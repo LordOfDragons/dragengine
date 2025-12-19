@@ -35,6 +35,9 @@
  * \brief Actor in conversation conversation Condition.
  */
 class ceCConditionActorInConversation : public ceConversationCondition{
+public:
+	typedef deTObjectReference<ceCConditionActorInConversation> Ref;
+
 private:
 	decString pActor;
 	bool pNegate;
@@ -71,7 +74,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create copy of condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

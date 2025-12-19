@@ -85,6 +85,6 @@ void ceCACameraShot::SetLookAtTarget(const char *target){
 
 
 
-ceConversationAction *ceCACameraShot::CreateCopy() const{
-	return new ceCACameraShot(*this);
+ceConversationAction::Ref ceCACameraShot::CreateCopy() const{
+	return ceCACameraShot::Ref::New(*this);
 }

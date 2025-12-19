@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionGameCommand;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionGameCommand.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,15 +37,16 @@ class ceConversationTopic;
  * \brief Undo game command conversation condition toggle negate.
  */
 class ceUCCGameCmdToggleNegate : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionGameCommand *pGameCommand;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCCGameCmdToggleNegate> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionGameCommand::Ref pGameCommand;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

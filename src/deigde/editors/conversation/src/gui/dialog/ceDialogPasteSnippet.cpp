@@ -68,36 +68,36 @@ pConversation(conversation)
 	
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
 	helper.ComboBoxFilter(content, "Camera Shot 1:", true,
-		"Camera shot to use for the first actor", pCBCameraShot1, NULL);
+		"Camera shot to use for the first actor", pCBCameraShot1, {});
 	pCBCameraShot1->SetDefaultSorter();
 	
 	helper.ComboBoxFilter(content, "Camera Shot 2:", true,
-		"Camera shot to use for the second actor", pCBCameraShot2, NULL);
+		"Camera shot to use for the second actor", pCBCameraShot2, {});
 	pCBCameraShot2->SetDefaultSorter();
 	
 	helper.ComboBoxFilter(content, "Target 1:", true,
-		"Target to use for the camera shot for the first actor", pCBTarget1, NULL);
+		"Target to use for the camera shot for the first actor", pCBTarget1, {});
 	pCBTarget1->SetDefaultSorter();
 	
 	helper.ComboBoxFilter(content, "Target 2:", true,
-		"Target to use for the camera shot for the second actor", pCBTarget2, NULL);
+		"Target to use for the camera shot for the second actor", pCBTarget2, {});
 	pCBTarget2->SetDefaultSorter();
 	
 	helper.EditFloat(content, "Wait Camera Shot:",
-		"Delay in seconds for added camera shot actions", pEditDelayCameraShot, NULL);
+		"Delay in seconds for added camera shot actions", pEditDelayCameraShot, {});
 	
 	helper.EditFloat(content, "Wait Actor Speak:",
-		"Delay in seconds for added actor speak actions", pEditDelayActorSpeak, NULL);
+		"Delay in seconds for added actor speak actions", pEditDelayActorSpeak, {});
 	
 	helper.EditFloat(content, "Scale Actor Speak:",
-		"Scale duration of spoken words added to actor speak actions", pEditScaleActorSpeak, NULL);
+		"Scale duration of spoken words added to actor speak actions", pEditScaleActorSpeak, {});
 	
 	helper.EditString(content, "Snippet:", "Conversation snippet to generate actions from",
-		pEditSnippet, 80, 20, NULL);
+		pEditSnippet, 80, 20, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Generate Actions", "Cancel");
@@ -131,20 +131,16 @@ ceDialogPasteSnippet::~ceDialogPasteSnippet(){
 ///////////////
 
 void ceDialogPasteSnippet::UpdateCameraShotLists(){
-	const ceCameraShotList list(pConversation->AllCameraShots());
 	const decString selection1(pCBCameraShot1->GetText());
 	const decString selection2(pCBCameraShot2->GetText());
-	const int count = list.GetCount();
-	int i;
 	
 	pCBCameraShot1->RemoveAllItems();
 	pCBCameraShot2->RemoveAllItems();
 	
-	for(i=0; i<count; i++){
-		const decString &name = list.GetAt(i)->GetName();
-		pCBCameraShot1->AddItem(name);
-		pCBCameraShot2->AddItem(name);
-	}
+	pConversation->GetAllCameraShots().Visit([&](const ceCameraShot &c){
+		pCBCameraShot1->AddItem(c.GetName());
+		pCBCameraShot2->AddItem(c.GetName());
+	});
 	
 	pCBCameraShot1->SortItems();
 	pCBCameraShot2->SortItems();
@@ -157,20 +153,16 @@ void ceDialogPasteSnippet::UpdateCameraShotLists(){
 }
 
 void ceDialogPasteSnippet::UpdateTargetLists(){
-	const ceTargetList list(pConversation->AllTargets());
 	const decString &selection1(pCBTarget1->GetText());
 	const decString &selection2(pCBTarget2->GetText());
-	const int count = list.GetCount();
-	int i;
 	
 	pCBTarget1->RemoveAllItems();
 	pCBTarget2->RemoveAllItems();
 	
-	for(i=0; i<count; i++){
-		const decString &name = list.GetAt(i)->GetName();
-		pCBTarget1->AddItem(name);
-		pCBTarget2->AddItem(name);
-	}
+	pConversation->AllTargets().Visit([&](const ceTarget &t){
+		pCBTarget1->AddItem(t.GetName());
+		pCBTarget2->AddItem(t.GetName());
+	});
 	
 	pCBTarget1->SortItems();
 	pCBTarget2->SortItems();
@@ -208,7 +200,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 		
 		// if line starts with a dash generate a comment
 		if(line.GetLength() > 0 && line.GetAt(0) == '#'){
-			const ceCAComment::Ref action(ceCAComment::Ref::NewWith());
+			const ceCAComment::Ref action(ceCAComment::Ref::New());
 			action->SetComment(line.GetMiddle(1).GetTrimmed());
 			pActions.Add(action);
 			continue;
@@ -218,13 +210,13 @@ void ceDialogPasteSnippet::GenerateActions(){
 		if(line.GetLength() > 0 && line.GetAt(0) == '!'){
 			// if we have an actor specified create an actor command
 			if(delimiter == -1){
-				const ceCAGameCommand::Ref action(ceCAGameCommand::Ref::NewWith());
+				const ceCAGameCommand::Ref action(ceCAGameCommand::Ref::New());
 				action->SetCommand(line.GetMiddle(1).GetTrimmed());
 				pActions.Add(action);
 				
 			// else create a game comment
 			}else{
-				const ceCAActorCommand::Ref action(ceCAActorCommand::Ref::NewWith());
+				const ceCAActorCommand::Ref action(ceCAActorCommand::Ref::New());
 				action->SetActor(line.GetLeft(delimiter).GetTrimmed());
 				action->SetCommand(line.GetMiddle(delimiter + 1).GetTrimmed());
 				pActions.Add(action);
@@ -251,7 +243,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 		// if the actor changed add a camera shot
 		if(actor != lastActor){
 			if(firstActor ? hasCameraShot1 : hasCameraShot2){
-				const ceCACameraShot::Ref action(ceCACameraShot::Ref::NewWith());
+				const ceCACameraShot::Ref action(ceCACameraShot::Ref::New());
 				action->SetName(firstActor ? cameraShot1 : cameraShot2);
 				action->SetCameraTarget(firstActor ? target2 : target1);
 				action->SetDuration(10.0f);
@@ -263,13 +255,13 @@ void ceDialogPasteSnippet::GenerateActions(){
 		}
 		
 		// add action speak for the actor
-		const ceCAActorSpeak::Ref action(ceCAActorSpeak::Ref::NewWith(pConversation->GetEngine()));
+		const ceCAActorSpeak::Ref action(ceCAActorSpeak::Ref::New(pConversation->GetEngine()));
 		ceCAActorSpeak * const actionActorSpeak = action;
 		actionActorSpeak->SetActor(actor);
 		actionActorSpeak->SetTextBoxText(decUnicodeString::NewFromUTF8(text));
 		actionActorSpeak->SetUseSpeechAnimation(true);
 		actionActorSpeak->SetDelay(delayActorSpeak);
-		WordsFromText(actionActorSpeak->GetWordList(), actionActorSpeak->GetTextBoxText(), scaleActorSpeak);
+		WordsFromText(actionActorSpeak->GetWords(), actionActorSpeak->GetTextBoxText(), scaleActorSpeak);
 		pActions.Add(actionActorSpeak);
 		
 		// keep track of which actor spoke the last time
@@ -277,7 +269,7 @@ void ceDialogPasteSnippet::GenerateActions(){
 	}
 }
 
-void ceDialogPasteSnippet::WordsFromText(ceStripList &wordList, const decUnicodeString &text, float scale){
+void ceDialogPasteSnippet::WordsFromText(ceStrip::List &wordList, const decUnicodeString &text, float scale){
 	const decUnicodeString padding = decUnicodeString::NewFromUTF8(" \t\n\r,.;:\"?!");
 	const float letterDuration = 0.075f;
 // 	const float phrasePause = 0.5f;
@@ -292,7 +284,7 @@ void ceDialogPasteSnippet::WordsFromText(ceStripList &wordList, const decUnicode
 		
 		if(padding.Find(character, 0) != -1){
 			if(word.GetLength() > 0){
-				wordList.Add(ceStrip::Ref::NewWith(word.GetLower().ToUTF8(),
+				wordList.Add(ceStrip::Ref::New(word.GetLower().ToUTF8(),
 					letterDuration * (float)word.GetLength() * scale, 0.0f));
 				word.SetFromUTF8("");
 			}

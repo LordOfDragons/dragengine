@@ -25,9 +25,9 @@
 #ifndef _CECONTROLLERVALUE_H_
 #define _CECONTROLLERVALUE_H_
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -40,8 +40,8 @@ private:
 	float pValue;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceControllerValue> Ref;
+	typedef decTObjectOrderedSet<ceControllerValue> List;
 
 
 	/** \name Constructors and Destructors */

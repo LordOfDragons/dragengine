@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture *gesture) :
-pGesture(NULL)
+pGesture(nullptr)
 {
 	if(!gesture){
 		DETHROW(deeInvalidParam);
@@ -49,13 +49,9 @@ pGesture(NULL)
 	SetShortInfo("Gesture toggle hold");
 	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureToggleHold::~ceUCGestureToggleHold(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

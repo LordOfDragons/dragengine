@@ -41,6 +41,9 @@ class ceWPTopic;
  * \brief Variable Conversation Condition property window.
  */
 class ceWPCVariable : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCVariable> Ref;
+
 private:
 	igdeComboBox::Ref pCBOperator;
 	igdeTextField::Ref pEditVariable;

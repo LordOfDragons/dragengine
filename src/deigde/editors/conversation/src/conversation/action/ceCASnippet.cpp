@@ -69,6 +69,6 @@ void ceCASnippet::SetCreateSideLane(bool createSideLane){
 }
 
 
-ceConversationAction *ceCASnippet::CreateCopy() const{
-	return new ceCASnippet(*this);
+ceConversationAction::Ref ceCASnippet::CreateCopy() const{
+	return ceCASnippet::Ref::New(*this);
 }

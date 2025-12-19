@@ -69,6 +69,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCActorCommand &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -80,7 +81,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCACommandSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
+			ceUCCACommandSetActor::Ref::New(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -89,6 +90,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCActorCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPCActorCommand &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -100,7 +102,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCACommandSetCommand::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCACommandSetCommand::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -108,11 +110,12 @@ class cActionEditCommand : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEditCommand> Ref;
 	cActionEditCommand(ceWPCActorCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
@@ -129,7 +132,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCACommandSetCommand::Ref::NewWith(topic, action, condition, text));
+			ceUCCACommandSetCommand::Ref::New(topic, action, condition, text));
 	}
 };
 
@@ -137,10 +140,11 @@ class cActionNegate : public igdeAction {
 	ceWPCActorCommand &pPanel;
 	
 public:
-	cActionNegate(ceWPCActorCommand &panel) : igdeAction("Negate", NULL,
+	typedef deTObjectReference<cActionNegate> Ref;
+	cActionNegate(ceWPCActorCommand &panel) : igdeAction("Negate", nullptr,
 		"True if the result of the command is negated"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorCommand * const condition = pPanel.GetCondition();
@@ -149,7 +153,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCACommandToggleNegate::Ref::NewWith(topic, action, condition));
+			ceUCCACommandToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -166,14 +170,14 @@ ceWPCActorCommand::ceWPCActorCommand(ceWPTopic &parentPanel) : ceWPCondition(par
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, new cComboActor(*this));
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
 	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
-	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
+	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
-	helper.CheckBox(formLine, pChkNegate, new cActionNegate(*this), true);
+	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCActorCommand::~ceWPCActorCommand(){
@@ -191,7 +195,7 @@ ceCConditionActorCommand *ceWPCActorCommand::GetCondition() const{
 		return (ceCConditionActorCommand*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

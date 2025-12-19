@@ -25,12 +25,14 @@
 #ifndef _CEUCFACEPOSESETNAME_H_
 #define _CEUCFACEPOSESETNAME_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/facepose/ceFacePose.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceFacePose;
-class ceConversationActionList;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationTopic;
 
 
@@ -39,18 +41,19 @@ class ceConversationTopic;
  * \brief Undo Action Face Pose Set Name.
  */
 class ceUCFacePoseSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCFacePoseSetName> Ref;
+	
+	
 private:
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 	decString pOldName;
 	decString pNewName;
 	
-	ceUndoCActionList pActionList;
+	decTObjectOrderedSet<ceUndoCAction> pActions;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCFacePoseSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
@@ -71,7 +74,7 @@ public:
 	
 private:
 	void pSetName(const char *oldNname, const char *newName);
-	void pAddActions(ceConversationTopic *topic, const ceConversationActionList &list);
+	void pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list);
 };
 
 #endif

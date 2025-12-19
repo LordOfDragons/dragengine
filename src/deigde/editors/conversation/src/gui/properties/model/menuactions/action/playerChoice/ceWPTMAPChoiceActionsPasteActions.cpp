@@ -73,6 +73,6 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAPChoiceActionsPasteActions::CreateUndo(const ceConversationActionList &actions){
-	return new ceUCAPChoiceActionPaste(pTopic, pPlayerChoice, NULL, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMAPChoiceActionsPasteActions::CreateUndo(const ceConversationAction::List &actions){
+	return ceUCAPChoiceActionPaste::Ref::New(pTopic, pPlayerChoice, nullptr, actions, pIndex);
 }

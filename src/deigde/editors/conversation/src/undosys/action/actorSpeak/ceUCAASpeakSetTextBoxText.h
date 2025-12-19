@@ -29,8 +29,8 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,16 +38,17 @@ class ceConversationTopic;
  * \brief Undo Action Actor Speak Conversation Action Set Text Box Text.
  */
 class ceUCAASpeakSetTextBoxText : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakSetTextBoxText> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakSetTextBoxText> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

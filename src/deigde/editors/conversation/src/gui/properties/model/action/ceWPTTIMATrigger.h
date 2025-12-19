@@ -34,6 +34,7 @@
  */
 class ceWPTTIMATrigger : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMATrigger> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCATrigger *GetActionTrigger() const{ return (ceCATrigger*)GetAction(); }
+	inline ceCATrigger *GetActionTrigger() const{ return GetAction().DynamicCast<ceCATrigger>(); }
 	
 	/** \brief Text representation for action. */
 	static const char *GetActionText(ceCATrigger::eActions action);

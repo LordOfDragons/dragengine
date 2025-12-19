@@ -58,10 +58,10 @@ pConversation(&conversation){
 ///////////////
 
 void ceWPTMARemoveAllActions::OnAction(){
-	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo()));
+	pConversation->GetUndoSystem()->Add(CreateUndo());
 }
 
-igdeUndo *ceWPTMARemoveAllActions::CreateUndo(){
+igdeUndo::Ref ceWPTMARemoveAllActions::CreateUndo(){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW(deeInvalidParam);

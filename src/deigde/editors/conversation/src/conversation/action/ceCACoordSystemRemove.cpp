@@ -59,6 +59,6 @@ void ceCACoordSystemRemove::SetCoordSystemID(const char *id){
 
 
 
-ceConversationAction *ceCACoordSystemRemove::CreateCopy() const{
-	return new ceCACoordSystemRemove(*this);
+ceConversationAction::Ref ceCACoordSystemRemove::CreateCopy() const{
+	return ceCACoordSystemRemove::Ref::New(*this);
 }

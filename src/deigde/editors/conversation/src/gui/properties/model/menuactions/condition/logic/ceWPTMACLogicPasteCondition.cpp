@@ -53,6 +53,6 @@ pLogic(&logic){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMACLogicPasteCondition::CreateUndo(const ceConversationConditionList &conditions){
-	return new ceUCCLogicPaste(pTopic, pAction, pLogic, conditions);
+igdeUndo::Ref ceWPTMACLogicPasteCondition::CreateUndo(const ceConversationCondition::List &conditions){
+	return ceUCCLogicPaste::Ref::New(pTopic, pAction, pLogic, conditions);
 }

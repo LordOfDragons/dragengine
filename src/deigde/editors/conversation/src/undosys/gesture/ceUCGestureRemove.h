@@ -36,14 +36,15 @@ class ceGesture;
  * \brief Undo Action Remove Gesture.
  */
 class ceUCGestureRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCGestureRemove> Ref;
+	
+	
 private:
 	ceConversation *pConversation;
 	ceGesture *pGesture;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCGestureRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

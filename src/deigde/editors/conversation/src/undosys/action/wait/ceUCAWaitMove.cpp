@@ -46,9 +46,9 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 	
 	int count = 0;
 	
-	pTopic = NULL;
-	pWait = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pWait = nullptr;
+	pAction = nullptr;
 	pNewIndex = newIndex;
 	pOldIndex = -1;
 	
@@ -62,25 +62,11 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 	SetShortInfo("Action Wait Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitMove::~ceUCAWaitMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -89,11 +75,11 @@ ceUCAWaitMove::~ceUCAWaitMove(){
 ///////////////
 
 void ceUCAWaitMove::Undo(){
-	pWait->GetActions().MoveTo(pAction, pOldIndex);
+	pWait->GetActions().Move(pAction, pOldIndex);
 	pTopic->NotifyActionStructureChanged(pWait);
 }
 
 void ceUCAWaitMove::Redo(){
-	pWait->GetActions().MoveTo(pAction, pNewIndex);
+	pWait->GetActions().Move(pAction, pNewIndex);
 	pTopic->NotifyActionStructureChanged(pWait);
 }

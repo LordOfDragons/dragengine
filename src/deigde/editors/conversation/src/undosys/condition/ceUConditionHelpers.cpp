@@ -27,8 +27,6 @@
 #include <stdlib.h>
 
 #include "ceUConditionHelpers.h"
-#include "../../conversation/condition/ceConversationCondition.h"
-#include "../../conversation/condition/ceConversationConditionList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -38,7 +36,7 @@
 //////////////////////////////
 
 ceConversationCondition *ceUConditionHelpers::ActivateConditionAfterRemove(
-const ceConversationConditionList& list, ceConversationCondition *removedCondition){
+const ceConversationCondition::List& list, ceConversationCondition *removedCondition){
 	if(!removedCondition){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,6 +53,6 @@ const ceConversationConditionList& list, ceConversationCondition *removedConditi
 		return list.GetAt(index - 1);
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }

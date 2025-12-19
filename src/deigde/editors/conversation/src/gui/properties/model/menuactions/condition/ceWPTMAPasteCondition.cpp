@@ -77,16 +77,15 @@ void ceWPTMAPasteCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New(
-		 cdata->GetConditions().GetAt(0)->CreateCopy()));
+	ceConversationCondition::Ref condition(cdata->GetConditions().GetAt(0)->CreateCopy());
 	
-	ceConversationConditionList conditions;
+	ceConversationCondition::List conditions;
 	conditions.Add(condition);
 	
-	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo(conditions)));
+	pConversation->GetUndoSystem()->Add(CreateUndo(conditions));
 }
 
-igdeUndo *ceWPTMAPasteCondition::CreateUndo(const ceConversationConditionList &conditions){
+igdeUndo::Ref ceWPTMAPasteCondition::CreateUndo(const ceConversationCondition::List &conditions){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW(deeInvalidParam);

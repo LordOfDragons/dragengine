@@ -34,6 +34,9 @@
  */
 class ceWPTTIMCTrigger : public ceWPTTIMCondition{
 public:
+	typedef deTObjectReference<ceWPTTIMCTrigger> Ref;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +54,9 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Condition. */
-	inline ceCConditionTrigger *GetConditionTrigger() const{ return (ceCConditionTrigger*)GetCondition(); }
+	inline ceCConditionTrigger *GetConditionTrigger() const{
+		return (ceCConditionTrigger*)GetCondition().Pointer();
+	}
 	
 	/** \brief Text representation for test mode. */
 	static const char *GetTestModeText(ceCConditionTrigger::eTestModes testMode);

@@ -854,9 +854,7 @@ void aeAnimator::RemoveAllVertexPositionSets(){
 
 aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
-	return pAttachments.FindDefault([&](const aeAttachment *attachment){
-		return attachment->GetName() == name;
-	}, {});
+	return pAttachments.FindOrDefault([&](const aeAttachment &a){ return a.GetName() == name; });
 }
 
 void aeAnimator::AddAttachment(aeAttachment *attachment){

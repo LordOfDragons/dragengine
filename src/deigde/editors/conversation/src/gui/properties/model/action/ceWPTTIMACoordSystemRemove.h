@@ -34,6 +34,7 @@
  */
 class ceWPTTIMACoordSystemRemove : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMACoordSystemRemove> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACoordSystemRemove *GetActionCoordSystemRemove() const{ return (ceCACoordSystemRemove*)GetAction(); }
+	inline ceCACoordSystemRemove *GetActionCoordSystemRemove() const{ return GetAction().DynamicCast<ceCACoordSystemRemove>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

@@ -55,7 +55,7 @@ pConversation(&conversation),
 pTopic(&topic),
 pWait(&wait)
 {
-	SetEnabled(wait.GetCondition() != NULL);
+	SetEnabled(wait.GetCondition() != nullptr);
 }
 
 
@@ -64,6 +64,6 @@ pWait(&wait)
 ///////////////
 
 void ceWPTMAWaitActionsClearCondition::OnAction(){
-	GetConversation().GetUndoSystem()->Add(ceUCAWaitSetCondition::Ref::NewWith(
+	GetConversation().GetUndoSystem()->Add(ceUCAWaitSetCondition::Ref::New(
 		pTopic, pWait, nullptr));
 }

@@ -59,6 +59,6 @@ pIndex(index)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCaseAddAction::CreateUndo(ceConversationAction *action){
-	return new ceUCAIfElseAdd(pTopic, pIfElse, pIfCase, action, pIndex);
+igdeUndo::Ref ceWPTMAIfElseCaseAddAction::CreateUndo(ceConversationAction *action){
+	return ceUCAIfElseAdd::Ref::New(pTopic, pIfElse, pIfCase, action, pIndex);
 }

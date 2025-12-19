@@ -82,7 +82,7 @@ void ceCanvasRuleOfThirdsAid::SetVisible(bool visible){
 //////////////////////
 
 void ceCanvasRuleOfThirdsAid::pCreateCanvas(){
-	pCanvasView.TakeOver(pEnvironment.GetEngineController()->GetEngine()->GetCanvasManager()->CreateCanvasView());
+	pCanvasView = pEnvironment.GetEngineController()->GetEngine()->GetCanvasManager()->CreateCanvasView();
 	pCanvasView->SetSize(decPoint(100, 100));
 	pCanvasView->SetVisible(false);
 	pCanvasView->SetTransparency(0.5f);
@@ -172,8 +172,7 @@ void ceCanvasRuleOfThirdsAid::pAddFocus(int x, int y){
 }
 
 void ceCanvasRuleOfThirdsAid::pAddRect(int x1, int y1, int x2, int y2, const decColor &color, float transparency){
-	deCanvasPaint::Ref canvasPaint(deCanvasPaint::Ref::New(
-		 pEnvironment.GetEngineController()->GetEngine()->GetCanvasManager()->CreateCanvasPaint()));
+	deCanvasPaint::Ref canvasPaint(pEnvironment.GetEngineController()->GetEngine()->GetCanvasManager()->CreateCanvasPaint());
 	canvasPaint->SetShapeType(deCanvasPaint::estRectangle);
 	canvasPaint->SetThickness(0);
 	canvasPaint->SetLineColor(decColor(color, 0.0f) /*color*/);

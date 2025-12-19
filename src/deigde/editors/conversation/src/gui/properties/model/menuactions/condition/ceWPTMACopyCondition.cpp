@@ -32,7 +32,7 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataCondition.h"
-#include "../../../../../conversation/condition/ceConversationConditionList.h"
+#include "../../../../../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/clipboard/igdeClipboardData.h>
@@ -50,7 +50,7 @@ ceWPTMenuAction(windowMain, "Copy Condition",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
 pCondition(condition)
 {
-	SetEnabled(condition != NULL);
+	SetEnabled(condition != nullptr);
 }
 
 ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
@@ -58,7 +58,7 @@ ceConversationCondition *condition, const char *text, igdeIcon *icon) :
 ceWPTMenuAction(windowMain, text, icon),
 pCondition(condition)
 {
-	SetEnabled(condition != NULL);
+	SetEnabled(condition != nullptr);
 }
 
 
@@ -71,8 +71,8 @@ void ceWPTMACopyCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationConditionList conditions;
+	ceConversationCondition::List conditions;
 	conditions.Add(pCondition);
 	
-	GetWindowMain().GetClipboard().Set(ceClipboardDataCondition::Ref::NewWith(conditions));
+	GetWindowMain().GetClipboard().Set(ceClipboardDataCondition::Ref::New(conditions));
 }

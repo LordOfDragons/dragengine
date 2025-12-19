@@ -25,13 +25,15 @@
 #ifndef _CEUCTARGETSETNAME_H_
 #define _CEUCTARGETSETNAME_H_
 
-#include "../action/ceUndoCActionList.h"
-#include "../../conversation/camerashot/ceCameraShotList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/target/ceTarget.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
-class ceConversationActionList;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationTopic;
 
 
@@ -40,19 +42,20 @@ class ceConversationTopic;
  * \brief Undo Action Target Set Name.
  */
 class ceUCTargetSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCTargetSetName> Ref;
+	
+	
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldName;
 	decString pNewName;
 	
-	ceUndoCActionList pActionList;
-	ceCameraShotList pCameraShotList;
+	decTObjectOrderedSet<ceUndoCAction> pActions;
+	decTObjectOrderedSet<ceCameraShot> pCameraShots;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCTargetSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
@@ -73,7 +76,7 @@ public:
 	
 private:
 	void pSetName(const char *oldName, const char *newName);
-	void pAddActions(ceConversationTopic *topic, const ceConversationActionList &list);
+	void pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list);
 };
 
 #endif

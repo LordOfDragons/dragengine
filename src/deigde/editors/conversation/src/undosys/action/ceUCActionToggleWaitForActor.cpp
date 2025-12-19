@@ -46,25 +46,16 @@ ceConversationTopic *topic, ceConversationAction *action)
 {
 	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	
 	SetShortInfo("Action Toggle Wait For Actor");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionToggleWaitForActor::~ceUCActionToggleWaitForActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

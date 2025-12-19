@@ -108,7 +108,7 @@ void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -123,19 +123,19 @@ void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
 	// child action specific
 	helper.MenuSeparator(contextMenu);
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Logic: Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMACLogicAddCondition(windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
+		helper.MenuCommand(subMenu, ceWPTMACLogicAddCondition::Ref::New(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMACLogicClearCondition(windowMain, conversation,
-		*topic, action, logic ), true );
-	helper.MenuCommand(contextMenu, new ceWPTMACLogicPasteCondition(windowMain, conversation,
-		*topic, action, logic ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACLogicClearCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicPasteCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
 }
 
 void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition){
@@ -146,7 +146,7 @@ void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConver
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -159,24 +159,24 @@ void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConver
 	int i;
 	
 	// child action specific
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMACLogicAddCondition(windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
+		helper.MenuCommand(subMenu, ceWPTMACLogicAddCondition::Ref::New(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMACopyCondition(windowMain, condition), true);
-	helper.MenuCommand(contextMenu, new ceWPTMACLogicCutCondition(windowMain, conversation,
-		*topic, action, logic, condition ), true );
-	helper.MenuCommand(contextMenu, new ceWPTMACLogicPasteCondition(windowMain, conversation,
-		*topic, action, logic ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACopyCondition::Ref::New(windowMain, condition));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicCutCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic, condition));
+	helper.MenuCommand(contextMenu, ceWPTMACLogicPasteCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic));
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new ceWPTMACLogicRemoveCondition(windowMain, conversation,
-		*topic, action, logic, condition ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACLogicRemoveCondition::Ref::New(
+		windowMain, conversation, *topic, action, logic, condition));
 }
 
 void ceWPTTIMCLogic::OnExpandedChanged(){

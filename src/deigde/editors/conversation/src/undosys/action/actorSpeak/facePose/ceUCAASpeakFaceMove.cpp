@@ -48,38 +48,24 @@ ceStrip *facePose, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pFacePose = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pFacePose = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetFacePoseList().IndexOf(facePose);
+	pOldIndex = actorSpeak->GetFacePoses().IndexOf(facePose);
 	
 	if(pOldIndex == -1) DETHROW(deeInvalidParam);
-	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetFacePoseList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetFacePoses().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Face Pose");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
 ///////////////
 
 void ceUCAASpeakFaceMove::Undo(){
-	pActorSpeak->GetFacePoseList().MoveTo(pFacePose, pOldIndex);
+	pActorSpeak->GetFacePoses().Move(pFacePose, pOldIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceMove::Redo(){
-	pActorSpeak->GetFacePoseList().MoveTo(pFacePose, pNewIndex);
+	pActorSpeak->GetFacePoses().Move(pFacePose, pNewIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -25,12 +25,13 @@
 #ifndef _CEDIALOGEDITSTRIP_H_
 #define _CEDIALOGEDITSTRIP_H_
 
+#include "../../conversation/strip/ceStrip.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
-class ceStrip;
 class decStringList;
 
 
@@ -101,7 +102,7 @@ public:
 	void UpdateStrip(ceStrip &strip) const;
 	
 	/** Create new strip from data. */
-	ceStrip *CreateStrip() const;
+	ceStrip::Ref CreateStrip() const;
 	
 	/** Set listener or nullptr. */
 	void SetListener(const Listener::Ref &listener);

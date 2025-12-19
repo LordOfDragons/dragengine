@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKSTRIPSSCALE_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,19 +38,24 @@ class ceConversationTopic;
  */
 class ceUCAASpeakStripsScale : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAASpeakStripsScale> Ref;
 	
-	struct sStrip{
-		float pause;
-		float duration;
-	};
 	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pStrips;
-	sStrip *pOldStates;
+	class cStrip : public deObject{
+	public:
+		typedef deTObjectReference<cStrip> Ref;
+		const ceStrip::Ref strip;
+		const float pause;
+		const float duration;
+		
+		explicit inline cStrip(const ceStrip::Ref &s) :
+			strip(s), pause(s->GetPause()), duration(s->GetDuration()){}
+	};
+	
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	decTObjectOrderedSet<cStrip> pStrips;
 	float pScaling;
 	
 public:
@@ -66,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the list of strips capturing the current state. */
-	void SetStrips(const ceStripList &strips);
+	void SetStrips(const ceStrip::List &strips);
 	/** \brief Set new scaling. */
 	void SetScaling(float scaling);
 	

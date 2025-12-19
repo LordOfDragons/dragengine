@@ -26,11 +26,12 @@
 #define _CEWPTMAPASTECONDITION_H_
 
 #include "../ceWPTMenuAction.h"
-#include "../../../../../conversation/condition/ceConversationConditionList.h"
+#include "../../../../../conversation/condition/ceConversationCondition.h"
+
+#include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
 class ceConversationCondition;
-class igdeUndo;
 
 
 
@@ -48,6 +49,7 @@ protected:
 	ceWPTMAPasteCondition();
 	
 public:
+	typedef deTObjectReference<ceWPTMAPasteCondition> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
@@ -72,7 +74,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
+	virtual igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions);
 	/*@}*/
 };
 

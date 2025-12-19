@@ -66,6 +66,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPAMusic &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPAMusic &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -76,7 +77,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAMusicSetName::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCAMusicSetName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -96,7 +97,7 @@ ceWPAMusic::ceWPAMusic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	CreateGUICommon(*this);
 	
 	helper.EditString(*this, "Name:", "Name of the music to use or empty to not change",
-		pEditName, new cTextName(*this));
+		pEditName, cTextName::Ref::New(*this));
 }
 
 ceWPAMusic::~ceWPAMusic(){
@@ -114,7 +115,7 @@ ceCAMusic *ceWPAMusic::GetAction() const{
 		return (ceCAMusic*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

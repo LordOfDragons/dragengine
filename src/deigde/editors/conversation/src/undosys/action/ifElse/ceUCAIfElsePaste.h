@@ -27,8 +27,8 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAIfElseCase;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -36,16 +36,19 @@ class ceCAIfElse;
  * \brief Undo action if-else add conversation action.
  */
 class ceUCAIfElsePaste : public ceUCActionPaste{
+public:
+	typedef deTObjectReference<ceUCAIfElsePaste> Ref;
+
 private:
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
 	ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index);
+	ceCAIfElseCase *ifcase, const ceConversationAction::List &actions, int index);
 	
 	/** \brief Clean up undo object. */
 	~ceUCAIfElsePaste() override;

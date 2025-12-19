@@ -53,51 +53,20 @@
 ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newName){
 	if(!facePose || !newName) DETHROW(deeInvalidParam);
 	
-	const ceConversationFileList &fileList = facePose->GetConversation()->GetFileList();
-	const int fileCount = fileList.GetCount();
-	ceConversationTopic *topic;
-	int e, t;
-	
-	pFacePose = NULL;
-	
 	SetShortInfo("FacePose Set Name");
 	
 	pOldName = facePose->GetName();
 	pNewName = newName;
 	
-	try{
-		pFacePose = facePose;
-		facePose->AddReference();
-		
-		for(e=0; e<fileCount; e++){
-			const ceConversationFile &file = *fileList.GetAt(e);
-			const ceConversationTopicList &topicList = file.GetTopicList();
-			const int topicCount = topicList.GetCount();
-			
-			for(t=0; t<topicCount; t++){
-				topic = topicList.GetAt(t);
-				
-				pAddActions(topic, topic->GetActionList());
-			}
-		}
-		
-	}catch(const deException &){
-		pActionList.RemoveAll();
-		
-		if(pFacePose){
-			pFacePose->FreeReference();
-		}
-		
-		throw;
-	}
+	pFacePose = facePose;
+	facePose->GetConversation()->GetFiles().Visit([&](const ceConversationFile &f){
+		f.GetTopics().Visit([&](ceConversationTopic *t){
+			pAddActions(t, t->GetActions());
+		});
+	});
 }
 
 ceUCFacePoseSetName::~ceUCFacePoseSetName(){
-	pActionList.RemoveAll();
-	
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 
@@ -106,11 +75,11 @@ ceUCFacePoseSetName::~ceUCFacePoseSetName(){
 ///////////////
 
 void ceUCFacePoseSetName::Undo(){
-	pSetName(pNewName.GetString(), pOldName.GetString());
+	pSetName(pNewName, pOldName);
 }
 
 void ceUCFacePoseSetName::Redo(){
-	pSetName(pOldName.GetString(), pNewName.GetString());
+	pSetName(pOldName, pNewName);
 }
 
 
@@ -119,90 +88,43 @@ void ceUCFacePoseSetName::Redo(){
 //////////////////////
 
 void ceUCFacePoseSetName::pSetName(const char *oldName, const char *newName){
-	const int count = pActionList.GetCount();
-	ceConversationAction *action;
-	int i, j, facePoseCount;
-	
 	pFacePose->SetName(newName);
 	
-	for(i=0; i<count; i++){
-		const ceUndoCAction &undoCAction = *pActionList.GetAt(i);
-		
-		action = undoCAction.GetAction();
-		
-		const ceCAActorSpeak &actorSpeak = *((ceCAActorSpeak*)action);
-		const ceStripList &facePoseList = actorSpeak.GetFacePoseList();
-		
-		facePoseCount = facePoseList.GetCount();
-		for(j=0; j<facePoseCount; j++){
-			ceStrip &facePose = *facePoseList.GetAt(j);
-			
-			if(facePose.GetID() == oldName){
-				facePose.SetID(newName);
+	pActions.Visit([&](const ceUndoCAction &a){
+		((ceCAActorSpeak&)*a.GetAction()).GetFacePoses().Visit([&](ceStrip &s){
+			if(s.GetID() == oldName){
+				s.SetID(newName);
 			}
-		}
+		});
 		
-		undoCAction.GetTopic()->NotifyActionChanged(action);
-	}
+		a.GetTopic()->NotifyActionChanged(a.GetAction());
+	});
 }
 
-void ceUCFacePoseSetName::pAddActions(ceConversationTopic *topic, const ceConversationActionList &list){
-	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
-	ceConversationAction *action;
-	int i, j, facePoseCount;
-	
-	try{
-		for(i=0; i<count; i++){
-			action = list.GetAt(i);
-			
-			if(action->GetType() == ceConversationAction::eatActorSpeak){
-				const ceCAActorSpeak &actorSpeak = *((ceCAActorSpeak*)action);
-				const ceStripList &facePoseList = actorSpeak.GetFacePoseList();
-				
-				facePoseCount = facePoseList.GetCount();
-				for(j=0; j<facePoseCount; j++){
-					if(facePoseList.GetAt(j)->GetID() == pOldName){
-						undoCAction = new ceUndoCAction(action, topic);
-						pActionList.Add(undoCAction);
-						undoCAction->FreeReference();
-						undoCAction = NULL;
-						break;
-					}
-				}
-				
-			}else if(action->GetType() == ceConversationAction::eatIfElse){
-				const ceCAIfElse &ifElse = *((ceCAIfElse*)action);
-				const ceCAIfElseCaseList &caseList = ifElse.GetCases();
-				const int caseCount = caseList.GetCount();
-				
-				for(j=0; j<caseCount; j++){
-					pAddActions(topic, caseList.GetAt(j)->GetActions());
-				}
-				pAddActions(topic, ifElse.GetElseActions());
-				
-			}else if(action->GetType() == ceConversationAction::eatPlayerChoice){
-				const ceCAPlayerChoice &playerChoice = *((ceCAPlayerChoice*)action);
-				const ceCAPlayerChoiceOptionList &optionList = playerChoice.GetOptions();
-				const int optionCount = optionList.GetCount();
-				
-				for(j=0; j<optionCount; j++){
-					pAddActions(topic, optionList.GetAt(j)->GetActions());
-				}
-				
-				pAddActions(topic, playerChoice.GetActions());
-				
-			}else if(action->GetType() == ceConversationAction::eatWait){
-				const ceCAWait &wait = *((ceCAWait*)action);
-				
-				pAddActions(topic, wait.GetActions());
+void ceUCFacePoseSetName::pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list){
+	list.Visit([&](ceConversationAction *a){
+		if(a->GetType() == ceConversationAction::eatActorSpeak){
+			const ceCAActorSpeak &actorSpeak = *((ceCAActorSpeak*)a);
+			if(actorSpeak.GetFacePoses().HasMatching([&](const ceStrip &s){ return s.GetID() == pOldName; })){
+				pActions.Add(ceUndoCAction::Ref::New(a, topic));
 			}
+			
+		}else if(a->GetType() == ceConversationAction::eatIfElse){
+			const ceCAIfElse &ifElse = *((ceCAIfElse*)a);
+			ifElse.GetCases().Visit([&](const ceCAIfElseCase &c){
+				pAddActions(topic, c.GetActions());
+			});
+			pAddActions(topic, ifElse.GetElseActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatPlayerChoice){
+			const ceCAPlayerChoice &playerChoice = *((ceCAPlayerChoice*)a);
+			playerChoice.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+				pAddActions(topic, o.GetActions());
+			});
+			pAddActions(topic, playerChoice.GetActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatWait){
+			pAddActions(topic, ((ceCAWait*)a)->GetActions());
 		}
-		
-	}catch(const deException &){
-		if(undoCAction){
-			undoCAction->FreeReference();
-		}
-		throw;
-	}
+	});
 }

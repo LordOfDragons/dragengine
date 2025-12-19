@@ -39,6 +39,9 @@
  *          send. The command returns a boolean value use directly as condition result.
  */
 class ceCConditionActorCommand : public ceConversationCondition{
+public:
+	typedef deTObjectReference<ceCConditionActorCommand> Ref;
+
 private:
 	decString pActor;
 	decString pCommand;
@@ -71,7 +74,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

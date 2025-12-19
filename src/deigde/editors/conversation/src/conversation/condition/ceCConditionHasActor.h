@@ -36,6 +36,9 @@
  * Determines if a named actor does or does not exist in the conversation.
  */
 class ceCConditionHasActor : public ceConversationCondition{
+public:
+	typedef deTObjectReference<ceCConditionHasActor> Ref;
+
 private:
 	decString pActor;
 	bool pNegate;
@@ -63,7 +66,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** Create a copy of this condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

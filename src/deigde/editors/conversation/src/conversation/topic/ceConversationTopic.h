@@ -25,12 +25,12 @@
 #ifndef _CECONVERSATIONTOPIC_H_
 #define _CECONVERSATIONTOPIC_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/string/decString.h>
-
-#include "../action/ceConversationActionList.h"
 #include "../action/ceConversationAction.h"
 #include "../condition/ceConversationCondition.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 class decStringSet;
 class ceConversationFile;
@@ -43,13 +43,14 @@ class ceConversationCondition;
 class ceConversationTopic : public deObject{
 public:
 	typedef deTObjectReference<ceConversationTopic> Ref;
+	typedef decTObjectOrderedSet<ceConversationTopic> List;
 	
 	
 private:
 	ceConversationFile *pFile;
 	
 	decString pID;
-	ceConversationActionList pActions;
+	ceConversationAction::List pActions;
 	ceConversationAction::Ref pActiveAction;
 	ceConversationCondition::Ref pActiveCondition;
 	
@@ -59,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation topic. */
-	ceConversationTopic(const char *id = "Topic");
+	explicit ceConversationTopic(const char *id = "Topic");
 	
 	/** \brief Create copy of conversation topic. */
 	ceConversationTopic(const ceConversationTopic &topic);
@@ -72,10 +73,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent file or \em NULL if not set. */
+	/** \brief Parent file or \em nullptr if not set. */
 	inline ceConversationFile *GetFile() const{ return pFile; }
 	
-	/** \brief Set parent file or \em NULL if not set. */
+	/** \brief Set parent file or \em nullptr if not set. */
 	void SetFile(ceConversationFile *file);
 	
 	
@@ -87,21 +88,21 @@ public:
 	void SetID(const char *id);
 	
 	/** \brief Actions. */
-	inline ceConversationActionList &GetActionList(){ return pActions; }
-	inline const ceConversationActionList &GetActionList() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
-	/** \brief Active action or \em NULL if none is active. */
-	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
+	/** \brief Active action or \em nullptr if none is active. */
+	inline const ceConversationAction::Ref &GetActiveAction() const{ return pActiveAction; }
 	
-	/** \brief Active condition or \em NULL if none is active. */
-	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	/** \brief Active condition or \em nullptr if none is active. */
+	inline const ceConversationCondition::Ref &GetActiveCondition() const{ return pActiveCondition; }
 	
 	/** \brief Set active element. */
 	void SetActive(ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Find missing words. */
 	void FindMissingWords(decStringSet &missingWords) const;
-	void FindMissingWords(const ceConversationActionList &actions, decStringSet &missingWords) const;
+	void FindMissingWords(const ceConversationAction::List &actions, decStringSet &missingWords) const;
 	
 	
 	

@@ -43,7 +43,7 @@
 ceCameraShot::ceCameraShot(const char *name) :
 pName(name)
 {
-	pConversation = NULL;
+	pConversation = nullptr;
 	pActorCount = 1;
 	pOffsetCameraFrom.Set(0.0f, 1.65f, 0.0f);
 	pCameraDistanceFrom = 0.5f;
@@ -65,7 +65,7 @@ pName(name)
 ceCameraShot::ceCameraShot(const ceCameraShot &cameraShot){
 	int i;
 	
-	pConversation = NULL;
+	pConversation = nullptr;
 	pName = cameraShot.pName;
 	pActorCount = cameraShot.pActorCount;
 	
@@ -115,16 +115,21 @@ void ceCameraShot::SetConversation(ceConversation *conversation){
 }
 
 void ceCameraShot::SetName(const char *name){
-	if(!name) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(name)
 	
-	if(!pName.Equals(name)){
-		if(pConversation && pConversation->GetCameraShotList().HasNamed(name)) DETHROW(deeInvalidParam);
-		
-		pName = name;
-		
-		if(pConversation){
-			pConversation->NotifyCameraShotChanged(this);
-		}
+	if(pName == name){
+		return;
+	}
+	
+	if(pConversation){
+		DEASSERT_FALSE(pConversation->GetCameraShotList().HasMatching(
+			[&](const ceCameraShot &c){ return c.GetName() == name;}))
+	}
+	
+	pName = name;
+	
+	if(pConversation){
+		pConversation->NotifyCameraShotChanged(this);
 	}
 }
 

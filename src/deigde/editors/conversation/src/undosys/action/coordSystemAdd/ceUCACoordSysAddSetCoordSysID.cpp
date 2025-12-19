@@ -47,27 +47,18 @@ ceCACoordSystemAdd *action, const char *newCoordSysID){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldCoordSysID = action->GetCoordSystemID();
 	pNewCoordSysID = newCoordSysID;
 	
 	SetShortInfo("Coord system add set coord system id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysAddSetCoordSysID::~ceUCACoordSysAddSetCoordSysID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

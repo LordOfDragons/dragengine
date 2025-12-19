@@ -45,27 +45,18 @@ ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATri
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldAction = action->GetAction();
 	pNewAction = newOperator;
 	
 	SetShortInfo("Action trigger set action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetAction::~ceUCATriggerSetAction(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

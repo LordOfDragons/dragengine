@@ -28,22 +28,25 @@
 #include "../../ceWPTTreeItemModel.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../../../conversation/action/ceCAPlayerChoiceOption.h"
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceOptionCondition;
-class ceWPTTIMAPlayerChoiceOptionActions;
+#include "ceWPTTIMAPlayerChoiceOptionCondition.h"
+#include "ceWPTTIMAPlayerChoiceOptionActions.h"
 
 
 /**
  * \brief Action player choice option.
  */
 class ceWPTTIMAPlayerChoiceOption : public ceWPTTreeItemModel{
+public:
+	typedef deTObjectReference<ceWPTTIMAPlayerChoiceOption> Ref;
+	
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
-	ceWPTTIMAPlayerChoiceOptionCondition *pCondition;
-	ceWPTTIMAPlayerChoiceOptionActions *pActions;
+	ceWPTTIMAPlayerChoiceOptionCondition::Ref pCondition;
+	ceWPTTIMAPlayerChoiceOptionActions::Ref pActions;
 	
 	
 	
@@ -65,7 +68,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline const ceCAPlayerChoiceOption::Ref &GetOption() const{ return pOption; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
@@ -76,11 +79,11 @@ public:
 	/** \brief Parent player choice model. */
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
 	
-	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{ return pCondition; }
+	/** \brief Model with condition or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceOptionCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
-	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{ return pActions; }
+	/** \brief Model with actions or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceOptionActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();

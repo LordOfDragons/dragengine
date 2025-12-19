@@ -46,37 +46,23 @@ ceUCAASpeakGestureAdd::ceUCAASpeakGestureAdd(ceConversationTopic *topic, ceCAAct
 	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}
-	if(index < 0 || index > actorSpeak->GetGestureList().GetCount()){
+	if(index < 0 || index > actorSpeak->GetGestures().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pGesture = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pGesture = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Actor Speak Add Gesture");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureAdd::~ceUCAASpeakGestureAdd(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCAASpeakGestureAdd::~ceUCAASpeakGestureAdd(){
 ///////////////
 
 void ceUCAASpeakGestureAdd::Undo(){
-	pActorSpeak->GetGestureList().Remove(pGesture);
+	pActorSpeak->GetGestures().Remove(pGesture);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureAdd::Redo(){
-	pActorSpeak->GetGestureList().InsertAt(pGesture, pIndex);
+	pActorSpeak->GetGestures().Insert(pGesture, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

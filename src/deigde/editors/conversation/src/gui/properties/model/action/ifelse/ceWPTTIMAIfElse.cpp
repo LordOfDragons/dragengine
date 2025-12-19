@@ -49,24 +49,13 @@
 
 ceWPTTIMAIfElse::ceWPTTIMAIfElse(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAIfElse *action) :
-ceWPTTIMAction(windowMain, etActionIfElse, conversation, action),
-pElse(NULL)
+ceWPTTIMAction(windowMain, etActionIfElse, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionIfElse());
 	SetText("If-Else");
 	
-	try{
-		pElse = new ceWPTTIMAIfElseElse(windowMain, conversation, action->GetElseActions());
-		AddChild(pElse);
-		
-	}catch(const deException &){
-		if(pElse){
-			pElse->FreeReference();
-		}
-		throw;
-	}
-	
-	pElse->FreeReference(); // held by super-class child list
+	pElse = ceWPTTIMAIfElseElse::Ref::New(windowMain, conversation, action->GetElseActions());
+	AddChild(pElse);
 }
 
 ceWPTTIMAIfElse::~ceWPTTIMAIfElse(){
@@ -78,22 +67,18 @@ ceWPTTIMAIfElse::~ceWPTTIMAIfElse(){
 ///////////////
 
 ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElse::GetIfCaseChild(ceCAIfElseCase *ifCase) const{
-	const int count = GetChildCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTreeItemModel * const child = GetChildAt(i);
-		if(child->GetType() != etActionIfElseCase){
+	for(const auto &c : GetChildren()){
+		if(c->GetType() != etActionIfElseCase){
 			continue;
 		}
 		
-		ceWPTTIMAIfElseIfCase * const childIfCase = (ceWPTTIMAIfElseIfCase*)child;
+		const ceWPTTIMAIfElseIfCase::Ref childIfCase(c.DynamicCast<ceWPTTIMAIfElseIfCase>());
 		if(childIfCase->GetIfCase() == ifCase){
 			return childIfCase;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTIMAIfElse::Update(){
@@ -103,37 +88,32 @@ void ceWPTTIMAIfElse::Update(){
 	pUpdateIfCases();
 	
 	const int countIfCases = ifElse.GetCases().GetCount();
-	if(GetChildAt(countIfCases) != pElse){
-		MoveChild(pElse, countIfCases);
+	if(GetChildren().GetAt(countIfCases) != pElse){
+		MoveChild(pElse.Pointer(), countIfCases);
 	}
 	pElse->Update();
 	
 	const int count = countIfCases + 1;
-	while(GetChildCount() > count){
-		RemoveChild(GetChildAt(GetChildCount() - 1));
+	while(GetChildren().GetCount() > count){
+		RemoveChild(GetChildren().Last());
 	}
 }
 
 void ceWPTTIMAIfElse::UpdateActionLists(){
-	const int count = GetChildCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTreeItemModel * const child = GetChildAt(i);
-		
-		switch(child->GetType()){
+	GetChildren().Visit([](const ceWPTTreeItemModel::Ref &c){
+		switch(c->GetType()){
 		case etActionIfElseCase:
-			((ceWPTTIMAIfElseIfCase*)child)->UpdateActionLists();
+			c.DynamicCast<ceWPTTIMAIfElseIfCase>()->UpdateActionLists();
 			break;
 			
 		case etActionIfElseElse:
-			((ceWPTTIMAIfElseElse*)child)->UpdateActions();
+			c.DynamicCast<ceWPTTIMAIfElseElse>()->UpdateActions();
 			break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }
 
 void ceWPTTIMAIfElse::OnExpandedChanged(){
@@ -149,15 +129,15 @@ void ceWPTTIMAIfElse::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceCAIfElse &ifElse = *GetActionIfElse();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
 	
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseAdd(
-		windowMain, conversation, *topic, ifElse), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseCaseAdd::Ref::New(
+		windowMain, conversation, *topic, ifElse));
 	helper.MenuSeparator(contextMenu);
 	
 	ceWPTTIMAction::OnContextMenu(contextMenu);
@@ -174,7 +154,7 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 	ceConversation &conversation = GetConversation();
 	
 	// update if-cases
-	const ceCAIfElseCaseList &ifCases = ifElse.GetCases();
+	const ceCAIfElseCase::List &ifCases = ifElse.GetCases();
 	const int ifCaseCount = ifCases.GetCount();
 	int i, j;
 	
@@ -182,15 +162,15 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 		ceCAIfElseCase * const ifCase = ifCases.GetAt(i);
 		
 		// find item matching ifCase if present
-		ceWPTTIMAIfElseIfCase *model = NULL;
-		const int childCount = GetChildCount();
+		ceWPTTIMAIfElseIfCase::Ref model;
+		const int childCount = GetChildren().GetCount();
 		for(j=i; j<childCount; j++){
-			ceWPTTreeItemModel * const child = GetChildAt(j);
+			ceWPTTreeItemModel * const child = GetChildren().GetAt(j);
 			if(child->GetType() != etActionIfElseCase){
 				continue;
 			}
 			
-			ceWPTTIMAIfElseIfCase * const childIfCase = (ceWPTTIMAIfElseIfCase*)child;
+			ceWPTTIMAIfElseIfCase * const childIfCase = static_cast<ceWPTTIMAIfElseIfCase*>(child);
 			if(childIfCase->GetIfCase() == ifCase){
 				model = childIfCase;
 				break;
@@ -208,18 +188,15 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAIfElseIfCase(windowMain, conversation, ifElse, ifCase, i);
+			model = ceWPTTIMAIfElseIfCase::Ref::New(windowMain, conversation, ifElse, ifCase, i);
 			
 			try{
 				InsertChild(model, i);
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 }

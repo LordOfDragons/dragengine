@@ -23,7 +23,6 @@
  */
 
 #include "ceLangPack.h"
-#include "ceLangPackEntry.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -66,55 +65,4 @@ void ceLangPack::SetMissingText(const decUnicodeString &missingText){
 
 void ceLangPack::SetChanged(bool changed){
 	pChanged = changed;
-}
-
-
-
-// Entries
-/////////////
-
-int ceLangPack::GetEntryCount() const{
-	return pEntries.GetCount();
-}
-
-ceLangPackEntry *ceLangPack::GetEntryAt(int index) const{
-	return (ceLangPackEntry*)pEntries.GetAt(index);
-}
-
-ceLangPackEntry *ceLangPack::GetEntryNamed (const char *name) const{
-	const int count = pEntries.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceLangPackEntry * const entry = (ceLangPackEntry*)pEntries.GetAt(i);
-		if(entry->GetName() == name){
-			return entry;
-		}
-	}
-	
-	return nullptr;
-}
-
-void ceLangPack::AddEntry(ceLangPackEntry *entry){
-	DEASSERT_NOTNULL(entry)
-	pEntries.Add(entry);
-}
-
-void ceLangPack::RemoveEntry(ceLangPackEntry *entry){
-	pEntries.Remove(entry);
-}
-
-void ceLangPack::RemoveAllEntries(){
-	pEntries.RemoveAll();
-}
-
-void ceLangPack::GetEntryNames(decStringList &list) const{
-	const int count = pEntries.GetCount();
-	int i;
-	
-	list.RemoveAll();
-	for(i=0; i<count; i++){
-		list.Add(((ceLangPackEntry*)pEntries.GetAt(i))->GetName());
-	}
-	list.SortAscending();
 }

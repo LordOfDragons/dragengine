@@ -36,6 +36,9 @@ class ceConversationAction;
  * \brief Menu action add action to if-else case.
  */
 class ceWPTMACLogicAddCondition : public ceWPTMACreateCondition{
+public:
+	typedef deTObjectReference<ceWPTMACLogicAddCondition> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceConversationAction *pAction;
@@ -71,7 +74,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo(ceConversationCondition *action) override;
+	igdeUndo::Ref CreateUndo(ceConversationCondition *action) override;
 	/*@}*/
 };
 

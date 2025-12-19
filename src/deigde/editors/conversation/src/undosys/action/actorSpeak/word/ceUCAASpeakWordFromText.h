@@ -25,12 +25,12 @@
 #ifndef _CEUCAASPEAKWORDFROMTEXT_H_
 #define _CEUCAASPEAKWORDFROMTEXT_H_
 
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 class decUnicodeString;
 
 
@@ -42,16 +42,16 @@ class decUnicodeString;
  * after it has been created.
  */
 class ceUCAASpeakWordFromText : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pOldWords;
-	ceStripList pNewWords;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAASpeakWordFromText> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::List pOldWords, pNewWords;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -36,11 +36,13 @@ class ceWPTTIMAIfElse;
  */
 class ceWPTTIMAIfElseElse : public ceWPTTIMActions{
 public:
+	typedef deTObjectReference<ceWPTTIMAIfElseElse> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseElse(ceWindowMain &windowMain,
-		ceConversation &conversation, const ceConversationActionList &actions);
+	ceWPTTIMAIfElseElse(ceWindowMain &windowMain, ceConversation &conversation,
+		const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */

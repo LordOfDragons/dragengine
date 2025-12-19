@@ -47,6 +47,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceWPASetAParam> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

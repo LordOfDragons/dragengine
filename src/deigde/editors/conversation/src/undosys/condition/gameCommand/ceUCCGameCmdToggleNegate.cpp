@@ -48,32 +48,18 @@ ceConversationAction *action, ceCConditionGameCommand *gameCommand){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pGameCommand = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pGameCommand = nullptr;
 	
 	SetShortInfo("Condition game command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pGameCommand = gameCommand;
-	gameCommand->AddReference();
 }
 
 ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
-	if(pGameCommand){
-		pGameCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

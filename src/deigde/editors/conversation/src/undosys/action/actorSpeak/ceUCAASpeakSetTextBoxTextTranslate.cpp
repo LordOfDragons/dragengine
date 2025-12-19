@@ -43,8 +43,7 @@
 
 ceUCAASpeakSetTextBoxTextTranslate::ceUCAASpeakSetTextBoxTextTranslate(
 ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText) :
-pTopic(nullptr),
-pActorSpeak(nullptr),
+
 pNewText(newText)
 {
 	DEASSERT_NOTNULL(topic)
@@ -54,19 +53,10 @@ pNewText(newText)
 	SetShortInfo("Actor speak set text box text translate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextTranslate::~ceUCAASpeakSetTextBoxTextTranslate(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

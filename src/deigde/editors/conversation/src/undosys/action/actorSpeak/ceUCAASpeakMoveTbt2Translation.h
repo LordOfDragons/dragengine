@@ -29,7 +29,6 @@
 #include "../../../conversation/action/ceCAActorSpeak.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../langpack/ceLangPack.h"
-#include "../../../langpack/ceLangPackEntry.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -38,27 +37,27 @@
  * Undo action move actor speak conversation action text box text to translation.
  */
 class ceUCAASpeakMoveTbt2Translation : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakMoveTbt2Translation> Ref;
+	
+	
 private:
 	const ceConversationTopic::Ref pTopic;
 	const ceConversation::Ref pConversation;
 	const ceCAActorSpeak::Ref pActorSpeak;
 	const ceLangPack::Ref pLangPack;
-	const ceLangPackEntry::Ref pEntry;
+	const decUnicodeString pTextBoxText, pOldEntryText;
+	const decString pTranslationName, pOldTranslationName;
 	const bool pAddEntry;
-	const decUnicodeString pTextBoxText;
-	const decUnicodeString pOldEntryText;
-	const decString pOldTranslationName;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakMoveTbt2Translation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
 	ceUCAASpeakMoveTbt2Translation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-		ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text);
+		const decString &translationName, const decUnicodeString *oldEntryText,
+		const decUnicodeString &text);
 	
 protected:
 	/** Clean up undo. */

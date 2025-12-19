@@ -26,7 +26,7 @@
 #define _CECAACTORSPEAK_H_
 
 #include "ceConversationAction.h"
-#include "../strip/ceStripList.h"
+#include "../strip/ceStrip.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
@@ -35,7 +35,7 @@
 class ceConversation;
 
 class deEngine;
-class deSound;
+#include <dragengine/resources/sound/deSound.h>
 
 
 
@@ -51,7 +51,7 @@ public:
 	
 private:
 	deEngine *pEngine;
-	deSound *pEngSound;
+	deSound::Ref pEngSound;
 	bool pLoaded;
 	
 	decString pActor;
@@ -59,12 +59,12 @@ private:
 	decString pTextBoxTextTranslate;
 	decString pTextBoxTextStyle;
 	decString pPathSound;
-	ceStripList pWords;
-	ceStripList pFacePoses;
-	ceStripList pGestures;
-	ceStripList pBodyLookAt;
-	ceStripList pHeadLookAt;
-	ceStripList pEyesLookAt;
+	ceStrip::List pWords;
+	ceStrip::List pFacePoses;
+	ceStrip::List pGestures;
+	ceStrip::List pBodyLookAt;
+	ceStrip::List pHeadLookAt;
+	ceStrip::List pEyesLookAt;
 	decString pMovement;
 	float pMinSpeechTime;
 	bool pUseSpeechAnimation;
@@ -86,7 +86,7 @@ public:
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the sound file loading it if not loaded already. */
-	deSound *GetEngineSound();
+	const deSound::Ref &GetEngineSound();
 	
 	/** Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
@@ -117,23 +117,23 @@ public:
 	/** Sets the path to the sound file or empty to use none. */
 	void SetPathSound(const char *path);
 	/** Retrieves the words list for lip-sync. */
-	inline ceStripList &GetWordList(){ return pWords; }
-	inline const ceStripList &GetWordList() const{ return pWords; }
+	inline ceStrip::List &GetWords(){ return pWords; }
+	inline const ceStrip::List &GetWords() const{ return pWords; }
 	/** Retrieves the face pose list. */
-	inline ceStripList &GetFacePoseList(){ return pFacePoses; }
-	inline const ceStripList &GetFacePoseList() const{ return pFacePoses; }
+	inline ceStrip::List &GetFacePoses(){ return pFacePoses; }
+	inline const ceStrip::List &GetFacePoses() const{ return pFacePoses; }
 	/** Retrieves the gesture list. */
-	inline ceStripList &GetGestureList(){ return pGestures; }
-	inline const ceStripList &GetGestureList() const{ return pGestures; }
+	inline ceStrip::List &GetGestures(){ return pGestures; }
+	inline const ceStrip::List &GetGestures() const{ return pGestures; }
 	/** Retrieves the body look-at list. */
-	inline ceStripList &GetBodyLookAtList(){ return pBodyLookAt; }
-	inline const ceStripList &GetBodyLookAtList() const{ return pBodyLookAt; }
+	inline ceStrip::List &GetBodyLookAts(){ return pBodyLookAt; }
+	inline const ceStrip::List &GetBodyLookAts() const{ return pBodyLookAt; }
 	/** Retrieves the head look-at list. */
-	inline ceStripList &GetHeadLookAtList(){ return pHeadLookAt; }
-	inline const ceStripList &GetHeadLookAtList() const{ return pHeadLookAt; }
+	inline ceStrip::List &GetHeadLookAts(){ return pHeadLookAt; }
+	inline const ceStrip::List &GetHeadLookAts() const{ return pHeadLookAt; }
 	/** Retrieves the eyes look-at list. */
-	inline ceStripList &GetEyesLookAtList(){ return pEyesLookAt; }
-	inline const ceStripList &GetEyesLookAtList() const{ return pEyesLookAt; }
+	inline ceStrip::List &GetEyesLookAts(){ return pEyesLookAt; }
+	inline const ceStrip::List &GetEyesLookAtList() const{ return pEyesLookAt; }
 	/** Retrieves the movement to use or empty to not change. */
 	inline const decString &GetMovement() const{ return pMovement; }
 	/** Sets the movement to use or empty to not change. */
@@ -149,7 +149,7 @@ public:
 	void SetUseSpeechAnimation(bool useSpeechAnimation);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 private:

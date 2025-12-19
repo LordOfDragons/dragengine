@@ -42,7 +42,7 @@
 ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 	if(!target || !newID) DETHROW(deeInvalidParam);
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
 	SetShortInfo("Target Set Actor ID");
 	
@@ -50,13 +50,9 @@ ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 	pNewID = newID;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetActor::~ceUCTargetSetActor(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

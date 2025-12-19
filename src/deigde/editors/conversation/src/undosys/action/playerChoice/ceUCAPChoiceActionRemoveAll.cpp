@@ -49,41 +49,27 @@ ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pPlayerChoice = NULL;
-	pOption = NULL;
+	pTopic = nullptr;
+	pPlayerChoice = nullptr;
+	pOption = nullptr;
 	
 	if(option){
-		pActionList = option->GetActions();
+		pActions = option->GetActions();
 		
 	}else{
-		pActionList = playerChoice->GetActions();
+		pActions = playerChoice->GetActions();
 	}
 	
 	SetShortInfo("Player Choice Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 }
 
 ceUCAPChoiceActionRemoveAll::~ceUCAPChoiceActionRemoveAll(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -93,16 +79,16 @@ ceUCAPChoiceActionRemoveAll::~ceUCAPChoiceActionRemoveAll(){
 
 void ceUCAPChoiceActionRemoveAll::Undo(){
 	if(pOption){
-		pOption->GetActions() = pActionList;
+		pOption->GetActions() = pActions;
 		
 	}else{
-		pPlayerChoice->GetActions() = pActionList;
+		pPlayerChoice->GetActions() = pActions;
 	}
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 	
-	if(pActionList.GetCount() > 0){
-		pTopic->SetActive(pActionList.GetAt(0), NULL);
+	if(pActions.GetCount() > 0){
+		pTopic->SetActive(pActions.GetAt(0), nullptr);
 	}
 }
 
@@ -116,5 +102,5 @@ void ceUCAPChoiceActionRemoveAll::Redo(){
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 	
-	pTopic->SetActive(pPlayerChoice, NULL);
+	pTopic->SetActive(pPlayerChoice, nullptr);
 }

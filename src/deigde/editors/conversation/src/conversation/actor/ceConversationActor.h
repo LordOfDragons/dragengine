@@ -25,29 +25,31 @@
 #ifndef _CECONVERSATIONACTOR_H_
 #define _CECONVERSATIONACTOR_H_
 
-#include "pose/ceActorPoseList.h"
-#include "parameters/ceActorParameterList.h"
-#include "../playback/command/cePlaybackCommandList.h"
+#include "pose/ceActorPose.h"
+#include "speechAnimation/ceSpeechAnimation.h"
+#include "../playback/command/cePlaybackCommand.h"
+#include "../facepose/ceFacePose.h"
+#include "../target/ceTarget.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/sound/deSpeaker.h>
 
+class ceGesture;
 class cePlayback;
 class ceConversation;
-class ceSpeechAnimation;
-class ceGesture;
-class ceFacePose;
-class ceTarget;
 
 class igdeEnvironment;
-class deComponent;
-class deAnimator;
-class deAnimatorInstance;
 class deLogger;
-class deSpeaker;
 class deSound;
 
 
@@ -58,25 +60,39 @@ class deSound;
 class ceConversationActor : public deObject{
 public:
 	typedef deTObjectReference<ceConversationActor> Ref;
+	typedef decTDictionary<decString,int> ParameterMap;
+	typedef decTObjectOrderedSet<ceActorPose> PoseList;
 	
 	
 private:
-	struct sGesture{
+	class cGesture : public deObject{
+	public:
+		typedef deTObjectReference<cGesture> Ref;
 		ceGesture *gesture;
 		float pause;
 		float length;
+		cGesture(ceGesture *agesture, float apause, float alength) :
+			gesture(agesture), pause(apause), length(alength){}
 	};
 	
-	struct sFacePose{
-		ceFacePose *facePose;
+	class cFacePose : public deObject{
+	public:
+		typedef deTObjectReference<cFacePose> Ref;
+		ceFacePose::Ref facePose;
 		float pause;
 		float length;
+		cFacePose(ceFacePose *afacePose, float apause, float alength) :
+			facePose(afacePose), pause(apause), length(alength){}
 	};
 	
-	struct sLookAt{
-		ceTarget *lookAt;
+	class cLookAt : public deObject{
+	public:
+		typedef deTObjectReference<cLookAt> Ref;
+		ceTarget::Ref lookAt;
 		float pause;
 		float duration;
+		cLookAt(ceTarget *alookAt, float apause, float aduration) :
+			lookAt(alookAt), pause(apause), duration(aduration){}
 	};
 	
 	
@@ -85,14 +101,14 @@ private:
 	ceConversation *pConversation;
 	
 	igdeEnvironment &pEnvironment;
-	deComponent *pEngComponent;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deAnimatorInstance *pEngGestureAnimatorInstance;
-	deAnimator *pEngFacePoseAnimator;
-	deAnimatorInstance *pEngFacePoseAnimatorInstance;
-	deAnimator *pEngEyesAnimator;
-	deAnimatorInstance *pEngEyesAnimatorInstance;
-	deSpeaker *pEngSpeaker;
+	deComponent::Ref pEngComponent;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deAnimatorInstance::Ref pEngGestureAnimatorInstance;
+	deAnimator::Ref pEngFacePoseAnimator;
+	deAnimatorInstance::Ref pEngFacePoseAnimatorInstance;
+	deAnimator::Ref pEngEyesAnimator;
+	deAnimatorInstance::Ref pEngEyesAnimatorInstance;
+	deSpeaker::Ref pEngSpeaker;
 	
 	decString pNameGestureProgress;
 	decString pNameGesturePlayback;
@@ -113,52 +129,44 @@ private:
 	decVector pPosition;
 	decVector pOrientation;
 	decString pBoneHeadRotator;
-	cePlaybackCommandList pCommands;
-	ceActorParameterList pParameter;
+	cePlaybackCommand::List pCommands;
+	ParameterMap pParameter;
 	
-	ceSpeechAnimation *pSpeechAnimation;
+	ceSpeechAnimation::Ref pSpeechAnimation;
 	
-	ceActorPoseList pPoses;
-	ceActorPose *pActivePose;
+	PoseList pPoses;
+	ceActorPose::Ref pActivePose;
 	
 	float pHeadLeftRight;
 	float pHeadUpDown;
 	float pEyesLeftRight;
 	float pEyesUpDown;
 	
-	sGesture *pPlayGestures;
-	int pPlayGestureCount;
-	int pPlayGestureSize;
+	decTObjectList<cGesture> pPlayGestures;
 	int pPlayGesturePos;
 	float pPlayGestureElapsed;
 	bool pPlayGestureRunning;
 	
-	sFacePose *pPlayFacePoses;
-	int pPlayFacePoseCount;
-	int pPlayFacePoseSize;
+	decTObjectList<cFacePose> pPlayFacePoses;
 	int pPlayFacePosePos;
 	float pPlayFacePoseElapsed;
 	bool pPlayFacePoseRunning;
-	ceFacePose *pPlayLastFacePose;
-	ceFacePose *pPlayCurFacePose;
+	ceFacePose::Ref pPlayLastFacePose;
+	ceFacePose::Ref pPlayCurFacePose;
 	
-	sLookAt *pPlayHeadLAs;
-	int pPlayHeadLACount;
-	int pPlayHeadLASize;
+	decTObjectList<cLookAt> pPlayHeadLAs;
 	int pPlayHeadLAPos;
 	float pPlayHeadLAElapsed;
 	bool pPlayHeadLARunning;
-	ceTarget *pPlayLastHeadLA;
-	ceTarget *pPlayCurHeadLA;
+	ceTarget::Ref pPlayLastHeadLA;
+	ceTarget::Ref pPlayCurHeadLA;
 	
-	sLookAt *pPlayEyesLAs;
-	int pPlayEyesLACount;
-	int pPlayEyesLASize;
+	decTObjectList<cLookAt> pPlayEyesLAs;
 	int pPlayEyesLAPos;
 	float pPlayEyesLAElapsed;
 	bool pPlayEyesLARunning;
-	ceTarget *pPlayLastEyesLA;
-	ceTarget *pPlayCurEyesLA;
+	ceTarget::Ref pPlayLastEyesLA;
+	ceTarget::Ref pPlayCurEyesLA;
 	int pPlayEyesBoneDisable;
 	
 	float pBlinkFreqMin;
@@ -188,13 +196,13 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Retrieves the gesture animator instance. */
-	inline deAnimatorInstance *GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
 	/** Retrieves the engine speaker. */
-	inline deSpeaker *GetEngineSpeaker() const{ return pEngSpeaker; }
+	inline const deSpeaker::Ref &GetEngineSpeaker() const{ return pEngSpeaker; }
 	
-	/** Retrieves the parent conversation or NULL if not set. */
+	/** Retrieves the parent conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** Sets the parent conversation or NULL if not set. */
+	/** Sets the parent conversation or nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Update actor. */
@@ -253,24 +261,24 @@ public:
 	void SetBoneHeadRotator(const char *bone);
 	
 	/** \brief Commands. */
-	inline cePlaybackCommandList &GetCommands(){ return pCommands; }
-	inline const cePlaybackCommandList &GetCommands() const{ return pCommands; }
+	inline cePlaybackCommand::List &GetCommands(){ return pCommands; }
+	inline const cePlaybackCommand::List &GetCommands() const{ return pCommands; }
 	
 	/** \brief Parameters. */
-	inline ceActorParameterList &GetParameters(){ return pParameter; }
-	inline const ceActorParameterList &GetParameter() const{ return pParameter; }
+	inline ParameterMap &GetParameters(){ return pParameter; }
+	inline const ParameterMap &GetParameter() const{ return pParameter; }
 	
 	/** Retrieves the speech animation. */
-	inline ceSpeechAnimation *GetSpeechAnimation() const{ return pSpeechAnimation; }
+	inline const ceSpeechAnimation::Ref &GetSpeechAnimation() const{ return pSpeechAnimation; }
 	
 	/** \brief Poses. */
-	inline ceActorPoseList &GetPoses(){ return pPoses; }
-	inline const ceActorPoseList &GetPoses() const{ return pPoses; }
+	inline PoseList &GetPoses(){ return pPoses; }
+	inline const PoseList &GetPoses() const{ return pPoses; }
 	
-	/** \brief Active pose or \em NULL. */
-	inline ceActorPose *GetActivePose() const{ return pActivePose; }
+	/** \brief Active pose or \em nullptr. */
+	inline const ceActorPose::Ref &GetActivePose() const{ return pActivePose; }
 	
-	/** \brief Set active pose or \em NULL. */
+	/** \brief Set active pose or \em nullptr. */
 	void SetActivePose(ceActorPose *pose);
 	
 	/** \brief Notify all poses changed. */

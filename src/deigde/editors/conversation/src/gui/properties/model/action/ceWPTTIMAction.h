@@ -33,6 +33,9 @@
  * \brief Base class for actions.
  */
 class ceWPTTIMAction : public ceWPTTreeItemModel{
+public:
+	typedef deTObjectReference<ceWPTTIMAction> Ref;
+	
 private:
 	ceConversationAction::Ref pAction;
 	
@@ -60,7 +63,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline const ceConversationAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Deep find action. */
 	ceWPTTIMAction *DeepFindAction(ceConversationAction *action) override;

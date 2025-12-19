@@ -67,6 +67,7 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemRemove &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboCoordSystemID> Ref;
 	cComboCoordSystemID(ceWPACoordSystemRemove &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -77,7 +78,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCACoordSysRemoveSetCoordSysID::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCACoordSysRemoveSetCoordSysID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -97,7 +98,7 @@ ceWPACoordSystemRemove::ceWPACoordSystemRemove(ceWPTopic &parentPanel) : ceWPAct
 	CreateGUICommon(*this);
 	
 	helper.ComboBox(*this, "Coord System:", true, "ID of the coordinate system to remove from conversation",
-		pCBCoordSystemID, new cComboCoordSystemID(*this));
+		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 }
 
@@ -116,7 +117,7 @@ ceCACoordSystemRemove *ceWPACoordSystemRemove::GetAction() const{
 		return (ceCACoordSystemRemove*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

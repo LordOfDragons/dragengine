@@ -54,62 +54,24 @@
 ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 	if(!target || !newName) DETHROW(deeInvalidParam);
 	
-	const ceCameraShotList &cameraShotList = target->GetConversation()->GetCameraShotList();
-	const ceConversationFileList &fileList = target->GetConversation()->GetFileList();
-	const int cameraShotCount = cameraShotList.GetCount();
-	const int fileCount = fileList.GetCount();
-	ceConversationTopic *topic;
-	int i, j;
-	
-	pTarget = NULL;
-	
 	SetShortInfo("Target Set Name");
 	
 	pOldName = target->GetName();
 	pNewName = newName;
 	
-	try{
-		pTarget = target;
-		target->AddReference();
-		
-		for(i=0; i<fileCount; i++){
-			const ceConversationFile &file = *fileList.GetAt(i);
-			const ceConversationTopicList &topicList = file.GetTopicList();
-			const int topicCount = topicList.GetCount();
-			
-			for(j=0; j<topicCount; j++){
-				topic = topicList.GetAt(j);
-				
-				pAddActions(topic, topic->GetActionList());
-			}
-		}
-		
-		for(i=0; i<cameraShotCount; i++){
-			ceCameraShot * const cameraShot = cameraShotList.GetAt(i);
-			
-			if(cameraShot->GetCameraTarget() == pOldName || cameraShot->GetLookAtTarget() == pOldName){
-				pCameraShotList.Add(cameraShot);
-			}
-		}
-		
-	}catch(const deException &){
-		pActionList.RemoveAll();
-		
-		if(pTarget){
-			pTarget->FreeReference();
-		}
-		
-		throw;
-	}
+	pTarget = target;
+	target->GetConversation()->GetFiles().Visit([&](const ceConversationFile &f){
+		f.GetTopics().Visit([&](ceConversationTopic *t){
+			pAddActions(t, t->GetActions());
+		});
+	});
+	
+	pCameraShots = target->GetConversation()->GetCameraShotList().Collect([&](ceCameraShot *c){
+		return c->GetCameraTarget() == pOldName || c->GetLookAtTarget() == pOldName;
+	});
 }
 
 ceUCTargetSetName::~ceUCTargetSetName(){
-	pCameraShotList.RemoveAll();
-	pActionList.RemoveAll();
-	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 
@@ -131,98 +93,58 @@ void ceUCTargetSetName::Redo(){
 //////////////////////
 
 void ceUCTargetSetName::pSetName(const char *oldName, const char *newName){
-	ceConversationAction *action;
-	int i, count;
-	
 	pTarget->SetName(newName);
 	
-	count = pActionList.GetCount();
-	for(i=0; i<count; i++){
-		const ceUndoCAction &undoCAction = *pActionList.GetAt(i);
-		
-		action = undoCAction.GetAction();
-		
-		if(action->GetType() == ceConversationAction::eatCameraShot){
-			ceCACameraShot &actionCShot = *((ceCACameraShot*)action);
+	pActions.Visit([&](ceUndoCAction &a){
+		if(a.GetAction()->GetType() == ceConversationAction::eatCameraShot){
+			ceCACameraShot &ac = (ceCACameraShot&)*a.GetAction();
 			
-			if(actionCShot.GetCameraTarget() == oldName){
-				actionCShot.SetCameraTarget(newName);
+			if(ac.GetCameraTarget() == oldName){
+				ac.SetCameraTarget(newName);
 			}
-			if(actionCShot.GetLookAtTarget() == oldName){
-				actionCShot.SetLookAtTarget(newName);
+			if(ac.GetLookAtTarget() == oldName){
+				ac.SetLookAtTarget(newName);
 			}
 		}
 		
-		undoCAction.GetTopic()->NotifyActionChanged(action);
-	}
+		a.GetTopic()->NotifyActionChanged(a.GetAction());
+	});
 	
-	count = pCameraShotList.GetCount();
-	for(i=0; i<count; i++){
-		ceCameraShot &cameraShot = *pCameraShotList.GetAt(i);
-		
-		if(cameraShot.GetCameraTarget() == oldName){
-			cameraShot.SetCameraTarget(newName);
+	pCameraShots.Visit([&](ceCameraShot &c){
+		if(c.GetCameraTarget() == oldName){
+			c.SetCameraTarget(newName);
 		}
-		if(cameraShot.GetLookAtTarget() == oldName){
-			cameraShot.SetLookAtTarget(newName);
+		if(c.GetLookAtTarget() == oldName){
+			c.SetLookAtTarget(newName);
 		}
-	}
+	});
 }
 
-void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversationActionList &list){
-	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
-	ceConversationAction *action;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			action = list.GetAt(i);
+void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list){
+	list.Visit([&](ceConversationAction *a){
+		if(a->GetType() == ceConversationAction::eatCameraShot){
+			const ceCACameraShot &target = *((ceCACameraShot*)a);
 			
-			if(action->GetType() == ceConversationAction::eatCameraShot){
-				const ceCACameraShot &target = *((ceCACameraShot*)action);
-				
-				if(target.GetCameraTarget() == pOldName || target.GetLookAtTarget() == pOldName){
-					undoCAction = new ceUndoCAction(action, topic);
-					pActionList.Add(undoCAction);
-					undoCAction->FreeReference();
-					undoCAction = NULL;
-				}
-				
-			}else if(action->GetType() == ceConversationAction::eatIfElse){
-				const ceCAIfElse &ifElse = *((ceCAIfElse*)action);
-				const ceCAIfElseCaseList &caseList = ifElse.GetCases();
-				const int caseCount = caseList.GetCount();
-				int j;
-				
-				for(j=0; j<caseCount; j++){
-					pAddActions(topic, caseList.GetAt(j)->GetActions());
-				}
-				pAddActions(topic, ifElse.GetElseActions());
-				
-			}else if(action->GetType() == ceConversationAction::eatPlayerChoice){
-				const ceCAPlayerChoice &playerChoice = *((ceCAPlayerChoice*)action);
-				const ceCAPlayerChoiceOptionList &optionList = playerChoice.GetOptions();
-				const int optionCount = optionList.GetCount();
-				int j;
-				
-				for(j=0; j<optionCount; j++){
-					pAddActions(topic, optionList.GetAt(j)->GetActions());
-				}
-				
-				pAddActions(topic, playerChoice.GetActions());
-				
-			}else if(action->GetType() == ceConversationAction::eatWait){
-				const ceCAWait &wait = *((ceCAWait*)action);
-				
-				pAddActions(topic, wait.GetActions());
+			if(target.GetCameraTarget() == pOldName || target.GetLookAtTarget() == pOldName){
+				pActions.Add(ceUndoCAction::Ref::New(a, topic));
 			}
+			
+		}else if(a->GetType() == ceConversationAction::eatIfElse){
+			const ceCAIfElse &ifElse = *((ceCAIfElse*)a);
+			ifElse.GetCases().Visit([&](const ceCAIfElseCase &c){
+				pAddActions(topic, c.GetActions());
+			});
+			pAddActions(topic, ifElse.GetElseActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatPlayerChoice){
+			const ceCAPlayerChoice &playerChoice = *((ceCAPlayerChoice*)a);
+			playerChoice.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+				pAddActions(topic, o.GetActions());
+			});
+			pAddActions(topic, playerChoice.GetActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatWait){
+			pAddActions(topic, ((ceCAWait*)a)->GetActions());
 		}
-		
-	}catch(const deException &){
-		if(undoCAction){
-			undoCAction->FreeReference();
-		}
-		throw;
-	}
+	});
 }

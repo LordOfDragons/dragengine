@@ -34,6 +34,9 @@
  */
 class ceWPTTIMCGameCommand : public ceWPTTIMCondition{
 public:
+	typedef deTObjectReference<ceWPTTIMCGameCommand> Ref;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -52,7 +55,7 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionGameCommand *GetConditionGameCommand() const{
-		return (ceCConditionGameCommand*)GetCondition();
+		return (ceCConditionGameCommand*)GetCondition().Pointer();
 	}
 	
 	/** \brief Update condition. */

@@ -41,8 +41,7 @@
 
 ceWPTTreeItem::ceWPTTreeItem(igdeTreeList *treeList) :
 igdeTreeItem(""),
-pTreeList(treeList),
-pModel(NULL)
+pTreeList(treeList)
 {
 	if(!treeList){
 		DETHROW(deeInvalidParam);
@@ -50,7 +49,7 @@ pModel(NULL)
 }
 
 ceWPTTreeItem::~ceWPTTreeItem(){
-	SetModel(NULL);
+	SetModel(nullptr);
 }
 
 
@@ -64,14 +63,12 @@ void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
 	}
 	
 	if(pModel){
-		pModel->SetTreeItem(NULL);
-		pModel->FreeReference();
+		pModel->SetTreeItem(nullptr);
 	}
 	
 	pModel = model;
 	
 	if(model){
-		model->AddReference();
 		model->SetTreeItem(this);
 	}
 }
@@ -83,9 +80,9 @@ void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
 		DETHROW(deeInvalidParam);
 	}
 	
-	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::NewWith(pTreeList));
+	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
 	pTreeList->AppendItem(this, item);
-	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
+	item->SetModel(model);
 }
 
 void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
@@ -93,7 +90,7 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeTreeItem *beforeItem = NULL;
+	igdeTreeItem *beforeItem = nullptr;
 	if(position < GetChildrenCount()){
 		beforeItem = GetFirstChild();
 		while(position > 0){
@@ -102,7 +99,7 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 		}
 	}
 	
-	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::NewWith(pTreeList));
+	const ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
 	
 	if(beforeItem){
 		pTreeList->InsertItemBefore(beforeItem, item);
@@ -111,7 +108,7 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 		pTreeList->AppendItem(this, item);
 	}
 	
-	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
+	item->SetModel(model);
 }
 
 void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
@@ -124,7 +121,7 @@ void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
 		DETHROW(deeInvalidParam);
 	}
 	
-	item->SetModel(NULL);
+	item->SetModel(nullptr);
 	pTreeList->RemoveItem(item);
 }
 
@@ -137,11 +134,12 @@ void ceWPTTreeItem::RemoveAllItems(){
 		return;
 	}
 	
-	ceWPTTreeItem *item = (ceWPTTreeItem*)GetFirstChild();
+	igdeTreeItem *item = GetFirstChild();
 	while(item){
-		item->RemoveAllItems();
-		item->SetModel(NULL);
-		item = (ceWPTTreeItem*)item->GetNext();
+		ceWPTTreeItem &ti = *((ceWPTTreeItem*)item);
+		ti.RemoveAllItems();
+		ti.SetModel(nullptr);
+		item = item->GetNext();
 	}
 }
 

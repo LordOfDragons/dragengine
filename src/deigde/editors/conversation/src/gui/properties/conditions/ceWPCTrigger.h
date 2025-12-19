@@ -41,6 +41,9 @@ class ceWPTopic;
  * \brief Trigger conversation condition property window.
  */
 class ceWPCTrigger : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCTrigger> Ref;
+
 private:
 	igdeComboBox::Ref pCBTestMode;
 	igdeTextField::Ref pEditTrigger;

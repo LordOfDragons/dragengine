@@ -51,6 +51,7 @@ protected:
 	ceWPTMAIfElseCaseCutAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMAIfElseCaseCutAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

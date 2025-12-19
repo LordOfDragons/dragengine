@@ -38,6 +38,9 @@ class ceWPTopic;
  * \brief Logic Conversation Condition property window.
  */
 class ceWPCLogic : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCLogic> Ref;
+
 private:
 	igdeComboBox::Ref pCBOperator;
 	

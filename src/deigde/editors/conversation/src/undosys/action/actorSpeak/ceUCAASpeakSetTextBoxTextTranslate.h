@@ -29,24 +29,25 @@
 
 #include <dragengine/common/string/decString.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 /**
  * Undo action actor speak conversation action set text box text translate.
  */
 class ceUCAASpeakSetTextBoxTextTranslate : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakSetTextBoxTextTranslate> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldText;
 	decString pNewText;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakSetTextBoxTextTranslate> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

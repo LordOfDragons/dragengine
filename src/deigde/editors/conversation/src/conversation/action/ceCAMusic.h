@@ -40,6 +40,7 @@ private:
 	decString pName;
 	
 public:
+	typedef deTObjectReference<ceCAMusic> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new music conversation action. */
@@ -58,7 +59,7 @@ public:
 	void SetName(const char *name);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

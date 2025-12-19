@@ -41,35 +41,17 @@
 ////////////////////////////
 
 ceConversationFile::ceConversationFile(const char *id) :
-pConversation(NULL),
-pID(id),
-pActiveTopic(NULL){
+pConversation(nullptr),
+pID(id){
 }
 
 ceConversationFile::ceConversationFile(const ceConversationFile &file) :
-pConversation(NULL),
-pID(file.pID),
-pActiveTopic(NULL)
+pConversation(nullptr),
+pID(file.pID)
 {
-	const int count = file.pTopics.GetCount();
-	ceConversationTopic *topic = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			topic = new ceConversationTopic(*file.pTopics.GetAt(i));
-			AddTopic(topic);
-			topic->FreeReference();
-			topic = NULL;
-		}
-		
-	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
-		RemoveAllTopics();
-		throw;
-	}
+	file.pTopics.Visit([&](const ceConversationTopic &t){
+		AddTopic(ceConversationTopic::Ref::New(t));
+	});
 }
 
 ceConversationFile::~ceConversationFile(){
@@ -94,8 +76,8 @@ void ceConversationFile::SetID(const char *id){
 		return;
 	}
 	
-	if(pConversation && pConversation->GetFileList().HasWithID(id)){
-		DETHROW(deeInvalidParam);
+	if(pConversation){
+		DEASSERT_FALSE(pConversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.pID == id; }))
 	}
 	
 	pID = id;
@@ -111,9 +93,9 @@ void ceConversationFile::SetID(const char *id){
 ///////////
 
 void ceConversationFile::AddTopic(ceConversationTopic *topic){
-	if(!topic || pTopics.HasWithID(topic->GetID().GetString()) || topic->GetFile()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(topic)
+	DEASSERT_FALSE(pTopics.HasMatching([&](const ceConversationTopic &t){ return t.GetID() == topic->GetID();}))
+	DEASSERT_NULL(topic->GetFile())
 	
 	pTopics.Add(topic);
 	topic->SetFile(this);
@@ -128,26 +110,24 @@ void ceConversationFile::AddTopic(ceConversationTopic *topic){
 }
 
 void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
-	if(!topic || !pTopics.Has(topic)){
-		DETHROW(deeInvalidParam);
-	}
+	const ceConversationTopic::Ref guard(topic);
+	pTopics.Remove(topic);
 	
 	if(topic == pActiveTopic){
 		if(pTopics.GetCount() == 1){
-			SetActiveTopic(NULL);
+			SetActiveTopic(nullptr);
 			
 		}else{
-			if(pTopics.GetAt(0) == topic){
+			if(pTopics.First() == topic){
 				SetActiveTopic(pTopics.GetAt(1));
 				
 			}else{
-				SetActiveTopic(pTopics.GetAt(0));
+				SetActiveTopic(pTopics.First());
 			}
 		}
 	}
 	
-	topic->SetFile(NULL);
-	pTopics.Remove(topic);
+	topic->SetFile(nullptr);
 	
 	if(pConversation){
 		pConversation->NotifyTopicStructureChanged(this);
@@ -155,14 +135,11 @@ void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
 }
 
 void ceConversationFile::RemoveAllTopics(){
-	const int count = pTopics.GetCount();
-	int i;
+	SetActiveTopic(nullptr);
 	
-	SetActiveTopic(NULL);
-	
-	for(i=0; i<count; i++){
-		pTopics.GetAt(i)->SetFile(NULL);
-	}
+	pTopics.Visit([&](ceConversationTopic &t){
+		t.SetFile(nullptr);
+	});
 	pTopics.RemoveAll();
 	
 	if(pConversation){
@@ -174,17 +151,7 @@ void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
 	if(topic == pActiveTopic){
 		return;
 	}
-	
-	if(pActiveTopic){
-		pActiveTopic->FreeReference();
-	}
-	
 	pActiveTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
-	
 	if(pConversation){
 		pConversation->NotifyActiveTopicChanged(this);
 	}

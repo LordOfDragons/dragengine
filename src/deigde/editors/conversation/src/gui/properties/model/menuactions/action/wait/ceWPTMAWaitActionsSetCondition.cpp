@@ -52,6 +52,6 @@ pWait(&wait){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsSetCondition::CreateUndo(ceConversationCondition *condition){
-	return new ceUCAWaitSetCondition(pTopic, pWait, condition);
+igdeUndo::Ref ceWPTMAWaitActionsSetCondition::CreateUndo(ceConversationCondition *condition){
+	return ceUCAWaitSetCondition::Ref::New(pTopic, pWait, condition);
 }

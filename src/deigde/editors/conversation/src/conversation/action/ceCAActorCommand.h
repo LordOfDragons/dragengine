@@ -42,7 +42,6 @@
  */
 class ceCAActorCommand : public ceConversationAction{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCAActorCommand> Ref;
 	
 	
@@ -73,7 +72,7 @@ public:
 	void SetCommand(const char *command);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

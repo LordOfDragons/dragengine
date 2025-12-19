@@ -50,10 +50,10 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
 	
 	int count = 0;
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pAction = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pAction = nullptr;
+	pCase = nullptr;
 	pNewIndex = newIndex;
 	pOldIndex = -1;
 	
@@ -79,33 +79,15 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
 	SetShortInfo("IfElse Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAIfElseMove::~ceUCAIfElseMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -115,10 +97,10 @@ ceUCAIfElseMove::~ceUCAIfElseMove(){
 
 void ceUCAIfElseMove::Undo(){
 	if(pCase){
-		pCase->GetActions().MoveTo(pAction, pOldIndex);
+		pCase->GetActions().Move(pAction, pOldIndex);
 		
 	}else{
-		pIfElse->GetElseActions().MoveTo(pAction, pOldIndex);
+		pIfElse->GetElseActions().Move(pAction, pOldIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);
@@ -126,10 +108,10 @@ void ceUCAIfElseMove::Undo(){
 
 void ceUCAIfElseMove::Redo(){
 	if(pCase){
-		pCase->GetActions().MoveTo(pAction, pNewIndex);
+		pCase->GetActions().Move(pAction, pNewIndex);
 		
 	}else{
-		pIfElse->GetElseActions().MoveTo(pAction, pNewIndex);
+		pIfElse->GetElseActions().Move(pAction, pNewIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);

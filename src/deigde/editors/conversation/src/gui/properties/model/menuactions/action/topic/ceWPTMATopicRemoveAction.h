@@ -49,6 +49,7 @@ protected:
 	ceWPTMATopicRemoveAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMATopicRemoveAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

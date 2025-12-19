@@ -35,6 +35,9 @@ class ceWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class ceWPUndoHistoryListener : public ceConversationListener{
+public:
+	typedef deTObjectReference<ceWPUndoHistoryListener> Ref;
+	
 private:
 	ceWPUndoHistory &pPanel;
 	

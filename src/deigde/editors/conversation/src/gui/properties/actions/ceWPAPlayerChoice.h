@@ -46,6 +46,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceWPAPlayerChoice> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
@@ -61,10 +62,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Active action or \em NULL. */
+	/** \brief Active action or \em nullptr. */
 	ceCAPlayerChoice *GetAction() const;
 	
-	/** \brief Active option or \em NULL. */
+	/** \brief Active option or \em nullptr. */
 	ceCAPlayerChoiceOption *GetActiveOption() const;
 	
 	/** \brief Update action. */

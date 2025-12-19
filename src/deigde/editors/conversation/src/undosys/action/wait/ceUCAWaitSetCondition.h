@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAWait;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAWait.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
@@ -37,16 +37,17 @@ class ceConversationCondition;
  * \brief Undo Action Wait Conversation Action Set Condition.
  */
 class ceUCAWaitSetCondition : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAWaitSetCondition> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

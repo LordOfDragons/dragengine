@@ -66,7 +66,7 @@ pOption(&option){
 void ceWPTMAPChoiceOptionCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::NewWith(
+	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::New(
 		pTopic, pPlayerChoice, pOption, GetAction()));
 	undo->SetShortInfo("Cut Action");
 	pConversation->GetUndoSystem()->Add(undo);

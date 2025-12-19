@@ -32,6 +32,8 @@
 #include "../action/ceCAPlayerChoiceOption.h"
 #include "../ceConversation.h"
 
+#include <deigde/gui/igdeApplication.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/font/deFont.h>
@@ -49,16 +51,12 @@
 ////////////////////////////
 
 cePCBOption::cePCBOption() :
-pAction(NULL),
-pActionOption(NULL),
-pCanvasView(NULL){
+
+pActionOption(nullptr){
 }
 
 cePCBOption::~cePCBOption(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
-	SetActionOption(NULL, NULL);
+	SetActionOption(nullptr, nullptr);
 }
 
 
@@ -72,27 +70,11 @@ void cePCBOption::SetText(const decUnicodeString &text){
 
 void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
 	if(action != pAction){
-		if(pAction){
-			pAction->FreeReference();
-		}
-		
 		pAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 	
 	if(option != pActionOption){
-		if(pActionOption){
-			pActionOption->FreeReference();
-		}
-		
 		pActionOption = option;
-		
-		if(option){
-			option->AddReference();
-		}
 	}
 }
 
@@ -118,12 +100,12 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// determine required height
 	deCanvasView &parentVide = *pcbox.GetCanvasView();
 	const decPoint &parentSize = parentVide.GetSize();
-	deCanvasText *canvasText = NULL;
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasText::Ref canvasText;
+	deCanvasPaint::Ref canvasBackground;
 	
 	const decString text(pText.ToUTF8());
 	
-	const int textHeight = pcbox.GetTextSize();
+	const int textHeight = igdeApplication::app().DisplayScaled(pcbox.GetTextSize());
 	
 	pCanvasView->SetSize(decPoint(parentSize.x, textHeight));
 	
@@ -140,8 +122,7 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 		canvasBackground->SetOrder(0.0f);
 		canvasBackground->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasBackground);
-		canvasBackground->FreeReference();
-		canvasBackground = NULL;
+		canvasBackground = nullptr;
 		
 		canvasText = canvasManager.CreateCanvasText();
 		if(selected){
@@ -155,16 +136,9 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 		canvasText->SetOrder(0.0f);
 		canvasText->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasText);
-		canvasText->FreeReference();
-		canvasText = NULL;
+		canvasText = nullptr;
 		
 	}catch(const deException &){
-		if(canvasText){
-			canvasText->FreeReference();
-		}
-		if(canvasBackground){
-			canvasBackground->FreeReference();
-		}
 		throw;
 	}
 }

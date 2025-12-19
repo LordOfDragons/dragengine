@@ -60,42 +60,24 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int index){
 		}
 	}
 	
-	pTopic = NULL;
-	pPlayerChoice = NULL;
-	pOption = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pPlayerChoice = nullptr;
+	pOption = nullptr;
+	pAction = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Player Choice Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAPChoiceActionAdd::~ceUCAPChoiceActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -104,7 +86,7 @@ ceUCAPChoiceActionAdd::~ceUCAPChoiceActionAdd(){
 ///////////////
 
 void ceUCAPChoiceActionAdd::Undo(){
-	ceConversationAction *activateAction = NULL;
+	ceConversationAction *activateAction = nullptr;
 	
 	if(pOption){
 		activateAction = ceUActionHelpers::ActivateActionAfterRemove(pOption->GetActions(), pAction);
@@ -117,17 +99,17 @@ void ceUCAPChoiceActionAdd::Undo(){
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 	
-	pTopic->SetActive(activateAction ? activateAction : pPlayerChoice, NULL);
+	pTopic->SetActive(activateAction ? activateAction : pPlayerChoice, nullptr);
 }
 
 void ceUCAPChoiceActionAdd::Redo(){
 	if(pOption){
-		pOption->GetActions().InsertAt(pAction, pIndex);
+		pOption->GetActions().Insert(pAction, pIndex);
 		
 	}else{
-		pPlayerChoice->GetActions().InsertAt(pAction, pIndex);
+		pPlayerChoice->GetActions().Insert(pAction, pIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
-	pTopic->SetActive(pAction, NULL);
+	pTopic->SetActive(pAction, nullptr);
 }

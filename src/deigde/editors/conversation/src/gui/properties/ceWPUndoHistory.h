@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class ceConversation;
-class ceWPUndoHistoryListener;
+#include "../../conversation/ceConversation.h"
+#include "ceWPUndoHistoryListener.h"
 
 
 
@@ -36,9 +36,12 @@ class ceWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class ceWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<ceWPUndoHistory> Ref;
+	
 private:
-	ceWPUndoHistoryListener *pListener;
-	ceConversation *pConversation;
+	ceWPUndoHistoryListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	
 	
@@ -59,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
 	void SetConversation(ceConversation *conversation);

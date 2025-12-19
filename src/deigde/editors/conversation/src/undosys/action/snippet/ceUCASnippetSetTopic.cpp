@@ -44,27 +44,18 @@
 ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic){
 	if(!topic || !newTopic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pSnippet = NULL;
+	pTopic = nullptr;
+	pSnippet = nullptr;
 	pOldTopic = snippet->GetTopic();
 	pNewTopic = newTopic;
 	
 	SetShortInfo("Snippet Set Topic");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAActorSpeak : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAActorSpeak> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorSpeak *GetActionActorSpeak() const{ return (ceCAActorSpeak*)GetAction(); }
+	inline ceCAActorSpeak *GetActionActorSpeak() const{ return GetAction().DynamicCast<ceCAActorSpeak>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

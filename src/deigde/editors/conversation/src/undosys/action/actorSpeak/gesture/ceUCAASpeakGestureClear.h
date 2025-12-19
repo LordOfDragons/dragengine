@@ -25,12 +25,12 @@
 #ifndef _CEUCAASPEAKGESTURECLEAR_H_
 #define _CEUCAASPEAKGESTURECLEAR_H_
 
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -38,17 +38,18 @@ class ceConversationTopic;
  * \brief Undo action actor speak conversation action clear gestures.
  */
 class ceUCAASpeakGestureClear : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakGestureClear> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pOldGestures;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::List pOldGestures;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakGestureClear> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

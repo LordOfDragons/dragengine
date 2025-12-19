@@ -40,6 +40,9 @@ class ceWPTopic;
  * \brief Game command conversation condition property window.
  */
 class ceWPCGameCommand : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCGameCommand> Ref;
+
 private:
 	igdeTextField::Ref pEditCommand;
 	igdeButton::Ref pBtnCommand;

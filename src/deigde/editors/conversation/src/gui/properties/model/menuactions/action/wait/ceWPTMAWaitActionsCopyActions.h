@@ -35,6 +35,9 @@ class ceCAWait;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMAWaitActionsCopyActions : public ceWPTMACopyActions{
+public:
+	typedef deTObjectReference<ceWPTMAWaitActionsCopyActions> Ref;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMAWaitActionsCopyActions();

@@ -25,15 +25,15 @@
 #ifndef _CEPLAYERCHOICEBOX_H_
 #define _CEPLAYERCHOICEBOX_H_
 
+#include "cePCBOption.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "cePCBOptionList.h"
-
-class deCanvasView;
 class deGraphicContext;
 class ceConversation;
 
@@ -42,7 +42,10 @@ class ceConversation;
 /**
  * \brief Player choice box in a conversation.
  */
-class cePlayerChoiceBox{
+class cePlayerChoiceBox : public deObject{
+public:
+	typedef deTObjectReference<cePlayerChoiceBox> Ref;
+	
 private:
 	ceConversation &pConversation;
 	
@@ -58,10 +61,10 @@ private:
 	int pPadding;
 	int pPlaybackStackDepth;
 	
-	cePCBOptionList pOptions;
+	cePCBOption::List pOptions;
 	int pSelectedOption;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -87,7 +90,7 @@ public:
 	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
 	inline const decString &GetPathFont() const{ return pPathFont; }
@@ -138,8 +141,8 @@ public:
 	void SetPlaybackStackDepth(int depth);
 	
 	/** \brief List of options. */
-	inline cePCBOptionList &GetOptionList(){ return pOptions; }
-	inline const cePCBOptionList &GetOptionList() const{ return pOptions; }
+	inline cePCBOption::List &GetOptionList(){ return pOptions; }
+	inline const cePCBOption::List &GetOptionList() const{ return pOptions; }
 	
 	/** \brief Index of the selected option or -1 if there is none. */
 	inline int GetSelectedOption() const{ return pSelectedOption; }

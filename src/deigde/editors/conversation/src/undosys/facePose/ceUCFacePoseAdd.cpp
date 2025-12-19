@@ -43,25 +43,16 @@
 ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *facePose){
 	if(!conversation || !facePose) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pFacePose = NULL;
+	pConversation = nullptr;
+	pFacePose = nullptr;
 	
 	SetShortInfo("Add Face Pose");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCFacePoseAdd::~ceUCFacePoseAdd(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

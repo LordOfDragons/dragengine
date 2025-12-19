@@ -82,11 +82,10 @@ pActionType(actionType){
 ///////////////
 
 void ceWPTMACreateAction::OnAction(){
-	GetConversation().GetUndoSystem()->Add(igdeUndo::Ref::New(
-		CreateUndo(ceConversationAction::Ref::New(CreateAction()))));
+	GetConversation().GetUndoSystem()->Add(CreateUndo(CreateAction()));
 }
 
-igdeUndo *ceWPTMACreateAction::CreateUndo(ceConversationAction*){
+igdeUndo::Ref ceWPTMACreateAction::CreateUndo(ceConversationAction*){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW(deeInvalidParam);
@@ -94,43 +93,35 @@ igdeUndo *ceWPTMACreateAction::CreateUndo(ceConversationAction*){
 
 
 
-ceConversationAction *ceWPTMACreateAction::CreateAction(){
+ceConversationAction::Ref ceWPTMACreateAction::CreateAction(){
 	switch(pActionType){
 	case ceConversationAction::eatCameraShot:
-		return new ceCACameraShot;
+		return ceCACameraShot::Ref::New();
 		
 	case ceConversationAction::eatMusic:
-		return new ceCAMusic;
+		return ceCAMusic::Ref::New();
 		
 	case ceConversationAction::eatActorSpeak:
-		return new ceCAActorSpeak(pConversation->GetEngine());
+		return ceCAActorSpeak::Ref::New(pConversation->GetEngine());
 		
 	case ceConversationAction::eatSetVariable:
-		return new ceCASetVariable;
+		return ceCASetVariable::Ref::New();
 		
 	case ceConversationAction::eatSetActorParameter:
-		return new ceCASetActorParameter;
+		return ceCASetActorParameter::Ref::New();
 		
 	case ceConversationAction::eatTrigger:
-		return new ceCATrigger;
+		return ceCATrigger::Ref::New();
 		
 	case ceConversationAction::eatIfElse:{
-		ceCAIfElse *ifElse = NULL;
-		ceCAIfElseCase *ifCase = NULL;
+		ceCAIfElse::Ref ifElse;
+		ceCAIfElseCase::Ref ifCase;
 		
 		try{
-			ifElse = new ceCAIfElse;
-			ifCase = new ceCAIfElseCase;
+			ifElse = ceCAIfElse::Ref::New();
+			ifCase = ceCAIfElseCase::Ref::New();
 			ifElse->GetCases().Add(ifCase);
-			ifCase->FreeReference();
-			
 		}catch(const deException &){
-			if(ifCase){
-				ifCase->FreeReference();
-			}
-			if(ifElse){
-				ifElse->FreeReference();
-			}
 			throw;
 		}
 		
@@ -138,22 +129,14 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		}
 		
 	case ceConversationAction::eatPlayerChoice:{
-		ceCAPlayerChoice *playerChoice = NULL;
-		ceCAPlayerChoiceOption *option = NULL;
+		ceCAPlayerChoice::Ref playerChoice;
+		ceCAPlayerChoiceOption::Ref option;
 		
 		try{
-			playerChoice = new ceCAPlayerChoice;
-			option = new ceCAPlayerChoiceOption;
+			playerChoice = ceCAPlayerChoice::Ref::New();
+			option = ceCAPlayerChoiceOption::Ref::New();
 			playerChoice->GetOptions().Add(option);
-			option->FreeReference();
-			
 		}catch(const deException &){
-			if(option){
-				option->FreeReference();
-			}
-			if(playerChoice){
-				playerChoice->FreeReference();
-			}
 			throw;
 		}
 		
@@ -161,37 +144,37 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		}
 		
 	case ceConversationAction::eatWait:
-		return new ceCAWait;
+		return ceCAWait::Ref::New();
 		
 	case ceConversationAction::eatSnippet:
-		return new ceCASnippet;
+		return ceCASnippet::Ref::New();
 		
 	case ceConversationAction::eatStopConversation:
-		return new ceCAStopConversation;
+		return ceCAStopConversation::Ref::New();
 		
 	case ceConversationAction::eatStopTopic:
-		return new ceCAStopTopic;
+		return ceCAStopTopic::Ref::New();
 		
 	case ceConversationAction::eatActorCommand:
-		return new ceCAActorCommand;
+		return ceCAActorCommand::Ref::New();
 		
 	case ceConversationAction::eatGameCommand:
-		return new ceCAGameCommand;
+		return ceCAGameCommand::Ref::New();
 		
 	case ceConversationAction::eatActorAdd:
-		return new ceCAActorAdd;
+		return ceCAActorAdd::Ref::New();
 		
 	case ceConversationAction::eatActorRemove:
-		return new ceCAActorRemove;
+		return ceCAActorRemove::Ref::New();
 		
 	case ceConversationAction::eatCoordSystemAdd:
-		return new ceCACoordSystemAdd;
+		return ceCACoordSystemAdd::Ref::New();
 		
 	case ceConversationAction::eatCoordSystemRemove:
-		return new ceCACoordSystemRemove;
+		return ceCACoordSystemRemove::Ref::New();
 		
 	case ceConversationAction::eatComment:
-		return new ceCAComment;
+		return ceCAComment::Ref::New();
 		
 	default:
 		DETHROW(deeInvalidAction);
@@ -324,6 +307,6 @@ ceConversationAction::eActionTypes actionType){
 		return windowMain.GetIconActionComment();
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }

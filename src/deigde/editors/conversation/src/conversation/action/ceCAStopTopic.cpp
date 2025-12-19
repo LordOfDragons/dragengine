@@ -52,6 +52,6 @@ ceCAStopTopic::~ceCAStopTopic(){
 // Management
 ///////////////
 
-ceConversationAction *ceCAStopTopic::CreateCopy() const{
-	return new ceCAStopTopic(*this);
+ceConversationAction::Ref ceCAStopTopic::CreateCopy() const{
+	return ceCAStopTopic::Ref::New(*this);
 }

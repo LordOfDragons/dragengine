@@ -25,9 +25,10 @@
 #ifndef _CEFACEPOSE_H_
 #define _CEFACEPOSE_H_
 
-#include "../../utils/ceControllerValueList.h"
+#include "../../utils/ceControllerValue.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class ceConversation;
@@ -42,11 +43,11 @@ private:
 	ceConversation *pConversation;
 	
 	decString pName;
-	ceControllerValueList pControllers;
+	ceControllerValue::List pControllers;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceFacePose> Ref;
+	typedef decTObjectOrderedSet<ceFacePose> List;
 
 
 	/** \name Constructors and Destructors */
@@ -59,9 +60,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the conversation or NULL if not set. */
+	/** Retrieves the conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** Sets the conversation or NULL if not set. */
+	/** Sets the conversation or nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */
@@ -69,8 +70,8 @@ public:
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the controller value list. */
-	inline ceControllerValueList &GetControllerList(){ return pControllers; }
-	inline const ceControllerValueList &GetControllerList() const{ return pControllers; }
+	inline ceControllerValue::List &GetControllers(){ return pControllers; }
+	inline const ceControllerValue::List &GetControllers() const{ return pControllers; }
 	/** Notifies all that the controller value list changed. */
 	void NotifyControllersChanged();
 	/*@}*/

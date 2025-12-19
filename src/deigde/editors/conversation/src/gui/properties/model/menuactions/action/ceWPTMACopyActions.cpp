@@ -32,7 +32,6 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataAction.h"
-#include "../../../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/clipboard/igdeClipboardData.h>
@@ -45,12 +44,12 @@
 ////////////////////////////
 
 ceWPTMACopyActions::ceWPTMACopyActions(ceWindowMain &windowMain,
-const ceConversationActionList &actions) :
+	const ceConversationAction::List &actions) :
 ceWPTMenuAction(windowMain, "Copy Actions",
 	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
-pActions(&actions)
+pActions(actions)
 {
-	SetEnabled(actions.GetCount() > 0);
+	SetEnabled(actions.IsNotEmpty());
 }
 
 
@@ -59,9 +58,7 @@ pActions(&actions)
 ///////////////
 
 void ceWPTMACopyActions::OnAction(){
-	if(pActions->GetCount() == 0){
-		return;
+	if(pActions.IsNotEmpty()){
+		GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::New(pActions));
 	}
-	
-	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::NewWith(*pActions));
 }

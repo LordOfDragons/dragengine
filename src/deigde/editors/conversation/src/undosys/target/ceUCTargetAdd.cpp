@@ -43,25 +43,16 @@
 ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 	if(!conversation || !target) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pTarget = NULL;
+	pConversation = nullptr;
+	pTarget = nullptr;
 	
 	SetShortInfo("Add Target");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetAdd::~ceUCTargetAdd(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

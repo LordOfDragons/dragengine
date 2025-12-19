@@ -36,6 +36,9 @@ class ceConversation;
  * \brief Menu action paste all topic actions.
  */
 class ceWPTMATopicPasteActions : public ceWPTMAPasteActions{
+public:
+	typedef deTObjectReference<ceWPTMATopicPasteActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	int pIndex;
@@ -67,7 +70,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for pasting actions. */
-	ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) override;
+	ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) override;
 	/*@}*/
 };
 

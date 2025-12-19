@@ -52,6 +52,7 @@ protected:
 	ceWPTMAWaitActionsMoveAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMAWaitActionsMoveAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */

@@ -44,27 +44,18 @@
 ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName){
 	if(!topic || !action || !newName) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldName = action->GetName();
 	pNewName = newName;
 	
 	SetShortInfo("SetActorParameter Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetAParamSetName::~ceUCASetAParamSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

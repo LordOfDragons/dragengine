@@ -37,7 +37,6 @@
 #include "../conversation/textbox/ceTextBox.h"
 #include "../conversation/playback/cePlayback.h"
 #include "../conversation/playback/cePlaybackActionStack.h"
-#include "../conversation/playback/variable/cePlaybackVariableList.h"
 #include "../conversation/playback/cePlaybackActionStackEntry.h"
 #include "../conversation/playerChoiceBox/cePCBOption.h"
 #include "../conversation/playerChoiceBox/cePlayerChoiceBox.h"
@@ -69,6 +68,7 @@ class cCameraMouseListener : public igdeMouseCameraListener {
 	ceViewConversation &pView;
 	
 public:
+	typedef deTObjectReference<cCameraMouseListener> Ref;
 	cCameraMouseListener(ceViewConversation &view) : pView(view){}
 	
 	virtual void OnCameraChanged(){
@@ -82,6 +82,7 @@ class cPlaybackListener : public igdeMouseKeyListener {
 	ceViewConversation &pView;
 	
 public:
+	typedef deTObjectReference<cPlaybackListener> Ref;
 	cPlaybackListener(ceViewConversation &view) : pView(view){}
 	
 	virtual void OnButtonPress(igdeWidget*, int, const decPoint &position, int){
@@ -95,7 +96,7 @@ public:
 		
 		cePlayback &playback = *pView.GetConversation()->GetPlayback();
 		cePlayerChoiceBox &pcbox = pView.GetConversation()->GetPlayerChoiceBox();
-		if(pcbox.GetOptionList().GetCount() > 0){
+		if(pcbox.GetOptionList().IsNotEmpty()){
 			if(pcbox.GetSelectedOption() != -1){
 				pcbox.SelectOptionAt(position.x, position.y);
 			}
@@ -128,7 +129,7 @@ public:
 			if(AdvancePlayerTriggeredAction()){
 				return;
 			}
-			if(pView.GetConversation()->GetPlayerChoiceBox().GetOptionList().GetCount() > 0){
+			if(pView.GetConversation()->GetPlayerChoiceBox()->GetOptionList().IsNotEmpty()){
 				return;
 			}
 			pView.GetConversation()->GetPlayback()->FastForwardSpeaking();
@@ -168,7 +169,7 @@ public:
 		cePlaybackActionStack &stack = playback.GetMainActionStack();
 		
 		// action user has to advance himself
-		ceConversationAction * const action = stack.HasNextAction() ? stack.GetTop().GetNextAction() : NULL;
+		ceConversationAction * const action = stack.HasNextAction() ? stack.GetTop().GetNextAction() : nullptr;
 		if(action){
 			switch(action->GetType()){
 			case ceConversationAction::eatActorCommand:
@@ -178,7 +179,7 @@ public:
 			case ceConversationAction::eatActorRemove:
 			case ceConversationAction::eatCoordSystemAdd:
 			case ceConversationAction::eatCoordSystemRemove:
-				playback.GetConversation().GetInfoBox().Clear();
+				playback.GetConversation().GetInfoBox()->Clear();
 				playback.AdvanceToNextAction();
 				return true;
 				
@@ -197,11 +198,11 @@ public:
 		}
 		
 		const int selectedOption = pcbox.GetSelectedOption();
-		ceCAPlayerChoiceOption *option = NULL;
-		ceCAPlayerChoice *action = NULL;
+		ceCAPlayerChoiceOption *option = nullptr;
+		ceCAPlayerChoice *action = nullptr;
 		
 		if(selectedOption != -1){
-			const cePCBOption &pcbOption = *pcbox.GetOptionList().GetAt(selectedOption);
+			const cePCBOption &pcbOption = pcbox.GetOptionList().GetAt(selectedOption);
 			action = pcbOption.GetAction();
 			option = pcbOption.GetActionOption();
 		}
@@ -211,7 +212,7 @@ public:
 		cePlayback &playback = *pView.GetConversation()->GetPlayback();
 		if(action && option){
 			if(!action->GetVariableName().IsEmpty()){
-				playback.GetVariables().Set(action->GetVariableName(), selectedOption);
+				playback.GetVariables().SetAt(action->GetVariableName(), selectedOption);
 				playback.GetConversation().NotifyPlaybackVarListChanged();
 			}
 			
@@ -220,7 +221,7 @@ public:
 			
 			// push option actions to stack or advance to the next action if missing
 			if(option->GetActions().GetCount() > 0){
-				playback.GetMainActionStack()->Push(NULL, action, &option->GetActions(), 0);
+				playback.GetMainActionStack()->Push(nullptr, action, &option->GetActions(), 0);
 				
 			}else{
 				playback.AdvanceToNextAction();
@@ -244,29 +245,19 @@ public:
 
 ceViewConversation::ceViewConversation(ceWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pListener(NULL),
-pConversation(NULL),
-pRuleOfThirdsAid(NULL)
+pWindowMain(windowMain)
 {
-	pListener = new ceViewConversationListener(*this);
+	pListener = ceViewConversationListener::Ref::New(*this);
 	
-	pCameraMouseListener.TakeOver(new cCameraMouseListener(*this));
+	pCameraMouseListener = cCameraMouseListener::Ref::New(*this);
 	AddListener(pCameraMouseListener);
 	
-	pPlaybackListener.TakeOver(new cPlaybackListener(*this));
+	pPlaybackListener = cPlaybackListener::Ref::New(*this);
 	AddListener(pPlaybackListener);
 }
 
 ceViewConversation::~ceViewConversation(){
-	SetConversation(NULL);
-	
-	if(pRuleOfThirdsAid){
-		delete pRuleOfThirdsAid;
-	}
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetConversation(nullptr);
 }
 
 
@@ -285,29 +276,27 @@ void ceViewConversation::SetConversation(ceConversation *conversation){
 	if(pRuleOfThirdsAid){
 		pRuleOfThirdsAid->SetVisible(true);
 	}
-	pCameraMouseListener->SetCamera(NULL);
-	SetRenderWorld(NULL);
+	pCameraMouseListener->SetCamera(nullptr);
+	SetRenderWorld(nullptr);
 	
 	if(pConversation){
 		if(GetRenderWindow()){
-			RemoveCanvas(pConversation->GetInfoBox().GetCanvasView());
-			RemoveCanvas(pConversation->GetPlayerChoiceBox().GetCanvasView());
+			RemoveCanvas(pConversation->GetInfoBox()->GetCanvasView());
+			RemoveCanvas(pConversation->GetPlayerChoiceBox()->GetCanvasView());
 			RemoveCanvas(pConversation->GetTextBox()->GetCanvasView());
 		}
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
-		conversation->AddReference();
 		conversation->AddListener(pListener);
 		
 		if(GetRenderWindow()){
 			AddCanvas(conversation->GetTextBox()->GetCanvasView());
-			AddCanvas(conversation->GetPlayerChoiceBox().GetCanvasView());
-			AddCanvas(conversation->GetInfoBox().GetCanvasView());
+			AddCanvas(conversation->GetPlayerChoiceBox()->GetCanvasView());
+			AddCanvas(conversation->GetInfoBox()->GetCanvasView());
 			conversation->GetTextBox()->UpdateCanvas();
 			if(pRuleOfThirdsAid){
 				pRuleOfThirdsAid->SetVisible(conversation->GetShowRuleOfThirdsAid());
@@ -359,17 +348,17 @@ void ceViewConversation::CreateCanvas(){
 	
 	if(pConversation){
 		AddCanvas(pConversation->GetTextBox()->GetCanvasView());
-		AddCanvas(pConversation->GetPlayerChoiceBox().GetCanvasView());
-		AddCanvas(pConversation->GetInfoBox().GetCanvasView());
+		AddCanvas(pConversation->GetPlayerChoiceBox()->GetCanvasView());
+		AddCanvas(pConversation->GetInfoBox()->GetCanvasView());
 		pConversation->GetTextBox()->UpdateCanvas();
 	}
 	
 	if(!pRuleOfThirdsAid){
-		pRuleOfThirdsAid = new ceCanvasRuleOfThirdsAid(pWindowMain.GetEnvironment());
+		pRuleOfThirdsAid = ceCanvasRuleOfThirdsAid::Ref::New(pWindowMain.GetEnvironment());
 		AddCanvas(pRuleOfThirdsAid->GetCanvasView());
 	}
 	
-	pCanvasBackground.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+	pCanvasBackground = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint();
 	pCanvasBackground->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f));
 	pCanvasBackground->SetLineColor(pCanvasBackground->GetFillColor());
@@ -391,8 +380,8 @@ void ceViewConversation::OnResize(){
 	
 	if(pConversation){
 		pConversation->GetTextBox()->UpdateCanvas();
-		pConversation->GetPlayerChoiceBox().UpdateCanvas();
-		pConversation->GetInfoBox().UpdateCanvas();
+		pConversation->GetPlayerChoiceBox()->UpdateCanvas();
+		pConversation->GetInfoBox()->UpdateCanvas();
 	}
 	
 	if(pCanvasBackground){

@@ -44,12 +44,11 @@
 cePlaybackActor::cePlaybackActor(){
 	pSpeechLength = 0.0f;
 	pElapsedTime = 0.0f;
-	pTextBox = NULL;
-	pTextBoxText = NULL;
+	pTextBox = nullptr;
 }
 
 cePlaybackActor::~cePlaybackActor(){
-	SetTextBoxText(NULL);
+	SetTextBoxText(nullptr);
 }
 
 
@@ -70,26 +69,22 @@ void cePlaybackActor::SetTextBox(ceTextBox *textBox){
 }
 
 void cePlaybackActor::SetTextBoxText(ceTextBoxText *text){
-	if(text != pTextBoxText){
-		if(pTextBoxText){
-			if(pTextBox){
-				pTextBox->GetTextList().Remove(pTextBoxText);
-			}
-			pTextBoxText->FreeReference();
-		}
-		
-		pTextBoxText = text;
-		
-		if(text){
-			text->AddReference();
-			if(pTextBox){
-				pTextBox->GetTextList().Add(text);
-			}
-		}
-		
-		if(pTextBox){
-			pTextBox->UpdateCanvas();
-		}
+	if(text == pTextBoxText){
+		return;
+	}
+	
+	if(pTextBoxText && pTextBox){
+		pTextBox->GetTexts().Remove(pTextBoxText);
+	}
+	
+	pTextBoxText = text;
+	
+	if(text && pTextBox){
+		pTextBox->GetTexts().Add(text);
+	}
+	
+	if(pTextBox){
+		pTextBox->UpdateCanvas();
 	}
 }
 
@@ -104,13 +99,13 @@ bool cePlaybackActor::IsSpeechDone() const{
 void cePlaybackActor::Reset(){
 	pSpeechLength = 0.0f;
 	pElapsedTime = 0.0f;
-	SetTextBoxText(NULL);
+	SetTextBoxText(nullptr);
 }
 
 void cePlaybackActor::Update(float elapsed){
 	pElapsedTime += elapsed;
 	
 	if(IsSpeechDone()){
-		SetTextBoxText(NULL);
+		SetTextBoxText(nullptr);
 	}
 }

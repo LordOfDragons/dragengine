@@ -57,34 +57,34 @@ public:
 	virtual void OnContextMenu(igdeMenuCascade &menu, const decPoint &position);
 	
 	/** \brief Strip list. */
-	const ceStripList &GetStripList() const override;
+	const ceStrip::List &GetStripList() const override;
 	
 	/** \brief Fill ID list. */
 	void FillIDList(decStringList &list) override;
 	
 	/** \brief Create add strip undo action. */
-	igdeUndo *UndoStripAdd(ceStrip *strip, int index) override;
+	igdeUndo::Ref UndoStripAdd(ceStrip *strip, int index) override;
 	
 	/** \brief Create remove strip undo action. */
-	igdeUndo *UndoStripRemove(ceStrip *strip) override;
+	igdeUndo::Ref UndoStripRemove(ceStrip *strip) override;
 	
 	/** \brief Create remove all strip undo action. */
-	igdeUndo *UndoStripRemoveAll() override;
+	igdeUndo::Ref UndoStripRemoveAll() override;
 	
 	/** \brief Create replace strip undo action. */
-	igdeUndo *UndoStripReplace(ceStrip *strip, ceStrip *withStrip) override;
+	igdeUndo::Ref UndoStripReplace(ceStrip *strip, ceStrip *withStrip) override;
 	
 	/** \brief Create move strip undo action. */
-	igdeUndo *UndoStripMove(ceStrip *strip, int toIndex) override;
+	igdeUndo::Ref UndoStripMove(ceStrip *strip, int toIndex) override;
 	
 	/** \brief Create strip set pause undo action. */
-	ceUCAASpeakStripSetPause *UndoStripSetPause(ceStrip *strip, float pause) override;
+	ceUCAASpeakStripSetPause::Ref UndoStripSetPause(ceStrip *strip, float pause) override;
 	
 	/** \brief Create strip set duration undo action. */
-	ceUCAASpeakStripSetDuration *UndoStripSetDuration(ceStrip *strip, float duration) override;
+	ceUCAASpeakStripSetDuration::Ref UndoStripSetDuration(ceStrip *strip, float duration) override;
 	
 	/** \brief Create scale strips undo action. */
-	ceUCAASpeakStripsScale *UndoScaleStrips() override;
+	ceUCAASpeakStripsScale::Ref UndoScaleStrips() override;
 	/*@}*/
 };
 

@@ -35,6 +35,9 @@ class ceWPConversation;
  * \brief Conversation panel listener.
  */
 class ceWPConversationListener : public ceConversationListener{
+public:
+	typedef deTObjectReference<ceWPConversationListener> Ref;
+	
 private:
 	ceWPConversation &pPanel;
 	

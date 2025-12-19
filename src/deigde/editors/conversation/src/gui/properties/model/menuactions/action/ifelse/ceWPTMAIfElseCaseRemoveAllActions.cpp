@@ -45,7 +45,7 @@ pTopic(&topic),
 pIfElse(&ifElse),
 pIfCase(&ifCase)
 {
-	SetEnabled(topic.GetActionList().GetCount() > 0);
+	SetEnabled(topic.GetActions().GetCount() > 0);
 }
 
 
@@ -53,6 +53,6 @@ pIfCase(&ifCase)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCaseRemoveAllActions::CreateUndo(){
-	return new ceUCAIfElseRemoveAll(pTopic, pIfElse, pIfCase);
+igdeUndo::Ref ceWPTMAIfElseCaseRemoveAllActions::CreateUndo(){
+	return ceUCAIfElseRemoveAll::Ref::New(pTopic, pIfElse, pIfCase);
 }

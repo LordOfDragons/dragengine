@@ -69,6 +69,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCGameCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPCGameCommand &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -80,7 +81,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCGameCmdSetCommand::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCGameCmdSetCommand::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -88,11 +89,12 @@ class cActionEditCommand : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEditCommand> Ref;
 	cActionEditCommand(ceWPCGameCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
@@ -109,7 +111,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCGameCmdSetCommand::Ref::NewWith(topic, action, condition, text));
+			ceUCCGameCmdSetCommand::Ref::New(topic, action, condition, text));
 	}
 };
 
@@ -117,10 +119,11 @@ class cActionNegate : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cActionNegate(ceWPCGameCommand &panel) : igdeAction("Negate", NULL,
+	typedef deTObjectReference<cActionNegate> Ref;
+	cActionNegate(ceWPCGameCommand &panel) : igdeAction("Negate", nullptr,
 		"True if the result of the command is negated"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
@@ -129,7 +132,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCGameCmdToggleNegate::Ref::NewWith(topic, action, condition));
+			ceUCCGameCmdToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -147,10 +150,10 @@ ceWPCGameCommand::ceWPCGameCommand(ceWPTopic &parentPanel) : ceWPCondition(paren
 	igdeContainer::Ref formLine;
 	
 	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
-	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
+	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
-	helper.CheckBox(formLine, pChkNegate, new cActionNegate(*this), true);
+	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCGameCommand::~ceWPCGameCommand(){
@@ -168,7 +171,7 @@ ceCConditionGameCommand *ceWPCGameCommand::GetCondition() const{
 		return (ceCConditionGameCommand*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

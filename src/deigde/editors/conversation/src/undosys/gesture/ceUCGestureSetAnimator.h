@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 
 
 
@@ -35,16 +35,17 @@ class ceGesture;
  * \brief Undo Action Gesture Set Animator.
  */
 class ceUCGestureSetAnimator : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCGestureSetAnimator> Ref;
+	
+	
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldAnimator;
 	decString pNewAnimator;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCGestureSetAnimator> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

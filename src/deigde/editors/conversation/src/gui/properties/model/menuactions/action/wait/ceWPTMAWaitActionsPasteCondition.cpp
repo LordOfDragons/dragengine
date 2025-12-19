@@ -51,11 +51,11 @@ pWait(&wait){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsPasteCondition::CreateUndo(
-const ceConversationConditionList &conditions){
+igdeUndo::Ref ceWPTMAWaitActionsPasteCondition::CreateUndo(
+const ceConversationCondition::List &conditions){
 	if(conditions.GetCount() != 1){
 		//DETHROW( deeInvalidParam );
 	}
 	
-	return new ceUCAWaitPasteCondition(pTopic, pWait, conditions.GetAt(0));
+	return ceUCAWaitPasteCondition::Ref::New(pTopic, pWait, conditions.First());
 }

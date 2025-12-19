@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *ConversationEditorCreateModule(igdeEnviro
 ////////////////
 
 igdeEditorModule *ConversationEditorCreateModule(igdeEnvironment *environment){
-	ceIGDEModule *module = NULL;
-	
 	try{
-		module = new ceIGDEModule(*environment);
+		return new ceIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

@@ -31,6 +31,8 @@
 #include "cePlayerChoiceBox.h"
 #include "../ceConversation.h"
 #include "../playback/cePlayback.h"
+#include "../playback/cePlaybackActionStack.h"
+#include "../action/ceConversationAction.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -39,8 +41,6 @@
 #include <dragengine/resources/font/deFontManager.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
-#include "../playback/cePlaybackActionStack.h"
-#include "../action/ceConversationAction.h"
 
 
 
@@ -67,9 +67,7 @@ pTextSize(18),
 pPadding(10),
 pPlaybackStackDepth(-1),
 
-pSelectedOption(-1),
-
-pCanvasView(NULL)
+pSelectedOption(-1)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
@@ -189,25 +187,17 @@ int cePlayerChoiceBox::IndexOfOptionAt(int x, int y) const{
 	}
 	
 	const decPoint &boxPosition = pCanvasView->GetPosition();
-	const int count = pOptions.GetCount();
 	const decPoint point(x, y);
-	int i;
 	
-	for(i=0; i<count; i++){
-		const deCanvasView * const canvasOption = pOptions.GetAt(i)->GetCanvasView();
+	return pOptions.IndexOfMatching([&](const cePCBOption &o){
+		const deCanvasView * const canvasOption = o.GetCanvasView();
 		if(!canvasOption){
-			continue;
+			return false;
 		}
 		
 		const decPoint position(boxPosition + canvasOption->GetPosition());
-		const decPoint &size = canvasOption->GetSize();
-		
-		if(point >= position && point < position + size){
-			return i;
-		}
-	}
-	
-	return -1;
+		return point >= position && point < position + canvasOption->GetSize();
+	});
 }
 
 void cePlayerChoiceBox::SelectOptionAt(int x, int y){
@@ -243,7 +233,7 @@ void cePlayerChoiceBox::UpdateCanvas(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		cePCBOption &option = *pOptions.GetAt(i);
+		cePCBOption &option = pOptions.GetAt(i);
 		
 		option.Layout(*this, i == pSelectedOption);
 		boxHeight += option.GetCanvasView()->GetSize().y;
@@ -279,10 +269,6 @@ void cePlayerChoiceBox::UpdateCanvas(){
 
 void cePlayerChoiceBox::pCleanUp(){
 	pOptions.RemoveAll();
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 
@@ -292,7 +278,7 @@ void cePlayerChoiceBox::pUpdateFont(){
 	
 	try{
 		if(!pPathFont.IsEmpty()){
-			pEngFont.TakeOver(pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/"));
+			pEngFont = pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/");
 			
 		}else{
 			pEngFont = nullptr;

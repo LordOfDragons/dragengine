@@ -46,37 +46,23 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpea
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
-	if(index < 0 || index > actorSpeak->GetWordList().GetCount()){
+	if(index < 0 || index > actorSpeak->GetWords().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pWord = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pWord = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Actor Speak Add Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
 ///////////////
 
 void ceUCAASpeakWordAdd::Undo(){
-	pActorSpeak->GetWordList().Remove(pWord);
+	pActorSpeak->GetWords().Remove(pWord);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordAdd::Redo(){
-	pActorSpeak->GetWordList().InsertAt(pWord, pIndex);
+	pActorSpeak->GetWords().Insert(pWord, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -57,6 +57,6 @@ pIndex(index)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsAddAction::CreateUndo(ceConversationAction *action){
-	return new ceUCAWaitAdd(pTopic, pWait, action, pIndex);
+igdeUndo::Ref ceWPTMAWaitActionsAddAction::CreateUndo(ceConversationAction *action){
+	return ceUCAWaitAdd::Ref::New(pTopic, pWait, action, pIndex);
 }

@@ -53,6 +53,6 @@ pIfElse(&ifElse)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseElseRemoveAllActions::CreateUndo(){
-	return new ceUCAIfElseRemoveAll(pTopic, pIfElse, NULL);
+igdeUndo::Ref ceWPTMAIfElseElseRemoveAllActions::CreateUndo(){
+	return ceUCAIfElseRemoveAll::Ref::New(pTopic, pIfElse, nullptr);
 }

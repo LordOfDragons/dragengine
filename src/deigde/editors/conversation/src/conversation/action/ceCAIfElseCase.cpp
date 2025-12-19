@@ -41,47 +41,26 @@
 ////////////////////////////
 
 ceCAIfElseCase::ceCAIfElseCase() :
-pCondition(NULL),
+
 pTIMExpanded(true),
 pTIMConditionExpanded(true),
 pTIMActionsExpanded(true){
 }
 
 ceCAIfElseCase::ceCAIfElseCase(const ceCAIfElseCase &ifcase) :
-pCondition(NULL),
 pTIMExpanded(ifcase.pTIMExpanded),
 pTIMConditionExpanded(ifcase.pTIMConditionExpanded),
 pTIMActionsExpanded(ifcase.pTIMActionsExpanded)
 {
-	const ceConversationActionList &actions = ifcase.GetActions();
-	ceConversationAction *newAction = NULL;
-	int i, count;
-	
-	try{
-		if(ifcase.GetCondition()){
-			SetCondition(ifcase.GetCondition()->CreateCopy());
-		}
-		
-		count = actions.GetCount();
-		for(i=0; i<count; i++){
-			newAction = actions.GetAt(i)->CreateCopy();
-			pActions.Add(newAction);
-			newAction->FreeReference();
-			newAction = NULL;
-		}
-		
-	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
-		pActions.RemoveAll();
-		throw;
+	if(ifcase.GetCondition()){
+		SetCondition(ifcase.GetCondition()->CreateCopy());
 	}
+	ifcase.GetActions().Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceCAIfElseCase::~ceCAIfElseCase(){
-	pActions.RemoveAll();
-	SetCondition(NULL);
 }
 
 
@@ -90,19 +69,7 @@ ceCAIfElseCase::~ceCAIfElseCase(){
 ///////////////
 
 void ceCAIfElseCase::SetCondition(ceConversationCondition *condition){
-	if(condition == pCondition){
-		return;
-	}
-	
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	
 	pCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 

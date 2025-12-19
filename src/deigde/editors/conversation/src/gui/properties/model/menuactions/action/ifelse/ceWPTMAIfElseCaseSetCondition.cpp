@@ -54,6 +54,6 @@ pIfCase(&ifCase){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCaseSetCondition::CreateUndo(ceConversationCondition *condition){
-	return new ceUCAIfElseCaseSetCondition(pTopic, pIfElse, pIfCase, condition);
+igdeUndo::Ref ceWPTMAIfElseCaseSetCondition::CreateUndo(ceConversationCondition *condition){
+	return ceUCAIfElseCaseSetCondition::Ref::New(pTopic, pIfElse, pIfCase, condition);
 }

@@ -26,11 +26,11 @@
 #define _CEUCCTRIGGERSETTESTMODE_H_
 
 #include "../../../conversation/condition/ceCConditionTrigger.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,17 +38,18 @@ class ceConversationTopic;
  * \brief Undo trigger conversation condition set test mode.
  */
 class ceUCCTriggerSetTestMode : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCTriggerSetTestMode> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	ceCConditionTrigger::eTestModes pOldTestMode;
 	ceCConditionTrigger::eTestModes pNewTestMode;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCTriggerSetTestMode> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

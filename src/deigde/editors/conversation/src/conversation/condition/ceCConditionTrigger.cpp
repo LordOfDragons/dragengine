@@ -72,6 +72,6 @@ void ceCConditionTrigger::SetTestMode(eTestModes testMode){
 	pTestMode = testMode;
 }
 
-ceConversationCondition *ceCConditionTrigger::CreateCopy() const{
-	return new ceCConditionTrigger(*this);
+ceConversationCondition::Ref ceCConditionTrigger::CreateCopy() const{
+	return ceCConditionTrigger::Ref::New(*this);
 }

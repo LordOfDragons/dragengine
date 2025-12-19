@@ -40,6 +40,7 @@ private:
 	decString pActor;
 	
 public:
+	typedef deTObjectReference<ceCAActorRemove> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
@@ -58,7 +59,7 @@ public:
 	void SetActor(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

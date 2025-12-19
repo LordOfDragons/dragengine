@@ -38,5 +38,5 @@
 
 ceWPTMATopicCopyActions::ceWPTMATopicCopyActions(ceWindowMain &windowMain,
 ceConversationTopic &topic) :
-ceWPTMACopyActions(windowMain, topic.GetActionList()){
+ceWPTMACopyActions(windowMain, topic.GetActions()){
 }

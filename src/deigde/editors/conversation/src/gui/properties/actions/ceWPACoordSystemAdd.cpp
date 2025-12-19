@@ -68,6 +68,7 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboCoordSystemID> Ref;
 	cComboCoordSystemID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -78,7 +79,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCACoordSysAddSetCoordSysID::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCACoordSysAddSetCoordSysID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -86,6 +87,7 @@ class cComboAliasID : public igdeComboBoxListener {
 	ceWPACoordSystemAdd &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboAliasID> Ref;
 	cComboAliasID(ceWPACoordSystemAdd &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -96,7 +98,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCACoordSysAddSetAliasID::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCACoordSysAddSetAliasID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -116,11 +118,11 @@ ceWPACoordSystemAdd::ceWPACoordSystemAdd(ceWPTopic &parentPanel) : ceWPAction(pa
 	CreateGUICommon(*this);
 	
 	helper.ComboBox(*this, "Coord System:", true, "ID of the coordinate system to add to conversation",
-		pCBCoordSystemID, new cComboCoordSystemID(*this));
+		pCBCoordSystemID, cComboCoordSystemID::Ref::New(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 	
 	helper.ComboBox(*this, "Alias:", true, "Optional alias ID to set for the added coordinate system",
-		pCBAliasID, new cComboAliasID(*this));
+		pCBAliasID, cComboAliasID::Ref::New(*this));
 	pCBAliasID->SetDefaultSorter();
 }
 
@@ -139,7 +141,7 @@ ceCACoordSystemAdd *ceWPACoordSystemAdd::GetAction() const{
 		return (ceCACoordSystemAdd*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

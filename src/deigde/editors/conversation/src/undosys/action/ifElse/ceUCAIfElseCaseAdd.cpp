@@ -49,33 +49,19 @@ ceUCAIfElseCaseAdd::ceUCAIfElseCaseAdd(ceConversationTopic *topic, ceCAIfElse *i
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pCase = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("If-else add case");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifelse;
-	ifelse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
 }
 
 ceUCAIfElseCaseAdd::~ceUCAIfElseCaseAdd(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -89,6 +75,6 @@ void ceUCAIfElseCaseAdd::Undo(){
 }
 
 void ceUCAIfElseCaseAdd::Redo(){
-	pIfElse->GetCases().InsertAt(pCase, pIndex);
+	pIfElse->GetCases().Insert(pCase, pIndex);
 	pTopic->NotifyActionStructureChanged(pIfElse);
 }

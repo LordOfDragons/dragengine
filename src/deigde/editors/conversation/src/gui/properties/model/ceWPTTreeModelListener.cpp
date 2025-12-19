@@ -155,7 +155,7 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 }
 
 void ceWPTTreeModelListener::ActionChanged(ceConversation *conversation,
@@ -192,7 +192,7 @@ ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *acti
 	// tree the listener of the WPTopic is called but no model is yet assigned. this will
 	// cause the WPTopic tree listener to miss out on an update. do it here to ensure
 	// the WPTopic properly updates
-	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic().SelectActivePanel();
+	pModel.GetWindowMain().GetWindowProperties().GetPanelTopic()->SelectActivePanel();
 }
 
 void ceWPTTreeModelListener::ConditionChanged(ceConversation *conversation, ceConversationFile *file,
@@ -231,7 +231,7 @@ ceConversationFile *file, ceConversationTopic *topic){
 		}
 	}
 	
-	pModel.GetTreeList()->SetSelection(NULL);
+	pModel.GetTreeList()->SetSelection(nullptr);
 }
 
 

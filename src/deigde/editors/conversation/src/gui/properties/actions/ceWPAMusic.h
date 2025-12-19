@@ -41,6 +41,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceWPAMusic> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

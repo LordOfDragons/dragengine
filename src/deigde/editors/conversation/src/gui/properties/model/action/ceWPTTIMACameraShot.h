@@ -34,6 +34,7 @@
  */
 class ceWPTTIMACameraShot : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMACameraShot> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACameraShot *GetActionCameraShot() const{ return (ceCACameraShot*)GetAction(); }
+	inline ceCACameraShot *GetActionCameraShot() const{ return GetAction().DynamicCast<ceCACameraShot>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

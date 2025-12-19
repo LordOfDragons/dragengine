@@ -46,16 +46,13 @@ ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
 	ceConversation *conversation = cameraShot->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pCameraShot = NULL;
+	pConversation = nullptr;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Remove Camera Shot");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotRemove::~ceUCCShotRemove(){

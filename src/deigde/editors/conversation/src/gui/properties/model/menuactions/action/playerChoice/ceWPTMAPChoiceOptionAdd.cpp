@@ -64,26 +64,9 @@ pPlayerChoice(&playerChoice){
 ///////////////
 
 void ceWPTMAPChoiceOptionAdd::OnAction(){
-	ceCAPlayerChoiceOption *selectOption = NULL;
-	ceCAPlayerChoiceOption *option = NULL;
-	igdeUndo::Ref undo;
-	
-	try{
-		option = new ceCAPlayerChoiceOption;
-		undo.TakeOver(new ceUCAPChoiceOptionAdd(pTopic, pPlayerChoice,
-			option, pPlayerChoice->GetOptions().GetCount()));
-		selectOption = option;
-		option->FreeReference();
-		option = NULL;
-		
-		pConversation->GetUndoSystem()->Add(undo);
-		
-	}catch(const deException &){
-		if(option){
-			option->FreeReference();
-		}
-		throw;
-	}
+	const ceCAPlayerChoiceOption::Ref option(ceCAPlayerChoiceOption::Ref::New());
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceOptionAdd::Ref::New(
+		pTopic, pPlayerChoice, option, pPlayerChoice->GetOptions().GetCount()));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
 	if(!wptopic.GetActionTreeModel()){
@@ -91,12 +74,13 @@ void ceWPTMAPChoiceOptionAdd::OnAction(){
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAPlayerChoice * const modelPlayerChoice = (ceWPTTIMAPlayerChoice*)model.DeepFindAction(pPlayerChoice);
+	ceWPTTIMAPlayerChoice * const modelPlayerChoice =
+		static_cast<ceWPTTIMAPlayerChoice*>(model.DeepFindAction(pPlayerChoice));
 	if(!modelPlayerChoice){
 		return;
 	}
 	
-	ceWPTTIMAPlayerChoiceOption * const modelOption = modelPlayerChoice->GetOptionChild(selectOption);
+	ceWPTTIMAPlayerChoiceOption * const modelOption = modelPlayerChoice->GetOptionChild(option);
 	if(!modelOption){
 		return;
 	}

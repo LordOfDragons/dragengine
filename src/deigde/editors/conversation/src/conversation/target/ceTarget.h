@@ -26,6 +26,7 @@
 #define _CETARGET_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -58,8 +59,8 @@ private:
 	decVector pOrientation;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceTarget> Ref;
+	typedef decTObjectOrderedSet<ceTarget> List;
 
 
 	/** \name Constructors and Destructors */
@@ -74,9 +75,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the conversation or NULL if not set. */
+	/** Retrieves the conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** Sets the conversation or NULL if not set. */
+	/** Sets the conversation or nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */

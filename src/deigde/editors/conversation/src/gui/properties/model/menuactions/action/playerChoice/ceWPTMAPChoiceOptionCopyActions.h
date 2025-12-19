@@ -35,6 +35,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMAPChoiceOptionCopyActions : public ceWPTMACopyActions{
+public:
+	typedef deTObjectReference<ceWPTMAPChoiceOptionCopyActions> Ref;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMAPChoiceOptionCopyActions();

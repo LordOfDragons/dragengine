@@ -26,11 +26,10 @@
 #define _CECAWAIT_H_
 
 #include "ceConversationAction.h"
-#include "ceConversationActionList.h"
+#include "../condition/ceConversationCondition.h"
 
 #include <dragengine/common/string/decString.h>
 
-class ceConversationCondition;
 
 
 
@@ -48,8 +47,8 @@ class ceConversationCondition;
  */
 class ceCAWait : public ceConversationAction{
 private:
-	ceConversationActionList pActions;
-	ceConversationCondition *pCondition;
+	ceConversationAction::List pActions;
+	ceConversationCondition::Ref pCondition;
 	float pInterval;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
@@ -58,6 +57,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceCAWait> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wait conversation action. */
@@ -71,11 +71,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
-	/** Retrieves the condition or NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
-	/** Sets the condition or NULL if there is none. */
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
+	/** Retrieves the condition or nullptr if there is none. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
+	/** Sets the condition or nullptr if there is none. */
 	void SetCondition(ceConversationCondition *condition);
 	/** Retrieves the interval to check the condition. */
 	inline float GetInterval() const{ return pInterval; }
@@ -83,7 +83,7 @@ public:
 	void SetInterval(float interval);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

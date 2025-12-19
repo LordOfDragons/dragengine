@@ -25,13 +25,13 @@
 #ifndef _CEUCCLOGICPASTE_H_
 #define _CEUCCLOGICPASTE_H_
 
-#include "../../../conversation/condition/ceConversationConditionList.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
+#include "../../../conversation/condition/ceCConditionLogic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -39,21 +39,22 @@ class ceConversationTopic;
  * \brief Undo Logic Conversation Condition Paste Condition.
  */
 class ceUCCLogicPaste : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationConditionList pConditions;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCCLogicPaste> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::List pConditions;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
-		const ceConversationConditionList &conditions);
+	ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionLogic *logic, const ceConversationCondition::List &conditions);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicPaste();
@@ -63,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of conditions. */
-	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
+	inline const ceConversationCondition::List &GetConditions() const{ return pConditions; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

@@ -25,31 +25,34 @@
 #ifndef _CEPLAYBACK_H_
 #define _CEPLAYBACK_H_
 
+#include "cePlaybackActor.h"
 #include "cePlaybackActionStack.h"
-#include "command/cePlaybackCommandList.h"
-#include "variable/cePlaybackVariableList.h"
-#include "../action/ceConversationActionList.h"
+#include "cePlaybackCamera.h"
+#include "command/cePlaybackCommand.h"
+#include "../action/ceConversationAction.h"
+#include "../topic/ceConversationTopic.h"
+#include "../textbox/ceTextBoxText.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 #include <deigde/triggersystem/igdeTriggerTargetList.h>
 
 class ceConversation;
-class ceConversationTopic;
 class ceCameraShot;
-class cePlaybackActor;
-class ceTextBoxText;
-class cePlaybackCamera;
 
 
 
 /**
  * Conversation playback.
  */
-class cePlayback{
+class cePlayback : public deObject{
 public:
+	typedef deTObjectReference<cePlayback> Ref;
+	typedef decTDictionary<decString, int> VariableMap;
+	
 	/** Camera handling. */
 	enum eCameraHandling{
 		/** Conversation playback. */
@@ -67,25 +70,24 @@ public:
 private:
 	ceConversation &pConversation;
 	
-	ceConversationTopic *pTopic;
-	cePlaybackActor *pActors;
-	int pActorCount;
+	ceConversationTopic::Ref pTopic;
+	decTObjectOrderedSet<cePlaybackActor> pActors;
 	bool pRunning;
 	bool pPaused;
 	bool pAutoAdvanceCommands;
 	eCameraHandling pCameraHandling;
-	ceTextBoxText *pTextBoxText;
-	cePlaybackCamera *pCamera;
+	ceTextBoxText::Ref pTextBoxText;
+	cePlaybackCamera::Ref pCamera;
 	cePlaybackActionStack::Ref pMainActionStack, pActiveActionStack;
-	decObjectOrderedSet pSideActionStacks;
-	cePlaybackCommandList pCommandList;
-	cePlaybackVariableList pVariableList;
-	ceConversationActionList pTestActionList;
+	cePlaybackActionStack::List pSideActionStacks;
+	cePlaybackCommand::List pCommands;
+	VariableMap pVariables;
+	ceConversationAction::List pTestActionList;
 	igdeTriggerTargetList pTriggerTable;
 	decStringSet pMissingWords;
 	
-	ceConversationAction *pLastPlayedAction;
-	ceConversationTopic *pLastPlayedActionTopic;
+	ceConversationAction::Ref pLastPlayedAction;
+	ceConversationTopic::Ref pLastPlayedActionTopic;
 	
 	
 	
@@ -108,12 +110,12 @@ public:
 	inline const ceConversation &GetConversation() const{ return pConversation; }
 	
 	/** Playback camera. */
-	inline cePlaybackCamera *GetCamera() const{ return pCamera; }
+	inline const cePlaybackCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	
 	
 	/** Topic to play back. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline const ceConversationTopic::Ref &GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
 	void SetTopic(ceConversationTopic *topic);
@@ -159,18 +161,18 @@ public:
 	inline const cePlaybackActionStack::Ref &GetMainActionStack() const{ return pMainActionStack; }
 	
 	/** Side action stacks. */
-	inline const decObjectOrderedSet &GetSideActionStacks() const{ return pSideActionStacks; }
+	inline const cePlaybackActionStack::List &GetSideActionStacks() const{ return pSideActionStacks; }
 	
 	/** Add side action stack and run it once. */
 	void AddSideActionStack(const cePlaybackActionStack::Ref &stack);
 	
 	/** Command list. */
-	inline cePlaybackCommandList &GetCommands(){ return pCommandList; }
-	inline const cePlaybackCommandList &GetCommandList() const{ return pCommandList; }
+	inline cePlaybackCommand::List &GetCommands(){ return pCommands; }
+	inline const cePlaybackCommand::List &GetCommands() const{ return pCommands; }
 	
 	/** Variable list. */
-	inline cePlaybackVariableList &GetVariables(){ return pVariableList; }
-	inline const cePlaybackVariableList &GetVariableList() const{ return pVariableList; }
+	inline VariableMap &GetVariables(){ return pVariables; }
+	inline const VariableMap &GetVariables() const{ return pVariables; }
 	
 	/** List of missing words encountered so far. */
 	inline decStringSet &GetMissingWords(){ return pMissingWords; }
@@ -188,7 +190,7 @@ public:
 	
 	
 	/** Number of actors. */
-	inline int GetActorCount() const{ return pActorCount; }
+	int GetActorCount() const;
 	
 	/** Set number of actors. */
 	void SetActorCount(int count);
@@ -216,11 +218,11 @@ public:
 	/** Cancel looping action list. */
 	void CancelLoopingLayer(int stackDepth);
 	
-	/** Last action played back or \em NULL if not set. */
-	inline ceConversationAction *GetLastPlayedAction() const{ return pLastPlayedAction; }
+	/** Last action played back or \em nullptr if not set. */
+	inline const ceConversationAction::Ref &GetLastPlayedAction() const{ return pLastPlayedAction; }
 	
-	/** Last action played back parent topic or \em NULL if not set. */
-	inline ceConversationTopic *GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
+	/** Last action played back parent topic or \em nullptr if not set. */
+	inline const ceConversationTopic::Ref &GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
 	
 	
 	

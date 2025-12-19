@@ -26,8 +26,7 @@
 #define _CEWPTMACOPYACTIONS_H_
 
 #include "../ceWPTMenuAction.h"
-
-class ceConversationActionList;
+#include "../../../../../conversation/action/ceConversationAction.h"
 
 
 
@@ -36,7 +35,7 @@ class ceConversationActionList;
  */
 class ceWPTMACopyActions : public ceWPTMenuAction{
 private:
-	const ceConversationActionList *pActions;
+	const ceConversationAction::List &pActions;
 	
 	
 	
@@ -45,11 +44,11 @@ protected:
 	ceWPTMACopyActions();
 	
 public:
+	typedef deTObjectReference<ceWPTMACopyActions> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyActions(ceWindowMain &windowMain,
-		const ceConversationActionList &actions);
+	ceWPTMACopyActions(ceWindowMain &windowMain, const ceConversationAction::List &actions);
 	/*@}*/
 	
 	
@@ -57,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Actions. */
-	inline const ceConversationActionList &GetActions() const{ return *pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

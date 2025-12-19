@@ -41,6 +41,7 @@ private:
 	decString pAliasID;
 	
 public:
+	typedef deTObjectReference<ceCAActorAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
@@ -63,7 +64,7 @@ public:
 	void SetAliasID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

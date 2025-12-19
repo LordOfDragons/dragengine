@@ -70,6 +70,6 @@ void ceCConditionHasActor::SetNegate(bool negate){
 
 
 
-ceConversationCondition *ceCConditionHasActor::CreateCopy() const{
-	return new ceCConditionHasActor(*this);
+ceConversationCondition::Ref ceCConditionHasActor::CreateCopy() const{
+	return ceCConditionHasActor::Ref::New(*this);
 }

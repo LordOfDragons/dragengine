@@ -70,6 +70,6 @@ void ceCATrigger::SetAction(eActions action){
 
 
 
-ceConversationAction *ceCATrigger::CreateCopy() const{
-	return new ceCATrigger(*this);
+ceConversationAction::Ref ceCATrigger::CreateCopy() const{
+	return ceCATrigger::Ref::New(*this);
 }

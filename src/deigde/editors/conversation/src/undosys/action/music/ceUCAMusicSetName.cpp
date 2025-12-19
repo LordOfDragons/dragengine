@@ -44,27 +44,18 @@
 ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName){
 	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pMusic = NULL;
+	pTopic = nullptr;
+	pMusic = nullptr;
 	pOldName = music->GetName();
 	pNewName = newName;
 	
 	SetShortInfo("Music Set Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pMusic = music;
-	music->AddReference();
 }
 
 ceUCAMusicSetName::~ceUCAMusicSetName(){
-	if(pMusic){
-		pMusic->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -68,6 +68,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPATrigger &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPATrigger &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -78,7 +79,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCATriggerSetName::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCATriggerSetName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -86,6 +87,7 @@ class cComboAction : public igdeComboBoxListener {
 	ceWPATrigger &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboAction> Ref;
 	cComboAction(ceWPATrigger &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -102,7 +104,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCATriggerSetAction::Ref::NewWith(topic, action, triggerAction));
+			ceUCATriggerSetAction::Ref::New(topic, action, triggerAction));
 	}
 };
 
@@ -122,14 +124,14 @@ ceWPATrigger::ceWPATrigger(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	CreateGUICommon(*this);
 	
 	helper.EditString(*this, "Name:", "Name of the trigger to operate or empty to have no effect",
-		pEditName, new cTextName(*this));
+		pEditName, cTextName::Ref::New(*this));
 	
 	helper.ComboBox(*this, "Action:", "The action to apply on the trigger",
-		pCBAction, new cComboAction(*this));
-	pCBAction->AddItem("Fire", NULL, (void*)(intptr_t)ceCATrigger::eaFire);
-	pCBAction->AddItem("Reset", NULL, (void*)(intptr_t)ceCATrigger::eaReset);
-	pCBAction->AddItem("Pulse", NULL, (void*)(intptr_t)ceCATrigger::eaPulse);
-	pCBAction->AddItem("Full Reset", NULL, (void*)(intptr_t)ceCATrigger::eaFullReset);
+		pCBAction, cComboAction::Ref::New(*this));
+	pCBAction->AddItem("Fire", nullptr, (void*)(intptr_t)ceCATrigger::eaFire);
+	pCBAction->AddItem("Reset", nullptr, (void*)(intptr_t)ceCATrigger::eaReset);
+	pCBAction->AddItem("Pulse", nullptr, (void*)(intptr_t)ceCATrigger::eaPulse);
+	pCBAction->AddItem("Full Reset", nullptr, (void*)(intptr_t)ceCATrigger::eaFullReset);
 }
 
 ceWPATrigger::~ceWPATrigger(){
@@ -147,7 +149,7 @@ ceCATrigger *ceWPATrigger::GetAction() const{
 		return (ceCATrigger*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

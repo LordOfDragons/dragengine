@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACoordSystemAdd;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACoordSystemAdd.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,16 +36,17 @@ class ceConversationTopic;
  * \brief Undo action coordinate system add conversation action set alias id.
  */
 class ceUCACoordSysAddSetAliasID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCACoordSysAddSetAliasID> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemAdd::Ref pAction;
 	decString pOldAliasID;
 	decString pNewAliasID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCACoordSysAddSetAliasID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

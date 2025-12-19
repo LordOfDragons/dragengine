@@ -47,12 +47,12 @@
 ////////////////////////////
 
 ceTarget::ceTarget(const char *name) :
-pConversation(NULL),
+pConversation(nullptr),
 pName(name){
 }
 
 ceTarget::ceTarget(const ceTarget &target){
-	pConversation = NULL;
+	pConversation = nullptr;
 	pName = target.GetName();
 	   pActor = target.GetActor();
 	   pCoordSystem = target.GetCoordSystem();
@@ -79,8 +79,9 @@ void ceTarget::SetName(const char *name){
 	}
 	
 	if(!pName.Equals(name)){
-		if(pConversation && pConversation->GetTargetList().HasNamed(name)){
-			DETHROW(deeInvalidParam);
+		if(pConversation){
+			DEASSERT_FALSE(pConversation->GetTargets().HasMatching( [&](const ceTarget &t){
+				return t.GetName() == name && &t != this; }))
 		}
 		
 		pName = name;
@@ -161,7 +162,6 @@ void ceTarget::GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSy
 	//	* decMatrix::CreateRotation( pOrientation * DEG2RAD );
 	
 	const ceConversationActorList &actorList = playback.GetConversation().GetActorList();
-	const ceConversationActor *actor = NULL;
 	
 	// coordinate system
 	if(!pCoordSystem.IsEmpty()){
@@ -170,9 +170,9 @@ void ceTarget::GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSy
 			coordinateSystem *= decMatrix::CreateRT(coordSystem->GetOrientation() * DEG2RAD, coordSystem->GetPosition());
 		}
 		
-	// actor
+		// actor
 	}else if(!pActor.IsEmpty()){
-		actor = actorList.GetWithIDOrAliasID(pActor);
+		const ceConversationActor * const actor = actorList.GetWithIDOrAliasID(pActor);
 		if(actor){
 			if(!pBone.IsEmpty()){
 				coordinateSystem *= actor->GetBoneMatrix(pBone);

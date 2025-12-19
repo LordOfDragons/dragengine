@@ -69,51 +69,51 @@ ceWDSLaneBodyLookAt::~ceWDSLaneBodyLookAt(){
 // Management
 ///////////////
 
-const ceStripList &ceWDSLaneBodyLookAt::GetStripList() const{
+const ceStrip::List &ceWDSLaneBodyLookAt::GetStripList() const{
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? action->GetBodyLookAtList() : GetEmptyList();
+	return action ? action->GetBodyLookAts() : GetEmptyList();
 }
 
 void ceWDSLaneBodyLookAt::FillIDList(decStringList &list){
 	FillIDListLookAt(list);
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripAdd(ceStrip *strip, int index){
+igdeUndo::Ref ceWDSLaneBodyLookAt::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAAdd(GetWindow().GetTopic(), action, strip, index) : NULL;
+	return action ? ceUCAASpeakBodyLAAdd::Ref::New(GetWindow().GetTopic(), action, strip, index) : ceUCAASpeakBodyLAAdd::Ref();
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripRemove(ceStrip *strip){
+igdeUndo::Ref ceWDSLaneBodyLookAt::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLARemove(GetWindow().GetTopic(), action, strip) : NULL;
+	return action ? ceUCAASpeakBodyLARemove::Ref::New(GetWindow().GetTopic(), action, strip) : ceUCAASpeakBodyLARemove::Ref();
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripRemoveAll(){
+igdeUndo::Ref ceWDSLaneBodyLookAt::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAClear(GetWindow().GetTopic(), action) : NULL;
+	return action ? ceUCAASpeakBodyLAClear::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakBodyLAClear::Ref();
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
+igdeUndo::Ref ceWDSLaneBodyLookAt::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASet(GetWindow().GetTopic(), action, strip, withStrip) : NULL;
+	return action ? ceUCAASpeakBodyLASet::Ref::New(GetWindow().GetTopic(), action, strip, withStrip) : ceUCAASpeakBodyLASet::Ref();
 }
 
-igdeUndo *ceWDSLaneBodyLookAt::UndoStripMove(ceStrip *strip, int toIndex){
+igdeUndo::Ref ceWDSLaneBodyLookAt::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAMove(GetWindow().GetTopic(), action, strip, toIndex) : NULL;
+	return action ? ceUCAASpeakBodyLAMove::Ref::New(GetWindow().GetTopic(), action, strip, toIndex) : ceUCAASpeakBodyLAMove::Ref();
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneBodyLookAt::UndoStripSetPause(ceStrip *strip, float pause){
+ceUCAASpeakStripSetPause::Ref ceWDSLaneBodyLookAt::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASetPause(GetWindow().GetTopic(), action, strip, pause) : NULL;
+	return action ? ceUCAASpeakBodyLASetPause::Ref::New(GetWindow().GetTopic(), action, strip, pause) : ceUCAASpeakBodyLASetPause::Ref();
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneBodyLookAt::UndoStripSetDuration(ceStrip *strip, float duration){
+ceUCAASpeakStripSetDuration::Ref ceWDSLaneBodyLookAt::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLASetDuration(GetWindow().GetTopic(), action, strip, duration) : NULL;
+	return action ? ceUCAASpeakBodyLASetDuration::Ref::New(GetWindow().GetTopic(), action, strip, duration) : ceUCAASpeakBodyLASetDuration::Ref();
 }
 
-ceUCAASpeakStripsScale *ceWDSLaneBodyLookAt::UndoScaleStrips(){
+ceUCAASpeakStripsScale::Ref ceWDSLaneBodyLookAt::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakBodyLAScale(GetWindow().GetTopic(), action) : NULL;
+	return action ? ceUCAASpeakBodyLAScale::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakBodyLAScale::Ref();
 }

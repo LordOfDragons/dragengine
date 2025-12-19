@@ -53,6 +53,6 @@ pPlayerChoice(&playerChoice)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceActionsRemoveAllActions::CreateUndo(){
-	return new ceUCAPChoiceActionRemoveAll(pTopic, pPlayerChoice, NULL);
+igdeUndo::Ref ceWPTMAPChoiceActionsRemoveAllActions::CreateUndo(){
+	return ceUCAPChoiceActionRemoveAll::Ref::New(pTopic, pPlayerChoice, nullptr);
 }

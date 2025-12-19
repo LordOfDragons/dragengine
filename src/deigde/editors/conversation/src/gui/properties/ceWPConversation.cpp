@@ -131,24 +131,25 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(ceWPConversation &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(!conversation){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(conversation)));
+		igdeUndo::Ref undo(OnAction(conversation));
 		if(undo){
 			conversation->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnAction(ceConversation *conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			Update(*conversation);
@@ -170,6 +171,7 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseActionContextMenu> Ref;
 	cBaseActionContextMenu(ceWPConversation &panel, const char *description) :
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 	description), pPanel(panel){}
@@ -183,7 +185,7 @@ public:
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation *conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			Update(*conversation);
@@ -205,19 +207,20 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, conversation)));
+			igdeUndo::Ref undo(OnChanged(*comboBox, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -225,19 +228,20 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, conversation)));
+			igdeUndo::Ref undo(OnChanged(*textField, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation *conversation) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -245,61 +249,68 @@ protected:
 	ceWPConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(ceWPConversation &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editVector, conversation)));
+			igdeUndo::Ref undo(OnChanged(*editVector, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation *conversation) = 0;
 };
 
 
 
 class cActionImportConvoAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionImportConvoAdd> Ref;
+	
+public:
 	cActionImportConvoAdd(ceWPConversation &panel) : cBaseAction(panel, "",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Import Conversation"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		const decString &path = pPanel.GetPathImportConvo();
 		if(path.IsEmpty() || path == conversation->GetFilePath()
 		|| conversation->GetImportConversationPath().Has(path)){
-			return NULL;
+			return {};
 		}
 		
 		decStringList list(pPanel.GetConversation()->GetImportConversationPath());
 		list.Add(path);
-		return new ceUConvoSetImportConvoPath(pPanel.GetWindowProperties().GetWindowMain()
+		return ceUConvoSetImportConvoPath::Ref::New(pPanel.GetWindowProperties().GetWindowMain()
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 };
 
 class cActionImportConvoRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionImportConvoRemove> Ref;
+	
+public:
 	cActionImportConvoRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Import"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
 		if(path.IsEmpty()){
-			return NULL;
+			return {};
 		}
 		
 		decStringList list(pPanel.GetConversation()->GetImportConversationPath());
 		const int index = list.IndexOf(path);
 		if(index == -1){
-			return NULL;
+			return {};
 		}
 		
 		list.RemoveFrom(index);
-		return new ceUConvoSetImportConvoPath(pPanel.GetWindowProperties().GetWindowMain()
+		return ceUConvoSetImportConvoPath::Ref::New(pPanel.GetWindowProperties().GetWindowMain()
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
@@ -310,23 +321,26 @@ public:
 
 class cActionImportConvoMoveUp : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionImportConvoMoveUp> Ref;
+	
+public:
 	cActionImportConvoMoveUp(ceWPConversation &panel) : cBaseAction(panel, "Move Up",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move Up"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
 		if(path.IsEmpty()){
-			return NULL;
+			return {};
 		}
 		
 		decStringList list(pPanel.GetConversation()->GetImportConversationPath());
 		const int index = list.IndexOf(path);
 		if(index < 1){
-			return NULL;
+			return {};
 		}
 		
 		list.Move(index, index - 1);
-		return new ceUConvoSetImportConvoPath(pPanel.GetWindowProperties().GetWindowMain()
+		return ceUConvoSetImportConvoPath::Ref::New(pPanel.GetWindowProperties().GetWindowMain()
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
@@ -338,23 +352,26 @@ public:
 
 class cActionImportConvoMoveDown : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionImportConvoMoveDown> Ref;
+	
+public:
 	cActionImportConvoMoveDown(ceWPConversation &panel) : cBaseAction(panel, "Move Down",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move Down"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		const decString path(pPanel.GetImportConvo());
 		if(path.IsEmpty()){
-			return NULL;
+			return {};
 		}
 		
 		decStringList list(pPanel.GetConversation()->GetImportConversationPath());
 		const int index = list.IndexOf(path);
 		if(index == -1 || index < list.GetCount() - 1){
-			return NULL;
+			return {};
 		}
 		
 		list.Move(index, index + 1);
-		return new ceUConvoSetImportConvoPath(pPanel.GetWindowProperties().GetWindowMain()
+		return ceUConvoSetImportConvoPath::Ref::New(pPanel.GetWindowProperties().GetWindowMain()
 			.GetLoadSaveSystem(), pPanel.GetConversation(), list);
 	}
 	
@@ -367,13 +384,16 @@ public:
 
 class cActionImportConvoClear : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionImportConvoClear> Ref;
+	
+public:
 	cActionImportConvoClear(ceWPConversation &panel) : cBaseAction(panel, "Remove All",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove All Imports"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		return pPanel.GetConversation() && pPanel.GetConversation()->GetImportConversationPath().GetCount() > 0
-			? new ceUConvoSetImportConvoPath(pPanel.GetWindowProperties().GetWindowMain()
-				.GetLoadSaveSystem(), pPanel.GetConversation(), decStringList()) : NULL;
+			? ceUConvoSetImportConvoPath::Ref::New(pPanel.GetWindowProperties().GetWindowMain()
+				.GetLoadSaveSystem(), pPanel.GetConversation(), decStringList()) : igdeUndo::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -384,14 +404,15 @@ public:
 class cListImportConvo : public igdeListBoxListener{
 	ceWPConversation &pPanel;
 public:
+	typedef deTObjectReference<cListImportConvo> Ref;
 	cListImportConvo(ceWPConversation &panel) : pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(menu, new cActionImportConvoMoveUp(pPanel), true);
-		helper.MenuCommand(menu, new cActionImportConvoMoveDown(pPanel), true);
-		helper.MenuCommand(menu, new cActionImportConvoRemove(pPanel), true);
-		helper.MenuCommand(menu, new cActionImportConvoClear(pPanel), true);
+		helper.MenuCommand(menu, cActionImportConvoMoveUp::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportConvoMoveDown::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportConvoRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportConvoClear::Ref::New(pPanel));
 	}
 };
 
@@ -399,42 +420,49 @@ public:
 
 class cComboTarget : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTarget> Ref;
 	cComboTarget(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		conversation->SetActiveTarget(comboBox.GetSelectedItem()
-			? (ceTarget*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceTarget*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionTargetAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTargetAdd> Ref;
+	
+public:
 	cActionTargetAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Target"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Target");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetTargetList().HasNamed(name)){
+		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Target", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		const ceTarget::Ref target(ceTarget::Ref::NewWith(name));
-		return new ceUCTargetAdd(conversation, target);
+		const ceTarget::Ref target(ceTarget::Ref::New(name));
+		return ceUCTargetAdd::Ref::New(conversation, target);
 	}
 };
 
 class cActionTargetRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTargetRemove> Ref;
+	
+public:
 	cActionTargetRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Target"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return pPanel.GetTarget() ? new ceUCTargetRemove(pPanel.GetTarget()) : NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return pPanel.GetTarget() ? ceUCTargetRemove::Ref::New(pPanel.GetTarget()) : ceUCTargetRemove::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -444,26 +472,29 @@ public:
 
 class cActionTargetRename : public cBaseAction{
 public:
-	cActionTargetRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", NULL, "Rename Target"){}
+	typedef deTObjectReference<cActionTargetRename> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionTargetRename(ceWPConversation &panel) : cBaseAction(panel,
+	"Rename...", nullptr, "Rename Target"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceTarget * const target = pPanel.GetTarget();
 		if(!target){
-			return NULL;
+			return {};
 		}
 		
 		decString name(target->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Target", "Name:", name) 
 		|| name == target->GetName()){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetTargetList().HasNamed(name)){
+		if(conversation->GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Target", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		return new ceUCTargetSetName(target, name);
+		return ceUCTargetSetName::Ref::New(target, name);
 	}
 	
 	void Update(const ceConversation &) override{
@@ -473,68 +504,74 @@ public:
 
 class cActionTargetMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionTargetMenu> Ref;
 	cActionTargetMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Target menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionTargetAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionTargetRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionTargetRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionTargetAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTargetRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTargetRename::Ref::New(pPanel));
 	}
 };
 
 class cComboTargetActorID : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTargetActorID> Ref;
 	cComboTargetActorID(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		ceTarget * const target = pPanel.GetTarget();
 		return target && comboBox.GetText() != target->GetActor()
-			? new ceUCTargetSetActor(target, comboBox.GetText()) : NULL;
+			? ceUCTargetSetActor::Ref::New(target, comboBox.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextTargetEntityID : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextTargetEntityID> Ref;
 	cTextTargetEntityID(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceTarget * const target = pPanel.GetTarget();
 		return target && textField.GetText() != target->GetCoordSystem()
-			? new ceUCTargetSetEntityID(target, textField.GetText()) : NULL;
+			? ceUCTargetSetEntityID::Ref::New(target, textField.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextTargetBone : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextTargetBone> Ref;
 	cTextTargetBone(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceTarget * const target = pPanel.GetTarget();
 		return target && textField.GetText() != target->GetBone()
-			? new ceUCTargetSetBone(target, textField.GetText()) : NULL;
+			? ceUCTargetSetBone::Ref::New(target, textField.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorTargetPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorTargetPosition> Ref;
 	cVectorTargetPosition(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceTarget * const target = pPanel.GetTarget();
 		return target && !editVector.GetVector().IsEqualTo(target->GetPosition())
-			? new ceUCTargetSetPosition(target, editVector.GetVector()) : NULL;
+			? ceUCTargetSetPosition::Ref::New(target, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorTargetOrientation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorTargetOrientation> Ref;
 	cVectorTargetOrientation(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceTarget * const target = pPanel.GetTarget();
 		return target && !editVector.GetVector().IsEqualTo(target->GetOrientation())
-			? new ceUCTargetSetOrientation(target, editVector.GetVector()) : NULL;
+			? ceUCTargetSetOrientation::Ref::New(target, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
@@ -542,41 +579,48 @@ public:
 
 class cComboCameraShot : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCameraShot> Ref;
 	cComboCameraShot(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		conversation->SetActiveCameraShot(comboBox.GetSelectedItem()
-			? (ceCameraShot*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceCameraShot*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionCameraShotAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraShotAdd> Ref;
+	
+public:
 	cActionCameraShotAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Camera Shot"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Camera Shot");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Camera Shot", "Name:", name)){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetCameraShotList().HasNamed(name)){
+		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Camera Shot", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		return new ceUCCShotAdd(conversation, ceCameraShot::Ref::NewWith(name));
+		return ceUCCShotAdd::Ref::New(conversation, ceCameraShot::Ref::New(name));
 	}
 };
 
 class cActionCameraShotRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraShotRemove> Ref;
+	
+public:
 	cActionCameraShotRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Camera Shot"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return pPanel.GetCameraShot() ? new ceUCCShotRemove(pPanel.GetCameraShot()) : NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return pPanel.GetCameraShot() ? ceUCCShotRemove::Ref::New(pPanel.GetCameraShot()) : ceUCCShotRemove::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -586,26 +630,29 @@ public:
 
 class cActionCameraShotRename : public cBaseAction{
 public:
-	cActionCameraShotRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", NULL, "Rename Camera Shot"){}
+	typedef deTObjectReference<cActionCameraShotRename> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionCameraShotRename(ceWPConversation &panel) : cBaseAction(panel,
+	"Rename...", nullptr, "Rename Camera Shot"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		if(!cameraShot){
-			return NULL;
+			return {};
 		}
 		
 		decString name(cameraShot->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Camera Shot", "Name:", name) 
 		|| name == cameraShot->GetName()){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetCameraShotList().HasNamed(name)){
+		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Camera Shot", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		return new ceUCCShotSetName(cameraShot, name);
+		return ceUCCShotSetName::Ref::New(cameraShot, name);
 	}
 	
 	void Update(const ceConversation &) override{
@@ -615,27 +662,30 @@ public:
 
 class cActionCameraDuplicate : public cBaseAction{
 public:
-	cActionCameraDuplicate(ceWPConversation &panel) : cBaseAction(panel,
-	"Duplicate...", NULL, "Duplicate Camera Shot"){}
+	typedef deTObjectReference<cActionCameraDuplicate> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionCameraDuplicate(ceWPConversation &panel) : cBaseAction(panel,
+	"Duplicate...", nullptr, "Duplicate Camera Shot"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		if(!cameraShot){
-			return NULL;
+			return {};
 		}
 		
 		decString name(cameraShot->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Duplicate Camera Shot", "Name:", name)){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetCameraShotList().HasNamed(name)){
+		if(conversation->GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Duplicate Camera Shot", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		const ceCameraShot::Ref duplicate(ceCameraShot::Ref::NewWith(*cameraShot));
+		const ceCameraShot::Ref duplicate(ceCameraShot::Ref::New(*cameraShot));
 		((ceCameraShot&)(deObject&)duplicate).SetName(name);
-		return new ceUCCShotAdd(conversation, duplicate);
+		return ceUCCShotAdd::Ref::New(conversation, duplicate);
 	}
 	
 	void Update(const ceConversation &) override{
@@ -645,244 +695,267 @@ public:
 
 class cActionCameraShotMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionCameraShotMenu> Ref;
 	cActionCameraShotMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Camera Shot menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionCameraShotAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCameraShotRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCameraShotRename(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCameraDuplicate(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionCameraShotAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCameraShotRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCameraShotRename::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCameraDuplicate::Ref::New(pPanel));
 	}
 };
 
 class cTextCShotActorCount : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotActorCount> Ref;
 	cTextCShotActorCount(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const int value = decMath::max(textField.GetInteger(), 0);
 		return cameraShot && value != cameraShot->GetActorCount()
-			? new ceUCCShotSetActorCount(cameraShot, value) : NULL;
+			? ceUCCShotSetActorCount::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboCameraShotCameraTarget : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCameraShotCameraTarget> Ref;
 	cComboCameraShotCameraTarget(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && comboBox.GetText() != cameraShot->GetCameraTarget()
-			? new ceUCCShotSetCameraTarget(cameraShot, comboBox.GetText()) : NULL;
+			? ceUCCShotSetCameraTarget::Ref::New(cameraShot, comboBox.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotOffCamFrom : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotOffCamFrom> Ref;
 	cVectorCShotOffCamFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraFrom())
-			? new ceUCCShotSetOffCamFrom(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetOffCamFrom::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotOffCamTo : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotOffCamTo> Ref;
 	cVectorCShotOffCamTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetCameraTo())
-			? new ceUCCShotSetOffCamTo(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetOffCamTo::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboCameraShotCameraLookAt : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCameraShotCameraLookAt> Ref;
 	cComboCameraShotCameraLookAt(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && comboBox.GetText() != cameraShot->GetLookAtTarget()
-			? new ceUCCShotSetLookAtTarget(cameraShot, comboBox.GetText()) : NULL;
+			? ceUCCShotSetLookAtTarget::Ref::New(cameraShot, comboBox.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotOffLookAtFrom : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotOffLookAtFrom> Ref;
 	cVectorCShotOffLookAtFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtFrom())
-			? new ceUCCShotSetOffLookAtFrom(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetOffLookAtFrom::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotOffLookAtTo : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotOffLookAtTo> Ref;
 	cVectorCShotOffLookAtTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetOffsetLookAtTo())
-			? new ceUCCShotSetOffLookAtTo(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetOffLookAtTo::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotCamOrbitFrom : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotCamOrbitFrom> Ref;
 	cVectorCShotCamOrbitFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitFrom())
-			? new ceUCCShotSetCamOrbitFrom(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetCamOrbitFrom::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotCamOrbitTo : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotCamOrbitTo> Ref;
 	cVectorCShotCamOrbitTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetCameraOrbitTo())
-			? new ceUCCShotSetCamOrbitTo(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetCamOrbitTo::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotCamDistanceFrom : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotCamDistanceFrom> Ref;
 	cTextCShotCamDistanceFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetCameraDistanceFrom()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetCamDistFrom(cameraShot, value) : NULL;
+			? ceUCCShotSetCamDistFrom::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotCamDistanceTo : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotCamDistanceTo> Ref;
 	cTextCShotCamDistanceTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetCameraDistanceTo()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetCamDistTo(cameraShot, value) : NULL;
+			? ceUCCShotSetCamDistTo::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cVectorCShotPositionFrom : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotPositionFrom> Ref;
 	cVectorCShotPositionFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetPositionFrom())
-			? new ceUCCShotSetPosFrom(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetPosFrom::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotPositionTo : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotPositionTo> Ref;
 	cVectorCShotPositionTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetPositionTo())
-			? new ceUCCShotSetPosTo(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetPosTo::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotRotationFrom : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotRotationFrom> Ref;
 	cVectorCShotRotationFrom(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetRotationFrom())
-			? new ceUCCShotSetRotFrom(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetRotFrom::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cVectorCShotRotationTo : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCShotRotationTo> Ref;
 	cVectorCShotRotationTo(ceWPConversation &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && !editVector.GetVector().IsEqualTo(cameraShot->GetRotationTo())
-			? new ceUCCShotSetRotTo(cameraShot, editVector.GetVector()) : NULL;
+			? ceUCCShotSetRotTo::Ref::New(cameraShot, editVector.GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotTiltFrom : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotTiltFrom> Ref;
 	cTextCShotTiltFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetTiltFrom()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetTiltFrom(cameraShot, value) : NULL;
+			? ceUCCShotSetTiltFrom::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotTiltTo : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotTiltTo> Ref;
 	cTextCShotTiltTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetTiltTo()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetTiltTo(cameraShot, value) : NULL;
+			? ceUCCShotSetTiltTo::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotFovFrom : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotFovFrom> Ref;
 	cTextCShotFovFrom(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetFovFrom()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetFovFrom(cameraShot, value) : NULL;
+			? ceUCCShotSetFovFrom::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextCShotFovTo : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCShotFovTo> Ref;
 	cTextCShotFovTo(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		const float value = textField.GetFloat();
 		return cameraShot && fabsf(value - cameraShot->GetFovTo()) > FLOAT_SAFE_EPSILON
-			? new ceUCCShotSetFovTo(cameraShot, value) : NULL;
+			? ceUCCShotSetFovTo::Ref::New(cameraShot, value) : igdeUndo::Ref();
 	}
 };
 
 class cActionCShotAlignTargets : public cBaseAction{
 public:
-	cActionCShotAlignTargets(ceWPConversation &panel) : cBaseAction(panel,
-		"Align Targets", NULL, "Targets are aligned to face each other"){}
+	typedef deTObjectReference<cActionCShotAlignTargets> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionCShotAlignTargets(ceWPConversation &panel) : cBaseAction(panel,
+		"Align Targets", nullptr, "Targets are aligned to face each other"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot ? new ceUCCShotToggleAlignTargets(cameraShot) : NULL;
+		return cameraShot ? ceUCCShotToggleAlignTargets::Ref::New(cameraShot) : ceUCCShotToggleAlignTargets::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -894,12 +967,15 @@ public:
 
 class cActionCShotLockUpAxis : public cBaseAction{
 public:
-	cActionCShotLockUpAxis(ceWPConversation &panel) : cBaseAction(panel,
-		"Align Target Lock Up-Axis", NULL, "Target up axes are locked during aligning"){}
+	typedef deTObjectReference<cActionCShotLockUpAxis> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionCShotLockUpAxis(ceWPConversation &panel) : cBaseAction(panel,
+		"Align Target Lock Up-Axis", nullptr, "Target up axes are locked during aligning"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot ? new ceUCCShotToggleLockUpAxis(cameraShot) : NULL;
+		return cameraShot ? ceUCCShotToggleLockUpAxis::Ref::New(cameraShot) : ceUCCShotToggleLockUpAxis::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -911,12 +987,15 @@ public:
 
 class cActionCShotRelativeToLookAt : public cBaseAction{
 public:
-	cActionCShotRelativeToLookAt(ceWPConversation &panel) : cBaseAction(panel,
-		"Anchor Relative to Look-At", NULL, "Camera is relative to the camera target or the look-at target"){}
+	typedef deTObjectReference<cActionCShotRelativeToLookAt> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionCShotRelativeToLookAt(ceWPConversation &panel) : cBaseAction(panel,
+		"Anchor Relative to Look-At", nullptr, "Camera is relative to the camera target or the look-at target"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot ? new ceUCCShotToggleRelativeToLookAt(cameraShot) : NULL;
+		return cameraShot ? ceUCCShotToggleRelativeToLookAt::Ref::New(cameraShot) : ceUCCShotToggleRelativeToLookAt::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -928,12 +1007,15 @@ public:
 
 class cActionCShotLockCameraTarget : public cBaseAction{
 public:
-	cActionCShotLockCameraTarget(ceWPConversation &panel) : cBaseAction(panel,
-		"Lock Target Camera", NULL, "Camera target position is locked during the entire camera shot"){}
+	typedef deTObjectReference<cActionCShotLockCameraTarget> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionCShotLockCameraTarget(ceWPConversation &panel) : cBaseAction(panel,
+		"Lock Target Camera", nullptr, "Camera target position is locked during the entire camera shot"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot ? new ceUCCShotToggleLockCameraTarget(cameraShot) : NULL;
+		return cameraShot ? ceUCCShotToggleLockCameraTarget::Ref::New(cameraShot) : ceUCCShotToggleLockCameraTarget::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -945,12 +1027,15 @@ public:
 
 class cActionCShotLockLookAtTarget : public cBaseAction{
 public:
-	cActionCShotLockLookAtTarget(ceWPConversation &panel) : cBaseAction(panel,
-		"Lock Target Look-At", NULL, "Look-at target position is locked during the entire camera shot"){}
+	typedef deTObjectReference<cActionCShotLockLookAtTarget> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionCShotLockLookAtTarget(ceWPConversation &panel) : cBaseAction(panel,
+		"Lock Target Look-At", nullptr, "Look-at target position is locked during the entire camera shot"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
-		return cameraShot ? new ceUCCShotToggleLockLookAtTarget(cameraShot) : NULL;
+		return cameraShot ? ceUCCShotToggleLockLookAtTarget::Ref::New(cameraShot) : ceUCCShotToggleLockLookAtTarget::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -964,42 +1049,49 @@ public:
 
 class cComboGesture : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboGesture> Ref;
 	cComboGesture(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		conversation->SetActiveGesture(comboBox.GetSelectedItem()
-			? (ceGesture*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceGesture*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionGestureAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionGestureAdd> Ref;
+	
+public:
 	cActionGestureAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("Gesture");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Name:", name)){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetGestureList().HasNamed(name)){
+		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Gesture", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		const ceGesture::Ref gesture(ceGesture::Ref::NewWith(name));
-		return new ceUCGestureAdd(conversation, gesture);
+		const ceGesture::Ref gesture(ceGesture::Ref::New(name));
+		return ceUCGestureAdd::Ref::New(conversation, gesture);
 	}
 };
 
 class cActionGestureRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionGestureRemove> Ref;
+	
+public:
 	cActionGestureRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return pPanel.GetGesture() ? new ceUCGestureRemove(pPanel.GetGesture()) : NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return pPanel.GetGesture() ? ceUCGestureRemove::Ref::New(pPanel.GetGesture()) : ceUCGestureRemove::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1009,26 +1101,29 @@ public:
 
 class cActionGestureRename : public cBaseAction{
 public:
-	cActionGestureRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", NULL, "Rename Gesture"){}
+	typedef deTObjectReference<cActionGestureRename> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionGestureRename(ceWPConversation &panel) : cBaseAction(panel,
+	"Rename...", nullptr, "Rename Gesture"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceGesture * const gesture = pPanel.GetGesture();
 		if(!gesture){
-			return NULL;
+			return {};
 		}
 		
 		decString name(gesture->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Name:", name) 
 		|| name == gesture->GetName()){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetGestureList().HasNamed(name)){
+		if(conversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Gesture", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		return new ceUCGestureSetName(gesture, name);
+		return ceUCGestureSetName::Ref::New(gesture, name);
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1038,35 +1133,40 @@ public:
 
 class cActionGestureMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionGestureMenu> Ref;
 	cActionGestureMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Gesture menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionGestureAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionGestureRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionGestureRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionGestureAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGestureRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGestureRename::Ref::New(pPanel));
 	}
 };
 
 class cTextGestureAnimator : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextGestureAnimator> Ref;
 	cTextGestureAnimator(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceGesture * const gesture = pPanel.GetGesture();
 		return gesture && textField.GetText() != gesture->GetAnimator()
-			? new ceUCGestureSetAnimator(gesture, textField.GetText()) : NULL;
+			? ceUCGestureSetAnimator::Ref::New(gesture, textField.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cActionGestureHold : public cBaseAction{
 public:
-	cActionGestureHold(ceWPConversation &panel) : cBaseAction(panel,
-		"Hold Gesture", NULL, "Hold gesture after gesture finished"){}
+	typedef deTObjectReference<cActionGestureHold> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionGestureHold(ceWPConversation &panel) : cBaseAction(panel,
+		"Hold Gesture", nullptr, "Hold gesture after gesture finished"){}
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceGesture * const gesture = pPanel.GetGesture();
-		return gesture ? new ceUCGestureToggleHold(gesture) : NULL;
+		return gesture ? ceUCGestureToggleHold::Ref::New(gesture) : ceUCGestureToggleHold::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1078,13 +1178,14 @@ public:
 
 class cTextGestureDuration : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextGestureDuration> Ref;
 	cTextGestureDuration(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceGesture * const gesture = pPanel.GetGesture();
 		const float value = textField.GetFloat();
 		return gesture && fabsf(value - gesture->GetDuration()) > FLOAT_SAFE_EPSILON
-			? new ceUCGestureSetDuration(gesture, value) : nullptr;
+			? ceUCGestureSetDuration::Ref::New(gesture, value) : igdeUndo::Ref();
 	}
 };
 
@@ -1092,42 +1193,49 @@ public:
 
 class cComboFacePose : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboFacePose> Ref;
 	cComboFacePose(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		conversation->SetActiveFacePose(comboBox.GetSelectedItem()
-			? (ceFacePose*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceFacePose*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionFacePoseAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionFacePoseAdd> Ref;
+	
+public:
 	cActionFacePoseAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString name("FacePose");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose", "Name:", name)){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetFacePoseList().HasNamed(name)){
+		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Face Pose", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		const ceFacePose::Ref facePose(ceFacePose::Ref::NewWith(name));
-		return new ceUCFacePoseAdd(conversation, facePose);
+		const ceFacePose::Ref facePose(ceFacePose::Ref::New(name));
+		return ceUCFacePoseAdd::Ref::New(conversation, facePose);
 	}
 };
 
 class cActionFacePoseRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionFacePoseRemove> Ref;
+	
+public:
 	cActionFacePoseRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Face Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return pPanel.GetFacePose() ? new ceUCFacePoseRemove(pPanel.GetFacePose()) : NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return pPanel.GetFacePose() ? ceUCFacePoseRemove::Ref::New(pPanel.GetFacePose()) : ceUCFacePoseRemove::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1137,26 +1245,29 @@ public:
 
 class cActionFacePoseRename : public cBaseAction{
 public:
-	cActionFacePoseRename(ceWPConversation &panel) : cBaseAction(panel,
-	"Rename...", NULL, "Rename Face Pose"){}
+	typedef deTObjectReference<cActionFacePoseRename> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionFacePoseRename(ceWPConversation &panel) : cBaseAction(panel,
+	"Rename...", nullptr, "Rename Face Pose"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if(!facePose){
-			return NULL;
+			return {};
 		}
 		
 		decString name(facePose->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Face Pose", "Name:", name) 
 		|| name == facePose->GetName()){
-			return NULL;
+			return {};
 		}
-		if(conversation->GetFacePoseList().HasNamed(name)){
+		if(conversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Face Pose", "Duplicate name");
-			return NULL;
+			return {};
 		}
 		
-		return new ceUCFacePoseSetName(facePose, name);
+		return ceUCFacePoseSetName::Ref::New(facePose, name);
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1166,58 +1277,63 @@ public:
 
 class cActionFacePoseMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionFacePoseMenu> Ref;
 	cActionFacePoseMenu(ceWPConversation &panel) : cBaseActionContextMenu(panel, "Face Pose menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionFacePoseAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionFacePoseRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionFacePoseRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionFacePoseAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionFacePoseRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionFacePoseRename::Ref::New(pPanel));
 	}
 };
 
 class cComboFacePoseController : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboFacePoseController> Ref;
 	cComboFacePoseController(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox&, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox&, ceConversation*) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if(facePose){
 			pPanel.UpdateFPController();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionFacePoseControllerAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionFacePoseControllerAdd> Ref;
+	
+public:
 	cActionFacePoseControllerAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose Controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if(!facePose || conversation->GetFacePoseControllerNameList().GetCount() == 0){
-			return NULL;
+			return {};
 		}
 		
 		decStringList names(conversation->GetFacePoseControllerNameList());
 		names.SortAscending();
 		decString name;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose Controller", "Controller to add", name, names)){
-			return NULL;
+			return {};
 		}
 		
-		if(facePose->GetControllerList().HasNamed(name)){
+		if(facePose->GetControllers().HasMatching([&](const ceControllerValue &c){ return c.GetController() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Face Pose Controller", "Duplicate controller");
-			return NULL;
+			return {};
 		}
 		
-		const ceControllerValue::Ref controller(ceControllerValue::Ref::NewWith(name, 1.0f));
-		ceUCFPControllerAdd::Ref undo(ceUCFPControllerAdd::Ref::NewWith(facePose, controller));
+		const ceControllerValue::Ref controller(ceControllerValue::Ref::New(name, 1.0f));
+		ceUCFPControllerAdd::Ref undo(ceUCFPControllerAdd::Ref::New(facePose, controller));
 		conversation->GetUndoSystem()->Add(undo);
 		
 		pPanel.SelectFacePoseController(controller);
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1227,13 +1343,16 @@ public:
 
 class cActionFacePoseControllerRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionFacePoseControllerRemove> Ref;
+	
+public:
 	cActionFacePoseControllerRemove(ceWPConversation &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Face Pose Controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		ceControllerValue * const controller = pPanel.GetFacePoseController();
-		return facePose && controller ? new ceUCFPControllerRemove(facePose, controller) : NULL;
+		return facePose && controller ? ceUCFPControllerRemove::Ref::New(facePose, controller) : ceUCFPControllerRemove::Ref();
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1243,25 +1362,27 @@ public:
 
 class cActionFacePoseControllerMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionFacePoseControllerMenu> Ref;
 	cActionFacePoseControllerMenu(ceWPConversation &panel) :
 	cBaseActionContextMenu(panel, "Face Pose Controller menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionFacePoseControllerAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionFacePoseControllerRemove(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionFacePoseControllerAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionFacePoseControllerRemove::Ref::New(pPanel));
 	}
 };
 
 class cTextFPControllerValue : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextFPControllerValue> Ref;
 	cTextFPControllerValue(ceWPConversation &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceControllerValue * const controller = pPanel.GetFacePoseController();
 		const float value = textField.GetFloat();
 		return controller && fabsf(value - controller->GetValue()) > FLOAT_SAFE_EPSILON
-			? new ceUCFPControllerSetValue(pPanel.GetFacePose(), controller, value) : NULL;
+			? ceUCFPControllerSetValue::Ref::New(pPanel.GetFacePose(), controller, value) : igdeUndo::Ref();
 	}
 };
 
@@ -1277,186 +1398,181 @@ public:
 
 ceWPConversation::ceWPConversation(ceWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
-	igdeActionContextMenu *actionContextMenu;
+	igdeActionContextMenu::Ref actionContextMenu;
 	
-	pListener = new ceWPConversationListener(*this);
+	pListener = ceWPConversationListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// import conversation
 	helper.GroupBoxFlow(content, groupBox, "Import Conversation:", true, true);
 	
-	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.EditPath(formLine, "Path to add to import list", *windowProperties.GetWindowMain()
-		.GetLoadSaveSystem().GetConversationFilePatterns(), pPathImportConvo, NULL);
-	helper.Button(formLine, new cActionImportConvoAdd(*this), true);
+		.GetLoadSaveSystem()->GetConversationFilePatterns(), pPathImportConvo, {});
+	helper.Button(formLine, cActionImportConvoAdd::Ref::New(*this));
 	groupBox->AddChild(formLine);
-	helper.ListBox(groupBox, 3, "Imported conversations", pListImportConvoPath, new cListImportConvo(*this));
+	helper.ListBox(groupBox, 3, "Imported conversations", pListImportConvoPath, cListImportConvo::Ref::New(*this));
 	
 	
 	// targets
 	helper.GroupBox(content, groupBox, "Targets:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Target:", "Target to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Target to edit", pCBTarget, new cComboTarget(*this));
+	helper.ComboBoxFilter(formLine, "Target to edit", pCBTarget, cComboTarget::Ref::New(*this));
 	pCBTarget->SetDefaultSorter();
-	actionContextMenu = new cActionTargetMenu(*this);
-	helper.Button(formLine, pBtnTarget, actionContextMenu, true);
+	actionContextMenu = cActionTargetMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnTarget, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnTarget);
 	
 	helper.ComboBoxFilter(groupBox, "Actor:", true, "ID of the actor or empty to not use an actor by ID",
-		pCBTargetActorID, new cComboTargetActorID(*this));
+		pCBTargetActorID, cComboTargetActorID::Ref::New(*this));
 	pCBTargetActorID->SetDefaultSorter();
 	
 	helper.EditString(groupBox, "Coord-System:", "ID of coordinate system or empty to not use a coordinate system",
-		pEditTargetEntityID, new cTextTargetEntityID(*this));
+		pEditTargetEntityID, cTextTargetEntityID::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:",
 		"Name of the bone to use as coordinate frame or an empty string to use the origin",
-		pEditTargetBone, new cTextTargetBone(*this));
+		pEditTargetBone, cTextTargetBone::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to the target object",
-		pEditTargetPosition, new cVectorTargetPosition(*this));
+		pEditTargetPosition, cVectorTargetPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Orientation:", "Orientation relative to the target object",
-		pEditTargetOrientation, new cVectorTargetOrientation(*this));
+		pEditTargetOrientation, cVectorTargetOrientation::Ref::New(*this));
 	
 	
 	// camera shots
 	helper.GroupBoxFlow(content, groupBox, "Camera Shots:", false, false);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	helper.FormLineStretchFirst(form, "Camera Shot:", "Camera Shot to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Camera Shot to edit", pCBCameraShot, new cComboCameraShot(*this));
+	helper.ComboBoxFilter(formLine, "Camera Shot to edit", pCBCameraShot, cComboCameraShot::Ref::New(*this));
 	pCBCameraShot->SetDefaultSorter();
-	actionContextMenu = new cActionCameraShotMenu(*this);
-	helper.Button(formLine, pBtnCameraShot, actionContextMenu, true);
+	actionContextMenu = cActionCameraShotMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnCameraShot, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnCameraShot);
 	
 	helper.EditInteger(form, "Actor Count:", "Number of actors required for this camera action",
-		pEditCShotActorCount, new cTextCShotActorCount(*this));
+		pEditCShotActorCount, cTextCShotActorCount::Ref::New(*this));
 	
 	// camera shot camera target
 	helper.GroupBox(groupBox, groupBox2, "Camera Target:", false);
 	
 	helper.ComboBoxFilter(groupBox2, "Target:", true,
 		"Target the camera is attached to or empty string for static position",
-		pCBCameraShotCameraTarget, new cComboCameraShotCameraTarget(*this));
+		pCBCameraShotCameraTarget, cComboCameraShotCameraTarget::Ref::New(*this));
 	pCBCameraShotCameraTarget->SetDefaultSorter();
 	
 	helper.EditVector(groupBox2, "Offset From:", "Start offset relative to the target",
-		pEditCShotOffCamFrom, new cVectorCShotOffCamFrom(*this));
+		pEditCShotOffCamFrom, cVectorCShotOffCamFrom::Ref::New(*this));
 	helper.EditVector(groupBox2, "Offset To:", "End offset relative to the target",
-		pEditCShotOffCamTo, new cVectorCShotOffCamTo(*this));
+		pEditCShotOffCamTo, cVectorCShotOffCamTo::Ref::New(*this));
 	
 	// camera shot look at target
 	helper.GroupBox(groupBox, groupBox2, "Camera Look-At:", false);
 	
 	helper.ComboBoxFilter(groupBox2, "Look-At Target:", true,
 		"Target to point the camera at or empty string for static position",
-		pCBCameraShotLookAtTarget, new cComboCameraShotCameraLookAt(*this));
+		pCBCameraShotLookAtTarget, cComboCameraShotCameraLookAt::Ref::New(*this));
 	pCBCameraShotLookAtTarget->SetDefaultSorter();
 	
 	helper.EditVector(groupBox2, "Offset From:", "Start offset relative to the look-at target",
-		pEditCShotOffLookAtFrom, new cVectorCShotOffLookAtFrom(*this));
+		pEditCShotOffLookAtFrom, cVectorCShotOffLookAtFrom::Ref::New(*this));
 	helper.EditVector(groupBox2, "Offset To:", "End offset relative to the look-at target",
-		pEditCShotOffLookAtTo, new cVectorCShotOffLookAtTo(*this));
+		pEditCShotOffLookAtTo, cVectorCShotOffLookAtTo::Ref::New(*this));
 	
 	// camera shot camera target
 	helper.GroupBox(groupBox, groupBox2, "Orbiting:", false);
 	
 	helper.EditVector(groupBox2, "Orbit From:", "Start rotation of the camera orbit",
-		pEditCShotCamOrbitFrom, new cVectorCShotCamOrbitFrom(*this));
+		pEditCShotCamOrbitFrom, cVectorCShotCamOrbitFrom::Ref::New(*this));
 	helper.EditVector(groupBox2, "Orbit To:", "End rotation of the camera orbit",
-		pEditCShotCamOrbitTo, new cVectorCShotCamOrbitTo(*this));
+		pEditCShotCamOrbitTo, cVectorCShotCamOrbitTo::Ref::New(*this));
 	
 	helper.EditFloat(groupBox2, "Distance From:", "Start distance of the camera to the orbit position",
-		pEditCShotCamDistFrom, new cTextCShotCamDistanceFrom(*this));
+		pEditCShotCamDistFrom, cTextCShotCamDistanceFrom::Ref::New(*this));
 	helper.EditFloat(groupBox2, "Distance To:", "End distance of the camera to the orbit position",
-		pEditCShotCamDistTo, new cTextCShotCamDistanceTo(*this));
+		pEditCShotCamDistTo, cTextCShotCamDistanceTo::Ref::New(*this));
 	
 	// camera shot camera target
 	helper.GroupBox(groupBox, groupBox2, "Parameters:", false);
 	
 	helper.EditVector(groupBox2, "Position From:", "Start position",
-		pEditCShotPosFrom, new cVectorCShotPositionFrom(*this));
+		pEditCShotPosFrom, cVectorCShotPositionFrom::Ref::New(*this));
 	helper.EditVector(groupBox2, "Position To:", "End position",
-		pEditCShotPosTo, new cVectorCShotPositionTo(*this));
+		pEditCShotPosTo, cVectorCShotPositionTo::Ref::New(*this));
 	
 	helper.EditVector(groupBox2, "Rotation From:", "Start rotation",
-		pEditCShotRotFrom, new cVectorCShotRotationFrom(*this));
+		pEditCShotRotFrom, cVectorCShotRotationFrom::Ref::New(*this));
 	helper.EditVector(groupBox2, "Rotation To:", "End rotation",
-		pEditCShotRotTo, new cVectorCShotRotationTo(*this));
+		pEditCShotRotTo, cVectorCShotRotationTo::Ref::New(*this));
 	
 	helper.EditFloat(groupBox2, "Tilt From:", "Start tilt of the camera along the view axis",
-		pEditCShotTiltFrom, new cTextCShotTiltFrom(*this));
+		pEditCShotTiltFrom, cTextCShotTiltFrom::Ref::New(*this));
 	helper.EditFloat(groupBox2, "Tilt To:", "End tilt of the camera along the view axis",
-		pEditCShotTiltTo, new cTextCShotTiltTo(*this));
+		pEditCShotTiltTo, cTextCShotTiltTo::Ref::New(*this));
 	
 	helper.EditFloat(groupBox2, "Fov From:", "Start fov of the camera along the view axis",
-		pEditCShotFovFrom, new cTextCShotFovFrom(*this));
+		pEditCShotFovFrom, cTextCShotFovFrom::Ref::New(*this));
 	helper.EditFloat(groupBox2, "Fov To:", "End fov of the camera along the view axis",
-		pEditCShotFovTo, new cTextCShotFovTo(*this));
+		pEditCShotFovTo, cTextCShotFovTo::Ref::New(*this));
 	
-	helper.CheckBox(groupBox2, pChkCShotAlignTargets, new cActionCShotAlignTargets(*this), true);
-	helper.CheckBox(groupBox2, pChkCShotLockUpAxis, new cActionCShotLockUpAxis(*this), true);
-	helper.CheckBox(groupBox2, pChkCShotRelativeToLookAt, new cActionCShotRelativeToLookAt(*this), true);
-	helper.CheckBox(groupBox2, pChkCShotLockCameraTarget, new cActionCShotLockCameraTarget(*this), true);
-	helper.CheckBox(groupBox2, pChkCShotLockLookAtTarget, new cActionCShotLockLookAtTarget(*this), true);
+	helper.CheckBox(groupBox2, pChkCShotAlignTargets, cActionCShotAlignTargets::Ref::New(*this));
+	helper.CheckBox(groupBox2, pChkCShotLockUpAxis, cActionCShotLockUpAxis::Ref::New(*this));
+	helper.CheckBox(groupBox2, pChkCShotRelativeToLookAt, cActionCShotRelativeToLookAt::Ref::New(*this));
+	helper.CheckBox(groupBox2, pChkCShotLockCameraTarget, cActionCShotLockCameraTarget::Ref::New(*this));
+	helper.CheckBox(groupBox2, pChkCShotLockLookAtTarget, cActionCShotLockLookAtTarget::Ref::New(*this));
 	
 	
 	// gestures
 	helper.GroupBox(content, groupBox, "Gestures:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Gesture:", "Gesture to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Gesture to edit", pCBGesture, new cComboGesture(*this));
+	helper.ComboBoxFilter(formLine, "Gesture to edit", pCBGesture, cComboGesture::Ref::New(*this));
 	pCBGesture->SetDefaultSorter();
-	actionContextMenu = new cActionGestureMenu(*this);
-	helper.Button(formLine, pBtnGesture, actionContextMenu, true);
+	actionContextMenu = cActionGestureMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnGesture, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnGesture);
 	
 	helper.EditString(groupBox, "Animator:", "Name of the animator to use for this gesture",
-		pEditGestureAnimator, new cTextGestureAnimator(*this));
+		pEditGestureAnimator, cTextGestureAnimator::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Duration:", "Duration of gesture. Used as default value in strips",
-		pEditGestureDuration, new cTextGestureDuration (*this));
+		pEditGestureDuration, cTextGestureDuration::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkGestureHold, new cActionGestureHold(*this), true);
+	helper.CheckBox(groupBox, pChkGestureHold, cActionGestureHold::Ref::New(*this));
 	
 	
 	// facePoses
 	helper.GroupBox(content, groupBox, "Face Poses:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Face Pose:", "Face Pose to edit", formLine);
-	helper.ComboBoxFilter(formLine, "Face Pose to edit", pCBFacePose, new cComboFacePose(*this));
+	helper.ComboBoxFilter(formLine, "Face Pose to edit", pCBFacePose, cComboFacePose::Ref::New(*this));
 	pCBFacePose->SetDefaultSorter();
-	actionContextMenu = new cActionFacePoseMenu(*this);
-	helper.Button(formLine, pBtnFacePose, actionContextMenu, true);
+	actionContextMenu = cActionFacePoseMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnFacePose, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnFacePose);
 	
 	helper.FormLineStretchFirst(groupBox, "Controller:", "Face pose controller to edit", formLine);
-	helper.ComboBox(formLine, "Face pose controller to edit", pCBFPController, new cComboFacePoseController(*this));
+	helper.ComboBox(formLine, "Face pose controller to edit", pCBFPController, cComboFacePoseController::Ref::New(*this));
 	pCBFPController->SetDefaultSorter();
-	actionContextMenu = new cActionFacePoseControllerMenu(*this);
-	helper.Button(formLine, pBtnFPController, actionContextMenu, true);
+	actionContextMenu = cActionFacePoseControllerMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnFPController, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnFPController);
 	
 	helper.EditFloat(groupBox, "Value:", "Value of face pose controller",
-		pEditFPControllerValue, new cTextFPControllerValue(*this));
+		pEditFPControllerValue, cTextFPControllerValue::Ref::New(*this));
 }
 
 ceWPConversation::~ceWPConversation(){
-	SetConversation(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetConversation(nullptr);
 }
 
 
@@ -1471,14 +1587,12 @@ void ceWPConversation::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
 	}
 	
 	const bool enabled = conversation;
@@ -1553,7 +1667,7 @@ decString ceWPConversation::GetImportConvo() const{
 
 
 ceGesture *ceWPConversation::GetGesture() const{
-	return pConversation ? pConversation->GetActiveGesture() : NULL;
+	return pConversation ? pConversation->GetActiveGesture() : nullptr;
 }
 
 void ceWPConversation::UpdateGestureList(){
@@ -1562,14 +1676,9 @@ void ceWPConversation::UpdateGestureList(){
 	pCBGesture->RemoveAllItems();
 	
 	if(pConversation){
-		const ceGestureList &list = pConversation->GetGestureList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceGesture * const gesture = list.GetAt(i);
-			pCBGesture->AddItem(gesture->GetName(), NULL, gesture);
-		}
+		pConversation->GetGestures().Visit([&](ceGesture *g){
+			pCBGesture->AddItem(g->GetName(), nullptr, g);
+		});
 		
 		pCBGesture->SortItems();
 		pCBGesture->StoreFilterItems();
@@ -1606,7 +1715,7 @@ void ceWPConversation::UpdateGesture(){
 
 
 ceFacePose *ceWPConversation::GetFacePose() const{
-	return pConversation ? pConversation->GetActiveFacePose() : NULL;
+	return pConversation ? pConversation->GetActiveFacePose() : nullptr;
 }
 
 void ceWPConversation::UpdateFacePoseList(){
@@ -1615,14 +1724,9 @@ void ceWPConversation::UpdateFacePoseList(){
 	pCBFacePose->RemoveAllItems();
 	
 	if(pConversation){
-		const ceFacePoseList &list = pConversation->GetFacePoseList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceFacePose * const facePose = list.GetAt(i);
-			pCBFacePose->AddItem(facePose->GetName(), NULL, facePose);
-		}
+		pConversation->GetFacePoseList().Visit([&](ceFacePose *f){
+			pCBFacePose->AddItem(f->GetName(), nullptr, f);
+		});
 		
 		pCBFacePose->SortItems();
 		pCBFacePose->StoreFilterItems();
@@ -1653,7 +1757,7 @@ void ceWPConversation::UpdateFacePose(){
 ceControllerValue *ceWPConversation::GetFacePoseController() const{
 	ceFacePose * const facePose = GetFacePose();
 	return facePose && pCBFPController->GetSelectedItem()
-		? (ceControllerValue*)pCBFPController->GetSelectedItem()->GetData() : NULL;
+		? (ceControllerValue*)pCBFPController->GetSelectedItem()->GetData() : nullptr;
 }
 
 void ceWPConversation::UpdateFPControllerList(){
@@ -1664,28 +1768,22 @@ void ceWPConversation::UpdateFPControllerList(){
 	
 	if(facePose){
 		const decStringList &controllerNames = pConversation->GetFacePoseControllerNameList();
-		const ceControllerValueList &list = facePose->GetControllerList();
-		const int count = list.GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceControllerValue * const entry = list.GetAt(i);
-			
-			if(entry->GetControllerIndex() == -1){
-				if(controllerNames.Has(entry->GetController())){
-					text = entry->GetController();
+		facePose->GetControllers().Visit([&](ceControllerValue *c){
+			decString text;
+			if(c->GetControllerIndex() == -1){
+				if(controllerNames.Has(c->GetController())){
+					text = c->GetController();
 					
 				}else{
-					text.Format("%s (missing)", entry->GetController().GetString());
+					text.Format("%s (missing)", c->GetController().GetString());
 				}
 				
 			}else{ // deprecated
-				text.Format("%d (deprecated)", entry->GetControllerIndex());
+				text.Format("%d (deprecated)", c->GetControllerIndex());
 			}
 			
-			pCBFPController->AddItem(text, NULL, entry);
-		}
+			pCBFPController->AddItem(text, nullptr, c);
+		});
 	}
 	
 	pCBFPController->SetSelectionWithData(controller);
@@ -1715,7 +1813,7 @@ void ceWPConversation::UpdateFPController(){
 
 
 ceCameraShot *ceWPConversation::GetCameraShot() const{
-	return pConversation ? pConversation->GetActiveCameraShot() : NULL;
+	return pConversation ? pConversation->GetActiveCameraShot() : nullptr;
 }
 
 void ceWPConversation::UpdateCameraShotList(){
@@ -1724,14 +1822,9 @@ void ceWPConversation::UpdateCameraShotList(){
 	pCBCameraShot->RemoveAllItems();
 	
 	if(pConversation){
-		const ceCameraShotList &list = pConversation->GetCameraShotList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceCameraShot * const cameraShot = list.GetAt(i);
-			pCBCameraShot->AddItem(cameraShot->GetName(), NULL, cameraShot);
-		}
+		pConversation->GetCameraShotList().Visit([&](ceCameraShot *c){
+			pCBCameraShot->AddItem(c->GetName(), nullptr, c);
+		});
 		
 		pCBCameraShot->SortItems();
 		pCBCameraShot->StoreFilterItems();
@@ -1831,7 +1924,7 @@ void ceWPConversation::UpdateCameraShot(){
 
 
 ceTarget *ceWPConversation::GetTarget() const{
-	return pConversation ? pConversation->GetActiveTarget() : NULL;
+	return pConversation ? pConversation->GetActiveTarget() : nullptr;
 }
 
 void ceWPConversation::UpdateTargetList(){
@@ -1840,15 +1933,9 @@ void ceWPConversation::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
 	
 	if(pConversation){
-		const ceTargetList &list = pConversation->GetTargetList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceTarget * const target = list.GetAt(i);
-			pCBTarget->AddItem(target->GetName(), NULL, target);
-		}
-		
+		pConversation->GetTargets().Visit([&](ceTarget *t){
+			pCBTarget->AddItem(t->GetName(), nullptr, t);
+		});
 		pCBTarget->SortItems();
 		pCBTarget->StoreFilterItems();
 	}
@@ -1865,18 +1952,12 @@ void ceWPConversation::UpdateTargetList(){
 	pCBCameraShotLookAtTarget->RemoveAllItems();
 	
 	if(pConversation){
-		const ceTargetList list(pConversation->AllTargets());
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			if(list.GetAt(i)->GetName().IsEmpty()){
-				continue;
+		pConversation->AllTargets().Visit([&](const ceTarget &t){
+			if(!t.GetName().IsEmpty()){
+				pCBCameraShotCameraTarget->AddItem(t.GetName());
+				pCBCameraShotLookAtTarget->AddItem(t.GetName());
 			}
-			pCBCameraShotCameraTarget->AddItem(list.GetAt(i)->GetName());
-			pCBCameraShotLookAtTarget->AddItem(list.GetAt(i)->GetName());
-		}
-		
+		});
 		pCBCameraShotCameraTarget->SortItems();
 		pCBCameraShotLookAtTarget->SortItems();
 	}

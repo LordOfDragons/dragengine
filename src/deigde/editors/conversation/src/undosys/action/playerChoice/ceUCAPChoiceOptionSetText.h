@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
 
 
 
@@ -38,17 +38,18 @@ class ceCAPlayerChoice;
  * \brief Undo Action Player Choice Option Set Text.
  */
 class ceUCAPChoiceOptionSetText : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAPChoiceOptionSetText> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAPChoiceOptionSetText> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

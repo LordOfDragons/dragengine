@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,13 +35,14 @@ class ceCameraShot;
  * \brief Undo action camera shot toggle lock camera target.
  */
 class ceUCCShotToggleLockCameraTarget : public igdeUndo{
-private:
-	ceCameraShot *pCameraShot;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCCShotToggleLockCameraTarget> Ref;
 	
+	
+private:
+	ceCameraShot::Ref pCameraShot;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

@@ -27,22 +27,23 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASnippet;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASnippet.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 /**
  * \brief Undo action snippet conversation action toggle create side lane.
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCASnippetToggleCreateSideLane> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

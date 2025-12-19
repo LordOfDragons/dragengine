@@ -44,9 +44,9 @@
 
 ceUCCAInConvoSetActor::ceUCCAInConvoSetActor(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionActorInConversation *condition, const char *newID) :
-pTopic(NULL),
-pAction(NULL),
-pCondition(NULL)
+
+
+pCondition(nullptr)
 {
 	if(!topic || !action || !condition || !newID){
 		DETHROW(deeInvalidParam);
@@ -58,25 +58,11 @@ pCondition(NULL)
 	SetShortInfo("Actor in conversation set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAInConvoSetActor::~ceUCCAInConvoSetActor(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

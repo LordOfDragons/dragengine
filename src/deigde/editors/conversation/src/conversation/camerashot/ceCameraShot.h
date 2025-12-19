@@ -106,9 +106,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the conversation or NULL if not set. */
+	/** Retrieves the conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** Sets the conversation or NULL if not set. */
+	/** Sets the conversation or nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Retrieves the name. */

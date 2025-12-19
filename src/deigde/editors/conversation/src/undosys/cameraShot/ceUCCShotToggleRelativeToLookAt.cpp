@@ -42,18 +42,14 @@
 ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *cameraShot){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Toggle Relative To Look-At");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

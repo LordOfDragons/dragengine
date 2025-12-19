@@ -41,6 +41,8 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceWindowDopeSheetListener> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

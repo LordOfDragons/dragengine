@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceCameraShot;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -36,14 +36,15 @@ class ceCameraShot;
  * \brief Undo Action Add Camera Shot.
  */
 class ceUCCShotAdd : public igdeUndo{
-private:
-	ceConversation *pConversation;
-	ceCameraShot *pCameraShot;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCCShotAdd> Ref;
 	
+	
+private:
+	ceConversation::Ref pConversation;
+	ceCameraShot::Ref pCameraShot;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

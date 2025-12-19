@@ -28,9 +28,10 @@
 #include "../ceWPTMenuAction.h"
 #include "../../../../../conversation/condition/ceConversationCondition.h"
 
+#include <deigde/undo/igdeUndo.h>
+
 class ceWindowMain;
 class ceConversation;
-class igdeUndo;
 
 
 
@@ -49,6 +50,7 @@ protected:
 	ceWPTMACreateCondition();
 	
 public:
+	typedef deTObjectReference<ceWPTMACreateCondition> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu condition. */
@@ -72,12 +74,12 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for adding condition. */
-	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
+	virtual igdeUndo::Ref CreateUndo(ceConversationCondition *condition);
 	
 	
 	
 	/** \brief Create condition. */
-	ceConversationCondition *CreateCondition();
+	ceConversationCondition::Ref CreateCondition();
 	
 	/** \brief Text for condition type. */
 	static const char *ConditionTypeText(ceWindowMain &windowMain,

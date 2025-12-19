@@ -98,8 +98,7 @@ pNameGesturePlayback("gesture.playback"),
 pNameGestureVariation("gesture.variation"),
 pNameGestureBlink("blinking"),
 pNameGestureFadeIn("gesture.fade.in"),
-pNameGestureFadeOut("gesture.fade.out"),
-pActivePose(nullptr)
+pNameGestureFadeOut("gesture.fade.out")
 {
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	deAnimatorInstanceManager &animatorInstanceManager = *engine.GetAnimatorInstanceManager();
@@ -115,41 +114,27 @@ pActivePose(nullptr)
 	pEngEyesAnimatorInstance = nullptr;
 	pEngSpeaker = nullptr;
 	
-	pSpeechAnimation = nullptr;
-	
 	pHeadLeftRight = 0.0f;
 	pHeadUpDown = 0.0f;
 	pEyesLeftRight = 0.0f;
 	pEyesUpDown = 0.0f;
 	
-	pPlayGestures = nullptr;
-	pPlayGestureCount = 0;
-	pPlayGestureSize = 0;
 	pPlayGesturePos = 0;
 	pPlayGestureElapsed = 0.0f;
 	pPlayGestureRunning = false;
 	
-	pPlayFacePoses = nullptr;
-	pPlayFacePoseCount = 0;
-	pPlayFacePoseSize = 0;
 	pPlayFacePosePos = 0;
 	pPlayFacePoseElapsed = 0.0f;
 	pPlayFacePoseRunning = false;
 	pPlayLastFacePose = nullptr;
 	pPlayCurFacePose = nullptr;
 	
-	pPlayHeadLAs = nullptr;
-	pPlayHeadLACount = 0;
-	pPlayHeadLASize = 0;
 	pPlayHeadLAPos = 0;
 	pPlayHeadLAElapsed = 0.0f;
 	pPlayHeadLARunning = false;
 	pPlayLastHeadLA = nullptr;
 	pPlayCurHeadLA = nullptr;
 	
-	pPlayEyesLAs = nullptr;
-	pPlayEyesLACount = 0;
-	pPlayEyesLASize = 0;
 	pPlayEyesLAPos = 0;
 	pPlayEyesLAElapsed = 0.0f;
 	pPlayEyesLARunning = false;
@@ -169,7 +154,7 @@ pActivePose(nullptr)
 		
 		pEngAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
 		
-		pSpeechAnimation = new ceSpeechAnimation(&engine);
+		pSpeechAnimation = ceSpeechAnimation::Ref::New(&engine);
 		
 		pEngGestureAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
 		pEngFacePoseAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
@@ -377,15 +362,9 @@ void ceConversationActor::SetActivePose(ceActorPose *pose){
 	if(pose == pActivePose){
 		return;
 	}
-	
-	if(pActivePose){
-		pActivePose->FreeReference();
-	}
-	
 	pActivePose = pose;
 	
 	if(pose){
-		pose->AddReference();
 		pEngAnimatorInstance->SetAnimator(pose->GetEngineAnimator());
 		
 	}else{
@@ -449,30 +428,14 @@ void ceConversationActor::SetEyesUpDown(float angle){
 
 
 void ceConversationActor::RemoveAllPlayGestures(){
-	pPlayGestureCount = 0;
-	
+	pPlayGestures.RemoveAll();
 	pPlayGesturePos = 0;
 	pPlayGestureElapsed = 0.0f;
 	pPlayGestureRunning = false;
 }
 
 void ceConversationActor::AddPlayGesture(ceGesture *gesture, float pause, float length){
-	if(pPlayGestureCount == pPlayGestureSize){
-		int newSize = pPlayGestureSize + 20;
-		sGesture *newArray = new sGesture[newSize];
-		if(pPlayGestures){
-			memcpy(newArray, pPlayGestures, sizeof(sGesture) * pPlayGestureCount);
-			delete [] pPlayGestures;
-		}
-		pPlayGestures = newArray;
-		pPlayGestureSize = newSize;
-	}
-	
-	pPlayGestures[pPlayGestureCount].gesture = gesture;
-	pPlayGestures[pPlayGestureCount].pause = pause;
-	pPlayGestures[pPlayGestureCount].length = length;
-	pPlayGestureCount++;
-	
+	pPlayGestures.Add(cGesture::Ref::New(gesture, pause, length));
 	pPlayGesturePos = 0;
 	pPlayGestureElapsed = 0.0f;
 	pPlayGestureRunning = true;
@@ -481,38 +444,14 @@ void ceConversationActor::AddPlayGesture(ceGesture *gesture, float pause, float 
 
 
 void ceConversationActor::RemoveAllPlayFacePoses(){
-	while(pPlayFacePoseCount > 0){
-		pPlayFacePoseCount--;
-		if(pPlayFacePoses[pPlayFacePoseCount].facePose){
-			pPlayFacePoses[pPlayFacePoseCount].facePose->FreeReference();
-		}
-	}
-	
+	pPlayFacePoses.RemoveAll();
 	pPlayFacePosePos = 0;
 	pPlayFacePoseElapsed = 0.0f;
 	pPlayFacePoseRunning = false;
 }
 
 void ceConversationActor::AddPlayFacePose(ceFacePose *facePose, float pause, float length){
-	if(pPlayFacePoseCount == pPlayFacePoseSize){
-		int newSize = pPlayFacePoseSize + 20;
-		sFacePose *newArray = new sFacePose[newSize];
-		if(pPlayFacePoses){
-			memcpy(newArray, pPlayFacePoses, sizeof(sFacePose) * pPlayFacePoseCount);
-			delete [] pPlayFacePoses;
-		}
-		pPlayFacePoses = newArray;
-		pPlayFacePoseSize = newSize;
-	}
-	
-	pPlayFacePoses[pPlayFacePoseCount].facePose = facePose;
-	pPlayFacePoses[pPlayFacePoseCount].pause = pause;
-	pPlayFacePoses[pPlayFacePoseCount].length = length;
-	pPlayFacePoseCount++;
-	if(facePose){
-		facePose->AddReference();
-	}
-	
+	pPlayFacePoses.Add(cFacePose::Ref::New(facePose, pause, length));
 	pPlayFacePosePos = 0;
 	pPlayFacePoseElapsed = 0.0f;
 	pPlayFacePoseRunning = true;
@@ -521,38 +460,14 @@ void ceConversationActor::AddPlayFacePose(ceFacePose *facePose, float pause, flo
 
 
 void ceConversationActor::RemoveAllPlayHeadLookAts(){
-	while(pPlayHeadLACount > 0){
-		pPlayHeadLACount--;
-		if(pPlayHeadLAs[pPlayHeadLACount].lookAt){
-			pPlayHeadLAs[pPlayHeadLACount].lookAt->FreeReference();
-		}
-	}
-	
+	pPlayHeadLAs.RemoveAll();
 	pPlayHeadLAPos = 0;
 	pPlayHeadLAElapsed = 0.0f;
 	pPlayHeadLARunning = false;
 }
 
 void ceConversationActor::AddPlayHeadLookAt(ceTarget *lookAt, float pause, float duration){
-	if(pPlayHeadLACount == pPlayHeadLASize){
-		int newSize = pPlayFacePoseSize + 20;
-		sLookAt *newArray = new sLookAt[newSize];
-		if(pPlayHeadLAs){
-			memcpy(newArray, pPlayHeadLAs, sizeof(sLookAt) * pPlayHeadLACount);
-			delete [] pPlayHeadLAs;
-		}
-		pPlayHeadLAs = newArray;
-		pPlayHeadLASize = newSize;
-	}
-	
-	pPlayHeadLAs[pPlayHeadLACount].lookAt = lookAt;
-	pPlayHeadLAs[pPlayHeadLACount].pause = pause;
-	pPlayHeadLAs[pPlayHeadLACount].duration = duration;
-	pPlayHeadLACount++;
-	if(lookAt){
-		lookAt->AddReference();
-	}
-	
+	pPlayHeadLAs.Add(cLookAt::Ref::New(lookAt, pause, duration));
 	pPlayHeadLAPos = 0;
 	pPlayHeadLAElapsed = 0.0f;
 	pPlayHeadLARunning = true;
@@ -561,38 +476,14 @@ void ceConversationActor::AddPlayHeadLookAt(ceTarget *lookAt, float pause, float
 
 
 void ceConversationActor::RemoveAllPlayEyesLookAts(){
-	while(pPlayEyesLACount > 0){
-		pPlayEyesLACount--;
-		if(pPlayEyesLAs[pPlayEyesLACount].lookAt){
-			pPlayEyesLAs[pPlayEyesLACount].lookAt->FreeReference();
-		}
-	}
-	
+	pPlayEyesLAs.RemoveAll();
 	pPlayEyesLAPos = 0;
 	pPlayEyesLAElapsed = 0.0f;
 	pPlayEyesLARunning = false;
 }
 
 void ceConversationActor::AddPlayEyesLookAt(ceTarget *lookAt, float pause, float duration){
-	if(pPlayEyesLACount == pPlayEyesLASize){
-		int newSize = pPlayFacePoseSize + 20;
-		sLookAt *newArray = new sLookAt[newSize];
-		if(pPlayEyesLAs){
-			memcpy(newArray, pPlayEyesLAs, sizeof(sLookAt) * pPlayEyesLACount);
-			delete [] pPlayEyesLAs;
-		}
-		pPlayEyesLAs = newArray;
-		pPlayEyesLASize = newSize;
-	}
-	
-	pPlayEyesLAs[pPlayEyesLACount].lookAt = lookAt;
-	pPlayEyesLAs[pPlayEyesLACount].pause = pause;
-	pPlayEyesLAs[pPlayEyesLACount].duration = duration;
-	pPlayEyesLACount++;
-	if(lookAt){
-		lookAt->AddReference();
-	}
-	
+	pPlayEyesLAs.Add(cLookAt::Ref::New(lookAt, pause, duration));
 	pPlayEyesLAPos = 0;
 	pPlayEyesLAElapsed = 0.0f;
 	pPlayEyesLARunning = true;
@@ -634,9 +525,6 @@ void ceConversationActor::Reset(){
 	RemoveAllPlayFacePoses();
 	RemoveAllPlayGestures();
 	
-	pCommands.RemoveAll();
-	pParameter.RemoveAll();
-	
 	SetActivePose(nullptr);
 	pPoses.RemoveAll();
 	NotifyPosesChanged();
@@ -665,93 +553,37 @@ void ceConversationActor::NotifyActorChanged(){
 //////////////////////
 
 void ceConversationActor::pCleanUp(){
-	if(pPlayCurEyesLA){
-		pPlayCurEyesLA->FreeReference();
-	}
-	if(pPlayLastEyesLA){
-		pPlayLastEyesLA->FreeReference();
-	}
-	if(pPlayEyesLAs){
-		RemoveAllPlayEyesLookAts();
-		delete [] pPlayEyesLAs;
-	}
-	
-	if(pPlayCurHeadLA){
-		pPlayCurHeadLA->FreeReference();
-	}
-	if(pPlayLastHeadLA){
-		pPlayLastHeadLA->FreeReference();
-	}
-	if(pPlayHeadLAs){
-		RemoveAllPlayHeadLookAts();
-		delete [] pPlayHeadLAs;
-	}
-	
-	if(pPlayCurFacePose){
-		pPlayCurFacePose->FreeReference();
-	}
-	if(pPlayLastFacePose){
-		pPlayLastFacePose->FreeReference();
-	}
-	if(pPlayFacePoses){
-		RemoveAllPlayFacePoses();
-		delete [] pPlayFacePoses;
-	}
-	
-	if(pPlayGestures){
-		delete [] pPlayGestures;
-	}
-	
-	if(pActivePose){
-		pActivePose->FreeReference();
-	}
-	pPoses.RemoveAll();
-	
 	SetConversation(nullptr);
 	
 	if(pEngSpeaker){
 		pEngSpeaker->Stop();
 		pEngSpeaker->SetSound(nullptr);
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngEyesAnimatorInstance){
 		pEngEyesAnimatorInstance->SetAnimator(nullptr);
 		pEngEyesAnimatorInstance->SetComponent(nullptr);
-		pEngEyesAnimatorInstance->FreeReference();
 	}
 	if(pEngEyesAnimator){
 		pEngEyesAnimator->SetRig(nullptr);
-		pEngEyesAnimator->FreeReference();
 	}
 	
 	if(pEngFacePoseAnimatorInstance){
 		pEngFacePoseAnimatorInstance->SetAnimator(nullptr);
 		pEngFacePoseAnimatorInstance->SetComponent(nullptr);
-		pEngFacePoseAnimatorInstance->FreeReference();
 	}
 	if(pEngFacePoseAnimator){
 		pEngFacePoseAnimator->SetRig(nullptr);
-		pEngFacePoseAnimator->FreeReference();
 	}
 	
 	if(pEngGestureAnimatorInstance){
 		pEngGestureAnimatorInstance->SetAnimator(nullptr);
 		pEngGestureAnimatorInstance->SetComponent(nullptr);
-		pEngGestureAnimatorInstance->FreeReference();
-	}
-	
-	if(pSpeechAnimation){
-		delete pSpeechAnimation;
 	}
 	
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(nullptr);
 		pEngAnimatorInstance->SetComponent(nullptr);
-		pEngAnimatorInstance->FreeReference();
-	}
-	if(pEngComponent){
-		pEngComponent->FreeReference();
 	}
 }
 
@@ -760,9 +592,9 @@ void ceConversationActor::pCleanUp(){
 void ceConversationActor::pUpdateComponent(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	const igdeGameDefinition *gamedef = nullptr;
-	deModel *model = nullptr;
-	deSkin *skin = nullptr;
-	deRig *rig = nullptr;
+	deModel::Ref model;
+	deSkin::Ref skin;
+	deRig::Ref rig;
 	
 	if(pConversation){
 		gamedef = pConversation->GetGameDefinition();
@@ -781,15 +613,6 @@ void ceConversationActor::pUpdateComponent(){
 		}
 		
 	}catch(const deException &e){
-		if(model){
-			model->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
@@ -798,7 +621,6 @@ void ceConversationActor::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!skin && gamedef){
 			skin = pEnvironment.GetStockSkin(igdeEnvironment::essError);
-			skin->AddReference();
 		}
 		
 		// reset the animator
@@ -821,7 +643,6 @@ void ceConversationActor::pUpdateComponent(){
 			if(pConversation){
 				pConversation->GetEngineWorld()->RemoveComponent(pEngComponent);
 			}
-			pEngComponent->FreeReference();
 			pEngComponent = nullptr;
 		}
 		
@@ -834,28 +655,16 @@ void ceConversationActor::pUpdateComponent(){
 		
 		// free the reference we hold
 		if(rig){
-			rig->FreeReference();
 			rig = nullptr;
 		}
 		if(model){
-			model->FreeReference();
 			model = nullptr;
 		}
 		if(skin){
-			skin->FreeReference();
 			skin = nullptr;
 		}
 		
 	}catch(const deException &){
-		if(model){
-			model->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		throw;
 	}
 	
@@ -870,7 +679,7 @@ void ceConversationActor::pUpdateComponent(){
 void ceConversationActor::pUpdateSpeechAnimation(){
 	deVirtualFileSystem &vfs = *pEnvironment.GetEngineController()->GetEngine()->GetVirtualFileSystem();
 	ceSpeechAnimationXML sanimationXML(pEnvironment.GetLogger(), LOGSOURCE);
-	decBaseFileReader *reader = nullptr;
+	decBaseFileReader::Ref reader;
 	decPath pathFile;
 	
 	pSpeechAnimation->Clear();
@@ -880,14 +689,8 @@ void ceConversationActor::pUpdateSpeechAnimation(){
 			pathFile.SetFromUnix(pPathSpeechAnimation);
 			
 			reader = vfs.OpenFileForReading(pathFile);
-			sanimationXML.ReadFromFile(pPathSpeechAnimation, *reader, *pSpeechAnimation);
-			
-			reader->FreeReference();
-			
+			sanimationXML.ReadFromFile(pPathSpeechAnimation, *reader, pSpeechAnimation);
 		}catch(const deException &){
-			if(reader){
-				reader->FreeReference();
-			}
 		}
 	}
 	
@@ -911,8 +714,8 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	igdeLoadAnimator animatorXML(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE);
-	decBaseFileReader *reader = nullptr;
-	deAnimator *animator = nullptr;
+	decBaseFileReader::Ref reader;
+	deAnimator::Ref animator;
 	decPath pathFile;
 	
 	if(!pPathFacePoseAnimator.IsEmpty()){
@@ -922,21 +725,8 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 			reader = vfs.OpenFileForReading(pathFile);
 			animator = engine.GetAnimatorManager()->CreateAnimator();
 			animatorXML.Load(pPathFacePoseAnimator, *animator, *reader);
-			
-			if(pEngFacePoseAnimator){
-				pEngFacePoseAnimator->FreeReference();
-			}
 			pEngFacePoseAnimator = animator;
-			
-			reader->FreeReference();
-			
 		}catch(const deException &e){
-			if(animator){
-				animator->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
@@ -948,8 +738,8 @@ void ceConversationActor::pUpdateEyesAnimator(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	igdeLoadAnimator animatorXML(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE);
-	decBaseFileReader *reader = nullptr;
-	deAnimator *animator = nullptr;
+	decBaseFileReader::Ref reader;
+	deAnimator::Ref animator;
 	decPath pathFile;
 	
 	if(!pPathEyesAnimator.IsEmpty()){
@@ -959,21 +749,8 @@ void ceConversationActor::pUpdateEyesAnimator(){
 			reader = vfs.OpenFileForReading(pathFile);
 			animator = engine.GetAnimatorManager()->CreateAnimator();
 			animatorXML.Load(pPathEyesAnimator, *animator, *reader);
-			
-			if(pEngEyesAnimator){
-				pEngEyesAnimator->FreeReference();
-			}
 			pEngEyesAnimator = animator;
-			
-			reader->FreeReference();
-			
 		}catch(const deException &e){
-			if(animator){
-				animator->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
@@ -1013,15 +790,10 @@ void ceConversationActor::pUpdateAnimatorInstance(float elapsed){
 		return;
 	}
 	
-	const ceActorControllerList &poseControllers = pActivePose->GetControllers();
-	const int count = poseControllers.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const ceActorController &poseController = *poseControllers.GetAt(i);
+	pActivePose->GetControllers().Visit([&](const ceActorController &poseController){
 		const int index = pEngAnimatorInstance->IndexOfControllerNamed(poseController.GetName());
 		if(index == -1){
-			continue;
+			return;
 		}
 		
 		deAnimatorController &animatorController = pEngAnimatorInstance->GetControllerAt(index);
@@ -1058,15 +830,14 @@ void ceConversationActor::pUpdateAnimatorInstance(float elapsed){
 		animatorController.SetVector(poseController.GetVector());
 		
 		pEngAnimatorInstance->NotifyControllerChangedAt(index);
-	}
+	});
 }
 
 void ceConversationActor::pUpdatePlayGesture(float elapsed){
-	if(!pPlayGestureRunning || pPlayGestureCount == 0){
+	if(!pPlayGestureRunning || pPlayGestures.GetCount() == 0){
 		return;
 	}
 	
-	ceActorGesture *actorGesture = nullptr;
 	deAnimator *engAnimator = nullptr;
 	bool resetAnimation = false;
 	float startTime = 0.0f;
@@ -1074,16 +845,16 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 	
 	pPlayGestureElapsed += elapsed;
 	
-	while(pPlayGesturePos < pPlayGestureCount){
-		const float totalLength = pPlayGestures[pPlayGesturePos].pause
-			+ pPlayGestures[pPlayGesturePos].length;
+	while(pPlayGesturePos < pPlayGestures.GetCount()){
+		const float totalLength = pPlayGestures.GetAt(pPlayGesturePos)->pause
+			+ pPlayGestures.GetAt(pPlayGesturePos)->length;
 		bool hold = false;
-		if(pPlayGestures[pPlayGesturePos].gesture){
-			hold = pPlayGestures[pPlayGesturePos].gesture->GetHold();
+		if(pPlayGestures.GetAt(pPlayGesturePos)->gesture){
+			hold = pPlayGestures.GetAt(pPlayGesturePos)->gesture->GetHold();
 		}
 		
 		if(pPlayGestureElapsed < totalLength || hold){
-			startTime = pPlayGestures[pPlayGesturePos].pause;
+			startTime = pPlayGestures.GetAt(pPlayGesturePos)->pause;
 			endTime = totalLength;
 			
 			if(pPlayGestureElapsed < startTime){
@@ -1091,12 +862,14 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 				break; // use actorGesturePose = nullptr during pause
 			}
 			
-			if(!pPlayGestures[pPlayGesturePos].gesture || !pActivePose){
+			if(!pPlayGestures.GetAt(pPlayGesturePos)->gesture || !pActivePose){
 				break;
 			}
 			
-			actorGesture = pActivePose->GetGestures().GetNamed(
-				pPlayGestures[pPlayGesturePos].gesture->GetAnimator());
+			ceActorGesture * const actorGesture = pActivePose->GetGestures().
+				FindOrDefault([&](const ceActorGesture &g){
+					return g.GetName() == pPlayGestures.GetAt(pPlayGesturePos)->gesture->GetAnimator();
+				});
 			
 			if(!actorGesture){
 				break;
@@ -1112,7 +885,7 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 		}
 	}
 	
-	if(pPlayGesturePos >= pPlayGestureCount){
+	if(pPlayGesturePos >= pPlayGestures.GetCount()){
 		pPlayGestureRunning = false;
 	}
 	
@@ -1205,39 +978,31 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 }
 
 void ceConversationActor::pUpdatePlayFacePose(float elapsed){
-	const int controllerCount = pEngFacePoseAnimatorInstance->GetControllerCount();
 	float blendFactor1 = 0.0f;
 	float blendFactor2 = 1.0f;
-	int i;
 	
-	if(pPlayFacePoseRunning && pPlayFacePoseCount > 0){
+	if(pPlayFacePoseRunning && pPlayFacePoses.GetCount() > 0){
 		pPlayFacePoseElapsed += elapsed;
 		
-		while(pPlayFacePosePos < pPlayFacePoseCount){
-			const float totalLength = pPlayFacePoses[pPlayFacePosePos].pause + pPlayFacePoses[pPlayFacePosePos].length;
-			ceFacePose * const facePose = pPlayFacePoses[pPlayFacePosePos].facePose;
+		while(pPlayFacePosePos < pPlayFacePoses.GetCount()){
+			const float totalLength = pPlayFacePoses.GetAt(pPlayFacePosePos)->pause + pPlayFacePoses.GetAt(pPlayFacePosePos)->length;
+			ceFacePose * const facePose = pPlayFacePoses.GetAt(pPlayFacePosePos)->facePose;
 			
 			if(pPlayFacePoseElapsed < totalLength){
 				if(pPlayCurFacePose != facePose){
-					if(pPlayLastFacePose){
-						pPlayLastFacePose->FreeReference();
-					}
 					pPlayLastFacePose = pPlayCurFacePose;
 					pPlayCurFacePose = facePose;
-					if(facePose){
-						facePose->AddReference();
-					}
 				}
 				
-				if(pPlayFacePoseElapsed < pPlayFacePoses[pPlayFacePosePos].pause){
+				if(pPlayFacePoseElapsed < pPlayFacePoses.GetAt(pPlayFacePosePos)->pause){
 					blendFactor1 = 1.0f;
 					blendFactor2 = 0.0f;
 					
 				}else{
-					const float duration = pPlayFacePoses[pPlayFacePosePos].length;
+					const float duration = pPlayFacePoses.GetAt(pPlayFacePosePos)->length;
 					
 					if(duration > 1e-5f){
-						blendFactor1 = (pPlayFacePoseElapsed - pPlayFacePoses[pPlayFacePosePos].pause) / duration;
+						blendFactor1 = (pPlayFacePoseElapsed - pPlayFacePoses.GetAt(pPlayFacePosePos)->pause) / duration;
 						
 						if(blendFactor1 < 1.0f){
 							//blendFactor1 = 0.5f + cosf( blendFactor1 * PI ) * 0.5f;
@@ -1255,21 +1020,14 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 				break;
 				
 			}else{
-				if(pPlayLastFacePose){
-					pPlayLastFacePose->FreeReference();
-				}
 				pPlayLastFacePose = pPlayCurFacePose;
 				pPlayCurFacePose = facePose;
-				if(facePose){
-					facePose->AddReference();
-				}
-				
 				pPlayFacePoseElapsed -= totalLength;
 				pPlayFacePosePos++;
 			}
 		}
 		
-		if(pPlayFacePosePos >= pPlayFacePoseCount){
+		if(pPlayFacePosePos >= pPlayFacePoses.GetCount()){
 			pPlayFacePoseRunning = false;
 		}
 		
@@ -1281,52 +1039,44 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 	// (if existing) multiplied by the second blend factor are added. this way a proper
 	// blending can be achieved no matter which combination of face poses (as well as
 	// the lack thereof) is in effect
+	const int controllerCount = pEngFacePoseAnimatorInstance->GetControllerCount();
+	int i;
 	for(i=0; i<controllerCount; i++){
 		pEngFacePoseAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
 	}
 	
 	if(pPlayLastFacePose){
-		const ceControllerValueList &list = pPlayLastFacePose->GetControllerList();
-		const int entryCount = list.GetCount();
-		
-		for(i=0; i<entryCount; i++){
-			const ceControllerValue &entry = *list.GetAt(i);
-			
-			if(entry.GetControllerIndex() == -1){
-				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(entry.GetController());
+		pPlayLastFacePose->GetControllers().Visit([&](const ceControllerValue &c){
+			if(c.GetControllerIndex() == -1){
+				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(c.GetController());
 				if(controller != -1){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(entry.GetValue() * blendFactor1);
+					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(c.GetValue() * blendFactor1);
 				}
 				
 			}else{
-				const int controller = entry.GetControllerIndex();
+				const int controller = c.GetControllerIndex();
 				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount()){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(entry.GetValue() * blendFactor1);
+					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(c.GetValue() * blendFactor1);
 				}
 			}
-		}
+		});
 	}
 	
 	if(pPlayCurFacePose){
-		const ceControllerValueList &list = pPlayCurFacePose->GetControllerList();
-		const int entryCount = list.GetCount();
-		
-		for(i=0; i<entryCount; i++){
-			const ceControllerValue &entry = *list.GetAt(i);
-			
-			if(entry.GetControllerIndex() == -1){
-				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(entry.GetController());
+		pPlayCurFacePose->GetControllers().Visit([&](const ceControllerValue &c){
+			if(c.GetControllerIndex() == -1){
+				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(c.GetController());
 				if(controller != -1){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(entry.GetValue() * blendFactor2);
+					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(c.GetValue() * blendFactor2);
 				}
 				
 			}else{
-				const int controller = entry.GetControllerIndex();
+				const int controller = c.GetControllerIndex();
 				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount()){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(entry.GetValue() * blendFactor2);
+					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(c.GetValue() * blendFactor2);
 				}
 			}
-		}
+		});
 	}
 	
 	for(i=0; i<controllerCount; i++){
@@ -1373,34 +1123,28 @@ void ceConversationActor::pUpdatePlayHeadLookAt(cePlayback &playback, float elap
 		}
 	}
 	
-	if(pPlayHeadLARunning && pPlayHeadLACount > 0){
+	if(pPlayHeadLARunning && pPlayHeadLAs.GetCount() > 0){
 		pPlayHeadLAElapsed += elapsed;
 		
-		while(pPlayHeadLAPos < pPlayHeadLACount){
-			const float totalLength = pPlayHeadLAs[pPlayHeadLAPos].pause + pPlayHeadLAs[pPlayHeadLAPos].duration;
-			ceTarget * const lookAt = pPlayHeadLAs[pPlayHeadLAPos].lookAt;
+		while(pPlayHeadLAPos < pPlayHeadLAs.GetCount()){
+			const float totalLength = pPlayHeadLAs.GetAt(pPlayHeadLAPos)->pause + pPlayHeadLAs.GetAt(pPlayHeadLAPos)->duration;
+			ceTarget * const lookAt = pPlayHeadLAs.GetAt(pPlayHeadLAPos)->lookAt;
 			
 			if(pPlayHeadLAElapsed < totalLength){
 				if(pPlayCurHeadLA != lookAt){
-					if(pPlayLastHeadLA){
-						pPlayLastHeadLA->FreeReference();
-					}
 					pPlayLastHeadLA = pPlayCurHeadLA;
 					pPlayCurHeadLA = lookAt;
-					if(lookAt){
-						lookAt->AddReference();
-					}
 				}
 				
-				if(pPlayHeadLAElapsed < pPlayHeadLAs[pPlayHeadLAPos].pause){
+				if(pPlayHeadLAElapsed < pPlayHeadLAs.GetAt(pPlayHeadLAPos)->pause){
 					blendFactor1 = 1.0f;
 					blendFactor2 = 0.0f;
 					
 				}else{
-					const float duration = pPlayHeadLAs[pPlayHeadLAPos].duration;
+					const float duration = pPlayHeadLAs.GetAt(pPlayHeadLAPos)->duration;
 					
 					if(duration > 1e-5f){
-						blendFactor1 = (pPlayHeadLAElapsed - pPlayHeadLAs[pPlayHeadLAPos].pause) / duration;
+						blendFactor1 = (pPlayHeadLAElapsed - pPlayHeadLAs.GetAt(pPlayHeadLAPos)->pause) / duration;
 						
 						if(blendFactor1 < 1.0f){
 							//blendFactor1 = 0.5f + cosf( blendFactor1 * PI ) * 0.5f;
@@ -1418,21 +1162,14 @@ void ceConversationActor::pUpdatePlayHeadLookAt(cePlayback &playback, float elap
 				break;
 				
 			}else{
-				if(pPlayLastHeadLA){
-					pPlayLastHeadLA->FreeReference();
-				}
 				pPlayLastHeadLA = pPlayCurHeadLA;
 				pPlayCurHeadLA = lookAt;
-				if(lookAt){
-					lookAt->AddReference();
-				}
-				
 				pPlayHeadLAElapsed -= totalLength;
 				pPlayHeadLAPos++;
 			}
 		}
 		
-		if(pPlayHeadLAPos >= pPlayHeadLACount){
+		if(pPlayHeadLAPos >= pPlayHeadLAs.GetCount()){
 			pPlayHeadLARunning = false;
 		}
 	}
@@ -1485,34 +1222,28 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 	float eyesUpDown = 0.0f;
 	decMatrix targetMatrix;
 	
-	if(pPlayEyesLARunning && pPlayEyesLACount > 0){
+	if(pPlayEyesLARunning && pPlayEyesLAs.GetCount() > 0){
 		pPlayEyesLAElapsed += elapsed;
 		
-		while(pPlayEyesLAPos < pPlayEyesLACount){
-			const float totalLength = pPlayEyesLAs[pPlayEyesLAPos].pause + pPlayEyesLAs[pPlayEyesLAPos].duration;
-			ceTarget * const lookAt = pPlayEyesLAs[pPlayEyesLAPos].lookAt;
+		while(pPlayEyesLAPos < pPlayEyesLAs.GetCount()){
+			const float totalLength = pPlayEyesLAs.GetAt(pPlayEyesLAPos)->pause + pPlayEyesLAs.GetAt(pPlayEyesLAPos)->duration;
+			ceTarget * const lookAt = pPlayEyesLAs.GetAt(pPlayEyesLAPos)->lookAt;
 			
 			if(pPlayEyesLAElapsed < totalLength){
 				if(pPlayCurEyesLA != lookAt){
-					if(pPlayLastEyesLA){
-						pPlayLastEyesLA->FreeReference();
-					}
 					pPlayLastEyesLA = pPlayCurEyesLA;
 					pPlayCurEyesLA = lookAt;
-					if(lookAt){
-						lookAt->AddReference();
-					}
 				}
 				
-				if(pPlayEyesLAElapsed < pPlayEyesLAs[pPlayEyesLAPos].pause){
+				if(pPlayEyesLAElapsed < pPlayEyesLAs.GetAt(pPlayEyesLAPos)->pause){
 					blendFactor1 = 1.0f;
 					blendFactor2 = 0.0f;
 					
 				}else{
-					const float duration = pPlayEyesLAs[pPlayEyesLAPos].duration;
+					const float duration = pPlayEyesLAs.GetAt(pPlayEyesLAPos)->duration;
 					
 					if(duration > 1e-5f){
-						blendFactor1 = (pPlayEyesLAElapsed - pPlayEyesLAs[pPlayEyesLAPos].pause) / duration;
+						blendFactor1 = (pPlayEyesLAElapsed - pPlayEyesLAs.GetAt(pPlayEyesLAPos)->pause) / duration;
 						
 						if(blendFactor1 < 1.0f){
 							//blendFactor1 = 0.5f + cosf( blendFactor1 * PI ) * 0.5f;
@@ -1530,21 +1261,14 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 				break;
 				
 			}else{
-				if(pPlayLastEyesLA){
-					pPlayLastEyesLA->FreeReference();
-				}
 				pPlayLastEyesLA = pPlayCurEyesLA;
 				pPlayCurEyesLA = lookAt;
-				if(lookAt){
-					lookAt->AddReference();
-				}
-				
 				pPlayEyesLAElapsed -= totalLength;
 				pPlayEyesLAPos++;
 			}
 		}
 		
-		if(pPlayEyesLAPos >= pPlayEyesLACount){
+		if(pPlayEyesLAPos >= pPlayEyesLAs.GetCount()){
 			pPlayEyesLARunning = false;
 		}
 	}

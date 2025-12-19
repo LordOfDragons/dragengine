@@ -26,6 +26,7 @@
 #define _CESAWORD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -40,8 +41,8 @@ private:
 	decUnicodeString pPhonetics;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceSAWord> Ref;
+	typedef decTObjectOrderedSet<ceSAWord> List;
 
 
 	/** \name Constructors and Destructors */

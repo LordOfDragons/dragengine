@@ -58,7 +58,7 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled(index >= 0 && index < topic.GetActionList().GetCount());
+	SetEnabled(index >= 0 && index < topic.GetActions().GetCount());
 }
 
 
@@ -67,9 +67,9 @@ pIndex(index)
 ///////////////
 
 void ceWPTMATopicMoveAction::OnAction(){
-	if(pIndex < 0 || pIndex > pTopic->GetActionList().GetCount()){
+	if(pIndex < 0 || pIndex > pTopic->GetActions().GetCount()){
 		DETHROW(deeInvalidAction);
 	}
 	
-	pConversation->GetUndoSystem()->Add(ceUCActionMove::Ref::NewWith(pTopic, pAction, pIndex));
+	pConversation->GetUndoSystem()->Add(ceUCActionMove::Ref::New(pTopic, pAction, pIndex));
 }

@@ -44,7 +44,7 @@ ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
 	SetShortInfo("Target set bone");
 	
@@ -52,13 +52,9 @@ ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
 	pNewBone = newBone;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetBone::~ceUCTargetSetBone(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

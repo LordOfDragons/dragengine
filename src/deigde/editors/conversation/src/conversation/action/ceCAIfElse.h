@@ -26,8 +26,7 @@
 #define _CECAIFELSE_H_
 
 #include "ceConversationAction.h"
-#include "ceConversationActionList.h"
-#include "ceCAIfElseCaseList.h"
+#include "ceCAIfElseCase.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -45,14 +44,14 @@ class ceConversationCondition;
  */
 class ceCAIfElse : public ceConversationAction{
 private:
-	ceCAIfElseCaseList pCases;
-	ceConversationActionList pElseActions;
-	bool pTIMExpanded;
-	bool pTIMElseExpanded;
+	ceCAIfElseCase::List pCases;
+	ceConversationAction::List pElseActions;
+	bool pTIMExpanded, pTIMElseExpanded;
 	
 	
 	
 public:
+	typedef deTObjectReference<ceCAIfElse> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create if-else conversation action. */
@@ -70,15 +69,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of cases. */
-	inline ceCAIfElseCaseList &GetCases(){ return pCases; }
-	inline const ceCAIfElseCaseList &GetCases() const{ return pCases; }
+	inline ceCAIfElseCase::List &GetCases(){ return pCases; }
+	inline const ceCAIfElseCase::List &GetCases() const{ return pCases; }
 	
 	/** \brief List of else-actions. */
-	inline ceConversationActionList &GetElseActions(){ return pElseActions; }
-	inline const ceConversationActionList &GetElseActions() const{ return pElseActions; }
+	inline ceConversationAction::List &GetElseActions(){ return pElseActions; }
+	inline const ceConversationAction::List &GetElseActions() const{ return pElseActions; }
 	
 	/** \brief Create copy of action. */
-	ceConversationAction *CreateCopy() const override;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

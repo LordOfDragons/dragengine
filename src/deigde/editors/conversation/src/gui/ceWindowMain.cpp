@@ -94,13 +94,13 @@ void ceWindowMain::cRecentFilesCTS::OpenFile(const char *filename){
 	ceConversation * const conversation = pWindowMain.GetConversation();
 	if(conversation){
 		conversation->SetCTSPath(filename);
-		pWindowMain.GetLoadSaveSystem().LoadCTS(filename, *conversation);
+		pWindowMain.GetLoadSaveSystem()->LoadCTS(filename, *conversation);
 		pWindowMain.GetRecentFilesCTS().AddFile(filename);
 	}
 }
 
 void ceWindowMain::cRecentFilesCTS::FilesChanged(){
-	pWindowMain.GetConfiguration().SaveConfiguration();
+	pWindowMain.GetConfiguration()->SaveConfiguration();
 }
 
 
@@ -117,7 +117,7 @@ void ceWindowMain::cRecentFilesCTA::OpenFile(const char *filename){
 }
 
 void ceWindowMain::cRecentFilesCTA::FilesChanged(){
-	pWindowMain.GetConfiguration().SaveConfiguration();
+	pWindowMain.GetConfiguration()->SaveConfiguration();
 }
 
 
@@ -130,13 +130,13 @@ void ceWindowMain::cRecentFilesCTGS::OpenFile(const char *filename){
 	ceConversation * const conversation = pWindowMain.GetConversation();
 	if(conversation){
 		conversation->SetCTFIPath(filename);
-		pWindowMain.GetLoadSaveSystem().LoadCTGS(filename, *conversation);
+		pWindowMain.GetLoadSaveSystem()->LoadCTGS(filename, *conversation);
 		pWindowMain.GetRecentFilesCTGS().AddFile(filename);
 	}
 }
 
 void ceWindowMain::cRecentFilesCTGS::FilesChanged(){
-	pWindowMain.GetConfiguration().SaveConfiguration();
+	pWindowMain.GetConfiguration()->SaveConfiguration();
 }
 
 
@@ -150,7 +150,7 @@ void ceWindowMain::cRecentFilesLangPack::OpenFile(const char *filename){
 }
 
 void ceWindowMain::cRecentFilesLangPack::FilesChanged(){
-	pWindowMain.GetConfiguration().SaveConfiguration();
+	pWindowMain.GetConfiguration()->SaveConfiguration();
 }
 
 
@@ -162,13 +162,6 @@ void ceWindowMain::cRecentFilesLangPack::FilesChanged(){
 
 ceWindowMain::ceWindowMain(ceIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pViewConversation(NULL),
-pWindowProperties(NULL),
-pWindowDopeSheet(NULL),
-pConversation(NULL),
 pRecentFilesCTS(*this),
 pRecentFilesCTA(*this),
 pRecentFilesCTGS(*this),
@@ -180,9 +173,9 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new ceWindowMainListener(*this);
-	pLoadSaveSystem = new ceLoadSaveSystem(*this);
-	pConfiguration = new ceConfiguration(*this);
+	pListener = ceWindowMainListener::Ref::New(*this);
+	pLoadSaveSystem = ceLoadSaveSystem::Ref::New(*this);
+	pConfiguration = ceConfiguration::Ref::New(*this);
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -190,21 +183,21 @@ pRecentFilesLangPack(*this)
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new ceWindowProperties(*this);
+	pWindowProperties = ceWindowProperties::Ref::New(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation = new ceViewConversation(*this);
+	pViewConversation = ceViewConversation::Ref::New(*this);
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet = new ceWindowDopeSheet(*this);
+	pWindowDopeSheet = ceWindowDopeSheet::Ref::New(*this);
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();
@@ -216,29 +209,7 @@ ceWindowMain::~ceWindowMain(){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetConversation(NULL);
-	
-	if(pWindowDopeSheet){
-		pWindowDopeSheet->FreeReference();
-	}
-	if(pViewConversation){
-		pViewConversation->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
-	if(pConfiguration){
-		delete pConfiguration;
-	}
-	if(pLoadSaveSystem){
-		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
-	
+	SetConversation(nullptr);
 }
 
 
@@ -261,23 +232,21 @@ void ceWindowMain::SetConversation(ceConversation *conversation){
 		return;
 	}
 	
-	pViewConversation->SetConversation(NULL);
-	pWindowDopeSheet->SetConversation(NULL);
-	pWindowProperties->SetConversation(NULL);
+	pViewConversation->SetConversation(nullptr);
+	pWindowDopeSheet->SetConversation(nullptr);
+	pWindowProperties->SetConversation(nullptr);
 	
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
 		pConversation->Dispose();
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
-		conversation->AddReference();
 		conversation->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(conversation->GetUndoSystem());
@@ -296,7 +265,7 @@ void ceWindowMain::SetConversation(ceConversation *conversation){
 }
 
 void ceWindowMain::CreateNewConversation(){
-	SetConversation(ceConversation::Ref::NewWith(&GetEnvironment()));
+	SetConversation(ceConversation::Ref::New(&GetEnvironment()));
 }
 
 void ceWindowMain::SaveConversation(const char *filename){
@@ -353,7 +322,7 @@ void ceWindowMain::LoadCTA(const char *filename){
 		pLoadSaveSystem->LoadCTA(filename, *activeActor);
 		
 	}else{
-		const ceConversationActor::Ref actor(ceConversationActor::Ref::NewWith(GetEnvironment()));
+		const ceConversationActor::Ref actor(ceConversationActor::Ref::New(GetEnvironment()));
 		pLoadSaveSystem->LoadCTA(filename, actor);
 		pConversation->AddActor(actor);
 	}
@@ -424,7 +393,7 @@ void ceWindowMain::OnDeactivate(){
 	pWindowDopeSheet->SetEnableRendering(false);
 	
 	if(pConversation){
-		GetEngine()->GetAudioSystem()->SetActiveMicrophone(NULL);
+		GetEngine()->GetAudioSystem()->SetActiveMicrophone(nullptr);
 	}
 	
 	igdeEditorWindow::OnDeactivate();
@@ -453,7 +422,7 @@ void ceWindowMain::LoadDocument(const char *filename){
 		}
 	}
 	
-	SetConversation(ceConversation::Ref::New(pLoadSaveSystem->LoadConversation(filename)));
+	SetConversation(pLoadSaveSystem->LoadConversation(filename));
 	GetRecentFiles().AddFile(filename);
 }
 
@@ -489,6 +458,10 @@ igdeStepableTask *ceWindowMain::OnGameDefinitionChanged(){
 namespace{
 
 class cActionBase : public igdeAction{
+public:
+	typedef deTObjectReference<cActionBase> Ref;
+	
+private:
 protected:
 	ceWindowMain &pWindow;
 	
@@ -504,19 +477,19 @@ public:
 	igdeAction(text, icon, description, mnemonic),
 	pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetConversation()){
 			return;
 		}
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetConversation())));
+		igdeUndo::Ref undo(OnAction(pWindow.GetConversation()));
 		if(undo){
 			pWindow.GetConversation()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnAction(ceConversation *conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		if(pWindow.GetConversation()){
 			Update(*pWindow.GetConversation());
 			
@@ -535,6 +508,10 @@ public:
 
 
 class cActionFileNew : public igdeAction{
+public:
+	typedef deTObjectReference<cActionFileNew> Ref;
+	
+private:
 	ceWindowMain &pWindow;
 public:
 	cActionFileNew(ceWindowMain &window) :
@@ -542,7 +519,7 @@ public:
 		"Create new conversation", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetConversation() || !pWindow.GetConversation()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Conversation",
 		"Creating a new conversation discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
@@ -552,13 +529,17 @@ public:
 };
 
 class cActionFileOpen : public igdeAction{
+public:
+	typedef deTObjectReference<cActionFileOpen> Ref;
+	
+private:
 	ceWindowMain &pWindow;
 public:
 	cActionFileOpen(ceWindowMain &window) : igdeAction("Open...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Open conversation from file",
 		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pWindow.GetConversation() && pWindow.GetConversation()->GetChanged()){
 			if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "Open Conversation",
 			"Open conversation discards changes. Is this ok?") == igdeCommonDialogs::ebNo){
@@ -570,34 +551,36 @@ public:
 			: pWindow.GetGameProject()->GetPathData());
 		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetConversationFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			return;
 		}
 		
-		pWindow.SetConversation(ceConversation::Ref::New(pWindow.GetLoadSaveSystem().LoadConversation(filename)));
+		pWindow.SetConversation(pWindow.GetLoadSaveSystem()->LoadConversation(filename));
 		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
 
 class cActionFileSaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(ceWindowMain &window) : cActionBase(window,
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves conversation under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction(ceConversation *conversation){
+	virtual igdeUndo::Ref OnAction(ceConversation *conversation){
 		decString filename(conversation->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetConversationFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetConversationFilePatterns(), filename ) ){
 			pWindow.SaveConversation(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionFileSave : public cActionFileSaveAs{
 public:
+	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(ceWindowMain &window) : cActionFileSaveAs(window){
 		SetText("Save");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs));
@@ -606,7 +589,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(conversation->GetSaved()){
 			if(conversation->GetChanged()){
 				pWindow.SaveConversation(conversation->GetFilePath());
@@ -615,7 +598,7 @@ public:
 		}else{
 			cActionFileSaveAs::OnAction(conversation);
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -626,178 +609,188 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(ceWindowMain &window) : cActionBase(window,
 		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return {};
 	}
 };
 
 class cActionEditCopy : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(ceWindowMain &window) : cActionBase(window,
 		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return {};
 	}
 };
 
 class cActionEditPaste : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(ceWindowMain &window) : cActionBase(window,
 		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		return NULL;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		return {};
 	}
 };
 
 
 class cActionViewCTSLoad : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTSLoad> Ref;
 	cActionViewCTSLoad(ceWindowMain &window) : cActionBase(window,
 		"Load Conversation Test Setup...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation test setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTSFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
-			pWindow.GetLoadSaveSystem().LoadCTS(filename, *conversation);
+			pWindow.GetLoadSaveSystem()->LoadCTS(filename, *conversation);
 			pWindow.GetRecentFilesCTS().AddFile(filename);
-			pWindow.GetConfiguration().SaveConfiguration();
+			pWindow.GetConfiguration()->SaveConfiguration();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionViewCTSSave : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTSSave> Ref;
 	cActionViewCTSSave(ceWindowMain &window) : cActionBase(window,
 		"Save Conversation Test Setup...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation test setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTSPath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTSFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTSFilePatterns(), filename ) ){
 			conversation->SetCTSPath(filename);
-			pWindow.GetLoadSaveSystem().SaveCTS(filename, *conversation);
+			pWindow.GetLoadSaveSystem()->SaveCTS(filename, *conversation);
 			pWindow.GetRecentFilesCTS().AddFile(filename);
-			pWindow.GetConfiguration().SaveConfiguration();
+			pWindow.GetConfiguration()->SaveConfiguration();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionViewCTALoad : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTALoad> Ref;
 	cActionViewCTALoad(ceWindowMain &window) : cActionBase(window,
 		"Load Conversation Actor Setup...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation actor setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTAPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTAFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			pWindow.LoadCTA(filename);
 			pWindow.GetRecentFilesCTA().AddFile(filename);
 		}
-		return nullptr;
+		return {};
 	}
 };
 
 class cActionViewCTASave : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTASave> Ref;
 	cActionViewCTASave(ceWindowMain &window) : cActionBase(window,
 		"Save Conversation Actor Setup...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation actor setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceConversationActor * const actor = conversation->GetActiveActor();
 		if(!actor){
-			return NULL;
+			return {};
 		}
 		
 		decString filename(conversation->GetCTAPath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTAFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTAFilePatterns(), filename ) ){
 			conversation->SetCTAPath(filename);
-			pWindow.GetLoadSaveSystem().SaveCTA(filename, *actor);
+			pWindow.GetLoadSaveSystem()->SaveCTA(filename, *actor);
 			pWindow.GetRecentFilesCTA().AddFile(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionViewCTGSLoad : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTGSLoad> Ref;
 	cActionViewCTGSLoad(ceWindowMain &window) : cActionBase(window,
 		"Load Conversation Test Game State...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation test game state from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTGSFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
-			pWindow.GetLoadSaveSystem().LoadCTGS(filename, *conversation);
+			pWindow.GetLoadSaveSystem()->LoadCTGS(filename, *conversation);
 			pWindow.GetRecentFilesCTGS().AddFile(filename);
-			pWindow.GetConfiguration().SaveConfiguration();
+			pWindow.GetConfiguration()->SaveConfiguration();
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionViewCTGSSave : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewCTGSSave> Ref;
 	cActionViewCTGSSave(ceWindowMain &window) : cActionBase(window,
 		"Save Conversation Test Game State...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation test game state from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetCTFIPath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetCTGSFilePatterns(), filename ) ){
+		*pWindow.GetLoadSaveSystem()->GetCTGSFilePatterns(), filename ) ){
 			conversation->SetCTFIPath(filename);
-			pWindow.GetLoadSaveSystem().SaveCTGS(filename, *conversation);
+			pWindow.GetLoadSaveSystem()->SaveCTGS(filename, *conversation);
 			pWindow.GetRecentFilesCTGS().AddFile(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cActionViewShowRuleOfThirdsAid : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewShowRuleOfThirdsAid> Ref;
 	cActionViewShowRuleOfThirdsAid(ceWindowMain &window) : cActionBase(window,
-		"Show Rule of Thirds aid", NULL,
+		"Show Rule of Thirds aid", nullptr,
 		"Show Rule of Thirds aid", deInputEvent::ekcT){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->SetShowRuleOfThirdsAid(!conversation->GetShowRuleOfThirdsAid());
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -809,40 +802,42 @@ public:
 
 class cActionViewAttachLangPack : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewAttachLangPack> Ref;
 	cActionViewAttachLangPack(ceWindowMain &window) : cActionBase(window,
 		"Attach Language Pack...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load language pack attaching it to conversation"){}
 	
-	igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetLangPackPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		pWindow.GetLoadSaveSystem().GetLangPackFPList(), filename)){
+		pWindow.GetLoadSaveSystem()->GetLangPackFPList(), filename)){
 			pWindow.AttachLangPack(filename);
 		}
-		return nullptr;
+		return {};
 	}
 };
 
 class cActionViewDetachLangPack : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewDetachLangPack> Ref;
 	cActionViewDetachLangPack(ceWindowMain &window) : cActionBase(window,
 		"Detach Language Pack...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Detach language pack from conversation"){}
 	
-	igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceLangPack * const langpack = conversation->GetLanguagePack();
 		if(!langpack){
-			return nullptr;
+			return {};
 		}
 		
 		if(langpack->GetChanged()){
 			switch(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNoCancel,
 			"Detach Language Pack", "Language pack changed. Save before detaching?")){
 			case igdeCommonDialogs::ebYes:
-				pWindow.GetLoadSaveSystem().SaveLangPack(*langpack);
+				pWindow.GetLoadSaveSystem()->SaveLangPack(*langpack);
 				break;
 				
 			case igdeCommonDialogs::ebNo:
@@ -855,7 +850,7 @@ public:
 		}
 		
 		conversation->SetLanguagePack(nullptr);
-		return nullptr;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -865,24 +860,19 @@ public:
 
 class cActionViewMissingWords : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewMissingWords> Ref;
 	cActionViewMissingWords(ceWindowMain &window) : cActionBase(window, "Missing Words...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch), "Show missing words"){}
 	
-	igdeUndo *OnAction(ceConversation *conversation) override{
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decStringSet missingWords;
-		const ceConversationFileList &groups = conversation->GetFileList();
-		const int groupCount = groups.GetCount();
-		int i, j;
-		
-		for(i=0; i<groupCount; i++){
-			const ceConversationTopicList &topics = groups.GetAt(i)->GetTopicList();
-			const int topicCount = topics.GetCount();
-			for(j=0; j<topicCount; j++){
-				topics.GetAt(j)->FindMissingWords(missingWords);
-			}
-		}
+		conversation->GetFiles().Visit([&](const ceConversationFile &f){
+			f.GetTopics().Visit([&](const ceConversationTopic &t){
+				t.FindMissingWords(missingWords);
+			});
+		});
 		pWindow.ShowFoundMissingWordsDialog(missingWords);
-		return nullptr;
+		return {};
 	}
 };
 
@@ -893,66 +883,66 @@ public:
 //////////////////////
 
 void ceWindowMain::pLoadIcons(){
-	pIconActionCameraShot.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_camerashot.png"));
-	pIconActionMusic.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_music.png"));
-	pIconActionActorSpeak.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actorspeak.png"));
-	pIconActionIfElse.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_ifelse.png"));
-	pIconActionIfElseCaseIf.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_case_if.png"));
-	pIconActionIfElseCaseElse.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_case_else.png"));
-	pIconActionPlayerChoice.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_playerchoice.png"));
-	pIconActionOption.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_option.png"));
-	pIconActionSnippet.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_snippet.png"));
-	pIconActionStop.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_stop.png"));
-	pIconActionActorCommand.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_command.png"));
-	pIconActionCommand.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_command.png"));
-	pIconActionVariable.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_variable.png"));
-	pIconActionWait.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_wait.png"));
-	pIconActionTrigger.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_trigger.png"));
-	pIconActionActorAdd.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_add.png"));
-	pIconActionActorRemove.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_remove.png"));
-	pIconActionCoordSysAdd.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_coordsys_add.png"));
-	pIconActionCoordSysRemove.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_coordsys_remove.png"));
-	pIconActionComment.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_comment.png"));
+	pIconActionCameraShot = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_camerashot.png");
+	pIconActionMusic = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_music.png");
+	pIconActionActorSpeak = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actorspeak.png");
+	pIconActionIfElse = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_ifelse.png");
+	pIconActionIfElseCaseIf = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_case_if.png");
+	pIconActionIfElseCaseElse = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_case_else.png");
+	pIconActionPlayerChoice = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_playerchoice.png");
+	pIconActionOption = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_option.png");
+	pIconActionSnippet = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_snippet.png");
+	pIconActionStop = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_stop.png");
+	pIconActionActorCommand = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_command.png");
+	pIconActionCommand = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_command.png");
+	pIconActionVariable = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_variable.png");
+	pIconActionWait = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_wait.png");
+	pIconActionTrigger = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_trigger.png");
+	pIconActionActorAdd = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_add.png");
+	pIconActionActorRemove = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_remove.png");
+	pIconActionCoordSysAdd = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_coordsys_add.png");
+	pIconActionCoordSysRemove = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_coordsys_remove.png");
+	pIconActionComment = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_comment.png");
 	
-	pIconConditionLogic.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_logic.png"));
-	pIconConditionActorCommand.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_command.png"));
-	pIconConditionCommand.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_command.png"));
-	pIconConditionVariable.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/action_variable.png"));
-	pIconConditionHasActor.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_hasactor.png"));
-	pIconConditionActorInConversation.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_hasactor.png"));
-	pIconConditionTrigger.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_trigger.png"));
+	pIconConditionLogic = igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_logic.png");
+	pIconConditionActorCommand = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_actor_command.png");
+	pIconConditionCommand = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_command.png");
+	pIconConditionVariable = igdeIcon::LoadPNG(GetEditorModule(), "icons/action_variable.png");
+	pIconConditionHasActor = igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_hasactor.png");
+	pIconConditionActorInConversation = igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_hasactor.png");
+	pIconConditionTrigger = igdeIcon::LoadPNG(GetEditorModule(), "icons/condition_trigger.png");
 	
-	pIconPlayAction.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/play_action.png"));
-	pIconPlayFromHere.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/play_from_here.png"));
-	pIconPlayPause.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/play_pause.png"));
-	pIconPlaySelectCurAction.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/play_select_current_action.png"));
+	pIconPlayAction = igdeIcon::LoadPNG(GetEditorModule(), "icons/play_action.png");
+	pIconPlayFromHere = igdeIcon::LoadPNG(GetEditorModule(), "icons/play_from_here.png");
+	pIconPlayPause = igdeIcon::LoadPNG(GetEditorModule(), "icons/play_pause.png");
+	pIconPlaySelectCurAction = igdeIcon::LoadPNG(GetEditorModule(), "icons/play_select_current_action.png");
 }
 
 void ceWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew = cActionFileNew::Ref::New(*this);
+	pActionFileOpen = cActionFileOpen::Ref::New(*this);
+	pActionFileSave = cActionFileSave::Ref::New(*this);
+	pActionFileSaveAs = cActionFileSaveAs::Ref::New(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo = igdeActionUndo::Ref::New(environment);
+	pActionEditRedo = igdeActionRedo::Ref::New(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
-	pActionViewCTSLoad.TakeOver(new cActionViewCTSLoad(*this));
-	pActionViewCTSSave.TakeOver(new cActionViewCTSSave(*this));
-	pActionViewCTALoad.TakeOver(new cActionViewCTALoad(*this));
-	pActionViewCTASave.TakeOver(new cActionViewCTASave(*this));
-	pActionViewCTGSLoad.TakeOver(new cActionViewCTGSLoad(*this));
-	pActionViewCTGSSave.TakeOver(new cActionViewCTGSSave(*this));
-	pActionViewShowRuleOfThirdsAid.TakeOver(new cActionViewShowRuleOfThirdsAid(*this));
-	pActionViewAttachLangPack.TakeOver(new cActionViewAttachLangPack(*this));
-	pActionViewDetachLangPack.TakeOver(new cActionViewDetachLangPack(*this));
-	pActionViewMissingWords.TakeOver(new cActionViewMissingWords(*this));
+	pActionViewCTSLoad = cActionViewCTSLoad::Ref::New(*this);
+	pActionViewCTSSave = cActionViewCTSSave::Ref::New(*this);
+	pActionViewCTALoad = cActionViewCTALoad::Ref::New(*this);
+	pActionViewCTASave = cActionViewCTASave::Ref::New(*this);
+	pActionViewCTGSLoad = cActionViewCTGSLoad::Ref::New(*this);
+	pActionViewCTGSSave = cActionViewCTGSSave::Ref::New(*this);
+	pActionViewShowRuleOfThirdsAid = cActionViewShowRuleOfThirdsAid::Ref::New(*this);
+	pActionViewAttachLangPack = cActionViewAttachLangPack::Ref::New(*this);
+	pActionViewDetachLangPack = cActionViewDetachLangPack::Ref::New(*this);
+	pActionViewMissingWords = cActionViewMissingWords::Ref::New(*this);
 	
 	
 	// register for updating
@@ -983,7 +973,7 @@ void ceWindowMain::pCreateActions(){
 void ceWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -995,7 +985,7 @@ void ceWindowMain::pCreateToolBarFile(){
 void ceWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1012,15 +1002,15 @@ void ceWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

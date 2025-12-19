@@ -30,9 +30,6 @@
 #include "../conversation/ceConversation.h"
 #include "../conversation/playback/cePlayback.h"
 #include "../conversation/playback/command/cePlaybackCommand.h"
-#include "../conversation/playback/command/cePlaybackCommandList.h"
-#include "../conversation/playback/variable/cePlaybackVariableList.h"
-#include "../conversation/playback/variable/cePlaybackVariable.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -70,7 +67,7 @@ pPattern(".dectgs"){
 ///////////////////////
 
 void ceLoadSaveCTGS::LoadCTGS(ceConversation &conversation, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -98,39 +95,27 @@ void ceLoadSaveCTGS::WriteGameState(decXmlWriter &writer, const cePlayback &play
 const char *tagName){
 	writer.WriteOpeningTag(tagName, false, true);
 	
-	// write commands
-	const cePlaybackCommandList &commandList = playback.GetCommandList();
-	const int commandCount = commandList.GetCount();
-	int i;
-	
-	for(i=0; i<commandCount; i++){
-		const cePlaybackCommand &command = *commandList.GetAt(i);
-		
+	playback.GetCommands().Visit([&writer](const cePlaybackCommand &c){
 		writer.WriteOpeningTagStart("command");
-		writer.WriteAttributeBool("value", command.GetValue());
+		writer.WriteAttributeBool("value", c.GetValue());
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(command.GetCommand());
+		writer.WriteTextString(c.GetCommand());
 		writer.WriteClosingTag("command", false);
-	}
+	});
 	
-	// write variables
-	const cePlaybackVariableList &variableList = playback.GetVariableList();
-	const int variableCount = variableList.GetCount();
-	
-	for(i=0; i<variableCount; i++){
-		const cePlaybackVariable &variable = *variableList.GetAt(i);
-		
+	playback.GetVariables().Visit([&writer](const decString &name, int value){
 		writer.WriteOpeningTagStart("variable");
-		writer.WriteAttributeString("name", variable.GetName());
+		writer.WriteAttributeString("name", name);
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextInt(variable.GetValue());
+		writer.WriteTextInt(value);
 		writer.WriteClosingTag("variable", false);
-	}
+	});
 	
 	// write trigger table
 	const igdeTriggerTargetList &triggerTable = playback.GetTriggerTable();
 	const int triggerCount = triggerTable.GetCount();
 	
+	int i;
 	for(i=0; i<triggerCount; i++){
 		const igdeTriggerTarget &trigger = *triggerTable.GetAt(i);
 		
@@ -146,14 +131,14 @@ const char *tagName){
 }
 
 void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &playback){
-	cePlaybackVariableList &variableList = playback.GetVariables();
+	cePlayback::VariableMap &variables = playback.GetVariables();
 	igdeTriggerTargetList &triggerTable = playback.GetTriggerTable();
-	cePlaybackCommandList &commandList = playback.GetCommands();
+	cePlaybackCommand::List &commands = playback.GetCommands();
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	commandList.RemoveAll();
-	variableList.RemoveAll();
+	commands.RemoveAll();
+	variables.RemoveAll();
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -164,40 +149,16 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 		const decString &tagName = tag->GetName();
 		
 		if(tagName == "command"){
-			cePlaybackCommand *command = NULL;
-			
-			try{
-				command = new cePlaybackCommand(GetCDataString(*tag),
-					GetAttributeBool(*tag, "value"));
-				commandList.Add(command);
-				command->FreeReference();
-				
-			}catch(const deException &){
-				if(command){
-					command->FreeReference();
-				}
-				throw;
-			}
+			commands.Add(cePlaybackCommand::Ref::New(GetCDataString(*tag), GetAttributeBool(*tag, "value")));
 			
 		}else if(tagName == "variable"){
-			variableList.Set(GetAttributeString(*tag, "name"), GetCDataInt(*tag));
+			variables.SetAt(GetAttributeString(*tag, "name"), GetCDataInt(*tag));
 			
 		}else if(tagName == "trigger"){
-			igdeTriggerTarget *trigger = NULL;
-			
-			try{
-				trigger = new igdeTriggerTarget(GetCDataString(*tag));
-				trigger->SetFired(GetAttributeBool(*tag, "fired"));
-				trigger->SetHasFired(GetAttributeBool(*tag, "hasFired"));
-				triggerTable.Add(trigger);
-				trigger->FreeReference();
-				
-			}catch(const deException &){
-				if(trigger){
-					trigger->FreeReference();
-				}
-				throw;
-			}
+			const igdeTriggerTarget::Ref trigger(igdeTriggerTarget::Ref::New(GetCDataString(*tag)));
+			trigger->SetFired(GetAttributeBool(*tag, "fired"));
+			trigger->SetHasFired(GetAttributeBool(*tag, "hasFired"));
+			triggerTable.Add(trigger);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

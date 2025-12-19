@@ -66,6 +66,6 @@ void ceCAComment::SetComment(const char *comment){
 
 
 
-ceConversationAction *ceCAComment::CreateCopy() const{
-	return new ceCAComment(*this);
+ceConversationAction::Ref ceCAComment::CreateCopy() const{
+	return ceCAComment::Ref::New(*this);
 }

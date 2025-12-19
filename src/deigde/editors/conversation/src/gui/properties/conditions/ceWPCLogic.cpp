@@ -63,6 +63,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCLogic &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPCLogic &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -80,7 +81,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCLogicSetOperator::Ref::NewWith(topic, action, condition, newOperator));
+			ceUCCLogicSetOperator::Ref::New(topic, action, condition, newOperator));
 	}
 };
 
@@ -97,10 +98,10 @@ ceWPCLogic::ceWPCLogic(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeContainer::Ref formLine;
 	
 	helper.ComboBox(*this, "Operator:", "Logic to apply to the conditions",
-		pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("None", NULL, (void*)(intptr_t)ceCConditionLogic::eopNone);
-	pCBOperator->AddItem("Any", NULL, (void*)(intptr_t)ceCConditionLogic::eopAny);
-	pCBOperator->AddItem("All", NULL, (void*)(intptr_t)ceCConditionLogic::eopAll);
+		pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("None", nullptr, (void*)(intptr_t)ceCConditionLogic::eopNone);
+	pCBOperator->AddItem("Any", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAny);
+	pCBOperator->AddItem("All", nullptr, (void*)(intptr_t)ceCConditionLogic::eopAll);
 }
 
 ceWPCLogic::~ceWPCLogic(){
@@ -118,7 +119,7 @@ ceCConditionLogic *ceWPCLogic::GetCondition() const{
 		return (ceCConditionLogic*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

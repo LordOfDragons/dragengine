@@ -38,6 +38,9 @@ class ceCConditionActorInConversation;
  * \brief Conversation condition actor in conversation property panel.
  */
 class ceWPCActorInConversation : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCActorInConversation> Ref;
+
 private:
 	igdeComboBox::Ref pCBActor;
 	igdeCheckBox::Ref pChkNegate;

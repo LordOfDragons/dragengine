@@ -35,6 +35,10 @@ class ceWindowMain;
  * \brief Menu action for tree item models.
  */
 class ceWPTMenuAction : public igdeAction{
+public:
+	typedef deTObjectReference<ceWPTMenuAction> Ref;
+	
+private:
 private:
 	ceWindowMain *pWindowMain;
 	

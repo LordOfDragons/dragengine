@@ -26,13 +26,12 @@
 #define _CELOADSAVESYSTEM_H_
 
 #include "ceLoadSaveConversation.h"
+#include "../conversation/ceConversation.h"
 #include "../langpack/ceLangPack.h"
+#include "../loadsave/ceLoadSaveLangPack.h"
 
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class ceConversation;
 class ceConversationActor;
 class ceLoadSaveConversation;
 class ceLoadSaveCTA;
@@ -47,7 +46,10 @@ class ceLangPack;
 /**
  * \brief Load/Save System.
  */
-class ceLoadSaveSystem{
+class ceLoadSaveSystem: public deObject{
+public:
+	typedef deTObjectReference<ceLoadSaveSystem> Ref;
+	
 private:
 	ceWindowMain &pWindowMain;
 	
@@ -63,7 +65,7 @@ private:
 	ceLoadSaveCTGS *pLSCTGS;
 	igdeFilePatternList pFPCTGS;
 	
-	decObjectOrderedSet pLSLangPacks;
+	ceLoadSaveLangPack::List pLSLangPacks;
 	igdeFilePatternList pFPListLangPack;
 	
 	
@@ -86,7 +88,7 @@ public:
 	inline ceLoadSaveConversation *GetLSConversation(){ return pLSConversation; }
 	
 	/** \brief Load conversation from file. */
-	ceConversation *LoadConversation(const char *filename);
+	ceConversation::Ref LoadConversation(const char *filename);
 	
 	/** \brief Save conversation to file. */
 	void SaveConversation(ceConversation *conversation, const char *filename);
@@ -137,31 +139,9 @@ public:
 	inline const igdeFilePatternList *GetCTGSFilePatterns() const{ return &pFPCTGS; }
 	
 	
-	
-	
-	/** Count of load save langpacks. */
-	int GetLSLangPackCount() const;
-	
-	/** Load save langpack at the given index. */
-	ceLoadSaveLangPack *GetLSLangPackAt(int index) const;
-	
-	/** Index of the load save langpack. */
-	int IndexOfLSLangPack(ceLoadSaveLangPack *lsLangPack) const;
-	
-	/** Save langpack exists. */
-	bool HasLSLangPack(ceLoadSaveLangPack *lsLangPack) const;
-	
-	/** Index of the load save langpack matching the given filename. */
-	int IndexOfLSLangPackMatching(const char *filename);
-	
-	/** Add load save langpack. */
-	void AddLSLangPack(ceLoadSaveLangPack *lsLangPack);
-	
-	/** Remove load save langpack. */
-	void RemoveLSLangPack(ceLoadSaveLangPack *lsLangPack);
-	
-	/** Remove all load save langpacks. */
-	void RemoveAllLSLangPacks();
+	/** Save language packs. */
+	inline ceLoadSaveLangPack::List &GetLSLangPacks(){ return pLSLangPacks; }
+	inline const ceLoadSaveLangPack::List &GetLSLangPacks() const{ return pLSLangPacks; }
 	
 	/** Update load save langpack list from the engine. */
 	void UpdateLSLangPacks();

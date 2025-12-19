@@ -32,7 +32,7 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataAction.h"
-#include "../../../../../conversation/action/ceConversationActionList.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/clipboard/igdeClipboardData.h>
@@ -69,8 +69,8 @@ pAction(action){
 ///////////////
 
 void ceWPTMACopyAction::OnAction(){
-	ceConversationActionList actions;
+	ceConversationAction::List actions;
 	actions.Add(pAction);
 	
-	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::NewWith(actions));
+	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::New(actions));
 }

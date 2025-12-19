@@ -50,7 +50,6 @@
 
 ceUCFileSetID::ceUCFileSetID(const ceConversation &conversation,
 ceConversationFile *file, const char *newID) :
-pFile(NULL),
 pNewID(newID)
 {
 	if(!file || !newID){
@@ -63,30 +62,16 @@ pNewID(newID)
 	
 	const decString &matchGroupID = file->GetID();
 	
-	const ceConversationFileList &groups = conversation.GetFileList();
-	const int groupCount = groups.GetCount();
-	int i;
-	
-	for(i=0; i<groupCount; i++){
-		const ceConversationFile &group = *groups.GetAt(i);
-		const ceConversationTopicList &topics = group.GetTopicList();
-		const int topicCount = topics.GetCount();
-		int j;
-		
-		for(j=0; j<topicCount; j++){
-			ceConversationTopic * const actionTopic = topics.GetAt(j);
-			pAddSnippets(actionTopic, matchGroupID, actionTopic->GetActionList());
-		}
-	}
+	conversation.GetFiles().Visit([&](const ceConversationFile &f){
+		f.GetTopics().Visit([&](ceConversationTopic *t){
+			pAddSnippets(t, matchGroupID, t->GetActions());
+		});
+	});
 	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileSetID::~ceUCFileSetID(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 
@@ -110,73 +95,44 @@ void ceUCFileSetID::Redo(){
 void ceUCFileSetID::pSetID(const char *id){
 	pFile->SetID(id);
 	
-	const int snippetCount = pSnippets.GetCount();
-	int i;
-	
-	for(i=0; i<snippetCount; i++){
-		const ceUndoCAction &undoCAction = *pSnippets.GetAt(i);
-		((ceCASnippet*)undoCAction.GetAction())->SetFile(id);
-		undoCAction.GetTopic()->NotifyActionChanged(undoCAction.GetAction());
-	}
+	pSnippets.Visit([&](const ceUndoCAction &a){
+		((ceCASnippet&)*a.GetAction()).SetFile(id);
+		a.GetTopic()->NotifyActionChanged(a.GetAction());
+	});
 }
 
 void ceUCFileSetID::pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
-const ceConversationActionList &actions){
-	const int count = actions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceConversationAction * const action = actions.GetAt(i);
-		
-		switch(action->GetType()){
+const ceConversationAction::List &actions){
+	actions.Visit([&](ceConversationAction *a){
+		switch(a->GetType()){
 		case ceConversationAction::eatIfElse:{
-			const ceCAIfElse &ifElse = *((const ceCAIfElse*)action);
-			
-			const ceCAIfElseCaseList &cases = ifElse.GetCases();
-			const int countCases = cases.GetCount();
-			int j;
-			for(j=0; j<countCases; j++){
-				pAddSnippets(topic, matchGroupID, cases.GetAt(j)->GetActions());
-			}
-			
+			const ceCAIfElse &ifElse = *((const ceCAIfElse*)a);
+			ifElse.GetCases().Visit([&](const ceCAIfElseCase &c){
+				pAddSnippets(topic, matchGroupID, c.GetActions());
+			});
 			pAddSnippets(topic, matchGroupID, ifElse.GetElseActions());
 			}break;
 			
 		case ceConversationAction::eatPlayerChoice:{
-			const ceCAPlayerChoice &playerChoice = *((const ceCAPlayerChoice*)action);
-			const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
-			const int optionCount = options.GetCount();
-			int j;
-			for(j=0; j<optionCount; j++){
-				pAddSnippets(topic, matchGroupID, options.GetAt(j)->GetActions());
-			}
+			const ceCAPlayerChoice &playerChoice = *((const ceCAPlayerChoice*)a);
+			playerChoice.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+				pAddSnippets(topic, matchGroupID, o.GetActions());
+			});
 			}break;
 			
 		case ceConversationAction::eatWait:
-			pAddSnippets(topic, matchGroupID, ((const ceCAWait*)action)->GetActions());
+			pAddSnippets(topic, matchGroupID, ((const ceCAWait*)a)->GetActions());
 			break;
 			
 		case ceConversationAction::eatSnippet:{
-			ceCASnippet * const snippet = (ceCASnippet*)action;
+			ceCASnippet * const snippet = (ceCASnippet*)a;
 			if(snippet->GetFile() == matchGroupID){
-				ceUndoCAction *undoCAction = NULL;
-				try{
-					undoCAction = new ceUndoCAction(action, topic);
-					pSnippets.Add(undoCAction);
-					undoCAction->FreeReference();
-					undoCAction = NULL;
-					
-				}catch(const deException &){
-					if(undoCAction){
-						undoCAction->FreeReference();
-					}
-					throw;
-				}
+				pSnippets.Add(ceUndoCAction::Ref::New(a, topic));
 			}
 			}break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }

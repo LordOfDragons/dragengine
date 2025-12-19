@@ -41,6 +41,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceCASnippet> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create snippet conversation action. */
@@ -75,7 +76,7 @@ public:
 	void SetCreateSideLane(bool createSideLane);
 	
 	/** Create a copy of this action. */
-	ceConversationAction *CreateCopy() const override;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

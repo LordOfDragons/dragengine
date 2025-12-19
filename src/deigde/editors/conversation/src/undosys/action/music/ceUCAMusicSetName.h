@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAMusic;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAMusic.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,16 +36,17 @@ class ceConversationTopic;
  * \brief Undo Action Music Conversation Action Set Name.
  */
 class ceUCAMusicSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAMusicSetName> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAMusic *pMusic;
+	ceConversationTopic::Ref pTopic;
+	ceCAMusic::Ref pMusic;
 	decString pOldName;
 	decString pNewName;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAMusicSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

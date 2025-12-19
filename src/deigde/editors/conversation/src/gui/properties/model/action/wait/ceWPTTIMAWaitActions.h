@@ -36,11 +36,13 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitActions : public ceWPTTIMActions{
 public:
+	typedef deTObjectReference<ceWPTTIMAWaitActions> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAWaitActions(ceWindowMain &windowMain, ceConversation &conversation,
-		const ceConversationActionList &actions);
+		const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */

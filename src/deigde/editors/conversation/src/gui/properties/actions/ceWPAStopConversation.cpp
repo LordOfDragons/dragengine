@@ -80,7 +80,7 @@ ceCAStopConversation *ceWPAStopConversation::GetAction() const{
 		return (ceCAStopConversation*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

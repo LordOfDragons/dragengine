@@ -71,7 +71,7 @@ pIfCase(ifCase)
 ///////////////
 
 void ceWPTMAIfElseCaseRemove::OnAction(){
-	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseRemove::Ref::NewWith(
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseRemove::Ref::New(
 		pTopic, pIfElse, pIfCase));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();

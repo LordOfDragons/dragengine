@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorParameter;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorParameter.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,19 +37,20 @@ class ceConversationTopic;
  * \brief Undo actor parameter conversation condition set test variable.
  */
 class ceUCCAParamSetTestVariable : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCAParamSetTestVariable> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorParameter *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorParameter::Ref pCondition;
 	decString pOldVariable;
 	decString pNewVariable;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCAParamSetTestVariable> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \birief Create undo. */

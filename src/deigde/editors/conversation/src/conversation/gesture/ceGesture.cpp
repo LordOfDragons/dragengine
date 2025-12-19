@@ -40,7 +40,7 @@
 ////////////////////////////
 
 ceGesture::ceGesture(const char *name) :
-pConversation(NULL),
+pConversation(nullptr),
 pName(name),
 pHold(false),
 pDuration (2.0f){
@@ -63,8 +63,8 @@ void ceGesture::SetName(const char *name){
 		return;
 	}
 	
-	if(pConversation && pConversation->GetGestureList().HasNamed(name)){
-		DETHROW(deeInvalidParam);
+	if(pConversation){
+		DEASSERT_FALSE(pConversation->GetGestures().HasMatching([&](const ceGesture &g){ return g.pName == name; }))
 	}
 	
 	pName = name;

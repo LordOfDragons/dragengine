@@ -26,8 +26,7 @@
 #define _CECAPLAYERCHOICE_H_
 
 #include "ceConversationAction.h"
-#include "ceCAPlayerChoiceOptionList.h"
-#include "ceConversationActionList.h"
+#include "ceCAPlayerChoiceOption.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -41,8 +40,8 @@
  */
 class ceCAPlayerChoice : public ceConversationAction{
 private:
-	ceCAPlayerChoiceOptionList pOptions;
-	ceConversationActionList pActions;
+	ceCAPlayerChoiceOption::List pOptions;
+	ceConversationAction::List pActions;
 	decString pVariableName;
 	bool pTIMExpanded;
 	bool pTIMActionsExpanded;
@@ -50,6 +49,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceCAPlayerChoice> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new player choice conversation action. */
@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of options. */
-	inline ceCAPlayerChoiceOptionList &GetOptions(){ return pOptions; }
-	inline const ceCAPlayerChoiceOptionList &GetOptions() const{ return pOptions; }
+	inline ceCAPlayerChoiceOption::List &GetOptions(){ return pOptions; }
+	inline const ceCAPlayerChoiceOption::List &GetOptions() const{ return pOptions; }
 	/** Retrieves the list of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/** Retrieves the variable name. */
 	inline const decString &GetVariableName() const{ return pVariableName; }
 	/** Sets the variable name. */

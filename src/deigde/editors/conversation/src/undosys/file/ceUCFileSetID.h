@@ -25,14 +25,16 @@
 #ifndef _CEUCFILESETID_H_
 #define _CEUCFILESETID_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/file/ceConversationFile.h"
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversation;
-class ceConversationFile;
 class ceConversationTopic;
-class ceConversationActionList;
 
 
 
@@ -40,20 +42,20 @@ class ceConversationActionList;
  * \brief Undo action file set id.
  */
 class ceUCFileSetID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCFileSetID> Ref;
+	
+	
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	
-	decString pOldID;
-	decString pNewID;
+	decString pOldID, pNewID;
 	
-	ceUndoCActionList pSnippets;
+	decTObjectOrderedSet<ceUndoCAction> pSnippets;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCFileSetID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -81,7 +83,7 @@ private:
 	void pSetID(const char *id);
 	
 	void pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
-		const ceConversationActionList &actions);
+		const ceConversationAction::List &actions);
 };
 
 #endif

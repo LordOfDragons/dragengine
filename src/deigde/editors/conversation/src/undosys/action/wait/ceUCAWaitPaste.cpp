@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
-const ceConversationActionList &actions, int index) :
+const ceConversationAction::List &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
 	if(!wait || actions.GetCount() == 0){
@@ -53,7 +53,7 @@ ceUCActionPaste(topic, actions, index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pWait = NULL;
+	pWait = nullptr;
 	
 	if(actions.GetCount() == 1){
 		SetShortInfo("Action Wait Paset Action");
@@ -63,13 +63,9 @@ ceUCActionPaste(topic, actions, index)
 	}
 	
 	pWait = wait;
-	wait->AddReference();
 }
 
 ceUCAWaitPaste::~ceUCAWaitPaste(){
-	if(pWait){
-		pWait->FreeReference();
-	}
 }
 
 
@@ -83,7 +79,7 @@ void ceUCAWaitPaste::Undo(){
 	pRemoveActions(pWait->GetActions());
 	GetTopic().NotifyActionStructureChanged(pWait);
 	
-	GetTopic().SetActive(activateAction ? activateAction : pWait, NULL);
+	GetTopic().SetActive(activateAction ? activateAction : pWait, nullptr);
 }
 
 void ceUCAWaitPaste::Redo(){

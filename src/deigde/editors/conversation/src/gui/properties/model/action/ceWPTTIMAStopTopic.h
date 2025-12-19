@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAStopTopic : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAStopTopic> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAStopTopic *GetActionStopTopic() const{ return (ceCAStopTopic*)GetAction(); }
+	inline ceCAStopTopic *GetActionStopTopic() const{ return GetAction().DynamicCast<ceCAStopTopic>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

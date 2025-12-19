@@ -46,16 +46,13 @@ ceUCGestureRemove::ceUCGestureRemove(ceGesture *gesture){
 	ceConversation *conversation = gesture->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pGesture = NULL;
+	pConversation = nullptr;
+	pGesture = nullptr;
 	
 	SetShortInfo("Remove Gesture");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureRemove::~ceUCGestureRemove(){

@@ -68,11 +68,10 @@ pConditionType(conditionType){
 ///////////////
 
 void ceWPTMACreateCondition::OnAction(){
-	GetConversation().GetUndoSystem()->Add(igdeUndo::Ref::New(
-		CreateUndo(ceConversationCondition::Ref::New(CreateCondition()))));
+	GetConversation().GetUndoSystem()->Add(CreateUndo(CreateCondition()));
 }
 
-igdeUndo *ceWPTMACreateCondition::CreateUndo(ceConversationCondition *condition){
+igdeUndo::Ref ceWPTMACreateCondition::CreateUndo(ceConversationCondition *condition){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW(deeInvalidParam);
@@ -80,31 +79,31 @@ igdeUndo *ceWPTMACreateCondition::CreateUndo(ceConversationCondition *condition)
 
 
 
-ceConversationCondition *ceWPTMACreateCondition::CreateCondition(){
+ceConversationCondition::Ref ceWPTMACreateCondition::CreateCondition(){
 	switch(pConditionType){
 	case ceConversationCondition::ectLogic:
-		return new ceCConditionLogic;
+		return ceCConditionLogic::Ref::New();
 		
 	case ceConversationCondition::ectHasActor:
-		return new ceCConditionHasActor;
+		return ceCConditionHasActor::Ref::New();
 		
 	case ceConversationCondition::ectActorInConversation:
-		return new ceCConditionActorInConversation;
+		return ceCConditionActorInConversation::Ref::New();
 		
 	case ceConversationCondition::ectVariable:
-		return new ceCConditionVariable;
+		return ceCConditionVariable::Ref::New();
 		
 	case ceConversationCondition::ectActorParameter:
-		return new ceCConditionActorParameter;
+		return ceCConditionActorParameter::Ref::New();
 		
 	case ceConversationCondition::ectActorCommand:
-		return new ceCConditionActorCommand;
+		return ceCConditionActorCommand::Ref::New();
 		
 	case ceConversationCondition::ectGameCommand:
-		return new ceCConditionGameCommand;
+		return ceCConditionGameCommand::Ref::New();
 		
 	case ceConversationCondition::ectTrigger:
-		return new ceCConditionTrigger;
+		return ceCConditionTrigger::Ref::New();
 		
 	default:
 		DETHROW(deeInvalidParam);
@@ -171,6 +170,6 @@ ceConversationCondition::eConditionTypes conditionType){
 		return windowMain.GetIconConditionTrigger();
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }

@@ -46,7 +46,7 @@ ceWPTMAPasteActions(windowMain, conversation),
 pTopic(&topic),
 pIndex(index)
 {
-	if(index < 0 || index > topic.GetActionList().GetCount()){
+	if(index < 0 || index > topic.GetActions().GetCount()){
 		DETHROW(deeInvalidAction);
 	}
 }
@@ -58,7 +58,7 @@ ceWPTMAPasteActions(windowMain, conversation, text),
 pTopic(&topic),
 pIndex(index)
 {
-	if(index < 0 || index > topic.GetActionList().GetCount()){
+	if(index < 0 || index > topic.GetActions().GetCount()){
 		DETHROW(deeInvalidAction);
 	}
 }
@@ -68,6 +68,6 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMATopicPasteActions::CreateUndo(const ceConversationActionList &actions){
-	return new ceUCTopicActionPaste(pTopic, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMATopicPasteActions::CreateUndo(const ceConversationAction::List &actions){
+	return ceUCTopicActionPaste::Ref::New(pTopic, actions, pIndex);
 }

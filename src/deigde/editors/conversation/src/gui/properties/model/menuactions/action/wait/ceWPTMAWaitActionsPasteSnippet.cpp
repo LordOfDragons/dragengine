@@ -57,8 +57,8 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAWaitActionsPasteSnippet::CreateUndo(const ceConversationActionList &actions){
-	ceUCActionPaste * const undo = new ceUCAWaitPaste(pTopic, pWait, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMAWaitActionsPasteSnippet::CreateUndo(const ceConversationAction::List &actions){
+	const ceUCActionPaste::Ref undo = ceUCAWaitPaste::Ref::New(pTopic, pWait, actions, pIndex);
 	undo->SetShortInfo("Paste Conversation Snippet");
 	return undo;
 }

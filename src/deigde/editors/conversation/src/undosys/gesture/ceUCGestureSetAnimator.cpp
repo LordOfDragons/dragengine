@@ -42,7 +42,7 @@
 ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *newAnimator){
 	if(!gesture || !newAnimator) DETHROW(deeInvalidParam);
 	
-	pGesture = NULL;
+	pGesture = nullptr;
 	
 	SetShortInfo("Gesture Set Animator");
 	
@@ -50,13 +50,9 @@ ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *n
 	pNewAnimator = newAnimator;
 	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureSetAnimator::~ceUCGestureSetAnimator(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

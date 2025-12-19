@@ -25,50 +25,50 @@
 #ifndef _CEWPTOPIC_H_
 #define _CEWPTOPIC_H_
 
+#include "ceWPTopicListener.h"
+#include "model/ceWPTTreeModel.h"
+#include "../../conversation/ceConversation.h"
+
+#include "actions/ceWPAComment.h"
+#include "actions/ceWPACoordSystemRemove.h"
+#include "actions/ceWPACoordSystemAdd.h"
+#include "actions/ceWPAActorRemove.h"
+#include "actions/ceWPAActorAdd.h"
+#include "actions/ceWPATrigger.h"
+#include "actions/ceWPACameraShot.h"
+#include "actions/ceWPAMusic.h"
+#include "actions/ceWPAActorSpeak.h"
+#include "actions/ceWPAIfElse.h"
+#include "actions/ceWPAPlayerChoice.h"
+#include "actions/ceWPAStopConversation.h"
+#include "actions/ceWPAStopTopic.h"
+#include "actions/ceWPASnippet.h"
+#include "actions/ceWPASetVariable.h"
+#include "actions/ceWPASetAParam.h"
+#include "actions/ceWPAActorCmd.h"
+#include "actions/ceWPAGameCommand.h"
+#include "actions/ceWPAWait.h"
+#include "conditions/ceWPCTrigger.h"
+#include "conditions/ceWPCGameCommand.h"
+#include "conditions/ceWPCLogic.h"
+#include "conditions/ceWPCHasActor.h"
+#include "conditions/ceWPCActorInConversation.h"
+#include "conditions/ceWPCVariable.h"
+#include "conditions/ceWPCAParam.h"
+#include "conditions/ceWPCActorCommand.h"
+
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
-class ceWPAComment;
-class ceWPACoordSystemRemove;
-class ceWPACoordSystemAdd;
-class ceWPAActorRemove;
-class ceWPAActorAdd;
-class ceWPCTrigger;
-class ceWPATrigger;
 class ceWindowProperties;
-class ceWPTopicListener;
-class ceConversation;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
-class ceConversationActionList;
 class ceConversationCondition;
-class ceConversationConditionList;
-class ceWPACameraShot;
-class ceWPAMusic;
-class ceWPAActorSpeak;
-class ceWPAIfElse;
-class ceWPAPlayerChoice;
-class ceWPAStopConversation;
-class ceWPAStopTopic;
-class ceWPASnippet;
-class ceWPASetVariable;
-class ceWPASetAParam;
-class ceWPAActorCmd;
-class ceWPAGameCommand;
-class ceWPAWait;
-class ceWPCLogic;
-class ceWPCHasActor;
-class ceWPCActorInConversation;
-class ceWPCVariable;
-class ceWPCAParam;
-class ceWPCActorCommand;
-class ceWPCGameCommand;
 
-class ceWPTTreeModel;
 class ceWPTTreeItemModel;
 class ceWPTTreeItem;
 
@@ -78,10 +78,13 @@ class ceWPTTreeItem;
  * Topic property window.
  */
 class ceWPTopic : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<ceWPTopic> Ref;
+	
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPTopicListener *pListener;
-	ceConversation *pConversation;
+	ceWPTopicListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeComboBoxFilter::Ref pCBFile;
 	igdeButton::Ref pBtnFile;
@@ -90,38 +93,38 @@ private:
 	igdeButton::Ref pBtnTopic;
 	
 	igdeTreeList::Ref pTreeActions;
-	ceWPTTreeModel *pModelTreeActions;
+	ceWPTTreeModel::Ref pModelTreeActions;
 	
 	igdeSwitcher::Ref pSwitcher;
 	
-	ceWPACameraShot *pPanelACameraShot;
-	ceWPAMusic *pPanelAMusic;
-	ceWPAActorSpeak *pPanelAActorSpeak;
-	ceWPAIfElse *pPanelAIfElse;
-	ceWPAPlayerChoice *pPanelAPlayerChoice;
-	ceWPAStopConversation *pPanelAStopConversation;
-	ceWPAStopTopic *pPanelAStopTopic;
-	ceWPASnippet *pPanelASnippet;
-	ceWPASetVariable *pPanelASetVariable;
-	ceWPASetAParam *pPanelASetAParam;
-	ceWPAActorCmd *pPanelAActorCmd;
-	ceWPAGameCommand *pPanelAGameCommand;
-	ceWPAWait *pPanelAWait;
-	ceWPATrigger *pPanelATrigger;
-	ceWPAActorAdd *pPanelAActorAdd;
-	ceWPAActorRemove *pPanelAActorRemove;
-	ceWPACoordSystemAdd *pPanelACoordSystemAdd;
-	ceWPACoordSystemRemove *pPanelACoordSystemRemove;
-	ceWPAComment *pPanelAComment;
+	ceWPACameraShot::Ref pPanelACameraShot;
+	ceWPAMusic::Ref pPanelAMusic;
+	ceWPAActorSpeak::Ref pPanelAActorSpeak;
+	ceWPAIfElse::Ref pPanelAIfElse;
+	ceWPAPlayerChoice::Ref pPanelAPlayerChoice;
+	ceWPAStopConversation::Ref pPanelAStopConversation;
+	ceWPAStopTopic::Ref pPanelAStopTopic;
+	ceWPASnippet::Ref pPanelASnippet;
+	ceWPASetVariable::Ref pPanelASetVariable;
+	ceWPASetAParam::Ref pPanelASetAParam;
+	ceWPAActorCmd::Ref pPanelAActorCmd;
+	ceWPAGameCommand::Ref pPanelAGameCommand;
+	ceWPAWait::Ref pPanelAWait;
+	ceWPATrigger::Ref pPanelATrigger;
+	ceWPAActorAdd::Ref pPanelAActorAdd;
+	ceWPAActorRemove::Ref pPanelAActorRemove;
+	ceWPACoordSystemAdd::Ref pPanelACoordSystemAdd;
+	ceWPACoordSystemRemove::Ref pPanelACoordSystemRemove;
+	ceWPAComment::Ref pPanelAComment;
 	
-	ceWPCLogic *pPanelCLogic;
-	ceWPCHasActor *pPanelCHasActor;
-	ceWPCActorInConversation *pPanelCActorInConversation;
-	ceWPCVariable *pPanelCVariable;
-	ceWPCAParam *pPanelCAParam;
-	ceWPCActorCommand *pPanelCActorCommand;
-	ceWPCGameCommand *pPanelCGameCommand;
-	ceWPCTrigger *pPanelCTrigger;
+	ceWPCLogic::Ref pPanelCLogic;
+	ceWPCHasActor::Ref pPanelCHasActor;
+	ceWPCActorInConversation::Ref pPanelCActorInConversation;
+	ceWPCVariable::Ref pPanelCVariable;
+	ceWPCAParam::Ref pPanelCAParam;
+	ceWPCActorCommand::Ref pPanelCActorCommand;
+	ceWPCGameCommand::Ref pPanelCGameCommand;
+	ceWPCTrigger::Ref pPanelCTrigger;
 	
 	
 	
@@ -145,13 +148,13 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Action tree model. */
-	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }
+	inline const ceWPTTreeModel::Ref &GetActionTreeModel() const{ return pModelTreeActions; }
 	
 	/** Active action tree item model. */
 	ceWPTTreeItemModel *GetActionTreeItem();

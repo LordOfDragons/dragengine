@@ -36,6 +36,7 @@ class ceCAStopTopic;
  */
 class ceWPAStopTopic : public ceWPAction{
 public:
+	typedef deTObjectReference<ceWPAStopTopic> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation action property window. */
@@ -49,7 +50,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Active action or \em NULL if none is active. */
+	/** \brief Active action or \em nullptr if none is active. */
 	ceCAStopTopic *GetAction() const;
 	
 	/** \brief Update active action. */

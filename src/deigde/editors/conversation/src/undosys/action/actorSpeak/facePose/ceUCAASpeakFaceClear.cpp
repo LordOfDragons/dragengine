@@ -43,8 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+pTopic(nullptr)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -52,22 +51,13 @@ pActorSpeak(NULL)
 	
 	SetShortInfo("Actor speak clear face pose");
 	
-	pOldFaces = actorSpeak->GetFacePoseList();
+	pOldFaces = actorSpeak->GetFacePoses();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
 ///////////////
 
 void ceUCAASpeakFaceClear::Undo(){
-	pActorSpeak->GetFacePoseList() = pOldFaces;
+	pActorSpeak->GetFacePoses() = pOldFaces;
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceClear::Redo(){
-	pActorSpeak->GetFacePoseList().RemoveAll();
+	pActorSpeak->GetFacePoses().RemoveAll();
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

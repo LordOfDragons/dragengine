@@ -84,6 +84,6 @@ void ceCASetActorParameter::SetValueVariable(const char *variable){
 
 
 
-ceConversationAction *ceCASetActorParameter::CreateCopy() const{
-	return new ceCASetActorParameter(*this);
+ceConversationAction::Ref ceCASetActorParameter::CreateCopy() const{
+	return ceCASetActorParameter::Ref::New(*this);
 }

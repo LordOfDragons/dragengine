@@ -69,6 +69,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPCVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -86,7 +87,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCVarSetOperator::Ref::NewWith(topic, action, condition, newOperator));
+			ceUCCVarSetOperator::Ref::New(topic, action, condition, newOperator));
 	}
 };
 
@@ -94,6 +95,7 @@ class cTextVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextVariable> Ref;
 	cTextVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -105,7 +107,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCVarSetVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCVarSetVariable::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -113,6 +115,7 @@ class cTextTestValue : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextTestValue> Ref;
 	cTextTestValue(ceWPCVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -129,7 +132,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCVarSetTestValue::Ref::NewWith(topic, action, condition, value));
+			ceUCCVarSetTestValue::Ref::New(topic, action, condition, value));
 	}
 };
 
@@ -137,6 +140,7 @@ class cTextTestVariable : public igdeTextFieldListener {
 	ceWPCVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextTestVariable> Ref;
 	cTextTestVariable(ceWPCVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -148,7 +152,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCVarSetTestVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCVarSetTestVariable::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -167,21 +171,21 @@ ceWPCVariable::ceWPCVariable(ceWPTopic &parentPanel) : ceWPCondition(parentPanel
 	igdeContainer::Ref formLine;
 	
 	helper.ComboBox(*this, "Operator:", "Operator to compare variable value with test value",
-		pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("Equal", NULL, (void*)(intptr_t)ceCConditionVariable::eopEqual);
-	pCBOperator->AddItem("Not Equal", NULL, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
-	pCBOperator->AddItem("Less", NULL, (void*)(intptr_t)ceCConditionVariable::eopLess);
-	pCBOperator->AddItem("Less or Equal", NULL, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
-	pCBOperator->AddItem("Greater", NULL, (void*)(intptr_t)ceCConditionVariable::eopGreater);
-	pCBOperator->AddItem("Greater or Equal", NULL, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
+		pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopEqual);
+	pCBOperator->AddItem("Not Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopNotEqual);
+	pCBOperator->AddItem("Less", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLess);
+	pCBOperator->AddItem("Less or Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopLessEqual);
+	pCBOperator->AddItem("Greater", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreater);
+	pCBOperator->AddItem("Greater or Equal", nullptr, (void*)(intptr_t)ceCConditionVariable::eopGreaterEqual);
 	
 	helper.EditString(*this, "Variable:", "Variable to compare",
-		pEditVariable, new cTextVariable(*this));
+		pEditVariable, cTextVariable::Ref::New(*this));
 	helper.EditInteger(*this, "Test Value:", "Value to compare against",
-		pEditTestValue, new cTextTestValue(*this));
+		pEditTestValue, cTextTestValue::Ref::New(*this));
 	helper.EditString(*this, "Test Variable:",
 		"Variable to compare against or empty string to use 'Test Value'",
-		pEditTestVariable, new cTextTestVariable(*this));
+		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 
 ceWPCVariable::~ceWPCVariable(){
@@ -199,7 +203,7 @@ ceCConditionVariable *ceWPCVariable::GetCondition() const{
 		return (ceCConditionVariable*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

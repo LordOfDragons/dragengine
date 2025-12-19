@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceFacePose;
-class ceControllerValue;
+#include "../../../conversation/facepose/ceFacePose.h"
+#include "../../../utils/ceControllerValue.h"
 
 
 
@@ -36,14 +36,15 @@ class ceControllerValue;
  * \brief Undo Action Add Face Pose Controller.
  */
 class ceUCFPControllerAdd : public igdeUndo{
-private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCFPControllerAdd> Ref;
 	
+	
+private:
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

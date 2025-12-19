@@ -70,6 +70,6 @@ void ceCConditionGameCommand::SetNegate(bool negate){
 
 
 
-ceConversationCondition *ceCConditionGameCommand::CreateCopy() const{
-	return new ceCConditionGameCommand(*this);
+ceConversationCondition::Ref ceCConditionGameCommand::CreateCopy() const{
+	return ceCConditionGameCommand::Ref::New(*this);
 }

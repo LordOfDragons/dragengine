@@ -25,6 +25,10 @@
 #ifndef _CEWINDOWDOPESHEET_H_
 #define _CEWINDOWDOPESHEET_H_
 
+#include "ceWindowDopeSheetListener.h"
+#include "ceWDSVAPreview.h"
+#include "../../conversation/ceConversation.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeScrollBar.h>
@@ -34,25 +38,23 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeFont.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
 
 
-class ceWindowDopeSheetListener;
 class ceViewDopeSheet;
 class ceWindowMain;
-class ceConversation;
 class ceCameraShot;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
 class ceCAActorSpeak;
 class ceWDSLane;
-class ceWDSVAPreview;
 
 
 
@@ -61,6 +63,8 @@ class ceWDSVAPreview;
  */
 class ceWindowDopeSheet : public igdeContainerFlow{
 public:
+	typedef deTObjectReference<ceWindowDopeSheet> Ref;
+	
 	/** \brief Lanes. */
 	enum eLanes{
 		elWord,
@@ -94,8 +98,8 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceWindowDopeSheetListener *pListener;
-	ceConversation *pConversation;
+	ceWindowDopeSheetListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeAction::Ref pActionPlayAction;
 	igdeAction::Ref pActionPlayFromhere;
@@ -111,8 +115,8 @@ private:
 	igdeComboBox::Ref pCBTimeScale;
 	cDopeSheet::Ref pDopeSheet;
 	
-	decObjectList pTimeLineLabels;
-	decObjectList pTimeLines;
+	decTObjectList<deCanvasText> pTimeLineLabels;
+	decTObjectList<deCanvasPaint> pTimeLines;
 	
 	deCanvasView::Ref pCanvasTimeLines;
 	deCanvasView::Ref pCanvasTimeLineLabels;
@@ -126,8 +130,8 @@ private:
 	float pSecondPerPixel;
 	int pVAPreviewHeight;
 	
-	decObjectList pLanes;
-	ceWDSVAPreview *pVAPreview;
+	decTObjectList<ceWDSLane> pLanes;
+	ceWDSVAPreview::Ref pVAPreview;
 	
 	igdeFont::Ref pFontText;
 	
@@ -155,7 +159,7 @@ public:
 	
 	
 	/** \brief Conversation to monitor. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);
@@ -208,7 +212,7 @@ public:
 	ceWDSLane *GetLaneAtPosition(const decPoint &position) const;
 	
 	/** \brief Voice audio preview. */
-	inline ceWDSVAPreview &GetVAPreview() const{ return *pVAPreview; }
+	inline const ceWDSVAPreview::Ref &GetVAPreview() const{ return pVAPreview; }
 	
 	
 	
@@ -225,7 +229,7 @@ public:
 	inline cDopeSheet &GetDopeSheet() const{ return (cDopeSheet&)(igdeWidget&)pDopeSheet; }
 	
 	/** \brief Text font. */
-	inline igdeFont *GetFontText() const{ return pFontText; }
+	inline const igdeFont::Ref &GetFontText() const{ return pFontText; }
 	
 	
 	

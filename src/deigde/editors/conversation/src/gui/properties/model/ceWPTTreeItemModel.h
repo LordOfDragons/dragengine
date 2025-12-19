@@ -29,7 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class ceConversation;
 class ceConversationAction;
@@ -45,18 +45,18 @@ class igdeMenuCascade;
 
 
 /**
- * \brief Base class for tree item models.
+ * Base class for tree item models.
  * 
  * Tree item models are responsible to update the visual state and content
  * of an assigned tree item.
  */
 class ceWPTTreeItemModel : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWPTTreeItemModel> Ref;
-
-
 public:
-	/** \brief Tree item types. */
+	typedef deTObjectReference<ceWPTTreeItemModel> Ref;
+	typedef decTObjectOrderedSet<ceWPTTreeItemModel> ModelList;
+	
+	
+	/** Tree item types. */
 	enum eTypes{
 		etActionCameraShot,
 		etActionMusic,
@@ -107,7 +107,7 @@ private:
 	
 	decString pText, pDescription;
 	igdeIcon::Ref pIcon;
-	decObjectOrderedSet pChildren;
+	ModelList pChildren;
 	bool pExpanded;
 	
 	ceWPTTreeModel *pTree; // weak reference;
@@ -117,164 +117,161 @@ private:
 	
 	
 public:
-	/** \brief Constructors and Destructors */
+	/** Constructors and Destructors */
 	/*@{*/
-	/** \brief Crete new tree item model. */
+	/** Crete new tree item model. */
 	ceWPTTreeItemModel(ceWindowMain &windowMain, ceConversation &conversation, eTypes type);
 	
 protected:
-	/** \brief Clean up tree item model. */
+	/** Clean up tree item model. */
 	virtual ~ceWPTTreeItemModel();
 	/*@}*/
 	
 	
 	
 public:
-	/** \brief Management */
+	/** Management */
 	/*@{*/
-	/** \brief Window selection. */
+	/** Window selection. */
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Game definition. */
+	/** Game definition. */
 	inline ceConversation &GetConversation() const{ return pConversation; }
 	
-	/** \brief Tree item type. */
+	/** Tree item type. */
 	inline eTypes GetType() const{ return pType; }
 	
 	
 	
-	/** \brief Tree item text. */
+	/** Tree item text. */
 	inline const decString &GetText() const{ return pText; }
 	
 	/**
-	 * \brief Set tree item text.
+	 * Set tree item text.
 	 * 
 	 * If tree item is assigned updates tree item text.
 	 */
 	void SetText(const char *text);
 	
-	/** \brief Tree item description. */
+	/** Tree item description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/**
-	 * \brief Set tree item description.
+	 * Set tree item description.
 	 * 
 	 * If tree item is assigned updates tree item description.
 	 */
 	void SetDescription(const char *description);
 	
-	/** \brief Tree item icon. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** Tree item icon. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
 	/**
-	 * \brief Set tree item icon.
+	 * Set tree item icon.
 	 * 
 	 * If tree item is assigned updates tree item icons.
 	 */
 	void SetIcon(igdeIcon *icon);
 	
-	/** \brief Expanded. */
+	/** Expanded. */
 	inline bool GetExpanded() const{ return pExpanded; }
 	
-	/** \brief Set expanded. */
+	/** Set expanded. */
 	void SetExpanded(bool expanded);
 	
 	
 	
-	/** \brief Number of children. */
-	int GetChildCount() const;
+	/** Children. */
+	inline const ModelList &GetChildren() const{ return pChildren; }
 	
-	/** \brief Child at index. */
-	ceWPTTreeItemModel *GetChildAt(int index) const;
-	
-	/** \brief Add child. */
+	/** Add child. */
 	void AddChild(ceWPTTreeItemModel *child);
 	
-	/** \brief Insert child at position. */
+	/** Insert child at position. */
 	void InsertChild(ceWPTTreeItemModel *child, int position);
 	
-	/** \brief Remove child. */
+	/** Remove child. */
 	void RemoveChild(ceWPTTreeItemModel *child);
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAllChildren();
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild(ceWPTTreeItemModel *child, int to);
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild(int from, int to);
 	
 	
 	
-	/** \brief Tree or \em NULL if not top level. */
+	/** Tree or \em nullptr if not top level. */
 	inline ceWPTTreeModel *GetTree() const{ return pTree; }
 	
-	/** \brief Set tree or \em NULL if not top level. */
+	/** Set tree or \em nullptr if not top level. */
 	void SetTree(ceWPTTreeModel *tree);
 	
-	/** \brief First non-NULL tree found while traveling up parents or \em NULL if not found. */
+	/** First non-nullptr tree found while traveling up parents or \em nullptr if not found. */
 	ceWPTTreeModel *GetFirstTree() const;
 	
-	/** \brief Parent or \em NULL. */
+	/** Parent or \em nullptr. */
 	inline ceWPTTreeItemModel *GetParent() const{ return pParent; }
 	
-	/** \brief Set parent or \em NULL. */
+	/** Set parent or \em nullptr. */
 	void SetParent(ceWPTTreeItemModel *parent);
 	
-	/** \brief Assigned tree item or \em NULL. */
+	/** Assigned tree item or \em nullptr. */
 	inline ceWPTTreeItem *GetTreeItem() const{ return pTreeItem; }
 	
 	/**
-	 * \brief Assign tree item or \em NULL.
+	 * Assign tree item or \em nullptr.
 	 * 
-	 * If tree item is not \em NULL fully updates tree item with stored data.
+	 * If tree item is not \em nullptr fully updates tree item with stored data.
 	 */
 	void SetTreeItem(ceWPTTreeItem *treeItem);
 	
-	/** \brief Sort children. */
+	/** Sort children. */
 	void SortChildren();
 	
-	/** \brief Sort parent item. */
+	/** Sort parent item. */
 	void ParentSortItems();
 	
-	/** \brief Set item as current item and make it visible. */
+	/** Set item as current item and make it visible. */
 	void SetAsCurrentItem();
 	
 	
 	
-	/** \brief User selected item. */
+	/** User selected item. */
 	virtual void OnSelected();
 	
-	/** \brief User requests context menu for selected item. */
+	/** User requests context menu for selected item. */
 	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
-	/** \brief User requests context menu for selected child action. */
+	/** User requests context menu for selected child action. */
 	virtual void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action);
 	
-	/** \brief User requests context menu for selected child condition. */
+	/** User requests context menu for selected child condition. */
 	virtual void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition);
 	
-	/** \brief Deep find action. */
+	/** Deep find action. */
 	virtual ceWPTTIMAction *DeepFindAction(ceConversationAction *action);
 	
-	/** \brief Deep find condition. */
+	/** Deep find condition. */
 	virtual ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition);
 	
-	/** \brief Expanded state changed. */
+	/** Expanded state changed. */
 	virtual void OnExpandedChanged();
 	
-	/** \brief Get action owning this model if any. */
+	/** Get action owning this model if any. */
 	virtual ceConversationAction *GetOwnerAction() const;
 	
-	/** \brief Get condition owning this model if any. */
+	/** Get condition owning this model if any. */
 	virtual ceConversationCondition *GetOwnerCondition() const;
 	
-	/** \brief Build playback continuing from here. */
+	/** Build playback continuing from here. */
 	virtual void BuildPlaybackFromHere() const;
 	/*@}*/
 };

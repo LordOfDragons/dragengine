@@ -50,8 +50,6 @@
 #include "../ceWPTTreeItem.h"
 #include "../../../ceWindowMain.h"
 #include "../../../../conversation/ceConversation.h"
-#include "../../../../conversation/action/ceConversationAction.h"
-#include "../../../../conversation/action/ceConversationActionList.h"
 #include "../../../../conversation/topic/ceConversationTopic.h"
 #include "../../../../conversation/playback/cePlayback.h"
 #include "../../../../conversation/playback/cePlaybackActionStackEntry.h"
@@ -66,7 +64,7 @@
 ////////////////////////////
 
 ceWPTTIMActions::ceWPTTIMActions(ceWindowMain &windowMain, ceConversation &conversation,
-eTypes type, const ceConversationActionList &actions) :
+eTypes type, const ceConversationAction::List &actions) :
 ceWPTTreeItemModel(windowMain, conversation, type),
 pActions(actions){
 }
@@ -80,17 +78,13 @@ ceWPTTIMActions::~ceWPTTIMActions(){
 ///////////////
 
 ceWPTTIMAction *ceWPTTIMActions::GetChildWith(ceConversationAction *action) const{
-	const int count = GetChildCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTIMAction * const child = (ceWPTTIMAction*)GetChildAt(i);
+	for(const auto &c : GetChildren()){
+		const ceWPTTIMAction::Ref child(c.DynamicCast<ceWPTTIMAction>());
 		if(child->GetAction() == action){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTIMActions::StructureChanged(){
@@ -111,10 +105,10 @@ void ceWPTTIMActions::UpdateActions(){
 		ceConversationAction * const action = pActions.GetAt(i);
 		
 		// find item matching action if present
-		ceWPTTIMAction *model = NULL;
-		const int childCount = GetChildCount();
+		ceWPTTIMAction::Ref model;
+		const int childCount = GetChildren().GetCount();
 		for(j=i; j<childCount; j++){
-			ceWPTTIMAction * const child = (ceWPTTIMAction*)GetChildAt(j);
+			const ceWPTTIMAction::Ref child(GetChildren().GetAt(j).DynamicCast<ceWPTTIMAction>());
 			if(child->GetAction() == action){
 				model = child;
 				break;
@@ -131,23 +125,14 @@ void ceWPTTIMActions::UpdateActions(){
 			
 		}else{
 			model = CreateActionModel(GetWindowMain(), GetConversation(), action);
-			
-			try{
-				InsertChild(model, i);
-				model->Update();
-				
-			}catch(const deException &){
-				model->FreeReference();
-				throw;
-			}
-			
-			model->FreeReference();
+			InsertChild(model, i);
+			model->Update();
 		}
 	}
 	
 	// remove non-matching nodes
-	while(GetChildCount() > count){
-		RemoveChild(GetChildAt(GetChildCount() - 1));
+	while(GetChildren().GetCount() > count){
+		RemoveChild(GetChildren().Last());
 	}
 }
 
@@ -159,13 +144,13 @@ void ceWPTTIMActions::BuildPlaybackFromHere() const{
 		
 	}else{
 		GetConversation().GetPlayback()->GetMainActionStack()->Push(
-			NULL, GetOwnerAction(), &pActions, 0);
+			nullptr, GetOwnerAction(), &pActions, 0);
 	}
 }
 
 
 
-ceWPTTIMAction *ceWPTTIMActions::CreateActionModel(ceWindowMain &windowMain,
+ceWPTTIMAction::Ref ceWPTTIMActions::CreateActionModel(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationAction *action){
 	if(!action){
 		DETHROW(deeInvalidParam);
@@ -173,61 +158,61 @@ ceConversation &conversation, ceConversationAction *action){
 	
 	switch(action->GetType()){
 	case ceConversationAction::eatCameraShot:
-		return new ceWPTTIMACameraShot(windowMain, conversation, (ceCACameraShot*)action);
+		return ceWPTTIMACameraShot::Ref::New(windowMain, conversation, (ceCACameraShot*)action);
 		
 	case ceConversationAction::eatMusic:
-		return new ceWPTTIMAMusic(windowMain, conversation, (ceCAMusic*)action);
+		return ceWPTTIMAMusic::Ref::New(windowMain, conversation, (ceCAMusic*)action);
 		
 	case ceConversationAction::eatActorSpeak:
-		return new ceWPTTIMAActorSpeak(windowMain, conversation, (ceCAActorSpeak*)action);
+		return ceWPTTIMAActorSpeak::Ref::New(windowMain, conversation, (ceCAActorSpeak*)action);
 		
 	case ceConversationAction::eatIfElse:
-		return new ceWPTTIMAIfElse(windowMain, conversation, (ceCAIfElse*)action);
+		return ceWPTTIMAIfElse::Ref::New(windowMain, conversation, (ceCAIfElse*)action);
 		
 	case ceConversationAction::eatPlayerChoice:
-		return new ceWPTTIMAPlayerChoice(windowMain, conversation, (ceCAPlayerChoice*)action);
+		return ceWPTTIMAPlayerChoice::Ref::New(windowMain, conversation, (ceCAPlayerChoice*)action);
 		
 	case ceConversationAction::eatStopConversation:
-		return new ceWPTTIMAStopConversation(windowMain, conversation, (ceCAStopConversation*)action);
+		return ceWPTTIMAStopConversation::Ref::New(windowMain, conversation, (ceCAStopConversation*)action);
 		
 	case ceConversationAction::eatStopTopic:
-		return new ceWPTTIMAStopTopic(windowMain, conversation, (ceCAStopTopic*)action);
+		return ceWPTTIMAStopTopic::Ref::New(windowMain, conversation, (ceCAStopTopic*)action);
 		
 	case ceConversationAction::eatSnippet:
-		return new ceWPTTIMASnippet(windowMain, conversation, (ceCASnippet*)action);
+		return ceWPTTIMASnippet::Ref::New(windowMain, conversation, (ceCASnippet*)action);
 		
 	case ceConversationAction::eatSetVariable:
-		return new ceWPTTIMASetVariable(windowMain, conversation, (ceCASetVariable*)action);
+		return ceWPTTIMASetVariable::Ref::New(windowMain, conversation, (ceCASetVariable*)action);
 		
 	case ceConversationAction::eatSetActorParameter:
-		return new ceWPTTIMASetActorParameter(windowMain, conversation, (ceCASetActorParameter*)action);
+		return ceWPTTIMASetActorParameter::Ref::New(windowMain, conversation, (ceCASetActorParameter*)action);
 		
 	case ceConversationAction::eatActorCommand:
-		return new ceWPTTIMAActorCommand(windowMain, conversation, (ceCAActorCommand*)action);
+		return ceWPTTIMAActorCommand::Ref::New(windowMain, conversation, (ceCAActorCommand*)action);
 		
 	case ceConversationAction::eatGameCommand:
-		return new ceWPTTIMAGameCommand(windowMain, conversation, (ceCAGameCommand*)action);
+		return ceWPTTIMAGameCommand::Ref::New(windowMain, conversation, (ceCAGameCommand*)action);
 		
 	case ceConversationAction::eatWait:
-		return new ceWPTTIMAWait(windowMain, conversation, (ceCAWait*)action);
+		return ceWPTTIMAWait::Ref::New(windowMain, conversation, (ceCAWait*)action);
 		
 	case ceConversationAction::eatTrigger:
-		return new ceWPTTIMATrigger(windowMain, conversation, (ceCATrigger*)action);
+		return ceWPTTIMATrigger::Ref::New(windowMain, conversation, (ceCATrigger*)action);
 		
 	case ceConversationAction::eatActorAdd:
-		return new ceWPTTIMAActorAdd(windowMain, conversation, (ceCAActorAdd*)action);
+		return ceWPTTIMAActorAdd::Ref::New(windowMain, conversation, (ceCAActorAdd*)action);
 		
 	case ceConversationAction::eatActorRemove:
-		return new ceWPTTIMAActorRemove(windowMain, conversation, (ceCAActorRemove*)action);
+		return ceWPTTIMAActorRemove::Ref::New(windowMain, conversation, (ceCAActorRemove*)action);
 		
 	case ceConversationAction::eatCoordSystemAdd:
-		return new ceWPTTIMACoordSystemAdd(windowMain, conversation, (ceCACoordSystemAdd*)action);
+		return ceWPTTIMACoordSystemAdd::Ref::New(windowMain, conversation, (ceCACoordSystemAdd*)action);
 		
 	case ceConversationAction::eatCoordSystemRemove:
-		return new ceWPTTIMACoordSystemRemove(windowMain, conversation, (ceCACoordSystemRemove*)action);
+		return ceWPTTIMACoordSystemRemove::Ref::New(windowMain, conversation, (ceCACoordSystemRemove*)action);
 		
 	case ceConversationAction::eatComment:
-		return new ceWPTTIMAComment(windowMain, conversation, (ceCAComment*)action);
+		return ceWPTTIMAComment::Ref::New(windowMain, conversation, (ceCAComment*)action);
 		
 	default:
 		DETHROW(deeInvalidParam);

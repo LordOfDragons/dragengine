@@ -36,6 +36,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action paste condition to wait.
  */
 class ceWPTMAPChoiceOptionPasteCondition : public ceWPTMAPasteCondition{
+public:
+	typedef deTObjectReference<ceWPTMAPChoiceOptionPasteCondition> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -70,7 +73,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for pasting condition. */
-	igdeUndo *CreateUndo(const ceConversationConditionList &conditions) override;
+	igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions) override;
 	/*@}*/
 };
 

@@ -40,6 +40,9 @@ class ceConversationAction;
  * content while this class handles the rest.
  */
 class ceWPTTIMConditionContainer : public ceWPTTreeItemModel{
+public:
+	typedef deTObjectReference<ceWPTTIMConditionContainer> Ref;
+	
 private:
 	ceConversationAction *pAction;
 	ceConversationCondition::Ref pCondition;
@@ -67,11 +70,11 @@ public:
 	/** \brief Action. */
 	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
-	/** \brief Condition in container or \em NULL. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	/** \brief Condition in container or \em nullptr. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/**
-	 * \brief Set condition in container or \em NULL.
+	 * \brief Set condition in container or \em nullptr.
 	 * 
 	 * Updates the child not if condition changed.
 	 */
@@ -85,7 +88,7 @@ public:
 	 */
 	void SetOrUpdateCondition(ceConversationCondition *condition);
 	
-	/** \brief Model with child condition or \em NULL. */
+	/** \brief Model with child condition or \em nullptr. */
 	inline ceWPTTIMCondition *GetChildCondition() const{ return pChildCondition; }
 	
 	

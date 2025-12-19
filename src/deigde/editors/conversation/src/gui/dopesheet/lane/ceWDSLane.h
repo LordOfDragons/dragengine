@@ -25,12 +25,16 @@
 #ifndef _CEWDSLANE_H_
 #define _CEWDSLANE_H_
 
-#include "../../../conversation/strip/ceStripList.h"
+#include "../../../conversation/strip/ceStrip.h"
+#include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripSetPause.h"
+#include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripSetDuration.h"
+#include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripsScale.h"
 
 #include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
@@ -38,14 +42,9 @@
 #include <dragengine/resources/canvas/deCanvasText.h>
 
 class ceWindowDopeSheet;
-class ceUCAASpeakStripSetPause;
-class ceUCAASpeakStripSetDuration;
-class ceUCAASpeakStripsScale;
-class ceStrip;
 class decStringList;
 
 class igdeMenuCascade;
-class igdeUndo;
 
 
 /**
@@ -80,8 +79,7 @@ private:
 	decString pLabel;
 	decString pDescription;
 	
-	decObjectList pStrips;
-	decObjectList pTimeLines;
+	decTObjectList<cStrip> pStrips;
 	
 	deCanvasView::Ref pCanvas;
 	deCanvasView::Ref pCanvasPanelSheet;
@@ -94,7 +92,7 @@ private:
 	int pSelectionFrom;
 	int pSelectionTo;
 	
-	const ceStripList pEmptyList;
+	const ceStrip::List pEmptyList;
 	
 	
 	
@@ -127,10 +125,10 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** Canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** Mouse listener. */
-	inline igdeMouseKeyListener *GetMouseKeyListener() const{ return pMouseKeyListener; }
+	inline const igdeMouseKeyListener::Ref &GetMouseKeyListener() const{ return pMouseKeyListener; }
 	
 	
 	
@@ -203,7 +201,7 @@ public:
 	virtual void OnContextMenu(igdeMenuCascade &menu, const decPoint &position);
 	
 	/** Strip list. */
-	virtual const ceStripList &GetStripList() const = 0;
+	virtual const ceStrip::List &GetStripList() const = 0;
 	
 	/** Fill ID list. */
 	virtual void FillIDList(decStringList &list) = 0;
@@ -212,33 +210,33 @@ public:
 	virtual float DefaultDuration(const decString &id);
 	
 	/** Create add strip undo action. */
-	virtual igdeUndo *UndoStripAdd(ceStrip *strip, int index) = 0;
+	virtual igdeUndo::Ref UndoStripAdd(ceStrip *strip, int index) = 0;
 	
 	/** Create remove strip undo action. */
-	virtual igdeUndo *UndoStripRemove(ceStrip *strip) = 0;
+	virtual igdeUndo::Ref UndoStripRemove(ceStrip *strip) = 0;
 	
 	/** Create remove all strip undo action. */
-	virtual igdeUndo *UndoStripRemoveAll() = 0;
+	virtual igdeUndo::Ref UndoStripRemoveAll() = 0;
 	
 	/** Create replace strip undo action. */
-	virtual igdeUndo *UndoStripReplace(ceStrip *strip, ceStrip *withStrip) = 0;
+	virtual igdeUndo::Ref UndoStripReplace(ceStrip *strip, ceStrip *withStrip) = 0;
 	
 	/** Create move strip undo action. */
-	virtual igdeUndo *UndoStripMove(ceStrip *strip, int toIndex) = 0;
+	virtual igdeUndo::Ref UndoStripMove(ceStrip *strip, int toIndex) = 0;
 	
 	/** Create strip set pause undo action. */
-	virtual ceUCAASpeakStripSetPause *UndoStripSetPause(ceStrip *strip, float pause) = 0;
+	virtual ceUCAASpeakStripSetPause::Ref UndoStripSetPause(ceStrip *strip, float pause) = 0;
 	
 	/** Create strip set duration undo action. */
-	virtual ceUCAASpeakStripSetDuration *UndoStripSetDuration(ceStrip *strip, float duration) = 0;
+	virtual ceUCAASpeakStripSetDuration::Ref UndoStripSetDuration(ceStrip *strip, float duration) = 0;
 	
 	/** Create scale strips undo action. */
-	virtual ceUCAASpeakStripsScale *UndoScaleStrips() = 0;
+	virtual ceUCAASpeakStripsScale::Ref UndoScaleStrips() = 0;
 	
 	
 	
 protected:
-	inline const ceStripList &GetEmptyList() const{ return pEmptyList; }
+	inline const ceStrip::List &GetEmptyList() const{ return pEmptyList; }
 	void FillIDListLookAt(decStringList &list);
 	void CreateHandle(deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size);
 	/*@}*/

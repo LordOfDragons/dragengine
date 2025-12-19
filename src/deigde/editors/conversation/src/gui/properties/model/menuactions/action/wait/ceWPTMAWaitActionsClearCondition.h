@@ -48,6 +48,7 @@ protected:
 	ceWPTMAWaitActionsClearCondition();
 	
 public:
+	typedef deTObjectReference<ceWPTMAWaitActionsClearCondition> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

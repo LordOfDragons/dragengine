@@ -48,34 +48,20 @@ ceStrip *strip, float newDuration){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pStrip = nullptr;
 	pOldDuration = strip->GetDuration();
 	pNewDuration = newDuration;
 	
 	SetShortInfo("Strip Set Duration");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = strip;
-	strip->AddReference();
 }
 
 ceUCAASpeakStripSetDuration::~ceUCAASpeakStripSetDuration(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -61,66 +61,29 @@
 
 ceActorPose::ceActorPose(igdeEnvironment &environment, const char *name) :
 pEnvironment(environment),
-pEngAnimator(NULL),
 pName(name){
 }
 
 ceActorPose::ceActorPose(const ceActorPose &pose) :
 pEnvironment(pose.pEnvironment),
-pEngAnimator(NULL),
 pName(pose.pName),
 pPathAnimator(pose.pPathAnimator),
 pControllerNames(pose.pControllerNames)
 {
-	// clone gestures
-	const int gestureCount = pose.pGestures.GetCount();
-	int i;
+	pose.pGestures.Visit([&](const ceActorGesture &g){
+		pGestures.Add(ceActorGesture::Ref::New(g));
+	});
 	
-	for(i=0; i<gestureCount; i++){
-		ceActorGesture *gesture = NULL;
-		
-		try{
-			gesture = new ceActorGesture(*pose.pGestures.GetAt(i));
-			pGestures.Add(gesture);
-			gesture->FreeReference();
-			
-		}catch(const deException &){
-			if(gesture){
-				gesture->FreeReference();
-			}
-			throw;
-		}
-	}
-	
-	// take over animator
 	pEngAnimator = pose.pEngAnimator;
-	if(pEngAnimator){
-		pEngAnimator->AddReference();
-	}
 	
-	// clone controllers
-	const int controllerCount = pose.pControllers.GetCount();
-	for(i=0; i<controllerCount; i++){
-		ceActorController *controller = NULL;
-		
-		try{
-			controller = new ceActorController(*pose.pControllers.GetAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			
-		}catch(const deException &){
-			if(controller){
-				controller->FreeReference();
-			}
-			throw;
-		}
-	}
+	pose.pControllers.Visit([&](const ceActorController &c){
+		pControllers.Add(ceActorController::Ref::New(c));
+	});
 }
 
 ceActorPose::~ceActorPose(){
 	if(pEngAnimator){
-		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
+		pEngAnimator->SetRig(nullptr);
 	}
 }
 
@@ -156,26 +119,17 @@ void ceActorPose::pLoadAnimator(){
 	
 	// load animator
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	decBaseFileReader::Ref reader;
-	deAnimator *animator = NULL;
+	deAnimator::Ref animator;
 	
 	try{
-		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
-			decPath::CreatePathUnix(pPathAnimator)));
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		
 		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
-			Load(pPathAnimator, *animator, reader);
-		
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
+			Load(pPathAnimator, *animator, engine.GetVirtualFileSystem()->
+				OpenFileForReading(decPath::CreatePathUnix(pPathAnimator)));
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
-		if(animator){
-			animator->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development

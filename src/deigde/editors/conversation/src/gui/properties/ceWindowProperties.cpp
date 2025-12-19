@@ -53,21 +53,19 @@ ceWindowProperties::ceWindowProperties(ceWindowMain &windowMain) :
 igdeTabBook(windowMain.GetEnvironment()),
 pWindowMain(windowMain)
 {
-	igdeWidget::Ref panel;
-	
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	panel.TakeOver(pPanelConversation = new ceWPConversation(*this));
-	AddChild(panel, "Conversation");
+	pPanelConversation = ceWPConversation::Ref::New(*this);
+	AddChild(pPanelConversation, "Conversation");
 	
-	panel.TakeOver(pPanelTopic = new ceWPTopic(*this));
-	AddChild(panel, "Topic");
+	pPanelTopic = ceWPTopic::Ref::New(*this);
+	AddChild(pPanelTopic, "Topic");
 	
-	panel.TakeOver(pPanelView = new ceWPView(*this));
-	AddChild(panel, "View");
+	pPanelView = ceWPView::Ref::New(*this);
+	AddChild(pPanelView, "View");
 	
-	panel.TakeOver(pPanelUndoHistory = new ceWPUndoHistory(GetEnvironment()));
-	AddChild(panel, "Undo");
+	pPanelUndoHistory = ceWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(0); // conversation
 }
@@ -79,10 +77,6 @@ ceWindowProperties::~ceWindowProperties(){
 
 // Management
 ///////////////
-
-ceWPTopic &ceWindowProperties::GetPanelTopic() const{
-	return *pPanelTopic;
-}
 
 void ceWindowProperties::SetConversation(ceConversation *conversation){
 	pPanelConversation->SetConversation(conversation);

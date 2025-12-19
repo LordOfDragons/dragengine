@@ -28,7 +28,6 @@
 
 #include "ceUActionHelpers.h"
 #include "../../conversation/action/ceConversationAction.h"
-#include "../../conversation/action/ceConversationActionList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -38,15 +37,13 @@
 ////////////////////////
 
 ceConversationAction *ceUActionHelpers::ActivateActionAfterRemove(
-const ceConversationActionList& list, ceConversationAction *removedAction){
+const ceConversationAction::List& list, ceConversationAction *removedAction){
 	if(!removedAction){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int index = list.IndexOf(removedAction);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index != -1)
 	
 	if(index < list.GetCount() - 1){
 		return list.GetAt(index + 1);
@@ -55,6 +52,6 @@ const ceConversationActionList& list, ceConversationAction *removedAction){
 		return list.GetAt(index - 1);
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }

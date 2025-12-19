@@ -38,7 +38,6 @@
  */
 class ceCACameraShot : public ceConversationAction{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCACameraShot> Ref;
 	
 	
@@ -79,7 +78,7 @@ public:
 	void SetLookAtTarget(const char *target);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

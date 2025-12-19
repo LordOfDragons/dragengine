@@ -25,8 +25,9 @@
 #ifndef _CESTRIP_H_
 #define _CESTRIP_H_
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 
@@ -40,8 +41,8 @@ private:
 	float pDuration;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceStrip> Ref;
+	typedef decTObjectOrderedSet<ceStrip> List;
 
 
 	/** \name Constructors and Destructors */

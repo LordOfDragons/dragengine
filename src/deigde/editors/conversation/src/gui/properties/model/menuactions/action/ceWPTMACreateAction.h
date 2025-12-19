@@ -28,9 +28,10 @@
 #include "../ceWPTMenuAction.h"
 #include "../../../../../conversation/action/ceConversationAction.h"
 
+#include <deigde/undo/igdeUndo.h>
+
 class ceWindowMain;
 class ceConversation;
-class igdeUndo;
 
 
 
@@ -49,6 +50,7 @@ protected:
 	ceWPTMACreateAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMACreateAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
@@ -72,12 +74,12 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo(ceConversationAction *action);
+	virtual igdeUndo::Ref CreateUndo(ceConversationAction *action);
 	
 	
 	
 	/** \brief Create action. */
-	ceConversationAction *CreateAction();
+	ceConversationAction::Ref CreateAction();
 	
 	/** \brief Text for action type. */
 	static const char *ActionTypeText(ceWindowMain &windowMain,

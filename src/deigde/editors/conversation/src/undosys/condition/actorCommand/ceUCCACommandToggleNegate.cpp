@@ -48,32 +48,18 @@ ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pActorCommand = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pActorCommand = nullptr;
 	
 	SetShortInfo("Condition actor command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pActorCommand = actorCommand;
-	actorCommand->AddReference();
 }
 
 ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
-	if(pActorCommand){
-		pActorCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -25,12 +25,10 @@
 #ifndef _CEUCTOPICPASTE_H_
 #define _CEUCTOPICPASTE_H_
 
-#include "../../conversation/topic/ceConversationTopicList.h"
+#include "../../conversation/topic/ceConversationTopic.h"
+#include "../../conversation/file/ceConversationFile.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class ceConversationFile;
-class ceConversationTopic;
 
 
 
@@ -38,20 +36,21 @@ class ceConversationTopic;
  * \brief Undo action paste conversation topic.
  */
 class ceUCTopicPaste : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCTopicPaste> Ref;
+	
+	
 private:
-	ceConversationFile *pFile;
-	ceConversationTopicList pTopics;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::List pTopics;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCTopicPaste> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics);
+	ceUCTopicPaste(ceConversationFile *file, const ceConversationTopic::List &topics);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicPaste();
@@ -63,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of topics. */
-	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
+	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();
