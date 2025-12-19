@@ -58,7 +58,7 @@ igdeSharedFontList::~igdeSharedFontList(){
 // Management
 ///////////////
 
-igdeFont *igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &configuration){
+const igdeFont::Ref &igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &configuration){
 	const int count = pFonts.GetCount();
 	int i;
 	

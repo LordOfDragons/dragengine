@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get font matching configuration. */
-	igdeFont *GetFontWith(const igdeFont::sConfiguration &configuration);
+	const igdeFont::Ref &GetFontWith(const igdeFont::sConfiguration &configuration);
 	/*@}*/
 };
 

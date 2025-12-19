@@ -79,10 +79,6 @@ igdeApplication::~igdeApplication(){
 // Management
 ///////////////
 
-igdeMainWindow *igdeApplication::GetMainWindow() const{
-	return (igdeMainWindow*)(igdeWidget*)pMainWindow;
-}
-
 #ifdef OS_UNIX
 void igdeApplication::Run(int argCount, char **args){
 	decUnicodeStringList arguments;

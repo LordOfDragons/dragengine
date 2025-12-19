@@ -677,10 +677,6 @@ igdeWindowMain::~igdeWindowMain(){
 // Management
 ///////////////
 
-igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed(const char *name){
-	return (igdeGuiTheme*)pGuiThemes.GetAt(name);
-}
-
 void igdeWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
 		pWindowLogger = igdeWindowLogger::Ref::New(pEnvironmentIGDE);
@@ -1841,7 +1837,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	pDefaultGuiTheme->SetIntProperty(igdeGuiThemePropertyNames::dialogPaddingContent, 10);
 	pDefaultGuiTheme->SetIntProperty(igdeGuiThemePropertyNames::dialogPaddingButtons, 5);
 	
-	pGuiThemes.SetAt(pDefaultGuiTheme->GetName(), pDefaultGuiTheme.operator->());
+	pGuiThemes.SetAt(pDefaultGuiTheme->GetName(), pDefaultGuiTheme);
 	
 	// properties theme
 	igdeGuiTheme::Ref guitheme(igdeGuiTheme::Ref::New(
@@ -1884,7 +1880,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	guitheme->SetIntProperty(igdeGuiThemePropertyNames::tabBookPaddingTop, 2);
 	guitheme->SetIntProperty(igdeGuiThemePropertyNames::tabBookPaddingBottom, 2);
 	
-	pGuiThemes.SetAt(guitheme->GetName(), guitheme.operator->());
+	pGuiThemes.SetAt(guitheme->GetName(), guitheme);
 }
 
 void igdeWindowMain::pLoadIGDEGameDefinition(){

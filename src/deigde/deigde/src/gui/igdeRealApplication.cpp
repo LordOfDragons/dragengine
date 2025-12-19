@@ -53,9 +53,7 @@ igdeRealApplication::~igdeRealApplication(){
 ///////////////
 
 igdeWindowMain &igdeRealApplication::GetWindowMain() const{
-	igdeMainWindow * const mainWindow = GetMainWindow();
-	DEASSERT_NOTNULL(mainWindow)
-	return *((igdeWindowMain*)mainWindow);
+	return GetMainWindow().DynamicCast<igdeWindowMain>();
 }
 
 bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){

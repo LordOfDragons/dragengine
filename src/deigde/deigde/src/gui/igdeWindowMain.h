@@ -49,7 +49,7 @@
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
@@ -82,6 +82,7 @@ class decUnicodeStringList;
 class igdeWindowMain : public igdeMainWindow{
 public:
 	typedef deTObjectReference<igdeWindowMain> Ref;
+	typedef decTObjectDictionary<igdeGuiTheme> GuiThemeMap;
 	
 	
 private:
@@ -100,7 +101,7 @@ private:
 	igdeGameDefinition::Ref pIGDEGameDefinition;
 	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
-	decObjectDictionary pGuiThemes;
+	GuiThemeMap pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
 	deRig::Ref pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
@@ -234,8 +235,8 @@ public:
 	/** Logger window or nullptr if not visible. */
 	inline const igdeWindowLogger::Ref &GetWindowLogger() const{ return pWindowLogger; }
 	
-	/** Named GuiTheme or default if not found. */
-	igdeGuiTheme *GetGuiThemeNamed(const char *name);
+	/** Gui themes. */
+	inline const GuiThemeMap &GetGuiThemes() const{ return pGuiThemes; }
 	
 	/** Default GuiTheme. */
 	inline const igdeGuiTheme::Ref &GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }

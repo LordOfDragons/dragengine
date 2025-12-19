@@ -123,7 +123,7 @@ decPoint igdeFont::TextSize(const char *text) const{
 	return ((igdeNativeFont*)pNativeFont)->TextSize(text);
 }
 
-deFont *igdeFont::GetEngineFont(){
+const deFont::Ref &igdeFont::GetEngineFont(){
 	if(!pEngineFont){
 		pEngineFont = static_cast<igdeNativeFont*>(pNativeFont)->CreateEngineFont();
 	}

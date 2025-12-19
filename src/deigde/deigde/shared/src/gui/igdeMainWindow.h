@@ -41,6 +41,10 @@ class igdeApplication;
  */
 class DE_DLL_EXPORT igdeMainWindow : public igdeWindow{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMainWindow> Ref;
+	
+	
 	/** \brief Window state. */
 	enum eWindowStates{
 		ewsNormal,

@@ -28,6 +28,7 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
@@ -37,7 +38,6 @@
 
 class igdeComboBoxListener;
 class igdeIcon;
-class igdeListItem;
 
 
 /**
@@ -172,15 +172,15 @@ public:
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	igdeListItem *AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
-	igdeListItem *AddItemRef(const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
+	igdeListItem::Ref AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem::Ref AddItemRef(const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	igdeListItem *InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
-	igdeListItem *InsertItemRef(int index, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	igdeListItem::Ref InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem::Ref InsertItemRef(int index, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);

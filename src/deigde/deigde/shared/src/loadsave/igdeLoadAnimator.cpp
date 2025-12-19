@@ -169,7 +169,7 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 			pReadLink(*tag, animator);
 			
 		}else{
-			deAnimatorRule * const rule = pReadRule(*tag, basePath, animator);
+			const deAnimatorRule::Ref rule(pReadRule(*tag, basePath, animator));
 			if(rule){
 				animator.AddRule(rule);
 			}

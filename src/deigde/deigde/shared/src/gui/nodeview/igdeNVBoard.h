@@ -26,6 +26,7 @@
 #define _IGDENVBOARD_H_
 
 #include "igdeNVNode.h"
+#include "igdeNVLink.h"
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
@@ -34,7 +35,6 @@
 #include <dragengine/common/string/decString.h>
 
 
-class igdeNVLink;
 class igdeNVSlot;
 class igdeNVBoardListener;
 
@@ -158,7 +158,7 @@ public:
 	bool CanLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Add link. */
-	igdeNVLink *AddLink(igdeNVSlot *source, igdeNVSlot *target);
+	igdeNVLink::Ref AddLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Remove link. */
 	void RemoveLink(igdeNVLink *link);

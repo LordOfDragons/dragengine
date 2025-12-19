@@ -306,12 +306,12 @@ bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
 	return true;
 }
 
-igdeNVLink *igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
+igdeNVLink::Ref igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
 	if(!CanLink(source, target)){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeNVLink::Ref link(igdeNVLink::Ref::New(source, target));
+	const igdeNVLink::Ref link(igdeNVLink::Ref::New(source, target));
 	link->SetOwnerBoard(this);
 	pLinks.Add((igdeNVLink*)link);
 	

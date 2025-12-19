@@ -301,8 +301,7 @@ igdeUIHelper &igdeEnvironmentIGDE::GetUIHelperProperties(){
 }
 
 igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed(const char *name){
-	igdeGuiTheme *guitheme = pWindowMain->GetGuiThemeNamed(name);
-	return guitheme ? guitheme : pWindowMain->GetDefaultGuiTheme();
+	return pWindowMain->GetGuiThemes().GetAtOrDefault(name, pWindowMain->GetDefaultGuiTheme());
 }
 
 igdeGuiTheme *igdeEnvironmentIGDE::GetDefaultGuiTheme(){

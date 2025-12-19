@@ -255,13 +255,13 @@ void igdeComboBox::AddItem(igdeListItem *item){
 	}
 }
 
-igdeListItem *igdeComboBox::AddItem(const char *text, igdeIcon *icon, void *data){
+igdeListItem::Ref igdeComboBox::AddItem(const char *text, igdeIcon *icon, void *data){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
 	AddItem(item);
 	return item;
 }
 
-igdeListItem *igdeComboBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
+igdeListItem::Ref igdeComboBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
 	item->SetRefData(refData);
 	AddItem(item);
@@ -285,13 +285,13 @@ void igdeComboBox::InsertItem(int index, igdeListItem *item){
 	}
 }
 
-igdeListItem *igdeComboBox::InsertItem(int index, const char *text, igdeIcon *icon, void *data){
+igdeListItem::Ref igdeComboBox::InsertItem(int index, const char *text, igdeIcon *icon, void *data){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
 	InsertItem(index, item);
 	return item;
 }
 
-igdeListItem *igdeComboBox::InsertItemRef(int index, const char *text, igdeIcon *icon, const deObject::Ref &refData){
+igdeListItem::Ref igdeComboBox::InsertItemRef(int index, const char *text, igdeIcon *icon, const deObject::Ref &refData){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
 	item->SetRefData(refData);
 	InsertItem(index, item);
