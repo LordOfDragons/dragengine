@@ -34,7 +34,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/resources/deResource.h>
@@ -93,7 +93,7 @@ void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReade
 	}
 	
 	// find best protocol to speak
-	decIntSet clientProtocols;
+	decTSet<int> clientProtocols;
 	const int clientProtocolCount = reader.ReadUShort();
 	int i;
 	for(i=0; i<clientProtocolCount; i++){
