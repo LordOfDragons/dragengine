@@ -57,7 +57,9 @@ pWidget(widget){
 
 void igdeEditTags::cActionAdd::OnAction(){
 	const decString tag(pWidget.GetComboBox().GetText());
-	pWidget.SetTags(pWidget.GetTags() + tag);
+	decStringSet tags(pWidget.GetTags());
+	tags.Add(tag);
+	pWidget.SetTags(tags);
 	pWidget.SelectTag(tag);
 	pWidget.OnAction();
 }

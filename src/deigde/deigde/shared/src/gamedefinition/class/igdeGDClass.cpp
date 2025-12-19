@@ -332,7 +332,7 @@ bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) co
 	}
 	
 	const decString *checkValue;
-	if(pPropertyValues.GetAt(name, &checkValue)){
+	if(pPropertyValues.GetAt(name, checkValue)){
 		value = *checkValue;
 		return true;
 	}

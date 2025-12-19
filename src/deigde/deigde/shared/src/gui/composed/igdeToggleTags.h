@@ -35,8 +35,6 @@
 
 class igdeUIHelper;
 
-class decStringSet;
-
 
 /**
  * \brief Toggle tags list.

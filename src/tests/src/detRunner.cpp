@@ -17,9 +17,8 @@
 #include "string/detStringDictionary.h"
 #include "string/detUnicodeString.h"
 #include "string/detUnicodeStringList.h"
+#include "string/detUnicodeLineBuffer.h"
 #include "string/detStringSet.h"
-#include "string/detUnicodeStringSet.h"
-#include "string/detUnicodeStringDictionary.h"
 #include "path/detPath.h"
 #include "math/detMath.h"
 #include "math/detColorMatrix.h"
@@ -184,8 +183,7 @@ detRunner::detRunner(){
 	pAddTest(new detStringDictionary);
 	pAddTest(new detUnicodeString);
 	pAddTest(new detUnicodeStringList);
-	pAddTest(new detUnicodeStringSet);
-	pAddTest(new detUnicodeStringDictionary);
+	pAddTest(new detUnicodeLineBuffer);
 	pAddTest(new detTOrderedSet);
 	pAddTest(new detTNamedOrderedSet);
 	pAddTest(new detTList);

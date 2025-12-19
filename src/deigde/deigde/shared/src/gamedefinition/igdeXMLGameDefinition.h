@@ -54,7 +54,6 @@ class igdeGDCWorld;
 class igdeEnvironment;
 
 class deLogger;
-class decStringSet;
 
 class decBaseFileReader;
 class decBaseFileWriter;

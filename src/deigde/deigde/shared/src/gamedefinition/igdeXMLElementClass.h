@@ -40,7 +40,6 @@ class decPath;
 class decBaseFileReader;
 class decBaseFileWriter;
 class decXmlElementTag;
-class decStringDictionary;
 class deVirtualFileSystem;
 
 

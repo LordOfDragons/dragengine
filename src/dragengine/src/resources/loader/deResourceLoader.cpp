@@ -314,8 +314,8 @@ void deResourceLoader::FinishTask(deResourceLoaderTask *task){
 	if(!task){
 		DETHROW(deeInvalidParam);
 	}
-	pFinishedTasks.AddIfAbsent(task);
-	pPendingTasks.RemoveIfPresent(task);
+	pFinishedTasks.Add(task);
+	pPendingTasks.Remove(task);
 }
 
 

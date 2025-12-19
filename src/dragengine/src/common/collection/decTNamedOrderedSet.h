@@ -98,7 +98,7 @@ public:
 			return false;
 		}
 		DEASSERT_FALSE(HasNamed(element->GetName()))
-		return decTOrderedSet<T,TP>::AddIfAbsent(element);
+		return decTOrderedSet<T,TP>::Add(element);
 	}
 	
 	/**

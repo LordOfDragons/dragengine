@@ -33,6 +33,7 @@
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 
 

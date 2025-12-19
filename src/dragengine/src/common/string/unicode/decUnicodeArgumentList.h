@@ -25,10 +25,9 @@
 #ifndef _DECUNICODEARGUMENTLIST_H_
 #define _DECUNICODEARGUMENTLIST_H_
 
+#include "decUnicodeStringList.h"
 #include "../../../dragengine_export.h"
 
-
-// definitions
 class decUnicodeString;
 
 
@@ -42,8 +41,7 @@ class decUnicodeString;
  */
 class DE_DLL_EXPORT decUnicodeArgumentList{
 private:
-	decUnicodeString **pArguments;
-	int pArgumentCount, pArgumentSize;
+	decUnicodeStringList pArguments;
 	
 	
 	
@@ -62,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of arguments. */
-	inline int GetArgumentCount() const{ return pArgumentCount; }
+	int GetArgumentCount() const;
 	
 	/** \brief Argument at the given index. */
 	const decUnicodeString *GetArgumentAt(int index) const;

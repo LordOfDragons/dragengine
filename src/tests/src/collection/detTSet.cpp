@@ -98,15 +98,12 @@ void detTSet::TestIntUniqueness(){
 	set.Add(20);
 	set.Add(30);
 
-	// AddIfAbsent returns false for duplicates
-	ASSERT_FALSE(set.AddIfAbsent(20));
+	// Add returns false for duplicates
+	ASSERT_FALSE(set.Add(20));
 	ASSERT_EQUAL(set.GetCount(), 3);
 
-	// Add throws on duplicate
-	ASSERT_DOES_FAIL(set.Add(20));
-
-	// AddIfAbsent returns true for new elements
-	ASSERT_TRUE(set.AddIfAbsent(40));
+	// Add returns true for new elements
+	ASSERT_TRUE(set.Add(40));
 	ASSERT_EQUAL(set.GetCount(), 4);
 	ASSERT_TRUE(set.Has(40));
 }
@@ -161,13 +158,9 @@ void detTSet::TestIntOperators(){
 	ASSERT_EQUAL(setC.GetCount(), 2);
 
 	// Remove operations
-	ASSERT_TRUE(set1.RemoveIfPresent(2));
+	ASSERT_TRUE(set1.Remove(2));
 	ASSERT_FALSE(set1.Has(2));
-	ASSERT_FALSE(set1.RemoveIfPresent(99));
-
-	set1.Remove(1);
-	ASSERT_FALSE(set1.Has(1));
-	ASSERT_DOES_FAIL(set1.Remove(999));
+	ASSERT_FALSE(set1.Remove(99));
 
 	set1.RemoveAll();
 	ASSERT_TRUE(set1.IsEmpty());
@@ -289,11 +282,11 @@ void detTSet::TestStringBasic(){
 	ASSERT_EQUAL(set.IndexOf(decString("gamma")), 2);
 
 	// Uniqueness
-	ASSERT_FALSE(set.AddIfAbsent(decString("beta")));
+	ASSERT_FALSE(set.Add(decString("beta")));
 	ASSERT_EQUAL(set.GetCount(), 3);
 
 	// Remove
-	ASSERT_TRUE(set.RemoveIfPresent(decString("alpha")));
+	ASSERT_TRUE(set.Remove(decString("alpha")));
 	ASSERT_FALSE(set.Has(decString("alpha")));
 	ASSERT_EQUAL(set.GetCount(), 2);
 

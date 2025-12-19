@@ -89,6 +89,24 @@ public:
 		list.pSize = 0;
 	}
 	
+	/** \brief Create list with content provided by iterators. */
+	template<typename InputIt>
+	decTList(InputIt first, InputIt last) : pElements(nullptr), pCount(0), pSize(0){
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
+	/** \brief Create list with content from another collection. */
+	template<typename C>
+	explicit decTList(const C &collection) : pElements(nullptr), pCount(0), pSize(0){
+		auto first = collection.cbegin();
+		auto last = collection.cend();
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
 	/** \brief Clean up the list. */
 	~decTList(){
 		RemoveAll();

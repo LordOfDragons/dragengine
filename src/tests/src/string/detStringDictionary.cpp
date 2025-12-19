@@ -70,9 +70,9 @@ void detStringDictionary::TestDictionary(){
 	ASSERT_TRUE(dict1.Has(key1));
 	ASSERT_FALSE(dict1.Has(key2));
 	ASSERT_EQUAL(dict1.GetAt(key1), value1);
-	ASSERT_TRUE(dict1.GetAt(key1, &result));
+	ASSERT_TRUE(dict1.GetAt(key1, result));
 	ASSERT_EQUAL(*result, value1);
-	ASSERT_FALSE(dict1.GetAt(key2, &result));
+	ASSERT_FALSE(dict1.GetAt(key2, result));
 	
 	dict1.SetAt(key2, value2);
 	ASSERT_EQUAL(dict1.GetCount(), 2);
@@ -80,9 +80,9 @@ void detStringDictionary::TestDictionary(){
 	ASSERT_TRUE(dict1.Has(key2));
 	ASSERT_EQUAL(dict1.GetAt(key1), value1);
 	ASSERT_EQUAL(dict1.GetAt(key2), value2);
-	ASSERT_TRUE(dict1.GetAt(key1, &result));
+	ASSERT_TRUE(dict1.GetAt(key1, result));
 	ASSERT_EQUAL(*result, value1);
-	ASSERT_TRUE(dict1.GetAt(key2, &result));
+	ASSERT_TRUE(dict1.GetAt(key2, result));
 	ASSERT_EQUAL(*result, value2);
 	
 	dict1.SetAt(key2, value3);
@@ -104,8 +104,8 @@ void detStringDictionary::TestDictionary(){
 	ASSERT_EQUAL(dict2.GetCount(), 1);
 	ASSERT_FALSE(dict2.Has(key1));
 	ASSERT_TRUE(dict2.Has(key2));
-	ASSERT_FALSE(dict2.GetAt(key1, &result));
-	ASSERT_TRUE(dict2.GetAt(key2, &result));
+	ASSERT_FALSE(dict2.GetAt(key1, result));
+	ASSERT_TRUE(dict2.GetAt(key2, result));
 	ASSERT_EQUAL(*result, value2);
 	
 	dict2 = decStringDictionary(dict1);

@@ -41,6 +41,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 
@@ -714,16 +716,16 @@ void deglDialogProfileList::UpdateMPModuleList(){
 	for(m=0; m<moduleCount; m++){
 		moduleNames.Add(moduleList.GetAt(m)->GetName());
 	}
-	moduleNames.SortAscending();
+	
+	const decStringList sortedModuleNames(decStringList(moduleNames).GetSortedAscending());
 	
 	pListMPModules->clearItems();
 	
-	const int moduleNameCount = moduleNames.GetCount();
-	for(m=0; m<moduleNameCount; m++){
-		const delEngineModule * const module = moduleList.GetNamed(moduleNames.GetAt(m));
+	sortedModuleNames.Visit([&](const decString &name){
+		const delEngineModule * const module = moduleList.GetNamed(name);
 		text.format("%s\t%s", module->GetName().GetString(), engine.GetModuleTypeText(module->GetType()));
 		pListMPModules->appendItem(text);
-	}
+	});
 }
 
 void deglDialogProfileList::UpdateMPParameterList(){
@@ -743,20 +745,21 @@ void deglDialogProfileList::UpdateMPParameterList(){
 	
 	const delEMParameterList &list = engineModule->GetParameters();
 	const int count = list.GetCount();
-	decStringList names;
+	decStringSet names;
 	int i;
 	
 	for(i=0; i<count; i++){
 		names.Add(list.GetAt(i)->GetInfo().GetName());
 	}
-	names.SortAscending();
+	
+	const decStringList sortedNames(decStringList(names).GetSortedAscending());
 	
 	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
-	for(i=0; i<count; i++){
+	sortedNames.Visit([&](const decString &name){
 		pMPParameters.Add(deglDialogProfileListParameter::Ref::New(
-			*list.GetNamed(names.GetAt(i)), profile, moduleName.text(),
+			*list.GetNamed(name), profile, moduleName.text(),
 			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE));
-	}
+	});
 	
 	pUpdateMPParamVisiblity();
 }
@@ -790,22 +793,20 @@ void deglDialogProfileList::UpdateListDisabledModuleVersions(){
 void deglDialogProfileList::UpdateCBDisabledModuleVersionsModule(){
 	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	const int moduleCount = moduleList.GetCount();
-	decStringSet moduleNames;
 	FXString selection;
 	int i;
 	
 	pCBDisableModuleVersionModule->clearItems();
 	
+	decStringSet moduleNames;
 	for(i=0; i<moduleCount; i++){
 		const delEngineModule &module = *moduleList.GetAt(i);
 		moduleNames.Add(module.GetName());
 	}
-	moduleNames.SortAscending();
 	
-	const int nameCount = moduleNames.GetCount();
-	for(i=0; i<nameCount; i++){
-		pCBDisableModuleVersionModule->appendItem(moduleNames.GetAt(i).GetString());
-	}
+	decStringList(moduleNames).GetSortedAscending().Visit([&](const decString &name){
+		pCBDisableModuleVersionModule->appendItem(name.GetString());
+	});
 	
 	if(pCBDisableModuleVersionModule->getNumItems() > 0){
 		pCBDisableModuleVersionModule->setCurrentItem(0);
@@ -818,12 +819,12 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsVersion(){
 	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	const FXString selectedModule = pCBDisableModuleVersionModule->getText();
 	const int moduleCount = moduleList.GetCount();
-	decStringSet versions;
 	FXString selection;
 	int i;
 	
 	pCBDisableModuleVersionVersion->clearItems();
 	
+	decStringSet versions;
 	for(i=0; i<moduleCount; i++){
 		const delEngineModule &module = *moduleList.GetAt(i);
 		if(module.GetName() == selectedModule.text()){
@@ -831,12 +832,9 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsVersion(){
 		}
 	}
 	
-    versions.SortAscending();
-	
-	const int versionCount = versions.GetCount();
-	for(i=0; i<versionCount; i++){
-		pCBDisableModuleVersionVersion->appendItem(versions.GetAt(i).GetString());
-	}
+	decStringList(versions).GetSortedAscending().Visit([&](const decString &version){
+		pCBDisableModuleVersionVersion->appendItem(version.GetString());
+	});
 }
 
 

@@ -96,6 +96,7 @@ pPendingClearLogs(false)
 }
 
 igdeWindowLogger::~igdeWindowLogger(){
+	SetHistoryLogger(nullptr);
 }
 
 

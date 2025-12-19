@@ -554,7 +554,7 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 	}
 	
 	const decString *sources = nullptr;
-	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, &sources)){
+	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, sources)){
 		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #include: File not found %s at %s:%d",
 			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine);
 		DETHROW(deeInvalidParam);

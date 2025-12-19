@@ -29,13 +29,13 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 class igdeEnvironment;
 class igdeStepableTask;
 class deEngine;
 class deLogger;
 class deException;
-class decUnicodeStringList;
 
 
 /**

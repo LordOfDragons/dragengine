@@ -171,7 +171,7 @@ bool igdeWOSubObject::GetPropertyValue(const decString &name, decString &value) 
 	const decString propertyName(pPrefix + name);
 	
 	const decString *propertyValue;
-	if(pWrapper.GetProperties().GetAt(propertyName, &propertyValue)){
+	if(pWrapper.GetProperties().GetAt(propertyName, propertyValue)){
 		value = *propertyValue;
 		return true;
 	}

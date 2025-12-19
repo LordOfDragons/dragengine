@@ -69,13 +69,13 @@ static int pToUpper(int character){
 /////////////////////////////////
 
 decUnicodeString::decUnicodeString(){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	pSize = 1;
 }
 
 decUnicodeString::decUnicodeString(const decUnicodeString &string){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	
 	if(string.pLength > 0){
@@ -85,7 +85,7 @@ decUnicodeString::decUnicodeString(const decUnicodeString &string){
 }
 
 decUnicodeString::decUnicodeString(const decUnicodeString &string1, const decUnicodeString &string2){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	
 	if(string1.pLength + string2.pLength > 0){
@@ -104,9 +104,19 @@ decUnicodeString::decUnicodeString(const decUnicodeString &string1, const decUni
 }
 
 decUnicodeString::decUnicodeString(int character){
-	pString = NULL;
+	pString = nullptr;
 	pCreateString(pCharSize(character), 1);
 	pSetAt(0, character);
+}
+
+decUnicodeString::decUnicodeString(decUnicodeString &&string) :
+pString(string.pString),
+pLength(string.pLength),
+pSize(string.pSize)
+{
+	string.pString = nullptr;
+	string.pLength = 0;
+	string.pSize = 1;
 }
 
 decUnicodeString decUnicodeString::NewFromUTF8(const char *string){
@@ -1316,6 +1326,24 @@ decUnicodeString &decUnicodeString::operator=(const decUnicodeString &string){
 	return *this;
 }
 
+decUnicodeString & decUnicodeString::operator=(decUnicodeString &&string){
+	if(this == &string) {
+		return *this;
+	}
+	
+	pFreeString();
+	
+	pString = string.pString;
+	pSize = string.pSize;
+	pLength = string.pLength;
+
+	string.pString = nullptr;
+	string.pSize = 1;
+	string.pLength = 0;
+	
+	return *this;
+}
+
 decUnicodeString &decUnicodeString::operator+=(const decUnicodeString &string){
 	Append(string);
 	return *this;
@@ -1361,7 +1389,7 @@ void decUnicodeString::pFreeString(){
 		}else{
 			delete [] ((unsigned int *)pString);
 		}
-		pString = NULL;
+		pString = nullptr;
 	}
 	pLength = 0;
 }
@@ -1387,7 +1415,7 @@ void decUnicodeString::pGrowString(int size, int length){
 		old.pLength = pLength; 
 		
 		// create string
-		pString = NULL;
+		pString = nullptr;
 		pCreateString(size > pSize ? size : pSize, length > pLength ? length : pLength);
 		for(i=0; i<old.pLength; i++){
 			pSetAt(i, old.pGetAt(i));

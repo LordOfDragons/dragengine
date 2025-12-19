@@ -72,7 +72,6 @@ class igdeUIHelper;
 class deException;
 class decTimer;
 class igdeGameDefinitionList;
-class decUnicodeStringList;
 
 
 

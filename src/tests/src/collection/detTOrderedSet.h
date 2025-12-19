@@ -23,11 +23,9 @@ private:
 	void TestIntHas();
 	void TestIntSetAt();
 	void TestIntAdd();
-	void TestIntAddIfAbsent();
 	void TestIntInsert();
 	void TestIntMove();
 	void TestIntRemove();
-	void TestIntRemoveIfPresent();
 	void TestIntRemoveFrom();
 	void TestIntRemoveAll();
 	void TestIntEquals();
@@ -72,11 +70,9 @@ private:
 	void TestStringHas();
 	void TestStringSetAt();
 	void TestStringAdd();
-	void TestStringAddIfAbsent();
 	void TestStringInsert();
 	void TestStringMove();
 	void TestStringRemove();
-	void TestStringRemoveIfPresent();
 	void TestStringRemoveFrom();
 	void TestStringRemoveAll();
 	void TestStringEquals();
@@ -121,11 +117,9 @@ private:
 	void TestObjectRefHas();
 	void TestObjectRefSetAt();
 	void TestObjectRefAdd();
-	void TestObjectRefAddIfAbsent();
 	void TestObjectRefInsert();
 	void TestObjectRefMove();
 	void TestObjectRefRemove();
-	void TestObjectRefRemoveIfPresent();
 	void TestObjectRefRemoveFrom();
 	void TestObjectRefRemoveAll();
 	void TestObjectRefEquals();

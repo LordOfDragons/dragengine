@@ -36,6 +36,7 @@
 #include <deigde/engine/igdeEngineController.h>
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>

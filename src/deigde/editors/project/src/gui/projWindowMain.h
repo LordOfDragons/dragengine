@@ -43,11 +43,11 @@
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
-class projIGDEModule;
-class decUnicodeStringList;
-class projConfiguration;
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
-class decStringList;
+class projIGDEModule;
+class projConfiguration;
 
 
 

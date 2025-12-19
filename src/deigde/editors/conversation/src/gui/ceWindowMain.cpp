@@ -300,13 +300,7 @@ void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 		return;
 	}
 	
-	decStringList list;
-	int i;
-	missingWords.SortAscending();
-	for(i=0; i<count; i++){
-		list.Add(missingWords.GetAt(i));
-	}
-	decString result(DEJoin(list, "\n"));
+	decString result(DEJoin(decStringList(missingWords).GetSortedAscending(), "\n"));
 	igdeCommonDialogs::GetMultilineString(this, "Missing Words", "Found missing words", result);
 }
 

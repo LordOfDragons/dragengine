@@ -221,7 +221,7 @@ void deoglCommandExecuter::pAnswerBoolValue(decUnicodeString &answer, const char
 void deoglCommandExecuter::pAnswerIntValue(decUnicodeString &answer, const char *name, int value){
 	answer.AppendFromUTF8(name);
 	answer.AppendFromUTF8(" = ");
-	answer += value;
+	answer.AppendValue(value);
 	answer.AppendFromUTF8("\n");
 }
 

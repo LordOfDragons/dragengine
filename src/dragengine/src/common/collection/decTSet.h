@@ -87,6 +87,32 @@ public:
 		set.pSize = 0;
 	}
 	
+	/**
+	 * \brief Create set with content provided by iterators.
+	 * 
+	 * Duplicate elements are ignored.
+	 */
+	template<typename InputIt>
+	decTSet(InputIt first, InputIt last) : pElements(nullptr), pCount(0), pSize(0){
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
+	/**
+	 * \brief Create set with content from another collection.
+	 * 
+	 * Duplicate elements are ignored.
+	 */
+	template<typename C>
+	explicit decTSet(const C &collection) : pElements(nullptr), pCount(0), pSize(0){
+		auto first = collection.cbegin();
+		auto last = collection.cend();
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
 	/** \brief Clean up the set. */
 	~decTSet(){
 		RemoveAll();
@@ -180,15 +206,10 @@ public:
 	}
 	
 	/**
-	 * \brief Add element.
-	 * \throws deeInvalidParam \em element is present in the set.
+	 * \brief Add element if absent from the set.
+	 * \returns true if added or false if already present.
 	 */
-	void Add(const TP &element){
-		DEASSERT_TRUE(AddIfAbsent(element))
-	}
-	
-	/** \brief Add element if absent from the set. */
-	bool AddIfAbsent(const TP &element){
+	bool Add(const TP &element){
 		if(Has(element)){
 			return false;
 		}
@@ -212,15 +233,10 @@ public:
 	}
 	
 	/**
-	 * \brief Remove element.
-	 * \throws deeInvalidParam \em element is is absent from the set.
+	 * \brief Remove element if present in the set.
+	 * \returns true removed or false if absent.
 	 */
-	void Remove(const TP &element){
-		DEASSERT_TRUE(RemoveIfPresent(element))
-	}
-	
-	/** \brief Remove element if present in the set. */
-	bool RemoveIfPresent(const TP &element){
+	bool Remove(const TP &element){
 		const int position = IndexOf(element);
 		if(position == -1){
 			return false;
@@ -428,7 +444,7 @@ public:
 		nset.pCount = pCount;
 		
 		for(i=0; i<set.pCount; i++){
-			nset.AddIfAbsent(set.pElements[i]);
+			nset.Add(set.pElements[i]);
 		}
 		
 		return nset;
@@ -509,7 +525,7 @@ public:
 			
 			int i;
 			for(i=0; i<set.pCount; i++){
-				AddIfAbsent(set.pElements[i]);
+				Add(set.pElements[i]);
 			}
 		}
 		

@@ -43,8 +43,8 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/decStringSet.h>
 
-class decStringSet;
 class ceIGDEModule;
 class igdeStepableTask;
 

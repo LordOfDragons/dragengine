@@ -966,7 +966,7 @@ void ceConversation::AddListener(ceConversationListener *listener){
 }
 
 void ceConversation::RemoveListener(ceConversationListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 

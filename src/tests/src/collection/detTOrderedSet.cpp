@@ -52,11 +52,9 @@ void detTOrderedSet::Run(){
 	TestIntHas();
 	TestIntSetAt();
 	TestIntAdd();
-	TestIntAddIfAbsent();
 	TestIntInsert();
 	TestIntMove();
 	TestIntRemove();
-	TestIntRemoveIfPresent();
 	TestIntRemoveFrom();
 	TestIntRemoveAll();
 	TestIntEquals();
@@ -101,11 +99,9 @@ void detTOrderedSet::Run(){
 	TestStringHas();
 	TestStringSetAt();
 	TestStringAdd();
-	TestStringAddIfAbsent();
 	TestStringInsert();
 	TestStringMove();
 	TestStringRemove();
-	TestStringRemoveIfPresent();
 	TestStringRemoveFrom();
 	TestStringRemoveAll();
 	TestStringEquals();
@@ -150,11 +146,9 @@ void detTOrderedSet::Run(){
 	TestObjectRefHas();
 	TestObjectRefSetAt();
 	TestObjectRefAdd();
-	TestObjectRefAddIfAbsent();
 	TestObjectRefInsert();
 	TestObjectRefMove();
 	TestObjectRefRemove();
-	TestObjectRefRemoveIfPresent();
 	TestObjectRefRemoveFrom();
 	TestObjectRefRemoveAll();
 	TestObjectRefEquals();
@@ -359,36 +353,19 @@ void detTOrderedSet::TestIntSetAt(){
 }
 
 void detTOrderedSet::TestIntAdd(){
-	SetSubTestNum(10);
-
-	decTOrderedSetInt set;
-	
-	set.Add(10);
-	ASSERT_EQUAL(set.GetCount(), 1);
-	ASSERT_TRUE(set.Has(10));
-	
-	set.Add(20);
-	ASSERT_EQUAL(set.GetCount(), 2);
-	ASSERT_TRUE(set.Has(20));
-	
-	// Try to add duplicate - should fail
-	ASSERT_DOES_FAIL(set.Add(10));
-}
-
-void detTOrderedSet::TestIntAddIfAbsent(){
 	SetSubTestNum(11);
 
 	decTOrderedSetInt set;
 	
-	ASSERT_TRUE(set.AddIfAbsent(10));
+	ASSERT_TRUE(set.Add(10));
 	ASSERT_EQUAL(set.GetCount(), 1);
 	ASSERT_TRUE(set.Has(10));
 	
-	ASSERT_TRUE(set.AddIfAbsent(20));
+	ASSERT_TRUE(set.Add(20));
 	ASSERT_EQUAL(set.GetCount(), 2);
 	
 	// Adding duplicate should return false
-	ASSERT_FALSE(set.AddIfAbsent(10));
+	ASSERT_FALSE(set.Add(10));
 	ASSERT_EQUAL(set.GetCount(), 2);
 }
 
@@ -441,24 +418,6 @@ void detTOrderedSet::TestIntMove(){
 }
 
 void detTOrderedSet::TestIntRemove(){
-	SetSubTestNum(14);
-
-	decTOrderedSetInt set;
-	set.Add(10);
-	set.Add(20);
-	set.Add(30);
-	
-	set.Remove(20);
-	ASSERT_EQUAL(set.GetCount(), 2);
-	ASSERT_FALSE(set.Has(20));
-	ASSERT_EQUAL(set.GetAt(0), 10);
-	ASSERT_EQUAL(set.GetAt(1), 30);
-	
-	// Try to remove non-existent element - should fail
-	ASSERT_DOES_FAIL(set.Remove(99));
-}
-
-void detTOrderedSet::TestIntRemoveIfPresent(){
 	SetSubTestNum(15);
 
 	decTOrderedSetInt set;
@@ -466,12 +425,12 @@ void detTOrderedSet::TestIntRemoveIfPresent(){
 	set.Add(20);
 	set.Add(30);
 	
-	ASSERT_TRUE(set.RemoveIfPresent(20));
+	ASSERT_TRUE(set.Remove(20));
 	ASSERT_EQUAL(set.GetCount(), 2);
 	ASSERT_FALSE(set.Has(20));
 	
 	// Try to remove non-existent element - should return false
-	ASSERT_FALSE(set.RemoveIfPresent(99));
+	ASSERT_FALSE(set.Remove(99));
 	ASSERT_EQUAL(set.GetCount(), 2);
 }
 
@@ -868,32 +827,17 @@ void detTOrderedSet::TestStringSetAt(){
 }
 
 void detTOrderedSet::TestStringAdd(){
-	SetSubTestNum(38);
-
-	decTOrderedSetString set;
-	
-	set.Add("apple");
-	ASSERT_EQUAL(set.GetCount(), 1);
-	ASSERT_TRUE(set.Has("apple"));
-	
-	set.Add("banana");
-	ASSERT_EQUAL(set.GetCount(), 2);
-	
-	ASSERT_DOES_FAIL(set.Add("apple"));
-}
-
-void detTOrderedSet::TestStringAddIfAbsent(){
 	SetSubTestNum(39);
 
 	decTOrderedSetString set;
 	
-	ASSERT_TRUE(set.AddIfAbsent("apple"));
+	ASSERT_TRUE(set.Add("apple"));
 	ASSERT_EQUAL(set.GetCount(), 1);
 	
-	ASSERT_TRUE(set.AddIfAbsent("banana"));
+	ASSERT_TRUE(set.Add("banana"));
 	ASSERT_EQUAL(set.GetCount(), 2);
 	
-	ASSERT_FALSE(set.AddIfAbsent("apple"));
+	ASSERT_FALSE(set.Add("apple"));
 	ASSERT_EQUAL(set.GetCount(), 2);
 }
 
@@ -925,29 +869,16 @@ void detTOrderedSet::TestStringMove(){
 }
 
 void detTOrderedSet::TestStringRemove(){
-	SetSubTestNum(42);
-
-	decTOrderedSetString set;
-	set.Add("apple");
-	set.Add("banana");
-	set.Add("cherry");
-	
-	set.Remove("banana");
-	ASSERT_EQUAL(set.GetCount(), 2);
-	ASSERT_FALSE(set.Has("banana"));
-}
-
-void detTOrderedSet::TestStringRemoveIfPresent(){
 	SetSubTestNum(43);
 
 	decTOrderedSetString set;
 	set.Add("apple");
 	set.Add("banana");
 	
-	ASSERT_TRUE(set.RemoveIfPresent("banana"));
+	ASSERT_TRUE(set.Remove("banana"));
 	ASSERT_EQUAL(set.GetCount(), 1);
 	
-	ASSERT_FALSE(set.RemoveIfPresent("date"));
+	ASSERT_FALSE(set.Remove("date"));
 	ASSERT_EQUAL(set.GetCount(), 1);
 }
 
@@ -1315,35 +1246,19 @@ void detTOrderedSet::TestObjectRefSetAt(){
 }
 
 void detTOrderedSet::TestObjectRefAdd(){
-	SetSubTestNum(66);
-
-	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
-	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
-	
-	decTOrderedSetXmlElementTag set;
-	set.Add(obj1);
-	ASSERT_EQUAL(set.GetCount(), 1);
-	
-	set.Add(obj2);
-	ASSERT_EQUAL(set.GetCount(), 2);
-	
-	ASSERT_DOES_FAIL(set.Add(obj1));
-}
-
-void detTOrderedSet::TestObjectRefAddIfAbsent(){
 	SetSubTestNum(67);
 
 	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
 	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
 	
 	decTOrderedSetXmlElementTag set;
-	ASSERT_TRUE(set.AddIfAbsent(obj1));
+	ASSERT_TRUE(set.Add(obj1));
 	ASSERT_EQUAL(set.GetCount(), 1);
 	
-	ASSERT_TRUE(set.AddIfAbsent(obj2));
+	ASSERT_TRUE(set.Add(obj2));
 	ASSERT_EQUAL(set.GetCount(), 2);
 	
-	ASSERT_FALSE(set.AddIfAbsent(obj1));
+	ASSERT_FALSE(set.Add(obj1));
 	ASSERT_EQUAL(set.GetCount(), 2);
 }
 
@@ -1383,23 +1298,6 @@ void detTOrderedSet::TestObjectRefMove(){
 }
 
 void detTOrderedSet::TestObjectRefRemove(){
-	SetSubTestNum(70);
-
-	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
-	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
-	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
-	
-	decTOrderedSetXmlElementTag set;
-	set.Add(obj1);
-	set.Add(obj2);
-	set.Add(obj3);
-	
-	set.Remove(obj2);
-	ASSERT_EQUAL(set.GetCount(), 2);
-	ASSERT_FALSE(set.Has(obj2));
-}
-
-void detTOrderedSet::TestObjectRefRemoveIfPresent(){
 	SetSubTestNum(71);
 
 	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
@@ -1410,10 +1308,10 @@ void detTOrderedSet::TestObjectRefRemoveIfPresent(){
 	set.Add(obj1);
 	set.Add(obj2);
 	
-	ASSERT_TRUE(set.RemoveIfPresent(obj2));
+	ASSERT_TRUE(set.Remove(obj2));
 	ASSERT_EQUAL(set.GetCount(), 1);
 	
-	ASSERT_FALSE(set.RemoveIfPresent(obj3));
+	ASSERT_FALSE(set.Remove(obj3));
 	ASSERT_EQUAL(set.GetCount(), 1);
 }
 

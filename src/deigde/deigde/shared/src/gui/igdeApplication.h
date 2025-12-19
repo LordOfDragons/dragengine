@@ -32,6 +32,7 @@
 
 #include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
@@ -42,7 +43,6 @@
 #endif
 
 
-class decUnicodeStringList;
 class igdeWindow;
 
 

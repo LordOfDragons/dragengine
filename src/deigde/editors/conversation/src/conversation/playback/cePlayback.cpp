@@ -472,7 +472,7 @@ void cePlayback::SetTextBoxText(const decUnicodeString &text){
 void cePlayback::ClearTextBoxText(){
 	if(pTextBoxText){
 		ceTextBox &textBox = *pConversation.GetTextBox();
-		if(textBox.GetTexts().RemoveIfPresent(pTextBoxText)){
+		if(textBox.GetTexts().Remove(pTextBoxText)){
 			textBox.UpdateCanvas();
 		}
 		pTextBoxText->SetText(decUnicodeString());

@@ -18,9 +18,6 @@ private:
 	void TestDEFindNamedFound();
 	void TestDEFindNamedNotFound();
 	
-	// String collection append tests
-	void TestDEAppend();
-	
 	// Comparators
 	void TestComparators();
 

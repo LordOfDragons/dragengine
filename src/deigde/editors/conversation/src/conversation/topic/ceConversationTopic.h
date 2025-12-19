@@ -31,8 +31,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 
-class decStringSet;
 class ceConversationFile;
 class ceConversationCondition;
 

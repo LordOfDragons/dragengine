@@ -34,9 +34,6 @@ void detHelperFunctions::Run(){
 	TestDEFindNamedFound();
 	TestDEFindNamedNotFound();
 	
-	// DEAppend tests
-	TestDEAppend();
-	
 	// Comparators
 	TestComparators();
 }
@@ -157,49 +154,11 @@ void detHelperFunctions::TestDEFindNamedNotFound(){
 }
 
 
-// Test DEAppend
-//////////////////
-
-void detHelperFunctions::TestDEAppend(){
-	SetSubTestNum(6);
-	
-	// Test appending to decStringSet
-	{
-	decTSet<decString> collection;
-	collection.Add("one");
-	collection.Add("two");
-	collection.Add("three");
-
-	decStringSet set;
-	DEAppend(set, collection);
-	ASSERT_EQUAL(set.GetCount(), 3);
-	ASSERT_TRUE(set.Has("one"));
-	ASSERT_TRUE(set.Has("two"));
-	ASSERT_TRUE(set.Has("three"));
-	}
-	
-	// Test appending decStringSet to decTSet<decString>
-	{
-	decStringSet set;
-	set.Add("alpha");
-	set.Add("beta");
-	set.Add("gamma");
-
-	decTSet<decString> collection;
-	DEAppend(collection, set);
-	ASSERT_EQUAL(collection.GetCount(), 3);
-	ASSERT_EQUAL(collection.GetAt(0), "alpha");
-	ASSERT_EQUAL(collection.GetAt(1), "beta");
-	ASSERT_EQUAL(collection.GetAt(2), "gamma");
-	}
-}
-
-
 // Test Comparators
 /////////////////////
 
 void detHelperFunctions::TestComparators(){
-	SetSubTestNum(7);
+	SetSubTestNum(6);
 	
 	{
 	decTList<decString> list;

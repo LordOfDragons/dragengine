@@ -87,6 +87,32 @@ public:
 		set.pSize = 0;
 	}
 	
+	/**
+	 * \brief Create set with content provided by iterators.
+	 * 
+	 * Duplicate elements are ignored.
+	 */
+	template<typename InputIt>
+	decTOrderedSet(InputIt first, InputIt last) : pElements(nullptr), pCount(0), pSize(0){
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
+	/**
+	 * \brief Create set with content from another collection.
+	 * 
+	 * Duplicate elements are ignored.
+	 */
+	template<typename C>
+	explicit decTOrderedSet(const C &collection) : pElements(nullptr), pCount(0), pSize(0){
+		auto first = collection.cbegin();
+		auto last = collection.cend();
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
 	/** \brief Clean up the set. */
 	~decTOrderedSet(){
 		RemoveAll();
@@ -226,6 +252,7 @@ public:
 	
 	/**
 	 * \brief Set element at index.
+	 * \throws deeInvalidParam \em element is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	void SetAt(int index, const TP &element){
@@ -241,18 +268,10 @@ public:
 	}
 	
 	/**
-	 * \brief Add element.
-	 * \throws deeInvalidParam \em element is present in the set.
-	 */
-	void Add(const TP &element){
-		DEASSERT_TRUE(AddIfAbsent(element))
-	}
-	
-	/**
 	 * \brief Add element if absent from the set.
-	 * \returns true if added.
+	 * \returns true if added or false if already present.
 	 */
-	bool AddIfAbsent(const TP &element){
+	bool Add(const TP &element){
 		if(Has(element)){
 			return false;
 		}
@@ -339,18 +358,10 @@ public:
 	}
 	
 	/**
-	 * \brief Remove element.
-	 * \throws deeInvalidParam \em element is is absent from the set.
-	 */
-	void Remove(const TP &element){
-		DEASSERT_TRUE(RemoveIfPresent(element))
-	}
-	
-	/**
 	 * \brief Remove element if present in the set.
-	 * \returns true if removed.
+	 * \returns true if removed or false if absent.
 	 */
-	bool RemoveIfPresent(const TP &element){
+	bool Remove(const TP &element){
 		const int position = IndexOf(element);
 		if(position != -1){
 			RemoveFrom(position);
@@ -1334,7 +1345,7 @@ public:
 		nset.pCount = pCount;
 		
 		for(i=0; i<set.pCount; i++){
-			nset.AddIfAbsent(set.pElements[i]);
+			nset.Add(set.pElements[i]);
 		}
 		
 		return nset;
@@ -1415,7 +1426,7 @@ public:
 			
 			int i;
 			for(i=0; i<set.pCount; i++){
-				AddIfAbsent(set.pElements[i]);
+				Add(set.pElements[i]);
 			}
 		}
 		
