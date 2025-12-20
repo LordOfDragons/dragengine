@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontImage;
+#include "../../font/image/feFontImage.h"
 
 
 
@@ -35,17 +35,18 @@ class feFontImage;
  * \brief Font Set Image Path Undo Action.
  */
 class feUFontSetImagePath : public igdeUndo{
+public:
+	typedef deTObjectReference<feUFontSetImagePath> Ref;
+	
+	
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	decString pOldPath;
 	decString pNewPath;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUFontSetImagePath> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

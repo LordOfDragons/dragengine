@@ -22,16 +22,10 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _FEFONTGLYPHSELECTION_H_
 #define _FEFONTGLYPHSELECTION_H_
 
-// includes
-#include "feFontGlyphList.h"
-
-// predefinitions
-class feFont;
-class feFontGlyph;
+#include "feFontGlyph.h"
 
 
 
@@ -43,8 +37,9 @@ class feFontGlyphSelection{
 private:
 	feFont *pParentFont;
 	
-	feFontGlyphList pSelected;
-	feFontGlyph *pActive;
+	feFontGlyph::List pSelected;
+	feFontGlyph::Ref pActive;
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -57,37 +52,31 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of selected glyphs. */
-	int GetSelectedGlyphCount() const;
-	/** Retrieves the n-thed selected glyph. */
-	feFontGlyph *GetSelectedGlyphAt(int index) const;
-	/** Determines if a glyph is in the list of selected glyphs. */
-	bool IsGlypthSelected(feFontGlyph *glyph) const;
-	/** Retrieves the index of the glyph if in the list of selected glyphs. */
-	int IndexOfGlyph(feFontGlyph *glyph) const;
+	/** Selected glyphs. */
+	inline const feFontGlyph::List &GetSelected() const{ return pSelected; }
+	
 	/** Adds a glyph to the selection if not there already. */
-	void AddGlyphToSelection(feFontGlyph *glyph);
+	void Add(feFontGlyph *glyph);
+	
 	/** Removes a glyph from the selection if selected. */
-	void RemoveGlyphFromSelection(feFontGlyph *glyph);
+	void Remove(feFontGlyph *glyph);
+	
 	/** Removes all glyph from the selection. */
-	void RemoveAllGlyphsFromSelection();
+	void RemoveAll();
 	
-	/** Retrieves the list of selected glyphs. */
-	void GetSelectedList(feFontGlyphList &list) const;
+	/** Retrieves the active glyph or nullptr if none is active. */
+	inline const feFontGlyph::Ref &GetActive() const{ return pActive; }
 	
-	/** Retrieves the active glyph or NULL if none is active. */
-	inline feFontGlyph *GetActiveGlyph() const{ return pActive; }
-	/** Determines if there is an active glyph or not. */
-	bool HasActiveGlyph() const;
-	/** Sets the active glyph or NULL if none is active. */
-	void SetActiveGlyph(feFontGlyph *glyph);
+	/** Sets the active glyph or nullptr if none is active. */
+	void SetActive(feFontGlyph *glyph);
+	
 	/**
 	 * Sets the next possible glyph from the selection as the active one or
-	 * NULL if the selection is empty.
+	 * nullptr if the selection is empty.
 	 */
 	void ActivateNextGlyph();
 	
-	/** Removes all glyph from the selection and sets the active glyph to NULL. */
+	/** Removes all glyph from the selection and sets the active glyph to nullptr. */
 	void Reset();
 };
 

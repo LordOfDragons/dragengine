@@ -52,6 +52,6 @@ feIGDEModule::~feIGDEModule(){
 
 void feIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new feWindowMain(*this));
+		SetEditorWindow(feWindowMain::Ref::New(*this));
 	}
 }

@@ -35,6 +35,9 @@ class feWPGlyph;
  * \brief Glyph Properties Panel Listener.
  */
 class feWPGlyphListener : public feFontNotifier{
+public:
+	typedef deTObjectReference<feWPGlyphListener> Ref;
+	
 private:
 	feWPGlyph &pPanel;
 	

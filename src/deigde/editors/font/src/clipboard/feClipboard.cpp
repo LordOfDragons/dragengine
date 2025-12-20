@@ -38,7 +38,7 @@
 ////////////////////////////
 
 feClipboard::feClipboard(){
-	pClip = NULL;
+	pClip = nullptr;
 }
 
 feClipboard::~feClipboard(){
@@ -51,7 +51,7 @@ feClipboard::~feClipboard(){
 ///////////////
 
 bool feClipboard::HasClip() const{
-	return pClip != NULL;
+	return pClip != nullptr;
 }
 
 void feClipboard::SetClip(feBaseClip *clip){

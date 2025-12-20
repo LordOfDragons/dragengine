@@ -22,29 +22,37 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
-#include "feWPGlyph.h"
-#include "feWPGlyphListener.h"
+#include "feUGlyphAdd.h"
 #include "../../font/feFont.h"
-#include "../../font/glyph/feFontGlyphSelection.h"
+#include "../../font/glyph/feFontGlyph.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class feWPGlyphListener
-////////////////////////////
+// Class feUGlyphAdd
+//////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-feWPGlyphListener::feWPGlyphListener(feWPGlyph &panel) :
-pPanel(panel){
+feUGlyphAdd::feUGlyphAdd(feFont *font, feFontGlyph *glyph){
+	if(!font || !glyph){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Add glyph");
+	
+	pFont = font;
+	pGlyph = glyph;
+	
+	Redo();
 }
 
-feWPGlyphListener::~feWPGlyphListener(){
+feUGlyphAdd::~feUGlyphAdd(){
 }
 
 
@@ -52,16 +60,11 @@ feWPGlyphListener::~feWPGlyphListener(){
 // Management
 ///////////////
 
-void feWPGlyphListener::GlyphStructureChanged(feFont *font){
-	pPanel.UpdateGlyphList();
+void feUGlyphAdd::Undo(){
+	pFont->RemoveGlyph(pGlyph);
 }
 
-void feWPGlyphListener::GlyphChanged(feFont *font, feFontGlyph *glyph){
-	if(glyph == pPanel.GetGlyph()){
-		pPanel.UpdateGlyph();
-	}
-}
-
-void feWPGlyphListener::ActiveGlyphChanged(feFont *font){
-	pPanel.SetGlyph(font->GetGlyphSelection().GetActive());
+void feUGlyphAdd::Redo(){
+	pFont->AddGlyph(pGlyph);
+	pFont->GetGlyphSelection().SetActive(pGlyph);
 }

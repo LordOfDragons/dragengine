@@ -56,8 +56,7 @@ feFontImage::feFontImage(deEngine *engine){
 	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
-	pEngImage = NULL;
-	pParentFont = NULL;
+	pParentFont = nullptr;
 	
 	pWidth = 256;
 	pHeight = 256;
@@ -66,30 +65,23 @@ feFontImage::feFontImage(deEngine *engine){
 	pChanged = false;
 	pSaved = false;
 	
-	try{
-		pEngImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
-		
-		sRGBA8 * const pixels = pEngImage->GetDataRGBA8();
-		const int pixelCount = pWidth * pHeight;
-		int i;
-		for(i=0; i<pixelCount; i++){
-			pixels[i].red = 0;
-			pixels[i].green = 0;
-			pixels[i].blue = 0;
-			pixels[i].alpha = 255;
-		}
-		
-		pEngImage->NotifyImageDataChanged();
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
+	pEngImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
+	
+	sRGBA8 * const pixels = pEngImage->GetDataRGBA8();
+	const int pixelCount = pWidth * pHeight;
+	int i;
+	for(i=0; i<pixelCount; i++){
+		pixels[i].red = 0;
+		pixels[i].green = 0;
+		pixels[i].blue = 0;
+		pixels[i].alpha = 255;
 	}
+	
+	pEngImage->NotifyImageDataChanged();
 }
 
 
 feFontImage::~feFontImage(){
-	pCleanUp();
 }
 
 
@@ -106,25 +98,11 @@ void feFontImage::SetParentFont(feFont* font){
 void feFontImage::SetSize(int width, int height){
 	if(width < 1 || height < 1) DETHROW(deeInvalidParam);
 	
-	deImage *engImage = NULL;
-	
 	pWidth = width;
 	pHeight = height;
 	
-	try{
-		engImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
-		
-		if(pEngImage){
-			pEngImage->FreeReference();
-		}
-		
-		pEngImage = engImage;
-		engImage->RetainImageData();
-		
-	}catch(const deException &){
-		if(engImage) engImage->FreeReference();
-		throw;
-	}
+	pEngImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
+	pEngImage->RetainImageData();
 	
 	SetChanged(true);
 }
@@ -155,10 +133,7 @@ void feFontImage::SetSaved(bool saved){
 }
 
 void feFontImage::LoadImage(){
-	if(pEngImage){
-		pEngImage->FreeReference();
-		pEngImage = NULL;
-	}
+	pEngImage = nullptr;
 	
 	if(!pFilename.IsEmpty()){
 		const char *basePath = "/";
@@ -196,21 +171,9 @@ void feFontImage::LoadImage(){
 }
 
 
-
 void feFontImage::NotifyImageChanged(){
 	if(pParentFont){
 		pParentFont->SetChanged(true);
 		pParentFont->NotifyImageChanged(this);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void feFontImage::pCleanUp(){
-	if(pEngImage){
-		pEngImage->FreeReference();
 	}
 }

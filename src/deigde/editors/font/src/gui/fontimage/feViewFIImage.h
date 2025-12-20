@@ -25,13 +25,14 @@
 #ifndef _FEVIEWFIIMAGE_H_
 #define _FEVIEWFIIMAGE_H_
 
+#include "../../font/feFont.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
 
 class feWindowMain;
-class feFont;
 
 
 
@@ -39,10 +40,14 @@ class feFont;
  * \brief Preview font image.
  */
 class feViewFIImage : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feViewFIImage> Ref;
+	
 private:
 	feWindowMain &pWindowMain;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	int pBorderSize;
 	int pZoom;
@@ -74,7 +79,7 @@ public:
 	
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

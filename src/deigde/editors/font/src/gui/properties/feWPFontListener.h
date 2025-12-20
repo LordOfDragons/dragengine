@@ -35,6 +35,9 @@ class feWPFont;
  * \brief Font Properties Panel Listener.
  */
 class feWPFontListener : public feFontNotifier{
+public:
+	typedef deTObjectReference<feWPFontListener> Ref;
+	
 private:
 	feWPFont &pPanel;
 	

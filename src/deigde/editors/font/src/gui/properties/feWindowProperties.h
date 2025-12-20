@@ -38,6 +38,9 @@ class feFont;
  * \brief Properties Panel.
  */
 class feWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<feWindowProperties> Ref;
+	
 private:
 	feWindowMain &pWindowMain;
 	

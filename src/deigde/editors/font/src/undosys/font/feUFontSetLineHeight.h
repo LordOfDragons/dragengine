@@ -35,6 +35,10 @@ class feFont;
  * \brief Font Set Line Height Undo Action.
  */
 class feUFontSetLineHeight : public igdeUndo{
+public:
+	typedef deTObjectReference<feUFontSetLineHeight> Ref;
+	
+	
 private:
 	feFont *pFont;
 	int pOldHeight;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUFontSetLineHeight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

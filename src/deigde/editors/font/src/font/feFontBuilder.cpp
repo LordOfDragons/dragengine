@@ -63,7 +63,7 @@ void feFontBuilder::BuildFont(deFont *engFont){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int glyphCount = pFont->GetGlyphCount();
+	const int glyphCount = pFont->GetGlyphs().GetCount();
 	
 	// set font properties
 	engFont->SetIsColorFont(pFont->GetColorFont());
@@ -80,7 +80,7 @@ void feFontBuilder::BuildFont(deFont *engFont){
 	
 	int i;
 	for(i=0; i<glyphCount; i++){
-		const feFontGlyph &glyph = *pFont->GetGlyphAt(i);
+		const feFontGlyph &glyph = *pFont->GetGlyphs().GetAt(i);
 		
 		deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
 		

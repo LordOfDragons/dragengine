@@ -80,6 +80,7 @@ protected:
 	feWPFont &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(feWPFont &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -88,33 +89,35 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, font)));
+		igdeUndo::Ref undo(OnChanged(textField, font));
 		if(undo){
 			font->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font) = 0;
 };
 
 
 
 class cTextImagePath : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextImagePath> Ref;
 	cTextImagePath(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font) override{
 		feFontImage * const image = font->GetFontImage();
 		if(image->GetFilename() == textField->GetText()){
-			return NULL;
+			return {};
 		}
-		return new feUFontSetImagePath(image, textField->GetText());
+		return feUFontSetImagePath::Ref::New(image, textField->GetText());
 	}
 };
 
 class cActionSelectImagePath : public igdeActionSelectFile{
 	feWindowMain &pWindow;
 public:
+	typedef deTObjectReference<cActionSelectImagePath> Ref;
 	cActionSelectImagePath(feWindowMain &window, igdeTextField &textField) :
 	igdeActionSelectFile(window.GetEnvironment(), igdeEnvironment::efpltImage, textField),
 	pWindow(window){}
@@ -140,8 +143,7 @@ public:
 			return true;
 		}
 		
-		deImage::Ref image(deImage::Ref::New(
-			 pWindow.GetEngine()->GetImageManager()->LoadImage(path, "/")));
+		deImage::Ref image(pWindow.GetEngine()->GetImageManager()->LoadImage(path, "/"));
 		
 		if(image->GetComponentCount() != 4){
 			igdeCommonDialogs::Error(&pWindow, "Import Font Image",
@@ -155,41 +157,47 @@ public:
 
 class cTextLineHeight : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLineHeight> Ref;
 	cTextLineHeight(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font) override{
 		const int lineHeight = textField->GetInteger();
 		if(lineHeight == font->GetLineHeight()){
-			return NULL;
+			return {};
 		}
-		return new feUFontSetLineHeight(font, lineHeight);
+		return feUFontSetLineHeight::Ref::New(font, lineHeight);
 	}
 };
 
 class cActionColorFont : public igdeAction{
+public:
+	typedef deTObjectReference<cActionColorFont> Ref;
+	
+private:
 	feWPFont &pPanel;
 public:
 	cActionColorFont(feWPFont &panel) : 
 	igdeAction("Color Font", "Font is a color font"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		feFont * const font = pPanel.GetFont();
 		if(!font){
 			return;
 		}
 		
-		font->GetUndoSystem()->Add(feUFontToggleColorFont::Ref::NewWith(font));
+		font->GetUndoSystem()->Add(feUFontToggleColorFont::Ref::New(font));
 	}
 };
 
 class cTextBaseLine : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBaseLine> Ref;
 	cTextBaseLine(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont *font) override{
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font) override{
 		const int baseLine = textField->GetInteger();
-		return baseLine != font->GetBaseLine() ? new feUFontSetBaseLine(font, baseLine) : nullptr;
+		return baseLine != font->GetBaseLine() ? feUFontSetBaseLine::Ref::New(font, baseLine) : feUFontSetBaseLine::Ref();
 	}
 };
 
@@ -205,41 +213,35 @@ public:
 
 feWPFont::feWPFont(feWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pFont(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPFontListener(*this);
+	pListener = feWPFontListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// font
 	helper.GroupBox(content, groupBox, "Font:");
 	
 	helper.FormLineStretchFirst(groupBox, "Image:", "Font image.", frameLine);
-	helper.EditString(frameLine, "Font image.", pEditImagePath, new cTextImagePath(*this));
-	helper.Button(frameLine, pBtnImagePath, new cActionSelectImagePath(
-		windowProperties.GetWindowMain(), pEditImagePath), true);
+	helper.EditString(frameLine, "Font image.", pEditImagePath, cTextImagePath::Ref::New(*this));
+	helper.Button(frameLine, pBtnImagePath, cActionSelectImagePath::Ref::New(
+		windowProperties.GetWindowMain(), pEditImagePath));
 	
 	helper.EditInteger(groupBox, "Line Height:", "Line height in pixels.",
-		pEditLineHeight, new cTextLineHeight(*this));
-	helper.CheckBox(groupBox, pChkColorFont, new cActionColorFont(*this), true);
+		pEditLineHeight, cTextLineHeight::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkColorFont, cActionColorFont::Ref::New(*this));
 	
 	helper.EditInteger(groupBox, "Base Line:", "Base line from top in pixels.",
-		pEditBaseLine, new cTextBaseLine(*this));
+		pEditBaseLine, cTextBaseLine::Ref::New(*this));
 }
 
 feWPFont::~feWPFont(){
-	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetFont(nullptr);
 }
 
 
@@ -254,15 +256,13 @@ void feWPFont::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
-		pFont = NULL;
+		pFont = nullptr;
 	}
 	
 	pFont = font;
 	
 	if(font){
 		font->AddNotifier(pListener);
-		font->AddReference();
 	}
 	
 	UpdateFont();

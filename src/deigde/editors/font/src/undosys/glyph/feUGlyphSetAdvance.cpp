@@ -46,11 +46,9 @@ feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance){
 	pNewAdvance = newAdvance;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetAdvance::~feUGlyphSetAdvance(){
-	if(pGlyph) pGlyph->FreeReference();
 }
 
 

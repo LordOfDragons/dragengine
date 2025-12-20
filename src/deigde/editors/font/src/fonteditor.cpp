@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *FontEditorCreateModule(igdeEnvironment *e
 ////////////////
 
 igdeEditorModule *FontEditorCreateModule(igdeEnvironment *environment){
-	feIGDEModule *module = NULL;
-	
 	try{
-		module = new feIGDEModule(*environment);
+		return new feIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

@@ -35,15 +35,16 @@ class feFont;
  * \brief Font Toggle Color Font.
  */
 class feUFontToggleColorFont : public igdeUndo{
+public:
+	typedef deTObjectReference<feUFontToggleColorFont> Ref;
+	
+	
 private:
 	feFont *pFont;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUFontToggleColorFont> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

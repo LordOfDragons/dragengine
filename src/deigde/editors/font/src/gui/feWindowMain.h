@@ -25,6 +25,11 @@
 #ifndef _FEWINDOWMAIN_H_
 #define _FEWINDOWMAIN_H_
 
+#include "feWindowMainListener.h"
+#include "fontimage/feViewFontImage.h"
+#include "properties/feWindowProperties.h"
+#include "../font/feFont.h"
+
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -33,12 +38,8 @@
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
-class feWindowMainListener;
 class feConfiguration;
-class feViewFontImage;
-class feFont;
 class feClipboard;
-class feWindowProperties;
 class feLoadSaveSystem;
 
 
@@ -47,8 +48,12 @@ class feLoadSaveSystem;
  * \brief Editor window.
  */
 class feWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<feWindowMain> Ref;
+	
+	
 private:
-	feWindowMainListener *pListener;
+	feWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconEditPaste;
 	
@@ -71,10 +76,10 @@ private:
 	feClipboard *pClipboard;
 	feLoadSaveSystem *pLoadSaveSystem;
 	
-	feViewFontImage *pViewFontImage;
-	feWindowProperties *pWndProps;
+	feViewFontImage::Ref pViewFontImage;
+	feWindowProperties::Ref pWndProps;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	igdeFont::sConfiguration pGenFontConfig;
 	
@@ -101,17 +106,17 @@ public:
 	//inline igdeIcon* GetIconFontNew() const{ return pIconFontNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionFontNew() const{ return pActionFontNew; }
-	inline igdeAction *GetActionFontOpen() const{ return pActionFontOpen; }
-	inline igdeAction *GetActionFontSave() const{ return pActionFontSave; }
-	inline igdeAction *GetActionFontSaveAs() const{ return pActionFontSaveAs; }
-	inline igdeAction *GetActionFontGenerate() const{ return pActionFontGenerate; }
+	inline const igdeAction::Ref &GetActionFontNew() const{ return pActionFontNew; }
+	inline const igdeAction::Ref &GetActionFontOpen() const{ return pActionFontOpen; }
+	inline const igdeAction::Ref &GetActionFontSave() const{ return pActionFontSave; }
+	inline const igdeAction::Ref &GetActionFontSaveAs() const{ return pActionFontSaveAs; }
+	inline const igdeAction::Ref &GetActionFontGenerate() const{ return pActionFontGenerate; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -132,7 +137,7 @@ public:
 	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	/** Sets the font. */
 	void SetFont(feFont *font);
 	/** Creates a new font. */

@@ -27,22 +27,23 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 /**
  * \brief Glyph Set Height Undo Action.
  */
 class feUGlyphSetHeight : public igdeUndo{
+public:
+	typedef deTObjectReference<feUGlyphSetHeight> Ref;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	int pOldValue, pNewValue;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUGlyphSetHeight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -22,46 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
+#ifndef _FEUGLYPHREMOVE_H_
+#define _FEUGLYPHREMOVE_H_
 
-#include "feWPGlyph.h"
-#include "feWPGlyphListener.h"
+#include <deigde/undo/igdeUndo.h>
+
 #include "../../font/feFont.h"
-#include "../../font/glyph/feFontGlyphSelection.h"
-
-#include <dragengine/common/exceptions.h>
+#include "../../font/glyph/feFontGlyph.h"
 
 
 
-// Class feWPGlyphListener
-////////////////////////////
+/**
+ * \brief Glyph Remove Undo Action.
+ */
+class feUGlyphRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<feUGlyphRemove> Ref;
+	
+	
+private:
+	feFont::Ref pFont;
+	feFontGlyph::Ref pGlyph;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo. */
+	feUGlyphRemove(feFont *font, feFontGlyph *glyph);
+	
+protected:
+	/** \brief Clean up undo. */
+	virtual ~feUGlyphRemove();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// Constructor, destructor
-////////////////////////////
-
-feWPGlyphListener::feWPGlyphListener(feWPGlyph &panel) :
-pPanel(panel){
-}
-
-feWPGlyphListener::~feWPGlyphListener(){
-}
-
-
-
-// Management
-///////////////
-
-void feWPGlyphListener::GlyphStructureChanged(feFont *font){
-	pPanel.UpdateGlyphList();
-}
-
-void feWPGlyphListener::GlyphChanged(feFont *font, feFontGlyph *glyph){
-	if(glyph == pPanel.GetGlyph()){
-		pPanel.UpdateGlyph();
-	}
-}
-
-void feWPGlyphListener::ActiveGlyphChanged(feFont *font){
-	pPanel.SetGlyph(font->GetGlyphSelection().GetActive());
-}
+#endif
