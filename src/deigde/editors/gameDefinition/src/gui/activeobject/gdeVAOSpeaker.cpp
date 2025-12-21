@@ -58,15 +58,12 @@ gdeVAOSpeaker::gdeVAOSpeaker(gdeViewActiveObject &view, const gdeObjectClass &ob
 	const decString &propertyPrefix, gdeOCSpeaker *ocspeaker) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCSpeaker(ocspeaker),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr)
 {
 	if(!ocspeaker){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSpeaker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -114,11 +111,7 @@ void gdeVAOSpeaker::pCleanUp(){
 	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCSpeaker){
-		pOCSpeaker->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -128,7 +121,7 @@ void gdeVAOSpeaker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	

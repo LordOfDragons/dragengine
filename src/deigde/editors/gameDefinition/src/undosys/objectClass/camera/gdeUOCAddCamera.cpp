@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCAddCamera::gdeUOCAddCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
-pObjectClass(NULL),
-pCamera(NULL)
+
+pCamera(nullptr)
 {
 	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pCamera(NULL)
 	SetShortInfo("Add camera");
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddCamera::~gdeUOCAddCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ void gdeUOCAddCamera::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCCamera(NULL);
+		gameDefinition->SetActiveOCCamera(nullptr);
 	}
 	
 	pObjectClass->GetCameras().Remove(pCamera);

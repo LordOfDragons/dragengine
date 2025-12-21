@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/shape/decShapeList.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class force field set influence area.
  */
 class gdeUOCForceFieldSetInfluenceArea : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCForceFieldSetInfluenceArea> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	decShapeList pOldValue;
 	decShapeList pNewValue;
@@ -48,9 +52,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCForceFieldSetInfluenceArea> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

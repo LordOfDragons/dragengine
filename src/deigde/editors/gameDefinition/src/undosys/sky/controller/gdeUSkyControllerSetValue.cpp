@@ -42,8 +42,8 @@
 
 gdeUSkyControllerSetValue::gdeUSkyControllerSetValue(gdeSky *sky,
 gdeSkyController *controller, float newValue) :
-pSky(NULL),
-pController(NULL),
+
+
 pNewValue(newValue)
 {
 	if(!sky || !controller){
@@ -58,19 +58,10 @@ pNewValue(newValue)
 	pOldValue = controller->GetValue();
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerSetValue::~gdeUSkyControllerSetValue(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

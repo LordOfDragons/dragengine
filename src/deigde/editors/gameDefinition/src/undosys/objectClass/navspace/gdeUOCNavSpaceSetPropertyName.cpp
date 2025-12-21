@@ -41,8 +41,7 @@
 
 gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass,
 gdeOCNavigationSpace *navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL),
+
 pProperty(property)
 {
 	if(!objectClass || !navspace){
@@ -55,19 +54,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetPropertyName::~gdeUOCNavSpaceSetPropertyName(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -41,6 +41,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCNavigationBlockerListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

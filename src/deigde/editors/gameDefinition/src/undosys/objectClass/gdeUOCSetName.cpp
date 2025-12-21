@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUOCSetName::gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetName::~gdeUOCSetName(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

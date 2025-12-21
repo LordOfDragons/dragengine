@@ -42,8 +42,8 @@
 
 gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass *objectClass,
 gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
-pObjectClass(NULL),
-pEnvMapProbe(NULL)
+
+pEnvMapProbe(nullptr)
 {
 	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetPosition::~gdeUOCEnvMapProbeSetPosition(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

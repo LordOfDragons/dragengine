@@ -58,16 +58,13 @@ gdeVAOSnapPoint::gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass
 	const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCSnapPoint(ocsnapPoint),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL),
-pDDSSnapDistance(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr),
+pDDSSnapDistance(nullptr)
 {
 	if(!ocsnapPoint){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSnapPoint->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -118,11 +115,7 @@ void gdeVAOSnapPoint::pCleanUp(){
 	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCSnapPoint){
-		pOCSnapPoint->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -132,7 +125,7 @@ void gdeVAOSnapPoint::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	

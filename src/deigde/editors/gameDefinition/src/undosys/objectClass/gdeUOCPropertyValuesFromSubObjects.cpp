@@ -426,49 +426,49 @@ static decStringDictionary BuildValues(const gdeObjectClass &objectClass){
 	int i, count;
 	
 	// components
-	const gdeOCComponentList &components = objectClass.GetComponents();
+	const gdeOCComponent::List &components = objectClass.GetComponents();
 	count = components.GetCount();
 	for(i=0; i<count; i++){
 		UpdateComponent(newValues, codec, *components.GetAt(i));
 	}
 	
 	// environment map probes
-	const gdeOCEnvMapProbeList &envMapProbes = objectClass.GetEnvMapProbes();
+	const gdeOCEnvMapProbe::List &envMapProbes = objectClass.GetEnvMapProbes();
 	count = envMapProbes.GetCount();
 	for(i=0; i<count; i++){
 		UpdateEnvMapProbe(newValues, codec, *envMapProbes.GetAt(i));
 	}
 	
 	// lights
-	const gdeOCLightList &lights = objectClass.GetLights();
+	const gdeOCLight::List &lights = objectClass.GetLights();
 	count = lights.GetCount();
 	for(i=0; i<count; i++){
 		UpdateLight(newValues, codec, *lights.GetAt(i));
 	}
 	
 	// navigation blockers
-	const gdeOCNavigationBlockerList &navBlockers = objectClass.GetNavigationBlockers();
+	const gdeOCNavigationBlocker::List &navBlockers = objectClass.GetNavigationBlockers();
 	count = navBlockers.GetCount();
 	for(i=0; i<count; i++){
 		UpdateNavBlocker(newValues, codec, *navBlockers.GetAt(i));
 	}
 	
 	// navigation spaces
-	const gdeOCNavigationSpaceList &navSpaces = objectClass.GetNavigationSpaces();
+	const gdeOCNavigationSpace::List &navSpaces = objectClass.GetNavigationSpaces();
 	count = navSpaces.GetCount();
 	for(i=0; i<count; i++){
 		UpdateNavSpace(newValues, codec, *navSpaces.GetAt(i));
 	}
 	
 	// speakers
-	const gdeOCSpeakerList &speakers = objectClass.GetSpeakers();
+	const gdeOCSpeaker::List &speakers = objectClass.GetSpeakers();
 	count = speakers.GetCount();
 	for(i=0; i<count; i++){
 		UpdateSpeaker(newValues, codec, *speakers.GetAt(i));
 	}
 	
 	// worlds
-	const gdeOCWorldList &worlds = objectClass.GetWorlds();
+	const gdeOCWorld::List &worlds = objectClass.GetWorlds();
 	count = worlds.GetCount();
 	for(i=0; i<count; i++){
 		UpdateWorld(newValues, codec, *worlds.GetAt(i));
@@ -489,7 +489,7 @@ static decStringDictionary BuildValues(const gdeObjectClass &objectClass){
 		const decString &name = names.GetAt(i);
 		const decString &newValue = newValues.GetAt(name);
 		
-		if(parentValues.GetAt(name, &parentValue) && *parentValue == newValue){
+		if(parentValues.GetAt(name, parentValue) && *parentValue == newValue){
 			continue; // same values as the parent has, skip it
 		}
 		
@@ -518,7 +518,7 @@ gdeUOCSetPropertyValues(objectClass, newValues)
 gdeUOCPropertyValuesFromSubObjects::~gdeUOCPropertyValuesFromSubObjects(){
 }
 
-gdeUOCPropertyValuesFromSubObjects *gdeUOCPropertyValuesFromSubObjects::Create(
+gdeUOCPropertyValuesFromSubObjects::Ref gdeUOCPropertyValuesFromSubObjects::Create(
 gdeObjectClass *objectClass){
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -526,9 +526,9 @@ gdeObjectClass *objectClass){
 	
 	const decStringDictionary newValues(BuildValues(*objectClass));
 	if(newValues.GetCount() > 0){ //&& newValues != objectClass->GetPropertyValues()){
-		return new gdeUOCPropertyValuesFromSubObjects(objectClass, newValues);
+		return Ref::New(objectClass, newValues);
 		
 	}else{
-		return NULL;
+		return {};
 	}
 }

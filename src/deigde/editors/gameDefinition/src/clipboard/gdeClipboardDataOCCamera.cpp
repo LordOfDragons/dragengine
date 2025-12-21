@@ -39,19 +39,14 @@ const char * const gdeClipboardDataOCCamera::TYPE_NAME = "OCCamera";
 ////////////////////////////
 
 gdeClipboardDataOCCamera::gdeClipboardDataOCCamera(gdeOCCamera *camera) :
-igdeClipboardData(TYPE_NAME),
-pCamera(NULL)
+igdeClipboardData(TYPE_NAME)
 {
 	if(!camera){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pCamera = camera;
-	camera->AddReference();
 }
 
 gdeClipboardDataOCCamera::~gdeClipboardDataOCCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 }

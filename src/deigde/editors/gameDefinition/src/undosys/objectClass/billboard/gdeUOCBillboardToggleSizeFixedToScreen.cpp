@@ -42,8 +42,8 @@
 
 gdeUOCBillboardToggleSizeFixedToScreen::gdeUOCBillboardToggleSizeFixedToScreen(
 gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
-pBillboard(NULL)
+
+pBillboard(nullptr)
 {
 	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pBillboard(NULL)
 	SetShortInfo("Billboard toggle size fixed to screen");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleSizeFixedToScreen::~gdeUOCBillboardToggleSizeFixedToScreen(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

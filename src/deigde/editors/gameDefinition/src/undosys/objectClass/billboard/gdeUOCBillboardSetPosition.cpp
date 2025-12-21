@@ -42,8 +42,8 @@
 
 gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass *objectClass,
 gdeOCBillboard *billboard, const decVector &newValue) :
-pObjectClass(NULL),
-pBillboard(NULL)
+
+pBillboard(nullptr)
 {
 	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetPosition::~gdeUOCBillboardSetPosition(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCParticleEmitterCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
 	if(!particleEmitter){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCParticleEmitter::Ref clipOCParticleEmitter(gdeOCParticleEmitter::Ref::NewWith(*particleEmitter));
+	const gdeOCParticleEmitter::Ref clipOCParticleEmitter(gdeOCParticleEmitter::Ref::New(*particleEmitter));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCParticleEmitter::Ref::NewWith(clipOCParticleEmitter));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCParticleEmitter::Ref::New(clipOCParticleEmitter));
+	return {};
 }
 
 void gdeMAOCParticleEmitterCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-		&& gameDefinition->GetActiveOCParticleEmitter() != NULL);
+		&& gameDefinition->GetActiveOCParticleEmitter() != nullptr);
 }

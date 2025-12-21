@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Camera",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCCameraCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
 	if(!camera){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCCamera::Ref clipOCCamera(gdeOCCamera::Ref::NewWith(*camera));
+	const gdeOCCamera::Ref clipOCCamera(gdeOCCamera::Ref::New(*camera));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCCamera::Ref::NewWith(clipOCCamera));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCCamera::Ref::New(clipOCCamera));
 	
-	return new gdeUOCRemoveCamera(&objectClass, camera);
+	return gdeUOCRemoveCamera::Ref::New(&objectClass, camera);
 }
 
 void gdeMAOCCameraCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-		&& gameDefinition->GetActiveOCCamera() != NULL);
+		&& gameDefinition->GetActiveOCCamera() != nullptr);
 }

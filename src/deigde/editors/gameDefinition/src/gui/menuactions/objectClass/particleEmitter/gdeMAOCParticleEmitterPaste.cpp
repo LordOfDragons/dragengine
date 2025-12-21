@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
 	if(!clip){
-		return NULL;
+		return {};
 	}
 	
 	const gdeClipboardDataOCParticleEmitter &clipOCParticleEmitter =
 		(const gdeClipboardDataOCParticleEmitter &)(igdeClipboardData&)clip;
 	
-	const gdeOCParticleEmitter::Ref particleEmitter(gdeOCParticleEmitter::Ref::NewWith(*clipOCParticleEmitter.GetParticleEmitter()));
+	const gdeOCParticleEmitter::Ref particleEmitter(gdeOCParticleEmitter::Ref::New(*clipOCParticleEmitter.GetParticleEmitter()));
 	
-	igdeUndo * const undo = new gdeUOCAddParticleEmitter(&objectClass,
+	const igdeUndo::Ref undo = gdeUOCAddParticleEmitter::Ref::New(&objectClass,
 		particleEmitter);
 	undo->SetShortInfo("Paste object class particle emitter");
 	return undo;
 }
 
 void gdeMAOCParticleEmitterPaste::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL
+	SetEnabled(GetActiveObjectClass() != nullptr
 		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
 }

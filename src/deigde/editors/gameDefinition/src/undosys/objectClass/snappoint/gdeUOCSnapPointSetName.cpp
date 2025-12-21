@@ -42,8 +42,8 @@
 
 gdeUOCSnapPointSetName::gdeUOCSnapPointSetName(gdeObjectClass *objectClass,
 gdeOCSnapPoint *snapPoint, const char *newValue) :
-pObjectClass(NULL),
-pSnapPoint(NULL)
+
+pSnapPoint(nullptr)
 {
 	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pSnapPoint(NULL)
 	pNewValue = newValue;
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSnapPointSetName::~gdeUOCSnapPointSetName(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

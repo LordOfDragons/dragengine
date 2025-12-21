@@ -42,8 +42,8 @@
 
 gdeUGDWPSetDefaultValue::gdeUGDWPSetDefaultValue(gdeGameDefinition *gamedef,
 	gdeProperty *property, const char *newValue, const char *oldValue) :
-pGameDefinition(NULL),
-pProperty(NULL)
+
+pProperty(nullptr)
 {
 	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetDefaultValue::~gdeUGDWPSetDefaultValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

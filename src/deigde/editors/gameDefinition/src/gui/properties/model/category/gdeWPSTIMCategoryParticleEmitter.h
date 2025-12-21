@@ -33,6 +33,8 @@
  */
 class gdeWPSTIMCategoryParticleEmitter : public gdeWPSTIMCategory{
 public:
+	typedef deTObjectReference<gdeWPSTIMCategoryParticleEmitter> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -48,7 +50,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with category or \em NULL. */
+	/** \brief Model with category or \em nullptr. */
 	gdeWPSTIMCategoryParticleEmitter *GetChildWith(gdeCategory* category, bool deep) const;
 	
 	/** \brief Categories changed. */

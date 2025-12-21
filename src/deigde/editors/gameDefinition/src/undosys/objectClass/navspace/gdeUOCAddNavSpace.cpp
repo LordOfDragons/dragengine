@@ -42,8 +42,7 @@
 ////////////////////////////
 
 gdeUOCAddNavSpace::gdeUOCAddNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -52,19 +51,10 @@ pNavSpace(NULL)
 	SetShortInfo("Add navspace");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddNavSpace::~gdeUOCAddNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +68,7 @@ void gdeUOCAddNavSpace::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationSpace(NULL);
+		gameDefinition->SetActiveOCNavigationSpace(nullptr);
 	}
 	
 	pObjectClass->GetNavigationSpaces().Remove(pNavSpace);

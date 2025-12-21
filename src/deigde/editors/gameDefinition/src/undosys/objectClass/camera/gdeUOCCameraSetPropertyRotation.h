@@ -27,24 +27,25 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 /**
  * \brief Undo action object class camera set property rotation.
  */
 class gdeUOCCameraSetPropertyRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCCameraSetPropertyRotation> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	decString pOldValue, pNewValue;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCCameraSetPropertyRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

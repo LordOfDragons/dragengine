@@ -43,16 +43,11 @@
 
 gdeWPUndoHistory::gdeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new gdeWPUndoHistoryListener(*this)),
-pGameDefinition(NULL){
+pListener(new gdeWPUndoHistoryListener(*this)){
 }
 
 gdeWPUndoHistory::~gdeWPUndoHistory(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -65,19 +60,16 @@ void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		SetUndoSystem(gameDefinition->GetUndoSystem());
 	}
 }

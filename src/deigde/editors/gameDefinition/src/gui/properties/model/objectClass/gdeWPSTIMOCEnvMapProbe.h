@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCEnvMapProbe;
+#include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCEnvMapProbe;
  */
 class gdeWPSTIMOCEnvMapProbe : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCEnvMapProbe> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Environment map probe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetOCEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

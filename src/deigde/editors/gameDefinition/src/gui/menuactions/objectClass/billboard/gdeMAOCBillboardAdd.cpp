@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Billboard...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddBillboard(&objectClass, gdeOCBillboard::Ref::NewWith());
+igdeUndo::Ref gdeMAOCBillboardAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddBillboard::Ref::New(&objectClass, gdeOCBillboard::Ref::New());
 }
 
 void gdeMAOCBillboardAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCAddNavBlocker::gdeUOCAddNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
-pObjectClass(NULL),
-pNavBlocker(NULL)
+
+pNavBlocker(nullptr)
 {
 	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pNavBlocker(NULL)
 	SetShortInfo("Add navblocker");
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddNavBlocker::~gdeUOCAddNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ void gdeUOCAddNavBlocker::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCNavigationBlocker(NULL);
+		gameDefinition->SetActiveOCNavigationBlocker(nullptr);
 	}
 	
 	pObjectClass->GetNavigationBlockers().Remove(pNavBlocker);

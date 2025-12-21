@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Navigation Space...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddNavSpace(&objectClass, gdeOCNavigationSpace::Ref::NewWith());
+igdeUndo::Ref gdeMAOCNavSpaceAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddNavSpace::Ref::New(&objectClass, gdeOCNavigationSpace::Ref::New());
 }
 
 void gdeMAOCNavSpaceAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

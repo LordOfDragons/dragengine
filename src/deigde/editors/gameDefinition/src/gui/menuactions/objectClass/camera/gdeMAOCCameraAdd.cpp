@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Camera...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddCamera(&objectClass, gdeOCCamera::Ref::NewWith());
+igdeUndo::Ref gdeMAOCCameraAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddCamera::Ref::New(&objectClass, gdeOCCamera::Ref::New());
 }
 
 void gdeMAOCCameraAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

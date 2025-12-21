@@ -25,14 +25,14 @@
 #ifndef _GDELOADSAVESYSTEM_H_
 #define _GDELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
-
 #include "gdeLoadSaveGameDefinition.h"
 #include "gdeLoadSaveXmlEClass.h"
+#include "../gamedef/gdeGameDefinition.h"
+#include "../gamedef/objectClass/gdeObjectClass.h"
+
+#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 class gdeWindowMain;
-class gdeGameDefinition;
-class gdeObjectClass;
 class igdeGameDefinition;
 
 
@@ -72,7 +72,7 @@ public:
 	inline gdeLoadSaveGameDefinition &GetLSGameDefinition(){ return pLSGameDef; }
 	
 	/** \brief Load game definition from file. */
-	gdeGameDefinition *LoadGameDefinition(const char *filename);
+	gdeGameDefinition::Ref LoadGameDefinition(const char *filename);
 	
 	/** \brief Save game definition to file. */
 	void SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename);
@@ -89,7 +89,7 @@ public:
 	inline gdeLoadSaveXmlEClass &GetLSXmlEClass(){ return pLSXmlEClass; }
 	
 	/** \brief Load xml element class from file. */
-	gdeObjectClass *LoadXmlEClass(const char *filename);
+	gdeObjectClass::Ref LoadXmlEClass(const char *filename);
 	
 	/** \brief Save xml element class to file. */
 	void SaveXmlEClass(const gdeGameDefinition &gameDefinition,

@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCLightCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
 	if(!light){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::New(*light));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::NewWith(clipOCLight));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::New(clipOCLight));
 	
-	return new gdeUOCRemoveLight(&objectClass, light);
+	return gdeUOCRemoveLight::Ref::New(&objectClass, light);
 }
 
 void gdeMAOCLightCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL);
+		&& gameDefinition->GetActiveOCLight() != nullptr);
 }

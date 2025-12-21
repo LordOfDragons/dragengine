@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -49,13 +49,9 @@ pObjectClass(NULL)
 	SetShortInfo("Object class toggle is ghost");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

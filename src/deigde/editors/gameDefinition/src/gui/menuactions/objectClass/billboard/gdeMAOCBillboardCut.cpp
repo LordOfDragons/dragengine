@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCBillboardCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
 	if(!billboard){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::NewWith(*billboard));
+	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::New(*billboard));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCBillboard::Ref::NewWith(clipOCBillboard));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCBillboard::Ref::New(clipOCBillboard));
 	
-	return new gdeUOCRemoveBillboard(&objectClass, billboard);
+	return gdeUOCRemoveBillboard::Ref::New(&objectClass, billboard);
 }
 
 void gdeMAOCBillboardCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL);
+		&& gameDefinition->GetActiveOCBillboard() != nullptr);
 }

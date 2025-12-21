@@ -42,8 +42,7 @@
 
 gdeUOCNavSpaceSetBoneName::gdeUOCNavSpaceSetBoneName(gdeObjectClass *objectClass,
 gdeOCNavigationSpace *navSpace, const char *newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !navSpace){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navSpace;
-	navSpace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetBoneName::~gdeUOCNavSpaceSetBoneName(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

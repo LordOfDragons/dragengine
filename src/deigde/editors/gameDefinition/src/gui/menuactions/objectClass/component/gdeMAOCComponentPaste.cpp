@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
 	if(!clip){
-		return NULL;
+		return {};
 	}
 	
 	const gdeClipboardDataOCComponent &clipOCComponent =
 		(const gdeClipboardDataOCComponent &)(igdeClipboardData&)clip;
 	
-	const gdeOCComponent::Ref component(gdeOCComponent::Ref::NewWith(*clipOCComponent.GetComponent()));
+	const gdeOCComponent::Ref component(gdeOCComponent::Ref::New(*clipOCComponent.GetComponent()));
 	
-	igdeUndo * const undo = new gdeUOCAddComponent(&objectClass,
+	const igdeUndo::Ref undo = gdeUOCAddComponent::Ref::New(&objectClass,
 		component);
 	undo->SetShortInfo("Paste object class component");
 	return undo;
 }
 
 void gdeMAOCComponentPaste::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL
+	SetEnabled(GetActiveObjectClass() != nullptr
 		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
 }

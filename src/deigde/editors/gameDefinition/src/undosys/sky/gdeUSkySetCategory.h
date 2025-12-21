@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
+#include "../../gamedef/sky/gdeSky.h"
 
 
 
@@ -36,8 +36,12 @@ class gdeSky;
  * \brief Undo action sky set category.
  */
 class gdeUSkySetCategory : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUSkySetCategory> Ref;
+	
+	
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUSkySetCategory> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

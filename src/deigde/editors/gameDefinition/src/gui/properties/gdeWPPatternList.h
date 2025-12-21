@@ -30,11 +30,11 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 
+#include <dragengine/common/string/decStringSet.h>
+
 class igdeUIHelper;
 class igdeUndoSystem;
 class igdeUndo;
-
-class decStringSet;
 
 
 /**
@@ -78,10 +78,10 @@ public:
 	/** \brief Set pattern list to edit. */
 	void SetPatternList(const decStringSet *patternList);
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
+	/** \brief Set undo system or nullptr. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
@@ -98,9 +98,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
@@ -114,10 +114,10 @@ public:
 	
 protected:
 	/** \brief Edit path. */
-	inline igdeEditPath *GetEditPath() const{ return pEditPath; }
+	inline const igdeEditPath::Ref &GetEditPath() const{ return pEditPath; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

@@ -41,6 +41,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCEnvMapProbeListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

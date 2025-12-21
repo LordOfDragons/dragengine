@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCComponentCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
 	if(!component){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::NewWith(*component));
+	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::New(*component));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::NewWith(clipOCComponent));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::New(clipOCComponent));
 	
-	return new gdeUOCRemoveComponent(&objectClass, component);
+	return gdeUOCRemoveComponent::Ref::New(&objectClass, component);
 }
 
 void gdeMAOCComponentCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL);
+		&& gameDefinition->GetActiveOCComponent() != nullptr);
 }

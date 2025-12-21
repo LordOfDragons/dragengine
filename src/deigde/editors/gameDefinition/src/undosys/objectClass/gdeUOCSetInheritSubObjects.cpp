@@ -39,7 +39,7 @@
 ////////////////////////////
 
 gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects(gdeObjectClass *objectClass, int newValue) :
-pObjectClass(nullptr),
+
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(objectClass)
@@ -50,13 +50,9 @@ pNewValue(newValue)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

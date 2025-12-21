@@ -41,8 +41,7 @@
 ////////////////////////////
 
 gdeUOCAddInherit::gdeUOCAddInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
-pObjectClass(NULL),
-pInherit(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pInherit(NULL)
 	SetShortInfo("Add inherit");
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddInherit::~gdeUOCAddInherit(){
-	if(pInherit){
-		pInherit->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

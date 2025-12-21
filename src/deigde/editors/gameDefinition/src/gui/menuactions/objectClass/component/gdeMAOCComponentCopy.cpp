@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCComponentCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
 	if(!component){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::NewWith(*component));
+	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::New(*component));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::NewWith(clipOCComponent));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::New(clipOCComponent));
+	return {};
 }
 
 void gdeMAOCComponentCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL);
+		&& gameDefinition->GetActiveOCComponent() != nullptr);
 }

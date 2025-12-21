@@ -42,8 +42,7 @@
 
 gdeUOCInheritSetName::gdeUOCInheritSetName(gdeObjectClass *objectClass,
 gdeOCInherit *inherit, const char *newValue) :
-pObjectClass(NULL),
-pInherit(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pInherit(NULL)
 	pNewValue = newValue;
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCInheritSetName::~gdeUOCInheritSetName(){
-	if(pInherit){
-		pInherit->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

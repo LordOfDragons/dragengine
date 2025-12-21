@@ -75,6 +75,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -83,13 +84,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, pPanel.GetObjectClass(), world)));
+		igdeUndo::Ref undo(OnChanged(*textField, pPanel.GetObjectClass(), world));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCWorld *world) = 0;
 };
 
@@ -98,6 +99,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -106,14 +108,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world)));
+		igdeUndo::Ref undo(
+			OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector,
 		gdeObjectClass *objectClass, gdeOCWorld *world) = 0;
 };
 
@@ -122,6 +124,7 @@ protected:
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -130,13 +133,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, pPanel.GetObjectClass(), world)));
+		igdeUndo::Ref undo(OnChanged(*comboBox, pPanel.GetObjectClass(), world));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCWorld *world) = 0;
 };
 
@@ -145,6 +148,7 @@ class cEditPath : public igdeEditPathListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
@@ -153,32 +157,34 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPath::Ref::New(
 			pPanel.GetObjectClass(), world, editPath->GetPath()));
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){}
 	
-	igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
 		if(world->GetPosition().IsEqualTo(vector)){
-			return nullptr;
+			return {};
 		}
-		return new gdeUOCWorldSetPosition(objectClass, world, vector);
+		return gdeUOCWorldSetPosition::Ref::New(objectClass, world, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCWorld &panel) : cBaseEditVectorListener(panel){}
 	
-	igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCWorld *world) override{
 		if(world->GetRotation().IsEqualTo(vector)){
-			return nullptr;
+			return {};
 		}
-		return new gdeUOCWorldSetRotation(objectClass, world, vector);
+		return gdeUOCWorldSetRotation::Ref::New(objectClass, world, vector);
 	}
 };
 
@@ -186,6 +192,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox*) override{
@@ -199,6 +206,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCWorld &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCWorld &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -211,7 +219,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPropertyName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPropertyName::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetWorld(), propertyName, comboBox->GetText()));
 	}
 };
@@ -228,38 +236,36 @@ public:
 
 gdeWPSOCWorld::gdeWPSOCWorld(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pGameDefinition(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCWorldListener(*this);
+	pListener = gdeWPSOCWorldListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class World:");
 	
 	helper.EditPath(groupBox, "Path:", "Path to world", igdeEnvironment::efpltWorld,
-		pEditPath, new cEditPath(*this));
+		pEditPath, cEditPath::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
 	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCWorld::epPath);
 	pCBPropertyNames->AddItem("Position", nullptr, (void*)(intptr_t)gdeOCWorld::epPosition);
 	pCBPropertyNames->AddItem("Rotation", nullptr, (void*)(intptr_t)gdeOCWorld::epRotation);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
@@ -267,10 +273,6 @@ pGameDefinition(nullptr)
 
 gdeWPSOCWorld::~gdeWPSOCWorld(){
 	SetGameDefinition(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -284,14 +286,12 @@ void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

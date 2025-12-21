@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCComponentRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCComponent){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCComponent * const component = gameDefinition.GetActiveOCComponent();
 	if(!component){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveComponent(&objectClass, component);
+	return gdeUOCRemoveComponent::Ref::New(&objectClass, component);
 }
 
 void gdeMAOCComponentRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent
-		&& gameDefinition->GetActiveOCComponent() != NULL);
+		&& gameDefinition->GetActiveOCComponent() != nullptr);
 }

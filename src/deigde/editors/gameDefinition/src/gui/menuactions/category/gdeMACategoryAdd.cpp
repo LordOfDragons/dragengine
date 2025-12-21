@@ -64,7 +64,7 @@ gdeBaseAction(windowMain, text, icon, description)
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 	gdeUCategoryBase::eCategoryType categoryType;
 	
 	switch(gameDefinition.GetSelectedObjectType()){
@@ -85,12 +85,12 @@ igdeUndo *gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 		break;
 		
 	default:
-		return NULL;
+		return {};
 	}
 	
 	gdeCategory * const category = gameDefinition.GetActiveCategory();
 	if(!category){
-		return NULL;
+		return {};
 	}
 	
 	return AddCategory(gameDefinition, category, category->GetCategories(), categoryType);
@@ -98,20 +98,18 @@ igdeUndo *gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 
 
 
-igdeUndo *gdeMACategoryAdd::AddCategory(gdeGameDefinition &gameDefinition,
+igdeUndo::Ref gdeMACategoryAdd::AddCategory(gdeGameDefinition &gameDefinition,
 gdeCategory *parent, const gdeCategoryList &list, gdeUCategoryBase::eCategoryType categoryType) const{
 	decString name("Category");
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Add Category", "Name:", name)){
-		if(list.HasNamed(name)){
+		if(list.GetNamed(name)){
 			igdeCommonDialogs::Error(&pWindowMain, "Add Category", "Category exists already.");
 			continue;
 		}
 		
-		const gdeCategory::Ref category(gdeCategory::Ref::NewWith(name));
-		return new gdeUCategoryAdd(&gameDefinition, parent,
-			category, categoryType);
+		return gdeUCategoryAdd::Ref::New(&gameDefinition, parent, gdeCategory::Ref::New(name), categoryType);
 	}
 	
-	return NULL;
+	return {};
 }

@@ -43,9 +43,8 @@
 
 gdeUOCTPCFPRemove::gdeUOCTPCFPRemove(gdeObjectClass *objectClass,
 gdeProperty *property, gdeFilePattern *filePattern) :
-pObjectClass(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+
+pProperty(nullptr)
 {
 	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -57,25 +56,11 @@ pFilePattern(NULL)
 	SetShortInfo("Object class texture property remove custom file pattern");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCTPCFPRemove::~gdeUOCTPCFPRemove(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -26,6 +26,7 @@
 #define _GDEOCFORCEFIELD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/forcefield/deForceField.h>
@@ -39,6 +40,9 @@ class gdeOCForceField : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCForceField> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCForceField> List;
 	
 	
 	/** \brief Properties. */

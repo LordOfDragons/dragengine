@@ -36,7 +36,7 @@
  */
 class gdeUCategorySetAutoCategorizePattern : public gdeUCategoryBase{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -44,6 +44,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeUCategorySetAutoCategorizePattern> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

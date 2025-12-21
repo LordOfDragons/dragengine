@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,15 +38,16 @@ class gdeObjectClass;
  * \brief Undo action object class toggle can instantiate.
  */
 class gdeUOCToggleCanInstantiate : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCToggleCanInstantiate> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCToggleCanInstantiate> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

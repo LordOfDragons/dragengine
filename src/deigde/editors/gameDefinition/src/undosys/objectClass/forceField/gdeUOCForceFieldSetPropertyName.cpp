@@ -41,8 +41,8 @@
 
 gdeUOCForceFieldSetPropertyName::gdeUOCForceFieldSetPropertyName(gdeObjectClass *objectClass,
 gdeOCForceField *forceField, gdeOCForceField::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pForceField(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !forceField){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetPropertyName::~gdeUOCForceFieldSetPropertyName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

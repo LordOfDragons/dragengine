@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 class decShape;
 
 
@@ -38,9 +38,13 @@ class decShape;
  * \brief Undo action object class environment map probe set shape reflection.
  */
 class gdeUOCEnvMapProbeSetShapeReflection : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeReflection> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	const decShape *pOldValue;
 	const decShape *pNewValue;
@@ -48,9 +52,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeReflection> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

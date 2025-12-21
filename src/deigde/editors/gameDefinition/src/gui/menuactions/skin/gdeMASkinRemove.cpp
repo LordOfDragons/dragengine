@@ -56,18 +56,18 @@ gdeBaseAction(windowMain, "Remove Skin",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkinRemove::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMASkinRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeSkin * const category = gameDefinition.GetActiveSkin();
 	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSkin){
-		return NULL;
+		return {};
 	}
 	
 	gdeSkin * const skin = gameDefinition.GetActiveSkin();
 	if(!skin){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeURemoveSkin(&gameDefinition, skin);
+	return gdeURemoveSkin::Ref::New(&gameDefinition, skin);
 }
 
 void gdeMASkinRemove::Update(){
@@ -78,5 +78,5 @@ void gdeMASkinRemove::Update(){
 	}
 	
 	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSkin 
-		&& gameDefinition->GetActiveSkin() != NULL);
+		&& gameDefinition->GetActiveSkin() != nullptr);
 }

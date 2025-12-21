@@ -36,6 +36,8 @@ class gdeObjectClass;
  */
 class gdeWPSTIMObjectClasses : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMObjectClasses> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +53,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with object class or \em NULL. */
+	/** \brief Model with object class or \em nullptr. */
 	gdeWPSTIMObjectClass *GetChildWith(gdeObjectClass *objectClass) const;
 	
 	/** \brief Structure changed. */

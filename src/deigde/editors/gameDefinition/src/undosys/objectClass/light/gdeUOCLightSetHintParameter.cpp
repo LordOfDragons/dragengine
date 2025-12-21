@@ -42,8 +42,7 @@
 
 gdeUOCLightSetHintParameter::gdeUOCLightSetHintParameter(gdeObjectClass *objectClass,
 gdeOCLight *light, deLight::eParameterHints newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHintParameter::~gdeUOCLightSetHintParameter(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

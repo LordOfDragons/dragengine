@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Component...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddComponent(&objectClass, gdeOCComponent::Ref::NewWith());
+igdeUndo::Ref gdeMAOCComponentAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddComponent::Ref::New(&objectClass, gdeOCComponent::Ref::New());
 }
 
 void gdeMAOCComponentAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

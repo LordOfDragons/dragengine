@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCParticleEmitter;
+#include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCParticleEmitter;
  */
 class gdeWPSTIMOCParticleEmitter : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCParticleEmitter> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

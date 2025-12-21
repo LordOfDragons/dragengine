@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 /**
@@ -35,12 +35,14 @@ class gdeObjectClass;
  */
 class gdeWPSTIMOCSubObject : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	int pIndex;
 	
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCSubObject> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -57,7 +59,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }

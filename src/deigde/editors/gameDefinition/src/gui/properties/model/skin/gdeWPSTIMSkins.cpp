@@ -62,20 +62,20 @@ gdeWPSTIMSkins::~gdeWPSTIMSkins(){
 ///////////////
 
 gdeWPSTIMSkin *gdeWPSTIMSkins::GetChildWith(gdeSkin *skin) const{
-	gdeWPSTIMSkin *child = (gdeWPSTIMSkin*)GetFirstChild();
+	gdeWPSTIMSkin *child = GetFirstChild().DynamicCast<gdeWPSTIMSkin>();
 	
 	while(child){
 		if(child->GetSkin() == skin){
 			return child;
 		}
-		child = (gdeWPSTIMSkin*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMSkin>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMSkins::StructureChanged(){
-	const gdeSkinList &list = GetGameDefinition().GetSkins();
+	const gdeSkin::List &list = GetGameDefinition().GetSkins();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -86,7 +86,7 @@ void gdeWPSTIMSkins::StructureChanged(){
 		gdeWPSTIMSkin * const modelSkin = GetChildWith(skin);
 		
 		if(!modelSkin){
-			item.TakeOver(new gdeWPSTIMSkin(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMSkin::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -109,13 +109,13 @@ void gdeWPSTIMSkins::StructureChanged(){
 
 
 void gdeWPSTIMSkins::OnAddedToTree(){
-	const gdeSkinList &list = GetGameDefinition().GetSkins();
+	const gdeSkin::List &list = GetGameDefinition().GetSkins();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMSkin(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMSkin::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

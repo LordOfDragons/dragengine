@@ -26,6 +26,8 @@
 #define _GDEWPSOCWORLD_H_
 
 #include "../../../gamedef/objectClass/world/gdeOCWorld.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCWorldListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -34,21 +36,22 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCWorldListener;
 
 
 /**
  * \brief Object class world property panel.
  */
 class gdeWPSOCWorld : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCWorld> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCWorldListener *pListener;
+	gdeWPSOCWorldListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeEditVector::Ref pEditPosition;
@@ -75,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or nullptr if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

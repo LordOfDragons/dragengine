@@ -38,6 +38,7 @@ class gdeCategoryList;
  */
 class gdeMACategoryAdd : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMACategoryAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
@@ -51,11 +52,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	igdeUndo *OnAction(gdeGameDefinition &gameDefinition) override;
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	
 	/** \brief Add category. */
-	igdeUndo *AddCategory(gdeGameDefinition &gameDefinition,
+	igdeUndo::Ref AddCategory(gdeGameDefinition &gameDefinition,
 		gdeCategory *parent, const gdeCategoryList &list,
 		gdeUCategoryBase::eCategoryType categoryType) const;
 	/*@}*/

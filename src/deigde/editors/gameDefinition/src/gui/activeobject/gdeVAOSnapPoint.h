@@ -26,10 +26,10 @@
 #define _GDEVAOSNAPPOINT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCSnapPoint;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSnapPoint *pOCSnapPoint;
+	gdeOCSnapPoint::Ref pOCSnapPoint;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pOCSnapPoint; }
+	inline const gdeOCSnapPoint::Ref &GetOCSnapPoint() const{ return pOCSnapPoint; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

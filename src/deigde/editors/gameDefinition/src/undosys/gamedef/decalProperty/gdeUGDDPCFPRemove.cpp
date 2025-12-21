@@ -43,9 +43,8 @@
 
 gdeUGDDPCFPRemove::gdeUGDDPCFPRemove(gdeGameDefinition *gamedef,
 gdeProperty *property, gdeFilePattern *filePattern) :
-pGameDefinition(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+
+pProperty(nullptr)
 {
 	if(!gamedef || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -57,25 +56,11 @@ pFilePattern(NULL)
 	SetShortInfo("Game definition property remove custom file pattern");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUGDDPCFPRemove::~gdeUGDDPCFPRemove(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

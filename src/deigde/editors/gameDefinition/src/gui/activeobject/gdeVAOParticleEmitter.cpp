@@ -69,15 +69,12 @@ gdeVAOParticleEmitter::gdeVAOParticleEmitter(gdeViewActiveObject &view,
 	gdeOCParticleEmitter *ocemitter) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCParticleEmitter(ocemitter),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr)
 {
 	if(!ocemitter){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCParticleEmitter->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateParticleEmitter();
@@ -127,7 +124,7 @@ void gdeVAOParticleEmitter::AttachResources(){
 	const decQuaternion orientation(PropertyQuaternion(pOCParticleEmitter->GetPropertyName(
 		gdeOCParticleEmitter::epAttachRotation), pOCParticleEmitter->GetRotation()));
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	try{
 		// attach particleEmitter
 		attachment = new deColliderAttachment(pInstance);
@@ -136,7 +133,7 @@ void gdeVAOParticleEmitter::AttachResources(){
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 		// attach debug drawer
 		attachment = new deColliderAttachment(pDebugDrawer);
@@ -145,7 +142,7 @@ void gdeVAOParticleEmitter::AttachResources(){
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 	}catch(const deException &){
 		if(attachment){
@@ -165,7 +162,7 @@ void gdeVAOParticleEmitter::DetachResources(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	attachment = attachCollider->GetAttachmentWith(pInstance);
 	if(attachment){
 		attachCollider->RemoveAttachment(attachment);
@@ -198,11 +195,7 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCParticleEmitter){
-		pOCParticleEmitter->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -212,7 +205,7 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
@@ -243,18 +236,18 @@ void gdeVAOParticleEmitter::pCreateParticleEmitter(){
 	decBaseFileReader::Ref reader;
 	
 	try{
-		pEmitter.TakeOver(engine.GetParticleEmitterManager()->CreateParticleEmitter());
-		reader.TakeOver(vfs->OpenFileForReading(decPath::CreatePathUnix(path)));
+		pEmitter = engine.GetParticleEmitterManager()->CreateParticleEmitter();
+		reader = vfs->OpenFileForReading(decPath::CreatePathUnix(path));
 		loader.Load(path, pEmitter, reader);
 		
 	}catch(const deException &e){
-		pEmitter = NULL;
+		pEmitter = nullptr;
 		environment.GetLogger()->LogException(LOGSOURCE, e);
 		return;
 	}
 	
 	// create particle emitter instance
-	pInstance.TakeOver(engine.GetParticleEmitterInstanceManager()->CreateInstance());
+	pInstance = engine.GetParticleEmitterInstanceManager()->CreateInstance();
 	pInstance->SetEmitter(pEmitter);
 	
 	decLayerMask collisionMask;
@@ -290,7 +283,7 @@ void gdeVAOParticleEmitter::pReleaseResources(){
 	
 	if(pInstance){
 		world.RemoveParticleEmitter(pInstance);
-		pInstance = NULL;
+		pInstance = nullptr;
 	}
-	pEmitter = NULL;
+	pEmitter = nullptr;
 }

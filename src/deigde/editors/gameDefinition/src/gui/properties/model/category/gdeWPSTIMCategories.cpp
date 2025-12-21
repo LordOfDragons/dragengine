@@ -50,10 +50,10 @@
 
 gdeWPSTIMCategories::gdeWPSTIMCategories(gdeWPSTreeModel &tree) :
 gdeWPSTreeItemModel(tree, etCategories),
-pObjectClass(NULL),
-pSkin(NULL),
-pSky(NULL),
-pParticleEmitter(NULL)
+pObjectClass(nullptr),
+pSkin(nullptr),
+pSky(nullptr),
+pParticleEmitter(nullptr)
 {
 	SetText("Categories");
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
@@ -71,19 +71,19 @@ void gdeWPSTIMCategories::OnAddedToTree(){
 	gdeWPSTreeModel &treeModel = GetTree();
 	igdeTreeItem::Ref item;
 	
-	item.TakeOver(new gdeWPSTIMCategoriesObjectClass(treeModel));
+	item = gdeWPSTIMCategoriesObjectClass::Ref::New(treeModel);
 	AppendModel(item);
 	pObjectClass = (gdeWPSTIMCategoriesObjectClass*)(igdeTreeItem*)item;
 	
-	item.TakeOver(new gdeWPSTIMCategoriesParticleEmitter(treeModel));
+	item = gdeWPSTIMCategoriesParticleEmitter::Ref::New(treeModel);
 	AppendModel(item);
 	pParticleEmitter = (gdeWPSTIMCategoriesParticleEmitter*)(igdeTreeItem*)item;
 	
-	item.TakeOver(new gdeWPSTIMCategoriesSkin(treeModel));
+	item = gdeWPSTIMCategoriesSkin::Ref::New(treeModel);
 	AppendModel(item);
 	pSkin = (gdeWPSTIMCategoriesSkin*)(igdeTreeItem*)item;
 	
-	item.TakeOver(new gdeWPSTIMCategoriesSky(treeModel));
+	item = gdeWPSTIMCategoriesSky::Ref::New(treeModel);
 	AppendModel(item);
 	pSky = (gdeWPSTIMCategoriesSky*)(igdeTreeItem*)item;
 }

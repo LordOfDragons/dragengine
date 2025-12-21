@@ -26,6 +26,7 @@
 #define _GDESKIN_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -50,6 +51,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeSkin> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeSkin> List;
 
 
 	/** \name Constructors and Destructors */

@@ -41,8 +41,7 @@
 ////////////////////////////
 
 gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass *objectClass, gdeOCLight *light) :
-pObjectClass(NULL),
-pLight(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pLight(NULL)
 	SetShortInfo("Light toggle activated");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

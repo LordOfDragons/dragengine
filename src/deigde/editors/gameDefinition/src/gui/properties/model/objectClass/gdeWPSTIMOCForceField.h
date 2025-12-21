@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCForceField;
+#include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCForceField;
  */
 class gdeWPSTIMOCForceField : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCForceField> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pForceField; }
+	inline const gdeOCForceField::Ref &GetOCForceField() const{ return pForceField; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

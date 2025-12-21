@@ -25,9 +25,10 @@
 #ifndef _GDESKY_H_
 #define _GDESKY_H_
 
-#include "gdeSkyControllerList.h"
+#include "gdeSkyController.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -48,13 +49,16 @@ private:
 	decString pCategory;
 	decStringSet pTags;
 	
-	gdeSkyControllerList pControllers;
+	gdeSkyController::List pControllers;
 	
 	
 	
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeSky> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeSky> List;
 
 
 	/** \name Constructors and Destructors */
@@ -120,7 +124,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	const gdeSkyControllerList &GetControllers() const{ return pControllers; }
+	const gdeSkyController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(gdeSkyController *controller);

@@ -42,8 +42,7 @@
 ////////////////////////////
 
 gdeUOCAddLight::gdeUOCAddLight(gdeObjectClass *objectClass, gdeOCLight *light) :
-pObjectClass(NULL),
-pLight(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -52,19 +51,10 @@ pLight(NULL)
 	SetShortInfo("Add light");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddLight::~gdeUOCAddLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +68,7 @@ void gdeUOCAddLight::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCLight(NULL);
+		gameDefinition->SetActiveOCLight(nullptr);
 	}
 	
 	pObjectClass->GetLights().Remove(pLight);

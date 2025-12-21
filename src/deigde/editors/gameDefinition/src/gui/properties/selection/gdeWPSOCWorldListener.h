@@ -39,6 +39,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCWorldListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationSpace;
+#include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCNavigationSpace;
  */
 class gdeWPSTIMOCNavSpace : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCNavSpace> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pNavSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetOCNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

@@ -120,6 +120,7 @@ protected:
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -128,14 +129,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), component)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), component));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCComponent *component) = 0;
 };
 
@@ -144,6 +145,7 @@ protected:
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -152,14 +154,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), component)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), component));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCComponent *component) = 0;
 };
 
@@ -168,6 +170,7 @@ protected:
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -176,14 +179,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*comboBox, pPanel.GetObjectClass(), component)));
+		igdeUndo::Ref undo(
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), component));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCComponent *component) = 0;
 };
 
@@ -192,6 +195,7 @@ protected:
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPSOCComponent &panel, const char *text, const char *description) :
 		igdeAction(text, description), pPanel(panel){}
 	
@@ -204,13 +208,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnActionComponent(pPanel.GetObjectClass(), component)));
+		igdeUndo::Ref undo(OnActionComponent(pPanel.GetObjectClass(), component));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component) = 0;
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component) = 0;
 	
 	virtual void Update(){
 		SetEnabled(pPanel.GetComponent());
@@ -223,6 +227,7 @@ class cEditPathModel : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathModel> Ref;
 	cEditPathModel(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -231,7 +236,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetModelPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetModelPath::Ref::New(
 			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
@@ -240,6 +245,7 @@ class cEditPathSkin : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathSkin> Ref;
 	cEditPathSkin(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -248,7 +254,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetSkinPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetSkinPath::Ref::New(
 			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
@@ -257,6 +263,7 @@ class cEditPathRig : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathRig> Ref;
 	cEditPathRig(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -265,7 +272,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetRigPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetRigPath::Ref::New(
 			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
@@ -274,6 +281,7 @@ class cEditPathAnimator : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathAnimator> Ref;
 	cEditPathAnimator(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -283,7 +291,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCComponentSetAnimatorPath::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCComponentSetAnimatorPath::Ref::New(pPanel.GetObjectClass(),
 				component, editPath->GetPath()));
 	}
 };
@@ -292,6 +300,7 @@ class cEditPathAnimation : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathAnimation> Ref;
 	cEditPathAnimation(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -301,7 +310,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCComponentSetAnimationPath::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCComponentSetAnimationPath::Ref::New(pPanel.GetObjectClass(),
 				component, editPath->GetPath()));
 	}
 };
@@ -310,6 +319,7 @@ class cEditMove : public igdeTextFieldListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditMove> Ref;
 	cEditMove(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	void OnTextChanged (igdeTextField *textField) override{
@@ -318,7 +328,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetMove::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetMove::Ref::New(
 			pPanel.GetObjectClass(), component, textField->GetText()));
 	}
 };
@@ -327,6 +337,7 @@ class cEditPathOcclusionMesh : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathOcclusionMesh> Ref;
 	cEditPathOcclusionMesh(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -336,7 +347,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCComponentSetOccMeshPath::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCComponentSetOccMeshPath::Ref::New(pPanel.GetObjectClass(),
 				component, editPath->GetPath()));
 	}
 };
@@ -345,6 +356,7 @@ class cEditPathAudioModel : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathAudioModel> Ref;
 	cEditPathAudioModel(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -354,31 +366,33 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCComponentSetAudioModelPath::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCComponentSetAudioModelPath::Ref::New(pPanel.GetObjectClass(),
 				component, editPath->GetPath()));
 	}
 };
 
 class cTextPlaybackController : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPlaybackController> Ref;
 	cTextPlaybackController(gdeWPSOCComponent &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCComponent *component){
 		if(component->GetPlaybackController() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCComponentSetPlaybackController(objectClass, component, textField.GetText());
+		return gdeUOCComponentSetPlaybackController::Ref::New(objectClass, component, textField.GetText());
 	}
 };
 
 class cActionDoNotScale : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionDoNotScale> Ref;
 	cActionDoNotScale(gdeWPSOCComponent &panel) : cBaseAction(panel, "Do not scale",
 		"Component scale does not change with scale of parent object class instance"){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleDoNotScale(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleDoNotScale::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -386,11 +400,12 @@ public:
 
 class cActionStatic : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionStatic> Ref;
 	cActionStatic(gdeWPSOCComponent &panel) : cBaseAction(panel, "Static",
 		"Component is static (optimization for graphic module)"){ }
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleStatic(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleStatic::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -398,11 +413,12 @@ public:
 
 class cActionRenderEnvMap : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionRenderEnvMap> Ref;
 	cActionRenderEnvMap(gdeWPSOCComponent &panel) : cBaseAction(panel, "Render Env-Map",
 		"Component is included in environment maps"){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleRenderEnvMap(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleRenderEnvMap::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -410,11 +426,12 @@ public:
 
 class cActionAffectsAudio : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionAffectsAudio> Ref;
 	cActionAffectsAudio(gdeWPSOCComponent &panel) : cBaseAction(panel, "Affects audio",
 		"Component affects audio"){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleAffectsAudio(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleAffectsAudio::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -422,11 +439,12 @@ public:
 
 class cActionLightShadowIgnore : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLightShadowIgnore> Ref;
 	cActionLightShadowIgnore(gdeWPSOCComponent &panel) : cBaseAction(panel, "Light Shadow Ignore",
 		"Component is not casting shadows from lights present in the same object"){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleLightShadowIgnore(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleLightShadowIgnore::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -434,11 +452,12 @@ public:
 
 class cActionPartialHide : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPartialHide> Ref;
 	cActionPartialHide(gdeWPSOCComponent &panel) : cBaseAction(panel, "Partial hide",
 		"Component is hidden if partial hide tags match"){ }
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentTogglePartialHide(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentTogglePartialHide::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -446,11 +465,12 @@ public:
 
 class cActionAttachTarget : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionAttachTarget> Ref;
 	cActionAttachTarget(gdeWPSOCComponent &panel) : cBaseAction(panel, "Attach Target",
 		"Resourcec can be attached to this component in the editor."){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
-		return new gdeUOCComponentToggleAttachTarget(objectClass, component);
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleAttachTarget::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -458,55 +478,59 @@ public:
 
 class cComboCollisionResponseType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCollisionResponseType> Ref;
 	cComboCollisionResponseType(gdeWPSOCComponent &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCComponent *component){
 		const deCollider::eResponseType responseType = (deCollider::eResponseType)
 			(intptr_t)comboBox.GetSelectedItem()->GetData();
 		if(component->GetColliderResponseType() == responseType){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCComponentSetColRespType(objectClass, component, responseType);
+		return gdeUOCComponentSetColRespType::Ref::New(objectClass, component, responseType);
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCComponent &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCComponent *component){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCComponent *component) override{
 		if(component->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCComponentSetPosition(objectClass, component, vector);
+		return gdeUOCComponentSetPosition::Ref::New(objectClass, component, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCComponent &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCComponent *component){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCComponent *component) override{
 		if(component->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCComponentSetRotation(objectClass, component, vector);
+		return gdeUOCComponentSetRotation::Ref::New(objectClass, component, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCComponent &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCComponent *component){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCComponent *component) override{
 		if(component->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCComponentSetBoneName(objectClass, component, textField.GetText());
+		return gdeUOCComponentSetBoneName::Ref::New(objectClass, component, textField.GetText());
 	}
 };
 
@@ -515,6 +539,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -528,6 +553,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -542,7 +568,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCComponentSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCComponentSetPropertyName::Ref::New(pPanel.GetObjectClass(),
 				component, propertyName, comboBox->GetText()));
 	}
 };
@@ -552,18 +578,22 @@ public:
 
 class cBaseComboBoxTextureListener : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cBaseComboBoxTextureListener> Ref;
 	cBaseComboBoxTextureListener(gdeWPSOCComponent &panel) : cBaseComboBoxListener(panel){}
 	
-	igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass, gdeOCComponent *component){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass, gdeOCComponent *component) override{
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		return texture ? OnChangedTexture(comboBox, objectClass, component, texture) : NULL;
+		return texture ? OnChangedTexture(comboBox, objectClass, component, texture) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnChangedTexture(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChangedTexture(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 		gdeOCComponent *component, gdeOCComponentTexture *texture) = 0;
 };
 
 class cBaseActionTexture : public cBaseAction{
+public:
+	typedef deTObjectReference<cBaseActionTexture> Ref;
+	
 public:
 	cBaseActionTexture(gdeWPSOCComponent &panel, const char *text, const char *description) :
 		cBaseAction(panel, text, description){}
@@ -571,12 +601,12 @@ public:
 	cBaseActionTexture(gdeWPSOCComponent &panel, const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		return texture ? OnActionTexture(objectClass, component, texture) : NULL;
+		return texture ? OnActionTexture(objectClass, component, texture) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass,
 		gdeOCComponent *component, gdeOCComponentTexture *texture) = 0;
 	
 	void Update() override{
@@ -586,14 +616,15 @@ public:
 
 class cBaseTextFieldTextureListener : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cBaseTextFieldTextureListener> Ref;
 	cBaseTextFieldTextureListener(gdeWPSOCComponent &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponent *component){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponent *component) override{
 		gdeOCComponentTexture * const texture = pPanel.GetTexture();
-		return texture ? OnChangedTexture(textField, objectClass, component, texture) : NULL;
+		return texture ? OnChangedTexture(textField, objectClass, component, texture) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
 		gdeOCComponent *component, gdeOCComponentTexture *texture) = 0;
 };
 
@@ -602,6 +633,7 @@ protected:
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVector2TextureListener> Ref;
 	cBaseEditVector2TextureListener(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
@@ -610,44 +642,47 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChangedTexture(editVector2->GetVector2(),
-			pPanel.GetObjectClass(), pPanel.GetComponent(), texture)));
+		igdeUndo::Ref undo(OnChangedTexture(editVector2->GetVector2(),
+			pPanel.GetObjectClass(), pPanel.GetComponent(), texture));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
 		gdeOCComponent *component, gdeOCComponentTexture *texture) = 0;
 };
 
 
 class cComboTextures : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTextures> Ref;
 	cComboTextures(gdeWPSOCComponent &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCComponent *component){
 		const igdeListItem * const selection = comboBox.GetSelectedItem();
-		component->SetActiveTexture(selection ? (gdeOCComponentTexture*)selection->GetData() : NULL);
+		component->SetActiveTexture(selection ? (gdeOCComponentTexture*)selection->GetData() : nullptr);
 		pPanel.GetGameDefinition()->NotifyOCComponentActiveTextureChanged(objectClass, component);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionTextureAdd : public cBaseAction{
-	const decString pTextureName;
-	
 public:
 	typedef deTObjectReference<cActionTextureAdd> Ref;
 	
+private:
+	const decString pTextureName;
+	
+public:
 	cActionTextureAdd(gdeWPSOCComponent &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
 	
 	cActionTextureAdd(gdeWPSOCComponent &panel, const decString &textureName) :
-		cBaseAction(panel, textureName, NULL, "Add texture"), pTextureName(textureName){}
+		cBaseAction(panel, textureName, nullptr, "Add texture"), pTextureName(textureName){}
 	
-	virtual igdeUndo *OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		decString name(pTextureName);
 		
 		if(name.IsEmpty()){
@@ -655,10 +690,12 @@ public:
 			
 			while(true){
 				if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Texture", "Name:", name)){
-					return NULL;
+					return {};
 				}
 				
-				if(component->GetTextures().HasNamed(name)){
+				if(component->GetTextures().HasMatching([&](const gdeOCComponentTexture::Ref &t){
+					return t->GetName() == name;
+				})){
 					igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
 					
 				}else{
@@ -667,30 +704,33 @@ public:
 			}
 		}
 		
-		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
+		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::New(name));
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCAddTexture::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCAddTexture::Ref::New(
 			objectClass, component, texture));
 		
 		component->SetActiveTexture(texture);
 		pPanel.GetGameDefinition()->NotifyOCComponentActiveTextureChanged(objectClass, component);
-		return NULL;
+		return {};
 	}
 	
 	void Update() override{
 		const gdeOCComponent * const component = pPanel.GetComponent();
-		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasNamed(pTextureName)));
+		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
+			return t.GetName() == pTextureName;
+		})));
 	}
 };
 
 class cActionTextureRemove : public cBaseActionTexture{
 public:
+	typedef deTObjectReference<cActionTextureRemove> Ref;
 	cActionTextureRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove selected texture"){}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
+	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
-		return new gdeUOCCRemoveTexture(objectClass, component, texture);
+		return gdeUOCCRemoveTexture::Ref::New(objectClass, component, texture);
 	}
 };
 
@@ -698,6 +738,7 @@ class cActionTexturesMenu : public igdeActionContextMenu{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionTexturesMenu> Ref;
 	cActionTexturesMenu(gdeWPSOCComponent &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Textures menu"), pPanel(panel){}
@@ -705,21 +746,19 @@ public:
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		pPanel.PrepareEngineModelPath();
 		
-		const decObjectList &actionsAddFromModel = pPanel.GetActionsTextureAddFromModel();
+		const decTObjectList<igdeAction> &actionsAddFromModel = pPanel.GetActionsTextureAddFromModel();
 		igdeEnvironment &env = contextMenu.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
 		
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureAdd());
 		
-		if(actionsAddFromModel.GetCount() > 0){
-			igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		if(actionsAddFromModel.IsNotEmpty()){
+			igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 				env, "Add Texture From Model", env.GetStockIcon(igdeEnvironment::esiPlus), "Add Texture From Model"));
 			
-			const int count = actionsAddFromModel.GetCount();
-			int i;
-			for(i=0; i<count; i++){
-				helper.MenuCommand(subMenu, (igdeAction*)actionsAddFromModel.GetAt(i));
-			}
+			actionsAddFromModel.Visit([&](const igdeAction::Ref &action){
+				helper.MenuCommand(subMenu, action);
+			});
 			
 			contextMenu.AddChild(subMenu);
 		}
@@ -730,21 +769,24 @@ public:
 
 class cTextTextureEditName : public cBaseTextFieldTextureListener{
 public:
+	typedef deTObjectReference<cTextTextureEditName> Ref;
 	cTextTextureEditName(gdeWPSOCComponent &panel) : cBaseTextFieldTextureListener(panel){}
 	
-	virtual igdeUndo *OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCComponent *component, gdeOCComponentTexture *texture){
+	igdeUndo::Ref OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCComponent *component, gdeOCComponentTexture *texture) override{
 		if(texture->GetName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
 		
-		if(component->GetTextures().HasNamed(textField.GetText())){
+		if(component->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
+			return t.GetName() == textField.GetText();
+		})){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
 			textField.SetText(texture->GetName());
-			return NULL;
+			return {};
 		}
 		
-		return new gdeUOCCTextureSetName(objectClass, component, texture, textField.GetText());
+		return gdeUOCCTextureSetName::Ref::New(objectClass, component, texture, textField.GetText());
 	}
 };
 
@@ -752,6 +794,7 @@ class cEditTextureEditPathSkin : public igdeEditPathListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditTextureEditPathSkin> Ref;
 	cEditTextureEditPathSkin(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -760,48 +803,51 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetPathSkin::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetPathSkin::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, editPath->GetPath()));
 	}
 };
 
 class cEditTextureEditOffset : public cBaseEditVector2TextureListener{
 public:
+	typedef deTObjectReference<cEditTextureEditOffset> Ref;
 	cEditTextureEditOffset(gdeWPSOCComponent &panel) : cBaseEditVector2TextureListener(panel){}
 	
-	virtual igdeUndo *OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
-	gdeOCComponent *component, gdeOCComponentTexture *texture){
+	igdeUndo::Ref OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
+	gdeOCComponent *component, gdeOCComponentTexture *texture) override{
 		if(texture->GetOffset().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCCTextureSetOffset(objectClass, component, texture, vector);
+		return gdeUOCCTextureSetOffset::Ref::New(objectClass, component, texture, vector);
 	}
 };
 
 class cTextTextureEditRotation : public cBaseTextFieldTextureListener{
 public:
+	typedef deTObjectReference<cTextTextureEditRotation> Ref;
 	cTextTextureEditRotation(gdeWPSOCComponent &panel) : cBaseTextFieldTextureListener(panel){}
 	
-	virtual igdeUndo *OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCComponent *component, gdeOCComponentTexture *texture){
+	igdeUndo::Ref OnChangedTexture(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCComponent *component, gdeOCComponentTexture *texture) override{
 		const float value = textField.GetFloat();
 		if(fabsf(texture->GetRotation() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCCTextureSetRotation(objectClass, component, texture, value);
+		return gdeUOCCTextureSetRotation::Ref::New(objectClass, component, texture, value);
 	}
 };
 
 class cEditTextureEditScale : public cBaseEditVector2TextureListener{
 public:
+	typedef deTObjectReference<cEditTextureEditScale> Ref;
 	cEditTextureEditScale(gdeWPSOCComponent &panel) : cBaseEditVector2TextureListener(panel){}
 	
-	virtual igdeUndo *OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
-	gdeOCComponent *component, gdeOCComponentTexture *texture){
+	igdeUndo::Ref OnChangedTexture(const decVector2 &vector, gdeObjectClass *objectClass,
+	gdeOCComponent *component, gdeOCComponentTexture *texture) override{
 		if(texture->GetScale().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCCTextureSetScale(objectClass, component, texture, vector);
+		return gdeUOCCTextureSetScale::Ref::New(objectClass, component, texture, vector);
 	}
 };
 
@@ -809,6 +855,7 @@ class cColorTextureTint : public igdeColorBoxListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cColorTextureTint> Ref;
 	cColorTextureTint(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -817,7 +864,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetColorTint::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetColorTint::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, colorBox->GetColor()));
 	}
 };
@@ -825,18 +872,19 @@ public:
 
 class cActionPropertyValueSet : public cBaseActionTexture {
 public:
+	typedef deTObjectReference<cActionPropertyValueSet> Ref;
 	cActionPropertyValueSet(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Set",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Set property value"){}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
+	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
 		const decString &key = pPanel.GetTexturePropertyKey();
 		if(!texture || key.IsEmpty()){
-			return NULL;
+			return {};
 		}
 		
-		const gdeObjectClass *propertyOwner = NULL;
-		const gdeProperty *property = NULL;
+		const gdeObjectClass *propertyOwner = nullptr;
+		const gdeProperty *property = nullptr;
 		decString value;
 		
 		if(objectClass->DeepGetNamedProperty(key, propertyOwner, property)){
@@ -844,12 +892,12 @@ public:
 		}
 		
 		if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value)){
-			return NULL;
+			return {};
 		}
 		
 		decStringDictionary values(texture->GetProperties());
 		values.SetAt(key, value);
-		return new gdeUOCCTextureSetProperties(objectClass, component, texture, values);
+		return gdeUOCCTextureSetProperties::Ref::New(objectClass, component, texture, values);
 	}
 	
 	void Update() override{
@@ -859,19 +907,20 @@ public:
 
 class cActionPropertyValueRemove : public cBaseActionTexture {
 public:
+	typedef deTObjectReference<cActionPropertyValueRemove> Ref;
 	cActionPropertyValueRemove(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove property value"){}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
+	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
 		const char * const key = pPanel.GetTexturePropertyValue();
 		if(!key || !texture->GetProperties().Has(key)){
-			return NULL;
+			return {};
 		}
 		
 		decStringDictionary values(texture->GetProperties());
 		values.Remove(key);
-		return new gdeUOCCTextureSetProperties(objectClass, component, texture, values);
+		return gdeUOCCTextureSetProperties::Ref::New(objectClass, component, texture, values);
 	}
 	
 	void Update() override{
@@ -883,15 +932,16 @@ public:
 
 class cActionPropertyValueClear : public cBaseActionTexture {
 public:
+	typedef deTObjectReference<cActionPropertyValueClear> Ref;
 	cActionPropertyValueClear(gdeWPSOCComponent &panel) : cBaseActionTexture(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all property values"){}
 	
-	virtual igdeUndo *OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
+	virtual igdeUndo::Ref OnActionTexture(gdeObjectClass *objectClass, gdeOCComponent *component,
 	gdeOCComponentTexture *texture){
 		if(texture->GetProperties().GetCount() == 0){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCCTextureSetProperties(objectClass, component, texture, decStringDictionary());
+		return gdeUOCCTextureSetProperties::Ref::New(objectClass, component, texture, decStringDictionary());
 	}
 	
 	void Update() override{
@@ -900,10 +950,11 @@ public:
 	}
 };
 
-class cListTexturePropertyValues : public igdeIconListBoxListener {
+class cListTexturePropertyValues : public igdeIconListBoxListener{
 	gdeWPSOCComponent &pPanel;
 	
 public:
+	typedef deTObjectReference<cListTexturePropertyValues> Ref;
 	cListTexturePropertyValues(gdeWPSOCComponent &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeIconListBox *listBox, int index){
@@ -925,7 +976,7 @@ public:
 		decStringDictionary values(texture->GetProperties());
 		values.SetAt(key, value);
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetProperties::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetProperties::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, values));
 	}
 	
@@ -950,92 +1001,90 @@ public:
 gdeWPSOCComponent::gdeWPSOCComponent(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL),
 pDirtyEngModelTexNames(true)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCComponentListener(*this);
+	pListener = gdeWPSOCComponentListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// actions
-	pActionTexturesMenu.TakeOver(new cActionTexturesMenu(*this));
-	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
-	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
-	pActionTexturePropertyValueClear.TakeOver(new cActionPropertyValueClear(*this));
-	pActionTexturePropertyValueRemove.TakeOver(new cActionPropertyValueRemove(*this));
-	pActionTexturePropertyValueSet.TakeOver(new cActionPropertyValueSet(*this));
+	pActionTexturesMenu = cActionTexturesMenu::Ref::New(*this);
+	pActionTextureAdd = cActionTextureAdd::Ref::New(*this);
+	pActionTextureRemove = cActionTextureRemove::Ref::New(*this);
+	pActionTexturePropertyValueClear = cActionPropertyValueClear::Ref::New(*this);
+	pActionTexturePropertyValueRemove = cActionPropertyValueRemove::Ref::New(*this);
+	pActionTexturePropertyValueSet = cActionPropertyValueSet::Ref::New(*this);
 	
 	
 	// component
 	helper.GroupBox(content, groupBox, "Object Class Component:");
 	
 	helper.EditPath(groupBox, "Model:", "Path to model file to use",
-		igdeEnvironment::efpltModel, pEditPathModel, new cEditPathModel(*this));
+		igdeEnvironment::efpltModel, pEditPathModel, cEditPathModel::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
-		igdeEnvironment::efpltSkin, pEditPathSkin, new cEditPathSkin(*this));
+		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
 	helper.EditPath(groupBox, "Rig:", "Path to rig file to use",
-		igdeEnvironment::efpltRig, pEditPathRig, new cEditPathRig(*this));
+		igdeEnvironment::efpltRig, pEditPathRig, cEditPathRig::Ref::New(*this));
 	helper.EditPath(groupBox, "Animator:", "Path to animator file to use",
-		igdeEnvironment::efpltAnimator, pEditPathAnimator, new cEditPathAnimator(*this));
+		igdeEnvironment::efpltAnimator, pEditPathAnimator, cEditPathAnimator::Ref::New(*this));
 	helper.EditPath(groupBox, "Animation:", "Path to animation file to use",
-		igdeEnvironment::efpltAnimation, pEditPathAnimation, new cEditPathAnimation(*this));
-	helper.EditString(groupBox, "Move:", "Move to use from animation file", 15, pEditMove, new cEditMove(*this));
+		igdeEnvironment::efpltAnimation, pEditPathAnimation, cEditPathAnimation::Ref::New(*this));
+	helper.EditString(groupBox, "Move:", "Move to use from animation file", 15, pEditMove, cEditMove::Ref::New(*this));
 	helper.EditPath(groupBox, "Occlusion Mesh:", "Path to occlusion mesh file to use",
-		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, new cEditPathOcclusionMesh(*this));
+		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, cEditPathOcclusionMesh::Ref::New(*this));
 	helper.EditPath(groupBox, "Audio Model:", "Path to audio model file to use",
-		igdeEnvironment::efpltModel, pEditPathAudioModel, new cEditPathAudioModel(*this));
+		igdeEnvironment::efpltModel, pEditPathAudioModel, cEditPathAudioModel::Ref::New(*this));
 	helper.EditString(groupBox, "Playback Controller:", "Name of animator playback controller",
-		pEditPlaybackController, new cTextPlaybackController(*this));
+		pEditPlaybackController, cTextPlaybackController::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Collision:", "Collision response type",
-		pCBCollisionResponseType, new cComboCollisionResponseType(*this));
-	pCBCollisionResponseType->AddItem("Static", NULL, (void*)(intptr_t)deCollider::ertStatic);
-	pCBCollisionResponseType->AddItem("Kinematic", NULL, (void*)(intptr_t)deCollider::ertKinematic);
-	pCBCollisionResponseType->AddItem("Dynamic", NULL, (void*)(intptr_t)deCollider::ertDynamic);
+		pCBCollisionResponseType, cComboCollisionResponseType::Ref::New(*this));
+	pCBCollisionResponseType->AddItem("Static", nullptr, (void*)(intptr_t)deCollider::ertStatic);
+	pCBCollisionResponseType->AddItem("Kinematic", nullptr, (void*)(intptr_t)deCollider::ertKinematic);
+	pCBCollisionResponseType->AddItem("Dynamic", nullptr, (void*)(intptr_t)deCollider::ertDynamic);
 	
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkDoNotScale, new cActionDoNotScale(*this), true);
-	helper.CheckBox(groupBox, pChkPartialHide, new cActionPartialHide(*this), true);
-	helper.CheckBox(groupBox, pChkAttachTarget, new cActionAttachTarget(*this), true);
-	helper.CheckBox(groupBox, pChkRenderEnvMap, new cActionRenderEnvMap(*this), true);
-	helper.CheckBox(groupBox, pChkAffectsAudio, new cActionAffectsAudio(*this), true);
-	helper.CheckBox(groupBox, pChkLightShadowIgnore, new cActionLightShadowIgnore(*this), true);
-	helper.CheckBox(groupBox, pChkStatic, new cActionStatic(*this), true);
+	helper.CheckBox(groupBox, pChkDoNotScale, cActionDoNotScale::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkPartialHide, cActionPartialHide::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkAttachTarget, cActionAttachTarget::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkRenderEnvMap, cActionRenderEnvMap::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkAffectsAudio, cActionAffectsAudio::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkLightShadowIgnore, cActionLightShadowIgnore::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkStatic, cActionStatic::Ref::New(*this));
 	
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Model", NULL, (void*)(intptr_t)gdeOCComponent::epModel);
-	pCBPropertyNames->AddItem("Skin", NULL, (void*)(intptr_t)gdeOCComponent::epSkin);
-	pCBPropertyNames->AddItem("Rig", NULL, (void*)(intptr_t)gdeOCComponent::epRig);
-	pCBPropertyNames->AddItem("Animator", NULL, (void*)(intptr_t)gdeOCComponent::epAnimator);
-	pCBPropertyNames->AddItem("Animation", NULL, (void*)(intptr_t)gdeOCComponent::epAnimation);
-	pCBPropertyNames->AddItem("Move", NULL, (void*)(intptr_t)gdeOCComponent::epMove);
-	pCBPropertyNames->AddItem("Playback controller", NULL, (void*)(intptr_t)gdeOCComponent::epPlaybackController);
-	pCBPropertyNames->AddItem("Occlusion mesh", NULL, (void*)(intptr_t)gdeOCComponent::epOcclusionMesh);
-	pCBPropertyNames->AddItem("Audio model", NULL, (void*)(intptr_t)gdeOCComponent::epAudioModel);
-	pCBPropertyNames->AddItem("Render env-map", NULL, (void*)(intptr_t)gdeOCComponent::epRenderEnvMap);
-	pCBPropertyNames->AddItem("Affects audio", NULL, (void*)(intptr_t)gdeOCComponent::epAffectsAudio);
-	pCBPropertyNames->AddItem("Light Shadow Ignore", NULL, (void*)(intptr_t)gdeOCComponent::epLightShadowIgnore);
-	pCBPropertyNames->AddItem("Attach position", NULL,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Model", nullptr, (void*)(intptr_t)gdeOCComponent::epModel);
+	pCBPropertyNames->AddItem("Skin", nullptr, (void*)(intptr_t)gdeOCComponent::epSkin);
+	pCBPropertyNames->AddItem("Rig", nullptr, (void*)(intptr_t)gdeOCComponent::epRig);
+	pCBPropertyNames->AddItem("Animator", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimator);
+	pCBPropertyNames->AddItem("Animation", nullptr, (void*)(intptr_t)gdeOCComponent::epAnimation);
+	pCBPropertyNames->AddItem("Move", nullptr, (void*)(intptr_t)gdeOCComponent::epMove);
+	pCBPropertyNames->AddItem("Playback controller", nullptr, (void*)(intptr_t)gdeOCComponent::epPlaybackController);
+	pCBPropertyNames->AddItem("Occlusion mesh", nullptr, (void*)(intptr_t)gdeOCComponent::epOcclusionMesh);
+	pCBPropertyNames->AddItem("Audio model", nullptr, (void*)(intptr_t)gdeOCComponent::epAudioModel);
+	pCBPropertyNames->AddItem("Render env-map", nullptr, (void*)(intptr_t)gdeOCComponent::epRenderEnvMap);
+	pCBPropertyNames->AddItem("Affects audio", nullptr, (void*)(intptr_t)gdeOCComponent::epAffectsAudio);
+	pCBPropertyNames->AddItem("Light Shadow Ignore", nullptr, (void*)(intptr_t)gdeOCComponent::epLightShadowIgnore);
+	pCBPropertyNames->AddItem("Attach position", nullptr,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
@@ -1045,30 +1094,30 @@ pDirtyEngModelTexNames(true)
 	helper.GroupBox(content, groupBox, "Textures:");
 	
 	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit", frameLine);
-	helper.ComboBox(frameLine, "Texture to edit", pCBTextures, new cComboTextures(*this));
+	helper.ComboBox(frameLine, "Texture to edit", pCBTextures, cComboTextures::Ref::New(*this));
 	pCBTextures->SetDefaultSorter();
 	helper.Button(frameLine, pBtnTextures, pActionTexturesMenu);
 	pActionTexturesMenu->SetWidget(pBtnTextures);
 	
-	helper.EditString(groupBox, "Name:", "Name of texture", pTextureEditName, new cTextTextureEditName(*this));
+	helper.EditString(groupBox, "Name:", "Name of texture", pTextureEditName, cTextTextureEditName::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
-		igdeEnvironment::efpltSkin, pTextureEditPathSkin, new cEditTextureEditPathSkin(*this));
+		igdeEnvironment::efpltSkin, pTextureEditPathSkin, cEditTextureEditPathSkin::Ref::New(*this));
 	helper.EditVector2(groupBox, "Offset:", "Texture coordinate offset",
-		pTextureEditOffset, new cEditTextureEditOffset(*this));
+		pTextureEditOffset, cEditTextureEditOffset::Ref::New(*this));
 	helper.EditFloat(groupBox, "Rotation:",
 		"Texture coordinate rotation around texture center in degrees",
-		pTextureEditRotation, new cTextTextureEditRotation(*this));
+		pTextureEditRotation, cTextTextureEditRotation::Ref::New(*this));
 	helper.EditVector2(groupBox, "Scale:", "Texture coordinate scaling",
-		pTextureEditScale, new cEditTextureEditScale(*this));
+		pTextureEditScale, cEditTextureEditScale::Ref::New(*this));
 	helper.ColorBox(groupBox, "Tint:", "Texture tint color",
-		pTextureClrTint, new cColorTextureTint(*this));
+		pTextureClrTint, cColorTextureTint::Ref::New(*this));
 	
 	
 	// texture property values
 	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ComboBox(frameLine, "Property value to set", pTextureCBPropertyKeys, NULL);
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	helper.ComboBox(frameLine, "Property value to set", pTextureCBPropertyKeys, {});
 	pTextureCBPropertyKeys->SetDefaultSorter();
 	helper.Button(frameLine, pTextureBtnPropertyValueSet, pActionTexturePropertyValueSet);
 	groupBox->AddChild(frameLine);
@@ -1079,16 +1128,12 @@ pDirtyEngModelTexNames(true)
 	};
 	helper.IconListBox(groupBox, pTextureListProperties,
 		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
-		headersPropertyValues, 2, "Property values", new cListTexturePropertyValues(*this));
+		headersPropertyValues, 2, "Property values", cListTexturePropertyValues::Ref::New(*this));
 	pTextureListProperties->SetDefaultSorter();
 }
 
 gdeWPSOCComponent::~gdeWPSOCComponent(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -1103,14 +1148,12 @@ void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateComponent();
@@ -1122,17 +1165,17 @@ void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCComponent::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCComponent *gdeWPSOCComponent::GetComponent() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCComponent() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCComponent() : nullptr;
 }
 
 gdeOCComponentTexture *gdeWPSOCComponent::GetTexture() const{
 	gdeOCComponent * const component = GetComponent();
-	return component ? component->GetActiveTexture() : NULL;
+	return component ? component->GetActiveTexture() : nullptr;
 }
 
 const decString &gdeWPSOCComponent::GetTextureProperty() const{
@@ -1151,7 +1194,7 @@ const decString &gdeWPSOCComponent::GetTexturePropertyKey() const{
 
 const char *gdeWPSOCComponent::GetTexturePropertyValue() const{
 	const igdeListItem * const selection = pTextureListProperties->GetSelectedItem();
-	return selection ? selection->GetText().GetString() : NULL;
+	return selection ? selection->GetText().GetString() : nullptr;
 }
 
 
@@ -1297,13 +1340,13 @@ void gdeWPSOCComponent::UpdateTextureList(){
 	pCBTextures->RemoveAllItems();
 	
 	if(component){
-		const gdeOCComponentTextureList &textures = component->GetTextures();
+		const gdeOCComponentTexture::List &textures = component->GetTextures();
 		const int count = textures.GetCount();
 		int i;
 		
 		for(i=0; i<count; i++){
 			gdeOCComponentTexture * const texture = textures.GetAt(i);
-			pCBTextures->AddItem(texture->GetName(), NULL, texture);
+			pCBTextures->AddItem(texture->GetName(), nullptr, texture);
 		}
 	}
 	
@@ -1400,7 +1443,7 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 	
 	deModel::Ref model;
 	try{
-		model.TakeOver(GetEngine()->GetModelManager()->LoadModel(pEngModelPath, "/"));
+		model = GetEngine()->GetModelManager()->LoadModel(pEngModelPath, "/");
 		
 		const int count = model->GetTextureCount();
 		int i;
@@ -1411,7 +1454,7 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 		pEngModelTexNames.SortAscending();
 		
 		for(i=0; i<count; i++){
-			pActionsTextureAddFromModel.Add(cActionTextureAdd::Ref::NewWith(
+			pActionsTextureAddFromModel.Add(cActionTextureAdd::Ref::New(
 				*this, pEngModelTexNames.GetAt(i)));
 		}
 		

@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 class gdeWindowProperties;
 class gdeWindowMain;
-class gdeWPGameDefinitionListener;
+#include "gdeWPGameDefinitionListener.h"
 class gdeWPPropertyList;
 class gdeProperty;
 
@@ -46,10 +46,13 @@ class gdeProperty;
  * \brief Property window game definition panel.
  */
 class gdeWPGameDefinition : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPGameDefinition> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPGameDefinitionListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPGameDefinitionListener::Ref pListener;
 	
 	igdeAction::Ref pActionBasePath;
 	
@@ -91,10 +94,10 @@ public:
 	/** \brief Properties window. */
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Game definition or \em NULL. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL. */
+	/** \brief Set game definition or \em nullptr. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Active world property. */

@@ -85,6 +85,7 @@ protected:
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVector2Listener> Ref;
 	cBaseEditVector2Listener(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
@@ -93,14 +94,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(pPanel.GetObjectClass(), billboard, editVector2->GetVector2())));
+		igdeUndo::Ref undo(
+			 OnChanged(pPanel.GetObjectClass(), billboard, editVector2->GetVector2()));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(gdeObjectClass *objectClass,
 		gdeOCBillboard *billboard, const decVector2 &vector) = 0;
 };
 
@@ -109,6 +110,7 @@ protected:
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPSOCBillboard &panel, const char *name, const char *description) :
 		igdeAction(name, description), pPanel(panel){}
 	
@@ -118,13 +120,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnActionBillboard(pPanel.GetObjectClass(), billboard)));
+		igdeUndo::Ref undo(OnActionBillboard(pPanel.GetObjectClass(), billboard));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) = 0;
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) = 0;
 	
 	virtual void Update(){
 		gdeOCBillboard * const billboard = pPanel.GetBillboard();
@@ -148,6 +150,7 @@ protected:
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -156,14 +159,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), billboard)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), billboard));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCBillboard *billboard) = 0;
 };
 
@@ -172,6 +175,7 @@ protected:
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -180,14 +184,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), billboard)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), billboard));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCBillboard *billboard) = 0;
 };
 
@@ -197,6 +201,7 @@ class cEditPathSkin : public igdeEditPathListener{
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathSkin> Ref;
 	cEditPathSkin(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -205,54 +210,60 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCBillboardSetSkinPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCBillboardSetSkinPath::Ref::New(
 			pPanel.GetObjectClass(), billboard, editPath->GetPath()));
 	}
 };
 
 class cEditAxis : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditAxis> Ref;
 	cEditAxis(gdeWPSOCBillboard &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged (const decVector &vector, gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass, gdeOCBillboard *billboard) override{
 		return !billboard->GetAxis().IsEqualTo(vector)
-			? new gdeUOCBillboardSetAxis(objectClass, billboard, vector) : NULL;
+			? gdeUOCBillboardSetAxis::Ref::New(objectClass, billboard, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditSize : public cBaseEditVector2Listener{
 public:
+	typedef deTObjectReference<cEditSize> Ref;
 	cEditSize(gdeWPSOCBillboard &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
-	const decVector2 &vector){
+	igdeUndo::Ref OnChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
+	const decVector2 &vector) override{
 		if(billboard->GetSize().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCBillboardSetSize(objectClass, billboard, vector);
+		return gdeUOCBillboardSetSize::Ref::New(objectClass, billboard, vector);
 	}
 };
 
 class cEditOffset : public cBaseEditVector2Listener{
 public:
+	typedef deTObjectReference<cEditOffset> Ref;
 	cEditOffset(gdeWPSOCBillboard &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
+	virtual igdeUndo::Ref OnChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
 	const decVector2 &vector){
 		if(billboard->GetOffset().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCBillboardSetOffset(objectClass, billboard, vector);
+		return gdeUOCBillboardSetOffset::Ref::New(objectClass, billboard, vector);
 	}
 };
 
 class cActionLocked : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLocked> Ref;
+	
+public:
 	cActionLocked(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Locked",
 		"Billboard is locked to axis while facing the camera as well as possible"){ }
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardToggleLocked(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardToggleLocked::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -263,11 +274,14 @@ public:
 
 class cActionSpherical : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionSpherical> Ref;
+	
+public:
 	cActionSpherical(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Spherical",
 		"Billboard is aligned using spherical mode"){}
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardToggleSpherical(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardToggleSpherical::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -278,11 +292,14 @@ public:
 
 class cActionRelativeSize : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionRelativeSize> Ref;
+	
+public:
 	cActionRelativeSize(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Relative Size",
 		"Size is relative to screen size"){}
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardToggleSizeFixedToScreen(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardToggleSizeFixedToScreen::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -293,11 +310,14 @@ public:
 
 class cActionDoNotScale : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionDoNotScale> Ref;
+	
+public:
 	cActionDoNotScale(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Do not scale",
 		"Billboard scale does not change with scale of parent object class instance"){}
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardToggleDoNotScale(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardToggleDoNotScale::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -308,11 +328,14 @@ public:
 
 class cActionRenderEnvMap : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionRenderEnvMap> Ref;
+	
+public:
 	cActionRenderEnvMap(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Render Env-Map",
 		"Billboard is included in environment maps"){}
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardToggleRenderEnvMap(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardToggleRenderEnvMap::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -323,11 +346,14 @@ public:
 
 class cActionPartialHide : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPartialHide> Ref;
+	
+public:
 	cActionPartialHide(gdeWPSOCBillboard &panel) : cBaseAction(panel, "Partial hide",
 		"Billboard is hidden if partial hide tags match"){ }
 	
-	virtual igdeUndo *OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
-		return new gdeUOCBillboardTogglePartialHide(objectClass, billboard);
+	virtual igdeUndo::Ref OnActionBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+		return gdeUOCBillboardTogglePartialHide::Ref::New(objectClass, billboard);
 	}
 	
 	void UpdateBillboard (const gdeObjectClass &objectClass, const gdeOCBillboard &billboard) override{
@@ -336,29 +362,31 @@ public:
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCBillboard &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCBillboard *billboard){
 		if(billboard->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCBillboardSetPosition(objectClass, billboard, vector);
+		return gdeUOCBillboardSetPosition::Ref::New(objectClass, billboard, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCBillboard &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCBillboard *billboard){
 		if(billboard->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCBillboardSetBoneName(objectClass, billboard, textField.GetText());
+		return gdeUOCBillboardSetBoneName::Ref::New(objectClass, billboard, textField.GetText());
 	}
 };
 
@@ -367,6 +395,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -380,6 +409,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCBillboard &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCBillboard &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -394,7 +424,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCBillboardSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCBillboardSetPropertyName::Ref::New(pPanel.GetObjectClass(),
 				billboard, propertyName, comboBox->GetText()));
 	}
 };
@@ -411,66 +441,60 @@ public:
 
 gdeWPSOCBillboard::gdeWPSOCBillboard(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCBillboardListener(*this);
+	pListener = gdeWPSOCBillboardListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// billboard
 	helper.GroupBox(content, groupBox, "Object Class Billboard:");
 	helper.EditPath(groupBox, "Skin:", "Path to skin file to use",
-		igdeEnvironment::efpltSkin, pEditPathSkin, new cEditPathSkin(*this));
+		igdeEnvironment::efpltSkin, pEditPathSkin, cEditPathSkin::Ref::New(*this));
 	helper.EditVector(groupBox, "Axis:", "Axis to align billboard with",
-		pEditAxis, new cEditAxis(*this));
+		pEditAxis, cEditAxis::Ref::New(*this));
 	helper.EditVector2(groupBox, "Size:", "Size of billboard",
-		pEditSize, new cEditSize(*this));
+		pEditSize, cEditSize::Ref::New(*this));
 	helper.EditVector2(groupBox, "Offset:", "Offset of texture on billboard",
-		pEditOffset, new cEditOffset(*this));
+		pEditOffset, cEditOffset::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkLocked, new cActionLocked(*this), true);
-	helper.CheckBox(groupBox, pChkSpherical, new cActionSpherical(*this), true);
-	helper.CheckBox(groupBox, pChkRelativeSize, new cActionRelativeSize(*this), true);
-	helper.CheckBox(groupBox, pChkDoNotScale, new cActionDoNotScale(*this), true);
-	helper.CheckBox(groupBox, pChkPartialHide, new cActionPartialHide(*this), true);
-	helper.CheckBox(groupBox, pChkRenderEnvMap, new cActionRenderEnvMap(*this), true);
+	helper.CheckBox(groupBox, pChkLocked, cActionLocked::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkSpherical, cActionSpherical::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkRelativeSize, cActionRelativeSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkDoNotScale, cActionDoNotScale::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkPartialHide, cActionPartialHide::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkRenderEnvMap, cActionRenderEnvMap::Ref::New(*this));
 	
 	// properties targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Skin", NULL, (void*)(intptr_t)gdeOCBillboard::epSkin);
-	pCBPropertyNames->AddItem("Axis", NULL, (void*)(intptr_t)gdeOCBillboard::epAxis);
-	pCBPropertyNames->AddItem("Offset", NULL, (void*)(intptr_t)gdeOCBillboard::epOffset);
-	pCBPropertyNames->AddItem("Locked", NULL, (void*)(intptr_t)gdeOCBillboard::epLocked);
-	pCBPropertyNames->AddItem("Spherical", NULL, (void*)(intptr_t)gdeOCBillboard::epSpherical);
-	pCBPropertyNames->AddItem("Render EnvironmentMap", NULL, (void*)(intptr_t)gdeOCBillboard::epRenderEnvMap);
-	pCBPropertyNames->AddItem("Attach Position", NULL, (void*)(intptr_t)gdeOCBillboard::epAttachPosition);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Skin", nullptr, (void*)(intptr_t)gdeOCBillboard::epSkin);
+	pCBPropertyNames->AddItem("Axis", nullptr, (void*)(intptr_t)gdeOCBillboard::epAxis);
+	pCBPropertyNames->AddItem("Offset", nullptr, (void*)(intptr_t)gdeOCBillboard::epOffset);
+	pCBPropertyNames->AddItem("Locked", nullptr, (void*)(intptr_t)gdeOCBillboard::epLocked);
+	pCBPropertyNames->AddItem("Spherical", nullptr, (void*)(intptr_t)gdeOCBillboard::epSpherical);
+	pCBPropertyNames->AddItem("Render EnvironmentMap", nullptr, (void*)(intptr_t)gdeOCBillboard::epRenderEnvMap);
+	pCBPropertyNames->AddItem("Attach Position", nullptr, (void*)(intptr_t)gdeOCBillboard::epAttachPosition);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCBillboard::~gdeWPSOCBillboard(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -485,14 +509,12 @@ void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateBillboard();
@@ -502,12 +524,12 @@ void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCBillboard::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCBillboard *gdeWPSOCBillboard::GetBillboard() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCBillboard() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCBillboard() : nullptr;
 }
 
 const gdeOCBillboard::eProperties gdeWPSOCBillboard::GetPropertyName() const{
@@ -559,7 +581,7 @@ void gdeWPSOCBillboard::UpdateBillboard(){
 		pEditBoneName->ClearText();
 	}
 	
-	const bool enabled = billboard != NULL;
+	const bool enabled = billboard != nullptr;
 	pEditPathSkin->SetEnabled(enabled);
 	pEditAxis->SetEnabled(enabled);
 	pEditSize->SetEnabled(enabled);

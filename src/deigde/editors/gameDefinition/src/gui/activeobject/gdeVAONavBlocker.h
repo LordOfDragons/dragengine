@@ -26,10 +26,10 @@
 #define _GDEVAONAVBLOCKER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCNavigationBlocker;
 
 class igdeWDebugDrawerShape;
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationBlocker *pOCNavBlocker;
+	gdeOCNavigationBlocker::Ref pOCNavBlocker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pOCNavBlocker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

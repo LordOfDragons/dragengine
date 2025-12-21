@@ -39,19 +39,14 @@ const char * const gdeClipboardDataObjectClass::TYPE_NAME = "ObjectClass";
 ////////////////////////////
 
 gdeClipboardDataObjectClass::gdeClipboardDataObjectClass(gdeObjectClass *objectClass) :
-igdeClipboardData(TYPE_NAME),
-pObjectClass(NULL)
+igdeClipboardData(TYPE_NAME)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeClipboardDataObjectClass::~gdeClipboardDataObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }

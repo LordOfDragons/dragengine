@@ -84,6 +84,7 @@ protected:
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -92,14 +93,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), speaker)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), speaker));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCSpeaker *speaker) = 0;
 };
 
@@ -108,6 +109,7 @@ protected:
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -116,14 +118,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), speaker)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), speaker));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCSpeaker *speaker) = 0;
 };
 
@@ -132,6 +134,7 @@ protected:
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -140,14 +143,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*comboBox, pPanel.GetObjectClass(), speaker)));
+		igdeUndo::Ref undo(
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), speaker));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCSpeaker *speaker) = 0;
 };
 
@@ -156,6 +159,7 @@ protected:
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPSOCSpeaker &panel, const char *text, const char *description) :
 		igdeAction(text, description), pPanel(panel){}
 	
@@ -165,13 +169,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnActionSpeaker(pPanel.GetObjectClass(), speaker)));
+		igdeUndo::Ref undo(OnActionSpeaker(pPanel.GetObjectClass(), speaker));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) = 0;
+	virtual igdeUndo::Ref OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) = 0;
 };
 
 
@@ -179,6 +183,7 @@ class cEditPathSound : public igdeEditPathListener{
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPathSound> Ref;
 	cEditPathSound(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -187,137 +192,151 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetPathSound::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetPathSound::Ref::New(
 			pPanel.GetObjectClass(), speaker, editPath->GetPath()));
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCSpeaker &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCSpeaker *speaker){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker) override{
 		if(speaker->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetPosition(objectClass, speaker, vector);
+		return gdeUOCSpeakerSetPosition::Ref::New(objectClass, speaker, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCSpeaker &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		if(speaker->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetRotation(objectClass, speaker, vector);
+		return gdeUOCSpeakerSetRotation::Ref::New(objectClass, speaker, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		if(speaker->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetBoneName(objectClass, speaker, textField.GetText());
+		return gdeUOCSpeakerSetBoneName::Ref::New(objectClass, speaker, textField.GetText());
 	}
 };
 
 class cActionLooping : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLooping> Ref;
+	
+public:
 	cActionLooping(gdeWPSOCSpeaker &panel) :
 	cBaseAction(panel, "Looping", "Speaker is looping"){}
 	
-	virtual igdeUndo *OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
-		return new gdeUOCSpeakerToggleLooping(objectClass, speaker);
+	virtual igdeUndo::Ref OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
+		return gdeUOCSpeakerToggleLooping::Ref::New(objectClass, speaker);
 	}
 };
 
 class cActionPlaying : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPlaying> Ref;
+	
+public:
 	cActionPlaying(gdeWPSOCSpeaker &panel) :
 	cBaseAction(panel, "Playing", "Speaker is playing"){}
 	
-	virtual igdeUndo *OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
-		return new gdeUOCSpeakerTogglePlaying(objectClass, speaker);
+	virtual igdeUndo::Ref OnActionSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
+		return gdeUOCSpeakerTogglePlaying::Ref::New(objectClass, speaker);
 	}
 };
 
 class cTextVolume : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextVolume> Ref;
 	cTextVolume(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		const float value = textField.GetFloat();
 		if(fabsf(speaker->GetVolume() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetVolume(objectClass, speaker, value);
+		return gdeUOCSpeakerSetVolume::Ref::New(objectClass, speaker, value);
 	}
 };
 
 class cTextRange : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRange> Ref;
 	cTextRange(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		const float value = textField.GetFloat();
 		if(fabsf(speaker->GetRange() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetRange(objectClass, speaker, value);
+		return gdeUOCSpeakerSetRange::Ref::New(objectClass, speaker, value);
 	}
 };
 
 class cTextRollOff : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRollOff> Ref;
 	cTextRollOff(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		const float value = textField.GetFloat();
 		if(fabsf(speaker->GetRollOff() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetRollOff(objectClass, speaker, value);
+		return gdeUOCSpeakerSetRollOff::Ref::New(objectClass, speaker, value);
 	}
 };
 
 class cTextDistanceOffset : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextDistanceOffset> Ref;
 	cTextDistanceOffset(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		const float value = textField.GetFloat();
 		if(fabsf(speaker->GetDistanceOffset() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetDistanceOffset(objectClass, speaker, value);
+		return gdeUOCSpeakerSetDistanceOffset::Ref::New(objectClass, speaker, value);
 	}
 };
 
 class cTextPlaySpeed : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPlaySpeed> Ref;
 	cTextPlaySpeed(gdeWPSOCSpeaker &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker){
 		const float value = textField.GetFloat();
 		if(fabsf(speaker->GetPlaySpeed() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSpeakerSetPlaySpeed(objectClass, speaker, value);
+		return gdeUOCSpeakerSetPlaySpeed::Ref::New(objectClass, speaker, value);
 	}
 };
 
@@ -326,6 +345,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -339,6 +359,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -351,7 +372,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetPropertyName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetPropertyName::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetSpeaker(), propertyName, comboBox->GetText()));
 	}
 };
@@ -360,6 +381,7 @@ class cComboTriggerNames : public igdeComboBoxListener{
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNames> Ref;
 	cComboTriggerNames(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -373,6 +395,7 @@ class cComboTriggerNameTarget : public igdeComboBoxListener{
 	gdeWPSOCSpeaker &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNameTarget> Ref;
 	cComboTriggerNameTarget(gdeWPSOCSpeaker &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -386,7 +409,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetTriggerName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSpeakerSetTriggerName::Ref::New(
 			pPanel.GetObjectClass(), speaker, triggerName, comboBox->GetText()));
 	}
 };
@@ -403,59 +426,57 @@ public:
 
 gdeWPSOCSpeaker::gdeWPSOCSpeaker(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCSpeakerListener(*this);
+	pListener = gdeWPSOCSpeakerListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Speaker:");
 	
 	helper.EditPath(groupBox, "Sound:", "Path to sound",
-		igdeEnvironment::efpltSound, pEditPathSound, new cEditPathSound(*this));
+		igdeEnvironment::efpltSound, pEditPathSound, cEditPathSound::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	helper.EditFloat(groupBox, "Volume:", "Speaker volume",
-		pEditVolume, new cTextVolume(*this));
+		pEditVolume, cTextVolume::Ref::New(*this));
 	helper.EditFloat(groupBox, "Range:", "Speaker range",
-		pEditRange, new cTextRange(*this));
+		pEditRange, cTextRange::Ref::New(*this));
 	helper.EditFloat(groupBox, "Roll-Off:", "Roll off factor",
-		pEditRollOff, new cTextRollOff(*this));
+		pEditRollOff, cTextRollOff::Ref::New(*this));
 	helper.EditFloat(groupBox, "Distance Offset:", "Distance offset",
-		pEditDistanceOffset, new cTextDistanceOffset(*this));
+		pEditDistanceOffset, cTextDistanceOffset::Ref::New(*this));
 	helper.EditFloat(groupBox, "Play Speed:", "Play Speed",
-		pEditPlaySpeed, new cTextPlaySpeed(*this));
-	helper.CheckBox(groupBox, pChkLooping, new cActionLooping(*this), true);
-	helper.CheckBox(groupBox, pChkPlaying, new cActionPlaying(*this), true);
+		pEditPlaySpeed, cTextPlaySpeed::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkLooping, cActionLooping::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkPlaying, cActionPlaying::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Sound", NULL, (void*)(intptr_t)gdeOCSpeaker::epSound);
-	pCBPropertyNames->AddItem("Volume", NULL, (void*)(intptr_t)gdeOCSpeaker::epVolume);
-	pCBPropertyNames->AddItem("Range", NULL, (void*)(intptr_t)gdeOCSpeaker::epRange);
-	pCBPropertyNames->AddItem("Roll off factor", NULL, (void*)(intptr_t)gdeOCSpeaker::epRollOff);
-	pCBPropertyNames->AddItem("Distance offset", NULL, (void*)(intptr_t)gdeOCSpeaker::epDistanceOffset);
-	pCBPropertyNames->AddItem("Play speed", NULL, (void*)(intptr_t)gdeOCSpeaker::epPlaySpeed);
-	pCBPropertyNames->AddItem("Playing", NULL, (void*)(intptr_t)gdeOCSpeaker::epPlaying);
-	pCBPropertyNames->AddItem("Looping", NULL, (void*)(intptr_t)gdeOCSpeaker::epLooping);
-	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCSpeaker::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCSpeaker::epAttachRotation);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Sound", nullptr, (void*)(intptr_t)gdeOCSpeaker::epSound);
+	pCBPropertyNames->AddItem("Volume", nullptr, (void*)(intptr_t)gdeOCSpeaker::epVolume);
+	pCBPropertyNames->AddItem("Range", nullptr, (void*)(intptr_t)gdeOCSpeaker::epRange);
+	pCBPropertyNames->AddItem("Roll off factor", nullptr, (void*)(intptr_t)gdeOCSpeaker::epRollOff);
+	pCBPropertyNames->AddItem("Distance offset", nullptr, (void*)(intptr_t)gdeOCSpeaker::epDistanceOffset);
+	pCBPropertyNames->AddItem("Play speed", nullptr, (void*)(intptr_t)gdeOCSpeaker::epPlaySpeed);
+	pCBPropertyNames->AddItem("Playing", nullptr, (void*)(intptr_t)gdeOCSpeaker::epPlaying);
+	pCBPropertyNames->AddItem("Looping", nullptr, (void*)(intptr_t)gdeOCSpeaker::epLooping);
+	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCSpeaker::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCSpeaker::epAttachRotation);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
@@ -463,23 +484,19 @@ pGameDefinition(NULL)
 	// trigger targets
 	helper.GroupBox(content, groupBox, "Triggers:");
 	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
-		pCBTriggerNames, new cComboTriggerNames(*this));
-	pCBTriggerNames->AddItem("Playing", NULL, (void*)(intptr_t)gdeOCSpeaker::etPlaying);
-	pCBTriggerNames->AddItem("Muted", NULL, (void*)(intptr_t)gdeOCSpeaker::etMuted);
+		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
+	pCBTriggerNames->AddItem("Playing", nullptr, (void*)(intptr_t)gdeOCSpeaker::etPlaying);
+	pCBTriggerNames->AddItem("Muted", nullptr, (void*)(intptr_t)gdeOCSpeaker::etMuted);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBTriggerNameTarget, new cComboTriggerNameTarget(*this));
+		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();
 	pCBTriggerNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCSpeaker::~gdeWPSOCSpeaker(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -494,14 +511,12 @@ void gdeWPSOCSpeaker::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();
@@ -511,12 +526,12 @@ void gdeWPSOCSpeaker::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCSpeaker::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCSpeaker *gdeWPSOCSpeaker::GetSpeaker() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCSpeaker() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCSpeaker() : nullptr;
 }
 
 const gdeOCSpeaker::eProperties gdeWPSOCSpeaker::GetPropertyName() const{

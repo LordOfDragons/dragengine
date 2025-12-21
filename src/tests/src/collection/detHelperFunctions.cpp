@@ -29,10 +29,6 @@ void detHelperFunctions::Run(){
 	TestDEJoinStringListEmpty();
 	TestDEJoinStringListSeparator();
 	TestDEJoinStringListEmptyEntries();
-
-	// DEFindNamed tests
-	TestDEFindNamedFound();
-	TestDEFindNamedNotFound();
 	
 	// Comparators
 	TestComparators();
@@ -109,48 +105,6 @@ void detHelperFunctions::TestDEJoinStringListEmptyEntries(){
 
 	decString result = DEJoin(list, decString(", "));
 	ASSERT_EQUAL(result, "first, second, third");
-}
-
-
-// Test DEFindNamed
-////////////////////
-
-// Helper class for testing DEFindNamed
-class TestNamedElement {
-public:
-	decString name;
-	int value;
-
-	TestNamedElement() : value(0) {}
-	TestNamedElement(const char *n, int v) : name(n), value(v) {}
-
-	const decString &GetName() const { return name; }
-};
-
-void detHelperFunctions::TestDEFindNamedFound(){
-	SetSubTestNum(4);
-
-	decTList<TestNamedElement> list;
-	list.Add(TestNamedElement("first", 1));
-	list.Add(TestNamedElement("second", 2));
-	list.Add(TestNamedElement("third", 3));
-
-	const TestNamedElement *found = DEFindNamed<decTList<TestNamedElement>, TestNamedElement>(list, "second");
-	ASSERT_NOT_NULL(found);
-	ASSERT_EQUAL(found->value, 2);
-	ASSERT_EQUAL(found->GetName(), "second");
-}
-
-void detHelperFunctions::TestDEFindNamedNotFound(){
-	SetSubTestNum(5);
-
-	decTList<TestNamedElement> list;
-	list.Add(TestNamedElement("first", 1));
-	list.Add(TestNamedElement("second", 2));
-	list.Add(TestNamedElement("third", 3));
-
-	const TestNamedElement *found = DEFindNamed<decTList<TestNamedElement>, TestNamedElement>(list, "notfound");
-	ASSERT_NULL(found);
 }
 
 

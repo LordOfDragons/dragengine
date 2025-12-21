@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCAddComponent::gdeUOCAddComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Add component");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddComponent::~gdeUOCAddComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ void gdeUOCAddComponent::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCComponent(NULL);
+		gameDefinition->SetActiveOCComponent(nullptr);
 	}
 	
 	pObjectClass->GetComponents().Remove(pComponent);

@@ -33,6 +33,7 @@
  */
 class gdeMASkyAdd : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeMASkyAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
@@ -43,8 +44,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	igdeUndo *OnAction(gdeGameDefinition &gameDefinition) override;
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	/*@}*/
 };
 

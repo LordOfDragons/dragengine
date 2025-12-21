@@ -42,9 +42,9 @@
 ////////////////////////////
 
 gdeUOCTextureSetOffset::gdeUOCTextureSetOffset(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const decVector2 &newValue) :
-pObjectClass(NULL),
-pTexture(NULL)
+gdeOCComponentTexture *texture, const decVector2 &newValue) :
+
+pTexture(nullptr)
 {
 	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
@@ -56,19 +56,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetOffset::~gdeUOCTextureSetOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

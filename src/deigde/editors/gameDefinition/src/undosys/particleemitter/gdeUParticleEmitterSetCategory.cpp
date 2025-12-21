@@ -41,7 +41,7 @@
 
 gdeUParticleEmitterSetCategory::gdeUParticleEmitterSetCategory(
 gdeParticleEmitter *particleEmitter, const char *newValue) :
-pParticleEmitter(NULL)
+pParticleEmitter(nullptr)
 {
 	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

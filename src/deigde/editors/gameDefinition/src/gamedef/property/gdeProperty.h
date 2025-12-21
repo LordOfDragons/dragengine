@@ -25,9 +25,10 @@
 #ifndef _GDEPROPERTY_H_
 #define _GDEPROPERTY_H_
 
-#include "../filepattern/gdeFilePatternList.h"
+#include "../filepattern/gdeFilePattern.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -40,6 +41,9 @@ class gdeProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeProperty> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeProperty> List;
 	
 	
 	/** \brief Property type. */
@@ -167,7 +171,7 @@ private:
 	decString pDefaultValue;
 	decStringList pOptions;
 	ePathPatternTypes pPathPatternType;
-	gdeFilePatternList pCustomPathPattern;
+	gdeFilePattern::List pCustomPathPattern;
 	decString pIdentifierGroup;
 	bool pIdentifierUsage;
 	
@@ -234,8 +238,8 @@ public:
 	void SetPathPatternType(ePathPatternTypes type);
 	
 	/** \brief Custom path pattern list. */
-	inline gdeFilePatternList &GetCustomPathPattern(){ return pCustomPathPattern; }
-	inline const gdeFilePatternList &GetCustomPathPattern() const{ return pCustomPathPattern; }
+	inline gdeFilePattern::List &GetCustomPathPattern(){ return pCustomPathPattern; }
+	inline const gdeFilePattern::List &GetCustomPathPattern() const{ return pCustomPathPattern; }
 	
 	/** \brief Identifier group or empty string if not set. */
 	inline const decString &GetIdentifierGroup() const{ return pIdentifierGroup; }

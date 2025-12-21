@@ -58,19 +58,21 @@ gdeBaseAction(windowMain, "Add Object Class...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
+igdeUndo::Ref gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name("Object Class");
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Add Object Class", "Name:", name)){
-		if(list.HasNamed(name)){
+		if(list.HasMatching([&](const gdeObjectClass &o){
+			return o.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pWindowMain, "Add Object Class", "Object Class exists already.");
 			continue;
 		}
 		
-		const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith(name));
-		return new gdeUAddObjectClass(&gameDefinition, objectClass);
+		const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::New(name));
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, objectClass);
 	}
 	
-	return NULL;
+	return {};
 }

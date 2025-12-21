@@ -59,7 +59,7 @@ gdeBaseAction(windowMain, "Add Particle Emitter...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
@@ -67,13 +67,15 @@ igdeUndo *gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
+	if(gameDefinition.GetParticleEmitters().HasMatching([&](const gdeParticleEmitter &pe){
+		return pe.GetPath() == filename;
+	})){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Particle Emitter",
 			"Particle emitter with path exists already.");
-		return NULL;
+		return {};
 	}
 	
 	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
@@ -82,7 +84,7 @@ igdeUndo *gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	const gdeParticleEmitter::Ref particleEmitter(gdeParticleEmitter::Ref::NewWith(filename, filetitle));
-	return new gdeUAddParticleEmitter(&gameDefinition,
+	const gdeParticleEmitter::Ref particleEmitter(gdeParticleEmitter::Ref::New(filename, filetitle));
+	return gdeUAddParticleEmitter::Ref::New(&gameDefinition,
 		particleEmitter);
 }

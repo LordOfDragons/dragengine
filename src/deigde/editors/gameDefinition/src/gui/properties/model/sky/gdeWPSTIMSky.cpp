@@ -46,8 +46,7 @@
 ////////////////////////////
 
 gdeWPSTIMSky::gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky) :
-gdeWPSTreeItemModel(tree, etSky),
-pSky(NULL)
+gdeWPSTreeItemModel(tree, etSky)
 {
 	if(!sky){
 		DETHROW(deeInvalidParam);
@@ -57,13 +56,9 @@ pSky(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 gdeWPSTIMSky::~gdeWPSTIMSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

@@ -25,10 +25,25 @@
 #ifndef _GDEVIEWACTIVEOBJECT_H_
 #define _GDEVIEWACTIVEOBJECT_H_
 
+#include "gdeVAOBillboard.h"
+#include "gdeVAOCamera.h"
+#include "gdeVAOComponent.h"
+#include "gdeVAOParticleEmitter.h"
+#include "gdeVAOForceField.h"
+#include "gdeVAOLight.h"
+#include "gdeVAOEnvMapProbe.h"
+#include "gdeVAONavSpace.h"
+#include "gdeVAONavBlocker.h"
+#include "gdeVAOSnapPoint.h"
+#include "gdeVAOSpeaker.h"
+#include "gdeVAOWorld.h"
+
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
@@ -40,8 +55,6 @@
 class gdeWindowMain;
 class gdeViewActiveObjectListener;
 
-class gdeGameDefinition;
-class gdeObjectClass;
 class gdeOCBillboard;
 class gdeOCComponent;
 class gdeOCComponentTexture;
@@ -69,13 +82,17 @@ class deCollider;
  * \todo Add DebugDrawerShape to show ObjectClass bounding box if an object class is selected.
  */
 class gdeViewActiveObject : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeViewActiveObject> Ref;
+	
 private:
 	gdeWindowMain &pWindowMain;
 	gdeViewActiveObjectListener *pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	deComponent::Ref pPreviewComponent;
 	deModel::Ref pPreviewModelBox;
@@ -83,18 +100,18 @@ private:
 	deSkyInstance::Ref pPreviewSky;
 	deParticleEmitterInstance::Ref pPreviewParticleEmitter;
 	
-	decObjectList pOCBillboards;
-	decObjectList pOCCameras;
-	decObjectList pOCComponents;
-	decObjectList pOCParticleEmitters;
-	decObjectList pOCForceFields;
-	decObjectList pOCLights;
-	decObjectList pOCEnvMapProbes;
-	decObjectList pOCNavSpaces;
-	decObjectList pOCNavBlockers;
-	decObjectList pOCSnapPoints;
-	decObjectList pOCSpeakers;
-	decObjectList pOCWorlds;
+	decTObjectOrderedSet<gdeVAOBillboard> pOCBillboards;
+	decTObjectOrderedSet<gdeVAOCamera> pOCCameras;
+	decTObjectOrderedSet<gdeVAOComponent> pOCComponents;
+	decTObjectOrderedSet<gdeVAOParticleEmitter> pOCParticleEmitters;
+	decTObjectOrderedSet<gdeVAOForceField> pOCForceFields;
+	decTObjectOrderedSet<gdeVAOLight> pOCLights;
+	decTObjectOrderedSet<gdeVAOEnvMapProbe> pOCEnvMapProbes;
+	decTObjectOrderedSet<gdeVAONavSpace> pOCNavSpaces;
+	decTObjectOrderedSet<gdeVAONavBlocker> pOCNavBlockers;
+	decTObjectOrderedSet<gdeVAOSnapPoint> pOCSnapPoints;
+	decTObjectOrderedSet<gdeVAOSpeaker> pOCSpeakers;
+	decTObjectOrderedSet<gdeVAOWorld> pOCWorlds;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	
@@ -130,13 +147,13 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Monitored game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
@@ -151,8 +168,8 @@ public:
 	
 	
 	
-	/** \brief Selected object class or \em NULL. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	/** \brief Selected object class or \em nullptr. */
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Set camera position to show active object properly. */
 	void ResetCameraPosition();
@@ -168,7 +185,7 @@ public:
 	
 	
 	
-	/** \brief Attach component collider or \em NULL. */
+	/** \brief Attach component collider or \em nullptr. */
 	deCollider *GetAttachComponentCollider() const;
 	
 	

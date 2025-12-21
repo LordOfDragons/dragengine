@@ -54,18 +54,18 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class World",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard().GetWithTypeName(
 		gdeClipboardDataOCWorld::TYPE_NAME));
 	if(!clip){
-		return nullptr;
+		return {};
 	}
 	
 	const gdeClipboardDataOCWorld &clipOCWorld =
 		(const gdeClipboardDataOCWorld &)(igdeClipboardData&)clip;
 	
-	igdeUndo * const undo = new gdeUOCAddWorld(&objectClass,
-		gdeOCWorld::Ref::NewWith(*clipOCWorld.GetWorld()));
+	const igdeUndo::Ref undo = gdeUOCAddWorld::Ref::New(&objectClass,
+		gdeOCWorld::Ref::New(*clipOCWorld.GetWorld()));
 	undo->SetShortInfo("Paste object class world");
 	return undo;
 }

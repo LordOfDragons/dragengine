@@ -42,8 +42,7 @@
 
 gdeUOCPToggleIdentifierUsage::gdeUOCPToggleIdentifierUsage(
 gdeObjectClass *objectClass, gdeProperty *property) :
-pObjectClass(NULL),
-pProperty(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -52,19 +51,10 @@ pProperty(NULL)
 	SetShortInfo("Object class property toggle identifier usage");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPToggleIdentifierUsage::~gdeUOCPToggleIdentifierUsage(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

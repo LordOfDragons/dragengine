@@ -41,8 +41,7 @@
 
 gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass *objectClass,
 gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pLight(NULL),
+
 pProperty(property)
 {
 	if(!objectClass || !light){
@@ -55,19 +54,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringList.h>
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -39,8 +39,12 @@ class gdeGameDefinition;
  * \brief Undo action game definition set auto find path skins.
  */
 class gdeUGDSetAutoFindPathSkins : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDSetAutoFindPathSkins> Ref;
+	
+	
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -48,9 +52,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUGDSetAutoFindPathSkins> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

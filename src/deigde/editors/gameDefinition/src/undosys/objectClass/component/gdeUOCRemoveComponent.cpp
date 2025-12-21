@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -56,19 +56,10 @@ pComponent(NULL)
 	SetShortInfo("Remove component");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveComponent::~gdeUOCRemoveComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -87,7 +78,7 @@ void gdeUOCRemoveComponent::Redo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCComponent(NULL);
+		gameDefinition->SetActiveOCComponent(nullptr);
 	}
 	
 	pObjectClass->GetComponents().Remove(pComponent);

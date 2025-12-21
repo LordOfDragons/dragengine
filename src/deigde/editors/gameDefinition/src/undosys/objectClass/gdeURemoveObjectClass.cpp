@@ -41,8 +41,7 @@
 ////////////////////////////
 
 gdeURemoveObjectClass::gdeURemoveObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
-pGameDefinition(NULL),
-pObjectClass(NULL)
+pGameDefinition(nullptr)
 {
 	if(!gameDefinition || !objectClass){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pObjectClass(NULL)
 	SetShortInfo("Remove object class");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveObjectClass::~gdeURemoveObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

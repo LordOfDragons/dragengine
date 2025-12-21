@@ -26,6 +26,8 @@
 #define _GDEWPSOCNAVIGATIONBLOCKER_H_
 
 #include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCNavigationBlockerListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -34,11 +36,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationBlocker;
 class gdeWindowProperties;
-class gdeWPSOCNavigationBlockerListener;
 
 
 
@@ -46,11 +46,14 @@ class gdeWPSOCNavigationBlockerListener;
  * \brief Object class navigation blocker property panel.
  */
 class gdeWPSOCNavigationBlocker : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCNavigationBlocker> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCNavigationBlockerListener *pListener;
+	gdeWPSOCNavigationBlockerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -83,18 +86,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class navigation blocker or \em NULL if not set. */
+	/** \brief Active object class navigation blocker or \em nullptr if not set. */
 	gdeOCNavigationBlocker *GetNavigationBlocker() const;
 	
 	/** \brief Selected property name. */

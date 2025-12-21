@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCLightCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
 	if(!light){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::New(*light));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::NewWith(clipOCLight));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::New(clipOCLight));
+	return {};
 }
 
 void gdeMAOCLightCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL);
+		&& gameDefinition->GetActiveOCLight() != nullptr);
 }

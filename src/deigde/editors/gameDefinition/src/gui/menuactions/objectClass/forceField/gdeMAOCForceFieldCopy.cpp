@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Force Field",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCForceFieldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
 	if(!forceField){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::NewWith(*forceField));
+	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::New(*forceField));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCForceField::Ref::NewWith(clipOCForceField));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCForceField::Ref::New(clipOCForceField));
+	return {};
 }
 
 void gdeMAOCForceFieldCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
-		&& gameDefinition->GetActiveOCForceField() != NULL);
+		&& gameDefinition->GetActiveOCForceField() != nullptr);
 }

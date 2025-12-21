@@ -39,6 +39,8 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCWorld> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCWorld *GetOCWorld() const{ return pWorld; }
+	inline const gdeOCWorld::Ref &GetOCWorld() const{ return pWorld; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

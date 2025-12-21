@@ -492,7 +492,7 @@ const gdeGameDefinition &gameDefinition) const{
 		return gameDefinition.GetActiveObjectClass();
 		
 	default:
-		return NULL;
+		return nullptr;
 	}
 }
 

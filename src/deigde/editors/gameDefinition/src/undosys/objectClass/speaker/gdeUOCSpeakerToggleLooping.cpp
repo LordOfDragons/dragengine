@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
-pObjectClass(NULL),
-pSpeaker(NULL)
+
+pSpeaker(nullptr)
 {
 	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pSpeaker(NULL)
 	SetShortInfo("Speaker toggle looping");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

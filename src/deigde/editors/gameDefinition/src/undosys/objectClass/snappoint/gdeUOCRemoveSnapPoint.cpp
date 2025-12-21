@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
-pObjectClass(NULL),
-pSnapPoint(NULL)
+
+pSnapPoint(nullptr)
 {
 	if(!objectClass || !snapPoint){
 		DETHROW(deeInvalidParam);
@@ -56,19 +56,10 @@ pSnapPoint(NULL)
 	SetShortInfo("Remove snap point");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSnapPoint::~gdeUOCRemoveSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -87,7 +78,7 @@ void gdeUOCRemoveSnapPoint::Redo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSnapPoint(NULL);
+		gameDefinition->SetActiveOCSnapPoint(nullptr);
 	}
 	
 	pObjectClass->GetSnapPoints().Remove(pSnapPoint);

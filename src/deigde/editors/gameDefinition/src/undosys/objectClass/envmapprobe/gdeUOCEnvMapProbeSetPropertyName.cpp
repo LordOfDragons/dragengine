@@ -41,8 +41,8 @@
 
 gdeUOCEnvMapProbeSetPropertyName::gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass,
 gdeOCEnvMapProbe *envMapProbe, gdeOCEnvMapProbe::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pEnvMapProbe(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetPropertyName::~gdeUOCEnvMapProbeSetPropertyName(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

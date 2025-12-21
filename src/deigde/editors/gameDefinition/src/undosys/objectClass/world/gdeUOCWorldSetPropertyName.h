@@ -36,6 +36,10 @@
  * \brief Undo action object class world set property name.
  */
 class gdeUOCWorldSetPropertyName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCWorldSetPropertyName> Ref;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	const gdeOCWorld::Ref pWorld;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCWorldSetPropertyName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

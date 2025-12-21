@@ -61,7 +61,7 @@ gdeWPSTIMCategoriesSky::~gdeWPSTIMCategoriesSky(){
 ///////////////
 
 gdeWPSTIMCategorySky *gdeWPSTIMCategoriesSky::GetChildWith(gdeCategory* category, bool deep) const{
-	gdeWPSTIMCategorySky *child = (gdeWPSTIMCategorySky*)GetFirstChild();
+	gdeWPSTIMCategorySky *child = GetFirstChild().DynamicCast<gdeWPSTIMCategorySky>();
 	
 	while(child){
 		if(child->GetCategory() == category){
@@ -75,10 +75,10 @@ gdeWPSTIMCategorySky *gdeWPSTIMCategoriesSky::GetChildWith(gdeCategory* category
 			}
 		}
 		
-		child = (gdeWPSTIMCategorySky*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMCategorySky>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -98,7 +98,7 @@ void gdeWPSTIMCategoriesSky::CategoriesChanged(){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver(new gdeWPSTIMCategorySky(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMCategorySky::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -127,7 +127,7 @@ void gdeWPSTIMCategoriesSky::OnAddedToTree(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMCategorySky(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMCategorySky::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

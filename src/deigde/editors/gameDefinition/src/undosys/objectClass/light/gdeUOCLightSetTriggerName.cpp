@@ -41,8 +41,7 @@
 
 gdeUOCLightSetTriggerName::gdeUOCLightSetTriggerName(gdeObjectClass *objectClass,
 gdeOCLight *light, gdeOCLight::eTriggers trigger, const char *newValue) :
-pObjectClass(NULL),
-pLight(NULL),
+
 pTrigger(trigger)
 {
 	if(!objectClass || !light){
@@ -55,19 +54,10 @@ pTrigger(trigger)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetTriggerName::~gdeUOCLightSetTriggerName(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

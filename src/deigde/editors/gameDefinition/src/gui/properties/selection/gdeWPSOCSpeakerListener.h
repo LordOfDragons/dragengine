@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _GDEWPSOCLIGHTLISTENER_H_
-#define _GDEWPSOCLIGHTLISTENER_H_
+#ifndef _GDEWPSOCSPEAKERLISTENER_H_
+#define _GDEWPSOCSPEAKERLISTENER_H_
 
 #include "../../../gamedef/gdeGameDefinitionListener.h"
 
@@ -41,6 +41,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCSpeakerListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

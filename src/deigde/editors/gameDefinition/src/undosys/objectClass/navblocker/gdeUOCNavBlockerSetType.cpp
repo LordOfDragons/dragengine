@@ -42,8 +42,8 @@
 
 gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue) :
-pObjectClass(NULL),
-pNavBlocker(NULL)
+
+pNavBlocker(nullptr)
 {
 	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetType::~gdeUOCNavBlockerSetType(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

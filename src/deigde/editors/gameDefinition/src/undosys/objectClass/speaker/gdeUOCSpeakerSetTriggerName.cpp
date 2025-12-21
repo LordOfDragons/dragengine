@@ -41,8 +41,8 @@
 
 gdeUOCSpeakerSetTriggerName::gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, gdeOCSpeaker::eTriggers trigger, const char *newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL),
+
+
 pTrigger(trigger)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pTrigger(trigger)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetTriggerName::~gdeUOCSpeakerSetTriggerName(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

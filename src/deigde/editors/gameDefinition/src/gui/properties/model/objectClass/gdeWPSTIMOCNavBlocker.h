@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationBlocker;
+#include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCNavigationBlocker;
  */
 class gdeWPSTIMOCNavBlocker : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCNavBlocker> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pNavBlocker; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

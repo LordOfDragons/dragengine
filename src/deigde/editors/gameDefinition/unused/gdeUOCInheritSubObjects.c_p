@@ -100,7 +100,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCBillboard( *billboards.GetAt( i ) ) );
+		ref = gdeOCBillboard::Ref::New(*billboards.GetAt( i ));
 		
 		gdeOCBillboard &billboard = ( gdeOCBillboard& )( deObject& )ref;
 		for( j=gdeOCBillboard::epSkin; j<gdeOCBillboard::epAttachPosition; j++ ){
@@ -136,7 +136,7 @@ const gdeObjectClass &objectClass ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCCamera( *cameras.GetAt( i ) ) );
+		ref = gdeOCCamera::Ref::New(*cameras.GetAt( i ));
 		pCameras.Add( ( gdeOCCamera* )( deObject* )ref );
 	}
 	
@@ -163,7 +163,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCComponent( *components.GetAt( i ) ) );
+		ref = gdeOCComponent::Ref::New(*components.GetAt( i ));
 		
 		gdeOCComponent &component = ( gdeOCComponent& )( deObject& )ref;
 		for( j=gdeOCComponent::epModel; j<gdeOCComponent::epAttachRotation; j++ ){
@@ -199,7 +199,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCEnvMapProbe( *probes.GetAt( i ) ) );
+		ref = gdeOCEnvMapProbe::Ref::New(*probes.GetAt( i ));
 		
 		gdeOCEnvMapProbe &probe = ( gdeOCEnvMapProbe& )( deObject& )ref;
 		for( j=gdeOCEnvMapProbe::epInfluenceArea; j<gdeOCEnvMapProbe::epAttachRotation; j++ ){
@@ -235,7 +235,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCForceField( *forceFields.GetAt( i ) ) );
+		ref = gdeOCForceField::Ref::New(*forceFields.GetAt( i ));
 		
 		gdeOCForceField &forceField = ( gdeOCForceField& )( deObject& )ref;
 		for( j=gdeOCForceField::epInfluenceArea; j<gdeOCForceField::epAttachRotation; j++ ){
@@ -277,7 +277,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCLight( *lights.GetAt( i ) ) );
+		ref = gdeOCLight::Ref::New(*lights.GetAt( i ));
 		
 		gdeOCLight &light = ( gdeOCLight& )( deObject& )ref;
 		for( j=gdeOCLight::epType; j<gdeOCLight::epAttachRotation; j++ ){
@@ -319,7 +319,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCNavigationBlocker( *blockers.GetAt( i ) ) );
+		ref = gdeOCNavigationBlocker::Ref::New(*blockers.GetAt( i ));
 		
 		gdeOCNavigationBlocker &blocker = ( gdeOCNavigationBlocker& )( deObject& )ref;
 		for( j=gdeOCNavigationBlocker::epEnabled; j<gdeOCNavigationBlocker::epAttachRotation; j++ ){
@@ -355,7 +355,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCNavigationSpace( *spaces.GetAt( i ) ) );
+		ref = gdeOCNavigationSpace::Ref::New(*spaces.GetAt( i ));
 		
 		gdeOCNavigationSpace &space = ( gdeOCNavigationSpace& )( deObject& )ref;
 		for( j=gdeOCNavigationSpace::epPath; j<gdeOCNavigationSpace::epAttachRotation; j++ ){
@@ -391,7 +391,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCParticleEmitter( *emitters.GetAt( i ) ) );
+		ref = gdeOCParticleEmitter::Ref::New(*emitters.GetAt( i ));
 		
 		gdeOCParticleEmitter &emitter = ( gdeOCParticleEmitter& )( deObject& )ref;
 		for( j=gdeOCParticleEmitter::epPath; j<gdeOCParticleEmitter::epAttachRotation; j++ ){
@@ -433,7 +433,7 @@ const gdeObjectClass &objectClass ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCSnapPoint( *snapPoints.GetAt( i ) ) );
+		ref = gdeOCSnapPoint::Ref::New(*snapPoints.GetAt( i ));
 		pSnapPoints.Add( ( gdeOCSnapPoint* )( deObject* )ref );
 	}
 	
@@ -460,7 +460,7 @@ const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		ref.TakeOver( new gdeOCSpeaker( *speakers.GetAt( i ) ) );
+		ref = gdeOCSpeaker::Ref::New(*speakers.GetAt( i ));
 		
 		gdeOCSpeaker &speaker = ( gdeOCSpeaker& )( deObject& )ref;
 		for( j=gdeOCSpeaker::epSound; j<gdeOCSpeaker::epAttachRotation; j++ ){
@@ -507,67 +507,67 @@ void gdeUOCInheritSubObjects::Undo(){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCBillboard( NULL );
+			gameDefinition->SetActiveOCBillboard( nullptr );
 			
 		}else if( objectClass.GetCameras().Has( gameDefinition->GetActiveOCCamera() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCCamera( NULL );
+			gameDefinition->SetActiveOCCamera( nullptr );
 			
 		}else if( objectClass.GetComponents().Has( gameDefinition->GetActiveOCComponent() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCComponent( NULL );
+			gameDefinition->SetActiveOCComponent( nullptr );
 			
 		}else if( objectClass.GetEnvMapProbes().Has( gameDefinition->GetActiveOCEnvMapProbe() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCEnvMapProbe( NULL );
+			gameDefinition->SetActiveOCEnvMapProbe( nullptr );
 			
 		}else if( objectClass.GetForceFields().Has( gameDefinition->GetActiveOCForceField() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCForceField( NULL );
+			gameDefinition->SetActiveOCForceField( nullptr );
 			
 		}else if( objectClass.GetLights().Has( gameDefinition->GetActiveOCLight() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCLight( NULL );
+			gameDefinition->SetActiveOCLight( nullptr );
 			
 		}else if( objectClass.GetNavigationBlockers().Has( gameDefinition->GetActiveOCNavigationBlocker() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCNavigationBlocker( NULL );
+			gameDefinition->SetActiveOCNavigationBlocker( nullptr );
 			
 		}else if( objectClass.GetNavigationSpaces().Has( gameDefinition->GetActiveOCNavigationSpace() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCNavigationSpace( NULL );
+			gameDefinition->SetActiveOCNavigationSpace( nullptr );
 			
 		}else if( objectClass.GetParticleEmitters().Has( gameDefinition->GetActiveOCParticleEmitter() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCParticleEmitter( NULL );
+			gameDefinition->SetActiveOCParticleEmitter( nullptr );
 			
 		}else if( objectClass.GetSnapPoints().Has( gameDefinition->GetActiveOCSnapPoint() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCSnapPoint( NULL );
+			gameDefinition->SetActiveOCSnapPoint( nullptr );
 			
 		}else if( objectClass.GetSpeakers().Has( gameDefinition->GetActiveOCSpeaker() ) ){
 			if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker ){
 				gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
 			}
-			gameDefinition->SetActiveOCSpeaker( NULL );
+			gameDefinition->SetActiveOCSpeaker( nullptr );
 		}
 	}
 	

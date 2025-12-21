@@ -34,11 +34,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeSkin;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkinListener;
+#include "gdeWPSSkinListener.h"
 
 
 
@@ -46,11 +46,14 @@ class gdeWPSSkinListener;
  * \brief Skin property panel.
  */
 class gdeWPSSkin : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSSkin> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSSkinListener *pListener;
+	gdeWPSSkinListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeTextField::Ref pEditName;
@@ -77,15 +80,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active skin or \em NULL if absent. */
+	/** \brief Active skin or \em nullptr if absent. */
 	gdeSkin *GetSkin() const;
 	
 	

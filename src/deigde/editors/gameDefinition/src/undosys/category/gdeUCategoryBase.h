@@ -26,10 +26,11 @@
 #ifndef _GDEUCATEGORYBASE_H_
 #define _GDEUCATEGORYBASE_H_
 
+#include "../../gamedef/category/gdeCategory.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class gdeGameDefinition;
-class gdeCategory;
 
 
 
@@ -38,9 +39,10 @@ class gdeCategory;
  */
 class gdeUCategoryBase : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeUCategoryBase> Ref;
 	
+	
+public:
 	/** \brief Category type. */
 	enum eCategoryType{
 		ectObjectClass,

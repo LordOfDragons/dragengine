@@ -65,15 +65,12 @@ gdeVAOForceField::gdeVAOForceField(gdeViewActiveObject &view, const gdeObjectCla
 	const decString &propertyPrefix, gdeOCForceField *ocfield) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCForceField(ocfield),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr)
 {
 	if(!ocfield){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCForceField->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateForceField();
@@ -122,7 +119,7 @@ void gdeVAOForceField::AttachResources(){
 	const decQuaternion orientation(decQuaternion::CreateFromEuler(
 		pOCForceField->GetRotation() * DEG2RAD));
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	try{
 		// attach particleEmitter
 		attachment = new deColliderAttachment(pForceField);
@@ -131,7 +128,7 @@ void gdeVAOForceField::AttachResources(){
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 		// attach debug drawer
 		attachment = new deColliderAttachment(pDebugDrawer);
@@ -140,7 +137,7 @@ void gdeVAOForceField::AttachResources(){
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 	}catch(const deException &){
 		if(attachment){
@@ -160,7 +157,7 @@ void gdeVAOForceField::DetachResources(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	attachment = attachCollider->GetAttachmentWith(pForceField);
 	if(attachment){
 		attachCollider->RemoveAttachment(attachment);
@@ -193,11 +190,7 @@ void gdeVAOForceField::pCleanUp(){
 	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCForceField){
-		pOCForceField->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -207,7 +200,7 @@ void gdeVAOForceField::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
@@ -225,7 +218,7 @@ void gdeVAOForceField::pCreateDebugDrawer(){
 
 void gdeVAOForceField::pCreateForceField(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	pForceField.TakeOver(engine.GetForceFieldManager()->CreateForceField());
+	pForceField = engine.GetForceFieldManager()->CreateForceField();
 	
 	pForceField->SetInfluenceArea(pOCForceField->GetInfluenceArea());
 	pForceField->SetRadius(pOCForceField->GetRadius());
@@ -271,6 +264,6 @@ void gdeVAOForceField::pReleaseResources(){
 	
 	if(pForceField){
 		world.RemoveForceField(pForceField);
-		pForceField = NULL;
+		pForceField = nullptr;
 	}
 }

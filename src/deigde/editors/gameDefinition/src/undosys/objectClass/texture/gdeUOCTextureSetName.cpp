@@ -41,9 +41,9 @@
 ////////////////////////////
 
 gdeUOCTextureSetName::gdeUOCTextureSetName(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const char *newValue) :
-pObjectClass(NULL),
-pTexture(NULL)
+gdeOCComponentTexture *texture, const char *newValue) :
+
+pTexture(nullptr)
 {
 	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetName::~gdeUOCTextureSetName(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

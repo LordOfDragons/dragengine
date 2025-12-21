@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Speaker...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddSpeaker(&objectClass, gdeOCSpeaker::Ref::NewWith());
+igdeUndo::Ref gdeMAOCSpeakerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddSpeaker::Ref::New(&objectClass, gdeOCSpeaker::Ref::New());
 }
 
 void gdeMAOCSpeakerAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

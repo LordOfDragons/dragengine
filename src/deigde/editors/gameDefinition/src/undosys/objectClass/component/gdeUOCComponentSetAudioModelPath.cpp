@@ -42,8 +42,8 @@
 
 gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath(gdeObjectClass *objectClass,
 gdeOCComponent *component, const char *newValue) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

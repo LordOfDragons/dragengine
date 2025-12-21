@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeProperty;
+#include "../gamedef/property/gdeProperty.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	

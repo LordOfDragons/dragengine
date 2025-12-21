@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCEnvMapProbeCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
 	if(!envMapProbe){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCEnvMapProbe::Ref clipOCEnvMapProbe(gdeOCEnvMapProbe::Ref::NewWith(*envMapProbe));
+	const gdeOCEnvMapProbe::Ref clipOCEnvMapProbe(gdeOCEnvMapProbe::Ref::New(*envMapProbe));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCEnvMapProbe::Ref::NewWith(clipOCEnvMapProbe));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCEnvMapProbe::Ref::New(clipOCEnvMapProbe));
 	
-	return new gdeUOCRemoveEnvMapProbe(&objectClass, envMapProbe);
+	return gdeUOCRemoveEnvMapProbe::Ref::New(&objectClass, envMapProbe);
 }
 
 void gdeMAOCEnvMapProbeCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL);
+		&& gameDefinition->GetActiveOCEnvMapProbe() != nullptr);
 }

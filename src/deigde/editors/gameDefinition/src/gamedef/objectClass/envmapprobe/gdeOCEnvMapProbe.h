@@ -26,6 +26,7 @@
 #define _GDEOCENVMAPPROBE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/string/decString.h>
@@ -39,6 +40,9 @@ class gdeOCEnvMapProbe : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCEnvMapProbe> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCEnvMapProbe> List;
 	
 	
 	/** \brief Properties. */
@@ -123,10 +127,10 @@ public:
 	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
 	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
-	/** \brief Reflection shape or \em NULL if probe is global. */
+	/** \brief Reflection shape or \em nullptr if probe is global. */
 	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
 	
-	/** \brief Set reflection shape or \em NULL if probe is global. */
+	/** \brief Set reflection shape or \em nullptr if probe is global. */
 	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */

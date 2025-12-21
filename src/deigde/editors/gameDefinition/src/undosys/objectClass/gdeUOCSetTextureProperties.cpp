@@ -40,8 +40,8 @@
 ////////////////////////////
 
 gdeUOCSetTextureProperties::gdeUOCSetTextureProperties(
-gdeObjectClass *objectClass, const gdePropertyList &newValue) :
-pObjectClass(NULL)
+gdeObjectClass *objectClass, const gdeProperty::List &newValue) :
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetTextureProperties::~gdeUOCSetTextureProperties(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

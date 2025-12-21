@@ -26,6 +26,8 @@
 #define _GDEWPSOCBILLBOARD_H_
 
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCBillboardListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -36,11 +38,9 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCBillboard;
 class gdeWindowProperties;
-class gdeWPSOCBillboardListener;
 
 
 
@@ -48,11 +48,14 @@ class gdeWPSOCBillboardListener;
  * \brief Object class billboard property panel.
  */
 class gdeWPSOCBillboard : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCBillboard> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCBillboardListener *pListener;
+	gdeWPSOCBillboardListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPathSkin;
 	igdeEditVector::Ref pEditAxis;
@@ -87,18 +90,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class billboard or \em NULL if not set. */
+	/** \brief Active object class billboard or \em nullptr if not set. */
 	gdeOCBillboard *GetBillboard() const;
 	
 	/** \brief Selected property name. */

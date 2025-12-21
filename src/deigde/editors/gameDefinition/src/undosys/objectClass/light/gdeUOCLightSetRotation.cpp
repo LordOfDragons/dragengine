@@ -42,8 +42,7 @@
 
 gdeUOCLightSetRotation::gdeUOCLightSetRotation(gdeObjectClass *objectClass,
 gdeOCLight *light, const decVector &newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetRotation::~gdeUOCLightSetRotation(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

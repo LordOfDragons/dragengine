@@ -22,16 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "gdeCategory.h"
 #include "gdeCategoryList.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class gdeCategory
@@ -44,116 +39,47 @@ gdeCategoryList::gdeCategoryList(){
 }
 
 gdeCategoryList::gdeCategoryList(const gdeCategoryList &list) :
-pCategories(list.pCategories){
+decTObjectOrderedSet<gdeCategory>(list){
 }
 
 gdeCategoryList::~gdeCategoryList(){
 }
 
 
-
 // Management
 ///////////////
 
-int gdeCategoryList::GetCount() const{
-	return pCategories.GetCount();
-}
-
-gdeCategory *gdeCategoryList::GetAt(int index) const{
-	return (gdeCategory*)pCategories.GetAt(index);
-}
-
 gdeCategory *gdeCategoryList::GetNamed(const char *name) const{
-	const int count = pCategories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		gdeCategory * const category = (gdeCategory*)pCategories.GetAt(i);
-		
-		if(category->GetName() == name){
-			return category;
-		}
-	}
-	
-	return NULL;
+	return FindOrDefault([&](const gdeCategory &c){
+		return c.GetName() == name;
+	});
 }
 
 gdeCategory *gdeCategoryList::GetWithPath(const char *path) const{
 	const decStringList components(decString(path).Split('/'));
-	const int count = components.GetCount();
-	if(count == 0){
-		return NULL;
+	if(components.IsEmpty()){
+		return nullptr;
 	}
 	
-	gdeCategory *category = GetNamed(components.GetAt(0));
-	if(!category){
-		return NULL;
+	gdeCategory * const root = GetNamed(components.First());
+	if(components.GetCount() == 1){
+		return root;
 	}
 	
-	int i;
-	for(i=1; i<count; i++){
-		category = category->GetCategories().GetNamed(components.GetAt(i));
-		if(!category){
-			return NULL;
-		}
-	}
-	
-	return category;
-}
-
-int gdeCategoryList::IndexOf(gdeCategory *category) const{
-	return pCategories.IndexOf(category);
-}
-
-int gdeCategoryList::IndexOfNamed(const char *name) const{
-	const int count = pCategories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((gdeCategory*)pCategories.GetAt(i))->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool gdeCategoryList::Has(gdeCategory *category) const{
-	return pCategories.Has(category);
-}
-
-bool gdeCategoryList::HasNamed(const char *name) const{
-	const int count = pCategories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((gdeCategory*)pCategories.GetAt(i))->GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
+	return components.Inject(root, [&](gdeCategory *cat, const decString &comp){
+		return cat ? cat->GetCategories().GetNamed(comp) : nullptr;
+	}, 1);
 }
 
 void gdeCategoryList::Add(gdeCategory *category){
-	if(!category || HasNamed(category->GetName())){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(category)
+	DEASSERT_NULL(GetNamed(category->GetName()))
 	
-	pCategories.Add(category);
+	decTObjectOrderedSet<gdeCategory>::Add(category);
 }
-
-void gdeCategoryList::Remove(gdeCategory *category){
-	pCategories.Remove(category);
-}
-
-void gdeCategoryList::RemoveAll(){
-	pCategories.RemoveAll();
-}
-
 
 
 gdeCategoryList &gdeCategoryList::operator=(const gdeCategoryList &list){
-	pCategories = list.pCategories;
+	decTObjectOrderedSet<gdeCategory>::operator=(list);
 	return *this;
 }

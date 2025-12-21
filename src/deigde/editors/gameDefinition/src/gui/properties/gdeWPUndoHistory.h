@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class gdeGameDefinition;
-class gdeWPUndoHistoryListener;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "gdeWPUndoHistoryListener.h"
 
 
 
@@ -36,9 +36,12 @@ class gdeWPUndoHistoryListener;
  * \brief Undo history panel.
  */
 class gdeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<gdeWPUndoHistory> Ref;
+	
 private:
-	gdeWPUndoHistoryListener *pListener;
-	gdeGameDefinition *pGameDefinition;
+	gdeWPUndoHistoryListener::Ref pListener;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	
 	
@@ -56,10 +59,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Monitored game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Monitored game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition to monitor or \em NULL if not set. */
+	/** \brief Set game definition to monitor or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };

@@ -51,19 +51,18 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class World",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCWorldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::NewWith(*world))));
-	return nullptr;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(gdeOCWorld::Ref::New(*world)));
+	return {};
 }
 
 void gdeMAOCWorldCopy::Update(){

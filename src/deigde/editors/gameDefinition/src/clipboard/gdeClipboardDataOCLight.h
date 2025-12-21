@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCLight;
+#include "../gamedef/objectClass/light/gdeOCLight.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCLight *pLight;
+	gdeOCLight::Ref pLight;
 	
 	
 	

@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCRemoveBillboard::gdeUOCRemoveBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
-pBillboard(NULL)
+
+pBillboard(nullptr)
 {
 	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
@@ -56,19 +56,10 @@ pBillboard(NULL)
 	SetShortInfo("Remove billboard");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveBillboard::~gdeUOCRemoveBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -87,7 +78,7 @@ void gdeUOCRemoveBillboard::Redo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCBillboard(NULL);
+		gameDefinition->SetActiveOCBillboard(nullptr);
 	}
 	
 	pObjectClass->GetBillboards().Remove(pBillboard);

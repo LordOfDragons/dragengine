@@ -33,11 +33,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeParticleEmitter;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSParticleEmitterListener;
+#include "gdeWPSParticleEmitterListener.h"
 
 
 
@@ -45,11 +45,14 @@ class gdeWPSParticleEmitterListener;
  * \brief Particle emitter property panel.
  */
 class gdeWPSParticleEmitter : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSParticleEmitter> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSParticleEmitterListener *pListener;
+	gdeWPSParticleEmitterListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeTextField::Ref pEditName;
@@ -76,15 +79,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active particle emitter or \em NULL if absent. */
+	/** \brief Active particle emitter or \em nullptr if absent. */
 	gdeParticleEmitter *GetParticleEmitter() const;
 	
 	

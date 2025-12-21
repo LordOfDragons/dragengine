@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCAddForceField::gdeUOCAddForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) :
-pObjectClass(NULL),
-pForceField(NULL)
+
+pForceField(nullptr)
 {
 	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pForceField(NULL)
 	SetShortInfo("Add force field");
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddForceField::~gdeUOCAddForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ void gdeUOCAddForceField::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCForceField(NULL);
+		gameDefinition->SetActiveOCForceField(nullptr);
 	}
 	
 	pObjectClass->GetForceFields().Remove(pForceField);

@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Force Field",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCForceFieldRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
 	if(!forceField){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveForceField(&objectClass, forceField);
+	return gdeUOCRemoveForceField::Ref::New(&objectClass, forceField);
 }
 
 void gdeMAOCForceFieldRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
-		&& gameDefinition->GetActiveOCForceField() != NULL);
+		&& gameDefinition->GetActiveOCForceField() != nullptr);
 }

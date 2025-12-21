@@ -35,6 +35,9 @@ class gdeWindowMain;
  * \brief Main window game definition listener.
  */
 class gdeWindowMainListener : public gdeGameDefinitionListener{
+public:
+	typedef deTObjectReference<gdeWindowMainListener> Ref;
+	
 private:
 	gdeWindowMain &pWindow;
 	

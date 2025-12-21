@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Light...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddLight(&objectClass, gdeOCLight::Ref::NewWith());
+igdeUndo::Ref gdeMAOCLightAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddLight::Ref::New(&objectClass, gdeOCLight::Ref::New());
 }
 
 void gdeMAOCLightAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

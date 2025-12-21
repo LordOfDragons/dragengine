@@ -13,10 +13,6 @@ private:
 	void TestDEJoinStringListEmpty();
 	void TestDEJoinStringListSeparator();
 	void TestDEJoinStringListEmptyEntries();
-
-	// Test methods for DEFindNamed
-	void TestDEFindNamedFound();
-	void TestDEFindNamedNotFound();
 	
 	// Comparators
 	void TestComparators();

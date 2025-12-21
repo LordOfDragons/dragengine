@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeObjectClass;
+#include "../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

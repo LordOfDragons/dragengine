@@ -36,6 +36,8 @@ class gdeSkin;
  */
 class gdeWPSTIMSkins : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMSkins> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +53,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with skin or \em NULL. */
+	/** \brief Model with skin or \em nullptr. */
 	gdeWPSTIMSkin *GetChildWith(gdeSkin *skin) const;
 	
 	/** \brief Structure changed. */

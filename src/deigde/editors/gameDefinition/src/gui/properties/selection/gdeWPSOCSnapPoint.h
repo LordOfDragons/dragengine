@@ -32,11 +32,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCSnapPoint;
 class gdeWindowProperties;
-class gdeWPSOCSnapPointListener;
+#include "gdeWPSOCSnapPointListener.h"
 
 
 
@@ -44,11 +44,14 @@ class gdeWPSOCSnapPointListener;
  * \brief Object class snap point property panel.
  */
 class gdeWPSOCSnapPoint : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCSnapPoint> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSnapPointListener *pListener;
+	gdeWPSOCSnapPointListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditName;
 	igdeEditVector::Ref pEditPosition;
@@ -74,18 +77,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class snap point or \em NULL if not set. */
+	/** \brief Active object class snap point or \em nullptr if not set. */
 	gdeOCSnapPoint *GetSnapPoint() const;
 	
 	

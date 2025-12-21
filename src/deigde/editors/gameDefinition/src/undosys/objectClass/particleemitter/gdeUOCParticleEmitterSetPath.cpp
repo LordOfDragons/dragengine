@@ -42,8 +42,8 @@
 
 gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
 gdeOCParticleEmitter *particleEmitter, const char *newValue) :
-pObjectClass(NULL),
-pParticleEmitter(NULL)
+
+pParticleEmitter(nullptr)
 {
 	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

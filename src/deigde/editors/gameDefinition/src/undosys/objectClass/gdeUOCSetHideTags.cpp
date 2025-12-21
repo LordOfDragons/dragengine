@@ -42,7 +42,7 @@
 
 gdeUOCSetHideTags::gdeUOCSetHideTags(
 gdeObjectClass *objectClass, const decStringSet &newValue) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -54,13 +54,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetHideTags::~gdeUOCSetHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

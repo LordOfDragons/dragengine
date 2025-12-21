@@ -40,7 +40,7 @@
 
 gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass *objectClass,
 gdeObjectClass::eScaleModes newValue) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetScaleMode::~gdeUOCSetScaleMode(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

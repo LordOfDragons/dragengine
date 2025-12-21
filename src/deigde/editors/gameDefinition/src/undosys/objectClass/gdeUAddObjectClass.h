@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeObjectClass;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,16 +37,17 @@ class gdeObjectClass;
  * \brief Undo action add object class.
  */
 class gdeUAddObjectClass : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUAddObjectClass> Ref;
+	
+	
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeObjectClass *pObjectClass;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUAddObjectClass> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

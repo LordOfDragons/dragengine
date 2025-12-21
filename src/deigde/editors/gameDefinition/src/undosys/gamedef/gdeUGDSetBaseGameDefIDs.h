@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringList.h>
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 class gdeWindowMain;
 
 
@@ -40,9 +40,13 @@ class gdeWindowMain;
  * \brief Undo action game definition set base game definition identifiers.
  */
 class gdeUGDSetBaseGameDefIDs : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDSetBaseGameDefIDs> Ref;
+	
+	
 private:
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -50,9 +54,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUGDSetBaseGameDefIDs> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

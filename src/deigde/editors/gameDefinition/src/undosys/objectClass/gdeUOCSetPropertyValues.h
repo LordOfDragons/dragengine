@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,8 +38,12 @@ class gdeObjectClass;
  * \brief Undo action object class set property values.
  */
 class gdeUOCSetPropertyValues : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetPropertyValues> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCSetPropertyValues> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -55,7 +55,7 @@ gdeMACategoryAdd(windowMain, "Add Sky Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategorySkyAdd::OnAction(gdeGameDefinition &gameDefinition){
-	return AddCategory(gameDefinition, NULL,
+igdeUndo::Ref gdeMACategorySkyAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, nullptr,
 		gameDefinition.GetCategoriesSky(), gdeUCategoryBase::ectSky);
 }

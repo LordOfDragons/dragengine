@@ -51,18 +51,18 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class World",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCWorldRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	return new gdeUOCRemoveWorld(&objectClass, world);
+	return gdeUOCRemoveWorld::Ref::New(&objectClass, world);
 }
 
 void gdeMAOCWorldRemove::Update(){

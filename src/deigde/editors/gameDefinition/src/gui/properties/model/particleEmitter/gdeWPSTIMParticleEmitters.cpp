@@ -63,20 +63,20 @@ gdeWPSTIMParticleEmitters::~gdeWPSTIMParticleEmitters(){
 
 gdeWPSTIMParticleEmitter *gdeWPSTIMParticleEmitters::GetChildWith(
 gdeParticleEmitter *particleEmitter) const{
-	gdeWPSTIMParticleEmitter *child = (gdeWPSTIMParticleEmitter*)GetFirstChild();
+	gdeWPSTIMParticleEmitter *child = GetFirstChild().DynamicCast<gdeWPSTIMParticleEmitter>();
 	
 	while(child){
 		if(child->GetParticleEmitter() == particleEmitter){
 			return child;
 		}
-		child = (gdeWPSTIMParticleEmitter*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMParticleEmitter>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMParticleEmitters::StructureChanged(){
-	const gdeParticleEmitterList &list = GetGameDefinition().GetParticleEmitters();
+	const gdeParticleEmitter::List &list = GetGameDefinition().GetParticleEmitters();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -87,7 +87,7 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 		gdeWPSTIMParticleEmitter * const modelParticleEmitter = GetChildWith(particleEmitter);
 		
 		if(!modelParticleEmitter){
-			item.TakeOver(new gdeWPSTIMParticleEmitter(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMParticleEmitter::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -110,13 +110,13 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 
 
 void gdeWPSTIMParticleEmitters::OnAddedToTree(){
-	const gdeParticleEmitterList &list = GetGameDefinition().GetParticleEmitters();
+	const gdeParticleEmitter::List &list = GetGameDefinition().GetParticleEmitters();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMParticleEmitter(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMParticleEmitter::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

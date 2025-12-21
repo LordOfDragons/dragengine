@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSkin;
+#include "../../../../gamedef/skin/gdeSkin.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeSkin;
  */
 class gdeWPSTIMSkin : public gdeWPSTreeItemModel{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMSkin> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -55,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline gdeSkin *GetSkin() const{ return pSkin; }
+	inline const gdeSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	

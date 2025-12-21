@@ -33,28 +33,6 @@
 
 
 /**
- * \brief Helper function to find named elements.
- * 
- * Requires type T to have a GetName() method returning deString or compatible type.
- * This function simplifies code like this:
- * 
- * \code{.cpp}
- * const T* found = nullptr;
- * collection.Find([&name](const T &e){ return e.GetName() == name; }, found);
- * // use found to do something;
- * \endcode
- */
-template<typename C, typename T>
-const T *DEFindNamed(const C &collection, const char *name){
-	const T *found = nullptr;
-	collection.Find([&name](const T &e){
-		return e.GetName() == name;
-	}, found);
-	return found;
-}
-
-
-/**
  * \brief Helper function to join strings.
  * 
  * This is typically used with decTList<decString> or similar collection.

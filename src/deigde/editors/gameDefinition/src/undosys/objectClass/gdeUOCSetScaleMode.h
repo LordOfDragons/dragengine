@@ -38,8 +38,12 @@
  * \brief Undo action object class set scale mode.
  */
 class gdeUOCSetScaleMode : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetScaleMode> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	gdeObjectClass::eScaleModes pOldValue;
 	gdeObjectClass::eScaleModes pNewValue;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCSetScaleMode> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

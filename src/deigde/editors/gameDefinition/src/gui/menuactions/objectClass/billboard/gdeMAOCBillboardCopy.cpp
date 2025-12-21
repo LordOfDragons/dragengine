@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCBillboardCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
 	if(!billboard){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::NewWith(*billboard));
+	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::New(*billboard));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCBillboard::Ref::NewWith(clipOCBillboard));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCBillboard::Ref::New(clipOCBillboard));
+	return {};
 }
 
 void gdeMAOCBillboardCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL);
+		&& gameDefinition->GetActiveOCBillboard() != nullptr);
 }
