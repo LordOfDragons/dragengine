@@ -41,14 +41,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *LangPackEditorCreateModule(igdeEnvironmen
 
 
 igdeEditorModule *LangPackEditorCreateModule(igdeEnvironment *environment){
-	lpeIGDEModule *module = NULL;
-	
 	try{
-		module = new lpeIGDEModule(*environment);
+		return new lpeIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

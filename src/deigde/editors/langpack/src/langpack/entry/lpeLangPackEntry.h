@@ -25,9 +25,10 @@
 #ifndef _LPELANGPACKENTRY_H_
 #define _LPELANGPACKENTRY_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/deObject.h>
 
 class lpeLangPack;
 
@@ -39,6 +40,7 @@ class lpeLangPack;
 class lpeLangPackEntry : public deObject{
 public:
 	typedef deTObjectReference<lpeLangPackEntry> Ref;
+	typedef decTObjectOrderedSet<lpeLangPackEntry> List;
 	
 	
 private:
@@ -71,10 +73,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent language pack or NULL if there is none. */
+	/** Retrieves the parent language pack or nullptr if there is none. */
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
-	/** Sets the parent language pack or NULL if there is none. */
+	/** Sets the parent language pack or nullptr if there is none. */
 	void SetLangPack(lpeLangPack *langpack);
 	
 	

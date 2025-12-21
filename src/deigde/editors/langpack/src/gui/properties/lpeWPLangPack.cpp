@@ -67,6 +67,7 @@ protected:
 	lpeWPLangPack &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -75,13 +76,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, langpack)));
+		igdeUndo::Ref undo(OnChanged(textField, langpack));
 		if(undo){
 			langpack->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) = 0;
 };
 
 class cBaseTextAreaListener : public igdeTextAreaListener{
@@ -89,6 +90,7 @@ protected:
 	lpeWPLangPack &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextAreaListener> Ref;
 	cBaseTextAreaListener(lpeWPLangPack &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -97,63 +99,67 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textArea, langpack)));
+		igdeUndo::Ref undo(OnChanged(textArea, langpack));
 		if(undo){
 			langpack->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack *langpack) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, lpeLangPack *langpack) = 0;
 };
 
 
 
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextIdentifier> Ref;
 	cTextIdentifier(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{
 		return textField->GetText() != langpack->GetIdentifier()
-			? new lpeULangPackSetIdentifier(langpack, textField->GetText()) : nullptr;
+			? lpeULangPackSetIdentifier::Ref::New(langpack, textField->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textField->GetText()));
 		if(value == langpack->GetName()){
-			return NULL;
+			return {};
 		}
-		return new lpeULangPackSetName(langpack, value);
+		return lpeULangPackSetName::Ref::New(langpack, value);
 	}
 };
 
 class cTextDescription : public cBaseTextAreaListener{
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(lpeWPLangPack &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack *langpack){
+	igdeUndo::Ref OnChanged(igdeTextArea *textArea, lpeLangPack *langpack) override{
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textArea->GetText()));
 		if(value == langpack->GetDescription()){
-			return NULL;
+			return {};
 		}
-		return new lpeULangPackSetDescription(langpack, value);
+		return lpeULangPackSetDescription::Ref::New(langpack, value);
 	}
 };
 
 class cTextMissingText : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextMissingText> Ref;
 	cTextMissingText(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, lpeLangPack *langpack) override{
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textField->GetText()));
 		if(value == langpack->GetMissingText()){
-			return NULL;
+			return {};
 		}
-		return new lpeULangPackSetMissingText(langpack, value);
+		return lpeULangPackSetMissingText::Ref::New(langpack, value);
 	}
 };
 
@@ -170,35 +176,30 @@ public:
 lpeWPLangPack::lpeWPLangPack(lpeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(new lpeWPLangPackListener(*this)),
-pLangPack(NULL)
+pListener(new lpeWPLangPackListener(*this))
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// language pack
 	helper.GroupBox(content, groupBox, "Language Pack:");
 	
 	helper.EditString(groupBox, "Identifier:", "Unique identifier of language pack.",
-		pEditIdentifier, new cTextIdentifier(*this));
+		pEditIdentifier, cTextIdentifier::Ref::New(*this));
 	helper.EditString(groupBox, "Name:", "Name of language pack.",
-		pEditName, new cTextName(*this));
+		pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Description of language pack.",
-		pEditDescription, 5, new cTextDescription(*this));
+		pEditDescription, 5, cTextDescription::Ref::New(*this));
 	helper.EditString(groupBox, "Missing Text:", "Text to use for missing entries.",
-		pEditMissingText, new cTextMissingText(*this));
+		pEditMissingText, cTextMissingText::Ref::New(*this));
 }
 
 lpeWPLangPack::~lpeWPLangPack(){
-	SetLangPack(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetLangPack(nullptr);
 }
 
 
@@ -213,14 +214,12 @@ void lpeWPLangPack::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
 	
 	if(langpack){
 		langpack->AddListener(pListener);
-		langpack->AddReference();
 	}
 	
 	UpdateLangPack();

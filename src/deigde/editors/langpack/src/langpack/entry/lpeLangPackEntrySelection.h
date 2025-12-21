@@ -25,8 +25,7 @@
 #ifndef _LPELANGPACKENTRYSELECTION_H_
 #define _LPELANGPACKENTRYSELECTION_H_
 
-#include "lpeLangPackEntryList.h"
-
+#include "lpeLangPackEntry.h"
 
 
 /**
@@ -34,8 +33,8 @@
  */
 class lpeLangPackEntrySelection{
 private:
-	lpeLangPackEntryList pSelection;
-	lpeLangPackEntry *pActive;
+	lpeLangPackEntry::List pSelection;
+	lpeLangPackEntry::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -49,7 +48,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of selected entries. */
-	inline const lpeLangPackEntryList &GetSelected() const{ return pSelection; }
+	inline const lpeLangPackEntry::List &GetSelected() const{ return pSelection; }
 	/** \brief Adds a entries to the selection if not included already. */
 	void Add(lpeLangPackEntry *entry);
 	/** \brief Removes a entries from the selection if included. */
@@ -57,16 +56,16 @@ public:
 	/** \brief Removes all entries from the selection. */
 	void RemoveAll();
 	
-	/** \brief Retrieves the active entries or NULL if there is none. */
-	inline lpeLangPackEntry *GetActive() const{ return pActive; }
+	/** \brief Retrieves the active entries or nullptr if there is none. */
+	inline const lpeLangPackEntry::Ref &GetActive() const{ return pActive; }
 	/** \brief Determines if there is an active entries. */
 	bool HasActive() const;
-	/** \brief Sets the active entries or NULL if there is none. */
+	/** \brief Sets the active entries or nullptr if there is none. */
 	void SetActive(lpeLangPackEntry *entry);
 	/** \brief Activate the first entries in the selection. */
 	void ActivateNext();
 	
-	/** \brief Resets the selection removing all entries and setting the active one to NULL. */
+	/** \brief Resets the selection removing all entries and setting the active one to nullptr. */
 	void Reset();
 };
 

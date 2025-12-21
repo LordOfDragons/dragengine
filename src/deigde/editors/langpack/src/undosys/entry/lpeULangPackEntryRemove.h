@@ -27,7 +27,6 @@
 
 #include "../../langpack/lpeLangPack.h"
 #include "../../langpack/entry/lpeLangPackEntry.h"
-#include "../../langpack/entry/lpeLangPackEntryList.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -36,21 +35,21 @@
  * Undo action remove language pack entries.
  */
 class lpeULangPackEntryRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<lpeULangPackEntryRemove> Ref;
+	
+	
 private:
 	const lpeLangPack::Ref pLangPack;
-	lpeLangPackEntryList pList;
-	lpeLangPackEntryList pListRef;
+	lpeLangPackEntry::List pList, pListRef;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeULangPackEntryRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackEntryRemove(lpeLangPack *langpack, const lpeLangPackEntryList &list,
+	lpeULangPackEntryRemove(lpeLangPack *langpack, const lpeLangPackEntry::List &list,
 		lpeLangPack *refLangpack);
 	
 protected:

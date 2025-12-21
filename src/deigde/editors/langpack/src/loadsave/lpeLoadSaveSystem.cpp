@@ -61,7 +61,7 @@ lpeLoadSaveSystem::lpeLoadSaveSystem(lpeWindowMain *windowMain){
 	
 	pWindowMain = windowMain;
 	
-	pLSLangPacks = NULL;
+	pLSLangPacks = nullptr;
 	pLSLangPackCount = 0;
 	pLSLangPackSize = 0;
 	
@@ -142,9 +142,7 @@ void lpeLoadSaveSystem::AddLSLangPack(lpeLoadSaveLangPack *lsLangPack){
 	
 	if(pLSLangPackCount == pLSLangPackSize){
 		int newSize = pLSLangPackSize * 3 / 2 + 1;
-		lpeLoadSaveLangPack **newArray = new lpeLoadSaveLangPack*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pLSLangPacks){
+		lpeLoadSaveLangPack **newArray = new lpeLoadSaveLangPack*[newSize];		if(pLSLangPacks){
 			memcpy(newArray, pLSLangPacks, sizeof(lpeLoadSaveLangPack*) * pLSLangPackSize);
 			delete [] pLSLangPacks;
 		}
@@ -180,7 +178,7 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 	deModuleSystem *modSys = engine->GetModuleSystem();
 	int m, moduleCount = modSys->GetModuleCount();
 	deLoadableModule *loadableModule;
-	lpeLoadSaveLangPack *lsLangPack = NULL;
+	lpeLoadSaveLangPack *lsLangPack = nullptr;
 	
 	// remove all load save langpacks
 	RemoveAllLSLangPacks();
@@ -209,34 +207,16 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 
 
 
-lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
+lpeLangPack::Ref lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
-	decBaseFileReader *fileReader = NULL;
-	lpeLangPack *langpack = NULL;
-	decPath path;
-	int lsIndex;
-	
-	lsIndex = IndexOfLSLangPackMatching(filename);
+	const int lsIndex = IndexOfLSLangPackMatching(filename);
 	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix(filename);
+	const lpeLangPack::Ref langpack(lpeLangPack::Ref::New(&pWindowMain->GetEnvironment()));
+	langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 	
-	try{
-		fileReader = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(path);
-		
-		langpack = new lpeLangPack(&pWindowMain->GetEnvironment());
-		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
-		
-		pLSLangPacks[lsIndex]->LoadLangPack(langpack, fileReader);
-		fileReader->FreeReference();
-	
-	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(langpack) langpack->FreeReference();
-		throw;
-	}
+	pLSLangPacks[lsIndex]->LoadLangPack(langpack, pWindowMain->GetEnvironment().
+		GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	langpack->SetSaved(true);
 	langpack->SetChanged(false);
@@ -246,30 +226,13 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 
 void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename){
 	if(!langpack || !filename) DETHROW(deeInvalidParam);
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	int lsIndex;
-	
-	lsIndex = IndexOfLSLangPackMatching(filename);
+	const int lsIndex = IndexOfLSLangPackMatching(filename);
 	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix(filename);
+	langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 	
-	try{
-		fileWriter = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
-		
-		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
-		
-		pLSLangPacks[lsIndex]->SaveLangPack(langpack, fileWriter);
-		
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSLangPacks[lsIndex]->SaveLangPack(langpack, pWindowMain->GetEnvironment().
+		GetFileSystemGame()->OpenFileForWriting(decPath::CreatePathUnix(filename)));
 	
 	langpack->SetSaved(true);
 	langpack->SetChanged(false);
@@ -281,7 +244,7 @@ void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename
 //////////////////////
 
 void lpeLoadSaveSystem::pRebuildFPListLangPack(){
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
 	int i;
 	
@@ -295,7 +258,7 @@ void lpeLoadSaveSystem::pRebuildFPListLangPack(){
 				pattern, pLSLangPacks[i]->GetPattern());
 			
 			pFPListLangPack.AddFilePattern(filePattern);
-			filePattern = NULL;
+			filePattern = nullptr;
 		}
 		
 	}catch(const deException &){

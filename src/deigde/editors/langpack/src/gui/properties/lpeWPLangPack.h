@@ -25,25 +25,29 @@
 #ifndef _LPEWPLANGPACK_H_
 #define _LPEWPLANGPACK_H_
 
+#include "lpeWPLangPackListener.h"
+#include "../../langpack/lpeLangPack.h"
+
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class lpeLangPack;
 class lpeWindowProperties;
-class lpeWPLangPackListener;
-
 
 
 /**
  * \brief Language pack properties panel.
  */
 class lpeWPLangPack : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeWPLangPack> Ref;
+	
 private:
 	lpeWindowProperties &pWindowProperties;
-	lpeWPLangPackListener *pListener;
+	lpeWPLangPackListener::Ref pListener;
 	
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	igdeTextField::Ref pEditIdentifier;
 	igdeTextField::Ref pEditName;
@@ -71,10 +75,10 @@ public:
 	/** \brief Properties window. */
 	inline lpeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	/** \brief Language pack or nullptr. */
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
-	/** \brief Set language pack or NULL. */
+	/** \brief Set language pack or nullptr. */
 	void SetLangPack(lpeLangPack *langpack);
 	
 	/** \brief Update language pack. */

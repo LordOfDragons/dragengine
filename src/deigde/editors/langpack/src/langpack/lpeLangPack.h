@@ -25,10 +25,11 @@
 #ifndef _LPELANGPACK_H_
 #define _LPELANGPACK_H_
 
+#include "lpeLangPackListener.h"
 #include "entry/lpeLangPackEntrySelection.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class lpeLangPackListener;
@@ -49,10 +50,10 @@ private:
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
 	
-	lpeLangPackEntryList pEntryList;
+	lpeLangPackEntry::List pEntries;
 	lpeLangPackEntrySelection pEntrySelection;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<lpeLangPackListener> pListeners;
 	
 	
 	
@@ -91,7 +92,7 @@ public:
 	/** \name Entries */
 	/*@{*/
 	/** Retrieves the entry list read-only. */
-	inline const lpeLangPackEntryList &GetEntryList() const{ return pEntryList; }
+	inline const lpeLangPackEntry::List &GetEntries() const{ return pEntries; }
 	/** Retrieves the entry selection. */
 	inline lpeLangPackEntrySelection &GetEntrySelection(){ return pEntrySelection; }
 	inline const lpeLangPackEntrySelection &GetEntrySelection() const{ return pEntrySelection; }

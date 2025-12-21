@@ -25,6 +25,11 @@
 #ifndef _LPEWINDOWMAIN_H_
 #define _LPEWINDOWMAIN_H_
 
+#include "lpeViewLangPack.h"
+#include "lpeWindowMainListener.h"
+#include "properties/lpeWindowProperties.h"
+#include "../langpack/lpeLangPack.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
@@ -35,11 +40,7 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class lpeLangPackEntry;
-class lpeWindowMainListener;
-class lpeWindowProperties;
-class lpeViewLangPack;
 class lpeConfiguration;
-class lpeLangPack;
 class lpeLoadSaveSystem;
 class lpeIGDEModule;
 
@@ -49,8 +50,21 @@ class lpeIGDEModule;
  * Main window.
  */
 class lpeWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<lpeWindowMain> Ref;
+	
+	
 private:
-	lpeWindowMainListener *pListener;
+	class cRecentFilesRefLangPack : public igdeRecentFiles{
+		lpeWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesRefLangPack(lpeWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
+		void FilesChanged() override;
+	};
+	
+	lpeWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconLangPackNew;
 	
@@ -76,10 +90,12 @@ private:
 	igdeClipboard pClipboard;
 	lpeLoadSaveSystem *pLoadSaveSystem;
 	
-	lpeWindowProperties *pWindowProperties;
-	lpeViewLangPack *pViewLangPack;
+	lpeWindowProperties::Ref pWindowProperties;
+	lpeViewLangPack::Ref pViewLangPack;
 	
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
+	
+	cRecentFilesRefLangPack pRecentFilesRefLangPack;
 	
 	
 	
@@ -100,23 +116,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Icons. */
-	//inline igdeIcon* GetIconLangPackNew() const{ return pIconLangPackNew; }
+	//inline const igdeIcon::Ref &GetIconLangPackNew() const{ return pIconLangPackNew; }
 	
 	/** Actions. */
-	inline igdeAction *GetActionLangPackNew() const{ return pActionLangPackNew; }
-	inline igdeAction *GetActionLangPackOpen() const{ return pActionLangPackOpen; }
-	inline igdeAction *GetActionLangPackSave() const{ return pActionLangPackSave; }
-	inline igdeAction *GetActionLangPackSaveAs() const{ return pActionLangPackSaveAs; }
-	inline igdeAction *GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
-	inline igdeAction *GetActionEntryAdd() const{ return pActionEntryAdd; }
-	inline igdeAction *GetActionEntryRemove() const{ return pActionEntryRemove; }
-	inline igdeAction *GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
+	inline const igdeAction::Ref &GetActionLangPackNew() const{ return pActionLangPackNew; }
+	inline const igdeAction::Ref &GetActionLangPackOpen() const{ return pActionLangPackOpen; }
+	inline const igdeAction::Ref &GetActionLangPackSave() const{ return pActionLangPackSave; }
+	inline const igdeAction::Ref &GetActionLangPackSaveAs() const{ return pActionLangPackSaveAs; }
+	inline const igdeAction::Ref &GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
+	inline const igdeAction::Ref &GetActionEntryAdd() const{ return pActionEntryAdd; }
+	inline const igdeAction::Ref &GetActionEntryRemove() const{ return pActionEntryRemove; }
+	inline const igdeAction::Ref &GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -130,8 +146,11 @@ public:
 	/** Load save system. */
 	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
+	/** Recent files for reference language packs. */
+	inline cRecentFilesRefLangPack &GetRecentFilesRefLangPack(){ return pRecentFilesRefLangPack; }
+	
 	/** Language pack. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack. */
 	void SetLangPack(lpeLangPack *langpack);

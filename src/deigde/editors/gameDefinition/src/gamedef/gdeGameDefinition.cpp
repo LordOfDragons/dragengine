@@ -179,9 +179,7 @@ void gdeGameDefinition::SetBasePath(const char *path){
 	
 	if(!pIsProjectGameDef){
 		pPreviewVFS = nullptr;
-		if(pVFS){
-			pVFS = nullptr;
-		}
+		pVFS = nullptr;
 	}
 	
 	NotifyBasePathChanged();
@@ -196,9 +194,7 @@ void gdeGameDefinition::SetVFSPath(const char *path){
 	
 	if(!pIsProjectGameDef){
 		pPreviewVFS = nullptr;
-		if(pVFS){
-			pVFS = nullptr;
-		}
+		pVFS = nullptr;
 	}
 	
 	NotifyBasePathChanged();

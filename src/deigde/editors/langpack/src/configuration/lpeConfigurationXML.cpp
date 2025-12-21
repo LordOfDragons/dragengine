@@ -63,7 +63,7 @@ lpeConfigurationXML::~lpeConfigurationXML(){
 ///////////////
 
 void lpeConfigurationXML::ReadFromFile(decBaseFileReader &reader, lpeConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -95,6 +95,7 @@ void lpeConfigurationXML::pWriteConfig(decXmlWriter &writer, const lpeConfigurat
 	writer.WriteOpeningTag("langpackEditor", false, true);
 	
 	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
+	config.GetWindowMain().GetRecentFilesRefLangPack().WriteToXml(writer, "recentFilesRefLangPack");
 	
 	writer.WriteClosingTag("langpackEditor", true);
 }
@@ -113,6 +114,9 @@ void lpeConfigurationXML::pReadConfig(const decXmlElementTag &root, lpeConfigura
 		
 		if(tag->GetName() == "recentFiles"){
 			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
+			
+		}else if(tag->GetName() == "recentFilesRefLangPack"){
+			config.GetWindowMain().GetRecentFilesRefLangPack().ReadFromXml(*tag);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

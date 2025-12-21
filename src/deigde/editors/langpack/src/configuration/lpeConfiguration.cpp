@@ -86,6 +86,7 @@ void lpeConfiguration::LoadConfiguration(){
 		
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		pWindowMain.GetRecentFilesRefLangPack().RemoveAllFiles();
 		
 		const decPath pathFile(decPath::CreatePathUnix("/igde/local/languagePackEditor.xml"));
 		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
@@ -94,7 +95,7 @@ void lpeConfiguration::LoadConfiguration(){
 		}
 		
 		lpeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
-			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
 	}catch(const deException &e){
@@ -117,7 +118,7 @@ void lpeConfiguration::SaveConfiguration(){
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		writer = vfs.OpenFileForWriting(pathFile);
 		lpeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
 	}catch(const deException &e){

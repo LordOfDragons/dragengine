@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class lpeLangPackEntry;
+#include "../../langpack/entry/lpeLangPackEntry.h"
 
 
 
@@ -35,8 +35,12 @@ class lpeLangPackEntry;
  * \brief Undo action set language pack entry name.
  */
 class lpeULangPackEntrySetName : public igdeUndo{
+public:
+	typedef deTObjectReference<lpeULangPackEntrySetName> Ref;
+	
+	
 private:
-	lpeLangPackEntry *pEntry;
+	lpeLangPackEntry::Ref pEntry;
 	
 	decString pOldName;
 	decString pNewName;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeULangPackEntrySetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
