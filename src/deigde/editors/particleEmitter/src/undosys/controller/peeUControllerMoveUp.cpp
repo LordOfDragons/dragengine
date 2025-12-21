@@ -46,7 +46,7 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	peeEmitter *emitter = controller->GetEmitter();
 	if(!emitter) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
 	SetShortInfo("Move Controller Up");
 	
@@ -54,13 +54,9 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerMoveUp::~peeUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

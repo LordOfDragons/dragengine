@@ -45,6 +45,6 @@ igdeEditorModule *ParticleEmitterEditorCreateModule(igdeEnvironment *environment
 		return new peeIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }

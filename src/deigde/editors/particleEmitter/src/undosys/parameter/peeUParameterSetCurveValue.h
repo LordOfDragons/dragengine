@@ -34,6 +34,9 @@
  */
 class peeUParameterSetCurveValue : public peeUParameterSetCurve{
 public:
+	typedef deTObjectReference<peeUParameterSetCurveValue> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

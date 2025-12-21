@@ -50,23 +50,19 @@ peeUTypeMoveUp::peeUTypeMoveUp(peeType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Move Type Up");
 	
-	pIndex = emitter->GetTypeList().IndexOf(type);
+	pIndex = emitter->GetTypes().IndexOf(type);
 	if(pIndex < 1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeMoveUp::~peeUTypeMoveUp(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

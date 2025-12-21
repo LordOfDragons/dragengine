@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -35,15 +35,16 @@ class peeEmitter;
  * \brief Undo Action Set Emitter Emit Burst.
  */
 class peeUEmitterToggleEmitBurst : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUEmitterToggleEmitBurst> Ref;
+	
+	
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUEmitterToggleEmitBurst> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

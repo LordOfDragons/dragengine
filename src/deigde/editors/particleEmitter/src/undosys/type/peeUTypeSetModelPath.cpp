@@ -44,7 +44,7 @@ peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Model Path");
 	
@@ -52,13 +52,9 @@ peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetModelPath::~peeUTypeSetModelPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

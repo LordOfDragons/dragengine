@@ -25,6 +25,9 @@
 #ifndef _PEEWPCONTROLLER_H_
 #define _PEEWPCONTROLLER_H_
 
+#include "peeWPControllerListener.h"
+#include "../../emitter/peeEmitter.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -33,21 +36,23 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class peeEmitter;
 class peeController;
 class peeWindowProperties;
-class peeWPControllerListener;
 
 
 /**
  * \brief Controller panel.
  */
 class peeWPController : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPController> Ref;
+	
 private:
 	peeWindowProperties &pWindowProperties;
-	peeWPControllerListener *pListener;
+	peeWPControllerListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -82,12 +87,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);
 	
-	/** \brief Active controller or \em NULL. */
+	/** \brief Active controller or \em nullptr. */
 	peeController *GetController() const;
 	
 	/** \brief Update controller list. */
@@ -103,10 +108,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
+	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
 	/*@}*/
 };
 

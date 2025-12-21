@@ -44,18 +44,14 @@ peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitter = NULL;
+	pEmitter = nullptr;
 	
 	SetShortInfo("Set Emitter Emit Burst");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
 }
 
 peeUEmitterToggleEmitBurst::~peeUEmitterToggleEmitBurst(){
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

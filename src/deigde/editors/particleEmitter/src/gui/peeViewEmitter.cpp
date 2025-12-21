@@ -52,6 +52,8 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	peeViewEmitter &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
+	
 	cCameraInteraction(peeViewEmitter &view) : pView(view){
 		SetEnabledAll(false);
 	}
@@ -76,16 +78,15 @@ public:
 
 peeViewEmitter::peeViewEmitter(peeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pEmitter(NULL)
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 }
 
 peeViewEmitter::~peeViewEmitter(){
-	SetEmitter(NULL);
+	SetEmitter(nullptr);
 }
 
 
@@ -101,17 +102,11 @@ void peeViewEmitter::SetEmitter(peeEmitter *emitter){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera(NULL);
-	SetRenderWorld(NULL);
-	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
-	
+	pCameraInteraction->SetCamera(nullptr);
+	SetRenderWorld(nullptr);
 	pEmitter = emitter;
 	
 	if(emitter){
-		emitter->AddReference();
 		SetRenderWorld(emitter->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(emitter->GetCamera());
 	}

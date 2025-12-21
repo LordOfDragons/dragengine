@@ -35,6 +35,10 @@ class peeWindowMain;
  * \brief Window Main Listener.
  */
 class peeWindowMainListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWindowMainListener> Ref;
+	
 private:
 	peeWindowMain &pWindow;
 	

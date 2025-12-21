@@ -49,6 +49,6 @@ peeIGDEModule::~peeIGDEModule(){
 
 void peeIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new peeWindowMain(*this));
+		SetEditorWindow(peeWindowMain::Ref::New(*this));
 	}
 }

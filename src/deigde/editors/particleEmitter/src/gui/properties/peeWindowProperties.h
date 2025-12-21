@@ -25,6 +25,11 @@
 #ifndef _PEEWINDOWPROPERTIES_H_
 #define _PEEWINDOWPROPERTIES_H_
 
+#include "peeWPType.h"
+#include "peeWPController.h"
+#include "peeWPView.h"
+#include "peeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
@@ -38,13 +43,17 @@ class peeEmitter;
  * \brief Properties Panel.
  */
 class peeWindowProperties : public igdeTabBook{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWindowProperties> Ref;
+	
 private:
 	peeWindowMain &pWindowMain;
 	
-	igdeWidget::Ref pPanelType;
-	igdeWidget::Ref pPanelController;
-	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	peeWPType::Ref pPanelType;
+	peeWPController::Ref pPanelController;
+	peeWPView::Ref pPanelView;
+	peeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

@@ -45,7 +45,7 @@ peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parame
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	pParameter = parameter;
 	
 	SetShortInfo("Set Parameter Value");
@@ -54,13 +54,9 @@ peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parame
 	pNewValue = newValue;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetValue::~peeUParameterSetValue(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

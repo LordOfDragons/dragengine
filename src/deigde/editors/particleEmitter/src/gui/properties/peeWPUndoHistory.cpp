@@ -42,16 +42,11 @@
 
 peeWPUndoHistory::peeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new peeWPUndoHistoryListener(*this)),
-pEmitter(NULL){
+pListener(peeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 peeWPUndoHistory::~peeWPUndoHistory(){
-	SetEmitter(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetEmitter(nullptr);
 }
 
 
@@ -64,19 +59,16 @@ void peeWPUndoHistory::SetEmitter(peeEmitter *emitter){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
-		
 		SetUndoSystem(emitter->GetUndoSystem());
 	}
 }

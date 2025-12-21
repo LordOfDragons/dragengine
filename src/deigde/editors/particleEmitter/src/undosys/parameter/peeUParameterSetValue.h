@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -36,8 +36,12 @@ class peeParameter;
  * \brief Undo Action Set Parameter Value.
  */
 class peeUParameterSetValue : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUParameterSetValue> Ref;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	float pOldValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUParameterSetValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

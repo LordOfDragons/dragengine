@@ -78,34 +78,14 @@ peeLoadSaveSystem::~peeLoadSaveSystem(){
 // Management
 ///////////////
 
-peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
+peeEmitter::Ref peeLoadSaveSystem::LoadEmitter(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
 	
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileReader *fileReader = NULL;
-	peeEmitter *emitter = NULL;
-	decPath path;
+	const peeEmitter::Ref emitter(peeEmitter::Ref::New(&pWindowMain.GetEnvironment(), *this));
+	emitter->SetFilePath(filename);
 	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
-		
-		emitter = new peeEmitter(&pWindowMain.GetEnvironment(), *this);
-		emitter->SetFilePath(filename);
-		
-		pLSEmitter->LoadEmitter(*this, *emitter, *fileReader);
-		fileReader->FreeReference();
-		
-	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(emitter){
-			emitter->FreeReference();
-		}
-		throw;
-	}
+	pLSEmitter->LoadEmitter(*this, emitter, pWindowMain.GetEngineController().GetEngine()->
+		GetVirtualFileSystem()->OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	return emitter;
 }
@@ -113,24 +93,8 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 	if(!emitter || !filename) DETHROW(deeInvalidParam);
 	
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting(path);
-		pLSEmitter->SaveEmitter(*this, *emitter, *fileWriter);
-		
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSEmitter->SaveEmitter(*this, *emitter, pWindowMain.GetEngineController().GetEngine()->
+		GetVirtualFileSystem()->OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
@@ -140,7 +104,7 @@ void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 //////////////////////	
 
 void peeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
 	
 	try{

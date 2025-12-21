@@ -59,10 +59,11 @@ class cBaseAction : public igdeAction{
 protected:
 	peeWPView &pPanel;
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(peeWPView &panel, const char *text, const char *description) :
 	igdeAction(text, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		peeEmitter * const emitter = pPanel.GetEmitter();
 		if(emitter){
 			OnAction(*emitter);
@@ -74,6 +75,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionSkyChanged> Ref;
 	cActionSkyChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -83,6 +85,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraChanged> Ref;
 	cActionCameraChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -92,6 +95,7 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnvObjChanged> Ref;
 	cActionEnvObjChanged(peeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(peeEmitter &emitter) override{
@@ -102,6 +106,7 @@ public:
 class cEditPosition : public igdeEditVectorListener{
 	peeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(peeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -115,6 +120,7 @@ public:
 class cEditRotation : public igdeEditVectorListener{
 	peeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(peeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -128,6 +134,7 @@ public:
 class cEditBurstInterval : public igdeTextFieldListener{
 	peeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditBurstInterval> Ref;
 	cEditBurstInterval(peeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -141,6 +148,7 @@ public:
 class cEditWarmUpTime : public igdeTextFieldListener{
 	peeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditWarmUpTime> Ref;
 	cEditWarmUpTime(peeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -153,6 +161,7 @@ public:
 
 class cActionEnableCasting : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableCasting> Ref;
 	cActionEnableCasting(peeWPView &panel) :
 	cBaseAction(panel, "Enable Casting", "Determines if casting is enabled"){ }
 	
@@ -173,46 +182,38 @@ public:
 
 peeWPView::peeWPView(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pEmitter(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new peeWPViewListener(*this);
+	pListener = peeWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),
-		"Camera:", false, false, true);
-	helper.WPSky(content, pWPSky, new cActionSkyChanged(*this),
-		"Sky:", false, false, true);
-	helper.WPWObject(content, pWPEnvObject, new cActionEnvObjChanged(*this),
-		"Environment Object:", false, false, true);
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:", false, false);
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Sky:", false, false);
+	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this),
+		"Environment Object:", false, false);
 	
 	// preview settings
 	helper.GroupBox(content, groupBox, "Preview:");
 	helper.EditVector(groupBox, "Position:", "Position of the emitter in meters.",
-		pEditEmitterPosition, new cEditPosition(*this));
+		pEditEmitterPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the emitter in degrees",
-		pEditEmitterRotation, new cEditRotation(*this));
+		pEditEmitterRotation, cEditRotation::Ref::New(*this));
 	helper.EditFloat(groupBox, "Burst Interval:", "Interval in seconds between bursts",
-		pEditEmitterBurstInterval, new cEditBurstInterval(*this));
+		pEditEmitterBurstInterval, cEditBurstInterval::Ref::New(*this));
 	helper.EditFloat(groupBox, "Warm-Up Time:",
 		"Warm-Up time in seconds for the first enabling casting",
-		pEditEmitterWarmUpTime, new cEditWarmUpTime(*this));
-	helper.CheckBox(groupBox, pChkEmitterEnableCasting, new cActionEnableCasting(*this), true);
+		pEditEmitterWarmUpTime, cEditWarmUpTime::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEmitterEnableCasting, cActionEnableCasting::Ref::New(*this));
 }
 
 peeWPView::~peeWPView(){
-	SetEmitter(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetEmitter(nullptr);
 }
 
 
@@ -226,21 +227,18 @@ void peeWPView::SetEmitter(peeEmitter *emitter){
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPSky->SetSky(NULL);
-	pWPCamera->SetCamera(NULL);
+	pWPSky->SetSky(nullptr);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
-		pEmitter = NULL;
+		pEmitter = nullptr;
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
-		
 		pWPSky->SetSky(emitter->GetSky());
 		pWPEnvObject->SetObject(emitter->GetEnvObject());
 		pWPCamera->SetCamera(emitter->GetCamera());
@@ -270,7 +268,7 @@ void peeWPView::UpdateView(){
 		pChkEmitterEnableCasting->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditEmitterPosition->SetEnabled(enabled);
 	pEditEmitterRotation->SetEnabled(enabled);
 	pEditEmitterBurstInterval->SetEnabled(enabled);

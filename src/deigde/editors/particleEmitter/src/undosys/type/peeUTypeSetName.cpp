@@ -44,7 +44,7 @@ peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Name");
 	
@@ -52,13 +52,9 @@ peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
 	pNewName = newName;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetName::~peeUTypeSetName(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

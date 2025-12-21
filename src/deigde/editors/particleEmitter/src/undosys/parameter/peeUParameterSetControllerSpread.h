@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
-class peeController;
+#include "../../emitter/peeType.h"
+#include "../../emitter/peeController.h"
 class peeParameter;
 
 
@@ -37,19 +37,20 @@ class peeParameter;
  * \brief Undo Action Set Parameter Spread Curve Controller.
  */
 class peeUParameterSetControllerSpread : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUParameterSetControllerSpread> Ref;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	peeController *pOldController;
-	peeController *pNewController;
+	peeController::Ref pOldController;
+	peeController::Ref pNewController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUParameterSetControllerSpread> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

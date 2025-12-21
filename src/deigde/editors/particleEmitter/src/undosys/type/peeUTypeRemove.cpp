@@ -50,30 +50,21 @@ peeUTypeRemove::peeUTypeRemove(peeType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitter = NULL;
-	pType = NULL;
+	pEmitter = nullptr;
+	pType = nullptr;
 	
 	SetShortInfo("Remove Type");
 	
-	pIndex = emitter->GetTypeList().IndexOf(type);
+	pIndex = emitter->GetTypes().IndexOf(type);
 	if(pIndex == -1){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeRemove::~peeUTypeRemove(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

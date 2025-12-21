@@ -42,7 +42,7 @@
 peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
 	if(!controller || !newName) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
 	SetShortInfo("Set Controller Name");
 	
@@ -50,13 +50,9 @@ peeUControllerSetName::peeUControllerSetName(peeController *controller, const ch
 	pNewName = newName;
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

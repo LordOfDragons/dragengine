@@ -35,6 +35,10 @@ class peeWPType;
  * \brief Type Properties Panel Listener.
  */
 class peeWPTypeListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPTypeListener> Ref;
+	
 private:
 	peeWPType &pPanel;
 	

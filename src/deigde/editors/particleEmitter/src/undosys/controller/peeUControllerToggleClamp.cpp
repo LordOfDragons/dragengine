@@ -42,18 +42,14 @@
 peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
 	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
