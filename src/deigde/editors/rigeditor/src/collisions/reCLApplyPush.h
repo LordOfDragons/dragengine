@@ -25,15 +25,13 @@
 #ifndef _RECLAPPLYPUSH_H_
 #define _RECLAPPLYPUSH_H_
 
-#include "reCLHitList.h"
-
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class decLayerMask;
 class deBasePhysicsWorld;
 class reRig;
-class deCollider;
 
 
 
@@ -42,16 +40,16 @@ class deCollider;
  */
 class reCLApplyPush : public deBaseScriptingCollider{
 private:
-	reRig *pRig;
+	reRig &pRig;
 	
 	decDVector pRayPosition;
 	decDVector pRayDirection;
 	
 	decVector pPush;
 	
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	
-	deCollider *pClosestCollider;
+	deCollider::Ref pClosestCollider;
 	int pClosestBone;
 	float pClosestDistance;
 	
@@ -59,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision listener. */
-	reCLApplyPush(reRig *rig);
+	reCLApplyPush(reRig &rig);
 	/** Cleans up the collision listener. */
 	virtual ~reCLApplyPush();
 	/*@}*/

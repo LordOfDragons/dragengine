@@ -1853,10 +1853,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decHashFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decHelperFunctions.h">
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntList.h">

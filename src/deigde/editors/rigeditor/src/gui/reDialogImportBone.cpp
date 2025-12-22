@@ -74,16 +74,16 @@ pWindowMain(windowMain)
 	
 	// content
 	igdeContainer::Ref content, frameLine;
-	content.TakeOver(new igdeContainerForm(env));
+	content = igdeContainerForm::Ref::New(env);
 	
 	const char *description = "File to import selected bones from.";
 	helper.FormLineStretchFirst(content, "Path:", description, frameLine);
-	helper.EditString(frameLine, description, pEditPath, NULL);
-	helper.Button(frameLine, pBtnPath, new igdeActionSelectFile(
-		env, igdeEnvironment::efpltRig, pEditPath), true);
+	helper.EditString(frameLine, description, pEditPath, {});
+	helper.Button(frameLine, pBtnPath, igdeActionSelectFile::Ref::New(
+		env, igdeEnvironment::efpltRig, pEditPath));
 	
 	helper.EditFloat(content, "Scaling:", "Scaling to apply to the imported objects.",
-		pEditScaling, NULL);
+		pEditScaling, {});
 	pEditScaling->SetFloat(1.0f);
 	
 	helper.CheckBox(content, "Import bone properties",

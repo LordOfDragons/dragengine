@@ -38,6 +38,9 @@ class reRigShapeSphere;
  * \brief Rig shape sphere panel.
  */
 class reWPPanelShapeSphere : public reWPPanelShape{
+public:
+	typedef deTObjectReference<reWPPanelShapeSphere> Ref;
+	
 private:
 	igdeEditVector::Ref pEditPosition;
 	igdeTextField::Ref pEditRadius;

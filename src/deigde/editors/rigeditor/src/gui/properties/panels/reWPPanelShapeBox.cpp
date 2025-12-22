@@ -56,6 +56,7 @@ namespace {
 class cEditHalfExtends : public igdeEditVectorListener{
 	reWPPanelShapeBox &pPanel;
 public:
+	typedef deTObjectReference<cEditHalfExtends> Ref;
 	cEditHalfExtends(reWPPanelShapeBox &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -69,7 +70,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeBoxHalfExtends::Ref undo(reUSetShapeBoxHalfExtends::Ref::NewWith(
+		reUSetShapeBoxHalfExtends::Ref undo(reUSetShapeBoxHalfExtends::Ref::New(
 			box, editVector->GetVector()));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -99,13 +100,13 @@ reWPPanelShape(wpShapes, reRigShape::estBox)
 	helper.GroupBox(*this, groupBox, "Box Parameters:");
 	
 	helper.EditVector(groupBox, "Position:", "Position of the box relative to the parent bone.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the box.",
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Half Extends:", "Half extends of the box.",
-		pEditHalfExtends, new cEditHalfExtends(*this));
+		pEditHalfExtends, cEditHalfExtends::Ref::New(*this));
 }
 
 reWPPanelShapeBox::~reWPPanelShapeBox(){
@@ -132,7 +133,7 @@ void reWPPanelShapeBox::UpdateShape(){
 		pEditHalfExtends->SetVector(decVector());
 	}
 	
-	const bool enabled = box != NULL;
+	const bool enabled = box != nullptr;
 	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);
 	pEditHalfExtends->SetEnabled(enabled);

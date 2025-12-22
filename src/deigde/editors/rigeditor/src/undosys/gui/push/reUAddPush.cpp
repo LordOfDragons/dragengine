@@ -30,7 +30,7 @@
 #include "../../../rig/push/reRigPush.h"
 #include "../../../rig/push/reSelectionPushes.h"
 
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -44,11 +44,7 @@ reUAddPush::reUAddPush(reRig *rig, reRigPush *push){
 	if(!rig || !push) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	rig->AddReference();
-	
 	pPush = push;
-	push->AddReference();
-	
 	try{
 		SetShortInfo("Add Push");
 		
@@ -92,6 +88,4 @@ void reUAddPush::Redo(){
 //////////////////////
 
 void reUAddPush::pCleanUp(){
-	if(pPush) pPush->FreeReference();
-	if(pRig) pRig->FreeReference();
 }

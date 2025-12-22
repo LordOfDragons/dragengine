@@ -162,6 +162,9 @@ void igdeWAngleRange::pRebuildShape(){
 	
 	// create the disk
 	pDDSDisk.RemoveAllFaces();
+	if(pointCount == 0){
+		return;
+	}
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;

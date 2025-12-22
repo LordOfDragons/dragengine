@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECREATERIGSHAPE_H_
 #define _RECREATERIGSHAPE_H_
 
-// includes
-#include "dragengine/common/shape/decShapeVisitor.h"
-#include "dragengine/common/math/decMath.h"
+#include "../rig/shape/reRigShape.h"
 
-// predefintions
-class reRigShape;
+#include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/math/decMath.h>
+
 class deEngine;
 
 
@@ -43,7 +41,7 @@ class deEngine;
 class reCreateRigShape : public decShapeVisitor{
 private:
 	deEngine *pEngine;
-	reRigShape *pRigShape;
+	reRigShape::Ref pRigShape;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -59,7 +57,7 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Retrieves the editor shape. */
-	inline reRigShape *GetRigShape() const{ return pRigShape; }
+	inline const reRigShape::Ref &GetRigShape() const{ return pRigShape; }
 	/*@}*/
 	
 	/** @name Visiting */

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
+#include "../../../rig/reRig.h"
 
 
 
@@ -35,15 +35,16 @@ class reRig;
  * \brief Undo action rig toggle model collision.
  */
 class reURigToggleModelCollision : public igdeUndo{
+public:
+	typedef deTObjectReference<reURigToggleModelCollision> Ref;
+	
+	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reURigToggleModelCollision> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

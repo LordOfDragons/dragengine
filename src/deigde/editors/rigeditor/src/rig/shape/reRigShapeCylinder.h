@@ -36,6 +36,9 @@
  * Working object for rig cylinder shape.
  */
 class reRigShapeCylinder : public reRigShape{
+public:
+	typedef deTObjectReference<reRigShapeCylinder> Ref;
+	
 private:
 	float pTopRadius;
 	float pBottomRadius;
@@ -68,7 +71,7 @@ public:
 	void SetRadius(float radius);
 	
 	/** Creates a copy of this shape. */
-	reRigShape *Duplicate() const override;
+	reRigShape::Ref Duplicate() const override;
 	/** Uniformly scale shape. */
 	void Scale(float scale) override;
 	

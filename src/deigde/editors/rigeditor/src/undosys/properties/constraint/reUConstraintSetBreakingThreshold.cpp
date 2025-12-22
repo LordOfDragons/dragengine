@@ -51,14 +51,9 @@ reUConstraintSetBreakingThreshold::reUConstraintSetBreakingThreshold(reRigConstr
 	pNewBreakingThreshold = newBreakingThreshold;
 	
 	SetShortInfo("Constraint set breaking threshold");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetBreakingThreshold::~reUConstraintSetBreakingThreshold(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

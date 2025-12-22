@@ -47,12 +47,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLIdentify::reCLIdentify(reRig *rig){
-	if(!rig) DETHROW(deeInvalidParam);
-	
-	pRig = rig;
-	pBone = NULL;
-	pShape = NULL;
+reCLIdentify::reCLIdentify(reRig &rig) :
+pRig(rig){
 }
 
 reCLIdentify::~reCLIdentify(){
@@ -64,16 +60,16 @@ reCLIdentify::~reCLIdentify(){
 ///////////////
 
 void reCLIdentify::Reset(){
-	pBone = NULL;
-	pShape = NULL;
+	pBone = nullptr;
+	pShape = nullptr;
 }
 
 bool reCLIdentify::HasBone() const{
-	return pBone != NULL;
+	return pBone.IsNotNull();
 }
 
 bool reCLIdentify::HasShape() const{
-	return pShape != NULL;
+	return pShape.IsNotNull();
 }
 
 
@@ -88,7 +84,7 @@ void reCLIdentify::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 		
 		collider->Visit(identify);
 		if(identify.IsVolume()){
-			pBone = NULL;
+			pBone = nullptr;
 			pShape = pGetShapeFromCollider(&identify.CastToVolume());
 		}
 	}
@@ -112,23 +108,26 @@ void reCLIdentify::ColliderChanged(deCollider *owner){
 //////////////////////
 
 reRigBone *reCLIdentify::pGetBoneFromCollider(deCollider *collider) const{
-	return NULL; // TODO
+	return nullptr; // TODO
 }
 
 reRigShape *reCLIdentify::pGetShapeFromCollider(deColliderVolume *collider) const{
-	int b, boneCount = pRig->GetBoneCount();
-	reRigShape *shape = NULL;
+	reRigShape *shape = nullptr;
 	
 	// check if a rig shape belongs to this collider
-	shape = pRig->GetShapeWith(collider);
-	if(shape) return shape;
+	shape = pRig.GetShapeWith(collider);
+	if(shape){
+		return shape;
+	}
 	
 	// check if a bone shape belongs to this collider
-	for(b=0; b<boneCount; b++){
-		shape = pRig->GetBoneAt(b)->GetShapeWith(collider);
-		if(shape) return shape;
+	pRig.GetBones().HasMatching([&](const reRigBone &b){
+		return shape = b.GetShapeWith(collider);
+	});
+	if(shape){
+		return shape;
 	}
 	
 	// otherwise no shape belongs to this collider
-	return NULL;
+	return nullptr;
 }

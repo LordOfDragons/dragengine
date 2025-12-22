@@ -61,51 +61,38 @@
 reWPShape::reWPShape(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pShape(NULL),
-pRig(NULL),
-pListener(NULL),
-
-pPanelSphere(NULL),
-pPanelBox(NULL),
-pPanelCylinder(NULL),
-pPanelCapsule(NULL),
-pPanelHull(NULL),
-pActivePanel(NULL)
+pActivePanel(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPShapeListener(*this);
+	pListener = reWPShapeListener::Ref::New(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher);
 	
 	helper.Label(pSwitcher, "No Active Shape");
 	
-	pPanelSphere = new reWPPanelShapeSphere(*this);
+	pPanelSphere = reWPPanelShapeSphere::Ref::New(*this);
 	pSwitcher->AddChild(pPanelSphere);
 	
-	pPanelBox = new reWPPanelShapeBox(*this);
+	pPanelBox = reWPPanelShapeBox::Ref::New(*this);
 	pSwitcher->AddChild(pPanelBox);
 	
-	pPanelCylinder = new reWPPanelShapeCylinder(*this);
+	pPanelCylinder = reWPPanelShapeCylinder::Ref::New(*this);
 	pSwitcher->AddChild(pPanelCylinder);
 	
-	pPanelCapsule = new reWPPanelShapeCapsule(*this);
+	pPanelCapsule = reWPPanelShapeCapsule::Ref::New(*this);
 	pSwitcher->AddChild(pPanelCapsule);
 	
-	pPanelHull = new reWPPanelShapeHull(*this);
+	pPanelHull = reWPPanelShapeHull::Ref::New(*this);
 	pSwitcher->AddChild(pPanelHull);
 	
 	pSwitcher->SetCurrent(0);
 }
 
 reWPShape::~reWPShape(){
-	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -118,20 +105,17 @@ void reWPShape::SetRig(reRig *rig){
 		return;
 	}
 	
-	SetShape(NULL);
+	SetShape(nullptr);
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
-		pRig = NULL;
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetShape(rig->GetSelectionShapes()->GetActiveShape());
 	}
 }
@@ -142,23 +126,15 @@ void reWPShape::SetShape(reRigShape *shape){
 	}
 	
 	if(pActivePanel){
-		pActivePanel->SetShape(NULL, NULL);
-		pActivePanel = NULL;
+		pActivePanel->SetShape(nullptr, nullptr);
+		pActivePanel = nullptr;
 	}
-	
-	if(pShape){
-		pShape->FreeReference();
-	}
-	
 	pShape = shape;
 	
 	if(!shape){
 		pSwitcher->SetCurrent(0);
 		return;
 	}
-	
-	shape->AddReference();
-	
 	const reRigShape::eShapeTypes shapeType = shape->GetShapeType();
 	
 	if(shapeType == pPanelSphere->GetRequiredShapeType()){

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigPush;
+#include "../../../rig/reRig.h"
+#include "../../../rig/push/reRigPush.h"
 
 
 
@@ -36,16 +36,17 @@ class reRigPush;
  * \brief Undo Add Push.
  */
 class reUAddPush : public igdeUndo{
+public:
+	typedef deTObjectReference<reUAddPush> Ref;
+	
+	
 private:
-	reRig *pRig;
-	reRigPush *pPush;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUAddPush> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

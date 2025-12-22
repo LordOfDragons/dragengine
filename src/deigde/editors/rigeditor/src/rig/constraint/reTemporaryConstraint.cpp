@@ -49,59 +49,42 @@
 
 reTemporaryConstraint::reTemporaryConstraint(reRig *rig, reRigBone *bone,
 const decDVector &position, const decQuaternion &orientation){
-	if(!rig) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rig)
 	
 	decDMatrix matrix(decDMatrix::CreateWorld(position, orientation));
-	deColliderComponent *simcol = rig->GetEngineSimulationCollider();
+	pEngSimCollider = rig->GetEngineSimulationCollider();
 	
 	pPosition = position;
 	pOrientation = orientation;
 	
-	pEngSimCollider = NULL;
-	pEngConstraint = NULL;
-	
-	if(simcol){
-		pEngConstraint = new deColliderConstraint;
+	if(pEngSimCollider){
+		pEngConstraint = deColliderConstraint::Ref::New();
+		pEngConstraint->SetPosition2(position.ToVector());
+		pEngConstraint->SetOrientation2(orientation);
 		
-		try{
-			pEngConstraint->SetPosition2(position.ToVector());
-			pEngConstraint->SetOrientation2(orientation);
+		pEngConstraint->SetToBallJoint();
+		
+		if(bone){
+			pEngConstraint->SetBone(bone->GetOrder());
 			
-			pEngConstraint->SetToBallJoint();
+			matrix *= decDMatrix(bone->GetInversePoseMatrix());
 			
-			if(bone){
-				pEngConstraint->SetBone(bone->GetOrder());
-				
-				matrix *= decDMatrix(bone->GetInversePoseMatrix());
-				
-			}else{
-				pEngConstraint->SetBone(-1);
-				
-				matrix *= decDMatrix(rig->GetPoseMatrix()).Invert();
-			}
+		}else{
+			pEngConstraint->SetBone(-1);
 			
-			pEngConstraint->SetPosition1(matrix.GetPosition().ToVector());
-			pEngConstraint->SetOrientation1(matrix.ToQuaternion());
-			
-			simcol->AddConstraint(pEngConstraint);
-			
-		}catch(const deException &){
-			if(pEngConstraint) delete pEngConstraint;
-			throw;
+			matrix *= decDMatrix(rig->GetPoseMatrix()).Invert();
 		}
+		
+		pEngConstraint->SetPosition1(matrix.GetPosition().ToVector());
+		pEngConstraint->SetOrientation1(matrix.ToQuaternion());
+		
+		pEngSimCollider->AddConstraint(pEngConstraint);
 	}
-	
-	pEngSimCollider = simcol;
-	if(simcol) simcol->AddReference();
 }
 
 reTemporaryConstraint::~reTemporaryConstraint(){
-	if(pEngSimCollider){
-		if(pEngConstraint){
-			pEngSimCollider->RemoveConstraint(pEngConstraint);
-		}
-		
-		pEngSimCollider->FreeReference();
+	if(pEngSimCollider && pEngConstraint){
+		pEngSimCollider->RemoveConstraint(pEngConstraint);
 	}
 }
 

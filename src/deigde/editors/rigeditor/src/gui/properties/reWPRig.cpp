@@ -74,6 +74,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPRig &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -82,13 +83,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, rig)));
+		igdeUndo::Ref undo(OnChanged(textField, rig));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -96,6 +97,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPRig &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -104,13 +106,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector->GetVector(), rig)));
+		igdeUndo::Ref undo(OnChanged(editVector->GetVector(), rig));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -118,23 +120,24 @@ protected:
 	reWPRig &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(reWPRig &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		if(!rig){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(rig)));
+		igdeUndo::Ref undo(OnAction(rig));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(reRig *rig) = 0;
+	virtual igdeUndo::Ref OnAction(reRig *rig) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -142,6 +145,7 @@ protected:
 	reWPRig &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPRig &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -150,7 +154,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnTextChanged(comboBox, rig)));
+		igdeUndo::Ref undo(OnTextChanged(comboBox, rig));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
@@ -163,16 +167,17 @@ public:
 
 class cComboRootBone : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboRootBone> Ref;
 	cComboRootBone(reWPRig &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		reRigBone *bone = NULL;
+		reRigBone *bone = nullptr;
 		if(selection){
 			bone = (reRigBone*)selection->GetData();
 		}
 		if(bone == rig->GetRootBone()){
-			return NULL;
+			return {};
 		}
 		return new reURigSetRootBone(rig, bone);
 	}
@@ -180,43 +185,47 @@ public:
 
 class cCheckDynamic : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckDynamic> Ref;
 	cCheckDynamic(reWPRig &panel) :
 	cBaseAction(panel, "Dynamic", "Determines if the rig is afflicted by dynamic physics."){ }
 	
-	virtual igdeUndo *OnAction(reRig *rig){
-		return new reURigToggleDynamic(rig);
+	igdeUndo::Ref OnAction(reRig *rig) override{
+		return reURigToggleDynamic::Ref::New(rig);
 	}
 };
 
 class cCheckModelCollision : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckModelCollision> Ref;
 	cCheckModelCollision(reWPRig &panel) :
 	cBaseAction(panel, "Model Collision", "Use model collision instead of shapes."){}
 	
-	virtual igdeUndo *OnAction(reRig *rig){
-		return new reURigToggleModelCollision(rig);
+	igdeUndo::Ref OnAction(reRig *rig) override{
+		return reURigToggleModelCollision::Ref::New(rig);
 	}
 };
 
 class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCentralMassPoint> Ref;
 	cEditCentralMassPoint(reWPRig &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig){
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig) override{
 		if(vector.IsEqualTo(rig->GetCentralMassPoint())){
-			return NULL;
+			return {};
 		}
-		return new reURigSetCentralMassPoint(rig, vector);
+		return reURigSetCentralMassPoint::Ref::New(rig, vector);
 	}
 };
 
 class cEditMass : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditMass> Ref;
 	cEditMass(reWPRig &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig) override{
 		rig->SetMass(textField->GetFloat());
-		return nullptr;
+		return {};
 	}
 };
 
@@ -232,44 +241,38 @@ public:
 
 reWPRig::reWPRig(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPRigListener(*this);
+	pListener = reWPRigListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	helper.GroupBox(content, groupBox, "Rig:");
 	
 	helper.ComboBox(groupBox, "Root Bone:", true, "Name of the root bone.",
-		pCBRootBone, new cComboRootBone(*this));
+		pCBRootBone, cComboRootBone::Ref::New(*this));
 	pCBRootBone->SetDefaultSorter();
 	
 	helper.EditVector(groupBox, "CMP:",
 		"Central mass point relative to the collider origin.",
-		pEditCentralMassPoint, new cEditCentralMassPoint(*this));
+		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkModelCollision, new cCheckModelCollision(*this), true);
+	helper.CheckBox(groupBox, pChkModelCollision, cCheckModelCollision::Ref::New(*this));
 	
 	
 	helper.GroupBox(content, groupBox, "Simulation:");
-	helper.CheckBox(groupBox, pChkDynamic, new cCheckDynamic(*this), true);
-	helper.EditFloat(groupBox, "Mass:", "Mass in kg.", pEditMass, new cEditMass(*this));
+	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
+	helper.EditFloat(groupBox, "Mass:", "Mass in kg.", pEditMass, cEditMass::Ref::New(*this));
 }
 
 reWPRig::~reWPRig(){
-	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -284,15 +287,13 @@ void reWPRig::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
-		pRig = NULL;
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
 	}
 	
 	UpdateRig();
@@ -304,17 +305,11 @@ void reWPRig::UpdateRootBoneList(){
 	pCBRootBone->RemoveAllItems();
 	
 	if(pRig){
-		const int count = pRig->GetBoneCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			reRigBone * const bone = pRig->GetBoneAt(i);
-			if(bone->GetParentBone()){
-				return;
+		pRig->GetBones().Visit([&](reRigBone *bone){
+			if(!bone->GetParentBone()){
+				pCBRootBone->AddItem(bone->GetName(), nullptr, bone);
 			}
-			
-			pCBRootBone->AddItem(bone->GetName(), NULL, bone);
-		}
+		});
 	}
 	
 	pCBRootBone->SortItems();
@@ -338,7 +333,7 @@ void reWPRig::UpdateRig(){
 		pEditMass->ClearText();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig.IsNotNull();
 	pCBRootBone->SetEnabled(enabled);
 	pEditCentralMassPoint->SetEnabled(enabled);
 	pChkModelCollision->SetEnabled(enabled);

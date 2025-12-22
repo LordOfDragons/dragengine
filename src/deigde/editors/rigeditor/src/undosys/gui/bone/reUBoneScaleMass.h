@@ -25,13 +25,15 @@
 #ifndef _REUBONESCALEMASS_H_
 #define _REUBONESCALEMASS_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class decObjectOrderedSet;
-class reRig;
-class reRigBone;
 
 
 
@@ -41,31 +43,37 @@ class reRigBone;
  * each bone is scale relative to the summed mass of all bones.
  */
 class reUBoneScaleMass : public igdeUndo{
-private:
-	struct sBone{
-		reRigBone *bone;
-		float oldMass;
-		float newMass;
-	};
+public:
+	typedef deTObjectReference<reUBoneScaleMass> Ref;
+	
 	
 private:
-	reRig *pRig;
+	class cBone : public deObject{
+	public:
+		typedef deTObjectReference<cBone> Ref;
+		
+		reRigBone::Ref bone;
+		float oldMass = 0.0f;
+		float newMass = 0.0f;
+		
+		cBone() = default;
+	};
+	
+	
+private:
+	reRig::Ref pRig;
 	
 	float pNewMass;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTObjectList<cBone> pBones;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUBoneScaleMass> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones, float newMass);
+	reUBoneScaleMass(reRig *rig, const reRigBone::List &bones, float newMass);
 	
 protected:
 	/** \brief Clean up the undo. */
@@ -83,11 +91,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

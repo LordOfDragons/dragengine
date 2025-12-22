@@ -26,10 +26,7 @@
 #include <stdlib.h>
 
 #include "reURotateShape.h"
-#include "reUndoDataShape.h"
 #include "../../../rig/bone/reRigBone.h"
-#include "../../../rig/shape/reRigShape.h"
-#include "../../../rig/shape/reRigShapeList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,41 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURotateShape::reURotateShape(reRigShapeList &list){
-	int shapeCount = list.GetShapeCount();
+reURotateShape::reURotateShape(const reRigShape::List &list){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(shapeCount == 0) DETHROW(deeInvalidParam);
+	list.Visit([&](reRigShape *s){
+		pShapes.Add(reUndoDataShape::Ref::New(s));
+	});
 	
-	pShapes = NULL;
-	pShapeCount = 0;
-	
-	try{
-		if(shapeCount > 0){
-			pShapes = new reUndoDataShape*[shapeCount];
-			if(!pShapes) DETHROW(deeOutOfMemory);
-			
-			while(pShapeCount < shapeCount){
-				pShapes[pShapeCount] = new reUndoDataShape(list.GetShapeAt(pShapeCount));
-				if(!pShapes[pShapeCount]) DETHROW(deeOutOfMemory);
-				pShapeCount++;
-			}
-		}
+	if(list.GetCount() > 1){
+		SetShortInfo("Rotate Shapes");
 		
-		if(shapeCount > 1){
-			SetShortInfo("Rotate Shapes");
-			
-		}else{
-			SetShortInfo("Rotate Shape");
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
+	}else{
+		SetShortInfo("Rotate Shape");
 	}
 }
 
 reURotateShape::~reURotateShape(){
-	pCleanUp();
 }
 
 
@@ -84,33 +62,24 @@ reURotateShape::~reURotateShape(){
 /////////////////////////////
 
 void reURotateShape::Undo(){
-	reRigShape *shape;
-	int s;
-	
-	for(s=0; s<pShapeCount; s++){
-		shape = pShapes[s]->GetShape();
-		
-		shape->SetPosition(pShapes[s]->GetOldPosition());
-		shape->SetOrientation(pShapes[s]->GetOldOrientation());
-	}
+	pShapes.Visit([&](const reUndoDataShape &d){
+		reRigShape &shape = d.GetShape();
+		shape.SetPosition(d.GetOldPosition());
+		shape.SetOrientation(d.GetOldOrientation());
+	});
 }
 
 void reURotateShape::Redo(){
-	bool modifyOrientation = GetModifyOrientation();
-	decMatrix rotationMatrix = GetRotationMatrix();
-	bool modifyPosition = GetModifyPosition();
-	decVector position, view, up, rotation;
-	reRigShape *shape;
-	decMatrix matrix;
-	reRigBone *bone;
-	int s;
+	const bool modifyOrientation = GetModifyOrientation();
+	const decMatrix rotationMatrix = GetRotationMatrix();
+	const bool modifyPosition = GetModifyPosition();
 	
-	for(s=0; s<pShapeCount; s++){
-		shape = pShapes[s]->GetShape();
-		bone = shape->GetRigBone();
+	pShapes.Visit([&](const reUndoDataShape &d){
+		reRigShape &shape = d.GetShape();
+		reRigBone * const bone = shape.GetRigBone();
 		
 		// build matrix
-		matrix = decMatrix::CreateRT(pShapes[s]->GetOldOrientation() * DEG2RAD, pShapes[s]->GetOldPosition());
+		decMatrix matrix(decMatrix::CreateRT(d.GetOldOrientation() * DEG2RAD, d.GetOldPosition()));
 		
 		if(bone){
 			matrix = matrix * bone->GetPoseMatrix().ToMatrix() * rotationMatrix * bone->GetInversePoseMatrix().ToMatrix();
@@ -121,48 +90,44 @@ void reURotateShape::Redo(){
 		
 		// modify orientation
 		if(modifyOrientation){
-			view = matrix.TransformView();
-			up = matrix.TransformUp();
+			decVector view(matrix.TransformView());
+			decVector up(matrix.TransformUp());
 			view.Normalize();
 			up.Normalize();
-			rotation = decMatrix::CreateWorld(decVector(), view, up).GetEulerAngles();
+			decVector rotation(decMatrix::CreateWorld(decVector(), view, up).GetEulerAngles());
 			
-			if(fabs(rotation.x) < 1e-5f) rotation.x = 0.0f;
-			if(fabs(rotation.y) < 1e-5f) rotation.y = 0.0f;
-			if(fabs(rotation.z) < 1e-5f) rotation.z = 0.0f;
+			if(fabs(rotation.x) < 1e-5f){
+				rotation.x = 0.0f;
+			}
+			if(fabs(rotation.y) < 1e-5f){
+				rotation.y = 0.0f;
+			}
+			if(fabs(rotation.z) < 1e-5f){
+				rotation.z = 0.0f;
+			}
 			
-			shape->SetOrientation(rotation * RAD2DEG);
+			shape.SetOrientation(rotation * RAD2DEG);
 		}
 		
 		// modify position
 		if(modifyPosition){
-			position = matrix.GetPosition();
+			decVector position(matrix.GetPosition());
 			
-			if(fabs(position.x) < 1e-5f) position.x = 0.0f;
-			if(fabs(position.y) < 1e-5f) position.y = 0.0f;
-			if(fabs(position.z) < 1e-5f) position.z = 0.0f;
+			if(fabs(position.x) < 1e-5f){
+				position.x = 0.0f;
+			}
+			if(fabs(position.y) < 1e-5f){
+				position.y = 0.0f;
+			}
+			if(fabs(position.z) < 1e-5f){
+				position.z = 0.0f;
+			}
 			
-			shape->SetPosition(position);
+			shape.SetPosition(position);
 		}
-	}
+	});
 }
 
 void reURotateShape::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void reURotateShape::pCleanUp(){
-	if(pShapes){
-		while(pShapeCount > 0){
-			pShapeCount--;
-			delete pShapes[pShapeCount];
-		}
-		
-		delete [] pShapes;
-	}
 }

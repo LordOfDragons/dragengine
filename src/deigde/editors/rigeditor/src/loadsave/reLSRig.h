@@ -25,8 +25,7 @@
 #ifndef _RELSRIG_H_
 #define _RELSRIG_H_
 
-#include "reLSRig.h"
-
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -40,7 +39,10 @@ class decBaseFileWriter;
 /**
  * \brief Loads and saves rigs in the Drag[en]gine Actor Rig XML format.
  */
-class reLSRig{
+class reLSRig : public deObject{
+public:
+	typedef deTObjectReference<reLSRig> Ref;
+	
 private:
 	deBaseRigModule *pModule;
 	
@@ -55,12 +57,14 @@ public:
 	/** \brief Create load-save. */
 	reLSRig(deBaseRigModule *module);
 	
+protected:
 	/** \brief Clean up load-save. */
-	~reLSRig();
+	~reLSRig() override;
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

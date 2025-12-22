@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
+#include "../../../rig/reRig.h"
 
 
 
@@ -35,15 +35,16 @@ class reRig;
  * \brief Undo Rig Toggle Dynamic.
  */
 class reURigToggleDynamic : public igdeUndo{
+public:
+	typedef deTObjectReference<reURigToggleDynamic> Ref;
+	
+	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reURigToggleDynamic> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

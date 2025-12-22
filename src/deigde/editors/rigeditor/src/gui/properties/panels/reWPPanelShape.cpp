@@ -61,6 +61,7 @@ namespace{
 class cTextProperty : public igdeTextFieldListener{
 	reWPPanelShape &pPanel;
 public:
+	typedef deTObjectReference<cTextProperty> Ref;
 	cTextProperty(reWPPanelShape &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -74,7 +75,7 @@ public:
 			return;
 		}
 		
-		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::NewWith(shape, textField->GetText()));
+		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::New(shape, textField->GetText()));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
@@ -103,7 +104,7 @@ void reWPPanelShape::cEditPosition::OnVectorChanged(igdeEditVector *editVector){
 		return;
 	}
 	
-	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::NewWith(shape, editVector->GetVector()));
+	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::New(shape, editVector->GetVector()));
 	if(undo){
 		rig->GetUndoSystem()->Add(undo);
 	}
@@ -129,7 +130,7 @@ void reWPPanelShape::cEditRotation::OnVectorChanged(igdeEditVector *editVector){
 		return;
 	}
 	
-	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::NewWith(
+	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::New(
 		shape, editVector->GetVector()));
 	if(undo){
 		rig->GetUndoSystem()->Add(undo);
@@ -148,21 +149,21 @@ reWPPanelShape::reWPPanelShape(reWPShape &wpShape, reRigShape::eShapeTypes requi
 igdeContainerFlow(wpShape.GetEnvironment(), igdeContainerFlow::eaY),
 pWPShape(wpShape),
 pRequiredShapeType(requiredShapeType),
-pRig(NULL),
-pShape(NULL)
+pRig(nullptr),
+pShape(nullptr)
 {
 	igdeEnvironment &env = wpShape.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(env));
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(env));
 	AddChild(content);
 	
 	helper.EditString(content, "Parent:", "Parent bone name or empty string for rig shapes.",
-		pEditBone, NULL);
+		pEditBone, {});
 	pEditBone->SetEditable(false);
 	
 	helper.EditString(content, "Property:", "Custom shape property string.",
-		pEditProperty, new cTextProperty(*this));
+		pEditProperty, cTextProperty::Ref::New(*this));
 }
 
 reWPPanelShape::~reWPPanelShape(){
@@ -180,13 +181,13 @@ void reWPPanelShape::SetShape(reRig *rig, reRigShape *shape){
 			pShape = shape;
 			
 		}else{
-			pRig = NULL;
-			pShape = NULL;
+			pRig = nullptr;
+			pShape = nullptr;
 		}
 		
 	}else{
-		pRig = NULL;
-		pShape = NULL;
+		pRig = nullptr;
+		pShape = nullptr;
 	}
 }
 
@@ -210,7 +211,7 @@ void reWPPanelShape::UpdateShape(){
 		pEditProperty->ClearText();
 	}
 	
-	const bool enabled = pShape != NULL;
+	const bool enabled = pShape != nullptr;
 	pEditBone->SetEnabled(enabled);
 	pEditProperty->SetEnabled(enabled);
 }

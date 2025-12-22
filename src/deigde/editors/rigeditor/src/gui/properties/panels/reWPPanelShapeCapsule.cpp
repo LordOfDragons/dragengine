@@ -58,6 +58,7 @@ namespace {
 class cTextHalfHeight : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
+	typedef deTObjectReference<cTextHalfHeight> Ref;
 	cTextHalfHeight(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -72,7 +73,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCapsuleHalfHeight::Ref undo(reUSetShapeCapsuleHalfHeight::Ref::NewWith(
+		reUSetShapeCapsuleHalfHeight::Ref undo(reUSetShapeCapsuleHalfHeight::Ref::New(
 			capsule, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -83,6 +84,7 @@ public:
 class cTextTopRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
+	typedef deTObjectReference<cTextTopRadius> Ref;
 	cTextTopRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -97,7 +99,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCapsuleTopRadius::Ref undo(reUSetShapeCapsuleTopRadius::Ref::NewWith(capsule, value));
+		reUSetShapeCapsuleTopRadius::Ref undo(reUSetShapeCapsuleTopRadius::Ref::New(capsule, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
@@ -107,6 +109,7 @@ public:
 class cTextBottomRadius : public igdeTextFieldListener{
 	reWPPanelShapeCapsule &pPanel;
 public:
+	typedef deTObjectReference<cTextBottomRadius> Ref;
 	cTextBottomRadius(reWPPanelShapeCapsule &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -121,7 +124,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCapsuleBottomRadius::Ref undo(reUSetShapeCapsuleBottomRadius::Ref::NewWith(
+		reUSetShapeCapsuleBottomRadius::Ref undo(reUSetShapeCapsuleBottomRadius::Ref::New(
 			capsule, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -151,19 +154,19 @@ reWPPanelShape(wpShapes, reRigShape::estCapsule)
 	helper.GroupBox(*this, groupBox, "Capsule Parameters:");
 	
 	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the capsule.",
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Half Height:", "Half height of the capsule.",
-		pEditHalfHeight, new cTextHalfHeight(*this));
+		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
-		pEditTopRadius, new cTextTopRadius(*this));
+		pEditTopRadius, cTextTopRadius::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
-		pEditBottomRadius, new cTextBottomRadius(*this));
+		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
 }
 
 reWPPanelShapeCapsule::~reWPPanelShapeCapsule(){

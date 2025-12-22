@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigBone;
-class reRigShape;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/shape/reRigShape.h"
 
 
 
@@ -37,17 +37,18 @@ class reRigShape;
  * \brief Undo Add Shape.
  */
 class reUAddShape : public igdeUndo{
+public:
+	typedef deTObjectReference<reUAddShape> Ref;
+	
+	
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigShape *pShape;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUAddShape> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

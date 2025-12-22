@@ -25,15 +25,15 @@
 #ifndef _REUBONEIMPORTFROMFILE_H_
 #define _REUBONEIMPORTFROMFILE_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/shape/reRigShape.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class reRig;
-class reRigBone;
-class reRigShapeList;
-class reRigConstraintList;
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -45,47 +45,41 @@ class reRigConstraintList;
  */
 class reUBoneImportFromFile : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reUBoneImportFromFile> Ref;
 	
 	
 private:
-	struct sBoneState{
-		decVector cmp;
-		float mass;
-		bool dynamic;
-		reRigBone *parentBone;
-		reRigShapeList *shapes;
-		reRigConstraintList *constraints;
-	};
-	
-	struct sBone{
-		reRigBone *bone;
-		reRigBone *importBone;
+	class cBone : public deObject{
+	public:
+		typedef deTObjectReference<cBone> Ref;
+		
+		reRigBone::Ref bone;
+		reRigBone::Ref importBone;
 		
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
-		reRigShapeList *oldShapes;
-		reRigConstraintList *oldConstraints;
+		reRigShape::List oldShapes;
+		reRigConstraint::List oldConstraints;
 		decVector oldIKLimitsLower;
 		decVector oldIKLimitsUpper;
 		decVector oldIKResistance;
 		bool oldIKLocked[3];
+		
+		cBone() = default;
 	};
 	
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pScale;
 	bool pImportBoneProperties;
 	bool pImportShapes;
 	bool pImportConstraints;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTObjectList<cBone> pBones;
 	
 	
 	
@@ -135,11 +129,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

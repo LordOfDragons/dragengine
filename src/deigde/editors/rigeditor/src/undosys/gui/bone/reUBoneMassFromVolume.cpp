@@ -27,7 +27,6 @@
 
 #include "reUBoneMassFromVolume.h"
 #include "../../../rig/reRig.h"
-#include "../../../rig/bone/reRigBone.h"
 #include "../../../rig/bone/reSelectionBones.h"
 #include "../../../rig/shape/reRigShape.h"
 #include "../../../rig/shape/reRigShapeSphere.h"
@@ -37,7 +36,6 @@
 #include "../../../rig/shape/reRigShapeHull.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 
 
 
@@ -47,48 +45,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density){
-	if(!rig || bones.GetCount() == 0){
-		DETHROW(deeInvalidParam);
-	}
+reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const reRigBone::List &bones, float density){
+	DEASSERT_NOTNULL(rig);
+	DEASSERT_TRUE(bones.IsNotEmpty());
 	
 	if(density < 0.0f){
 		density = 0.0f;
 	}
 	
-	const int boneCount = bones.GetCount();
-	int i;
-	
-	pRig = NULL;
-	
-	pBones = NULL;
-	pBoneCount = 0;
-	
 	SetShortInfo("Bone mass from volume");
 	
-	try{
-		pBones = new sBone[boneCount];
-		
-		for(i=0; i<boneCount; i++){
-			pBones[i].bone = (reRigBone*)bones.GetAt(i);
-			pBones[i].bone->AddReference();
-			pBones[i].oldMass = pBones[i].bone->GetMass();
-			pBones[i].newMass = pCalcVolume(*pBones[i].bone) * density;
-		}
-		
-		pBoneCount = boneCount;
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	bones.Visit([&](reRigBone *bone){
+		const cBone::Ref ubone(cBone::Ref::New());
+		ubone->bone = bone;
+		ubone->oldMass = bone->GetMass();
+		ubone->newMass = pCalcVolume(*bone) * density;
+		pBones.Add(ubone);
+	});
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneMassFromVolume::~reUBoneMassFromVolume(){
-	pCleanUp();
 }
 
 
@@ -97,23 +75,15 @@ reUBoneMassFromVolume::~reUBoneMassFromVolume(){
 /////////////////////////////
 
 void reUBoneMassFromVolume::Undo(){
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i].bone){
-			pBones[i].bone->SetMass(pBones[i].oldMass);
-		}
-	}
+	pBones.Visit([&](cBone &bone){
+		bone.bone->SetMass(bone.oldMass);
+	});
 }
 
 void reUBoneMassFromVolume::Redo(){
-	int i;
-	
-	for(i=0; i<pBoneCount; i++){
-		if(pBones[i].bone){
-			pBones[i].bone->SetMass(pBones[i].newMass);
-		}
-	}
+	pBones.Visit([&](cBone &bone){
+		bone.bone->SetMass(bone.newMass);
+	});
 }
 
 
@@ -121,30 +91,10 @@ void reUBoneMassFromVolume::Redo(){
 // Private Functions
 //////////////////////
 
-void reUBoneMassFromVolume::pCleanUp(){
-	if(pBones){
-		while(pBoneCount > 0){
-			pBoneCount--;
-			if(pBones[pBoneCount].bone){
-				pBones[pBoneCount].bone->FreeReference();
-			}
-		}
-		
-		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
-	}
-}
-
 float reUBoneMassFromVolume::pCalcVolume(const reRigBone &bone) const{
-	const int count = bone.GetShapeCount();
 	float volume = 0.0f;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const reRigShape &shape = *bone.GetShapeAt(i);
+	bone.GetShapes().Visit([&](const reRigShape &shape){
 		const reRigShape::eShapeTypes type = shape.GetShapeType();
 		
 		switch(type){
@@ -187,12 +137,13 @@ float reUBoneMassFromVolume::pCalcVolume(const reRigBone &bone) const{
 			
 		case reRigShape::estHull:{
 			// this calculation is a crude approximation for the time being
-			const reRigShapeHull &hull = (reRigShapeHull&)shape;
-			const int pointCount = hull.GetPointCount();
+			const reRigShapeHull::PointList &points = ((reRigShapeHull&)shape).GetPoints();
+			const int pointCount = points.GetCount();
 			decVector minExtend, maxExtend;
+			int i;
 			
 			for(i=0; i<pointCount; i++){
-				const decVector &point = hull.GetPointAt(i);
+				const decVector &point = points.GetAt(i);
 				if(i == 0){
 					minExtend = maxExtend = point;
 					
@@ -209,7 +160,7 @@ float reUBoneMassFromVolume::pCalcVolume(const reRigBone &bone) const{
 		default:
 			break;
 		}
-	}
+	});
 	
 	return volume;
 }

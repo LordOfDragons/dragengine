@@ -1079,8 +1079,7 @@
     <ClInclude Include="..\..\src\dragengine\src\app\deOSWindows.h"/>
     <ClInclude Include="..\..\src\dragengine\src\app\include_windows.h"/>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h"/>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decHashFunctions.h"/>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decHelperFunctions.h"/>
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions.h"/>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntList.h"/>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.h"/>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionaryExt.h"/>

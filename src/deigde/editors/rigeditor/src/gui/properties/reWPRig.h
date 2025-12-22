@@ -25,15 +25,16 @@
 #ifndef _REWPRIG_H_
 #define _REWPRIG_H_
 
+#include "reWPRigListener.h"
+#include "../../rig/reRig.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
 class reWindowProperties;
-class reWPRigListener;
 
 
 
@@ -41,10 +42,13 @@ class reWPRigListener;
  * \brief Rig panel.
  */
 class reWPRig : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPRig> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reWPRigListener *pListener;
+	reRig::Ref pRig;
+	reWPRigListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBRootBone;
 	igdeCheckBox::Ref pChkDynamic;
@@ -71,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

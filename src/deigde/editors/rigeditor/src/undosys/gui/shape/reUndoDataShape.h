@@ -25,18 +25,23 @@
 #ifndef _REUNDODATASHAPE_H_
 #define _REUNDODATASHAPE_H_
 
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
 
-class reRigShape;
+#include "../../../rig/shape/reRigShape.h"
 
 
 
 /**
  * \brief Shape data for undo actions.
  */
-class reUndoDataShape{
+class reUndoDataShape : public deObject{
+public:
+	typedef deTObjectReference<reUndoDataShape> Ref;
+	typedef decTObjectOrderedSet<reUndoDataShape> List;
+	
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	decVector pOldPosition;
 	decVector pOldOrientation;
 	decVector pOldSize;
@@ -49,18 +54,19 @@ public:
 	/**
 	 * \brief Create a new undo data object which holding a not owned pointer to the given object.
 	 */
-	reUndoDataShape(reRigShape *shape);
+	explicit reUndoDataShape(reRigShape *shape);
 	
+protected:
 	/** \brief Clean up the data object. */
-	~reUndoDataShape();
+	~reUndoDataShape() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	
 	/** Retrieves the position before the action took place. */
 	inline const decVector &GetOldPosition() const{ return pOldPosition; }

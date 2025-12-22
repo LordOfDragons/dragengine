@@ -25,6 +25,9 @@
 #ifndef _REWPVIEW_H_
 #define _REWPVIEW_H_
 
+#include "reWPViewListener.h"
+#include "../../rig/reRig.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -38,10 +41,8 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 
 class igdeWPWObject;
-class reRig;
 class reRigTexture;
 class reWindowProperties;
-class reWPViewListener;
 class igdeGameDefinition;
 class igdeWPWObject;
 
@@ -51,11 +52,14 @@ class igdeWPWObject;
  * \brief View property window.
  */
 class reWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPView> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
 	
-	reWPViewListener *pListener;
-	reRig *pRig;
+	reWPViewListener::Ref pListener;
+	reRig::Ref pRig;
 	
 	igdeEditPath::Ref pEditModelPath;
 	igdeEditPath::Ref pEditSkinPath;
@@ -118,7 +122,7 @@ public:
 	inline reWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

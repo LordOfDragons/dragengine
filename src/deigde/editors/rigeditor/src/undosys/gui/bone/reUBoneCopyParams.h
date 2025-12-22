@@ -29,9 +29,10 @@
 
 #include <dragengine/common/math/decMath.h>
 
+#include "../../../rig/constraint/reRigConstraint.h"
+
 // predefinitions
 class reRigShapeList;
-class reRigConstraintList;
 
 
 
@@ -44,19 +45,20 @@ class reRigConstraintList;
  * have to stay the same.
  */
 class reUBoneCopy : public igdeUndo{
+public:
+	typedef deTObjectReference<reUBoneCopy> Ref;
+	
+	
 private:
 	struct sBone{
 		
 		reRigShapeList *shapes;
-		reRigConstraintList *constraints;
+		reRigConstraint::List *constraints;
 	};
 	
 private:
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUBoneCopy> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new CLASS. */

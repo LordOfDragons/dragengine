@@ -58,11 +58,6 @@ pTestPushes(false),
 
 pHitDistance(0.0f),
 pHitSimRig(false),
-pHitSimBone(NULL),
-pHitBone(NULL),
-pHitShape(NULL),
-pHitConstraint(NULL),
-pHitPush(NULL),
 pHasHit(false){
 }
 
@@ -101,11 +96,11 @@ void reCLClosestElement::Reset(){
 	pHitNormal.SetZero();
 	
 	pHitSimRig = false;
-	pHitSimBone = NULL;
-	pHitBone = NULL;
-	pHitShape = NULL;
-	pHitConstraint = NULL;
-	pHitPush = NULL;
+	pHitSimBone = nullptr;
+	pHitBone = nullptr;
+	pHitShape = nullptr;
+	pHitConstraint = nullptr;
+	pHitPush = nullptr;
 	
 	pHasHit = false;
 }
@@ -127,13 +122,12 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	
 	if(pTestSimRig){
 		if(collider == (deCollider*)pRig.GetEngineSimulationCollider()){
-			const int boneCount = pRig.GetBoneCount();
 			const int bone = info->GetBone();
 			
 			pInitResult(info);
 			
-			if(bone >= 0 && bone < boneCount){
-				pHitSimBone = pRig.GetBoneAt(bone);
+			if(bone >= 0 && bone < pRig.GetBones().GetCount()){
+				pHitSimBone = pRig.GetBones().GetAt(bone);
 				
 			}else{
 				pHitSimRig = true;
@@ -144,11 +138,11 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	}
 	
 	if(pTestBones){
-		const int boneCount = pRig.GetBoneCount();
+		const int boneCount = pRig.GetBones().GetCount();
 		int i;
 		
 		for(i=0; i<boneCount; i++){
-			reRigBone * const bone = pRig.GetBoneAt(i);
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
 			if(collider != (deCollider*)bone->GetCollider()){
 				continue;
 			}
@@ -160,12 +154,12 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	}
 	
 	if(pTestShapes){
-		const int rigShapeCount = pRig.GetShapeCount();
-		const int boneCount = pRig.GetBoneCount();
+		const int rigShapeCount = pRig.GetShapes().GetCount();
+		const int boneCount = pRig.GetBones().GetCount();
 		int i, j;
 		
 		for(i=0; i< rigShapeCount; i++){
-			reRigShape * const shape = pRig.GetShapeAt(i);
+			reRigShape * const shape = pRig.GetShapes().GetAt(i);
 			if(collider != (deCollider*)shape->GetCollider()){
 				continue;
 			}
@@ -176,11 +170,11 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 		}
 		
 		for(i=0; i<boneCount; i++){
-			reRigBone * const bone = pRig.GetBoneAt(i);
-			const int boneShapeCount = bone->GetShapeCount();
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
+			const int boneShapeCount = bone->GetShapes().GetCount();
 			
 			for(j=0; j<boneShapeCount; j++){
-				reRigShape * const shape = bone->GetShapeAt(j);
+				reRigShape * const shape = bone->GetShapes().GetAt(j);
 				if(collider != (deCollider*)shape->GetCollider()){
 					continue;
 				}
@@ -193,12 +187,12 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	}
 	
 	if(pTestConstraints){
-		const int rigConstraintCount = pRig.GetConstraintCount();
-		const int boneCount = pRig.GetBoneCount();
+		const int rigConstraintCount = pRig.GetConstraints().GetCount();
+		const int boneCount = pRig.GetBones().GetCount();
 		int i, j;
 		
 		for(i=0; i<rigConstraintCount; i++){
-			reRigConstraint * const constraint = pRig.GetConstraintAt(i);
+			reRigConstraint * const constraint = pRig.GetConstraints().GetAt(i);
 			if(collider != (deCollider*)constraint->GetCollider()){
 				continue;
 			}
@@ -209,11 +203,11 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 		}
 		
 		for(i=0; i<boneCount; i++){
-			reRigBone * const bone = pRig.GetBoneAt(i);
-			const int boneConstraintCount = bone->GetConstraintCount();
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
+			const int boneConstraintCount = bone->GetConstraints().GetCount();
 			
 			for(j=0; j<boneConstraintCount; j++){
-				reRigConstraint * const constraint = bone->GetConstraintAt(j);
+				reRigConstraint * const constraint = bone->GetConstraints().GetAt(j);
 				if(collider != (deCollider*)constraint->GetCollider()){
 					continue;
 				}
@@ -226,11 +220,11 @@ void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 	}
 	
 	if(pTestPushes){
-		const int pushCount = pRig.GetPushCount();
+		const int pushCount = pRig.GetPushes().GetCount();
 		int i;
 		
 		for(i=0; i<pushCount; i++){
-			reRigPush * const push = pRig.GetPushAt(i);
+			reRigPush * const push = pRig.GetPushes().GetAt(i);
 			if(collider != (deCollider*)push->GetCollider()){
 				continue;
 			}

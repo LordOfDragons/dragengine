@@ -83,24 +83,13 @@ void reRigShapeCylinder::SetBottomRadius(float bottomRadius){
 	}
 }
 
-reRigShape *reRigShapeCylinder::Duplicate() const{
-	reRigShapeCylinder *shape = NULL;
-	
-	try{
-		shape = new reRigShapeCylinder(GetEngine());
-		if(!shape) DETHROW(deeOutOfMemory);
-		
-		shape->SetPosition(GetPosition());
-		shape->SetOrientation(GetOrientation());
-		shape->SetHalfHeight(GetHalfHeight());
-		shape->SetTopRadius(GetTopRadius());
-		shape->SetBottomRadius(GetBottomRadius());
-		
-	}catch(const deException &){
-		if(shape) shape->FreeReference();
-		throw;
-	}
-	
+reRigShape::Ref reRigShapeCylinder::Duplicate() const{
+	const reRigShapeCylinder::Ref shape(reRigShapeCylinder::Ref::New(GetEngine()));
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	shape->SetHalfHeight(GetHalfHeight());
+	shape->SetTopRadius(GetTopRadius());
+	shape->SetBottomRadius(GetBottomRadius());
 	return shape;
 }
 

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -35,8 +35,12 @@ class reRigConstraint;
  * \brief Undo action set constraint breaking threshold.
  */
 class reUConstraintSetBreakingThreshold : public igdeUndo{
+public:
+	typedef deTObjectReference<reUConstraintSetBreakingThreshold> Ref;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	float pOldBreakingThreshold;
 	float pNewBreakingThreshold;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUConstraintSetBreakingThreshold> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

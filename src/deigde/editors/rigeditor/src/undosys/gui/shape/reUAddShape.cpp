@@ -45,13 +45,8 @@ reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
 	if(!shape || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	if(rig) rig->AddReference();
-	
 	pBone = bone;
-	if(bone) bone->AddReference();
-	
 	pShape = shape;
-	shape->AddReference();
 	
 	try{
 		if(bone){
@@ -77,7 +72,7 @@ reUAddShape::~reUAddShape(){
 ///////////////
 
 void reUAddShape::Undo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
@@ -94,7 +89,7 @@ void reUAddShape::Undo(){
 }
 
 void reUAddShape::Redo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
@@ -115,16 +110,15 @@ void reUAddShape::Redo(){
 //////////////////////
 
 void reUAddShape::pCleanUp(){
-	if(pShape) pShape->FreeReference();
-	if(pBone) pBone->FreeReference();
-	if(pRig) pRig->FreeReference();
 }
 
 reRig *reUAddShape::pGetRig(){
-	if(pRig) return pRig;
+	if(pRig){
+		return pRig;
+	}
 	
 	reRig *rig = pBone->GetRig();
-	if(!rig) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rig)
 	
 	return rig;
 }

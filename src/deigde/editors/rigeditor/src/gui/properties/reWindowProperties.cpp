@@ -56,25 +56,25 @@ pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelRig.TakeOver(new reWPRig(*this));
+	pPanelRig = reWPRig::Ref::New(*this);
 	AddChild(pPanelRig, "Rig");
 	
-	pPanelBone.TakeOver(new reWPBone(*this));
+	pPanelBone = reWPBone::Ref::New(*this);
 	AddChild(pPanelBone, "Bone");
 	
-	pPanelShape.TakeOver(new reWPShape(*this));
+	pPanelShape = reWPShape::Ref::New(*this);
 	AddChild(pPanelShape, "Shape");
 	
-	pPanelConstraint.TakeOver(new reWPConstraint(*this));
+	pPanelConstraint = reWPConstraint::Ref::New(*this);
 	AddChild(pPanelConstraint, "Constraint");
 	
-	pPanelPush.TakeOver(new reWPPush(*this));
+	pPanelPush = reWPPush::Ref::New(*this);
 	AddChild(pPanelPush, "Push");
 	
-	pPanelView.TakeOver(new reWPView(*this));
+	pPanelView = reWPView::Ref::New(*this);
 	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver(new reWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = reWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(5); // view
@@ -89,11 +89,11 @@ reWindowProperties::~reWindowProperties(){
 ///////////////
 
 void reWindowProperties::SetRig(reRig *rig){
-	((reWPRig&)(igdeWidget&)pPanelRig).SetRig(rig);
-	((reWPBone&)(igdeWidget&)pPanelBone).SetRig(rig);
-	((reWPShape&)(igdeWidget&)pPanelShape).SetRig(rig);
-	((reWPConstraint&)(igdeWidget&)pPanelConstraint).SetRig(rig);
-	((reWPPush&)(igdeWidget&)pPanelPush).SetRig(rig);
-	((reWPView&)(igdeWidget&)pPanelView).SetRig(rig);
-	((reWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetRig(rig);
+	pPanelRig->SetRig(rig);
+	pPanelBone->SetRig(rig);
+	pPanelShape->SetRig(rig);
+	pPanelConstraint->SetRig(rig);
+	pPanelPush->SetRig(rig);
+	pPanelView->SetRig(rig);
+	pPanelUndoHistory->SetRig(rig);
 }

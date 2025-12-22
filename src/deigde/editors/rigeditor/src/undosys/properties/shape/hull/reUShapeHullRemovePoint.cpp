@@ -43,7 +43,7 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pPoint = shape->GetPointAt(index);
+	pPoint = shape->GetPoints().GetAt(index);
 	
 	SetShortInfo("Shape hull remove point");
 }
@@ -57,9 +57,9 @@ reUShapeHullRemovePoint::~reUShapeHullRemovePoint(){
 ///////////////
 
 void reUShapeHullRemovePoint::Undo(){
-	((reRigShapeHull&)(deObject&)pShape).InsertPoint(pPoint, pIndex);
+	pShape->InsertPoint(pPoint, pIndex);
 }
 
 void reUShapeHullRemovePoint::Redo(){
-	((reRigShapeHull&)(deObject&)pShape).RemovePoint(pIndex);
+	pShape->RemovePoint(pIndex);
 }

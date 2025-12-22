@@ -22,18 +22,12 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "reCamera.h"
 #include "reRig.h"
 #include "bone/reRigBone.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class reCamera
@@ -43,12 +37,11 @@
 ////////////////////////////
 
 reCamera::reCamera(reRig *rig, deEngine *engine) : igdeCamera(engine){
-	if(!rig) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rig)
 	
 	pRig = rig;
 	
 	pFreeDistance = 0.0f;
-	pBone = NULL;
 	pDirty = false;
 	pAttachToBone = false;
 }
@@ -63,11 +56,7 @@ reCamera::~reCamera(){
 
 void reCamera::SetBone(reRigBone *bone){
 	if(bone != pBone){
-		if(pBone) pBone->FreeReference();
-		
 		pBone = bone;
-		
-		if(bone) bone->AddReference();
 		
 		pDirty = true;
 		
@@ -160,10 +149,7 @@ void reCamera::Reset(){
 	igdeCamera::Reset();
 	
 	pFreeDistance = 5.0f;
-	if(pBone){
-		pBone->FreeReference();
-		pBone = NULL;
-	}
+	pBone = nullptr;
 	pFreePosition.Set(0.0, 1.0, 0.0);
 	pFreeOrientation.Set(0.0f, 180.0f, 0.0f);
 	pRelPosition.Set(0.0, 0.0, 0.0);

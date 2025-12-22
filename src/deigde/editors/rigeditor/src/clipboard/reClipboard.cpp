@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 #include "reClipboard.h"
-#include "reBaseClip.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -36,11 +35,9 @@
 ////////////////////////////
 
 reClipboard::reClipboard(){
-	pClip = NULL;
 }
 
 reClipboard::~reClipboard(){
-	if(pClip) delete pClip;
 }
 
 
@@ -49,10 +46,9 @@ reClipboard::~reClipboard(){
 ///////////////
 
 bool reClipboard::HasClip() const{
-	return pClip != NULL;
+	return pClip.IsNotNull();
 }
 
 void reClipboard::SetClip(reBaseClip *clip){
-	if(pClip) delete pClip;
 	pClip = clip;
 }

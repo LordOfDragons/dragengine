@@ -38,7 +38,6 @@
 #include "../rig/bone/reRigBone.h"
 #include "../rig/constraint/reTemporaryConstraint.h"
 #include "../rig/shape/reRigShape.h"
-#include "../rig/shape/reRigShapeList.h"
 #include "../rig/shape/reSelectionShapes.h"
 #include "../undosys/gui/shape/reUMoveShape.h"
 #include "../undosys/gui/shape/reURotateShape.h"
@@ -80,6 +79,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	reView3D &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
 	cCameraInteraction(reView3D &view) : pView(view){}
 	
 public:
@@ -150,19 +150,18 @@ public:
 
 
 class cSimulationInteraction : public cBaseInteraction {
-	reTemporaryConstraint *pConstraint;
+	reTemporaryConstraint::Ref pConstraint;
 	float pGrabDistance;
 	
 public:
-	cSimulationInteraction(reView3D &view) : cBaseInteraction(view), pConstraint(NULL){
+	typedef deTObjectReference<cSimulationInteraction> Ref;
+	cSimulationInteraction(reView3D &view) : cBaseInteraction(view), pConstraint(nullptr){
 	}
 	
-	virtual ~cSimulationInteraction(){
-		if(pConstraint){
-			delete pConstraint;
-		}
-	}
+protected:
+	virtual ~cSimulationInteraction() = default;
 	
+public:
 	bool OnDragBegin(reRig &rig) override{
 		if(!rig.GetSimulationRunning()){
 			return false;
@@ -184,7 +183,7 @@ public:
 		
 		// apply push if shift is pressed. no interaction starts in this case
 		if(GetShiftOrigin()){
-			reCLApplyPush applyPush(&rig);
+			reCLApplyPush applyPush(rig);
 			applyPush.SetCollider(rig.GetEngineSimulationCollider());
 			applyPush.SetRay(position, view * rayLength);
 			applyPush.SetPush(view * pushStrength);
@@ -215,13 +214,10 @@ public:
 		}
 		
 		// clicked on something we can grab
-		if(pConstraint){
-			delete pConstraint;
-			pConstraint = NULL;
-		}
+		pConstraint = nullptr;
 		
 		pGrabDistance = rayLength * closestElement.GetHitDistance();
-		pConstraint = new reTemporaryConstraint(&rig, closestElement.GetHitSimBone(),
+		pConstraint = reTemporaryConstraint::Ref::New(&rig, closestElement.GetHitSimBone(),
 			position + decDVector(view * pGrabDistance), decQuaternion());
 		return true;
 	}
@@ -236,10 +232,7 @@ public:
 	}
 	
 	virtual void OnDragFinish(bool cancelled){
-		if(pConstraint){
-			delete pConstraint;
-			pConstraint = NULL;
-		}
+		pConstraint = nullptr;
 	}
 };
 
@@ -247,6 +240,7 @@ public:
 
 class cSelectInteraction : public cBaseInteraction {
 public:
+	typedef deTObjectReference<cSelectInteraction> Ref;
 	cSelectInteraction(reView3D &view) : cBaseInteraction(view){}
 	
 	bool OnDragBegin(reRig &rig) override{
@@ -254,7 +248,7 @@ public:
 			return false;
 		}
 		
-		reCLSelect clSelect(&rig);
+		reCLSelect clSelect(rig);
 		clSelect.SetToggleSelection(GetShiftOrigin());
 		
 		decLayerMask layerMask;
@@ -304,6 +298,7 @@ private:
 	decMatrix pInvRotationMatrix;
 	
 public:
+	typedef deTObjectReference<cMoveInteraction> Ref;
 	cMoveInteraction(reView3D &view) : cBaseInteraction(view){}
 	
 	bool OnDragBegin(reRig &rig) override{
@@ -312,7 +307,7 @@ public:
 		}
 		
 		pRotationMatrix.SetIdentity();
-		pUndo = NULL;
+		pUndo = nullptr;
 		
 		switch(rig.GetElementMode()){
 		case reRig::eemBone:
@@ -322,13 +317,13 @@ public:
 			const reSelectionShapes &selection = *rig.GetSelectionShapes();
 			const reRigShape * const activeShape = selection.GetActiveShape();
 			
-			reRigShapeList list;
+			reRigShape::List list;
 			selection.AddVisibleShapesTo(list);
-			if(list.GetShapeCount() == 0){
+			if(list.IsEmpty()){
 				return false;
 			}
 			
-			pUndo.TakeOver(new reUMoveShape(list));
+			pUndo = reUMoveShape::Ref::New(list);
 			
 			if(activeShape){
 				pRotationMatrix.SetRotation(activeShape->GetOrientation() * DEG2RAD);
@@ -362,7 +357,7 @@ public:
 		
 		decVector vector(
 			pViewMatrix.TransformRight() * (RE_DRAG_MOVE * (float)distance.x * sensitivity)
-			+ pViewMatrix.TransformUp() * (RE_DRAG_MOVE * (float)distance.y * sensitivity));
+			+ pViewMatrix.TransformUp() * (RE_DRAG_MOVE * (float)-distance.y * sensitivity));
 		
 		if(rig.GetUseLocal()){
 			vector = pInvRotationMatrix * vector;
@@ -387,7 +382,7 @@ public:
 		}
 		
 		// update undo object and redo the movement
-		reUMoveShape &undo = (reUMoveShape&)(igdeUndo&)pUndo;
+		reUMoveShape &undo = pUndo.DynamicCast<reUMoveShape>();
 		undo.SetDistance(vector);
 		undo.ProgressiveRedo();
 	}
@@ -398,15 +393,15 @@ public:
 		}
 		
 		if(cancelled || !pView.GetRig()){
-			pUndo = NULL;
+			pUndo = nullptr;
 			return;
 		}
 		
-		reUMoveShape &undo = (reUMoveShape&)(igdeUndo&)pUndo;
+		reUMoveShape &undo = pUndo.DynamicCast<reUMoveShape>();
 		if(undo.GetDistance().Length() > 1e-5f){
 			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 };
 
@@ -414,6 +409,7 @@ public:
 
 class cScaleInteraction : public cBaseInteraction {
 public:
+	typedef deTObjectReference<cScaleInteraction> Ref;
 	cScaleInteraction(reView3D &view) : cBaseInteraction(view){}
 	
 	bool OnDragBegin(reRig &rig) override{
@@ -443,6 +439,7 @@ private:
 	float pNullAngle;
 	
 public:
+	typedef deTObjectReference<cRotateInteraction> Ref;
 	cRotateInteraction(reView3D &view) : cBaseInteraction(view), pNullAngle(0.0f){}
 	
 	bool OnDragBegin(reRig &rig) override{
@@ -453,7 +450,7 @@ public:
 		const reSelectionShapes &selectionShapes = *rig.GetSelectionShapes();
 		const reRigShape * const activeShape = selectionShapes.GetActiveShape();
 		
-		pUndo = NULL;
+		pUndo = nullptr;
 		
 		// determine rotation axis
 		pRotationMatrix.SetIdentity();
@@ -512,18 +509,15 @@ public:
 				break;
 				
 			case reRig::eemShape:{
-				reRigShapeList list;
+				reRigShape::List list;
 				selectionShapes.AddVisibleShapesTo(list);
 				
-				const int shapeCount = list.GetShapeCount();
-				if(shapeCount == 0){
+				if(list.IsEmpty()){
 					return false;
 				}
 				
 				center.SetZero();
-				int i;
-				for(i=0; i<shapeCount; i++){
-					const reRigShape &shape = *list.GetShapeAt(i);
+				list.Visit([&](const reRigShape &shape){
 					const reRigBone * const bone = shape.GetRigBone();
 					
 					if(bone){
@@ -532,11 +526,11 @@ public:
 					}else{
 						center += shape.GetPosition();
 					}
-				}
-				center /= (float)shapeCount;
+				});
+				center /= (float)list.GetCount();
 				
-				pUndo.TakeOver(new reURotateShape(list));
-				((reURotateShape&)(igdeUndo&)pUndo).SetModifyPosition(shapeCount > 1);
+				pUndo = reURotateShape::Ref::New(list);
+				pUndo.DynamicCast<reURotateShape>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				
 			default:
@@ -551,7 +545,7 @@ public:
 		const decPoint scrDir(GetDragOrigin() - (pView.GetRenderAreaSize() / 2));
 		pNullAngle = atan2f((float)-scrDir.y, (float)scrDir.x);
 		
-		reURotateShape &undo = (reURotateShape&)(igdeUndo&)pUndo;
+		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
 		undo.SetCenterPosition(center);
 		undo.SetAxis(axis);
 		
@@ -574,7 +568,7 @@ public:
 		}
 		
 		// update undo object and redo the movement
-		reURotateShape &undo = (reURotateShape&)(igdeUndo&)pUndo;
+		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
 		undo.SetAngle(angle);
 		undo.SetModifyPosition(!GetControlNow());
 		undo.ProgressiveRedo();
@@ -586,15 +580,15 @@ public:
 		}
 		
 		if(cancelled || !pView.GetRig()){
-			pUndo = NULL;
+			pUndo = nullptr;
 			return;
 		}
 		
-		reURotateShape &undo = (reURotateShape&)(igdeUndo&)pUndo;
+		reURotateShape &undo = pUndo.DynamicCast<reURotateShape>();
 		if(undo.GetAngle() > 1e-5){
 			pView.GetRig()->GetUndoSystem()->Add(pUndo);
 		}
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 };
 
@@ -610,15 +604,14 @@ public:
 
 reView3D::reView3D(reWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pRig(NULL)
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
-	pSimulationInteraction.TakeOver(new cSimulationInteraction(*this));
-	pSelectInteraction.TakeOver(new cSelectInteraction(*this));
-	pMoveInteraction.TakeOver(new cMoveInteraction(*this));
-	pScaleInteraction.TakeOver(new cScaleInteraction(*this));
-	pRotateInteraction.TakeOver(new cRotateInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pSimulationInteraction = cSimulationInteraction::Ref::New(*this);
+	pSelectInteraction = cSelectInteraction::Ref::New(*this);
+	pMoveInteraction = cMoveInteraction::Ref::New(*this);
+	pScaleInteraction = cScaleInteraction::Ref::New(*this);
+	pRotateInteraction = cRotateInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 	AddListener(pSimulationInteraction);
@@ -629,7 +622,7 @@ pRig(NULL)
 }
 
 reView3D::~reView3D(){
-	SetRig(NULL);
+	SetRig(nullptr);
 }
 
 
@@ -645,24 +638,17 @@ void reView3D::SetRig(reRig *rig){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera(NULL);
+	pCameraInteraction->SetCamera(nullptr);
 	pSimulationInteraction->Cancel();
 	pSelectInteraction->Cancel();
 	pMoveInteraction->Cancel();
 	pScaleInteraction->Cancel();
 	pRotateInteraction->Cancel();
 	
-	SetRenderWorld(NULL);
-	
-	if(pRig){
-		pRig->FreeReference();
-	}
-	
+	SetRenderWorld(nullptr);
 	pRig = rig;
 	
 	if(rig){
-		rig->AddReference();
-		
 		if(rig->GetCamera()){
 			SetRenderWorld(rig->GetCamera()->GetEngineCamera());
 			pCameraInteraction->SetCamera(rig->GetCamera());

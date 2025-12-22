@@ -68,6 +68,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPPush &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -86,6 +87,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPPush &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -104,6 +106,7 @@ protected:
 	reWPPush &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPPush &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -121,6 +124,7 @@ public:
 
 class cComboType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboType> Ref;
 	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push){
@@ -133,6 +137,7 @@ public:
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
@@ -142,6 +147,7 @@ public:
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
@@ -151,6 +157,7 @@ public:
 
 class cTextImpuls : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextImpuls> Ref;
 	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
@@ -160,6 +167,7 @@ public:
 
 class cTextRayCount : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRayCount> Ref;
 	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
@@ -169,6 +177,7 @@ public:
 
 class cTextConeAngle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextConeAngle> Ref;
 	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
@@ -188,47 +197,40 @@ public:
 
 reWPPush::reWPPush(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pPush(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPPushListener(*this);
+	pListener = reWPPushListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// structure
 	helper.GroupBox(content, groupBox, "Geometry:");
 	
-	helper.ComboBox(groupBox, "Type:", "Type of the push.", pCBType, new cComboType(*this));
-	pCBType->AddItem("Simple Push", NULL, (void*)(intptr_t)reRigPush::eptSimple);
-	pCBType->AddItem("Explosion", NULL, (void*)(intptr_t)reRigPush::eptExplosion);
+	helper.ComboBox(groupBox, "Type:", "Type of the push.", pCBType, cComboType::Ref::New(*this));
+	pCBType->AddItem("Simple Push", nullptr, (void*)(intptr_t)reRigPush::eptSimple);
+	pCBType->AddItem("Explosion", nullptr, (void*)(intptr_t)reRigPush::eptExplosion);
 	
 	helper.EditVector(groupBox, "Position:", "Position the push originates from.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the push determining the push direction.",
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Impuls:", "Power of the push in Ns.",
-		pEditImpuls, new cTextImpuls(*this));
+		pEditImpuls, cTextImpuls::Ref::New(*this));
 	helper.EditInteger(groupBox, "Ray Count:", "Number of rays to shoot.",
-		pEditRayCount, new cTextRayCount(*this));
+		pEditRayCount, cTextRayCount::Ref::New(*this));
 	helper.EditFloat(groupBox, "Cone:", "Cone angle in degrees if required by the push type.",
-		pEditConeAngle, new cTextConeAngle(*this));
+		pEditConeAngle, cTextConeAngle::Ref::New(*this));
 }
 
 reWPPush::~reWPPush(){
-	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -241,20 +243,17 @@ void reWPPush::SetRig(reRig *rig){
 		return;
 	}
 	
-	SetPush(NULL);
+	SetPush(nullptr);
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
-		pRig = NULL;
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetPush(rig->GetSelectionPushes()->GetActivePush());
 	}
 }
@@ -263,17 +262,7 @@ void reWPPush::SetPush(reRigPush *push){
 	if(push == pPush){
 		return;
 	}
-	
-	if(pPush){
-		pPush->FreeReference();
-	}
-	
 	pPush = push;
-	
-	if(push){
-		push->AddReference();
-	}
-	
 	UpdatePush();
 }
 
@@ -295,7 +284,7 @@ void reWPPush::UpdatePush(){
 		pEditConeAngle->ClearText();
 	}
 	
-	const bool enabled = pPush != NULL;
+	const bool enabled = pPush.IsNotNull();
 	pCBType->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);

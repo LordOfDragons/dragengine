@@ -36,16 +36,11 @@
 ////////////////////////////
 
 reUSetBoneParent::reUSetBoneParent(reRigBone *bone, reRigBone *parent){
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldParent = bone->GetParentBone();
-	if(pOldParent) pOldParent->AddReference();
-	
 	pNewParent = parent;
-	if(pNewParent) pNewParent->AddReference();
 	
 	try{
 		SetShortInfo("Set Bone Parent");
@@ -79,8 +74,4 @@ void reUSetBoneParent::Redo(){
 //////////////////////
 
 void reUSetBoneParent::pCleanUp(){
-	if(pNewParent) pNewParent->FreeReference();
-	if(pOldParent) pOldParent->FreeReference();
-	
-	if(pBone) pBone->FreeReference();
 }

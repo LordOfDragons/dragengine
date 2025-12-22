@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -35,15 +35,16 @@ class reRigBone;
  * \brief Undo Toggle Bone Dynamic.
  */
 class reUToggleBoneDynamic : public igdeUndo{
+public:
+	typedef deTObjectReference<reUToggleBoneDynamic> Ref;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUToggleBoneDynamic> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

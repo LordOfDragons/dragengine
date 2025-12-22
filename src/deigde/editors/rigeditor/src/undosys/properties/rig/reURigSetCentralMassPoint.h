@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRig;
+#include "../../../rig/reRig.h"
 
 
 
@@ -36,8 +36,12 @@ class reRig;
  * \brief Undo action rig set central mass point.
  */
 class reURigSetCentralMassPoint : public igdeUndo{
+public:
+	typedef deTObjectReference<reURigSetCentralMassPoint> Ref;
+	
+	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	decVector pOldCMP;
 	decVector pNewCmp;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reURigSetCentralMassPoint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

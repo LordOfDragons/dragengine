@@ -22,40 +22,44 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _REBASECLIP_H_
 #define _REBASECLIP_H_
 
+#include <dragengine/deObject.h>
 
 
 /**
  * @brief Base Clipboard Clip.
  * Base class for clips to be held by a clipboard object.
  */
-class reBaseClip{
+class reBaseClip : public deObject{
 public:
+	typedef deTObjectReference<reBaseClip> Ref;
+	
 	enum eClipTypes{
 		ectObject
 	};
 	
 private:
-	int pType;
+	eClipTypes pType;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base clipboard clip. */
-	reBaseClip(int type);
+	explicit reBaseClip(eClipTypes type);
+	
+protected:
 	/** Cleans up the clipboard clip. */
-	virtual ~reBaseClip();
+	~reBaseClip() override;
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the type of the clip. */
-	inline int GetType() const{ return pType; }
+	inline eClipTypes GetType() const{ return pType; }
 	/*@}*/
 };
 
-// end of include only once
 #endif

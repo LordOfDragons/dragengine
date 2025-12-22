@@ -25,6 +25,11 @@
 #ifndef _RERIG_H_
 #define _RERIG_H_
 
+#include "reRigTexture.h"
+#include "bone/reRigBone.h"
+#include "push/reRigPush.h"
+#include "shape/reRigShape.h"
+#include "constraint/reRigConstraint.h"
 #include "../collisions/reCLRigSimulation.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
@@ -32,31 +37,26 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 class reRigConstraintDof;
 class igdeGameDefinition;
 class igdeEnvironment;
 class igdeWSky;
 class reCamera;
-class reRigPush;
-class reRigBone;
-class reRigShape;
-class reRigConstraint;
 class reSelectionBones;
 class reSelectionPushes;
 class reSelectionShapes;
 class reSelectionConstraints;
 class reRigNotifier;
-class reRigTexture;
 
 class deEngine;
-class deWorld;
-class deLight;
-class deRig;
-class deColliderComponent;
-class deComponent;
-class deAnimator;
-class deAnimatorInstance;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
 class deCollider;
@@ -118,23 +118,22 @@ public:
 	};
 	
 private:
-	deWorld *pEngWorld;
-	deLight *pEngLight;
+	deWorld::Ref pEngWorld;
+	deLight::Ref pEngLight;
 	
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deColliderComponent *pEngSimCollider;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deColliderComponent::Ref pEngSimCollider;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deAnimatorRuleStateManipulator *pEngAnimatorRestPose;
 	
-	reRigTexture **pComponentTextures;
-	int pComponentTextureCount;
+	reRigTexture::List pComponentTextures;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deRig *pEngRig;
+	deRig::Ref pEngRig;
 	bool pPoseChanged;
 	
 	decString pModelPath;
@@ -152,26 +151,16 @@ private:
 	
 	reCamera *pCamera;
 	
-	reRigBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
-	reRigBone *pRootBone;
+	reRigBone::List pBones;
+	reRigBone::Ref pRootBone;
 	
-	reRigShape **pShapes;
-	int pShapeCount;
-	int pShapeSize;
+	reRigShape::List pShapes;
 	
-	reRigConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	reRigConstraint::List pConstraints;
 	
-	reRigPush **pPushes;
-	int pPushCount;
-	int pPushSize;
+	reRigPush::List pPushes;
 	
-	reRigNotifier **pNotifiers;
-	int pNotifierCount;
-	int pNotifierSize;
+	decTObjectOrderedSet<reRigNotifier> pNotifiers;
 	
 	bool pLockAxisX;
 	bool pLockAxisY;
@@ -360,26 +349,25 @@ public:
 	/** @name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the simulation collider. */
-	inline deColliderComponent *GetEngineSimulationCollider() const{ return pEngSimCollider; }
+	inline const deColliderComponent::Ref &GetEngineSimulationCollider() const{ return pEngSimCollider; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine rig. */
-	inline deRig *GetEngineRig() const{ return pEngRig; }
+	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
 	/** Retrieves the camera. */
 	inline reCamera *GetCamera() const{ return pCamera; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	
 	/** Retrieves the number of component textures. */
-	inline int GetComponentTextureCount() const{ return pComponentTextureCount; }
-	/** Retrieves a component texture. */
-	reRigTexture *GetComponentTextureAt(int index) const;
+	inline const reRigTexture::List &GetComponentTextures() const{ return pComponentTextures; }
+	
 	/** Updates component textures. */
 	void UpdateComponentTextures();
 	
@@ -423,20 +411,15 @@ public:
 	
 	/** @name Bones */
 	/*@{*/
-	/** Retrieves the number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
-	/** Retrieves the bone at the given index. */
-	reRigBone *GetBoneAt(int index) const;
-	/** Retrieves the bone with the given name or NULL if not found. */
+	/** List of bones. */
+	inline const reRigBone::List &GetBones() const{ return pBones; }
+	
+	/** Retrieves the bone with the given name or nullptr if not found. */
 	reRigBone *GetBoneNamed(const char *name) const;
-	/** Retrieves the bone with the given collider or NULL if not found. */
+	/** Retrieves the bone with the given collider or nullptr if not found. */
 	reRigBone *GetBoneWith(deColliderVolume *collider) const;
-	/** Retrieves the bone with the given order or NULL if not found. */
+	/** Retrieves the bone with the given order or nullptr if not found. */
 	reRigBone *GetBoneWithOrder(int order) const;
-	/** Retrieves the index of the bone or -1 if not found. */
-	int IndexOfBone(reRigBone *bone) const;
-	/** Determines if the bone exists. */
-	bool HasBone(reRigBone *bone) const;
 	/** Adds a new bone. */
 	void AddBone(reRigBone *bone);
 	/** Removes the given bone. */
@@ -449,24 +432,19 @@ public:
 	/** Sets the visited state of all bones. */
 	void SetAllBonesVisited(bool visited);
 	
-	/** Retrieves the root bone or NULL if not set. */
-	inline reRigBone *GetRootBone() const{ return pRootBone; }
-	/** Sets the root bone or NULL if not set. */
+	/** Retrieves the root bone or nullptr if not set. */
+	inline const reRigBone::Ref &GetRootBone() const{ return pRootBone; }
+	/** Sets the root bone or nullptr if not set. */
 	void SetRootBone(reRigBone *rootBone);
 	/*@}*/
 	
 	/** @name Shapes */
 	/*@{*/
-	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
-	/** Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt(int index) const;
-	/** Retrieves the shape with the given collider or NULL if not found. */
+	/** List of shapes. */
+	inline const reRigShape::List &GetShapes() const{ return pShapes; }
+	
+	/** Retrieves the shape with the given collider or nullptr if not found. */
 	reRigShape *GetShapeWith(deColliderVolume *collider) const;
-	/** Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape(reRigShape *shape) const;
-	/** Determines if the shape exists. */
-	bool HasShape(reRigShape *shape) const;
 	/** Adds a new shape. */
 	void AddShape(reRigShape *shape);
 	/** Removes the given shape. */
@@ -477,16 +455,11 @@ public:
 	
 	/** @name Constraints */
 	/*@{*/
-	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
-	/** Retrieves the constraint at the given index. */
-	reRigConstraint *GetConstraintAt(int index) const;
-	/** Retrieves the constraint with the given collider or NULL if not found. */
+	/** List of constraints. */
+	inline const reRigConstraint::List &GetConstraints() const{ return pConstraints; }
+	
+	/** Retrieves the constraint with the given collider or nullptr if not found. */
 	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;
-	/** Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
-	/** Determines if the constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
 	/** Adds a new constraint. */
 	void AddConstraint(reRigConstraint *constraint);
 	/** Removes the given constraint. */
@@ -497,16 +470,11 @@ public:
 	
 	/** @name Pushes */
 	/*@{*/
-	/** Retrieves the number of pushs. */
-	inline int GetPushCount() const{ return pPushCount; }
-	/** Retrieves the push at the given index. */
-	reRigPush *GetPushAt(int index) const;
-	/** Retrieves the push with the given collider or NULL if not found. */
+	/** List of pushes. */
+	inline const reRigPush::List &GetPushes() const{ return pPushes; }
+	
+	/** Retrieves the push with the given collider or nullptr if not found. */
 	reRigPush *GetPushWith(deColliderVolume *collider) const;
-	/** Retrieves the index of the push or -1 if not found. */
-	int IndexOfPush(reRigPush *push) const;
-	/** Determines if the push exists. */
-	bool HasPush(reRigPush *push) const;
 	/** Adds a new push. */
 	void AddPush(reRigPush *push);
 	/** Removes the given push. */
@@ -517,20 +485,10 @@ public:
 	
 	/** @name Notifiers */
 	/*@{*/
-	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{ return pNotifierCount; }
-	/** Retrieves the notifier at the given index. */
-	reRigNotifier *GetNotifierAt(int index) const;
-	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(reRigNotifier *notifier) const;
-	/** Determines if the notifier exists. */
-	bool HasNotifier(reRigNotifier *notifier) const;
 	/** Adds a new notifier. */
 	void AddNotifier(reRigNotifier *notifier);
 	/** Removes the given notifier. */
 	void RemoveNotifier(reRigNotifier *notifier);
-	/** Removes all notifiers. */
-	void RemoveAllNotifiers();
 	
 	/** Notifies all that the element or work mode changed. */
 	void NotifyModeChanged();

@@ -59,7 +59,7 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decHelperFunctions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>

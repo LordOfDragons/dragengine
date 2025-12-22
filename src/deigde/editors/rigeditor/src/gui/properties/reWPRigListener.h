@@ -35,6 +35,9 @@ class reWPRig;
  * \brief Rig panel listener.
  */
 class reWPRigListener : public reRigNotifier{
+public:
+	typedef deTObjectReference<reWPRigListener> Ref;
+	
 private:
 	reWPRig &pPanel;
 	

@@ -35,6 +35,9 @@ class reWPShape;
  * \brief Shape panel rig listener.
  */
 class reWPShapeListener : public reRigNotifier{
+public:
+	typedef deTObjectReference<reWPShapeListener> Ref;
+	
 private:
 	reWPShape &pPanel;
 	

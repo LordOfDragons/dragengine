@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCylinderTopRadius.h"
 #include "../../../rig/shape/reRigShapeCylinder.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius(reRigShapeCylinder *shape, float topRadius){
-	if(!shape) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
@@ -43,12 +43,9 @@ reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius(reRigShapeCylinder *s
 	pNewTopRadius = topRadius;
 	
 	SetShortInfo("Set Cylinder Shape Half Height");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeCylinderTopRadius::~reUSetShapeCylinderTopRadius(){
-	pShape->FreeReference();
 }
 
 

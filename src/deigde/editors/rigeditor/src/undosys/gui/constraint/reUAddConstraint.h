@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigBone;
-class reRigConstraint;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -37,17 +37,18 @@ class reRigConstraint;
  * \brief Undo Add Constraint.
  */
 class reUAddConstraint : public igdeUndo{
+public:
+	typedef deTObjectReference<reUAddConstraint> Ref;
+	
+	
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigConstraint *pConstraint;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigConstraint::Ref pConstraint;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUAddConstraint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

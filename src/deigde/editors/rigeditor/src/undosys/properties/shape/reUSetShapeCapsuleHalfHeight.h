@@ -26,9 +26,9 @@
 #define _REUSETSHAPECAPSULEHALHEIGHT_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeCapsule;
+#include "../../../rig/shape/reRigShapeCapsule.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeCapsule;
  * \brief Undo Set Shape HalfHeight.
  */
 class reUSetShapeCapsuleHalfHeight : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetShapeCapsuleHalfHeight> Ref;
+	
+	
 private:
-	reRigShapeCapsule *pShape;
+	reRigShapeCapsule::Ref pShape;
 	
 	float pOldHalfHeight;
 	float pNewHalfHeight;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetShapeCapsuleHalfHeight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

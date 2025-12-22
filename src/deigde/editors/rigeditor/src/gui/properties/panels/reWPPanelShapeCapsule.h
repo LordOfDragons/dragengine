@@ -38,6 +38,9 @@ class reRigShapeCapsule;
  * \brief Rig shape capsule panel.
  */
 class reWPPanelShapeCapsule : public reWPPanelShape{
+public:
+	typedef deTObjectReference<reWPPanelShapeCapsule> Ref;
+	
 private:
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;

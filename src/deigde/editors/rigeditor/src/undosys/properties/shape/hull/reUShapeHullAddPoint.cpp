@@ -40,7 +40,7 @@ pShape(shape),
 pPoint(point),
 pIndex(index)
 {
-	if(!shape || index < 0 || index > shape->GetPointCount()){
+	if(!shape || index < 0 || index > shape->GetPoints().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -56,9 +56,9 @@ reUShapeHullAddPoint::~reUShapeHullAddPoint(){
 ///////////////
 
 void reUShapeHullAddPoint::Undo(){
-	((reRigShapeHull&)(deObject&)pShape).RemovePoint(pIndex);
+	pShape->RemovePoint(pIndex);
 }
 
 void reUShapeHullAddPoint::Redo(){
-	((reRigShapeHull&)(deObject&)pShape).InsertPoint(pPoint, pIndex);
+	pShape->InsertPoint(pPoint, pIndex);
 }

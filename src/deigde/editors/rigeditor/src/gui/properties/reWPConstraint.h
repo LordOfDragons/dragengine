@@ -25,6 +25,10 @@
 #ifndef _REWPCONSTRAINT_H_
 #define _REWPCONSTRAINT_H_
 
+#include "reWPConstraintListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/constraint/reRigConstraint.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -32,21 +36,20 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
-class reRig;
-class reRigConstraint;
-class reWPConstraintListener;
-
 
 
 /**
  * \brief Constraint panel.
  */
 class reWPConstraint : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPConstraint> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigConstraint *pConstraint;
-	reWPConstraintListener *pListener;
+	reRig::Ref pRig;
+	reRigConstraint::Ref pConstraint;
+	reWPConstraintListener::Ref pListener;
 	
 	igdeTextField::Ref pEditBoneParent;
 	igdeComboBox::Ref pCBBoneTarget;
@@ -91,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Constraint. */
-	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
+	inline const reRigConstraint::Ref &GetConstraint() const{ return pConstraint; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

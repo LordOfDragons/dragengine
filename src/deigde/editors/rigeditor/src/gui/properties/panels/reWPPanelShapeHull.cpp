@@ -62,6 +62,7 @@ namespace {
 class cSpinPoint : public igdeSpinTextFieldListener{
 	reWPPanelShapeHull &pPanel;
 public:
+	typedef deTObjectReference<cSpinPoint> Ref;
 	cSpinPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField*){
@@ -72,25 +73,26 @@ public:
 class cActionAddPoint : public igdeAction{
 	reWPPanelShapeHull &pPanel;
 public:
+	typedef deTObjectReference<cActionAddPoint> Ref;
 	cActionAddPoint(reWPPanelShapeHull &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add point"),
 		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
 		if(!rig || !hull){
 			return;
 		}
 		
-		reUShapeHullAddPoint::Ref undo(reUShapeHullAddPoint::Ref::NewWith(
-			hull, decVector(), hull->GetPointCount()));
+		reUShapeHullAddPoint::Ref undo(reUShapeHullAddPoint::Ref::New(
+			hull, decVector(), hull->GetPoints().GetCount()));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetRig() && pPanel.GetShape());
 	}
 };
@@ -98,11 +100,12 @@ public:
 class cActionRemovePoint : public igdeAction{
 	reWPPanelShapeHull &pPanel;
 public:
+	typedef deTObjectReference<cActionRemovePoint> Ref;
 	cActionRemovePoint(reWPPanelShapeHull &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove point"),
 		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		reRigShapeHull * const hull = (reRigShapeHull*)pPanel.GetShape();
 		const int index = pPanel.GetSelectedPoint();
@@ -110,13 +113,13 @@ public:
 			return;
 		}
 		
-		reUShapeHullRemovePoint::Ref undo(reUShapeHullRemovePoint::Ref::NewWith(hull, index));
+		reUShapeHullRemovePoint::Ref undo(reUShapeHullRemovePoint::Ref::New(hull, index));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetRig() && pPanel.GetShape() && pPanel.GetSelectedPoint() != -1);
 	}
 };
@@ -124,6 +127,7 @@ public:
 class cEditPoint : public igdeEditVectorListener{
 	reWPPanelShapeHull &pPanel;
 public:
+	typedef deTObjectReference<cEditPoint> Ref;
 	cEditPoint(reWPPanelShapeHull &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -134,11 +138,11 @@ public:
 			return;
 		}
 		
-		if(editVector->GetVector().IsEqualTo(hull->GetPointAt(index))){
+		if(editVector->GetVector().IsEqualTo(hull->GetPoints().GetAt(index))){
 			return;
 		}
 		
-		reUShapeHullSetPoint::Ref undo(reUShapeHullSetPoint::Ref::NewWith(
+		reUShapeHullSetPoint::Ref undo(reUShapeHullSetPoint::Ref::New(
 			hull, editVector->GetVector(), index));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -168,18 +172,18 @@ reWPPanelShape(wpShapes, reRigShape::estHull)
 	helper.GroupBox(*this, groupHull, "Hull Parameters:");
 	
 	helper.EditVector(groupHull, "Position:", "Position of the box relative to the parent bone.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
 	helper.EditVector(groupHull, "Rotation:", "Rotation of the box.",
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupHull, "Points:", "Select point to edit", formline);
-	helper.EditSpinInteger(formline, "Select point to edit", 0, 0, pSpinPoint, new cSpinPoint(*this));
-	helper.Button(formline, pBtnPointAdd, new cActionAddPoint(*this), true);
-	helper.Button(formline, pBtnPointRemove, new cActionRemovePoint(*this), true);
+	helper.EditSpinInteger(formline, "Select point to edit", 0, 0, pSpinPoint, cSpinPoint::Ref::New(*this));
+	helper.Button(formline, pBtnPointAdd, cActionAddPoint::Ref::New(*this));
+	helper.Button(formline, pBtnPointRemove, cActionRemovePoint::Ref::New(*this));
 	
 	helper.EditVector(groupHull, "Coordinates:", "Selected point coordinates.",
-		pEditPoint, new cEditPoint(*this));
+		pEditPoint, cEditPoint::Ref::New(*this));
 }
 
 reWPPanelShapeHull::~reWPPanelShapeHull(){
@@ -198,7 +202,7 @@ void reWPPanelShapeHull::UpdateShape(){
 	if(hull){
 		pEditPosition->SetVector(hull->GetPosition());
 		pEditRotation->SetVector(hull->GetOrientation());
-		pSpinPoint->SetRange(0, decMath::max(hull->GetPointCount() - 1, 0));
+		pSpinPoint->SetRange(0, decMath::max(hull->GetPoints().GetCount() - 1, 0));
 		
 	}else{
 		pEditPosition->SetVector(decVector());
@@ -219,7 +223,7 @@ void reWPPanelShapeHull::UpdateShape(){
 
 int reWPPanelShapeHull::GetSelectedPoint() const{
 	const reRigShapeHull * const hull = (reRigShapeHull*)GetShape();
-	return hull && hull->GetPointCount() > 0 ? pSpinPoint->GetValue() : -1;
+	return hull && hull->GetPoints().GetCount() > 0 ? pSpinPoint->GetValue() : -1;
 }
 
 void reWPPanelShapeHull::UpdatePoint(){
@@ -227,7 +231,7 @@ void reWPPanelShapeHull::UpdatePoint(){
 	const int index = GetSelectedPoint();
 	
 	if(hull && index != -1){
-		pEditPoint->SetVector(hull->GetPointAt(index));
+		pEditPoint->SetVector(hull->GetPoints().GetAt(index));
 		
 	}else{
 		pEditPoint->SetVector(decVector());

@@ -28,12 +28,12 @@
 
 // includes
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/collider/deColliderConstraint.h>
 
 // predefinitions
 class reRig;
 class reRigBone;
-class deColliderComponent;
-class deColliderConstraint;
 class deEngine;
 
 
@@ -43,10 +43,13 @@ class deEngine;
  *
  * Temporary Constraint.
  */
-class reTemporaryConstraint{
+class reTemporaryConstraint : public deObject{
+public:
+	typedef deTObjectReference<reTemporaryConstraint> Ref;
+	
 private:
-	deColliderComponent *pEngSimCollider;
-	deColliderConstraint *pEngConstraint;
+	deColliderComponent::Ref pEngSimCollider;
+	deColliderConstraint::Ref pEngConstraint;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -60,14 +63,17 @@ public:
 	/*@{*/
 	/** Creates a new temporary constraint. */
 	reTemporaryConstraint(reRig *rig, reRigBone *bone, const decDVector &position, const decQuaternion &orientation);
+	
+protected:
 	/** Cleans up the temporary constraint. */
 	~reTemporaryConstraint();
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the engine constraint. */
-	inline deColliderConstraint *GetEngineConstraint() const{ return pEngConstraint; }
+	inline const deColliderConstraint::Ref &GetEngineConstraint() const{ return pEngConstraint; }
 	
 	/** Retrieves the constraint position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }

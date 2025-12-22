@@ -44,13 +44,12 @@
 #include <dragengine/systems/modules/rig/deBaseRigModule.h>
 #include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/exceptions.h>
-
 
 
 // Class reLoadSaveSystem
@@ -60,177 +59,62 @@
 ////////////////////////////
 
 reLoadSaveSystem::reLoadSaveSystem(reWindowMain &windowMain) :
-pWindowMain(windowMain)
-{
-	pLSRigs = NULL;
-	pLSRigCount = 0;
-	pLSRigSize = 0;
+pWindowMain(windowMain){
 }
 
 reLoadSaveSystem::~reLoadSaveSystem(){
-	pCleanUp();
 }
-	
 
 
 // Management
 ///////////////
 
-reLSRig *reLoadSaveSystem::GetLSRigAt(int index) const{
-	if(index < 0 || index >= pLSRigCount) DETHROW(deeInvalidParam);
-	
-	return pLSRigs[index];
-}
-
-int reLoadSaveSystem::IndexOfLSRig(reLSRig *lsRig) const{
-	if(!lsRig) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSRigCount; i++){
-		if(lsRig == pLSRigs[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool reLoadSaveSystem::HasLSRig(reLSRig *lsRig) const{
-	if(!lsRig) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSRigCount; i++){
-		if(lsRig == pLSRigs[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int reLoadSaveSystem::IndexOfLSRigMatching(const char *filename){
-	const decString testFilename(filename);
-	int i;
-	
-	for(i=0; i<pLSRigCount; i++){
-		if(testFilename.MatchesPattern(pLSRigs[i]->GetPattern())){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void reLoadSaveSystem::AddLSRig(reLSRig *lsRig){
-	if(HasLSRig(lsRig)) DETHROW(deeInvalidParam);
-	
-	if(pLSRigCount == pLSRigSize){
-		int newSize = pLSRigSize * 3 / 2 + 1;
-		reLSRig **newArray = new reLSRig*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pLSRigs){
-			memcpy(newArray, pLSRigs, sizeof(reLSRig*) * pLSRigSize);
-			delete [] pLSRigs;
-		}
-		pLSRigs = newArray;
-		pLSRigSize = newSize;
-	}
-	
-	pLSRigs[pLSRigCount] = lsRig;
-	pLSRigCount++;
-}
-
-void reLoadSaveSystem::RemoveLSRig(reLSRig *lsRig){
-	int i, index = IndexOfLSRig(lsRig);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pLSRigCount; i++){
-		pLSRigs[i - 1] = pLSRigs[i];
-	}
-	pLSRigCount--;
-	
-	delete lsRig;
-}
-
-void reLoadSaveSystem::RemoveAllLSRigs(){
-	while(pLSRigCount > 0){
-		pLSRigCount--;
-		delete pLSRigs[pLSRigCount];
-	}
-}
-
-void reLoadSaveSystem::UpdateLSRigs(){
+void reLoadSaveSystem::UpdateLSRigs()
+{
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	deModuleSystem *modSys = engine->GetModuleSystem();
 	int m, moduleCount = modSys->GetModuleCount();
-	deLoadableModule *loadableModule;
-	reLSRig *lsRig = NULL;
 	
-	// remove all load save rigs
-	RemoveAllLSRigs();
+	pLSRigs.RemoveAll();
 	
-	try{
-		// add a new load save rig for each rig module found in the engine that is also
-		// running and usable therefore
-		for(m=0; m<moduleCount; m++){
-			loadableModule = modSys->GetModuleAt(m);
-			
-			if(loadableModule->GetType() != deModuleSystem::emtRig) continue;
-			if(!loadableModule->IsLoaded()) continue;
-			
-			lsRig = new reLSRig((deBaseRigModule*)loadableModule->GetModule());
-			if(!lsRig) DETHROW(deeOutOfMemory);
-			
-			AddLSRig(lsRig);
-			lsRig = NULL;
+	// add a new load save rig for each rig module found in the engine that is also
+	// running and usable therefore
+	for(m=0; m<moduleCount; m++){
+		const deLoadableModule &loadableModule = *modSys->GetModuleAt(m);
+		
+		if(loadableModule.GetType() != deModuleSystem::emtRig){
+			continue;
+		}
+		if(!loadableModule.IsLoaded()){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(lsRig) delete lsRig;
-		throw;
+		pLSRigs.Add(reLSRig::Ref::New((deBaseRigModule*)loadableModule.GetModule()));
 	}
 }
 
-
-
-reRig *reLoadSaveSystem::LoadRig(const char *filename){
-	const int lsIndex = IndexOfLSRigMatching(filename);
-	if(lsIndex == -1){
-		DETHROW(deeInvalidParam);
-	}
+reRig::Ref reLoadSaveSystem::LoadRig(const char *filename){
+	reLSRig &lsrig = pLSRigs.FindOrDefault([&](const reLSRig &l){
+		return decString::StringMatchesPattern(filename, l.GetPattern());
+	});
 	
-	const reRig::Ref rig(reRig::Ref::NewWith(&pWindowMain.GetEnvironment()));
+	const reRig::Ref rig(reRig::Ref::New(&pWindowMain.GetEnvironment()));
 	
-	pLSRigs[lsIndex]->LoadRig(rig, decBaseFileReader::Ref::New(
-		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-			decPath::CreatePathUnix(filename))));
+	lsrig.LoadRig(rig, pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	rig->SetFilePath(filename);
 	rig->SetChanged(false);
 	rig->SetSaved(true);
 	
-	rig->AddReference(); // required to hand over reference to caller
 	return rig;
 }
 
 void reLoadSaveSystem::SaveRig(reRig *rig, const char *filename){
-	const int lsIndex = IndexOfLSRigMatching(filename);
-	if(lsIndex == -1){
-		DETHROW(deeInvalidParam);
-	}
+	reLSRig &lsrig = pLSRigs.FindOrDefault([&](const reLSRig &l){
+		return decString::StringMatchesPattern(filename, l.GetPattern());
+	});
 	
-	pLSRigs[lsIndex]->SaveRig(rig, decBaseFileWriter::Ref::New(
-		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix(filename))));
-}
-
-
-
-
-// Private Functions
-//////////////////////	
-
-void reLoadSaveSystem::pCleanUp(){
-	RemoveAllLSRigs();
-	if(pLSRigs) delete [] pLSRigs;
+	lsrig.SaveRig(rig, pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }

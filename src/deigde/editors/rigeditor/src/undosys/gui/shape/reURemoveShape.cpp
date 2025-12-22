@@ -29,7 +29,6 @@
 #include "../../../rig/reRig.h"
 #include "../../../rig/bone/reRigBone.h"
 #include "../../../rig/shape/reRigShape.h"
-#include "../../../rig/shape/reRigShapeList.h"
 #include "../../../rig/shape/reSelectionShapes.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,49 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemoveShape::reURemoveShape(reRigShapeList &list){
-	int shapeCount = list.GetShapeCount();
-	reRigShape *shape;
-	reRigBone *bone;
+reURemoveShape::reURemoveShape(const reRigShape::List &list){
+	DEASSERT_FALSE(list.IsEmpty())
 	
-	if(shapeCount == 0) DETHROW(deeInvalidParam);
+	pRig = list.First()->GetRig();
+	DEASSERT_NOTNULL(pRig)
 	
-	pRig = list.GetShapeAt(0)->GetRig();
-	if(!pRig) DETHROW(deeInvalidParam);
-	pRig->AddReference();
-	
-	pEntries = NULL;
-	pEntryCount = 0;
-	
-	try{
-		pEntries = new sEntry[shapeCount];
-		if(!pEntries) DETHROW(deeOutOfMemory);
+	list.Visit([&](reRigShape *shape){
+		DEASSERT_TRUE(shape->GetRig() == pRig)
 		
-		while(pEntryCount < shapeCount){
-			shape = list.GetShapeAt(pEntryCount);
-			bone = shape->GetRigBone();
-			
-			if(shape->GetRig() != pRig) DETHROW(deeInvalidParam);
-			
-			pEntries[pEntryCount].shape = shape;
-			shape->AddReference();
-			
-			pEntries[pEntryCount].bone = bone;
-			if(bone) bone->AddReference();
-			
-			pEntryCount++;
-		}
-		
-		SetShortInfo("Remove Shapes");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+		const cEntry::Ref entry(cEntry::Ref::New());
+		entry->shape = shape;
+		entry->bone = shape->GetRigBone();
+		pEntries.Add(entry);
+	});
+	
+	SetShortInfo("Remove Shapes");
 }
 
 reURemoveShape::~reURemoveShape(){
-	pCleanUp();
 }
 
 
@@ -94,63 +69,34 @@ reURemoveShape::~reURemoveShape(){
 
 void reURemoveShape::Undo(){
 	reSelectionShapes *selection = pRig->GetSelectionShapes();
-	int e;
 	
 	selection->RemoveAllShapes();
 	
-	for(e=0; e<pEntryCount; e++){
-		if(pEntries[e].bone){
-			pEntries[e].bone->AddShape(pEntries[e].shape);
+	pEntries.Visit([&](const cEntry &entry){
+		if(entry.bone){
+			entry.bone->AddShape(entry.shape);
 			
 		}else{
-			pRig->AddShape(pEntries[e].shape);
+			pRig->AddShape(entry.shape);
 		}
 		
-		selection->AddShape(pEntries[e].shape);
-	}
-	
+		selection->AddShape(entry.shape);
+	});
 }
 
 void reURemoveShape::Redo(){
 	reSelectionShapes *selection = pRig->GetSelectionShapes();
-	int e;
 	
-	for(e=0; e<pEntryCount; e++){
-		if(pEntries[e].shape->GetSelected()){
-			selection->RemoveShape(pEntries[e].shape);
+	pEntries.Visit([&](const cEntry &entry){
+		if(entry.shape->GetSelected()){
+			selection->RemoveShape(entry.shape);
 		}
 		
-		if(pEntries[e].bone){
-			pEntries[e].bone->RemoveShape(pEntries[e].shape);
+		if(entry.bone){
+			entry.bone->RemoveShape(entry.shape);
 			
 		}else{
-			pRig->RemoveShape(pEntries[e].shape);
+			pRig->RemoveShape(entry.shape);
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void reURemoveShape::pCleanUp(){
-	reRigBone *bone;
-	
-	if(pEntries){
-		while(pEntryCount > 0){
-			pEntryCount--;
-			
-			bone = pEntries[pEntryCount].bone;
-			
-			if(bone) bone->FreeReference();
-			pEntries[pEntryCount].shape->FreeReference();
-		}
-		
-		delete [] pEntries;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
-	}
+	});
 }

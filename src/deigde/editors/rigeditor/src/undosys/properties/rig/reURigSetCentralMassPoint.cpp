@@ -39,7 +39,7 @@
 ////////////////////////////
 
 reURigSetCentralMassPoint::reURigSetCentralMassPoint(reRig *rig, const decVector &newCMP) :
-pRig(NULL)
+pRig(nullptr)
 {
 	if(!rig){
 		DETHROW(deeInvalidParam);
@@ -51,13 +51,9 @@ pRig(NULL)
 	pNewCmp = newCMP;
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigSetCentralMassPoint::~reURigSetCentralMassPoint(){
-	if(pRig){
-		pRig->FreeReference();
-	}
 }
 
 

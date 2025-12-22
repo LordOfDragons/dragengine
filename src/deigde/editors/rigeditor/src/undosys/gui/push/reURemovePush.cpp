@@ -27,11 +27,9 @@
 
 #include "reURemovePush.h"
 #include "../../../rig/reRig.h"
-#include "../../../rig/push/reRigPush.h"
-#include "../../../rig/push/reRigPushList.h"
 #include "../../../rig/push/reSelectionPushes.h"
 
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -41,34 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemovePush::reURemovePush(reRigPushList &list){
-	int pushCount = list.GetPushCount();
-	
-	if(pushCount == 0) DETHROW(deeInvalidParam);
-	
-	pPushes = NULL;
-	pPushCount = 0;
-	
-	try{
-		pPushes = new reRigPush*[pushCount];
-		if(!pPushes) DETHROW(deeOutOfMemory);
-		
-		while(pPushCount < pushCount){
-			pPushes[pPushCount] = list.GetPushAt(pPushCount);
-			pPushes[pPushCount]->AddReference();
-			pPushCount++;
-		}
-		
-		SetShortInfo("Remove Pushes");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+reURemovePush::reURemovePush(const reRigPush::List &list) :
+pPushes(list){
+	DEASSERT_TRUE(list.IsNotEmpty())
+	SetShortInfo("Remove Pushes");
 }
 
 reURemovePush::~reURemovePush(){
-	pCleanUp();
 }
 
 
@@ -77,36 +54,32 @@ reURemovePush::~reURemovePush(){
 ///////////////
 
 void reURemovePush::Undo(){
-	reRig *rig = pPushes[0]->GetRig();
-	if(!rig) DETHROW(deeInvalidParam);
+	reRig *rig = pPushes.First()->GetRig();
+	DEASSERT_NOTNULL(rig)
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
 	int p;
 	
 	selection->RemoveAllPushes();
 	
-	for(p=0; p<pPushCount; p++){
-		rig->AddPush(pPushes[p]);
-		
-		selection->AddPush(pPushes[p]);
-	}
-	
+	pPushes.Visit([&](reRigPush *push){
+		rig->AddPush(push);
+		selection->AddPush(push);
+	});
 }
 
 void reURemovePush::Redo(){
-	reRig *rig = pPushes[0]->GetRig();
-	if(!rig) DETHROW(deeInvalidParam);
+	reRig *rig = pPushes.First()->GetRig();
+	DEASSERT_NOTNULL(rig)
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
-	int p;
 	
-	for(p=0; p<pPushCount; p++){
-		if(pPushes[p]->GetSelected()){
-			selection->RemovePush(pPushes[p]);
+	pPushes.Visit([&](reRigPush *push){
+		if(push->GetSelected()){
+			selection->RemovePush(push);
 		}
-		
-		rig->RemovePush(pPushes[p]);
-	}
+		rig->RemovePush(push);
+	});
 }
 
 
@@ -114,13 +87,3 @@ void reURemovePush::Redo(){
 // Private Functions
 //////////////////////
 
-void reURemovePush::pCleanUp(){
-	if(pPushes){
-		while(pPushCount > 0){
-			pPushCount--;
-			pPushes[pPushCount]->FreeReference();
-		}
-		
-		delete [] pPushes;
-	}
-}

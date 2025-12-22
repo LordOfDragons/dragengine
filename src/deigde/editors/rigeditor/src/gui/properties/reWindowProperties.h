@@ -25,6 +25,14 @@
 #ifndef _REWINDOWPROPERTIES_H_
 #define _REWINDOWPROPERTIES_H_
 
+#include "reWPRig.h"
+#include "reWPBone.h"
+#include "reWPShape.h"
+#include "reWPConstraint.h"
+#include "reWPPush.h"
+#include "reWPView.h"
+#include "reWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
@@ -40,16 +48,19 @@ class reRigConstraint;
  * \brief Shows Properties.
  */
 class reWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<reWindowProperties> Ref;
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeWidget::Ref pPanelRig;
-	igdeWidget::Ref pPanelBone;
-	igdeWidget::Ref pPanelShape;
-	igdeWidget::Ref pPanelConstraint;
-	igdeWidget::Ref pPanelPush;
-	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	reWPRig::Ref pPanelRig;
+	reWPBone::Ref pPanelBone;
+	reWPShape::Ref pPanelShape;
+	reWPConstraint::Ref pPanelConstraint;
+	reWPPush::Ref pPanelPush;
+	reWPView::Ref pPanelView;
+	reWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

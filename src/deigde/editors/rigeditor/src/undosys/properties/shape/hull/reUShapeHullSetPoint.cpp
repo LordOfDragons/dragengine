@@ -44,7 +44,7 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pPointOld = shape->GetPointAt(index);
+	pPointOld = shape->GetPoints().GetAt(index);
 	
 	SetShortInfo("Shape hull set point");
 }
@@ -58,9 +58,9 @@ reUShapeHullSetPoint::~reUShapeHullSetPoint(){
 ///////////////
 
 void reUShapeHullSetPoint::Undo(){
-	((reRigShapeHull&)(deObject&)pShape).SetPointAt(pIndex, pPointOld);
+	pShape->SetPointAt(pIndex, pPointOld);
 }
 
 void reUShapeHullSetPoint::Redo(){
-	((reRigShapeHull&)(deObject&)pShape).SetPointAt(pIndex, pPointNew);
+	pShape->SetPointAt(pIndex, pPointNew);
 }

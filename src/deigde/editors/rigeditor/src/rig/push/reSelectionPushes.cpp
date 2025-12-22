@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "reSelectionPushes.h"
 #include "reRigPush.h"
-#include "reRigPushList.h"
 #include "../reRig.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -40,148 +37,78 @@
 ////////////////////////////
 
 reSelectionPushes::reSelectionPushes(reRig *rig){
-	if(!rig) DETHROW(deeInvalidParam);
-	
+	DEASSERT_NOTNULL(rig)
 	pRig = rig;
-	
-	pPushes = NULL;
-	pPushCount = 0;
-	pPushSize = 0;
-	pActivePush = NULL;
 }
 
 reSelectionPushes::~reSelectionPushes(){
 	Reset();
-	if(pPushes) delete [] pPushes;
 }
 
 
 
 // Management
 ///////////////
-
-reRigPush *reSelectionPushes::GetPushAt(int index) const{
-	if(index < 0 || index >= pPushCount) DETHROW(deeOutOfBoundary);
-	
-	return pPushes[index];
-}
-
-bool reSelectionPushes::HasPush(reRigPush *push) const{
-	if(!push) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPushCount; i++){
-		if(push == pPushes[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-	
-int reSelectionPushes::IndexOfPush(reRigPush *push) const{
-	if(!push) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPushCount; i++){
-		if(push == pPushes[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 int reSelectionPushes::IndexOfPushWith(deColliderVolume *collider) const{
-	if(!collider) DETHROW(deeInvalidParam);
-	int i;
+	DEASSERT_NOTNULL(collider)
 	
-	for(i=0; i<pPushCount; i++){
-		if(collider == pPushes[i]->GetCollider()){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pPushes.IndexOfMatching([collider](const reRigPush &p){
+		return p.GetCollider() == collider;
+	});
 }
 
 void reSelectionPushes::AddPush(reRigPush *push){
-	if(HasPush(push)) DETHROW(deeInvalidParam);
+	DEASSERT_FALSE(pPushes.Has(push))
 	
-	if(pPushCount == pPushSize){
-		int newSize = pPushSize * 3 / 2 + 1;
-		reRigPush **newArray = new reRigPush*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pPushes){
-			memcpy(newArray, pPushes, sizeof(reRigPush*) * pPushSize);
-			delete [] pPushes;
-		}
-		pPushes = newArray;
-		pPushSize = newSize;
-	}
-	
-	pPushes[pPushCount] = push;
-	pPushCount++;
-	
-	push->AddReference();
-	
+	pPushes.Add(push);
 	push->SetSelected(true);
 	
 	pRig->NotifyPushSelectedChanged(push);
 	
-	if(pActivePush == NULL){
+	if(!pActivePush){
 		SetActivePush(push);
 	}
 }
 
 void reSelectionPushes::RemovePush(reRigPush *push){
-	int i, index = IndexOfPush(push);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pPushCount; i++){
-		pPushes[i - 1] = pPushes[i];
-	}
-	pPushes[pPushCount - 1] = NULL;
-	pPushCount--;
-	
+	const reRigPush::Ref guard(push);
+	pPushes.Remove(push);
 	push->SetSelected(false);
 	
 	if(push == pActivePush){
-		if(pPushCount > 0){
-			SetActivePush(pPushes[0]);
+		if(pPushes.IsNotEmpty()){
+			SetActivePush(pPushes.First());
 			
 		}else{
-			SetActivePush(NULL);
+			SetActivePush(nullptr);
 		}
 	}
 	
 	pRig->NotifyPushSelectedChanged(push);
-	
-	push->FreeReference();
 }
 
 void reSelectionPushes::RemoveAllPushes(){
-	SetActivePush(NULL);
+	SetActivePush(nullptr);
 	
 	pRig->NotifyAllPushesDeselected();
 	
-	while(pPushCount > 0){
-		pPushCount--;
-		
-		pPushes[pPushCount]->SetSelected(false);
-		pPushes[pPushCount]->FreeReference();
-	}
+	pPushes.Visit([](reRigPush &p){
+		p.SetSelected(false);
+	});
+	pPushes.RemoveAll();
 }
 
 
 
 bool reSelectionPushes::HasActivePush() const{
-	return pActivePush != NULL;
+	return pActivePush.IsNotNull();
 }
 
 void reSelectionPushes::SetActivePush(reRigPush *push){
 	if(push != pActivePush){
-		if(push && !HasPush(push)) DETHROW(deeInvalidParam);
+		if(push){
+			DEASSERT_TRUE(pPushes.Has(push))
+		}
 		
 		if(pActivePush){
 			pActivePush->SetActive(false);
@@ -200,13 +127,10 @@ void reSelectionPushes::SetActivePush(reRigPush *push){
 void reSelectionPushes::Reset(){
 	RemoveAllPushes();
 }
-
-void reSelectionPushes::AddVisiblePushesTo(reRigPushList &list) const{
-	int c;
-	
-	for(c=0; c<pPushCount; c++){
-		if(pPushes[c]->IsVisible()){
-			list.AddPush(pPushes[c]);
+void reSelectionPushes::AddVisiblePushesTo(reRigPush::List &list) const{
+	pPushes.Visit([&list](reRigPush *p){
+		if(p->IsVisible()){
+			list.Add(p);
 		}
-	}
+	});
 }

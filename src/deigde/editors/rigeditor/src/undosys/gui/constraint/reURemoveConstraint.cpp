@@ -29,7 +29,6 @@
 #include "../../../rig/reRig.h"
 #include "../../../rig/bone/reRigBone.h"
 #include "../../../rig/constraint/reRigConstraint.h"
-#include "../../../rig/constraint/reRigConstraintList.h"
 #include "../../../rig/constraint/reSelectionConstraints.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,49 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
-	int constraintCount = list.GetConstraintCount();
-	reRigConstraint *constraint;
-	reRigBone *bone;
+reURemoveConstraint::reURemoveConstraint(reRigConstraint::List &list){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(constraintCount == 0) DETHROW(deeInvalidParam);
+	pRig = list.First()->GetRig();
+	DEASSERT_NOTNULL(pRig)
 	
-	pRig = list.GetConstraintAt(0)->GetRig();
-	if(!pRig) DETHROW(deeInvalidParam);
-	pRig->AddReference();
+	list.Visit([&](reRigConstraint *constraint){
+		DEASSERT_TRUE(constraint->GetRig() == pRig)
+		const cEntry::Ref entry(cEntry::Ref::New());
+		entry->constraint = constraint;
+		entry->bone = constraint->GetRigBone();
+		pEntries.Add(entry);
+	});
 	
-	pEntries = NULL;
-	pEntryCount = 0;
-	
-	try{
-		pEntries = new sEntry[constraintCount];
-		if(!pEntries) DETHROW(deeOutOfMemory);
-		
-		while(pEntryCount < constraintCount){
-			constraint = list.GetConstraintAt(pEntryCount);
-			bone = constraint->GetRigBone();
-			
-			if(constraint->GetRig() != pRig) DETHROW(deeInvalidParam);
-			
-			pEntries[pEntryCount].constraint = constraint;
-			constraint->AddReference();
-			
-			pEntries[pEntryCount].bone = bone;
-			if(bone) bone->AddReference();
-			
-			pEntryCount++;
-		}
-		
-		SetShortInfo("Remove Constraints");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	SetShortInfo("Remove Constraints");
 }
 
 reURemoveConstraint::~reURemoveConstraint(){
-	pCleanUp();
 }
 
 
@@ -93,62 +67,35 @@ reURemoveConstraint::~reURemoveConstraint(){
 ///////////////
 
 void reURemoveConstraint::Undo(){
-	reSelectionConstraints *selection = pRig->GetSelectionConstraints();
-	int e;
+	reSelectionConstraints &selection = *pRig->GetSelectionConstraints();
 	
-	selection->RemoveAllConstraints();
+	selection.RemoveAllConstraints();
 	
-	for(e=0; e<pEntryCount; e++){
-		if(pEntries[e].bone){
-			pEntries[e].bone->AddConstraint(pEntries[e].constraint);
+	pEntries.Visit([&](const cEntry &e){
+		if(e.bone){
+			e.bone->AddConstraint(e.constraint);
 			
 		}else{
-			pRig->AddConstraint(pEntries[e].constraint);
+			pRig->AddConstraint(e.constraint);
 		}
 		
-		selection->AddConstraint(pEntries[e].constraint);
-	}
-	
+		selection.AddConstraint(e.constraint);
+	});
 }
 
 void reURemoveConstraint::Redo(){
-	reSelectionConstraints *selection = pRig->GetSelectionConstraints();
-	int e;
+	reSelectionConstraints &selection = *pRig->GetSelectionConstraints();
 	
-	for(e=0; e<pEntryCount; e++){
-		if(pEntries[e].constraint->GetSelected()){
-			selection->RemoveConstraint(pEntries[e].constraint);
+	pEntries.Visit([&](const cEntry &e){
+		if(e.constraint->GetSelected()){
+			selection.RemoveConstraint(e.constraint);
 		}
 		
-		if(pEntries[e].bone){
-			pEntries[e].bone->RemoveConstraint(pEntries[e].constraint);
+		if(e.bone){
+			e.bone->RemoveConstraint(e.constraint);
 			
 		}else{
-			pRig->RemoveConstraint(pEntries[e].constraint);
+			pRig->RemoveConstraint(e.constraint);
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void reURemoveConstraint::pCleanUp(){
-	if(pEntries){
-		while(pEntryCount > 0){
-			pEntryCount--;
-			
-			if(pEntries[pEntryCount].bone){
-				pEntries[pEntryCount].bone->FreeReference();
-			}
-			pEntries[pEntryCount].constraint->FreeReference();
-		}
-		
-		delete [] pEntries;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
-	}
+	});
 }

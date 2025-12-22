@@ -38,6 +38,10 @@ class reRigShapeHull;
  * \brief Undo action shape hull add point.
  */
 class reUShapeHullSetPoint : public igdeUndo{
+public:
+	typedef deTObjectReference<reUShapeHullSetPoint> Ref;
+	
+	
 private:
 	const reRigShapeHull::Ref pShape;
 	
@@ -48,9 +52,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUShapeHullSetPoint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

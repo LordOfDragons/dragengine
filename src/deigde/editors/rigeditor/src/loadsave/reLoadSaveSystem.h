@@ -22,17 +22,16 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RELOADSAVESYSTEM_H_
 #define _RELOADSAVESYSTEM_H_
 
-// includes
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include "../rig/reRig.h"
 
-// predefinitions
+#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+
 class reLSRig;
 class reWindowMain;
-class reRig;
 class igdeGameDefinition;
 
 
@@ -41,49 +40,31 @@ class igdeGameDefinition;
  * Load/Save System for the editor.
  */
 class reLoadSaveSystem{
+public:
+	typedef decTObjectOrderedSet<reLSRig> LSRigList;
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	reLSRig **pLSRigs;
-	int pLSRigCount;
-	int pLSRigSize;
+	LSRigList pLSRigs;
 	
 public:
-	// constructor, destructor
 	reLoadSaveSystem(reWindowMain &windowMain);
 	~reLoadSaveSystem();
 	
-	// rigs management
-	/** Retrieves the main window. */
 	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the number of load save rigs. */
-	inline int GetLSRigCount() const{ return pLSRigCount; }
-	/** Retrieves the load save rig at the given index. */
-	reLSRig *GetLSRigAt(int index) const;
-	/** Retrieves the index of the load save rig. */
-	int IndexOfLSRig(reLSRig *lsRig) const;
-	/** Determines if the save rig exists. */
-	bool HasLSRig(reLSRig *lsRig) const;
-	/** Retrieves the index of the load save rig matching the given filename. */
-	int IndexOfLSRigMatching(const char *filename);
-	/** Adds a load save rig. */
-	void AddLSRig(reLSRig *lsRig);
-	/** Removes a load save rig. */
-	void RemoveLSRig(reLSRig *lsRig);
-	/** Removes all load save rigs. */
-	void RemoveAllLSRigs();
+	inline LSRigList &GetLSRigs(){ return pLSRigs; }
+	inline const LSRigList &GetLSRigs() const{ return pLSRigs; }
+	
 	/** Updates the load save rig list from the engine. */
 	void UpdateLSRigs();
 	
 	/** Loads the rig from file if possible. */
-	reRig *LoadRig(const char *filename);
+	reRig::Ref LoadRig(const char *filename);
+	
 	/** Saves the rig to file if possible. */
 	void SaveRig(reRig *rig, const char *filename);
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

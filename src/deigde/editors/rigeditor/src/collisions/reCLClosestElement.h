@@ -25,15 +25,15 @@
 #ifndef _RECLOSESTELEMENT_H_
 #define _RECLOSESTELEMENT_H_
 
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
-#include <dragengine/common/math/decMath.h>
+#include "../rig/reRig.h"
+#include "../rig/bone/reRigBone.h"
+#include "../rig/shape/reRigShape.h"
+#include "../rig/constraint/reRigConstraint.h"
+#include "../rig/push/reRigPush.h"
 
-class reRig;
-class reRigBone;
-class reRigShape;
-class reRigConstraint;
-class reRigPush;
-class deCollider;
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 
 
@@ -53,11 +53,11 @@ private:
 	float pHitDistance;
 	decVector pHitNormal;
 	bool pHitSimRig;
-	reRigBone *pHitSimBone;
-	reRigBone *pHitBone;
-	reRigShape *pHitShape;
-	reRigConstraint *pHitConstraint;
-	reRigPush *pHitPush;
+	reRigBone::Ref pHitSimBone;
+	reRigBone::Ref pHitBone;
+	reRigShape::Ref pHitShape;
+	reRigConstraint::Ref pHitConstraint;
+	reRigPush::Ref pHitPush;
 	bool pHasHit;
 	
 public:
@@ -93,16 +93,16 @@ public:
 	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	/** \brief Determines if the simulation rig itself is hit. */
 	inline bool GetHitSimRig() const{ return pHitSimRig; }
-	/** \brief Retrieves the hit simulation bone or NULL. */
-	inline reRigBone *GetHitSimBone() const{ return pHitSimBone; }
-	/** \brief Retrieves the hit bone or NULL. */
-	inline reRigBone *GetHitBone() const{ return pHitBone; }
-	/** \brief Retrieves the hit shape or NULL. */
-	inline reRigShape *GetHitShape() const{ return pHitShape; }
-	/** \brief Retrieves the hit constraint or NULL. */
-	inline reRigConstraint *GetHitConstraint() const{ return pHitConstraint; }
-	/** \brief Retrieves the hit push or NULL. */
-	inline reRigPush *GetHitPush() const{ return pHitPush; }
+	/** \brief Retrieves the hit simulation bone or nullptr. */
+	inline const reRigBone::Ref &GetHitSimBone() const{ return pHitSimBone; }
+	/** \brief Retrieves the hit bone or nullptr. */
+	inline const reRigBone::Ref &GetHitBone() const{ return pHitBone; }
+	/** \brief Retrieves the hit shape or nullptr. */
+	inline const reRigShape::Ref &GetHitShape() const{ return pHitShape; }
+	/** \brief Retrieves the hit constraint or nullptr. */
+	inline const reRigConstraint::Ref &GetHitConstraint() const{ return pHitConstraint; }
+	/** \brief Retrieves the hit push or nullptr. */
+	inline const reRigPush::Ref &GetHitPush() const{ return pHitPush; }
 	/*@}*/
 	
 	/** \name Notifications */
@@ -118,9 +118,9 @@ public:
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
 	 *          determine if the two collider can hit each other. If this peer is
-	 *          used in a ray test owner is NULL and the script is asked to
+	 *          used in a ray test owner is nullptr and the script is asked to
 	 *          determine if the ray can hit the collider.
-	 * \param owner Collider this peer belongs to or NULL if a ray test is done.
+	 * \param owner Collider this peer belongs to or nullptr if a ray test is done.
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */

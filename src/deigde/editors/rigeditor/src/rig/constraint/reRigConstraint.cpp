@@ -64,36 +64,34 @@
 ////////////////////////////
 
 reRigConstraint::reRigConstraint(deEngine *engine){
-	if(!engine){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	igdeShapeBuilder shapeBuilder;
 	
 	pEngine = engine;
-	pRig = NULL;
-	pRigBone = NULL;
+	pRig = nullptr;
+	pRigBone = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSConstraint = NULL;
-	pDDSJointError = NULL;
-	pDDSCoordSys = NULL;
-	pDDSOffset = NULL;
-	pDDSRangeLinear = NULL;
-	pDDSRangeAngularX = NULL;
-	pDDSRangeAngularY = NULL;
-	pDDSRangeAngularZ = NULL;
-	pCollider = NULL;
-	pEngConstraint = NULL;
+	pDebugDrawer = nullptr;
+	pDDSConstraint = nullptr;
+	pDDSJointError = nullptr;
+	pDDSCoordSys = nullptr;
+	pDDSOffset = nullptr;
+	pDDSRangeLinear = nullptr;
+	pDDSRangeAngularX = nullptr;
+	pDDSRangeAngularY = nullptr;
+	pDDSRangeAngularZ = nullptr;
+	pCollider = nullptr;
+	pEngConstraint = nullptr;
 	
-	pConstraintBone = NULL;
+	pConstraintBone = nullptr;
 	
-	pDof[deColliderConstraint::edofLinearX] = NULL;
-	pDof[deColliderConstraint::edofLinearY] = NULL;
-	pDof[deColliderConstraint::edofLinearZ] = NULL;
-	pDof[deColliderConstraint::edofAngularX] = NULL;
-	pDof[deColliderConstraint::edofAngularY] = NULL;
-	pDof[deColliderConstraint::edofAngularZ] = NULL;
+	pDof[deColliderConstraint::edofLinearX] = nullptr;
+	pDof[deColliderConstraint::edofLinearY] = nullptr;
+	pDof[deColliderConstraint::edofLinearZ] = nullptr;
+	pDof[deColliderConstraint::edofAngularX] = nullptr;
+	pDof[deColliderConstraint::edofAngularY] = nullptr;
+	pDof[deColliderConstraint::edofAngularZ] = nullptr;
 	
 	pDampingLinear = 1.0f;
 	pDampingAngular = 1.0f;
@@ -250,7 +248,7 @@ void reRigConstraint::SetEngineConstraint(deColliderConstraint *constraint){
 		constraint->SetBreakingThreshold(pBreakingThreshold);
 		
 		if(pConstraintBone && pRig){
-			pEngConstraint->SetBone(pRig->IndexOfBone(pConstraintBone));
+			pEngConstraint->SetBone(pRig->GetBones().IndexOf(pConstraintBone));
 			
 		}else{
 			pEngConstraint->SetBone(-1);
@@ -264,7 +262,7 @@ void reRigConstraint::SetEngineConstraint(deColliderConstraint *constraint){
 }
 
 deRigConstraint *reRigConstraint::BuildEngineRigConstraint(){
-	deRigConstraint *engConstraint = NULL;
+	deRigConstraint *engConstraint = nullptr;
 	
 	try{
 		engConstraint = new deRigConstraint;
@@ -305,35 +303,25 @@ deRigConstraint *reRigConstraint::BuildEngineRigConstraint(){
 	return engConstraint;
 }
 
-deColliderConstraint *reRigConstraint::BuildEngineColliderConstraint(){
-	deColliderConstraint *engConstraint = NULL;
+deColliderConstraint::Ref reRigConstraint::BuildEngineColliderConstraint(){
+	const deColliderConstraint::Ref engConstraint(deColliderConstraint::Ref::New());
 	
-	try{
-		engConstraint = new deColliderConstraint;
-		
-		pUpdateConstraintPosition(*engConstraint);
-		
-		pDof[deColliderConstraint::edofLinearX]->UpdateEngineDof(engConstraint->GetDofLinearX());
-		pDof[deColliderConstraint::edofLinearY]->UpdateEngineDof(engConstraint->GetDofLinearY());
-		pDof[deColliderConstraint::edofLinearZ]->UpdateEngineDof(engConstraint->GetDofLinearZ());
-		pDof[deColliderConstraint::edofAngularX]->UpdateEngineDof(engConstraint->GetDofAngularX());
-		pDof[deColliderConstraint::edofAngularY]->UpdateEngineDof(engConstraint->GetDofAngularY());
-		pDof[deColliderConstraint::edofAngularZ]->UpdateEngineDof(engConstraint->GetDofAngularZ());
-		
-		engConstraint->SetLinearDamping(pDampingLinear);
-		engConstraint->SetAngularDamping(pDampingAngular);
-		engConstraint->SetSpringDamping(pDampingSpring);
-		
-		engConstraint->SetIsRope(pIsRope);
-		
-		engConstraint->SetBreakingThreshold(pBreakingThreshold);
-		
-	}catch(const deException &){
-		if(engConstraint){
-			delete engConstraint;
-		}
-		throw;
-	}
+	pUpdateConstraintPosition(engConstraint);
+	
+	pDof[deColliderConstraint::edofLinearX]->UpdateEngineDof(engConstraint->GetDofLinearX());
+	pDof[deColliderConstraint::edofLinearY]->UpdateEngineDof(engConstraint->GetDofLinearY());
+	pDof[deColliderConstraint::edofLinearZ]->UpdateEngineDof(engConstraint->GetDofLinearZ());
+	pDof[deColliderConstraint::edofAngularX]->UpdateEngineDof(engConstraint->GetDofAngularX());
+	pDof[deColliderConstraint::edofAngularY]->UpdateEngineDof(engConstraint->GetDofAngularY());
+	pDof[deColliderConstraint::edofAngularZ]->UpdateEngineDof(engConstraint->GetDofAngularZ());
+	
+	engConstraint->SetLinearDamping(pDampingLinear);
+	engConstraint->SetAngularDamping(pDampingAngular);
+	engConstraint->SetSpringDamping(pDampingSpring);
+	
+	engConstraint->SetIsRope(pIsRope);
+	
+	engConstraint->SetBreakingThreshold(pBreakingThreshold);
 	
 	return engConstraint;
 }
@@ -507,20 +495,10 @@ void reRigConstraint::SetConstraintBone(reRigBone *bone){
 	if(bone == pConstraintBone){
 		return;
 	}
-	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
-	
 	pConstraintBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	if(pEngConstraint){
 		if(pConstraintBone && pRig){
-			pEngConstraint->SetBone(pRig->IndexOfBone(pConstraintBone));
+			pEngConstraint->SetBone(pRig->GetBones().IndexOf(pConstraintBone));
 			
 		}else{
 			pEngConstraint->SetBone(-1);
@@ -631,37 +609,27 @@ bool reRigConstraint::IsVisible() const{
 }
 
 reRigConstraint *reRigConstraint::Duplicate() const{
-	reRigConstraint *constraint = NULL;
+	const reRigConstraint::Ref constraint(reRigConstraint::Ref::New(pEngine));
 	
-	try{
-		constraint = new reRigConstraint(pEngine);
-		
-		constraint->SetPosition(pPosition);
-		constraint->SetOrientation(pOrientation);
-		constraint->SetOffset(pOffset);
-		
-		constraint->GetDofLinearX().SetParametersFrom(*pDof[deColliderConstraint::edofLinearX]);
-		constraint->GetDofLinearY().SetParametersFrom(*pDof[deColliderConstraint::edofLinearY]);
-		constraint->GetDofLinearZ().SetParametersFrom(*pDof[deColliderConstraint::edofLinearZ]);
-		constraint->GetDofAngularX().SetParametersFrom(*pDof[deColliderConstraint::edofAngularX]);
-		constraint->GetDofAngularY().SetParametersFrom(*pDof[deColliderConstraint::edofAngularY]);
-		constraint->GetDofAngularZ().SetParametersFrom(*pDof[deColliderConstraint::edofAngularZ]);
-		
-		constraint->SetLinearDamping(pDampingLinear);
-		constraint->SetAngularDamping(pDampingAngular);
-		constraint->SetSpringDamping(pDampingSpring);
-		
-		constraint->SetIsRope(pIsRope);
-		constraint->SetBreakingThreshold(pBreakingThreshold);
-		
-		constraint->SetConstraintBone(pConstraintBone);
-		
-	}catch(const deException &){
-		if(constraint){
-			constraint->FreeReference();
-		}
-		throw;
-	}
+	constraint->SetPosition(pPosition);
+	constraint->SetOrientation(pOrientation);
+	constraint->SetOffset(pOffset);
+	
+	constraint->GetDofLinearX().SetParametersFrom(*pDof[deColliderConstraint::edofLinearX]);
+	constraint->GetDofLinearY().SetParametersFrom(*pDof[deColliderConstraint::edofLinearY]);
+	constraint->GetDofLinearZ().SetParametersFrom(*pDof[deColliderConstraint::edofLinearZ]);
+	constraint->GetDofAngularX().SetParametersFrom(*pDof[deColliderConstraint::edofAngularX]);
+	constraint->GetDofAngularY().SetParametersFrom(*pDof[deColliderConstraint::edofAngularY]);
+	constraint->GetDofAngularZ().SetParametersFrom(*pDof[deColliderConstraint::edofAngularZ]);
+	
+	constraint->SetLinearDamping(pDampingLinear);
+	constraint->SetAngularDamping(pDampingAngular);
+	constraint->SetSpringDamping(pDampingSpring);
+	
+	constraint->SetIsRope(pIsRope);
+	constraint->SetBreakingThreshold(pBreakingThreshold);
+	
+	constraint->SetConstraintBone(pConstraintBone);
 	
 	return constraint;
 }
@@ -698,17 +666,8 @@ void reRigConstraint::NotifyEngineConstraintChanged(){
 //////////////////////
 
 void reRigConstraint::pCleanUp(){
-	SetRigBone(NULL);
-	SetRig(NULL);
-	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
+	SetRigBone(nullptr);
+	SetRig(nullptr);
 	if(pDof[deColliderConstraint::edofLinearX]){
 		delete pDof[deColliderConstraint::edofLinearX];
 	}
@@ -751,9 +710,6 @@ void reRigConstraint::pCleanUp(){
 	}
 	if(pDDSConstraint){
 		delete pDDSConstraint;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -897,7 +853,7 @@ void reRigConstraint::pUpdateDDJointError(){
 		decVector currentLocation, correctLocation;
 		decVector up(0.0, 1.0f, 0.0f);
 		decQuaternion orientation;
-		decShapeBox *box = NULL;
+		decShapeBox *box = nullptr;
 		
 		if(pRigBone){
 			currentLocation = pRigBone->GetPoseMatrix().ToMatrix() * pPosition;
@@ -959,7 +915,7 @@ void reRigConstraint::pUpdateColliderShape(){
 		decVector up(0.0, 1.0f, 0.0f);
 		decVector arrowStart, arrowEnd;
 		decQuaternion orientation;
-		decShape *shape = NULL;
+		decShape *shape = nullptr;
 		float arrowLen;
 		
 		if(pRigBone){
