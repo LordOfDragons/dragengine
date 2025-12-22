@@ -386,11 +386,4 @@ private:
 	int pCharSize(int character) const;
 };
 
-
-/** \brief Global hash functions used for example with decTDictionary. */
-
-inline unsigned int DEHash(const decUnicodeString &key){
-	return key.Hash();
-}
-
 #endif

@@ -7,6 +7,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUuid.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 
@@ -36,6 +37,7 @@ void detUuid::Run(){
 	TestInit();
 	TestCompare();
 	TestHexString();
+	TestDEHash();
 }
 
 void detUuid::CleanUp(){
@@ -136,4 +138,41 @@ void detUuid::TestHexString(){
 	
 	id1.SetFromHexString("00010203-0405-0607-0809-0a0b0c0d0e0f", false);
 	ASSERT_EQUAL(decUuid("00010203-0405-0607-0809-0a0b0c0d0e0f", false), id1);
+}
+
+
+// Test DEHash
+//////////////
+
+void detUuid::TestDEHash(){
+	SetSubTestNum(3);
+	
+	// Test that same UUIDs produce same hash
+	const uint8_t values1[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+	const uint8_t values2[16] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+	
+	decUuid id1(values1);
+	decUuid id2(values1);
+	decUuid id3(values2);
+	
+	unsigned int hash1 = DEHash(id1);
+	unsigned int hash2 = DEHash(id2);
+	unsigned int hash3 = DEHash(id3);
+	
+	ASSERT_EQUAL(hash1, hash2);  // Same UUID should have same hash
+	ASSERT_TRUE(hash1 != hash3);  // Different UUIDs should (likely) have different hash
+	
+	// Test empty UUID
+	decUuid empty1;
+	decUuid empty2;
+	ASSERT_EQUAL(DEHash(empty1), DEHash(empty2));
+	
+	// Test that DEHash uses the Hash() method
+	ASSERT_EQUAL(DEHash(id1), id1.Hash());
+	ASSERT_EQUAL(DEHash(id3), id3.Hash());
+	
+	// Test random UUIDs
+	decUuid random1(decUuid::Random());
+	decUuid random2(random1);
+	ASSERT_EQUAL(DEHash(random1), DEHash(random2));
 }

@@ -42,7 +42,7 @@
 #include "../../theme/propertyNames.h"
 #include "../../../environment/igdeEnvironment.h"
 
-#include <dragengine/common/collection/decHelperFunctions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 

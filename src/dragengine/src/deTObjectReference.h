@@ -300,15 +300,19 @@ public:
 	template<typename U> deTObjectReference<U> DynamicCast() const{
 		return deTObjectReference<U>(dynamic_cast<U*>(pObject));
 	}
+	
+	/**
+	 * \brief Compare with another object reference.
+	 * \throws deeNullPointer if either object is nullptr.
+	 * 
+	 * Uses DECompare on the referenced object.
+	 */
+	int Compare(const deTObjectReference<T> &other) const{
+		DEASSERT_NOTNULL(pObject)
+		DEASSERT_NOTNULL(other.pObject)
+		return DECompare(*pObject, *other.pObject);
+	}
 	/*@}*/
 };
-
-
-/** \brief Global hash functions used for example with decTDictionary. */
-
-template<typename T>
-inline unsigned int DEHash(const deTObjectReference<T> &key){
-	return key.Hash();
-}
 
 #endif

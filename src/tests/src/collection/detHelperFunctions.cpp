@@ -4,7 +4,7 @@
 
 #include "detHelperFunctions.h"
 
-#include <dragengine/common/collection/decHelperFunctions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/string/decString.h>
@@ -32,6 +32,10 @@ void detHelperFunctions::Run(){
 	
 	// Comparators
 	TestComparators();
+	
+	// DEHash and DECompare for primitive types
+	TestDEHashPrimitives();
+	TestDEComparePrimitives();
 }
 
 void detHelperFunctions::CleanUp(){
@@ -219,5 +223,87 @@ void detHelperFunctions::TestComparators(){
 	ASSERT_EQUAL(list.GetAt(0), 3.5);
 	ASSERT_EQUAL(list.GetAt(1), 2.5);
 	ASSERT_EQUAL(list.GetAt(2), 1.5);
+	}
+}
+
+
+// Test DEHash for primitive types
+//////////////////////////////////////
+
+void detHelperFunctions::TestDEHashPrimitives(){
+	SetSubTestNum(7);
+	
+	// Test DEHash for int
+	{
+		int val1 = 42;
+		int val2 = 42;
+		int val3 = 100;
+		
+		unsigned int hash1 = DEHash(val1);
+		unsigned int hash2 = DEHash(val2);
+		unsigned int hash3 = DEHash(val3);
+		
+		ASSERT_EQUAL(hash1, hash2);  // Same values should have same hash
+		ASSERT_TRUE(hash1 != hash3);  // Different values should (likely) have different hash
+		ASSERT_EQUAL(hash1, static_cast<unsigned int>(42));  // DEHash(int) returns the int as unsigned int
+	}
+	
+	// Test DEHash for float
+	{
+		// Note: Float hashing uses the object's Hash() method if available,
+		// but for primitive float types, there's no Hash() method.
+		// The current implementation doesn't have a DEHash(float) overload,
+		// so this tests if one needs to be added or if floats should hash differently.
+		// For now, we test that the same float values produce consistent results.
+		
+		// Skip float hash test for now as DEHash(float) is not directly defined
+		// Only DECompare(float) is defined
+	}
+	
+	// Test DEHash for double
+	{
+		// Similar to float, double doesn't have a direct DEHash implementation
+		// Skip for now
+	}
+}
+
+
+// Test DECompare for primitive types
+/////////////////////////////////////////
+
+void detHelperFunctions::TestDEComparePrimitives(){
+	SetSubTestNum(8);
+	
+	// Test DECompare for int
+	{
+		int val1 = 10;
+		int val2 = 20;
+		int val3 = 10;
+		
+		ASSERT_TRUE(DECompare(val1, val2) < 0);  // 10 < 20
+		ASSERT_TRUE(DECompare(val2, val1) > 0);  // 20 > 10
+		ASSERT_EQUAL(DECompare(val1, val3), 0);  // 10 == 10
+	}
+	
+	// Test DECompare for float
+	{
+		float val1 = 1.5f;
+		float val2 = 2.5f;
+		float val3 = 1.5f;
+		
+		ASSERT_TRUE(DECompare(val1, val2) < 0);  // 1.5 < 2.5
+		ASSERT_TRUE(DECompare(val2, val1) > 0);  // 2.5 > 1.5
+		ASSERT_EQUAL(DECompare(val1, val3), 0);  // 1.5 == 1.5
+	}
+	
+	// Test DECompare for double
+	{
+		double val1 = 1.5;
+		double val2 = 2.5;
+		double val3 = 1.5;
+		
+		ASSERT_TRUE(DECompare(val1, val2) < 0);  // 1.5 < 2.5
+		ASSERT_TRUE(DECompare(val2, val1) > 0);  // 2.5 > 1.5
+		ASSERT_EQUAL(DECompare(val1, val3), 0);  // 1.5 == 1.5
 	}
 }

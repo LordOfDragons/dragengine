@@ -26,7 +26,7 @@
 #define _DECTDICTIONARY_H_
 
 #include "decTList.h"
-#include "decHashFunctions.h"
+#include "decGlobalFunctions.h"
 #include "../exceptions_reduced.h"
 #include "../string/decString.h"
 #include "../string/decStringList.h"
@@ -36,7 +36,7 @@
  * \brief Dictionary template class mapping values to keys.
  * 
  * For type K it is required to exist a global function "unsigned int DEHash(const K&)".
- * Such functions are provided in decHashFunctions.h (int, unsigned int, void*) as well as
+ * Such functions are provided in decGlobalFunctions.h (int, unsigned int, void*) as well as
  * certain classes like decString.
  */
 template<typename K, typename V, typename VP = V>

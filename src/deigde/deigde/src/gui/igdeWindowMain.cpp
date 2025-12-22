@@ -95,7 +95,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
-#include <dragengine/common/collection/decHelperFunctions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/file/decBaseFileReader.h>

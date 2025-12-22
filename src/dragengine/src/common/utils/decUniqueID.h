@@ -125,6 +125,9 @@ public:
 	
 	/** \brief Hash. */
 	unsigned int Hash() const;
+	
+	/** \brief Compare unique ID. */
+	int Compare(const decUniqueID &id) const;
 	/*@}*/
 	
 	
@@ -153,12 +156,5 @@ public:
 	bool operator>=(const decUniqueID &id) const;
 	/*@}*/
 };
-
-
-/** \brief Global hash functions used for example with decTDictionary. */
-
-inline unsigned int DEHash(const decUniqueID &key){
-	return key.Hash();
-}
 
 #endif

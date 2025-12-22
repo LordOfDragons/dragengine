@@ -72,7 +72,7 @@
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decHelperFunctions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/utils/decTimer.h>

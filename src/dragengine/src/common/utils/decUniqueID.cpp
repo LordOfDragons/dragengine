@@ -365,6 +365,10 @@ unsigned int decUniqueID::Hash() const{
 	return hash;
 }
 
+int decUniqueID::Compare(const decUniqueID &id) const{
+	return (*this < id) ? -1 : ((*this > id) ? 1 : 0);
+}
+
 
 // Operators
 //////////////
@@ -422,8 +426,7 @@ bool decUniqueID::operator!=(const decUniqueID &id) const{
 	return !(*this == id);
 }
 
-bool decUniqueID::operator<(const decUniqueID& id) const
-{
+bool decUniqueID::operator<(const decUniqueID& id) const{
 	const int byteCount = decMath::max(pByteCount, id.pByteCount);
 	int i;
 	
@@ -438,8 +441,7 @@ bool decUniqueID::operator<(const decUniqueID& id) const
 	return false;
 }
 
-bool decUniqueID::operator<=(const decUniqueID& id) const
-{
+bool decUniqueID::operator<=(const decUniqueID& id) const{
 	const int byteCount = decMath::max(pByteCount, id.pByteCount);
 	int i;
 	
@@ -454,8 +456,7 @@ bool decUniqueID::operator<=(const decUniqueID& id) const
 	return true;
 }
 
-bool decUniqueID::operator>(const decUniqueID& id) const
-{
+bool decUniqueID::operator>(const decUniqueID& id) const{
 	const int byteCount = decMath::max(pByteCount, id.pByteCount);
 	int i;
 	
@@ -470,8 +471,7 @@ bool decUniqueID::operator>(const decUniqueID& id) const
 	return false;
 }
 
-bool decUniqueID::operator>=(const decUniqueID& id) const
-{
+bool decUniqueID::operator>=(const decUniqueID& id) const{
 	const int byteCount = decMath::max(pByteCount, id.pByteCount);
 	int i;
 	

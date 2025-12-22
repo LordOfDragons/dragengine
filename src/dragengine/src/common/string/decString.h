@@ -510,12 +510,15 @@ private:
 
 /** \brief Global hash functions used for example with decTDictionary. */
 
-inline unsigned int DEHash(const decString &key){
-	return key.Hash();
-}
-
 inline unsigned int DEHash(const char *key){
 	return decString::Hash(key);
+}
+
+/** \brief Global compare functions used with ordered lists. */
+
+#include <string.h>
+inline int DECompare(const char *a, const char *b){
+	return strcmp(a, b);
 }
 
 #endif

@@ -19,6 +19,7 @@ private:
 	void TestInit();
 	void TestCompare();
 	void TestHexString();
+	void TestDEHash();
 };
 
 // end of include only once

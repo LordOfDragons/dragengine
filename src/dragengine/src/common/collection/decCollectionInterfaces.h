@@ -25,10 +25,7 @@
 #ifndef _DECCOLLECTIONINTERFACES_H_
 #define _DECCOLLECTIONINTERFACES_H_
 
-#include "../../dragengine_export.h"
-
-class deObject;
-class deThreadSafeObject;
+#include "decGlobalFunctions_safe.h"
 
 
 /** \brief Comparator. */
@@ -91,83 +88,29 @@ public:
 };
 
 
-/** \brief Ascending comparator using Compare() function. */
+/** \brief Ascending comparator using DECompare() function. */
 template<typename T>
 class decAscendingComparator : public decTComparator<T>{
 public:
 	decAscendingComparator() = default;
-	int operator() (const T &a, const T &b) override {
-		return a.Compare(b);
-	}
-};
-
-/** \brief Ascending comparator for int, float and double. */
-template<>
-class decAscendingComparator<int> : public decTComparator<int> {
-public:
-	decAscendingComparator() = default;
-	int operator() (const int &a, const int &b) override {
-		return a - b;
-	}
-};
-
-template<>
-class decAscendingComparator<float> : public decTComparator<float> {
-public:
-	decAscendingComparator() = default;
-	int operator() (const float &a, const float &b) override {
-		return (a < b) ? -1 : ((a > b) ? 1 : 0);
-	}
-};
-
-template<>
-class decAscendingComparator<double> : public decTComparator<double> {
-public:
-	decAscendingComparator() = default;
-	int operator() (const double &a, const double &b) override {
-		return (a < b) ? -1 : ((a > b) ? 1 : 0);
+	int operator() (const T &a, const T &b) override{
+		return DECompare(a, b);
 	}
 };
 
 
-/** \brief Descending comparator using Compare() function. */
+/** \brief Descending comparator using DECompare() function. */
 template<typename T>
 class decDesendingComparator : public decTComparator<T>{
 public:
 	decDesendingComparator() = default;
-	int operator() (const T &a, const T &b) override {
-		return b.Compare(a);
+	int operator() (const T &a, const T &b) override{
+		return DECompare(b, a);
 	}
 };
 
-/** \brief Descending comparator for int, float and double. */
-template<>
-class decDesendingComparator<int> : public decTComparator<int> {
-public:
-	decDesendingComparator() = default;
-	int operator() (const int &a, const int &b) override {
-		return b - a;
-	}
-};
 
-template<>
-class decDesendingComparator<float> : public decTComparator<float> {
-public:
-	decDesendingComparator() = default;
-	int operator() (const float &a, const float &b) override {
-		return (b < a) ? -1 : ((b > a) ? 1 : 0);
-	}
-};
-
-template<>
-class decDesendingComparator<double> : public decTComparator<double> {
-public:
-	decDesendingComparator() = default;
-	int operator() (const double &a, const double &b) override {
-		return (b < a) ? -1 : ((b > a) ? 1 : 0);
-	}
-};
-
+class deObject;
 
 /** \brief Object comparator. */
 using decObjectComparator = decTComparator<deObject*>;
@@ -188,6 +131,8 @@ using decPointerVisitor = decTVisitor<void*>;
 /** \brief Pointer evaluator. */
 using decPointerEvaluator = decTEvaluator<void*>;
 
+
+class deThreadSafeObject;
 
 /** \brief ThreadSafeObject comparator. */
 using decThreadSafeObjectComparator = decTComparator<deThreadSafeObject*>;

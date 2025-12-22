@@ -33,6 +33,8 @@ private:
 	void TestReplace();
 	void TestTrim();
 	void TestLowerUpper();
+	void TestDEHash();
+	void TestDECompare();
 };
 
 // end of include only once

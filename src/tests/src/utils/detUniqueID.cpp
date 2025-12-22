@@ -6,6 +6,7 @@
 #include "detUniqueID.h"
 
 #include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -40,6 +41,8 @@ void detUniqueID::Run(){
 	TestDecrement();
 	TestCompare();
 	TestHexString();
+	TestDEHash();
+	TestDECompare();
 }
 
 void detUniqueID::CleanUp(){
@@ -537,4 +540,71 @@ void detUniqueID::TestHexString(){
 	ASSERT_EQUAL(decUniqueID("00005600").ToHexString(), "5600");
 	ASSERT_EQUAL(decUniqueID("00000000").ToHexString(), "0");
 	ASSERT_EQUAL(decUniqueID("1234567890abcdef").ToHexString(), "1234567890abcdef");
+}
+
+
+// Test DEHash
+//////////////
+
+void detUniqueID::TestDEHash(){
+	SetSubTestNum(7);
+	
+	// Test that same IDs produce same hash
+	decUniqueID id1(0x12345678);
+	decUniqueID id2(0x12345678);
+	decUniqueID id3(0x7bcdef00);  // Use positive int value
+	
+	unsigned int hash1 = DEHash(id1);
+	unsigned int hash2 = DEHash(id2);
+	unsigned int hash3 = DEHash(id3);
+	
+	ASSERT_EQUAL(hash1, hash2);  // Same ID should have same hash
+	ASSERT_TRUE(hash1 != hash3);  // Different IDs should (likely) have different hash
+	
+	// Test empty ID
+	decUniqueID empty1;
+	decUniqueID empty2;
+	ASSERT_EQUAL(DEHash(empty1), DEHash(empty2));
+	
+	// Test that DEHash uses the Hash() method
+	ASSERT_EQUAL(DEHash(id1), id1.Hash());
+	ASSERT_EQUAL(DEHash(id3), id3.Hash());
+	
+	// Test with larger IDs
+	decUniqueID large1("1234567890abcdef");
+	decUniqueID large2("1234567890abcdef");
+	ASSERT_EQUAL(DEHash(large1), DEHash(large2));
+	ASSERT_EQUAL(DEHash(large1), large1.Hash());
+}
+
+
+// Test DECompare
+/////////////////
+
+void detUniqueID::TestDECompare(){
+	SetSubTestNum(8);
+	
+	decUniqueID id1(100);
+	decUniqueID id2(200);
+	decUniqueID id3(100);
+	
+	// Test less than
+	ASSERT_TRUE(DECompare(id1, id2) < 0);  // 100 < 200
+	
+	// Test greater than
+	ASSERT_TRUE(DECompare(id2, id1) > 0);  // 200 > 100
+	
+	// Test equal
+	ASSERT_EQUAL(DECompare(id1, id3), 0);  // 100 == 100
+	
+	// Test that DECompare uses the Compare() method
+	ASSERT_EQUAL(DECompare(id1, id2), id1.Compare(id2));
+	ASSERT_EQUAL(DECompare(id2, id1), id2.Compare(id1));
+	ASSERT_EQUAL(DECompare(id1, id3), id1.Compare(id3));
+	
+	// Test with larger IDs
+	decUniqueID large1("1234567890abcdef");
+	decUniqueID large2("fedcba0987654321");
+	ASSERT_TRUE(DECompare(large1, large2) < 0);
+	ASSERT_EQUAL(DECompare(large1, large2), large1.Compare(large2));
 }

@@ -126,11 +126,4 @@ public:
 	/*@}*/
 };
 
-
-/** \brief Global hash functions used for example with decTDictionary. */
-
-inline unsigned int DEHash(const decUuid &key){
-	return key.Hash();
-}
-
 #endif

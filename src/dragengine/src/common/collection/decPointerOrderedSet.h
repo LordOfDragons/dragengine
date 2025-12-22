@@ -26,6 +26,7 @@
 #define _DECPOINTERORDEREDSET_H_
 
 #include "decCollectionInterfaces.h"
+#include "../../dragengine_export.h"
 
 
 /**

@@ -16,6 +16,10 @@ private:
 	
 	// Comparators
 	void TestComparators();
+	
+	// DEHash and DECompare for primitive types
+	void TestDEHashPrimitives();
+	void TestDEComparePrimitives();
 
 public:
 	detHelperFunctions();

@@ -39,7 +39,7 @@
 
 #include "decPath.h"
 #include "../exceptions.h"
-#include "../collection/decHelperFunctions.h"
+#include "../collection/decGlobalFunctions.h"
 
 
 

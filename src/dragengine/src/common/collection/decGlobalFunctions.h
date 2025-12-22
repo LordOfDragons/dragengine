@@ -22,12 +22,15 @@
  * SOFTWARE.
  */
 
-#ifndef _DECHELPERFUNCTIONS_H_
-#define _DECHELPERFUNCTIONS_H_
+#ifndef _DECGLOBALFUNCTIONS_H_
+#define _DECGLOBALFUNCTIONS_H_
+
+#include "decGlobalFunctions_safe.h"
+
 
 #include <string.h>
+#include <stdint.h>
 
-#include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
 #include "../string/decString.h"
 

@@ -8,6 +8,7 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -50,6 +51,8 @@ void detUnicodeString::Run(){
 	TestReplace();
 	TestTrim();
 	TestLowerUpper();
+	TestDEHash();
+	TestDECompare();
 }
 
 void detUnicodeString::CleanUp(){
@@ -1352,4 +1355,64 @@ void detUnicodeString::TestLowerUpper(){
 	// decString GetUpper() const;
 	ASSERT_EQUAL(string1.GetUpper(), string3);
 	ASSERT_EQUAL(string3.GetUpper(), string3);
+}
+
+
+// Test DEHash
+//////////////
+
+void detUnicodeString::TestDEHash(){
+	SetSubTestNum(15);
+	
+	// Test that same strings produce same hash
+	decUnicodeString str1 = decUnicodeString::NewFromUTF8("hello");
+	decUnicodeString str2 = decUnicodeString::NewFromUTF8("hello");
+	decUnicodeString str3 = decUnicodeString::NewFromUTF8("world");
+	
+	unsigned int hash1 = DEHash(str1);
+	unsigned int hash2 = DEHash(str2);
+	unsigned int hash3 = DEHash(str3);
+	
+	ASSERT_EQUAL(hash1, hash2);  // Same content should have same hash
+	ASSERT_TRUE(hash1 != hash3);  // Different content should (likely) have different hash
+	
+	// Test empty string
+	decUnicodeString emptyStr1;
+	decUnicodeString emptyStr2;
+	ASSERT_EQUAL(DEHash(emptyStr1), DEHash(emptyStr2));
+	
+	// Test that DEHash uses the Hash() method
+	ASSERT_EQUAL(DEHash(str1), str1.Hash());
+	ASSERT_EQUAL(DEHash(str3), str3.Hash());
+	
+	// Test unicode characters
+	decUnicodeString unicode1 = decUnicodeString::NewFromUTF8("café");
+	decUnicodeString unicode2 = decUnicodeString::NewFromUTF8("café");
+	ASSERT_EQUAL(DEHash(unicode1), DEHash(unicode2));
+}
+
+
+// Test DECompare
+/////////////////
+
+void detUnicodeString::TestDECompare(){
+	SetSubTestNum(16);
+	
+	decUnicodeString str1 = decUnicodeString::NewFromUTF8("apple");
+	decUnicodeString str2 = decUnicodeString::NewFromUTF8("banana");
+	decUnicodeString str3 = decUnicodeString::NewFromUTF8("apple");
+	
+	// Test less than
+	ASSERT_TRUE(DECompare(str1, str2) < 0);  // "apple" < "banana"
+	
+	// Test greater than
+	ASSERT_TRUE(DECompare(str2, str1) > 0);  // "banana" > "apple"
+	
+	// Test equal
+	ASSERT_EQUAL(DECompare(str1, str3), 0);  // "apple" == "apple"
+	
+	// Test that DECompare uses the Compare() method
+	ASSERT_EQUAL(DECompare(str1, str2), str1.Compare(str2));
+	ASSERT_EQUAL(DECompare(str2, str1), str2.Compare(str1));
+	ASSERT_EQUAL(DECompare(str1, str3), str1.Compare(str3));
 }

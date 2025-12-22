@@ -23,6 +23,8 @@ private:
 	void TestDecrement();
 	void TestCompare();
 	void TestHexString();
+	void TestDEHash();
+	void TestDECompare();
 };
 
 // end of include only once

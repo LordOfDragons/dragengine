@@ -22,14 +22,16 @@
  * SOFTWARE.
  */
 
-#ifndef _DECHASHFUNCTIONS_H_
-#define _DECHASHFUNCTIONS_H_
+#ifndef _DECGLOBALFUNCTIONSSAFE_H_
+#define _DECGLOBALFUNCTIONSSAFE_H_
 
+#include <string.h>
 #include <stdint.h>
+#include <type_traits>
+#include <utility>
 
 
 /** \brief Global hash functions used for example with decTDictionary. */
-
 inline unsigned int DEHash(int key){
 	return static_cast<unsigned int>(key);
 }
@@ -41,5 +43,44 @@ inline unsigned int DEHash(unsigned int key){
 inline unsigned int DEHash(const void *key){
 	return key ? static_cast<unsigned int>(reinterpret_cast<uintptr_t>(key)) : 0;
 }
+
+template<typename T, typename = std::enable_if_t<
+	std::is_convertible<
+		decltype(std::declval<const T&>().Hash()),
+		unsigned int
+	>::value
+>>
+inline unsigned int DEHash(const T &key){
+	return key.Hash();
+}
+
+
+/** \brief Global compare functions used with ordered lists. */
+inline int DECompare(int a, int b){
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
+inline int DECompare(float a, float b){
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
+inline int DECompare(double a, double b){
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
+inline int DECompare(const void *a, const void *b){
+	return (a < b) ? -1 : ((a > b) ? 1 : 0);
+}
+
+template<typename T, typename = std::enable_if_t<
+	std::is_convertible<
+		decltype(std::declval<T&>().Compare(std::declval<const T&>())),
+		int
+	>::value
+>>
+inline int DECompare(const T &a, const T &b){
+	return a.Compare(b);
+}
+
 
 #endif
