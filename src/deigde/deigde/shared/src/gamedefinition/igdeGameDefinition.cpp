@@ -36,7 +36,8 @@
 #include "../environment/igdeEnvironment.h"
 #include "../engine/igdeEngineController.h"
 #include "../gui/filedialog/igdeFilePattern.h"
-#include "../gui/filedialog/igdeFilePatternList.h"
+#include "../gui/igdeTreeList.h"
+#include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -218,7 +219,7 @@ void igdeGameDefinition::FindClasses(deVirtualFileSystem &vfs, igdeGDClassManage
 }
 
 void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &found){
-	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSkin);
+	const igdeFilePattern::List &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSkin);
 	const decStringList &pathList = pSkinManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
@@ -229,11 +230,11 @@ void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &
 		const decString &path = pathList.GetAt(i);
 		logger.LogInfoFormat("IGDE", "Find Skins: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
+		const int patternCount = patterns.GetCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
 		
 		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+			const igdeFilePattern &pattern = *patterns.GetAt(j);
 			found.FindAndAddSkins(vfs, searchPath, pattern.GetPattern());
 		}
 	}
@@ -241,7 +242,7 @@ void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &
 }
 
 void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &found){
-	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSky);
+	const igdeFilePattern::List &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSky);
 	const decStringList &pathList = pSkyManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
@@ -252,11 +253,11 @@ void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &f
 		const decString &path = pathList.GetAt(i);
 		logger.LogInfoFormat("IGDE", "Find Skies: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
+		const int patternCount = patterns.GetCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
 		
 		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+			const igdeFilePattern &pattern = *patterns.GetAt(j);
 			found.FindAndAddSkies(vfs, searchPath, pattern.GetPattern());
 		}
 	}

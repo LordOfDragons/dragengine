@@ -34,8 +34,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -104,16 +102,7 @@ void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 //////////////////////	
 
 void peeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
-	
-	try{
-		pattern.Format("*%s", pLSEmitter->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSEmitter->GetName(), pattern, pLSEmitter->GetPattern());
-		pFPEmitter.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern) delete filePattern;
-		throw;
-	}
+	pattern.Format("*%s", pLSEmitter->GetPattern().GetString());
+	pFPEmitter.Add(igdeFilePattern::Ref::New(pLSEmitter->GetName(), pattern, pLSEmitter->GetPattern()));
 }

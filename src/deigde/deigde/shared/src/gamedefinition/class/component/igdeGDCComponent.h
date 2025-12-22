@@ -27,9 +27,10 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
 
-#include "igdeGDCCTextureList.h"
+#include "igdeGDCCTexture.h"
 
 
 
@@ -43,6 +44,9 @@ class DE_DLL_EXPORT igdeGDCComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCComponent> Ref;
+	
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<igdeGDCComponent> List;
 	
 	
 	/** \brief Properties. */
@@ -89,10 +93,10 @@ private:
 	
 	decString pPropertyNames[epMove + 1];
 	
-	igdeGDCCTextureList pTextureList;
+	igdeGDCCTexture::List pTextureList;
 	
 	
-	
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -243,8 +247,8 @@ public:
 	bool HasPropertyWithName(const char *name) const;
 	
 	/** \brief List of textures. */
-	inline igdeGDCCTextureList &GetTextureList(){ return pTextureList; }
-	inline const igdeGDCCTextureList &GetTextureList() const{ return pTextureList; }
+	inline igdeGDCCTexture::List &GetTextureList(){ return pTextureList; }
+	inline const igdeGDCCTexture::List &GetTextureList() const{ return pTextureList; }
 	/*@}*/
 };
 

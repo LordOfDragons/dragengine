@@ -603,27 +603,21 @@ void igdeWOSOComponent::pLoadResources(){
 		rl.LoadAnimation(pathAnimation);
 	}
 	
-	int textureCount = pGDComponent.GetTextureList().GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		const igdeGDCCTexture &gdctexture = *pGDComponent.GetTextureList().GetAt(i);
-		
-		if(!gdctexture.GetPathSkin().IsEmpty()){
-			rl.LoadTextureSkin(gdctexture.GetPathSkin());
+	pGDComponent.GetTextureList().Visit([&](const igdeGDCCTexture &t){
+		if(!t.GetPathSkin().IsEmpty()){
+			rl.LoadTextureSkin(t.GetPathSkin());
 		}
-	}
+	});
 	
 	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
 	if(gdclass){
-		igdeGDCCTextureList textures;
+		igdeGDCCTexture::List textures;
 		gdclass->GetDeepComponentTextures(textures);
-		textureCount = textures.GetCount();
-		for(i=0; i<textureCount; i++){
-			const igdeGDCCTexture &gdctexture = *textures.GetAt(i);
-			if(!gdctexture.GetPathSkin().IsEmpty()){
-				rl.LoadTextureSkin(gdctexture.GetPathSkin());
+		textures.Visit([&](const igdeGDCCTexture &t){
+			if(!t.GetPathSkin().IsEmpty()){
+				rl.LoadTextureSkin(t.GetPathSkin());
 			}
-		}
+		});
 	}
 	
 	rl.CheckFinished();
@@ -963,17 +957,21 @@ void igdeWOSOComponent::pUpdateTextures(){
 	deEngine &engine = GetEngine();
 	int i;
 	
-	igdeGDCCTextureList textures;
+	igdeGDCCTexture::List textures;
 	if(gdclass){
 		gdclass->GetDeepComponentTextures(textures);
 	}
 	
 	for(i=0; i<textureCount; i++){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt(i);
-		const decString &name = model.GetTextureAt(i)->GetName();
-		const igdeGDCCTexture *gdctexture = textures.GetNamed(name);
+		const decString name = model.GetTextureAt(i)->GetName();
+		const igdeGDCCTexture *gdctexture = textures.FindOrDefault([&](const igdeGDCCTexture &t){
+			return t.GetName() == name;
+		});
 		if(!gdctexture){
-			gdctexture = pGDComponent.GetTextureList().GetNamed(name);
+			gdctexture = pGDComponent.GetTextureList().FindOrDefault([&](const igdeGDCCTexture &t){
+				return t.GetName() == name;
+			});
 		}
 		
 		deDynamicSkin::Ref gdctDynamicSkin;

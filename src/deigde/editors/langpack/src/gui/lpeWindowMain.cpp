@@ -463,7 +463,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pWindow.GetClipboard().GetCount() > 0);
+		SetEnabled(pWindow.GetClipboard().GetData().IsNotEmpty());
 		// HasWithTypeName( "..." )
 	}
 };

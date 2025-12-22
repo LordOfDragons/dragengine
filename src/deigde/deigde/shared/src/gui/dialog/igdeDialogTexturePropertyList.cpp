@@ -36,7 +36,6 @@
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/textureProperties/igdeTextureProperty.h"
-#include "../../engine/textureProperties/igdeTexturePropertyList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decGlobalFunctions.h>
@@ -120,24 +119,20 @@ igdeDialogTexturePropertyList::~igdeDialogTexturePropertyList(){
 ///////////////
 
 void igdeDialogTexturePropertyList::UpdatePropertyList(){
-	const igdeTexturePropertyList &list = *GetEnvironment().GetTexturePropertyList();
-	const igdeTextureProperty *selection = nullptr;
-	const int count = list.GetCount();
-	int i;
+	igdeTextureProperty *selection = nullptr;
 	
 	pListProperties->RemoveAllItems();
 	
-	for(i=0; i<count; i++){
-		const igdeTextureProperty * const property = list.GetAt(i);
-		pListProperties->AddItem(property->GetName(), nullptr, (void*)property);
+	GetEnvironment().GetTexturePropertyList().Visit([&](igdeTextureProperty *property){
+		pListProperties->AddItem(property->GetName(), nullptr, property);
 		if(property->GetName() == "color"){
 			selection = property;
 		}
-	}
+	});
 	
 	pListProperties->SortItems();
 	if(selection){
-		pListProperties->SetSelectionWithData((void*)selection);
+		pListProperties->SetSelectionWithData(selection);
 	}
 	
 	UpdateProperty();

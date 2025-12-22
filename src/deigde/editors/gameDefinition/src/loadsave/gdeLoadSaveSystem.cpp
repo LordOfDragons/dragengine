@@ -116,51 +116,29 @@ const gdeObjectClass &objectClass, const char *filename){
 //////////////////////
 
 void gdeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
 	
-	try{
-		// load/save game definition
-		pattern.Format("*%s", pLSGameDef.GetPattern().GetString());
-		
-		filePattern = new igdeFilePattern(pLSGameDef.GetName(), pattern, pLSGameDef.GetPattern());
-		
-		pFPGameDef.AddFilePattern(filePattern);
-		
-		// load/save xml element class
-		pattern.Format("*%s", pLSXmlEClass.GetPattern().GetString());
-		
-		filePattern = new igdeFilePattern(pLSXmlEClass.GetName(), pattern, pLSXmlEClass.GetPattern());
-		
-		pFPXmlEClass.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	// load/save game definition
+	pattern.Format("*%s", pLSGameDef.GetPattern().GetString());
+	pFPGameDef.Add(igdeFilePattern::Ref::New(pLSGameDef.GetName(), pattern, pLSGameDef.GetPattern()));
+	
+	// load/save xml element class
+	pattern.Format("*%s", pLSXmlEClass.GetPattern().GetString());
+	pFPXmlEClass.Add(igdeFilePattern::Ref::New(pLSXmlEClass.GetName(), pattern, pLSXmlEClass.GetPattern()));
 	
 	// convert file pattern lists to fox ones
 	pConvertToFOX(pFPGameDef, pFoxFPLGameDef);
 	pConvertToFOX(pFPXmlEClass, pFoxFPLXmlEClass);
 }
 
-void gdeLoadSaveSystem::pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl){
-	const int count = fpl.GetFilePatternCount();
-	int i;
-	
+void gdeLoadSaveSystem::pConvertToFOX(const igdeFilePattern::List &fpl, decString &foxfpl){
 	foxfpl.Empty();
-	
-	for(i=0; i<count; i++){
-		const igdeFilePattern &pattern = *fpl.GetFilePatternAt(i);
-		
-		if(i > 0){
+	fpl.Visit([&](const igdeFilePattern &p){
+		if(!foxfpl.IsEmpty()){
 			foxfpl.AppendCharacter('\n');
 		}
-		
-		foxfpl.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
-	}
+		foxfpl.AppendFormat("%s (%s)", p.GetName().GetString(), p.GetPattern().GetString());
+	});
 	
 	//foxfpl.Append( "\nAll Files (*)" );
 }

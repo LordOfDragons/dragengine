@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeAction.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../../environment/igdeEnvironment.h"
 
 
@@ -50,7 +50,7 @@ public:
 	
 private:
 	igdeEnvironment &pEnvironment;
-	igdeFilePatternList pFilePatterns;
+	igdeFilePattern::List pFilePatterns;
 	bool pUseGameVFS;
 	igdeTextField &pTextField;
 	
@@ -65,7 +65,7 @@ public:
 		bool useGameVFS = true);
 	
 	igdeActionSelectFile(igdeEnvironment &environment,
-		const igdeFilePatternList &filePatterns, igdeTextField &textField,
+		const igdeFilePattern::List &filePatterns, igdeTextField &textField,
 		bool useGameVFS = true);
 	
 	
@@ -89,7 +89,7 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetFilePatterns() const{ return pFilePatterns; }
+	inline const igdeFilePattern::List &GetFilePatterns() const{ return pFilePatterns; }
 	
 	/** \brief Use game virtual file system or native file system. */
 	inline bool GetUseGameVFS() const{ return pUseGameVFS; }

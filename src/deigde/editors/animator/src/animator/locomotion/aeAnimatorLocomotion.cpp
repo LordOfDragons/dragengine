@@ -102,8 +102,6 @@ pDragonFootBack(-0.6f),
 pDragonFootSpread(0.2f),
 pDragonFootRadius(0.2f),
 
-pLegs(nullptr),
-pLegCount(0),
 pUseLegPairCount(1),
 pLegBlendTime(0.0f),
 pLegGCCollider(nullptr),
@@ -157,7 +155,6 @@ pTurnIP(0.0f)
 	}
 	
 	deEngine * const engine = animator->GetEngine();
-	int i;
 	
 	pLookUpDown.SetAdjustRange(90.0f);
 	pLookUpDown.SetAdjustTime(0.0f);
@@ -213,6 +210,7 @@ pTurnIP(0.0f)
 		pDDSDragonColFeet.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
 		pDDSDragonColFeet.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
+		int i;
 		for(i=0; i<4; i++){
 			pDDSGroundPlane[i].SetParentDebugDrawer(pDebugDrawer);
 			pDDSGroundPlane[i].SetVisible(true);
@@ -227,12 +225,10 @@ pTurnIP(0.0f)
 		pCreateTouchSensor();
 		
 		// create 4 legs
-		pLegs = new aeAnimatorLocomotionLeg*[4];
-		if(!pLegs) DETHROW(deeInvalidParam);
-		
-		for(pLegCount=0; pLegCount<4; pLegCount++){
-			pLegs[pLegCount] = new aeAnimatorLocomotionLeg(this);
-			pLegs[pLegCount]->SetShapesVisible(pLegCount < 2);
+		for(i=0; i<4; i++){
+			aeAnimatorLocomotionLeg::Ref leg(new aeAnimatorLocomotionLeg(this));
+			leg->SetShapesVisible(i < 2);
+			pLegs.Add(leg);
 		}
 		
 		// update the leg pair information
@@ -255,7 +251,6 @@ aeAnimatorLocomotion::~aeAnimatorLocomotion(){
 
 void aeAnimatorLocomotion::Reset(){
 	const double groundThreshold = 0.01f;
-	int l;
 	
 	pMotionTime = 0.0f;
 	
@@ -294,9 +289,9 @@ void aeAnimatorLocomotion::Reset(){
 	pTurnIP = 0.0f;
 	pTouchingGround = false;
 	
-	for(l=0; l<pLegCount; l++){
-		pLegs[l]->Reset();
-	}
+	pLegs.Visit([](aeAnimatorLocomotionLeg &l){
+		l.Reset();
+	});
 }
 
 
@@ -545,13 +540,6 @@ void aeAnimatorLocomotion::SetLocomotionType(eLocomotionTypes type){
 }
 
 
-
-aeAnimatorLocomotionLeg *aeAnimatorLocomotion::GetLegAt(int index) const{
-	if(index < 0 || index >= pLegCount) DETHROW(deeInvalidParam);
-	
-	return pLegs[index];
-}
-
 void aeAnimatorLocomotion::SetLegBlendTime(float time){
 	if(fabsf(time - pLegBlendTime) < FLOAT_SAFE_EPSILON){
 		return;
@@ -609,14 +597,14 @@ void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
 		pDDSDragonColHands.SetVisible(false);
 		pDDSDragonColFeet.SetVisible(false);
 		
-		pLegs[0]->SetVisBoneName("ikb.hand.l");
-		pLegs[1]->SetVisBoneName("ikb.hand.r");
-		pLegs[2]->SetVisBoneName("ikb.foot.l");
-		pLegs[3]->SetVisBoneName("ikb.foot.r");
+		pLegs.GetAt(0)->SetVisBoneName("ikb.hand.l");
+		pLegs.GetAt(1)->SetVisBoneName("ikb.hand.r");
+		pLegs.GetAt(2)->SetVisBoneName("ikb.foot.l");
+		pLegs.GetAt(3)->SetVisBoneName("ikb.foot.r");
 	}
 	
-	for(l=0; l<pLegCount; l++){
-		pLegs[l]->SetShapesVisible(l < legCount);
+	for(l=0; l<pLegs.GetCount(); l++){
+		pLegs.GetAt(l)->SetShapesVisible(l < legCount);
 	}
 	
 	UpdateCollider();
@@ -925,17 +913,17 @@ void aeAnimatorLocomotion::Update(float elapsed){
 	if(pCollider){
 		pCollider->SetLinearVelocity(pLinearVelocity.GetValue());
 		
-		if(pLegCount > 1){
+		if(pLegs.GetCount() > 1){
 			pCollider->SetAngularVelocity(pAngularVelocity);
 		}
 	}
 	
 	// update legs
-	const int legCount = pUseLegPairCount * 2; // pLegCount
+	const int legCount = pUseLegPairCount * 2;
 	int i;
 	
 	for(i=0; i<legCount; i++){
-		pLegs[i]->Update(elapsed);
+		pLegs.GetAt(i)->Update(elapsed);
 	}
 	
 	// now we can determine the real look up down which is altered by the body tilt
@@ -1115,15 +1103,6 @@ void aeAnimatorLocomotion::OnColliderChanged(){
 
 void aeAnimatorLocomotion::pCleanUp(){
 	int i;
-	
-	if(pLegs){
-		while(pLegCount > 0){
-			pLegCount--;
-			delete pLegs[pLegCount];
-		}
-		
-		delete [] pLegs;
-	}
 	
 	for(i=0; i<4; i++){
 		pDDSGroundPlane[i].SetParentDebugDrawer(nullptr);

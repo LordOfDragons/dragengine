@@ -27,6 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
 
 
@@ -39,6 +40,9 @@ class DE_DLL_EXPORT igdeGDCWorld : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCWorld> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCWorld> List;
 	
 	
 public:

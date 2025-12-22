@@ -46,7 +46,6 @@
 #include "../property/igdeGDProperty.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -106,22 +105,50 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		pListProperties.SetToDeepCopyFrom(gdclass.pListProperties);
 		pPropertyValues = gdclass.pPropertyValues;
 		pTextureProperties.SetToDeepCopyFrom(gdclass.pTextureProperties);
-		pListBillboards.SetToDeepCopyFrom(gdclass.pListBillboards);
-		pListComponents.SetToDeepCopyFrom(gdclass.pListComponents);
-		pListLights.SetToDeepCopyFrom(gdclass.pListLights);
 		
-		count = gdclass.pSnapPoints.GetCount();
-		for(i=0; i<count; i++){
-			pSnapPoints.Add(igdeGDCSnapPoint::Ref::New(*gdclass.pSnapPoints.GetAt(i)));
-		}
+		gdclass.pListBillboards.Visit([&](const igdeGDCBillboard &s){
+			pListBillboards.Add(igdeGDCBillboard::Ref::New(s));
+		});
 		
-		pListParticleEmitters.SetToDeepCopyFrom(gdclass.pListParticleEmitters);
-		pListForceFields.SetToDeepCopyFrom(gdclass.pListForceFields);
-		pListEnvMapProbes.SetToDeepCopyFrom(gdclass.pListEnvMapProbes);
-		pListSpeakers.SetToDeepCopyFrom(gdclass.pListSpeakers);
-		pListNavigationSpaces.SetToDeepCopyFrom(gdclass.pListNavigationSpaces);
-		pListNavigationBlockers.SetToDeepCopyFrom(gdclass.pListNavigationBlockers);
-		pListWorlds.SetToDeepCopyFrom(gdclass.pListWorlds);
+		gdclass.pListComponents.Visit([&](const igdeGDCComponent &s){
+			pListComponents.Add(igdeGDCComponent::Ref::New(s));
+		});
+		
+		gdclass.pListLights.Visit([&](const igdeGDCLight &s){
+			pListLights.Add(igdeGDCLight::Ref::New(s));
+		});
+		
+		gdclass.pSnapPoints.Visit([&](const igdeGDCSnapPoint &s){
+			pSnapPoints.Add(igdeGDCSnapPoint::Ref::New(s));
+		});
+		
+		gdclass.pListParticleEmitters.Visit([&](const igdeGDCParticleEmitter &s){
+			pListParticleEmitters.Add(igdeGDCParticleEmitter::Ref::New(s));
+		});
+		
+		gdclass.pListForceFields.Visit([&](const igdeGDCForceField &s){
+			pListForceFields.Add(igdeGDCForceField::Ref::New(s));
+		});
+		
+		gdclass.pListEnvMapProbes.Visit([&](const igdeGDCEnvMapProbe &s){
+			pListEnvMapProbes.Add(igdeGDCEnvMapProbe::Ref::New(s));
+		});
+		
+		gdclass.pListSpeakers.Visit([&](const igdeGDCSpeaker &s){
+			pListSpeakers.Add(igdeGDCSpeaker::Ref::New(s));
+		});
+		
+		gdclass.pListNavigationSpaces.Visit([&](const igdeGDCNavigationSpace &s){
+			pListNavigationSpaces.Add(igdeGDCNavigationSpace::Ref::New(s));
+		});
+		
+		gdclass.pListNavigationBlockers.Visit([&](const igdeGDCNavigationBlocker &s){
+			pListNavigationBlockers.Add(igdeGDCNavigationBlocker::Ref::New(s));
+		});
+		
+		gdclass.pListWorlds.Visit([&](const igdeGDCWorld &s){
+			pListWorlds.Add(igdeGDCWorld::Ref::New(s));
+		});
 		
 		pHideTags = gdclass.pHideTags;
 		pPartialHideTags = gdclass.pPartialHideTags;
@@ -134,7 +161,9 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
 		pPathEClass = gdclass.pPathEClass;
-		pComponentTextures.SetToDeepCopyFrom(gdclass.pComponentTextures);
+		gdclass.pComponentTextures.Visit([&](const igdeGDCCTexture &s){
+			pComponentTextures.Add(igdeGDCCTexture::Ref::New(s));
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -254,18 +283,18 @@ void igdeGDClass::SetPathEClass(const decString &pathEClass){
 	pPathEClass = pathEClass;
 }
 
-void igdeGDClass::GetDeepComponentTextures(igdeGDCCTextureList &list) const{
-	const int textureCount = pComponentTextures.GetCount();
-	int i;
-	for(i=0; i<textureCount; i++){
-		igdeGDCCTexture * const texture = pComponentTextures.GetAt(i);
-		if(!list.HasNamed(texture->GetName())){
-			list.Add(texture);
+void igdeGDClass::GetDeepComponentTextures(igdeGDCCTexture::List &list) const{
+	pComponentTextures.Visit([&](const igdeGDCCTexture &t){
+		const decString &name = t.GetName();
+		if(!list.HasMatching([&name](const igdeGDCCTexture &t2){
+			return t2.GetName() == name;
+		})){
+			list.Add(igdeGDCCTexture::Ref::New(t));
 		}
-	}
+	});
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for(i=0; i<inheritCount; i++){
+	for(int i=0; i<inheritCount; i++){
 		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
 		if(inherit.GetClass()){
 			inherit.GetClass()->GetDeepComponentTextures(list);
@@ -534,24 +563,15 @@ bool igdeGDClass::HasComponentLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCComponentList igdeGDClass::GetComponentsWithLinkedProperty(const char *name) const{
-	const int count = pListComponents.GetCount();
-	igdeGDCComponentList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListComponents.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListComponents.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCComponent::List igdeGDClass::GetComponentsWithLinkedProperty(const char *name) const{
+	return pListComponents.Collect([&](const igdeGDCComponent &c){
+		return c.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetComponentIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetComponentIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListComponents.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -594,24 +614,15 @@ bool igdeGDClass::HasLightLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCLightList igdeGDClass::GetLightWithLinkedProperty(const char *name) const{
-	const int count = pListLights.GetCount();
-	igdeGDCLightList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListLights.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListLights.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCLight::List igdeGDClass::GetLightWithLinkedProperty(const char *name) const{
+	return pListLights.Collect([&](const igdeGDCLight &c){
+		return c.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetLightIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetLightIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListLights.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -654,24 +665,15 @@ bool igdeGDClass::HasBillboardLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCBillboardList igdeGDClass::GetBillboardWithLinkedProperty(const char *name) const{
-	const int count = pListBillboards.GetCount();
-	igdeGDCBillboardList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListBillboards.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListBillboards.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCBillboard::List igdeGDClass::GetBillboardWithLinkedProperty(const char *name) const{
+	return pListBillboards.Collect([&](const igdeGDCBillboard &b){
+		return b.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetBillboardIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetBillboardIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListBillboards.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -712,24 +714,15 @@ bool igdeGDClass::HasSpeakerLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCSpeakerList igdeGDClass::GetSpeakerWithLinkedProperty(const char *name) const{
-	const int count = pListSpeakers.GetCount();
-	igdeGDCSpeakerList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListSpeakers.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListSpeakers.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCSpeaker::List igdeGDClass::GetSpeakerWithLinkedProperty(const char *name) const{
+	return pListSpeakers.Collect([&](const igdeGDCSpeaker &s){
+		return s.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetSpeakerIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetSpeakerIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListSpeakers.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -770,24 +763,15 @@ bool igdeGDClass::HasNavSpaceLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCNavigationSpaceList igdeGDClass::GetNavSpaceWithLinkedProperty(const char *name) const{
-	const int count = pListNavigationSpaces.GetCount();
-	igdeGDCNavigationSpaceList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListNavigationSpaces.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListNavigationSpaces.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCNavigationSpace::List igdeGDClass::GetNavSpaceWithLinkedProperty(const char *name) const{
+	return pListNavigationSpaces.Collect([&](const igdeGDCNavigationSpace &ns){
+		return ns.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationSpaces.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -828,24 +812,15 @@ bool igdeGDClass::HasNavBlockerLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCNavigationBlockerList igdeGDClass::GetNavBlockerWithLinkedProperty(const char *name) const{
-	const int count = pListNavigationBlockers.GetCount();
-	igdeGDCNavigationBlockerList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListNavigationBlockers.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListNavigationBlockers.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCNavigationBlocker::List igdeGDClass::GetNavBlockerWithLinkedProperty(const char *name) const{
+	return pListNavigationBlockers.Collect([&](const igdeGDCNavigationBlocker &nb){
+		return nb.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationBlockers.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -886,24 +861,15 @@ bool igdeGDClass::HasWorldLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCWorldList igdeGDClass::GetWorldsWithLinkedProperty(const char *name) const{
-	const int count = pListWorlds.GetCount();
-	igdeGDCWorldList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListWorlds.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListWorlds.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCWorld::List igdeGDClass::GetWorldsWithLinkedProperty(const char *name) const{
+	return pListWorlds.Collect([&](const igdeGDCWorld &w){
+		return w.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetWorldIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetWorldIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListWorlds.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -1002,24 +968,15 @@ bool igdeGDClass::HasEnvMapProbesLinkedProperty(const char *name) const{
 	
 	return false;
 }
-
-const igdeGDCEnvMapProbeList igdeGDClass::GetEnvMapProbesWithLinkedProperty(const char *name) const{
-	const int count = pListEnvMapProbes.GetCount();
-	igdeGDCEnvMapProbeList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pListEnvMapProbes.GetAt(i)->HasPropertyWithName(name)){
-			list.Add(pListEnvMapProbes.GetAt(i));
-		}
-	}
-	
-	return list;
+const igdeGDCEnvMapProbe::List igdeGDClass::GetEnvMapProbesWithLinkedProperty(const char *name) const{
+	return pListEnvMapProbes.Collect([&](const igdeGDCEnvMapProbe &e){
+		return e.HasPropertyWithName(name);
+	});
 }
 
-const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const char *name) const{
+const igdeGDClass::IndexList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListEnvMapProbes.GetCount();
-	decIntList list;
+	IndexList list;
 	int i;
 	
 	for(i=0; i<count; i++){

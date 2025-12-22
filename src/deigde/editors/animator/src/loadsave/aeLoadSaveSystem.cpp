@@ -145,18 +145,8 @@ void aeLoadSaveSystem::pCleanUp(){
 }
 
 void aeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
+	pattern.Format("*%s", pLSAttConfig->GetPattern().GetString());
 	
-	try{
-		pattern.Format("*%s", pLSAttConfig->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern());
-		pFPAttConfig.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	pFPAttConfig.Add(igdeFilePattern::Ref::New(pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern()));
 }

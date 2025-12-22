@@ -103,7 +103,7 @@ igdeGDPreviewManager *igdeEnvironmentIGDE::GetGDPreviewManager(){
 	return pWindowMain->GetGDPreviewManager();
 }
 
-const igdeTexturePropertyList *igdeEnvironmentIGDE::GetTexturePropertyList(){
+const igdeTextureProperty::List &igdeEnvironmentIGDE::GetTexturePropertyList(){
 	return pWindowMain->GetTexturePropertyList();
 }
 
@@ -111,7 +111,7 @@ igdeGameProject *igdeEnvironmentIGDE::GetGameProject(){
 	return pWindowMain->GetGameProject();
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatternListTypes type){
+const igdeFilePattern::List *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
 	switch(type){
@@ -177,7 +177,7 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatt
 	}
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePatternListTypes type){
+const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
 	switch(type){

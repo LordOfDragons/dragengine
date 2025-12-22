@@ -51,7 +51,7 @@ pTextField(textField){
 }
 
 igdeActionSelectFile::igdeActionSelectFile(igdeEnvironment &environment,
-const igdeFilePatternList &filePatterns, igdeTextField &textField, bool useGameVFS) :
+const igdeFilePattern::List &filePatterns, igdeTextField &textField, bool useGameVFS) :
 igdeAction("...", nullptr, "Select file"),
 pEnvironment(environment),
 pFilePatterns(filePatterns),

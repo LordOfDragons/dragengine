@@ -77,7 +77,9 @@ pBoneName(component.pBoneName)
 		pPropertyNames[i] = component.pPropertyNames[i];
 	}
 	
-	pTextureList.SetToDeepCopyFrom(component.GetTextureList());
+	component.GetTextureList().Visit([&](const igdeGDCCTexture &t){
+		pTextureList.Add(igdeGDCCTexture::Ref::New(t));
+	});
 }
 
 igdeGDCComponent::~igdeGDCComponent(){

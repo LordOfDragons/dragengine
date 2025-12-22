@@ -31,9 +31,6 @@
 #include "../igdeTextArea.h"
 
 
-class igdeTexturePropertyList;
-
-
 /**
  * \brief Texture Property List Dialog.
  * 
@@ -60,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogTexturePropertyList(igdeEnvironment &environment);
+	explicit igdeDialogTexturePropertyList(igdeEnvironment &environment);
 	
 	
 	

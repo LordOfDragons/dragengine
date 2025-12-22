@@ -30,7 +30,7 @@
 #include "../langpack/ceLangPack.h"
 #include "../loadsave/ceLoadSaveLangPack.h"
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class ceConversationActor;
 class ceLoadSaveConversation;
@@ -54,19 +54,19 @@ private:
 	ceWindowMain &pWindowMain;
 	
 	ceLoadSaveConversation *pLSConversation;
-	igdeFilePatternList pFPConversation;
+	igdeFilePattern::List pFPConversation;
 	
 	ceLoadSaveCTS *pLSCTS;
-	igdeFilePatternList pFPCTS;
+	igdeFilePattern::List pFPCTS;
 	
 	ceLoadSaveCTA *pLSCTA;
-	igdeFilePatternList pFPCTA;
+	igdeFilePattern::List pFPCTA;
 	
 	ceLoadSaveCTGS *pLSCTGS;
-	igdeFilePatternList pFPCTGS;
+	igdeFilePattern::List pFPCTGS;
 	
 	ceLoadSaveLangPack::List pLSLangPacks;
-	igdeFilePatternList pFPListLangPack;
+	igdeFilePattern::List pFPListLangPack;
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	void SaveConversation(ceConversation *conversation, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList *GetConversationFilePatterns() const{ return &pFPConversation; }
+	inline const igdeFilePattern::List *GetConversationFilePatterns() const{ return &pFPConversation; }
 	
 	
 	
@@ -108,7 +108,7 @@ public:
 	void SaveCTS(const char *filename, ceConversation &conversation);
 	
 	/** \brief Conversation test setup file pattern list. */
-	inline const igdeFilePatternList *GetCTSFilePatterns() const{ return &pFPCTS; }
+	inline const igdeFilePattern::List *GetCTSFilePatterns() const{ return &pFPCTS; }
 	
 	
 	
@@ -122,7 +122,7 @@ public:
 	void SaveCTA(const char *filename, ceConversationActor &actor);
 	
 	/** \brief Conversation test actor file pattern list. */
-	inline const igdeFilePatternList *GetCTAFilePatterns() const{ return &pFPCTA; }
+	inline const igdeFilePattern::List *GetCTAFilePatterns() const{ return &pFPCTA; }
 	
 	
 	
@@ -136,7 +136,7 @@ public:
 	void SaveCTGS(const char *filename, const ceConversation &conversation);
 	
 	/** \brief Conversation test game state file pattern list. */
-	inline const igdeFilePatternList *GetCTGSFilePatterns() const{ return &pFPCTGS; }
+	inline const igdeFilePattern::List *GetCTGSFilePatterns() const{ return &pFPCTGS; }
 	
 	
 	/** Save language packs. */
@@ -153,7 +153,7 @@ public:
 	void SaveLangPack(ceLangPack &langpack);
 	
 	/** File pattern list. */
-	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }
+	inline const igdeFilePattern::List &GetLangPackFPList() const{ return pFPListLangPack; }
 	/*@}*/
 	
 	

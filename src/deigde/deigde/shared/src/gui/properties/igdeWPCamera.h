@@ -34,7 +34,7 @@
 #include "../composed/igdeEditSliderText.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../curveedit/igdeViewCurveBezier.h"
 
@@ -92,7 +92,7 @@ private:
 	
 public:
 	static decString lastCameraFile;
-	static const igdeFilePatternList patternCamera;
+	static const igdeFilePattern::List patternCamera;
 	
 	
 	

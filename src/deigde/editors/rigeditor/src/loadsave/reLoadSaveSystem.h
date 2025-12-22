@@ -27,9 +27,6 @@
 
 #include "../rig/reRig.h"
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
 class reLSRig;
 class reWindowMain;
 class igdeGameDefinition;

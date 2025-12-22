@@ -101,7 +101,7 @@ public:
 	igdeGDPreviewManager *GetGDPreviewManager() override;
 	
 	/** \brief Retrieves the texture property list. */
-	const igdeTexturePropertyList *GetTexturePropertyList() override;
+	const igdeTextureProperty::List &GetTexturePropertyList() override;
 	
 	/** \brief The active game project. */
 	igdeGameProject *GetGameProject() override;
@@ -180,14 +180,14 @@ public:
 	 *        for opening files of a given resource type.
 	 * \details The pattern list is build from the available engine modules.
 	 */
-	const igdeFilePatternList *GetOpenFilePatternList(eFilePatternListTypes type) override;
+	const igdeFilePattern::List *GetOpenFilePatternList(eFilePatternListTypes type) override;
 	
 	/**
 	 * \brief Retrieves a list of file patterns suitable to be used in a file dialog
 	 *        for saving files of a given resource type.
 	 * \details The pattern list is build from the available engine modules.
 	 */
-	const igdeFilePatternList *GetSaveFilePatternList(eFilePatternListTypes type) override;
+	const igdeFilePattern::List *GetSaveFilePatternList(eFilePatternListTypes type) override;
 	
 	
 	/**

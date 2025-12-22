@@ -27,6 +27,7 @@
 #define _FELOADSAVEFONT_H_
 
 // includes
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
@@ -41,7 +42,11 @@ class decBaseFileWriter;
  * @brief Load/Save Engine Font.
  * Loads and saves fonts using engine font modules.
  */
-class feLoadSaveFont{
+class feLoadSaveFont : public deObject{
+public:
+	typedef deTObjectReference<feLoadSaveFont> Ref;
+	
+	
 private:
 	deBaseFontModule *pModule;
 	
@@ -52,11 +57,15 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader for the given module. */
-	feLoadSaveFont(deBaseFontModule *module);
+	explicit feLoadSaveFont(deBaseFontModule *module);
+	
+protected:
 	/** Cleans up the loader. */
-	~feLoadSaveFont();
+	~feLoadSaveFont() override;
 	/*@}*/
-
+	
+	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the name. */

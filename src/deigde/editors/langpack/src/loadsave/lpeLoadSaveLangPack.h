@@ -25,6 +25,7 @@
 #ifndef _LPELOADSAVELANGPACK_H_
 #define _LPELOADSAVELANGPACK_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 class lpeLangPack;
@@ -37,7 +38,11 @@ class decBaseFileWriter;
 /**
  * @brief Load/Saves langpacks using an engine module.
  */
-class lpeLoadSaveLangPack{
+class lpeLoadSaveLangPack : public deObject{
+public:
+	typedef deTObjectReference<lpeLoadSaveLangPack> Ref;
+	
+	
 private:
 	deBaseLanguagePackModule *pModule;
 	
@@ -48,9 +53,13 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save object. */
-	lpeLoadSaveLangPack(deBaseLanguagePackModule *module);
+	explicit lpeLoadSaveLangPack(deBaseLanguagePackModule *module);
+	
+protected:
 	/** Cleans up the load/save object. */
-	~lpeLoadSaveLangPack();
+	~lpeLoadSaveLangPack() override;
+	
+public:
 	/*@}*/
 	
 	/** @name Management */

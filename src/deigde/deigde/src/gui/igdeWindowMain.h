@@ -29,6 +29,7 @@
 #include "../configuration/igdeConfigurationLocal.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -65,7 +66,6 @@ class igdeGDPreviewManager;
 class igdeLoadSaveSystem;
 class igdeTaskSyncGameDefinition;
 class igdeTemplateList;
-class igdeTexturePropertyList;
 class igdeSharedFontList;
 class igdeUIHelper;
 
@@ -91,7 +91,7 @@ private:
 	igdeEditorModuleManager *pModuleManager;
 	igdeLoadSaveSystem *pLoadSaveSystem;
 	igdeGDPreviewManager *pGDPreviewManager;
-	igdeTexturePropertyList *pTexturePropertyList;
+	igdeTextureProperty::List pTexturePropertyList;
 	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLogger::Ref pWindowLogger;
 	deVirtualFileSystem::Ref pVFS;
@@ -215,7 +215,7 @@ public:
 	/** Retrieves the game definition preview manager. */
 	inline igdeGDPreviewManager *GetGDPreviewManager() const{ return pGDPreviewManager; }
 	/** Retrieves the texture property list. */
-	inline igdeTexturePropertyList *GetTexturePropertyList() const{ return pTexturePropertyList; }
+	inline const igdeTextureProperty::List &GetTexturePropertyList() const{ return pTexturePropertyList; }
 	/** Retrieves the history logger. */
 	inline const igdeLoggerHistory::Ref &GetLoggerHistory() const{ return pLoggerHistory; }
 	

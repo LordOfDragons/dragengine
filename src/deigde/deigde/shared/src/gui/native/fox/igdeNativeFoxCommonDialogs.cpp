@@ -32,8 +32,6 @@
 #include "igdeNativeFoxCommonDialogs.h"
 #include "dialog/igdeNativeFoxFileDialog.h"
 #include "../../igdeWidget.h"
-#include "../../filedialog/igdeFilePattern.h"
-#include "../../filedialog/igdeFilePatternList.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decGlobalFunctions.h>
@@ -232,7 +230,7 @@ const char *text, const decTList<decString> &list, int &selection){
 
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -254,7 +252,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -275,7 +273,7 @@ deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &fi
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -295,7 +293,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 	
 	// TEMP
 	if(true){
-		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(dialog.getCurrentPattern());
+		const igdeFilePattern &pattern = *filePatterns.GetAt(dialog.getCurrentPattern());
 		if(!filename.MatchesPattern(pattern.GetPattern())){
 			filename.Append(pattern.GetDefaultExtension());
 		}
@@ -306,7 +304,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}

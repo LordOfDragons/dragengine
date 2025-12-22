@@ -29,6 +29,7 @@
 // includes
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -44,7 +45,11 @@ class aeAnimatorLocomotion;
  * Keeps track of a leg in an animator locomotion. A leg stores various
  * parameters required for properly animating a leg on uneven terrain.
  */
-class aeAnimatorLocomotionLeg{
+class aeAnimatorLocomotionLeg : public deObject{
+public:
+	typedef deTObjectReference<aeAnimatorLocomotionLeg> Ref;
+	
+	
 private:
 	aeAnimatorLocomotion *pLocomotion;
 	
@@ -83,9 +88,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion);
+	explicit aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion);
+	
+protected:
 	/** Cleans up the object. */
-	~aeAnimatorLocomotionLeg();
+	~aeAnimatorLocomotionLeg() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

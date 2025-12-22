@@ -32,9 +32,7 @@
 #include "class/igdeGDClassInherit.h"
 #include "class/igdeGDClassManager.h"
 #include "class/component/igdeGDCComponent.h"
-#include "class/component/igdeGDCComponentList.h"
 #include "class/component/igdeGDCCTexture.h"
-#include "class/component/igdeGDCCTextureList.h"
 #include "../codec/igdeCodecPropertyString.h"
 #include "../environment/igdeEnvironment.h"
 
@@ -564,7 +562,7 @@ igdeGDClass &gdClass, const char *basePath){
 		return;
 	}
 	
-	igdeGDCCTextureList &textures = gdClass.GetComponentTextures();
+	igdeGDCCTexture::List &textures = gdClass.GetComponentTextures();
 	igdeCodecPropertyString codec;
 	deObject* object;
 	int i;

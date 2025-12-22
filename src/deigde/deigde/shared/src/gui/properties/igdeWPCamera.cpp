@@ -41,8 +41,6 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeTextFieldListener.h"
-#include "../filedialog/igdeFilePattern.h"
-#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../menu/igdeMenuCascade.h"
@@ -535,13 +533,13 @@ public:
 
 decString igdeWPCamera::lastCameraFile("Camera.decamera");
 
-static igdeFilePatternList sCreateFilePatternList(){
-	igdeFilePatternList list;
-	list.AddFilePattern(new igdeFilePattern("Drag[en]gine Camera", "*.decamera", ".decamera"));
+static igdeFilePattern::List sCreateFilePatternList(){
+	igdeFilePattern::List list;
+	list.Add(igdeFilePattern::Ref::New("Drag[en]gine Camera", "*.decamera", ".decamera"));
 	return list;
 }
 
-const igdeFilePatternList igdeWPCamera::patternCamera(sCreateFilePatternList());
+const igdeFilePattern::List igdeWPCamera::patternCamera(sCreateFilePatternList());
 
 
 

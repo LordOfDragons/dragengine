@@ -240,7 +240,7 @@ void aeLSAnimator::pSaveDisplay(decXmlWriter &writer, const aeAnimator &animator
 
 void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &animator){
 	const aeAnimatorLocomotion &locomotion = animator.GetLocomotion();
-	int l, legCount = locomotion.GetLegCount();
+	int l, legCount = locomotion.GetLegs().GetCount();
 	
 	writer.WriteOpeningTag("locomotion");
 	
@@ -308,7 +308,7 @@ void aeLSAnimator::pSaveLocomotion(decXmlWriter &writer, const aeAnimator &anima
 	}
 	
 	for(l=0; l<legCount; l++){
-		const aeAnimatorLocomotionLeg &leg = *locomotion.GetLegAt(l);
+		const aeAnimatorLocomotionLeg &leg = *locomotion.GetLegs().GetAt(l);
 		const decVector &pdposStand = leg.GetPutDownPositionStand();
 		const decVector &pdposWalk = leg.GetPutDownPositionWalk();
 		const decVector &pdposRun = leg.GetPutDownPositionRun();
@@ -1719,7 +1719,7 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				locomotion.SetUseLegPairCount((int)strtol(GetCDataString(*tag), nullptr, 10));
 				
 			}else if(strcmp(tag->GetName(), "leg") == 0){
-				if(leg >= locomotion.GetLegCount()){
+				if(leg >= locomotion.GetLegs().GetCount()){
 					logger.LogWarnFormat(LOGSOURCE, "animator(%i:%i): Too many leg definitions, ignoring",
 						tag->GetLineNumber(), tag->GetPositionNumber());
 					continue;
@@ -1738,7 +1738,7 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 
 void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animator, int legnum){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	aeAnimatorLocomotionLeg &leg = *animator.GetLocomotion().GetLegAt(legnum);
+	aeAnimatorLocomotionLeg &leg = *animator.GetLocomotion().GetLegs().GetAt(legnum);
 	decXmlElementTag *tag;
 	decVector vector;
 	int i;
@@ -1878,7 +1878,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 			}else if(strcmp(tag->GetName(), "locomotionLeg") == 0){
 				leg = (int)strtol(GetCDataString(*tag), nullptr, 10);
 				
-				if(leg >= 0 && leg < animator.GetLocomotion().GetLegCount()){
+				if(leg >= 0 && leg < animator.GetLocomotion().GetLegs().GetCount()){
 					controller->SetLocomotionLeg(leg);
 				}
 				

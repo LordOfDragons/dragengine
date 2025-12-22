@@ -27,6 +27,7 @@
 
 
 #include "resources/igdeFont.h"
+#include "filedialog/igdeFilePattern.h"
 
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
@@ -34,7 +35,6 @@
 
 class igdeEditorModule;
 class igdeWidget;
-class igdeFilePatternList;
 
 class decString;
 class deException;
@@ -281,7 +281,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request open file from user.
@@ -291,7 +291,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -301,7 +301,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -311,7 +311,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request directory from user.

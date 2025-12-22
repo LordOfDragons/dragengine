@@ -133,8 +133,8 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	
 	// reset the file pattern lists
 	for(i=0; i<FilePatternListCount; i++){
-		pFPLOpen[i].RemoveAllFilePatterns();
-		pFPLSave[i].RemoveAllFilePatterns();
+		pFPLOpen[i].RemoveAll();
+		pFPLSave[i].RemoveAll();
 	}
 	
 	// add show-all file patterns to the file pattern lists. these have to come first
@@ -241,11 +241,11 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 
 
 
-const igdeFilePatternList &igdeLoadSaveSystem::GetOpenFilePatternList(eFilePatternLists list) const{
+const igdeFilePattern::List &igdeLoadSaveSystem::GetOpenFilePatternList(eFilePatternLists list) const{
 	return pFPLOpen[list];
 }
 
-const igdeFilePatternList &igdeLoadSaveSystem::GetSaveFilePatternList(eFilePatternLists list) const{
+const igdeFilePattern::List &igdeLoadSaveSystem::GetSaveFilePatternList(eFilePatternLists list) const{
 	return pFPLSave[list];
 }
 
@@ -268,61 +268,30 @@ void igdeLoadSaveSystem::pCleanUp(){
 	}
 }
 
-void igdeLoadSaveSystem::pAddPattern(igdeFilePatternList &fpl, const deLoadableModule &module){
-	const decStringList &patternList = module.GetPatternList();
-	const int patternCount = patternList.GetCount();
-	igdeFilePattern *filePattern = nullptr;
+void igdeLoadSaveSystem::pAddPattern(igdeFilePattern::List &fpl, const deLoadableModule &module){
 	decString patterns;
-	int i;
 	
-	for(i=0; i<patternCount; i++){
-		if(i > 0){
+	module.GetPatternList().Visit([&](const decString &p){
+		if(!patterns.IsEmpty()){
 			patterns.AppendCharacter(',');
 		}
 		patterns.AppendCharacter('*');
-		patterns.Append(patternList.GetAt(i));
-	}
+		patterns.Append(p);
+	});
 	
-	try{
-		filePattern = new igdeFilePattern(module.GetName(), patterns.GetString(), module.GetDefaultExtension().GetString());
-		fpl.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	fpl.Add(igdeFilePattern::Ref::New(module.GetName(), patterns, module.GetDefaultExtension()));
 }
 
-void igdeLoadSaveSystem::pAddPattern(igdeFilePatternList &fpl, const char *name, const char *pattern, const char *defaultExtension){
-	igdeFilePattern *filePattern = nullptr;
-	
-	try{
-		filePattern = new igdeFilePattern(name, pattern, defaultExtension);
-		fpl.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+void igdeLoadSaveSystem::pAddPattern(igdeFilePattern::List &fpl, const char *name, const char *pattern, const char *defaultExtension){
+	fpl.Add(igdeFilePattern::Ref::New(name, pattern, defaultExtension));
 }
 
-void igdeLoadSaveSystem::pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl){
-	const int count = fpl.GetFilePatternCount();
-	int i;
-	
+void igdeLoadSaveSystem::pConvertToFOX(const igdeFilePattern::List &fpl, decString &foxfpl){
 	foxfpl.Empty();
-	
-	for(i=0; i<count; i++){
-		const igdeFilePattern &pattern = *fpl.GetFilePatternAt(i);
-		
-		if(i > 0){
+	fpl.Visit([&](const igdeFilePattern &p){
+		if(!foxfpl.IsEmpty()){
 			foxfpl.AppendCharacter('\n');
 		}
-		
-		foxfpl.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
-	}
+		foxfpl.AppendFormat("%s (%s)", p.GetName().GetString(), p.GetPattern().GetString());
+	});
 }

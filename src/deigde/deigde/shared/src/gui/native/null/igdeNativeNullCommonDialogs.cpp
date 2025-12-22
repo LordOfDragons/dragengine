@@ -71,21 +71,21 @@ bool igdeNativeNullCommonDialogs::SelectString(igdeWidget*, const char *, const 
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, const igdeFilePatternList &, decString &){
+bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, const igdeFilePattern::List &, decString &){
 	return false;
 }
 
 bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, deVirtualFileSystem &,
-const igdeFilePatternList &, decString &){
+const igdeFilePattern::List &, decString &){
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, const igdeFilePatternList &, decString &){
+bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, const igdeFilePattern::List &, decString &){
 	return false;
 }
 
 bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, deVirtualFileSystem &,
-const igdeFilePatternList &, decString &){
+const igdeFilePattern::List &, decString &){
 	return false;
 }
 

@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -49,6 +50,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCSnapPoint> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCSnapPoint> List;
 
 
 	/** \name Constructors and Destructors */

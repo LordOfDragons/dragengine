@@ -27,7 +27,7 @@
 
 #include "../emitter/peeEmitter.h"
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class peeLoadSaveEmitter;
 class peeWindowMain;
@@ -44,7 +44,7 @@ private:
 	peeWindowMain &pWindowMain;
 	
 	peeLoadSaveEmitter *pLSEmitter;
-	igdeFilePatternList pFPEmitter;
+	igdeFilePattern::List pFPEmitter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -67,7 +67,7 @@ public:
 	/** Saves the emitter to file if possible. */
 	void SaveEmitter(peeEmitter *emitter, const char *filename);
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList *GetEmitterFilePatterns() const{ return &pFPEmitter; }
+	inline const igdeFilePattern::List *GetEmitterFilePatterns() const{ return &pFPEmitter; }
 	/*@}*/
 	
 private:

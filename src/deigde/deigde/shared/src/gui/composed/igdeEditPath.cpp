@@ -123,7 +123,7 @@ void igdeEditPath::cActionButtonMenu::Update(){
 igdeEditPath::cActionSelectFileDialog::cActionSelectFileDialog(
 	igdeEditPath &editPath, igdeTextField &textField) :
 igdeActionSelectFile(editPath.GetEnvironment(),
-	editPath.GetCustomPatternList().GetFilePatternCount() > 0 ? editPath.GetCustomPatternList()
+	editPath.GetCustomPatternList().IsNotEmpty() ? editPath.GetCustomPatternList()
 		: *editPath.GetEnvironment().GetOpenFilePatternList(editPath.GetResourceType()),
 	textField, editPath.GetUseGameVFS()),
 pEditPath(editPath),
@@ -322,7 +322,7 @@ pUseGameVFS(useGameVFS)
 	SetSelectPathActions();
 }
 
-igdeEditPath::igdeEditPath(igdeUIHelper &helper, const igdeFilePatternList &customFilePatterns,
+igdeEditPath::igdeEditPath(igdeUIHelper &helper, const igdeFilePattern::List &customFilePatterns,
 	const char *description, bool useGameVFS) :
 igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2),
 pResourceType(igdeEnvironment::efpltAll),

@@ -114,6 +114,11 @@ void deColliderRig::SetRig(deRig *rig){
 		}
 		
 		if(pBones){
+			for(i=0; i<pBoneCount; i++){
+				if(pBones[i]){
+					delete pBones[i];
+				}
+			}
 			delete [] pBones;
 			pBones = NULL;
 		}

@@ -623,8 +623,8 @@ void aeWPPlayground::SetAnimator(aeAnimator *animator){
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		pSpinLocoUseLegPairs->SetRange(1, animator->GetLocomotion().GetLegCount() / 2);
-		pSpinLocoLeg->SetRange(0, animator->GetLocomotion().GetLegCount() - 1);
+		pSpinLocoUseLegPairs->SetRange(1, animator->GetLocomotion().GetLegs().GetCount() / 2);
+		pSpinLocoLeg->SetRange(0, animator->GetLocomotion().GetLegs().GetCount() - 1);
 		
 	}else{
 		pSpinLocoUseLegPairs->SetRange(1, 1);
@@ -641,11 +641,11 @@ aeAnimatorLocomotionLeg *aeWPPlayground::GetLeg() const{
 	}
 	
 	const int legnum = pSpinLocoLeg->GetValue();
-	if(legnum < 0 || legnum >= pAnimator->GetLocomotion().GetLegCount()){
+	if(legnum < 0 || legnum >= pAnimator->GetLocomotion().GetLegs().GetCount()){
 		return nullptr;
 	}
 	
-	return pAnimator->GetLocomotion().GetLegAt(legnum);
+	return pAnimator->GetLocomotion().GetLegs().GetAt(legnum);
 }
 
 aeWPPlayground::sController &aeWPPlayground::GetControllerAt(int index) const{

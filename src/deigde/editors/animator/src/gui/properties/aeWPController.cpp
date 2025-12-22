@@ -439,7 +439,7 @@ public:
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) override{
 		const int value = textField->GetInteger();
-		if(value >= 0 && value < animator->GetLocomotion().GetLegCount()){
+		if(value >= 0 && value < animator->GetLocomotion().GetLegs().GetCount()){
 			controller->SetLocomotionLeg(value);
 		}
 		return {};

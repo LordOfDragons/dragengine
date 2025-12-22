@@ -262,12 +262,15 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				}
 				gdclassExisting->ResolveInheritClasses(*this);
 				
-				const igdeGDCCTextureList &eclassCompTextures = eclass->GetComponentTextures();
-				igdeGDCCTextureList &compTextures = gdclassExisting->GetComponentTextures();
+				const igdeGDCCTexture::List &eclassCompTextures = eclass->GetComponentTextures();
+				igdeGDCCTexture::List &compTextures = gdclassExisting->GetComponentTextures();
 				const int textureCount = eclassCompTextures.GetCount();
 				for(j=0; j<textureCount; j++){
 					igdeGDCCTexture * const texture = eclassCompTextures.GetAt(j);
-					igdeGDCCTexture * const existingTexture = compTextures.GetNamed(texture->GetName());
+					const decString &textureName = texture->GetName();
+					igdeGDCCTexture * const existingTexture = compTextures.FindOrDefault([&](const igdeGDCCTexture &t){
+						return t.GetName() == textureName; }
+					);
 					if(existingTexture){
 						compTextures.Remove(existingTexture);
 					}
@@ -377,7 +380,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 					decString inheritComponentPrefix;
 					fFindFirstComponent(*inheritClass, inheritComponentPrefix, inheritClassComponent);
 					
-					const igdeGDCComponentList &components = gdclass->GetComponentList();
+					const igdeGDCComponent::List &components = gdclass->GetComponentList();
 					const int componentCount = components.GetCount();
 					const int copyCount = decMath::min(componentCount, inheritClassComponent ? 1 : 0);
 					

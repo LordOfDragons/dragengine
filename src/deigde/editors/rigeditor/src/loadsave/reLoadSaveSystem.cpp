@@ -33,8 +33,6 @@
 #include "../gui/reWindowMain.h"
 
 #include <deigde/engine/igdeEngineController.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/environment/igdeEnvironment.h>
 

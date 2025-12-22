@@ -26,13 +26,13 @@
 #define _AELOADSAVESYSTEM_H_
 
 #include "../animator/aeAnimator.h"
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class aeLoadSaveAttachmentConfig;
 class aeLSAnimator;
 class aeWindowMain;
 class igdeGameDefinition;
-class igdeFilePatternList;
 
 
 
@@ -45,7 +45,7 @@ private:
 	aeLSAnimator *pLSAnimator;
 	
 	aeLoadSaveAttachmentConfig *pLSAttConfig;
-	igdeFilePatternList pFPAttConfig;
+	igdeFilePattern::List pFPAttConfig;
 	
 public:
 	// constructor, destructor
@@ -70,7 +70,7 @@ public:
 	void SaveAttConfig(const char *filename, const aeAnimator &animator);
 	
 	/** Attachment configuration file pattern list. */
-	inline const igdeFilePatternList &GetAttConfigFilePatterns() const{ return pFPAttConfig; }
+	inline const igdeFilePattern::List &GetAttConfigFilePatterns() const{ return pFPAttConfig; }
 	
 private:
 	void pCleanUp();

@@ -832,7 +832,7 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 			
 		case igdeGDProperty::eptPath:
 			pSwitcher->SetCurrent(9);
-			pPath->GetCustomPatternList().RemoveAllFilePatterns();
+			pPath->GetCustomPatternList().RemoveAll();
 			
 			switch(pGDProperty->GetPathPatternType()){
 			case igdeGDProperty::epptAll:

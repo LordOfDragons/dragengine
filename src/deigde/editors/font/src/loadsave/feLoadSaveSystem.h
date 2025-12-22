@@ -27,7 +27,7 @@
 
 #include "../font/feFont.h"
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class feLoadSaveFont;
 class feWindowMain;
@@ -41,12 +41,14 @@ class igdeGameDefinition;
  * pattern lists for various file formats.
  */
 class feLoadSaveSystem{
+public:
+	typedef decTObjectOrderedSet<feLoadSaveFont> LSFontList;
+	
+	
 private:
 	feWindowMain *pWndMain;
 	
-	feLoadSaveFont **pLSFonts;
-	int pLSFontCount;
-	int pLSFontSize;
+	LSFontList pLSFonts;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -62,27 +64,16 @@ public:
 	/** Retrieves the main window. */
 	inline feWindowMain *GetWindowMain() const{ return pWndMain; }
 	
-	/** Retrieves the number of load save fonts. */
-	inline int GetLSFontCount() const{ return pLSFontCount; }
-	/** Retrieves the load save font at the given index. */
-	feLoadSaveFont *GetLSFontAt(int index) const;
-	/** Retrieves the index of the load save font. */
-	int IndexOfLSFont(feLoadSaveFont *lsFont) const;
-	/** Determines if the save font exists. */
-	bool HasLSFont(feLoadSaveFont *lsFont) const;
-	/** Retrieves the index of the load save font matching the given filename. */
-	int IndexOfLSFontMatching(const char *filename);
-	/** Adds a load save font. */
-	void AddLSFont(feLoadSaveFont *lsFont);
-	/** Removes a load save font. */
-	void RemoveLSFont(feLoadSaveFont *lsFont);
-	/** Removes all load save fonts. */
-	void RemoveAllLSFonts();
+	/** Load save fonts. */
+	LSFontList &GetLSFonts(){ return pLSFonts; }
+	const LSFontList &GetLSFonts() const{ return pLSFonts; }
+	
 	/** Updates the load save font list from the engine. */
 	void UpdateLSFonts();
 	
 	/** Loads the font from file if possible. */
 	feFont::Ref LoadFont(const char *filename, igdeGameDefinition *gameDefinition);
+	
 	/** Saves the font to file if possible. */
 	void SaveFont(feFont *font, const char *filename);
 	/*@}*/

@@ -39,8 +39,6 @@
 
 #include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
-#include <deigde/engine/textureProperties/igdeTextureProperty.h>
-#include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/engine/textureProperties/igdeXMLLoadTexturePropertyList.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeApplication.h>
@@ -63,7 +61,6 @@
 #include <deigde/gui/enginestatus/igdeDialogEngine.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/logger/igdeWindowLogger.h>
@@ -483,7 +480,6 @@ pConfigurationLocal(*this),
 pModuleManager(nullptr),
 pLoadSaveSystem(nullptr),
 pGDPreviewManager(nullptr),
-pTexturePropertyList(nullptr),
 pTemplates(nullptr),
 pSharedGameDefinitions(nullptr),
 pSharedFontList(nullptr),
@@ -526,7 +522,6 @@ pTaskSyncGameDefinition(nullptr)
 		pUIHelperProperties = new igdeUIHelper(*pUIHelper);
 		
 		pSharedFontList = new igdeSharedFontList(pEnvironmentIGDE);
-		pTexturePropertyList = new igdeTexturePropertyList;
 		pTimer = new decTimer;
 		
 		pResourceLoader = new igdeResourceLoader(pEnvironmentIGDE);
@@ -1672,10 +1667,6 @@ void igdeWindowMain::pCleanUp(){
 		pUIHelper = nullptr;
 	}
 	
-	if(pTexturePropertyList){
-		delete pTexturePropertyList;
-		pTexturePropertyList = nullptr;
-	}
 	if(pGDPreviewManager){
 		delete pGDPreviewManager;
 		pGDPreviewManager = nullptr;
@@ -1944,7 +1935,7 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	logger.LogInfo(LOGSOURCE, "Reading texture property list file");
-	readXML.ReadFromFile(*pTexturePropertyList, pVFS->OpenFileForReading(pathFile));
+	readXML.ReadFromFile(pTexturePropertyList, pVFS->OpenFileForReading(pathFile));
 }
 
 void igdeWindowMain::pLoadTemplates(){
@@ -2331,7 +2322,7 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 
 void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 	decTimer timer;
-	const igdeFilePatternList &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
+	const igdeFilePattern::List &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
 	igdeGameDefinition &gameDefinition = *gameProject.GetFoundGameDefinition();
 	
 	igdeGDSkinManager &gdskins = *gameDefinition.GetSkinManager();
@@ -2345,29 +2336,21 @@ void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
-	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
-	const int pathCount = pathList.GetCount();
-	int i, j;
-	
-	for(i=0; i<pathCount; i++){
-		const decString &path = pathList.GetAt(i);
+	gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath().Visit([&](const decString &path){
 		GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skins: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
-		
-		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+		patterns.Visit([&](const igdeFilePattern &pattern){
 			gdskins.FindAndAddSkins(vfs, searchPath, pattern.GetPattern());
-		}
-	}
+		});
+	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skins done: %.1fs (%d found)",
 		timer.GetElapsedTime(), gdskins.GetSkinCount());
 }
 
 void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 	decTimer timer;
-	const igdeFilePatternList &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
+	const igdeFilePattern::List &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 	igdeGameDefinition &gameDefinition = *gameProject.GetFoundGameDefinition();
 	
 	igdeGDSkyManager &gdskies = *gameDefinition.GetSkyManager();
@@ -2381,22 +2364,14 @@ void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
-	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
-	const int pathCount = pathList.GetCount();
-	int i, j;
-	
-	for(i=0; i<pathCount; i++){
-		const decString &path = pathList.GetAt(i);
+	gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath().Visit([&](const decString &path){
 		GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skies: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
-		
-		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+		patterns.Visit([&](const igdeFilePattern &pattern){
 			gdskies.FindAndAddSkies(vfs, searchPath, pattern.GetPattern());
-		}
-	}
+		});
+	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skies done: %.1fs (%d found)",
 		timer.GetElapsedTime(), gdskies.GetSkyList().GetCount());
 }

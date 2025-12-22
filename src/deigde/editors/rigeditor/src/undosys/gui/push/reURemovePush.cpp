@@ -58,7 +58,6 @@ void reURemovePush::Undo(){
 	DEASSERT_NOTNULL(rig)
 	
 	reSelectionPushes *selection = rig->GetSelectionPushes();
-	int p;
 	
 	selection->RemoveAllPushes();
 	

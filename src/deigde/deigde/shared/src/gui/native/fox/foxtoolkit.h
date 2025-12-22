@@ -99,6 +99,8 @@
 
 
 // internal stuff
+#include "../../../gui/filedialog/igdeFilePattern.h"
+
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
@@ -108,7 +110,6 @@ class igdeHotKey;
 class igdeWidget;
 class igdeContainer;
 class igdeEnvironment;
-class igdeFilePatternList;
 
 class igdeUIFoxHelper{
 public:
@@ -129,7 +130,7 @@ public:
 	static FXString MnemonizeString(const char* string, deInputEvent::eKeyCodes keyCode);
 	static deInputEvent::eKeyCodes KeyCodeFromEvent(const FXEvent &event);
 	static int ModifiersFromEvent(const FXEvent &event);
-	static FXString FilePatternListToFOX(const igdeFilePatternList &filePatterns);
+	static FXString FilePatternListToFOX(const igdeFilePattern::List &filePatterns);
 	
 	static int GetChildLayoutFlags(igdeWidget *widget, int defaultFlags =
 		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);

@@ -33,8 +33,6 @@
 #include "igdeUIHelper.h"
 #include "dialog/igdeDialog.h"
 #include "dialog/igdeDialogMultilineValue.h"
-#include "filedialog/igdeFilePattern.h"
-#include "filedialog/igdeFilePatternList.h"
 #include "layout/igdeContainerFlow.h"
 #include "native/toolkit.h"
 
@@ -262,22 +260,22 @@ const char *text, const decTList<decString> &list, int &selection){
 
 
 bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, filePatterns, filename);
 }
 
 bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, vfs, filePatterns, filename);
 }
 
 bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, vfs, filePatterns, filename);
 }
 

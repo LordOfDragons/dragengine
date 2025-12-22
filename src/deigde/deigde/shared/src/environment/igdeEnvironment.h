@@ -25,7 +25,9 @@
 #ifndef _IGDEENVIRONMENT_H_
 #define _IGDEENVIRONMENT_H_
 
+#include "../gui/filedialog/igdeFilePattern.h"
 #include "../gui/resources/igdeFont.h"
+#include "../engine/textureProperties/igdeTextureProperty.h"
 
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
@@ -34,7 +36,6 @@
 #include <dragengine/resources/model/deModel.h>
 
 class igdeEngineController;
-class igdeFilePatternList;
 class igdeGameDefinition;
 class igdeContainer;
 class igdeWindow;
@@ -42,7 +43,6 @@ class igdeGDPreviewManager;
 class igdeGameProject;
 class igdeGuiTheme;
 class igdeIcon;
-class igdeTexturePropertyList;
 class igdeToolBarDock;
 class igdeUIHelper;
 class igdeResourceLoaderListener;
@@ -294,7 +294,7 @@ public:
 	virtual igdeGDPreviewManager *GetGDPreviewManager() = 0;
 	
 	/** \brief Texture property list. */
-	virtual const igdeTexturePropertyList *GetTexturePropertyList() = 0;
+	virtual const igdeTextureProperty::List &GetTexturePropertyList() = 0;
 	
 	/** \brief The active game project. */
 	virtual igdeGameProject *GetGameProject() = 0;
@@ -374,14 +374,14 @@ public:
 	 * 
 	 * The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetOpenFilePatternList(eFilePatternListTypes type) = 0;
+	virtual const igdeFilePattern::List *GetOpenFilePatternList(eFilePatternListTypes type) = 0;
 	
 	/**
 	 * \brief List of file patterns for save resource file dialogs.
 	 * 
 	 * The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetSaveFilePatternList(eFilePatternListTypes type) = 0;
+	virtual const igdeFilePattern::List *GetSaveFilePatternList(eFilePatternListTypes type) = 0;
 	
 	
 	

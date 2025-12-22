@@ -31,8 +31,6 @@
 #include "../foxIcons.h"
 #include "../../../igdeCommonDialogs.h"
 #include "../../../igdeWidget.h"
-#include "../../../filedialog/igdeFilePattern.h"
-#include "../../../filedialog/igdeFilePatternList.h"
 #include "../../../../engine/igdeEngineController.h"
 #include "../../../../environment/igdeEnvironment.h"
 
@@ -186,33 +184,28 @@ void igdeNativeFoxFileDialog::SetFilename(const char *filename, const char *base
 	SetFilename(absolutePath.GetPathUnix());
 }
 
-void igdeNativeFoxFileDialog::SetFilePatternList(const igdeFilePatternList *filePatternList){
+void igdeNativeFoxFileDialog::SetFilePatternList(const igdeFilePattern::List *filePatternList){
 	pFilePatternList = filePatternList;
 	
 	UpdateFileTypeBox();
 }
 
 void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
-	int  filePatternCount = 0;
-	
 	pCBFilter->clearItems();
 	
 	if(pFilePatternList){
 		decString text;
-		int i;
 		
-		filePatternCount = pFilePatternList->GetFilePatternCount();
-		for(i=0; i<filePatternCount; i++){
-			const igdeFilePattern &fp = *pFilePatternList->GetFilePatternAt(i);
+		pFilePatternList->Visit([&](const igdeFilePattern &fp){
 			text.Format("%s (%s)", fp.GetName().GetString(), fp.GetPattern().GetString());
 			pCBFilter->appendItem(text.GetString());
-		}
+		});
 	}
 	
 	pCBFilter->appendItem("All Files (*)");
 	
-	if(filePatternCount > 0){
-		pList->SetPattern(pFilePatternList->GetFilePatternAt(0)->GetPattern());
+	if(pFilePatternList->IsNotEmpty()){
+		pList->SetPattern(pFilePatternList->First()->GetPattern());
 		
 	}else{
 		pList->SetPattern("*");
@@ -417,11 +410,11 @@ long igdeNativeFoxFileDialog::onCBFilterChanged(FXObject*, FXSelector, void*){
 	int filePatternCount = 0;
 	
 	if(pFilePatternList){
-		filePatternCount = pFilePatternList->GetFilePatternCount();
+		filePatternCount = pFilePatternList->GetCount();
 	}
 	
 	if(index < filePatternCount){
-		pList->SetPattern(pFilePatternList->GetFilePatternAt(index)->GetPattern());
+		pList->SetPattern(pFilePatternList->GetAt(index)->GetPattern());
 		
 	}else{
 		pList->SetPattern("*");
@@ -595,8 +588,8 @@ void igdeNativeFoxFileDialog::pSetFilenameAndAppendExtension(const char *filenam
 	igdeFilePattern *pattern = nullptr;
 	
 	const int selection = pCBFilter->getCurrentItem();
-	if(selection >= 0 && selection < pFilePatternList->GetFilePatternCount()){
-		pattern = pFilePatternList->GetFilePatternAt(selection);
+	if(selection >= 0 && selection < pFilePatternList->GetCount()){
+		pattern = pFilePatternList->GetAt(selection);
 	}
 	
 	if(pattern){

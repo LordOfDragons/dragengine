@@ -741,7 +741,7 @@ igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener, bool use
 }
 
 void igdeUIHelper::EditPath(igdeContainer &form, const char *label, const char *description,
-const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
+const igdeFilePattern::List &customFilePatterns, igdeEditPath::Ref &editPath,
 const igdeEditPathListener::Ref &listener, bool useGameVFS){
 	EditPath(description, customFilePatterns, editPath, listener, useGameVFS);
 	FormLine(form, label, description, editPath);
@@ -755,7 +755,7 @@ igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener, bool use
 }
 
 void igdeUIHelper::EditPath(igdeContainer &parent, const char *description,
-const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
+const igdeFilePattern::List &customFilePatterns, igdeEditPath::Ref &editPath,
 const igdeEditPathListener::Ref &listener, bool useGameVFS){
 	EditPath(description, customFilePatterns, editPath, listener, useGameVFS);
 	parent.AddChild(editPath);
@@ -769,7 +769,7 @@ igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener, bool use
 	}
 }
 
-void igdeUIHelper::EditPath(const char *description, const igdeFilePatternList &customFilePatterns,
+void igdeUIHelper::EditPath(const char *description, const igdeFilePattern::List &customFilePatterns,
 igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener, bool useGameVFS){
 	editPath = igdeEditPath::Ref::New(*this, customFilePatterns, description, useGameVFS);
 	if(listener){

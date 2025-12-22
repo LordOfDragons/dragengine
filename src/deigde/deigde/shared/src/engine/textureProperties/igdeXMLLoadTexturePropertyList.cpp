@@ -26,8 +26,6 @@
 #include <string.h>
 
 #include "igdeXMLLoadTexturePropertyList.h"
-#include "igdeTextureProperty.h"
-#include "igdeTexturePropertyList.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -60,7 +58,7 @@ igdeXMLLoadTexturePropertyList::~igdeXMLLoadTexturePropertyList(){
 // Loading
 ////////////
 
-void igdeXMLLoadTexturePropertyList::ReadFromFile(igdeTexturePropertyList &list,
+void igdeXMLLoadTexturePropertyList::ReadFromFile(igdeTextureProperty::List &list,
 decBaseFileReader &file){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
@@ -70,7 +68,7 @@ decBaseFileReader &file){
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
-	decXmlElementTag * const root = xmlDoc->GetRoot();
+	const decXmlElementTag * const root = xmlDoc->GetRoot();
 	if(!root || root->GetName() != "texturePropertyList"){
 		DETHROW(deeInvalidParam);
 	}
@@ -84,12 +82,12 @@ decBaseFileReader &file){
 //////////////////////
 
 void igdeXMLLoadTexturePropertyList::pReadList(const decXmlElementTag &root,
-igdeTexturePropertyList &list){
+igdeTextureProperty::List &list){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
 	for(i=0; i<elementCount; i++){
-		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
 		if(!tag){
 			continue;
 		}
@@ -104,67 +102,61 @@ igdeTexturePropertyList &list){
 	}
 }
 
-void igdeXMLLoadTexturePropertyList::pReadProperty(const decXmlElementTag &root, igdeTexturePropertyList &list){
+void igdeXMLLoadTexturePropertyList::pReadProperty(const decXmlElementTag &root,
+igdeTextureProperty::List &list){
 	const int elementCount = root.GetElementCount();
-	igdeTextureProperty *property = nullptr;
 	int i;
 	
-	try{
-		property = new igdeTextureProperty(GetAttributeString(root, "name"));
-		
-		if(list.HasNamed(property->GetName())){
-			LogWarnGenericProblemValue(root, property->GetName().GetString(), "Duplicate property definition");
-			return;
+	const igdeTextureProperty::Ref property(igdeTextureProperty::Ref::New(GetAttributeString(root, "name")));
+	
+	if(list.HasMatching([&](const igdeTextureProperty &p){
+		return p.GetName() == property->GetName();
+	})){
+		LogWarnGenericProblemValue(root, property->GetName().GetString(), "Duplicate property definition");
+		return;
+	}
+	
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-		for(i=0; i<elementCount; i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "description"){
+			property->SetDescription(ReadMultilineString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "description"){
-				property->SetDescription(ReadMultilineString(*tag));
+		}else if(tagName == "type"){
+			const char * const identifier = GetCDataString(*tag);
+			
+			if(strcmp(identifier, "value") == 0){
+				property->SetType(igdeTextureProperty::eptValue);
 				
-			}else if(tagName == "type"){
-				const char * const identifier = GetCDataString(*tag);
+			}else if(strcmp(identifier, "color") == 0){
+				property->SetType(igdeTextureProperty::eptColor);
 				
-				if(strcmp(identifier, "value") == 0){
-					property->SetType(igdeTextureProperty::eptValue);
-					
-				}else if(strcmp(identifier, "color") == 0){
-					property->SetType(igdeTextureProperty::eptColor);
-					
-				}else if(strcmp(identifier, "image") == 0){
-					property->SetType(igdeTextureProperty::eptImage);
-					
-				}else{
-					LogErrorUnknownValue(*tag, identifier);
-				}
-				
-			}else if(tagName == "components"){
-				property->SetComponentCount(GetCDataInt(*tag));
-				
-			}else if(tagName == "default"){
-				pReadDefault(*tag, *property);
-				
-			}else if(tagName == "affects"){
-				pReadAffects(*tag, *property);
+			}else if(strcmp(identifier, "image") == 0){
+				property->SetType(igdeTextureProperty::eptImage);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogErrorUnknownValue(*tag, identifier);
 			}
+			
+		}else if(tagName == "components"){
+			property->SetComponentCount(GetCDataInt(*tag));
+			
+		}else if(tagName == "default"){
+			pReadDefault(*tag, *property);
+			
+		}else if(tagName == "affects"){
+			pReadAffects(*tag, *property);
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		list.Add(property);
-		
-	}catch(const deException &){
-		if(property){
-			delete property;
-		}
-		throw;
 	}
+	
+	list.Add(property);
 }
 
 void igdeXMLLoadTexturePropertyList::pReadDefault(const decXmlElementTag &root,

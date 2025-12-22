@@ -29,6 +29,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
 
@@ -40,6 +41,9 @@ class DE_DLL_EXPORT igdeGDCNavigationSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCNavigationSpace> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCNavigationSpace> List;
 	
 	
 	/** \brief Properties. */

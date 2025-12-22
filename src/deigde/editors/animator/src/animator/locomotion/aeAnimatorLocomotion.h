@@ -33,6 +33,7 @@
 
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/smooth/decSmoothFloat.h>
 #include <dragengine/common/math/smooth/decSmoothVector.h>
@@ -54,6 +55,8 @@ class deLogger;
  */
 class aeAnimatorLocomotion{
 public:
+	typedef decTObjectOrderedSet<aeAnimatorLocomotionLeg> LegList;
+	
 	/** Locomotion type. */
 	enum eLocomotionTypes{
 		/**
@@ -201,8 +204,7 @@ private:
 	float pDragonFootSpread;
 	float pDragonFootRadius;
 	
-	aeAnimatorLocomotionLeg **pLegs;
-	int pLegCount;
+	LegList pLegs;
 	int pUseLegPairCount;
 	float pLegBlendTime;
 	deColliderVolume *pLegGCCollider;
@@ -312,10 +314,10 @@ public:
 	/** Set locomotion type. */
 	void SetLocomotionType(eLocomotionTypes type);
 	
-	/** Retrieves the number of legs. */
-	inline int GetLegCount() const{ return pLegCount; }
-	/** Retrieves a leg by index. */
-	aeAnimatorLocomotionLeg *GetLegAt(int index) const;
+	/** Legs. */
+	LegList &GetLegs(){ return pLegs; }
+	const LegList &GetLegs() const{ return pLegs; }
+	
 	/** Retrieves the number of leg pairs to use. */
 	inline int GetUseLegPairCount() const{ return pUseLegPairCount; }
 	/** Sets the number of leg pairs to use. */

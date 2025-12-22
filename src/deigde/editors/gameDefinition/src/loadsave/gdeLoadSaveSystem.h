@@ -30,7 +30,7 @@
 #include "../gamedef/gdeGameDefinition.h"
 #include "../gamedef/objectClass/gdeObjectClass.h"
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class gdeWindowMain;
 class igdeGameDefinition;
@@ -45,10 +45,10 @@ private:
 	gdeWindowMain &pWindowMain;
 	
 	gdeLoadSaveGameDefinition pLSGameDef;
-	igdeFilePatternList pFPGameDef;
+	igdeFilePattern::List pFPGameDef;
 	
 	gdeLoadSaveXmlEClass pLSXmlEClass;
-	igdeFilePatternList pFPXmlEClass;
+	igdeFilePattern::List pFPXmlEClass;
 	
 	decString pFoxFPLGameDef;
 	decString pFoxFPLXmlEClass;
@@ -78,7 +78,7 @@ public:
 	void SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetGameDefFilePatterns() const{ return pFPGameDef; }
+	inline const igdeFilePattern::List &GetGameDefFilePatterns() const{ return pFPGameDef; }
 	
 	/** \brief FOX game definition file pattern list. */
 	inline const decString &GetFoxFPLGameDefinition() const{ return pFoxFPLGameDef; }
@@ -96,7 +96,7 @@ public:
 		const gdeObjectClass &objectClass, const char *filename);
 	
 	/** \brief XML element class file pattern list. */
-	inline const igdeFilePatternList &GetXmlEClassFilePatterns() const{ return pFPXmlEClass; }
+	inline const igdeFilePattern::List &GetXmlEClassFilePatterns() const{ return pFPXmlEClass; }
 	
 	/** \brief FOX XML element class file pattern list. */
 	inline const decString &GetFoxFPLXmlEClass() const{ return pFoxFPLXmlEClass; }
@@ -106,7 +106,7 @@ public:
 	
 private:
 	void pBuildFilePattern();
-	void pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl);
+	void pConvertToFOX(const igdeFilePattern::List &fpl, decString &foxfpl);
 };
 
 #endif

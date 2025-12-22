@@ -31,8 +31,6 @@
 #include "foxtoolkit.h"
 #include "../../igdeWidget.h"
 #include "../../igdeContainer.h"
-#include "../../filedialog/igdeFilePattern.h"
-#include "../../filedialog/igdeFilePatternList.h"
 #include "../../resources/igdeHotKey.h"
 
 #include <dragengine/common/exceptions.h>
@@ -321,20 +319,16 @@ int igdeUIFoxHelper::ModifiersFromEvent(const FXEvent &event){
 	return modifiers;
 }
 
-FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePatternList &filePatterns){
-	const int count = filePatterns.GetFilePatternCount();
+FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePattern::List &filePatterns){
 	decString foxString;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(i);
-		
-		if(i > 0){
+	filePatterns.Visit([&](const igdeFilePattern &fp){
+		if(!foxString.IsEmpty()){
 			foxString.AppendCharacter('\n');
 		}
 		
-		foxString.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
-	}
+		foxString.AppendFormat("%s (%s)", fp.GetName().GetString(), fp.GetPattern().GetString());
+	});
 	
 	//foxString.Append( "\nAll Files (*)" );
 	return FXString(foxString.GetString());

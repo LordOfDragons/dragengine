@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -39,6 +40,9 @@ class DE_DLL_EXPORT igdeGDCEnvMapProbe : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCEnvMapProbe> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCEnvMapProbe> List;
 	
 	
 	/** \brief Properties. */

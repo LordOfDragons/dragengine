@@ -30,7 +30,7 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeActionSelectFile.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../environment/igdeEnvironment.h"
@@ -168,7 +168,7 @@ protected:
 	
 private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
-	igdeFilePatternList pCustomPatternList;
+	igdeFilePattern::List pCustomPatternList;
 	
 	decObjectOrderedSet pSelectPathActions;
 	decString pDefaultPath;
@@ -194,7 +194,7 @@ public:
 	igdeEditPath(igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
 		const char *description = "", bool useGameVFS = true);
 	
-	igdeEditPath(igdeUIHelper &helper, const igdeFilePatternList &filePatterns,
+	igdeEditPath(igdeUIHelper &helper, const igdeFilePattern::List &filePatterns,
 		const char *description = "", bool useGameVFS = true);
 	
 	
@@ -229,8 +229,8 @@ public:
 	 * 
 	 * If you change the content call SetSelectPathActions() to make the changes effective.
 	 */
-	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
-	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
+	inline igdeFilePattern::List &GetCustomPatternList(){ return pCustomPatternList; }
+	inline const igdeFilePattern::List &GetCustomPatternList() const{ return pCustomPatternList; }
 	
 	
 	

@@ -584,7 +584,7 @@ public:
 		bool useGameVFS = true);
 	
 	void EditPath(igdeContainer &form, const char *label, const char *description,
-		const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
+		const igdeFilePattern::List &customFilePatterns, igdeEditPath::Ref &editPath,
 		const igdeEditPathListener::Ref &listener, bool useGameVFS = true);
 	
 	/**
@@ -598,14 +598,14 @@ public:
 		bool useGameVFS = true);
 	
 	void EditPath(igdeContainer &parent, const char *description,
-		const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
+		const igdeFilePattern::List &customFilePatterns, igdeEditPath::Ref &editPath,
 		const igdeEditPathListener::Ref &listener, bool useGameVFS = true);
 	
 	void EditPath(const char *description, igdeEnvironment::eFilePatternListTypes resourceType,
 		igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener,
 		bool useGameVFS = true);
 	
-	void EditPath(const char *description, const igdeFilePatternList &customFilePatterns,
+	void EditPath(const char *description, const igdeFilePattern::List &customFilePatterns,
 		igdeEditPath::Ref &editPath, const igdeEditPathListener::Ref &listener,
 		bool useGameVFS = true);
 	

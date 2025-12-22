@@ -38,8 +38,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/module/igdeEditorModule.h>
 
 #include <dragengine/deEngine.h>
@@ -203,45 +201,26 @@ void ceLoadSaveSystem::SaveLangPack(ceLangPack &langpack){
 //////////////////////
 
 void ceLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
 	
-	try{
-		pattern.Format("*%s", pLSConversation->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSConversation->GetName(),
-			pattern, pLSConversation->GetPattern());
-		pFPConversation.AddFilePattern(filePattern);
-		filePattern = nullptr;
-		
-		pattern.Format("*%s", pLSCTS->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSCTS->GetName(), pattern, pLSCTS->GetPattern());
-		pFPCTS.AddFilePattern(filePattern);
-		filePattern = nullptr;
-		
-		pattern.Format("*%s", pLSCTA->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSCTA->GetName(), pattern, pLSCTA->GetPattern());
-		pFPCTA.AddFilePattern(filePattern);
-		filePattern = nullptr;
-		
-		pattern.Format("*%s", pLSCTGS->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSCTGS->GetName(), pattern, pLSCTGS->GetPattern());
-		pFPCTGS.AddFilePattern(filePattern);
-		filePattern = nullptr;
-		
-		// language pack
-		pFPListLangPack.RemoveAllFilePatterns();
-		
-		pLSLangPacks.Visit([&](const ceLoadSaveLangPack &lslp){
-			pattern.Format("*%s", lslp.GetPattern().GetString());
-			filePattern = new igdeFilePattern(lslp.GetName(), pattern, lslp.GetPattern());
-			pFPListLangPack.AddFilePattern(filePattern);
-			filePattern = nullptr;
-		});
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	pattern.Format("*%s", pLSConversation->GetPattern().GetString());
+	pFPConversation.Add(igdeFilePattern::Ref::New(pLSConversation->GetName(),
+		pattern, pLSConversation->GetPattern()));
+	
+	pattern.Format("*%s", pLSCTS->GetPattern().GetString());
+	pFPCTS.Add(igdeFilePattern::Ref::New(pLSCTS->GetName(), pattern, pLSCTS->GetPattern()));
+	
+	pattern.Format("*%s", pLSCTA->GetPattern().GetString());
+	pFPCTA.Add(igdeFilePattern::Ref::New(pLSCTA->GetName(), pattern, pLSCTA->GetPattern()));
+	
+	pattern.Format("*%s", pLSCTGS->GetPattern().GetString());
+	pFPCTGS.Add(igdeFilePattern::Ref::New(pLSCTGS->GetName(), pattern, pLSCTGS->GetPattern()));
+	
+	// language pack
+	pFPListLangPack.RemoveAll();
+	
+	pLSLangPacks.Visit([&](const ceLoadSaveLangPack &lslp){
+		pattern.Format("*%s", lslp.GetPattern().GetString());
+		pFPListLangPack.Add(igdeFilePattern::Ref::New(lslp.GetName(), pattern, lslp.GetPattern()));
+	});
 }

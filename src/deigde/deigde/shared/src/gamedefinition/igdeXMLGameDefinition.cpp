@@ -57,7 +57,6 @@
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 #include "../gui/igdeMainWindow.h"
-#include "../gui/filedialog/igdeFilePatternList.h"
 #include "../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deEngine.h>
@@ -703,7 +702,10 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 	int e;
 	
 	texture->SetName(GetAttributeString(root, "name"));
-	if(gdccomponent.GetTextureList().HasNamed(texture->GetName().GetString())){
+	const decString &componentTextureName = texture->GetName();
+	if(gdccomponent.GetTextureList().HasMatching([&](const igdeGDCCTexture &t){
+		return t.GetName() == componentTextureName;
+	})){
 		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
 	}
 	
@@ -1665,7 +1667,10 @@ void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igd
 	int i;
 	
 	texture->SetName(GetAttributeString(root, "name"));
-	if(gdclass.GetComponentTextures().HasNamed(texture->GetName())){
+	const decString &textureName = texture->GetName();
+	if(gdclass.GetComponentTextures().HasMatching([&](const igdeGDCCTexture &t){
+		return t.GetName() == textureName;
+	})){
 		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
 	}
 	
@@ -1873,8 +1878,7 @@ void igdeXMLGameDefinition::pParseProperty(const decXmlElementTag &root, igdeGDP
 	}
 }
 
-void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePatternList &list){
-	igdeFilePattern *pattern = nullptr;
+void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePattern::List &list){
 	int e;
 	
 	for(e=0; e<root.GetElementCount(); e++){
@@ -1885,20 +1889,8 @@ void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "add"){
-			try{
-				pattern = new igdeFilePattern(GetAttributeString(*tag, "name"),
-					GetAttributeString(*tag, "pattern"), GetAttributeString(*tag, "default"));
-				
-				list.AddFilePattern(pattern);
-				pattern = nullptr;
-				
-			}catch(const deException &){
-				if(pattern){
-					delete pattern;
-				}
-				pattern = nullptr;
-				throw;
-			}
+			list.Add(igdeFilePattern::Ref::New(GetAttributeString(*tag, "name"),
+				GetAttributeString(*tag, "pattern"), GetAttributeString(*tag, "default")));
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
