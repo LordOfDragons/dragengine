@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 class igdeWindowMain;
@@ -58,7 +58,7 @@ protected:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	decPointerList pEditorTasks;
+	decTObjectOrderedSet<igdeStepableTask> pEditorTasks;
 	
 	igdeGameDefinition::Ref pOldProjectGameDef;
 	igdeGameDefinition::Ref pOldGameDef;

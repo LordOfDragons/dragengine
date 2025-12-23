@@ -110,7 +110,7 @@ bool igdeTaskSyncGameDefinition::Step(){
 		
 		pCreateEditorTasks();
 		
-		if(pEditorTasks.GetCount() == 0){
+		if(pEditorTasks.IsEmpty()){
 			pState = esFinished;
 			return false;
 		}
@@ -131,13 +131,12 @@ bool igdeTaskSyncGameDefinition::Step(){
 			return false;
 		}
 		
-		igdeStepableTask &activeTask = *static_cast<igdeStepableTask*>(pEditorTasks.GetAt(pTaskIndex));
+		igdeStepableTask &activeTask = pEditorTasks.GetAt(pTaskIndex);
 		if(activeTask.Step()){
 			pUpdateProgress(false);
 			break;
 		}
 		
-		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex);
 		pEditorTasks.SetAt(pTaskIndex, nullptr);
 		
 		pTaskIndex++;
@@ -168,15 +167,10 @@ bool igdeTaskSyncGameDefinition::Step(){
 //////////////////////
 
 void igdeTaskSyncGameDefinition::pCleanUp(){
-	const int taskCount = pEditorTasks.GetCount();
-	
-	while(pTaskIndex<taskCount){
-		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex++);
-	}
 }
 
 void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){
-	const igdeStepableTask &task = *static_cast<const igdeStepableTask*>(pEditorTasks.GetAt(pTaskIndex));
+	const igdeStepableTask &task = pEditorTasks.GetAt(pTaskIndex);
 	
 	if(force || fabsf(task.GetProgress() - pLastProgress) > 0.1f){
 		pLastProgress = task.GetProgress();
@@ -207,34 +201,22 @@ void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 void igdeTaskSyncGameDefinition::pCreateEditorTasks(){
 	const igdeEditorModuleManager &moduleManager = pWindowMain.GetModuleManager();
 	const int editorCount = moduleManager.GetModuleCount();
-	igdeStepableTask *editorTask = nullptr;
 	
-	try{
-		int i;
-		for(i=0; i<editorCount; i++){
-			const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt(i);
-			if(!editorDefinition.IsModuleRunning()){
-				continue;
-			}
-			
-			igdeEditorModule * const editor = editorDefinition.GetModule();
-			if(!editor){
-				continue;
-			}
-			
-			editorTask = editor->OnGameDefinitionChanged();
-			if(!editorTask){
-				continue;
-			}
-			
-			pEditorTasks.Add(editorTask);
-			editorTask = nullptr;
+	int i;
+	for(i=0; i<editorCount; i++){
+		const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt(i);
+		if(!editorDefinition.IsModuleRunning()){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(editorTask){
-			delete editorTask;
+		igdeEditorModule * const editor = editorDefinition.GetModule();
+		if(!editor){
+			continue;
 		}
-		throw;
+		
+		const igdeStepableTask::Ref editorTask(editor->OnGameDefinitionChanged());
+		if(editorTask){
+			pEditorTasks.Add(editorTask);
+		}
 	}
 }

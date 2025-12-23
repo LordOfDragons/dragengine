@@ -53,9 +53,9 @@ public:
 private:
 	aeAnimatorLocomotion *pLocomotion;
 	
-	igdeWDebugDrawerShape pDDSLocked;
+	igdeWDebugDrawerShape::Ref pDDSLocked;
 	igdeWCoordSysArrows pDDSLockedCF;
-	igdeWDebugDrawerShape pDDSPredict;
+	igdeWDebugDrawerShape::Ref pDDSPredict;
 	
 	decString pName;
 	

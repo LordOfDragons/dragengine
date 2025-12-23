@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGERTARGET_H_
 #define _IGDETRIGGERTARGET_H_
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 
@@ -46,7 +46,7 @@ private:
 	decString pName;
 	bool pFired;
 	bool pHasFired;
-	decObjectSet pListeners;
+	decTObjectOrderedSet<igdeTriggerListener> pListeners;
 	
 	
 	

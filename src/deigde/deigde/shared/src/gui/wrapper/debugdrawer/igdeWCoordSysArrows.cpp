@@ -50,12 +50,17 @@ igdeWCoordSysArrows::igdeWCoordSysArrows(){
 	pArrowSize = 0.005f;
 	pVisible = true;
 	
-	pDDSAxisX.SetEdgeColor(pColorAxisX);
-	pDDSAxisX.SetEdgeColor(pColorAxisX);
-	pDDSAxisY.SetEdgeColor(pColorAxisY);
-	pDDSAxisY.SetEdgeColor(pColorAxisY);
-	pDDSAxisZ.SetEdgeColor(pColorAxisZ);
-	pDDSAxisZ.SetEdgeColor(pColorAxisZ);
+	pDDSAxisX = igdeWDebugDrawerShape::Ref::New();
+	pDDSAxisX->SetEdgeColor(pColorAxisX);
+	pDDSAxisX->SetEdgeColor(pColorAxisX);
+	
+	pDDSAxisY = igdeWDebugDrawerShape::Ref::New();
+	pDDSAxisY->SetEdgeColor(pColorAxisY);
+	pDDSAxisY->SetEdgeColor(pColorAxisY);
+	
+	pDDSAxisZ = igdeWDebugDrawerShape::Ref::New();
+	pDDSAxisZ->SetEdgeColor(pColorAxisZ);
+	pDDSAxisZ->SetEdgeColor(pColorAxisZ);
 	
 	pRebuildArrows();
 }
@@ -70,9 +75,9 @@ igdeWCoordSysArrows::~igdeWCoordSysArrows(){
 ///////////////
 
 void igdeWCoordSysArrows::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
-	pDDSAxisX.SetParentDebugDrawer(debugDrawer);
-	pDDSAxisY.SetParentDebugDrawer(debugDrawer);
-	pDDSAxisZ.SetParentDebugDrawer(debugDrawer);
+	pDDSAxisX->SetParentDebugDrawer(debugDrawer);
+	pDDSAxisY->SetParentDebugDrawer(debugDrawer);
+	pDDSAxisZ->SetParentDebugDrawer(debugDrawer);
 }
 
 
@@ -81,9 +86,9 @@ void igdeWCoordSysArrows::SetPosition(const decVector &position){
 	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		pDDSAxisX.SetPosition(position);
-		pDDSAxisY.SetPosition(position);
-		pDDSAxisZ.SetPosition(position);
+		pDDSAxisX->SetPosition(position);
+		pDDSAxisY->SetPosition(position);
+		pDDSAxisZ->SetPosition(position);
 	}
 }
 
@@ -91,9 +96,9 @@ void igdeWCoordSysArrows::SetOrientation(const decQuaternion &orientation){
 	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		pDDSAxisX.SetOrientation(orientation);
-		pDDSAxisY.SetOrientation(orientation);
-		pDDSAxisZ.SetOrientation(orientation);
+		pDDSAxisX->SetOrientation(orientation);
+		pDDSAxisY->SetOrientation(orientation);
+		pDDSAxisZ->SetOrientation(orientation);
 	}
 }
 
@@ -101,9 +106,9 @@ void igdeWCoordSysArrows::SetScale(const decVector &scale){
 	if(!scale.IsEqualTo(pScale)){
 		pScale = scale;
 		
-		pDDSAxisX.SetScale(scale);
-		pDDSAxisY.SetScale(scale);
-		pDDSAxisZ.SetScale(scale);
+		pDDSAxisX->SetScale(scale);
+		pDDSAxisY->SetScale(scale);
+		pDDSAxisZ->SetScale(scale);
 	}
 }
 
@@ -113,8 +118,8 @@ void igdeWCoordSysArrows::SetAxisXColor(const decColor &color){
 	if(!color.IsEqualTo(pColorAxisX)){
 		pColorAxisX = color;
 		
-		pDDSAxisX.SetEdgeColor(pColorAxisX);
-		pDDSAxisX.SetEdgeColor(pColorAxisX);
+		pDDSAxisX->SetEdgeColor(pColorAxisX);
+		pDDSAxisX->SetEdgeColor(pColorAxisX);
 	}
 }
 
@@ -122,8 +127,8 @@ void igdeWCoordSysArrows::SetAxisYColor(const decColor &color){
 	if(!color.IsEqualTo(pColorAxisY)){
 		pColorAxisY = color;
 		
-		pDDSAxisY.SetEdgeColor(pColorAxisY);
-		pDDSAxisY.SetEdgeColor(pColorAxisY);
+		pDDSAxisY->SetEdgeColor(pColorAxisY);
+		pDDSAxisY->SetEdgeColor(pColorAxisY);
 	}
 }
 
@@ -131,8 +136,8 @@ void igdeWCoordSysArrows::SetAxisZColor(const decColor &color){
 	if(!color.IsEqualTo(pColorAxisZ)){
 		pColorAxisZ = color;
 		
-		pDDSAxisZ.SetEdgeColor(pColorAxisZ);
-		pDDSAxisZ.SetEdgeColor(pColorAxisZ);
+		pDDSAxisZ->SetEdgeColor(pColorAxisZ);
+		pDDSAxisZ->SetEdgeColor(pColorAxisZ);
 	}
 }
 
@@ -162,9 +167,9 @@ void igdeWCoordSysArrows::SetVisible(bool visible){
 	if(visible != pVisible){
 		pVisible = visible;
 		
-		pDDSAxisX.SetVisible(visible);
-		pDDSAxisY.SetVisible(visible);
-		pDDSAxisZ.SetVisible(visible);
+		pDDSAxisX->SetVisible(visible);
+		pDDSAxisY->SetVisible(visible);
+		pDDSAxisZ->SetVisible(visible);
 	}
 }
 

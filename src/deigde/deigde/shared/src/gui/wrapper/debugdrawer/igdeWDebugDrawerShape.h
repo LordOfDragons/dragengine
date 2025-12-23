@@ -25,6 +25,8 @@
 #ifndef _IGDEWDEBUGDRAWERSHAPE_H_
 #define _IGDEWDEBUGDRAWERSHAPE_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
@@ -48,11 +50,17 @@ class deOcclusionMesh;
  * rendering editing information in the world without having to deal with the
  * low level tasks involved. The debug drawer shape is placed in the provided
  * debug drawer. If no debug drawer is set this equals to the debug drawer shape
- * being invisible. This class does not hold a reference to the provided debug
- * drawer. Therefore make sure the debug drawer is held as long as a debug drawer
- * wrapper object is using the debug drawer.
+ * being invisible.
  */
-class DE_DLL_EXPORT igdeWDebugDrawerShape{
+class DE_DLL_EXPORT igdeWDebugDrawerShape : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWDebugDrawerShape> Ref;
+	
+	/** \brief List of debug drawer shapes. */
+	typedef decTObjectOrderedSet<igdeWDebugDrawerShape> List;
+	
+	
 private:
 	deDebugDrawer::Ref pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;
@@ -78,12 +86,14 @@ public:
 	/** \brief Create wrapper. */
 	igdeWDebugDrawerShape();
 	
+	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWDebugDrawerShape();
+	~igdeWDebugDrawerShape() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent debug drawer or nullptr. */

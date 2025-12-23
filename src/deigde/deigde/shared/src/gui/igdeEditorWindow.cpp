@@ -121,8 +121,8 @@ void igdeEditorWindow::RecentFilesChanged(){
 void igdeEditorWindow::OnGameProjectChanged(){
 }
 
-igdeStepableTask *igdeEditorWindow::OnGameDefinitionChanged(){
-	return nullptr;
+igdeStepableTask::Ref igdeEditorWindow::OnGameDefinitionChanged(){
+	return {};
 }
 
 void igdeEditorWindow::DisplayException(const deException &exception){

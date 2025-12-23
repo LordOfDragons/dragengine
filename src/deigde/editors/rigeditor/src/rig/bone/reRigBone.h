@@ -28,6 +28,8 @@
 #include "../shape/reRigShape.h"
 #include "../constraint/reRigConstraint.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -39,7 +41,6 @@ class reRig;
 class reRigShape;
 class reRigConstraint;
 class deCollider;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class deEngine;
 
@@ -62,8 +63,8 @@ private:
 	int pOrder;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSBone;
-	igdeWDebugDrawerShape *pDDSCmp;
+	igdeWDebugDrawerShape::Ref pDDSBone;
+	igdeWDebugDrawerShape::Ref pDDSCmp;
 	igdeWCoordSysArrows *pDDSCoordSys;
 	deColliderVolume::Ref pCollider;
 	

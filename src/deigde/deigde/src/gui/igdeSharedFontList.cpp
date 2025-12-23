@@ -33,12 +33,9 @@
 // Internal Class
 ///////////////////
 
-igdeSharedFontList::cFont::cFont(const igdeFont::sConfiguration &config, igdeFont *font) :
-pConfig(config),
-pFont(font){
-}
-
-igdeSharedFontList::cFont::~cFont(){
+igdeSharedFontList::cFont::cFont(const igdeFont::sConfiguration &aconfig, igdeFont *afont) :
+config(aconfig),
+font(afont){
 }
 
 
@@ -59,18 +56,14 @@ igdeSharedFontList::~igdeSharedFontList(){
 ///////////////
 
 const igdeFont::Ref &igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &configuration){
-	const int count = pFonts.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		cFont * const cfont = static_cast<cFont*>(pFonts.GetAt(i));
-		if(configuration == cfont->GetConfig()){
-			return cfont->GetFont();
-		}
+	const cFont * const found = pFonts.FindOrDefault([&](const cFont &font){
+		return configuration == font.config;
+	});
+	if(found){
+		return found->font;
 	}
 	
 	const cFont::Ref cfont(cFont::Ref::New(configuration, igdeFont::Ref::New(pEnvironment, configuration)));
 	pFonts.Add(cfont);
-	
-	return cfont->GetFont();
+	return cfont->font;
 }

@@ -25,6 +25,8 @@
 #ifndef _RERIGCONSTRAINT_H_
 #define _RERIGCONSTRAINT_H_
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -37,7 +39,6 @@ class reRigBone;
 class deRigConstraint;
 class reRigConstraintDof;
 class deCollider;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class igdeWAngleRange;
 class deEngine;
@@ -55,11 +56,11 @@ private:
 	reRigBone *pRigBone;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSConstraint;
-	igdeWDebugDrawerShape *pDDSJointError;
+	igdeWDebugDrawerShape::Ref pDDSConstraint;
+	igdeWDebugDrawerShape::Ref pDDSJointError;
 	igdeWCoordSysArrows *pDDSCoordSys;
-	igdeWDebugDrawerShape *pDDSOffset;
-	igdeWDebugDrawerShape *pDDSRangeLinear;
+	igdeWDebugDrawerShape::Ref pDDSOffset;
+	igdeWDebugDrawerShape::Ref pDDSRangeLinear;
 	igdeWAngleRange *pDDSRangeAngularX;
 	igdeWAngleRange *pDDSRangeAngularY;
 	igdeWAngleRange *pDDSRangeAngularZ;

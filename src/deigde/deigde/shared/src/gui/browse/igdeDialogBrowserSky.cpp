@@ -96,7 +96,9 @@ bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const c
 
 bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, decString &sky, const char *title){
 	const igdeGDSkyManager &skyManager = *owner->GetGameDefinition()->GetSkyManager();
-	igdeGDSky *gdSky = skyManager.GetSkyList().GetWithPath(sky);
+	igdeGDSky *gdSky = skyManager.GetSkyList().FindOrDefault([&](const igdeGDSky &s){
+		return s.GetPath() == sky;
+	});
 	if(SelectSky(owner, gdSky, title)){
 		sky = gdSky->GetPath();
 		return true;

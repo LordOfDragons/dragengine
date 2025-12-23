@@ -28,10 +28,9 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
-
-
-class igdeWDebugDrawerShape;
 
 
 
@@ -49,8 +48,8 @@ private:
 	
 	deDebugDrawer::Ref pDDSpace;
 	deDebugDrawer::Ref pDDBlocker;
-	igdeWDebugDrawerShape *pDDSSpace;
-	igdeWDebugDrawerShape *pDDSBlocker;
+	igdeWDebugDrawerShape::Ref pDDSSpace;
+	igdeWDebugDrawerShape::Ref pDDSBlocker;
 	
 	
 	

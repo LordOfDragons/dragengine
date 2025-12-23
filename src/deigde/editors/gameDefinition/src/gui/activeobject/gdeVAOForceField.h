@@ -28,10 +28,11 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/forcefield/deForceField.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -50,7 +51,7 @@ private:
 	deForceField::Ref pForceField;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	

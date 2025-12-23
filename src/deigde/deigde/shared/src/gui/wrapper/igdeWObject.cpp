@@ -66,7 +66,6 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/shape/decShapeBox.h>
@@ -259,11 +258,9 @@ void igdeWObject::SetCamera(deCamera *camera){
 	
 	pCamera = camera;
 	
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->CameraChanged();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.CameraChanged();
+	});
 }
 
 void igdeWObject::SetGDClass(igdeGDClass *gdClass){
@@ -476,37 +473,29 @@ void igdeWObject::SetDynamicCollider(bool dynamic){
 
 
 void igdeWObject::Update(float elapsed){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->Update(elapsed);
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.Update(elapsed);
+	});
 	
 	pUpdateColliderShapes();
 }
 
 void igdeWObject::ResetComponentTextures(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->ResetComponentTextures();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.ResetComponentTextures();
+	});
 }
 
 void igdeWObject::ResetPhysics(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->ResetPhysics();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.ResetPhysics();
+	});
 }
 
 void igdeWObject::VisitSubObjects(igdeWOSOVisitor &visitor){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->Visit(visitor);
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.Visit(visitor);
+	});
 }
 
 void igdeWObject::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
@@ -514,19 +503,9 @@ void igdeWObject::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 }
 
 bool igdeWObject::AllSubObjectsFinishedLoading() const{
-	if(pAsyncLoadCounter != 0){
-		return false;
-	}
-	
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(!((igdeWOSubObject*)pSubObjects.GetAt(i))->AllSubObjectsFinishedLoading()){
-			return false;
-		}
-	}
-	
-	return true;
+	return pAsyncLoadCounter == 0 && !pSubObjects.HasMatching([](igdeWOSubObject &so){
+		return !so.AllSubObjectsFinishedLoading();
+	});
 }
 
 
@@ -556,11 +535,9 @@ void igdeWObject::SetOutlineSkin(deSkin *skin){
 		pOutlineDynamicSkin->AddRenderable(renderableThickess);
 	}
 	
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->OutlineSkinChanged();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.OutlineSkinChanged();
+	});
 }
 
 void igdeWObject::SetOutlineSkinSharedEditing(){
@@ -739,11 +716,9 @@ void igdeWObject::SetColliderUserPointer(void *userPointer){
 	}
 	pEnvironment.SetColliderUserPointer(pColliderFallback, userPointer);
 	
-	const int count = pCollidersInteraction.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pEnvironment.SetColliderUserPointer((deCollider*)pCollidersInteraction.GetAt(i), userPointer);
-	}
+	pCollidersInteraction.Visit([&](deCollider *c){
+		pEnvironment.SetColliderUserPointer(c, userPointer);
+	});
 	
 	pSubObjectsColliderUserPointerChanged();
 }
@@ -805,13 +780,10 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 		pColliderFallback->SetEnabled(pVisible && !pPartiallyHidden);
 	}
 	
-	const int count = pCollidersInteraction.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deCollider * const colliderInteract = (deCollider*) pCollidersInteraction.GetAt(i);
-		pEnvironment.SetColliderDelegee(colliderInteract, nullptr);
-		pEnvironment.SetColliderUserPointer(colliderInteract, nullptr);
-	}
+	pCollidersInteraction.Visit([&](deCollider *c){
+		pEnvironment.SetColliderDelegee(c, nullptr);
+		pEnvironment.SetColliderUserPointer(c, nullptr);
+	});
 	
 	if(!collider){
 		return;
@@ -824,11 +796,10 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 	pEnvironment.SetColliderDelegee(collider, pListenerCollider);
 	pEnvironment.SetColliderUserPointer(collider, userPointer);
 	
-	for(i=0; i<count; i++){
-		deCollider * const colliderInteract = (deCollider*) pCollidersInteraction.GetAt(i);
-		pEnvironment.SetColliderDelegee(colliderInteract, pListenerCollider);
-		pEnvironment.SetColliderUserPointer(colliderInteract, userPointer);
-	}
+	pCollidersInteraction.Visit([&](deCollider *c){
+		pEnvironment.SetColliderDelegee(c, pListenerCollider);
+		pEnvironment.SetColliderUserPointer(c, userPointer);
+	});
 }
 
 void igdeWObject::AddInteractionCollider(deCollider *collider){
@@ -850,16 +821,9 @@ void igdeWObject::RemoveInteractionCollider(deCollider *collider){
 }
 
 void igdeWObject::UpdateAnyContentVisibile(){
-	const int count = pSubObjects.GetCount();
-	bool anyContentVisible = false;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((igdeWOSubObject*)pSubObjects.GetAt(i))->IsContentVisible()){
-			anyContentVisible = true;
-			break;
-		}
-	}
+	const bool anyContentVisible = pSubObjects.HasMatching([](igdeWOSubObject &so){
+		return so.IsContentVisible();
+	});
 	
 	if(anyContentVisible == pAnyContentVisible){
 		return;
@@ -881,11 +845,9 @@ void igdeWObject::pCleanUp(){
 	pDestroySubObjects();
 	SetWorld(nullptr);
 	
-	const int count = pCollidersInteraction.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pEnvironment.SetColliderUserPointer((deCollider*) pCollidersInteraction.GetAt(i), nullptr);
-	}
+	pCollidersInteraction.Visit([&](deCollider *c){
+		pEnvironment.SetColliderUserPointer(c, nullptr);
+	});
 	
 	if(pColliderFallback){
 		pEnvironment.SetColliderDelegee(pColliderFallback, nullptr);
@@ -1084,77 +1046,58 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 void igdeWObject::pDestroySubObjects(){
 	pSubObjects.RemoveAll();
 }
-
 void igdeWObject::pSubObjectsReattachToColliders(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->ReattachToColliders();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.ReattachToColliders();
+	});
 }
 
 void igdeWObject::pSubObjectsInitTriggers(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->InitTriggers();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.InitTriggers();
+	});
 }
 
 void igdeWObject::pSubObjectsUpdateGeometry(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateGeometry();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateGeometry();
+	});
 }
 
 void igdeWObject::pSubObjectsUpdateTriggers(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateTriggers();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateTriggers();
+	});
 }
 
 void igdeWObject::pSubObjectsUpdateVisibility(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateVisibility();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateVisibility();
+	});
 }
 
 void igdeWObject::pSubObjectsUpdateLayerMasks(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateLayerMasks();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateLayerMasks();
+	});
 }
 
 void igdeWObject::pSubObjectsUpdateCollisionFilter(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateCollisionFilter();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateCollisionFilter();
+	});
 }
 
 void igdeWObject::pSubObjectsColliderUserPointerChanged(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->ColliderUserPointerChanged();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.ColliderUserPointerChanged();
+	});
 }
 
 void igdeWObject::pSubObjectsAllFinishedLoading(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->OnAllSubObjectsFinishedLoading();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.OnAllSubObjectsFinishedLoading();
+	});
 }
 
 void igdeWObject::pCheckAsyncLoadFinished(){
@@ -1181,18 +1124,16 @@ void igdeWObject::pUpdateProperties(){
 	
 	pAsyncLoadCounter = 1;
 	
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
+	pSubObjects.Visit([&](igdeWOSubObject &so){
 		pAsyncLoadCounter++;
 		try{
-			((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateParameters();
+			so.UpdateParameters();
 			
 		}catch(const deException &e){
 			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 			pAsyncLoadCounter--;
 		}
-	}
+	});
 	
 	pAsyncLoadCounter--;
 	pCheckAsyncLoadFinished();
@@ -1202,11 +1143,9 @@ void igdeWObject::pUpdateProperties(){
 }
 
 void igdeWObject::pUpdateColliderResponseType(){
-	const int count = pSubObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeWOSubObject*)pSubObjects.GetAt(i))->UpdateColliderResponseType();
-	}
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		so.UpdateColliderResponseType();
+	});
 	
 	deCollider::eResponseType responseType;
 	if(pColliderComponent){
@@ -1229,18 +1168,15 @@ void igdeWObject::pUpdateColliderShapes(){
 	}
 	
 	pDirtyFallbackColliderShape = false;
-	
-	const int count = pSubObjects.GetCount();
 	decShapeList shapeList;
-	int i;
-	for(i=0; i<count; i++){
-		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
-		if(!subObject.HasBoxExtends()){
-			continue;
+	
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		if(!so.HasBoxExtends()){
+			return;
 		}
 		
-		const decVector &boxMinExtend = subObject.GetBoxMinExtends();
-		const decVector &boxMaxExtend = subObject.GetBoxMaxExtends();
+		const decVector &boxMinExtend = so.GetBoxMinExtends();
+		const decVector &boxMaxExtend = so.GetBoxMaxExtends();
 		decVector boxSize((boxMaxExtend - boxMinExtend) * 0.5f);
 		decVector boxCenter((boxMinExtend + boxMaxExtend) * 0.5f);
 		
@@ -1252,7 +1188,7 @@ void igdeWObject::pUpdateColliderShapes(){
 		boxCenter.z *= pScaling.z;
 		
 		shapeList.Add(new decShapeBox(boxSize, boxCenter));
-	}
+	});
 	
 	if(shapeList.GetCount() == 0){
 		// ensure the user can still select the object
@@ -1267,29 +1203,25 @@ void igdeWObject::pPrepareExtends(){
 		return;
 	}
 	
-	const int count = pSubObjects.GetCount();
-	int i;
-	
 	pHasBoxExtends = false;
 	pBoxMinExtend.SetZero();
 	pBoxMaxExtend.SetZero();
 	
-	for(i=0; i<count; i++){
-		const igdeWOSubObject &subObject = *((igdeWOSubObject*)pSubObjects.GetAt(i));
-		if(!subObject.HasBoxExtends()){
-			continue;
+	pSubObjects.Visit([&](igdeWOSubObject &so){
+		if(!so.HasBoxExtends()){
+			return;
 		}
 		
 		if(pHasBoxExtends){
-			pBoxMinExtend.SetSmallest(subObject.GetBoxMinExtends());
-			pBoxMaxExtend.SetLargest(subObject.GetBoxMaxExtends());
+			pBoxMinExtend.SetSmallest(so.GetBoxMinExtends());
+			pBoxMaxExtend.SetLargest(so.GetBoxMaxExtends());
 			
 		}else{
-			pBoxMinExtend = subObject.GetBoxMinExtends();
-			pBoxMaxExtend = subObject.GetBoxMaxExtends();
+			pBoxMinExtend = so.GetBoxMinExtends();
+			pBoxMaxExtend = so.GetBoxMaxExtends();
 			pHasBoxExtends = true;
 		}
-	}
+	});
 	
 	if(pHasBoxExtends){
 		const decVector boxSize(pBoxMaxExtend - pBoxMinExtend);

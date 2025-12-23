@@ -28,10 +28,11 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/light/gdeOCLight.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/light/deLight.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 class deComponent;
@@ -55,7 +56,7 @@ private:
 	deLight::Ref pLight;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	

@@ -25,11 +25,12 @@
 #ifndef _IGDERESOURCELOADER_H_
 #define _IGDERESOURCELOADER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeResourceLoaderTask.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
 class igdeEnvironment;
-class igdeResourceLoaderTask;
 class igdeResourceLoaderListener;
 
 
@@ -46,7 +47,7 @@ class igdeResourceLoaderListener;
  */
 class DE_DLL_EXPORT igdeResourceLoader{
 	igdeEnvironment &pEnvironment;
-	decObjectOrderedSet pTasks;
+	decTObjectOrderedSet<igdeResourceLoaderTask> pTasks;
 	
 	
 	

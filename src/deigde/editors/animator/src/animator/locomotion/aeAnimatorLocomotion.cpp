@@ -182,40 +182,47 @@ pTurnIP(0.0f)
 		pDebugDrawer->SetVisible(false);
 		animator->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
 		
-		pDDSCollider.SetParentDebugDrawer(pDebugDrawer);
-		pDDSCollider.SetVisible(true);
-		pDDSCollider.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-		pDDSCollider.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+		pDDSCollider = igdeWDebugDrawerShape::Ref::New();
+		pDDSCollider->SetParentDebugDrawer(pDebugDrawer);
+		pDDSCollider->SetVisible(true);
+		pDDSCollider->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+		pDDSCollider->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
-		pDDSSensorGround.SetParentDebugDrawer(pDebugDrawer);
-		pDDSSensorGround.SetVisible(true);
+		pDDSSensorGround = igdeWDebugDrawerShape::Ref::New();
+		pDDSSensorGround->SetParentDebugDrawer(pDebugDrawer);
+		pDDSSensorGround->SetVisible(true);
 		
-		pDDSDragonColBody.SetParentDebugDrawer(pDebugDrawer);
-		pDDSDragonColBody.SetVisible(false);
-		pDDSDragonColBody.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-		pDDSDragonColBody.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+		pDDSDragonColBody = igdeWDebugDrawerShape::Ref::New();
+		pDDSDragonColBody->SetParentDebugDrawer(pDebugDrawer);
+		pDDSDragonColBody->SetVisible(false);
+		pDDSDragonColBody->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+		pDDSDragonColBody->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
-		pDDSDragonColHead.SetParentDebugDrawer(pDebugDrawer);
-		pDDSDragonColHead.SetVisible(false);
-		pDDSDragonColHead.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-		pDDSDragonColHead.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+		pDDSDragonColHead = igdeWDebugDrawerShape::Ref::New();
+		pDDSDragonColHead->SetParentDebugDrawer(pDebugDrawer);
+		pDDSDragonColHead->SetVisible(false);
+		pDDSDragonColHead->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+		pDDSDragonColHead->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
-		pDDSDragonColHands.SetParentDebugDrawer(pDebugDrawer);
-		pDDSDragonColHands.SetVisible(false);
-		pDDSDragonColHands.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-		pDDSDragonColHands.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+		pDDSDragonColHands = igdeWDebugDrawerShape::Ref::New();
+		pDDSDragonColHands->SetParentDebugDrawer(pDebugDrawer);
+		pDDSDragonColHands->SetVisible(false);
+		pDDSDragonColHands->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+		pDDSDragonColHands->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
-		pDDSDragonColFeet.SetParentDebugDrawer(pDebugDrawer);
-		pDDSDragonColFeet.SetVisible(false);
-		pDDSDragonColFeet.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-		pDDSDragonColFeet.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+		pDDSDragonColFeet = igdeWDebugDrawerShape::Ref::New();
+		pDDSDragonColFeet->SetParentDebugDrawer(pDebugDrawer);
+		pDDSDragonColFeet->SetVisible(false);
+		pDDSDragonColFeet->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+		pDDSDragonColFeet->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		
 		int i;
 		for(i=0; i<4; i++){
-			pDDSGroundPlane[i].SetParentDebugDrawer(pDebugDrawer);
-			pDDSGroundPlane[i].SetVisible(true);
-			pDDSGroundPlane[i].SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-			pDDSGroundPlane[i].SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+			pDDSGroundPlane[i] = igdeWDebugDrawerShape::Ref::New();
+			pDDSGroundPlane[i]->SetParentDebugDrawer(pDebugDrawer);
+			pDDSGroundPlane[i]->SetVisible(true);
+			pDDSGroundPlane[i]->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+			pDDSGroundPlane[i]->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 		}
 		
 		// create collider
@@ -405,57 +412,70 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		pGroundPlaneCollider->SetShapes(shapeListGPC);
 		
 		// update debug drawer
-		pDDSCollider.RemoveAllShapes();
-		pDDSDragonColBody.RemoveAllShapes();
-		pDDSDragonColHead.RemoveAllShapes();
-		pDDSDragonColHands.RemoveAllShapes();
-		pDDSDragonColFeet.RemoveAllShapes();
+		pDDSCollider->RemoveAllShapes();
+		pDDSDragonColBody->RemoveAllShapes();
+		pDDSDragonColHead->RemoveAllShapes();
+		pDDSDragonColHands->RemoveAllShapes();
+		pDDSDragonColFeet->RemoveAllShapes();
 		
 		for(i=0; i<4; i++){
-			pDDSGroundPlane[i].RemoveAllShapes();
+			pDDSGroundPlane[i]->RemoveAllShapes();
 		}
 		
 		try{
 			if(pUseLegPairCount == 1){
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pDDSCollider.AddShape(shape);
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
+				pDDSCollider->AddShape(shape);
 				shape = nullptr;
 				
-				shape = new decShapeSphere(pColliderRadius);				pDDSDragonColHands.AddShape(shape);
+				shape = new decShapeSphere(pColliderRadius);
+				pDDSDragonColHands->AddShape(shape);
 				shape = nullptr;
 				
-				shape = new decShapeSphere(pColliderRadius);				pDDSDragonColFeet.AddShape(shape);
+				shape = new decShapeSphere(pColliderRadius);
+				pDDSDragonColFeet->AddShape(shape);
 				shape = nullptr;
 				
 			}else{
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pDDSCollider.AddShape(shape);
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
+				pDDSCollider->AddShape(shape);
 				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				pDDSCollider.AddShape(shape);
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
+				pDDSCollider->AddShape(shape);
 				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				pDDSCollider.AddShape(shape);
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
+				pDDSCollider->AddShape(shape);
 				shape = nullptr;
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDDSCollider.AddShape(shape);
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+				pDDSCollider->AddShape(shape);
 				shape = nullptr;
 				*/
 				
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				pDDSDragonColBody.AddShape(shape);
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
+				pDDSDragonColBody->AddShape(shape);
 				shape = nullptr;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				pDDSDragonColBody.AddShape(shape);
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
+				pDDSDragonColBody->AddShape(shape);
 				shape = nullptr;
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDDSDragonColBody.AddShape(shape);
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+				pDDSDragonColBody->AddShape(shape);
 				shape = nullptr;
 				*/
 				
-				shape = new decShapeSphere(pDragonColHandsRadius);				pDDSDragonColHands.AddShape(shape);
+				shape = new decShapeSphere(pDragonColHandsRadius);
+				pDDSDragonColHands->AddShape(shape);
 				shape = nullptr;
 				
-				shape = new decShapeSphere(pDragonColFeetRadius);				pDDSDragonColFeet.AddShape(shape);
+				shape = new decShapeSphere(pDragonColFeetRadius);
+				pDDSDragonColFeet->AddShape(shape);
 				shape = nullptr;
 			}
 			
 			for(i=0; i<4; i++){
-				shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));				pDDSGroundPlane[i].AddShape(shape);
+				shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));
+				pDDSGroundPlane[i]->AddShape(shape);
 				shape = nullptr;
 			}
 			
@@ -490,13 +510,13 @@ void aeAnimatorLocomotion::UpdateTouchSensors(){
 	}
 	
 	// debug drawer shapes
-	pDDSSensorGround.RemoveAllShapes();
+	pDDSSensorGround->RemoveAllShapes();
 	
 	try{
-		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);		pDDSSensorGround.AddShape(shape);
+		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);		pDDSSensorGround->AddShape(shape);
 		shape = nullptr;
 		
-		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);		pDDSSensorGround.AddShape(shape);
+		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);		pDDSSensorGround->AddShape(shape);
 		shape = nullptr;
 		
 	}catch(const deException &){
@@ -507,12 +527,12 @@ void aeAnimatorLocomotion::UpdateTouchSensors(){
 
 void aeAnimatorLocomotion::UpdateTSColors(){
 	if(pTouchSensor->IsEmpty()){
-		pDDSSensorGround.SetEdgeColor(decColor(0.0f, 0.5f, 0.0f, 0.25f));
-		pDDSSensorGround.SetFillColor(decColor(0.0f, 0.5f, 0.0f, 0.1f));
+		pDDSSensorGround->SetEdgeColor(decColor(0.0f, 0.5f, 0.0f, 0.25f));
+		pDDSSensorGround->SetFillColor(decColor(0.0f, 0.5f, 0.0f, 0.1f));
 		
 	}else{
-		pDDSSensorGround.SetEdgeColor(decColor(0.5f, 0.0f, 0.0f, 0.25f));
-		pDDSSensorGround.SetFillColor(decColor(0.5f, 0.0f, 0.0f, 0.1f));
+		pDDSSensorGround->SetEdgeColor(decColor(0.5f, 0.0f, 0.0f, 0.25f));
+		pDDSSensorGround->SetFillColor(decColor(0.5f, 0.0f, 0.0f, 0.1f));
 	}
 }
 
@@ -569,12 +589,12 @@ void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
 		//pTSGroundExtents.Set( 0.4f, 0.1f, 0.4f );
 		pTSGroundExtents.Set(0.4f, 0.5f, 0.8f);
 		
-		pDDSCollider.SetVisible(true);
+		pDDSCollider->SetVisible(true);
 		
-		pDDSDragonColBody.SetVisible(false);
-		pDDSDragonColHead.SetVisible(false);
-		pDDSDragonColHands.SetVisible(false);
-		pDDSDragonColFeet.SetVisible(false);
+		pDDSDragonColBody->SetVisible(false);
+		pDDSDragonColHead->SetVisible(false);
+		pDDSDragonColHands->SetVisible(false);
+		pDDSDragonColFeet->SetVisible(false);
 		
 		pLegs[0]->SetVisBoneName("ikb.foot.l");
 		pLegs[1]->SetVisBoneName("ikb.foot.r");
@@ -583,19 +603,19 @@ void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
 		pTSGroundPosition.Set(0.0f, 0.0f, 0.0f);
 		pTSGroundExtents.Set(0.6f, 0.8f, 2.0f);
 		/*
-		pDDSCollider.SetVisible(false);
+		pDDSCollider->SetVisible(false);
 		
-		pDDSDragonColBody.SetVisible(true);
-		pDDSDragonColHead.SetVisible(true);
-		pDDSDragonColHands.SetVisible(true);
-		pDDSDragonColFeet.SetVisible(true);
+		pDDSDragonColBody->SetVisible(true);
+		pDDSDragonColHead->SetVisible(true);
+		pDDSDragonColHands->SetVisible(true);
+		pDDSDragonColFeet->SetVisible(true);
 		*/
-		pDDSCollider.SetVisible(true);
+		pDDSCollider->SetVisible(true);
 		
-		pDDSDragonColBody.SetVisible(false);
-		pDDSDragonColHead.SetVisible(false);
-		pDDSDragonColHands.SetVisible(false);
-		pDDSDragonColFeet.SetVisible(false);
+		pDDSDragonColBody->SetVisible(false);
+		pDDSDragonColHead->SetVisible(false);
+		pDDSDragonColHands->SetVisible(false);
+		pDDSDragonColFeet->SetVisible(false);
 		
 		pLegs.GetAt(0)->SetVisBoneName("ikb.hand.l");
 		pLegs.GetAt(1)->SetVisBoneName("ikb.hand.r");
@@ -1063,8 +1083,8 @@ void aeAnimatorLocomotion::PostUpdate(){
 		decDVector testpos1(0.0, (double)pColliderPosition.y, 0.3); // 0.4-0.5 for running
 		decDVector testpos2(0.0, (double)pColliderPosition.y, -0.3);
 		
-		pDDSDragonColHands.SetPosition(testpos1);
-		pDDSDragonColFeet.SetPosition(testpos2);
+		pDDSDragonColHands->SetPosition(testpos1);
+		pDDSDragonColFeet->SetPosition(testpos2);
 		
 	}else{
 		//decDVector testpos1( pDragonColHandsPos );
@@ -1072,17 +1092,17 @@ void aeAnimatorLocomotion::PostUpdate(){
 		decDVector testpos1(0.0, (double)pColliderPosition.y, 0.3); // 0.4-0.5 for running
 		decDVector testpos2(0.0, (double)pColliderPosition.y, -0.3);
 		
-		pDDSDragonColHands.SetPosition(testpos1);
-		pDDSDragonColFeet.SetPosition(testpos2);
+		pDDSDragonColHands->SetPosition(testpos1);
+		pDDSDragonColFeet->SetPosition(testpos2);
 	}
 	
-	pDDSGroundPlane[0].SetPosition(decDVector((double)pGroundPlaneLeft,
+	pDDSGroundPlane[0]->SetPosition(decDVector((double)pGroundPlaneLeft,
 		(double)pGroundPlaneOffsetFL, (double)pGroundPlaneFront));
-	pDDSGroundPlane[1].SetPosition(decDVector((double)pGroundPlaneRight,
+	pDDSGroundPlane[1]->SetPosition(decDVector((double)pGroundPlaneRight,
 		(double)pGroundPlaneOffsetFR, (double)pGroundPlaneFront));
-	pDDSGroundPlane[2].SetPosition(decDVector((double)pGroundPlaneLeft,
+	pDDSGroundPlane[2]->SetPosition(decDVector((double)pGroundPlaneLeft,
 		(double)pGroundPlaneOffsetBL, (double)pGroundPlaneBack));
-	pDDSGroundPlane[3].SetPosition(decDVector((double)pGroundPlaneRight,
+	pDDSGroundPlane[3]->SetPosition(decDVector((double)pGroundPlaneRight,
 		(double)pGroundPlaneOffsetBR, (double)pGroundPlaneBack));
 	
 	for(l=0; l<legCount; l++){
@@ -1105,15 +1125,15 @@ void aeAnimatorLocomotion::pCleanUp(){
 	int i;
 	
 	for(i=0; i<4; i++){
-		pDDSGroundPlane[i].SetParentDebugDrawer(nullptr);
+		pDDSGroundPlane[i]->SetParentDebugDrawer(nullptr);
 	}
 	
-	pDDSSensorGround.SetParentDebugDrawer(nullptr);
-	pDDSDragonColBody.SetParentDebugDrawer(nullptr);
-	pDDSDragonColHead.SetParentDebugDrawer(nullptr);
-	pDDSDragonColHands.SetParentDebugDrawer(nullptr);
-	pDDSDragonColFeet.SetParentDebugDrawer(nullptr);
-	pDDSCollider.SetParentDebugDrawer(nullptr);
+	pDDSSensorGround->SetParentDebugDrawer(nullptr);
+	pDDSDragonColBody->SetParentDebugDrawer(nullptr);
+	pDDSDragonColHead->SetParentDebugDrawer(nullptr);
+	pDDSDragonColHands->SetParentDebugDrawer(nullptr);
+	pDDSDragonColFeet->SetParentDebugDrawer(nullptr);
+	pDDSCollider->SetParentDebugDrawer(nullptr);
 	
 	if(pAnimator){
 		deWorld *world = pAnimator->GetEngineWorld();

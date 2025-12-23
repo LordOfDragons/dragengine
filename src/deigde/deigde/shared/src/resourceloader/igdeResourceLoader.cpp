@@ -70,7 +70,7 @@ void igdeResourceLoader::Update(){
 			continue;
 		}
 		
-		const igdeResourceLoaderTask::Ref task((igdeResourceLoaderTask*)pTasks.GetAt(index));
+		const igdeResourceLoaderTask::Ref task(pTasks.GetAt(index));
 		pTasks.RemoveFrom(index);
 		
 		if(info.GetResource()){
@@ -94,7 +94,7 @@ deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listen
 		task = pTasks.GetCount() - 1;
 	}
 	
-	((igdeResourceLoaderTask*)pTasks.GetAt(task))->AddListener(listener);
+	pTasks.GetAt(task)->AddListener(listener);
 }
 
 
@@ -104,21 +104,14 @@ deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listen
 
 int igdeResourceLoader::pIndexOfTaskWith(const char *filename,
 deResourceLoader::eResourceType resourceType){
-	int i;
-	for(i=0; i<pTasks.GetCount(); i++){
-		const igdeResourceLoaderTask &task = *((igdeResourceLoaderTask*)pTasks.GetAt(i));
-		if(task.GetFilename() == filename && task.GetResourceType() == resourceType){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pTasks.IndexOfMatching([&](const igdeResourceLoaderTask &t){
+		return t.GetFilename() == filename && t.GetResourceType() == resourceType;
+	});
 }
 
 void igdeResourceLoader::pAddTask(const char *filename,
 deResourceLoader::eResourceType resourceType){
-	const igdeResourceLoaderTask::Ref task(igdeResourceLoaderTask::Ref::New(filename, resourceType));
-	pTasks.Add(task);
+	pTasks.Add(igdeResourceLoaderTask::Ref::New(filename, resourceType));
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	engine.GetResourceLoader()->AddLoadRequest(engine.GetVirtualFileSystem(), filename, resourceType);

@@ -190,9 +190,6 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = nullptr;
@@ -210,7 +207,7 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-	pDDSCenter = new igdeWDebugDrawerShape;
+	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 	pDDSCenter->AddSphereShape(0.05f, decVector());
 	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	

@@ -273,8 +273,8 @@ void peeWindowMain::OnGameProjectChanged(){
 	CreateNewEmitter();
 }
 
-igdeStepableTask *peeWindowMain::OnGameDefinitionChanged(){
-	return new peeTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref peeWindowMain::OnGameDefinitionChanged(){
+	return peeTaskSyncGameDefinition::Ref::New(*this);
 }
 
 

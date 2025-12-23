@@ -25,6 +25,7 @@
 #ifndef _IGDEEDITORWINDOW_H_
 #define _IGDEEDITORWINDOW_H_
 
+#include "igdeStepableTask.h"
 #include "layout/igdeContainerBox.h"
 #include "../utils/igdeRecentFiles.h"
 
@@ -36,7 +37,6 @@ class igdeAction;
 class igdeEditorModule;
 class igdeMenuCascade;
 class igdeToolBar;
-class igdeStepableTask;
 
 class deException;
 
@@ -172,7 +172,7 @@ public:
 	 * 
 	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/** \brief Display exception error in a message dialog. */
 	void DisplayException(const deException &exception);

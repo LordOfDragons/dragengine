@@ -35,6 +35,9 @@ class peeWindowMain;
  * \brief Synchronize game definition task.
  */
 class peeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<peeTaskSyncGameDefinition> Ref;
+	
 private:
 	peeWindowMain &pWindowMain;
 	

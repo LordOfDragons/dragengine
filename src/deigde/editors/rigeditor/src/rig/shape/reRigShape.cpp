@@ -88,7 +88,7 @@ reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSShape = new igdeWDebugDrawerShape;
+		pDDSShape = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDSColor();
 		pDDSShape->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -227,9 +227,6 @@ bool reRigShape::IsVisible() const{
 void reRigShape::pRSCleanUp(){
 	pRigBone = nullptr;
 	pSetRig(nullptr, false);
-	if(pDDSShape){
-		delete pDDSShape;
-	}
 }
 
 

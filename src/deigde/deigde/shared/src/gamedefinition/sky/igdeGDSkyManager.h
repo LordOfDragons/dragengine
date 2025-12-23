@@ -25,7 +25,7 @@
 #ifndef _IGDEGDSKYMANAGER_H_
 #define _IGDEGDSKYMANAGER_H_
 
-#include "igdeGDSkyList.h"
+#include "igdeGDSky.h"
 #include "../igdeGDCategory.h"
 
 #include <dragengine/common/string/decString.h>
@@ -41,7 +41,7 @@ class decPath;
  */
 class DE_DLL_EXPORT igdeGDSkyManager{
 private:
-	igdeGDSkyList pSkyList;
+	igdeGDSky::List pSkyList;
 	igdeGDCategory::Ref pCategories;
 	decString pDefaultPath;
 	decStringList pAutoFindPath;
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky list. */
-	inline const igdeGDSkyList &GetSkyList() const{ return pSkyList; }
+	inline const igdeGDSky::List &GetSkyList() const{ return pSkyList; }
 	
 	/** \brief Add sky. */
 	void AddSky(igdeGDSky *sky);

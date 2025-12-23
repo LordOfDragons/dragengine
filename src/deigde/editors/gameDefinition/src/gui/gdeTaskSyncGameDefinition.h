@@ -35,6 +35,9 @@ class gdeWindowMain;
  * \brief Synchronize game definition task.
  */
 class gdeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<gdeTaskSyncGameDefinition> Ref;
+	
 private:
 	gdeWindowMain &pWindowMain;
 	

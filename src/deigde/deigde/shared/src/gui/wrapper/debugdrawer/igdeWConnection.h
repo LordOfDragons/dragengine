@@ -40,9 +40,9 @@
  */
 class DE_DLL_EXPORT igdeWConnection{
 private:
-	igdeWDebugDrawerShape pDDSConnection;
-	igdeWDebugDrawerShape pDDSArrowAnchor;
-	igdeWDebugDrawerShape pDDSArrowTarget;
+	igdeWDebugDrawerShape::Ref pDDSConnection;
+	igdeWDebugDrawerShape::Ref pDDSArrowAnchor;
+	igdeWDebugDrawerShape::Ref pDDSArrowTarget;
 	
 	decVector pAnchorPosition;
 	decVector pTargetPosition;

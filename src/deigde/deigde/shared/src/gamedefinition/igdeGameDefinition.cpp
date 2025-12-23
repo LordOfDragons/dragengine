@@ -136,8 +136,13 @@ void igdeGameDefinition::UpdateWith(const igdeGameDefinition &gameDefinition){
 	pSkyManager->UpdateWith(*gameDefinition.pSkyManager);
 	pParticleEmitterManager.UpdateWith(gameDefinition.pParticleEmitterManager);
 	
-	pListWorldProperties.SetToDeepCopyFrom(gameDefinition.pListWorldProperties);
-	pListDecalProperties.SetToDeepCopyFrom(gameDefinition.pListDecalProperties);
+	gameDefinition.pListWorldProperties.Visit([&](const igdeGDProperty &p){
+		pListWorldProperties.Add(igdeGDProperty::Ref::New(p));
+	});
+	
+	gameDefinition.pListDecalProperties.Visit([&](const igdeGDProperty &p){
+		pListDecalProperties.Add(igdeGDProperty::Ref::New(p));
+	});
 }
 
 void igdeGameDefinition::UpdateWithElementClasses(const igdeGameDefinition &gameDefinition){

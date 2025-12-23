@@ -461,7 +461,7 @@ public:
 	 * 
 	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	/*@}*/
 	
 	

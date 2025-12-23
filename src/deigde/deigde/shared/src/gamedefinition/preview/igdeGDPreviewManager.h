@@ -25,7 +25,11 @@
 #ifndef _IGDEGDPREVIEWMANAGER_H_
 #define _IGDEGDPREVIEWMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "creators/igdeGDPCObjectClass.h"
+#include "creators/igdeGDPCSkin.h"
+#include "creators/igdeGDPCSky.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -68,9 +72,9 @@ private:
 	deImage::Ref pImageFailed;
 	int pImageSize;
 	
-	decObjectList pCreatorsObjectClass;
-	decObjectList pCreatorsSkin;
-	decObjectList pCreatorsSky;
+	decTObjectOrderedSet<igdeGDPCObjectClass> pCreatorsObjectClass;
+	decTObjectOrderedSet<igdeGDPCSkin> pCreatorsSkin;
+	decTObjectOrderedSet<igdeGDPCSky> pCreatorsSky;
 	bool pHasCreators;
 	
 	

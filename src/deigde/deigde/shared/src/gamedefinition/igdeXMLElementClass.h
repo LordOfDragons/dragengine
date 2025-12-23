@@ -29,7 +29,7 @@
 #include "../utils/igdeBaseXML.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 class igdeGameDefinition;
 class igdeGDClassManager;
@@ -80,7 +80,7 @@ protected:
 	
 	
 		decString value;
-		decObjectDictionary map;
+		decTObjectDictionary<cMap> map;
 		cMap();
 		
 	protected:

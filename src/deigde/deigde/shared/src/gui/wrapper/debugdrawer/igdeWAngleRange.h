@@ -39,7 +39,7 @@
  */
 class DE_DLL_EXPORT igdeWAngleRange{
 private:
-	igdeWDebugDrawerShape pDDSDisk;
+	igdeWDebugDrawerShape::Ref pDDSDisk;
 	
 	decVector pPosition;
 	decQuaternion pOrientation;

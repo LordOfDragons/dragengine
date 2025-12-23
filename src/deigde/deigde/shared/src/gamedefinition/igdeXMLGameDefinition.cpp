@@ -1974,10 +1974,15 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		LogErrorMissingTag(root, "name");
 	}
 	
-	if(manager.GetEmitterList().HasWithPath(path)){
+	if(manager.GetEmitterList().HasMatching([&](const igdeGDParticleEmitter &em){
+		return em.GetPath() == path;
+	})){
 		LogErrorGenericProblemValue(root, path, "A particle emitter with this path exists already.");
 	}
-	if(manager.GetEmitterList().HasWithName(name)){
+	
+	if(manager.GetEmitterList().HasMatching([&](const igdeGDParticleEmitter &em){
+		return em.GetName() == name;
+	})){
 		LogErrorGenericProblemValue(root, name, "A particle emitter with this name exists already.");
 	}
 	
@@ -2105,10 +2110,14 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		LogErrorMissingTag(root, "name");
 	}
 	
-	if(skyManager.GetSkyList().HasWithPath(strPath)){
+	if(skyManager.GetSkyList().HasMatching([&](const igdeGDSky &s){
+		return s.GetPath() == strPath;
+	})){
 		LogErrorGenericProblemValue(root, strPath, "A sky with this path exists already.");
 	}
-	if(skyManager.GetSkyList().HasWithName(strName)){
+	if(skyManager.GetSkyList().HasMatching([&](const igdeGDSky &s){
+		return s.GetName() == strName;
+	})){
 		LogErrorGenericProblemValue(root, strName, "A sky with this name exists already.");
 	}
 	

@@ -356,8 +356,8 @@ void aeWindowMain::OnGameProjectChanged(){
 	CreateNewAnimator();
 }
 
-igdeStepableTask *aeWindowMain::OnGameDefinitionChanged(){
-	return new aeTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref aeWindowMain::OnGameDefinitionChanged(){
+	return aeTaskSyncGameDefinition::Ref::New(*this);
 }
 
 

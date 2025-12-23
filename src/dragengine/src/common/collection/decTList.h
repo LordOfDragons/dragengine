@@ -212,7 +212,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	int IndexOfMatching(Evaluator &&evaluator) const{
+	inline int IndexOfMatching(Evaluator &&evaluator) const{
 		return IndexOfMatching<Evaluator>(evaluator);
 	}
 	
@@ -236,7 +236,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	int IndexOfMatching(Evaluator &&evaluator, int start) const{
+	inline int IndexOfMatching(Evaluator &&evaluator, int start) const{
 		return IndexOfMatching<Evaluator>(evaluator, start);
 	}
 	
@@ -264,7 +264,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool HasMatching(Evaluator &&evaluator) const{
+	inline bool HasMatching(Evaluator &&evaluator) const{
 		return HasMatching<Evaluator>(evaluator);
 	}
 	
@@ -686,7 +686,7 @@ public:
 	}
 	
 	template<typename Visitor>
-	void Visit(Visitor &&visitor, int from, int to, int step = 1) const{
+	inline void Visit(Visitor &&visitor, int from, int to, int step = 1) const{
 		Visit<Visitor>(visitor, from, to, step);
 	}
 	
@@ -705,7 +705,7 @@ public:
 	}
 	
 	template<typename Visitor>
-	void Visit(Visitor &&visitor, int from) const{
+	inline void Visit(Visitor &&visitor, int from) const{
 		Visit<Visitor>(visitor, from);
 	}
 	
@@ -718,7 +718,9 @@ public:
 	}
 	
 	template<typename Visitor>
-	inline void Visit(Visitor &&visitor) const{ Visit<Visitor>(visitor); }
+	inline void Visit(Visitor &&visitor) const{
+		Visit<Visitor>(visitor);
+	}
 	
 	template<typename Visitor>
 	void VisitReverse(Visitor &visitor) const{
@@ -729,7 +731,99 @@ public:
 	}
 	
 	template<typename Visitor>
-	inline void VisitReverse(Visitor &&visitor) const{ VisitReverse<Visitor>(visitor); }
+	inline void VisitReverse(Visitor &&visitor) const{
+		VisitReverse<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Visit elements with index.
+	 * \param[in] visitor Visitor callable invoked as visitor(int,T).
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	template<typename Visitor>
+	void VisitIndexed(Visitor &visitor, int from, int to, int step = 1) const {
+		DEASSERT_TRUE(step != 0)
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		
+		int i;
+		if(step > 0){
+			DEASSERT_TRUE(to <= pCount)
+			
+			for(i=from; i<to; i+=step){
+				visitor(i, pElements[i]);
+			}
+			
+		}else{
+			DEASSERT_TRUE(to < pCount)
+			
+			for(i=from; i>=to; i+=step){
+				visitor(i, pElements[i]);
+			}
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitIndexed(Visitor &&visitor, int from, int to, int step = 1) const{
+		VisitIndexed<Visitor>(visitor, from, to, step);
+	}
+	
+	template<typename Visitor>
+	void VisitIndexed(Visitor &visitor, int from) const {
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		
+		int i;
+		for(i=from; i<pCount; i++){
+			visitor(i, pElements[i]);
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitIndexed(Visitor &&visitor, int from) const{
+		VisitIndexed<Visitor>(visitor, from);
+	}
+	
+	template<typename Visitor>
+	void VisitIndexed(Visitor &visitor) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			visitor(i, pElements[i]);
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitIndexed(Visitor &&visitor) const{
+		VisitIndexed<Visitor>(visitor);
+	}
+	
+	template<typename Visitor>
+	void VisitReverseIndexed(Visitor &visitor) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			visitor(i, pElements[i]);
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitReverseIndexed(Visitor &&visitor) const{
+		VisitReverseIndexed<Visitor>(visitor);
+	}
 	
 	
 	/**
@@ -780,7 +874,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const T* &found, int from, int to, int step = 1) const{
+	inline bool Find(Evaluator &&evaluator, const T* &found, int from, int to, int step = 1) const{
 		return Find<Evaluator>(evaluator, found, from, to, step);
 	}
 	
@@ -803,7 +897,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const T* &found, int from) const{
+	inline bool Find(Evaluator &&evaluator, const T* &found, int from) const{
 		return Find<Evaluator>(evaluator, found, from);
 	}
 	
@@ -856,7 +950,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue, from, to, step);
 	}
 	
@@ -867,7 +961,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue, from);
 	}
 	
@@ -940,7 +1034,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTList<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
+	inline decTList<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
 		return Collect<Evaluator>(evaluator, from, to, step);
 	}
 	
@@ -963,7 +1057,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTList<T,TP> Collect(Evaluator &&evaluator, int from) const{
+	inline decTList<T,TP> Collect(Evaluator &&evaluator, int from) const{
 		return Collect<Evaluator>(evaluator, from);
 	}
 	
@@ -1033,7 +1127,7 @@ public:
 	}
 	
 	template<typename Combiner>
-	T Fold(Combiner &&combiner, int from, int to, int step = 1) const{
+	inline T Fold(Combiner &&combiner, int from, int to, int step = 1) const{
 		return Fold<Combiner>(combiner, from, to, step);
 	}
 	
@@ -1049,7 +1143,7 @@ public:
 	}
 	
 	template<typename Combiner>
-	T Fold(Combiner &&combiner, int from) const{
+	inline T Fold(Combiner &&combiner, int from) const{
 		return Fold<Combiner>(combiner, from);
 	}
 	
@@ -1070,7 +1164,7 @@ public:
 	}
 	
 	template<typename Combiner>
-	T Fold(Combiner &&combiner) const{
+	inline T Fold(Combiner &&combiner) const{
 		return Fold<Combiner>(combiner);
 	}
 	
@@ -1113,7 +1207,7 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	R Inject(const R &value, Combiner &&combiner, int from, int to, int step = 1) const{
+	inline R Inject(const R &value, Combiner &&combiner, int from, int to, int step = 1) const{
 		return Inject<R,Combiner>(value, combiner, from, to, step);
 	}
 	
@@ -1123,7 +1217,7 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	R Inject(const R &value, Combiner &&combiner, int from) const{
+	inline R Inject(const R &value, Combiner &&combiner, int from) const{
 		return Inject<R,Combiner>(value, combiner, from);
 	}
 	
@@ -1138,7 +1232,7 @@ public:
 	}
 	
 	template<typename R, typename Combiner>
-	R Inject(const R &value, Combiner &&combiner) const{
+	inline R Inject(const R &value, Combiner &&combiner) const{
 		return Inject<R,Combiner>(value, combiner);
 	}
 	
@@ -1217,7 +1311,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	void RemoveIf(Evaluator &&evaluator, int from, int to, int step = 1){
+	inline void RemoveIf(Evaluator &&evaluator, int from, int to, int step = 1){
 		RemoveIf<Evaluator>(evaluator, from, to, step);
 	}
 	
@@ -1239,7 +1333,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	void RemoveIf(Evaluator &&evaluator, int from){
+	inline void RemoveIf(Evaluator &&evaluator, int from){
 		RemoveIf<Evaluator>(evaluator, from);
 	}
 	
@@ -1262,7 +1356,9 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline void RemoveIf(Evaluator &&evaluator){ RemoveIf<Evaluator>(evaluator); }
+	inline void RemoveIf(Evaluator &&evaluator){
+		RemoveIf<Evaluator>(evaluator);
+	}
 	
 	
 	/** \brief Sort elements in place. */
@@ -1274,7 +1370,7 @@ public:
 	}
 	
 	template<typename Comparator>
-	void Sort(Comparator &&comparator){
+	inline void Sort(Comparator &&comparator){
 		Sort<Comparator>(comparator);
 	}
 	
@@ -1297,7 +1393,7 @@ public:
 	}
 	
 	template<typename Comparator>
-	decTList<T,TP> GetSorted(Comparator &&comparator) const{
+	inline decTList<T,TP> GetSorted(Comparator &&comparator) const{
 		return GetSorted<Comparator>(comparator);
 	}
 	

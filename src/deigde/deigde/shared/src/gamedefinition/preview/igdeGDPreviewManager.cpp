@@ -97,9 +97,8 @@ void igdeGDPreviewManager::SetDirectorySky(const char *directory){
 
 
 void igdeGDPreviewManager::OnAfterEngineStart(){
-	if(pImageCreating || pImageFailed){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NULL(pImageCreating)
+	DEASSERT_NULL(pImageFailed)
 	
 	deImageManager &imgmgr = *pEnvironment.GetEngineController()->GetEngine()->GetImageManager();
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemIGDE();
@@ -124,12 +123,9 @@ void igdeGDPreviewManager::Update(){
 	}
 	
 	// update object classes
-	int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDPCObjectClass &creator = *((igdeGDPCObjectClass*)pCreatorsObjectClass.GetAt(i));
+	pCreatorsObjectClass.RemoveIf([&](igdeGDPCObjectClass &creator){
 		if(!creator.FinishCreation()){
-			continue;
+			return false;
 		}
 		
 		if(creator.GetImage()){
@@ -139,19 +135,13 @@ void igdeGDPreviewManager::Update(){
 		}else{
 			creator.GetGDClass()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsObjectClass.RemoveFrom(i);
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// update skins
-	count = pCreatorsSkin.GetCount();
-	
-	for(i=0; i<count; i++){
-		igdeGDPCSkin &creator = *((igdeGDPCSkin*)pCreatorsSkin.GetAt(i));
+	pCreatorsSkin.RemoveIf([&](igdeGDPCSkin &creator){
 		if(!creator.FinishCreation()){
-			continue;
+			return false;
 		}
 		
 		if(creator.GetImage()){
@@ -161,18 +151,13 @@ void igdeGDPreviewManager::Update(){
 		}else{
 			creator.GetGDSkin()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsSkin.RemoveFrom(i);
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// update skies
-	count = pCreatorsSky.GetCount();
-	for(i=0; i<count; i++){
-		igdeGDPCSky &creator = *((igdeGDPCSky*)pCreatorsSky.GetAt(i));
+	pCreatorsSky.RemoveIf([&](igdeGDPCSky &creator){
 		if(!creator.FinishCreation()){
-			continue;
+			return false;
 		}
 		
 		if(creator.GetImage()){
@@ -182,16 +167,13 @@ void igdeGDPreviewManager::Update(){
 		}else{
 			creator.GetGDSky()->SetPreviewImage(pImageFailed);
 		}
-		
-		pCreatorsSky.RemoveFrom(i);
-		i--;
-		count--;
-	}
+		return true;
+	});
 	
 	// check if still some creators are left
-	pHasCreators = pCreatorsObjectClass.GetCount() > 0
-		|| pCreatorsSkin.GetCount() > 0
-		|| pCreatorsSky.GetCount() > 0;
+	pHasCreators = pCreatorsObjectClass.IsNotEmpty()
+		|| pCreatorsSkin.IsNotEmpty()
+		|| pCreatorsSky.IsNotEmpty();
 }
 
 void igdeGDPreviewManager::AbortAllCreators(){
@@ -200,25 +182,21 @@ void igdeGDPreviewManager::AbortAllCreators(){
 	}
 	
 	// update object classes
-	int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeGDPCObjectClass*)pCreatorsObjectClass.GetAt(i))->AbortCreation();
-	}
+	pCreatorsObjectClass.Visit([&](igdeGDPCObjectClass &c){
+		c.AbortCreation();
+	});
 	pCreatorsObjectClass.RemoveAll();
 	
 	// update skins
-	count = pCreatorsSkin.GetCount();
-	for(i=0; i<count; i++){
-		((igdeGDPCSkin*)pCreatorsSkin.GetAt(i))->AbortCreation();
-	}
+	pCreatorsSkin.Visit([&](igdeGDPCSkin &c){
+		c.AbortCreation();
+	});
 	pCreatorsSkin.RemoveAll();
 	
 	// update skies
-	count = pCreatorsSky.GetCount();
-	for(i=0; i<count; i++){
-		((igdeGDPCSky*)pCreatorsSky.GetAt(i))->AbortCreation();
-	}
+	pCreatorsSky.Visit([&](igdeGDPCSky &c){
+		c.AbortCreation();
+	});
 	pCreatorsSky.RemoveAll();
 	
 	pHasCreators = false;
@@ -227,9 +205,7 @@ void igdeGDPreviewManager::AbortAllCreators(){
 
 
 deImage *igdeGDPreviewManager::GetPreviewObjectClass(igdeGDClass *gdclass) const{
-	if(!gdclass){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdclass)
 	
 	if(gdclass->GetPreviewImage()){
 		return gdclass->GetPreviewImage();
@@ -242,18 +218,15 @@ deImage *igdeGDPreviewManager::GetPreviewObjectClass(igdeGDClass *gdclass) const
 }
 
 void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGDPreviewListener *listener){
-	if(!gdclass || !listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdclass)
+	DEASSERT_NOTNULL(listener)
 	
-	const int count = pCreatorsObjectClass.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDPCObjectClass &creator = *((igdeGDPCObjectClass*)pCreatorsObjectClass.GetAt(i));
-		if(creator.GetGDClass() == gdclass){
-			creator.AddListener(listener);
-			return;
-		}
+	igdeGDPCObjectClass * const found = pCreatorsObjectClass.FindOrDefault([&](const igdeGDPCObjectClass &c){
+		return c.GetGDClass() == gdclass;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
 	const igdeGDPCObjectClass::Ref creator(igdeGDPCObjectClass::Ref::New(
@@ -266,9 +239,7 @@ void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGD
 }
 
 void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
-	if(!gdclass){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdclass)
 	
 	gdclass->SetPreviewImage(nullptr);
 	
@@ -278,9 +249,7 @@ void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
 
 
 deImage *igdeGDPreviewManager::GetPreviewSkin(igdeGDSkin *gdskin) const{
-	if(!gdskin){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdskin)
 	
 	if(gdskin->GetPreviewImage()){
 		return gdskin->GetPreviewImage();
@@ -293,18 +262,15 @@ deImage *igdeGDPreviewManager::GetPreviewSkin(igdeGDSkin *gdskin) const{
 }
 
 void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewListener *listener){
-	if(!gdskin || !listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdskin)
+	DEASSERT_NOTNULL(listener)
 	
-	const int count = pCreatorsSkin.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDPCSkin &creator = *((igdeGDPCSkin*)pCreatorsSkin.GetAt(i));
-		if(creator.GetGDSkin() == gdskin){
-			creator.AddListener(listener);
-			return;
-		}
+	igdeGDPCSkin * const found = pCreatorsSkin.FindOrDefault([&](const igdeGDPCSkin &c){
+		return c.GetGDSkin() == gdskin;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
 	const igdeGDPCSkin::Ref creator(igdeGDPCSkin::Ref::New(
@@ -317,9 +283,7 @@ void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewLi
 }
 
 void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
-	if(!gdskin){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdskin)
 	
 	gdskin->SetPreviewImage(nullptr);
 	
@@ -329,9 +293,7 @@ void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
 
 
 deImage *igdeGDPreviewManager::GetPreviewSky(igdeGDSky *gdsky) const{
-	if(!gdsky){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdsky)
 	
 	if(gdsky->GetPreviewImage()){
 		return gdsky->GetPreviewImage();
@@ -344,18 +306,15 @@ deImage *igdeGDPreviewManager::GetPreviewSky(igdeGDSky *gdsky) const{
 }
 
 void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListener *listener){
-	if(!gdsky || !listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdsky)
+	DEASSERT_NOTNULL(listener)
 	
-	const int count = pCreatorsSky.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDPCSky &creator = *((igdeGDPCSky*)pCreatorsSky.GetAt(i));
-		if(creator.GetGDSky() == gdsky){
-			creator.AddListener(listener);
-			return;
-		}
+	igdeGDPCSky * const found = pCreatorsSky.FindOrDefault([&](const igdeGDPCSky &c){
+		return c.GetGDSky() == gdsky;
+	});
+	if(found){
+		found->AddListener(listener);
+		return;
 	}
 	
 	const igdeGDPCSky::Ref creator(igdeGDPCSky::Ref::New(
@@ -368,9 +327,7 @@ void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListe
 }
 
 void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
-	if(!gdsky){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(gdsky)
 	
 	gdsky->SetPreviewImage(nullptr);
 	
@@ -385,19 +342,18 @@ void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
 void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &typedir, const decString &filename) const{
 	image = nullptr;
 	
-	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	decPath path;
 	path.SetFromUnix(pPathCache);
 	path.AddComponent(typedir);
 	path.AddComponent(filename + ".png");
 	
-	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
+	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	if(!vfs->ExistsFile(path)){
 		return;
 	}
 	
 	try{
-		image = engine.GetImageManager()->LoadImage(vfs, path.GetPathUnix(), "/");
+		image = pEnvironment.GetEngineController()->GetEngine()->GetImageManager()->LoadImage(vfs, path.GetPathUnix(), "/");
 		if(image->GetBitCount() != 8){
 			image = nullptr;
 		}
@@ -408,9 +364,7 @@ void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &t
 }
 
 void igdeGDPreviewManager::pSaveToFile(deImage *image, const decString &typedir, const decString &filename) const{
-	if(!image){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(image)
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	decPath path;
@@ -429,12 +383,12 @@ void igdeGDPreviewManager::pSaveToFile(deImage *image, const decString &typedir,
 }
 
 void igdeGDPreviewManager::pDeleteFile(const decString &typedir, const decString &filename) const{
-	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	decPath path;
 	path.SetFromUnix(pPathCache);
 	path.AddComponent(typedir);
 	path.AddComponent(filename + ".png");
 	
+	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	if(!vfs->ExistsFile(path)){
 		return;
 	}

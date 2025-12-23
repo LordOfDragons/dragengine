@@ -28,9 +28,10 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/camera/gdeOCCamera.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -48,7 +49,7 @@ private:
 	gdeOCCamera::Ref pOCCamera;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	

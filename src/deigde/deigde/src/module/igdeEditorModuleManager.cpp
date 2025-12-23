@@ -103,7 +103,7 @@ void igdeEditorModuleManager::SetActiveModule(igdeEditorModuleDefinition *module
 	pWindowMain.SwitchToModuleWindow();
 	
 	if(module){
-		if(pRecentlyUsed.GetAt(0) != module){
+		if(pRecentlyUsed.First() != module){
 			ChangeModuleRecentUsedPosition(module, 0);
 			pWindowMain.GetConfigurationLocal().SaveConfiguration();
 		}
@@ -118,15 +118,11 @@ void igdeEditorModuleManager::SetActiveModule(igdeEditorModuleDefinition *module
 }
 
 void igdeEditorModuleManager::ActivateMostRecentModule(){
-	const int count = pRecentlyUsed.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pRecentlyUsed.GetAt(i);
-		if(module->IsModuleRunning()){
-			SetActiveModule(module);
-			return;
-		}
+	igdeEditorModuleDefinition * const module = pRecentlyUsed.FindOrDefault([](const igdeEditorModuleDefinition *m){
+		return m->IsModuleRunning();
+	});
+	if(module){
+		SetActiveModule(module);
 	}
 }
 
@@ -258,12 +254,10 @@ void igdeEditorModuleManager::StopModules(){
 	}
 }
 
-igdeEditorModuleDefinition *igdeEditorModuleManager::GetRecentModuleAt(int index) const{
-	return (igdeEditorModuleDefinition*)pRecentlyUsed.GetAt(index);
-}
-
 void igdeEditorModuleManager::ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position){
-	pRecentlyUsed.Move(module, position);
+	try{
+		pRecentlyUsed.Move(module, position);
+	}catch(...){}
 	
 #ifdef OS_W32
 	int i;
@@ -284,7 +278,7 @@ void igdeEditorModuleManager::ResetRecentUsedPosition(){
 	pRecentlyUsed.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		pRecentlyUsed.Add(pModules.GetAt(i));
+		pRecentlyUsed.Add((igdeEditorModuleDefinition*)pModules.GetAt(i));
 	}
 }
 

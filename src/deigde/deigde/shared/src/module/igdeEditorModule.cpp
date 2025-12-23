@@ -165,13 +165,8 @@ void igdeEditorModule::OnGameProjectChanged(){
 	}
 }
 
-igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
-	if(pEditorWindow){
-		return pEditorWindow->OnGameDefinitionChanged();
-		
-	}else{
-		return nullptr;
-	}
+igdeStepableTask::Ref igdeEditorModule::OnGameDefinitionChanged(){
+	return pEditorWindow ? pEditorWindow->OnGameDefinitionChanged() : igdeStepableTask::Ref();
 }
 
 bool igdeEditorModule::ProcessCommandLine(decUnicodeStringList&){

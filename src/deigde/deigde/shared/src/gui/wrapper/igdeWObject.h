@@ -26,10 +26,12 @@
 #define _IGDEWOBJECT_H_
 
 #include "../../gamedefinition/class/igdeGDClass.h"
+#include "../../triggersystem/igdeTriggerTarget.h"
 #include "../../triggersystem/igdeTriggerListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
@@ -101,13 +103,13 @@ private:
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
-	decObjectSet pCollidersInteraction;
+	decTObjectSet<deCollider> pCollidersInteraction;
 	void *pColliderUserPointer;
 	
 	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
 	
-	decObjectOrderedSet pSubObjects;
+	decTObjectOrderedSet<igdeWOSubObject> pSubObjects;
 	igdeTriggerListener::Ref pTriggerListener;
 	
 	decDVector pPosition;
@@ -134,7 +136,7 @@ private:
 	deBaseScriptingCollider *pListenerCollider;
 	
 	igdeTriggerTargetList *pTriggerTable;
-	decObjectList pListTriggerTarget;
+	decTObjectList<igdeTriggerTarget> pListTriggerTarget;
 	
 	decVector pBoxMinExtend;
 	decVector pBoxMaxExtend;

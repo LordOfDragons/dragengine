@@ -82,21 +82,18 @@ void igdeGDSkyManager::SetDefaultPath(const char *path){
 
 
 void igdeGDSkyManager::VisitSkiesMatchingCategory(igdeGDVisitor &visitor, const igdeGDCategory *category) const{
-	const int count = pSkyList.GetCount();
 	decPath pathCat;
-	int i;
 	
 	if(category){
 		category->GetFullPath(pathCat);
 	}
 	const decString strPathCat(pathCat.GetPathUnix());
 	
-	for(i=0; i<count; i++){
-		igdeGDSky * const sky = (igdeGDSky*)pSkyList.GetAt(i);
+	pSkyList.Visit([&](igdeGDSky *sky){
 		if(sky->GetCategory() == strPathCat){
 			visitor.VisitSky(sky);
 		}
-	}
+	});
 }
 
 void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decString &filter) const{
@@ -105,32 +102,28 @@ void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStri
 	}
 	
 	const decString realFilter(filter.GetLower());
-	const int count = pSkyList.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeGDSky * const sky = (igdeGDSky*)pSkyList.GetAt(i);
+	pSkyList.Visit([&](igdeGDSky *sky){
 		if(sky->GetName().GetLower().FindString(realFilter) != -1
 		|| sky->GetPath().GetLower().FindString(realFilter) != -1){
 			visitor.VisitSky(sky);
 		}
-	}
+	});
 }
 
 
 
 void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
-	const int count = manager.GetSkyList().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDSky::Ref sky(igdeGDSky::Ref::New(*manager.GetSkyList().GetAt(i)));
-		igdeGDSky * const check = pSkyList.GetWithPath(sky->GetPath());
+	manager.GetSkyList().Visit([&](const igdeGDSky &sky){
+		const igdeGDSky::Ref skyCopy(igdeGDSky::Ref::New(sky));
+		igdeGDSky * const check = pSkyList.FindOrDefault([&](const igdeGDSky &s){
+			return s.GetPath() == skyCopy->GetPath();
+		});
 		if(check){
 			RemoveSky(check);
 		}
-		AddSky(sky);
-	}
+		AddSky(skyCopy);
+	});
 	
 	pCategories->UpdateWith(manager.pCategories);
 	pAutoFindPath = manager.pAutoFindPath;
@@ -141,15 +134,12 @@ void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 }
 
 void igdeGDSkyManager::UpdateWithFound(const igdeGDSkyManager &skyManager){
-	const int count = skyManager.GetSkyList().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDSky &foundSky = *skyManager.GetSkyList().GetAt(i);
-		
-		igdeGDSky * const skyCheck = pSkyList.GetWithPath(foundSky.GetPath());
+	skyManager.GetSkyList().Visit([&](const igdeGDSky &foundSky){
+		const igdeGDSky::Ref skyCheck(pSkyList.FindOrDefault([&](const igdeGDSky &s){
+			return s.GetPath() == foundSky.GetPath();
+		}));
 		if(skyCheck){
-			continue;
+			return;
 		}
 		
 		const igdeGDSky::Ref sky(igdeGDSky::Ref::New(foundSky));
@@ -160,7 +150,7 @@ void igdeGDSkyManager::UpdateWithFound(const igdeGDSkyManager &skyManager){
 		}
 		
 		AddSky(sky);
-	}
+	});
 }
 
 class igdeGDSkyManagerFind : public deFileSearchVisitor{
@@ -180,7 +170,10 @@ public:
 		}
 		
 		const decString fullPath(path.GetPathUnix());
-		if(pOwner.GetSkyList().HasWithPath(fullPath)){
+		const bool hasPath = pOwner.GetSkyList().HasMatching([&](const igdeGDSky &s){
+			return s.GetPath() == fullPath;
+		});
+		if(hasPath){
 			return true;
 		}
 		

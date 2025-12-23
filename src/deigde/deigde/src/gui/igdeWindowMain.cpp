@@ -1435,7 +1435,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		
 		/*
 		igdeCommonDialogs needs a ChoiceString in addition to SelectString allowing to select
-		more then one string from a list of strings returning decIntList as result.
+		more then one string from a list of strings returning decTList<int> as result.
 		
 		const int selection = FXChoiceBox::ask(this, MBOX_OK_CANCEL,
 			title, "Changed Documents", nullptr, choices);

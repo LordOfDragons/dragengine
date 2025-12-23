@@ -189,7 +189,7 @@ public:
 	 * 
 	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/**
 	 * \brief Process command line arguments.

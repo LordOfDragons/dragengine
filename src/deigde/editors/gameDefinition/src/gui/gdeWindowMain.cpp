@@ -397,8 +397,8 @@ void gdeWindowMain::OnGameProjectChanged(){
 // 	LoadGameProject( true );
 }
 
-igdeStepableTask *gdeWindowMain::OnGameDefinitionChanged(){
-	return new gdeTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref gdeWindowMain::OnGameDefinitionChanged(){
+	return gdeTaskSyncGameDefinition::Ref::New(*this);
 }
 
 

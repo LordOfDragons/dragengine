@@ -85,7 +85,7 @@ reRigPush::reRigPush(deEngine *engine){
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
 		pDDSPush->SetVisible(true);
 		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
@@ -129,7 +129,7 @@ reRigPush::reRigPush(const reRigPush &push){
 		pDebugDrawer = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
 		pDDSPush->SetVisible(true);
 		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
@@ -296,9 +296,6 @@ bool reRigPush::IsVisible() const{
 
 void reRigPush::pCleanUp(){
 	SetRig(nullptr);
-	if(pDDSPush){
-		delete pDDSPush;
-	}
 }
 
 void reRigPush::pUpdateDDPush(){

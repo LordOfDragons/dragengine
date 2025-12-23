@@ -38,17 +38,13 @@
  */
 class DE_DLL_EXPORT igdeWCoordSysArrows{
 private:
-	igdeWDebugDrawerShape pDDSAxisX;
-	igdeWDebugDrawerShape pDDSAxisY;
-	igdeWDebugDrawerShape pDDSAxisZ;
+	igdeWDebugDrawerShape::Ref pDDSAxisX, pDDSAxisY, pDDSAxisZ;
 	
 	decVector pPosition;
 	decQuaternion pOrientation;
 	decVector pScale;
 	
-	decColor pColorAxisX;
-	decColor pColorAxisY;
-	decColor pColorAxisZ;
+	decColor pColorAxisX, pColorAxisY, pColorAxisZ;
 	
 	float pArrowLength;
 	float pArrowSize;

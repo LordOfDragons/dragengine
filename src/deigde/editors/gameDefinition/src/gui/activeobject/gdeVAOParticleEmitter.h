@@ -28,11 +28,12 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -53,7 +54,7 @@ private:
 	deParticleEmitterInstance::Ref pInstance;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	

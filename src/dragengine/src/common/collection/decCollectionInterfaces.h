@@ -58,6 +58,21 @@ public:
 };
 
 
+/** \brief Indexed visitor. */
+template<typename T>
+class decTIndexedVisitor{
+public:
+	decTIndexedVisitor() = default;
+	
+	/**
+	 * \brief Visit element.
+	 * \param[in] index Index of visited element.
+	 * \param[in] element Element to visit.
+	 */
+	virtual void operator() (int index, T &element) = 0;
+};
+
+
 /** \brief Key/value visitor. */
 template<typename K, typename V>
 class decTKeyValueVisitor{

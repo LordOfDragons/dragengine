@@ -25,10 +25,10 @@
 #ifndef _IGDEUNDOSYSTEM_H_
 #define _IGDEUNDOSYSTEM_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeUndo.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class igdeUndo;
 class igdeEditableEntity;
 
 
@@ -44,7 +44,7 @@ class DE_DLL_EXPORT igdeUndoSystem{
 private:
 	igdeEditableEntity *pEditableEntity;
 	
-	decObjectOrderedSet pUndos;
+	decTObjectOrderedSet<igdeUndo> pUndos;
 	int pRedoCount;
 	
 	int pMaxUndos;
@@ -70,6 +70,9 @@ public:
 	inline igdeEditableEntity *GetEditableEntity() const{ return pEditableEntity; }
 	
 	
+	
+	/** \brief Undo actions. */
+	inline const decTObjectOrderedSet<igdeUndo> &GetUndos() const{ return pUndos; }
 	
 	/** \brief Number of undo actions. */
 	int GetCount() const;

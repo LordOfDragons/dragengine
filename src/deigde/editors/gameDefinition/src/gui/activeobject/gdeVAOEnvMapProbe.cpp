@@ -121,18 +121,6 @@ void gdeVAOEnvMapProbe::UpdateDDVisibility(){
 void gdeVAOEnvMapProbe::pCleanUp(){
 	pReleaseResources();
 	
-	if(pDDSMask){
-		delete pDDSMask;
-	}
-	if(pDDSReflection){
-		delete pDDSReflection;
-	}
-	if(pDDSInfluence){
-		delete pDDSInfluence;
-	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = nullptr;
@@ -150,20 +138,20 @@ void gdeVAOEnvMapProbe::pCreateDebugDrawer(){
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-	pDDSCenter = new igdeWDebugDrawerShape;
+	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 	pDDSCenter->AddSphereShape(0.05f, decVector());
 	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create reflection shape
-	pDDSReflection = new igdeWDebugDrawerShape;
+	pDDSReflection = igdeWDebugDrawerShape::Ref::New();
 	pDDSReflection->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create influence shape
-	pDDSInfluence = new igdeWDebugDrawerShape;
+	pDDSInfluence = igdeWDebugDrawerShape::Ref::New();
 	pDDSInfluence->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create mask shape
-	pDDSMask = new igdeWDebugDrawerShape;
+	pDDSMask = igdeWDebugDrawerShape::Ref::New();
 	pDDSMask->SetParentDebugDrawer(pDebugDrawer);
 }
 

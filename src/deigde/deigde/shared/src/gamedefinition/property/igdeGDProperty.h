@@ -28,6 +28,7 @@
 #include "../../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -43,6 +44,9 @@ class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDProperty> Ref;
+	
+	/** \brief List of properties. */
+	typedef decTObjectOrderedSet<igdeGDProperty> List;
 	
 	
 	/** \brief Property type. */

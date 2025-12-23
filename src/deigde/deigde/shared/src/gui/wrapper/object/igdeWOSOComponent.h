@@ -28,10 +28,11 @@
 #include "igdeWOSubObject.h"
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 class deColliderAttachment;
@@ -66,7 +67,7 @@ private:
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
 	bool pLightShadowIgnore;
-	decObjectDictionary pTextureSkins;
+	decTObjectDictionary<deSkin> pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
 	deComponent::Ref pOutlineComponent;

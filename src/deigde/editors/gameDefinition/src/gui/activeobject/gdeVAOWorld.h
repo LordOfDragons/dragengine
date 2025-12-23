@@ -28,9 +28,10 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/world/gdeOCWorld.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -47,7 +48,7 @@ private:
 	const gdeOCWorld::Ref pOCWorld;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	

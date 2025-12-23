@@ -69,11 +69,11 @@ void igdeActionClearUndo::SetUndoSystem(igdeUndoSystem *undoSystem){
 
 
 void igdeActionClearUndo::OnAction(){
-	if(pUndoSystem && pUndoSystem->GetCount() > 0){
+	if(pUndoSystem && pUndoSystem->GetUndos().IsNotEmpty()){
 		pUndoSystem->RemoveAll();
 	}
 }
 
 void igdeActionClearUndo::Update(){
-	SetEnabled(pUndoSystem && pUndoSystem->GetCount() > 0);
+	SetEnabled(pUndoSystem && pUndoSystem->GetUndos().IsNotEmpty());
 }

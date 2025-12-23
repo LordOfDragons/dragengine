@@ -28,10 +28,10 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
-
-class igdeWDebugDrawerShape;
 
 
 
@@ -50,10 +50,10 @@ private:
 	deEnvMapProbe::Ref pEnvMapProbe;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
-	igdeWDebugDrawerShape *pDDSReflection;
-	igdeWDebugDrawerShape *pDDSInfluence;
-	igdeWDebugDrawerShape *pDDSMask;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSReflection;
+	igdeWDebugDrawerShape::Ref pDDSInfluence;
+	igdeWDebugDrawerShape::Ref pDDSMask;
 	
 	
 	

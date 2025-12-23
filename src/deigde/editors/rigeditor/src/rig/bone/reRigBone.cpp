@@ -103,10 +103,10 @@ pIKLocked{false, false, false}
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSBone = new igdeWDebugDrawerShape;
+		pDDSBone = igdeWDebugDrawerShape::Ref::New();
 		pDDSBone->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSCmp = new igdeWDebugDrawerShape;
+		pDDSCmp = igdeWDebugDrawerShape::Ref::New();
 		pDDSCmp->SetVisible(false);
 		pDDSCmp->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -638,14 +638,8 @@ void reRigBone::pCleanUp(){
 	RemoveAllConstraints();
 	RemoveAllShapes();
 	
-	if(pDDSCmp){
-		delete pDDSCmp;
-	}
 	if(pDDSCoordSys){
 		delete pDDSCoordSys;
-	}
-	if(pDDSBone){
-		delete pDDSBone;
 	}
 }
 

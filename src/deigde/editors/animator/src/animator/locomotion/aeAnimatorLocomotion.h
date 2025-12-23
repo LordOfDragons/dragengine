@@ -150,8 +150,8 @@ private:
 	aeAnimator *pAnimator;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape pDDSCollider;
-	igdeWDebugDrawerShape pDDSSensorGround;
+	igdeWDebugDrawerShape::Ref pDDSCollider;
+	igdeWDebugDrawerShape::Ref pDDSSensorGround;
 	
 	aeALColliderListener pColliderListener;
 	aeALTouchSensorListener pTouchSensorListener;
@@ -179,21 +179,21 @@ private:
 	float pGroundPlaneOffsetBL;
 	float pGroundPlaneOffsetBR;
 	deColliderVolume::Ref pGroundPlaneCollider;
-	igdeWDebugDrawerShape pDDSGroundPlane[4];
+	igdeWDebugDrawerShape::Ref pDDSGroundPlane[4];
 	
-	igdeWDebugDrawerShape pDDSDragonColBody;
+	igdeWDebugDrawerShape::Ref pDDSDragonColBody;
 	decVector pDragonColBodyPos;
 	decVector pDragonColBodyRot;
 	decVector pDragonColBodySize;
 	deColliderVolume::Ref pDragonColBody;
-	igdeWDebugDrawerShape pDDSDragonColHead;
+	igdeWDebugDrawerShape::Ref pDDSDragonColHead;
 	decVector pDragonColHeadPos;
 	decVector pDragonColHeadRot;
 	decVector pDragonColHeadSize;
-	igdeWDebugDrawerShape pDDSDragonColHands;
+	igdeWDebugDrawerShape::Ref pDDSDragonColHands;
 	decVector pDragonColHandsPos;
 	float pDragonColHandsRadius;
-	igdeWDebugDrawerShape pDDSDragonColFeet;
+	igdeWDebugDrawerShape::Ref pDDSDragonColFeet;
 	decVector pDragonColFeetPos;
 	float pDragonColFeetRadius;
 	

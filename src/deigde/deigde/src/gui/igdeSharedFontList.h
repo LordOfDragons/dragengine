@@ -28,7 +28,7 @@
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEnvironment;
 
@@ -43,21 +43,15 @@ private:
 	public:
 		typedef deTObjectReference<cFont> Ref;
 		
+		const igdeFont::sConfiguration config;
+		const igdeFont::Ref font;
 		
-	private:
-		igdeFont::sConfiguration pConfig;
-		igdeFont::Ref pFont;
-		
-	public:
 		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
-		virtual ~cFont();
-		
-		inline const igdeFont::Ref &GetFont() const{ return pFont; }
-		inline const igdeFont::sConfiguration &GetConfig() const{ return pConfig; }
+		~cFont() override = default;
 	};
 	
 	igdeEnvironment &pEnvironment;
-	decObjectList pFonts;
+	decTObjectOrderedSet<cFont> pFonts;
 	
 	
 	

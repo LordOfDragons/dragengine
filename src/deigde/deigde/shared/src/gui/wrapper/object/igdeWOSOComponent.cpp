@@ -42,7 +42,7 @@
 #include "../../../loadsave/igdeLoadAnimator.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decPath.h>
@@ -107,7 +107,7 @@ private:
 	deModel::Ref pModel;
 	deSkin::Ref pSkin;
 	deRig::Ref pRig;
-	decObjectDictionary pTextureSkins;
+	decTObjectDictionary<deSkin> pTextureSkins;
 	int pCounter;
 	bool pSuccess;
 	
@@ -177,10 +177,9 @@ public:
 		pCounter++;
 	}
 	deSkin *GetTextureSkinFor(const char *path) const{
-		deObject *skin = nullptr;
-		return pTextureSkins.GetAt(path, &skin) ? (deSkin*)skin : nullptr;
+		return pTextureSkins.GetAtOrDefault(path);
 	}
-	inline const decObjectDictionary &GetTextureSkins() const{ return pTextureSkins; }
+	inline const decTObjectDictionary<deSkin> &GetTextureSkins() const{ return pTextureSkins; }
 	
 	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
 		if(!pOwner){
@@ -194,31 +193,31 @@ public:
 // 			filename.GetString(), type, pCounter, pSuccess );
 		
 		if(type == deResourceLoader::ertModel && pPathAudioModel == filename){
-			pAudioModel = (deModel*)resource;
+			pAudioModel = dynamic_cast<deModel*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertOcclusionMesh && pPathOcclusionModel == filename){
-			pOcclusionMesh = (deOcclusionMesh*)resource;
+			pOcclusionMesh = dynamic_cast<deOcclusionMesh*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertAnimation && pPathAnimation == filename){
-			pAnimation = (deAnimation*)resource;
+			pAnimation = dynamic_cast<deAnimation*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertModel && pPathModel == filename){
-			pModel = (deModel*)resource;
+			pModel = dynamic_cast<deModel*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertSkin && pPathSkin == filename){
-			pSkin = (deSkin*)resource;
+			pSkin = dynamic_cast<deSkin*>(resource);
 			pCounter--;
 		}
 		if(type == deResourceLoader::ertRig && pPathRig == filename){
-			pRig = (deRig*)resource;
+			pRig = dynamic_cast<deRig*>(resource);
 			pCounter--;
 		}
 		if(pTextureSkins.Has(filename)){
-			pTextureSkins.SetAt(filename, resource);
+			pTextureSkins.SetAt(filename, dynamic_cast<deSkin*>(resource));
 			pCounter--;
 		}
 		
@@ -991,9 +990,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 		if(!useSkin && gdctexture){
 			const decString &pathToLoad = gdctexture->GetPathSkin().GetString();
 			if(!pathToLoad.IsEmpty()){
-				deObject *object;
-				if(pTextureSkins.GetAt(pathToLoad, &object) && object){
-					useSkin = (deSkin*)object;
+				const deSkin::Ref *skin = nullptr;
+				if(pTextureSkins.GetAt(pathToLoad, skin) && skin->IsNotNull()){
+					useSkin = *skin;
 					useTexture = 0;
 				}
 			}

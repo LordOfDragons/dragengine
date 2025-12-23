@@ -165,12 +165,16 @@ void igdeWSky::SetGDSky(igdeGDSky *gdsky){
 }
 
 void igdeWSky::SetPath(const char *path){
-	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
-		->GetSkyManager()->GetSkyList().GetWithPath(path);
+	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->
+		GetSkyList().FindOrDefault([&](const igdeGDSky &sky){
+			return sky.GetPath() == path;
+		});
 	
 	if(!gdsky){
-		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()
-			->GetSkyManager()->GetSkyList().GetWithPath(path);
+		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->
+			GetSkyList().FindOrDefault([&](const igdeGDSky &sky){
+				return sky.GetName() == path;
+			});
 	}
 	
 	if(gdsky){

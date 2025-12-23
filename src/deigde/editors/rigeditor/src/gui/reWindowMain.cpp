@@ -299,8 +299,8 @@ void reWindowMain::OnGameProjectChanged(){
 	CreateNewRig();
 }
 
-igdeStepableTask *reWindowMain::OnGameDefinitionChanged(){
-	return new reTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref reWindowMain::OnGameDefinitionChanged(){
+	return reTaskSyncGameDefinition::Ref::New(*this);
 }
 
 

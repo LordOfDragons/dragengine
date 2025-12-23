@@ -25,6 +25,8 @@
 #ifndef _RERIGSHAPE_H_
 #define _RERIGSHAPE_H_
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -34,7 +36,6 @@
 
 class reRig;
 class reRigBone;
-class igdeWDebugDrawerShape;
 class decShape;
 class deEngine;
 
@@ -67,7 +68,7 @@ private:
 	reRigBone *pRigBone;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSShape;
+	igdeWDebugDrawerShape::Ref pDDSShape;
 	deColliderVolume::Ref pCollider;
 	
 	eShapeTypes pShapeType;

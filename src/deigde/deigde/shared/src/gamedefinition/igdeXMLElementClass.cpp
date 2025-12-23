@@ -459,7 +459,7 @@ void igdeXMLElementClass::pReadMap(const decXmlElementTag &root, cMap &map, cons
 			continue;
 		}
 		
-		const char * const key = GetAttributeString(*tag, "key");
+		const decString &key = GetAttributeString(*tag, "key");
 		const cMap::Ref child(cMap::Ref::New());
 		
 		if(pReadPropertyValue(*tag, child->value, child, filename)){
@@ -556,59 +556,52 @@ const char *filename){
 
 void igdeXMLElementClass::pProcessTextureReplacements(const cMap &map,
 igdeGDClass &gdClass, const char *basePath){
-	const decStringList keys(map.map.GetKeys());
-	const int count = keys.GetCount();
-	if(count == 0){
+	if(map.map.IsEmpty()){
 		return;
 	}
 	
 	igdeGDCCTexture::List &textures = gdClass.GetComponentTextures();
 	igdeCodecPropertyString codec;
-	deObject* object;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const decString &key = keys.GetAt(i);
-		const cMap &child = *((cMap*)map.map.GetAt(key));
-		
+	map.map.Visit([&](const decString &key, const cMap &child){
 		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::New());
 		texture->SetName(key);
 		
-		if(child.map.GetAt("skin", &object)){
-			texture->SetPathSkin(decPath::AbsolutePathUnix(
-				((cMap*)object)->value, basePath).GetPathUnix());
+		const cMap::Ref *object;
+		if(child.map.GetAt("skin", object)){
+			texture->SetPathSkin(decPath::AbsolutePathUnix((*object)->value, basePath).GetPathUnix());
 		}
 		
-		if(child.map.GetAt("tint", &object)){
+		if(child.map.GetAt("tint", object)){
 			decColor color;
-			codec.DecodeColor3(((cMap*)object)->value, color);
+			codec.DecodeColor3((*object)->value, color);
 			texture->SetColorTint(color);
 		}
 		
-		if(child.map.GetAt("transform", &object)){
-			const cMap &child2 = *((cMap*)object);
+		if(child.map.GetAt("transform", object)){
+			const cMap &child2 = **object;
 			
 			decVector2 translate;
-			if(child2.map.GetAt("translate", &object)){
-				codec.DecodeVector2(((cMap*)object)->value, translate);
+			if(child2.map.GetAt("translate", object)){
+				codec.DecodeVector2((*object)->value, translate);
 			}
 			texture->SetOffset(translate);
 			
 			decVector2 scale(1.0f, 1.0f);
-			if(child2.map.GetAt("scale", &object)){
-				codec.DecodeVector2(((cMap*)object)->value, scale);
+			if(child2.map.GetAt("scale", object)){
+				codec.DecodeVector2((*object)->value, scale);
 			}
 			texture->SetScale(scale);
 			
 			float rotate = 0.0f;
-			if(child2.map.GetAt("rotate", &object)){
-				rotate = ((cMap*)object)->value.ToFloat();
+			if(child2.map.GetAt("rotate", object)){
+				rotate = (*object)->value.ToFloat();
 			}
 			texture->SetRotation(rotate);
 		}
 		
 		textures.Add(texture);
-	}
+	});
 }
 
 /*

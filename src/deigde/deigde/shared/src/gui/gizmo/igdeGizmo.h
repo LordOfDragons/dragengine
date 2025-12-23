@@ -64,7 +64,7 @@ public:
 	
 	
 private:
-	class cShapeColor : public deObject {
+	class cShapeColor : public deObject{
 	public:
 		typedef deTObjectReference<cShapeColor> Ref;
 		

@@ -28,10 +28,9 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
-
-
-class igdeWDebugDrawerShape;
 
 
 
@@ -48,7 +47,7 @@ private:
 	gdeOCNavigationBlocker::Ref pOCNavBlocker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSBlocker;
+	igdeWDebugDrawerShape::Ref pDDSBlocker;
 	
 	
 	

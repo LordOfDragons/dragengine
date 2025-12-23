@@ -65,7 +65,7 @@ private:
 	decString pTargetName;
 	igdeTriggerTarget::Ref pTarget;
 	igdeTriggerListener::Ref pTargetListener;
-	decObjectOrderedSet pChildred;
+	decObjectOrderedSet pChildren;
 	
 	
 	

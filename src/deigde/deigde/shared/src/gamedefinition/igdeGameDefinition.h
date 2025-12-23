@@ -26,7 +26,7 @@
 #define _IGDEGAMEDEFINITION_H_
 
 #include "particleemitter/igdeGDParticleEmitterManager.h"
-#include "property/igdeGDPropertyList.h"
+#include "property/igdeGDProperty.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -71,8 +71,8 @@ private:
 	igdeGDSkyManager *pSkyManager;
 	igdeGDParticleEmitterManager pParticleEmitterManager;
 	
-	igdeGDPropertyList pListWorldProperties;
-	igdeGDPropertyList pListDecalProperties;
+	igdeGDProperty::List pListWorldProperties;
+	igdeGDProperty::List pListDecalProperties;
 	
 	deModel::Ref pDefaultModel;
 	deSkin::Ref pDefaultSkin;
@@ -160,12 +160,12 @@ public:
 		return pParticleEmitterManager;}
 	
 	/** \brief World properties. */
-	inline igdeGDPropertyList &GetListWorldProperties(){ return pListWorldProperties; }
-	inline const igdeGDPropertyList &GetListWorldProperties() const{ return pListWorldProperties; }
+	inline igdeGDProperty::List &GetListWorldProperties(){ return pListWorldProperties; }
+	inline const igdeGDProperty::List &GetListWorldProperties() const{ return pListWorldProperties; }
 	
 	/** \brief Decal properties. */
-	inline igdeGDPropertyList &GetListDecalProperties(){ return pListDecalProperties; }
-	inline const igdeGDPropertyList &GetListDecalProperties() const{ return pListDecalProperties; }
+	inline igdeGDProperty::List &GetListDecalProperties(){ return pListDecalProperties; }
+	inline const igdeGDProperty::List &GetListDecalProperties() const{ return pListDecalProperties; }
 	
 	
 	

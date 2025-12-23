@@ -28,9 +28,10 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -48,9 +49,9 @@ private:
 	gdeOCSnapPoint::Ref pOCSnapPoint;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
-	igdeWDebugDrawerShape *pDDSSnapDistance;
+	igdeWDebugDrawerShape::Ref pDDSSnapDistance;
 	
 	
 	

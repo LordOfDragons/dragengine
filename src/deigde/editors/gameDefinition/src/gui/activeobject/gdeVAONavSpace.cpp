@@ -117,14 +117,6 @@ void gdeVAONavSpace::UpdateDDVisibility(){
 //////////////////////
 
 void gdeVAONavSpace::pCleanUp(){
-	if(pDDSSpace){
-		pDDSSpace->SetParentDebugDrawer(nullptr);
-		delete pDDSSpace;
-	}
-	if(pDDSBlocker){
-		pDDSBlocker->SetParentDebugDrawer(nullptr);
-		delete pDDSBlocker;
-	}
 	if(pDDSpace){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDDSpace);
 		pDDSpace = nullptr;
@@ -150,11 +142,11 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDDBlocker);
 	
 	// space
-	pDDSSpace = new igdeWDebugDrawerShape;
+	pDDSSpace = igdeWDebugDrawerShape::Ref::New();
 	pDDSSpace->SetParentDebugDrawer(pDDSpace);
 	
 	// blocker
-	pDDSBlocker = new igdeWDebugDrawerShape;
+	pDDSBlocker = igdeWDebugDrawerShape::Ref::New();
 	pDDSBlocker->SetParentDebugDrawer(pDDBlocker);
 }
 

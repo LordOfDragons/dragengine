@@ -26,6 +26,7 @@
 #define _IGDEGDPARTICLEEMITTER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -51,6 +52,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDParticleEmitter> Ref;
+	
+	/** \brief List of particle emitters. */
+	typedef decTObjectOrderedSet<igdeGDParticleEmitter> List;
 
 
 	/** \name Constructors and Destructors */

@@ -25,7 +25,7 @@
 #ifndef _IGDEGDPARTICLEEMITTERMANAGER_H_
 #define _IGDEGDPARTICLEEMITTERMANAGER_H_
 
-#include "igdeGDParticleEmitterList.h"
+#include "igdeGDParticleEmitter.h"
 #include "../igdeGDCategory.h"
 
 #include <dragengine/common/string/decString.h>
@@ -39,7 +39,7 @@ class igdeGameDefinition;
  */
 class DE_DLL_EXPORT igdeGDParticleEmitterManager{
 private:
-	igdeGDParticleEmitterList pEmitterList;
+	igdeGDParticleEmitter::List pEmitterList;
 	igdeGDCategory::Ref pCategories;
 	decString pDefaultPath;
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter list. */
-	inline const igdeGDParticleEmitterList &GetEmitterList() const{ return pEmitterList; }
+	inline const igdeGDParticleEmitter::List &GetEmitterList() const{ return pEmitterList; }
 	
 	/** \brief Add emitter. */
 	void AddEmitter(igdeGDParticleEmitter *emitter);

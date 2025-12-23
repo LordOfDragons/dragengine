@@ -26,6 +26,7 @@
 #define _IGDEGDSKY_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
@@ -42,6 +43,9 @@ class DE_DLL_EXPORT igdeGDSky : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDSky> Ref;
+	
+	/** \brief List of skies. */
+	typedef decTObjectOrderedSet<igdeGDSky> List;
 	
 	
 private:

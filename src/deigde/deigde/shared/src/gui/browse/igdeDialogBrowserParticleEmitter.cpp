@@ -97,7 +97,9 @@ igdeGDParticleEmitter* &particleEmitter, const char *title){
 
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter, const char *title){
 	const igdeGDParticleEmitterManager &particleEmitterManager = owner->GetGameDefinition()->GetParticleEmitterManager();
-	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().GetWithPath(particleEmitter);
+	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().FindOrDefault([&](const igdeGDParticleEmitter &s){
+		return s.GetPath() == particleEmitter;
+	});
 	if(SelectParticleEmitter(owner, gdParticleEmitter, title)){
 		particleEmitter = gdParticleEmitter->GetPath();
 		return true;

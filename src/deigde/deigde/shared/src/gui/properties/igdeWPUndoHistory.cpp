@@ -126,22 +126,13 @@ void igdeWPUndoHistory::UpdateUndo(){
 	igdeIcon * const iconUndo = pActionUndo->GetIcon();
 	igdeIcon * const iconRedo = pActionRedo->GetIcon();
 	const int redoCount = pUndoSystem->GetRedoableCount();
-	const int count = pUndoSystem->GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeUndo &undo = *pUndoSystem->GetAt(i);
+	pUndoSystem->GetUndos().VisitIndexed([&](int i, const igdeUndo &undo){
 		//undo.GetLongInfo(), undo.GetMemoryConsumption()
-		
-		if(i < redoCount){
-			pListUndo->AddItem(undo.GetShortInfo(), iconRedo);
-			
-		}else{
-			pListUndo->AddItem(undo.GetShortInfo(), iconUndo);
-		}
-	}
+		pListUndo->AddItem(undo.GetShortInfo(), i < redoCount ? iconRedo : iconUndo);
+	});
 	
-	if(count > 0){
-		pListUndo->SetSelection(decMath::min(redoCount, count - 1));
+	if(pUndoSystem->GetUndos().IsNotEmpty()){
+		pListUndo->SetSelection(decMath::min(redoCount, pUndoSystem->GetUndos().GetCount() - 1));
 	}
 }

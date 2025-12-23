@@ -102,9 +102,15 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		pCategory = gdclass.pCategory;
 		
-		pListProperties.SetToDeepCopyFrom(gdclass.pListProperties);
+		gdclass.pListProperties.Visit([&](const igdeGDProperty &p){
+			pListProperties.Add(igdeGDProperty::Ref::New(p));
+		});
+		
 		pPropertyValues = gdclass.pPropertyValues;
-		pTextureProperties.SetToDeepCopyFrom(gdclass.pTextureProperties);
+		
+		gdclass.pTextureProperties.Visit([&](const igdeGDProperty &p){
+			pTextureProperties.Add(igdeGDProperty::Ref::New(p));
+		});
 		
 		gdclass.pListBillboards.Visit([&](const igdeGDCBillboard &s){
 			pListBillboards.Add(igdeGDCBillboard::Ref::New(s));
@@ -325,7 +331,9 @@ void igdeGDClass::SetPropertyValues(const decStringDictionary &values){
 
 igdeGDProperty *igdeGDClass::GetPropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty *property = gdclass->pListProperties.GetNamed(name);
+	igdeGDProperty::Ref property(gdclass->pListProperties.FindOrDefault([&](const igdeGDProperty &p){
+		return p.GetName() == name;
+	}));
 	if(property){
 		return property;
 	}
@@ -366,7 +374,9 @@ bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) co
 		return true;
 	}
 	
-	igdeGDProperty * const property = pListProperties.GetNamed(name);
+	const igdeGDProperty::Ref property(pListProperties.FindOrDefault([&](const igdeGDProperty &p){
+		return p.GetName() == name;
+	}));
 	if(property){
 		value = property->GetDefaultValue();
 		return true;
@@ -426,7 +436,7 @@ void igdeGDClass::AddPropertyNames(decStringSet &set, bool inherited) const{
 // Texture properties
 ///////////////////////
 
-void igdeGDClass::SetTextureProperties(const igdeGDPropertyList &properties){
+void igdeGDClass::SetTextureProperties(const igdeGDProperty::List &properties){
 	pTextureProperties = properties;
 }
 
@@ -444,7 +454,9 @@ void igdeGDClass::RemoveAllTextureProperties(){
 
 igdeGDProperty *igdeGDClass::GetTexturePropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty *property = gdclass->pTextureProperties.GetNamed(name);
+	igdeGDProperty::Ref property(gdclass->pTextureProperties.FindOrDefault([&](const igdeGDProperty &p){
+		return p.GetName() == name;
+	}));
 	if(property){
 		return property;
 	}
@@ -479,7 +491,9 @@ bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &va
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeGDProperty * const property = pTextureProperties.GetNamed(name);
+	const igdeGDProperty::Ref property(pTextureProperties.FindOrDefault([&](const igdeGDProperty &p){
+		return p.GetName() == name;
+	}));
 	if(property){
 		value = property->GetDefaultValue();
 		return true;

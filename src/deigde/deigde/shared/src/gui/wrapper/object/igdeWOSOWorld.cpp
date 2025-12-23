@@ -101,21 +101,17 @@ void igdeWOSOWorld::LoadObjectResources::LoadingFailed(const igdeResourceLoaderT
 }
 
 void igdeWOSOWorld::LoadObjectResources::pUpdateTextures(const char *path, deSkin *skin){
-	int i, count = pTextures.GetCount();
-	for(i=0; i<count; i++){
-		const Texture &texture = *((Texture*)pTextures.GetAt(i));
-		if(texture.texture->pathSkin != path){
-			continue;
+	pTextures.RemoveIf([&](const Texture &t) {
+		if(t.texture->pathSkin != path){
+			return false;
 		}
 		
-		texture.texture->skin = skin;
+		t.texture->skin = skin;
 		if(skin && pOwner){
-			pOwner->UpdateChildComponentTexture(texture.object, texture.texture);
+			pOwner->UpdateChildComponentTexture(t.object, t.texture);
 		}
-		pTextures.RemoveFrom(i);
-		i--;
-		count--;
-	}
+		return true;
+	});
 }
 
 
@@ -134,27 +130,6 @@ hasTCTransform(false){
 
 igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
 pWrapper(igdeWObject::Ref::New(environment)){
-}
-
-int igdeWOSOWorld::ChildObject::GetTextureCount() const{
-	return pTextures.GetCount();
-}
-
-igdeWOSOWorld::ChildObjectTexture &igdeWOSOWorld::ChildObject::GetTextureAt(int index) const{
-	return *((igdeWOSOWorld::ChildObjectTexture*)pTextures.GetAt(index));
-}
-
-igdeWOSOWorld::ChildObjectTexture *igdeWOSOWorld::ChildObject::GetNamedTexture(const char *name) const{
-	const int count = pTextures.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeWOSOWorld::ChildObjectTexture * const texture =
-			(igdeWOSOWorld::ChildObjectTexture*)pTextures.GetAt(i);
-		if(texture->name == name){
-			return texture;
-		}
-	}
-	return nullptr;
 }
 
 void igdeWOSOWorld::ChildObject::AddTexture(const ChildObjectTexture::Ref &texture){
@@ -337,26 +312,20 @@ pOwner(owner){
 }
 
 void igdeWOSOWorld::ChildAsyncFinished::LoadFinished(igdeWObject &wrapper, bool succeeded){
-	const int count = pOwner.GetChildObjectCount();
-	int i;
-	for(i=0; i<count; i++){
-		ChildObject &child = pOwner.GetChildObjectAt(i);
-		if(child.GetWrapper() == &wrapper){
-			pOwner.ChildObjectFinishedAsyncLoad(child);
-			return;
-		}
+	ChildObject * const co = pOwner.GetChildObjects().FindOrDefault([&](ChildObject &o){
+		return o.GetWrapper() == &wrapper;
+	});
+	if(co){
+		pOwner.ChildObjectFinishedAsyncLoad(*co);
 	}
 }
 
 void igdeWOSOWorld::ChildAsyncFinished::ExtendsChanged(igdeWObject &wrapper){
-	const int count = pOwner.GetChildObjectCount();
-	int i;
-	for(i=0; i<count; i++){
-		ChildObject &child = pOwner.GetChildObjectAt(i);
-		if(child.GetWrapper() == &wrapper){
-			pOwner.ChildObjectExtendsChanged(child);
-			return;
-		}
+	ChildObject * const co = pOwner.GetChildObjects().FindOrDefault([&](ChildObject &o){
+		return o.GetWrapper() == &wrapper;
+	});
+	if(co){
+		pOwner.ChildObjectExtendsChanged(*co);
 	}
 }
 
@@ -400,31 +369,25 @@ void igdeWOSOWorld::OnAllSubObjectsFinishedLoading(){
 
 void igdeWOSOWorld::UpdateVisibility(){
 	const bool visible = GetWrapper().GetVisible();
-	const int count = pChildObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->SetVisible(visible);
-	}
+	pChildObjects.Visit([&](ChildObject &o){
+		o.GetWrapper()->SetVisible(visible);
+	});
 }
 
 void igdeWOSOWorld::UpdateGeometry(){
 	const igdeWObject &w = GetWrapper();
 	const decDMatrix transform(decDMatrix::CreateWorld(pPosition, pOrientation)
 		* decDMatrix::CreateWorld(w.GetPosition(), w.GetOrientation(), w.GetScaling()));
-	const int count = pChildObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
-		igdeWObject &wo = object.GetWrapper();
-		const decDMatrix matrix(object.originalMatrix * transform);
+	pChildObjects.Visit([&](ChildObject &o){
+		igdeWObject &wo = o.GetWrapper();
+		const decDMatrix matrix(o.originalMatrix * transform);
 		
 		wo.SetScaling(matrix.GetScale());
 		wo.SetPosition(matrix.GetPosition());
 		if(!wo.GetScaling().IsZero()){
 			wo.SetOrientation(matrix.Normalized().ToQuaternion());
 		}
-	}
+	});
 }
 
 void igdeWOSOWorld::UpdateCollisionFilter(){
@@ -436,12 +399,8 @@ void igdeWOSOWorld::UpdateCollisionFilter(){
 	const decCollisionFilter &cfParticles = w.GetCollisionFilterParticles();
 	int lmAudio = w.GetAudioLayerMask();
 	int lmRender = w.GetRenderLayerMask();
-	const int count = pChildObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
-		igdeWObject &wo = object.GetWrapper();
+	pChildObjects.Visit([&](ChildObject &o){
+		igdeWObject &wo = o.GetWrapper();
 		wo.SetCollisionFilter(cf);
 		wo.SetCollisionFilterFallback(cfFallback);
 		wo.SetCollisionFilterForceFields(cfForceFields);
@@ -449,47 +408,31 @@ void igdeWOSOWorld::UpdateCollisionFilter(){
 		wo.SetCollisionFilterParticles(cfParticles);
 		wo.SetAudioLayerMask(lmAudio);
 		wo.SetRenderLayerMask(lmRender);
-	}
+	});
 }
 
 void igdeWOSOWorld::OutlineSkinChanged(){
 	const igdeWObject &w = GetWrapper();
 	deSkin * const skin = w.GetOutlineSkin();
 	const decColor &color = w.GetOutlineColor();
-	const int count = pChildObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
-		igdeWObject &wo = object.GetWrapper();
+	pChildObjects.Visit([&](ChildObject &o){
+		igdeWObject &wo = o.GetWrapper();
 		wo.SetOutlineSkin(skin);
 		wo.SetOutlineColor(color);
-	}
+	});
 }
 
 void igdeWOSOWorld::ColliderUserPointerChanged(){
 	void * const userPointer = GetWrapper().GetColliderUserPointer();
-	const int count = pChildObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
-		object.GetWrapper()->SetColliderUserPointer(userPointer);
-	}
+	pChildObjects.Visit([&](ChildObject &o){
+		o.GetWrapper()->SetColliderUserPointer(userPointer);
+	});
 }
 
 void igdeWOSOWorld::Visit(igdeWOSOVisitor &visitor){
 	visitor.VisitWorld(*this);
 }
 
-
-int igdeWOSOWorld::GetChildObjectCount() const{
-	return pChildObjects.GetCount();
-}
-
-igdeWOSOWorld::ChildObject &igdeWOSOWorld::GetChildObjectAt(int index) const{
-	return *((ChildObject*)pChildObjects.GetAt(index));
-}
 
 void igdeWOSOWorld::AddChildObject(const ChildObject::Ref &object){
 	DEASSERT_NOTNULL(object)
@@ -501,14 +444,11 @@ void igdeWOSOWorld::AddChildObject(const ChildObject::Ref &object){
 }
 
 void igdeWOSOWorld::RemoveAllChildObjects(){
-	const int count = pChildObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeWObject &wo = ((ChildObject*)pChildObjects.GetAt(i))->GetWrapper();
+	pChildObjects.Visit([](ChildObject &o){
+		igdeWObject &wo = o.GetWrapper();
 		wo.SetWorld(nullptr);
 		wo.SetAsyncLoadFinished(nullptr);
-	}
-	
+	});
 	pChildObjects.RemoveAll();
 }
 
@@ -528,7 +468,7 @@ void igdeWOSOWorld::LoadTextureSkin(ChildObject &object, ChildObjectTexture &tex
 	pLoadObjectResources->LoadTexture(object, texture);
 }
 
-void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, ChildObjectTexture &texture){
+void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, const ChildObjectTexture &texture){
 	igdeWObject &wo = object.GetWrapper();
 	deComponent * const component = wo.GetComponent();
 	if(!component || !component->GetModel()){
@@ -556,25 +496,15 @@ void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, ChildObject
 }
 
 bool igdeWOSOWorld::IsContentVisible(){
-	const int count = pChildObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->IsAnyContentVisible()){
-			return true;
-		}
-	}
-	return false;
+	return pChildObjects.HasMatching([](ChildObject &o){
+		return o.GetWrapper()->IsAnyContentVisible();
+	});
 }
 
 bool igdeWOSOWorld::AllSubObjectsFinishedLoading() const{
-	const int count = pChildObjects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(!((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->AllSubObjectsFinishedLoading()){
-			return false;
-		}
-	}
-	return true;
+	return !pChildObjects.HasMatching([](ChildObject &o){
+		return !o.GetWrapper()->AllSubObjectsFinishedLoading();
+	});
 }
 
 
@@ -655,12 +585,9 @@ void igdeWOSOWorld::pUpdateChildComponentTextures(ChildObject &object){
 		return;
 	}
 	
-	const int textureCount = object.GetTextureCount();
-	int i;
-	
-	for(i=0; i<textureCount; i++){
-		UpdateChildComponentTexture(object, object.GetTextureAt(i));
-	}
+	object.GetTextures().Visit([&](const ChildObjectTexture &t){
+		UpdateChildComponentTexture(object, t);
+	});
 }
 
 
@@ -668,30 +595,29 @@ void igdeWOSOWorld::pUpdateExtends(){
 	const decDMatrix invMatrix(GetWrapper().GetInverseMatrix().QuickMultiply(
 		decDMatrix::CreateWorld(pPosition, pOrientation).QuickInvert()));
 	decVector boxMinExtend, boxMaxExtend, cboxCorners[8];
-	const int count = pChildObjects.GetCount();
 	bool hasBoxExtends = false;
-	int i, j;
 	
-	for(i=0; i<count; i++){
-		igdeWObject &c = ((ChildObject*)pChildObjects.GetAt(i))->GetWrapper();
-		if(!c.GetHasBoxExtends()){
-			continue;
+	pChildObjects.Visit([&](ChildObject &o){
+		igdeWObject &wo = o.GetWrapper();
+		if(!wo.GetHasBoxExtends()){
+			return;
 		}
 		
-		const decDVector a(c.GetBoxMinExtend()), b(c.GetBoxMaxExtend());
+		const decDVector a(wo.GetBoxMinExtend()), b(wo.GetBoxMaxExtend());
 		const decDVector boxCorners[8]{
 			{a.x, a.y, a.z}, {a.x, b.y, a.z}, {b.x, b.y, a.z}, {b.x, a.y, a.z},
 			{a.x, a.y, b.z}, {a.x, b.y, b.z}, {b.x, b.y, b.z}, {b.x, a.y, b.z}};
 		
-		const decDMatrix matrix(c.GetMatrix() * invMatrix);
-		for(j=0; j<8; j++){
-			cboxCorners[j] = matrix * boxCorners[j];
+		const decDMatrix matrix(wo.GetMatrix() * invMatrix);
+		int i;
+		for(i=0; i<8; i++){
+			cboxCorners[i] = matrix * boxCorners[i];
 		}
 		
 		decVector cboxMinExtend(cboxCorners[0]), cboxMaxExtend(cboxCorners[0]);
-		for(j=1; j<8; j++){
-			cboxMinExtend.SetSmallest(cboxCorners[j]);
-			cboxMaxExtend.SetLargest(cboxCorners[j]);
+		for(i=1; i<8; i++){
+			cboxMinExtend.SetSmallest(cboxCorners[i]);
+			cboxMaxExtend.SetLargest(cboxCorners[i]);
 		}
 		
 		if(hasBoxExtends){
@@ -703,7 +629,7 @@ void igdeWOSOWorld::pUpdateExtends(){
 			boxMaxExtend = cboxMaxExtend;
 			hasBoxExtends = true;
 		}
-	}
+	});
 	
 	if(hasBoxExtends){
 		const decVector boxSize(boxMaxExtend - boxMinExtend);

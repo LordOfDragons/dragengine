@@ -34,7 +34,6 @@
 #include "../igdeGDCategory.h"
 #include "../igdeTagManager.h"
 #include "../property/igdeGDProperty.h"
-#include "../property/igdeGDPropertyList.h"
 #include "../visitor/igdeGDVisitor.h"
 #include "../../codec/igdeCodecPropertyString.h"
 

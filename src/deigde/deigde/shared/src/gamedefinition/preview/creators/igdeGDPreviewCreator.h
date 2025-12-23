@@ -25,15 +25,16 @@
 #ifndef _IGDEGDPREVIEWCREATOR_H_
 #define _IGDEGDPREVIEWCREATOR_H_
 
+#include "../igdeGDPreviewListener.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
 #include <dragengine/resources/image/deImage.h>
 
-class igdeGDPreviewListener;
 class igdeEnvironment;
 
 
@@ -59,7 +60,7 @@ private:
 	
 	eStates pState;
 	deImage::Ref pImage;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeGDPreviewListener> pListeners;
 	bool pEnableDebug;
 	
 	

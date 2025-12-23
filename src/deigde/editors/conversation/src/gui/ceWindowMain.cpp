@@ -441,8 +441,8 @@ void ceWindowMain::OnGameProjectChanged(){
 	CreateNewConversation();
 }
 
-igdeStepableTask *ceWindowMain::OnGameDefinitionChanged(){
-	return new ceTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref ceWindowMain::OnGameDefinitionChanged(){
+	return ceTaskSyncGameDefinition::Ref::New(*this);
 }
 
 

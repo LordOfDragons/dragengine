@@ -26,7 +26,7 @@
 #define _IGDEEDITORMODULEMANAGER_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditorModuleDefinition;
@@ -45,7 +45,7 @@ private:
 	igdeWindowMain &pWindowMain;
 	decObjectOrderedSet pModules;
 	igdeEditorModuleDefinition *pActiveModule;
-	decPointerList pRecentlyUsed;
+	decTOrderedSet<igdeEditorModuleDefinition*> pRecentlyUsed;
 	
 	
 	
@@ -104,8 +104,8 @@ public:
 	/** \brief Stops all modules. */
 	void StopModules();
 	
-	/** \brief Recent module. */
-	igdeEditorModuleDefinition *GetRecentModuleAt(int index) const;
+	/** \brief Recent modules. */
+	inline const decTOrderedSet<igdeEditorModuleDefinition*> &GetRecentModules() const{ return pRecentlyUsed; }
 	
 	/** \brief Change recent used position of module. */
 	void ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position);

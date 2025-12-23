@@ -84,9 +84,7 @@ void igdeGDPreviewCreator::SetImage(deImage *image){
 }
 
 void igdeGDPreviewCreator::AddListener(igdeGDPreviewListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
@@ -135,11 +133,9 @@ void igdeGDPreviewCreator::AbortCreation(){
 
 
 void igdeGDPreviewCreator::NotifyImageCreated(deImage *image){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeGDPreviewListener*)pListeners.GetAt(i))->ImageCreated(image);
-	}
+	pListeners.Visit([&](igdeGDPreviewListener &listener){
+		listener.ImageCreated(image);
+	});
 }
 
 void igdeGDPreviewCreator::DebugLog(const char *message){

@@ -38,7 +38,7 @@
 #include "speaker/igdeGDCSpeaker.h"
 #include "world/igdeGDCWorld.h"
 #include "../igdeTagManager.h"
-#include "../property/igdeGDPropertyList.h"
+#include "../property/igdeGDProperty.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -107,9 +107,9 @@ private:
 	igdeGDCamera *pCamera;
 	bool pHasCamera, pIsGhost, pCanInstantiate, pIsAttachableBehavior;
 	decString pCategory;
-	igdeGDPropertyList pListProperties;
+	igdeGDProperty::List pListProperties;
 	decStringDictionary pPropertyValues;
-	igdeGDPropertyList pTextureProperties;
+	igdeGDProperty::List pTextureProperties;
 	igdeGDCBillboard::List pListBillboards;
 	igdeGDCComponent::List pListComponents;
 	igdeGDCLight::List pListLights;
@@ -275,7 +275,7 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief List of class properties. */
-	inline const igdeGDPropertyList &GetListProperties() const{ return pListProperties; }
+	inline const igdeGDProperty::List &GetListProperties() const{ return pListProperties; }
 	
 	/** \brief Adds a class property. */
 	void AddProperty(igdeGDProperty *property);
@@ -333,10 +333,10 @@ public:
 	/** \name Texture properties */
 	/*@{*/
 	/** \brief Texture properties. */
-	inline const igdeGDPropertyList &GetTextureProperties() const{ return pTextureProperties; }
+	inline const igdeGDProperty::List &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** \brief Set texture properties. */
-	void SetTextureProperties(const igdeGDPropertyList &properties);
+	void SetTextureProperties(const igdeGDProperty::List &properties);
 	
 	/** \brief Add texture property. */
 	void AddTextureProperty(igdeGDProperty *property);

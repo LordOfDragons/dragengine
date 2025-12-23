@@ -75,26 +75,28 @@ aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotio
 	
 	pIKInfluence = 0.0f;
 	
-	pDDSLocked.SetParentDebugDrawer(debugDrawer);
-	pDDSLocked.SetVisible(false);
-	pDDSLocked.SetEdgeColor(decColor(0.0f, 0.5f, 0.75f, 0.25f));
-	pDDSLocked.SetFillColor(decColor(0.0f, 0.5f, 0.75f, 0.1f));
+	pDDSLocked = igdeWDebugDrawerShape::Ref::New();
+	pDDSLocked->SetParentDebugDrawer(debugDrawer);
+	pDDSLocked->SetVisible(false);
+	pDDSLocked->SetEdgeColor(decColor(0.0f, 0.5f, 0.75f, 0.25f));
+	pDDSLocked->SetFillColor(decColor(0.0f, 0.5f, 0.75f, 0.1f));
 	
 	pDDSLockedCF.SetParentDebugDrawer(debugDrawer);
 	pDDSLockedCF.SetVisible(false);
 	
-	pDDSPredict.SetParentDebugDrawer(debugDrawer);
-	pDDSPredict.SetVisible(false);
-	pDDSPredict.SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
-	pDDSPredict.SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
+	pDDSPredict = igdeWDebugDrawerShape::Ref::New();
+	pDDSPredict->SetParentDebugDrawer(debugDrawer);
+	pDDSPredict->SetVisible(false);
+	pDDSPredict->SetEdgeColor(decColor(0.0f, 0.75f, 0.75f, 0.25f));
+	pDDSPredict->SetFillColor(decColor(0.0f, 0.75f, 0.75f, 0.1f));
 	
 	UpdateShapes();
 }
 
 aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
-	pDDSPredict.SetParentDebugDrawer(nullptr);
+	pDDSPredict->SetParentDebugDrawer(nullptr);
 	pDDSLockedCF.SetParentDebugDrawer(nullptr);
-	pDDSLocked.SetParentDebugDrawer(nullptr);
+	pDDSLocked->SetParentDebugDrawer(nullptr);
 }
 
 
@@ -427,8 +429,8 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 	pIKOrientation = (decDMatrix::CreateRotation(ikBoneRotation) * locoInvMatrix).GetEulerAngles().ToVector();
 	
 	// update the debug drawe shapes with the ik parameters
-	pDDSLocked.SetPosition(ikBonePosition);
-	pDDSLocked.SetOrientation(ikBoneOrientation);
+	pDDSLocked->SetPosition(ikBonePosition);
+	pDDSLocked->SetOrientation(ikBoneOrientation);
 	pDDSLockedCF.SetPosition(ikBonePosition);
 	pDDSLockedCF.SetOrientation(ikBoneOrientation);
 #endif
@@ -451,10 +453,10 @@ void aeAnimatorLocomotionLeg::UpdateDebugDrawers(){
 		if(boneIndex != -1){
 			boneMatrix = decDMatrix(engComponent->GetBoneAt(boneIndex).GetMatrix());
 			
-			pDDSLocked.SetPosition(boneMatrix.GetPosition());
-			pDDSLocked.SetOrientation(boneMatrix.ToQuaternion());
-			pDDSLockedCF.SetPosition(pDDSLocked.GetPosition());
-			pDDSLockedCF.SetOrientation(pDDSLocked.GetOrientation());
+			pDDSLocked->SetPosition(boneMatrix.GetPosition());
+			pDDSLocked->SetOrientation(boneMatrix.ToQuaternion());
+			pDDSLockedCF.SetPosition(pDDSLocked->GetPosition());
+			pDDSLockedCF.SetOrientation(pDDSLocked->GetOrientation());
 		}
 	}
 }
@@ -464,15 +466,15 @@ void aeAnimatorLocomotionLeg::UpdateDebugDrawers(){
 void aeAnimatorLocomotionLeg::UpdateShapes(){
 	decShape *shape = nullptr;
 	
-	pDDSLocked.RemoveAllShapes();
-	pDDSPredict.RemoveAllShapes();
+	pDDSLocked->RemoveAllShapes();
+	pDDSPredict->RemoveAllShapes();
 	
 	try{
 		shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
-		//shape = new decShapeSphere( 0.05 );		pDDSLocked.AddShape(shape);
+		//shape = new decShapeSphere( 0.05 );		pDDSLocked->AddShape(shape);
 		shape = nullptr;
 		
-		shape = new decShapeSphere(0.05f);		pDDSPredict.AddShape(shape);
+		shape = new decShapeSphere(0.05f);		pDDSPredict->AddShape(shape);
 		shape = nullptr;
 		
 	}catch(const deException &){
@@ -487,26 +489,26 @@ void aeAnimatorLocomotionLeg::RepositionShapes(){
 	decDMatrix locoMatrix = decDMatrix::CreateFromQuaternion(locoOrientation) * decDMatrix::CreateTranslation(locoPosition);
 	const decDMatrix invLocoMatrix = locoMatrix.Invert();
 	
-	pDDSPredict.SetPosition(invLocoMatrix * pPredictPosition);
+	pDDSPredict->SetPosition(invLocoMatrix * pPredictPosition);
 	
-	pDDSLocked.SetPosition(invLocoMatrix * pLockedPosition);
+	pDDSLocked->SetPosition(invLocoMatrix * pLockedPosition);
 	pDDSLockedCF.SetPosition(invLocoMatrix * pLockedPosition);
 	pDDSLockedCF.SetOrientation((decDMatrix::CreateRotation(pLockedRotation) * invLocoMatrix).ToQuaternion());
 	
 	if(pPositionLocked){
-		pDDSLocked.SetEdgeColor(decColor(0.5f, 0.5f, 0.75f, 0.25f));
-		pDDSLocked.SetFillColor(decColor(0.5f, 0.5f, 0.75f, 0.1f));
+		pDDSLocked->SetEdgeColor(decColor(0.5f, 0.5f, 0.75f, 0.25f));
+		pDDSLocked->SetFillColor(decColor(0.5f, 0.5f, 0.75f, 0.1f));
 		
 	}else{
-		pDDSLocked.SetEdgeColor(decColor(0.0f, 0.5f, 0.75f, 0.25f));
-		pDDSLocked.SetFillColor(decColor(0.0f, 0.5f, 0.75f, 0.1f));
+		pDDSLocked->SetEdgeColor(decColor(0.0f, 0.5f, 0.75f, 0.25f));
+		pDDSLocked->SetFillColor(decColor(0.0f, 0.5f, 0.75f, 0.1f));
 	}
 }
 
 
 
 void aeAnimatorLocomotionLeg::SetShapesVisible(bool visible){
-	pDDSLocked.SetVisible(visible);
+	pDDSLocked->SetVisible(visible);
 	pDDSLockedCF.SetVisible(visible);
-	//pDDSPredict.SetVisible( visible );
+	//pDDSPredict->SetVisible( visible );
 }

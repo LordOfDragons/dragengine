@@ -130,7 +130,7 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSConstraint = new igdeWDebugDrawerShape;
+		pDDSConstraint = igdeWDebugDrawerShape::Ref::New();
 		pDDSConstraint->SetVisible(false);
 		pDDSConstraint->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -138,18 +138,18 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pDDSCoordSys->SetVisible(false);
 		pDDSCoordSys->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSJointError = new igdeWDebugDrawerShape;
+		pDDSJointError = igdeWDebugDrawerShape::Ref::New();
 		pDDSJointError->SetVisible(false);
 		pDDSJointError->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSOffset = new igdeWDebugDrawerShape;
+		pDDSOffset = igdeWDebugDrawerShape::Ref::New();
 		pDDSOffset->SetVisible(false);
 		pDDSOffset->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0f));
 		pDDSOffset->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
 		shapeBuilder.CreateSphere(*pDDSOffset, decVector(), 0.01f);
 		pDDSOffset->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSRangeLinear = new igdeWDebugDrawerShape;
+		pDDSRangeLinear = igdeWDebugDrawerShape::Ref::New();
 		pDDSRangeLinear->SetVisible(false);
 		pDDSRangeLinear->SetEdgeColor(decColor(0.5f, 0.5f, 0.5f, 0.25f));
 		pDDSRangeLinear->SetFillColor(decColor(0.5f, 0.5f, 0.5f, 0.05f));
@@ -696,20 +696,8 @@ void reRigConstraint::pCleanUp(){
 	if(pDDSRangeAngularX){
 		delete pDDSRangeAngularX;
 	}
-	if(pDDSRangeLinear){
-		delete pDDSRangeLinear;
-	}
-	if(pDDSOffset){
-		delete pDDSOffset;
-	}
-	if(pDDSJointError){
-		delete pDDSJointError;
-	}
 	if(pDDSCoordSys){
 		delete pDDSCoordSys;
-	}
-	if(pDDSConstraint){
-		delete pDDSConstraint;
 	}
 }
 
