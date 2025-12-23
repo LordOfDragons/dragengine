@@ -26,7 +26,6 @@
 #define _IGDEGAMEPROJECT_H_
 
 #include "../gamedefinition/igdeGameDefinition.h"
-#include "../gamedefinition/igdeGameDefinitionList.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
@@ -65,7 +64,7 @@ private:
 	
 	decStringList pBaseGameDefinitionIDList;
 	decString pPathProjectGameDefinition;
-	igdeGameDefinitionList pBaseGameDefinitionList;
+	igdeGameDefinition::List pBaseGameDefinitionList;
 	igdeGameDefinition::Ref pProjectGameDefinition;
 	igdeGameDefinition::Ref pXMLEClassGameDefinition;
 	igdeGameDefinition::Ref pFoundGameDefinition;
@@ -80,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project. */
-	igdeGameProject(igdeEnvironment &environment);
+	explicit igdeGameProject(igdeEnvironment &environment);
 	
 	/** \brief Clean up game definition. */
 	virtual ~igdeGameProject();
@@ -145,8 +144,8 @@ public:
 	void SetPathProjectGameDefinition(const char *path);
 	
 	/** \brief Base game definition list. */
-	inline igdeGameDefinitionList &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
-	inline const igdeGameDefinitionList &GetBaseGameDefinitionList() const{ return pBaseGameDefinitionList; }
+	inline igdeGameDefinition::List &GetBaseGameDefinitionList(){ return pBaseGameDefinitionList; }
+	inline const igdeGameDefinition::List &GetBaseGameDefinitionList() const{ return pBaseGameDefinitionList; }
 	
 	/**
 	 * \brief Project game definition.

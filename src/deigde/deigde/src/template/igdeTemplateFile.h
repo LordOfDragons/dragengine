@@ -25,9 +25,10 @@
 #ifndef _IGDETEMPLATEFILE_H_
 #define _IGDETEMPLATEFILE_H_
 
-#include "igdeTemplateReplaceList.h"
+#include "igdeTemplateReplace.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -39,6 +40,9 @@ class igdeTemplateFile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTemplateFile> Ref;
+
+	/** \brief List of template files. */
+	typedef decTObjectOrderedSet<igdeTemplateFile> List;
 
 
 	/** \brief Directories. */
@@ -57,7 +61,7 @@ private:
 	decString pPathRename;
 	decString pPattern;
 	eDirectories pDirectory;
-	igdeTemplateReplaceList pReplacements;
+	igdeTemplateReplace::List pReplacements;
 	
 	
 	
@@ -105,8 +109,8 @@ public:
 	void SetDirectory(eDirectories directory);
 	
 	/** \brief Replacements. */
-	inline igdeTemplateReplaceList &GetReplacements(){ return pReplacements; }
-	inline const igdeTemplateReplaceList &GetReplacements() const{ return pReplacements; }
+	inline igdeTemplateReplace::List &GetReplacements(){ return pReplacements; }
+	inline const igdeTemplateReplace::List &GetReplacements() const{ return pReplacements; }
 	/*@}*/
 };
 

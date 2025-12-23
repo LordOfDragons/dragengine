@@ -25,9 +25,11 @@
 #ifndef _IGDETEMPLATE_H_
 #define _IGDETEMPLATE_H_
 
-#include "igdeTemplateFileList.h"
+#include "igdeTemplateFile.h"
+#include "igdeTemplateReplace.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -40,6 +42,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTemplate> Ref;
 
+	/** \brief List of templates. */
+	typedef decTObjectOrderedSet<igdeTemplate> List;
+
 
 
 private:
@@ -48,7 +53,8 @@ private:
 	decString pDescription;
 	decString pScriptModule;
 	decStringList pBaseGameDefinitions;
-	igdeTemplateFileList pFiles;
+	igdeTemplateFile::List pFiles;
+	igdeTemplateReplace::List pReplacements;
 	
 	
 	
@@ -100,8 +106,8 @@ public:
 	inline const decStringList &GetBaseGameDefinitions() const{ return pBaseGameDefinitions; }
 	
 	/** \brief Files. */
-	inline igdeTemplateFileList &GetFiles(){ return pFiles; }
-	inline const igdeTemplateFileList &GetFiles() const{ return pFiles; }
+	inline igdeTemplateFile::List &GetFiles(){ return pFiles; }
+	inline const igdeTemplateFile::List &GetFiles() const{ return pFiles; }
 	/*@}*/
 };
 

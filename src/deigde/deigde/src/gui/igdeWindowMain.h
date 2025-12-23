@@ -27,6 +27,7 @@
 
 #include "../configuration/igdeConfiguration.h"
 #include "../configuration/igdeConfigurationLocal.h"
+#include "../template/igdeTemplate.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
@@ -65,13 +66,11 @@ class igdeEnvironmentIGDE;
 class igdeGDPreviewManager;
 class igdeLoadSaveSystem;
 class igdeTaskSyncGameDefinition;
-class igdeTemplateList;
 class igdeSharedFontList;
 class igdeUIHelper;
 
 class deException;
 class decTimer;
-class igdeGameDefinitionList;
 
 
 
@@ -95,8 +94,8 @@ private:
 	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLogger::Ref pWindowLogger;
 	deVirtualFileSystem::Ref pVFS;
-	igdeTemplateList *pTemplates;
-	igdeGameDefinitionList *pSharedGameDefinitions;
+	igdeTemplate::List pTemplates;
+	igdeGameDefinition::List pSharedGameDefinitions;
 	igdeGameDefinition::Ref pIGDEGameDefinition;
 	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
@@ -223,10 +222,13 @@ public:
 	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Project templates. */
-	inline igdeTemplateList &GetTemplates() const{ return *pTemplates; }
+		/** \brief Templates. */
+	inline igdeTemplate::List &GetTemplates(){ return pTemplates; }
+	inline const igdeTemplate::List &GetTemplates() const{ return pTemplates; }
 	
 	/** Shared game definitions. */
-	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{ return *pSharedGameDefinitions; }
+	inline igdeGameDefinition::List &GetSharedGameDefinitions(){ return pSharedGameDefinitions; }
+	inline const igdeGameDefinition::List &GetSharedGameDefinitions() const{ return pSharedGameDefinitions; }
 	
 	/** Retrieves the igde game definition. */
 	inline const igdeGameDefinition::Ref &GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }

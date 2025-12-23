@@ -327,7 +327,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.cpp"/>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLElementClass.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLGameDefinition.cpp"/>
@@ -650,7 +649,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpression.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.cpp"/>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.cpp"/>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.cpp"/>
@@ -706,7 +704,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.h"/>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLElementClass.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLGameDefinition.h"/>
@@ -1033,7 +1030,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpression.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.h"/>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.h"/>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.h"/>

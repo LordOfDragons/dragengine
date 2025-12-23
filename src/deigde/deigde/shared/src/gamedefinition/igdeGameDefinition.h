@@ -29,6 +29,7 @@
 #include "property/igdeGDProperty.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/model/deModel.h>
@@ -53,6 +54,9 @@ class DE_DLL_EXPORT igdeGameDefinition : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGameDefinition> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGameDefinition> List;
 	
 	
 private:

@@ -35,7 +35,6 @@
 #include "../module/igdeEditorModuleManager.h"
 #include "../module/igdeEditorModuleDefinition.h"
 #include "../template/igdeTemplate.h"
-#include "../template/igdeTemplateList.h"
 
 #include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
@@ -76,7 +75,6 @@
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gamedefinition/igdeGDCategory.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gamedefinition/igdeGameDefinitionList.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
 #include <deigde/gamedefinition/class/component/igdeGDCComponent.h>
@@ -480,8 +478,6 @@ pConfigurationLocal(*this),
 pModuleManager(nullptr),
 pLoadSaveSystem(nullptr),
 pGDPreviewManager(nullptr),
-pTemplates(nullptr),
-pSharedGameDefinitions(nullptr),
 pSharedFontList(nullptr),
 pResourceLoader(nullptr),
 pUIHelper(nullptr),
@@ -565,10 +561,8 @@ pTaskSyncGameDefinition(nullptr)
 		
 		pLoadIGDEGameDefinition();
 		
-		pSharedGameDefinitions = new igdeGameDefinitionList;
 		pLoadSharedGameDefinitions();
 		
-		pTemplates = new igdeTemplateList;
 		pLoadTemplates();
 		
 		pIconApplication = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/application.png");
@@ -1645,14 +1639,8 @@ void igdeWindowMain::pCleanUp(){
 	pGameProject = nullptr;
 	pIGDEGameDefinition = nullptr;
 	
-	if(pSharedGameDefinitions){
-		delete pSharedGameDefinitions;
-		pSharedGameDefinitions = nullptr;
-	}
-	if(pTemplates){
-		delete pTemplates;
-		pTemplates = nullptr;
-	}
+	pSharedGameDefinitions.RemoveAll();
+	pTemplates.RemoveAll();
 	
 	if(pSharedFontList){
 		delete pSharedFontList;
@@ -1968,26 +1956,22 @@ void igdeWindowMain::pLoadTemplates(){
 	// load found templates
 	igdeLoadTemplate loadTemplate(&logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	
 	for(i=0; i<count; i++){
-		igdeTemplate::Ref atemplate;
-		
 		decPath path(basePath);
 		path.Add(pathList.GetAt(i));
 		const decString pathXml(path.GetPathNative());
+		
 		path.RemoveLastComponent();
 		const decString pathTemplate(path.GetPathNative());
 		
 		logger.LogInfoFormat(LOGSOURCE, "Loading project template '%s'",
 			path.GetLastComponent().GetString());
 		
+		const igdeTemplate::Ref atemplate(igdeTemplate::Ref::New());
 		try{
-			reader = decDiskFileReader::Ref::New(pathXml);
-			
-			atemplate = igdeTemplate::Ref::New();
 			atemplate->SetBasePath(pathTemplate);
-			loadTemplate.Load(reader, atemplate);
+			loadTemplate.Load(decDiskFileReader::Ref::New(pathXml), atemplate);
 			
 		}catch(const deException &e){
 			logger.LogException(LOGSOURCE, e);
@@ -1999,7 +1983,7 @@ void igdeWindowMain::pLoadTemplates(){
 			continue;
 		}
 		
-		pTemplates->Add(atemplate);
+		pTemplates.Add(atemplate);
 	}
 }
 
@@ -2024,23 +2008,18 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	const dePathList &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef(pEnvironmentIGDE, &logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeGameDefinition::Ref gameDefinition;
-		
 		decPath path(gameDefPath);
 		path.Add(pathList.GetAt(i));
 		logger.LogInfoFormat(LOGSOURCE, "Loading shared game definition '%s'",
 			pathList.GetAt(i).GetLastComponent().GetString());
 			
+		const igdeGameDefinition::Ref gameDefinition(igdeGameDefinition::Ref::New(pEnvironmentIGDE));
 		try{
-			reader = decDiskFileReader::Ref::New(path.GetPathNative());
-			
-			gameDefinition = igdeGameDefinition::Ref::New(pEnvironmentIGDE);
 			gameDefinition->SetFilename(path.GetPathNative());
-			loadGameDef.Load(reader, gameDefinition);
+			loadGameDef.Load(decDiskFileReader::Ref::New(path.GetPathNative()), gameDefinition);
 			
 		}catch(const deException &e){
 			logger.LogException(LOGSOURCE, e);
@@ -2052,7 +2031,9 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 			continue;
 		}
 		
-		if(pSharedGameDefinitions->HasWithID(gameDefinition->GetID())){
+		if(pSharedGameDefinitions.HasMatching([&](const igdeGameDefinition &gd){
+			return gd.GetID() == gameDefinition->GetID();
+		})){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has has duplicate identifier, skipped");
 			continue;
 		}
@@ -2084,7 +2065,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		gameDefinition->FindSkies(vfs, foundSkies);
 		gameDefinition->GetSkyManager()->UpdateWith(foundSkies);
 		
-		pSharedGameDefinitions->Add(gameDefinition);
+		pSharedGameDefinitions.Add(gameDefinition);
 	}
 }
 

@@ -64,10 +64,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.h" />
@@ -95,10 +92,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\deigde\deigde\src\deigde-res.rc" />

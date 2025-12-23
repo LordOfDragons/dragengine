@@ -26,6 +26,7 @@
 #define _IGDETEMPLATEREPLACE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -37,6 +38,9 @@ class igdeTemplateReplace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTemplateReplace> Ref;
+
+	/** \brief List of template replacements. */
+	typedef decTObjectOrderedSet<igdeTemplateReplace> List;
 
 
 	/** \brief Replacement value. */

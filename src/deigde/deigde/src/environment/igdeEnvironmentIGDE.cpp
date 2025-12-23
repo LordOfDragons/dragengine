@@ -36,7 +36,6 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gamedefinition/igdeGameDefinitionList.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/dialog/igdeDialog.h>
@@ -96,7 +95,9 @@ igdeGameDefinition *igdeEnvironmentIGDE::GetGameDefinition(){
 }
 
 igdeGameDefinition *igdeEnvironmentIGDE::GetSharedGameDefinition(const char *id){
-	return pWindowMain->GetSharedGameDefinitions().GetWithID(id);
+	return pWindowMain->GetSharedGameDefinitions().FindOrDefault([id](const igdeGameDefinition::Ref &gd){
+		return gd->GetID() == id;
+	});
 }
 
 igdeGDPreviewManager *igdeEnvironmentIGDE::GetGDPreviewManager(){

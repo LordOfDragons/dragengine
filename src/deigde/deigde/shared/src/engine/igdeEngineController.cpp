@@ -212,13 +212,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		const deVirtualFileSystem::Ref &vfsAssetLibraries =
 			pEngine->GetModuleSystem()->GetVFSAssetLibraries();
 				
-		const igdeGameDefinitionList &baseGameDefs = gameProject->GetBaseGameDefinitionList();
-		const int baseGameDefCount = baseGameDefs.GetCount();
-		int i;
-		
-		for(i=0; i<baseGameDefCount; i++){
-			const igdeGameDefinition &baseGameDef = *baseGameDefs.GetAt(i);
-			
+		gameProject->GetBaseGameDefinitionList().Visit([&](const igdeGameDefinition &baseGameDef){
 			diskPath.SetFromNative(baseGameDef.GetBasePath());
 			rootPath.SetFromUnix(baseGameDef.GetVFSPath());
 			logger.LogInfoFormat(LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
@@ -230,7 +224,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 				relPath.SetPrefix("/");
 				vfs.AddContainer(deVFSRedirect::Ref::New(rootPath, relPath, vfsAssetLibraries, true));
 			}
-		}
+		});
 	}
 	
 	rootPath.SetFromUnix("/");

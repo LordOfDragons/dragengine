@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger target. */
-	igdeTriggerTarget(const char *name);
+	explicit igdeTriggerTarget(const char *name);
 	
 	
 	

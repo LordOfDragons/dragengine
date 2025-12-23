@@ -379,15 +379,13 @@ void igdeCreateProject::pXmlEscapeValues(decStringList &values){
 }
 
 void igdeCreateProject::pStoreBaseGameDefs(){
-	const igdeGameDefinitionList &sharedGameDefList = pWindowMain.GetSharedGameDefinitions();
-	const int count = pBaseGameDefs.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const decString &id = pBaseGameDefs.GetAt(i);
+	const igdeGameDefinition::List &sgdl = pWindowMain.GetSharedGameDefinitions();
+	pBaseGameDefs.Visit([&](const decString &id){
 		pProject->GetBaseGameDefinitionIDList().Add(id);
-		pProject->GetBaseGameDefinitionList().Add(sharedGameDefList.GetWithID(id));
-	}
+		pProject->GetBaseGameDefinitionList().Add(sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
+			return gd.GetID() == id;
+		}));
+	});
 }
 
 void igdeCreateProject::pApplyTemplate(){
@@ -408,13 +406,9 @@ void igdeCreateProject::pApplyTemplate(){
 	pCreateFileRenames();
 	
 	// create files
-	const igdeTemplateFileList &files = pTemplate->GetFiles();
-	const int fileCount = files.GetCount();
-	int i;
-	
-	for(i=0; i<fileCount; i++){
-		pTemplateCreateFile(*files.GetAt(i));
-	}
+	pTemplate->GetFiles().Visit([this](const igdeTemplateFile &file){
+		pTemplateCreateFile(file);
+	});
 }
 
 void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
@@ -504,12 +498,7 @@ void igdeCreateProject::pCreateFileRenames(){
 
 void igdeCreateProject::pCreateFileReplacements(const igdeTemplateFile &file,
 decStringList &tokens, decStringList &values){
-	const igdeTemplateReplaceList &list = file.GetReplacements();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeTemplateReplace &replace = *list.GetAt(i);
+	file.GetReplacements().Visit([&](const igdeTemplateReplace &replace){
 		tokens.Add(replace.GetToken());
 		
 		decString value;
@@ -570,7 +559,7 @@ decStringList &tokens, decStringList &values){
 		}
 		
 		values.Add(value);
-	}
+	});
 }
 
 decString igdeCreateProject::pEscapeStringC(const decString &string){

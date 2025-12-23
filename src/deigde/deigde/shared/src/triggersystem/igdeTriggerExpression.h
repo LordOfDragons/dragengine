@@ -27,6 +27,7 @@
 
 #include "igdeTriggerExpressionComponent.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 class igdeTriggerTargetList;
@@ -42,6 +43,9 @@ class DE_DLL_EXPORT igdeTriggerExpression : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerExpression> Ref;
+	
+	/** \brief List of trigger expressions. */
+	typedef decTObjectOrderedSet<igdeTriggerExpression> List;
 	
 	
 private:

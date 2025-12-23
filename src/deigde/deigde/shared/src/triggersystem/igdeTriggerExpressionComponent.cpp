@@ -94,7 +94,7 @@ void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerT
 	SetTargetListener(nullptr);
 	
 	if(pType == ectTarget && !pTargetName.IsEmpty()){
-		SetTarget(triggerTable.GetNamedAddIfMissing(pTargetName.GetString()));
+		SetTarget(triggerTable.GetNamedAddIfMissing(pTargetName));
 		
 		if(listener){
 			pTarget->AddListener(listener);

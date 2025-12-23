@@ -122,22 +122,18 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	project->SetFilePath(filename);
 	
 	// locate base game definitions
-	const igdeGameDefinitionList &sharedGameDefs = windowMain.GetSharedGameDefinitions();
-	const decStringList &baseGameDefs = project->GetBaseGameDefinitionIDList();
-	const int baseGameDefCount = baseGameDefs.GetCount();
-	int i;
-	
-	for(i=0; i<baseGameDefCount; i++){
-		const decString &id = baseGameDefs.GetAt(i);
-		igdeGameDefinition * const baseGameDef = sharedGameDefs.GetWithID(id);
-		if(baseGameDef){
-			project->GetBaseGameDefinitionList().Add(baseGameDef);
+	const igdeGameDefinition::List &sgdl = windowMain.GetSharedGameDefinitions();
+	project->GetBaseGameDefinitionIDList().Visit([&](const decString &id){
+		igdeGameDefinition * const bgd = sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
+			return gd.GetID() == id;
+		});
+		if(bgd){
+			project->GetBaseGameDefinitionList().Add(bgd);
 			
 		}else{
-			logger->LogWarnFormat(LOGSOURCE, "Can not find base game definition '%s', skipped",
-				id.GetString());
+			logger->LogWarnFormat(LOGSOURCE, "Can not find base game definition '%s', skipped", id.GetString());
 		}
-	}
+	});
 	
 	// load the project game definition specified
 	decPath path;

@@ -136,19 +136,11 @@ void projRemoteServer::pUpdateTaskProfileData(){
 	
 	pTaskProfileData->vfs = env.GetFileSystemGame();
 	
-	const igdeGameDefinitionList &list = env.GetGameProject()->GetBaseGameDefinitionList();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGameDefinition &gameDef = *list.GetAt(i);
-		if(gameDef.GetVFSPath().IsEmpty()){
-			continue;
+	env.GetGameProject()->GetBaseGameDefinitionList().Visit([&](const igdeGameDefinition &gd){
+		if(!gd.GetVFSPath().IsEmpty()){
+			pTaskProfileData->excludeBaseGameDefPath.AddIfAbsent(decPath::CreatePathUnix(gd.GetVFSPath()));
 		}
-		
-		pTaskProfileData->excludeBaseGameDefPath.AddIfAbsent(
-			decPath::CreatePathUnix(gameDef.GetVFSPath()));
-	}
+	});
 	
 	if(pProject.GetActiveProfile()){
 		pTaskProfileData->excludePatterns = pProject.GetActiveProfile()->GetExcludePatterns();

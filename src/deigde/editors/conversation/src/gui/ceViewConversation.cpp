@@ -166,7 +166,7 @@ public:
 		}
 		
 		cePlayback &playback = *pView.GetConversation()->GetPlayback();
-		cePlaybackActionStack &stack = playback.GetMainActionStack();
+		const cePlaybackActionStack &stack = playback.GetMainActionStack();
 		
 		// action user has to advance himself
 		ceConversationAction * const action = stack.HasNextAction() ? stack.GetTop().GetNextAction() : nullptr;
@@ -174,7 +174,6 @@ public:
 			switch(action->GetType()){
 			case ceConversationAction::eatActorCommand:
 			case ceConversationAction::eatGameCommand:
-			case ceConversationAction::eatTrigger:
 			case ceConversationAction::eatActorAdd:
 			case ceConversationAction::eatActorRemove:
 			case ceConversationAction::eatCoordSystemAdd:

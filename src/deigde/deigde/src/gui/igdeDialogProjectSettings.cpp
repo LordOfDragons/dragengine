@@ -325,7 +325,7 @@ bool igdeDialogProjectSettings::Accept(){
 		return false;
 	}
 	
-	const igdeGameDefinitionList &sharedGameDefList = pWindowMain.GetSharedGameDefinitions();
+	const igdeGameDefinition::List &sgdl = pWindowMain.GetSharedGameDefinitions();
 	
 	try{
 		igdeGameProject &project = *GetEnvironment().GetGameProject();
@@ -345,7 +345,9 @@ bool igdeDialogProjectSettings::Accept(){
 		for(i=0; i<baseGameDefCount; i++){
 			const decString &id = pListPathGameDefBase->GetItemAt(i)->GetText();
 			project.GetBaseGameDefinitionIDList().Add(id);
-			project.GetBaseGameDefinitionList().Add(sharedGameDefList.GetWithID(id));
+			project.GetBaseGameDefinitionList().Add(sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
+				return gd.GetID() == id;
+			}));
 		}
 		
 		pBaseGameDefsChanged = true; // TODO check first if this is required
@@ -384,16 +386,11 @@ void igdeDialogProjectSettings::UpdateSharedGameDefs(){
 		return;
 	}
 	
-	const igdeGameDefinitionList &list = pWindowMain.GetSharedGameDefinitions();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeGameDefinition * const gameDefinition = list.GetAt(i);
-		if(gameDefinition->GetScriptModule() == scriptModule){
-			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), nullptr, gameDefinition);
+	pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
+		if(gd->GetScriptModule() == scriptModule){
+			pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
 		}
-	}
+	});
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);

@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "igdeTriggerTarget.h"
 #include "igdeTriggerTargetList.h"
 #include "igdeTriggerExpression.h"
+#include "igdeTriggerListener.h"
 #include "igdeTriggerExpressionComponent.h"
 
 #include <dragengine/common/exceptions.h>

@@ -28,7 +28,6 @@
 #include "../environment/igdeEnvironmentIGDE.h"
 #include "../configuration/igdeConfiguration.h"
 #include "../template/igdeTemplate.h"
-#include "../template/igdeTemplateList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -515,16 +514,11 @@ void igdeDialogNewGameProject::UpdateSharedGameDefs(){
 		return;
 	}
 	
-	const igdeGameDefinitionList &list = pWindowMain.GetSharedGameDefinitions();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeGameDefinition * const gameDefinition = list.GetAt(i);
-		if(gameDefinition->GetScriptModule() == scriptModule){
-			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), nullptr, gameDefinition);
+	pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
+		if(gd->GetScriptModule() == scriptModule){
+			pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
 		}
-	}
+	});
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);
@@ -607,19 +601,14 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 }
 
 void igdeDialogNewGameProject::pInitTemplates(){
-	const igdeTemplateList &templates = pWindowMain.GetTemplates();
-	const int count = templates.GetCount();
-	int i;
-	
 	pCBTemplate->RemoveAllItems();
 	pCBTemplate->AddItem("< Use No Template >");
 	
-	for(i=0; i<count; i++){
-		igdeTemplate * const atemplate = templates.GetAt(i);
-		if(!pCBScriptModule->HasItemWithData(atemplate)){
-			pCBTemplate->AddItem(atemplate->GetName(), nullptr, atemplate);
+	pWindowMain.GetTemplates().Visit([&](igdeTemplate *t){
+		if(!pCBScriptModule->HasItemWithData(t)){
+			pCBTemplate->AddItem(t->GetName(), nullptr, t);
 		}
-	}
+	});
 	
 	pCBTemplate->SortItems();
 	
