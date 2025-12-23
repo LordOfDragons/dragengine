@@ -77,7 +77,7 @@ long igdeNativeFoxContainerBoxAlternateY::onChildLayoutFlags(FXObject*, FXSelect
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
@@ -139,7 +139,7 @@ long igdeNativeFoxContainerBoxAlternateX::onChildLayoutFlags(FXObject*, FXSelect
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_Y;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}

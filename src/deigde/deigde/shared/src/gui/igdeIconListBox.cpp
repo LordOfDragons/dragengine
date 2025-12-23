@@ -509,14 +509,6 @@ void igdeIconListBox::NotifyItemDeselected(int index){
 
 
 
-int igdeIconListBox::GetHeaderCount() const{
-	return pHeaders.GetCount();
-}
-
-igdeListHeader *igdeIconListBox::GetHeaderAt(int index) const{
-	return (igdeListHeader*)pHeaders.GetAt(index);
-}
-
 bool igdeIconListBox::HasHeader(igdeListHeader *header) const{
 	return pHeaders.Has(header);
 }
@@ -585,7 +577,7 @@ void igdeIconListBox::ShowContextMenu(const decPoint &position){
 		l.AddContextMenuEntries(this, menu);
 	});
 	
-	if(menu->GetChildCount() > 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(*this, position);
 	}
 }

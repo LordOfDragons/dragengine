@@ -58,27 +58,6 @@ igdeContainer::~igdeContainer(){
 // Management
 ///////////////
 
-int igdeContainer::GetChildCount() const{
-	return pChildren.GetCount();
-}
-
-igdeWidget *igdeContainer::GetChildAt(int index) const{
-	return (igdeWidget*)pChildren.GetAt(index);
-}
-
-int igdeContainer::IndexOfChild(igdeWidget *widget) const{
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if((igdeWidget*)pChildren.GetAt(i) == widget){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 void igdeContainer::AddChild(igdeWidget *child){
 	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
@@ -102,37 +81,27 @@ void igdeContainer::RemoveChild(igdeWidget *child){
 }
 
 void igdeContainer::RemoveAllChildren(){
-	while(pChildren.GetCount() > 0){
-		const int index = pChildren.GetCount() - 1;
-		igdeWidget &child = *((igdeWidget*)pChildren.GetAt(index));
-		
+	pChildren.Visit([&](igdeWidget &child){
 		child.DestroyNativeWidget();
 		child.SetParent(nullptr);
-		
-		pChildren.RemoveFrom(index);
-	}
+	});
+	pChildren.RemoveAll();
 }
 
 
 
 void igdeContainer::DropNativeWidget(){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeWidget*)pChildren.GetAt(i))->DropNativeWidget();
-	}
+	pChildren.Visit([&](igdeWidget &child){
+		child.DropNativeWidget();
+	});
 	
 	igdeWidget::DropNativeWidget();
 }
 
 void igdeContainer::CreateChildWidgetNativeWidgets(){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeWidget*)pChildren.GetAt(i))->CreateNativeWidget();
-	}
+	pChildren.Visit([&](igdeWidget &child){
+		child.CreateNativeWidget();
+	});
 }
 
 void igdeContainer::OnGuiThemeChanged(){
@@ -142,15 +111,12 @@ void igdeContainer::OnGuiThemeChanged(){
 
 void igdeContainer::NotifyChildrenGuiThemeChanged(){
 	igdeGuiTheme * const guitheme = GetGuiTheme();
-	const int count = pChildren.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeWidget * const widget = (igdeWidget*)pChildren.GetAt(i);
-		if(widget->GetGuiTheme() != guitheme){
-			widget->OnGuiThemeChanged();
+	pChildren.Visit([&](igdeWidget &child){
+		if(child.GetGuiTheme() != guitheme){
+			child.OnGuiThemeChanged();
 		}
-	}
+	});
 }
 
 void *igdeContainer::GetNativeContainer() const{

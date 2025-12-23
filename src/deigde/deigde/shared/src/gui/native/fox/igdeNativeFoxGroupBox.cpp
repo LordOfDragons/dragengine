@@ -147,11 +147,9 @@ void igdeNativeFoxGroupBox::UpdateTitleAlignment(){
 }
 
 void igdeNativeFoxGroupBox::UpdateStretchLast(){
-	const int count = pOwner->GetChildCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(i));
-	}
+	pOwner->GetChildren().Visit([](igdeWidget *widget){
+		igdeUIFoxHelper::UpdateLayoutFlags(widget);
+	});
 	recalc();
 }
 
@@ -247,12 +245,12 @@ long igdeNativeFoxGroupBox::onChildLayoutFlags(FXObject*, FXSelector, void *pdat
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
 	
-	if(pOwner->GetStretchLast() && index == pOwner->GetChildCount() - 1){
+	if(pOwner->GetStretchLast() && index == pOwner->GetChildren().GetCount() - 1){
 		clflags.flags |= LAYOUT_FILL_Y;
 	}
 	

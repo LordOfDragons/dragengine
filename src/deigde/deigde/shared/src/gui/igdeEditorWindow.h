@@ -29,7 +29,7 @@
 #include "layout/igdeContainerBox.h"
 #include "../utils/igdeRecentFiles.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -49,13 +49,17 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditorWindow> Ref;
 	
+	typedef decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*> SharedMenusList;
+	typedef decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*> SharedToolBarsList;
+	typedef decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*> UpdateActionsList;
+	
 	
 private:
 	igdeEditorModule &pEditorModule;
 	bool pActiveModule;
-	decObjectOrderedSet pSharedMenus;
-	decObjectOrderedSet pSharedToolBars;
-	decObjectOrderedSet pUpdateActions;
+	SharedMenusList pSharedMenus;
+	SharedToolBarsList pSharedToolBars;
+	UpdateActionsList pUpdateActions;
 	igdeRecentFiles pRecentFiles;
 	
 	
@@ -186,11 +190,8 @@ public:
 	 * Shared menus are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared menus. */
-	int GetSharedMenuCount() const;
-	
-	/** \brief Shared menu at index. */
-	igdeMenuCascade *GetSharedMenuAt(int index) const;
+	/** \brief Shared menus. */
+	const SharedMenusList &GetSharedMenus() const{ return pSharedMenus; }
 	
 	/** \brief Add shared menu. */
 	void AddSharedMenu(igdeMenuCascade *menu);
@@ -210,11 +211,8 @@ public:
 	 * Shared toolbars are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared toolbars. */
-	int GetSharedToolBarCount() const;
-	
-	/** \brief Shared toolbar at index. */
-	igdeToolBar *GetSharedToolBarAt(int index) const;
+	/** \brief Shared toolbars. */
+	const SharedToolBarsList &GetSharedToolBars() const{ return pSharedToolBars; }
 	
 	/** \brief Add shared tool bar. */
 	void AddSharedToolBar(igdeToolBar *toolbar);

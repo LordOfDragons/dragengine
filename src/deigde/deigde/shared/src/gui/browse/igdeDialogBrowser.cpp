@@ -278,21 +278,15 @@ void igdeDialogBrowser::UpdateCategoryList(){
 }
 
 void igdeDialogBrowser::UpdateCategoryListWith(igdeGDCategory *category){
-	if(!category){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int categoryCount = category->GetCategoryCount();
-	int i;
+	DEASSERT_NOTNULL(category)
 	
 	pTreeCategories->AppendItem(nullptr, "< No Category >");
 	
-	for(i=0; i<categoryCount; i++){
-		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(!child->GetHidden()){
-			AddCategoryToList(child, nullptr);
+	category->GetCategories().Visit([&](igdeGDCategory *c){
+		if(!c->GetHidden()){
+			AddCategoryToList(c, nullptr);
 		}
-	}
+	});
 }
 
 void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent){
@@ -300,18 +294,14 @@ void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int categoryCount = category->GetCategoryCount();
-	int i;
-	
 	igdeTreeItem::Ref item(igdeTreeItem::Ref::New(category->GetName(), category));
 	pTreeCategories->AppendItem(parent, item);
 	
-	for(i=0; i<categoryCount; i++){
-		igdeGDCategory * const child = category->GetCategoryAt(i);
-		if(!child->GetHidden()){
-			AddCategoryToList(child, item);
+	category->GetCategories().Visit([&](igdeGDCategory *c){
+		if(!c->GetHidden()){
+			AddCategoryToList(c, item);
 		}
-	}
+	});
 }
 
 void igdeDialogBrowser::UpdateItemList(){

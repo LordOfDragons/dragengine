@@ -47,8 +47,7 @@ void igdeContainerForm::RemoveChild(igdeWidget *child){
 		return;
 	}
 	
-	const int count = GetChildCount();
-	if(count < 1){
+	if(GetChildren().GetCount() < 1){
 		return;
 	}
 	

@@ -28,6 +28,7 @@
 #include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -43,6 +44,9 @@ class DE_DLL_EXPORT igdeListHeader : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeListHeader> Ref;
+	
+	/** \brief List header list. */
+	typedef decTObjectOrderedSet<igdeListHeader> List;
 	
 	
 private:

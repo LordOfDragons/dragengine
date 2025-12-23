@@ -31,7 +31,6 @@
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -44,10 +43,12 @@ class igdeNVSlot;
  * \brief IGDE UI NodeView Board.
  */
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeNVBoard> Ref;
+	
+	typedef decTObjectOrderedSet<igdeNVNode> NodesList;
+	typedef decTObjectOrderedSet<igdeNVLink> LinksList;
 	
 	
 private:
@@ -55,8 +56,8 @@ private:
 	bool pEnabled;
 	decPoint pOffset;
 	
-	decObjectOrderedSet pNodes;
-	decObjectOrderedSet pLinks;
+	NodesList pNodes;
+	LinksList pLinks;
 	igdeNVNode::Ref pActiveNode;
 	
 	decTObjectOrderedSet<igdeNVBoardListener> pListeners;
@@ -67,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVBoard(igdeEnvironment &environment);
+	explicit igdeNVBoard(igdeEnvironment &environment);
 	
 	
 	
@@ -114,14 +115,8 @@ public:
 	
 	
 	
-	/** \brief Number of nodes. */
-	int GetNodeCount() const;
-	
-	/** \brief Node at index. */
-	igdeNVNode *GetNodeAt(int index) const;
-	
-	/** \brief Has node. */
-	bool HasNode(igdeNVNode *node) const;
+	/** \brief Nodes. */
+	const NodesList &GetNodes() const{ return pNodes; }
 	
 	/** \brief Add node. */
 	void AddNode(igdeNVNode *node);
@@ -140,17 +135,11 @@ public:
 	
 	
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt(int index) const;
+	/** \brief Links. */
+	const LinksList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Link between source and target or nullptr if not linked. */
 	igdeNVLink *GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
-	
-	/** \brief Has link. */
-	bool HasLink(igdeNVLink *link) const;
 	
 	/** \brief Has link between source and target. */
 	bool HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;

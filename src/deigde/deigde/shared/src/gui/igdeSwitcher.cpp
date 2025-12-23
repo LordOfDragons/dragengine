@@ -58,8 +58,8 @@ void igdeSwitcher::SetCurrent(int index){
 		return;
 	}
 	
-	if(GetChildCount() > 0){
-		if(index < 0 || index >= GetChildCount()){
+	if(GetChildren().IsNotEmpty()){
+		if(index < 0 || index >= GetChildren().GetCount()){
 			DETHROW(deeInvalidParam);
 		}
 		
@@ -82,7 +82,7 @@ void igdeSwitcher::AddChild(igdeWidget *child){
 }
 
 void igdeSwitcher::RemoveChild(igdeWidget *child){
-	const int index = IndexOfChild(child);
+	const int index = GetChildren().IndexOf(child);
 	igdeContainer::RemoveChild(child);
 	
 	int current = pCurrent;
@@ -90,8 +90,8 @@ void igdeSwitcher::RemoveChild(igdeWidget *child){
 	if(index < current){
 		current--;
 		
-	}else if(current >= GetChildCount()){
-		current = GetChildCount() - 1;
+	}else if(current >= GetChildren().GetCount()){
+		current = GetChildren().GetCount() - 1;
 	}
 	
 	SetCurrent(current);

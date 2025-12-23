@@ -184,26 +184,9 @@ void igdeNVNode::OnBoardOffsetChanged(){
 
 
 
-int igdeNVNode::GetSlotCount() const{
-	return pSlots.GetCount();
-}
-
-igdeNVSlot *igdeNVNode::GetSlotAt(int index) const{
-	return (igdeNVSlot*)pSlots.GetAt(index);
-}
-
-int igdeNVNode::IndexOfSlot(igdeNVSlot *slot) const{
-	return pSlots.IndexOf(slot);
-}
-
-bool igdeNVNode::HasSlot(igdeNVSlot *slot) const{
-	return pSlots.Has(slot);
-}
-
 void igdeNVNode::AddSlot(igdeNVSlot *slot){
-	if(!slot || HasSlot(slot)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(slot)
+	DEASSERT_FALSE(pSlots.Has(slot))
 	
 	igdeContainer::AddChild(slot);
 	pSlots.Add(slot);
@@ -212,9 +195,8 @@ void igdeNVNode::AddSlot(igdeNVSlot *slot){
 }
 
 void igdeNVNode::RemoveSlot(igdeNVSlot *slot){
-	if(!slot || !HasSlot(slot)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(slot)
+	DEASSERT_TRUE(pSlots.Has(slot))
 	
 	igdeContainer::RemoveChild(slot);
 	slot->SetOwnerNode(nullptr);
@@ -227,13 +209,11 @@ void igdeNVNode::RemoveAllSlots(){
 		return;
 	}
 	
-	while(pSlots.GetCount() > 0){
-		const int index = pSlots.GetCount() - 1;
-		igdeNVSlot * const slot = (igdeNVSlot*)pSlots.GetAt(index);
-		slot->SetOwnerNode(nullptr);
-		igdeContainer::RemoveChild(slot);
-		pSlots.RemoveFrom(index);
-	}
+	pSlots.VisitReverse([&](igdeNVSlot &slot){
+		slot.SetOwnerNode(nullptr);
+		igdeContainer::RemoveChild(&slot);
+	});
+	pSlots.RemoveAll();
 	
 	OnSlotsChanged();
 }
@@ -246,13 +226,11 @@ void igdeNVNode::ShowContextMenu(const decPoint &position){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(helper.GetEnvironment()));
 	
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu);
-	}
+	pListeners.Visit([&](igdeNVNodeListener &l){
+		l.AddContextMenuEntries(this, menu);
+	});
 	
-	if(menu->GetChildCount() > 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(*this, position);
 	}
 }
@@ -260,15 +238,14 @@ void igdeNVNode::ShowContextMenu(const decPoint &position){
 
 
 void igdeNVNode::AddListener(igdeNVNodeListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeNVNode::RemoveListener(igdeNVNodeListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeNVNode::NotifyActivated(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeNVNodeListener &l){

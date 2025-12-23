@@ -27,7 +27,7 @@
 
 #include "../igdeContainer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -48,6 +48,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeNVSlot> Ref;
 	
+	/** \brief Link list. */
+	typedef decTOrderedSet<deTObjectReference<igdeNVLink>, igdeNVLink*> LinkList;
+	
 	
 private:
 	decString pText;
@@ -58,7 +61,7 @@ private:
 	decColor pColor;
 	
 	igdeNVNode *pOwnerNode;
-	decPointerSet pLinks;
+	LinkList pLinks;
 	
 	
 	
@@ -126,11 +129,8 @@ public:
 	
 	
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt(int index) const;
+	/** \brief Links. */
+	const LinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Has link. */
 	bool HasLink(igdeNVLink *link) const;

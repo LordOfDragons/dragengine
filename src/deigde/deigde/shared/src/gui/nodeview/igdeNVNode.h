@@ -30,7 +30,6 @@
 #include "../igdeWidget.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -43,10 +42,11 @@ class igdeNVSlot;
  * \brief IGDE UI NodeView Node.
  */
 class DE_DLL_EXPORT igdeNVNode : public igdeContainer{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeNVNode> Ref;
+	
+	typedef decTObjectOrderedSet<igdeNVSlot> SlotsList;
 	
 	
 private:
@@ -63,7 +63,7 @@ private:
 	igdeNVBoard *pOwnerBoard;
 	decPoint pPosition;
 	
-	decObjectOrderedSet pSlots;
+	SlotsList pSlots;
 	
 	decTObjectOrderedSet<igdeNVNodeListener> pListeners;
 	
@@ -167,17 +167,8 @@ public:
 	
 	
 	
-	/** \brief Number of slots. */
-	int GetSlotCount() const;
-	
-	/** \brief Slot at index. */
-	igdeNVSlot *GetSlotAt(int index) const;
-	
-	/** \brief Index of slot. */
-	int IndexOfSlot(igdeNVSlot *slot) const;
-	
-	/** \brief Has slot. */
-	bool HasSlot(igdeNVSlot *slot) const;
+	/** \brief Slots. */
+	const SlotsList &GetSlots() const{ return pSlots; }
 	
 	/** \brief Add slot. */
 	void AddSlot(igdeNVSlot *slot);

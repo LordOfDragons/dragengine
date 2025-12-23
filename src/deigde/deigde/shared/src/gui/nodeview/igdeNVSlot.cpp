@@ -147,29 +147,19 @@ void igdeNVSlot::SetOwnerNode(igdeNVNode *node){
 
 
 
-int igdeNVSlot::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-igdeNVLink *igdeNVSlot::GetLinkAt(int index) const{
-	return (igdeNVLink*)pLinks.GetAt(index);
-}
-
 bool igdeNVSlot::HasLink(igdeNVLink *link) const{
 	return pLinks.Has(link);
 }
 
 void igdeNVSlot::AddLink(igdeNVLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(link)
 	
-	pLinks.AddIfAbsent(link);
+	pLinks.Add(link);
 	OnLinksChanged();
 }
 
 void igdeNVSlot::RemoveLink(igdeNVLink *link){
-	pLinks.RemoveIfPresent(link);
+	pLinks.Remove(link);
 	OnLinksChanged();
 }
 

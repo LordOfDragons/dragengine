@@ -42,7 +42,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
@@ -67,6 +67,7 @@ public:
 	typedef deTObjectReference<igdeGDClass> Ref;
 	
 	typedef decTList<int> IndexList;
+	typedef decTObjectOrderedSet<igdeGDClassInherit> InheritClassesList;
 	
 	
 	/** \brief Scale modes. */
@@ -126,7 +127,7 @@ private:
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
 	
-	decObjectOrderedSet pInheritClasses;
+	InheritClassesList pInheritClasses;
 	decString pDefaultInheritPropertyPrefix;
 	
 	decString pPathEClass;
@@ -221,11 +222,8 @@ public:
 	
 	
 	
-	/** \brief Count of inherit classes. */
-	int GetInheritClassCount() const;
-	
-	/** \brief Inherit class at index. */
-	igdeGDClassInherit *GetInheritClassAt(int index) const;
+	/** \brief Inherit classes. */
+	inline const InheritClassesList &GetInheritClasses() const{ return pInheritClasses; }
 	
 	/** \brief Add inherit class. */
 	void AddInheritClass(igdeGDClassInherit *inheritClass);

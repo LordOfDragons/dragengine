@@ -168,7 +168,7 @@ void igdeNativeFoxNVSlot::UpdateColor(){
 }
 
 void igdeNativeFoxNVSlot::UpdateLinkedState(){
-	pSocket->SetChecked(pOwner->GetLinkCount() > 0);
+	pSocket->SetChecked(pOwner->GetLinks().IsNotEmpty());
 }
 
 

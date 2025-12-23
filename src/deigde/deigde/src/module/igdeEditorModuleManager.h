@@ -25,7 +25,6 @@
 #ifndef _IGDEEDITORMODULEMANAGER_H_
 #define _IGDEEDITORMODULEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
@@ -40,10 +39,14 @@ class igdeWindowMain;
  * the module directory for valid modules and loading them.
  */
 class igdeEditorModuleManager{
+public:
+	typedef decTObjectOrderedSet<igdeEditorModuleDefinition> ModulesList;
+	
+	
 private:
 	decString pPathModules;
 	igdeWindowMain &pWindowMain;
-	decObjectOrderedSet pModules;
+	ModulesList pModules;
 	igdeEditorModuleDefinition *pActiveModule;
 	decTOrderedSet<igdeEditorModuleDefinition*> pRecentlyUsed;
 	
@@ -86,11 +89,8 @@ public:
 	
 	/** \name Modules */
 	/*@{*/
-	/** \brief Number of modules. */
-	int GetModuleCount() const;
-	
-	/** \brief Module at index. */
-	igdeEditorModuleDefinition *GetModuleAt(int index) const;
+	/** \brief Modules. */
+	const ModulesList &GetModules() const{ return pModules; }
 	
 	/** \brief Module with ID or nullptr if not found. */
 	igdeEditorModuleDefinition *GetModuleWithID (const char *id) const;

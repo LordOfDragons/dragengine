@@ -85,8 +85,6 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 	pCamera = nullptr;
 	
 	try{
-		int i, count;
-		
 		pName = gdclass.pName;
 		pDescription = gdclass.pDescription;
 		pScaleMode = gdclass.pScaleMode;
@@ -159,11 +157,9 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		pHideTags = gdclass.pHideTags;
 		pPartialHideTags = gdclass.pPartialHideTags;
 		
-		count = gdclass.pInheritClasses.GetCount();
-		for(i=0; i<count; i++){
-			pInheritClasses.Add(igdeGDClassInherit::Ref::New(
-				*static_cast<igdeGDClassInherit*>(gdclass.pInheritClasses.GetAt(i))));
-		}
+		gdclass.pInheritClasses.Visit([&](const igdeGDClassInherit &s){
+			pInheritClasses.Add(igdeGDClassInherit::Ref::New(s));
+		});
 		
 		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
 		pPathEClass = gdclass.pPathEClass;
@@ -224,14 +220,6 @@ void igdeGDClass::SetInheritSubObjects(int filter){
 
 
 
-int igdeGDClass::GetInheritClassCount() const{
-	return pInheritClasses.GetCount();
-}
-
-igdeGDClassInherit *igdeGDClass::GetInheritClassAt(int index) const{
-	return (igdeGDClassInherit*)pInheritClasses.GetAt(index);
-}
-
 void igdeGDClass::AddInheritClass(igdeGDClassInherit *inheritClass){
 	if(!inheritClass){
 		DETHROW(deeInvalidParam);
@@ -240,13 +228,10 @@ void igdeGDClass::AddInheritClass(igdeGDClassInherit *inheritClass){
 }
 
 void igdeGDClass::ResolveInheritClasses(const igdeGDClassManager &classManager){
-	const int count = pInheritClasses.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](igdeGDClassInherit &inherit){
 		inherit.ResolveClass(classManager);
 		inherit.AddAutoPrefixedPropertiesTo(*this);
-	}
+	});
 }
 
 void igdeGDClass::RemoveAllInheritClasses(){
@@ -258,16 +243,10 @@ bool igdeGDClass::Inherits(igdeGDClass *gdclass) const{
 		return false;
 	}
 	
-	const int count = pInheritClasses.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeGDClass * const inheritClass = ((igdeGDClassInherit*)pInheritClasses.GetAt(i))->GetClass();
-		if(inheritClass == gdclass || inheritClass->Inherits(gdclass)){
-			return true;
-		}
-	}
-	
-	return false;
+	return pInheritClasses.HasMatching([&](const igdeGDClassInherit &inherit){
+		igdeGDClass * const inheritClass = inherit.GetClass();
+		return inheritClass == gdclass || inheritClass->Inherits(gdclass);
+	});
 }
 
 
@@ -299,13 +278,11 @@ void igdeGDClass::GetDeepComponentTextures(igdeGDCCTexture::List &list) const{
 		}
 	});
 	
-	const int inheritCount = pInheritClasses.GetCount();
-	for(int i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			inherit.GetClass()->GetDeepComponentTextures(list);
 		}
-	}
+	});
 }
 
 
@@ -338,29 +315,23 @@ igdeGDProperty *igdeGDClass::GetPropertyNamed(const char *name) const{
 		return property;
 	}
 	
-	const int count = pInheritClasses.GetCount();
 	const int nameLen = (int)strlen(name);
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
-		if(!inherit.GetClass()){
-			continue;
+	igdeGDProperty *result = nullptr;
+	pInheritClasses.HasMatching([&](const igdeGDClassInherit &inherit){
+		if(result || !inherit.GetClass()){
+			return false;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
 		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
-			continue;
+			return false;
 		}
 		
-		property = inherit.GetClass()->GetPropertyNamed(name + prefixLen);
-		if(property){
-			return property;
-		}
-	}
-	
-	return nullptr;
+		result = inherit.GetClass()->GetPropertyNamed(name + prefixLen);
+		return result != nullptr;
+	});
+	return result;
 }
 
 bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) const{
@@ -382,28 +353,20 @@ bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) co
 		return true;
 	}
 	
-	const int count = pInheritClasses.GetCount();
 	const int nameLen = (int)strlen(name);
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	return pInheritClasses.HasMatching([&](const igdeGDClassInherit &inherit){
 		if(!inherit.GetClass()){
-			continue;
+			return false;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
 		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
-			continue;
+			return false;
 		}
 		
-		if(inherit.GetClass()->GetDefaultPropertyValue(name + prefixLen, value)){
-			return true;
-		}
-	}
-	
-	return false;
+		return inherit.GetClass()->GetDefaultPropertyValue(name + prefixLen, value);
+	});
 }
 
 bool igdeGDClass::HasDefaultPropertyValue(const char *name) const{
@@ -412,23 +375,19 @@ bool igdeGDClass::HasDefaultPropertyValue(const char *name) const{
 }
 
 void igdeGDClass::AddPropertyNames(decStringSet &set, bool inherited) const{
-	const int propertyCount = pListProperties.GetCount();
-	int i;
-	for(i=0; i<propertyCount; i++){
-		set.Add(pListProperties.GetAt(i)->GetName());
-	}
+	pListProperties.Visit([&](const igdeGDProperty &p){
+		set.Add(p.GetName());
+	});
 	
 	if(!inherited){
 		return;
 	}
 	
-	const int inheritCount = pInheritClasses.GetCount();
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			inherit.GetClass()->pAddPropertyNames(set, inherit.GetPropertyPrefix());
 		}
-	}
+	});
 }
 
 
@@ -461,29 +420,24 @@ igdeGDProperty *igdeGDClass::GetTexturePropertyNamed(const char *name) const{
 		return property;
 	}
 	
-	const int count = pInheritClasses.GetCount();
 	const int nameLen = (int)strlen(name);
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.HasMatching([&](const igdeGDClassInherit &inherit){
 		if(!inherit.GetClass()){
-			continue;
+			return false;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
 		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
-			continue;
+			return false;
 		}
 		
 		property = inherit.GetClass()->GetTexturePropertyNamed(name + prefixLen);
-		if(property){
-			return property;
-		}
-	}
+		return property != nullptr;
+	});
 	
-	return nullptr;
+	return property;
 }
 
 bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &value) const{
@@ -499,28 +453,20 @@ bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &va
 		return true;
 	}
 	
-	const int count = pInheritClasses.GetCount();
 	const int nameLen = (int)strlen(name);
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	return pInheritClasses.HasMatching([&](const igdeGDClassInherit &inherit){
 		if(!inherit.GetClass()){
-			continue;
+			return false;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
 		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
-			continue;
+			return false;
 		}
 		
-		if(inherit.GetClass()->GetDefaultTexturePropertyValue(name + prefixLen, value)){
-			return true;
-		}
-	}
-	
-	return false;
+		return inherit.GetClass()->GetDefaultTexturePropertyValue(name + prefixLen, value);
+	});
 }
 
 bool igdeGDClass::HasDefaultTexturePropertyValue(const char *name) const{
@@ -539,13 +485,11 @@ void igdeGDClass::AddTexturePropertyNames(decStringSet &set, bool inherited) con
 		return;
 	}
 	
-	const int inheritCount = pInheritClasses.GetCount();
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			inherit.GetClass()->pAddTexturePropertyNames(set, inherit.GetPropertyPrefix());
 		}
-	}
+	});
 }
 
 
@@ -1047,11 +991,9 @@ void igdeGDClass::pAddTexturePropertyNames(decStringSet &set, const decString &p
 		set.Add(prefix + pTextureProperties.GetAt(i)->GetName());
 	}
 	
-	const int inheritCount = pInheritClasses.GetCount();
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			inherit.GetClass()->pAddTexturePropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
-	}
+	});
 }

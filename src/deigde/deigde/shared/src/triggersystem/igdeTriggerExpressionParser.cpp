@@ -347,8 +347,8 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			component->AddChild(child);
 		}
 		
-		if(component->GetChildCount() == 1){
-			child = component->GetChildAt(0);
+		if(component->GetChildren().GetCount() == 1){
+			child = component->GetChildren().First();
 			if(child->GetTargetName().IsEmpty()){
 				component = child;
 				
@@ -448,19 +448,16 @@ const igdeTriggerExpressionComponent &component, bool grouping) const{
 		break;
 		
 	case igdeTriggerExpressionComponent::ectAnd:{
-		const int count = component.GetChildCount();
-		int i;
-		
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for(i=0; i<count; i++){
+		component.GetChildren().VisitIndexed([&](int i, const igdeTriggerExpressionComponent &child){
 			if(i > 0){
 				string.AppendCharacter(pSymbolAnd);
 			}
-			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
+			ExpressionComponentToString(subString, child, true);
 			string += subString;
-		}
+		});
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupEnd);
 		}
@@ -468,19 +465,16 @@ const igdeTriggerExpressionComponent &component, bool grouping) const{
 		}break;
 		
 	case igdeTriggerExpressionComponent::ectOr:{
-		const int count = component.GetChildCount();
-		int i;
-		
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for(i=0; i<count; i++){
+		component.GetChildren().VisitIndexed([&](int i, const igdeTriggerExpressionComponent &child){
 			if(i > 0){
 				string.AppendCharacter(pSymbolOr);
 			}
-			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
+			ExpressionComponentToString(subString, child, true);
 			string += subString;
-		}
+		});
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupEnd);
 		}

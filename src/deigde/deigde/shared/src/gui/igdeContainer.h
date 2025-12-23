@@ -27,7 +27,7 @@
 
 #include "igdeWidget.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -35,14 +35,15 @@
  * \brief IGDE UI Container Widget grouping widgets.
  */
 class DE_DLL_EXPORT igdeContainer : public igdeWidget{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeContainer> Ref;
 	
+	typedef decTObjectOrderedSet<igdeWidget> ChildrenList;
+	
 	
 private:
-	decObjectOrderedSet pChildren;
+	ChildrenList pChildren;
 	
 	
 	
@@ -50,7 +51,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget with layout elNone. */
-	igdeContainer(igdeEnvironment &environment);
+	explicit igdeContainer(igdeEnvironment &environment);
 	
 	/**
 	 * \brief Clean up widget.
@@ -66,14 +67,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of children. */
-	int GetChildCount() const;
-	
-	/** \brief Get child at index. */
-	igdeWidget *GetChildAt(int index) const;
-	
-	/** \brief Index of child or -1 if absent. */
-	int IndexOfChild(igdeWidget *widget) const;
+	/** \brief Children. */
+	const ChildrenList &GetChildren() const{ return pChildren; }
 	
 	/** \brief Add child. */
 	virtual void AddChild(igdeWidget *child);

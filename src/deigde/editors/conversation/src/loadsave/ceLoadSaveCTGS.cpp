@@ -113,19 +113,15 @@ const char *tagName){
 	
 	// write trigger table
 	const igdeTriggerTargetList &triggerTable = playback.GetTriggerTable();
-	const int triggerCount = triggerTable.GetCount();
 	
-	int i;
-	for(i=0; i<triggerCount; i++){
-		const igdeTriggerTarget &trigger = *triggerTable.GetAt(i);
-		
+	triggerTable.GetTargets().Visit([&](const igdeTriggerTarget &t){
 		writer.WriteOpeningTagStart("trigger");
-		writer.WriteAttributeBool("fired", trigger.GetFired());
-		writer.WriteAttributeBool("hasFired", trigger.GetHasFired());
+		writer.WriteAttributeBool("fired", t.GetFired());
+		writer.WriteAttributeBool("hasFired", t.GetHasFired());
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(trigger.GetName());
+		writer.WriteTextString(t.GetName());
 		writer.WriteClosingTag("trigger", false);
-	}
+	});
 	
 	writer.WriteClosingTag(tagName, true);
 }

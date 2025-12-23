@@ -41,6 +41,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerTarget> Ref;
 	
+	/** \brief List of targets. */
+	typedef decTObjectOrderedSet<igdeTriggerTarget> List;
+	
 	
 private:
 	decString pName;

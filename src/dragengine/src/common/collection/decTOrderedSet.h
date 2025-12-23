@@ -666,7 +666,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -676,6 +675,7 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
 				visitor(pElements[i]);
@@ -683,6 +683,7 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
 				visitor(pElements[i]);
@@ -701,7 +702,7 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(from <= pCount)
 		
 		int i;
 		for(i=from; i<pCount; i++){
@@ -757,7 +758,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -767,6 +767,7 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
 				visitor(i, pElements[i]);
@@ -774,6 +775,7 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
 				visitor(i, pElements[i]);
@@ -792,7 +794,7 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(from <= pCount)
 		
 		int i;
 		for(i=from; i<pCount; i++){
@@ -848,7 +850,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -858,6 +859,7 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
 				if(evaluator(pElements[i])){
@@ -868,6 +870,7 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
 				if(evaluator(pElements[i])){
@@ -890,7 +893,7 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(from <= pCount)
 		
 		int i;
 		for(i=from; i<pCount; i++){
@@ -1009,7 +1012,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -1020,6 +1022,7 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
 				if(evaluator(pElements[i])){
@@ -1029,6 +1032,7 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
 				if(evaluator(pElements[i])){
@@ -1050,7 +1054,7 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(from <= pCount)
 		
 		decTOrderedSet<T,TP> collected;
 		int i;
@@ -1102,7 +1106,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -1112,9 +1115,12 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
-			DEASSERT_TRUE(from < to)
-			T acc = pElements[from];
+			DEASSERT_TRUE(from <= pCount)
+			if(from == pCount){
+				return T();
+			}
 			
+			T acc = pElements[from];
 			for(i=from+step; i<to; i+=step){
 				acc = combiner(acc, pElements[i]);
 			}
@@ -1122,9 +1128,12 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
-			DEASSERT_TRUE(from > to)
-			T acc = pElements[from];
+			DEASSERT_TRUE(from < pCount)
+			if(from == to){
+				return T();
+			}
 			
+			T acc = pElements[from];
 			for(i=from+step; i>=to; i+=step){
 				acc = combiner(acc, pElements[i]);
 			}
@@ -1188,7 +1197,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -1199,12 +1207,14 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			for(i=from; i<to; i+=step){
 				acc = combiner(acc, pElements[i]);
 			}
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			for(i=from; i>=to; i+=step){
 				acc = combiner(acc, pElements[i]);
 			}
@@ -1284,7 +1294,6 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
 		
 		if(to < 0){
 			to = pCount + to;
@@ -1294,6 +1303,7 @@ public:
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from <= pCount)
 			
 			for(i=from; i<to; i+=step){
 				if(evaluator(pElements[i])){
@@ -1305,6 +1315,7 @@ public:
 			
 		}else{
 			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from < pCount)
 			
 			for(i=from; i>=to; i+=step){
 				if(evaluator(pElements[i])){
@@ -1327,7 +1338,7 @@ public:
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
+		DEASSERT_TRUE(from <= pCount)
 		
 		int i;
 		for(i=from; i<pCount; i++){

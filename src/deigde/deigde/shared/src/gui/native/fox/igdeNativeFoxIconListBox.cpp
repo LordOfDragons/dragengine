@@ -309,18 +309,13 @@ void igdeNativeFoxIconListBox::UpdateSelection(){
 
 void igdeNativeFoxIconListBox::UpdateHeader(){
 	FXHeader &nativeHeader = *pListBox->getHeader();
-	const int count = pOwner->GetHeaderCount();
-	int i;
 	
 	nativeHeader.clearItems();
 	
-	for(i=0; i<count; i++){
-		const igdeListHeader &header = *pOwner->GetHeaderAt(i);
-		
-		nativeHeader.appendItem(header.GetTitle().GetString(),
-			header.GetIcon() ? (FXIcon*)header.GetIcon()->GetNativeIcon() : nullptr,
-			header.GetSize());
-	}
+	pOwner->GetHeaders().Visit([&](const igdeListHeader &h){
+		nativeHeader.appendItem(h.GetTitle().GetString(),
+			h.GetIcon() ? (FXIcon*)h.GetIcon()->GetNativeIcon() : nullptr, h.GetSize());
+	});
 }
 
 void igdeNativeFoxIconListBox::UpdateStyles(){
@@ -497,15 +492,15 @@ long igdeNativeFoxIconListBox::onListDeselected(FXObject*, FXSelector, void *pda
 
 long igdeNativeFoxIconListBox::onListHeaderChanged(FXObject *sender, FXSelector selector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetHeaderCount()){
-		pOwner->GetHeaderAt(index)->SetSize(pListBox->getHeader()->getItemSize(index));
+	if(index >= 0 and index < pOwner->GetHeaders().GetCount()){
+		pOwner->GetHeaders().GetAt(index)->SetSize(pListBox->getHeader()->getItemSize(index));
 	}
 	return pListBox->onChgHeader(sender, selector, pdata);
 }
 
 long igdeNativeFoxIconListBox::onListHeaderClicked(FXObject *sender, FXSelector selector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetHeaderCount()){
+	if(index >= 0 and index < pOwner->GetHeaders().GetCount()){
 		pOwner->NotifyHeaderClicked(index);
 	}
 	return pListBox->onClkHeader(sender, selector, pdata);

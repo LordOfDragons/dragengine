@@ -88,7 +88,7 @@ void igdeActionContextMenu::OnAction(){
 	
 	AddContextMenuEntries(menu);
 	
-	if(menu->GetChildCount() != 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->PopupBottom(pWidget);
 	}
 }

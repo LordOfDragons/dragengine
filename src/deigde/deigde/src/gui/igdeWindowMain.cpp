@@ -744,16 +744,11 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		project->GetGameDefinition()->UpdateEngineObjects();
 	}
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &moduleDefinition = *pModuleManager->GetModuleAt(i);
-		
-		if(moduleDefinition.IsModuleRunning()){
-			moduleDefinition.GetModule()->OnGameProjectChanged();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnGameProjectChanged();
 		}
-	}
+	});
 	
 	// update window title
 	const decPath path(decPath::CreatePathNative(project->GetFilePath()));
@@ -895,13 +890,11 @@ void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 void igdeWindowMain::ActivateEditor(igdeEditorModule *editor){
 	DEASSERT_NOTNULL(editor)
 	
-	const int count = pModuleManager->GetModuleCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(pModuleManager->GetModuleAt(i)->GetModule() == editor){
-			pModuleManager->SetActiveModule(pModuleManager->GetModuleAt(i));
-			break;
-		}
+	igdeEditorModuleDefinition * const md = pModuleManager->GetModules().FindOrDefault([&](const igdeEditorModuleDefinition &m){
+		return m.GetModule() == editor;
+	});
+	if(md){
+		pModuleManager->SetActiveModule(md);
 	}
 }
 
@@ -924,11 +917,9 @@ void igdeWindowMain::RebuildMenu(){
 	}
 	
 	if(editorWindow){
-		const int count = editorWindow->GetSharedMenuCount();
-		int i;
-		for(i=0; i<count; i++){
-			pMenuBar->AddChild(editorWindow->GetSharedMenuAt(i));
-		}
+		editorWindow->GetSharedMenus().Visit([&](igdeMenuCascade *m){
+			pMenuBar->AddChild(m);
+		});
 	}
 	
 	pMenuBar->AddChild(pMenuSettings);
@@ -961,13 +952,10 @@ void igdeWindowMain::RebuildToolBars(){
 	}
 	
 	if(editorWindow){
-		const int count = editorWindow->GetSharedToolBarCount();
-		int i;
-		for(i=0; i<count; i++){
-			igdeToolBar * const toolbar = editorWindow->GetSharedToolBarAt(i);
+		editorWindow->GetSharedToolBars().Visit([&](igdeToolBar *tb){
 			// TODO add it to the desired dock
-			pToolBarDockTop->AddChild(toolbar);
-		}
+			pToolBarDockTop->AddChild(tb);
+		});
 	}
 }
 
@@ -979,7 +967,8 @@ void igdeWindowMain::SwitchToModuleWindow(){
 		return;
 	}
 	
-	const int index = pSwiContent->IndexOfChild(pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow());
+	const int index = pSwiContent->GetChildren().IndexOf(
+		pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow());
 	if(index != -1){
 		pSwiContent->SetCurrent(index);
 	}
@@ -1085,30 +1074,22 @@ void igdeWindowMain::SetMinUpdateTime(float seconds){
 
 
 void igdeWindowMain::OnBeforeEngineStart(){
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnBeforeEngineStart();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnBeforeEngineStart();
 		}
-	}
+	});
 }
 
 void igdeWindowMain::OnAfterEngineStart(){
 	pLoadSaveSystem->UpdatePatternLists();
 	pGDPreviewManager->OnAfterEngineStart();
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnAfterEngineStart();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnAfterEngineStart();
 		}
-	}
+	});
 	
 	// first time init. we have to move this here since this is the only safe time to
 	// start anything potentially requiring the game engine object to be present.
@@ -1135,27 +1116,19 @@ void igdeWindowMain::OnAfterEngineStart(){
 void igdeWindowMain::OnBeforeEngineStop(){
 	pGDPreviewManager->OnBeforeEngineStop();
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnBeforeEngineStop();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnBeforeEngineStop();
 		}
-	}
+	});
 }
 
 void igdeWindowMain::OnAfterEngineStop(){
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnAfterEngineStop();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnAfterEngineStop();
 		}
-	}
+	});
 }
 
 
@@ -1251,21 +1224,21 @@ void igdeWindowMain::OnFrameUpdate(){
 	}
 	
 	// process after start command line if present
-	if(pModuleManager->GetModuleCount() > 0 && pAfterLoadArguments.GetCount() > 0){
+	if(pModuleManager->GetModules().IsNotEmpty() && pAfterLoadArguments.IsNotEmpty()){
 		try{
-			const int moduleCount = pModuleManager->GetModuleCount();
-			int i;
-			
-			while(pAfterLoadArguments.GetCount() > 0){
+			while(pAfterLoadArguments.IsNotEmpty()){
 				const int argCount = pAfterLoadArguments.GetCount();
 				
-				for(i=0; i<moduleCount; i++){
-					igdeEditorModule * const module = pModuleManager->GetModuleAt(i)->GetModule();
+				if(pModuleManager->GetModules().HasMatching([&](const igdeEditorModuleDefinition &md){
+					igdeEditorModule * const module = md.GetModule();
 					if(module && !module->ProcessCommandLine(pAfterLoadArguments)){
 						pAfterLoadArguments.RemoveAll();
 						pEnvironmentIGDE.CloseApplication();
-						return;
+						return true;
 					}
+					return false;
+				})){
+					return;
 				}
 				
 				if(pAfterLoadArguments.GetCount() == argCount){
@@ -1329,22 +1302,18 @@ void igdeWindowMain::UpdateFrame(){
 	pGDPreviewManager->Update();
 	
 	// update modules
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleAt(i);
-		if(!moduleDef.IsModuleRunning()){
-			continue;
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(!md.IsModuleRunning()){
+			return;
 		}
 		
-		igdeEditorModule * const module = moduleDef.GetModule();
+		igdeEditorModule * const module = md.GetModule();
 		if(!module){
-			continue;
+			return;
 		}
 		
 		module->OnFrameUpdate(elapsed);
-	}
+	});
 	
 	// update logging window
 	if(pWindowLogger){
@@ -1393,26 +1362,20 @@ void igdeWindowMain::UpdateSyncProject(){
 
 
 bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message){
-	const int moduleCount = pModuleManager->GetModuleCount();
 	decStringList changedDocuments;
-	int i;
 	
-	// determine the list of changed documents across all modules
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &moduleDefinition = *pModuleManager->GetModuleAt(i);
-		
-		if(moduleDefinition.IsModuleRunning()){
-			decStringList mcdList;
-			moduleDefinition.GetModule()->GetChangedDocuments(mcdList);
-			
-			const int mcdCount = mcdList.GetCount();
-			int j;
-			
-			for(j=0; j<mcdCount; j++){
-				changedDocuments.Add(moduleDefinition.GetID() + ": " + mcdList.GetAt(j));
-			}
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(!md.IsModuleRunning()){
+			return;
 		}
-	}
+		
+		decStringList mcdList;
+		md.GetModule()->GetChangedDocuments(mcdList);
+		
+		mcdList.Visit([&](const decString &filename){
+			changedDocuments.Add(md.GetID() + ": " + filename);
+		});
+	});
 	
 	// ask the user which documents to save:
 	// 
@@ -1421,12 +1384,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 	//      with module pointer and filename assigned as data pointer. this avoids this
 	//      stupid split-string hack used below which can only break sooner or later
 	
-	if(changedDocuments.GetCount() > 0){
-		decStringList choices;
-		for(i=0; i<changedDocuments.GetCount(); i++){
-			choices.Add(changedDocuments.GetAt(i));
-		}
-		
+	if(changedDocuments.IsNotEmpty()){
 		/*
 		igdeCommonDialogs needs a ChoiceString in addition to SelectString allowing to select
 		more then one string from a list of strings returning decTList<int> as result.
@@ -1449,7 +1407,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		}
 		text += "\n\n";
 		
-		text += DEJoin(choices, ", ");
+		text += DEJoin(changedDocuments, ", ");
 		
 		//MBOX_QUIT_SAVE_CANCEL
 		switch(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNoCancel, title, text)){
@@ -1468,10 +1426,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 	}
 	
 	// save documents
-	const int saveCount = changedDocuments.GetCount();
-	
-	for(i=0; i<saveCount; i++){
-		const decString &document = changedDocuments.GetAt(i);
+	for(const auto &document : changedDocuments){
 		const decStringList parts(document.Split(':'));
 		
 		if(parts.GetCount() != 2){
@@ -2109,24 +2064,20 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 	pFraEditors->RemoveAllChildren();
 	
 	decStringList moduleIDs;
-	int i;
-	
-	for(i=0; i<pModuleManager->GetModuleCount(); i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			moduleIDs.Add(module.GetID());
+	pModuleManager->GetModules().Visit([&](const igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			moduleIDs.Add(md.GetID());
 		}
-	}
+	});
 	moduleIDs.SortAscending();
 	
-	const int count = moduleIDs.GetCount();
 	igdeToggleButton::Ref button;
 	igdeAction::Ref action;
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID(moduleIDs.GetAt(i));
+	moduleIDs.Visit([&](const decString &name){
+		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID(name);
 		if(!moduleDef.IsModuleRunning() || !moduleDef.GetModule()){
-			continue;
+			return;
 		}
 		
 		igdeIcon::Ref icon;
@@ -2151,7 +2102,7 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 		pUIHelper->ToggleButton(button, action);
 		button->SetStyle(igdeButton::ebsToolBar);
 		pFraEditors->AddChild(button);
-	}
+	});
 }
 
 
@@ -2231,29 +2182,20 @@ void igdeWindowMain::pUpdateMenuWindow(igdeMenuCascade &menu){
 	menu.RemoveAllChildren();
 	
 	// find all running modules and sort them by name
-	const int moduleCount = pModuleManager->GetModuleCount();
 	decStringList addModules;
-	int i;
 	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			addModules.Add(module.GetID());
+	pModuleManager->GetModules().Visit([&](const igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			addModules.Add(md.GetID());
 		}
-	}
+	});
 	addModules.SortAscending();
 	
 	// add a menu entry for each module
-	const int addModuleCount = addModules.GetCount();
-	igdeAction::Ref action;
-	igdeWidget::Ref entry;
-	
-	for(i=0; i<addModuleCount; i++){
-		action = cActionWindowEditor::Ref::New(*this,
-			*pModuleManager->GetModuleWithID(addModules.GetAt(i)), true);
-		entry = igdeMenuOption::Ref::New(pEnvironmentIGDE, action);
-		menu.AddChild(entry);
-	}
+	addModules.Visit([&](const decString &name){
+		menu.AddChild(igdeMenuOption::Ref::New(pEnvironmentIGDE, cActionWindowEditor::Ref::New(
+			*this, *pModuleManager->GetModuleWithID(name), true)));
+	});
 }
 
 
@@ -2285,7 +2227,7 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 			vfs, decPath::CreatePathUnix(path));
 	}
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Load XML Element Classes done: %.1fs (%d found)",
-		timer.GetElapsedTime(), gameProject.GetXMLEClassGameDefinition()->GetClassManager()->GetCount());
+		timer.GetElapsedTime(), gameProject.GetXMLEClassGameDefinition()->GetClassManager()->GetClasses().GetCount());
 	
 	// DEBUG
 	/*
@@ -2326,7 +2268,7 @@ void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 		});
 	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skins done: %.1fs (%d found)",
-		timer.GetElapsedTime(), gdskins.GetSkinCount());
+		timer.GetElapsedTime(), gdskins.GetSkins().GetCount());
 }
 
 void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){

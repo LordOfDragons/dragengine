@@ -200,23 +200,20 @@ void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 
 void igdeTaskSyncGameDefinition::pCreateEditorTasks(){
 	const igdeEditorModuleManager &moduleManager = pWindowMain.GetModuleManager();
-	const int editorCount = moduleManager.GetModuleCount();
 	
-	int i;
-	for(i=0; i<editorCount; i++){
-		const igdeEditorModuleDefinition &editorDefinition = *moduleManager.GetModuleAt(i);
-		if(!editorDefinition.IsModuleRunning()){
-			continue;
+	moduleManager.GetModules().Visit([&](const igdeEditorModuleDefinition &ed){
+		if(!ed.IsModuleRunning()){
+			return;
 		}
 		
-		igdeEditorModule * const editor = editorDefinition.GetModule();
-		if(!editor){
-			continue;
+		igdeEditorModule * const module = ed.GetModule();
+		if(!module){
+			return;
 		}
 		
-		const igdeStepableTask::Ref editorTask(editor->OnGameDefinitionChanged());
+		const igdeStepableTask::Ref editorTask(module->OnGameDefinitionChanged());
 		if(editorTask){
 			pEditorTasks.Add(editorTask);
 		}
-	}
+	});
 }

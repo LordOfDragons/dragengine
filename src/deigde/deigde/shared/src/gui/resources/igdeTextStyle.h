@@ -26,6 +26,7 @@
 #define _IGDETEXTSTYLE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -39,6 +40,9 @@ class DE_DLL_EXPORT igdeTextStyle : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTextStyle> Ref;
+	
+	/** \brief Text style list. */
+	typedef decTObjectOrderedSet<igdeTextStyle> List;
 	
 	
 private:

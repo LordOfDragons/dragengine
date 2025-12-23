@@ -138,25 +138,12 @@ void igdeEditorModuleManager::ActivateProjectManager(){
 // Modules
 ////////////
 
-int igdeEditorModuleManager::GetModuleCount() const{
-	return pModules.GetCount();
-}
-
-igdeEditorModuleDefinition *igdeEditorModuleManager::GetModuleAt(int index) const{
-	return (igdeEditorModuleDefinition*)pModules.GetAt(index);
-}
-
 igdeEditorModuleDefinition *igdeEditorModuleManager::GetModuleWithID(const char *id) const{
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
+	for(const auto &module : pModules){
 		if(module->GetID() == id){
 			return module;
 		}
-	}
-	
+	};
 	return nullptr;
 }
 
@@ -165,41 +152,34 @@ void igdeEditorModuleManager::RemoveAllModules(){
 	
 	pRecentlyUsed.RemoveAll();
 	
-	while(pModules.GetCount() > 0){
-		const int index = pModules.GetCount() - 1;
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(index);
-		
-		if(module->IsModuleRunning()){
-			module->UnloadModule();
+	pModules.VisitReverse([&](igdeEditorModuleDefinition &module){
+		if(module.IsModuleRunning()){
+			module.UnloadModule();
 		}
-		
-		pModules.RemoveFrom(index);
-	}
+	});
+	pModules.RemoveAll();
 }
 
 void igdeEditorModuleManager::StartModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	const int count = pModules.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(!module->CanLoad() || module->IsModuleRunning()){
-			continue;
+	pModules.Visit([&](igdeEditorModuleDefinition &module){
+		if(!module.CanLoad() || module.IsModuleRunning()){
+			return;
 		}
 		
-		logger.LogInfoFormat(LOGSOURCE, "Starting editor module %s.", module->GetID().GetString());
-		if(module->LoadModule(&pWindowMain.GetEnvironment())){
-			continue;
+		logger.LogInfoFormat(LOGSOURCE, "Starting editor module %s.", module.GetID().GetString());
+		if(module.LoadModule(&pWindowMain.GetEnvironment())){
+			return;
 		}
 		
-		switch(module->GetErrorCode()){
+		switch(module.GetErrorCode()){
 		case igdeEditorModuleDefinition::eecCreateModuleFailed:
 			logger.LogError(LOGSOURCE, "  Creation of module failed.");
 			break;
 			
 		case igdeEditorModuleDefinition::eecLibFileNotFound:
-			logger.LogErrorFormat(LOGSOURCE, "  Library %s not found.", module->GetLibraryPath().GetString());
+			logger.LogErrorFormat(LOGSOURCE, "  Library %s not found.", module.GetLibraryPath().GetString());
 			break;
 			
 		case igdeEditorModuleDefinition::eecLibFileNotRegularFile:
@@ -223,9 +203,9 @@ void igdeEditorModuleManager::StartModules(){
 			break;
 			
 		default:
-			logger.LogErrorFormat(LOGSOURCE, "  ?? (%d)", module->GetErrorCode());
+			logger.LogErrorFormat(LOGSOURCE, "  ?? (%d)", module.GetErrorCode());
 		}
-	}
+	});
 	
 	pActiveModule = nullptr;
 	ActivateMostRecentModule();
@@ -233,25 +213,22 @@ void igdeEditorModuleManager::StartModules(){
 
 void igdeEditorModuleManager::StopModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	const int count = pModules.GetCount();
-	int i;
 	
 	SetActiveModule(nullptr);
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(!module->IsModuleRunning()){
-			continue;
+	pModules.Visit([&](igdeEditorModuleDefinition &module){
+		if(!module.IsModuleRunning()){
+			return;
 		}
 		
-		logger.LogInfoFormat(LOGSOURCE, "Stopping editor module %s.", module->GetID().GetString());
+		logger.LogInfoFormat(LOGSOURCE, "Stopping editor module %s.", module.GetID().GetString());
 		try{
-			module->UnloadModule();
+			module.UnloadModule();
 			
 		}catch(const deException &e){
 			logger.LogException(LOGSOURCE, e);
 		}
-	}
+	});
 }
 
 void igdeEditorModuleManager::ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position){

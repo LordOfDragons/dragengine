@@ -536,11 +536,9 @@ void igdeEditPropertyValue::SetTriggerTargets(igdeTriggerTargetList *triggerTarg
 	pTriggerTargets = triggerTargets;
 	
 	if(triggerTargets){
-		const int count = triggerTargets->GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			pTriggerTarget->AddItem(triggerTargets->GetAt(i)->GetName());
-		}
+		triggerTargets->GetTargets().Visit([&](const igdeTriggerTarget &t){
+			pTriggerTarget->AddItem(t.GetName());
+		});
 		pTriggerTarget->SortItems();
 		pTriggerTarget->StoreFilterItems();
 	}

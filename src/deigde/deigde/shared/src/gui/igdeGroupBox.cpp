@@ -154,9 +154,7 @@ void igdeGroupBox::SetStretchLast(bool stretchLast){
 
 
 void igdeGroupBox::AddChild(igdeWidget *child){
-	if(GetChildCount() > 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(GetChildren().IsEmpty())
 	igdeContainer::AddChild(child);
 }
 

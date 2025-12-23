@@ -142,39 +142,16 @@ void igdeTextArea::SetDescription(const char *description){
 
 
 
-int igdeTextArea::GetStyleCount() const{
-	return pStyles.GetCount();
-}
-
-igdeTextStyle *igdeTextArea::GetStyleAt(int index) const{
-	return (igdeTextStyle*)pStyles.GetAt(index);
-}
-
 igdeTextStyle *igdeTextArea::GetStyleNamed(const char *name) const{
-	const int count = pStyles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeTextStyle * const style = (igdeTextStyle*)pStyles.GetAt(i);
-		if(style->GetName() == name){
-			return style;
-		}
-	}
-	
-	return nullptr;
+	return pStyles.FindOrDefault([&](const igdeTextStyle &style){
+		return style.GetName() == name;
+	});
 }
 
 int igdeTextArea::IndexOfStyleNamed(const char *name) const{
-	const int count = pStyles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((igdeTextStyle*)pStyles.GetAt(i))->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pStyles.IndexOfMatching([&](const igdeTextStyle &style){
+		return style.GetName() == name;
+	});
 }
 
 void igdeTextArea::AddStyle(igdeTextStyle *style){
@@ -187,7 +164,7 @@ void igdeTextArea::AddStyle(igdeTextStyle *style){
 }
 
 void igdeTextArea::RemoveAllStyles(){
-	if(pStyles.GetCount() == 0){
+	if(pStyles.IsEmpty()){
 		return;
 	}
 	
@@ -249,35 +226,30 @@ void igdeTextArea::DeleteText(int begin, int end){
 	}
 	
 	const int count = pSegments.GetCount();
-	igdeTextSegment::Ref newSegment;
 	const int length = end - begin;
 	int i;
 	
 	for(i=count-1; i>=0; i--){
-		const igdeTextSegment &segment = *((igdeTextSegment*)pSegments.GetAt(i));
+		const igdeTextSegment &segment = pSegments.GetAt(i);
 		
 		if(segment.GetBegin() >= begin && segment.GetEnd() < end){
 			pSegments.RemoveFrom(i);
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= end){
-			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(),
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(segment.GetBegin(),
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(segment.GetBegin(),
+				begin - 1, segment.GetStyle(), segment.GetAction()));
 			
 		}else if(segment.GetEnd() >= end && segment.GetBegin() < end){
-			newSegment = igdeTextSegment::Ref::New(end, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(end,
+				segment.GetEnd(), segment.GetStyle(), segment.GetAction()));
 			
 		}else if(segment.GetBegin() >= end){
-			newSegment = igdeTextSegment::Ref::New(segment.GetBegin() - length,
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(segment.GetBegin() - length,
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
 		}
 	}
 	
@@ -386,26 +358,10 @@ void igdeTextArea::Focus(){
 
 
 
-int igdeTextArea::GetSegmentCount() const{
-	return pSegments.GetCount();
-}
-
-const igdeTextSegment &igdeTextArea::GetSegmentAt(int index) const{
-	return *((igdeTextSegment*)pSegments.GetAt(index));
-}
-
 const igdeTextSegment *igdeTextArea::GetSegmentWith(int offset) const{
-	const int count = pSegments.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeTextSegment * const segment = (const igdeTextSegment *)pSegments.GetAt(i);
-		if(offset >= segment->GetBegin() && offset <= segment->GetEnd()){
-			return segment;
-		}
-	}
-	
-	return nullptr;
+	return pSegments.FindOrDefault([&](const igdeTextSegment &segment){
+		return offset >= segment.GetBegin() && offset <= segment.GetEnd();
+	});
 }
 
 void igdeTextArea::SetTextSegment(int begin, int end, const char *style, igdeAction *action){

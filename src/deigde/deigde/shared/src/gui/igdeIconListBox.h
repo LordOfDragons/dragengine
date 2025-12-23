@@ -29,17 +29,16 @@
 
 #include "igdeWidget.h"
 #include "event/igdeIconListBoxListener.h"
+#include "model/igdeListHeader.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
 class igdeIcon;
-class igdeListHeader;
 class igdeListItem;
 
 /**
@@ -83,7 +82,7 @@ private:
 	igdeListItemSorter::Ref pSorter;
 	decPoint pMinimumSize;
 	decString pDescription;
-	decObjectOrderedSet pHeaders;
+	igdeListHeader::List pHeaders;
 	
 	decTObjectOrderedSet<igdeIconListBoxListener> pListeners;
 	
@@ -265,11 +264,8 @@ public:
 	
 	
 	
-	/** \brief Number of headers. */
-	int GetHeaderCount() const;
-	
-	/** \brief Header at index. */
-	igdeListHeader *GetHeaderAt(int index) const;
+	/** \brief Headers. */
+	const igdeListHeader::List &GetHeaders() const{ return pHeaders; }
 	
 	/** \brief Header is present. */
 	bool HasHeader(igdeListHeader *header) const;

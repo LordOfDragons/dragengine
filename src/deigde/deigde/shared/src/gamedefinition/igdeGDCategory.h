@@ -26,7 +26,7 @@
 #define _IGDEGDCATEGORY_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -47,11 +47,14 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCategory> Ref;
 	
+	/** \brief List of categories. */
+	typedef decTObjectOrderedSet<igdeGDCategory> CategoriesList;
+	
 	
 private:
 	decString pName;
 	decString pDescription;
-	decObjectOrderedSet pCategories;
+	CategoriesList pCategories;
 	decStringSet pAutoCategorizePattern;
 	bool pHidden;
 	
@@ -125,8 +128,8 @@ public:
 	
 	/** \name Children Categories */
 	/*@{*/
-	/** \brief Count of categories. */
-	int GetCategoryCount() const;
+	/** \brief Categories. */
+	inline const CategoriesList &GetCategories() const{ return pCategories; }
 	
 	/** \brief Category is present. */
 	bool HasCategory(igdeGDCategory *category) const;
@@ -139,9 +142,6 @@ public:
 	
 	/** \brief Index of named category or -1 if absent. */
 	int IndexOfCategoryNamed(const char *name) const;
-	
-	/** \brief Category at index. */
-	igdeGDCategory *GetCategoryAt(int index) const;
 	
 	/** \brief Named category or nullptr if absent. */
 	igdeGDCategory *GetCategoryNamed(const char *name) const;

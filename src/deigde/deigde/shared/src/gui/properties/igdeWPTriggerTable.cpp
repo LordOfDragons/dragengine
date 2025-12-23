@@ -150,7 +150,8 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetTriggerTargetList() && pPanel.GetTriggerTargetList()->GetCount() > 0);
+		SetEnabled(pPanel.GetTriggerTargetList()
+			&& pPanel.GetTriggerTargetList()->GetTargets().IsNotEmpty());
 	}
 };
 
@@ -356,21 +357,16 @@ void igdeWPTriggerTable::UpdateTable(){
 	pListTriggerTable->RemoveAllItems();
 	
 	if(pTriggerTargetList){
-		const int count = pTriggerTargetList->GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			igdeTriggerTarget * const target = pTriggerTargetList->GetAt(i);
-			
-			if(hasFilter && target->GetName().GetLower().FindString(filter) == -1){
-				continue;
+		pTriggerTargetList->GetTargets().Visit([&](igdeTriggerTarget *t){
+			if(hasFilter && t->GetName().GetLower().FindString(filter) == -1){
+				return;
 			}
 			
-			text.Format("%s (%s)", target->GetName().GetString(),
-				target->GetHasFired() ? "has fired" : "never fired");
-			pListTriggerTable->AddItem(text, target->GetFired() ? pIconFired : pIconNotFired, target);
-		}
+			decString text;
+			text.Format("%s (%s)", t->GetName().GetString(),
+				t->GetHasFired() ? "has fired" : "never fired");
+			pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
+		});
 	}
 	
 	pListTriggerTable->SortItems();

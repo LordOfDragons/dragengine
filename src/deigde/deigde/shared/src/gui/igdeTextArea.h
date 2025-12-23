@@ -27,14 +27,13 @@
 
 #include "igdeWidget.h"
 #include "event/igdeTextAreaListener.h"
+#include "resources/igdeTextStyle.h"
+#include "resources/igdeTextSegment.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeTextStyle;
-class igdeTextSegment;
 class igdeAction;
 
 
@@ -48,7 +47,6 @@ class igdeAction;
  * AppendText() is safe to be used.
  */
 class DE_DLL_EXPORT igdeTextArea : public igdeWidget{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTextArea> Ref;
@@ -62,8 +60,8 @@ private:
 	bool pEditable;
 	decString pDescription;
 	
-	decObjectOrderedSet pStyles;
-	decObjectOrderedSet pSegments;
+	igdeTextStyle::List pStyles;
+	igdeTextSegment::List pSegments;
 	
 	decTObjectOrderedSet<igdeTextAreaListener> pListeners;
 	
@@ -128,11 +126,8 @@ public:
 	
 	
 	
-	/** \brief Number of styles. */
-	int GetStyleCount() const;
-	
-	/** \brief Get style at index. */
-	igdeTextStyle *GetStyleAt(int index) const;
+	/** \brief Styles. */
+	const igdeTextStyle::List &GetStyles() const{ return pStyles; }
 	
 	/** \brief Get named style or nullptr if absent. */
 	igdeTextStyle *GetStyleNamed(const char *name) const;
@@ -216,11 +211,8 @@ public:
 	
 	
 	
-	/** \brief Number of segments. */
-	int GetSegmentCount() const;
-	
-	/** \brief Get segment at index. */
-	const igdeTextSegment &GetSegmentAt(int index) const;
+	/** \brief Segments. */
+	const igdeTextSegment::List &GetSegments() const{ return pSegments; }
 	
 	/** \brief Segment containing position or nullptr if not found. */
 	const igdeTextSegment *GetSegmentWith(int offset) const;

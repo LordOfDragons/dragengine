@@ -135,14 +135,6 @@ void igdeEditorWindow::DisplayException(const deException &exception){
 // Shared Menus
 /////////////////
 
-int igdeEditorWindow::GetSharedMenuCount() const{
-	return pSharedMenus.GetCount();
-}
-
-igdeMenuCascade *igdeEditorWindow::GetSharedMenuAt(int index) const{
-	return (igdeMenuCascade*)pSharedMenus.GetAt(index);
-}
-
 void igdeEditorWindow::AddSharedMenu(igdeMenuCascade *menu){
 	if(!menu){
 		DETHROW(deeInvalidParam);
@@ -174,14 +166,6 @@ void igdeEditorWindow::RemoveAllSharedMenus(){
 
 // Shared ToolBars
 ////////////////////
-
-int igdeEditorWindow::GetSharedToolBarCount() const{
-	return pSharedToolBars.GetCount();
-}
-
-igdeToolBar *igdeEditorWindow::GetSharedToolBarAt(int index) const{
-	return (igdeToolBar*)pSharedToolBars.GetAt(index);
-}
 
 void igdeEditorWindow::AddSharedToolBar(igdeToolBar *toolbar){
 	if(!toolbar){
@@ -216,14 +200,13 @@ void igdeEditorWindow::RemoveAllSharedToolBars(){
 ///////////////////
 
 void igdeEditorWindow::AddUpdateAction(igdeAction *action){
-	if(!action){
-		DETHROW(deeInvalidParam);
-	}
-	pUpdateActions.AddIfAbsent(action);
+	DEASSERT_NOTNULL(action)
+	
+	pUpdateActions.Add(action);
 }
 
 void igdeEditorWindow::RemoveUpdateAction(igdeAction *action){
-	pUpdateActions.RemoveIfPresent(action);
+	pUpdateActions.Remove(action);
 }
 
 void igdeEditorWindow::RemoveAllUpdateActions(){
@@ -231,12 +214,9 @@ void igdeEditorWindow::RemoveAllUpdateActions(){
 }
 
 void igdeEditorWindow::UpdateAllActions(){
-	const int count = pUpdateActions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeAction*)pUpdateActions.GetAt(i))->Update();
-	}
+	pUpdateActions.Visit([&](igdeAction &action){
+		action.Update();
+	});
 }
 
 

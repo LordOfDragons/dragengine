@@ -102,12 +102,9 @@ void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerT
 		}
 	}
 	
-	const int count = pChildren.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		static_cast<igdeTriggerExpressionComponent*>(pChildren.GetAt(i))->
-			LinkTargets(triggerTable, listener);
-	}
+	pChildren.Visit([&](igdeTriggerExpressionComponent &child){
+		child.LinkTargets(triggerTable, listener);
+	});
 }
 
 void igdeTriggerExpressionComponent::UnlinkTargets(){
@@ -118,11 +115,9 @@ void igdeTriggerExpressionComponent::UnlinkTargets(){
 	SetTarget(nullptr);
 	SetTargetListener(nullptr);
 	
-	const int count = pChildren.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		static_cast<igdeTriggerExpressionComponent*>(pChildren.GetAt(i))->UnlinkTargets();
-	}
+	pChildren.Visit([&](igdeTriggerExpressionComponent &child){
+		child.UnlinkTargets();
+	});
 }
 
 bool igdeTriggerExpressionComponent::Evaluate(){
@@ -147,7 +142,7 @@ bool igdeTriggerExpressionComponent::Evaluate(){
 		const int count = pChildren.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			if(!static_cast<igdeTriggerExpressionComponent*>(pChildren.GetAt(i))->Evaluate()){
+			if(!pChildren.GetAt(i)->Evaluate()){
 				break;
 			}
 		}
@@ -158,7 +153,7 @@ bool igdeTriggerExpressionComponent::Evaluate(){
 		const int count = pChildren.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			if(static_cast<igdeTriggerExpressionComponent*>(pChildren.GetAt(i))->Evaluate()){
+			if(pChildren.GetAt(i)->Evaluate()){
 				break;
 			}
 		}
@@ -176,14 +171,6 @@ bool igdeTriggerExpressionComponent::Evaluate(){
 
 // Children
 /////////////
-
-int igdeTriggerExpressionComponent::GetChildCount() const{
-	return pChildren.GetCount();
-}
-
-igdeTriggerExpressionComponent *igdeTriggerExpressionComponent::GetChildAt(int index) const{
-	return (igdeTriggerExpressionComponent*)pChildren.GetAt(index);
-}
 
 int igdeTriggerExpressionComponent::IndexOfChild(igdeTriggerExpressionComponent *child) const{
 	return pChildren.IndexOf(child);

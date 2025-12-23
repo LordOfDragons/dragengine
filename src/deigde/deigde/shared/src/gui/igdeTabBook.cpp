@@ -79,11 +79,11 @@ void igdeTabBook::SetActivePanel(int index){
 	}
 	
 	if(index == -1){
-		if(GetChildCount() > 0){
+		if(GetChildren().IsNotEmpty()){
 			DETHROW(deeInvalidParam);
 		}
 		
-	}else if(index < 0 || index >= GetChildCount()){
+	}else if(index < 0 || index >= GetChildren().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -140,7 +140,7 @@ void igdeTabBook::AddChild(igdeWidget *child){
 }
 
 void igdeTabBook::RemoveChild(igdeWidget *child){
-	const int index = IndexOfChild(child);
+	const int index = GetChildren().IndexOf(child);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}

@@ -519,11 +519,9 @@ void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeT
 	pTreeExpression->ItemChanged(item);
 	
 	if(component && component->GetType() != igdeTriggerExpressionComponent::ectTarget){
-		const int count = component->GetChildCount();
-		int i;
-		for(i=0; i<count; i++){
-			AddComponentToTree(item, component->GetChildAt(i));
-		}
+		component->GetChildren().Visit([&](igdeTriggerExpressionComponent *c){
+			AddComponentToTree(item, c);
+		});
 	}
 }
 
@@ -572,19 +570,16 @@ void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igde
 	
 	if(component && component->GetType() != igdeTriggerExpressionComponent::ectTarget){
 		igdeTreeItem *childItem = item->GetFirstChild();
-		const int count = component->GetChildCount();
-		int i;
-		
-		for(i=0; i<count; i++){
+		component->GetChildren().Visit([&](igdeTriggerExpressionComponent *c){
 			if(childItem){
-				UpdateComponentInTree(childItem, component->GetChildAt(i));
+				UpdateComponentInTree(childItem, c);
 				
 			}else{
-				AddComponentToTree(item, component->GetChildAt(i));
+				AddComponentToTree(item, c);
 				childItem = item->GetLastChild();
 			}
 			childItem = childItem->GetNext();
-		}
+		});
 		
 		while(childItem){
 			igdeTreeItem * const removeItem = childItem;
@@ -643,16 +638,13 @@ void igdeTriggerExpressionEditor::UpdateFromTargetList(){
 	pListTargetName->RemoveAllItems();
 	
 	if(pTargetList){
-		const int count = pTargetList->GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			const decString &targetName = pTargetList->GetAt(i)->GetName();
-			if(hasFilter && targetName.GetLower().FindString(filter) == -1){
-				continue;
+		pTargetList->GetTargets().Visit([&](const igdeTriggerTarget &target){
+			const decString &name = target.GetName();
+			if(hasFilter && name.GetLower().FindString(filter) == -1){
+				return;
 			}
-			pListTargetName->AddItem(targetName);
-		}
+			pListTargetName->AddItem(name);
+		});
 	}
 	
 	pListTargetName->SortItems();

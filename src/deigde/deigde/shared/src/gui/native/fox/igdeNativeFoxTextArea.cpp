@@ -184,24 +184,19 @@ void igdeNativeFoxTextArea::ApplyStyles(){
 		return;
 	}
 	
-	const int count = pOwner->GetSegmentCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeTextSegment &segment = pOwner->GetSegmentAt(i);
-		
+	pOwner->GetSegments().Visit([&](const igdeTextSegment &segment){
 		const decString &styleName = segment.GetStyle();
 		if(styleName.IsEmpty()){
-			continue;
+			return;
 		}
 		
 		const int style = pOwner->IndexOfStyleNamed(styleName);
 		if(style == -1){
-			continue;
+			return;
 		}
 		
 		pTextArea->changeStyle(segment.GetBegin(), segment.GetLength(), style + 1);
-	}
+	});
 }
 
 void igdeNativeFoxTextArea::UpdateText(){
@@ -447,7 +442,7 @@ long igdeNativeFoxTextArea::onResizerDrag(FXObject*, FXSelector, void *pdata){
 //////////////////////
 
 void igdeNativeFoxTextArea::pBuildStylesArray(){
-	const int count = decMath::min(pOwner->GetStyleCount(), 254);
+	const int count = decMath::min(pOwner->GetStyles().GetCount(), 254);
 	if(count == 0){
 		return;
 	}
@@ -481,10 +476,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 	defaultStyle.activeBackColor = aapp.getBackColor();
 	defaultStyle.style = 0;
 	
-	int i;
-	for(i=0; i<count; i++){
-		const igdeTextStyle &style = *pOwner->GetStyleAt(i);
-		
+	pOwner->GetStyles().VisitIndexed([&](int i, const igdeTextStyle &style){
 		FXHiliteStyle &foxStyle = pStyles[i];
 		foxStyle = defaultStyle;
 		
@@ -511,7 +503,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 		if(style.GetStrikeThrough()){
 			foxStyle.style |= FXText::STYLE_STRIKEOUT;
 		}
-	}
+	}, 0, count);
 }
 
 #endif

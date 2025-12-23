@@ -30,7 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeTriggerTargetList;
 
@@ -42,6 +42,9 @@ class DE_DLL_EXPORT igdeTriggerExpressionComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerExpressionComponent> Ref;
+	
+	/** \brief Trigger expression component list. */
+	typedef decTObjectOrderedSet<igdeTriggerExpressionComponent> List;
 	
 	
 	/** \brief Component type. */
@@ -65,7 +68,7 @@ private:
 	decString pTargetName;
 	igdeTriggerTarget::Ref pTarget;
 	igdeTriggerListener::Ref pTargetListener;
-	decObjectOrderedSet pChildren;
+	List pChildren;
 	
 	
 	
@@ -137,11 +140,8 @@ public:
 	
 	/** \name Children */
 	/*@{*/
-	/** \brief Count of child components. */
-	int GetChildCount() const;
-	
-	/** \brief Child component at index. */
-	igdeTriggerExpressionComponent *GetChildAt(int index) const;
+	/** \brief Children. */
+	const List &GetChildren() const{ return pChildren; }
 	
 	/** \brief Index of child component or -1 if not found. */
 	int IndexOfChild(igdeTriggerExpressionComponent *child) const;

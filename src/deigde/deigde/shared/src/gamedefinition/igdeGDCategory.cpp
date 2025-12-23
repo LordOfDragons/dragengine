@@ -102,10 +102,6 @@ igdeGDCategory *igdeGDCategory::AutoCategorize(const decString &path) const{
 // Children Categories
 ////////////////////////
 
-int igdeGDCategory::GetCategoryCount() const{
-	return pCategories.GetCount();
-}
-
 bool igdeGDCategory::HasCategory(igdeGDCategory *category) const{
 	return pCategories.Has(category);
 }
@@ -122,37 +118,23 @@ int igdeGDCategory::IndexOfCategoryNamed(const char *name) const{
 	if(!name){
 		DETHROW(deeInvalidParam);
 	}
-	const int count = pCategories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((igdeGDCategory*)pCategories.GetAt(i))->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-igdeGDCategory *igdeGDCategory::GetCategoryAt(int index) const{
-	return (igdeGDCategory*)pCategories.GetAt(index);
+	return pCategories.IndexOfMatching([&](const igdeGDCategory &c){
+		return c.GetName() == name;
+	});
 }
 
 igdeGDCategory *igdeGDCategory::GetCategoryNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	const int count = pCategories.GetCount();
-	int i;
+	DEASSERT_NOTNULL(name)
 	
-	for(i=0; i<count; i++){
-		igdeGDCategory * const category = (igdeGDCategory*)pCategories.GetAt(i);
-		if(category->GetName() == name){
-			return category;
+	igdeGDCategory *result = nullptr;
+	pCategories.HasMatching([&](igdeGDCategory *c){
+		if(c->GetName() == name){
+			result = c;
+			return true;
 		}
-	}
-	
-	return nullptr;
+		return false;
+	});
+	return result;
 }
 
 igdeGDCategory *igdeGDCategory::GetCategoryWithPath(const decPath &path) const{
@@ -194,25 +176,20 @@ void igdeGDCategory::RemoveCategory(igdeGDCategory *category){
 }
 
 void igdeGDCategory::RemoveAllCategories(){
-	while(pCategories.GetCount() > 0){
-		const int index = pCategories.GetCount() - 1;
-		((igdeGDCategory*)pCategories.GetAt(index))->SetParent(nullptr);
-		pCategories.RemoveFrom(index);
-	}
+	pCategories.VisitReverse([&](igdeGDCategory &c){
+		c.SetParent(nullptr);
+	});
+	pCategories.RemoveAll();
 }
 
 
 
 void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
-	const int count = category.GetCategoryCount();
-	int i;
-	
 	pDescription = category.GetDescription();
 	pAutoCategorizePattern += category.pAutoCategorizePattern;
 	pHidden = category.GetHidden();
 	
-	for(i=0; i<count; i++){
-		const igdeGDCategory &childCategory = *category.GetCategoryAt(i);
+	category.GetCategories().Visit([&](const igdeGDCategory &childCategory){
 		igdeGDCategory *matchingCategory = GetCategoryNamed(childCategory.GetName());
 		
 		if(!matchingCategory){
@@ -224,7 +201,7 @@ void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
 		}
 		
 		matchingCategory->UpdateWith(childCategory);
-	}
+	});
 }
 
 

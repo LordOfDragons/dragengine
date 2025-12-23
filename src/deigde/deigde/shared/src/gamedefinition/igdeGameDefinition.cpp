@@ -206,7 +206,7 @@ void igdeGameDefinition::FindClasses(deVirtualFileSystem &vfs, igdeGDClassManage
 		loader.LoadElementClasses(found, vfs, decPath::CreatePathUnix(path));
 	}
 	logger.LogInfoFormat("IGDE", "Load XML Element Classes done: %.1fs (%d found)",
-		timer.GetElapsedTime(), found.GetCount());
+		timer.GetElapsedTime(), found.GetClasses().GetCount());
 	
 	// DEBUG
 	/*
@@ -243,7 +243,8 @@ void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &
 			found.FindAndAddSkins(vfs, searchPath, pattern.GetPattern());
 		}
 	}
-	logger.LogInfoFormat("IGDE", "Find Skins done: %.1fs (%d found)", timer.GetElapsedTime(), found.GetSkinCount());
+	logger.LogInfoFormat("IGDE", "Find Skins done: %.1fs (%d found)", timer.GetElapsedTime(),
+		found.GetSkins().GetCount());
 }
 
 void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &found){

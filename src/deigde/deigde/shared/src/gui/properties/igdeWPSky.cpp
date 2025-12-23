@@ -244,8 +244,8 @@ void igdeWPSky::RebuildControllers(){
 			0.0f, 1.0f, 6, 3, 0.1f, slider, cEditControllerValue::Ref::New(*this, controller->controller));
 		
 		controller->slider = slider;
-		controller->label = static_cast<igdeLabel*>(pFraControllers->GetChildAt(
-			pFraControllers->IndexOfChild(controller->slider) - 1));
+		controller->label = pFraControllers->GetChildren().GetAt(
+			pFraControllers->GetChildren().IndexOf(controller->slider) - 1).DynamicCast<igdeLabel>();
 		
 		pControllers.Add(controller);
 	}

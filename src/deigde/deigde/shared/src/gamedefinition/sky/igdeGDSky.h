@@ -27,7 +27,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -47,6 +46,9 @@ public:
 	/** \brief List of skies. */
 	typedef decTObjectOrderedSet<igdeGDSky> List;
 	
+	/** \brief List of controllers. */
+	typedef decTObjectOrderedSet<igdeGDSkyController> ControllersList;
+	
 	
 private:
 	decString pPath;
@@ -54,7 +56,7 @@ private:
 	decString pDescription;
 	decString pCategory;
 	
-	decObjectOrderedSet pControllers;
+	ControllersList pControllers;
 	
 	deImage::Ref pPreviewImage;
 	
@@ -114,11 +116,8 @@ public:
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/** \brief Controller at index. */
-	igdeGDSkyController *GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const ControllersList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(igdeGDSkyController *controller);

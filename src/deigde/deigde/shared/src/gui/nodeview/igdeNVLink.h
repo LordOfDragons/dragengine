@@ -25,11 +25,10 @@
 #ifndef _IGDENVLINK_H_
 #define _IGDENVLINK_H_
 
-#include "igdeNVSlot.h"
-
 #include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
 
-
+class igdeNVSlot;
 class igdeNVBoard;
 
 
@@ -44,8 +43,8 @@ public:
 	
 	
 private:
-	igdeNVSlot::Ref pSource;
-	igdeNVSlot::Ref pTarget;
+	deTObjectReference<igdeNVSlot> pSource;
+	deTObjectReference<igdeNVSlot> pTarget;
 	
 	igdeNVBoard *pOwnerBoard;
 	
@@ -75,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source. */
-	inline const igdeNVSlot::Ref &GetSource() const{ return pSource; }
+	inline const deTObjectReference<igdeNVSlot> &GetSource() const{ return pSource; }
 	
 	/** \brief Target. */
-	inline const igdeNVSlot::Ref &GetTarget() const{ return pTarget; }
+	inline const deTObjectReference<igdeNVSlot> &GetTarget() const{ return pTarget; }
 	
 	
 	

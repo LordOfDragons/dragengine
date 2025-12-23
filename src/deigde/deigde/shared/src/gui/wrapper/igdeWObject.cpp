@@ -881,8 +881,6 @@ void igdeWObject::pCreateSubObjects(){
 }
 
 void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &gdclass, int filter){
-	int i;
-	
 	// components
 	if((filter & igdeGDClass::efsoComponents) != 0){
 		const igdeGDCComponent::List &components = gdclass.GetComponentList();
@@ -1032,15 +1030,13 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 	}
 	
 	// inherited classes
-	const int inheritCount = gdclass.GetInheritClassCount();
 	filter &= gdclass.GetInheritSubObjects();
 	
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+	gdclass.GetInheritClasses().Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			pCreateSubObjects(prefix + inherit.GetPropertyPrefix(), *inherit.GetClass(), filter);
 		}
-	}
+	});
 }
 
 void igdeWObject::pDestroySubObjects(){

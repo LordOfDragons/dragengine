@@ -403,13 +403,11 @@ void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = container->GetChildCount();
 	sChildLayoutFlags clflags;
-	int i;
 	
-	for(i=0; i<count; i++){
-		clflags.widget = container->GetChildAt(i);
-		FXWindow * const foxWidget = (FXWindow*)clflags.widget->GetNativeWidget();
+	container->GetChildren().Visit([&](igdeWidget *child){
+		clflags.widget = child;
+		FXWindow * const foxWidget = static_cast<FXWindow*>(clflags.widget->GetNativeWidget());
 		if(!foxWidget){
 			DETHROW(deeInvalidParam);
 		}
@@ -417,7 +415,7 @@ void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
 		foxContainer->handle(foxContainer, FXSEL(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0), &clflags);
 		
 		foxWidget->setLayoutHints(clflags.flags & 0xfff);
-	}
+	});
 }
 
 FXColor igdeUIFoxHelper::BlendColor(FXColor color1, FXColor color2, float factor){

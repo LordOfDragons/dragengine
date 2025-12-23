@@ -619,7 +619,7 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 		((igdeViewCurveBezierListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu);
 	}
 	
-	if(menu->GetChildCount() > 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(*this, position);
 	}
 }
