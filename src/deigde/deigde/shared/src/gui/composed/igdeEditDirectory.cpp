@@ -204,11 +204,8 @@ void igdeEditDirectory::RemoveListener(igdeEditDirectoryListener *listener){
 }
 
 void igdeEditDirectory::NotifyEditDirectoryChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditDirectoryListener*)listeners.GetAt(i))->OnEditDirectoryChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditDirectoryListener &l){
+		l.OnEditDirectoryChanged(this);
+	});
 }

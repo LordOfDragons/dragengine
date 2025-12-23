@@ -740,6 +740,10 @@ void deCollider::pCleanUp(){
 	
 	RemoveAllAttachments();
 	if(pAttachments){
+		while(pAttachmentCount > 0){
+			delete pAttachments[pAttachmentCount - 1];
+			pAttachmentCount--;
+		}
 		delete [] pAttachments;
 	}
 }

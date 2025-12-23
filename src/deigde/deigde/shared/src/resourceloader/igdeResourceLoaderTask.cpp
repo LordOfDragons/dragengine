@@ -55,50 +55,36 @@ igdeResourceLoaderTask::~igdeResourceLoaderTask(){
 //////////////
 
 void igdeResourceLoaderTask::AddListener(igdeResourceLoaderListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	pListeners.AddIfAbsent(listener);
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
 }
 
 void igdeResourceLoaderTask::RemoveListener(igdeResourceLoaderListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 void igdeResourceLoaderTask::NotifyLoadingFinished(deLogger &logger, deFileResource *resource){
-	if(!resource){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(resource)
 	
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeResourceLoaderListener &listener = *((igdeResourceLoaderListener*)pListeners.GetAt(i));
-		
+	pListeners.Visit([&](igdeResourceLoaderListener &l){
 		try{
-			listener.LoadingFinished(*this, resource);
+			l.LoadingFinished(*this, resource);
 			
 		}catch(const deException &e){
 			logger.LogException("IGDE", e);
 		}
-	}
-	
+	});
 	pListeners.RemoveAll();
 }
 
 void igdeResourceLoaderTask::NotifyLoadingFailed(deLogger &logger){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeResourceLoaderListener &listener = *((igdeResourceLoaderListener*)pListeners.GetAt(i));
-		
+	pListeners.Visit([&](igdeResourceLoaderListener &l){
 		try{
-			listener.LoadingFailed(*this);
+			l.LoadingFailed(*this);
 			
 		}catch(const deException &e){
 			logger.LogException("IGDE", e);
 		}
-	}
-	
+	});
 	pListeners.RemoveAll();
 }

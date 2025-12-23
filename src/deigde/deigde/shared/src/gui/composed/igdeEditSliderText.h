@@ -31,7 +31,7 @@
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditSliderTextListener;
@@ -89,7 +89,7 @@ private:
 	float pValue;
 	bool pPreventNotify;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditSliderTextListener> pListeners;
 	
 	
 	

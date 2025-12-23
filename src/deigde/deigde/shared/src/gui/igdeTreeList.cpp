@@ -505,45 +505,32 @@ void igdeTreeList::AddListener(igdeTreeListListener *listener){
 void igdeTreeList::RemoveListener(igdeTreeListListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeTreeList::NotifySelectionChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTreeListListener*)listeners.GetAt(i))->OnSelectionChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTreeListListener &l){
+		l.OnSelectionChanged(this);
+	});
 }
 
 void igdeTreeList::NotifyItemExpanded(igdeTreeItem *item){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTreeListListener*)listeners.GetAt(i))->OnItemExpanded(this, item);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTreeListListener &l){
+		l.OnItemExpanded(this, item);
+	});
 }
 
 void igdeTreeList::NotifyItemCollapsed(igdeTreeItem *item){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTreeListListener*)listeners.GetAt(i))->OnItemCollapsed(this, item);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTreeListListener &l){
+		l.OnItemCollapsed(this, item);
+	});
 }
 
 void igdeTreeList::NotifyDoubleClickItem(igdeTreeItem *item){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTreeListListener*)listeners.GetAt(i))->OnDoubleClickItem(this, item);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTreeListListener &l){
+		l.OnDoubleClickItem(this, item);
+	});
 }
 
 

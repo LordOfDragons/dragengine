@@ -636,35 +636,25 @@ void igdeViewCurveBezier::AddListener(igdeViewCurveBezierListener *listener){
 void igdeViewCurveBezier::RemoveListener(igdeViewCurveBezierListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeViewCurveBezier::NotifyCurveChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnCurveChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnCurveChanged(this);
+	});
 }
 
 void igdeViewCurveBezier::NotifyCurveChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnCurveChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnCurveChanging(this);
+	});
 }
 
 void igdeViewCurveBezier::NotifyCurveSelectPoint(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnSelectedPointChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnSelectedPointChanged(this);
+	});
 }
 
 

@@ -227,35 +227,25 @@ void igdeTextField::AddListener(igdeTextFieldListener *listener){
 void igdeTextField::RemoveListener(igdeTextFieldListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeTextField::NotifyTextChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTextFieldListener*)listeners.GetAt(i))->OnTextChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTextFieldListener &l){
+		l.OnTextChanged(this);
+	});
 }
 
 void igdeTextField::NotifyTextChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTextFieldListener*)listeners.GetAt(i))->OnTextChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTextFieldListener &l){
+		l.OnTextChanging(this);
+	});
 }
 
 void igdeTextField::NotifyEnterKey(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTextFieldListener*)listeners.GetAt(i))->OnEnterKey(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTextFieldListener &l){
+		l.OnEnterKey(this);
+	});
 }
 
 

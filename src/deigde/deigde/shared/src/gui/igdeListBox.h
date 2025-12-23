@@ -28,14 +28,14 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeListBoxListener.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-class igdeListBoxListener;
 class igdeIcon;
 class igdeListItem;
 
@@ -68,7 +68,7 @@ private:
 	int pRows;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeListBoxListener> pListeners;
 	
 	
 	

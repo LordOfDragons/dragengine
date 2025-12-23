@@ -35,7 +35,7 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../../environment/igdeEnvironment.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditPathListener;
@@ -170,7 +170,7 @@ private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
 	igdeFilePattern::List pCustomPatternList;
 	
-	decObjectOrderedSet pSelectPathActions;
+	decTObjectOrderedSet<igdeAction> pSelectPathActions;
 	decString pDefaultPath;
 	bool pAutoValidatePath;
 	bool pUseGameVFS;
@@ -183,7 +183,7 @@ private:
 	igdeButton::Ref pButton;
 	igdeButton::Ref pButtonMenu;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPathListener> pListeners;
 	
 	
 	

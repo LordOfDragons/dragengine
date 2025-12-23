@@ -137,15 +137,11 @@ void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
 void igdeSpinTextField::RemoveListener(igdeSpinTextFieldListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeSpinTextField::NotifyValueChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeSpinTextFieldListener*)listeners.GetAt(i))->OnValueChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeSpinTextFieldListener &l){
+		l.OnValueChanged(this);
+	});
 }
 
 

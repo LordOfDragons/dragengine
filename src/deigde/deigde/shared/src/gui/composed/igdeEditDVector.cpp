@@ -175,13 +175,10 @@ void igdeEditDVector::RemoveListener(igdeEditDVectorListener *listener){
 }
 
 void igdeEditDVector::NotifyDVectorChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditDVectorListener*)listeners.GetAt(i))->OnDVectorChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditDVectorListener &l){
+		l.OnDVectorChanged(this);
+	});
 }
 
 

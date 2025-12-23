@@ -131,13 +131,10 @@ pDefault(false){
 }
 
 igdeAction::~igdeAction(){
-	const decPointerOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeActionListener*)listeners.GetAt(i))->OnDestroyed(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeActionListener *l){
+		l->OnDestroyed(this);
+	});
 }
 
 
@@ -220,9 +217,7 @@ void igdeAction::SetDefault(bool isdefault){
 
 
 void igdeAction::AddListener(igdeActionListener *listener){
-	if(!listener || pListeners.Has(listener)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NULL(listener)
 	pListeners.Add(listener);
 }
 
@@ -231,13 +226,10 @@ void igdeAction::RemoveListener(igdeActionListener *listener){
 }
 
 void igdeAction::NotifyParametersChanged(){
-	const decPointerOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeActionListener*)listeners.GetAt(i))->OnParameterChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeActionListener *l){
+		l->OnParameterChanged(this);
+	});
 }
 
 

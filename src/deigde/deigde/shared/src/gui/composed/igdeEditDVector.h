@@ -29,7 +29,7 @@
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -84,7 +84,7 @@ private:
 	igdeTextField::Ref pTextZ;
 	bool pPreventUpdate;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditDVectorListener> pListeners;
 	
 	
 	

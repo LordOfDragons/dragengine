@@ -27,13 +27,12 @@
 
 #include "igdeWidget.h"
 #include "event/igdeAction.h"
+#include "event/igdeColorBoxListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
-
-class igdeColorBoxListener;
 
 
 /**
@@ -100,7 +99,7 @@ private:
 	bool pEnabled;
 	decColor pColor;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeColorBoxListener> pListeners;
 	
 	
 	

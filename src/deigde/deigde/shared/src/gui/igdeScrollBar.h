@@ -27,11 +27,10 @@
 
 #include "igdeWidget.h"
 #include "event/igdeAction.h"
+#include "event/igdeScrollBarListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-
-class igdeScrollBarListener;
 
 
 /**
@@ -61,7 +60,7 @@ private:
 	int pPageSize;
 	int pValue;
 	bool pEnabled;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeScrollBarListener> pListeners;
 	
 	
 	

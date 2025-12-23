@@ -28,12 +28,10 @@
 #include <stdlib.h>
 
 #include "igdeWidget.h"
+#include "event/igdeTextFieldListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
-
-class igdeTextFieldListener;
 
 
 /**
@@ -58,7 +56,7 @@ private:
 	int pPrecision;
 	bool pInvalidValue;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTextFieldListener> pListeners;
 	
 	
 	

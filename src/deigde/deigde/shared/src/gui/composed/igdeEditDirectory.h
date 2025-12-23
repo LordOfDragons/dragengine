@@ -33,6 +33,7 @@
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEditDirectoryListener;
 class igdeMenuCascade;
@@ -90,7 +91,7 @@ private:
 	igdeTextField::Ref pText;
 	igdeButton::Ref pButton;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditDirectoryListener> pListeners;
 	
 	
 	

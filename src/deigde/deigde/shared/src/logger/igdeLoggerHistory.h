@@ -25,13 +25,14 @@
 #ifndef _IGDELOGGERHISTORY_H_
 #define _IGDELOGGERHISTORY_H_
 
+#include "igdeLoggerHistoryListener.h"
+
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class igdeLoggerHistoryEntry;
-class igdeLoggerHistoryListener;
 
 
 
@@ -56,7 +57,7 @@ private:
 	int pEntryPointer;
 	int pEntryCount;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<igdeLoggerHistoryListener> pListeners;
 	
 	bool pLogInfo;
 	bool pLogWarn;

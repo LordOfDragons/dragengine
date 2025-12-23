@@ -560,27 +560,19 @@ void igdeEditPropertyValue::AddListener(igdeEditPropertyValueListener* listener)
 void igdeEditPropertyValue::RemoveListener(igdeEditPropertyValueListener* listener){
 	pListeners.Remove(listener);
 }
-
 void igdeEditPropertyValue::NotifyPropertyValueChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPropertyValueListener*)listeners.GetAt(i))->OnPropertyValueChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPropertyValueListener &l){
+		l.OnPropertyValueChanged(this);
+	});
 }
 
 void igdeEditPropertyValue::NotifyPropertyValueChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPropertyValueListener*)listeners.GetAt(i))->OnPropertyValueChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPropertyValueListener &l){
+		l.OnPropertyValueChanging(this);
+	});
 }
-
 
 
 void igdeEditPropertyValue::EditWidgetValueChanged(bool changing){

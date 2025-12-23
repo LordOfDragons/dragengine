@@ -25,16 +25,16 @@
 #ifndef _IGDEVIEWCURVEBEZIER_H_
 #define _IGDEVIEWCURVEBEZIER_H_
 
+#include "igdeViewCurveBezierListener.h"
 #include "../igdeWidget.h"
 #include "../event/igdeAction.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/math/decMath.h>
 
 class igdeEnvironment;
-class igdeViewCurveBezierListener;
 
 
 /**
@@ -177,7 +177,7 @@ private:
 	
 	decPoint pDefaultSize;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeViewCurveBezierListener> pListeners;
 	
 	
 	

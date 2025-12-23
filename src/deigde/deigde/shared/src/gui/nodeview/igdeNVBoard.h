@@ -27,16 +27,17 @@
 
 #include "igdeNVNode.h"
 #include "igdeNVLink.h"
+#include "igdeNVBoardListener.h"
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
 class igdeNVSlot;
-class igdeNVBoardListener;
 
 
 /**
@@ -58,7 +59,7 @@ private:
 	decObjectOrderedSet pLinks;
 	igdeNVNode::Ref pActiveNode;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeNVBoardListener> pListeners;
 	
 	
 	

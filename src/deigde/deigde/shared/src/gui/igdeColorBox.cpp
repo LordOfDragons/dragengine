@@ -260,17 +260,12 @@ void igdeColorBox::AddListener(igdeColorBoxListener *listener){
 void igdeColorBox::RemoveListener(igdeColorBoxListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeColorBox::NotifyColorChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeColorBoxListener*)listeners.GetAt(i))->OnColorChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeColorBoxListener &l){
+		l.OnColorChanged(this);
+	});
 }
-
 void igdeColorBox::ShowContextMenu(const decPoint &position){
 	if(!GetNativeWidget()){
 		return;

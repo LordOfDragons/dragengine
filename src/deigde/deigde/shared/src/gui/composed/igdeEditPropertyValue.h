@@ -42,6 +42,8 @@
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 #include <dragengine/common/string/decStringSet.h>
 
 class igdeUIHelper;
@@ -90,7 +92,7 @@ private:
 	igdeTextField::Ref pShapeList;
 	igdeComboBoxFilter::Ref pIdentifier;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPropertyValueListener> pListeners;
 	
 	igdeAction::Ref pActionEditRawValue;
 	igdeAction::Ref pActionBooleanValue;

@@ -149,34 +149,25 @@ void igdeSlider::Focus(){
 
 
 void igdeSlider::AddListener(igdeSliderListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeSlider::RemoveListener(igdeSliderListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeSlider::NotifyValueChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeSliderListener*)listeners.GetAt(i))->OnValueChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeSliderListener &l){
+		l.OnValueChanged(this);
+	});
 }
 
 void igdeSlider::NotifyValueChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeSliderListener*)listeners.GetAt(i))->OnValueChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeSliderListener &l){
+		l.OnValueChanging(this);
+	});
 }
 
 

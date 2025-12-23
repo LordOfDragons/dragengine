@@ -415,55 +415,39 @@ void igdeNVBoard::AddListener(igdeNVBoardListener *listener){
 void igdeNVBoard::RemoveListener(igdeNVBoardListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeNVBoard::NotifyLinkAdded(igdeNVLink *link){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)listeners.GetAt(i))->OnLinkAdded(this, link);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnLinkAdded(this, link);
+	});
 }
 
 void igdeNVBoard::NotifyLinkRemoved(igdeNVSlot *source, igdeNVSlot *target){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)listeners.GetAt(i))->OnLinkRemoved(this, source, target);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnLinkRemoved(this, source, target);
+	});
 }
 
 void igdeNVBoard::NotifyAllLinksRemoved(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)listeners.GetAt(i))->OnAllLinksRemoved(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnAllLinksRemoved(this);
+	});
 }
 
 void igdeNVBoard::NotifyOffsetChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)listeners.GetAt(i))->OnOffsetChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnOffsetChanged(this);
+	});
 }
 
 void igdeNVBoard::NotifySizeChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVBoardListener*)listeners.GetAt(i))->OnSizeChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnSizeChanged(this);
+	});
 }
 
 

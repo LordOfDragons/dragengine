@@ -580,49 +580,35 @@ void igdeListBox::AddListener(igdeListBoxListener *listener){
 void igdeListBox::RemoveListener(igdeListBoxListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeListBox::NotifySelectionChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnSelectionChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnSelectionChanged(this);
+	});
 }
 
 void igdeListBox::NotifyItemSelected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnItemSelected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnItemSelected(this, index);
+	});
 }
 
 void igdeListBox::NotifyItemDeselected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnItemDeselected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnItemDeselected(this, index);
+	});
 }
 
 void igdeListBox::NotifyDoubleClickItem(int index){
-	if(index < 0 || index >= pItems.GetCount()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pItems.GetCount())
 	
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnDoubleClickItem(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnDoubleClickItem(this, index);
+	});
 }
 
 

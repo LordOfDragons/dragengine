@@ -25,15 +25,14 @@
 #ifndef _IGDETEXTAREA_H_
 #define _IGDETEXTAREA_H_
 
-#include <stdlib.h>
-
 #include "igdeWidget.h"
+#include "event/igdeTextAreaListener.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeTextAreaListener;
 class igdeTextStyle;
 class igdeTextSegment;
 class igdeAction;
@@ -66,7 +65,7 @@ private:
 	decObjectOrderedSet pStyles;
 	decObjectOrderedSet pSegments;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTextAreaListener> pListeners;
 	
 	
 	

@@ -200,13 +200,10 @@ void igdeEditSliderText::NotifySliderTextValueChanged(){
 		return;
 	}
 	
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditSliderTextListener*)listeners.GetAt(i))->OnSliderTextValueChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditSliderTextListener &l){
+		l.OnSliderTextValueChanged(this);
+	});
 }
 
 void igdeEditSliderText::NotifySliderTextValueChanging(){
@@ -214,13 +211,10 @@ void igdeEditSliderText::NotifySliderTextValueChanging(){
 		return;
 	}
 	
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditSliderTextListener*)listeners.GetAt(i))->OnSliderTextValueChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditSliderTextListener &l){
+		l.OnSliderTextValueChanging(this);
+	});
 }
 
 

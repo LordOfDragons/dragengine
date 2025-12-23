@@ -28,15 +28,15 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeComboBoxListener.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeComboBoxListener;
 class igdeIcon;
 
 
@@ -64,7 +64,7 @@ private:
 	decString pDescription;
 	bool pInvalidValue;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeComboBoxListener> pListeners;
 	
 	
 	

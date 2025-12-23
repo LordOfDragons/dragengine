@@ -162,13 +162,10 @@ void igdeEditPoint3::RemoveListener(igdeEditPoint3Listener *listener){
 }
 
 void igdeEditPoint3::NotifyPoint3Changed(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPoint3Listener*)listeners.GetAt(i))->OnPoint3Changed(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPoint3Listener &l){
+		l.OnPoint3Changed(this);
+	});
 }
 
 

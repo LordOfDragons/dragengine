@@ -29,7 +29,7 @@
 #include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 class igdeActionListener;
@@ -64,7 +64,7 @@ private:
 	bool pEnabled;
 	bool pSelected;
 	bool pDefault;
-	decPointerOrderedSet pListeners;
+	decTOrderedSet<igdeActionListener*> pListeners;
 	
 	
 	

@@ -28,15 +28,16 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeIconListBoxListener.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
-class igdeIconListBoxListener;
 class igdeIcon;
 class igdeListHeader;
 class igdeListItem;
@@ -84,7 +85,7 @@ private:
 	decString pDescription;
 	decObjectOrderedSet pHeaders;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeIconListBoxListener> pListeners;
 	
 	
 	

@@ -493,25 +493,18 @@ void igdeIconListBox::DeselectAllItems(){
 		OnSelectionChanged();
 	}
 }
-
 void igdeIconListBox::NotifyItemSelected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)listeners.GetAt(i))->OnItemSelected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnItemSelected(this, index);
+	});
 }
 
 void igdeIconListBox::NotifyItemDeselected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)listeners.GetAt(i))->OnItemDeselected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnItemDeselected(this, index);
+	});
 }
 
 
@@ -558,15 +551,11 @@ void igdeIconListBox::HeaderChangedAt(int index){
 	
 	OnHeaderChanged();
 }
-
 void igdeIconListBox::NotifyHeaderClicked(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)listeners.GetAt(i))->OnHeaderClicked(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnHeaderClicked(this, index);
+	});
 }
 
 
@@ -592,11 +581,9 @@ void igdeIconListBox::ShowContextMenu(const decPoint &position){
 	
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu);
-	}
+	pListeners.Visit([&](igdeIconListBoxListener &l){
+		l.AddContextMenuEntries(this, menu);
+	});
 	
 	if(menu->GetChildCount() > 0){
 		menu->Popup(*this, position);
@@ -615,29 +602,21 @@ void igdeIconListBox::AddListener(igdeIconListBoxListener *listener){
 void igdeIconListBox::RemoveListener(igdeIconListBoxListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeIconListBox::NotifySelectionChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)listeners.GetAt(i))->OnSelectionChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnSelectionChanged(this);
+	});
 }
 
 void igdeIconListBox::NotifyDoubleClickItem(int index){
-	if(index < 0 || index >= pItems.GetCount()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pItems.GetCount())
 	
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeIconListBoxListener*)listeners.GetAt(i))->OnDoubleClickItem(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeIconListBoxListener &l){
+		l.OnDoubleClickItem(this, index);
+	});
 }
 
 

@@ -430,34 +430,25 @@ void igdeTextArea::ClearTextSegment(int begin, int end){
 
 
 void igdeTextArea::AddListener(igdeTextAreaListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeTextArea::RemoveListener(igdeTextAreaListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeTextArea::NotifyTextChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTextAreaListener*)listeners.GetAt(i))->OnTextChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTextAreaListener &l){
+		l.OnTextChanged(this);
+	});
 }
 
 void igdeTextArea::NotifyTextChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTextAreaListener*)listeners.GetAt(i))->OnTextChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeTextAreaListener &l){
+		l.OnTextChanging(this);
+	});
 }
 
 

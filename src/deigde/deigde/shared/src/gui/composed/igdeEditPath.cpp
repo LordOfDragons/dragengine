@@ -561,12 +561,12 @@ void igdeEditPath::AddSelectPathAction(igdeAction *action){
 	if(!action){
 		DETHROW(deeInvalidParam);
 	}
-	pSelectPathActions.AddIfAbsent(action);
+	pSelectPathActions.Add(action);
 	pActionButton->Update();
 }
 
 void igdeEditPath::RemoveSelectPathAction(igdeAction *action){
-	pSelectPathActions.RemoveIfPresent(action);
+	pSelectPathActions.Remove(action);
 	pActionButton->Update();
 }
 
@@ -576,12 +576,9 @@ void igdeEditPath::RemoveAllSelectPathActions(){
 }
 
 void igdeEditPath::UpdateSelectPathActions(){
-	const int count = pSelectPathActions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeAction*)pSelectPathActions.GetAt(i))->Update();
-	}
+	pSelectPathActions.Visit([](igdeAction &a){
+		a.Update();
+	});
 }
 
 void igdeEditPath::SetSelectPathActions(){
@@ -608,11 +605,9 @@ void igdeEditPath::SetSelectPathActions(){
 void igdeEditPath::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	const int count = pSelectPathActions.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		helper.MenuCommand(contextMenu, igdeAction::Ref(static_cast<igdeAction*>(pSelectPathActions.GetAt(i))));
-	}
+	pSelectPathActions.Visit([&](const igdeAction::Ref &a){
+		helper.MenuCommand(contextMenu, a);
+	});
 	
 	if(!pBasePath.IsEmpty()){
 		helper.MenuSeparator(contextMenu);
@@ -691,11 +686,8 @@ void igdeEditPath::RemoveListener(igdeEditPathListener *listener){
 }
 
 void igdeEditPath::NotifyEditPathChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPathListener*)listeners.GetAt(i))->OnEditPathChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPathListener &l){
+		l.OnEditPathChanged(this);
+	});
 }

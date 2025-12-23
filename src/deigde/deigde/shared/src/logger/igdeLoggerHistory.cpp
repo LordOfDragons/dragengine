@@ -54,7 +54,6 @@ igdeLoggerHistory::~igdeLoggerHistory(){
 	if(pEntries){
 		delete [] pEntries;
 	}
-	pListeners.RemoveAll();
 }
 
 
@@ -130,16 +129,13 @@ igdeLoggerHistoryEntry &igdeLoggerHistory::AddEntry(){
 void igdeLoggerHistory::Clear(){
 	pMutex.Lock();
 	
-	const int count = pListeners.GetCount();
-	int i;
-	
 	pEntryPointer = 0;
 	pEntryCount = 0;
 	
 	try{
-		for(i=0; i<count; i++){
-			((igdeLoggerHistoryListener*)pListeners.GetAt(i))->HistoryCleared(this);
-		}
+		pListeners.Visit([&](igdeLoggerHistoryListener &l){
+			l.HistoryCleared(this);
+		});
 		
 	}catch(const deException &){
 		pMutex.Unlock();
@@ -172,28 +168,18 @@ bool igdeLoggerHistory::CanAddMessage(int type, const char *source){
 
 
 void igdeLoggerHistory::AddListener(igdeLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeLoggerHistory::RemoveListener(igdeLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 void igdeLoggerHistory::NotifyMessageAdded(igdeLoggerHistoryEntry &entry){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeLoggerHistoryListener*)pListeners.GetAt(i))->MessageAdded(this, entry);
-	}
+	pListeners.Visit([&](igdeLoggerHistoryListener &l){
+		l.MessageAdded(this, entry);
+	});
 }
 
 

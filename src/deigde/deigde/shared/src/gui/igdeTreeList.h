@@ -28,13 +28,13 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeTreeListListener.h"
 #include "model/igdeTreeItem.h"
 #include "model/igdeTreeItemSorter.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-class igdeTreeListListener;
 class igdeIcon;
 class igdeTreeItem;
 
@@ -56,7 +56,7 @@ private:
 	int pRows;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTreeListListener> pListeners;
 	
 	
 	

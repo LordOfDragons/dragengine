@@ -159,24 +159,18 @@ void igdeScrollBar::SetEnabled(bool enabled){
 
 
 void igdeScrollBar::AddListener(igdeScrollBarListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeScrollBar::RemoveListener(igdeScrollBarListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeScrollBar::NotifyValueChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeScrollBarListener*)listeners.GetAt(i))->OnValueChanged(this);
-	}
+	auto listeners(pListeners);
+	listeners.Visit([&](igdeScrollBarListener &l){
+		l.OnValueChanged(this);
+	});
 }
 
 

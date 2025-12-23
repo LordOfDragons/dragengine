@@ -269,55 +269,39 @@ void igdeNVNode::AddListener(igdeNVNodeListener *listener){
 void igdeNVNode::RemoveListener(igdeNVNodeListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeNVNode::NotifyActivated(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)listeners.GetAt(i))->OnActivated(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVNodeListener &l){
+		l.OnActivated(this);
+	});
 }
 
 void igdeNVNode::NotifyDeactivated(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)listeners.GetAt(i))->OnDeactivated(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVNodeListener &l){
+		l.OnDeactivated(this);
+	});
 }
 
 void igdeNVNode::NotifyDragBegin(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)listeners.GetAt(i))->OnDragBegin(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVNodeListener &l){
+		l.OnDragBegin(this);
+	});
 }
 
 void igdeNVNode::NotifyDraging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)listeners.GetAt(i))->OnDraging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVNodeListener &l){
+		l.OnDraging(this);
+	});
 }
 
 void igdeNVNode::NotifyDragEnd(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeNVNodeListener*)listeners.GetAt(i))->OnDragEnd(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVNodeListener &l){
+		l.OnDragEnd(this);
+	});
 }
 
 

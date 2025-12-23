@@ -27,11 +27,9 @@
 
 #include "igdeWidget.h"
 #include "event/igdeAction.h"
+#include "event/igdeSliderListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-
-class igdeSliderListener;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -63,7 +61,7 @@ private:
 	int pPrecision;
 	bool pEnabled;
 	decString pDescription;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeSliderListener> pListeners;
 	
 	
 	

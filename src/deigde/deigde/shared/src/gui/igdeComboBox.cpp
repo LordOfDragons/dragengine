@@ -525,25 +525,18 @@ void igdeComboBox::AddListener(igdeComboBoxListener *listener){
 void igdeComboBox::RemoveListener(igdeComboBoxListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeComboBox::NotifyTextChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeComboBoxListener*)listeners.GetAt(i))->OnTextChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeComboBoxListener &l){
+		l.OnTextChanged(this);
+	});
 }
 
 void igdeComboBox::NotifyTextChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeComboBoxListener*)listeners.GetAt(i))->OnTextChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeComboBoxListener &l){
+		l.OnTextChanging(this);
+	});
 }
 
 
