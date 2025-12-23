@@ -217,7 +217,7 @@ void igdeAction::SetDefault(bool isdefault){
 
 
 void igdeAction::AddListener(igdeActionListener *listener){
-	DEASSERT_NULL(listener)
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
