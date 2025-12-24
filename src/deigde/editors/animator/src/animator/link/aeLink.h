@@ -26,6 +26,7 @@
 #define _AELINK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -43,6 +44,7 @@ class deAnimatorLink;
 class aeLink : public deObject{
 public:
 	typedef deTObjectReference<aeLink> Ref;
+	typedef decTObjectOrderedSet<aeLink> List;
 	
 	
 private:

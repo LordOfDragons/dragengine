@@ -192,7 +192,7 @@ public:
 	
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	

@@ -150,7 +150,7 @@ void aeRuleAnimation::UpdateTargets(){
 int aeRuleAnimation::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetMoveTime.HasLink(link)) usageCount++;
+	if(pTargetMoveTime.GetLinks().Has(link)) usageCount++;
 	
 	return usageCount;
 }
@@ -158,7 +158,7 @@ int aeRuleAnimation::CountLinkUsage(aeLink *link) const{
 void aeRuleAnimation::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetMoveTime.HasLink(link)){
+	if(pTargetMoveTime.GetLinks().Has(link)){
 		pTargetMoveTime.RemoveLink(link);
 	}
 	
@@ -204,7 +204,7 @@ aeRule::Ref aeRuleAnimation::CreateCopy() const{
 
 
 
-void aeRuleAnimation::ListLinks(aeLinkList &list){
+void aeRuleAnimation::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetMoveTime.AddLinksToList(list);
 }

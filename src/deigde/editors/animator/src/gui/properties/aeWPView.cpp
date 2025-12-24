@@ -364,14 +364,10 @@ public:
 		cBaseAction(panel, "", icon, description), pFactor(factor){}
 	
 	void OnAction(aeAnimator *animator) override{
-		const aeControllerList &list = animator->GetControllers();
 		const float timeStep = animator->GetTimeStep() * pFactor;
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			list.GetAt(i)->UpdateValue(timeStep);
-		}
+		animator->GetControllers().Visit([&](aeController &controller){
+			controller.UpdateValue(timeStep);
+		});
 	}
 };
 
@@ -416,13 +412,9 @@ public:
 	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", nullptr, "Reset animation"){}
 	
 	void OnAction(aeAnimator *animator) override{
-		const aeControllerList &list = animator->GetControllers();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			list.GetAt(i)->ResetValue();
-		}
+		animator->GetControllers().Visit([](aeController &controller){
+			controller.ResetValue();
+		});
 	}
 };
 

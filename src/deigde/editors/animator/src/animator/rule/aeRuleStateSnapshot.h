@@ -100,7 +100,7 @@ public:
 	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */

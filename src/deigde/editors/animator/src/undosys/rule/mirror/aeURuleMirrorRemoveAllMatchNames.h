@@ -41,7 +41,7 @@ public:
 	
 private:
 	const aeRuleMirror::Ref pRule;
-	decObjectOrderedSet pMatchNames;
+	aeRuleMirror::MatchName::List pMatchNames;
 	
 	
 	

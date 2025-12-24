@@ -26,13 +26,11 @@
 #define _AERULESUBANIMATOR_H_
 
 #include "aeRule.h"
-
-#include <dragengine/common/collection/decObjectList.h>
-
-class aeController;
-class aeLoadSaveSystem;
+#include "../controller/aeController.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
+
+class aeLoadSaveSystem;
 class deAnimatorRuleSubAnimator;
 
 
@@ -54,7 +52,7 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	decObjectList pConnections;
+	aeController::List pConnections;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -78,11 +76,8 @@ public:
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	
-	/** Number of connections. */
-	int GetConnectionCount() const;
-	
-	/** Controller for target controller or \em nullptr. */
-	aeController *GetControllerAt(int position) const;
+	/** Connections. */
+	inline const aeController::List &GetConnections() const{ return pConnections; }
 	
 	/** Set controller for target controller or \em nullptr. */
 	void SetControllerAt(int position, aeController *controller);
@@ -118,7 +113,7 @@ public:
 	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;

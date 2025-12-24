@@ -42,14 +42,14 @@
 ////////////////////////////
 
 aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks(aeRule *rule,
-aeControllerTarget *target, const aeLinkList &links) :
+aeControllerTarget *target, const aeLink::List &links) :
 
 pTarget(nullptr),
 pLinks(links)
 {
-	if(!rule || !target || links.GetCount() == 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(target)
+	DEASSERT_TRUE(links.IsNotEmpty())
 	
 	SetShortInfo("Rule Target Remove All Links");
 	
@@ -66,19 +66,15 @@ aeURuleTargetRemoveAllLinks::~aeURuleTargetRemoveAllLinks(){
 ///////////////
 
 void aeURuleTargetRemoveAllLinks::Undo(){
-	const int count = pLinks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTarget->AddLink(pLinks.GetAt(i));
-	}
+	pLinks.Visit([&](aeLink *link){
+		pTarget->AddLink(link);
+	});
 	pRule->NotifyRuleChanged();
 }
 
 void aeURuleTargetRemoveAllLinks::Redo(){
-	const int count = pLinks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pTarget->RemoveLink(pLinks.GetAt(i));
-	}
+	pLinks.Visit([&](aeLink *link){
+		pTarget->RemoveLink(link);
+	});
 	pRule->NotifyRuleChanged();
 }

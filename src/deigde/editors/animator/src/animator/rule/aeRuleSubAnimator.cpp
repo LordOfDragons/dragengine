@@ -104,14 +104,10 @@ void aeRuleSubAnimator::SetPathSubAnimator(const char *path){
 
 void aeRuleSubAnimator::LoadSubAnimator(){
 	// clear connections only if not manually set
-	int i, count = pConnections.GetCount();
-	for(i=0; i<count; i++){
-		if(pConnections.GetAt(i)){
-			break;
-		}
-	}
+	const bool autoConnections = !pConnections.HasMatching([](const aeController *controller){
+		return controller != nullptr;
+	});
 	
-	const bool autoConnections = i == count;
 	if(autoConnections){
 		pConnections.RemoveAll();
 	}
@@ -133,9 +129,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	deAnimatorController *engController = nullptr;
 	deAnimatorLink *engLink = nullptr;
 	aeAnimator::Ref animator;
-	int c, controllerCount;
-	int l, linkCount;
-	int r, ruleCount;
 	
 	// try to load the animator
 	if(!pPathSubAnimator.IsEmpty()){
@@ -147,9 +140,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
 				decPath::AbsolutePathUnix(pPathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
 			
-			controllerCount = animator->GetControllers().GetCount();
-			linkCount = animator->GetLinks().GetCount();
-			ruleCount = animator->GetRules().GetCount();
 			
 			// create animator
 			pSubAnimator = engine->GetAnimatorManager()->CreateAnimator();
@@ -157,9 +147,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			pSubAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 			
 			// add controllers
-			for(c=0; c<controllerCount; c++){
-				const aeController &controller = *animator->GetControllers().GetAt(c);
-				
+			animator->GetControllers().Visit([&](const aeController &controller){
 				engController = new deAnimatorController;
 				engController->SetName(controller.GetName());
 				engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
@@ -170,12 +158,10 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				
 				pSubAnimator->AddController(engController);
 				engController = nullptr;
-			}
+			});
 			
 			// add links
-			for(l=0; l<linkCount; l++){
-				const aeLink &link = *animator->GetLinks().GetAt(l);
-				
+			animator->GetLinks().Visit([&](const aeLink &link){
 				engLink = new deAnimatorLink;
 				
 				if(link.GetController()){
@@ -196,12 +182,12 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				
 				pSubAnimator->AddLink(engLink);
 				engLink = nullptr;
-			}
+			});
 			
 			// add rules
-			for(r=0; r<ruleCount; r++){
-				pSubAnimator->AddRule(animator->GetRules().GetAt(r)->CreateEngineRule());
-			}
+			animator->GetRules().Visit([&](aeRule &rule2){
+				pSubAnimator->AddRule(rule2.CreateEngineRule());
+			});
 			
 			// free the loaded animator as it is no more needed
 		}catch(const deException &e){
@@ -234,16 +220,8 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 
 
 
-int aeRuleSubAnimator::GetConnectionCount() const{
-	return pConnections.GetCount();
-}
-
-aeController *aeRuleSubAnimator::GetControllerAt(int position) const{
-	return (aeController*)pConnections.GetAt(position);
-}
-
 void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
-	if(controller == (aeController*)pConnections.GetAt(position)){
+	if(controller == pConnections.GetAt(position)){
 		return;
 	}
 	
@@ -363,7 +341,7 @@ aeRule::Ref aeRuleSubAnimator::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleSubAnimator::ListLinks(aeLinkList &list){
+void aeRuleSubAnimator::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 }
 
@@ -377,35 +355,32 @@ void aeRuleSubAnimator::OnParentAnimatorChanged(){
 //////////////////////
 
 void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) const{
-	const int count = pConnections.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pConnections.GetAt(i)){
-			break;
-		}
-	}
-	
-	if(i == count){
+	if(pConnections.HasMatching([](const aeController *controller){
+		return controller != nullptr;
+	})){
+		// custom connections
+		pConnections.VisitIndexed([&](int i, const aeController *controller){
+			int engController = -1;
+			if(controller){
+				engController = controller->GetEngineControllerIndex();
+			}
+			rule.SetConnectionAt(i, engController);
+		});
+		
+	}else{
 		// auto connections
 		if(GetAnimator()){
-			const aeControllerList &controllers = GetAnimator()->GetControllers();
-			for(i=0; i<count; i++){
-				rule.SetConnectionAt(i, controllers.IndexOfNamed(pSubAnimator->GetControllerAt(i)->GetName()));
+			const aeController::List &controllers = GetAnimator()->GetControllers();
+			int i;
+			for(i=0; i<pConnections.GetCount(); i++){
+				const decString &name = pSubAnimator->GetControllerAt(i)->GetName();
+				rule.SetConnectionAt(i, controllers.IndexOfMatching([&](const aeController &c){
+					return c.GetName() == name;
+				}));
 			}
 			
 		}else{
 			rule.ClearConnections();
-		}
-		
-	}else{
-		// custom connections
-		for(i=0; i<count; i++){
-			int engController = -1;
-			if(pConnections[i]){
-				engController = ((aeController*)pConnections.GetAt(i))->GetEngineControllerIndex();
-			}
-			rule.SetConnectionAt(i, engController);
 		}
 	}
 }

@@ -42,7 +42,7 @@ public:
 private:
 	aeRuleMirror::Ref pRule;
 	
-	aeRuleMirror::cMatchName::Ref pMatchName;
+	aeRuleMirror::MatchName::Ref pMatchName;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName);
+	aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::MatchName *matchName);
 	
 protected:
 	/** Clean up undo. */

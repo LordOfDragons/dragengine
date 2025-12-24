@@ -512,7 +512,7 @@ aeRule::Ref aeRuleLimit::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleLimit::ListLinks(aeLinkList &list){
+void aeRuleLimit::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 }
 

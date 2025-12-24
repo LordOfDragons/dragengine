@@ -40,17 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkPaste::aeULinkPaste(aeAnimator *animator, const aeLinkList &linkList) :
+aeULinkPaste::aeULinkPaste(aeAnimator *animator, const aeLink::List &linkList) :
 pAnimator(animator)
 {
 	DEASSERT_NOTNULL(animator)
-	const int linkCount = linkList.GetCount();
-	DEASSERT_TRUE(linkCount > 0)
+	DEASSERT_TRUE(linkList.IsNotEmpty())
 	
-	int i;
-	for(i=0; i<linkCount; i++){
-		pLinkList.Add(aeLink::Ref::New(*linkList.GetAt(i)));
-	}
+	linkList.Visit([&](const aeLink &link){
+		pLinkList.Add(aeLink::Ref::New(link));
+	});
 }
 
 aeULinkPaste::~aeULinkPaste(){
@@ -62,39 +60,33 @@ aeULinkPaste::~aeULinkPaste(){
 ///////////////
 
 void aeULinkPaste::Undo(){
-	const int linkCount = pLinkList.GetCount();
-	int i;
-	
 	// remove the links
-	for(i=0; i<linkCount; i++){
-		pAnimator->RemoveLink(pLinkList.GetAt(i));
-	}
+	pLinkList.Visit([&](aeLink *link){
+		pAnimator->RemoveLink(link);
+	});
 	
 	// remove controller added in a prior redo
-	const int controllerCount = pRemoveControllerList.GetCount();
-	for(i=0; i<controllerCount; i++){
-		pAnimator->RemoveController(pRemoveControllerList.GetAt(i));
-	}
+	pRemoveControllerList.Visit([&](aeController *controller){
+		pAnimator->RemoveController(controller);
+	});
 	pRemoveControllerList.RemoveAll();
 }
 
 void aeULinkPaste::Redo(){
-	const aeControllerList &controllers = pAnimator->GetControllers();
-	const int linkCount = pLinkList.GetCount();
-	int i;
+	const aeController::List &controllers = pAnimator->GetControllers();
 	
 	pRemoveControllerList.RemoveAll();
 	
-	for(i=0; i<linkCount; i++){
-		aeLink * const link = pLinkList.GetAt(i);
-		
+	pLinkList.Visit([&](aeLink *link){
 		// check if controllers exist in the animator. if not add them and mark them to
 		// remove during undo. controllers are matched by name. if controller has been
 		// added modify all links. this should be safe since only pasted links not present
 		// in the animator can be potentially modified
 		aeController * const controller = link->GetController();
 		if(controller && !controllers.Has(controller)){
-			aeController * const sameNameController = controllers.GetNamed(controller->GetName());
+			aeController * const sameNameController = controllers.FindOrDefault([&](const aeController &c){
+				return c.GetName() == controller->GetName();
+			});
 			
 			if(sameNameController){
 				link->SetController(sameNameController, false);
@@ -108,7 +100,7 @@ void aeULinkPaste::Redo(){
 		
 		// insert link
 		pAnimator->AddLink(link);
-	}
+	});
 	
-	pAnimator->SetActiveLink(pLinkList.GetAt(linkCount - 1));
+	pAnimator->SetActiveLink(pLinkList.Last());
 }

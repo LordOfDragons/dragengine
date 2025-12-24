@@ -26,7 +26,7 @@
 #ifndef _AEUREMOVECONTROLLER_H_
 #define _AEUREMOVECONTROLLER_H_
 
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
 #include "../../animator/controller/aeController.h"
 #include "../../animator/aeAnimator.h"
 
@@ -48,7 +48,7 @@ private:
 	aeController::Ref pController;
 	int pIndex;
 	
-	aeLinkList pLinksUsingController;
+	aeLink::List pLinksUsingController;
 	
 	
 	

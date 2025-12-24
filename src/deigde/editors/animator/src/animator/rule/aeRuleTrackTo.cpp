@@ -178,10 +178,10 @@ void aeRuleTrackTo::UpdateTargets(){
 int aeRuleTrackTo::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition.HasLink(link)){
+	if(pTargetPosition.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetUp.HasLink(link)){
+	if(pTargetUp.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -191,11 +191,11 @@ int aeRuleTrackTo::CountLinkUsage(aeLink *link) const{
 void aeRuleTrackTo::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetPosition.HasLink(link)){
+	if(pTargetPosition.GetLinks().Has(link)){
 		pTargetPosition.RemoveLink(link);
 	}
 	
-	if(pTargetUp.HasLink(link)){
+	if(pTargetUp.GetLinks().Has(link)){
 		pTargetUp.RemoveLink(link);
 	}
 	
@@ -237,7 +237,7 @@ aeRule::Ref aeRuleTrackTo::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleTrackTo::ListLinks(aeLinkList &list){
+void aeRuleTrackTo::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetPosition.AddLinksToList(list);
 	pTargetUp.AddLinksToList(list);

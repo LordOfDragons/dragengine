@@ -34,18 +34,15 @@
 ////////////////////////////
 
 aeURuleMirrorRemoveMatchName::aeURuleMirrorRemoveMatchName(
-aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName) :
+aeRuleMirror *rule, aeRuleMirror::MatchName *matchName) :
 pRule(rule),
 pMatchName(matchName)
 {
-	if(!rule || !matchName){
-		DETHROW(deeInvalidAction);
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(matchName)
 	
-	pIndex = rule->IndexOfMatchName(matchName);
-	if(pIndex == -1){
-		DETHROW(deeInvalidAction);
-	}
+	pIndex = rule->GetMatchNames().IndexOf(matchName);
+	DEASSERT_TRUE(pIndex != -1)
 	
 	SetShortInfo("Mirror rule remove match name");
 }

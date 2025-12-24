@@ -279,7 +279,7 @@ int aeRuleGroup::CountLinkUsage(aeLink *link) const{
 	int i, usageCount = aeRule::CountLinkUsage(link);
 	const int count = pRules.GetCount();
 	
-	if(pTargetSelect.HasLink(link)){
+	if(pTargetSelect.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -293,7 +293,7 @@ int aeRuleGroup::CountLinkUsage(aeLink *link) const{
 void aeRuleGroup::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetSelect.HasLink(link)){
+	if(pTargetSelect.GetLinks().Has(link)){
 		pTargetSelect.RemoveLink(link);
 	}
 	
@@ -369,7 +369,7 @@ aeRule::Ref aeRuleGroup::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleGroup::ListLinks(aeLinkList &list){
+void aeRuleGroup::ListLinks(aeLink::List &list){
 	const int count = pRules.GetCount();
 	int i;
 	

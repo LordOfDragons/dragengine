@@ -181,12 +181,12 @@ public:
 		}
 		
 		if(rule->GetParentGroup()){
-			const aeRuleList &list = rule->GetParentGroup()->GetRules();
+			const aeRule::List &list = rule->GetParentGroup()->GetRules();
 			return aeURuleGroupPasteRule::Ref::New(rule->GetParentGroup(), cdata->GetRules(),
 				pInsert ? list.IndexOf(rule) : list.GetCount());
 			
 		}else{
-			const aeRuleList &list = animator->GetRules();
+			const aeRule::List &list = animator->GetRules();
 			return aeUPasteRule::Ref::New(animator, cdata->GetRules(),
 				pInsert ? list.IndexOf(rule) : list.GetCount());
 		}
@@ -229,7 +229,7 @@ public:
 		}
 		
 		aeRuleGroup * const group = (aeRuleGroup*)rule;
-		const aeRuleList &list = group->GetRules();
+		const aeRule::List &list = group->GetRules();
 		return aeURuleGroupPasteRule::Ref::New(group, cdata->GetRules(), list.GetCount());
 	}
 	
@@ -482,14 +482,9 @@ void aeWPRule::UpdateLinkList(){
 
 void aeWPRule::UpdateRuleTree(){
 	if(pAnimator){
-		const aeRuleList &list = pAnimator->GetRules();
-		const int count = list.GetCount();
 		igdeTreeItem *nextItem = pTreeRule->GetFirstChild();
-		int i;
 		
-		for(i=0; i<count; i++){
-			aeRule * const rule = list.GetAt(i);
-			
+		pAnimator->GetRules().Visit([&](aeRule *rule){
 			if(!nextItem){
 				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New(""));
 				pTreeRule->AppendItem(nullptr, newItem);
@@ -499,7 +494,7 @@ void aeWPRule::UpdateRuleTree(){
 			UpdateRuleTreeItem(nextItem, rule);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;
@@ -539,19 +534,14 @@ void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
 	
 	if(rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup){
 		const aeRuleGroup &ruleGroup = *((aeRuleGroup*)rule);
-		const aeRuleList &list = ruleGroup.GetRules();
-		const int count = list.GetCount();
 		igdeTreeItem *nextItem = item->GetFirstChild();
-		int i;
 		
 		if(item->GetExpanded() != ruleGroup.GetTreeListExpanded()){
 			item->SetExpanded(ruleGroup.GetTreeListExpanded());
 			pTreeRule->ItemChanged(item);
 		}
 		
-		for(i=0; i<count; i++){
-			aeRule * const rule2 = list.GetAt(i);
-			
+		ruleGroup.GetRules().Visit([&](aeRule *rule2){
 			if(!nextItem){
 				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New(""));
 				pTreeRule->AppendItem(item, newItem);
@@ -561,7 +551,7 @@ void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
 			UpdateRuleTreeItem(nextItem, rule2);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;

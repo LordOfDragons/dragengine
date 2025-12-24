@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../animator/aeAnimator.h"
-#include "../../animator/link/aeLinkList.h"
-#include "../../animator/controller/aeControllerList.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/controller/aeController.h"
 
 
 
@@ -43,14 +43,14 @@ public:
 	
 private:
 	const aeAnimator::Ref pAnimator;
-	aeLinkList pLinkList;
-	aeControllerList pRemoveControllerList;
+	aeLink::List pLinkList;
+	aeController::List pRemoveControllerList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeULinkPaste(aeAnimator *animator, const aeLinkList &linkList);
+	aeULinkPaste(aeAnimator *animator, const aeLink::List &linkList);
 	
 protected:
 	/** Clean up undo. */

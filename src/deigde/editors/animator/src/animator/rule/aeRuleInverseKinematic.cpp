@@ -250,22 +250,22 @@ void aeRuleInverseKinematic::UpdateTargets(){
 int aeRuleInverseKinematic::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetGoalPosition.HasLink(link)){
+	if(pTargetGoalPosition.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetGoalOrientation.HasLink(link)){
+	if(pTargetGoalOrientation.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetLocalPosition.HasLink(link)){
+	if(pTargetLocalPosition.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetLocalOrientation.HasLink(link)){
+	if(pTargetLocalOrientation.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetReachRange.HasLink(link)){
+	if(pTargetReachRange.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetReachCenter.HasLink(link)){
+	if(pTargetReachCenter.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -275,22 +275,22 @@ int aeRuleInverseKinematic::CountLinkUsage(aeLink *link) const{
 void aeRuleInverseKinematic::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetGoalPosition.HasLink(link)){
+	if(pTargetGoalPosition.GetLinks().Has(link)){
 		pTargetGoalPosition.RemoveLink(link);
 	}
-	if(pTargetGoalOrientation.HasLink(link)){
+	if(pTargetGoalOrientation.GetLinks().Has(link)){
 		pTargetGoalOrientation.RemoveLink(link);
 	}
-	if(pTargetLocalPosition.HasLink(link)){
+	if(pTargetLocalPosition.GetLinks().Has(link)){
 		pTargetLocalPosition.RemoveLink(link);
 	}
-	if(pTargetLocalOrientation.HasLink(link)){
+	if(pTargetLocalOrientation.GetLinks().Has(link)){
 		pTargetLocalOrientation.RemoveLink(link);
 	}
-	if(pTargetReachRange.HasLink(link)){
+	if(pTargetReachRange.GetLinks().Has(link)){
 		pTargetReachRange.RemoveLink(link);
 	}
-	if(pTargetReachCenter.HasLink(link)){
+	if(pTargetReachCenter.GetLinks().Has(link)){
 		pTargetReachCenter.RemoveLink(link);
 	}
 	
@@ -347,7 +347,7 @@ aeRule::Ref aeRuleInverseKinematic::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleInverseKinematic::ListLinks(aeLinkList &list){
+void aeRuleInverseKinematic::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetGoalPosition.AddLinksToList(list);
 	pTargetGoalOrientation.AddLinksToList(list);

@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATARULE_H_
 #define _AECLIPBOARDDATARULE_H_
 
-#include "../animator/rule/aeRuleList.h"
+#include "../animator/rule/aeRule.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	aeRuleList pRules;
+	aeRule::List pRules;
 	
 	
 	
@@ -56,7 +56,7 @@ public:
 	aeClipboardDataRule(aeRule *rule);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataRule(const aeRuleList &rules);
+	aeClipboardDataRule(const aeRule::List &rules);
 	
 protected:
 	/**
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return pRules; }
 	/*@}*/
 };
 

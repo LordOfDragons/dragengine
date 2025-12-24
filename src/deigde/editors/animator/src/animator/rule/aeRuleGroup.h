@@ -26,7 +26,6 @@
 #define _AERULEGROUP_H_
 
 #include "aeRule.h"
-#include "aeRuleList.h"
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
@@ -41,7 +40,7 @@ public:
 	
 	
 private:
-	aeRuleList pRules;
+	aeRule::List pRules;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -69,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return pRules; }
 	/** Add a new rule. */
 	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
@@ -138,7 +137,7 @@ public:
 	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;

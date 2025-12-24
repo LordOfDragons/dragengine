@@ -51,7 +51,7 @@ aeURuleSASetConController::aeURuleSASetConController(aeRuleSubAnimator *rule, in
 	
 	SetShortInfo("Sub-Animator: Set connection controller");
 	
-	pOldController = rule->GetControllerAt(target);
+	pOldController = rule->GetConnections().GetAt(target);
 	pNewController = newController;
 	pRule = rule;
 }

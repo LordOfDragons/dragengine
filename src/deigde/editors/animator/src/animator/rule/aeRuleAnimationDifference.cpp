@@ -185,8 +185,8 @@ void aeRuleAnimationDifference::UpdateTargets(){
 int aeRuleAnimationDifference::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetLeadMoveTime.HasLink(link)) usageCount++;
-	if(pTargetRefMoveTime.HasLink(link)) usageCount++;
+	if(pTargetLeadMoveTime.GetLinks().Has(link)) usageCount++;
+	if(pTargetRefMoveTime.GetLinks().Has(link)) usageCount++;
 	
 	return usageCount;
 }
@@ -194,11 +194,11 @@ int aeRuleAnimationDifference::CountLinkUsage(aeLink *link) const{
 void aeRuleAnimationDifference::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetLeadMoveTime.HasLink(link)){
+	if(pTargetLeadMoveTime.GetLinks().Has(link)){
 		pTargetLeadMoveTime.RemoveLink(link);
 	}
 	
-	if(pTargetRefMoveTime.HasLink(link)){
+	if(pTargetRefMoveTime.GetLinks().Has(link)){
 		pTargetRefMoveTime.RemoveLink(link);
 	}
 	
@@ -246,7 +246,7 @@ aeRule::Ref aeRuleAnimationDifference::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleAnimationDifference::ListLinks(aeLinkList &list){
+void aeRuleAnimationDifference::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetLeadMoveTime.AddLinksToList(list);
 	pTargetRefMoveTime.AddLinksToList(list);

@@ -26,10 +26,9 @@
 #define _AEURULESASETPATHANIMATOR_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/collection/decObjectList.h>
 
+#include "../../../animator/controller/aeController.h"
 #include "../../../animator/rule/aeRuleSubAnimator.h"
-class aeController;
 
 
 
@@ -44,10 +43,9 @@ public:
 private:
 	aeRuleSubAnimator::Ref pRule;
 	
-	decString pOldPath;
-	decString pNewPath;
+	decString pOldPath, pNewPath;
 	
-	decObjectList pOldConnections;
+	aeController::List pOldConnections;
 	
 	
 	

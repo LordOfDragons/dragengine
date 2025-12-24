@@ -27,9 +27,9 @@
 
 #include "aeAnimatorNotifier.h"
 #include "attachment/aeAttachment.h"
-#include "controller/aeControllerList.h"
-#include "link/aeLinkList.h"
-#include "rule/aeRuleList.h"
+#include "controller/aeController.h"
+#include "link/aeLink.h"
+#include "rule/aeRule.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -130,13 +130,13 @@ private:
 	
 	aeCamera *pCamera;
 	
-	aeControllerList pControllers;
+	aeController::List pControllers;
 	aeController *pActiveController;
 	
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	aeLink *pActiveLink;
 	
-	aeRuleList pRules;
+	aeRule::List pRules;
 	aeRule *pActiveRule;
 	
 	decStringSet pListBones;
@@ -288,7 +288,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** Controllers. */
-	inline const aeControllerList &GetControllers() const{ return pControllers; }
+	inline const aeController::List &GetControllers() const{ return pControllers; }
 	
 	/** Add controller. */
 	void AddController(aeController *controller);
@@ -329,7 +329,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** Links. */
-	inline const aeLinkList &GetLinks() const{ return pLinks; }
+	inline const aeLink::List &GetLinks() const{ return pLinks; }
 	
 	/** Add link. */
 	void AddLink(aeLink *link);
@@ -355,7 +355,7 @@ public:
 	/** \name Rules */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return pRules; }
 	
 	/** Add rule. */
 	void AddRule(aeRule *rule);

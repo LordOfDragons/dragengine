@@ -753,7 +753,9 @@ public:
 		if(!igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
 			return {};
 		}
-		if(animator->GetControllers().HasNamed(name)){
+		if(animator->GetControllers().HasMatching([&name](const aeController &c){
+			return c.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
 			return {};
 		}
@@ -776,7 +778,9 @@ public:
 			return {};
 		}
 		
-		if(animator->GetControllers().HasNamed(name)){
+		if(animator->GetControllers().HasMatching([&name](const aeController &c){
+			return c.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
 			return {};
 		}
@@ -795,18 +799,16 @@ public:
 		"Remove controller", deInputEvent::ekcR){}
 	
 	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
-		const aeLinkList &links = animator->GetLinks();
-		const int count = links.GetCount();
-		int i, usageCount = 0;
+		const aeLink::List &links = animator->GetLinks();
+		int usageCount = 0;
 		decStringList names;
 		
-		for(i=0; i<count; i++){
-			const aeLink &link = *links.GetAt(i);
+		links.Visit([&](const aeLink &link){
 			if(link.GetController() == controller){
 				names.Add(link.GetName());
 				usageCount++;
 			}
-		}
+		});
 		
 		if(usageCount > 0){
 			names.SortAscending();

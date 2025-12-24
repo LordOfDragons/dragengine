@@ -265,7 +265,9 @@ public:
 		if(controller->GetName() == value){
 			return {};
 		}
-		if(animator->GetControllers().HasNamed(value)){
+		if(animator->GetControllers().HasMatching([&](aeController *other){
+			return other->GetName() == value;
+		})){
 			igdeCommonDialogs::Error(&pPanel, "Set Controller Name", "Duplicate Controller Name");
 			textField->SetText(controller->GetName());
 			return {};
@@ -628,16 +630,11 @@ void aeWPController::UpdateControllerList(){
 	pListController->RemoveAllItems();
 	
 	if(pAnimator){
-		const aeControllerList &list = pAnimator->GetControllers();
-		const int count = list.GetCount();
 		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			aeController * const controller = list.GetAt(i);
+		pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
 			text.Format("%d: %s", i, controller->GetName().GetString());
 			pListController->AddItem(text, nullptr, controller);
-		}
+		});
 	}
 	
 	pListController->SetSelectionWithData(selection);

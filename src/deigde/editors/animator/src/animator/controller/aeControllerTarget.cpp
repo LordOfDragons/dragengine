@@ -59,26 +59,8 @@ aeControllerTarget::~aeControllerTarget(){
 // Management
 ///////////////
 
-int aeControllerTarget::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-aeLink *aeControllerTarget::GetLinkAt(int index) const{
-	return (aeLink*)pLinks.GetAt(index);
-}
-
-int aeControllerTarget::IndexOfLink(aeLink *link) const{
-	return pLinks.IndexOf(link);
-}
-
-bool aeControllerTarget::HasLink(aeLink *link) const{
-	return pLinks.Has(link);
-}
-
 void aeControllerTarget::AddLink(aeLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(link)
 	pLinks.Add(link);
 }
 
@@ -120,7 +102,7 @@ void aeControllerTarget::UpdateEngineTarget(aeAnimator *animator, deAnimatorCont
 
 
 
-void aeControllerTarget::AddLinksToList(aeLinkList &list){
+void aeControllerTarget::AddLinksToList(aeLink::List &list){
 	list += pLinks;
 }
 

@@ -48,15 +48,12 @@ igdeClipboardData(TYPE_NAME)
 	pRules.Add(rule->CreateCopy());
 }
 
-aeClipboardDataRule::aeClipboardDataRule(const aeRuleList &rules) :
+aeClipboardDataRule::aeClipboardDataRule(const aeRule::List &rules) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = rules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pRules.Add(rules.GetAt(i)->CreateCopy());
-	}
+	rules.Visit([&](const aeRule &rule){
+		pRules.Add(rule.CreateCopy());
+	});
 }
 
 aeClipboardDataRule::~aeClipboardDataRule(){

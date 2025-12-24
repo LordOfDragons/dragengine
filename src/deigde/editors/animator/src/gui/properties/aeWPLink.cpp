@@ -724,14 +724,9 @@ void aeWPLink::UpdateLinkList(){
 	pListLink->RemoveAllItems();
 	
 	if(pAnimator){
-		const aeLinkList &list = pAnimator->GetLinks();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			aeLink * const link = list.GetAt(i);
+		pAnimator->GetLinks().Visit([&](aeLink *link){
 			pListLink->AddItem(link->GetName(), nullptr, link);
-		}
+		});
 		pListLink->SortItems();
 	}
 	
@@ -858,16 +853,11 @@ void aeWPLink::UpdateControllerList(){
 		pCBController->AddItem("< No Controller >", nullptr, nullptr);
 		
 		if(pAnimator){
-			const aeControllerList &list = pAnimator->GetControllers();
-			const int count = list.GetCount();
 			decString text;
-			int i;
-			
-			for(i=0; i<count; i++){
-				aeController * const controller = list.GetAt(i);
+			pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
 				text.Format("%d: %s", i, controller->GetName().GetString());
 				pCBController->AddItem(text, nullptr, controller);
-			}
+			});
 		}
 		
 		pCBController->SetSelectionWithData(selection);

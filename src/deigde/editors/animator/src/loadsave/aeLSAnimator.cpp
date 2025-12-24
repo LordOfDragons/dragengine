@@ -659,25 +659,17 @@ void aeLSAnimator::pSaveRule(decXmlWriter &writer, const aeAnimator &animator, c
 
 void aeLSAnimator::pSaveControllerTarget(decXmlWriter &writer, const aeAnimator &animator,
 const aeControllerTarget &target, const char *name){
-	const int linkCount = target.GetLinkCount();
-	if(linkCount == 0){
+	if(target.GetLinks().IsEmpty()){
 		return;
 	}
-	
-	int l, linkIndex;
-	aeLink *link;
 	
 	writer.WriteOpeningTagStart("target");
 	writer.WriteAttributeString("name", name);
 	writer.WriteOpeningTagEnd();
 	
-	for(l=0; l<linkCount; l++){
-		link = target.GetLinkAt(l);
-		
-		linkIndex = animator.GetLinks().IndexOf(link);
-		
-		writer.WriteDataTagInt("link", linkIndex);
-	}
+	target.GetLinks().Visit([&](aeLink *link){
+		writer.WriteDataTagInt("link", animator.GetLinks().IndexOf(link));
+	});
 	
 	writer.WriteClosingTag("target");
 }
@@ -1134,15 +1126,12 @@ const aeRuleMirror &rule){
 		writer.WriteDataTagString("mirrorBone", rule.GetMirrorBone());
 	}
 	
-	const int count = rule.GetMatchNameCount();
-	int i;
-	for(i=0; i<count; i++){
-		const aeRuleMirror::cMatchName &matchName = *rule.GetMatchNameAt(i);
+	rule.GetMatchNames().Visit([&](const aeRuleMirror::MatchName &matchName){
 		writer.WriteOpeningTagStart("matchName");
-		writer.WriteAttributeString("first", matchName.GetFirst());
-		writer.WriteAttributeString("second", matchName.GetSecond());
+		writer.WriteAttributeString("first", matchName.first);
+		writer.WriteAttributeString("second", matchName.second);
 		
-		switch(matchName.GetType()){
+		switch(matchName.type){
 		case deAnimatorRuleMirror::emntFirst:
 			writer.WriteAttributeString("type", "first");
 			break;
@@ -1157,7 +1146,7 @@ const aeRuleMirror &rule){
 		}
 		
 		writer.WriteOpeningTagEnd(true);
-	}
+	});
 	
 	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
@@ -1228,12 +1217,9 @@ const aeRuleSubAnimator &rule){
 	
 	writer.WriteDataTagString("pathAnimator", rule.GetPathSubAnimator());
 	
-	const int connectionCount = rule.GetConnectionCount();
-	int i;
-	for(i=0; i<connectionCount; i++){
-		aeController * const controller = rule.GetControllerAt(i);
+	rule.GetConnections().VisitIndexed([&](int i, aeController *controller){
 		if(!controller){
-			continue;
+			return;
 		}
 		
 		writer.WriteOpeningTagStart("connection");
@@ -1241,7 +1227,7 @@ const aeRuleSubAnimator &rule){
 		writer.WriteOpeningTagEnd(false, false);
 		writer.WriteTextString(rule.GetSubAnimator()->GetControllerAt(i)->GetName());
 		writer.WriteClosingTag("connection", false);
-	}
+	});
 	
 	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
@@ -2860,7 +2846,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 				DETHROW(deeInvalidFileFormat);
 			}
 			
-			rule->AddMatchName(aeRuleMirror::cMatchName::Ref::New(first, second, type));
+			rule->AddMatchName(aeRuleMirror::MatchName::Ref::New(first, second, type));
 			
 		}else if(strcmp(tag->GetName(), "target") == 0){
 			const decString &name = pGetAttributeString(tag, "name");

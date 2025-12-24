@@ -27,9 +27,9 @@
 #define _AEURULEGROUPPASTERULE_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../animator/rule/aeRuleList.h"
-#include "../../../animator/link/aeLinkList.h"
-#include "../../../animator/controller/aeControllerList.h"
+#include "../../../animator/rule/aeRule.h"
+#include "../../../animator/link/aeLink.h"
+#include "../../../animator/controller/aeController.h"
 
 #include "../../../animator/rule/aeRuleGroup.h"
 
@@ -45,16 +45,16 @@ public:
 	
 private:
 	aeRuleGroup::Ref pGroup;
-	aeRuleList pRuleList;
-	aeLinkList pRemoveLinkList;
-	aeControllerList pRemoveControllerList;
+	aeRule::List pRuleList;
+	aeLink::List pRemoveLinkList;
+	aeController::List pRemoveControllerList;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index);
+	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRule::List &ruleList, int index);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupPasteRule();

@@ -355,13 +355,13 @@ void aeRuleBoneTransformator::UpdateTargets(){
 int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetTranslation.HasLink(link)){
+	if(pTargetTranslation.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetRotation.HasLink(link)){
+	if(pTargetRotation.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetScaling.HasLink(link)){
+	if(pTargetScaling.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -371,13 +371,13 @@ int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
 void aeRuleBoneTransformator::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetTranslation.HasLink(link)){
+	if(pTargetTranslation.GetLinks().Has(link)){
 		pTargetTranslation.RemoveLink(link);
 	}
-	if(pTargetRotation.HasLink(link)){
+	if(pTargetRotation.GetLinks().Has(link)){
 		pTargetRotation.RemoveLink(link);
 	}
-	if(pTargetScaling.HasLink(link)){
+	if(pTargetScaling.GetLinks().Has(link)){
 		pTargetScaling.RemoveLink(link);
 	}
 	
@@ -433,7 +433,7 @@ aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleBoneTransformator::ListLinks(aeLinkList &list){
+void aeRuleBoneTransformator::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetRotation.AddLinksToList(list);
 	pTargetScaling.AddLinksToList(list);

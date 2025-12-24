@@ -42,7 +42,6 @@
 #include "aeRuleTrackTo.h"
 #include "aeRuleMirror.h"
 #include "../aeAnimator.h"
-#include "../link/aeLinkList.h"
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -232,7 +231,7 @@ void aeRule::UpdateTargets(){
 int aeRule::CountLinkUsage(aeLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetBlendFactor.HasLink(link)){
+	if(pTargetBlendFactor.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -240,7 +239,7 @@ int aeRule::CountLinkUsage(aeLink *link) const{
 }
 
 void aeRule::RemoveLinkFromTargets(aeLink *link){
-	if(pTargetBlendFactor.HasLink(link)){
+	if(pTargetBlendFactor.GetLinks().Has(link)){
 		pTargetBlendFactor.RemoveLink(link);
 	}
 }
@@ -251,7 +250,7 @@ void aeRule::RemoveLinksFromAllTargets(){
 
 
 
-void aeRule::ListLinks(aeLinkList &list){
+void aeRule::ListLinks(aeLink::List &list){
 	pTargetBlendFactor.AddLinksToList(list);
 }
 

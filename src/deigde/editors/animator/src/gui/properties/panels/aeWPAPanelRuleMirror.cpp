@@ -232,7 +232,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
 		return aeURuleMirrorAddMatchName::Ref::New(rule,
-			aeRuleMirror::cMatchName::Ref::New(pFirst, pSecond, pType));
+			aeRuleMirror::MatchName::Ref::New(pFirst, pSecond, pType));
 	}
 };
 
@@ -244,7 +244,7 @@ public:
 	cBaseAction(panel, "Edit...", nullptr, "Edit match name"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
-		aeRuleMirror::cMatchName * const matchName = pPanel.GetSelectedMatchBone();
+		aeRuleMirror::MatchName * const matchName = pPanel.GetSelectedMatchBone();
 		if(!matchName){
 			return {};
 		}
@@ -256,11 +256,11 @@ public:
 			return {};
 		}
 		
-		const aeRuleMirror::cMatchName::Ref edited(
+		const aeRuleMirror::MatchName::Ref edited(
 			((aeDialogMirrorMatchName&)(igdeDialog&)dialog).CreateMatchName());
 		
 		return edited->operator!=(*matchName) ? aeURuleMirrorSetMatchName::Ref::New(rule,
-			rule->IndexOfMatchName(matchName), edited) : igdeUndo::Ref();
+			rule->GetMatchNames().IndexOf(matchName), edited) : igdeUndo::Ref();
 	}
 	
 	void Update(const aeAnimator &, const aeRuleMirror &) override{
@@ -277,7 +277,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove match name"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
-		aeRuleMirror::cMatchName * const matchName = pPanel.GetSelectedMatchBone();
+		aeRuleMirror::MatchName * const matchName = pPanel.GetSelectedMatchBone();
 		return matchName ? aeURuleMirrorRemoveMatchName::Ref::New(rule, matchName) : aeURuleMirrorRemoveMatchName::Ref();
 	}
 	
@@ -295,11 +295,13 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all match names"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRuleMirror *rule) override{
-		return rule->GetMatchNameCount() > 0 ? aeURuleMirrorRemoveAllMatchNames::Ref::New(rule) : aeURuleMirrorRemoveAllMatchNames::Ref();
+		return rule->GetMatchNames().IsNotEmpty()
+			? aeURuleMirrorRemoveAllMatchNames::Ref::New(rule)
+			: aeURuleMirrorRemoveAllMatchNames::Ref();
 	}
 	
 	void Update(const aeAnimator &, const aeRuleMirror &rule) override{
-		SetEnabled(rule.GetMatchNameCount() > 0);
+		SetEnabled(rule.GetMatchNames().IsNotEmpty());
 	}
 };
 
@@ -459,9 +461,9 @@ aeWPAPanelRuleMirror::~aeWPAPanelRuleMirror(){
 // Management
 ///////////////
 
-aeRuleMirror::cMatchName *aeWPAPanelRuleMirror::GetSelectedMatchBone() const{
+aeRuleMirror::MatchName *aeWPAPanelRuleMirror::GetSelectedMatchBone() const{
 	return pListMatchName->GetSelectedItem()
-		? (aeRuleMirror::cMatchName*)pListMatchName->GetSelectedItem()->GetData() : nullptr;
+		? (aeRuleMirror::MatchName*)pListMatchName->GetSelectedItem()->GetData() : nullptr;
 }
 
 void aeWPAPanelRuleMirror::UpdateRigBoneList(){
@@ -496,18 +498,14 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 		pCBMirrorAxis->SetSelectionWithData((void*)(intptr_t)rule->GetMirrorAxis());
 		pCBMirrorBone->SetText(rule->GetMirrorBone());
 		
-		aeRuleMirror::cMatchName * const selection = GetSelectedMatchBone();
+		aeRuleMirror::MatchName * const selection = GetSelectedMatchBone();
 		pListMatchName->RemoveAllItems();
 		
-		const int count = rule->GetMatchNameCount();
 		const char *typeStr;
 		decString text;
-		int i;
 		
-		for(i=0; i<count; i++){
-			aeRuleMirror::cMatchName * const matchName = rule->GetMatchNameAt(i);
-			
-			switch(matchName->GetType()){
+		rule->GetMatchNames().Visit([&](aeRuleMirror::MatchName *matchName){
+			switch(matchName->type){
 			case deAnimatorRuleMirror::emntFirst:
 				typeStr = "Begin";
 				break;
@@ -525,9 +523,9 @@ void aeWPAPanelRuleMirror::UpdateRule(){
 			}
 			
 			text.Format("%s: '%s' <-> '%s'", typeStr,
-				matchName->GetFirst().GetString(), matchName->GetSecond().GetString());
+				matchName->first.GetString(), matchName->second.GetString());
 			pListMatchName->AddItem(text, nullptr, matchName);
-		}
+		});
 		
 		pListMatchName->SetSelectionWithData(selection);
 		

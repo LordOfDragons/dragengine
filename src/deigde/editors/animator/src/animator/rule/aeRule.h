@@ -26,14 +26,15 @@
 #define _AERULE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 #include "../controller/aeControllerTarget.h"
+#include "../link/aeLink.h"
 
-class aeLinkList;
 class aeAnimator;
 class aeRuleGroup;
 class deAnimatorRule;
@@ -48,6 +49,7 @@ class aeRule : public deObject{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<aeRule> Ref;
+	typedef decTObjectOrderedSet<aeRule> List;
 	
 	
 private:
@@ -142,7 +144,7 @@ public:
 	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLinkList& list);
+	virtual void ListLinks(aeLink::List& list);
 	
 	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();

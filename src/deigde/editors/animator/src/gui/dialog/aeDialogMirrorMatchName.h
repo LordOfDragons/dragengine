@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set from match name. */
-	void Set(const aeRuleMirror::cMatchName &matchName);
+	void Set(const aeRuleMirror::MatchName &matchName);
 	
 	/** Create match name. */
-	aeRuleMirror::cMatchName::Ref CreateMatchName() const;
+	aeRuleMirror::MatchName::Ref CreateMatchName() const;
 	
 	/**
 	 * Init running. Called by Run() after dialog is created. Subclass can implement to

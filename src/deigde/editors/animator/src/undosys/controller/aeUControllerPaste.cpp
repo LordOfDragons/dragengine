@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerPaste::aeUControllerPaste(aeAnimator *animator, const aeControllerList &controllerList) :
+aeUControllerPaste::aeUControllerPaste(aeAnimator *animator, const aeController::List &controllerList) :
 pAnimator(animator)
 {
 	DEASSERT_NOTNULL(animator)
@@ -63,31 +63,26 @@ aeUControllerPaste::~aeUControllerPaste(){
 ///////////////
 
 void aeUControllerPaste::Undo(){
-	const int controllerCount = pControllerList.GetCount();
-	int i;
-	
-	for(i=0; i<controllerCount; i++){
-		pAnimator->RemoveController(pControllerList.GetAt(i));
-	}
+	pControllerList.Visit([&](aeController *controller){
+		pAnimator->RemoveController(controller);
+	});
 }
 
 void aeUControllerPaste::Redo(){
-	const aeControllerList &controllers = pAnimator->GetControllers();
-	const int controllerCount = pControllerList.GetCount();
-	int i;
+	const aeController::List &controllers = pAnimator->GetControllers();
 	
-	for(i=0; i<controllerCount; i++){
-		aeController * const controller = pControllerList.GetAt(i);
-		
+	pControllerList.VisitIndexed([&](int i, aeController *controller){
 		decString name(controller->GetName());
 		int number = 2;
-		while(controllers.HasNamed(name)){
+		while(controllers.HasMatching([&](aeController *c){
+			return c->GetName() == name;
+		})){
 			name.Format("%s #%d", controller->GetName().GetString(), number++);
 		}
 		controller->SetName(name);
 		
 		pAnimator->InsertControllerAt(controller, pIndex + i);
-	}
+	});
 	
-	pAnimator->SetActiveController(pControllerList.GetAt(controllerCount - 1));
+	pAnimator->SetActiveController(pControllerList.Last());
 }

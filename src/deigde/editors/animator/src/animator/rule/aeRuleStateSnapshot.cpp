@@ -165,7 +165,7 @@ aeRule::Ref aeRuleStateSnapshot::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleStateSnapshot::ListLinks(aeLinkList &list){
+void aeRuleStateSnapshot::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 }
 

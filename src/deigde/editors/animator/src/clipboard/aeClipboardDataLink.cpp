@@ -48,15 +48,12 @@ igdeClipboardData(TYPE_NAME)
 	pLinks.Add(aeLink::Ref::New(*link));
 }
 
-aeClipboardDataLink::aeClipboardDataLink(const aeLinkList &links) :
+aeClipboardDataLink::aeClipboardDataLink(const aeLink::List &links) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = links.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pLinks.Add(aeLink::Ref::New(*links.GetAt(i)));
-	}
+	links.Visit([&](const aeLink &link){
+		pLinks.Add(aeLink::Ref::New(link));
+	});
 }
 
 aeClipboardDataLink::~aeClipboardDataLink(){

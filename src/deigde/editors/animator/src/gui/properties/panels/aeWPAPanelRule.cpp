@@ -754,14 +754,14 @@ public:
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		return target && link && !target->HasLink(link)
+		return target && link && !target->GetLinks().Has(link)
 			? aeURuleTargetAddLink::Ref::New(rule, target, link) : igdeUndo::Ref();
 	}
 	
 	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetCBLinkSelection();
-		SetEnabled(target && link && !target->HasLink(link));
+		SetEnabled(target && link && !target->GetLinks().Has(link));
 	}
 };
 
@@ -776,14 +776,14 @@ public:
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetListLinkSelection();
-		return target && link && target->HasLink(link)
+		return target && link && target->GetLinks().Has(link)
 			? aeURuleTargetRemoveLink::Ref::New(rule, target, link) : igdeUndo::Ref();
 	}
 	
 	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
 		aeLink * const link = pPanel.GetListLinkSelection();
-		SetEnabled(target && link && target->HasLink(link));
+		SetEnabled(target && link && target->GetLinks().Has(link));
 	}
 };
 
@@ -797,22 +797,22 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
-		if(!target || target->GetLinkCount() == 0){
+		if(!target || target->GetLinks().IsEmpty()){
 			return {};
 		}
 		
-		const int count = target->GetLinkCount();
-		aeLinkList list;
+		const int count = target->GetLinks().GetCount();
+		aeLink::List list;
 		int i;
 		for(i=0; i<count; i++){
-			list.Add(target->GetLinkAt(i));
+			list.Add(target->GetLinks().GetAt(i));
 		}
 		return aeURuleTargetRemoveAllLinks::Ref::New(rule, target, list);
 	}
 	
 	void Update(const aeAnimator &, const aeRule &) override{
 		const aeControllerTarget * const target = pPanel.GetTarget();
-		SetEnabled(target && target->GetLinkCount() > 0);
+		SetEnabled(target && target->GetLinks().IsNotEmpty());
 	}
 };
 
@@ -995,14 +995,9 @@ void aeWPAPanelRule::UpdateLinkList(){
 	pCBLinks->RemoveAllItems();
 	
 	if(GetAnimator()){
-		const aeLinkList &list = GetAnimator()->GetLinks();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			aeLink * const link = list.GetAt(i);
+		GetAnimator()->GetLinks().Visit([&](aeLink *link){
 			pCBLinks->AddItem(link->GetName(), nullptr, link);
-		}
+		});
 		pCBLinks->SortItems();
 	}
 	
@@ -1122,14 +1117,10 @@ void aeWPAPanelRule::UpdateTargetList(){
 
 void aeWPAPanelRule::UpdateTarget(){
 	if(pTarget){
-		const int linkCount = pTarget->GetLinkCount();
-		int i;
-		
 		pListLinks->RemoveAllItems();
-		for(i=0; i<linkCount; i++){
-			aeLink * const link = pTarget->GetLinkAt(i);
+		pTarget->GetLinks().Visit([&](aeLink *link){
 			pListLinks->AddItem(link->GetName(), nullptr, link);
-		}
+		});
 		pListLinks->SortItems();
 		
 	}else{

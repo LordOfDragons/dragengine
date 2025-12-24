@@ -256,7 +256,7 @@ public:
 		
 		const int connection = pPanel.GetCBConnection();
 		aeController * const controller = pPanel.GetCBConnectionController();
-		return connection != -1 && rule->GetControllerAt(connection) != controller
+		return connection != -1 && rule->GetConnections().GetAt(connection) != controller
 			? aeURuleSASetConController::Ref::New(rule, connection, controller) : igdeUndo::Ref();
 	}
 };
@@ -333,7 +333,7 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 	if(rule && rule->GetSubAnimator()){
 		const deAnimator &subAnimator = *rule->GetSubAnimator();
 		const int nameCount = subAnimator.GetControllerCount();
-		const int count = rule->GetConnectionCount();
+		const int count = rule->GetConnections().GetCount();
 		decString text;
 		int i;
 		
@@ -370,16 +370,11 @@ void aeWPAPanelRuleSubAnimator::UpdateControllerList(){
 		pCBConnectionController->AddItem("< not assigned >", nullptr);
 		
 		if(GetAnimator()){
-			const aeControllerList &list = GetAnimator()->GetControllers();
-			const int count = list.GetCount();
 			decString text;
-			int i;
-			
-			for(i=0; i<count; i++){
-				aeController * const controller = list.GetAt(i);
+			GetAnimator()->GetControllers().VisitIndexed([&](int i, aeController *controller){
 				text.Format("%d: %s", i, controller->GetName().GetString());
 				pCBConnectionController->AddItem(text, nullptr, controller);
-			}
+			});
 		}
 		
 		pCBConnectionController->SetSelectionWithData(selection);
@@ -422,7 +417,7 @@ void aeWPAPanelRuleSubAnimator::UpdateConnection(){
 	const int connection = GetCBConnection();
 	
 	if(rule && connection != -1){
-		pCBConnectionController->SetSelectionWithData(rule->GetControllerAt(connection));
+		pCBConnectionController->SetSelectionWithData(rule->GetConnections().GetAt(connection));
 		
 	}else{
 		pCBConnectionController->SetSelectionWithData(nullptr);

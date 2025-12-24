@@ -29,6 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include <dragengine/common/string/decString.h>
 
@@ -44,6 +45,7 @@ class deAnimatorController;
 class aeController : public deObject{
 public:
 	typedef deTObjectReference<aeController> Ref;
+	typedef decTObjectOrderedSet<aeController> List;
 	
 	
 	enum eVectorSimulation{

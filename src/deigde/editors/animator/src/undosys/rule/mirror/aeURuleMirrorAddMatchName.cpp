@@ -33,13 +33,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorAddMatchName::aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName) :
+aeURuleMirrorAddMatchName::aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::MatchName *matchName) :
 pRule(rule),
 pMatchName(matchName)
 {
-	if(!rule || !matchName || rule->HasMatchName(matchName)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(matchName)
+	DEASSERT_FALSE(rule->GetMatchNames().Has(matchName))
 	
 	SetShortInfo("Mirror rule add match name");
 }

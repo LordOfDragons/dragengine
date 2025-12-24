@@ -26,7 +26,7 @@
 #define _aeULinkRemoveUnusedUNUSED_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
 
 class aeRule;
 #include "../../animator/aeAnimator.h"
@@ -43,7 +43,7 @@ public:
 	
 private:
 	aeAnimator::Ref pAnimator;
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Has links. */
-	inline bool HasLinks() const{ return pLinks.GetCount() > 0; }
+	inline bool HasLinks() const{ return pLinks.IsNotEmpty(); }
 	
 	/** Undo action. */
 	virtual void Undo();

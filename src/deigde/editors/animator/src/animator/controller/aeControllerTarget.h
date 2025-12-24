@@ -25,9 +25,11 @@
 #ifndef _AECONTROLLERTARGET_H_
 #define _AECONTROLLERTARGET_H_
 
-#include "../link/aeLinkList.h"
+#include "../link/aeLink.h"
 
-class aeLink;
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class aeAnimator;
 class deAnimatorControllerTarget;
 
@@ -36,9 +38,14 @@ class deAnimatorControllerTarget;
 /**
  * Links for a controller target.
  */
-class aeControllerTarget{
+class aeControllerTarget : public deObject{
+public:
+	typedef deTObjectReference<aeControllerTarget> Ref;
+	typedef decTObjectOrderedSet<aeControllerTarget> List;
+	
+	
 private:
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -53,14 +60,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of links. */
-	int GetLinkCount() const;
-	/** Retrieves the link at the given index. */
-	aeLink *GetLinkAt(int index) const;
-	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink(aeLink *link) const;
-	/** Determines if the link exists. */
-	bool HasLink(aeLink *link) const;
+	/** Links. */
+	inline const aeLink::List &GetLinks() const{ return pLinks; }
+	
 	/** Adds a new link. */
 	void AddLink(aeLink *link);
 	/** Removes a link. */
@@ -72,7 +74,7 @@ public:
 	void UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const;
 	
 	/** Add links to a list of links. */
-	void AddLinksToList(aeLinkList &list);
+	void AddLinksToList(aeLink::List &list);
 	/*@}*/
 	
 	/** \name Operators */

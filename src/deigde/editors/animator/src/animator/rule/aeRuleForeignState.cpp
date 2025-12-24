@@ -213,10 +213,10 @@ void aeRuleForeignState::UpdateTargets(){
 int aeRuleForeignState::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition.HasLink(link)) usageCount++;
-	if(pTargetOrientation.HasLink(link)) usageCount++;
-	if(pTargetSize.HasLink(link)) usageCount++;
-	if(pTargetVertexPositionSet.HasLink(link)) usageCount++;
+	if(pTargetPosition.GetLinks().Has(link)) usageCount++;
+	if(pTargetOrientation.GetLinks().Has(link)) usageCount++;
+	if(pTargetSize.GetLinks().Has(link)) usageCount++;
+	if(pTargetVertexPositionSet.GetLinks().Has(link)) usageCount++;
 	
 	return usageCount;
 }
@@ -224,16 +224,16 @@ int aeRuleForeignState::CountLinkUsage(aeLink *link) const{
 void aeRuleForeignState::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetPosition.HasLink(link)){
+	if(pTargetPosition.GetLinks().Has(link)){
 		pTargetPosition.RemoveLink(link);
 	}
-	if(pTargetOrientation.HasLink(link)){
+	if(pTargetOrientation.GetLinks().Has(link)){
 		pTargetOrientation.RemoveLink(link);
 	}
-	if(pTargetSize.HasLink(link)){
+	if(pTargetSize.GetLinks().Has(link)){
 		pTargetSize.RemoveLink(link);
 	}
-	if(pTargetVertexPositionSet.HasLink(link)){
+	if(pTargetVertexPositionSet.GetLinks().Has(link)){
 		pTargetVertexPositionSet.RemoveLink(link);
 	}
 	
@@ -285,7 +285,7 @@ aeRule::Ref aeRuleForeignState::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleForeignState::ListLinks(aeLinkList &list){
+void aeRuleForeignState::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetOrientation.AddLinksToList(list);
 	pTargetPosition.AddLinksToList(list);

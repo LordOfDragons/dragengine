@@ -74,14 +74,14 @@ aeDialogMirrorMatchName::~aeDialogMirrorMatchName(){
 // Management
 ///////////////
 
-void aeDialogMirrorMatchName::Set(const aeRuleMirror::cMatchName &matchName){
-	pCBType->SetSelectionWithData((void*)(intptr_t)matchName.GetType());
-	pEditFirst->SetText(matchName.GetFirst());
-	pEditSecond->SetText(matchName.GetSecond());
+void aeDialogMirrorMatchName::Set(const aeRuleMirror::MatchName &matchName){
+	pCBType->SetSelectionWithData((void*)(intptr_t)matchName.type);
+	pEditFirst->SetText(matchName.first);
+	pEditSecond->SetText(matchName.second);
 }
 
-aeRuleMirror::cMatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
-	return aeRuleMirror::cMatchName::Ref::New(pEditFirst->GetText(), pEditSecond->GetText(),
+aeRuleMirror::MatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
+	return aeRuleMirror::MatchName::Ref::New(pEditFirst->GetText(), pEditSecond->GetText(),
 		(deAnimatorRuleMirror::eMatchNameType)(intptr_t)pCBType->GetSelectedItem()->GetData());
 }
 

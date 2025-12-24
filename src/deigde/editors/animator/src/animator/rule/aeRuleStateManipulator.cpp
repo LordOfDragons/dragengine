@@ -268,16 +268,16 @@ void aeRuleStateManipulator::UpdateTargets(){
 int aeRuleStateManipulator::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition.HasLink(link)){
+	if(pTargetPosition.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetRotation.HasLink(link)){
+	if(pTargetRotation.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetSize.HasLink(link)){
+	if(pTargetSize.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetVertexPositionSet.HasLink(link)){
+	if(pTargetVertexPositionSet.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -287,16 +287,16 @@ int aeRuleStateManipulator::CountLinkUsage(aeLink *link) const{
 void aeRuleStateManipulator::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetPosition.HasLink(link)){
+	if(pTargetPosition.GetLinks().Has(link)){
 		pTargetPosition.RemoveLink(link);
 	}
-	if(pTargetRotation.HasLink(link)){
+	if(pTargetRotation.GetLinks().Has(link)){
 		pTargetRotation.RemoveLink(link);
 	}
-	if(pTargetSize.HasLink(link)){
+	if(pTargetSize.GetLinks().Has(link)){
 		pTargetSize.RemoveLink(link);
 	}
-	if(pTargetVertexPositionSet.HasLink(link)){
+	if(pTargetVertexPositionSet.GetLinks().Has(link)){
 		pTargetVertexPositionSet.RemoveLink(link);
 	}
 	
@@ -348,7 +348,7 @@ aeRule::Ref aeRuleStateManipulator::CreateCopy() const{
 	return Ref::New(*this);
 }
 
-void aeRuleStateManipulator::ListLinks(aeLinkList &list){
+void aeRuleStateManipulator::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetPosition.AddLinksToList(list);
 	pTargetRotation.AddLinksToList(list);

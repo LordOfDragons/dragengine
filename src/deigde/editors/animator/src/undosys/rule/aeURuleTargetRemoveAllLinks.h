@@ -25,7 +25,7 @@
 #ifndef _AEURULETARGETREMOVEALLLINKS_H_
 #define _AEURULETARGETREMOVEALLLINKS_H_
 
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
 
 #include <deigde/undo/igdeUndo.h>
@@ -45,7 +45,7 @@ private:
 	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target, const aeLinkList &links);
+	aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target, const aeLink::List &links);
 	
 protected:
 	/** Clean up undo. */

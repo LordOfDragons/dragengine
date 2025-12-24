@@ -36,15 +36,10 @@
 aeURuleMirrorRemoveAllMatchNames::aeURuleMirrorRemoveAllMatchNames(aeRuleMirror *rule) :
 pRule(rule)
 {
-	if(!rule || rule->GetMatchNameCount() == 0){
-		DETHROW(deeInvalidAction);
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_TRUE(rule->GetMatchNames().IsNotEmpty())
 	
-	const int count = rule->GetMatchNameCount();
-	int i;
-	for(i=0; i<count; i++){
-		pMatchNames.Add(rule->GetMatchNameAt(i));
-	}
+	pMatchNames = rule->GetMatchNames();
 	
 	SetShortInfo("Mirror rule remove all match names");
 }
@@ -58,11 +53,9 @@ aeURuleMirrorRemoveAllMatchNames::~aeURuleMirrorRemoveAllMatchNames(){
 ///////////////
 
 void aeURuleMirrorRemoveAllMatchNames::Undo(){
-	const int count = pMatchNames.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pRule->AddMatchName((aeRuleMirror::cMatchName*)pMatchNames.GetAt(i));
-	}
+	pMatchNames.Visit([&](aeRuleMirror::MatchName *matchName){
+		pRule->AddMatchName(matchName);
+	});
 }
 
 void aeURuleMirrorRemoveAllMatchNames::Redo(){
