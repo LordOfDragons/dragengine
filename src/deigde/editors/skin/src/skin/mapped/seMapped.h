@@ -25,15 +25,13 @@
 #ifndef _SEMAPPED_H_
 #define _SEMAPPED_H_
 
-#include "../property/sePropertyList.h"
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
 
 class seSkin;
-class seMappedList;
 
 
 /**
@@ -42,6 +40,9 @@ class seMappedList;
 class seMapped : public deObject{
 public:
 	typedef deTObjectReference<seMapped> Ref;
+	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seMapped> List;
 	
 	
 private:
@@ -69,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new mapped. */
-	seMapped(const char *name = "Mapped");
+	explicit seMapped(const char *name = "Mapped");
 	
 	/** Create copy of mapped. */
 	seMapped(const seMapped &mapped);
@@ -99,7 +100,7 @@ public:
 	void SetName(const char *name);
 	
 	/** Make name uniqueu. */
-	void MakeNameUnique(const seMappedList &list);
+	void MakeNameUnique(const seMapped::List &list);
 	
 	/** Curve. */
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }

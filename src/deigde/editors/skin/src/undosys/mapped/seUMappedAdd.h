@@ -38,6 +38,10 @@ class seSkin;
  * Undo action add mapped.
  */
 class seUMappedAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMappedAdd> Ref;
+	
+	
 protected:
 	const seMapped::Ref pMapped;
 	const seSkin::Ref pSkin;
@@ -45,9 +49,6 @@ protected:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMappedAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

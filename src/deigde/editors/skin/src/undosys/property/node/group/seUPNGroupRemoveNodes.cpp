@@ -38,43 +38,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupRemoveNodes::seUPNGroupRemoveNodes(
-sePropertyNodeGroup *node, const sePropertyNodeList &children) :
-pNode(NULL),
-pChildren(NULL),
-pCount(0)
-{
+seUPNGroupRemoveNodes::seUPNGroupRemoveNodes(sePropertyNodeGroup *node,
+const sePropertyNode::List &children){
 	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = children.GetCount();
-	if(count == 0){
+	if(children.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	SetShortInfo("Node group remove nodes");
 	
-	try{
-		pChildren = new sNode[count];
-		
-		for(pCount=0; pCount<count; pCount++){
-			pChildren[pCount].index = -1;
-			pChildren[pCount].node = children.GetAt(pCount);
-			pChildren[pCount].node->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	children.Visit([&](sePropertyNode *child){
+		const cNode::Ref unode(cNode::Ref::New());
+		unode->index = -1;
+		unode->node = child;
+		pChildren.Add(unode);
+	});
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupRemoveNodes::~seUPNGroupRemoveNodes(){
-	pCleanUp();
 }
 
 
@@ -83,35 +69,15 @@ seUPNGroupRemoveNodes::~seUPNGroupRemoveNodes(){
 ///////////////
 
 void seUPNGroupRemoveNodes::Undo(){
-	int i;
-	for(i=pCount-1; i>=0; i--){
-		pNode->InsertNode(pChildren[i].index, pChildren[i].node);
-		pChildren[i].index = -1;
-	}
+	pChildren.VisitReverse([&](cNode &child){
+		pNode->InsertNode(child.index, child.node);
+		child.index = -1;
+	});
 }
 
 void seUPNGroupRemoveNodes::Redo(){
-	int i;
-	for(i=0; i<pCount; i++){
-		pChildren[i].index = pNode->IndexOfNode(pChildren[i].node);
-		pNode->RemoveNode(pChildren[i].node);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUPNGroupRemoveNodes::pCleanUp(){
-	if(pChildren){
-		int i;
-		for(i=0; i<pCount; i++){
-			pChildren[i].node->FreeReference();
-		}
-		delete [] pChildren;
-	}
-	if(pNode){
-		pNode->FreeReference();
-	}
+	pChildren.Visit([&](cNode &child){
+		child.index = pNode->GetNodes().IndexOf(child.node);
+		pNode->RemoveNode(child.node);
+	});
 }

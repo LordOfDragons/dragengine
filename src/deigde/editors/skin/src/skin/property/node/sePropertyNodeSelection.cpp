@@ -43,8 +43,7 @@
 ////////////////////////////
 
 sePropertyNodeSelection::sePropertyNodeSelection(seProperty &property) :
-pProperty(property),
-pActive(NULL){
+pProperty(property){
 }
 
 sePropertyNodeSelection::~sePropertyNodeSelection(){
@@ -93,7 +92,7 @@ void sePropertyNodeSelection::Remove(sePropertyNode *node){
 			}
 			
 		}else{
-			SetActive(NULL);
+			SetActive(nullptr);
 		}
 	}
 	
@@ -107,7 +106,7 @@ void sePropertyNodeSelection::RemoveAll(){
 		return;
 	}
 	
-	SetActive(NULL);
+	SetActive(nullptr);
 	
 	const int count = pSelection.GetCount();
 	int i;
@@ -118,7 +117,7 @@ void sePropertyNodeSelection::RemoveAll(){
 	NotifyNodeSelectionChanged();
 }
 
-void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
+void sePropertyNodeSelection::SetSelected(const sePropertyNode::List &list){
 	const int count = list.GetCount();
 	if(count == pSelection.GetCount()){
 		int i;
@@ -134,7 +133,7 @@ void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
 	}
 	
 	if(!list.Has(pActive)){
-		SetActive(NULL);
+		SetActive(nullptr);
 	}
 	
 	const int clearCount = pSelection.GetCount();
@@ -159,7 +158,7 @@ void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
 
 
 bool sePropertyNodeSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void sePropertyNodeSelection::SetActive(sePropertyNode *node){
@@ -169,13 +168,11 @@ void sePropertyNodeSelection::SetActive(sePropertyNode *node){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = node;
 	
 	if(node){
-		node->AddReference();
 		node->SetActive(true);
 	}
 	

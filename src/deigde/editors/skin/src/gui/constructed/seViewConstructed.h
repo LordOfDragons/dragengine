@@ -25,6 +25,9 @@
 #ifndef _SEVIEWCONSTRUCTED_H_
 #define _SEVIEWCONSTRUCTED_H_
 
+#include "seViewConstructedView.h"
+#include "seViewConstructedListener.h"
+
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeSpinTextField.h>
@@ -34,8 +37,6 @@
 
 class seSkin;
 class seWindowMain;
-class seViewConstructedView;
-class seViewConstructedListener;
 
 
 
@@ -43,9 +44,12 @@ class seViewConstructedListener;
  * \brief Constructed property preview container.
  */
 class seViewConstructed : public igdeContainerBorder{
+public:
+	typedef deTObjectReference<seViewConstructed> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
-	seViewConstructedListener *pListener;
+	seViewConstructedListener::Ref pListener;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
@@ -54,7 +58,7 @@ private:
 	igdeScrollBar::Ref pSBVertical;
 	igdeComboBox::Ref pCBZoom;
 	igdeSpinTextField::Ref pSpinLayer;
-	seViewConstructedView *pViewNode;
+	seViewConstructedView::Ref pViewNode;
 	
 	
 	

@@ -26,6 +26,8 @@
 #define _SEWPTEXTURE_H_
 
 #include "../../skin/property/seProperty.h"
+#include "../../skin/seSkin.h"
+#include "seWPTextureListener.h"
 
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -41,10 +43,8 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSkin;
 class seTexture;
 class seWindowProperties;
-class seWPTextureListener;
 
 
 
@@ -52,11 +52,14 @@ class seWPTextureListener;
  * Texture panel.
  */
 class seWPTexture : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPTexture> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPTextureListener *pListener;
+	seWPTextureListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	bool pPreventUpdateMappedTarget;
 	
@@ -117,7 +120,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(seSkin *skin);

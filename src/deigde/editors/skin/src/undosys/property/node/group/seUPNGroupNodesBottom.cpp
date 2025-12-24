@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupNodesBottom::seUPNGroupNodesBottom(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+seUPNGroupNodesBottom::seUPNGroupNodesBottom(sePropertyNodeGroup *node, const sePropertyNode::List &children) :
 seUPNGroupMoveNodes(node, children)
 {
 	SetShortInfo("Move nodes to bottom");
 	
-	if(pCount > 0 && pChildren[0].index == 0){
-		pClearChildNodes(); // has no effect
+	if(pChildren.IsNotEmpty() && pChildren.First()->index == 0){
+		pChildren.RemoveAll(); // has no effect
 	}
 }
 
@@ -57,15 +57,13 @@ seUPNGroupNodesBottom::~seUPNGroupNodesBottom(){
 ///////////////
 
 void seUPNGroupNodesBottom::Undo(){
-	int i;
-	for(i=pCount-1; i>=0; i--){
-		pNode->MoveNode(pChildren[i].node, pChildren[i].index);
-	}
+	pChildren.VisitReverse([&](const cNode &child){
+		pNode->MoveNode(child.node, child.index);
+	});
 }
 
 void seUPNGroupNodesBottom::Redo(){
-	int i;
-	for(i=0; i<pCount; i++){
-		pNode->MoveNode(pChildren[i].node, i);
-	}
+	pChildren.VisitIndexed([&](int i, const cNode &child){
+		pNode->MoveNode(child.node, i);
+	});
 }

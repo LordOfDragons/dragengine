@@ -36,6 +36,9 @@
  */
 class sePropertyNodeShape : public sePropertyNode{
 public:
+	typedef deTObjectReference<sePropertyNodeShape> Ref;
+	
+	
 	enum eShapeMapped{
 		esmFillColorRed = MappedCount, //!< Fill color red component
 		esmFillColorGreen, //!< Fill color green component
@@ -64,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeShape(deEngine &engine);
+	explicit sePropertyNodeShape(const deEngine &engine);
 	
 	/** \brief Create copy of node. */
 	sePropertyNodeShape(const sePropertyNodeShape &node);
@@ -104,7 +107,7 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	sePropertyNode *Copy() const override;
+	sePropertyNode::Ref Copy() const override;
 	/*@}*/
 };
 

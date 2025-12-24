@@ -41,7 +41,7 @@
 seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
 	if(!property) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Value");
 	
@@ -49,13 +49,9 @@ seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
 	pNewValue = newValue;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValue::~seUPropertySetValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -25,16 +25,17 @@
 #ifndef _SETEXTURE_H_
 #define _SETEXTURE_H_
 
-#include "../property/sePropertyList.h"
+#include "../property/seProperty.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/deObject.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class seSkin;
 
 class deEngine;
-class deSkin;
 
 
 
@@ -45,17 +46,20 @@ class seTexture : public deObject{
 public:
 	typedef deTObjectReference<seTexture> Ref;
 	
+	/** \brief List type. */
+	typedef decTOrderedSet<deTObjectReference<seTexture>, seTexture*> List;
+	
 	
 private:
 	deEngine *pEngine;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	seSkin *pSkin;
 	
 	decString pName;
 	
-	sePropertyList pPropertyList;
-	seProperty *pActiveProperty;
+	seProperty::List pPropertyList;
+	seProperty::Ref pActiveProperty;
 	
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
@@ -81,12 +85,12 @@ public:
 	/*@{*/
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
-	/** \brief Retrieves the texture engine skin or NULL if not created. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Retrieves the texture engine skin or nullptr if not created. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
-	/** Retrieves the parent skin or NULL if there is none. */
+	/** Retrieves the parent skin or nullptr if there is none. */
 	inline seSkin *GetSkin() const{ return pSkin; }
-	/** Sets the parent skin or NULL if there is none. */
+	/** Sets the parent skin or nullptr if there is none. */
 	void SetSkin(seSkin *skin);
 	
 	/** Retrieves the name. */
@@ -122,18 +126,18 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the property list read-only. */
-	inline const sePropertyList &GetPropertyList() const{ return pPropertyList; }
+	inline const seProperty::List &GetProperties() const{ return pPropertyList; }
 	/** Adds a new property. */
 	void AddProperty(seProperty *property);
 	/** Removes a property. */
 	void RemoveProperty(seProperty *property);
 	/** Removes all properties. */
 	void RemoveAllProperties();
-	/** Retrieves the active property or NULL if none is active. */
-	inline seProperty *GetActiveProperty() const{ return pActiveProperty; }
+	/** Retrieves the active property or nullptr if none is active. */
+	inline const seProperty::Ref &GetActiveProperty() const{ return pActiveProperty; }
 	/** Determines if there is an active property or not. */
 	bool HasActiveProperty() const;
-	/** Sets the active property or NULL if none is active. */
+	/** Sets the active property or nullptr if none is active. */
 	void SetActiveProperty(seProperty *property);
 	
 	/**

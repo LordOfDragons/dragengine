@@ -25,18 +25,20 @@
 #ifndef _SELOADSAVESKIN_H_
 #define _SELOADSAVESKIN_H_
 
+#include "../skin/property/node/sePropertyNodeGroup.h"
+
+#include <deigde/engine/textureProperties/igdeTextureProperty.h>
+
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
 class seSkin;
 class sePropertyNode;
-class sePropertyNodeGroup;
 class deBaseSkinModule;
 class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 class decBaseFileReader;
 class decBaseFileWriter;
-class igdeTexturePropertyList;
 
 
 /**
@@ -80,13 +82,13 @@ public:
 	
 	
 	/** \brief Load skin. */
-	void LoadSkin(seSkin *skin, decBaseFileReader *file, const igdeTexturePropertyList &knownPropertyList);
+	void LoadSkin(seSkin *skin, decBaseFileReader *file, const igdeTextureProperty::List &knownPropertyList);
 	
 	/** \brief Load propery node group. */
-	sePropertyNodeGroup *LoadPropertyNodeGroup(seSkin &skin, const deSkinPropertyNodeGroup &engNodeGroup);
+	sePropertyNodeGroup::Ref LoadPropertyNodeGroup(seSkin &skin, const deSkinPropertyNodeGroup &engNodeGroup);
 	
 	/** \brief Load propery node. */
-	sePropertyNode *LoadPropertyNode(seSkin &skin, deSkinPropertyNode &engNode);
+	sePropertyNode::Ref LoadPropertyNode(seSkin &skin, deSkinPropertyNode &engNode);
 	
 	/** \brief Load common propery node parameters. */
 	void LoadPropertyNodeCommon(seSkin &skin, sePropertyNode &node, const deSkinPropertyNode &engNode);

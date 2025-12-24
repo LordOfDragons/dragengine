@@ -35,6 +35,10 @@
  * Undo action set mapped output upper.
  */
 class seUMappedSetOutputUpper : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMappedSetOutputUpper> Ref;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMappedSetOutputUpper> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

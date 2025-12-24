@@ -40,7 +40,7 @@
 
 seUPropertyNodeShapeSetFillColor::seUPropertyNodeShapeSetFillColor(
 sePropertyNodeShape *node, const decColor &newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetFillColor();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetFillColor::~seUPropertyNodeShapeSetFillColor(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

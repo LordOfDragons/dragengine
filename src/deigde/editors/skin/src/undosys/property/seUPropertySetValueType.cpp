@@ -40,7 +40,7 @@
 seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
 	if(!property) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Value Type");
 	
@@ -48,13 +48,9 @@ seUPropertySetValueType::seUPropertySetValueType(seProperty *property, sePropert
 	pNewType = newType;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -25,6 +25,9 @@
 #ifndef _SEVIEWCONSTRUCTEDVIEW_H_
 #define _SEVIEWCONSTRUCTEDVIEW_H_
 
+#include "seViewConstructedViewListener.h"
+#include "../../skin/seSkin.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
@@ -38,8 +41,6 @@
 class seProperty;
 class sePropertyNode;
 class sePropertyNodeGroup;
-class seSkin;
-class seViewConstructedViewListener;
 class seWindowMain;
 class sePropertyNodeList;
 
@@ -48,14 +49,17 @@ class sePropertyNodeList;
  * \brief Constructed property preview.
  */
 class seViewConstructedView : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<seViewConstructedView> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
-	seViewConstructedViewListener *pListener;
+	seViewConstructedViewListener::Ref pListener;
 	
 	igdeMouseKeyListener::Ref pKeyHandling;
 	igdeMouseDragListener::Ref pDragNode;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	igdeAction::Ref pActionConstructedFromImage;
 	igdeAction::Ref pActionAddShape;
@@ -133,10 +137,10 @@ public:
 	/** \brief Main window. */
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Skin or \em NULL. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	/** \brief Skin or \em nullptr. */
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL. */
+	/** \brief Set skin or \em nullptr. */
 	void SetSkin(seSkin *skin);
 	
 	
@@ -164,16 +168,16 @@ public:
 	
 	
 	
-	/** \brief Active property or \em NULL. */
+	/** \brief Active property or \em nullptr. */
 	seProperty *GetActiveProperty() const;
 	
-	/** \brief Active property node or \em NULL. */
+	/** \brief Active property node or \em nullptr. */
 	sePropertyNode *GetActiveNode() const;
 	
-	/** \brief Active property node group or \em NULL. */
+	/** \brief Active property node group or \em nullptr. */
 	sePropertyNodeGroup *GetActiveNodeGroup() const;
 	
-	/** \brief Node at coordinates or \em NULL. */
+	/** \brief Node at coordinates or \em nullptr. */
 	sePropertyNode *NodeAtPosition(const decPoint &position) const;
 	
 	
@@ -208,51 +212,51 @@ public:
 	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Get selection boundaries. */
-	void GetSelectionBoundary(const sePropertyNodeList &list, decVector2 &minBounds, decVector2 &maxBounds);
+	void GetSelectionBoundary(const sePropertyNode::List &list, decVector2 &minBounds, decVector2 &maxBounds);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionConstructedFromImage() const{ return pActionConstructedFromImage; }
-	inline igdeAction *GetActionAddShape() const{ return pActionAddShape; }
-	inline igdeAction *GetActionAddImage() const{ return pActionAddImage; }
-	inline igdeAction *GetActionAddText() const{ return pActionAddText; }
-	inline igdeAction *GetActionRemoveNode() const{ return pActionRemoveNode; }
-	inline igdeAction *GetActionCopyNode() const{ return pActionCopyNode; }
-	inline igdeAction *GetActionCutNode() const{ return pActionCutNode; }
-	inline igdeAction *GetActionPasteNode() const{ return pActionPasteNode; }
-	inline igdeAction *GetActionEnterGroup() const{ return pActionEnterGroup; }
-	inline igdeAction *GetActionExitGroup() const{ return pActionExitGroup; }
-	inline igdeAction *GetActionGroupNodes() const{ return pActionGroupNodes; }
-	inline igdeAction *GetActionUngroupNodes() const{ return pActionUngroupNodes; }
-	inline igdeAction *GetActionMoveNodeTop() const{ return pActionMoveNodeTop; }
-	inline igdeAction *GetActionMoveNodeUp() const{ return pActionMoveNodeUp; }
-	inline igdeAction *GetActionMoveNodeDown() const{ return pActionMoveNodeDown; }
-	inline igdeAction *GetActionMoveNodeBottom() const{ return pActionMoveNodeBottom; }
-	inline igdeAction *GetActionSetMask() const{ return pActionSetMask; }
-	inline igdeAction *GetActionRemoveMask() const{ return pActionRemoveMask; }
-	inline igdeAction *GetActionSizeFromImage() const{ return pActionSizeFromImage; }
+	inline const igdeAction::Ref &GetActionConstructedFromImage() const{ return pActionConstructedFromImage; }
+	inline const igdeAction::Ref &GetActionAddShape() const{ return pActionAddShape; }
+	inline const igdeAction::Ref &GetActionAddImage() const{ return pActionAddImage; }
+	inline const igdeAction::Ref &GetActionAddText() const{ return pActionAddText; }
+	inline const igdeAction::Ref &GetActionRemoveNode() const{ return pActionRemoveNode; }
+	inline const igdeAction::Ref &GetActionCopyNode() const{ return pActionCopyNode; }
+	inline const igdeAction::Ref &GetActionCutNode() const{ return pActionCutNode; }
+	inline const igdeAction::Ref &GetActionPasteNode() const{ return pActionPasteNode; }
+	inline const igdeAction::Ref &GetActionEnterGroup() const{ return pActionEnterGroup; }
+	inline const igdeAction::Ref &GetActionExitGroup() const{ return pActionExitGroup; }
+	inline const igdeAction::Ref &GetActionGroupNodes() const{ return pActionGroupNodes; }
+	inline const igdeAction::Ref &GetActionUngroupNodes() const{ return pActionUngroupNodes; }
+	inline const igdeAction::Ref &GetActionMoveNodeTop() const{ return pActionMoveNodeTop; }
+	inline const igdeAction::Ref &GetActionMoveNodeUp() const{ return pActionMoveNodeUp; }
+	inline const igdeAction::Ref &GetActionMoveNodeDown() const{ return pActionMoveNodeDown; }
+	inline const igdeAction::Ref &GetActionMoveNodeBottom() const{ return pActionMoveNodeBottom; }
+	inline const igdeAction::Ref &GetActionSetMask() const{ return pActionSetMask; }
+	inline const igdeAction::Ref &GetActionRemoveMask() const{ return pActionRemoveMask; }
+	inline const igdeAction::Ref &GetActionSizeFromImage() const{ return pActionSizeFromImage; }
 	
 	/** \brief Markers. */
-	inline deCanvasView *GetCanvasContent() const{ return pCanvasContent; }
-	inline deCanvasPaint *GetCanvasContentBackground() const{ return pCanvasContentBackground; }
-	inline deCanvasPaint *GetCanvasMarkerBorder() const{ return pCanvasMarkerBorder; }
-	inline deCanvasImage *GetCanvasMarkerResizeTopLeft() const{ return pCanvasMarkerResizeTopLeft; }
-	inline deCanvasImage *GetCanvasMarkerResizeTop() const{ return pCanvasMarkerResizeTop; }
-	inline deCanvasImage *GetCanvasMarkerResizeTopRight() const{ return pCanvasMarkerResizeTopRight; }
-	inline deCanvasImage *GetCanvasMarkerResizeLeft() const{ return pCanvasMarkerResizeLeft; }
-	inline deCanvasImage *GetCanvasMarkerResizeRight() const{ return pCanvasMarkerResizeRight; }
-	inline deCanvasImage *GetCanvasMarkerResizeBottomLeft() const{ return pCanvasMarkerResizeBottomLeft; }
-	inline deCanvasImage *GetCanvasMarkerResizeBottomRight() const{ return pCanvasMarkerResizeBottomRight; }
-	inline deCanvasImage *GetCanvasMarkerResizeBottom() const{ return pCanvasMarkerResizeBottom; }
-	inline deCanvasImage *GetCanvasMarkerRotateTopLeft() const{ return pCanvasMarkerRotateTopLeft; }
-	inline deCanvasImage *GetCanvasMarkerRotateTopRight() const{ return pCanvasMarkerRotateTopRight; }
-	inline deCanvasImage *GetCanvasMarkerRotateBottomLeft() const{ return pCanvasMarkerRotateBottomLeft; }
-	inline deCanvasImage *GetCanvasMarkerRotateBottomRight() const{ return pCanvasMarkerRotateBottomRight; }
-	inline deCanvasImage *GetCanvasMarkerShearTop() const{ return pCanvasMarkerShearTop; }
-	inline deCanvasImage *GetCanvasMarkerShearBottom() const{ return pCanvasMarkerShearBottom; }
-	inline deCanvasImage *GetCanvasMarkerShearLeft() const{ return pCanvasMarkerShearLeft; }
-	inline deCanvasImage *GetCanvasMarkerShearRight() const{ return pCanvasMarkerShearRight; }
+	inline const deCanvasView::Ref &GetCanvasContent() const{ return pCanvasContent; }
+	inline const deCanvasPaint::Ref &GetCanvasContentBackground() const{ return pCanvasContentBackground; }
+	inline const deCanvasPaint::Ref &GetCanvasMarkerBorder() const{ return pCanvasMarkerBorder; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeTopLeft() const{ return pCanvasMarkerResizeTopLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeTop() const{ return pCanvasMarkerResizeTop; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeTopRight() const{ return pCanvasMarkerResizeTopRight; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeLeft() const{ return pCanvasMarkerResizeLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeRight() const{ return pCanvasMarkerResizeRight; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeBottomLeft() const{ return pCanvasMarkerResizeBottomLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeBottomRight() const{ return pCanvasMarkerResizeBottomRight; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerResizeBottom() const{ return pCanvasMarkerResizeBottom; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerRotateTopLeft() const{ return pCanvasMarkerRotateTopLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerRotateTopRight() const{ return pCanvasMarkerRotateTopRight; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerRotateBottomLeft() const{ return pCanvasMarkerRotateBottomLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerRotateBottomRight() const{ return pCanvasMarkerRotateBottomRight; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerShearTop() const{ return pCanvasMarkerShearTop; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerShearBottom() const{ return pCanvasMarkerShearBottom; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerShearLeft() const{ return pCanvasMarkerShearLeft; }
+	inline const deCanvasImage::Ref &GetCanvasMarkerShearRight() const{ return pCanvasMarkerShearRight; }
 	/*@}*/
 	
 	

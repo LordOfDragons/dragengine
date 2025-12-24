@@ -94,23 +94,24 @@ protected:
 	seViewConstructedView &pView;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : igdeAction(text, icon, description), pView(view){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSkin * const skin = pView.GetSkin();
 		seProperty * const property = pView.GetActiveProperty();
 		if(!skin || !property){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(skin, property)));
+		igdeUndo::Ref undo(OnAction(skin, property));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property) = 0;
+	virtual igdeUndo::Ref OnAction(seSkin *skin, seProperty *property) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pView.GetSkin();
@@ -135,12 +136,12 @@ public:
 	cBaseActionNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(view, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property){
+	virtual igdeUndo::Ref OnAction(seSkin *skin, seProperty *property){
 		sePropertyNode * const node = pView.GetActiveNode();
-		return node ? OnActionNode(skin, property, node) : NULL;
+		return node ? OnActionNode(skin, property, node) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
+	virtual igdeUndo::Ref OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
 	
 	void Update(const seSkin &skin, const seProperty &property) override{
 		sePropertyNode * const node = pView.GetActiveNode();
@@ -162,63 +163,69 @@ public:
 
 class cActionConstructedFromImage : public cBaseAction{
 public:
-	cActionConstructedFromImage(seViewConstructedView &view) : cBaseAction(view,
-		"Constructed from Image", NULL, "Create constructed from image"){}
+	typedef deTObjectReference<cActionConstructedFromImage> Ref;
 	
-	virtual igdeUndo *OnAction(seSkin*, seProperty *property){
-		return property->GetEngineImage() ? new seUPropertyConstructedFromImage(property) : NULL;
+public:
+	cActionConstructedFromImage(seViewConstructedView &view) : cBaseAction(view,
+		"Constructed from Image", nullptr, "Create constructed from image"){}
+	
+	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
+		return property->GetEngineImage() ? seUPropertyConstructedFromImage::Ref::New(property) : seUPropertyConstructedFromImage::Ref();
 	}
 };
 
 
 class cBaseActionAddNode : public cBaseAction{
 public:
+	typedef deTObjectReference<cBaseActionAddNode> Ref;
+	
+public:
 	cBaseActionAddNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(view, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property){
-		const sePropertyNode::Ref node(sePropertyNode::Ref::New(CreateNode(*skin, *property)));
+	igdeUndo::Ref OnAction(seSkin *skin, seProperty *property) override{
+		const sePropertyNode::Ref node(CreateNode(*skin, *property));
 		if(!node){
-			return nullptr;
+			return {};
 		}
 		
 		node->SetPosition(decPoint3(0, 0, property->GetActiveNodeLayer()));
 		
-		return new seUPNGroupAddNode(pView.GetActiveNodeGroup()
+		return seUPNGroupAddNode::Ref::New(pView.GetActiveNodeGroup()
 			? pView.GetActiveNodeGroup() : property->GetNodeGroup(), node);
 	}
 	
-	virtual sePropertyNode *CreateNode(seSkin &skin, seProperty &property) = 0;
+	virtual sePropertyNode::Ref CreateNode(seSkin &skin, seProperty &property) = 0;
 };
 
 class cActionAddShape : public cBaseActionAddNode{
 public:
+	typedef deTObjectReference<cActionAddShape> Ref;
 	cActionAddShape(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Shape",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add shape node"){}
 	
-	sePropertyNode *CreateNode(seSkin &, seProperty &) override{
-		return new sePropertyNodeShape(*pView.GetEngine());
+	sePropertyNode::Ref CreateNode(seSkin &, seProperty &) override{
+		return sePropertyNodeShape::Ref::New(*pView.GetEngine());
 	}
 };
 
 class cActionAddImage : public cBaseActionAddNode{
 public:
+	typedef deTObjectReference<cActionAddImage> Ref;
 	cActionAddImage(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Image ...",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add image node"){}
 	
-	sePropertyNode *CreateNode(seSkin &skin, seProperty &) override{
+	sePropertyNode::Ref CreateNode(seSkin &skin, seProperty &) override{
 		igdeEnvironment &env = pView.GetEnvironment();
 		decString path(skin.GetDirectoryPath());
 		if(!igdeCommonDialogs::GetFileOpen(&pView, "Select Image", *env.GetFileSystemGame(),
 		*env.GetOpenFilePatternList(igdeEnvironment::efpltImage), path)){
-			return nullptr;
+			return {};
 		}
 		
-		deImage::Ref image(deImage::Ref::New(
-			pView.GetEngine()->GetImageManager()->LoadImage(path, "/")));
+		deImage::Ref image(pView.GetEngine()->GetImageManager()->LoadImage(path, "/"));
 		
-		const sePropertyNodeImage::Ref node(sePropertyNodeImage::Ref::New(
-			new sePropertyNodeImage(*pView.GetEngine())));
+		const sePropertyNodeImage::Ref node(sePropertyNodeImage::Ref::New(*pView.GetEngine()));
 		
 		if(!skin.GetDirectoryPath().IsEmpty() && decPath::IsUnixPathAbsolute(path)){
 			path = decPath::RelativePathUnix(path, skin.GetDirectoryPath(), true).GetPathUnix();
@@ -226,73 +233,78 @@ public:
 		
 		node->SetPath(path);
 		node->SetSize(decPoint3(image->GetWidth(), image->GetHeight(), image->GetDepth()));
-		node->AddReference(); // because we need to hand over a reference
 		return node;
 	}
 };
 
 class cActionAddText : public cBaseActionAddNode{
 public:
+	typedef deTObjectReference<cActionAddText> Ref;
 	cActionAddText(seViewConstructedView &view) : cBaseActionAddNode(view, "Add Text",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add text node"){}
 	
-	sePropertyNode *CreateNode(seSkin &, seProperty &) override{
-		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
+	sePropertyNode::Ref CreateNode(seSkin &, seProperty &) override{
+		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::New(*pView.GetEngine()));
 		node->SetPath("/igde/fonts/regular_67px.defont");
 		node->SetTextSize(67.0f);
 		node->SetSize(decPoint3(256, 67, 1));
 		node->SetText("Text");
-		node->AddReference(); // because we need to hand over a reference
 		return node;
 	}
 };
 
 class cActionRemoveNode : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionRemoveNode> Ref;
 	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "Remove Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
-		return new seUPNGroupRemoveNodes(node->GetParent(), property->GetNodeSelection().GetSelected());
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+		return seUPNGroupRemoveNodes::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
 class cActionCopyNode : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionCopyNode> Ref;
 	cActionCopyNode(seViewConstructedView &view) : cBaseActionNode(view, "Copy Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode*){
-		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::NewWith(
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode*){
+		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
 			property->GetNodeSelection().GetSelected()));
-		return NULL;
+		return {};
 	}
 };
 
 class cActionCutNode : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionCutNode> Ref;
 	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "Cut Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
-		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::NewWith(
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::New(
 			property->GetNodeSelection().GetSelected()));
 		
-		return new seUPNGroupRemoveNodes(node->GetParent(), property->GetNodeSelection().GetSelected());
+		return seUPNGroupRemoveNodes::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
 class cActionPasteNode : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPasteNode> Ref;
+	
+public:
 	cActionPasteNode(seViewConstructedView &view) : cBaseAction(view, "Paste Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste nodes"){}
 	
-	virtual igdeUndo *OnAction(seSkin*, seProperty *property){
+	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		const seClipboardDataPropertyNode * const data = (seClipboardDataPropertyNode*)
 			pView.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataPropertyNode::TYPE_NAME);
-		return data ? new seUPNGroupPasteNodes(
+		return data ? seUPNGroupPasteNodes::Ref::New(
 			pView.GetActiveNodeGroup() ? pView.GetActiveNodeGroup() : property->GetNodeGroup(),
-			property->GetActiveNodeLayer(), *data) : NULL;
+			property->GetActiveNodeLayer(), *data) : igdeUndo::Ref();
 	}
 	
 	void Update(const seSkin &, const seProperty &) override{
@@ -302,15 +314,16 @@ public:
 
 class cActionEnterGroup : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionEnterGroup> Ref;
 	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "Enter Group",
-		NULL, "Enter group"){}
+		nullptr, "Enter group"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
 		if(node->GetNodeType() == sePropertyNode::entGroup){
 			property->GetNodeSelection().RemoveAll();
 			property->SetActiveNodeGroup((sePropertyNodeGroup*)node);
 		}
-		return NULL;
+		return {};
 	}
 	
 	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
@@ -320,24 +333,27 @@ public:
 
 class cActionExitGroup : public cBaseAction{
 public:
-	cActionExitGroup(seViewConstructedView &view) : cBaseAction(view, "Exit Group",
-		NULL, "Exit group"){}
+	typedef deTObjectReference<cActionExitGroup> Ref;
 	
-	virtual igdeUndo *OnAction(seSkin*, seProperty *property){
+public:
+	cActionExitGroup(seViewConstructedView &view) : cBaseAction(view, "Exit Group",
+		nullptr, "Exit group"){}
+	
+	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		sePropertyNodeGroup * const node = property->GetActiveNodeGroup();
 		if(!node){
-			return NULL;
+			return {};
 		}
 		
 		if(node->GetParent() == property->GetNodeGroup()){
 			property->GetNodeSelection().RemoveAll();
-			property->SetActiveNodeGroup(NULL);
+			property->SetActiveNodeGroup(nullptr);
 			property->GetNodeSelection().Add(node);
 			
 		}else{
 			property->SetActiveNodeGroup(node->GetParent());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const seSkin &, const seProperty &property) override{
@@ -347,12 +363,15 @@ public:
 
 class cActionGroupNodes : public cBaseAction{
 public:
-	cActionGroupNodes(seViewConstructedView &view) : cBaseAction(view, "Group Nodes",
-		NULL, "Group Nodes"){}
+	typedef deTObjectReference<cActionGroupNodes> Ref;
 	
-	virtual igdeUndo *OnAction(seSkin*, seProperty *property){
+public:
+	cActionGroupNodes(seViewConstructedView &view) : cBaseAction(view, "Group Nodes",
+		nullptr, "Group Nodes"){}
+	
+	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
 		return property->GetNodeSelection().GetSelected().GetCount() > 1
-			? new seUPNGroupNodes(property->GetNodeSelection().GetSelected()) : NULL;
+			? seUPNGroupNodes::Ref::New(property->GetNodeSelection().GetSelected()) : igdeUndo::Ref();
 	}
 	
 	void Update(const seSkin &, const seProperty &property) override{
@@ -362,12 +381,13 @@ public:
 
 class cActionUngroupNodes : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionUngroupNodes> Ref;
 	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "Ungroup Nodes",
-		NULL, "Ungroup Nodes"){}
+		nullptr, "Ungroup Nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entGroup
-			? new seUPNUngroupNodes((sePropertyNodeGroup*)node) : NULL;
+			? seUPNUngroupNodes::Ref::New((sePropertyNodeGroup*)node) : igdeUndo::Ref();
 	}
 	
 	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
@@ -377,16 +397,16 @@ public:
 
 class cBaseMoveNodes : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cBaseMoveNodes> Ref;
 	cBaseMoveNodes(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseActionNode(view, text, icon, description){}
 	
-	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node){
-		seUPNGroupMoveNodes *undo = NULL;
+	virtual igdeUndo::Ref OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node){
+		seUPNGroupMoveNodes::Ref undo;
 		if(node){
 			undo = CreateUndo(skin, property, node);
 			if(!undo->HasAnyEffect()){
-				undo->FreeReference();
-				undo = NULL;
+				undo = nullptr;
 			}
 		}
 		return undo;
@@ -397,6 +417,7 @@ public:
 
 class cActionMoveNodesTop : public cBaseMoveNodes{
 public:
+	typedef deTObjectReference<cActionMoveNodesTop> Ref;
 	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
 	
@@ -407,6 +428,7 @@ public:
 
 class cActionMoveNodesUp : public cBaseMoveNodes{
 public:
+	typedef deTObjectReference<cActionMoveNodesUp> Ref;
 	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
 	
@@ -417,6 +439,7 @@ public:
 
 class cActionMoveNodesDown : public cBaseMoveNodes{
 public:
+	typedef deTObjectReference<cActionMoveNodesDown> Ref;
 	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
 	
@@ -427,6 +450,7 @@ public:
 
 class cActionMoveNodesBottom : public cBaseMoveNodes{
 public:
+	typedef deTObjectReference<cActionMoveNodesBottom> Ref;
 	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
 	
@@ -437,19 +461,20 @@ public:
 
 class cActionSetMask : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionSetMask> Ref;
 	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "Set Mask",
-		NULL, "Set Mask"){}
+		nullptr, "Set Mask"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
-		const sePropertyNodeList &selection = property->GetNodeSelection().GetSelected();
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+		const sePropertyNode::List &selection = property->GetNodeSelection().GetSelected();
 		if(node->GetMask() || selection.GetCount() != 2){
-			return NULL;
+			return {};
 		}
-		if(selection.GetAt(0) == node){
-			return new seUPropertyNodeSetMask(node, selection.GetAt(1));
+		if(selection.First() == node){
+			return seUPropertyNodeSetMask::Ref::New(node, selection.GetAt(1));
 			
 		}else{
-			return new seUPropertyNodeSetMask(node, selection.GetAt(0));
+			return seUPropertyNodeSetMask::Ref::New(node, selection.GetAt(0));
 		}
 	}
 	
@@ -460,11 +485,12 @@ public:
 
 class cActionRemoveMask : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionRemoveMask> Ref;
 	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "Remove Mask",
-		NULL, "Remove Mask"){}
+		nullptr, "Remove Mask"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
-		return node->GetMask() ? new seUPropertyNodeRemoveMask(node) : NULL;
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+		return node->GetMask() ? seUPropertyNodeRemoveMask::Ref::New(node) : seUPropertyNodeRemoveMask::Ref();
 	}
 	
 	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
@@ -474,13 +500,14 @@ public:
 
 class cActionSizeFromImage : public cBaseActionNode{
 public:
+	typedef deTObjectReference<cActionSizeFromImage> Ref;
 	cActionSizeFromImage(seViewConstructedView &view) : cBaseActionNode(view,
-		"Size from image size", NULL, "Set image size to constructed size"){}
+		"Size from image size", nullptr, "Set image size to constructed size"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	virtual igdeUndo::Ref OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entImage
 			&& ((sePropertyNodeImage*)node)->GetImage()
-			? new seUPropertyNodeImageSizeFromImage((sePropertyNodeImage*)node) : NULL;
+			? seUPropertyNodeImageSizeFromImage::Ref::New((sePropertyNodeImage*)node) : igdeUndo::Ref();
 	}
 	
 	void UpdateNode(const seSkin &, const seProperty &, const sePropertyNode &node) override{
@@ -501,49 +528,43 @@ public:
 seViewConstructedView::seViewConstructedView(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-
-pSkin(NULL),
+pListener(nullptr),
 
 pZoom(100),
 pZoomScale(1.0f),
 pBorderSize(5, 5)
 {
-	pListener = new seViewConstructedViewListener(*this);
+	pListener = seViewConstructedViewListener::Ref::New(*this);
 	
-	pActionConstructedFromImage.TakeOver(new cActionConstructedFromImage(*this));
-	pActionAddShape.TakeOver(new cActionAddShape(*this));
-	pActionAddImage.TakeOver(new cActionAddImage(*this));
-	pActionAddText.TakeOver(new cActionAddText(*this));
-	pActionRemoveNode.TakeOver(new cActionRemoveNode(*this));
-	pActionCopyNode.TakeOver(new cActionCopyNode(*this));
-	pActionCutNode.TakeOver(new cActionCutNode(*this));
-	pActionPasteNode.TakeOver(new cActionPasteNode(*this));
-	pActionEnterGroup.TakeOver(new cActionEnterGroup(*this));
-	pActionExitGroup.TakeOver(new cActionExitGroup(*this));
-	pActionGroupNodes.TakeOver(new cActionGroupNodes(*this));
-	pActionUngroupNodes.TakeOver(new cActionUngroupNodes(*this));
-	pActionMoveNodeTop.TakeOver(new cActionMoveNodesTop(*this));
-	pActionMoveNodeUp.TakeOver(new cActionMoveNodesUp(*this));
-	pActionMoveNodeDown.TakeOver(new cActionMoveNodesDown(*this));
-	pActionMoveNodeBottom.TakeOver(new cActionMoveNodesBottom(*this));
-	pActionSetMask.TakeOver(new cActionSetMask(*this));
-	pActionRemoveMask.TakeOver(new cActionRemoveMask(*this));
-	pActionSizeFromImage.TakeOver(new cActionSizeFromImage(*this));
+	pActionConstructedFromImage = cActionConstructedFromImage::Ref::New(*this);
+	pActionAddShape = cActionAddShape::Ref::New(*this);
+	pActionAddImage = cActionAddImage::Ref::New(*this);
+	pActionAddText = cActionAddText::Ref::New(*this);
+	pActionRemoveNode = cActionRemoveNode::Ref::New(*this);
+	pActionCopyNode = cActionCopyNode::Ref::New(*this);
+	pActionCutNode = cActionCutNode::Ref::New(*this);
+	pActionPasteNode = cActionPasteNode::Ref::New(*this);
+	pActionEnterGroup = cActionEnterGroup::Ref::New(*this);
+	pActionExitGroup = cActionExitGroup::Ref::New(*this);
+	pActionGroupNodes = cActionGroupNodes::Ref::New(*this);
+	pActionUngroupNodes = cActionUngroupNodes::Ref::New(*this);
+	pActionMoveNodeTop = cActionMoveNodesTop::Ref::New(*this);
+	pActionMoveNodeUp = cActionMoveNodesUp::Ref::New(*this);
+	pActionMoveNodeDown = cActionMoveNodesDown::Ref::New(*this);
+	pActionMoveNodeBottom = cActionMoveNodesBottom::Ref::New(*this);
+	pActionSetMask = cActionSetMask::Ref::New(*this);
+	pActionRemoveMask = cActionRemoveMask::Ref::New(*this);
+	pActionSizeFromImage = cActionSizeFromImage::Ref::New(*this);
 	
-	pKeyHandling.TakeOver(new seVCIKeyHandling(*this));
+	pKeyHandling = seVCIKeyHandling::Ref::New(*this);
 	AddListener(pKeyHandling);
 	
-	pDragNode.TakeOver(new seVCIDragNode(*this));
+	pDragNode = seVCIDragNode::Ref::New(*this);
 	AddListener(pDragNode);
 }
 
 seViewConstructedView::~seViewConstructedView(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		delete pListener;
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -563,13 +584,11 @@ void seViewConstructedView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		skin->AddListener(pListener);
 		OnResize();
 	}
@@ -608,23 +627,23 @@ decPoint seViewConstructedView::GetContentSize() const{
 
 
 seProperty *seViewConstructedView::GetActiveProperty() const{
-	return pSkin && pSkin->GetActiveTexture() ? pSkin->GetActiveTexture()->GetActiveProperty() : NULL;
+	return pSkin && pSkin->GetActiveTexture() ? pSkin->GetActiveTexture()->GetActiveProperty() : nullptr;
 }
 
 sePropertyNode *seViewConstructedView::GetActiveNode() const{
 	seProperty * const property = GetActiveProperty();
 	if(!property){
-		return NULL;
+		return {};
 	}
 	
 	sePropertyNode * const node = property->GetNodeSelection().GetActive();
 	if(!node){
-		return NULL;
+		return nullptr;
 	}
 	
 	const int activeLayer = property->GetActiveNodeLayer();
 	if(activeLayer < node->GetPosition().z || activeLayer >= node->GetPosition().z + node->GetSize().z){
-		return NULL;
+		return nullptr;
 	}
 	
 	return node;
@@ -633,17 +652,17 @@ sePropertyNode *seViewConstructedView::GetActiveNode() const{
 sePropertyNodeGroup *seViewConstructedView::GetActiveNodeGroup() const{
 	seProperty * const property = GetActiveProperty();
 	if(!property){
-		return NULL;
+		return nullptr;
 	}
 	
 	sePropertyNodeGroup * const nodeGroup = property->GetActiveNodeGroup();
 	if(!nodeGroup){
-		return NULL;
+		return nullptr;
 	}
 	
 	const int activeLayer = property->GetActiveNodeLayer();
 	if(activeLayer < nodeGroup->GetPosition().z || activeLayer >= nodeGroup->GetPosition().z + nodeGroup->GetSize().z){
-		return NULL;
+		return nullptr;
 	}
 	
 	return nodeGroup;
@@ -652,7 +671,7 @@ sePropertyNodeGroup *seViewConstructedView::GetActiveNodeGroup() const{
 sePropertyNode *seViewConstructedView::NodeAtPosition(const decPoint &position) const{
 	seProperty * const property = GetActiveProperty();
 	if(!property){
-		return NULL;
+		return nullptr;
 	}
 	
 	sePropertyNodeGroup *nodeGroup = property->GetActiveNodeGroup();
@@ -666,11 +685,11 @@ sePropertyNode *seViewConstructedView::NodeAtPosition(const decPoint &position) 
 	}
 	
 	const int activeLayer = property->GetActiveNodeLayer();
-	const int count = nodeGroup->GetNodeCount();
+	const int count = nodeGroup->GetNodes().GetCount();
 	int i;
 	
 	for(i=count-1; i>=0; i--){
-		sePropertyNode * const node = nodeGroup->GetNodeAt(i);
+		sePropertyNode * const node = nodeGroup->GetNodes().GetAt(i);
 		if(activeLayer < node->GetPosition().z || activeLayer >= node->GetPosition().z + node->GetSize().z) {
 			continue;
 		}
@@ -683,7 +702,7 @@ sePropertyNode *seViewConstructedView::NodeAtPosition(const decPoint &position) 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -920,7 +939,7 @@ void seViewConstructedView::UpdateMarkers(){
 
 void seViewConstructedView::UpdateGroupDarkening(){
 	/*seProperty * const property = GetActiveProperty();
-	sePropertyNodeGroup *nodeGroup = NULL;
+	sePropertyNodeGroup *nodeGroup = nullptr;
 	
 	if(property){
 		nodeGroup = property->GetActiveNodeGroup();
@@ -1015,14 +1034,14 @@ void seViewConstructedView::CreateCanvas(){
 	const decColor colorBackground(0.65f, 0.65f, 0.65f);
 	
 	// constructed image background
-	pCanvasContentBackground.TakeOver(canvasManager.CreateCanvasPaint());
+	pCanvasContentBackground = canvasManager.CreateCanvasPaint();
 	pCanvasContentBackground->SetOrder(1.0f);
 	pCanvasContentBackground->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasContentBackground->SetThickness(0.0f);
 	AddCanvas(pCanvasContentBackground);
 	
 	// constructed image content
-	pCanvasContent.TakeOver(canvasManager.CreateCanvasView());
+	pCanvasContent = canvasManager.CreateCanvasView();
 	pCanvasContent->SetOrder(2.0f);
 	AddCanvas(pCanvasContent);
 	
@@ -1040,7 +1059,7 @@ void seViewConstructedView::CreateCanvas(){
 	AddCanvas(pCanvasGroupDarkeningRight);
 	
 	// markers
-	pCanvasMarkerBorder.TakeOver(canvasManager.CreateCanvasPaint());
+	pCanvasMarkerBorder = canvasManager.CreateCanvasPaint();
 	pCanvasMarkerBorder->SetOrder(4.0f);
 	pCanvasMarkerBorder->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasMarkerBorder->SetLineColor(decColor(0.5f, 0.5f, 0.5f, 0.5f));
@@ -1095,7 +1114,7 @@ void seViewConstructedView::OnFrameUpdate(float elapsed){
 	// TODO?
 }
 
-void seViewConstructedView::GetSelectionBoundary(const sePropertyNodeList &list,
+void seViewConstructedView::GetSelectionBoundary(const sePropertyNode::List &list,
 decVector2 &minBounds, decVector2 &maxBounds){
 	const int count = list.GetCount();
 	int i;
@@ -1138,10 +1157,10 @@ const char *pathImage, float order) const{
 	path.AddComponent("images");
 	path.AddUnixPath(pathImage);
 	
-	deImage::Ref image(deImage::Ref::New(pWindowMain.GetEngine()->GetImageManager()->LoadImage(
-		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/")));
+	deImage::Ref image(pWindowMain.GetEngine()->GetImageManager()->LoadImage(
+		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/"));
 	
-	canvas.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage());
+	canvas = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage();
 	canvas->SetOrder(order);
 	canvas->SetVisible(false);
 	canvas->SetSize(decPoint(image->GetWidth(), image->GetHeight()));
@@ -1152,7 +1171,7 @@ void seViewConstructedView::pCreateDarkeningCanvas(deCanvasPaint::Ref &canvas, f
 	const decColor darkeningColor(0.0f, 0.0f, 0.0f);
 	const float darkeningAlpha = 0.5f; //0.25f
 	
-	canvas.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+	canvas = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint();
 	canvas->SetOrder(order);
 	canvas->SetShapeType(deCanvasPaint::estRectangle);
 	canvas->SetThickness(0.0f);
@@ -1166,31 +1185,31 @@ void seViewConstructedView::pCreateDarkeningCanvas(deCanvasPaint::Ref &canvas, f
 void seViewConstructedView::pRecreateContentCanvas(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView){
 	deCanvasManager &canvasManager = *pWindowMain.GetEngine()->GetCanvasManager();
 	const int activeLayer = GetActiveProperty()->GetActiveNodeLayer();
-	const int count = nodeGroup.GetNodeCount();
+	const int count = nodeGroup.GetNodes().GetCount();
 	deCanvas::Ref canvas;
 	int i;
 	
 	for(i=0; i<count; i++){
-		const sePropertyNode &node = *nodeGroup.GetNodeAt(i);
+		const sePropertyNode &node = *nodeGroup.GetNodes().GetAt(i);
 		if(activeLayer < node.GetPosition().z || activeLayer >= node.GetPosition().z + node.GetSize().z) {
 			continue;
 		}
 		
 		switch(node.GetNodeType()){
 		case sePropertyNodeImage::entImage:
-			canvas.TakeOver(canvasManager.CreateCanvasImage());
+			canvas = canvasManager.CreateCanvasImage();
 			break;
 			
 		case sePropertyNodeImage::entShape:
-			canvas.TakeOver(canvasManager.CreateCanvasPaint());
+			canvas = canvasManager.CreateCanvasPaint();
 			break;
 			
 		case sePropertyNodeImage::entText:
-			canvas.TakeOver(canvasManager.CreateCanvasText());
+			canvas = canvasManager.CreateCanvasText();
 			break;
 			
 		case sePropertyNodeImage::entGroup:
-			canvas.TakeOver(canvasManager.CreateCanvasView());
+			canvas = canvasManager.CreateCanvasView();
 			pRecreateContentCanvas((const sePropertyNodeGroup &)node, (deCanvasView&)(deCanvas&)canvas);
 			break;
 			
@@ -1203,7 +1222,7 @@ void seViewConstructedView::pRecreateContentCanvas(const sePropertyNodeGroup &no
 }
 
 void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView){
-	const int count = nodeGroup.GetNodeCount();
+	const int count = nodeGroup.GetNodes().GetCount();
 	if(count == 0){
 		return;
 	}
@@ -1214,7 +1233,7 @@ void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup
 	int i;
 	
 	for(i=0; i<count; i++){
-		const sePropertyNode &node = *nodeGroup.GetNodeAt(i);
+		const sePropertyNode &node = *nodeGroup.GetNodes().GetAt(i);
 		if(activeLayer < node.GetPosition().z || activeLayer >= node.GetPosition().z + node.GetSize().z) {
 			continue;
 		}

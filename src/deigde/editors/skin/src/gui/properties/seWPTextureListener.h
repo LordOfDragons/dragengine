@@ -35,6 +35,9 @@ class seWPTexture;
  * \brief Texture panel listener.
  */
 class seWPTextureListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPTextureListener> Ref;
+	
 private:
 	seWPTexture &pPanel;
 	

@@ -44,36 +44,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeGroup::sePropertyNodeGroup(deEngine &engine) :
+sePropertyNodeGroup::sePropertyNodeGroup(const deEngine &engine) :
 sePropertyNode(entGroup, engine, MappedCount),
-pProperty(NULL),
+pProperty(nullptr),
 pActiveGroup(false){
 }
 
 sePropertyNodeGroup::sePropertyNodeGroup(const sePropertyNodeGroup &node) :
 sePropertyNode(node),
-pProperty(NULL),
+pProperty(nullptr),
 pActiveGroup(false)
 {
-	const int count = node.pNodes.GetCount();
-	sePropertyNode *childNode = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			childNode = ((sePropertyNode*)node.pNodes.GetAt(i))->Copy();
-			pNodes.Add(childNode);
-			childNode->SetParent(this);
-			childNode = NULL;
-		}
-		
-	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
-		pNodes.RemoveAll();
-		throw;
-	}
+	node.pNodes.Visit([&](const sePropertyNode &child){
+		const sePropertyNode::Ref childNode(child.Copy());
+		pNodes.Add(childNode);
+		childNode->SetParent(this);
+	});
 }
 
 sePropertyNodeGroup::~sePropertyNodeGroup(){
@@ -108,22 +94,6 @@ void sePropertyNodeGroup::SetActiveGroup(bool active){
 
 
 
-int sePropertyNodeGroup::GetNodeCount() const{
-	return pNodes.GetCount();
-}
-
-sePropertyNode *sePropertyNodeGroup::GetNodeAt(int index) const{
-	return (sePropertyNode*)pNodes.GetAt(index);
-}
-
-bool sePropertyNodeGroup::HasNode(sePropertyNode *node) const{
-	return pNodes.Has(node);
-}
-
-int sePropertyNodeGroup::IndexOfNode(sePropertyNode *node) const{
-	return pNodes.IndexOf(node);
-}
-
 void sePropertyNodeGroup::AddNode(sePropertyNode *node){
 	if(!node || node->GetProperty()){
 		DETHROW(deeInvalidParam);
@@ -150,7 +120,7 @@ void sePropertyNodeGroup::RemoveNode(sePropertyNode *node){
 	seProperty * const property = GetProperty();
 	if(property){
 		if(property->GetNodeSelection().GetActive() == node){
-			property->GetNodeSelection().SetActive(NULL);
+			property->GetNodeSelection().SetActive(nullptr);
 		}
 	}
 	
@@ -158,7 +128,7 @@ void sePropertyNodeGroup::RemoveNode(sePropertyNode *node){
 		DETHROW(deeInvalidParam);
 	}
 	
-	node->SetParent(NULL);
+	node->SetParent(nullptr);
 	pNodes.Remove(node);
 	
 	NotifyStructreChanged();
@@ -166,18 +136,13 @@ void sePropertyNodeGroup::RemoveNode(sePropertyNode *node){
 
 void sePropertyNodeGroup::RemoveAllNodes(){
 	seProperty * const property = GetProperty();
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		sePropertyNode * const node = (sePropertyNode*)pNodes.GetAt(i);
-		
+	pNodes.Visit([&](sePropertyNode *node){
 		if(property && property->GetNodeSelection().GetActive() == node){
-			property->GetNodeSelection().SetActive(NULL);
+			property->GetNodeSelection().SetActive(nullptr);
 		}
 		
-		node->SetParent(NULL);
-	}
+		node->SetParent(nullptr);
+	});
 	
 	pNodes.RemoveAll();
 	
@@ -191,17 +156,13 @@ void sePropertyNodeGroup::MoveNode(sePropertyNode *node, int index){
 
 
 
-sePropertyNode *sePropertyNodeGroup::Copy() const{
-	return new sePropertyNodeGroup(*this);
+sePropertyNode::Ref sePropertyNodeGroup::Copy() const{
+	return sePropertyNodeGroup::Ref::New(*this);
 }
 
 void sePropertyNodeGroup::UpdateResources(){
 	sePropertyNode::UpdateResources();
-	
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((sePropertyNode*)pNodes.GetAt(i))->UpdateResources();
-	}
+	pNodes.Visit([&](sePropertyNode &node){
+		node.UpdateResources();
+	});
 }

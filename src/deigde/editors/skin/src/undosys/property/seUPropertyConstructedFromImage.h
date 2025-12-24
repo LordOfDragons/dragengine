@@ -26,12 +26,12 @@
 #define _SEUPROPERTYCONSTRUCTEDFROMIMAGE_H_
 
 #include "../../skin/property/seProperty.h"
+#include "../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -39,20 +39,21 @@ class sePropertyNodeGroup;
  * \brief Undo action property set constructed from image.
  */
 class seUPropertyConstructedFromImage : public igdeUndo{
-private:
-	seProperty *pProperty;
+public:
+	typedef deTObjectReference<seUPropertyConstructedFromImage> Ref;
 	
-	sePropertyNodeGroup *pOldContent;
-	sePropertyNodeGroup *pNewContent;
+	
+private:
+	seProperty::Ref pProperty;
+	
+	sePropertyNodeGroup::Ref pOldContent;
+	sePropertyNodeGroup::Ref pNewContent;
 	int pOldBitCount;
 	int pNewBitCount;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyConstructedFromImage> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

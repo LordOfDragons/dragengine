@@ -41,7 +41,7 @@
 seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property, const char *newName){
 	if(!property || !newName) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Renderable");
 	
@@ -49,13 +49,9 @@ seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property,
 	pNewName = newName;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetRenderableName::~seUPropertySetRenderableName(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

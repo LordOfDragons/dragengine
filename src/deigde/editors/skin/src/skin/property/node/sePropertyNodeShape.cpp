@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeShape::sePropertyNodeShape(deEngine &engine) :
+sePropertyNodeShape::sePropertyNodeShape(const deEngine &engine) :
 sePropertyNode(entShape, engine, ShapeMappedCount),
 pShapeType(deSkinPropertyNodeShape::estRectangle),
 pThickness(1.0f){
@@ -108,6 +108,6 @@ void sePropertyNodeShape::SetThickness(float thickness){
 
 
 
-sePropertyNode *sePropertyNodeShape::Copy() const{
-	return new sePropertyNodeShape(*this);
+sePropertyNode::Ref sePropertyNodeShape::Copy() const{
+	return sePropertyNodeShape::Ref::New(*this);
 }

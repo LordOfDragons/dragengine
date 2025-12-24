@@ -27,7 +27,7 @@
 
 #include "sePropertyNode.h"
 
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 /**
@@ -40,7 +40,7 @@ public:
 	
 private:
 	decString pPath;
-	deImage *pImage;
+	deImage::Ref pImage;
 	decPoint pRepeat;
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeImage(deEngine &engine);
+	sePropertyNodeImage(const deEngine &engine);
 	
 	/** \brief Create copy of node. */
 	sePropertyNodeImage(const sePropertyNodeImage &node);
@@ -68,8 +68,8 @@ public:
 	/** \brief Set image path or empty path if not set. */
 	void SetPath(const char *path);
 	
-	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or \em nullptr if not set. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();
@@ -86,7 +86,7 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	sePropertyNode *Copy() const override;
+	sePropertyNode::Ref Copy() const override;
 	
 	/** \brief Update resources. */
 	void UpdateResources() override;

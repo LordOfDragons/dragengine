@@ -40,7 +40,7 @@
 
 seUPropertyNodeTextSetText::seUPropertyNodeTextSetText(
 sePropertyNodeText *node, const char *newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetText();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetText::~seUPropertyNodeTextSetText(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

@@ -46,6 +46,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	seViewSkin &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
 	cCameraInteraction(seViewSkin &view) : pView(view){}
 	
 public:
@@ -68,16 +69,15 @@ public:
 
 seViewSkin::seViewSkin(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSkin(NULL)
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 }
 
 seViewSkin::~seViewSkin(){
-	SetSkin(NULL);
+	SetSkin(nullptr);
 }
 
 
@@ -93,18 +93,12 @@ void seViewSkin::SetSkin(seSkin *skin){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera(NULL);
+	pCameraInteraction->SetCamera(nullptr);
 	
-	SetRenderWorld(NULL);
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
+	SetRenderWorld(nullptr);
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		SetRenderWorld(skin->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(skin->GetCamera());
 	}

@@ -33,7 +33,7 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 // predefinitions
-class seSkyLayer;
+#include "../../sky/layer/seSkyLayer.h"
 class seProperty;
 
 
@@ -42,17 +42,18 @@ class seProperty;
  * \brief Undo Action Set Layer Property Curve.
  */
 class seUPropertySetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetCurve> Ref;
+	
+	
 private:
-	seSkyLayer *pLayer;
+	seSkyLayer::Ref pLayer;
 	seProperty *pProperty;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetCurve> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

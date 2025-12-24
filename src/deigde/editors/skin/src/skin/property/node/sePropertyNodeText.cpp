@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeText::sePropertyNodeText(deEngine &engine) :
+sePropertyNodeText::sePropertyNodeText(const deEngine &engine) :
 sePropertyNode(entText, engine, TextMappedCount),
 pTextSize(10.0f){
 }
@@ -98,7 +98,7 @@ void sePropertyNodeText::UpdateFont(){
 		const decString &basePath = GetProperty()->GetTexture()->GetSkin()->GetDirectoryPath();
 		
 		try{
-			pFont.TakeOver(GetEngine().GetFontManager()->LoadFont(pPath, basePath));
+			pFont = GetEngine().GetFontManager()->LoadFont(pPath, basePath);
 			
 		}catch(const deException &e){
 			GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException("Skin Editor", e);
@@ -140,8 +140,8 @@ void sePropertyNodeText::SetColor(const decColor &color){
 
 
 
-sePropertyNode *sePropertyNodeText::Copy() const{
-	return new sePropertyNodeText(*this);
+sePropertyNode::Ref sePropertyNodeText::Copy() const{
+	return sePropertyNodeText::Ref::New(*this);
 }
 
 void sePropertyNodeText::UpdateResources(){

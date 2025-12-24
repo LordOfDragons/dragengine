@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty *property) :
-pProperty(NULL)
+pProperty(nullptr)
 {
 	if(!property){
 		DETHROW(deeInvalidParam);
@@ -48,13 +48,9 @@ pProperty(NULL)
 	SetShortInfo("Property constructed tile Y");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

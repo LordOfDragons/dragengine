@@ -25,42 +25,39 @@
 #ifndef _SECLIPBOARDDATAPROPERTYNODE_H_
 #define _SECLIPBOARDDATAPROPERTYNODE_H_
 
+#include "../skin/property/node/sePropertyNode.h"
+
 #include <deigde/clipboard/igdeClipboardData.h>
-
-#include <dragengine/common/collection/decObjectList.h>
-
-class sePropertyNode;
-class sePropertyNodeList;
 
 
 
 /**
- * \brief Clipboard data property node.
+ * Clipboard data property node.
  */
 class seClipboardDataPropertyNode : public igdeClipboardData{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<seClipboardDataPropertyNode> Ref;
 	
-	/** \brief Type name. */
+	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	decObjectList pNodes;
+	sePropertyNode::List pNodes;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create clipboard data from selected nodes. */
-	seClipboardDataPropertyNode(const sePropertyNodeList &nodes);
+	/** Create clipboard data from selected nodes. */
+	explicit seClipboardDataPropertyNode(const sePropertyNode::List &nodes);
 	
 protected:
 	/**
-	 * \brief Clean up object.
+	 * Clean up object.
 	 * \note Subclasses should set their destructor protected too to avoid users
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
@@ -73,11 +70,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of nodes. */
-	int GetCount() const;
-	
-	/** \brief Node at index. */
-	const sePropertyNode &GetAt(int index) const;
+	/** Nodes. */
+	inline const sePropertyNode::List &GetNodes() const{ return pNodes; }
 	/*@}*/
 };
 

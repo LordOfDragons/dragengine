@@ -35,6 +35,9 @@ class seWPNode;
  * Node panel listener.
  */
 class seWPNodeListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPNodeListener> Ref;
+	
 private:
 	seWPNode &pPanel;
 	

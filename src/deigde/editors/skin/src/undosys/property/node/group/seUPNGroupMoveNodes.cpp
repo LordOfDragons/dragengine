@@ -38,54 +38,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
-pNode(NULL),
-pChildren(NULL),
-pCount(0)
-{
+seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node,
+const sePropertyNode::List &children){
 	if(!node || !node->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = children.GetCount();
-	if(count == 0){
+	if(children.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	try{
-		pChildren = new sNode[count];
-		
-		for(pCount=0; pCount<count; pCount++){
-			pChildren[pCount].node = children.GetAt(pCount);
-			pChildren[pCount].node->AddReference();
-			pChildren[pCount].index = node->IndexOfNode(pChildren[pCount].node);
-		}
-		
-		int i;
-		for(i=1; i<count; i++){
-			if(pChildren[i].index >= pChildren[i - 1].index){
-				continue;
-			}
-			
-			const sNode temp(pChildren[i - 1]);
-			pChildren[i - 1] = pChildren[i];
-			pChildren[i] = temp;
-			if(i > 1){
-				i--;
-			}
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	children.Visit([&](sePropertyNode *child){
+		const cNode::Ref unode(cNode::Ref::New());
+		unode->node = child;
+		unode->index = node->GetNodes().IndexOf(child);
+	});
+	
+	pChildren.Sort([](const cNode &a, const cNode &b){
+		return a.index < b.index ? -1 : (a.index > b.index ? 1 : 0);
+	});
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupMoveNodes::~seUPNGroupMoveNodes(){
-	pCleanUp();
 }
 
 
@@ -94,32 +70,5 @@ seUPNGroupMoveNodes::~seUPNGroupMoveNodes(){
 ///////////////
 
 bool seUPNGroupMoveNodes::HasAnyEffect() const{
-	return pCount > 0;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUPNGroupMoveNodes::pCleanUp(){
-	pClearChildNodes();
-	if(pNode){
-		pNode->FreeReference();
-	}
-}
-
-void seUPNGroupMoveNodes::pClearChildNodes(){
-	if(!pChildren){
-		return;
-	}
-	
-	int i;
-	for(i=0; i<pCount; i++){
-		pChildren[i].node->FreeReference();
-	}
-	delete [] pChildren;
-	pChildren = NULL;
-	
-	pCount = 0;
+	return pChildren.IsNotEmpty();
 }

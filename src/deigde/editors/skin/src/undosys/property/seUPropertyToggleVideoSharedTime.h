@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,15 +35,16 @@ class seProperty;
  * \brief Undo action property toggle video shared time.
  */
 class seUPropertyToggleVideoSharedTime : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyToggleVideoSharedTime> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyToggleVideoSharedTime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

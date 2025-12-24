@@ -26,6 +26,7 @@
 #define _SEDYNAMICSKINRENDERABLE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
@@ -45,6 +46,9 @@ class seDynamicSkinRenderable : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seDynamicSkinRenderable> Ref;
+	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seDynamicSkinRenderable> List;
 	
 	
 	/** Renderable types. */
@@ -97,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable. */
-	seDynamicSkinRenderable(deEngine *engine, const char *name = "Renderable");
+	explicit seDynamicSkinRenderable(deEngine *engine, const char *name = "Renderable");
 	/** Cleans up the renderable. */
 	virtual ~seDynamicSkinRenderable();
 	/*@}*/
@@ -107,9 +111,9 @@ public:
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
-	/** Retrieves the parent dynamic skin or NULL if there is none. */
+	/** Retrieves the parent dynamic skin or nullptr if there is none. */
 	inline seDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
-	/** Sets the parent dynamic skin or NULL if there is none. */
+	/** Sets the parent dynamic skin or nullptr if there is none. */
 	void SetDynamicSkin(seDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the name. */
@@ -182,8 +186,8 @@ public:
 	inline const decString &GetImagePath() const{ return pPathImage; }
 	/** Sets the image path. */
 	void SetImagePath(const char *imagePath);
-	/** Retrieves the engine image or NULL if not set. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	/** Retrieves the engine image or nullptr if not set. */
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	/** Update image. */
 	void UpdateImage();
 	
@@ -197,10 +201,10 @@ public:
 	inline const decString &GetVideoPath() const{ return pPathVideo; }
 	/** Sets the video path. */
 	void SetVideoPath(const char *videoPath);
-	/** Retrieves the engine video or NULL if not set. */
-	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
-	/** Retrieves the engine video player or NULL if not set. */
-	inline deVideoPlayer *GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
+	/** Retrieves the engine video or nullptr if not set. */
+	inline const deVideo::Ref &GetEngineVideo() const{ return pEngVideo; }
+	/** Retrieves the engine video player or nullptr if not set. */
+	inline const deVideoPlayer::Ref &GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
 	/** Update video. */
 	void UpdateVideo();
 	

@@ -25,11 +25,11 @@
 #ifndef _SEUPNGROUPREMOVENODES_H_
 #define _SEUPNGROUPREMOVENODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -37,26 +37,32 @@ class sePropertyNodeGroup;
  * \brief Undo action property node group add node.
  */
 class seUPNGroupRemoveNodes : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPNGroupRemoveNodes> Ref;
+	
+	
 private:
-	struct sNode{
-		sePropertyNode *node;
-		int index;
+	class cNode : public deObject{
+	public:
+		typedef deTObjectReference<cNode> Ref;
+		typedef decTObjectOrderedSet<cNode> List;
+		
+		sePropertyNode::Ref node;
+		int index = -1;
+		
+		cNode() = default;
 	};
 	
-	sePropertyNodeGroup *pNode;
-	sNode *pChildren;
-	int pCount;
+	sePropertyNodeGroup::Ref pNode;
+	cNode::List pChildren;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPNGroupRemoveNodes> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupRemoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children);
+	seUPNGroupRemoveNodes(sePropertyNodeGroup *node, const sePropertyNode::List &children);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -74,11 +80,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

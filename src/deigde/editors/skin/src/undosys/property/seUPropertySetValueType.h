@@ -35,16 +35,17 @@
  * \brief Undo Action Property Set Value Type.
  */
 class seUPropertySetValueType : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetValueType> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	seProperty::eValueTypes pOldType;
 	seProperty::eValueTypes pNewType;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetValueType> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

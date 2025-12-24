@@ -42,7 +42,7 @@
 seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 	if(!texture || !newName) DETHROW(deeInvalidParam);
 	
-	pTexture = NULL;
+	pTexture = nullptr;
 	
 	SetShortInfo("Set Texture Name");
 	
@@ -50,11 +50,9 @@ seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 	pNewName = newName;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUTextureSetName::~seUTextureSetName(){
-	if(pTexture) pTexture->FreeReference();
 }
 
 

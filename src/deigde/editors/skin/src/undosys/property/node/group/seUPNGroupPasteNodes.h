@@ -25,11 +25,11 @@
 #ifndef _SEUPNGROUPPASTENODES_H_
 #define _SEUPNGROUPPASTENODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 class seClipboardDataPropertyNode;
 
 
@@ -38,17 +38,18 @@ class seClipboardDataPropertyNode;
  * \brief Undo action property node paste nodes.
  */
 class seUPNGroupPasteNodes : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPNGroupPasteNodes> Ref;
+	
+	
 private:
-	sePropertyNodeGroup *pGroup;
-	sePropertyNodeList pNodes;
+	sePropertyNodeGroup::Ref pGroup;
+	sePropertyNode::List pNodes;
 	int pLayer;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPNGroupPasteNodes> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

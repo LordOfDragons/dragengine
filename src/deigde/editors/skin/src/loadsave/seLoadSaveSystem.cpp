@@ -57,7 +57,7 @@
 seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	pLSSkins = NULL;
+	pLSSkins = nullptr;
 	pLSSkinCount = 0;
 	pLSSkinSize = 0;
 	
@@ -124,9 +124,7 @@ void seLoadSaveSystem::AddLSSkin(seLoadSaveSkin *lsSkin){
 	
 	if(pLSSkinCount == pLSSkinSize){
 		int newSize = pLSSkinSize * 3 / 2 + 1;
-		seLoadSaveSkin **newArray = new seLoadSaveSkin*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pLSSkins){
+		seLoadSaveSkin **newArray = new seLoadSaveSkin*[newSize];		if(pLSSkins){
 			memcpy(newArray, pLSSkins, sizeof(seLoadSaveSkin*) * pLSSkinSize);
 			delete [] pLSSkins;
 		}
@@ -162,7 +160,7 @@ void seLoadSaveSystem::UpdateLSSkins(){
 	deModuleSystem *modSys = engine->GetModuleSystem();
 	int m, moduleCount = modSys->GetModuleCount();
 	deLoadableModule *loadableModule;
-	seLoadSaveSkin *lsSkin = NULL;
+	seLoadSaveSkin *lsSkin = nullptr;
 	
 	// remove all load save skins
 	RemoveAllLSSkins();
@@ -177,7 +175,6 @@ void seLoadSaveSystem::UpdateLSSkins(){
 			if(!loadableModule->IsLoaded()) continue;
 			
 			lsSkin = new seLoadSaveSkin((deBaseSkinModule*)loadableModule->GetModule());
-			if(!lsSkin) DETHROW(deeOutOfMemory);
 			
 			AddLSSkin(lsSkin);
 			lsSkin = NULL;
@@ -191,35 +188,19 @@ void seLoadSaveSystem::UpdateLSSkins(){
 
 
 
-seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
+seSkin::Ref seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
 	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileReader *fileReader = NULL;
-	seSkin *skin = NULL;
-	decPath path;
 	int lsIndex;
 	
 	lsIndex = IndexOfLSSkinMatching(filename);
 	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix(filename);
+	const seSkin::Ref skin(seSkin::Ref::New(&pWindowMain.GetEnvironment()));
+	skin->SetFilePath(filename); // required here so the relative path can be resolved properly
 	
-	try{
-		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
-		
-		skin = new seSkin(&pWindowMain.GetEnvironment());
-		skin->SetFilePath(filename); // required here so the relative path can be resolved properly
-		
-		pLSSkins[lsIndex]->LoadSkin(skin, fileReader, *pWindowMain.GetEnvironment().GetTexturePropertyList());
-		fileReader->FreeReference();
-	
-	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(skin) skin->FreeReference();
-		throw;
-	}
+	pLSSkins[lsIndex]->LoadSkin(skin, engine->GetVirtualFileSystem()->OpenFileForReading(
+		decPath::CreatePathUnix(filename)), pWindowMain.GetEnvironment().GetTexturePropertyList());
 	
 	skin->SetSaved(true);
 	skin->SetChanged(false);
@@ -230,30 +211,14 @@ seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gam
 void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
 	if(!skin || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
 	int lsIndex;
 	
 	lsIndex = IndexOfLSSkinMatching(filename);
 	if(lsIndex == -1) DETHROW(deeInvalidParam);
 	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting(path);
-		
-		skin->SetFilePath(filename); // required here so the relative path can be resolved properly
-		
-		pLSSkins[lsIndex]->SaveSkin(skin, fileWriter);
-		
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	skin->SetFilePath(filename); // required here so the relative path can be resolved properly
+	pLSSkins[lsIndex]->SaveSkin(skin, engine->GetVirtualFileSystem()->OpenFileForWriting(
+		decPath::CreatePathUnix(filename)));
 	
 	skin->SetSaved(true);
 	skin->SetChanged(false);

@@ -33,6 +33,8 @@
  */
 class seUMappedDuplicate : public seUMappedAdd{
 public:
+	typedef deTObjectReference<seUMappedDuplicate> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

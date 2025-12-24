@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,15 +35,16 @@ class seProperty;
  * \brief Undo action property constructed toggle tile y.
  */
 class seUPropertyConstructedToggleTileY : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyConstructedToggleTileY> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyConstructedToggleTileY> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

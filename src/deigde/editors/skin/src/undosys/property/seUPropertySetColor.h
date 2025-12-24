@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -37,16 +37,17 @@ class seProperty;
  * \brief Undo Action Property Set Color.
  */
 class seUPropertySetColor : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetColor> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decColor pOldColor;
 	decColor pNewColor;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetColor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

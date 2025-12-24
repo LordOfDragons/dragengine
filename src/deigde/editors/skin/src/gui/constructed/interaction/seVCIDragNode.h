@@ -70,6 +70,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<seVCIDragNode> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

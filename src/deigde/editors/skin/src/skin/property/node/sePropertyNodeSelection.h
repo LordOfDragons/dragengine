@@ -25,7 +25,7 @@
 #ifndef _SEPROPERTYNODESELECTION_H_
 #define _SEPROPERTYNODESELECTION_H_
 
-#include "sePropertyNodeList.h"
+#include "sePropertyNode.h"
 
 class seProperty;
 
@@ -37,8 +37,8 @@ class seProperty;
 class sePropertyNodeSelection{
 private:
 	seProperty &pProperty;
-	sePropertyNodeList pSelection;
-	sePropertyNode *pActive;
+	sePropertyNode::List pSelection;
+	sePropertyNode::Ref pActive;
 	
 	
 	
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create selection. */
-	sePropertyNodeSelection(seProperty &property);
+	explicit sePropertyNodeSelection(seProperty &property);
 	
 	/** \brief Clean up selection. */
 	~sePropertyNodeSelection();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of selected nodes. */
-	inline const sePropertyNodeList &GetSelected() const{ return pSelection; }
+	inline const sePropertyNode::List &GetSelected() const{ return pSelection; }
 	
 	/** \brief Add node to selection if absent. */
 	void Add(sePropertyNode *node);
@@ -69,17 +69,17 @@ public:
 	void RemoveAll();
 	
 	/** \brief Set list of selected nodes. */
-	void SetSelected(const sePropertyNodeList &list);
+	void SetSelected(const sePropertyNode::List &list);
 	
 	
 	
-	/** \brief Active node or \em NULL if absent. */
-	inline sePropertyNode *GetActive() const{ return pActive; }
+	/** \brief Active node or \em nullptr if absent. */
+	inline const sePropertyNode::Ref &GetActive() const{ return pActive; }
 	
 	/** \brief Active node is present. */
 	bool HasActive() const;
 	
-	/** \brief Set active node or \em NULL if absent. */
+	/** \brief Set active node or \em nullptr if absent. */
 	void SetActive(sePropertyNode *navspaces);
 	
 	

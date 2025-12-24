@@ -43,21 +43,16 @@
 seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 	if(!skin || !texture) DETHROW(deeInvalidParam);
 	
-	pSkin = NULL;
-	pTexture = NULL;
+	pSkin = nullptr;
+	pTexture = nullptr;
 	
 	SetShortInfo("Add Texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 seUTextureAdd::~seUTextureAdd(){
-	if(pTexture) pTexture->FreeReference();
-	if(pSkin) pSkin->FreeReference();
 }
 
 

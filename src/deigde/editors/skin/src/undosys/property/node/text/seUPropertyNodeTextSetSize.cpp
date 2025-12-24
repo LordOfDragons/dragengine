@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetSize::seUPropertyNodeTextSetSize(sePropertyNodeText *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetTextSize();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetSize::~seUPropertyNodeTextSetSize(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

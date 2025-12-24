@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,16 +35,17 @@ class seProperty;
  * \brief Undo action property constructed set bit count.
  */
 class seUPropertyConstructedSetBitCount : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyConstructedSetBitCount> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	int pOldValue;
 	int pNewValue;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyConstructedSetBitCount> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetTransparency::seUPropertyNodeSetTransparency(sePropertyNode *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetTransparency();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetTransparency::~seUPropertyNodeSetTransparency(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

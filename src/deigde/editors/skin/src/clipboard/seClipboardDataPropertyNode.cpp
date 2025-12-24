@@ -25,7 +25,6 @@
 
 #include "seClipboardDataPropertyNode.h"
 #include "../skin/property/node/sePropertyNode.h"
-#include "../skin/property/node/sePropertyNodeList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,32 +38,14 @@ const char * const seClipboardDataPropertyNode::TYPE_NAME = "property-node";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataPropertyNode::seClipboardDataPropertyNode(const sePropertyNodeList &nodes) :
+seClipboardDataPropertyNode::seClipboardDataPropertyNode(const sePropertyNode::List &nodes) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = nodes.GetCount();
-	if(count == 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(nodes.IsNotEmpty())
 	
-	sePropertyNode *node = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			node = nodes.GetAt(i)->Copy();
-			pNodes.Add(node);
-			node->FreeReference();
-			node = NULL;
-		}
-		
-	}catch(const deException &){
-		if(node){
-			node->FreeReference();
-		}
-		pNodes.RemoveAll();
-		throw;
-	}
+	nodes.Visit([&](const sePropertyNode &node){
+		pNodes.Add(node.Copy());
+	});
 }
 
 seClipboardDataPropertyNode::~seClipboardDataPropertyNode(){
@@ -74,11 +55,3 @@ seClipboardDataPropertyNode::~seClipboardDataPropertyNode(){
 
 // Management
 ///////////////
-
-int seClipboardDataPropertyNode::GetCount() const{
-	return pNodes.GetCount();
-}
-
-const sePropertyNode &seClipboardDataPropertyNode::GetAt(int index) const{
-	return *((const sePropertyNode *)pNodes.GetAt(index));
-}

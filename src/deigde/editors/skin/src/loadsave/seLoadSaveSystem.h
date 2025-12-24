@@ -25,9 +25,10 @@
 #ifndef _SELOADSAVESYSTEM_H_
 #define _SELOADSAVESYSTEM_H_
 
+#include "../skin/seSkin.h"
+
 class seLoadSaveSkin;
 class seWindowMain;
-class seSkin;
 class igdeGameDefinition;
 
 
@@ -77,7 +78,7 @@ public:
 	void UpdateLSSkins();
 	
 	/** Loads the skin from file if possible. */
-	seSkin *LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
+	seSkin::Ref LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the skin to file if possible. */
 	void SaveSkin(seSkin *skin, const char *filename);
 	/*@}*/

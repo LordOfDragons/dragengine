@@ -77,7 +77,7 @@ bool seVCIDragNode::OnDragBegin(){
 		return 0;
 	}
 	
-	pUndo = NULL;
+	pUndo = nullptr;
 	
 	// check if a marker is clicked
 	const decPoint &position = GetDragOrigin();
@@ -221,7 +221,7 @@ void seVCIDragNode::OnDragUpdate(){
 }
 
 void seVCIDragNode::OnDragFinish(bool){
-	pUndo = NULL;
+	pUndo = nullptr;
 	pDragAction = edaNone;
 }
 
@@ -250,7 +250,7 @@ void seVCIDragNode::pMove(){
 			return;
 		}
 		
-		pUndo.TakeOver(new seUPropertyNodesDrag(property->GetNodeSelection().GetSelected()));
+		pUndo = seUPropertyNodesDrag::Ref::New(property->GetNodeSelection().GetSelected());
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
@@ -296,7 +296,7 @@ void seVCIDragNode::pRotate(){
 			- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
 		const decVector2 pivot(matrix * (size * 0.5f));
 		
-		pUndo.TakeOver(new seUPropertyNodesRotate(selection.GetSelected(), pivot, origin));
+		pUndo = seUPropertyNodesRotate::Ref::New(selection.GetSelected(), pivot, origin);
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
@@ -421,8 +421,8 @@ void seVCIDragNode::pResize(){
 	}
 	
 	if(!pUndo){
-		pUndo.TakeOver(new seUPropertyNodesResize(selection.GetSelected(),
-			pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
+		pUndo = seUPropertyNodesResize::Ref::New(selection.GetSelected(),
+			pivot, origin, matrix.GetRotation(), matrix.GetShearing());
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
@@ -542,8 +542,8 @@ void seVCIDragNode::pShear(){
 	}
 	
 	if(!pUndo){
-		pUndo.TakeOver(new seUPropertyNodesShear(selection.GetSelected(),
-				pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
+		pUndo = seUPropertyNodesShear::Ref::New(selection.GetSelected(),
+				pivot, origin, matrix.GetRotation(), matrix.GetShearing());
 		pView.GetSkin()->GetUndoSystem()->Add(pUndo);
 	}
 	

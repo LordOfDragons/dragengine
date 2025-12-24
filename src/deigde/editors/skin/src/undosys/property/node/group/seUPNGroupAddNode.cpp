@@ -41,8 +41,8 @@
 
 seUPNGroupAddNode::seUPNGroupAddNode(
 sePropertyNodeGroup *node, sePropertyNode *child) :
-pNode(NULL),
-pChild(NULL)
+
+pChild(nullptr)
 {
 	if(!node || !node->GetProperty() || !child || child->GetProperty()){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pChild(NULL)
 	SetShortInfo("Node group add node");
 	
 	pNode = node;
-	node->AddReference();
-	
 	pChild = child;
-	child->AddReference();
 }
 
 seUPNGroupAddNode::~seUPNGroupAddNode(){
-	if(pChild){
-		pChild->FreeReference();
-	}
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

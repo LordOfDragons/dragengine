@@ -26,11 +26,11 @@
 #ifndef _SEUPROPERTYADD_H_
 #define _SEUPROPERTYADD_H_
 
-#include "../../skin/property/sePropertyList.h"
+#include "../../skin/property/seProperty.h"
+#include "../../skin/texture/seTexture.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
 
 
 
@@ -38,18 +38,19 @@ class seTexture;
  * \brief Undo Action Add Property.
  */
 class seUPropertyAdd : public igdeUndo{
-private:
-	sePropertyList pProperties;
-	seTexture *pTexture;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seUPropertyAdd> Ref;
 	
+	
+private:
+	seProperty::List pProperties;
+	seTexture::Ref pTexture;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyAdd(seTexture *texture, const sePropertyList &properties);
+	seUPropertyAdd(seTexture *texture, const seProperty::List &properties);
 	
 protected:
 	/** \brief Clean up undo. */

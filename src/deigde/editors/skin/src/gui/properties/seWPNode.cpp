@@ -115,11 +115,12 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(seWPNode &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
@@ -128,15 +129,15 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(skin, texture, property, node)));
+		igdeUndo::Ref undo(OnAction(skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
+	virtual igdeUndo::Ref OnAction(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
@@ -161,6 +162,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -172,13 +174,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*textField, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -187,6 +189,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
 	cBaseEditPathListener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -198,13 +201,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editPath, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*editPath, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -213,6 +216,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseColorBoxListener> Ref;
 	cBaseColorBoxListener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -224,13 +228,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*colorBox, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*colorBox, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -239,6 +243,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPoint3Listener> Ref;
 	cBaseEditPoint3Listener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnPoint3Changed(igdeEditPoint3 *editPoint3){
@@ -250,13 +255,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editPoint3, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*editPoint3, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint3 &editPoint3, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint3 &editPoint3, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -265,6 +270,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPointListener> Ref;
 	cBaseEditPointListener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnPointChanged(igdeEditPoint *editPoint){
@@ -276,13 +282,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editPoint, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*editPoint, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint &editPoint, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint &editPoint, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -291,6 +297,7 @@ protected:
 	seWPNode &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -302,13 +309,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, skin, texture, property, node)));
+		igdeUndo::Ref undo(OnChanged(*comboBox, skin, texture, property, node));
 		if(undo){
 			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin *skin,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, seSkin *skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -319,6 +326,7 @@ protected:
 	bool &pPreventUpdate;
 	
 public:
+	typedef deTObjectReference<cTreeOutliner> Ref;
 	cTreeOutliner(seWPNode &panel, bool &preventUpdate) :
 	pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -333,7 +341,7 @@ public:
 		}
 		
 		igdeTreeItem * const item = treeList->GetSelection();
-		sePropertyNode *node = NULL;
+		sePropertyNode *node = nullptr;
 		if(item){
 			node = (sePropertyNode*)item->GetData();
 			if(!node){
@@ -382,94 +390,102 @@ public:
 
 class cEditPosition : public cBaseEditPoint3Listener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(seWPNode &panel) : cBaseEditPoint3Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint3 &editPoint3, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint3 &editPoint3, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetPosition() != editPoint3.GetPoint3()
-			? new seUPropertyNodeSetPosition(node, editPoint3.GetPoint3()) : NULL;
+			? seUPropertyNodeSetPosition::Ref::New(node, editPoint3.GetPoint3()) : igdeUndo::Ref();
 	}
 };
 
 class cEditSize : public cBaseEditPoint3Listener{
 public:
+	typedef deTObjectReference<cEditSize> Ref;
 	cEditSize(seWPNode &panel) : cBaseEditPoint3Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint3 &editPoint3, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint3 &editPoint3, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetSize() != editPoint3.GetPoint3()
-			? new seUPropertyNodeSetSize(node, editPoint3.GetPoint3()) : NULL;
+			? seUPropertyNodeSetSize::Ref::New(node, editPoint3.GetPoint3()) : igdeUndo::Ref();
 	}
 };
 
 class cTextRotation : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRotation> Ref;
 	cTextRotation(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return fabsf(node->GetRotation() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeSetRotation(node, value) : NULL;
+			? seUPropertyNodeSetRotation::Ref::New(node, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextShearing : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextShearing> Ref;
 	cTextShearing(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return fabsf(node->GetShearing() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeSetShear(node, value) : NULL;
+			? seUPropertyNodeSetShear::Ref::New(node, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextBrightness : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBrightness> Ref;
 	cTextBrightness(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return fabsf(node->GetBrightness() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeSetBrightness(node, value) : NULL;
+			? seUPropertyNodeSetBrightness::Ref::New(node, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextContrast : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextContrast> Ref;
 	cTextContrast(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return fabsf(node->GetContrast() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeSetContrast(node, value) : NULL;
+			? seUPropertyNodeSetContrast::Ref::New(node, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextGamma : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextGamma> Ref;
 	cTextGamma(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return fabsf(node->GetGamma() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeSetGamma(node, value) : NULL;
+			? seUPropertyNodeSetGamma::Ref::New(node, value) : igdeUndo::Ref();
 	}
 };
 
 class cColorColorize : public cBaseColorBoxListener{
 public:
+	typedef deTObjectReference<cColorColorize> Ref;
 	cColorColorize(seWPNode &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return !node->GetColorize().IsEqualTo(colorBox.GetColor())
-			? new seUPropertyNodeSetColorize(node, colorBox.GetColor()) : NULL;
+			? seUPropertyNodeSetColorize::Ref::New(node, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
@@ -478,6 +494,7 @@ class cSliderTransparency : public igdeEditSliderTextListener{
 	igdeUndo::Ref pUndo;
 	
 public:
+	typedef deTObjectReference<cSliderTransparency> Ref;
 	cSliderTransparency(seWPNode &panel) : pPanel(panel){}
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
@@ -494,10 +511,10 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver(new seUPropertyNodeSetTransparency(node, sliderText->GetValue()));
+			pUndo = seUPropertyNodeSetTransparency::Ref::New(node, sliderText->GetValue());
 			skin->GetUndoSystem()->Add(pUndo);
 		}
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
@@ -514,7 +531,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver(new seUPropertyNodeSetTransparency(node, sliderText->GetValue()));
+			pUndo = seUPropertyNodeSetTransparency::Ref::New(node, sliderText->GetValue());
 			skin->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -522,124 +539,133 @@ public:
 
 class cComboCombineMode : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCombineMode> Ref;
 	cComboCombineMode(seWPNode &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		if(!comboBox.GetSelectedItem()){
-			return NULL;
+			return {};
 		}
 		deSkinPropertyNode::eCombineModes value = (deSkinPropertyNode::eCombineModes)
 			(intptr_t)comboBox.GetSelectedItem()->GetData();
 		
-		return node->GetCombineMode() != value ? new seUPropertyNodeSetCombineMode(node, value) : NULL;
+		return node->GetCombineMode() != value ? seUPropertyNodeSetCombineMode::Ref::New(node, value) : seUPropertyNodeSetCombineMode::Ref();
 	}
 };
 
 
 class cPathImage : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathImage> Ref;
 	cPathImage(seWPNode &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entImage
 			&& ((sePropertyNodeImage*)node)->GetPath() != editPath.GetPath()
-			? new seUPropertyNodeImageSetPath((sePropertyNodeImage*)node, editPath.GetPath()) : NULL;
+			? seUPropertyNodeImageSetPath::Ref::New((sePropertyNodeImage*)node, editPath.GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cEditImageRepeat : public cBaseEditPointListener{
 public:
+	typedef deTObjectReference<cEditImageRepeat> Ref;
 	cEditImageRepeat(seWPNode &panel) : cBaseEditPointListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint &editPoint, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint &editPoint, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const decPoint repeat(editPoint.GetPoint().Largest(decPoint(1, 1)));
 		return node->GetNodeType() == sePropertyNode::entImage
 			&& ((sePropertyNodeImage*)node)->GetRepeat() != repeat
-			? new seUPropertyNodeImageSetRepeat((sePropertyNodeImage*)node, repeat) : nullptr;
+			? seUPropertyNodeImageSetRepeat::Ref::New((sePropertyNodeImage*)node, repeat) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboShapeType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboShapeType> Ref;
 	cComboShapeType(seWPNode &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		if(!comboBox.GetSelectedItem() || node->GetNodeType() != sePropertyNode::entShape){
-			return NULL;
+			return {};
 		}
 		deSkinPropertyNodeShape::eShapeTypes value = (deSkinPropertyNodeShape::eShapeTypes)
 			(intptr_t)comboBox.GetSelectedItem()->GetData();
 		
 		return ((sePropertyNodeShape*)node)->GetShapeType() != value
-			? new seUPropertyNodeShapeSetType((sePropertyNodeShape*)node, value) : NULL;
+			? seUPropertyNodeShapeSetType::Ref::New((sePropertyNodeShape*)node, value) : igdeUndo::Ref();
 	}
 };
 
 class cColorShapeLineColor : public cBaseColorBoxListener{
 public:
+	typedef deTObjectReference<cColorShapeLineColor> Ref;
 	cColorShapeLineColor(seWPNode &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entShape
 			&& !((sePropertyNodeShape*)node)->GetLineColor().IsEqualTo(colorBox.GetColor())
-			? new seUPropertyNodeShapeSetLineColor((sePropertyNodeShape*)node, colorBox.GetColor()) : NULL;
+			? seUPropertyNodeShapeSetLineColor::Ref::New((sePropertyNodeShape*)node, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
 class cColorShapeFillColor : public cBaseColorBoxListener{
 public:
+	typedef deTObjectReference<cColorShapeFillColor> Ref;
 	cColorShapeFillColor(seWPNode &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entShape
 			&& !((sePropertyNodeShape*)node)->GetFillColor().IsEqualTo(colorBox.GetColor())
-			? new seUPropertyNodeShapeSetFillColor((sePropertyNodeShape*)node, colorBox.GetColor()) : NULL;
+			? seUPropertyNodeShapeSetFillColor::Ref::New((sePropertyNodeShape*)node, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
 class cColorShapeThickness : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cColorShapeThickness> Ref;
 	cColorShapeThickness(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return node->GetNodeType() == sePropertyNode::entShape
 			&& fabsf(((sePropertyNodeShape*)node)->GetThickness() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeShapeSetThickness((sePropertyNodeShape*)node, value) : NULL;
+			? seUPropertyNodeShapeSetThickness::Ref::New((sePropertyNodeShape*)node, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cEditPathFont : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditPathFont> Ref;
 	cEditPathFont(seWPNode &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entText
 			&& ((sePropertyNodeText*)node)->GetPath() != editPath.GetPath()
-			? new seUPropertyNodeTextSetPath((sePropertyNodeText*)node, editPath.GetPath()) : NULL;
+			? seUPropertyNodeTextSetPath::Ref::New((sePropertyNodeText*)node, editPath.GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cTextFontSize : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextFontSize> Ref;
 	cTextFontSize(seWPNode &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		const float value = textField.GetFloat();
 		return node->GetNodeType() == sePropertyNode::entText
 			&& fabsf(((sePropertyNodeText*)node)->GetTextSize() - value) > FLOAT_SAFE_EPSILON
-			? new seUPropertyNodeTextSetSize((sePropertyNodeText*)node, value) : NULL;
+			? seUPropertyNodeTextSetSize::Ref::New((sePropertyNodeText*)node, value) : igdeUndo::Ref();
 	}
 };
 
@@ -647,17 +673,18 @@ class cTextText : public igdeTextFieldListener{
 	seWPNode &pPanel;
 	igdeUndo::Ref pUndo;
 public:
+	typedef deTObjectReference<cTextText> Ref;
 	cTextText(seWPNode &panel) : pPanel(panel){}
 	
 	sePropertyNodeText *GetNodeText() const{
 		return pPanel.GetNode() && pPanel.GetNode()->GetNodeType() == sePropertyNode::entText
-			? (sePropertyNodeText*)pPanel.GetNode() : NULL;
+			? (sePropertyNodeText*)pPanel.GetNode() : nullptr;
 	}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		if(GetNodeText()){
 			UpdateChanged(textField->GetText(), GetNodeText());
-			pUndo = NULL;
+			pUndo = nullptr;
 		}
 	}
 	
@@ -677,7 +704,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver(new seUPropertyNodeTextSetText(node, text));
+			pUndo = seUPropertyNodeTextSetText::Ref::New(node, text);
 			pPanel.GetSkin()->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -685,13 +712,14 @@ public:
 
 class cColorText : public cBaseColorBoxListener{
 public:
+	typedef deTObjectReference<cColorText> Ref;
 	cColorText(seWPNode &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node){
 		return node->GetNodeType() == sePropertyNode::entText
 			&& !((sePropertyNodeText*)node)->GetColor().IsEqualTo(colorBox.GetColor())
-			? new seUPropertyNodeTextSetColor((sePropertyNodeText*)node, colorBox.GetColor()) : NULL;
+			? seUPropertyNodeTextSetColor::Ref::New((sePropertyNodeText*)node, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
@@ -700,6 +728,7 @@ public:
 class cComboMappedType : public igdeComboBoxListener{
 	seWPNode &pPanel;
 public:
+	typedef deTObjectReference<cComboMappedType> Ref;
 	cComboMappedType(seWPNode &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox*) override{
@@ -711,6 +740,7 @@ class cComboMappedTarget : public igdeComboBoxListener{
 	seWPNode &pPanel;
 	bool &pPreventUpdate;
 public:
+	typedef deTObjectReference<cComboMappedTarget> Ref;
 	cComboMappedTarget(seWPNode &panel, bool &preventUpdate) :
 	pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -734,7 +764,7 @@ public:
 			return;
 		}
 		
-		skin->GetUndoSystem()->Add(seUPropertyNodeSetMapped::Ref::NewWith(node, type, newMapped));
+		skin->GetUndoSystem()->Add(seUPropertyNodeSetMapped::Ref::New(node, type, newMapped));
 	}
 };
 
@@ -751,25 +781,23 @@ public:
 seWPNode::seWPNode(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pSkin(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPNodeListener(*this);
+	pListener = seWPNodeListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// outliner
-	helper.TreeList(content, pTreeOutline, 10, "Outliner", new cTreeOutliner(*this, pPreventUpdate));
+	helper.TreeList(content, pTreeOutline, 10, "Outliner", cTreeOutliner::Ref::New(*this, pPreventUpdate));
 	
-	helper.EditString(content, "", pLabSelection, NULL);
+	helper.EditString(content, "", pLabSelection, {});
 	pLabSelection->SetEditable(false);
 	
 	
@@ -777,24 +805,24 @@ pPreventUpdate(false)
 	helper.GroupBox(content, groupBox, "Node:");
 	
 	helper.EditPoint3(groupBox, "Position:", "Position of node center",
-		pEditPosition, new cEditPosition(*this));
-	helper.EditPoint3(groupBox, "Size:", "Size of node center", pEditSize, new cEditSize(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditPoint3(groupBox, "Size:", "Size of node center", pEditSize, cEditSize::Ref::New(*this));
 	helper.EditFloat(groupBox, "Rotation:", "Counter clock-wise rotation of node",
-		pEditRotation, new cTextRotation(*this));
+		pEditRotation, cTextRotation::Ref::New(*this));
 	helper.EditFloat(groupBox, "Shear:", "Shearing of node in degrees along X direction",
-		pEditShear, new cTextShearing(*this));
-	helper.EditFloat(groupBox, "Brightness:", "Brightness", pEditBrightness, new cTextBrightness(*this));
-	helper.EditFloat(groupBox, "Contrast:", "Contrast", pEditContrast, new cTextContrast(*this));
-	helper.EditFloat(groupBox, "Gamma:", "Gamma", pEditGamma, new cTextGamma(*this));
-	helper.ColorBox(groupBox, "Colorize:", "Colorize", pClrColorize, new cColorColorize(*this));
+		pEditShear, cTextShearing::Ref::New(*this));
+	helper.EditFloat(groupBox, "Brightness:", "Brightness", pEditBrightness, cTextBrightness::Ref::New(*this));
+	helper.EditFloat(groupBox, "Contrast:", "Contrast", pEditContrast, cTextContrast::Ref::New(*this));
+	helper.EditFloat(groupBox, "Gamma:", "Gamma", pEditGamma, cTextGamma::Ref::New(*this));
+	helper.ColorBox(groupBox, "Colorize:", "Colorize", pClrColorize, cColorColorize::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Transparency:", "Transparency of node",
-		0.0f, 1.0f, 6, 3, 0.1f, pSldTransparency, new cSliderTransparency(*this));
+		0.0f, 1.0f, 6, 3, 0.1f, pSldTransparency, cSliderTransparency::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Combine Mode:", "Combine mode", pCBCombineMode, new cComboCombineMode(*this));
-	pCBCombineMode->AddItem("Blend", NULL, (void*)(intptr_t)deSkinPropertyNode::ecmBlend);
-	pCBCombineMode->AddItem("Overlay", NULL, (void*)(intptr_t)deSkinPropertyNode::ecmOverlay);
+	helper.ComboBox(groupBox, "Combine Mode:", "Combine mode", pCBCombineMode, cComboCombineMode::Ref::New(*this));
+	pCBCombineMode->AddItem("Blend", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmBlend);
+	pCBCombineMode->AddItem("Overlay", nullptr, (void*)(intptr_t)deSkinPropertyNode::ecmOverlay);
 	
-	helper.EditString(content, "", pLabMask, NULL);
+	helper.EditString(content, "", pLabMask, {});
 	pLabMask->SetEditable(false);
 	
 	
@@ -802,14 +830,14 @@ pPreventUpdate(false)
 	helper.GroupBox(content, groupBox, "Dynamic:");
 	
 	helper.ComboBox(groupBox, "Property:", "Property to set mapped value for",
-		pCBMappedType, new cComboMappedType(*this));
+		pCBMappedType, cComboMappedType::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Mapped:", "Mapped value to use for property",
-		pCBMappedTarget, new cComboMappedTarget(*this, pPreventUpdate));
+		pCBMappedTarget, cComboMappedTarget::Ref::New(*this, pPreventUpdate));
 	
 	
 	// type specific
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -818,62 +846,58 @@ pPreventUpdate(false)
 	
 	
 	// image node
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Image:");
 	
 	helper.EditPath(groupBox, "Image:", "Image resource to display",
-		igdeEnvironment::efpltImage, pImageEditImage, new cPathImage(*this));
-	helper.EditString(groupBox, "", "Image information", pImageLabImageInfo, NULL);
+		igdeEnvironment::efpltImage, pImageEditImage, cPathImage::Ref::New(*this));
+	helper.EditString(groupBox, "", "Image information", pImageLabImageInfo, {});
 	pImageLabImageInfo->SetEditable(false);
 	
 	helper.EditPoint(groupBox, "Repeat:", "Repetition of image inside node size",
-		pImageEditRepeat, new cEditImageRepeat(*this));
+		pImageEditRepeat, cEditImageRepeat::Ref::New(*this));
 	
 	
 	// shape node
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Shape:");
 	
-	helper.ComboBox(groupBox, "Type:", "Shape type", pShapeCBType, new cComboShapeType(*this));
-	pShapeCBType->AddItem("Rectangle", NULL, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
-	pShapeCBType->AddItem("Ellipse", NULL, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
+	helper.ComboBox(groupBox, "Type:", "Shape type", pShapeCBType, cComboShapeType::Ref::New(*this));
+	pShapeCBType->AddItem("Rectangle", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estRectangle);
+	pShapeCBType->AddItem("Ellipse", nullptr, (void*)(intptr_t)deSkinPropertyNodeShape::estEllipse);
 	
-	helper.ColorBox(groupBox, "Line Color:", "Line color", pShapeClrLine, new cColorShapeLineColor(*this));
-	helper.ColorBox(groupBox, "Fill Color:", "Fill color", pShapeClrFill, new cColorShapeFillColor(*this));
+	helper.ColorBox(groupBox, "Line Color:", "Line color", pShapeClrLine, cColorShapeLineColor::Ref::New(*this));
+	helper.ColorBox(groupBox, "Fill Color:", "Fill color", pShapeClrFill, cColorShapeFillColor::Ref::New(*this));
 	helper.EditFloat(groupBox, "Thickness:", "Thickness of line in pixels",
-		pShapeEditThickness, new cColorShapeThickness(*this));
+		pShapeEditThickness, cColorShapeThickness::Ref::New(*this));
 	
 	
 	// text node
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Text:");
 	
 	helper.EditPath(groupBox, "Font:", "Font resource to use for text",
-		igdeEnvironment::efpltFont, pTextEditFont, new cEditPathFont(*this));
-	helper.EditString(groupBox, "", "Font information", pTextLabFontInfo, NULL);
+		igdeEnvironment::efpltFont, pTextEditFont, cEditPathFont::Ref::New(*this));
+	helper.EditString(groupBox, "", "Font information", pTextLabFontInfo, {});
 	pTextLabFontInfo->SetEditable(false);
 	
 	helper.EditFloat(groupBox, "Font size:", "Font size in pixels (equals height of text line)",
-		pTextEditFontSize, new cTextFontSize(*this));
-	helper.EditString(groupBox, "Text:", "Text", pTextEditText, new cTextText(*this));
-	helper.ColorBox(groupBox, "Color:", "Text color", pTextClrColor, new cColorText(*this));
+		pTextEditFontSize, cTextFontSize::Ref::New(*this));
+	helper.EditString(groupBox, "Text:", "Text", pTextEditText, cTextText::Ref::New(*this));
+	helper.ColorBox(groupBox, "Color:", "Text color", pTextClrColor, cColorText::Ref::New(*this));
 	
 	
 	// group node
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Group:");
 }
 
 seWPNode::~seWPNode(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -888,14 +912,12 @@ void seWPNode::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdateMappedTypeList();
@@ -1140,15 +1162,15 @@ void seWPNode::UpdateOutline(){
 		}
 		
 		const sePropertyNodeGroup &group = *property->GetNodeGroup();
-		const int count = group.GetNodeCount();
+		const int count = group.GetNodes().GetCount();
 		igdeTreeItem *item = pTreeOutline->GetFirstChild();
 		int i;
 		
 		for(i=count-1; i>=0; i--){
 			if(!item){
-				item = pTreeOutline->AppendItem(NULL, "");
+				item = pTreeOutline->AppendItem(nullptr, "");
 			}
-			UpdateOutline(item, group.GetNodeAt(i), "");
+			UpdateOutline(item, group.GetNodes().GetAt(i), "");
 			item = item->GetNext();
 		}
 		
@@ -1252,7 +1274,7 @@ void seWPNode::UpdateMappedTargetList(){
 	pCBMappedTarget->RemoveAllItems();
 	
 	if(pSkin){
-		const seMappedList &list = pSkin->GetMappedList();
+		const seMapped::List &list = pSkin->GetMapped();
 		const int count = list.GetCount();
 		int i;
 		
@@ -1281,7 +1303,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 	switch(node->GetNodeType()){
 	case sePropertyNode::entGroup:{
 		sePropertyNodeGroup &group = (sePropertyNodeGroup&)*node;
-		const int count = group.GetNodeCount();
+		const int count = group.GetNodes().GetCount();
 		int i;
 		
 		item->SetText(prefix + "Group");
@@ -1290,7 +1312,7 @@ void seWPNode::UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const dec
 			if(!childItem){
 				childItem = pTreeOutline->AppendItem(item, "");
 			}
-			UpdateOutline(childItem, group.GetNodeAt(i), "");
+			UpdateOutline(childItem, group.GetNodes().GetAt(i), "");
 			childItem = childItem->GetNext();
 		}
 		}break;

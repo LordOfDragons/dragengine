@@ -25,6 +25,12 @@
 #ifndef _SEWINDOWMAIN_H_
 #define _SEWINDOWMAIN_H_
 
+#include "constructed/seViewConstructed.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "properties/seWindowProperties.h"
+#include "../skin/seSkin.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeTabBook.h>
@@ -34,20 +40,15 @@
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
+#include <dragengine/common/string/decStringList.h>
+
 class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
 class igdeStepableTask;
-
-class decStringList;
 
 
 
@@ -55,8 +56,12 @@ class decStringList;
  * \brief Main Application Window.
  */
 class seWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<seWindowMain> Ref;
+	
+	
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileNewModel;
@@ -89,13 +94,13 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seWindowProperties *pWindowProperties;
+	seWindowProperties::Ref pWindowProperties;
 	
 	igdeTabBook::Ref pSwitcherViews;
-	seViewSkin *pViewSkin;
-	seViewConstructed *pViewConstructed;
+	seViewSkin::Ref pViewSkin;
+	seViewConstructed::Ref pViewConstructed;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -137,7 +142,7 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
 	void SetSkin(seSkin *Skin);
@@ -154,16 +159,16 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionMappedAdd() const{ return pActionMappedAdd; }
-	inline igdeAction *GetActionMappedRemove() const{ return pActionMappedRemove; }
+	inline const igdeAction::Ref &GetActionMappedAdd() const{ return pActionMappedAdd; }
+	inline const igdeAction::Ref &GetActionMappedRemove() const{ return pActionMappedRemove; }
 	
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
-	inline igdeAction *GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
+	inline const igdeAction::Ref &GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
 	
-	inline igdeAction *GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
 	
 	
 	
@@ -236,12 +241,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	/*@}*/
 	
 	

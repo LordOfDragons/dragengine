@@ -35,6 +35,9 @@ class seWindowMain;
  * \brief Window Main Listener.
  */
 class seWindowMainListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWindowMainListener> Ref;
+	
 private:
 	seWindowMain &pWindow;
 	

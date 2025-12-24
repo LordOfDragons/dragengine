@@ -25,14 +25,12 @@
 #ifndef _SEUPROPERTYNODESRESIZE_H_
 #define _SEUPROPERTYNODESRESIZE_H_
 
+#include "seUPropertyNodeData.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
-
-class sePropertyNode;
-class sePropertyNodeList;
-class seUPropertyNodeData;
 
 
 
@@ -40,8 +38,12 @@ class seUPropertyNodeData;
  * \brief Undo action property resize nodes.
  */
 class seUPropertyNodesResize : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodesResize> Ref;
+	
+	
 private:
-	decObjectList pNodes;
+	seUPropertyNodeData::List pNodes;
 	
 	decVector2 pPivot;
 	decVector2 pOrigin;
@@ -53,13 +55,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodesResize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesResize(const sePropertyNodeList &nodes, const decVector2 &pivot,
+	seUPropertyNodesResize(const sePropertyNode::List &nodes, const decVector2 &pivot,
 		const decVector2 &origin, float rotation, float shearing);
 	
 protected:

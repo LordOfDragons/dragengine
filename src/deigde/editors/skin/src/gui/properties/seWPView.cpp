@@ -80,6 +80,7 @@ protected:
 	seWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(seWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -97,11 +98,12 @@ protected:
 	seWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(seWPView &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
 		if(skin){
 			OnAction(*skin);
@@ -110,7 +112,7 @@ public:
 	
 	virtual void OnAction(seSkin &skin) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
 		if(skin){
 			Update(*skin);
@@ -132,6 +134,7 @@ protected:
 	seWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
 	cBaseEditPathListener(seWPView &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -149,6 +152,7 @@ protected:
 	seWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(seWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -165,6 +169,7 @@ public:
 
 class cComboPreviewMode : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboPreviewMode> Ref;
 	cComboPreviewMode(seWPView &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual void OnChanged(igdeComboBox &comboBox, seSkin &skin){
@@ -176,6 +181,7 @@ public:
 
 class cEditModelPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditModelPath> Ref;
 	cEditModelPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
@@ -185,6 +191,7 @@ public:
 
 class cEditRigPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditRigPath> Ref;
 	cEditRigPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
@@ -194,6 +201,7 @@ public:
 
 class cEditAnimationPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditAnimationPath> Ref;
 	cEditAnimationPath(seWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(igdeEditPath &editPath, seSkin &skin){
@@ -204,6 +212,7 @@ public:
 class cComboMove : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
+	typedef deTObjectReference<cComboMove> Ref;
 	cComboMove(seWPView &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
@@ -216,8 +225,11 @@ public:
 
 class cActionPlayback : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPlayback> Ref;
+	
+public:
 	cActionPlayback(seWPView &panel) : cBaseAction(panel, "Play back animation",
-		NULL, "Animation is played back"){}
+		nullptr, "Animation is played back"){}
 	
 	void OnAction(seSkin &skin) override{
 		skin.SetPlayback(!skin.GetPlayback());
@@ -231,7 +243,10 @@ public:
 
 class cActionRewind : public cBaseAction{
 public:
-	cActionRewind(seWPView &panel) : cBaseAction(panel, "Rewind Textures", NULL,
+	typedef deTObjectReference<cActionRewind> Ref;
+	
+public:
+	cActionRewind(seWPView &panel) : cBaseAction(panel, "Rewind Textures", nullptr,
 		"Rewind all textures to the initial state as if added to the game world"){ }
 	
 	void OnAction(seSkin &skin) override{
@@ -241,7 +256,10 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionCameraChanged> Ref;
+	
+public:
+	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(seSkin &skin) override{
 		skin.NotifyCameraChanged();
@@ -250,7 +268,10 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionSkyChanged> Ref;
+	
+public:
+	cActionSkyChanged(seWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(seSkin &skin) override{
 		skin.NotifySkyChanged();
@@ -259,7 +280,10 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
-	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionEnvObjChanged> Ref;
+	
+public:
+	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(seSkin &skin) override{
 		skin.NotifyEnvObjectChanged();
@@ -279,55 +303,49 @@ public:
 seWPView::seWPView(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pPreventUpdate(false),
-pSkin(NULL)
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPViewListener(*this);
+	pListener = seWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// resources
 	helper.GroupBox(content, groupBox, "Preview:");
 	
-	helper.ComboBox(groupBox, "Mode:", "Preview mode.", pCBPreviewMode, new cComboPreviewMode(*this));
-	pCBPreviewMode->AddItem("Model", NULL, (void*)(intptr_t)seSkin::epmModel);
-	pCBPreviewMode->AddItem("Light", NULL, (void*)(intptr_t)seSkin::epmLight);
+	helper.ComboBox(groupBox, "Mode:", "Preview mode.", pCBPreviewMode, cComboPreviewMode::Ref::New(*this));
+	pCBPreviewMode->AddItem("Model", nullptr, (void*)(intptr_t)seSkin::epmModel);
+	pCBPreviewMode->AddItem("Light", nullptr, (void*)(intptr_t)seSkin::epmLight);
 	
 	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
-		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath(*this));
+		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
 	helper.EditPath(groupBox, "Rig:", "Path to the rig resource to use.",
-		igdeEnvironment::efpltRig, pEditRigPath, new cEditRigPath(*this));
+		igdeEnvironment::efpltRig, pEditRigPath, cEditRigPath::Ref::New(*this));
 	helper.EditPath(groupBox, "Animation:", "Path to the animation resource to use.",
-		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath(*this));
+		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "Move:", true, "Name of the animation move to play.",
-		pCBAnimMoves, new cComboMove(*this, pPreventUpdate));
+		pCBAnimMoves, cComboMove::Ref::New(*this, pPreventUpdate));
 	pCBAnimMoves->SetDefaultSorter();
 	
-	helper.CheckBox(groupBox, pChkPlayback, new cActionPlayback(*this), true);
+	helper.CheckBox(groupBox, pChkPlayback, cActionPlayback::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
-	helper.Button(formLine, pBtnRewindTextures, new cActionRewind(*this), true);
+	helper.Button(formLine, pBtnRewindTextures, cActionRewind::Ref::New(*this));
 	
 	// property panels
-	helper.WPSky(content, pWPSky, new cActionSkyChanged(*this), "Sky:");
-	helper.WPWObject(content, pWPEnvObject, new cActionEnvObjChanged(*this), "Environment Object:");
-	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this), "Camera:");
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Sky:");
+	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this), "Environment Object:");
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:");
 }
 
 seWPView::~seWPView(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -341,13 +359,12 @@ void seWPView::SetSkin(seSkin *skin){
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPSky->SetSky(NULL);
-	pWPCamera->SetCamera(NULL);
+	pWPSky->SetSky(nullptr);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
-		pSkin = NULL;
+		pSkin = nullptr;
 	}
 	
 	pSkin = skin;
@@ -356,8 +373,6 @@ void seWPView::SetSkin(seSkin *skin){
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
-		
 		pWPSky->SetSky(skin->GetSky());
 		pWPEnvObject->SetObject(skin->GetEnvObject());
 		pWPCamera->SetCamera(skin->GetCamera());
@@ -406,7 +421,7 @@ void seWPView::UpdateView(){
 }
 
 void seWPView::UpdateMoveList(){
-	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : NULL;
+	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : nullptr;
 	const decString selection(pCBAnimMoves->GetText());
 	
 	pPreventUpdate = true;
