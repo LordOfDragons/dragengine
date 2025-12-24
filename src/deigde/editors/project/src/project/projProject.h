@@ -25,16 +25,14 @@
 #ifndef _PROJDISTRIBUTOR_H_
 #define _PROJDISTRIBUTOR_H_
 
+#include "projProjectListener.h"
 #include "profile/projProfile.h"
-#include "profile/projProfileList.h"
 #include "remote/projRemoteClient.h"
 #include "remote/projRemoteServer.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
-
-class projProjectListener;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEnvironment;
 
@@ -54,12 +52,12 @@ private:
 	decString pPathConfig;
 	decString pPathCapture;
 	
-	projProfileList pProfiles;
+	projProfile::List pProfiles;
 	projProfile::Ref pActiveProfile;
 	
 	decString pActiveLaunchProfile;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<projProjectListener> pListeners;
 	
 	projRemoteServer::Ref pRemoteServer;
 	
@@ -111,7 +109,7 @@ public:
 	/** \name Profiles */
 	/*@{*/
 	/** \brief Profiles. */
-	const projProfileList &GetProfiles() const{ return pProfiles; }
+	const projProfile::List &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Add profile. */
 	void AddProfile(projProfile *profile);

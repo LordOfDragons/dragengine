@@ -248,7 +248,9 @@ public:
 			return {};
 		}
 		
-		if(project->GetProfiles().HasNamed(name)){
+		if(project->GetProfiles().HasMatching([&](const projProfile &p){
+			return p.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pPanel, "Rename profile",
 				"A profile with this name exists already.");
 			textField->SetText(profile->GetName());
@@ -938,14 +940,9 @@ void projPanelProfiles::UpdateProfiles(){
 	pListProfiles->RemoveAllItems();
 	
 	if(pProject){
-		const projProfileList &list = pProject->GetProfiles();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			projProfile * const profile = list.GetAt(i);
+		pProject->GetProfiles().Visit([&](projProfile *profile){
 			pListProfiles->AddItem(profile->GetName(), nullptr, profile);
-		}
+		});
 		
 		pListProfiles->SortItems();
 	}

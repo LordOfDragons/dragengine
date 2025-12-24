@@ -426,8 +426,9 @@ void projPanelTestRun::Start(){
 	
 	projTRProfile *launchProfile = nullptr;
 	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
-		launchProfile = pTestRunner->GetLauncherProfiles().GetNamed(
-			pProject->GetActiveLaunchProfile());
+		launchProfile = pTestRunner->GetLauncherProfiles().FindOrDefault([&](const projTRProfile &p){
+			return p.GetName() == pProject->GetActiveLaunchProfile();
+		});
 	}
 	
 	try{
@@ -618,15 +619,9 @@ void projPanelTestRun::UpdateProfiles(){
 	pCBProfile->RemoveAllItems();
 	
 	if(pProject){
-		const projProfileList &list = pProject->GetProfiles();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			projProfile * const profile = list.GetAt(i);
+		pProject->GetProfiles().Visit([&](projProfile *profile){
 			pCBProfile->AddItem(profile->GetName(), nullptr, profile);
-		}
-		
+		});
 		pCBProfile->SortItems();
 	}
 	
@@ -653,8 +648,9 @@ void projPanelTestRun::SelectLauncherProfile(){
 	}
 	
 	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
-		pCBLaunchProfile->SetSelectionWithData(pTestRunner->GetLauncherProfiles()
-			.GetNamed(pProject->GetActiveLaunchProfile()));
+		pCBLaunchProfile->SetSelectionWithData(pTestRunner->GetLauncherProfiles().FindOrDefault([&](const projTRProfile &p){
+			return p.GetName() == pProject->GetActiveLaunchProfile();
+		}));
 		
 	}else{
 		pCBLaunchProfile->SetSelectionWithData(nullptr);
@@ -724,26 +720,15 @@ void projPanelTestRun::RemoveRemoteClient(const projRemoteClient::Ref &client){
 }
 
 void projPanelTestRun::UpdateRemoteClients(float elapsed){
-	const int count = pRemoteClients.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projPanelRemoteClient*)pRemoteClients.GetAt(i))->Update(elapsed);
-	}
+	pRemoteClients.Visit([&](projPanelRemoteClient &c){
+		c.Update(elapsed);
+	});
 }
 
 projPanelRemoteClient *projPanelTestRun::GetRemoteClientPanel(projRemoteClient *client) const{
-	const int count = pRemoteClients.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		projPanelRemoteClient * const panel = (projPanelRemoteClient*)pRemoteClients.GetAt(i);
-		if(panel->GetClient().get() == client){
-			return panel;
-		}
-	}
-	
-	return nullptr;
+	return pRemoteClients.FindOrDefault([&](projPanelRemoteClient &c){
+		return c.GetClient().get() == client;
+	});
 }
 
 
@@ -758,14 +743,9 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 	
 	pTestRunner->LoadEngineConfiguration();
 	
-	const projTRProfileList &list = pTestRunner->GetLauncherProfiles();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		projTRProfile * const profile = list.GetAt(i);
+	pTestRunner->GetLauncherProfiles().Visit([&](projTRProfile *profile){
 		pCBLaunchProfile->AddItem(profile->GetName(), nullptr, profile);
-	}
+	});
 	
 	SelectLauncherProfile();
 	preventUpdateLaunchProfile = false;

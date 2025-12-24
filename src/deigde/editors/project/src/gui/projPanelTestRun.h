@@ -39,7 +39,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class projTestRunner;
@@ -81,7 +81,7 @@ private:
 	
 	igdeTextArea::Ref pEditLogs;
 	
-	decObjectOrderedSet pRemoteClients;
+	decTObjectOrderedSet<projPanelRemoteClient> pRemoteClients;
 	
 	igdeComboBox::Ref pCBProfile;
 	igdeComboBox::Ref pCBLaunchProfile;

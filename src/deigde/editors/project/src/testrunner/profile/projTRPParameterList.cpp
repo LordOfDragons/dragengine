@@ -51,42 +51,17 @@ projTRPParameterList::~projTRPParameterList(){
 // Management
 ///////////////
 
-int projTRPParameterList::GetCount() const{
-	return pParameters.GetCount();
-}
-
-projTRPParameter *projTRPParameterList::GetAt(int index) const{
-	return (projTRPParameter*)pParameters.GetAt(index);
-}
-
 projTRPParameter *projTRPParameterList::GetWith(const char *module, const char *name) const{
-	if(!module || !name){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(module)
+	DEASSERT_NOTNULL(name)
 	
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		projTRPParameter * const parameter = (projTRPParameter*)pParameters.GetAt(i);
-		if(parameter->GetModule() == module && parameter->GetName() == name){
-			return parameter;
-		}
-	}
-	
-	return nullptr;
-}
-
-bool projTRPParameterList::Has(projTRPParameter *parameter) const{
-	return pParameters.Has(parameter);
+	return pParameters.FindOrDefault([&](const projTRPParameter &p){
+		return p.GetModule() == module && p.GetName() == name;
+	});
 }
 
 bool projTRPParameterList::HasWith(const char *module, const char *name) const{
 	return GetWith(module, name) != nullptr;
-}
-
-int projTRPParameterList::IndexOf(projTRPParameter *parameter) const{
-	return pParameters.IndexOf(parameter);
 }
 
 int projTRPParameterList::IndexOfWith(const char *module, const char *name) const{
@@ -94,17 +69,9 @@ int projTRPParameterList::IndexOfWith(const char *module, const char *name) cons
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const projTRPParameter &parameter = *((projTRPParameter*)pParameters.GetAt(i));
-		if(parameter.GetModule() == module && parameter.GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pParameters.IndexOfMatching([&](const projTRPParameter &p){
+		return p.GetModule() == module && p.GetName() == name;
+	});
 }
 
 void projTRPParameterList::Add(projTRPParameter *parameter){

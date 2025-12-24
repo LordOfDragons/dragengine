@@ -28,6 +28,7 @@
 #include "projTRPParameterList.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/systems/deModuleSystem.h>
 
@@ -67,10 +68,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<projTRProfile> Ref;
-
-
+	typedef decTObjectOrderedSet<projTRProfile> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create profile. */

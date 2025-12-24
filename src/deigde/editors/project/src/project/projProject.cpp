@@ -185,14 +185,10 @@ void projProject::SetActiveProfile(projProfile *profile){
 }
 
 
-
 void projProject::NotifyProfileStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ProfileStructureChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ProfileStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	
@@ -200,12 +196,9 @@ void projProject::NotifyProfileStructureChanged(){
 }
 
 void projProject::NotifyProfileChanged(projProfile *profile){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ProfileChanged(this, profile);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ProfileChanged(this, profile);
+	});
 	
 	SetChanged(true);
 	
@@ -213,12 +206,9 @@ void projProject::NotifyProfileChanged(projProfile *profile){
 }
 
 void projProject::NotifyProfileNameChanged(projProfile *profile){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ProfileNameChanged(this, profile);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ProfileNameChanged(this, profile);
+	});
 	
 	SetChanged(true);
 	
@@ -226,23 +216,17 @@ void projProject::NotifyProfileNameChanged(projProfile *profile){
 }
 
 void projProject::NotifyActiveProfileChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ActiveProfileChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ActiveProfileChanged(this);
+	});
 	
 	pRemoteServer->OnActiveProfileChanged();
 }
 
 void projProject::NotifyRemoteClientConnected(const projRemoteClient::Ref &client){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->RemoteClientConnected(this, client);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.RemoteClientConnected(this, client);
+	});
 }
 
 
@@ -260,14 +244,10 @@ void projProject::SetActiveLaunchProfile(const char *profile){
 }
 
 
-
 void projProject::NotifyActiveLaunchProfileChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ActiveLaunchProfileChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ActiveLaunchProfileChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -286,36 +266,25 @@ void projProject::RemoveListener(projProjectListener *listener){
 }
 
 
-
 void projProject::NotifyStateChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->StateChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.StateChanged(this);
+	});
 }
 
 void projProject::NotifyUndoChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->UndoChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.UndoChanged(this);
+	});
 }
 
 void projProject::NotifyProjectChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projProjectListener*)pListeners.GetAt(i))->ProjectChanged(this);
-	}
+	pListeners.Visit([&](projProjectListener &l){
+		l.ProjectChanged(this);
+	});
 	
 	SetChanged(true);
 }
-
 
 
 // Private Functions

@@ -87,15 +87,11 @@ void projProjectXml::WriteToFile(decBaseFileWriter &writer, const projProject &p
 //////////////////////
 
 void projProjectXml::pWriteProject(decXmlWriter &writer, const projProject &project){
-	int i;
-	
 	writer.WriteOpeningTag("project");
 	
-	const projProfileList &profiles = project.GetProfiles();
-	const int profileCount = profiles.GetCount();
-	for(i=0; i<profileCount; i++){
-		pWriteProfile(writer, *profiles.GetAt(i));
-	}
+	project.GetProfiles().Visit([&](const projProfile &profile){
+		pWriteProfile(writer, profile);
+	});
 	
 	writer.WriteClosingTag("project");
 }
@@ -176,9 +172,9 @@ void projProjectXml::pReadProject(const decXmlElementTag &root, projProject &pro
 		}
 	}
 	
-	const projProfileList &profiles = project.GetProfiles();
-	if(profiles.GetCount() > 0){
-		project.SetActiveProfile(profiles.GetAt(0));
+	const projProfile::List &profiles = project.GetProfiles();
+	if(profiles.IsNotEmpty()){
+		project.SetActiveProfile(profiles.First());
 	}
 }
 
@@ -264,7 +260,9 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 	if(!profile->GetIdentifier()){
 		LogErrorGenericProblem(root, "Profile requires valid identifier");
 	}
-	if(project.GetProfiles().HasNamed(profile->GetName())){
+	if(project.GetProfiles().HasMatching([&](const projProfile &p){
+		return p.GetName() == profile->GetName();
+	})){
 		LogErrorGenericProblem(root, "Duplicate profile name");
 	}
 	

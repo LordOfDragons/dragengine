@@ -171,7 +171,7 @@ bool projTaskDistribute::Step(){
 			
 		case esProcessFiles:
 			pProcessFiles();
-			if(pStackDirectories.GetCount() > 0){
+			if(pStackDirectories.IsNotEmpty()){
 				return true;
 			}
 			
@@ -625,7 +625,7 @@ void projTaskDistribute::pZipWriteMemoryFile(const decMemoryFile &memoryFile){
 }
 
 void projTaskDistribute::pCloseDirectory(){
-	if(pStackDirectories.GetCount() == 0){
+	if(pStackDirectories.IsEmpty()){
 		DETHROW(deeInvalidAction);
 	}
 	
@@ -728,8 +728,5 @@ void projTaskDistribute::pWriteGameXmlRequiredFormats(decXmlWriter &writer){
 }
 
 projTaskDistribute::cProcessDirectory *projTaskDistribute::GetProcessDirectory(){
-	if(pStackDirectories.GetCount() == 0){
-		return nullptr;
-	}
-	return (cProcessDirectory*)pStackDirectories.GetAt(pStackDirectories.GetCount() - 1);
+	return pStackDirectories.IsNotEmpty() ? pStackDirectories.Last() : nullptr;
 }

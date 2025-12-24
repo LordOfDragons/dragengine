@@ -791,11 +791,9 @@ void projTestRunner::pSendLaunchParameters(){
 	projTRPParameterList parameters;
 	
 	if(pLauncherProfile){
-		const projTRPParameterList &lpparams = pLauncherProfile->GetParameters();
-		count = lpparams.GetCount();
-		for(i=0; i<count; i++){
-			parameters.Set(*lpparams.GetAt(i));
-		}
+		pLauncherProfile->GetParameters().GetParameters().Visit([&](const projTRPParameter &p){
+			parameters.Set(p);
+		});
 		
 		if(pLauncherProfile->GetReplaceRunArguments()){
 			runArguments = pLauncherProfile->GetRunArguments();
@@ -851,14 +849,13 @@ void projTestRunner::pSendLaunchParameters(){
 	WriteUCharToPipe(fullScreen ? 1 : 0);
 	WriteString16ToPipe(decString("Test Run: ") + project.GetName());
 	
-	count = parameters.GetCount();
+	count = parameters.GetParameters().GetCount();
 	WriteUShortToPipe(count);
-	for(i=0; i<count; i++){
-		const projTRPParameter &parameter = *parameters.GetAt(i);
-		WriteString16ToPipe(parameter.GetModule());
-		WriteString16ToPipe(parameter.GetName());
-		WriteString16ToPipe(parameter.GetValue());
-	}
+	parameters.GetParameters().Visit([&](const projTRPParameter &p){
+		WriteString16ToPipe(p.GetModule());
+		WriteString16ToPipe(p.GetName());
+		WriteString16ToPipe(p.GetValue());
+	});
 	
 	WriteString16ToPipe(runArguments);
 	

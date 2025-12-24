@@ -33,7 +33,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
-#include "profile/projTRProfileList.h"
+#include "profile/projTRProfile.h"
 
 class projWindowMain;
 class projProfile;
@@ -47,7 +47,7 @@ class projTestRunner{
 private:
 	projWindowMain &pWindowMain;
 	
-	projTRProfileList pLauncherProfiles;
+	projTRProfile::List pLauncherProfiles;
 	decString pDefaultLauncherProfileName;
 	
 	projProfile *pProfile;
@@ -96,8 +96,8 @@ public:
 	void LoadEngineConfiguration();
 	
 	/** \brief Launcher profiles. */
-	inline projTRProfileList &GetLauncherProfiles(){ return pLauncherProfiles; }
-	inline const projTRProfileList &GetLauncherProfiles() const{ return pLauncherProfiles; }
+	inline projTRProfile::List &GetLauncherProfiles(){ return pLauncherProfiles; }
+	inline const projTRProfile::List &GetLauncherProfiles() const{ return pLauncherProfiles; }
 	
 	/** \brief Default launcher profile name. */
 	inline const decString &GetDefaultLauncherProfileName() const{ return pDefaultLauncherProfileName; }

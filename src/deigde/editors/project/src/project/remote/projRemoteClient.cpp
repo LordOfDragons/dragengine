@@ -84,7 +84,6 @@ pProject(project)
 }
 
 projRemoteClient::~projRemoteClient(){
-	pListeners.RemoveAll();
 }
 
 
@@ -342,41 +341,28 @@ void projRemoteClient::RemoveListener(projRemoteClientListener *listener){
 	pListeners.Remove(listener);
 }
 
-
 void projRemoteClient::NotifyClientChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		static_cast<projRemoteClientListener*>(pListeners.GetAt(i))->ClientChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ClientChanged(this);
+	});
 }
 
 void projRemoteClient::NotifyClientDisconnected(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		static_cast<projRemoteClientListener*>(pListeners.GetAt(i))->ClientDisconnected(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ClientDisconnected(this);
+	});
 }
 
 void projRemoteClient::NotifyLaunchProfilesChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		static_cast<projRemoteClientListener*>(pListeners.GetAt(i))->LaunchProfilesChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.LaunchProfilesChanged(this);
+	});
 }
 
 void projRemoteClient::NotifyActiveLaunchProfileChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projRemoteClientListener*)pListeners.GetAt(i))->ActiveLaunchProfileChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ActiveLaunchProfileChanged(this);
+	});
 }
 
 

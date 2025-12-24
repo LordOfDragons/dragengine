@@ -539,7 +539,7 @@ public:
 			return;
 		}
 		
-		const projProfileList &list = project->GetProfiles();
+		const projProfile::List &list = project->GetProfiles();
 		decString name("Profile");
 		
 		while(true){
@@ -547,7 +547,9 @@ public:
 				return;
 			}
 			
-			if(list.HasNamed(name)){
+			if(list.HasMatching([&](const projProfile &profile){
+				return profile.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pWindow, "Add Profile",
 					"A profile with this name exists already.");
 				
@@ -635,7 +637,7 @@ public:
 			return;
 		}
 		
-		const projProfileList &list = project->GetProfiles();
+		const projProfile::List &list = project->GetProfiles();
 		decString name;
 		name.Format("%s Copy", profile->GetName().GetString());
 		
@@ -644,7 +646,9 @@ public:
 				return;
 			}
 			
-			if(list.HasNamed(name)){
+			if(list.HasMatching([&](const projProfile &p){
+				return p.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pWindow, "Duplicate Profile",
 					"A profile with this name exists already.");
 				
@@ -884,7 +888,9 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
-			profile = pProject->GetProfiles().GetNamed(arg);
+			profile = pProject->GetProfiles().FindOrDefault([&](const projProfile &p){
+				return p.GetName() == arg;
+			});
 			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());
@@ -933,7 +939,9 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
-			profile = pProject->GetProfiles().GetNamed(arg);
+			profile = pProject->GetProfiles().FindOrDefault([&](const projProfile &p){
+				return p.GetName() == arg;
+			});
 			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());
@@ -972,11 +980,9 @@ bool projWindowMain::pCmdLineProfileList(decUnicodeStringList &arguments){
 		DETHROW_INFO(deeInvalidParam, message);
 	}
 	
-	const int count = pProject->GetProfiles().GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		printf("%s\n", pProject->GetProfiles().GetAt(i)->GetName().GetString());
-	}
+	pProject->GetProfiles().Visit([&](const projProfile &profile){
+		printf("%s\n", profile.GetName().GetString());
+	});
 	
 	return false;
 }
