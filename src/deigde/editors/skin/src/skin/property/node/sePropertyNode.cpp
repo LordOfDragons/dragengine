@@ -69,7 +69,7 @@ pActive(false)
 {
 	int i;
 	for(i=0; i<mappedCount; i++){
-		pMapped.Add(seMapped::Ref::New());
+		pMapped.Add({});
 	}
 }
 

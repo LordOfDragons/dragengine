@@ -28,7 +28,7 @@
 #include "../../mapped/seMapped.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
@@ -45,8 +45,6 @@ class deEngine;
 class sePropertyNode : public deObject{
 public:
 	typedef deTObjectReference<sePropertyNode> Ref;
-	
-	/** \brief List type. */
 	typedef decTObjectOrderedSet<sePropertyNode> List;
 	
 	
@@ -110,7 +108,7 @@ private:
 	sePropertyNode::Ref pMask;
 	deSkinPropertyNode::eCombineModes pCombineMode;
 	
-	seMapped::List pMapped;
+	decTObjectList<seMapped> pMapped;
 	
 	bool pSelected;
 	bool pActive;

@@ -758,7 +758,7 @@ public:
 		}
 		
 		const int type = pPanel.GetSelectedMappedType();
-		seMapped * const curMapped = node->GetMappedFor(type);
+		seMapped * const curMapped = type != -1 ? node->GetMappedFor(type) : nullptr;
 		seMapped * const newMapped = (seMapped*)comboBox->GetSelectedItem()->GetData();
 		if(newMapped == curMapped){
 			return;

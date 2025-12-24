@@ -41,8 +41,7 @@ private:
 	const sePropertyNode::Ref pNode;
 	const int pType;
 	
-	const seMapped::Ref pOldValue;
-	const seMapped::Ref pNewValue;
+	seMapped::Ref pOldValue, pNewValue;
 	
 	
 	

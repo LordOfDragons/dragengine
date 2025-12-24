@@ -52,6 +52,7 @@ const sePropertyNode::List &children){
 		const cNode::Ref unode(cNode::Ref::New());
 		unode->node = child;
 		unode->index = node->GetNodes().IndexOf(child);
+		pChildren.Add(unode);
 	});
 	
 	pChildren.Sort([](const cNode &a, const cNode &b){
