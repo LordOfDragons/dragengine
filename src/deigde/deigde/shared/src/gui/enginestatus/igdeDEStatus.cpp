@@ -153,11 +153,11 @@ igdeDEStatus::~igdeDEStatus(){
 ///////////////
 
 void igdeDEStatus::UpdateStatus(){
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeListItem &item = *pListSystems->GetItemAt(i);
+		igdeListItem &item = *pListSystems->GetItems().GetAt(i);
 		const deBaseSystem &system = *((deBaseSystem*)item.GetData());
 		const deLoadableModule * const loadedModule = system.GetActiveLoadableModule();
 		
@@ -198,14 +198,14 @@ void igdeDEStatus::StartEngine(){
 	
 	pTextStatus->ClearText();
 	
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	decString message;
 	int i;
 	
 	try{
 		// test if we can start all required systems
 		for(i=0; i<count; i++){
-			deBaseSystem &system = *((deBaseSystem*)pListSystems->GetItemAt(i)->GetData());
+			deBaseSystem &system = *((deBaseSystem*)pListSystems->GetItems().GetAt(i)->GetData());
 			if(system.CanStart()){
 				continue;
 			}

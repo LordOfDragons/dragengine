@@ -154,13 +154,13 @@ void igdeNativeFoxListBox::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxListBox::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner->GetItems().GetCount();
 	int i;
 	
 	pListBox->clearItems();
 	
 	for(i=0; i<count; i++){
-		const igdeListItem &item = *pOwner->GetItemAt(i);
+		const igdeListItem &item = *pOwner->GetItems().GetAt(i);
 		pListBox->appendItem(item.GetText().GetString(),
 			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
 	}
@@ -169,7 +169,7 @@ void igdeNativeFoxListBox::BuildList(){
 }
 
 void igdeNativeFoxListBox::UpdateItem(int index){
-	const igdeListItem &item = *pOwner->GetItemAt(index);
+	const igdeListItem &item = *pOwner->GetItems().GetAt(index);
 	pListBox->setItemText(index, item.GetText().GetString());
 	
 	if(item.GetIcon()){
@@ -202,7 +202,7 @@ void igdeNativeFoxListBox::UpdateSelection(){
 		int i;
 		
 		for(i=0; i<count; i++){
-			const bool selected = pOwner->GetItemAt(i)->GetSelected();
+			const bool selected = pOwner->GetItems().GetAt(i)->GetSelected();
 			FXListItem &item = *pListBox->getItem(i);
 			
 			if(selected == item.isSelected()){
@@ -228,7 +228,7 @@ void igdeNativeFoxListBox::MakeItemVisible(int index){
 }
 
 void igdeNativeFoxListBox::InsertItem(int index){
-	const igdeListItem &item = *pOwner->GetItemAt(index);
+	const igdeListItem &item = *pOwner->GetItems().GetAt(index);
 	pListBox->insertItem(index, item.GetText().GetString(),
 		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
 }
@@ -289,19 +289,19 @@ igdeFont *igdeNativeFoxListBox::ListBoxFont(const igdeListBox &powner, const igd
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -352,12 +352,12 @@ long igdeNativeFoxListBox::onListChanged(FXObject *sender, FXSelector selector, 
 
 long igdeNativeFoxListBox::onListSelected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index < 0 || index >= pOwner->GetItemCount()){
+	if(index < 0 || index >= pOwner->GetItems().GetCount()){
 		return 1;
 	}
 	
 	try{
-		pOwner->GetItemAt(index)->SetSelected(true);
+		pOwner->GetItems().GetAt(index)->SetSelected(true);
 		pOwner->NotifyItemSelected(index);
 		
 	}catch(const deException &e){
@@ -369,12 +369,12 @@ long igdeNativeFoxListBox::onListSelected(FXObject*, FXSelector, void *pdata){
 
 long igdeNativeFoxListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index < 0 || index >= pOwner->GetItemCount()){
+	if(index < 0 || index >= pOwner->GetItems().GetCount()){
 		return 1;
 	}
 	
 	try{
-		pOwner->GetItemAt(index)->SetSelected(false);
+		pOwner->GetItems().GetAt(index)->SetSelected(false);
 		pOwner->NotifyItemDeselected(index);
 		
 	}catch(const deException &e){
@@ -407,7 +407,7 @@ long igdeNativeFoxListBox::onListRightMouseUp(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxListBox::onListDoubleClicked(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index < 0 || index >= pOwner->GetItemCount()){
+	if(index < 0 || index >= pOwner->GetItems().GetCount()){
 		return 1;
 	}
 	

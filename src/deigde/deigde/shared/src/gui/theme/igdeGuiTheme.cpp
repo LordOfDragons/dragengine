@@ -56,23 +56,8 @@ igdeGuiTheme::~igdeGuiTheme(){
 // Management
 ///////////////
 
-int igdeGuiTheme::GetPropertyCount() const{
-	return pProperties.GetCount();
-}
-
-igdeGuiThemeProperty *igdeGuiTheme::GetProperty(const char *name) const{
-	deObject *property = nullptr;
-	return pProperties.GetAt(name, &property) ? (igdeGuiThemeProperty*)property : nullptr;
-}
-
-bool igdeGuiTheme::HasProperty(const char *property) const{
-	return pProperties.Has(property);
-}
-
 void igdeGuiTheme::SetProperty(igdeGuiThemeProperty *property){
-	if(!property){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(property)
 	pProperties.SetAt(property->GetName(), property);
 }
 
@@ -95,27 +80,27 @@ decStringList igdeGuiTheme::GetPropertyNames() const{
 
 
 int igdeGuiTheme::GetIntProperty(const char *name, int defaultValue) const{
-	const igdeGuiThemeProperty * const property = GetProperty(name);
+	const igdeGuiThemeProperty * const property = pProperties.GetAtOrDefault(name);
 	return property ? property->GetInt() : defaultValue;
 }
 
 float igdeGuiTheme::GetFloatProperty(const char *name, float defaultValue) const{
-	const igdeGuiThemeProperty * const property = GetProperty(name);
+	const igdeGuiThemeProperty * const property = pProperties.GetAtOrDefault(name);
 	return property ? property->GetFloat() : defaultValue;
 }
 
 const decPoint &igdeGuiTheme::GetPointProperty(const char *name, const decPoint &defaultValue) const{
-	const igdeGuiThemeProperty * const property = GetProperty(name);
+	const igdeGuiThemeProperty * const property = pProperties.GetAtOrDefault(name);
 	return property ? property->GetPoint() : defaultValue;
 }
 
 const decColor &igdeGuiTheme::GetColorProperty(const char *name, const decColor &defaultValue) const{
-	const igdeGuiThemeProperty * const property = GetProperty(name);
+	const igdeGuiThemeProperty * const property = pProperties.GetAtOrDefault(name);
 	return property ? property->GetColor() : defaultValue;
 }
 
 const decString &igdeGuiTheme::GetStringProperty(const char *name, const decString &defaultValue) const{
-	const igdeGuiThemeProperty * const property = GetProperty(name);
+	const igdeGuiThemeProperty * const property = pProperties.GetAtOrDefault(name);
 	return property ? property->GetString() : defaultValue;
 }
 

@@ -96,7 +96,7 @@ public:
 		
 		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(patterns));
 		
-		if(pListBox->GetItemCount() > 0){
+		if(pListBox->GetItems().IsNotEmpty()){
 			pListBox->SetSelection(0);
 		}
 	}
@@ -112,7 +112,7 @@ public:
 	igdeAction("Clear", nullptr, "Clear pattern"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
-		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){
 			return;
 		}
 		

@@ -172,18 +172,6 @@ void igdeComboBox::Focus(){
 
 
 
-int igdeComboBox::GetItemCount() const{
-	return pItems.GetCount();
-}
-
-igdeListItem *igdeComboBox::GetItemAt(int index) const{
-	return (igdeListItem*)pItems.GetAt(index);
-}
-
-bool igdeComboBox::HasItem(igdeListItem *item) const{
-	return pItems.Has(item);
-}
-
 bool igdeComboBox::HasItem(const char *item) const{
 	return IndexOfItem(item) != -1;
 }
@@ -196,51 +184,24 @@ bool igdeComboBox::HasItemWithRefData(const deObject::Ref &refData) const{
 	return IndexOfItemWithRefData(refData) != -1;
 }
 
-int igdeComboBox::IndexOfItem(igdeListItem *item) const{
-	return pItems.IndexOf(item);
-}
-
 int igdeComboBox::IndexOfItem(const char *item) const{
-	if(!item){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(item)
 	
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetText() == item){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetText() == item;
+	});
 }
 
 int igdeComboBox::IndexOfItemWithData(void *data) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetData() == data){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetData() == data;
+	});
 }
 
 int igdeComboBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetRefData() == refData){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetRefData() == refData;
+	});
 }
 
 void igdeComboBox::AddItem(igdeListItem *item){
@@ -299,7 +260,7 @@ igdeListItem::Ref igdeComboBox::InsertItemRef(int index, const char *text, igdeI
 }
 
 void igdeComboBox::MoveItem(int fromIndex, int toIndex){
-	pItems.Move(fromIndex, toIndex);
+	pItems.MoveIndex(fromIndex, toIndex);
 	
 	if(pSelection != -1){
 		if(fromIndex < toIndex){
@@ -335,7 +296,7 @@ void igdeComboBox::RemoveItem(int index){
 		}else{
 			pSelection = decMath::min(pSelection, pItems.GetCount() - 1);
 			if(pSelection != -1){
-				pText = ((igdeListItem*)pItems.GetAt(pSelection))->GetText();
+				pItems.GetAt(pSelection)->GetText();
 				
 			}else{
 				pText.Empty();
@@ -389,37 +350,6 @@ void igdeComboBox::SetDefaultSorter(){
 	pSorter = igdeListItemSorter::Ref::New();
 }
 
-static void igdeComboBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
-	igdeListItem::Ref pivot((igdeListItem*)items.GetAt(left));
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while(left < right){
-		while(left < right && sorter.Precedes(pivot, *((igdeListItem*)items.GetAt(right)))){
-			right--;
-		}
-		if(left != right){
-			items.SetAt(left, items.GetAt(right));
-			left++;
-		}
-		while(left < right && sorter.Precedes(*((igdeListItem*)items.GetAt(left)), pivot)){
-			left++;
-		}
-		if(left != right){
-			items.SetAt(right, items.GetAt(left));
-			right--;
-		}
-	}
-	
-	items.SetAt(left, (igdeListItem*)pivot);
-	if(l_hold < left){
-		igdeComboBox_Sort(items, sorter, l_hold, left - 1);
-	}
-	if(r_hold > left){
-		igdeComboBox_Sort(items, sorter, left + 1, r_hold);
-	}
-}
-
 void igdeComboBox::SortItems(){
 	if(!pSorter){
 		return;
@@ -430,12 +360,14 @@ void igdeComboBox::SortItems(){
 		return;
 	}
 	
-	deObject *selection = nullptr;
+	igdeListItem::Ref selection;
 	if(pSelection != -1){
 		selection = pItems.GetAt(pSelection);
 	}
 	
-	igdeComboBox_Sort(pItems, pSorter, 0, count - 1);
+	pItems.Sort([&](const igdeListItem &a, const igdeListItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
 	if(selection){
 		pSelection = pItems.IndexOf(selection);
@@ -447,15 +379,15 @@ void igdeComboBox::SortItems(){
 
 
 igdeListItem *igdeComboBox::GetSelectedItem() const{
-	return pSelection != -1 ? (igdeListItem*)pItems.GetAt(pSelection) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
 }
 
 void *igdeComboBox::GetSelectedItemData() const{
-	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetData() : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection)->GetData() : nullptr;
 }
 
 deObject::Ref igdeComboBox::GetSelectedItemRefData() const{
-	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetRefData() : deObject::Ref();
+	return pSelection != -1 ? pItems.GetAt(pSelection)->GetRefData() : deObject::Ref();
 }
 
 void igdeComboBox::SetSelection(int selection){
@@ -470,7 +402,7 @@ void igdeComboBox::SetSelection(int selection){
 	pSelection = selection;
 	
 	if(selection != -1){
-		pText = ((igdeListItem*)pItems.GetAt(selection))->GetText();
+		pText = pItems.GetAt(selection)->GetText();
 		OnTextChanged();
 		NotifyTextChanged();
 		
@@ -567,7 +499,7 @@ void igdeComboBox::OnItemAdded(int index){
 		return;
 	}
 	
-	const igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
+	const igdeListItem &item = pItems.GetAt(index);
 	igdeNativeComboBox &native = *((igdeNativeComboBox*)GetNativeWidget());
 	native.InsertItem(index, item);
 	//native.SyncSelection( false );

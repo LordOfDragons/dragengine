@@ -864,7 +864,7 @@ public:
 			return;
 		}
 		
-		const decString &key = listBox->GetItemAt(index)->GetText();
+		const decString &key = listBox->GetItems().GetAt(index)->GetText();
 		decString value(objectClass->GetPropertyValues().GetAtOrDefault(key));
 		if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(), "Edit Property Value", "Value:", value)){
 			return;
@@ -1659,7 +1659,7 @@ void gdeWPSObjectClass::UpdateInherits(){
 	}
 	
 	pListInherits->SetSelectionWithData(activeInherit);
-	if(!pListInherits->GetSelectedItem() && pListInherits->GetItemCount() > 0){
+	if(!pListInherits->GetSelectedItem() && pListInherits->GetItems().IsNotEmpty()){
 		pListInherits->SetSelection(0);
 	}
 	

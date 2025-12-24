@@ -1005,8 +1005,8 @@ void peeWPType::UpdateTypeList(){
 	if(activeType){
 		pCBType->SetSelectionWithData(activeType);
 		
-	}else if(pCBType->GetItemCount() > 0){
-		pEmitter->SetActiveType((peeType*)pCBType->GetItemAt(0)->GetData());
+	}else if(pCBType->GetItems().IsNotEmpty()){
+		pEmitter->SetActiveType((peeType*)pCBType->GetItems().First()->GetData());
 	}
 	
 	UpdateType();  // can be duplicate but required to not skip it in certain situations
@@ -1042,9 +1042,9 @@ void peeWPType::UpdateType(){
 				pCBEmitController->GetSelectedItem()->GetData()));
 		
 		// update usage icons
-		for(i=0; i<pListParams->GetItemCount(); i++){
+		for(i=0; i<pListParams->GetItems().GetCount(); i++){
 			UpdateParameterUsage(*type->GetParameterAt(
-				(deParticleEmitterType::eParameters)(intptr_t)pListParams->GetItemAt(i)->GetData()));
+				(deParticleEmitterType::eParameters)(intptr_t)pListParams->GetItems().GetAt(i)->GetData()));
 		}
 		
 	}else{
@@ -1064,8 +1064,8 @@ void peeWPType::UpdateType(){
 		pEditEmitTargetController->ClearText();
 		
 		// update usage icons
-		for(i=0; i<pListParams->GetItemCount(); i++){
-			pListParams->GetItemAt(i)->SetIcon(pIconUnused);
+		for(i=0; i<pListParams->GetItems().GetCount(); i++){
+			pListParams->GetItems().GetAt(i)->SetIcon(pIconUnused);
 		}
 	}
 	
@@ -1196,7 +1196,7 @@ void peeWPType::UpdateParameterUsage(const peeParameter &parameter){
 		return;
 	}
 	
-	pListParams->GetItemAt(index)->SetIcon(
+	pListParams->GetItems().GetAt(index)->SetIcon(
 		(parameter.GetCurveValue().GetPointCount() > 0
 		|| parameter.GetCurveSpread().GetPointCount() > 0
 		|| parameter.GetCurveProgress().GetPointCount() > 0

@@ -198,16 +198,11 @@ void *igdeTabBook::GetNativeContainer() const{
 
 void igdeTabBook::CreateChildWidgetNativeWidgets(){
 	igdeNativeTabBook * const native = (igdeNativeTabBook*)GetNativeWidget();
-	if(!native){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(native)
 	
 	igdeContainer::CreateChildWidgetNativeWidgets();
 	
-	const int count = pHeaders.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		native->AddHeader(*((cHeader*)pHeaders.GetAt(i)));
-	}
+	pHeaders.Visit([&](const cHeader &header){
+		native->AddHeader(header);
+	});
 }

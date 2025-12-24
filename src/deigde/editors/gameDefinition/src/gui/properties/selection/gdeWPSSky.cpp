@@ -198,7 +198,7 @@ public:
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
 			gdeUSkyControllerRemove::Ref::New(pPanel.GetSky(), controller));
 		
-		if(pComboBox.GetItemCount() > 0){
+		if(pComboBox.GetItems().IsNotEmpty()){
 			pComboBox.SetSelection(0);
 			pPanel.UpdateController();
 		}
@@ -514,8 +514,8 @@ void gdeWPSSky::UpdateController(){
 		}
 		pCBController->SortItems();
 		
-		if(!selectedController && pCBController->GetItemCount() > 0){
-			const decString &name = pCBController->GetItemAt(0)->GetText();
+		if(!selectedController && pCBController->GetItems().IsNotEmpty()){
+			const decString &name = pCBController->GetItems().First()->GetText();
 			selectedController = controllers.FindOrDefault([&](const gdeSkyController &c){
 				return c.GetName() == name;
 			});

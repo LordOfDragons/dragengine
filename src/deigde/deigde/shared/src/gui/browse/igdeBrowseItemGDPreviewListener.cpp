@@ -57,7 +57,7 @@ igdeBrowseItemGDPreviewListener::~igdeBrowseItemGDPreviewListener(){
 ///////////////
 
 void igdeBrowseItemGDPreviewListener::ImageCreated(deImage *image){
-	const int index = pIconListBox->IndexOfItem(pListItem);
+	const int index = pIconListBox->GetItems().IndexOf(pListItem);
 	if(index == -1){
 		return;
 	}

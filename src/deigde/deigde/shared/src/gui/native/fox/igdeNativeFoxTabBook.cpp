@@ -229,19 +229,19 @@ igdeFont *igdeNativeFoxTabBook::TabBookFont(const igdeTabBook &powner, const igd
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::tabBookFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::tabBookFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::tabBookFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::tabBookFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::tabBookFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::tabBookFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

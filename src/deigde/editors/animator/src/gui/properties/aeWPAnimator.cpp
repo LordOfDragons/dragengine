@@ -667,7 +667,7 @@ void aeWPAnimator::UpdateAnimator(){
 		}
 		pListBones->SortItems();
 		pListBones->SetSelection(pListBones->IndexOfItem(boneSelection));
-		if(!pListBones->GetSelectedItem() && pListBones->GetItemCount() > 0){
+		if(!pListBones->GetSelectedItem() && pListBones->GetItems().IsNotEmpty()){
 			pListBones->SetSelection(0);
 		}
 		
@@ -683,7 +683,7 @@ void aeWPAnimator::UpdateAnimator(){
 		}
 		pListVertexPositionSets->SortItems();
 		pListVertexPositionSets->SetSelection(pListVertexPositionSets->IndexOfItem(vpsSelection));
-		if(!pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItemCount() > 0){
+		if(!pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItems().IsNotEmpty()){
 			pListVertexPositionSets->SetSelection(0);
 		}
 		

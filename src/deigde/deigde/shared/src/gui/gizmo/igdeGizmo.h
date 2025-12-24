@@ -27,7 +27,7 @@
 
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
@@ -78,14 +78,13 @@ private:
 	};
 	
 	
-	
 	igdeEnvironment &pEnvironment;
 	
 	deWorld::Ref pWorld;
 	deDebugDrawer::Ref pDebugDrawer;
 	deColliderRig::Ref pCollider;
 	
-	decObjectList pShapeColors;
+	decTObjectOrderedSet<cShapeColor> pShapeColors;
 	float pTransparency;
 	float pHoverTransparency;
 	decColor pHoverColorMultiply;

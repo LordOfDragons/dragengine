@@ -133,18 +133,6 @@ void igdeIconListBox::Focus(){
 
 
 
-int igdeIconListBox::GetItemCount() const{
-	return pItems.GetCount();
-}
-
-igdeListItem *igdeIconListBox::GetItemAt(int index) const{
-	return (igdeListItem*)pItems.GetAt(index);
-}
-
-bool igdeIconListBox::HasItem(igdeListItem *item) const{
-	return pItems.Has(item);
-}
-
 bool igdeIconListBox::HasItem(const char *item) const{
 	return IndexOfItem(item) != -1;
 }
@@ -153,38 +141,20 @@ bool igdeIconListBox::HasItemWithData(void *data) const{
 	return IndexOfItemWithData(data) != -1;
 }
 
-int igdeIconListBox::IndexOfItem(igdeListItem *item) const{
-	return pItems.IndexOf(item);
-}
-
 int igdeIconListBox::IndexOfItem(const char *item) const{
 	if(!item){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetText() == item){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetText() == item;
+	});
 }
 
 int igdeIconListBox::IndexOfItemWithData(void *data) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetData() == data){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &item){
+		return item.GetData() == data;
+	});
 }
 
 void igdeIconListBox::AddItem(igdeListItem *item){
@@ -270,7 +240,7 @@ const decStringList &details, igdeIcon *icon, void *data){
 void igdeIconListBox::MoveItem(int fromIndex, int toIndex){
 	igdeListItem * const selection = GetSelectedItem();
 	
-	pItems.Move(fromIndex, toIndex);
+	pItems.MoveIndex(fromIndex, toIndex);
 	
 	if(selection){
 		pSelection = pItems.IndexOf(selection);
@@ -322,37 +292,6 @@ void igdeIconListBox::SetDefaultSorter(){
 	pSorter = igdeListItemSorter::Ref::New();
 }
 
-static void igdeIconListBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
-	const igdeListItem::Ref pivot(static_cast<igdeListItem*>(items.GetAt(left)));
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while(left < right){
-		while(left < right && sorter.Precedes(pivot, *static_cast<igdeListItem*>(items.GetAt(right)))){
-			right--;
-		}
-		if(left != right){
-			items.SetAt(left, items.GetAt(right));
-			left++;
-		}
-		while(left < right && sorter.Precedes(*static_cast<igdeListItem*>(items.GetAt(left)), pivot)){
-			left++;
-		}
-		if(left != right){
-			items.SetAt(right, items.GetAt(left));
-			right--;
-		}
-	}
-	
-	items.SetAt(left, pivot);
-	if(l_hold < left){
-		igdeIconListBox_Sort(items, sorter, l_hold, left - 1);
-	}
-	if(r_hold > left){
-		igdeIconListBox_Sort(items, sorter, left + 1, r_hold);
-	}
-}
-
 void igdeIconListBox::SortItems(){
 	if(!pSorter){
 		return;
@@ -365,7 +304,9 @@ void igdeIconListBox::SortItems(){
 	
 	igdeListItem * const selected = GetSelectedItem();
 	
-	igdeIconListBox_Sort(pItems, pSorter, 0, count - 1);
+	pItems.Sort([&](const igdeListItem &a, const igdeListItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
 	if(selected){
 		pSelection = pItems.IndexOf(selected);
@@ -386,12 +327,7 @@ void igdeIconListBox::SetSelectionMode(eSelectionMode mode){
 }
 
 igdeListItem *igdeIconListBox::GetSelectedItem() const{
-	if(pSelection != -1){
-		return (igdeListItem*)pItems.GetAt(pSelection);
-		
-	}else{
-		return nullptr;
-	}
+	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
 }
 
 void igdeIconListBox::SetSelection(int selection){
@@ -420,12 +356,12 @@ void igdeIconListBox::SelectItem(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(item.GetSelected()){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected(true);
+	item->SetSelected(true);
 	OnSelectionChanged();
 }
 
@@ -434,19 +370,15 @@ void igdeIconListBox::SelectAllItems(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
-		if(item.GetSelected()){
-			continue;
+	pItems.Visit([&](igdeListItem *item){
+		if(item->GetSelected()){
+			return;
 		}
 		
-		item.SetSelected(true);
+		item->SetSelected(true);
 		changed = true;
-	}
+	});
 	
 	if(changed){
 		OnSelectionChanged();
@@ -461,12 +393,12 @@ void igdeIconListBox::DeselectItem(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(!item.GetSelected()){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(!item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected(false);
+	item->SetSelected(false);
 	OnSelectionChanged();
 }
 
@@ -475,19 +407,15 @@ void igdeIconListBox::DeselectAllItems(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
-		if(!item.GetSelected()){
-			continue;
+	pItems.Visit([&](igdeListItem *item){
+		if(!item->GetSelected()){
+			return;
 		}
 		
-		item.SetSelected(false);
+		item->SetSelected(false);
 		changed = true;
-	}
+	});
 	
 	if(changed){
 		OnSelectionChanged();
@@ -636,8 +564,7 @@ void igdeIconListBox::DestroyNativeWidget(){
 
 void igdeIconListBox::OnItemAdded(int index){
 	if(GetNativeWidget()){
-		((igdeNativeIconListBox*)GetNativeWidget())->InsertItem(
-			index, *((igdeListItem*)pItems.GetAt(index)));
+		((igdeNativeIconListBox*)GetNativeWidget())->InsertItem(index, pItems.GetAt(index));
 	}
 }
 

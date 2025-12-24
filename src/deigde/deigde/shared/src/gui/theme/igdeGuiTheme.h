@@ -25,13 +25,12 @@
 #ifndef _IGDEGUITHEME_H_
 #define _IGDEGUITHEME_H_
 
+#include "igdeGuiThemeProperty.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-
-class igdeGuiThemeProperty;
-
 
 
 /**
@@ -46,10 +45,13 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGuiTheme> Ref;
 	
+	/** \brief Property dictionary. */
+	typedef decTObjectDictionary<igdeGuiThemeProperty> PropertyMap;
+	
 	
 private:
 	decString pName;
-	decObjectDictionary pProperties;
+	PropertyMap pProperties;
 	
 	
 	
@@ -84,14 +86,8 @@ public:
 	
 	
 	
-	/** \brief Number of properties. */
-	int GetPropertyCount() const;
-	
-	/** \brief Property or nullptr if absent. */
-	igdeGuiThemeProperty *GetProperty(const char *name) const;
-	
-	/** \brief Property is present. */
-	bool HasProperty(const char *name) const;
+	/** \brief Properties. */
+	inline const PropertyMap &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property. */
 	void SetProperty(igdeGuiThemeProperty *property);

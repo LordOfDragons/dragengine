@@ -269,12 +269,12 @@ void peeWindowCurves::DropProgressiveUndo(){
 
 void peeWindowCurves::pUpdateCurveListIcons(){
 	const peeParameter * const parameter = GetParameter();
-	const int count = pListCurves->GetItemCount();
+	const int count = pListCurves->GetItems().GetCount();
 	int i;
 	
 	if(parameter){
 		for(i=0; i<count; i++){
-			igdeListItem &item = *pListCurves->GetItemAt(i);
+			igdeListItem &item = pListCurves->GetItems().GetAt(i);
 			int pointCount;
 			
 			switch((eCurves)(intptr_t)item.GetData()){
@@ -304,7 +304,7 @@ void peeWindowCurves::pUpdateCurveListIcons(){
 		
 	}else{
 		for(i=0; i<count; i++){
-			pListCurves->GetItemAt(i)->SetIcon(pIconCurveEmpty);
+			pListCurves->GetItems().GetAt(i)->SetIcon(pIconCurveEmpty);
 			pListCurves->ItemChangedAt(i);
 		}
 	}

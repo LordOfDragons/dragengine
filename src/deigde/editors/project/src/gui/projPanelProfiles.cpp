@@ -1041,7 +1041,7 @@ void projPanelProfiles::UpdateIcons(){
 		pListIcons->SetSelection(pListIcons->IndexOfItem(selection));
 	}
 	
-	if(pListIcons->GetSelection() == -1 && pListIcons->GetItemCount() > 0){
+	if(pListIcons->GetSelection() == -1 && pListIcons->GetItems().IsNotEmpty()){
 		pListIcons->SetSelection(0);
 	}
 	
@@ -1077,7 +1077,7 @@ void projPanelProfiles::UpdateExcludePatterns(){
 		pListExcludePatterns->SetSelection(pListExcludePatterns->IndexOfItem(selection));
 	}
 	
-	if(pListExcludePatterns->GetSelection() == -1 && pListExcludePatterns->GetItemCount() > 0){
+	if(pListExcludePatterns->GetSelection() == -1 && pListExcludePatterns->GetItems().IsNotEmpty()){
 		pListExcludePatterns->SetSelection(0);
 	}
 	
@@ -1113,7 +1113,7 @@ void projPanelProfiles::UpdateRequiredExtensions(){
 		pListRequiredExtensions->SetSelection(pListRequiredExtensions->IndexOfItem(selection));
 	}
 	
-	if(pListRequiredExtensions->GetSelection() == -1 && pListRequiredExtensions->GetItemCount() > 0){
+	if(pListRequiredExtensions->GetSelection() == -1 && pListRequiredExtensions->GetItems().IsNotEmpty()){
 		pListRequiredExtensions->SetSelection(0);
 	}
 	

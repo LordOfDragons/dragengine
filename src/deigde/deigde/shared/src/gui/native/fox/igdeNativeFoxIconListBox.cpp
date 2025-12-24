@@ -241,13 +241,13 @@ void igdeNativeFoxIconListBox::BuildHeader(){
 }
 
 void igdeNativeFoxIconListBox::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner->GetItems().GetCount();
 	int i;
 	
 	pListBox->clearItems();
 	
 	for(i=0; i<count; i++){
-		pListBox->appendItem(new igdeNativeFoxIconListBoxItem(*pOwner, *pOwner->GetItemAt(i)));
+		pListBox->appendItem(new igdeNativeFoxIconListBoxItem(*pOwner, pOwner->GetItems().GetAt(i)));
 	}
 	
 	UpdateSelection();
@@ -400,19 +400,19 @@ igdeFont *igdeNativeFoxIconListBox::IconListBoxFont(const igdeIconListBox &powne
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -474,8 +474,8 @@ long igdeNativeFoxIconListBox::onListChanged(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxIconListBox::onListSelected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetItemCount()){
-		pOwner->GetItemAt(index)->SetSelected(true);
+	if(index >= 0 and index < pOwner->GetItems().GetCount()){
+		pOwner->GetItems().GetAt(index)->SetSelected(true);
 		pOwner->NotifyItemSelected(index);
 	}
 	return 1;
@@ -483,8 +483,8 @@ long igdeNativeFoxIconListBox::onListSelected(FXObject*, FXSelector, void *pdata
 
 long igdeNativeFoxIconListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetItemCount()){
-		pOwner->GetItemAt(index)->SetSelected(false);
+	if(index >= 0 and index < pOwner->GetItems().GetCount()){
+		pOwner->GetItems().GetAt(index)->SetSelected(false);
 		pOwner->NotifyItemDeselected(index);
 	}
 	return 1;
@@ -529,7 +529,7 @@ long igdeNativeFoxIconListBox::onListRightMouseUp(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxIconListBox::onListDoubleClicked(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index < 0 || index >= pOwner->GetItemCount()){
+	if(index < 0 || index >= pOwner->GetItems().GetCount()){
 		return 1;
 	}
 	

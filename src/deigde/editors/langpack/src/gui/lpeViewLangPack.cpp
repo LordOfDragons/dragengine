@@ -188,7 +188,7 @@ public:
 			return;
 		}
 		
-		langpack->GetEntrySelection().Add((lpeLangPackEntry*)listBox->GetItemAt(index)->GetData());
+		langpack->GetEntrySelection().Add((lpeLangPackEntry*)listBox->GetItems().GetAt(index)->GetData());
 		langpack->NotifyEntrySelectionChanged();
 	}
 	
@@ -198,7 +198,7 @@ public:
 			return;
 		}
 		
-		langpack->GetEntrySelection().Remove((lpeLangPackEntry*)listBox->GetItemAt(index)->GetData());
+		langpack->GetEntrySelection().Remove((lpeLangPackEntry*)listBox->GetItems().GetAt(index)->GetData());
 		langpack->NotifyEntrySelectionChanged();
 	}
 	
@@ -437,12 +437,12 @@ void lpeViewLangPack::SelectNextMissingEntry(){
 	
 	const igdeIconListBox &list = pListEntries;
 	const int startIndex = list.GetSelection() + 1;
-	const int count = list.GetItemCount();
+	const int count = list.GetItems().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
 		lpeLangPackEntry * const entry = (lpeLangPackEntry*)
-			list.GetItemAt((startIndex + i) % count)->GetData();
+			list.GetItems().GetAt((startIndex + i) % count)->GetData();
 		if(entry->GetLangPack() != pLangPack){
 			SelectEntry(entry);
 			return;
@@ -494,11 +494,11 @@ void lpeViewLangPack::UpdateEntrySelection(){
 	}
 	
 	igdeIconListBox &list = pListEntries;
-	const int count = list.GetItemCount();
+	const int count = list.GetItems().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const lpeLangPackEntry &entry = *((lpeLangPackEntry*)list.GetItemAt(i)->GetData());
+		const lpeLangPackEntry &entry = *((lpeLangPackEntry*)list.GetItems().GetAt(i)->GetData());
 		if(entry.GetSelected()){
 			list.SelectItem(i);
 			
@@ -516,7 +516,7 @@ void lpeViewLangPack::UpdateEntry(lpeLangPackEntry *entry){
 		return;
 	}
 	
-	igdeListItem &item = *pListEntries->GetItemAt(selection);
+	igdeListItem &item = *pListEntries->GetItems().GetAt(selection);
 	decStringList &details = item.GetDetails();
 	
 	item.SetText(entry->GetName());

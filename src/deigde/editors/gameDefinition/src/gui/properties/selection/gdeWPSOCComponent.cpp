@@ -963,7 +963,7 @@ public:
 			return;
 		}
 		
-		const decString &key = listBox->GetItemAt(index)->GetText();
+		const decString &key = listBox->GetItems().GetAt(index)->GetText();
 		if(!texture->GetProperties().Has(key)){
 			return;
 		}

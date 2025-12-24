@@ -419,19 +419,19 @@ igdeFont *igdeNativeFoxTreeList::TreeListFont(const igdeTreeList &powner, const 
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::treeListFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::treeListFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::treeListFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::treeListFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::treeListFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::treeListFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

@@ -641,7 +641,7 @@ void aeWPController::UpdateControllerList(){
 	}
 	
 	pListController->SetSelectionWithData(selection);
-	if(!pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
+	if(!pListController->GetSelectedItem() && pListController->GetItems().IsNotEmpty()){
 		pListController->SetSelection(0);
 	}
 	

@@ -41,7 +41,7 @@
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -359,37 +359,6 @@ void igdeTreeList::SetDefaultSorter(){
 	pSorter = igdeTreeItemSorter::Ref::New();
 }
 
-static void igdeTreeList_Sort(decObjectList &items, igdeTreeItemSorter &sorter, int left, int right){
-	igdeTreeItem::Ref pivot((igdeTreeItem*)items.GetAt(left));
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while(left < right){
-		while(left < right && sorter.Precedes(pivot, *((igdeTreeItem*)items.GetAt(right)))){
-			right--;
-		}
-		if(left != right){
-			items.SetAt(left, items.GetAt(right));
-			left++;
-		}
-		while(left < right && sorter.Precedes(*((igdeTreeItem*)items.GetAt(left)), pivot)){
-			left++;
-		}
-		if(left != right){
-			items.SetAt(right, items.GetAt(left));
-			right--;
-		}
-	}
-	
-	items.SetAt(left, (igdeTreeItem*)pivot);
-	if(l_hold < left){
-		igdeTreeList_Sort(items, sorter, l_hold, left - 1);
-	}
-	if(r_hold > left){
-		igdeTreeList_Sort(items, sorter, left + 1, r_hold);
-	}
-}
-
 void igdeTreeList::SortItems(igdeTreeItem *item){
 	if(!pSorter){
 		return;
@@ -401,15 +370,17 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 	}
 	
 	igdeTreeItem *child = item ? item->GetFirstChild() : (igdeTreeItem*)pFirstChild;
-	decObjectList items;
+	igdeTreeItem::List items;
 	while(child){
 		items.Add(child);
 		child = child->GetNext();
 	}
 	
-	igdeTreeList_Sort(items, pSorter, 0, count - 1);
+	items.Sort([&](const igdeTreeItem &a, const igdeTreeItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
-	igdeTreeItem *prevItem = (igdeTreeItem*)items.GetAt(0);
+	igdeTreeItem *prevItem = items.First();
 	prevItem->SetPrevious(nullptr);
 	
 	if(item){
@@ -419,13 +390,11 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 		pFirstChild = prevItem;
 	}
 	
-	int i;
-	for(i=1; i<count; i++){
-		igdeTreeItem * const nextItem = (igdeTreeItem*)items.GetAt(i);
+	items.Visit([&](igdeTreeItem *nextItem){
 		prevItem->SetNext(nextItem);
 		nextItem->SetPrevious(prevItem);
 		prevItem = nextItem;
-	}
+	}, 1);
 	
 	prevItem->SetNext(nullptr);
 	

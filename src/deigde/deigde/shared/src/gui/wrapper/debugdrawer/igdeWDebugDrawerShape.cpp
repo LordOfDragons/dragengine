@@ -486,9 +486,7 @@ void igdeWDebugDrawerShape::RemoveAllShapes(){
 
 void igdeWDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
 	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if(!face){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(face)
 	pFaces.Add(face);
 	pRebuildFaces();
 }
@@ -565,12 +563,9 @@ void igdeWDebugDrawerShape::AddNavSpaceFaces(const deNavigationSpace &navSpace, 
 }
 
 void igdeWDebugDrawerShape::RemoveAllFaces(){
-	const int count = pFaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete (deDebugDrawerShapeFace*)pFaces.GetAt(i);
-	}
+	pFaces.Visit([](deDebugDrawerShapeFace *f){
+		delete f;
+	});
 	pFaces.RemoveAll();
 	
 	pRebuildFaces();
@@ -659,25 +654,23 @@ void igdeWDebugDrawerShape::pRebuildFaces(){
 void igdeWDebugDrawerShape::pBareRebuildFaces(){
 	if(pEngDDShape){
 		deDebugDrawerShapeFace *newFace = nullptr;
-		const int faceCount = pFaces.GetCount();
-		int i, j;
 		
 		pEngDDShape->RemoveAllFaces();
 		
 		try{
-			for(i=0; i<faceCount; i++){
-				const deDebugDrawerShapeFace &face = *((deDebugDrawerShapeFace*)pFaces.GetAt(i));
-				const int vertexCount = face.GetVertexCount();
+			pFaces.Visit([&](const deDebugDrawerShapeFace *face){
+				const int vertexCount = face->GetVertexCount();
 				
 				newFace = new deDebugDrawerShapeFace;
-				newFace->SetNormal(face.GetNormal());
-				for(j=0; j<vertexCount; j++){
-					newFace->AddVertex(face.GetVertexAt(j));
+				newFace->SetNormal(face->GetNormal());
+				int i;
+				for(i=0; i<vertexCount; i++){
+					newFace->AddVertex(face->GetVertexAt(i));
 				}
 				
 				pEngDDShape->AddFace(newFace);
 				newFace = nullptr;
-			}
+			});
 			
 		}catch(const deException &){
 			if(newFace){

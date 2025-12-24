@@ -331,7 +331,15 @@ public:
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
 	void Move(const TP &element, int to){
-		const int from = IndexOf(element);
+		MoveIndex(IndexOf(element), to);
+	}
+	
+	/**
+	 * \brief Move element.
+	 * \throws deeInvalidParam from is less than 0 or larger than GetCount() - 1.
+	 * \throws deeInvalidParam to is less than 0 or larger than GetCount().
+	 */
+	void MoveIndex(int from, int to){
 		DEASSERT_TRUE(from != -1)
 		
 		if(to < 0){

@@ -349,11 +349,11 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 		}
 	}
 	
-	if(selection < pCBConnection->GetItemCount()){
+	if(selection < pCBConnection->GetItems().GetCount()){
 		pCBConnection->SetSelection(selection);
 		
-	}else if(pCBConnectionController->GetItemCount() > 0){
-		pCBConnection->SetSelection(pCBConnection->GetItemCount() - 1);
+	}else if(pCBConnectionController->GetItems().IsNotEmpty()){
+		pCBConnection->SetSelection(pCBConnection->GetItems().GetCount() - 1);
 	}
 	
 	if(pCBConnection->GetText() != selectionText){

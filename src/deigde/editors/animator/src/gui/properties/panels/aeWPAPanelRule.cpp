@@ -971,7 +971,7 @@ void aeWPAPanelRule::OnActivated(){
 	
 	OnAnimatorPathChanged();
 	
-	if(pCBTarget->GetItemCount() > 0){
+	if(pCBTarget->GetItems().IsNotEmpty()){
 		pCBTarget->SetSelection(0);
 	}
 }

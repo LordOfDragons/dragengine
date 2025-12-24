@@ -78,7 +78,7 @@ void igdeEditTags::cActionRemove::OnAction(){
 	decStringSet tags(pWidget.GetTags());
 	tags.Remove(pWidget.GetListBox().GetSelectedItem()->GetText());
 	pWidget.SetTags(tags);
-	if(pWidget.GetListBox().GetItemCount() > 0){
+	if(pWidget.GetListBox().GetItems().IsNotEmpty()){
 		pWidget.GetListBox().SetSelection(0);
 	}
 	pWidget.OnAction();
@@ -91,7 +91,7 @@ pWidget(widget){
 }
 
 void igdeEditTags::cActionClear::OnAction(){
-	if(pWidget.GetListBox().GetItemCount() == 0){
+	if(pWidget.GetListBox().GetItems().IsEmpty()){
 		return;
 	}
 	pWidget.SetTags(decStringSet());

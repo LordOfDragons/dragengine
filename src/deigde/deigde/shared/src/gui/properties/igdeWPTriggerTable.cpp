@@ -372,7 +372,7 @@ void igdeWPTriggerTable::UpdateTable(){
 	pListTriggerTable->SortItems();
 	
 	pListTriggerTable->SetSelectionWithData(selectedTarget);
-	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItemCount() > 0){
+	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItems().IsNotEmpty()){
 		pListTriggerTable->SetSelection(0);
 	}
 }

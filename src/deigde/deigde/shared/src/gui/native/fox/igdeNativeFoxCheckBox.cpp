@@ -186,19 +186,19 @@ igdeFont *igdeNativeFoxCheckBox::CheckBoxFont(const igdeCheckBox &powner, const 
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::checkBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::checkBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::checkBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::checkBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

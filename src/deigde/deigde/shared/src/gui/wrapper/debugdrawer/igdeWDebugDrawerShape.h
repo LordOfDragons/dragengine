@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deNavigationSpace;
@@ -76,7 +76,7 @@ private:
 	
 	decShapeList pShapes;
 	
-	decPointerList pFaces;
+	decTList<deDebugDrawerShapeFace*> pFaces;
 	
 	
 	

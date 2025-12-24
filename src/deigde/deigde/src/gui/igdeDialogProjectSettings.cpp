@@ -139,7 +139,7 @@ public:
 		}
 		
 		pListPathGameDefBase.RemoveItem(selection);
-		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
+		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItems().IsNotEmpty()){
 			pListPathGameDefBase.SetSelection(0);
 		}
 		
@@ -193,7 +193,7 @@ public:
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
-		const int count = pListPathGameDefBase.GetItemCount();
+		const int count = pListPathGameDefBase.GetItems().GetCount();
 		if(selection == -1 || selection >= count - 1){
 			return;
 		}
@@ -205,7 +205,7 @@ public:
 	
 	void Update() override{
 		SetEnabled(pListPathGameDefBase.GetSelection() != -1
-			&& pListPathGameDefBase.GetSelection() < pListPathGameDefBase.GetItemCount() - 1);
+			&& pListPathGameDefBase.GetSelection() < pListPathGameDefBase.GetItems().GetCount() - 1);
 	}
 };
 
@@ -340,10 +340,10 @@ bool igdeDialogProjectSettings::Accept(){
 		project.GetBaseGameDefinitionIDList().RemoveAll();
 		project.GetBaseGameDefinitionList().RemoveAll();
 		
-		const int baseGameDefCount = pListPathGameDefBase->GetItemCount();
+		const int baseGameDefCount = pListPathGameDefBase->GetItems().GetCount();
 		int i;
 		for(i=0; i<baseGameDefCount; i++){
-			const decString &id = pListPathGameDefBase->GetItemAt(i)->GetText();
+			const decString &id = pListPathGameDefBase->GetItems().GetAt(i)->GetText();
 			project.GetBaseGameDefinitionIDList().Add(id);
 			project.GetBaseGameDefinitionList().Add(sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
 				return gd.GetID() == id;
@@ -394,7 +394,7 @@ void igdeDialogProjectSettings::UpdateSharedGameDefs(){
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);
-	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
+	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItems().IsNotEmpty()){
 		pCBSharedGameDefs->SetSelection(0);
 	}
 }
@@ -431,7 +431,7 @@ void igdeDialogProjectSettings::pInitScriptModules(){
 	
 	pCBScriptModule->SortItems();
 	
-	if(pCBScriptModule->GetItemCount() > 0){
+	if(pCBScriptModule->GetItems().IsNotEmpty()){
 		pCBScriptModule->SetSelection(0);
 	}
 }

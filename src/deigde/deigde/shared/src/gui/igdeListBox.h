@@ -32,7 +32,6 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
@@ -61,7 +60,7 @@ public:
 	
 private:
 	bool pEnabled;
-	decObjectList pItems;
+	igdeListItem::List pItems;
 	eSelectionMode pSelectionMode;
 	int pSelection;
 	igdeListItemSorter::Ref pSorter;
@@ -118,20 +117,14 @@ public:
 	
 	
 	
-	/** \brief Number of items. */
-	int GetItemCount() const;
-	
-	/** \brief Item at index. */
-	igdeListItem *GetItemAt(int index) const;
+	/** \brief List items. */
+	const igdeListItem::List &GetItems() const{ return pItems; }
 	
 	/** \brief Item with data or nullptr if not found. */
 	igdeListItem *GetItemWithData(void *data) const;
 	
 	/** \brief Item with reference data or nullptr if not found. */
 	igdeListItem *GetItemWithRefData(const deObject::Ref &data) const;
-	
-	/** \brief Item is present. */
-	bool HasItem(igdeListItem *item) const;
 	
 	/** \brief Item with text is present. */
 	bool HasItem(const char *item) const;
@@ -141,9 +134,6 @@ public:
 	
 	/** \brief Item with reference data is present. */
 	bool HasItemWithRefData(const deObject::Ref &data) const;
-	
-	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem(igdeListItem *item) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
 	int IndexOfItem(const char *item) const;

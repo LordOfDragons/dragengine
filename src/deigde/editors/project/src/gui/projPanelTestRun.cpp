@@ -632,8 +632,8 @@ void projPanelTestRun::UpdateProfiles(){
 	
 	SelectProfile((projProfile*)(deObject*)pSelectedProfile);
 	
-	if(!pSelectedProfile && pCBProfile->GetItemCount() > 0){
-		SelectProfile((projProfile*)pCBProfile->GetItemAt(0)->GetData());
+	if(!pSelectedProfile && pCBProfile->GetItems().IsNotEmpty()){
+		SelectProfile((projProfile*)pCBProfile->GetItems().First()->GetData());
 	}
 }
 

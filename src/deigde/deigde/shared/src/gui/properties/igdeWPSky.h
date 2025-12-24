@@ -26,7 +26,7 @@
 #define _IGDEWPSTATICSKY_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include "../igdeButton.h"
 #include "../igdeContainer.h"
@@ -62,11 +62,10 @@ public:
 	
 	
 private:
-	class DE_DLL_EXPORT Controller : public deObject{
+	class cController : public deObject{
 	public:
-		typedef deTObjectReference<Controller> Ref;
-	
-	
+		typedef deTObjectReference<cController> Ref;
+		
 		int controller;
 		igdeLabel::WeakRef label;
 		igdeEditSliderText::WeakRef slider;
@@ -85,7 +84,7 @@ private:
 	igdeButton::Ref pBtnFromGDSky;
 	
 	igdeContainer::Ref pFraControllers;
-	decObjectList pControllers;
+	decTObjectOrderedSet<cController> pControllers;
 	
 	igdeAction::Ref pAction;
 	

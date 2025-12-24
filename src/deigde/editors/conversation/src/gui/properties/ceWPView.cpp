@@ -1231,7 +1231,7 @@ public:
 	"Remove All Actor Commands"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		if(pPanel.GetActor() && pListBox.GetItemCount() > 0){
+		if(pPanel.GetActor() && pListBox.GetItems().IsNotEmpty()){
 			pPanel.GetActor()->GetCommands().RemoveAll();
 			conversation->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
@@ -1239,7 +1239,7 @@ public:
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pPanel.GetActor() && pListBox.GetItemCount() > 0);
+		SetEnabled(pPanel.GetActor() && pListBox.GetItems().IsNotEmpty());
 	}
 };
 
@@ -1251,7 +1251,7 @@ public:
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetActor()){
-			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
+			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItems().GetAt(index)->GetData());
 			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
@@ -1674,7 +1674,7 @@ public:
 	"Remove All Playback Commands"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		if(pListBox.GetItemCount() > 0){
+		if(pListBox.GetItems().IsNotEmpty()){
 			conversation->GetPlayback()->GetCommands().RemoveAll();
 			conversation->NotifyPlaybackCommandListChanged();
 		}
@@ -1682,7 +1682,7 @@ public:
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pListBox.GetItemCount() > 0);
+		SetEnabled(pListBox.GetItems().IsNotEmpty());
 	}
 };
 
@@ -1694,7 +1694,7 @@ public:
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetConversation()){
-			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
+			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItems().GetAt(index)->GetData());
 			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyPlaybackCommandListChanged();
 		}
@@ -1804,7 +1804,7 @@ public:
 	"Remove All Playback Variables"), pListBox(listBox){}
 	
 	igdeUndo::Ref OnAction(ceConversation *conversation) override{
-		if(pListBox.GetItemCount() > 0){
+		if(pListBox.GetItems().IsNotEmpty()){
 			conversation->GetPlayback()->GetVariables().RemoveAll();
 			conversation->NotifyPlaybackVarListChanged();
 		}
@@ -1812,7 +1812,7 @@ public:
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pListBox.GetItemCount() > 0);
+		SetEnabled(pListBox.GetItems().IsNotEmpty());
 	}
 };
 
@@ -2386,7 +2386,7 @@ void ceWPView::UpdateActorGestures(){
 	}
 	
 	pCBActorGesture->SetSelectionWithData(gesture);
-	if(!pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItemCount() > 0){
+	if(!pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItems().IsNotEmpty()){
 		pCBActorGesture->SetSelection(0);
 	}
 	gesture = GetActorGesture();
@@ -2485,7 +2485,7 @@ void ceWPView::UpdateActorCommands(){
 	pListActorCommands->SortItems();
 	
 	pListActorCommands->SetSelectionWithData(selection);
-	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItemCount() > 0){
+	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItems().IsNotEmpty()){
 		pListActorCommands->SetSelection(0);
 	}
 }
@@ -2507,10 +2507,11 @@ void ceWPView::UpdateActorParameters(){
 	pListActorParameters->SortItems();
 	
 	if(selection){
-		const int count = pListActorParameters->GetItemCount();
+		const int count = pListActorParameters->GetItems().GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const cVariableKey::Ref varKey = pListActorParameters->GetItemAt(i)->GetRefData().DynamicCast<cVariableKey>();
+			const cVariableKey::Ref varKey = pListActorParameters->GetItems().GetAt(i)->
+				GetRefData().DynamicCast<cVariableKey>();
 			if(varKey->name == selection->name){
 				pListActorParameters->SetSelection(i);
 				break;
@@ -2518,7 +2519,7 @@ void ceWPView::UpdateActorParameters(){
 		}
 	}
 	
-	if(!pListActorParameters->GetSelectedItem() && pListActorParameters->GetItemCount() > 0){
+	if(!pListActorParameters->GetSelectedItem() && pListActorParameters->GetItems().IsNotEmpty()){
 		pListActorParameters->SetSelection(0);
 	}
 }
@@ -2641,7 +2642,7 @@ void ceWPView::UpdatePlaybackCommands(){
 	pListPlaybackCommands->SortItems();
 	
 	pListPlaybackCommands->SetSelectionWithData(selectedEntry);
-	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItemCount() > 0){
+	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItems().IsNotEmpty()){
 		pListPlaybackCommands->SetSelection(0);
 	}
 }
@@ -2662,10 +2663,11 @@ void ceWPView::UpdatePlaybackVariables(){
 	pListPlaybackVars->SortItems();
 	
 	if(selection){
-		const int count = pListPlaybackVars->GetItemCount();
+		const int count = pListPlaybackVars->GetItems().GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			const cVariableKey::Ref varKey = pListPlaybackVars->GetItemAt(i)->GetRefData().DynamicCast<cVariableKey>();
+			const cVariableKey::Ref varKey = pListPlaybackVars->GetItems().GetAt(i)->
+				GetRefData().DynamicCast<cVariableKey>();
 			if(varKey->name == selection->name){
 				pListPlaybackVars->SetSelection(i);
 				break;
@@ -2673,7 +2675,7 @@ void ceWPView::UpdatePlaybackVariables(){
 		}
 	}
 	
-	if(!pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItemCount() > 0){
+	if(!pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItems().IsNotEmpty()){
 		pListPlaybackVars->SetSelection(0);
 	}
 }
@@ -2700,7 +2702,7 @@ void ceWPView::UpdatePlaybackMissingWords(){
 	pCBPlaybackMissingWords->SortItems();
 	
 	pCBPlaybackMissingWords->SetText(selectedWord);
-	if(!pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItemCount() > 0){
+	if(!pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItems().IsNotEmpty()){
 		pCBPlaybackMissingWords->SetSelection(0);
 	}
 }

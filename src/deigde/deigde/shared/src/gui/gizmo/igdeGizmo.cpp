@@ -248,11 +248,9 @@ decDMatrix igdeGizmo::GetMatrix() const{
 
 
 void igdeGizmo::SetShapeFromModel(const deModel &model){
-	const int shapeColorCount = pShapeColors.GetCount();
-	int i;
-	for(i=0; i<shapeColorCount; i++){
-		((cShapeColor*)pShapeColors.GetAt(i))->ddshapeIndex = -1;
-	}
+	pShapeColors.Visit([&](cShapeColor &shapeColor){
+		shapeColor.ddshapeIndex = -1;
+	});
 	
 	pModelTextureNames.RemoveAll();
 	pDebugDrawer->RemoveAllShapes();
@@ -266,6 +264,7 @@ void igdeGizmo::SetShapeFromModel(const deModel &model){
 	deDebugDrawerShape *ddshape = nullptr;
 	
 	try{
+		int i;
 		for(i=0; i<textureCount; i++){
 			const decString &name = model.GetTextureAt(i)->GetName();
 			
@@ -291,6 +290,7 @@ void igdeGizmo::SetShapeFromModel(const deModel &model){
 	}
 	
 	try{
+		int i;
 		for(i=0; i<faceCount; i++){
 			const deModelFace &face = faces[i];
 			ddsface = new deDebugDrawerShapeFace;
@@ -435,14 +435,11 @@ void igdeGizmo::OnRemoveFromWorld(){
 //////////////////////
 
 void igdeGizmo::pApplyShapeColors(){
-	const int count = pShapeColors.GetCount();
 	decColor color;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const cShapeColor &shapeColor = *(cShapeColor*)pShapeColors.GetAt(i);
+	pShapeColors.Visit([&](const cShapeColor &shapeColor){
 		if(shapeColor.ddshapeIndex == -1){
-			continue;
+			return;
 		}
 		
 		if(pIsHovering && shapeColor.name == pHoverShapeName){
@@ -455,21 +452,17 @@ void igdeGizmo::pApplyShapeColors(){
 		deDebugDrawerShape &shape = *pDebugDrawer->GetShapeAt(shapeColor.ddshapeIndex);
 		shape.SetEdgeColor(decColor(color, 0.0f));
 		shape.SetFillColor(color);
-	}
+	});
 	
 	pDebugDrawer->NotifyShapeColorChanged();
 }
 
 igdeGizmo::cShapeColor *igdeGizmo::pNamedShapeColor(const char *name) const{
-	const int count = pShapeColors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		cShapeColor *shapeColor = (cShapeColor*)pShapeColors.GetAt(i);
+	for(const auto &shapeColor : pShapeColors){
 		if(shapeColor->name == name){
 			return shapeColor;
 		}
-	}
+	};
 	return nullptr;
 }
 

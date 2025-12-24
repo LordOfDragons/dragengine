@@ -193,7 +193,7 @@ public:
 		}
 		
 		pListPathGameDefBase.RemoveItem(selection);
-		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItemCount() > 0){
+		if(!pListPathGameDefBase.GetSelectedItem() && pListPathGameDefBase.GetItems().IsNotEmpty()){
 			pListPathGameDefBase.SetSelection(0);
 		}
 		
@@ -247,7 +247,7 @@ public:
 	
 	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
-		const int count = pListPathGameDefBase.GetItemCount();
+		const int count = pListPathGameDefBase.GetItems().GetCount();
 		if(selection == -1 || selection >= count - 1){
 			return;
 		}
@@ -259,7 +259,7 @@ public:
 	
 	void Update() override{
 		SetEnabled(pListPathGameDefBase.GetSelection() != -1
-			&& pListPathGameDefBase.GetSelection() < pListPathGameDefBase.GetItemCount() - 1);
+			&& pListPathGameDefBase.GetSelection() < pListPathGameDefBase.GetItems().GetCount() - 1);
 	}
 };
 
@@ -452,10 +452,10 @@ bool igdeDialogNewGameProject::Accept(){
 	createProject.SetScriptModule(pCBScriptModule->GetText());
 	createProject.SetTemplate(static_cast<const igdeTemplate*>(pCBTemplate->GetSelectedItem()->GetData()));
 	
-	const int baseGameDefCount = pListPathGameDefBase->GetItemCount();
+	const int baseGameDefCount = pListPathGameDefBase->GetItems().GetCount();
 	int i;
 	for(i=0; i<baseGameDefCount; i++){
-		createProject.GetBaseGameDefs().Add(pListPathGameDefBase->GetItemAt(i)->GetText());
+		createProject.GetBaseGameDefs().Add(pListPathGameDefBase->GetItems().GetAt(i)->GetText());
 	}
 	
 	try{
@@ -522,7 +522,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDefs(){
 	
 	pCBSharedGameDefs->SortItems();
 	pCBSharedGameDefs->SetSelectionWithData(selection);
-	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItemCount() > 0){
+	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItems().IsNotEmpty()){
 		pCBSharedGameDefs->SetSelection(0);
 	}
 }
@@ -595,7 +595,7 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 	
 	pCBScriptModule->SortItems();
 	
-	if(pCBScriptModule->GetItemCount() > 0){
+	if(pCBScriptModule->GetItems().IsNotEmpty()){
 		pCBScriptModule->SetSelection(0);
 	}
 }

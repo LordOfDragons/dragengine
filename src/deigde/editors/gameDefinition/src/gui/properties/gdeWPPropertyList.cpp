@@ -973,7 +973,7 @@ void gdeWPPropertyList::UpdateList(){
 	}
 	
 	pCBProperties->SetSelectionWithData(property);
-	if(pCBProperties->GetSelection() == -1 && pCBProperties->GetItemCount() > 0){
+	if(pCBProperties->GetSelection() == -1 && pCBProperties->GetItems().IsNotEmpty()){
 		pCBProperties->SetSelection(0);
 	}
 	
@@ -1046,7 +1046,7 @@ void gdeWPPropertyList::UpdatePropertyIdentifierList(){
 				pCBIdentifierGroup->AddItem(id, pIconIdentifierUsage);
 				
 			}else{
-				igdeListItem &item = *pCBIdentifierGroup->GetItemAt(index);
+				igdeListItem &item = pCBIdentifierGroup->GetItems().GetAt(index);
 				if(item.GetIcon() == pIconIdentifierNoUsage){
 					item.SetIcon(pIconIdentifierUsage);
 					pCBIdentifierGroup->ItemChangedAt(index);
@@ -1076,7 +1076,7 @@ void gdeWPPropertyList::UpdatePropertyIdentifierList(){
 					? pIconIdentifierUsage : pIconIdentifierNoUsage);
 				
 			}else if(property.GetIdentifierUsage()){
-				igdeListItem &item = *pCBIdentifierGroup->GetItemAt(index);
+				igdeListItem &item = pCBIdentifierGroup->GetItems().GetAt(index);
 				if(item.GetIcon() == pIconIdentifierNoUsage){
 					item.SetIcon(pIconIdentifierUsage);
 					pCBIdentifierGroup->ItemChangedAt(index);
@@ -1225,8 +1225,8 @@ void gdeWPPropertyList::SetDefaultValueFromType(){
 		break;
 		
 	case gdeProperty::eptSelect:
-		if(pListOptions->GetItemCount() > 0){
-			value = pListOptions->GetItemAt(0)->GetText();
+		if(pListOptions->GetItems().IsNotEmpty()){
+			value = pListOptions->GetItems().First()->GetText();
 		}
 		break;
 		

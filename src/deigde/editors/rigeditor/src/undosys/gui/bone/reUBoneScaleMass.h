@@ -33,8 +33,6 @@
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-class decObjectOrderedSet;
-
 
 
 /**

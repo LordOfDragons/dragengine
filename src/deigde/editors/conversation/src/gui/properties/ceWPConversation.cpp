@@ -1650,7 +1650,7 @@ void ceWPConversation::UpdateImportConvoPathList(){
 	if(!selection.IsEmpty()){
 		pListImportConvoPath->SetSelection(pListImportConvoPath->IndexOfItem(selection));
 	}
-	if(pListImportConvoPath->GetSelection() == -1 && pListImportConvoPath->GetItemCount() > 0){
+	if(pListImportConvoPath->GetSelection() == -1 && pListImportConvoPath->GetItems().IsNotEmpty()){
 		pListImportConvoPath->SetSelection(0);
 	}
 }
@@ -1787,7 +1787,7 @@ void ceWPConversation::UpdateFPControllerList(){
 	}
 	
 	pCBFPController->SetSelectionWithData(controller);
-	if(pCBFPController->GetSelection() == -1 && pCBFPController->GetItemCount() > 0){
+	if(pCBFPController->GetSelection() == -1 && pCBFPController->GetItems().IsNotEmpty()){
 		pCBFPController->SetSelection(0);
 	}
 	UpdateFPController();

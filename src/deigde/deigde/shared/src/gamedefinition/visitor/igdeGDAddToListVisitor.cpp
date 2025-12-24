@@ -147,7 +147,7 @@ void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
 		return;
 	}
 	
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;
@@ -168,7 +168,7 @@ void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
 }
 
 void igdeGDAddToListVisitor::VisitSkin(igdeGDSkin *gdskin){
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;
@@ -189,7 +189,7 @@ void igdeGDAddToListVisitor::VisitSkin(igdeGDSkin *gdskin){
 }
 
 void igdeGDAddToListVisitor::VisitSky(igdeGDSky *gdsky){
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;

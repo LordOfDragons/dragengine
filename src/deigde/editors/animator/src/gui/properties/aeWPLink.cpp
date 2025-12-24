@@ -736,7 +736,7 @@ void aeWPLink::UpdateLinkList(){
 	}
 	
 	pListLink->SetSelectionWithData(selection);
-	if(!pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
+	if(!pListLink->GetSelectedItem() && pListLink->GetItems().IsNotEmpty()){
 		pListLink->SetSelection(0);
 	}
 	

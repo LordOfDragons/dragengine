@@ -33,7 +33,6 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
@@ -75,7 +74,7 @@ public:
 	
 private:
 	bool pEnabled;
-	decObjectList pItems;
+	igdeListItem::List pItems;
 	eSelectionMode pSelectionMode;
 	eViewMode pViewMode;
 	int pSelection;
@@ -143,23 +142,14 @@ public:
 	
 	
 	
-	/** \brief Number of items. */
-	int GetItemCount() const;
-	
-	/** \brief Item at index. */
-	igdeListItem *GetItemAt(int index) const;
-	
-	/** \brief Item is present. */
-	bool HasItem(igdeListItem *item) const;
+	/** \brief List items. */
+	inline const igdeListItem::List &GetItems() const{ return pItems; }
 	
 	/** \brief Item with text is present. */
 	bool HasItem(const char *item) const;
 	
 	/** \brief Item with data is present. */
 	bool HasItemWithData(void *data) const;
-	
-	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem(igdeListItem *item) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
 	int IndexOfItem(const char *item) const;

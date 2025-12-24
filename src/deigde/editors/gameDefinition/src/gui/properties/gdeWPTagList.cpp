@@ -96,7 +96,7 @@ public:
 		
 		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(tags));
 		
-		if(pListBox->GetItemCount() > 0){
+		if(pListBox->GetItems().IsNotEmpty()){
 			pListBox->SetSelection(0);
 		}
 	}
@@ -112,7 +112,7 @@ public:
 	igdeAction("Clear", nullptr, "Clear tag"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
-		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){
 			return;
 		}
 		

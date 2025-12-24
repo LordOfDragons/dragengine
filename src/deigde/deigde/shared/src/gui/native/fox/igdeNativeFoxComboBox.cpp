@@ -124,13 +124,13 @@ void igdeNativeFoxComboBox::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxComboBox::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner->GetItems().GetCount();
 	int i;
 	
 	clearItems();
 	
 	for(i=0; i<count; i++){
-		const igdeListItem &item = *pOwner->GetItemAt(i);
+		const igdeListItem &item = pOwner->GetItems().GetAt(i);
 		
 		appendItem(item.GetText().GetString());
 		
@@ -141,7 +141,7 @@ void igdeNativeFoxComboBox::BuildList(){
 }
 
 void igdeNativeFoxComboBox::UpdateItem(int index){
-	const igdeListItem &item = *pOwner->GetItemAt(index);
+	const igdeListItem &item = pOwner->GetItems().GetAt(index);
 	
 	list->setItemText(index, item.GetText().GetString());
 	
@@ -248,19 +248,19 @@ igdeFont *igdeNativeFoxComboBox::ComboBoxFont(const igdeComboBox &powner, const 
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::comboBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::comboBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

@@ -248,7 +248,7 @@ void igdeDialogStartUp::pUpdateRecentProjectList(){
 		pListRecentProjects->AddItem(text);
 	}
 	
-	if(pListRecentProjects->GetItemCount() > 0){
+	if(pListRecentProjects->GetItems().IsNotEmpty()){
 		pListRecentProjects->SetSelection(0);
 	}
 	

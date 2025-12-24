@@ -141,7 +141,7 @@ public:
 		
 		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(paths));
 		
-		if(pListBox->GetItemCount() > 0){
+		if(pListBox->GetItems().IsNotEmpty()){
 			pListBox->SetSelection(0);
 		}
 	}
@@ -157,7 +157,7 @@ public:
 	igdeAction("Clear", nullptr, "Clear path"), pPanel(panel), pListBox(listBox){}
 	
 	void OnAction() override{
-		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+		if(!pPanel.GetPathList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){
 			return;
 		}
 		

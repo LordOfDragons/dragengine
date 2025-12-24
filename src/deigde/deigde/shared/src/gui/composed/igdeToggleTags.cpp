@@ -150,12 +150,12 @@ void igdeToggleTags::Focus(){
 }
 
 decStringSet igdeToggleTags::GetTags() const{
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	decStringSet set;
 	int i;
 	
 	for(i=0; i<count; i++){
-		set.Add(pListBox->GetItemAt(i)->GetText());
+		set.Add(pListBox->GetItems().GetAt(i)->GetText());
 	}
 	
 	return set;
@@ -178,13 +178,13 @@ void igdeToggleTags::Clear(){
 }
 
 decStringSet igdeToggleTags::GetEnabledTags() const{
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	decStringSet set;
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(pListBox->GetItemAt(i)->GetData() == TAG_ENABLED){
-			set.Add(pListBox->GetItemAt(i)->GetText());
+		if(pListBox->GetItems().GetAt(i)->GetData() == TAG_ENABLED){
+			set.Add(pListBox->GetItems().GetAt(i)->GetText());
 		}
 	}
 	
@@ -192,13 +192,13 @@ decStringSet igdeToggleTags::GetEnabledTags() const{
 }
 
 decStringSet igdeToggleTags::GetDisabledTags() const{
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	decStringSet set;
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(pListBox->GetItemAt(i)->GetData() == TAG_DISABLED){
-			set.Add(pListBox->GetItemAt(i)->GetText());
+		if(pListBox->GetItems().GetAt(i)->GetData() == TAG_DISABLED){
+			set.Add(pListBox->GetItems().GetAt(i)->GetText());
 		}
 	}
 	
@@ -220,12 +220,12 @@ void igdeToggleTags::SelectTag(const char *tag){
 }
 
 void igdeToggleTags::EnableAllTags(){
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	bool changed = false;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeListItem &item = *pListBox->GetItemAt(i);
+		igdeListItem &item = *pListBox->GetItems().GetAt(i);
 		if(item.GetData() == TAG_ENABLED){
 			continue;
 		}
@@ -241,12 +241,12 @@ void igdeToggleTags::EnableAllTags(){
 }
 
 void igdeToggleTags::DisableAllTags(){
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	bool changed = false;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeListItem &item = *pListBox->GetItemAt(i);
+		igdeListItem &item = *pListBox->GetItems().GetAt(i);
 		if(item.GetData() == TAG_DISABLED){
 			continue;
 		}
@@ -262,12 +262,12 @@ void igdeToggleTags::DisableAllTags(){
 }
 
 void igdeToggleTags::EnableTags(const decStringSet &set){
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	bool changed = false;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeListItem &item = *pListBox->GetItemAt(i);
+		igdeListItem &item = *pListBox->GetItems().GetAt(i);
 		const bool inSet = set.Has(item.GetText());
 		if(inSet == (item.GetData() == TAG_ENABLED)){
 			continue;
@@ -284,12 +284,12 @@ void igdeToggleTags::EnableTags(const decStringSet &set){
 }
 
 bool igdeToggleTags::GetTagEnabled(const char *tag) const{
-	return pListBox->GetItemAt(pListBox->IndexOfItem(tag))->GetData() == TAG_ENABLED;
+	return pListBox->GetItems().GetAt(pListBox->IndexOfItem(tag))->GetData() == TAG_ENABLED;
 }
 
 void igdeToggleTags::SetTagEnabled(const char *tag, bool enabled){
 	const int index = pListBox->IndexOfItem(tag);
-	igdeListItem &item = *pListBox->GetItemAt(index);
+	igdeListItem &item = *pListBox->GetItems().GetAt(index);
 	if(enabled == (item.GetData() == TAG_ENABLED)){
 		return;
 	}
@@ -343,7 +343,7 @@ void igdeToggleTags::OnDestroyed(igdeAction *action){
 
 
 void igdeToggleTags::ToggleTagEnabled(int index){
-	igdeListItem &item = *pListBox->GetItemAt(index);
+	igdeListItem &item = *pListBox->GetItems().GetAt(index);
 	item.SetData(item.GetData() == TAG_ENABLED ? TAG_DISABLED : TAG_ENABLED);
 	pUpdateIcon(index);
 	OnAction();
@@ -366,7 +366,7 @@ void igdeToggleTags::pCreateContent(igdeUIHelper &helper, int rows){
 }
 
 void igdeToggleTags::pUpdateAllIcons(){
-	const int count = pListBox->GetItemCount();
+	const int count = pListBox->GetItems().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -375,7 +375,7 @@ void igdeToggleTags::pUpdateAllIcons(){
 }
 
 void igdeToggleTags::pUpdateIcon(int index){
-	igdeListItem &item = *pListBox->GetItemAt(index);
+	igdeListItem &item = *pListBox->GetItems().GetAt(index);
 	
 	igdeIcon * const icon = item.GetData() == TAG_ENABLED ? pIconEnabled : pIconDisabled;
 	if(icon == item.GetIcon()){

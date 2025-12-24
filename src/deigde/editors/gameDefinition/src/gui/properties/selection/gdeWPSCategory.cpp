@@ -175,7 +175,7 @@ public:
 			return;
 		}
 		
-		const igdeListItem &item = *listBox.GetItemAt(index);
+		const igdeListItem &item = listBox.GetItems().GetAt(index);
 		if(!item.GetData()){
 			return;
 		}
@@ -395,7 +395,7 @@ void gdeWPSCategory::UpdateListElements(){
 	}
 	
 	pListElements->SortItems();
-	if(pListElements->GetItemCount() > 0){
+	if(pListElements->GetItems().IsNotEmpty()){
 		pListElements->SetSelection(0);
 	}
 }

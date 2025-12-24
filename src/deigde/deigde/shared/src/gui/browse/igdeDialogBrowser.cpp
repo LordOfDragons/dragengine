@@ -314,7 +314,7 @@ void igdeDialogBrowser::UpdateItemList(){
 	pListItems->SortItems();
 	
 	pListItems->SetSelectionWithData(selection);
-	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItems().IsNotEmpty()){
 		pListItems->SetSelection(0);
 	}
 }
