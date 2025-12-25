@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodySetSkin.h"
+#include "../../sky/body/skyeBody.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodySetSkin
+/////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodySetSkin::skyeUBodySetSkin(skyeBody *body, const char *newSkin) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewSkin(newSkin)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Body Skin");
+	
+	pOldSkin = body->GetSkinPath();
+	
+	pBody = body;
+}
+
+skyeUBodySetSkin::~skyeUBodySetSkin(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodySetSkin::Undo(){
+	pBody->SetSkinPath(pOldSkin);
+}
+
+void skyeUBodySetSkin::Redo(){
+	pBody->SetSkinPath(pNewSkin);
 }

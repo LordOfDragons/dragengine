@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULAYERTSETLIGHTINTENSITY_H_
+#define _SKYEULAYERTSETLIGHTINTENSITY_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/layer/skyeLayer.h"
 
 
+/**
+ * \brief Undo action set layer light intensity.
+ */
+class skyeULayerSetLightIntensity : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULayerSetLightIntensity> Ref;
+	
+	
+private:
+	skyeLayer::Ref pLayer;
+	
+	float pOldIntensity;
+	float pNewIntensity;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULayerSetLightIntensity(skyeLayer *layer, float newIntensity);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULayerSetLightIntensity();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

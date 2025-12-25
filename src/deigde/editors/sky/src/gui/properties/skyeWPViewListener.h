@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWPVIEWLISTENER_H_
+#define _SKYEWPVIEWLISTENER_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSkyListener.h"
 
-#include <dragengine/common/exceptions.h>
+class skyeWPView;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief View panel listener.
+ */
+class skyeWPViewListener : public skyeSkyListener{
+public:
+	typedef deTObjectReference<skyeWPViewListener> Ref;
+	
+private:
+	skyeWPView &pPanel;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	skyeWPViewListener(skyeWPView &panel);
+	
+	/** \brief Clean up listener. */
+	~skyeWPViewListener() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Environment component changed. */
+	void EnvObjectChanged(skyeSky *sky) override;
+	
+	/** \brief View changed. */
+	void ViewChanged(skyeSky *sky) override;
+	
+	/** \brief Camera changed. */
+	void CameraChanged(skyeSky *sky) override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

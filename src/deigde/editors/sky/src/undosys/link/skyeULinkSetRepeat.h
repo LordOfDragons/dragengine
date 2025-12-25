@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULINKSETREPEAT_H_
+#define _SKYEULINKSETREPEAT_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/link/skyeLink.h"
 
 
+/**
+ * \brief Undo action set link repeat.
+ */
+class skyeULinkSetRepeat : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULinkSetRepeat> Ref;
+	
+	
+private:
+	skyeLink::Ref pLink;
+	
+	int pOldRepeat;
+	int pNewRepeat;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULinkSetRepeat(skyeLink *link, int newRepeat);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULinkSetRepeat();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

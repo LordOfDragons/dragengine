@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerToggleClamp.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerToggleClamp
+///////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+skyeUControllerToggleClamp::skyeUControllerToggleClamp(skyeController *controller) :
+pController(nullptr)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Toggle Controller Clamp");
+	
+	pController = controller;
+}
+
+skyeUControllerToggleClamp::~skyeUControllerToggleClamp(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerToggleClamp::Undo(){
+	pController->SetClamp(!pController->GetClamp());
+}
+
+void skyeUControllerToggleClamp::Redo(){
+	pController->SetClamp(!pController->GetClamp());
 }

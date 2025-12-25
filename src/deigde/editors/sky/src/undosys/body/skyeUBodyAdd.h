@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEUBODYADD_H_
+#define _SKYEUBODYADD_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/body/skyeBody.h"
+#include "../../sky/layer/skyeLayer.h"
 
 
+/**
+ * \brief Undo action add body.
+ */
+class skyeUBodyAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeUBodyAdd> Ref;
+	
+	
+private:
+	skyeLayer::Ref pLayer;
+	skyeBody::Ref pBody;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeUBodyAdd(skyeLayer *layer, skyeBody *body);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeUBodyAdd();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

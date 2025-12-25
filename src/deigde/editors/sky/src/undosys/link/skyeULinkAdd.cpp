@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULinkAdd.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULinkAdd
+/////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+skyeULinkAdd::skyeULinkAdd(skyeSky *sky, skyeLink *link) :
+pSky(nullptr)
+{
+	if(!sky || !link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Add Link");
+	
+	pSky = sky;
+	pLink = link;
+}
+
+skyeULinkAdd::~skyeULinkAdd(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULinkAdd::Undo(){
+	pSky->RemoveLink(pLink);
+}
+
+void skyeULinkAdd::Redo(){
+	pSky->AddLink(pLink);
+	pSky->SetActiveLink(pLink);
 }

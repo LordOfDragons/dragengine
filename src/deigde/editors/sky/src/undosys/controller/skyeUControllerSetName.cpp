@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerSetName.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerSetName
+///////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUControllerSetName::skyeUControllerSetName(skyeController *controller, const char *newName) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewName(newName)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Controller Name");
+	
+	pOldName = controller->GetName();
+	
+	pController = controller;
+}
+
+skyeUControllerSetName::~skyeUControllerSetName(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerSetName::Undo(){
+	pController->SetName(pOldName);
+}
+
+void skyeUControllerSetName::Redo(){
+	pController->SetName(pNewName);
 }

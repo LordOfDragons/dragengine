@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWINDOWMAINLISTENER_H_
+#define _SKYEWINDOWMAINLISTENER_H_
 
-#include "skyeIGDEModule.h"
+#include "../sky/skyeSkyListener.h"
 
-#include <dragengine/common/exceptions.h>
+class skyeWindowMain;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Window main listener.
+ */
+class skyeWindowMainListener : public skyeSkyListener{
+public:
+	typedef deTObjectReference<skyeWindowMainListener> Ref;
+	
+private:
+	skyeWindowMain &pWindow;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	skyeWindowMainListener(skyeWindowMain &window);
+	
+	/** \brief Clean up listener. */
+	~skyeWindowMainListener() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Changed or saved state changed. */
+	void StateChanged(skyeSky *sky) override;
+	
+	/** \brief Undo changed. */
+	void UndoChanged(skyeSky *sky) override;
+	
+	/** \brief The view changed. */
+	void ViewChanged(skyeSky *sky) override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

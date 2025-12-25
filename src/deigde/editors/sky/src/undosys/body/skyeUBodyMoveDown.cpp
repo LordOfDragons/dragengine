@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodyMoveDown.h"
+#include "../../sky/body/skyeBody.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodyMoveDown
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodyMoveDown::skyeUBodyMoveDown(skyeBody *body) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	const skyeLayer * const layer = body->GetLayer();
+	if(!layer){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Move Body Down");
+	
+	pIndex = layer->GetBodies().IndexOf(body);
+	if(pIndex == -1 || pIndex == layer->GetBodies().GetCount() - 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pBody = body;
+}
+
+skyeUBodyMoveDown::~skyeUBodyMoveDown(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodyMoveDown::Undo(){
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex);
+}
+
+void skyeUBodyMoveDown::Redo(){
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex + 1);
 }

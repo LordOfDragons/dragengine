@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEUBODYSETSIZE_H_
+#define _SKYEUBODYSETSIZE_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
+
+#include "../../sky/body/skyeBody.h"
 
 
+/**
+ * \brief Undo action set body size.
+ */
+class skyeUBodySetSize : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeUBodySetSize> Ref;
+	
+	
+private:
+	skyeBody::Ref pBody;
+	
+	decVector2 pOldSize;
+	decVector2 pNewSize;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeUBodySetSize(skyeBody *body, const decVector2 &newSize);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeUBodySetSize();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetLightOrientation.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetLightOrientation
+/////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetLightOrientation::skyeULayerSetLightOrientation(skyeLayer *layer,
+const decVector &newOrientation) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewOrientation(newOrientation)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Light Orientation");
+	
+	pOldOrientation = layer->GetLightOrientation();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetLightOrientation::~skyeULayerSetLightOrientation(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetLightOrientation::Undo(){
+	pLayer->SetLightOrientation(pOldOrientation);
+}
+
+void skyeULayerSetLightOrientation::Redo(){
+	pLayer->SetLightOrientation(pNewOrientation);
 }

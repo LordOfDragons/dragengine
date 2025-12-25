@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerAdd.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerAdd
+//////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerAdd::skyeULayerAdd(skyeSky *sky, skyeLayer *layer) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pLayer(nullptr)
+{
+	if(!sky || !layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Add Layer");
+	
+	pSky = sky;
+	pLayer = layer;
+}
+
+skyeULayerAdd::~skyeULayerAdd(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerAdd::Undo(){
+	pSky->RemoveLayer(pLayer);
+}
+
+void skyeULayerAdd::Redo(){
+	pSky->AddLayer(pLayer);
+	pSky->SetActiveLayer(pLayer);
 }

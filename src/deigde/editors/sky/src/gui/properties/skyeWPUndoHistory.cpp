@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWPUndoHistory.h"
+#include "skyeWPUndoHistoryListener.h"
+#include "../../sky/skyeSky.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWPUndoHistory
+//////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPUndoHistory::skyeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new skyeWPUndoHistoryListener(*this)){
 }
-#endif
+
+skyeWPUndoHistory::~skyeWPUndoHistory(){
+	SetSky(nullptr);
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeWPUndoHistory::SetSky(skyeSky *sky){
+	if(sky == pSky){
+		return;
+	}
+	
+	SetUndoSystem(nullptr);
+	
+	if(pSky){
+		pSky->RemoveListener(pListener);
+	}
+	
+	pSky = sky;
+	
+	if(sky){
+		sky->AddListener(pListener);
+		SetUndoSystem(sky->GetUndoSystem());
 	}
 }

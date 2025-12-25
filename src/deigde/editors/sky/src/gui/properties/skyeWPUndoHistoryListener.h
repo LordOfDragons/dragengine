@@ -22,33 +22,44 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWPUNDOHISTORYLISTENER_H_
+#define _SKYEWPUNDOHISTORYLISTENER_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSkyListener.h"
 
-#include <dragengine/common/exceptions.h>
+class skyeWPUndoHistory;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo History Properties Panel Listener.
+ */
+class skyeWPUndoHistoryListener : public skyeSkyListener{
+public:
+	typedef deTObjectReference<skyeWPUndoHistoryListener> Ref;
+	
+private:
+	skyeWPUndoHistory &pPanel;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	skyeWPUndoHistoryListener(skyeWPUndoHistory &panel);
+	
+	/** \brief Clean up listener. */
+	~skyeWPUndoHistoryListener() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo changed. */
+	void UndoChanged(skyeSky *sky) override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

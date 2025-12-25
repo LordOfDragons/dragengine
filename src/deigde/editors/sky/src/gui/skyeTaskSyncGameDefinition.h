@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYETASKSYNCGAMEDEFINITION_H_
+#define _SKYETASKSYNCGAMEDEFINITION_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/gui/igdeStepableTask.h>
 
-#include <dragengine/common/exceptions.h>
+class skyeWindowMain;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Synchronize game definition task.
+ */
+class skyeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<skyeTaskSyncGameDefinition> Ref;
+	
+private:
+	skyeWindowMain &pWindowMain;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create task. */
+	skyeTaskSyncGameDefinition(skyeWindowMain &windowMain);
+	
+	/** \brief Clean up task. */
+	virtual ~skyeTaskSyncGameDefinition();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Run next step of task.
+	 * 
+	 * The step should consume a small amount of time to allow the GUI to stay responsive.
+	 * In case of an error an exception has to be thrown which aborts the task.
+	 * 
+	 * \retval true Task requires more steps.
+	 * \retval false Task finished after this step.
+	 */
+	virtual bool Step();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

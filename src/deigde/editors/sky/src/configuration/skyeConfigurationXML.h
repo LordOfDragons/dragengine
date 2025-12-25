@@ -22,33 +22,46 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYECONFIGURATIONXML_H_
+#define _SKYECONFIGURATIONXML_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/utils/igdeBaseXML.h>
 
-#include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decString.h>
+
+class decBaseFileReader;
+class decBaseFileWriter;
+class skyeConfiguration;
+class decXmlWriter;
+class decXmlElementTag;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Load/Save Configuration XML.
+ */
+class skyeConfigurationXML : public igdeBaseXML{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create new configuration xml read/save. */
+	skyeConfigurationXML(deLogger *logger, const char *loggerSource);
+	/** \brief Clean up the configuration xml read/save. */
+	virtual ~skyeConfigurationXML();
+	/*@}*/
+	
+	/** \name Management */
+	/*@{*/
+	/** Read from XML file. */
+	void ReadFromFile(decBaseFileReader&reader, skyeConfiguration &config);
+	/** Write to XML file. */
+	void WriteToFile(decBaseFileWriter&writer, const skyeConfiguration &config);
+	/*@}*/
+	
+private:
+	void pWriteConfig(decXmlWriter &writer, const skyeConfiguration &config);
+	
+	void pReadConfig(const decXmlElementTag &root, skyeConfiguration &config);
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

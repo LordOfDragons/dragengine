@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULinkSetRepeat.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULinkSetRepeat
+///////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULinkSetRepeat::skyeULinkSetRepeat(skyeLink *link, int newRepeat) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewRepeat(newRepeat)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Link Repeat");
+	
+	pOldRepeat = link->GetRepeat();
+	
+	pLink = link;
+}
+
+skyeULinkSetRepeat::~skyeULinkSetRepeat(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULinkSetRepeat::Undo(){
+	pLink->SetRepeat(pOldRepeat);
+}
+
+void skyeULinkSetRepeat::Redo(){
+	pLink->SetRepeat(pNewRepeat);
 }

@@ -22,33 +22,57 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWPSKY_H_
+#define _SKYEWPSKY_H_
 
-#include "skyeIGDEModule.h"
+#include "skyeWPSkyListener.h"
+#include "../../sky/skyeSky.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
+
+class skyeWindowProperties;
 
 
+/**
+ * \brief Sky panel.
+ */
+class skyeWPSky : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<skyeWPSky> Ref;
+	
+private:
+	skyeWindowProperties &pWindowProperties;
+	skyeSky::Ref pSky;
+	skyeWPSkyListener::Ref pListener;
+	
+	igdeColorBox::Ref pClrBg;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create panel. */
+	skyeWPSky(skyeWindowProperties &windowProperties);
+	
+	/** \brief Clean up panel. */
+	virtual ~skyeWPSky();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Sky. */
+	inline const skyeSky::Ref &GetSky() const{ return pSky; }
+	
+	/** \brief Set sky. */
+	void SetSky(skyeSky *sky);
+	
+	/** \brief Update sky. */
+	void UpdateSky();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

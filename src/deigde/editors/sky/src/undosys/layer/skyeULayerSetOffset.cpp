@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetOffset.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetOffset
+////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetOffset::skyeULayerSetOffset(skyeLayer *layer, const decVector &newOffset) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewOffset(newOffset)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Offset");
+	
+	pOldOffset = layer->GetOffset();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetOffset::~skyeULayerSetOffset(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetOffset::Undo(){
+	pLayer->SetOffset(pOldOffset);
+}
+
+void skyeULayerSetOffset::Redo(){
+	pLayer->SetOffset(pNewOffset);
 }

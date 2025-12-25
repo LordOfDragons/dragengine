@@ -23,32 +23,59 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWPLink.h"
+#include "skyeWPLinkListener.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWPLinkListener
+///////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPLinkListener::skyeWPLinkListener(skyeWPLink &panel) :
+pPanel(panel){
 }
-#endif
+
+skyeWPLinkListener::~skyeWPLinkListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeWPLinkListener::ControllerStructureChanged(skyeSky *sky){
+	pPanel.UpdateControllerList();
+}
+
+void skyeWPLinkListener::ControllerNameChanged(skyeSky *sky, skyeController *controller){
+	pPanel.UpdateControllerList();
+}
+
+
+
+void skyeWPLinkListener::LinkStructureChanged(skyeSky *sky){
+	pPanel.UpdateLinkList();
+}
+
+void skyeWPLinkListener::LinkChanged(skyeSky *sky, skyeLink *link){
+	if(link->GetActive()){
+		pPanel.UpdateLink();
 	}
+}
+
+void skyeWPLinkListener::LinkNameChanged(skyeSky* sky, skyeLink* link){
+	pPanel.UpdateLinkList();
+}
+
+void skyeWPLinkListener::ActiveLinkChanged(skyeSky *sky){
+	pPanel.SelectActiveLink();
 }

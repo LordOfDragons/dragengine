@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetLightColor.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetLightColor
+////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetLightColor::skyeULayerSetLightColor(skyeLayer *layer, const decColor &newColor) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewColor(newColor)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Color");
+	
+	pOldColor = layer->GetLightColor();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetLightColor::~skyeULayerSetLightColor(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetLightColor::Undo(){
+	pLayer->SetLightColor(pOldColor);
+}
+
+void skyeULayerSetLightColor::Redo(){
+	pLayer->SetLightColor(pNewColor);
 }

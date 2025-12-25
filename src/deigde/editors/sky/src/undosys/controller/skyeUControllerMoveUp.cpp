@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerMoveUp.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerMoveUp
+//////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUControllerMoveUp::skyeUControllerMoveUp(skyeController *controller) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	const skyeSky * const sky = controller->GetSky();
+	if(!sky){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Move Controller Up");
+	
+	pIndex = sky->GetControllers().IndexOf(controller);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pController = controller;
+}
+
+skyeUControllerMoveUp::~skyeUControllerMoveUp(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerMoveUp::Undo(){
+	pController->GetSky()->MoveControllerTo(pController, pIndex);
+}
+
+void skyeUControllerMoveUp::Redo(){
+	pController->GetSky()->MoveControllerTo(pController, pIndex - 1);
 }

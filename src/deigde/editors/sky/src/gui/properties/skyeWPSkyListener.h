@@ -22,33 +22,45 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWPSKYLISTENER_H_
+#define _SKYEWPSKYLISTENER_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSkyListener.h"
 
-#include <dragengine/common/exceptions.h>
+class skyeWPSky;
 
 
+/**
+ * \brief Sky properties panel listener.
+ */
+class skyeWPSkyListener : public skyeSkyListener{
+public:
+	typedef deTObjectReference<skyeWPSkyListener> Ref;
+	
+private:
+	skyeWPSky &pPanel;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	skyeWPSkyListener(skyeWPSky &panel);
+	
+protected:
+	/** \brief Clean up listener. */
+	~skyeWPSkyListener() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Sky parameters changed. */
+	void SkyChanged(skyeSky *sky) override;
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

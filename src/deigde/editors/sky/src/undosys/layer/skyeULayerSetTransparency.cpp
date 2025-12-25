@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetTransparency.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetTransparency
+//////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetTransparency::skyeULayerSetTransparency(skyeLayer *layer, float newTransparency) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewTransparency(newTransparency)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Transparency");
+	
+	pOldTransparency = layer->GetTransparency();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetTransparency::~skyeULayerSetTransparency(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetTransparency::SetNewTransparency(float transparency){
+	pNewTransparency = transparency;
+}
+
+
+
+void skyeULayerSetTransparency::Undo(){
+	pLayer->SetTransparency(pOldTransparency);
+}
+
+void skyeULayerSetTransparency::Redo(){
+	pLayer->SetTransparency(pNewTransparency);
 }

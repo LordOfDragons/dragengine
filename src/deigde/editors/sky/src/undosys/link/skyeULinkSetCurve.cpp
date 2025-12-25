@@ -22,33 +22,58 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULinkSetCurve.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULinkSetCurve
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULinkSetCurve::skyeULinkSetCurve(skyeLink *link, const decCurveBezier &newCurve) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewCurve(newCurve)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Link Curve");
+	
+	pOldCurve = link->GetCurve();
+	
+	pLink = link;
+}
+
+skyeULinkSetCurve::~skyeULinkSetCurve(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULinkSetCurve::SetNewCurve(const decCurveBezier &curve){
+	pNewCurve = curve;
+}
+
+
+
+void skyeULinkSetCurve::Undo(){
+	pLink->GetCurve() = pOldCurve;
+	pLink->NotifyCurveChanged();
+}
+
+void skyeULinkSetCurve::Redo(){
+	pLink->GetCurve() = pNewCurve;
+	pLink->NotifyCurveChanged();
 }

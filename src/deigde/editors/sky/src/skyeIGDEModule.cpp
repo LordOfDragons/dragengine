@@ -22,33 +22,33 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "skyeIGDEModule.h"
+#include "gui/skyeWindowMain.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/environment/igdeEnvironment.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeIGDEModule
+///////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeIGDEModule::skyeIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
-#endif
+
+skyeIGDEModule::~skyeIGDEModule(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeIGDEModule::Start(){
+	if(!GetEditorWindow()){
+		SetEditorWindow(skyeWindowMain::Ref::New(*this));
 	}
 }

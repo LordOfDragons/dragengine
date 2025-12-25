@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodySetSize.h"
+#include "../../sky/body/skyeBody.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodySetSize
+/////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodySetSize::skyeUBodySetSize(skyeBody *body, const decVector2 &newSize) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewSize(newSize)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Body Size");
+	
+	pOldSize = body->GetSize();
+	
+	pBody = body;
+}
+
+skyeUBodySetSize::~skyeUBodySetSize(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodySetSize::Undo(){
+	pBody->SetSize(pOldSize);
+}
+
+void skyeUBodySetSize::Redo(){
+	pBody->SetSize(pNewSize);
 }

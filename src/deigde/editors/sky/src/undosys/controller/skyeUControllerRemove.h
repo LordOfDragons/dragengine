@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEUCONTROLLERREMOVE_H_
+#define _SKYEUCONTROLLERREMOVE_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/controller/skyeController.h"
+#include "../../sky/link/skyeLink.h"
+#include "../../sky/skyeSky.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/resources/sky/deSkyLayer.h>
+
+class skyeLayer;
 
 
+/**
+ * Undo action remove controller.
+ */
+class skyeUControllerRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeUControllerRemove> Ref;
+	
+	
+private:
+	skyeSky::Ref pSky;
+	skyeController::Ref pController;
+	int pIndex;
+	
+	skyeLink::List pLinks;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create undo action. */
+	skyeUControllerRemove(skyeController *controller);
+	
+protected:
+	/** Clean up undo action. */
+	virtual ~skyeUControllerRemove();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Undo. */
+	virtual void Undo();
+	
+	/** Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

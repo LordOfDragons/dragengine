@@ -22,33 +22,57 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUTargetRemoveLink.h"
+#include "../../sky/controller/skyeControllerTarget.h"
+#include "../../sky/layer/skyeLayer.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUTargetRemoveLink
+//////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUTargetRemoveLink::skyeUTargetRemoveLink(skyeLayer *layer,
+deSkyLayer::eTargets target, skyeLink *link) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pTarget(target)
+{
+	if(!layer || !link){
+		DETHROW(deeInvalidParam);
 	}
+	if(!layer->GetTarget(target).GetLinks().Has(link)){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Target Remove Link");
+	
+	pLayer = layer;
+	pLink = link;
+}
+
+skyeUTargetRemoveLink::~skyeUTargetRemoveLink(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUTargetRemoveLink::Undo(){
+	pLayer->GetTarget(pTarget).AddLink(pLink);
+	pLayer->NotifyTargetChanged(pTarget);
+}
+
+void skyeUTargetRemoveLink::Redo(){
+	pLayer->GetTarget(pTarget).RemoveLink(pLink);
+	pLayer->NotifyTargetChanged(pTarget);
 }

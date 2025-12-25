@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetName.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetName
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetName::skyeULayerSetName(skyeLayer *layer, const char *newName) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewName(newName)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Name");
+	
+	pOldName = layer->GetName();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetName::~skyeULayerSetName(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetName::Undo(){
+	pLayer->SetName(pOldName);
+}
+
+void skyeULayerSetName::Redo(){
+	pLayer->SetName(pNewName);
 }

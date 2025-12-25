@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerToggleMulBySkyLight.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerToggleMulBySkyLight
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+skyeULayerToggleMulBySkyLight::skyeULayerToggleMulBySkyLight(skyeLayer *layer) :
+pLayer(nullptr)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Toggle Layer Multiply By Sky Light");
+	
+	pLayer = layer;
+}
+
+skyeULayerToggleMulBySkyLight::~skyeULayerToggleMulBySkyLight(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerToggleMulBySkyLight::Undo(){
+	pLayer->SetMultiplyBySkyLight(!pLayer->GetMuliplyBySkyLight());
+}
+
+void skyeULayerToggleMulBySkyLight::Redo(){
+	pLayer->SetMultiplyBySkyLight(!pLayer->GetMuliplyBySkyLight());
 }

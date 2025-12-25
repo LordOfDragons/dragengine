@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWINDOWCURVESLISTENER_H_
+#define _SKYEWINDOWCURVESLISTENER_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSkyListener.h"
 
-#include <dragengine/common/exceptions.h>
+class skyeWindowCurves;
 
 
+/**
+ * \brief Curves window listener.
+ */
+class skyeWindowCurvesListener : public skyeSkyListener{
+public:
+	typedef deTObjectReference<skyeWindowCurvesListener> Ref;
+	
+private:
+	skyeWindowCurves &pWindow;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	skyeWindowCurvesListener(skyeWindowCurves &window);
+	
+	/** \brief Clean up listener. */
+	~skyeWindowCurvesListener() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Link added or removed. */
+	void LinkStructureChanged (skyeSky *sky) override;
+	
+	/** \brief Link changed. */
+	void LinkChanged(skyeSky *sky, skyeLink *link) override;
+	
+	/** \brief Link name changed. */
+	void LinkNameChanged(skyeSky *sky, skyeLink *link) override;
+	
+	/** \brief Active controller changed. */
+	void ActiveLinkChanged(skyeSky *sky) override;
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

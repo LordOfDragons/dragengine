@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetSkin.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetSkin
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetSkin::skyeULayerSetSkin(skyeLayer *layer, const char *newSkin) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewSkin(newSkin)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Skin");
+	
+	pOldSkin = layer->GetSkinPath();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetSkin::~skyeULayerSetSkin(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetSkin::Undo(){
+	pLayer->SetSkinPath(pOldSkin);
+}
+
+void skyeULayerSetSkin::Redo(){
+	pLayer->SetSkinPath(pNewSkin);
 }

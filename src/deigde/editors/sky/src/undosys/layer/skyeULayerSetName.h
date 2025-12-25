@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULAYERSETNAME_H_
+#define _SKYEULAYERSETNAME_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/layer/skyeLayer.h"
 
 
+/**
+ * \brief Undo action set layer name.
+ */
+class skyeULayerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULayerSetName> Ref;
+	
+	
+private:
+	skyeLayer::Ref pLayer;
+	
+	decString pOldName;
+	decString pNewName;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULayerSetName(skyeLayer *layer, const char *newName);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULayerSetName();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

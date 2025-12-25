@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerToggleFrozen.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerToggleFrozen
+////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+skyeUControllerToggleFrozen::skyeUControllerToggleFrozen(skyeController *controller) :
+pController(nullptr)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Toggle Controller Frozen");
+	
+	pController = controller;
+}
+
+skyeUControllerToggleFrozen::~skyeUControllerToggleFrozen(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerToggleFrozen::Undo(){
+	pController->SetFrozen(!pController->GetFrozen());
+}
+
+void skyeUControllerToggleFrozen::Redo(){
+	pController->SetFrozen(!pController->GetFrozen());
 }

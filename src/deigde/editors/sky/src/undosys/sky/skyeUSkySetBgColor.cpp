@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUSkySetBgColor.h"
+#include "../../sky/skyeSky.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUSkySetBgColor
+///////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUSkySetBgColor::skyeUSkySetBgColor(skyeSky *sky, const decColor &newColor) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewColor(newColor)
+{
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Sky Bg Color");
+	
+	pOldColor = sky->GetBgColor();
+	
+	pSky = sky;
+}
+
+skyeUSkySetBgColor::~skyeUSkySetBgColor(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUSkySetBgColor::Undo(){
+	pSky->SetBgColor(pOldColor);
+}
+
+void skyeUSkySetBgColor::Redo(){
+	pSky->SetBgColor(pNewColor);
 }

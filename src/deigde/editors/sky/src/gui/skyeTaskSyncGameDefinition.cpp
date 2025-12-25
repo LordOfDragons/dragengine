@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeTaskSyncGameDefinition.h"
+#include "skyeWindowMain.h"
+#include "../sky/skyeSky.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeTaskSyncGameDefinition
+///////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeTaskSyncGameDefinition::skyeTaskSyncGameDefinition(skyeWindowMain &windowMain) :
+pWindowMain(windowMain)
+{
+	SetMessage("Sky Editor: Synchronize Game Definition");
 }
-#endif
+
+skyeTaskSyncGameDefinition::~skyeTaskSyncGameDefinition(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+bool skyeTaskSyncGameDefinition::Step(){
+	if(!pWindowMain.GetSky()){
+		return false;
 	}
+	
+	skyeSky &sky = *pWindowMain.GetSky();
+	
+	sky.GetEnvObject()->OnGameDefinitionChanged();
+	
+	return false;
 }

@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerSetAmbientIntensity.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerSetAmbientIntensity
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerSetAmbientIntensity::skyeULayerSetAmbientIntensity(skyeLayer *layer, float newIntensity) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewIntensity(newIntensity)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Layer Ambient Intensity");
+	
+	pOldIntensity = layer->GetAmbientIntensity();
+	
+	pLayer = layer;
+}
+
+skyeULayerSetAmbientIntensity::~skyeULayerSetAmbientIntensity(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerSetAmbientIntensity::Undo(){
+	pLayer->SetAmbientIntensity(pOldIntensity);
+}
+
+void skyeULayerSetAmbientIntensity::Redo(){
+	pLayer->SetAmbientIntensity(pNewIntensity);
 }

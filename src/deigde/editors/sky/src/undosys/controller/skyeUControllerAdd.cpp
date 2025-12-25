@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerAdd.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerAdd
+///////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUControllerAdd::skyeUControllerAdd(skyeSky *sky, skyeController *controller) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pController(nullptr)
+{
+	if(!sky || !controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Add Controller");
+	
+	pSky = sky;
+	pController = controller;
+}
+
+skyeUControllerAdd::~skyeUControllerAdd(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerAdd::Undo(){
+	pSky->RemoveController(pController);
+}
+
+void skyeUControllerAdd::Redo(){
+	pSky->AddController(pController);
+	pSky->SetActiveController(pController);
 }

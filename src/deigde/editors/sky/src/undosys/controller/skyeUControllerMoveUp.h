@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEUCONTROLLERMOVEUP_H_
+#define _SKYEUCONTROLLERMOVEUP_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/controller/skyeController.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action move controller up.
+ */
+class skyeUControllerMoveUp : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeUControllerMoveUp> Ref;
+	
+	
+private:
+	skyeController::Ref pController;
+	int pIndex;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeUControllerMoveUp(skyeController *controller);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeUControllerMoveUp();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

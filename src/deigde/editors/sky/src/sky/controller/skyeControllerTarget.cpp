@@ -22,33 +22,62 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeControllerTarget.h"
+#include "../skyeSky.h"
+#include "../link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/resources/sky/deSkyControllerTarget.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeControllerTarget
+/////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeControllerTarget::skyeControllerTarget(){
 }
-#endif
+
+skyeControllerTarget::skyeControllerTarget(const skyeControllerTarget &copy) :
+pLinks(copy.pLinks){
+}
+
+skyeControllerTarget::~skyeControllerTarget(){
+	RemoveAllLinks();
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeControllerTarget::AddLink(skyeLink *link){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	pLinks.Add(link);
+}
+
+void skyeControllerTarget::RemoveLink(skyeLink *link){
+	pLinks.Remove(link);
+}
+
+void skyeControllerTarget::RemoveAllLinks(){
+	pLinks.RemoveAll();
+}
+
+
+
+// Operators
+//////////////
+
+skyeControllerTarget &skyeControllerTarget::operator=(const skyeControllerTarget &copy){
+	pLinks = copy.pLinks;
+	return *this;
 }

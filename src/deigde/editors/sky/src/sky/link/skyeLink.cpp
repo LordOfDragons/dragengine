@@ -22,33 +22,97 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeLink.h"
+#include "../skyeSky.h"
+#include "../controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/curve/decCurveBezierPoint.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeLink
+/////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeLink::skyeLink() :
+pSky(nullptr),
+pIndex(-1),
+
+pName("Link"),
+pRepeat(1),
+
+pSelected(false),
+pActive(false){
 }
-#endif
+
+skyeLink::~skyeLink(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeLink::SetSky(skyeSky *sky){
+	pSky = sky;
+}
+
+void skyeLink::SetIndex(int index){
+	pIndex = index;
+}
+
+void skyeLink::SetName(const char *name){
+	if(pName == name){
+		return;
 	}
+	
+	pName = name;
+	if(pSky){
+		pSky->NotifyLinkNameChanged(this);
+	}
+}
+
+void skyeLink::NotifyCurveChanged(){
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
+	}
+}
+
+void skyeLink::SetController(skyeController *controller){
+	if(controller == pController){
+		return;
+	}
+	pController = controller;
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
+	}
+}
+
+void skyeLink::SetRepeat(int repeat){
+	if(repeat == pRepeat){
+		return;
+	}
+	
+	pRepeat = repeat;
+	
+	if(pSky){
+		pSky->NotifyLinkChanged(this);
+	}
+}
+
+
+
+void skyeLink::SetSelected(bool selected){
+	pSelected = selected;
+}
+
+void skyeLink::SetActive(bool active){
+	pActive = active;
 }

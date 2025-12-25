@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerToggleMulBySkyColor.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerToggleMulBySkyColor
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+skyeULayerToggleMulBySkyColor::skyeULayerToggleMulBySkyColor(skyeLayer *layer) :
+pLayer(nullptr)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Toggle Layer Multiply By Sky Color");
+	
+	pLayer = layer;
+}
+
+skyeULayerToggleMulBySkyColor::~skyeULayerToggleMulBySkyColor(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerToggleMulBySkyColor::Undo(){
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
+}
+
+void skyeULayerToggleMulBySkyColor::Redo(){
+	pLayer->SetMultiplyBySkyColor(!pLayer->GetMuliplyBySkyColor());
 }

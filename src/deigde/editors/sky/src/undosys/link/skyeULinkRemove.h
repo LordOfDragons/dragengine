@@ -22,33 +22,67 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULINKREMOVE_H_
+#define _SKYEULINKREMOVE_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/layer/skyeLayer.h"
+#include "../../sky/link/skyeLink.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
 
-
-
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/sky/deSkyLayer.h>
 
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
+/**
+ * \brief Undo action remove link.
+ */
+class skyeULinkRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULinkRemove> Ref;
+	
+	
+private:
+	class cTarget : public deObject{
+	public:
+		typedef deTObjectReference<cTarget> Ref;
+		typedef decTObjectOrderedSet<cTarget> List;
 		
-	}catch(const deException &){
-		return nullptr;
-	}
-}
+		skyeLayer::Ref layer;
+		deSkyLayer::eTargets target;
+		
+		cTarget() = default;
+	};
+	
+	skyeSky::Ref pSky;
+	skyeLink::Ref pLink;
+	
+	cTarget::List pTargets;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULinkRemove(skyeLink *link);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULinkRemove();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
+
+#endif

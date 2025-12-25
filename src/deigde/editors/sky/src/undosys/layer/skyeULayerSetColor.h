@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULAYERSETCOLOR_H_
+#define _SKYEULAYERSETCOLOR_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
+
+#include "../../sky/layer/skyeLayer.h"
 
 
+/**
+ * \brief Undo action set layer color.
+ */
+class skyeULayerSetColor : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULayerSetColor> Ref;
+	
+	
+private:
+	skyeLayer::Ref pLayer;
+	
+	decColor pOldColor;
+	decColor pNewColor;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULayerSetColor(skyeLayer *layer, const decColor &newColor);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULayerSetColor();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

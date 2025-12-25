@@ -22,33 +22,68 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEVIEWSKY_H_
+#define _SKYEVIEWSKY_H_
 
-#include "skyeIGDEModule.h"
+#include "../sky/skyeSky.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/gui/igdeViewRenderWindow.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+
+class skyeWindowMain;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief View of the sky.
+ */
+class skyeViewSky : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<skyeViewSky> Ref;
+	
+private:
+	skyeWindowMain &pWindowMain;
+	
+	skyeSky::Ref pSky;
+	
+	igdeMouseCameraListener::Ref pCameraInteraction;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create new sky view. */
+	skyeViewSky(skyeWindowMain &windowMain);
+	
+protected:
+	/** \brief Clean up the sky view. */
+	virtual ~skyeViewSky();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Main window. */
+	inline skyeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
+	/** \brie Reset view. */
+	void ResetView();
+	
+	/** \brief Sky. */
+	inline const skyeSky::Ref &GetSky() const{ return pSky; }
+	
+	/** \brief Set sky. */
+	void SetSky(skyeSky *sky);
+	
+	/** \brief Game like frame update. */
+	virtual void OnFrameUpdate(float elapsed);
+	
+	/** \brief Create canvas. */
+	virtual void CreateCanvas();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

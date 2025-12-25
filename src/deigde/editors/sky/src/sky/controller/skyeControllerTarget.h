@@ -22,33 +22,61 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYECONTROLLERTARGET_H_
+#define _SKYECONTROLLERTARGET_H_
 
-#include "skyeIGDEModule.h"
+#include "../link/skyeLink.h"
 
-#include <dragengine/common/exceptions.h>
+class deSkyControllerTarget;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Links for controller target.
+ */
+class skyeControllerTarget{
+private:
+	skyeLink::List pLinks;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create controller target. */
+	skyeControllerTarget();
+	
+	/** \brief Create copy of controller target. */
+	skyeControllerTarget(const skyeControllerTarget &copy);
+	
+	/** \brief Clean up controller target. */
+	~skyeControllerTarget();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Links. */
+	const skyeLink::List &GetLinks() const{ return pLinks; }
+	
+	/** \brief Add link. */
+	void AddLink(skyeLink *link);
+	
+	/** \brief Remove link. */
+	void RemoveLink(skyeLink *link);
+	
+	/** \brief Remove all links. */
+	void RemoveAllLinks();
+	/*@}*/
+	
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Copy another controller target to this controller target. */
+	skyeControllerTarget &operator=(const skyeControllerTarget &copy);
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

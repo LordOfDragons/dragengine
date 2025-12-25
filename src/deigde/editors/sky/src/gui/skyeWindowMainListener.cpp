@@ -22,33 +22,37 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
-#include "skyeIGDEModule.h"
-
-#include <dragengine/common/exceptions.h>
+#include "skyeWindowMain.h"
+#include "skyeWindowMainListener.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWindowMainListener
+///////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWindowMainListener::skyeWindowMainListener(skyeWindowMain &window) :
+pWindow(window){
 }
-#endif
+
+skyeWindowMainListener::~skyeWindowMainListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+void skyeWindowMainListener::StateChanged(skyeSky*){
+	pWindow.UpdateAllActions();
+}
+
+void skyeWindowMainListener::UndoChanged(skyeSky*){
+	pWindow.UpdateAllActions();
+}
+
+void skyeWindowMainListener::ViewChanged(skyeSky*){
+	pWindow.UpdateAllActions();
 }

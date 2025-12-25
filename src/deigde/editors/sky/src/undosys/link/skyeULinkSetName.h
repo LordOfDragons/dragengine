@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULINKSETNAME_H_
+#define _SKYEULINKSETNAME_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/link/skyeLink.h"
 
 
+/**
+ * \brief Undo action set link name.
+ */
+class skyeULinkSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULinkSetName> Ref;
+	
+	
+private:
+	skyeLink::Ref pLink;
+	
+	decString pOldName;
+	decString pNewName;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULinkSetName(skyeLink *link, const char *newName);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULinkSetName();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

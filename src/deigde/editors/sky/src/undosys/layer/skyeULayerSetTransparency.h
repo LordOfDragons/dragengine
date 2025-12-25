@@ -22,33 +22,55 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEULAYERSETTRANSPARENCY_H_
+#define _SKYEULAYERSETTRANSPARENCY_H_
 
-#include "skyeIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../sky/layer/skyeLayer.h"
 
 
+/**
+ * \brief Undo action set layer transparency.
+ */
+class skyeULayerSetTransparency : public igdeUndo{
+public:
+	typedef deTObjectReference<skyeULayerSetTransparency> Ref;
+	
+	
+private:
+	skyeLayer::Ref pLayer;
+	
+	float pOldTransparency;
+	float pNewTransparency;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	skyeULayerSetTransparency(skyeLayer *layer, float newTransparency);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~skyeULayerSetTransparency();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Set new transparency. */
+	void SetNewTransparency(float transparency);
+	
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

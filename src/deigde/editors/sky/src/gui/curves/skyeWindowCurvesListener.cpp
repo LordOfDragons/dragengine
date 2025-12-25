@@ -23,32 +23,49 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWindowCurves.h"
+#include "skyeWindowCurvesListener.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWindowCurvesListener
+/////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWindowCurvesListener::skyeWindowCurvesListener(skyeWindowCurves &window) :
+pWindow(window){
 }
-#endif
+
+skyeWindowCurvesListener::~skyeWindowCurvesListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeWindowCurvesListener::LinkStructureChanged(skyeSky*){
+	pWindow.UpdateLinkList();
+}
+
+void skyeWindowCurvesListener::LinkChanged(skyeSky*, skyeLink *link){
+	if(link->GetActive()){
+		pWindow.UpdateCurve();
 	}
+}
+
+void skyeWindowCurvesListener::LinkNameChanged(skyeSky*, skyeLink*){
+	pWindow.UpdateLinkList();
+}
+
+void skyeWindowCurvesListener::ActiveLinkChanged(skyeSky*){
+	pWindow.SelectActiveLink();
 }

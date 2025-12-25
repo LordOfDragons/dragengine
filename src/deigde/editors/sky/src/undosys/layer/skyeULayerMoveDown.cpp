@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerMoveDown.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerMoveDown
+///////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerMoveDown::skyeULayerMoveDown(skyeLayer *layer) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	const skyeSky * const sky = layer->GetSky();
+	if(!sky){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Move Layer Down");
+	
+	pIndex = sky->GetLayers().IndexOf(layer);
+	if(pIndex == -1 || pIndex == sky->GetLayers().GetCount() - 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pLayer = layer;
+}
+
+skyeULayerMoveDown::~skyeULayerMoveDown(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerMoveDown::Undo(){
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex);
+}
+
+void skyeULayerMoveDown::Redo(){
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex + 1);
 }

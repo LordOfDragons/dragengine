@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUControllerSetMaximum.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUControllerSetMaximum
+//////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUControllerSetMaximum::skyeUControllerSetMaximum(skyeController *controller, float newMaximum) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewMaximum(newMaximum)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Controller Maximum");
+	
+	pOldMaximum = controller->GetMaximumValue();
+	pOldMinimum = controller->GetMinimumValue();
+	
+	pController = controller;
+}
+
+skyeUControllerSetMaximum::~skyeUControllerSetMaximum(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUControllerSetMaximum::Undo(){
+	pController->SetMaximumValue(pOldMaximum);
+	pController->SetMinimumValue(pOldMinimum);
+}
+
+void skyeUControllerSetMaximum::Redo(){
+	pController->SetMaximumValue(pNewMaximum);
 }

@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodyAdd.h"
+#include "../../sky/layer/skyeLayer.h"
+#include "../../sky/body/skyeBody.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodyAdd
+/////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodyAdd::skyeUBodyAdd(skyeLayer *layer, skyeBody *body) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pBody(nullptr)
+{
+	if(!layer || !body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Add Body");
+	
+	pLayer = layer;
+	pBody = body;
+}
+
+skyeUBodyAdd::~skyeUBodyAdd(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodyAdd::Undo(){
+	pLayer->RemoveBody(pBody);
+}
+
+void skyeUBodyAdd::Redo(){
+	pLayer->AddBody(pBody);
+	pLayer->SetActiveBody(pBody);
 }

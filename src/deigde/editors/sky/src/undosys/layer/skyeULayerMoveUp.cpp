@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULayerMoveUp.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULayerMoveUp
+/////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeULayerMoveUp::skyeULayerMoveUp(skyeLayer *layer) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!layer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	const skyeSky * const sky = layer->GetSky();
+	if(!sky){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Move Layer Up");
+	
+	pIndex = sky->GetLayers().IndexOf(layer);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pLayer = layer;
+}
+
+skyeULayerMoveUp::~skyeULayerMoveUp(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULayerMoveUp::Undo(){
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex);
+}
+
+void skyeULayerMoveUp::Redo(){
+	pLayer->GetSky()->MoveLayerTo(pLayer, pIndex - 1);
 }

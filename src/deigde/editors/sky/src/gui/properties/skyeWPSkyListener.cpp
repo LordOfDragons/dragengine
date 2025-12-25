@@ -23,32 +23,35 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWPSky.h"
+#include "skyeWPSkyListener.h"
+#include "../../sky/skyeSky.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWPSkyListener
+//////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPSkyListener::skyeWPSkyListener(skyeWPSky &panel) :
+pPanel(panel){
 }
-#endif
+
+skyeWPSkyListener::~skyeWPSkyListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+
+void skyeWPSkyListener::SkyChanged(skyeSky *sky){
+	pPanel.UpdateSky();
 }

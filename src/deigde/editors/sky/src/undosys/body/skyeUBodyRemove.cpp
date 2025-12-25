@@ -22,33 +22,61 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodyRemove.h"
+#include "../../sky/body/skyeBody.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodyRemove
+////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeUBodyRemove::skyeUBodyRemove(skyeBody *body) :
 
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	skyeLayer * const layer = body->GetLayer();
+	if(!layer){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Remove Body");
+	
+	pIndex = layer->GetBodies().IndexOf(body);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pLayer = layer;
+	pBody = body;
+}
+
+skyeUBodyRemove::~skyeUBodyRemove(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodyRemove::Undo(){
+	pLayer->InsertBodyAt(pBody, pIndex);
+}
+
+void skyeUBodyRemove::Redo(){
+	pLayer->RemoveBody(pBody);
 }

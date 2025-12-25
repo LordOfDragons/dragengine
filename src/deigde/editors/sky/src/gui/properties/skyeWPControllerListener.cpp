@@ -23,32 +23,55 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWPController.h"
+#include "skyeWPControllerListener.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/controller/skyeController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWPControllerListener
+/////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPControllerListener::skyeWPControllerListener(skyeWPController &panel) :
+pPanel(panel){
 }
-#endif
+
+skyeWPControllerListener::~skyeWPControllerListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void skyeWPControllerListener::ControllerStructureChanged(skyeSky *sky){
+	pPanel.UpdateControllerList();
+}
+
+void skyeWPControllerListener::ControllerChanged(skyeSky *sky, skyeController *controller){
+	if(controller->GetActive()){
+		pPanel.UpdateController();
 	}
+}
+
+void skyeWPControllerListener::ControllerNameChanged(skyeSky* sky, skyeController* controller){
+	pPanel.UpdateControllerList();
+}
+
+void skyeWPControllerListener::ControllerValueChanged(skyeSky *sky, skyeController *controller){
+	if(controller->GetActive()){
+		pPanel.UpdateControllerValue();
+	}
+}
+
+void skyeWPControllerListener::ActiveControllerChanged(skyeSky *sky){
+	pPanel.SelectActiveController();
 }

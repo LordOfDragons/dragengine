@@ -23,32 +23,34 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeWPUndoHistory.h"
+#include "skyeWPUndoHistoryListener.h"
+#include "../../sky/skyeSky.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class skyeWPUndoHistoryListener
+//////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeWPUndoHistoryListener::skyeWPUndoHistoryListener(skyeWPUndoHistory &panel) :
+pPanel(panel){
 }
-#endif
+
+skyeWPUndoHistoryListener::~skyeWPUndoHistoryListener(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+void skyeWPUndoHistoryListener::UndoChanged(skyeSky*){
+	pPanel.UpdateUndo();
 }

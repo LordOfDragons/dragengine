@@ -22,33 +22,34 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEIGDEMODULE_H_
+#define _SKYEIGDEMODULE_H_
 
-#include "skyeIGDEModule.h"
-
-#include <dragengine/common/exceptions.h>
-
+#include <deigde/module/igdeEditorModule.h>
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+
+/**
+ * \brief DEIGDE Sky Editor.
+ */
+class skyeIGDEModule : public igdeEditorModule{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create module. */
+	skyeIGDEModule(igdeEnvironment &environment);
+	
+	/** \brief Clean up module. */
+	virtual ~skyeIGDEModule();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Start module. */
+	virtual void Start();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

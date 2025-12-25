@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodySetColor.h"
+#include "../../sky/body/skyeBody.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodySetColor
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodySetColor::skyeUBodySetColor(skyeBody *body, const decColor &newColor) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewColor(newColor)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Body Color");
+	
+	pOldColor = body->GetColor();
+	
+	pBody = body;
+}
+
+skyeUBodySetColor::~skyeUBodySetColor(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodySetColor::Undo(){
+	pBody->SetColor(pOldColor);
+}
+
+void skyeUBodySetColor::Redo(){
+	pBody->SetColor(pNewColor);
 }

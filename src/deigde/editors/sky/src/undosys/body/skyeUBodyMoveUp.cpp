@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeUBodyMoveUp.h"
+#include "../../sky/body/skyeBody.h"
+#include "../../sky/layer/skyeLayer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeUBodyMoveUp
+////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+skyeUBodyMoveUp::skyeUBodyMoveUp(skyeBody *body) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(0)
+{
+	if(!body){
+		DETHROW(deeInvalidParam);
 	}
+	
+	const skyeLayer * const layer = body->GetLayer();
+	if(!layer){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Move Body Up");
+	
+	pIndex = layer->GetBodies().IndexOf(body);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pBody = body;
+}
+
+skyeUBodyMoveUp::~skyeUBodyMoveUp(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeUBodyMoveUp::Undo(){
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex);
+}
+
+void skyeUBodyMoveUp::Redo(){
+	pBody->GetLayer()->MoveBodyTo(pBody, pIndex - 1);
 }

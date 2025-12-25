@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SKYEWPUNDOHISTORY_H_
+#define _SKYEWPUNDOHISTORY_H_
 
-#include "skyeIGDEModule.h"
+#include "../../sky/skyeSky.h"
+#include "skyeWPUndoHistoryListener.h"
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo history panel.
+ */
+class skyeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<skyeWPUndoHistory> Ref;
+	
+private:
+	skyeWPUndoHistoryListener::Ref pListener;
+	skyeSky::Ref pSky;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create panel. */
+	skyeWPUndoHistory(igdeEnvironment &environment);
+	
+protected:
+	/** \brief Clean up panel. */
+	virtual ~skyeWPUndoHistory();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Sky. */
+	inline const skyeSky::Ref &GetSky() const{ return pSky; }
+	
+	/** \brief Set sky. */
+	void SetSky(skyeSky *sky);
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

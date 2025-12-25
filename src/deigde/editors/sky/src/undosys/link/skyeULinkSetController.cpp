@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "skyeIGDEModule.h"
+#include "skyeULinkSetController.h"
+#include "../../sky/skyeSky.h"
+#include "../../sky/controller/skyeController.h"
+#include "../../sky/link/skyeLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class skyeULinkSetController
+///////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+skyeULinkSetController::skyeULinkSetController(skyeLink *link, skyeController *newController) :
 
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new skyeIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewController(nullptr)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set Link Controller");
+	
+	pOldController = link->GetController();
+	pNewController = newController;
+	pLink = link;
+}
+
+skyeULinkSetController::~skyeULinkSetController(){
+}
+
+
+
+// Management
+///////////////
+
+void skyeULinkSetController::Undo(){
+	pLink->SetController(pOldController);
+}
+
+void skyeULinkSetController::Redo(){
+	pLink->SetController(pNewController);
 }
