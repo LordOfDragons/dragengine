@@ -26,7 +26,7 @@
 #define _SAEPHONEME_H_
 
 #include <dragengine/deObject.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class saeSAnimation;
@@ -53,6 +53,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<saePhoneme> Ref;
 
+	/** \brief List of objects. */
+	typedef decTOrderedSet<deTObjectReference<saePhoneme>, saePhoneme*> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -60,7 +63,7 @@ public:
 	saePhoneme();
 	
 	/** Create phoneme. */
-	saePhoneme(int ipa);
+	explicit saePhoneme(int ipa);
 	
 protected:
 	/** Clean up phoneme. */

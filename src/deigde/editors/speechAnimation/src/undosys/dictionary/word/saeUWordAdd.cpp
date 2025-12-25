@@ -43,25 +43,16 @@
 saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
 	if(!sanimation || !word) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
-	pWord = NULL;
+	pSAnimation = nullptr;
+	pWord = nullptr;
 	
 	SetShortInfo("Add Word");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordAdd::~saeUWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

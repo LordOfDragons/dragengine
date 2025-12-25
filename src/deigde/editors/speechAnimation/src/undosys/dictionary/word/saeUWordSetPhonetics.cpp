@@ -42,7 +42,7 @@
 saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics){
 	if(!word) DETHROW(deeInvalidParam);
 	
-	pWord = NULL;
+	pWord = nullptr;
 	
 	SetShortInfo("Word Set Phonetics");
 	
@@ -50,13 +50,9 @@ saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString
 	pNewPhonetics = newPhonetics;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetPhonetics::~saeUWordSetPhonetics(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

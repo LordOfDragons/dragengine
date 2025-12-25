@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -35,8 +35,12 @@ class saeSAnimation;
  * Undo Action Speech Animation Set Animation Path.
  */
 class saeUSAnimSetAnimPath : public igdeUndo{
+public:
+	typedef deTObjectReference<saeUSAnimSetAnimPath> Ref;
+	
+	
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeUSAnimSetAnimPath> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

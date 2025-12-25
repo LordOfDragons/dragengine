@@ -27,9 +27,6 @@
 #include <string.h>
 
 #include "saeWindowProperties.h"
-#include "saeWPSAnim.h"
-#include "saeWPView.h"
-#include "saeWPUndoHistory.h"
 #include "../saeWindowMain.h"
 #include "../../sanimation/saeSAnimation.h"
 
@@ -53,13 +50,13 @@ pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelSAnimation.TakeOver(new saeWPSAnim(*this));
+	pPanelSAnimation = saeWPSAnim::Ref::New(*this);
 	AddChild(pPanelSAnimation, "SAnimation");
 	
-	pPanelView.TakeOver(new saeWPView(*this));
+	pPanelView = saeWPView::Ref::New(*this);
 	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver(new saeWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = saeWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(0); // speech animation panel
@@ -74,11 +71,11 @@ saeWindowProperties::~saeWindowProperties(){
 ///////////////
 
 void saeWindowProperties::SetSAnimation(saeSAnimation *sanimation){
-	((saeWPSAnim&)(igdeWidget&)pPanelSAnimation).SetSAnimation(sanimation);
-	((saeWPView&)(igdeWidget&)pPanelView).SetSAnimation(sanimation);
-	((saeWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetSAnimation(sanimation);
+	pPanelSAnimation->SetSAnimation(sanimation);
+	pPanelView->SetSAnimation(sanimation);
+	pPanelUndoHistory->SetSAnimation(sanimation);
 }
 
 void saeWindowProperties::OnSAnimationPathChanged(){
-	((saeWPSAnim&)(igdeWidget&)pPanelSAnimation).OnSAnimationPathChanged();
+	pPanelSAnimation->OnSAnimationPathChanged();
 }

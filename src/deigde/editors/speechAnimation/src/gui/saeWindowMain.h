@@ -25,6 +25,11 @@
 #ifndef _SAEWINDOWMAIN_H_
 #define _SAEWINDOWMAIN_H_
 
+#include "saeWindowMainListener.h"
+#include "saeViewSAnimation.h"
+#include "properties/saeWindowProperties.h"
+#include "../sanimation/saeSAnimation.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
@@ -33,12 +38,9 @@
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
-class decStringList;
-class saeWindowMainListener;
-class saeViewSAnimation;
+#include <dragengine/common/string/decStringList.h>
+
 class saeConfiguration;
-class saeSAnimation;
-class saeWindowProperties;
 class saeLoadSaveSystem;
 class saeIGDEModule;
 class igdeStepableTask;
@@ -49,8 +51,12 @@ class igdeStepableTask;
  * Main Editor Window.
  */
 class saeWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<saeWindowMain> Ref;
+	
+	
 private:
-	saeWindowMainListener *pListener;
+	saeWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileOpen;
@@ -84,10 +90,10 @@ private:
 	igdeClipboard pClipboard;
 	saeLoadSaveSystem *pLoadSaveSystem;
 	
-	saeViewSAnimation *pViewSAnimation;
-	saeWindowProperties *pWindowProperties;
+	saeViewSAnimation::Ref pViewSAnimation;
+	saeWindowProperties::Ref pWindowProperties;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	
 	
@@ -130,7 +136,7 @@ public:
 	
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);
@@ -212,12 +218,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	/*@}*/
 	
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 saeWord::saeWord(){
-	pSAnimation = NULL;
+	pSAnimation = nullptr;
 	
 	pName = "word";
 	
@@ -48,7 +48,7 @@ saeWord::saeWord(){
 }
 
 saeWord::saeWord(const char *name) :
-pSAnimation(NULL),
+pSAnimation(nullptr),
 pName(name),
 pActive(false)
 {
@@ -58,7 +58,7 @@ pActive(false)
 }
 
 saeWord::saeWord(const char *name, const decUnicodeString &phonetics) :
-pSAnimation(NULL),
+pSAnimation(nullptr),
 pName(name),
 pPhonetics(phonetics),
 pActive(false)
@@ -69,7 +69,7 @@ pActive(false)
 }
 
 saeWord::~saeWord(){
-	SetSAnimation(NULL);
+	SetSAnimation(nullptr);
 }
 
 
@@ -88,8 +88,10 @@ void saeWord::SetName(const char *name){
 		return;
 	}
 	
-	if(pSAnimation && pSAnimation->GetWordList().HasNamed(name)){
-		DETHROW(deeInvalidParam);
+	if(pSAnimation){
+		DEASSERT_FALSE(pSAnimation->GetWordList().HasMatching([&](const saeWord &w){
+			return w.GetName() == name;
+		}))
 	}
 	
 	pName = name;

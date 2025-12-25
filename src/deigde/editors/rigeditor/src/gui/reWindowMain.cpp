@@ -207,10 +207,7 @@ void reWindowMain::SetRig(reRig *rig){
 }
 
 void reWindowMain::CreateNewRig(){
-	const reRig::Ref refRig(reRig::Ref::New(&GetEnvironment()));
-	reRig * const rig = (reRig*)refRig.operator->();
-	
-	SetRig(rig);
+	SetRig(reRig::Ref::New(&GetEnvironment()));
 }
 
 void reWindowMain::SaveRig(const char *filename){
@@ -915,8 +912,8 @@ public:
 		"Add Constraint", nullptr, "Add a constraint", deInputEvent::ekcC){}
 	
 	igdeUndo::Ref OnAction(reRig *rig) override{
-		const reRigConstraint::Ref constraint(reRigConstraint::Ref::New(pWindow.GetEngineController().GetEngine()));
-		return reUAddConstraint::Ref::New(rig, nullptr, (reRigConstraint*)constraint.operator->());
+		return reUAddConstraint::Ref::New(rig, nullptr,
+			reRigConstraint::Ref::New(pWindow.GetEngineController().GetEngine()));
 	}
 };
 
@@ -927,8 +924,7 @@ public:
 		"Add Push", nullptr, "Add a push", deInputEvent::ekcP){}
 	
 	igdeUndo::Ref OnAction(reRig *rig) override{
-		const reRigPush::Ref push(reRigPush::Ref::New(pWindow.GetEngineController().GetEngine()));
-		return reUAddPush::Ref::New(rig, (reRigPush*)push.operator->());
+		return reUAddPush::Ref::New(rig, reRigPush::Ref::New(pWindow.GetEngineController().GetEngine()));
 	}
 };
 

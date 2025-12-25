@@ -25,6 +25,10 @@
 #ifndef _FEWINDOWPROPERTIES_H_
 #define _FEWINDOWPROPERTIES_H_
 
+#include "feWPFont.h"
+#include "feWPGlyph.h"
+#include "feWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
@@ -44,9 +48,9 @@ public:
 private:
 	feWindowMain &pWindowMain;
 	
-	igdeWidget::Ref pPanelFont;
-	igdeWidget::Ref pPanelGlyph;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	feWPFont::Ref pPanelFont;
+	feWPGlyph::Ref pPanelGlyph;
+	feWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

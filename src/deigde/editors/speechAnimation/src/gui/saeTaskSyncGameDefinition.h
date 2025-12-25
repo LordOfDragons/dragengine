@@ -35,6 +35,9 @@ class saeWindowMain;
  * Synchronize game definition task.
  */
 class saeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<saeTaskSyncGameDefinition> Ref;
+	
 private:
 	saeWindowMain &pWindowMain;
 	

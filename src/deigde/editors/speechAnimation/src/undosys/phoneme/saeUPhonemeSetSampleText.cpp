@@ -42,7 +42,7 @@
 saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText){
 	if(!phoneme || !newText) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
 	SetShortInfo("Phoneme Set Sample Text");
 	
@@ -50,13 +50,9 @@ saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const ch
 	pNewText = newText;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetSampleText::~saeUPhonemeSetSampleText(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

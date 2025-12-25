@@ -41,30 +41,21 @@
 ////////////////////////////
 
 saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
-	if(!phoneme) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(phoneme)
 	
-	saeSAnimation *sanimation = phoneme->GetSAnimation();
-	if(!sanimation) DETHROW(deeInvalidParam);
+	saeSAnimation * const sanimation = phoneme->GetSAnimation();
+	DEASSERT_NOTNULL(sanimation)
 	
-	pSAnimation = NULL;
-	pPhoneme = NULL;
+	pSAnimation = nullptr;
+	pPhoneme = nullptr;
 	
 	SetShortInfo("Remove Phoneme");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeRemove::~saeUPhonemeRemove(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

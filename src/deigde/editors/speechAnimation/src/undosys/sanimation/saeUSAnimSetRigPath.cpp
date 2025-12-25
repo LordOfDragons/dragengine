@@ -42,7 +42,7 @@
 saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName){
 	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
+	pSAnimation = nullptr;
 	
 	SetShortInfo("Set Rig Path");
 	
@@ -50,13 +50,9 @@ saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *
 	pNewPath = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

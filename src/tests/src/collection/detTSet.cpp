@@ -5,11 +5,13 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 
 // Type aliases
 typedef decTSet<int> decTSetInt;
 typedef decTSet<decString> decTSetString;
+typedef decTList<int> decTListInt;
 
 
 // Class detTSet
@@ -38,6 +40,9 @@ void detTSet::Run(){
 	TestIntFindOrDefault();
 	TestIntFold();
 	TestIntInject();
+	TestIntMoveSemantics();
+	TestIntIteratorConstructor();
+	TestIntCollect();
 	// string
 	TestStringBasic();
 	TestStringOperators();
@@ -505,3 +510,125 @@ void detTSet::TestStringInject(){
 	};
 	ASSERT_EQUAL(set.Inject(0, lengthCombiner), 3);
 }
+
+
+// ============================================================================
+// Additional INT Tests - Move Semantics
+// ============================================================================
+
+void detTSet::TestIntMoveSemantics(){
+	SetSubTestNum(16);
+
+	decTSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+
+	// Move constructor
+	decTSetInt set2(std::move(set1));
+	ASSERT_EQUAL(set2.GetCount(), 3);
+	ASSERT_TRUE(set2.Has(10));
+	ASSERT_TRUE(set2.Has(20));
+	ASSERT_TRUE(set2.Has(30));
+
+	// set1 should be empty after move
+	ASSERT_EQUAL(set1.GetCount(), 0);
+	ASSERT_TRUE(set1.IsEmpty());
+
+	// Move assignment
+	decTSetInt set3;
+	set3.Add(100);
+	set3 = std::move(set2);
+	ASSERT_EQUAL(set3.GetCount(), 3);
+	ASSERT_TRUE(set3.Has(10));
+	ASSERT_EQUAL(set2.GetCount(), 0);
+}
+
+
+// ============================================================================
+// Additional INT Tests - Iterator Constructor
+// ============================================================================
+
+void detTSet::TestIntIteratorConstructor(){
+	SetSubTestNum(17);
+
+	decTSetInt source;
+	source.Add(5);
+	source.Add(10);
+	source.Add(15);
+	source.Add(20);
+
+	// Construct from iterators
+	decTSetInt set1(source.cbegin(), source.cend());
+	ASSERT_EQUAL(set1.GetCount(), 4);
+	ASSERT_TRUE(set1.Has(5));
+	ASSERT_TRUE(set1.Has(20));
+
+	// Construct from partial range
+	auto it1 = source.cbegin();
+	auto it2 = source.cbegin();
+	++it1; // skip first
+	it2 += 3; // skip to 4th
+
+	decTSetInt set2(it1, it2);
+	ASSERT_EQUAL(set2.GetCount(), 2);
+	ASSERT_TRUE(set2.Has(10));
+	ASSERT_TRUE(set2.Has(15));
+	ASSERT_FALSE(set2.Has(5));
+
+	// Construct from empty range
+	decTSetInt set3(source.cend(), source.cend());
+	ASSERT_TRUE(set3.IsEmpty());
+
+	// Test uniqueness during construction
+	decTListInt listWithDuplicates;
+	listWithDuplicates.Add(1);
+	listWithDuplicates.Add(2);
+	listWithDuplicates.Add(1); // duplicate
+	listWithDuplicates.Add(3);
+	listWithDuplicates.Add(2); // duplicate
+
+	decTSetInt set4(listWithDuplicates.cbegin(), listWithDuplicates.cend());
+	ASSERT_EQUAL(set4.GetCount(), 3); // Only unique values
+	ASSERT_TRUE(set4.Has(1));
+	ASSERT_TRUE(set4.Has(2));
+	ASSERT_TRUE(set4.Has(3));
+}
+
+
+// ============================================================================
+// Additional INT Tests - Collect
+// ============================================================================
+
+void detTSet::TestIntCollect(){
+	SetSubTestNum(18);
+
+	decTSetInt set;
+	set.Add(5);
+	set.Add(10);
+	set.Add(15);
+	set.Add(20);
+	set.Add(25);
+
+	// Collect with lambda
+	auto collected = set.Collect([](const int &v){ return v > 12; });
+	ASSERT_EQUAL(collected.GetCount(), 3);
+	ASSERT_TRUE(collected.Has(15));
+	ASSERT_TRUE(collected.Has(20));
+	ASSERT_TRUE(collected.Has(25));
+	ASSERT_FALSE(collected.Has(10));
+
+	// Collect all
+	auto all = set.Collect([](const int &v){ return true; });
+	ASSERT_EQUAL(all.GetCount(), 5);
+
+	// Collect none
+	auto none = set.Collect([](const int &v){ return false; });
+	ASSERT_TRUE(none.IsEmpty());
+
+	// Collect from empty set
+	decTSetInt emptySet;
+	auto empty = emptySet.Collect([](const int &v){ return true; });
+	ASSERT_TRUE(empty.IsEmpty());
+}
+

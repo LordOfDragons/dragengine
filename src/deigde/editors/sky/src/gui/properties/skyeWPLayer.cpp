@@ -644,8 +644,7 @@ public:
 		"Add body to end of list"){}
 	
 	virtual igdeUndo::Ref OnActionLayer(skyeSky*, skyeLayer *layer){
-		const skyeBody::Ref refBody(skyeBody::Ref::New(pPanel.GetEngine()));
-		return skyeUBodyAdd::Ref::New(layer, (skyeBody*)refBody.operator->());
+		return skyeUBodyAdd::Ref::New(layer, skyeBody::Ref::New(pPanel.GetEngine()));
 	}
 };
 

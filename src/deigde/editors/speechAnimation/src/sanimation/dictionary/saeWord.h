@@ -26,6 +26,7 @@
 #define _SAEWORD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -49,6 +50,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<saeWord> Ref;
 
+	/** \brief List of objects. */
+	typedef decTOrderedSet<deTObjectReference<saeWord>, saeWord*> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -56,7 +60,7 @@ public:
 	saeWord();
 	
 	/** Create word. */
-	saeWord(const char *name);
+	explicit saeWord(const char *name);
 	
 	/** Create word. */
 	saeWord(const char *name, const decUnicodeString &phonetics);

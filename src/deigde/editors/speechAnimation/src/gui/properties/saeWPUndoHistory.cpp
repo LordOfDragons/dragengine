@@ -42,15 +42,11 @@
 
 saeWPUndoHistory::saeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pSAnimation(NULL),
 pListener(new saeWPUndoHistoryListener(*this)){
 }
 
 saeWPUndoHistory::~saeWPUndoHistory(){
-	SetSAnimation(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSAnimation(nullptr);
 }
 
 
@@ -63,19 +59,16 @@ void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
 		sanimation->AddListener(pListener);
-		sanimation->AddReference();
-		
 		SetUndoSystem(sanimation->GetUndoSystem());
 	}
 }

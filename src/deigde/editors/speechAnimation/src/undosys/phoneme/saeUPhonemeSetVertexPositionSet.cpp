@@ -35,7 +35,7 @@
 ////////////////////////////
 
 saeUPhonemeSetVertexPositionSet::saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName) :
-pPhoneme(nullptr),
+
 pNewName(newName)
 {
 	DEASSERT_NOTNULL(phoneme)
@@ -45,13 +45,9 @@ pNewName(newName)
 	pOldName = phoneme->GetVertexPositionSet();
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetVertexPositionSet::~saeUPhonemeSetVertexPositionSet(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

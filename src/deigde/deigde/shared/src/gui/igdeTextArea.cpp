@@ -476,38 +476,31 @@ bool igdeTextArea::pClearSegment(int begin, int end){
 	}
 	
 	const int count = pSegments.GetCount();
-	igdeTextSegment::Ref newSegment;
 	bool changed = false;
 	int i;
 	
 	for(i=count-1; i>=0; i--){
-		const igdeTextSegment &segment = *((igdeTextSegment*)pSegments.GetAt(i));
+		const igdeTextSegment &segment = pSegments.GetAt(i);
 		
 		if(segment.GetBegin() >= begin && segment.GetEnd() <= end){
 			pSegments.RemoveFrom(i);
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() > end){
-			newSegment = igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction());
-			pSegments.Add(newSegment.operator->());
-			
-			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
-			
+			pSegments.Add(igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction()));
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction()));
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction()));
 			changed = true;
 			
 		}else if(segment.GetBegin() <= end && segment.GetEnd() > end){
-			newSegment = igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction());
-			pSegments.SetAt(i, newSegment.operator->());
+			pSegments.SetAt(i, igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction()));
 			changed = true;
 		}
 		// otherwise segment is fully before start or after end so not affected

@@ -75,7 +75,7 @@ feWindowProperties::~feWindowProperties(){
 ///////////////
 
 void feWindowProperties::SetFont(feFont *font){
-	((feWPFont&)(igdeWidget&)pPanelFont).SetFont(font);
-	((feWPGlyph&)(igdeWidget&)pPanelGlyph).SetFont(font);
-	((feWPUndoHistory*)pPanelUndoHistory.operator->())->SetFont(font);
+	pPanelFont->SetFont(font);
+	pPanelGlyph->SetFont(font);
+	pPanelUndoHistory->SetFont(font);
 }

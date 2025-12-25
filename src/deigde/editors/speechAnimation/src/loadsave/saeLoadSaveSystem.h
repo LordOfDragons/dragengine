@@ -25,13 +25,13 @@
 #ifndef _SAELOADSAVESYSTEM_H_
 #define _SAELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
-
 #include "saeLoadSaveSAnimation.h"
+#include "../sanimation/saeSAnimation.h"
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class saeLoadSaveSAnimation;
 class saeWindowMain;
-class saeSAnimation;
 class igdeGameDefinition;
 
 
@@ -44,7 +44,7 @@ private:
 	saeWindowMain &pWindowMain;
 	
 	saeLoadSaveSAnimation *pLSSAnim;
-	igdeFilePatternList pFilePatternList;
+	igdeFilePattern::List pFilePatterns;
 	
 	
 	
@@ -64,11 +64,11 @@ public:
 	inline saeLoadSaveSAnimation *GetLSSAnim(){ return pLSSAnim; }
 	
 	/** Loads the speech animation from file. */
-	saeSAnimation *LoadSAnimation(const char *filename);
+	saeSAnimation::Ref LoadSAnimation(const char *filename);
 	/** Saves the speech animation to file. */
 	void SaveSAnimation(saeSAnimation *sanimation, const char *filename);
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList *GetFilePatternList() const{ return &pFilePatternList; }
+	inline const igdeFilePattern::List &GetFilePatternList() const{ return pFilePatterns; }
 	/*@}*/
 	
 private:

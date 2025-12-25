@@ -42,7 +42,7 @@
 saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
 	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
 	SetShortInfo("Phoneme Set Move Name");
 	
@@ -50,13 +50,9 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *
 	pNewName = newName;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

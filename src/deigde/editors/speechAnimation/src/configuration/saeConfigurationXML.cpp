@@ -63,7 +63,7 @@ saeConfigurationXML::~saeConfigurationXML(){
 ///////////////
 
 void saeConfigurationXML::ReadFromFile(decBaseFileReader &reader, saeConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	

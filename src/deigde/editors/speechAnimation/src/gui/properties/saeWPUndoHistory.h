@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class saeSAnimation;
-class saeWPUndoHistoryListener;
+#include "../../sanimation/saeSAnimation.h"
+#include "saeWPUndoHistoryListener.h"
 
 
 
@@ -36,9 +36,12 @@ class saeWPUndoHistoryListener;
  * Undo History Panel.
  */
 class saeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<saeWPUndoHistory> Ref;
+	
 private:
-	saeSAnimation *pSAnimation;
-	saeWPUndoHistoryListener *pListener;
+	saeSAnimation::Ref pSAnimation;
+	saeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

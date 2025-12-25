@@ -52,6 +52,6 @@ saeIGDEModule::~saeIGDEModule(){
 
 void saeIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new saeWindowMain(*this));
+		SetEditorWindow(saeWindowMain::Ref::New(*this));
 	}
 }

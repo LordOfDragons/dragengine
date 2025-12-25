@@ -40,6 +40,12 @@ void detTList::Run(){
 	TestIntHasMatching();
 	TestIntFold();
 	TestIntInject();
+	TestIntVisitVariants();
+	TestIntReverse();
+	TestIntSortVariants();
+	TestIntMoveConstructor();
+	TestIntIteratorConstructor();
+	TestIntCollectionConstructor();
 	// string
 	TestStringBasic();
 	TestStringOperators();
@@ -828,3 +834,264 @@ void detTList::TestObjectRefInject(){
 	};
 	ASSERT_EQUAL(list.Inject(0, counter), 3);
 }
+
+
+// ============================================================================
+// Additional INT Tests - Visit Variants
+// ============================================================================
+
+void detTList::TestIntVisitVariants(){
+	SetSubTestNum(24);
+
+	decTListInt list;
+	for(int i=1; i<=10; i++) list.Add(i * 10); // [10,20,30,...,100]
+
+	// VisitReverse
+	decTListInt reversed;
+	list.VisitReverse([&reversed](const int &v){ reversed.Add(v); });
+	ASSERT_EQUAL(reversed.GetCount(), 10);
+	ASSERT_EQUAL(reversed.GetAt(0), 100);
+	ASSERT_EQUAL(reversed.GetAt(9), 10);
+
+	// VisitIndexed
+	int lastIndex = -1;
+	list.VisitIndexed([&lastIndex](int index, const int &v){ 
+		ASSERT_EQUAL(v, (index + 1) * 10);
+		lastIndex = index;
+	});
+	ASSERT_EQUAL(lastIndex, 9);
+
+	// VisitIndexed with range
+	int sumIndexed = 0;
+	list.VisitIndexed([&sumIndexed](int index, const int &v){ 
+		sumIndexed += v;
+	}, 2, 5);
+	ASSERT_EQUAL(sumIndexed, 30 + 40 + 50);
+
+	// VisitIndexed with negative step
+	decTListInt reversedIndexed;
+	list.VisitIndexed([&reversedIndexed](int index, const int &v){ 
+		reversedIndexed.Add(v);
+	}, 5, 2, -1);
+	ASSERT_EQUAL(reversedIndexed.GetCount(), 4);
+	ASSERT_EQUAL(reversedIndexed.GetAt(0), 60);
+	ASSERT_EQUAL(reversedIndexed.GetAt(3), 30);
+
+	// VisitReverseIndexed
+	int firstIndexReverse = -1;
+	list.VisitReverseIndexed([&firstIndexReverse](int index, const int &v){
+		if(firstIndexReverse == -1) firstIndexReverse = index;
+		ASSERT_EQUAL(v, (index + 1) * 10);
+	});
+	ASSERT_EQUAL(firstIndexReverse, 9);
+}
+
+
+// ============================================================================
+// Additional INT Tests - Reverse
+// ============================================================================
+
+void detTList::TestIntReverse(){
+	SetSubTestNum(25);
+
+	decTListInt list;
+	list.Add(1);
+	list.Add(2);
+	list.Add(3);
+	list.Add(4);
+	list.Add(5);
+
+	// GetReversed (non-mutating)
+	auto reversed = list.GetReversed();
+	ASSERT_EQUAL(reversed.GetCount(), 5);
+	ASSERT_EQUAL(reversed.GetAt(0), 5);
+	ASSERT_EQUAL(reversed.GetAt(4), 1);
+	// Original unchanged
+	ASSERT_EQUAL(list.GetAt(0), 1);
+	ASSERT_EQUAL(list.GetAt(4), 5);
+
+	// Reverse (mutating)
+	list.Reverse();
+	ASSERT_EQUAL(list.GetAt(0), 5);
+	ASSERT_EQUAL(list.GetAt(4), 1);
+
+	// Test with empty list
+	decTListInt emptyList;
+	emptyList.Reverse();
+	ASSERT_TRUE(emptyList.IsEmpty());
+
+	// Test with single element
+	decTListInt singleList;
+	singleList.Add(42);
+	singleList.Reverse();
+	ASSERT_EQUAL(singleList.GetCount(), 1);
+	ASSERT_EQUAL(singleList.GetAt(0), 42);
+}
+
+
+// ============================================================================
+// Additional INT Tests - Sort Variants
+// ============================================================================
+
+void detTList::TestIntSortVariants(){
+	SetSubTestNum(26);
+
+	// SortAscending
+	decTListInt list1;
+	list1.Add(50);
+	list1.Add(20);
+	list1.Add(80);
+	list1.Add(10);
+	list1.Add(40);
+
+	list1.SortAscending();
+	ASSERT_EQUAL(list1.GetAt(0), 10);
+	ASSERT_EQUAL(list1.GetAt(1), 20);
+	ASSERT_EQUAL(list1.GetAt(2), 40);
+	ASSERT_EQUAL(list1.GetAt(3), 50);
+	ASSERT_EQUAL(list1.GetAt(4), 80);
+
+	// SortDescending
+	decTListInt list2;
+	list2.Add(50);
+	list2.Add(20);
+	list2.Add(80);
+	list2.Add(10);
+	list2.Add(40);
+
+	list2.SortDescending();
+	ASSERT_EQUAL(list2.GetAt(0), 80);
+	ASSERT_EQUAL(list2.GetAt(1), 50);
+	ASSERT_EQUAL(list2.GetAt(2), 40);
+	ASSERT_EQUAL(list2.GetAt(3), 20);
+	ASSERT_EQUAL(list2.GetAt(4), 10);
+
+	// GetSortedAscending (non-mutating)
+	decTListInt list3;
+	list3.Add(50);
+	list3.Add(20);
+	list3.Add(80);
+
+	auto sorted3 = list3.GetSortedAscending();
+	ASSERT_EQUAL(sorted3.GetAt(0), 20);
+	ASSERT_EQUAL(sorted3.GetAt(1), 50);
+	ASSERT_EQUAL(sorted3.GetAt(2), 80);
+	// Original unchanged
+	ASSERT_EQUAL(list3.GetAt(0), 50);
+
+	// GetSortedDescending (non-mutating)
+	auto sorted4 = list3.GetSortedDescending();
+	ASSERT_EQUAL(sorted4.GetAt(0), 80);
+	ASSERT_EQUAL(sorted4.GetAt(1), 50);
+	ASSERT_EQUAL(sorted4.GetAt(2), 20);
+	// Original still unchanged
+	ASSERT_EQUAL(list3.GetAt(0), 50);
+
+	// Empty list edge cases
+	decTListInt emptyList;
+	emptyList.SortAscending();
+	ASSERT_TRUE(emptyList.IsEmpty());
+
+	auto sortedEmpty = emptyList.GetSortedDescending();
+	ASSERT_TRUE(sortedEmpty.IsEmpty());
+}
+
+
+// ============================================================================
+// Additional INT Tests - Move Constructor
+// ============================================================================
+
+void detTList::TestIntMoveConstructor(){
+	SetSubTestNum(27);
+
+	decTListInt list1;
+	list1.Add(10);
+	list1.Add(20);
+	list1.Add(30);
+
+	// Move constructor
+	decTListInt list2(std::move(list1));
+	ASSERT_EQUAL(list2.GetCount(), 3);
+	ASSERT_EQUAL(list2.GetAt(0), 10);
+	ASSERT_EQUAL(list2.GetAt(1), 20);
+	ASSERT_EQUAL(list2.GetAt(2), 30);
+
+	// list1 should be empty after move
+	ASSERT_EQUAL(list1.GetCount(), 0);
+	ASSERT_TRUE(list1.IsEmpty());
+
+	// Move assignment
+	decTListInt list3;
+	list3.Add(100);
+	list3 = std::move(list2);
+	ASSERT_EQUAL(list3.GetCount(), 3);
+	ASSERT_EQUAL(list3.GetAt(0), 10);
+	ASSERT_EQUAL(list2.GetCount(), 0);
+}
+
+
+// ============================================================================
+// Additional INT Tests - Iterator Constructor
+// ============================================================================
+
+void detTList::TestIntIteratorConstructor(){
+	SetSubTestNum(28);
+
+	decTListInt source;
+	source.Add(5);
+	source.Add(10);
+	source.Add(15);
+	source.Add(20);
+
+	// Construct from iterators
+	decTListInt list1(source.cbegin(), source.cend());
+	ASSERT_EQUAL(list1.GetCount(), 4);
+	ASSERT_EQUAL(list1.GetAt(0), 5);
+	ASSERT_EQUAL(list1.GetAt(3), 20);
+
+	// Construct from partial range
+	auto it1 = source.cbegin();
+	auto it2 = source.cbegin();
+	++it1; // points to 10
+	it2 += 3; // points to 20
+	
+	decTListInt list2(it1, it2);
+	ASSERT_EQUAL(list2.GetCount(), 2);
+	ASSERT_EQUAL(list2.GetAt(0), 10);
+	ASSERT_EQUAL(list2.GetAt(1), 15);
+
+	// Construct from empty range
+	decTListInt list3(source.cend(), source.cend());
+	ASSERT_TRUE(list3.IsEmpty());
+}
+
+
+// ============================================================================
+// Additional INT Tests - Collection Constructor
+// ============================================================================
+
+void detTList::TestIntCollectionConstructor(){
+	SetSubTestNum(29);
+
+	decTListInt source;
+	source.Add(100);
+	source.Add(200);
+	source.Add(300);
+
+	// Construct from another collection
+	decTListInt list1(source);
+	ASSERT_EQUAL(list1.GetCount(), 3);
+	ASSERT_EQUAL(list1.GetAt(0), 100);
+	ASSERT_EQUAL(list1.GetAt(2), 300);
+
+	// Modify source to ensure deep copy
+	source.SetAt(0, 999);
+	ASSERT_EQUAL(source.GetAt(0), 999);
+	ASSERT_EQUAL(list1.GetAt(0), 100); // list1 unchanged
+
+	// Construct from empty collection
+	decTListInt emptySource;
+	decTListInt list2(emptySource);
+	ASSERT_TRUE(list2.IsEmpty());
+}
+

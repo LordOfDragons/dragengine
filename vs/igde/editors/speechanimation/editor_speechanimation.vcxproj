@@ -57,9 +57,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.cpp" />
@@ -98,9 +96,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.h" />

@@ -19,6 +19,12 @@ private:
 	void TestIntHasMatching();
 	void TestIntFold();
 	void TestIntInject();
+	void TestIntVisitVariants();
+	void TestIntReverse();
+	void TestIntSortVariants();
+	void TestIntMoveConstructor();
+	void TestIntIteratorConstructor();
+	void TestIntCollectionConstructor();
 
 	// Test methods for T=decString
 	void TestStringBasic();

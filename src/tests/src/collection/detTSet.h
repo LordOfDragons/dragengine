@@ -19,6 +19,9 @@ private:
 	void TestIntFindOrDefault();
 	void TestIntFold();
 	void TestIntInject();
+	void TestIntMoveSemantics();
+	void TestIntIteratorConstructor();
+	void TestIntCollect();
 
 	// Test methods for T=decString
 	void TestStringBasic();

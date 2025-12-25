@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeWord;
-class saeSAnimation;
+#include "../../../sanimation/dictionary/saeWord.h"
+#include "../../../sanimation/saeSAnimation.h"
 
 
 
@@ -36,16 +36,17 @@ class saeSAnimation;
  * Undo Action Remove Word.
  */
 class saeUWordRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<saeUWordRemove> Ref;
+	
+	
 private:
-	saeSAnimation *pSAnimation;
-	saeWord *pWord;
+	saeSAnimation::Ref pSAnimation;
+	saeWord::Ref pWord;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeUWordRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

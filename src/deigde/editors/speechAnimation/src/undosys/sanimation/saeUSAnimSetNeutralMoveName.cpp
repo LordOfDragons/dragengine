@@ -42,7 +42,7 @@
 saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimation, const char *newName){
 	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
+	pSAnimation = nullptr;
 	
 	SetShortInfo("Set Neutral Move Name");
 	
@@ -50,13 +50,9 @@ saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimati
 	pNewName = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetNeutralMoveName::~saeUSAnimSetNeutralMoveName(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 
