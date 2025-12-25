@@ -236,8 +236,7 @@ void seWindowMain::LoadSkin(const char *filename){
 	pWindowProperties->OnSkinPathChanged();
 	
 	// determine the file title of the loaded skin
-	const int lsindex = pLoadSaveSystem->IndexOfLSSkinMatching(filename);
-	const decStringList extensions = pLoadSaveSystem->GetLSSkinAt(lsindex)->GetPattern().Split(',');
+	const decStringList extensions(pLoadSaveSystem->GetLSSkinMatching(filename)->GetPattern().Split(','));
 	const decString sfilename(filename);
 	decString basePath;
 	int i, j;

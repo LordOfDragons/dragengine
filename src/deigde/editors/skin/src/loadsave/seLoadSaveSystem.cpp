@@ -57,16 +57,11 @@
 seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
 pWindowMain(windowMain)
 {
-	pLSSkins = nullptr;
-	pLSSkinCount = 0;
-	pLSSkinSize = 0;
-	
 	UpdateLSSkins();
 }
 
 seLoadSaveSystem::~seLoadSaveSystem(){
 	RemoveAllLSSkins();
-	if(pLSSkins) delete [] pLSSkins;
 }
 
 
@@ -74,133 +69,63 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seLoadSaveSkin *seLoadSaveSystem::GetLSSkinAt(int index) const{
-	if(index < 0 || index >= pLSSkinCount) DETHROW(deeInvalidParam);
-	
-	return pLSSkins[index];
-}
-
-int seLoadSaveSystem::IndexOfLSSkin(seLoadSaveSkin *lsSkin) const{
-	if(!lsSkin) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSSkinCount; i++){
-		if(lsSkin == pLSSkins[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool seLoadSaveSystem::HasLSSkin(seLoadSaveSkin *lsSkin) const{
-	if(!lsSkin) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSSkinCount; i++){
-		if(lsSkin == pLSSkins[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int seLoadSaveSystem::IndexOfLSSkinMatching(const char *filename){
-	const decString testFilename(filename);
-	int i;
-	
-	for(i=0; i<pLSSkinCount; i++){
-		if(testFilename.MatchesPattern(pLSSkins[i]->GetPattern())){
-			return i;
-		}
-	}
-	
-	return -1;
+seLoadSaveSkin *seLoadSaveSystem::GetLSSkinMatching(const char *filename){
+	return pLSSkins.FindOrDefault([&](const seLoadSaveSkin &lsskin){
+		return decString::StringMatchesPattern(filename, lsskin.GetPattern());
+	});
 }
 
 void seLoadSaveSystem::AddLSSkin(seLoadSaveSkin *lsSkin){
-	if(HasLSSkin(lsSkin)) DETHROW(deeInvalidParam);
-	
-	if(pLSSkinCount == pLSSkinSize){
-		int newSize = pLSSkinSize * 3 / 2 + 1;
-		seLoadSaveSkin **newArray = new seLoadSaveSkin*[newSize];		if(pLSSkins){
-			memcpy(newArray, pLSSkins, sizeof(seLoadSaveSkin*) * pLSSkinSize);
-			delete [] pLSSkins;
-		}
-		pLSSkins = newArray;
-		pLSSkinSize = newSize;
-	}
-	
-	pLSSkins[pLSSkinCount] = lsSkin;
-	pLSSkinCount++;
+	DEASSERT_FALSE(pLSSkins.Has(lsSkin))
+	pLSSkins.Add(lsSkin);
 }
 
 void seLoadSaveSystem::RemoveLSSkin(seLoadSaveSkin *lsSkin){
-	int i, index = IndexOfLSSkin(lsSkin);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pLSSkinCount; i++){
-		pLSSkins[i - 1] = pLSSkins[i];
-	}
-	pLSSkinCount--;
-	
-	delete lsSkin;
+	pLSSkins.Remove(lsSkin);
 }
 
 void seLoadSaveSystem::RemoveAllLSSkins(){
-	while(pLSSkinCount > 0){
-		pLSSkinCount--;
-		delete pLSSkins[pLSSkinCount];
-	}
+	pLSSkins.RemoveAll();
 }
 
 void seLoadSaveSystem::UpdateLSSkins(){
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	deModuleSystem *modSys = engine->GetModuleSystem();
-	int m, moduleCount = modSys->GetModuleCount();
-	deLoadableModule *loadableModule;
-	seLoadSaveSkin *lsSkin = nullptr;
+	deModuleSystem &modSys = *pWindowMain.GetEngineController().GetEngine()->GetModuleSystem();
+	int m, moduleCount = modSys.GetModuleCount();
 	
-	// remove all load save skins
 	RemoveAllLSSkins();
 	
-	try{
-		// add a new load save skin for each skin module found in the engine that is also
-		// running and usable therefore
-		for(m=0; m<moduleCount; m++){
-			loadableModule = modSys->GetModuleAt(m);
-			
-			if(loadableModule->GetType() != deModuleSystem::emtSkin) continue;
-			if(!loadableModule->IsLoaded()) continue;
-			
-			lsSkin = new seLoadSaveSkin((deBaseSkinModule*)loadableModule->GetModule());
-			
-			AddLSSkin(lsSkin);
-			lsSkin = NULL;
+	// add a new load save skin for each skin module found in the engine that is also
+	// running and usable therefore
+	for(m=0; m<moduleCount; m++){
+		deLoadableModule &loadableModule = *modSys.GetModuleAt(m);
+		
+		if(loadableModule.GetType() != deModuleSystem::emtSkin){
+			continue;
+		}
+		if(!loadableModule.IsLoaded()){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(lsSkin) delete lsSkin;
-		throw;
+		AddLSSkin(seLoadSaveSkin::Ref::New((deBaseSkinModule*)loadableModule.GetModule()));
 	}
 }
 
 
 
 seSkin::Ref seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
-	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	int lsIndex;
+	DEASSERT_NOTNULL(filename)
+	DEASSERT_NOTNULL(gameDefinition)
 	
-	lsIndex = IndexOfLSSkinMatching(filename);
-	if(lsIndex == -1) DETHROW(deeInvalidParam);
+	seLoadSaveSkin &lsskin = pLSSkins.FindOrDefault([&](const seLoadSaveSkin &l){
+		return decString::StringMatchesPattern(filename, l.GetPattern());
+	});
 	
 	const seSkin::Ref skin(seSkin::Ref::New(&pWindowMain.GetEnvironment()));
 	skin->SetFilePath(filename); // required here so the relative path can be resolved properly
 	
-	pLSSkins[lsIndex]->LoadSkin(skin, engine->GetVirtualFileSystem()->OpenFileForReading(
-		decPath::CreatePathUnix(filename)), pWindowMain.GetEnvironment().GetTexturePropertyList());
+	lsskin.LoadSkin(skin, pWindowMain.GetEngineController().GetEngine()->GetVirtualFileSystem()->
+		OpenFileForReading(decPath::CreatePathUnix(filename)),
+		pWindowMain.GetEnvironment().GetTexturePropertyList());
 	
 	skin->SetSaved(true);
 	skin->SetChanged(false);
@@ -209,16 +134,16 @@ seSkin::Ref seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition 
 }
 
 void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
-	if(!skin || !filename) DETHROW(deeInvalidParam);
-	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	int lsIndex;
+	DEASSERT_NOTNULL(skin)
+	DEASSERT_NOTNULL(filename)
 	
-	lsIndex = IndexOfLSSkinMatching(filename);
-	if(lsIndex == -1) DETHROW(deeInvalidParam);
+	seLoadSaveSkin &lsskin = pLSSkins.FindOrDefault([&](const seLoadSaveSkin &l){
+		return decString::StringMatchesPattern(filename, l.GetPattern());
+	});
 	
 	skin->SetFilePath(filename); // required here so the relative path can be resolved properly
-	pLSSkins[lsIndex]->SaveSkin(skin, engine->GetVirtualFileSystem()->OpenFileForWriting(
-		decPath::CreatePathUnix(filename)));
+	lsskin.SaveSkin(skin, pWindowMain.GetEngineController().GetEngine()->GetVirtualFileSystem()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 	
 	skin->SetSaved(true);
 	skin->SetChanged(false);
