@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 
@@ -37,8 +37,12 @@ class seBody;
  * \brief Undo action set body color.
  */
 class seUBodySetColor : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodySetColor> Ref;
+	
+	
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decColor pOldColor;
 	decColor pNewColor;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodySetColor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

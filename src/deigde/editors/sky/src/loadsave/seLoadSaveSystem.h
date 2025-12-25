@@ -25,13 +25,13 @@
 #ifndef _SELOADSAVESYSTEM_H_
 #define _SELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
-
 #include "seLoadSaveSky.h"
+#include "../sky/seSky.h"
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class seLoadSaveSky;
 class seWindowMain;
-class seSky;
 class igdeGameDefinition;
 
 
@@ -44,7 +44,7 @@ private:
 	seWindowMain &pWindowMain;
 	
 	seLoadSaveSky *pLSSky;
-	igdeFilePatternList pFPSky;
+	igdeFilePattern::List pFPSky;
 	
 	
 	
@@ -69,13 +69,13 @@ public:
 	inline seLoadSaveSky &GetLSSky(){ return *pLSSky; }
 	
 	/** \brief Load sky from file. */
-	seSky *LoadSky(const char *filename);
+	seSky::Ref LoadSky(const char *filename);
 	
 	/** \brief Save sky to file. */
 	void SaveSky(seSky *sky, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList *GetSkyFilePatterns() const{ return &pFPSky; }
+	inline const igdeFilePattern::List *GetSkyFilePatterns() const{ return &pFPSky; }
 	/*@}*/
 	
 	

@@ -29,7 +29,6 @@
 #include "seUControllerRemove.h"
 #include "../../sky/seSky.h"
 #include "../../sky/controller/seController.h"
-#include "../../sky/link/seLink.h"
 #include "../../sky/layer/seLayer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,11 +42,7 @@
 ////////////////////////////
 
 seUControllerRemove::seUControllerRemove(seController *controller) :
-pSky(nullptr),
-pController(nullptr),
-pIndex(0),
-pLinks(nullptr),
-pLinkCount(0)
+pIndex(0)
 {
 	DEASSERT_NOTNULL(controller)
 	
@@ -61,49 +56,25 @@ pLinkCount(0)
 	
 	const int usageCount = sky->CountControllerUsage(controller);
 	if(usageCount > 0){
-		const seLayerList &layers = sky->GetLayers();
-		const int layerCount = layers.GetCount();
-		int i, j, k;
-		
-		try{
-			pLinks = new seLink*[usageCount];
-			
-			for(i=0; i<layerCount; i++){
-				seLayer * const layer = layers.GetAt(i);
-				
-				for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
-					const deSkyLayer::eTargets target = (deSkyLayer::eTargets)j;
-					const seLinkList &links = layer->GetTarget(target).GetLinks();
-					
-					const int linkCount = links.GetCount();
-					for(k=0; k<linkCount; k++){
-						seLink * const link = links.GetAt(k);
-						if(link->GetController() != controller){
-							continue;
-						}
-						
-						pLinks[pLinkCount] = link;
-						link->AddReference();
-						pLinkCount++;
+		sky->GetLayers().Visit([&](const seLayer &layer){
+			int i;
+			for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
+				const deSkyLayer::eTargets target = (deSkyLayer::eTargets)i;
+				layer.GetTarget(target).GetLinks().Visit([&](seLink *link){
+					if(link->GetController() == controller){
+						pLinks.Add(link);
 					}
-				}
+				});
 			}
-			
-		}catch(const deException &){
-			pCleanUp();
-			throw;
-		}
+		});
 	}
 	
 	pSky = sky;
-	sky->AddReference();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerRemove::~seUControllerRemove(){
-	pCleanUp();
 }
 
 
@@ -113,37 +84,14 @@ seUControllerRemove::~seUControllerRemove(){
 
 void seUControllerRemove::Undo(){
 	pSky->InsertControllerAt(pController, pIndex);
-	
-	int i;
-	for(i=0; i<pLinkCount; i++){
-		pLinks[i]->SetController(pController);
-	}
+	pLinks.Visit([&](seLink &link){
+		link.SetController(pController);
+	});
 }
 
 void seUControllerRemove::Redo(){
 	pSky->RemoveController(pController);
-	
-	int i;
-	for(i=0; i<pLinkCount; i++){
-		pLinks[i]->SetController(nullptr);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUControllerRemove::pCleanUp(){
-	int i;
-	for(i=0; i<pLinkCount; i++){
-		pLinks[i]->FreeReference();
-	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
+	pLinks.Visit([&](seLink &link){
+		link.SetController(nullptr);
+	});
 }

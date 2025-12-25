@@ -25,11 +25,12 @@
 #ifndef _SEVIEWSKY_H_
 #define _SEVIEWSKY_H_
 
+#include "../sky/seSky.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
 class seWindowMain;
-class seSky;
 
 
 
@@ -37,10 +38,13 @@ class seSky;
  * \brief View of the sky.
  */
 class seViewSky : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<seViewSky> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -69,7 +73,7 @@ public:
 	void ResetView();
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

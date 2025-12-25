@@ -80,12 +80,7 @@
 
 seWindowMain::seWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pLoadSaveSystem(NULL),
-pViewSky(NULL),
-pWindowProperties(NULL),
-pWindowCurves(NULL),
-pSky(NULL)
+pLoadSaveSystem(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -94,7 +89,7 @@ pSky(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener = seWindowMainListener::Ref::New(*this);
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -104,21 +99,21 @@ pSky(NULL)
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties = seWindowProperties::Ref::New(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new seWindowCurves(*this);
+	pWindowCurves = seWindowCurves::Ref::New(*this);
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewSky = new seViewSky(*this);
+	pViewSky = seViewSky::Ref::New(*this);
 	splitted2->AddChild(pViewSky, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSky();
@@ -130,19 +125,16 @@ seWindowMain::~seWindowMain(){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetSky(NULL);
+	SetSky(nullptr);
 	
 	if(pWindowCurves){
-		pWindowCurves->FreeReference();
-		pWindowCurves = NULL;
+		pWindowCurves = nullptr;
 	}
 	if(pViewSky){
-		pViewSky->FreeReference();
-		pViewSky = NULL;
+		pViewSky = nullptr;
 	}
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-		pWindowProperties = NULL;
+		pWindowProperties = nullptr;
 	}
 	
 	if(pConfiguration){
@@ -150,9 +142,6 @@ seWindowMain::~seWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -176,23 +165,21 @@ void seWindowMain::SetSky(seSky *sky){
 		return;
 	}
 	
-	pViewSky->SetSky(NULL);
-	pWindowProperties->SetSky(NULL);
-	pWindowCurves->SetSky(NULL);
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pViewSky->SetSky(nullptr);
+	pWindowProperties->SetSky(nullptr);
+	pWindowCurves->SetSky(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
 		
 		pSky->Dispose();
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
-		sky->AddReference();
 		sky->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(sky->GetUndoSystem());
@@ -205,20 +192,7 @@ void seWindowMain::SetSky(seSky *sky){
 }
 
 void seWindowMain::CreateNewSky(){
-	seSky *sky = NULL;
-	
-	try{
-		sky = new seSky(&GetEnvironment());
-		
-		SetSky(sky);
-		sky->FreeReference();
-		
-	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
-		throw;
-	}
+	SetSky(seSky::Ref::New(&GetEnvironment()));
 }
 
 void seWindowMain::SaveSky(const char *filename){
@@ -286,10 +260,7 @@ void seWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void seWindowMain::LoadDocument(const char *filename){
-	seSky * const sky = pLoadSaveSystem->LoadSky(filename);
-	SetSky(sky);
-	sky->FreeReference();
-	
+	SetSky(pLoadSaveSystem->LoadSky(filename));
 	GetRecentFiles().AddFile(filename);
 }
 
@@ -311,8 +282,8 @@ void seWindowMain::OnGameProjectChanged(){
 	CreateNewSky();
 }
 
-igdeStepableTask *seWindowMain::OnGameDefinitionChanged(){
-	return new seTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref seWindowMain::OnGameDefinitionChanged(){
+	return seTaskSyncGameDefinition::Ref::New(*this);
 }
 
 
@@ -342,11 +313,12 @@ public:
 
 class cActionSkyNew : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSkyNew> Ref;
 	cActionSkyNew(seWindowMain &window) : cActionBase(window, "New",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new sky",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Sky",
 		"Creating a new sky discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewSky();
@@ -357,11 +329,12 @@ public:
 
 class cActionSkyOpen : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSkyOpen> Ref;
 	cActionSkyOpen(seWindowMain &window) : cActionBase(window, "Open...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a sky from file",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
 		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Sky",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -371,17 +344,15 @@ public:
 		
 		// load sky
 		pWindow.GetEditorModule().LogInfoFormat("Loading sky %s", filename.GetString());
-		seSky *sky = pWindow.GetLoadSaveSystem().LoadSky(filename);
+		seSky::Ref sky = pWindow.GetLoadSaveSystem().LoadSky(filename);
 		
 		// replace sky
 		pWindow.SetSky(sky);
-		sky->FreeReference();
-		
 		// store information
 		sky->SetFilePath(filename);
 		sky->SetChanged(false);
 		sky->SetSaved(true);
-		pWindow.GetWindowProperties().OnSkyPathChanged();
+		pWindow.GetWindowProperties()->OnSkyPathChanged();
 		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
@@ -389,11 +360,12 @@ public:
 
 class cActionSkySaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSkySaveAs> Ref;
 	cActionSkySaveAs(seWindowMain &window) : cActionBase(window, "Save As...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves the sky under a differen file", deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		decString filename(pWindow.GetSky()->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Sky",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -406,6 +378,7 @@ public:
 
 class cActionSkySave : public cActionSkySaveAs{
 public:
+	typedef deTObjectReference<cActionSkySave> Ref;
 	cActionSkySave(seWindowMain &window) : cActionSkySaveAs(window){
 		SetText("Save");
 		SetDescription("Saves the sky to file");
@@ -427,7 +400,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetSky()->GetChanged());
 	}
 };
@@ -436,15 +409,16 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(seWindowMain &window) : cActionBase(window,
 		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -452,15 +426,16 @@ public:
 
 class cActionEditCopy : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(seWindowMain &window) : cActionBase(window,
 		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -468,15 +443,16 @@ public:
 
 class cActionEditPaste : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(seWindowMain &window) : cActionBase(window,
 		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false /*pWindow.GetClipboard().HasClip()*/);
 	}
 };
@@ -484,20 +460,21 @@ public:
 
 class cActionViewShowCompass : public cActionBase{
 public:
+	typedef deTObjectReference<cActionViewShowCompass> Ref;
 	cActionViewShowCompass(seWindowMain &window) : cActionBase(window,
-		"Show Sky-Compass", NULL, "Shows/Hides the Sky Compass", deInputEvent::ekcC){}
+		"Show Sky-Compass", nullptr, "Shows/Hides the Sky Compass", deInputEvent::ekcC){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSky * const sky = pWindow.GetSky();
 		if(sky){
 			sky->SetDrawSkyCompass(!sky->GetDrawSkyCompass());
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const seSky * const sky = pWindow.GetSky();
-		SetEnabled(sky != NULL);
-		SetSelected(sky != NULL && sky->GetDrawSkyCompass());
+		SetEnabled(sky != nullptr);
+		SetSelected(sky != nullptr && sky->GetDrawSkyCompass());
 	}
 };
 
@@ -509,20 +486,20 @@ public:
 //////////////////////
 
 void seWindowMain::pLoadIcons(){
-	//pIconSkyNew.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/file_new.png" ) );
+	//pIconSkyNew = igdeIcon::LoadPNG(GetEditorModule(), "icons/file_new.png");
 }
 
 void seWindowMain::pCreateActions(){
-	pActionSkyNew.TakeOver(new cActionSkyNew(*this));
-	pActionSkyOpen.TakeOver(new cActionSkyOpen(*this));
-	pActionSkySave.TakeOver(new cActionSkySave(*this));
-	pActionSkySaveAs.TakeOver(new cActionSkySaveAs(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
-	pActionViewShowCompass.TakeOver(new cActionViewShowCompass(*this));
+	pActionSkyNew = cActionSkyNew::Ref::New(*this);
+	pActionSkyOpen = cActionSkyOpen::Ref::New(*this);
+	pActionSkySave = cActionSkySave::Ref::New(*this);
+	pActionSkySaveAs = cActionSkySaveAs::Ref::New(*this);
+	pActionEditUndo = igdeActionUndo::Ref::New(GetEnvironment());
+	pActionEditRedo = igdeActionRedo::Ref::New(GetEnvironment());
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
+	pActionViewShowCompass = cActionViewShowCompass::Ref::New(*this);
 	
 	
 	// register for updating
@@ -541,7 +518,7 @@ void seWindowMain::pCreateActions(){
 void seWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionSkyNew);
 	helper.ToolBarButton(pTBFile, pActionSkyOpen);
@@ -553,7 +530,7 @@ void seWindowMain::pCreateToolBarFile(){
 void seWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -570,15 +547,15 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Sky", deInputEvent::ekcS));
+	cascade = igdeMenuCascade::Ref::New(env, "Sky", deInputEvent::ekcS);
 	pCreateMenuSky(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

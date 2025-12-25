@@ -25,6 +25,9 @@
 #ifndef _SEWPLINK_H_
 #define _SEWPLINK_H_
 
+#include "seWPLinkListener.h"
+#include "../../sky/seSky.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -33,10 +36,8 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 
-class seSky;
 class seLink;
 class seWindowProperties;
-class seWPLinkListener;
 
 class igdeViewCurveBezier;
 
@@ -45,11 +46,14 @@ class igdeViewCurveBezier;
  * \brief Link Panel.
  */
 class seWPLink : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPLink> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPLinkListener *pListener;
+	seWPLinkListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
@@ -80,12 +84,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
 	
-	/** \brief Active link or \em NULL. */
+	/** \brief Active link or \em nullptr. */
 	seLink *GetLink() const;
 	
 	/** \brief Update link list. */
@@ -101,8 +105,8 @@ public:
 	void UpdateControllerList();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

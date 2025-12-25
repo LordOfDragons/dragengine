@@ -72,21 +72,9 @@
 
 seSky::seSky(igdeEnvironment *environment) :
 igdeEditableEntity(environment),
-
-pEngWorld(NULL),
-pEngSky(NULL),
-pEngSkyInstance(NULL),
 pNeedsRebuildSky(true),
 
-pCamera(NULL),
-
-pDDHorizon(NULL),
-
-pActiveController(NULL),
-
-pActiveLink(NULL),
-
-pActiveLayer(NULL)
+pCamera(nullptr)
 {
 	deEngine * const engine = GetEngine();
 	
@@ -108,7 +96,7 @@ pActiveLayer(NULL)
 		pEngSkyInstance = engine->GetSkyInstanceManager()->CreateSkyInstance();
 		pEngWorld->AddSky(pEngSkyInstance);
 		
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject = igdeWObject::Ref::New(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, -1.8, 0.0));
 		pEnvObject->SetGDClassName("IGDETestTerrain");
@@ -117,10 +105,11 @@ pActiveLayer(NULL)
 		pDDHorizon->SetXRay(true);
 		pEngWorld->AddDebugDrawer(pDDHorizon);
 		
-		pDDSHorizon.SetParentDebugDrawer(pDDHorizon);
-		pDDSHorizon.SetVisible(true);
-		pDDSHorizon.SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
-		pDDSHorizon.SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.5f));
+		pDDSHorizon = igdeWDebugDrawerShape::Ref::New();
+		pDDSHorizon->SetParentDebugDrawer(pDDHorizon);
+		pDDSHorizon->SetVisible(true);
+		pDDSHorizon->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
+		pDDSHorizon->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.5f));
 		pBuildShapeHorizon();
 		
 	}catch(const deException &){
@@ -149,9 +138,9 @@ void seSky::SetDrawSkyCompass(bool drawSkyCompass){
 
 
 void seSky::Dispose(){
-	SetActiveLayer(NULL);
-	SetActiveLink(NULL);
-	SetActiveController(NULL);
+	SetActiveLayer(nullptr);
+	SetActiveLink(nullptr);
+	SetActiveController(nullptr);
 	
 	RemoveAllLayers();
 	RemoveAllLinks();
@@ -161,9 +150,9 @@ void seSky::Dispose(){
 }
 
 void seSky::Reset(){
-	SetActiveLayer(NULL);
-	SetActiveLink(NULL);
-	SetActiveController(NULL);
+	SetActiveLayer(nullptr);
+	SetActiveLink(nullptr);
+	SetActiveController(nullptr);
 	
 	GetUndoSystem()->RemoveAll();
 }
@@ -179,11 +168,10 @@ void seSky::Update(float elapsed){
 
 void seSky::RebuildEngineSky(){
 	// drop old sky
-	pEngSkyInstance->SetSky(NULL);
+	pEngSkyInstance->SetSky(nullptr);
 	
 	if(pEngSky){
-		pEngSky->FreeReference();
-		pEngSky = NULL;
+		pEngSky = nullptr;
 	}
 	
 	// create sky
@@ -243,7 +231,7 @@ void seSky::RebuildEngineSky(){
 			destLayer.SetLightIntensity(sourceLayer.GetLightIntensity());
 			destLayer.SetAmbientIntensity(sourceLayer.GetAmbientIntensity());
 			
-			const seBodyList &bodies = sourceLayer.GetBodies();
+			const seBody::List &bodies = sourceLayer.GetBodies();
 			const int bodyCount = bodies.GetCount();
 			destLayer.SetBodyCount(bodyCount);
 			for(j=0; j<bodyCount; j++){
@@ -262,7 +250,7 @@ void seSky::RebuildEngineSky(){
 				const seControllerTarget &sourceTarget = sourceLayer.GetTarget(target);
 				deSkyControllerTarget &destTarget = destLayer.GetTarget(target);
 				
-				const seLinkList &ctLinks = sourceTarget.GetLinks();
+				const seLink::List &ctLinks = sourceTarget.GetLinks();
 				const int ctLinkCount = ctLinks.GetCount();
 				for(k=0; k<ctLinkCount; k++){
 					destTarget.AddLink(ctLinks.GetAt(k)->GetIndex());
@@ -277,8 +265,7 @@ void seSky::RebuildEngineSky(){
 		
 	}catch(const deException &){
 		if(pEngSky){
-			pEngSky->FreeReference();
-			pEngSky = NULL;
+			pEngSky = nullptr;
 		}
 		throw;
 	}
@@ -333,7 +320,7 @@ void seSky::InsertControllerAt(seController *controller, int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pControllers.InsertAt(controller, index);
+	pControllers.Insert(controller, index);
 	controller->SetSky(this);
 	
 	const int count = pControllers.GetCount();
@@ -350,7 +337,7 @@ void seSky::InsertControllerAt(seController *controller, int index){
 }
 
 void seSky::MoveControllerTo(seController *controller, int index){
-	pControllers.MoveTo(controller, index);
+	pControllers.Move(controller, index);
 	
 	const int count = pControllers.GetCount();
 	int i;
@@ -377,11 +364,11 @@ void seSky::RemoveController(seController *controller){
 			SetActiveController(pControllers.GetAt(controllerIndex - 1));
 			
 		}else{
-			SetActiveController(NULL);
+			SetActiveController(nullptr);
 		}
 	}
 	
-	controller->SetSky(NULL);
+	controller->SetSky(nullptr);
 	pControllers.Remove(controller);
 	
 	const int count = pControllers.GetCount();
@@ -397,10 +384,10 @@ void seSky::RemoveAllControllers(){
 	const int controllerCount = pControllers.GetCount();
 	int i;
 	
-	SetActiveController(NULL);
+	SetActiveController(nullptr);
 	
 	for(i=0; i<controllerCount; i++){
-		pControllers.GetAt(i)->SetSky(NULL);
+		pControllers.GetAt(i)->SetSky(nullptr);
 	}
 	pControllers.RemoveAll();
 	
@@ -414,13 +401,11 @@ void seSky::SetActiveController(seController *controller){
 	
 	if(pActiveController){
 		pActiveController->SetActive(false);
-		pActiveController->FreeReference();
 	}
 	
 	pActiveController = controller;
 	
 	if(controller){
-		controller->AddReference();
 		controller->SetActive(true);
 	}
 	
@@ -435,7 +420,7 @@ int seSky::CountControllerUsage(seController *controller) const{
 	for(i=0; i<layerCount; i++){
 		const seLayer &layer = *pLayers.GetAt(i);
 		for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
-			const seLinkList &links = layer.GetTarget((deSkyLayer::eTargets)j).GetLinks();
+			const seLink::List &links = layer.GetTarget((deSkyLayer::eTargets)j).GetLinks();
 			const int linkCount = links.GetCount();
 			for(k=0; k<linkCount; k++){
 				if(links.GetAt(k)->GetController() == controller){
@@ -485,11 +470,11 @@ void seSky::RemoveLink(seLink *link){
 			SetActiveLink(pLinks.GetAt(controllerIndex - 1));
 			
 		}else{
-			SetActiveLink(NULL);
+			SetActiveLink(nullptr);
 		}
 	}
 	
-	link->SetSky(NULL);
+	link->SetSky(nullptr);
 	pLinks.Remove(link);
 	
 	const int count = pLinks.GetCount();
@@ -505,10 +490,10 @@ void seSky::RemoveAllLinks(){
 	const int linkCount = pLinks.GetCount();
 	int i;
 	
-	SetActiveLink(NULL);
+	SetActiveLink(nullptr);
 	
 	for(i=0; i<linkCount; i++){
-		pLinks.GetAt(i)->SetSky(NULL);
+		pLinks.GetAt(i)->SetSky(nullptr);
 	}
 	pLinks.RemoveAll();
 	
@@ -522,13 +507,11 @@ void seSky::SetActiveLink(seLink *link){
 	
 	if(pActiveLink){
 		pActiveLink->SetActive(false);
-		pActiveLink->FreeReference();
 	}
 	
 	pActiveLink = link;
 	
 	if(link){
-		link->AddReference();
 		link->SetActive(true);
 	}
 	
@@ -577,7 +560,7 @@ void seSky::InsertLayerAt(seLayer *layer, int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pLayers.InsertAt(layer, index);
+	pLayers.Insert(layer, index);
 	layer->SetSky(this);
 	
 	NotifyLayerStructureChanged();
@@ -588,7 +571,7 @@ void seSky::InsertLayerAt(seLayer *layer, int index){
 }
 
 void seSky::MoveLayerTo(seLayer *layer, int index){
-	pLayers.MoveTo(layer, index);
+	pLayers.Move(layer, index);
 	NotifyLayerStructureChanged();
 }
 
@@ -608,11 +591,11 @@ void seSky::RemoveLayer(seLayer *layer){
 			SetActiveLayer(pLayers.GetAt(layerIndex - 1));
 			
 		}else{
-			SetActiveLayer(NULL);
+			SetActiveLayer(nullptr);
 		}
 	}
 	
-	layer->SetSky(NULL);
+	layer->SetSky(nullptr);
 	pLayers.Remove(layer);
 	
 	NotifyLayerStructureChanged();
@@ -622,10 +605,10 @@ void seSky::RemoveAllLayers(){
 	const int layerCount = pLayers.GetCount();
 	int i;
 	
-	SetActiveLayer(NULL);
+	SetActiveLayer(nullptr);
 	
 	for(i=0; i<layerCount; i++){
-		pLayers.GetAt(i)->SetSky(NULL);
+		pLayers.GetAt(i)->SetSky(nullptr);
 	}
 	pLayers.RemoveAll();
 	
@@ -639,13 +622,11 @@ void seSky::SetActiveLayer(seLayer *layer){
 	
 	if(pActiveLayer){
 		pActiveLayer->SetActive(false);
-		pActiveLayer->FreeReference();
 	}
 	
 	pActiveLayer = layer;
 	
 	if(layer){
-		layer->AddReference();
 		layer->SetActive(true);
 	}
 	
@@ -658,314 +639,228 @@ void seSky::SetActiveLayer(seLayer *layer){
 //////////////
 
 void seSky::AddListener(seSkyListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
+	
 	pListeners.Add(listener);
 }
 
 void seSky::RemoveListener(seSkyListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
-
 
 
 void seSky::NotifyStateChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->StateChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.StateChanged(this);
+	});
 }
 
 void seSky::NotifyUndoChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->UndoChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.UndoChanged(this);
+	});
 }
 
 
 
 void seSky::NotifySkyChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->SkyChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.SkyChanged(this);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyEnvObjectChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->EnvObjectChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.EnvObjectChanged(this);
+	});
 }
 
 void seSky::NotifyViewChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ViewChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ViewChanged(this);
+	});
 }
 
 void seSky::NotifyCameraChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->CameraChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.CameraChanged(this);
+	});
 }
 
 
 
 void seSky::NotifyControllerStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ControllerStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ControllerStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyControllerChanged(seController *controller){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ControllerChanged(this, controller);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ControllerChanged(this, controller);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyControllerNameChanged(seController* controller){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ControllerNameChanged(this, controller);
-	}
+void seSky::NotifyControllerNameChanged(seController *controller){
+	pListeners.Visit([&](seSkyListener &l){
+		l.ControllerNameChanged(this, controller);
+	});
 }
 
 void seSky::NotifyControllerValueChanged(seController *controller){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ControllerValueChanged(this, controller);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ControllerValueChanged(this, controller);
+	});
 }
 
 void seSky::NotifyControllerSelectionChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ControllerSelectionChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ControllerSelectionChanged(this);
+	});
 }
 
 void seSky::NotifyActiveControllerChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ActiveControllerChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ActiveControllerChanged(this);
+	});
 }
 
 
 
 void seSky::NotifyLinkStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LinkStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LinkStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyLinkChanged(seLink *controller){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LinkChanged(this, controller);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LinkChanged(this, controller);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLinkNameChanged(seLink* link){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LinkNameChanged(this, link);
-	}
+void seSky::NotifyLinkNameChanged(seLink *link){
+	pListeners.Visit([&](seSkyListener &l){
+		l.LinkNameChanged(this, link);
+	});
 	
 	SetChanged(true);
 }
 
 void seSky::NotifyLinkSelectionChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LinkSelectionChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LinkSelectionChanged(this);
+	});
 }
 
 void seSky::NotifyActiveLinkChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ActiveLinkChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ActiveLinkChanged(this);
+	});
 }
 
 
 
 void seSky::NotifyLayerStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LayerStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LayerStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyLayerChanged(seLayer *layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LayerChanged(this, layer);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LayerChanged(this, layer);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLayerNameChanged(seLayer* layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LayerNameChanged(this, layer);
-	}
+void seSky::NotifyLayerNameChanged(seLayer *layer){
+	pListeners.Visit([&](seSkyListener &l){
+		l.LayerNameChanged(this, layer);
+	});
 	
 	SetChanged(true);
 }
 
 void seSky::NotifyLayerSelectionChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->LayerSelectionChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.LayerSelectionChanged(this);
+	});
 }
 
 void seSky::NotifyActiveLayerChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ActiveLayerChanged(this);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ActiveLayerChanged(this);
+	});
 }
 
 
 
 void seSky::NotifyBodyStructureChanged(seLayer *layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->BodyStructureChanged(this, layer);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.BodyStructureChanged(this, layer);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyBodyChanged(seLayer *layer, seBody *body){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->BodyChanged(this, layer, body);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.BodyChanged(this, layer, body);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyBodySelectionChanged(seLayer *layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->BodySelectionChanged(this, layer);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.BodySelectionChanged(this, layer);
+	});
 }
 
 void seSky::NotifyActiveBodyChanged(seLayer *layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ActiveBodyChanged(this, layer);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ActiveBodyChanged(this, layer);
+	});
 }
 
 
 
 void seSky::NotifyTargetChanged(seLayer *layer, deSkyLayer::eTargets target){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->TargetChanged(this, layer, target);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.TargetChanged(this, layer, target);
+	});
 	
 	SetChanged(true);
 	pNeedsRebuildSky = true;
 }
 
 void seSky::NotifyActiveTargetChanged(seLayer *layer){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkyListener*)pListeners.GetAt(i))->ActiveTargetChanged(this, layer);
-	}
+	pListeners.Visit([&](seSkyListener &l){
+		l.ActiveTargetChanged(this, layer);
+	});
 }
 
 
@@ -980,40 +875,32 @@ void seSky::pCleanUp(){
 		delete pCamera;
 	}
 	
-	SetActiveLayer(NULL);
+	SetActiveLayer(nullptr);
 	RemoveAllLayers();
 	
-	SetActiveLink(NULL);
+	SetActiveLink(nullptr);
 	RemoveAllLinks();
 	
-	SetActiveController(NULL);
+	SetActiveController(nullptr);
 	RemoveAllControllers();
 	
 	pEnvObject = nullptr;
 	
 	if(pEngWorld){
-		pDDSHorizon.SetParentDebugDrawer(NULL);
+		pDDSHorizon->SetParentDebugDrawer(nullptr);
 		
 		if(pDDHorizon){
 			pEngWorld->RemoveDebugDrawer(pDDHorizon);
-			pDDHorizon->FreeReference();
 		}
 		
 		if(pEngSkyInstance){
 			pEngWorld->RemoveSky(pEngSkyInstance);
-			pEngSkyInstance->FreeReference();
 		}
-		
-		if(pEngSky){
-			pEngSky->FreeReference();
-		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
 void seSky::pBuildShapeHorizon(){
-	deDebugDrawerShapeFace *face = NULL;
+	deDebugDrawerShapeFace *face = nullptr;
 	int s, stepCount, subStepCount;
 	decVector vertex[4], normal;
 	float bandHeight = 0.005f;
@@ -1032,7 +919,7 @@ void seSky::pBuildShapeHorizon(){
 	// smaller marks at 5 degree steps.
 	
 	// just to make sure clear the shape
-	pDDSHorizon.RemoveAllFaces();
+	pDDSHorizon->RemoveAllFaces();
 	
 	try{
 		stepCount = 72; // 5 degree steps
@@ -1061,8 +948,6 @@ void seSky::pBuildShapeHorizon(){
 			vertex[3].z = vertex[0].z;
 			
 			face = new deDebugDrawerShapeFace;
-			if(!face) DETHROW(deeOutOfMemory);
-			
 			face->AddVertex(vertex[0]);
 			face->AddVertex(vertex[1]);
 			face->AddVertex(vertex[2]);
@@ -1071,8 +956,8 @@ void seSky::pBuildShapeHorizon(){
 			normal.Normalize();
 			face->SetNormal(normal);
 			
-			pDDSHorizon.AddFace(face);
-			face = NULL;
+			pDDSHorizon->AddFace(face);
+			face = nullptr;
 			
 			angle1 = angle2;
 		}
@@ -1114,8 +999,6 @@ void seSky::pBuildShapeHorizon(){
 			vertex[3].z = vertex[0].z;
 			
 			face = new deDebugDrawerShapeFace;
-			if(!face) DETHROW(deeOutOfMemory);
-			
 			face->AddVertex(vertex[0]);
 			face->AddVertex(vertex[1]);
 			face->AddVertex(vertex[2]);
@@ -1124,8 +1007,8 @@ void seSky::pBuildShapeHorizon(){
 			normal.Normalize();
 			face->SetNormal(normal);
 			
-			pDDSHorizon.AddFace(face);
-			face = NULL;
+			pDDSHorizon->AddFace(face);
+			face = nullptr;
 		}
 		
 		

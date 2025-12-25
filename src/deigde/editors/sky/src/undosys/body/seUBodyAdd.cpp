@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seUBodyAdd::seUBodyAdd(seLayer *layer, seBody *body) :
-pLayer(NULL),
-pBody(NULL)
+
+pBody(nullptr)
 {
 	if(!layer || !body){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pBody(NULL)
 	SetShortInfo("Add Body");
 	
 	pLayer = layer;
-	layer->AddReference();
-	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodyAdd::~seUBodyAdd(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

@@ -29,15 +29,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action set layer rotation.
  */
 class seULayerSetOrientation : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerSetOrientation> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerSetOrientation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

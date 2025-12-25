@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
-pLink(NULL),
+
 pNewName(newName)
 {
 	if(!link){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = link->GetName();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetName::~seULinkSetName(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

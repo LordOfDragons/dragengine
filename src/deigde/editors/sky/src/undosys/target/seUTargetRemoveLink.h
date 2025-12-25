@@ -29,25 +29,26 @@
 
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class seLayer;
-class seLink;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/link/seLink.h"
 
 
 /**
  * \brief Undo action target remove link.
  */
 class seUTargetRemoveLink : public igdeUndo{
+public:
+	typedef deTObjectReference<seUTargetRemoveLink> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	deSkyLayer::eTargets pTarget;
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUTargetRemoveLink> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

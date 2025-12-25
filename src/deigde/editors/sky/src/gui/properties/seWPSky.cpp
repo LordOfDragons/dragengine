@@ -59,6 +59,7 @@ protected:
 	seWPSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cColorBackground> Ref;
 	cColorBackground(seWPSky &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -71,7 +72,7 @@ public:
 			return;
 		}
 		
-		seUSkySetBgColor::Ref undo(seUSkySetBgColor::Ref::NewWith(sky, colorBox->GetColor()));
+		seUSkySetBgColor::Ref undo(seUSkySetBgColor::Ref::New(sky, colorBox->GetColor()));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
@@ -90,30 +91,24 @@ public:
 
 seWPSky::seWPSky(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pSky(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPSkyListener(*this);
+	pListener = seWPSkyListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Sky:");
 	
-	helper.ColorBox(groupBox, "Bg Color:", "Background Color.", pClrBg, new cColorBackground(*this));
+	helper.ColorBox(groupBox, "Bg Color:", "Background Color.", pClrBg, cColorBackground::Ref::New(*this));
 }
 
 seWPSky::~seWPSky(){
-	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSky(nullptr);
 }
 
 
@@ -128,15 +123,13 @@ void seWPSky::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
-		pSky = NULL;
+		pSky = nullptr;
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateSky();
@@ -152,7 +145,7 @@ void seWPSky::UpdateSky(){
 		pClrBg->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	}
 	
-	const bool enabled = pSky != NULL;
+	const bool enabled = pSky != nullptr;
 	
 	pClrBg->SetEnabled(enabled);
 }

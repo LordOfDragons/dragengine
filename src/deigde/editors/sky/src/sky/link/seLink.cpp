@@ -42,12 +42,10 @@
 ////////////////////////////
 
 seLink::seLink() :
-pSky(NULL),
+pSky(nullptr),
 pIndex(-1),
 
 pName("Link"),
-
-pController(NULL),
 pRepeat(1),
 
 pSelected(false),
@@ -55,9 +53,6 @@ pActive(false){
 }
 
 seLink::~seLink(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -94,17 +89,7 @@ void seLink::SetController(seController *controller){
 	if(controller == pController){
 		return;
 	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	
 	pController = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	if(pSky){
 		pSky->NotifyLinkChanged(this);
 	}

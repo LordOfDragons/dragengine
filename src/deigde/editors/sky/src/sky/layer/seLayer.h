@@ -26,9 +26,10 @@
 #define _SELAYER_H_
 
 #include "../controller/seControllerTarget.h"
-#include "../body/seBodyList.h"
+#include "../body/seBody.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -68,8 +69,8 @@ private:
 	bool pMulBySkyLight;
 	bool pMulBySkyColor;
 	
-	seBodyList pBodies;
-	seBody *pActiveBody;
+	seBody::List pBodies;
+	seBody::Ref pActiveBody;
 	
 	seControllerTarget pTargets[deSkyLayer::etAmbientIntensity + 1];
 	deSkyLayer::eTargets pActiveTarget;
@@ -82,6 +83,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seLayer> Ref;
+
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seLayer> List;
 
 
 	/** \name Constructors and Destructors */
@@ -106,10 +110,10 @@ public:
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
-	/** \brief Parent sky or \em NULL. */
+	/** \brief Parent sky or \em nullptr. */
 	inline seSky *GetSky() const{ return pSky; }
 	
-	/** \brief Set parent sky or \em NULL. */
+	/** \brief Set parent sky or \em nullptr. */
 	void SetSky(seSky *sky);
 	
 	/** \brief Offset. */
@@ -148,8 +152,8 @@ public:
 	/** \brief Set skin path. */
 	void SetSkinPath(const char *skinPath);
 	
-	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Engine skin or \em nullptr. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	/** \brief Light orientation. */
 	inline const decVector &GetLightOrientation() const{ return pLightOrientation; }
@@ -208,7 +212,7 @@ public:
 	/** \name Bodies */
 	/*@{*/
 	/** \brief Bodies. */
-	const seBodyList &GetBodies() const{ return pBodies; }
+	const seBody::List &GetBodies() const{ return pBodies; }
 	
 	/** \brief Add body. */
 	void AddBody(seBody *body);
@@ -225,10 +229,10 @@ public:
 	/** \brief Remove all bodies. */
 	void RemoveAllBodies();
 	
-	/** \brief Active body or \em NULL. */
-	inline seBody *GetActiveBody() const{ return pActiveBody; }
+	/** \brief Active body or \em nullptr. */
+	inline const seBody::Ref &GetActiveBody() const{ return pActiveBody; }
 	
-	/** \brief Set active body or \em NULL. */
+	/** \brief Set active body or \em nullptr. */
 	void SetActiveBody(seBody *body);
 	/*@}*/
 	

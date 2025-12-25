@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action set layer transparency.
  */
 class seULayerSetTransparency : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerSetTransparency> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldTransparency;
 	float pNewTransparency;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerSetTransparency> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

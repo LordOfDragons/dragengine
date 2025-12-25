@@ -25,22 +25,26 @@
 #ifndef _SEWPSKY_H_
 #define _SEWPSKY_H_
 
+#include "seWPSkyListener.h"
+#include "../../sky/seSky.h"
+
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSky;
 class seWindowProperties;
-class seWPSkyListener;
 
 
 /**
  * \brief Sky panel.
  */
 class seWPSky : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPSky> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seSky *pSky;
-	seWPSkyListener *pListener;
+	seSky::Ref pSky;
+	seWPSkyListener::Ref pListener;
 	
 	igdeColorBox::Ref pClrBg;
 	
@@ -61,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

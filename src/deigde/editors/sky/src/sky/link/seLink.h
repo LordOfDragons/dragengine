@@ -26,12 +26,13 @@
 #define _SELINK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 class seSky;
-class seController;
+#include "../controller/seController.h"
 
 
 
@@ -45,7 +46,7 @@ private:
 	
 	decString pName;
 	
-	seController *pController;
+	seController::Ref pController;
 	decCurveBezier pCurve;
 	int pRepeat;
 	
@@ -57,6 +58,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seLink> Ref;
+
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seLink> List;
 
 
 	/** \name Constructors and Destructors */
@@ -72,10 +76,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent sky or \em NULL. */
+	/** \brief Parent sky or \em nullptr. */
 	inline seSky *GetSky() const{ return pSky; }
 	
-	/** \brief Set parent sky or \em NULL. */
+	/** \brief Set parent sky or \em nullptr. */
 	void SetSky(seSky *sky);
 	
 	/** \brief Index. */
@@ -90,10 +94,10 @@ public:
 	/** \brief Set name. */
 	void SetName(const char *name);
 	
-	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	/** \brief Controller or \em nullptr. */
+	inline const seController::Ref &GetController() const{ return pController; }
 	
-	/** \brief Set controller or \em NULL. */
+	/** \brief Set controller or \em nullptr. */
 	void SetController(seController *controller);
 	
 	/** \brief Curve. */

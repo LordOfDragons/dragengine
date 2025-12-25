@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
  * \brief Undo action set controller name.
  */
 class seUControllerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetName> Ref;
+	
+	
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

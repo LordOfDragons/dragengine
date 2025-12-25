@@ -56,22 +56,22 @@ pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelController.TakeOver(new seWPController(*this));
+	pPanelController = seWPController::Ref::New(*this);
 	AddChild(pPanelController, "Controller");
 	
-	pPanelLink.TakeOver(new seWPLink(*this));
+	pPanelLink = seWPLink::Ref::New(*this);
 	AddChild(pPanelLink, "Link");
 	
-	pPanelLayer.TakeOver(new seWPLayer(*this));
+	pPanelLayer = seWPLayer::Ref::New(*this);
 	AddChild(pPanelLayer, "Layer");
 	
-	pPanelSky.TakeOver(new seWPSky(*this));
+	pPanelSky = seWPSky::Ref::New(*this);
 	AddChild(pPanelSky, "Sky");
 	
-	pPanelView.TakeOver(new seWPView(*this));
+	pPanelView = seWPView::Ref::New(*this);
 	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver(new seWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = seWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(0); // controller
@@ -86,14 +86,14 @@ seWindowProperties::~seWindowProperties(){
 ///////////////
 
 void seWindowProperties::SetSky(seSky *sky){
-	((seWPController&)(igdeWidget&)pPanelController).SetSky(sky);
-	((seWPLink&)(igdeWidget&)pPanelLink).SetSky(sky);
-	((seWPLayer&)(igdeWidget&)pPanelLayer).SetSky(sky);
-	((seWPSky&)(igdeWidget&)pPanelSky).SetSky(sky);
-	((seWPView&)(igdeWidget&)pPanelView).SetSky(sky);
-	((seWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetSky(sky);
+	pPanelController->SetSky(sky);
+	pPanelLink->SetSky(sky);
+	pPanelLayer->SetSky(sky);
+	pPanelSky->SetSky(sky);
+	pPanelView->SetSky(sky);
+	pPanelUndoHistory->SetSky(sky);
 }
 
 void seWindowProperties::OnSkyPathChanged(){
-	((seWPLayer&)(igdeWidget&)pPanelLayer).OnSkyPathChanged();
+	pPanelLayer->OnSkyPathChanged();
 }

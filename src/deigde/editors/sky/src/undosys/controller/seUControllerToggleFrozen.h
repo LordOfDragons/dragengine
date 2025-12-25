@@ -27,22 +27,23 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
  * \brief Undo action toggle controller frozen.
  */
 class seUControllerToggleFrozen : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerToggleFrozen> Ref;
+	
+	
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerToggleFrozen> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

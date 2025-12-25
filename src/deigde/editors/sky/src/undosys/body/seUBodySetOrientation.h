@@ -29,15 +29,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
  * \brief Undo action set body orientation.
  */
 class seUBodySetOrientation : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodySetOrientation> Ref;
+	
+	
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodySetOrientation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

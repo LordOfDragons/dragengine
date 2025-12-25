@@ -89,13 +89,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, sky, link)));
+		igdeUndo::Ref undo(OnChanged(textField, sky, link));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seLink *link) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seSky *sky, seLink *link) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -112,13 +112,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, sky, link)));
+		igdeUndo::Ref undo(OnChanged(comboBox, sky, link));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSky *sky, seLink *link) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, seSky *sky, seLink *link) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -138,19 +138,19 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(sky)));
+		igdeUndo::Ref undo(OnAction(sky));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSky *sky) = 0;
+	virtual igdeUndo::Ref OnAction(seSky *sky) = 0;
 };
 
 class cBaseActionLink : public cBaseAction{
@@ -164,17 +164,17 @@ public:
 	cBaseActionLink(seWPLink &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
+	igdeUndo::Ref OnAction(seSky *sky) override{
 		seLink * const link = pPanel.GetLink();
 		if(link){
 			return OnActionLink(sky, link);
 			
 		}else{
-			return NULL;
+			return {};
 		}
 	}
 	
-	virtual igdeUndo *OnActionLink(seSky *sky, seLink *link) = 0;
+	virtual igdeUndo::Ref OnActionLink(seSky *sky, seLink *link) = 0;
 };
 
 
@@ -182,6 +182,7 @@ public:
 class cListLinks : public igdeListBoxListener{
 	seWPLink &pPanel;
 public:
+	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -196,7 +197,7 @@ public:
 			sky->SetActiveLink((seLink*)selection->GetData());
 			
 		}else{
-			sky->SetActiveLink(NULL);
+			sky->SetActiveLink(nullptr);
 		}
 	}
 	
@@ -209,22 +210,24 @@ public:
 
 class cActionLinkAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLinkAdd> Ref;
 	cActionLinkAdd(seWPLink &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a link to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
-		return new seULinkAdd(sky, seLink::Ref::NewWith());
+	igdeUndo::Ref OnAction(seSky *sky) override{
+		return seULinkAdd::Ref::New(sky, seLink::Ref::New());
 	}
 };
 
 class cActionLinkRemove : public cBaseActionLink{
 public:
+	typedef deTObjectReference<cActionLinkRemove> Ref;
 	cActionLinkRemove(seWPLink &panel) : cBaseActionLink(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected link."){}
 	
-	virtual igdeUndo *OnActionLink(seSky *sky, seLink *link){
+	virtual igdeUndo::Ref OnActionLink(seSky *sky, seLink *link){
 		const int usageCount = sky->CountLinkUsage(link);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -233,14 +236,14 @@ public:
 			"If the link is removed now it is also removed from\n"
 			"all the targets using it. Do you want to remove the link?",
 			link->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){
-				return NULL;
+				return {};
 		}
 		
-		return new seULinkRemove(link);
+		return seULinkRemove::Ref::New(link);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetLink() != NULL);
+	void Update() override{
+		SetEnabled(pPanel.GetLink() != nullptr);
 	}
 };
 
@@ -248,46 +251,49 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(seWPLink &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLink *link){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seSky*, seLink *link) override{
 		const decString &name = textField->GetText();
 		if(name == link->GetName()){
-			return NULL;
+			return {};
 		}
-		return new seULinkSetName(link, name);
+		return seULinkSetName::Ref::New(link, name);
 	}
 };
 
 class cComboController : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboController> Ref;
 	cComboController(seWPLink &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSky*, seLink *link){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, seSky*, seLink *link) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		seController *controller = NULL;
+		seController *controller = nullptr;
 		if(selection){
 			controller = (seController*)selection->GetData();
 		}
 		
 		if(controller == link->GetController()){
-			return NULL;
+			return {};
 		}
 		
-		return new seULinkSetController(link, controller);
+		return seULinkSetController::Ref::New(link, controller);
 	}
 };
 
 class cTextRepeat : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRepeat> Ref;
 	cTextRepeat(seWPLink &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seLink *link){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seSky*, seLink *link) override{
 		const int repeat = textField->GetInteger();
 		if(repeat == link->GetRepeat()){
-			return NULL;
+			return {};
 		}
-		return new seULinkSetRepeat(link, repeat);
+		return seULinkSetRepeat::Ref::New(link, repeat);
 	}
 };
 
@@ -297,6 +303,7 @@ protected:
 	igdeUndo::Ref pUndo;
 	
 public:
+	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
@@ -307,11 +314,11 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 		
 		pPanel.GetSky()->GetUndoSystem()->Add(pUndo);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
@@ -320,7 +327,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 	}
 };
@@ -337,50 +344,43 @@ public:
 
 seWPLink::seWPLink(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSky(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLinkListener(*this);
+	pListener = seWPLinkListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// link list
 	helper.GroupBoxFlow(content, groupBox, "Links:");
 	
-	helper.ListBox(groupBox, 8, "Links", pListLinks, new cListLinks(*this));
+	helper.ListBox(groupBox, 8, "Links", pListLinks, cListLinks::Ref::New(*this));
 	
-	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
-	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this));
+	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
+	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
 	
 	// link settings
 	helper.GroupBoxFlow(content, groupBox, "Link Settings:");
 	
-	frameLine.TakeOver(new igdeContainerForm(env));
+	frameLine = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(frameLine);
 	
-	helper.EditString(frameLine, "Name:", "Name of the link", pEditName, new cTextName(*this));
+	helper.EditString(frameLine, "Name:", "Name of the link", pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox(frameLine, "Link:", true, "Name of the link if used", pCBController,
-		new cComboController(*this));
+	helper.ComboBox(frameLine, "Link:", true, "Name of the link if used", pCBController, cComboController::Ref::New(*this));
 	pCBController->SetDefaultSorter();
 	
-	helper.EditInteger(frameLine, "Repeat:", "Repeat link value", pEditRepeat, new cTextRepeat(*this));
+	helper.EditInteger(frameLine, "Repeat:", "Repeat link value", pEditRepeat, cTextRepeat::Ref::New(*this));
 	
-	helper.ViewCurveBezier(groupBox, pEditCurve, new cEditCurve(*this));
+	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 }
 
 seWPLink::~seWPLink(){
-	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSky(nullptr);
 }
 
 
@@ -395,14 +395,12 @@ void seWPLink::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateControllerList();
@@ -410,31 +408,26 @@ void seWPLink::SetSky(seSky *sky){
 }
 
 seLink *seWPLink::GetLink() const{
-	if(pSky){
-		return pSky->GetActiveLink();
-	}
-	
-	return NULL;
+	return pSky ? pSky->GetActiveLink() : nullptr;
 }
 
 
 
 void seWPLink::UpdateLinkList(){
+	const seLink::Ref selection(GetLink());
+	
 	pListLinks->RemoveAllItems();
 	
 	if(pSky){
-		const seLinkList &links = pSky->GetLinks();
-		const int linkCount = links.GetCount();
-		int i;
-		
-		for(i=0; i<linkCount; i++){
-			seLink * const link = links.GetAt(i);
-			pListLinks->AddItem(link->GetName().GetString(), NULL, link);
-		}
+		pSky->GetLinks().Visit([this](seLink *link){
+			pListLinks->AddItem(link->GetName().GetString(), nullptr, link);
+		});
 		pListLinks->SortItems();
 	}
 	
-	SelectActiveLink();
+	if(selection){
+		pListLinks->SetSelectionWithData(selection);
+	}
 }
 
 void seWPLink::SelectActiveLink(){
@@ -459,12 +452,12 @@ void seWPLink::UpdateLink(){
 		
 	}else{
 		pEditName->ClearText();
-		pCBController->SetSelectionWithData(NULL);
+		pCBController->SetSelectionWithData(nullptr);
 		pEditRepeat->ClearText();
 		pEditCurve->SetDefaultBezier();
 	}
 	
-	const bool enabled = link != NULL;
+	const bool enabled = link != nullptr;
 	pEditName->SetEnabled(enabled);
 	pCBController->SetEnabled(enabled);
 	pEditRepeat->SetEnabled(enabled);
@@ -473,17 +466,12 @@ void seWPLink::UpdateLink(){
 
 void seWPLink::UpdateControllerList(){
 	pCBController->RemoveAllItems();
-	pCBController->AddItem("< No Controller >", NULL);
+	pCBController->AddItem("< No Controller >", nullptr);
 	
 	if(pSky){
-		const seControllerList &controllers = pSky->GetControllers();
-		const int controllerCount = controllers.GetCount();
-		int i;
-		
-		for(i=0; i<controllerCount; i++){
-			seController * const controller = controllers.GetAt(i);
-			pCBController->AddItem(controller->GetName().GetString(), NULL, controller);
-		}
+		pSky->GetControllers().Visit([&](seController *controller){
+			pCBController->AddItem(controller->GetName(), nullptr, controller);
+		});
 		pCBController->SortItems();
 	}
 	
@@ -492,6 +480,6 @@ void seWPLink::UpdateControllerList(){
 		pCBController->SetSelectionWithData(link->GetController());
 		
 	}else{
-		pCBController->SetSelectionWithData(NULL);
+		pCBController->SetSelectionWithData(nullptr);
 	}
 }

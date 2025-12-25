@@ -25,10 +25,10 @@
 #ifndef _SEWPUNDOHISTORY_H_
 #define _SEWPUNDOHISTORY_H_
 
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "../../sky/seSky.h"
+#include "seWPUndoHistoryListener.h"
 
-class seSky;
-class seWPUndoHistoryListener;
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 
@@ -36,9 +36,12 @@ class seWPUndoHistoryListener;
  * \brief Undo history panel.
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<seWPUndoHistory> Ref;
+	
 private:
-	seWPUndoHistoryListener *pListener;
-	seSky *pSky;
+	seWPUndoHistoryListener::Ref pListener;
+	seSky::Ref pSky;
 	
 	
 	
@@ -59,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

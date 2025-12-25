@@ -81,6 +81,7 @@ protected:
 	seWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(seWPController &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -90,13 +91,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, sky, controller)));
+		igdeUndo::Ref undo(OnChanged(textField, sky, controller));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seController *controller) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seSky *sky, seController *controller) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -104,6 +105,7 @@ protected:
 	seWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditSliderTextListener> Ref;
 	cBaseEditSliderTextListener(seWPController &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditSliderText *editSlider){
@@ -113,13 +115,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editSlider->GetValue(), sky, controller)));
+		igdeUndo::Ref undo(OnChanged(editSlider->GetValue(), sky, controller));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(float value, seSky *sky, seController *controller) = 0;
+	virtual igdeUndo::Ref OnChanged(float value, seSky *sky, seController *controller) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -127,6 +129,7 @@ protected:
 	seWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(seWPController &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
@@ -139,22 +142,25 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(sky)));
+		igdeUndo::Ref undo(OnAction(sky));
 		if(undo){
 			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSky *sky) = 0;
+	virtual igdeUndo::Ref OnAction(seSky *sky) = 0;
 };
 
 class cBaseActionController : public cBaseAction{
+public:
+	typedef deTObjectReference<cBaseActionController> Ref;
+	
 public:
 	cBaseActionController(seWPController &panel, const char *text, const char *description) :
 	cBaseAction(panel, text, description){}
@@ -165,17 +171,17 @@ public:
 	cBaseActionController(seWPController &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
+	igdeUndo::Ref OnAction(seSky *sky) override{
 		seController * const controller = pPanel.GetController();
 		if(controller){
 			return OnActionController(sky, controller);
 			
 		}else{
-			return NULL;
+			return {};
 		}
 	}
 	
-	virtual igdeUndo *OnActionController(seSky *sky, seController *controller) = 0;
+	virtual igdeUndo::Ref OnActionController(seSky *sky, seController *controller) = 0;
 };
 
 
@@ -183,6 +189,7 @@ public:
 class cListControllers : public igdeListBoxListener{
 	seWPController &pPanel;
 public:
+	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(seWPController &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -197,7 +204,7 @@ public:
 			sky->SetActiveController((seController*)selection->GetData());
 			
 		}else{
-			sky->SetActiveController(NULL);
+			sky->SetActiveController(nullptr);
 		}
 	}
 	
@@ -213,22 +220,26 @@ public:
 
 class cActionControllerAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionControllerAdd> Ref;
+	
+public:
 	cActionControllerAdd(seWPController &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a controller to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
-		return new seUControllerAdd(sky, seController::Ref::NewWith());
+	igdeUndo::Ref OnAction(seSky *sky) override{
+		return seUControllerAdd::Ref::New(sky, seController::Ref::New());
 	}
 };
 
 class cActionControllerRemove : public cBaseActionController{
 public:
+	typedef deTObjectReference<cActionControllerRemove> Ref;
 	cActionControllerRemove(seWPController &panel) : cBaseActionController(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
 	
-	virtual igdeUndo *OnActionController(seSky *sky, seController *controller){
+	virtual igdeUndo::Ref OnActionController(seSky *sky, seController *controller){
 		const int usageCount = sky->CountControllerUsage(controller);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -237,30 +248,31 @@ public:
 			"If the controller is removed now it is also removed from\n"
 			"all the links using it. Do you want to remove the controller?",
 			controller->GetName().GetString(), usageCount) != igdeCommonDialogs::ebYes){
-				return nullptr;
+				return {};
 		}
 		
-		return new seUControllerRemove(controller);
+		return seUControllerRemove::Ref::New(controller);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetController() != NULL);
+	void Update() override{
+		SetEnabled(pPanel.GetController() != nullptr);
 	}
 };
 
 class cActionControllerUp : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
+	typedef deTObjectReference<cActionControllerUp> Ref;
 	cActionControllerUp(seWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Up", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionController(seSky*, seController *controller){
-		return new seUControllerMoveUp(controller);
+	virtual igdeUndo::Ref OnActionController(seSky*, seController *controller){
+		return seUControllerMoveUp::Ref::New(controller);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pListBox.GetSelection() > 0);
 	}
 };
@@ -268,17 +280,18 @@ public:
 class cActionControllerDown : public cBaseActionController{
 	igdeListBox &pListBox;
 public:
+	typedef deTObjectReference<cActionControllerDown> Ref;
 	cActionControllerDown(seWPController &panel, igdeListBox &listBox) : cBaseActionController(
 		panel, "Move Down", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down in the list."),
 	pListBox(listBox){}
 	
-	virtual igdeUndo *OnActionController(seSky*, seController *controller){
-		return new seUControllerMoveDown(controller);
+	virtual igdeUndo::Ref OnActionController(seSky*, seController *controller){
+		return seUControllerMoveDown::Ref::New(controller);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1);
+	void Update() override{
+		SetEnabled(pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItems().GetCount() - 1);
 	}
 };
 
@@ -286,46 +299,50 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seSky*, seController *controller) override{
 		const decString &name = textField->GetText();
 		if(name == controller->GetName()){
-			return NULL;
+			return {};
 		}
-		return new seUControllerSetName(controller, name);
+		return seUControllerSetName::Ref::New(controller, name);
 	}
 };
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextMinimumValue> Ref;
 	cTextMinimumValue(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seSky*, seController *controller) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - controller->GetMinimumValue()) <= FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new seUControllerSetMinimum(controller, value);
+		return seUControllerSetMinimum::Ref::New(controller, value);
 	}
 };
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextMaximumValue> Ref;
 	cTextMaximumValue(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky*, seController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seSky*, seController *controller) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - controller->GetMaximumValue()) <= FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new seUControllerSetMinimum(controller, value);
+		return seUControllerSetMinimum::Ref::New(controller, value);
 	}
 };
 
 class cSliderValue : public igdeEditSliderTextListener{
 	seWPController &pPanel;
 public:
+	typedef deTObjectReference<cSliderValue> Ref;
 	cSliderValue(seWPController &panel) : pPanel(panel){}
 	
 	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
@@ -342,21 +359,23 @@ public:
 
 class cActionClamp : public cBaseActionController{
 public:
+	typedef deTObjectReference<cActionClamp> Ref;
 	cActionClamp(seWPController &panel) : cBaseActionController(panel, "Clamp value to range",
 		"Determines if the value of the controller is clamped to the given range."){ }
 	
-	virtual igdeUndo *OnActionController(seSky*, seController *controller){
-		return new seUControllerToggleClamp(controller);
+	virtual igdeUndo::Ref OnActionController(seSky*, seController *controller){
+		return seUControllerToggleClamp::Ref::New(controller);
 	}
 };
 
 class cActionFrozen : public cBaseActionController{
 public:
+	typedef deTObjectReference<cActionFrozen> Ref;
 	cActionFrozen(seWPController &panel) : cBaseActionController(panel,
 		"Freeze Controller value", "Prevents the controller from changing the current value."){}
 	
-	virtual igdeUndo *OnActionController(seSky*, seController *controller){
-		return new seUControllerToggleFrozen(controller);
+	virtual igdeUndo::Ref OnActionController(seSky*, seController *controller){
+		return seUControllerToggleFrozen::Ref::New(controller);
 	}
 };
 
@@ -371,56 +390,48 @@ public:
 
 seWPController::seWPController(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-
-pSky(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPControllerListener(*this);
+	pListener = seWPControllerListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// controller list
 	helper.GroupBoxFlow(content, groupBox, "Controllers:");
 	
-	helper.ListBox(groupBox, 8, "Controllers", pListController, new cListControllers(*this));
+	helper.ListBox(groupBox, 8, "Controllers", pListController, cListControllers::Ref::New(*this));
 	
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this));
-	pActionControllerUp.TakeOver(new cActionControllerUp(*this, pListController));
-	pActionControllerDown.TakeOver(new cActionControllerDown(*this, pListController));
+	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
+	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
+	pActionControllerUp = cActionControllerUp::Ref::New(*this, pListController);
+	pActionControllerDown = cActionControllerDown::Ref::New(*this, pListController);
 	
 	// controller settings
 	helper.GroupBox(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, cTextName::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Range:", "Range of the controller value if limited", frameLine);
 	helper.EditFloat(frameLine, "Minimum value the controller can take",
-		pEditMin, new cTextMinimumValue(*this));
+		pEditMin, cTextMinimumValue::Ref::New(*this));
 	helper.EditFloat(frameLine, "Maximum value the controller can take",
-		pEditMax, new cTextMaximumValue(*this));
+		pEditMax, cTextMaximumValue::Ref::New(*this));
 	
 	helper.EditSliderText(groupBox, "Value:", "Current value of the controller",
-		0.0f, 0.0f, 6, 3, 0.1f, pSldValue, new cSliderValue(*this));
+		0.0f, 0.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkClamp, new cActionClamp(*this), true);
-	helper.CheckBox(groupBox, pChkFrozen, new cActionFrozen(*this), true);
+	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
 }
 
 seWPController::~seWPController(){
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
-		pSky = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
+		pSky = nullptr;
 	}
 }
 
@@ -436,21 +447,19 @@ void seWPController::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateControllerList();
 }
 
 seController *seWPController::GetController() const{
-	return pSky ? pSky->GetActiveController() : NULL;
+	return pSky ? pSky->GetActiveController() : nullptr;
 }
 
 
@@ -459,16 +468,11 @@ void seWPController::UpdateControllerList(){
 	pListController->RemoveAllItems();
 	
 	if(pSky){
-		const seControllerList &controllers = pSky->GetControllers();
-		const int controllerCount = controllers.GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<controllerCount; i++){
-			seController * const controller = controllers.GetAt(i);
+		pSky->GetControllers().VisitIndexed([&](int i, seController *controller){
+			decString text;
 			text.Format("%i: %s", i, controller->GetName().GetString());
-			pListController->AddItem(text, NULL, controller);
-		}
+			pListController->AddItem(text, nullptr, controller);
+		});
 	}
 	
 	SelectActiveController();
@@ -504,7 +508,7 @@ void seWPController::UpdateController(){
 		pChkFrozen->SetChecked(false);
 	}
 	
-	const bool enable = controller != NULL;
+	const bool enable = controller != nullptr;
 	pEditName->SetEnabled(enable);
 	pEditMin->SetEnabled(enable);
 	pEditMax->SetEnabled(enable);

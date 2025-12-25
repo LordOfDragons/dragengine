@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUControllerToggleFrozen::seUControllerToggleFrozen(seController *controller) :
-pController(NULL)
+pController(nullptr)
 {
 	if(!controller){
 		DETHROW(deeInvalidParam);
@@ -49,13 +49,9 @@ pController(NULL)
 	SetShortInfo("Toggle Controller Frozen");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerToggleFrozen::~seUControllerToggleFrozen(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

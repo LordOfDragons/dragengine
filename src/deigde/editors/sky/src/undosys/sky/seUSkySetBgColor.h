@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 
 
 
@@ -37,8 +37,12 @@ class seSky;
  * \brief Undo action set sky background color.
  */
 class seUSkySetBgColor : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSkySetBgColor> Ref;
+	
+	
 private:
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	decColor pOldColor;
 	decColor pNewColor;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSkySetBgColor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

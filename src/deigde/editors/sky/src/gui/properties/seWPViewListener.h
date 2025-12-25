@@ -35,6 +35,9 @@ class seWPView;
  * \brief View panel listener.
  */
 class seWPViewListener : public seSkyListener{
+public:
+	typedef deTObjectReference<seWPViewListener> Ref;
+	
 private:
 	seWPView &pPanel;
 	

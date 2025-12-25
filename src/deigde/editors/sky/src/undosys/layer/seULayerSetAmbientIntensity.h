@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action set layer ambient intensity.
  */
 class seULayerSetAmbientIntensity : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerSetAmbientIntensity> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldIntensity;
 	float pNewIntensity;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerSetAmbientIntensity> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

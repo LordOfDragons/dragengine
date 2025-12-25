@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
-pLink(NULL),
+
 pNewRepeat(newRepeat)
 {
 	if(!link){
@@ -52,13 +52,9 @@ pNewRepeat(newRepeat)
 	pOldRepeat = link->GetRepeat();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetRepeat::~seULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

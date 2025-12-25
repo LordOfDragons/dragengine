@@ -42,16 +42,11 @@
 
 seWPUndoHistory::seWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new seWPUndoHistoryListener(*this)),
-pSky(NULL){
+pListener(new seWPUndoHistoryListener(*this)){
 }
 
 seWPUndoHistory::~seWPUndoHistory(){
-	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSky(nullptr);
 }
 
 
@@ -64,19 +59,16 @@ void seWPUndoHistory::SetSky(seSky *sky){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
-		
 		SetUndoSystem(sky->GetUndoSystem());
 	}
 }

@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
  * \brief Undo action set body skin.
  */
 class seUBodySetSkin : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodySetSkin> Ref;
+	
+	
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decString pOldSkin;
 	decString pNewSkin;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodySetSkin> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

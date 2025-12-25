@@ -25,6 +25,9 @@
 #ifndef _SEWPCONTROLLER_H_
 #define _SEWPCONTROLLER_H_
 
+#include "seWPControllerListener.h"
+#include "../../sky/seSky.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -33,21 +36,22 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSky;
 class seController;
 class seWindowProperties;
-class seWPControllerListener;
 
 
 /**
  * \brief Controller panel.
  */
 class seWPController : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPController> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -82,12 +86,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
 	
-	/** \brief Active controller or \em NULL. */
+	/** \brief Active controller or \em nullptr. */
 	seController *GetController() const;
 	
 	/** \brief Update controller list. */
@@ -103,10 +107,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
+	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
 	/*@}*/
 };
 

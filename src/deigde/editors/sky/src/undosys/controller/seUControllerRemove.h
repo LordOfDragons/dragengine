@@ -25,34 +25,35 @@
 #ifndef _SEUCONTROLLERREMOVE_H_
 #define _SEUCONTROLLERREMOVE_H_
 
+#include "../../sky/controller/seController.h"
+#include "../../sky/link/seLink.h"
+#include "../../sky/seSky.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class seController;
-class seSky;
 class seLayer;
-class seLink;
 
 
 /**
  * Undo action remove controller.
  */
 class seUControllerRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerRemove> Ref;
+	
+	
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	int pIndex;
 	
-	seLink **pLinks;
-	int pLinkCount;
+	seLink::List pLinks;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
@@ -74,11 +75,6 @@ public:
 	/** Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

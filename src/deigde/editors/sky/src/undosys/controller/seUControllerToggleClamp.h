@@ -27,22 +27,23 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
  * \brief Undo action toggle controller clamp.
  */
 class seUControllerToggleClamp : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerToggleClamp> Ref;
+	
+	
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerToggleClamp> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

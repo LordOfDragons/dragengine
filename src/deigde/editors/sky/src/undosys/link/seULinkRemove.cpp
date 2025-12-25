@@ -41,68 +41,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkRemove::seULinkRemove(seLink *link) :
-pSky(NULL),
-pLink(NULL),
-pTargets(NULL),
-pTargetCount(0)
-{
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+seULinkRemove::seULinkRemove(seLink *link){
+	DEASSERT_NOTNULL(link)
 	
 	seSky * const sky = link->GetSky();
-	if(!sky){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(sky)
 	
-	if(sky->GetLinks().IndexOf(link) == -1){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(sky->GetLinks().IndexOf(link) != -1)
 	
 	SetShortInfo("Remove Link");
 	
 	const int targetCount = sky->CountLinkUsage(link);
 	if(targetCount > 0){
-		const seLayerList &layers = sky->GetLayers();
-		const int layerCount = layers.GetCount();
-		int i, j;
-		
-		try{
-			pTargets = new sTarget[targetCount];
-			
-			for(i=0; i<layerCount; i++){
-				seLayer * const layer = layers.GetAt(i);
+		sky->GetLayers().Visit([&](seLayer *layer){
+			int i;
+			for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
+				const deSkyLayer::eTargets target = (deSkyLayer::eTargets)i;
 				
-				for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
-					const deSkyLayer::eTargets target = (deSkyLayer::eTargets)j;
-					
-					if(!layer->GetTarget(target).GetLinks().Has(link)){
-						continue;
-					}
-					
-					pTargets[pTargetCount].layer = layer;
-					pTargets[pTargetCount].target = target;
-					layer->AddReference();
-					pTargetCount++;
+				if(!layer->GetTarget(target).GetLinks().Has(link)){
+					continue;
 				}
+				
+				const cTarget::Ref utarget(cTarget::Ref::New());
+				utarget->layer = layer;
+				utarget->target = target;
+				pTargets.Add(utarget);
 			}
-			
-		}catch(const deException &){
-			pCleanUp();
-			throw;
-		}
+		});
 	}
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkRemove::~seULinkRemove(){
-	pCleanUp();
 }
 
 
@@ -113,38 +85,17 @@ seULinkRemove::~seULinkRemove(){
 void seULinkRemove::Undo(){
 	pSky->AddLink(pLink);
 	
-	int i;
-	for(i=0; i<pTargetCount; i++){
-		pTargets[i].layer->GetTarget(pTargets[i].target).AddLink(pLink);
-		pTargets[i].layer->NotifyTargetChanged(pTargets[i].target);
-	}
+	pTargets.Visit([&](cTarget &target){
+		target.layer->GetTarget(target.target).AddLink(pLink);
+		target.layer->NotifyTargetChanged(target.target);
+	});
 }
 
 void seULinkRemove::Redo(){
-	int i;
-	for(i=0; i<pTargetCount; i++){
-		pTargets[i].layer->GetTarget(pTargets[i].target).RemoveLink(pLink);
-		pTargets[i].layer->NotifyTargetChanged(pTargets[i].target);
-	}
+	pTargets.Visit([&](cTarget &target){
+		target.layer->GetTarget(target.target).RemoveLink(pLink);
+		target.layer->NotifyTargetChanged(target.target);
+	});
 	
 	pSky->RemoveLink(pLink);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seULinkRemove::pCleanUp(){
-	int i;
-	for(i=0; i<pTargetCount; i++){
-		pTargets[i].layer->FreeReference();
-	}
-	
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }

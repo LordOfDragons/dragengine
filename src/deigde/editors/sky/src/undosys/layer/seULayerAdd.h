@@ -27,24 +27,25 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
-class seSky;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/seSky.h"
 
 
 /**
  * \brief Undo action add layer.
  */
 class seULayerAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerAdd> Ref;
+	
+	
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

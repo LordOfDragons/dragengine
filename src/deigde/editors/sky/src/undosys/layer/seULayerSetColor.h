@@ -29,15 +29,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action set layer color.
  */
 class seULayerSetColor : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerSetColor> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decColor pOldColor;
 	decColor pNewColor;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerSetColor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

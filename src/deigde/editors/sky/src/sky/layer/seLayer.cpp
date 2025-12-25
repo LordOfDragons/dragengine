@@ -51,7 +51,7 @@
 seLayer::seLayer(igdeEnvironment &environment) :
 pEnvironment(environment),
 
-pSky(NULL),
+pSky(nullptr),
 
 pName("Layer"),
 
@@ -65,8 +65,6 @@ pAmbientIntensity(0.0f),
 
 pMulBySkyLight(false),
 pMulBySkyColor(false),
-
-pActiveBody(NULL),
 
 pActiveTarget(deSkyLayer::etRotationX),
 
@@ -289,7 +287,7 @@ void seLayer::InsertBodyAt(seBody *body, int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pBodies.InsertAt(body, index);
+	pBodies.Insert(body, index);
 	body->SetLayer(this);
 	
 	if(pSky){
@@ -302,7 +300,7 @@ void seLayer::InsertBodyAt(seBody *body, int index){
 }
 
 void seLayer::MoveBodyTo(seBody *body, int index){
-	pBodies.MoveTo(body, index);
+	pBodies.Move(body, index);
 	
 	if(pSky){
 		pSky->NotifyBodyStructureChanged(this);
@@ -325,11 +323,11 @@ void seLayer::RemoveBody(seBody *body){
 			SetActiveBody(pBodies.GetAt(index - 1));
 			
 		}else{
-			SetActiveBody(NULL);
+			SetActiveBody(nullptr);
 		}
 	}
 	
-	body->SetLayer(NULL);
+	body->SetLayer(nullptr);
 	pBodies.Remove(body);
 	
 	if(pSky){
@@ -341,10 +339,10 @@ void seLayer::RemoveAllBodies(){
 	const int count = pBodies.GetCount();
 	int i;
 	
-	SetActiveBody(NULL);
+	SetActiveBody(nullptr);
 	
 	for(i=0; i<count; i++){
-		pBodies.GetAt(i)->SetLayer(NULL);
+		pBodies.GetAt(i)->SetLayer(nullptr);
 	}
 	pBodies.RemoveAll();
 	
@@ -360,13 +358,11 @@ void seLayer::SetActiveBody(seBody *body){
 	
 	if(pActiveBody){
 		pActiveBody->SetActive(false);
-		pActiveBody->FreeReference();
 	}
 	
 	pActiveBody = body;
 	
 	if(body){
-		body->AddReference();
 		body->SetActive(true);
 	}
 	
@@ -422,7 +418,7 @@ void seLayer::NotifyTargetChanged(deSkyLayer::eTargets target){
 
 void seLayer::pUpdateSkin(){
 	if(pPathSkin.IsEmpty()){
-		pEngSkin = NULL;
+		pEngSkin = nullptr;
 		return;
 	}
 	
@@ -433,7 +429,7 @@ void seLayer::pUpdateSkin(){
 	}
 	
 	try{
-		pEngSkin.TakeOver(skinMgr.LoadSkin(pPathSkin, basePath));
+		pEngSkin = skinMgr.LoadSkin(pPathSkin, basePath);
 		
 	}catch(const deException &){
 		if(pSky){

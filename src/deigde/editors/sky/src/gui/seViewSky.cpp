@@ -52,6 +52,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	seViewSky &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
 	cCameraInteraction(seViewSky &view) : pView(view){
 		SetEnabledAll(false);
 		SetEnableRotate(true);
@@ -76,16 +77,15 @@ public:
 
 seViewSky::seViewSky(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSky(NULL)
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 }
 
 seViewSky::~seViewSky(){
-	SetSky(NULL);
+	SetSky(nullptr);
 }
 
 
@@ -101,17 +101,11 @@ void seViewSky::SetSky(seSky *sky){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera(NULL);
-	SetRenderWorld(NULL);
-	
-	if(pSky){
-		pSky->FreeReference();
-	}
-	
+	pCameraInteraction->SetCamera(nullptr);
+	SetRenderWorld(nullptr);
 	pSky = sky;
 	
 	if(sky){
-		sky->AddReference();
 		SetRenderWorld(sky->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(sky->GetCamera());
 	}

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULayerSetIntensity::seULayerSetIntensity(seLayer *layer, float newIntensity) :
-pLayer(NULL),
+
 pNewIntensity(newIntensity)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewIntensity(newIntensity)
 	pOldIntensity = layer->GetIntensity();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetIntensity::~seULayerSetIntensity(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

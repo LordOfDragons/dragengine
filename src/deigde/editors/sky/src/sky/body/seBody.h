@@ -26,6 +26,7 @@
 #define _SEBODY_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -60,6 +61,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seBody> Ref;
 
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seBody> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -79,10 +83,10 @@ public:
 	/** \brief Engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
-	/** \brief Parent layer or \em NULL. */
+	/** \brief Parent layer or \em nullptr. */
 	inline seLayer *GetLayer() const{ return pLayer; }
 	
-	/** \brief Set parent layer or \em NULL. */
+	/** \brief Set parent layer or \em nullptr. */
 	void SetLayer(seLayer *layer);
 	
 	/** \brief Orientation. */
@@ -109,8 +113,8 @@ public:
 	/** \brief Set skin path. */
 	void SetSkinPath(const char *skinPath);
 	
-	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Engine skin or \em nullptr. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	/** \brief Body is the active one. */
 	inline bool GetActive() const{ return pActive; }

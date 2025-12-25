@@ -25,6 +25,13 @@
 #ifndef _SEWINDOWPROPERTIES_H_
 #define _SEWINDOWPROPERTIES_H_
 
+#include "seWPController.h"
+#include "seWPLink.h"
+#include "seWPLayer.h"
+#include "seWPSky.h"
+#include "seWPView.h"
+#include "seWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
@@ -37,15 +44,18 @@ class seSky;
  * \brief Properties panel.
  */
 class seWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<seWindowProperties> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
 	
-	igdeWidget::Ref pPanelController;
-	igdeWidget::Ref pPanelLink;
-	igdeWidget::Ref pPanelLayer;
-	igdeWidget::Ref pPanelSky;
-	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	seWPController::Ref pPanelController;
+	seWPLink::Ref pPanelLink;
+	seWPLayer::Ref pPanelLayer;
+	seWPSky::Ref pPanelSky;
+	seWPView::Ref pPanelView;
+	seWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

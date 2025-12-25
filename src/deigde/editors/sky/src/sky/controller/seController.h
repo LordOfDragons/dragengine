@@ -26,6 +26,7 @@
 #define _SECONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -57,6 +58,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seController> Ref;
+
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seController> List;
 
 
 	/** \name Constructors and Destructors */

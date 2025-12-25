@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
  * \brief Undo action set controller minimum.
  */
 class seUControllerSetMinimum : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetMinimum> Ref;
+	
+	
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	float pOldMinimum;
 	float pOldMaximum;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetMinimum> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

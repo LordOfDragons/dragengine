@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUControllerSetName::seUControllerSetName(seController *controller, const char *newName) :
-pController(NULL),
+
 pNewName(newName)
 {
 	if(!controller){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = controller->GetName();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerSetName::~seUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

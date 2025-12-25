@@ -29,15 +29,19 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class seLink;
+#include "../../sky/link/seLink.h"
 
 
 /**
  * \brief Undo action set link curve.
  */
 class seULinkSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<seULinkSetCurve> Ref;
+	
+	
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULinkSetCurve> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -56,6 +56,7 @@ namespace{
 class cListLinks : public igdeListBoxListener{
 	seWindowCurves &pPanel;
 public:
+	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(seWindowCurves &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -69,7 +70,7 @@ public:
 			sky->SetActiveLink((seLink*)selection->GetData());
 			
 		}else{
-			sky->SetActiveLink(NULL);
+			sky->SetActiveLink(nullptr);
 		}
 	}
 	
@@ -81,6 +82,7 @@ class cViewCurve : public igdeViewCurveBezierListener{
 	seWindowCurves &pPanel;
 	igdeUndo::Ref &pUndo;
 public:
+	typedef deTObjectReference<cViewCurve> Ref;
 	cViewCurve(seWindowCurves &panel, igdeUndo::Ref &undo) :
 	pPanel(panel),
 	pUndo(undo){
@@ -94,11 +96,11 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 		
 		pPanel.GetSky()->GetUndoSystem()->Add(pUndo);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
@@ -107,7 +109,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 	}
 };
@@ -125,20 +127,18 @@ public:
 seWindowCurves::seWindowCurves(seWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espRight,
 	igdeApplication::app().DisplayScaled(200)),
-pWindowMain(windowMain),
-pListener(NULL),
-pSky(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWindowCurvesListener(*this);
+	pListener = seWindowCurvesListener::Ref::New(*this);
 	
-	helper.ListBox(5, "Link to edit", pListLinks, new cListLinks(*this));
+	helper.ListBox(5, "Link to edit", pListLinks, cListLinks::Ref::New(*this));
 	pListLinks->SetDefaultSorter();
 	AddChild(pListLinks, igdeContainerSplitted::eaSide);
 	
-	helper.ViewCurveBezier(pEditCurve, new cViewCurve(*this, pUndoSetCurve));
+	helper.ViewCurveBezier(pEditCurve, cViewCurve::Ref::New(*this, pUndoSetCurve));
 	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
 	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 	pEditCurve->SetClamp(true);
@@ -146,10 +146,7 @@ pSky(NULL)
 }
 
 seWindowCurves::~seWindowCurves(){
-	SetSky(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSky(nullptr);
 }
 
 
@@ -162,18 +159,16 @@ void seWindowCurves::SetSky(seSky *sky){
 		return;
 	}
 	
-	pUndoSetCurve = NULL;
+	pUndoSetCurve = nullptr;
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateLinkList();
@@ -182,21 +177,16 @@ void seWindowCurves::SetSky(seSky *sky){
 
 
 seLink *seWindowCurves::GetLink() const{
-	return pSky ? pSky->GetActiveLink() : NULL;
+	return pSky ? pSky->GetActiveLink() : nullptr;
 }
 
 void seWindowCurves::UpdateLinkList(){
 	pListLinks->RemoveAllItems();
 	
 	if(pSky){
-		const seLinkList &links = pSky->GetLinks();
-		const int count = links.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seLink * const link = links.GetAt(i);
-			pListLinks->AddItem(link->GetName(), NULL, link);
-		}
+		pSky->GetLinks().Visit([&](seLink *link){
+			pListLinks->AddItem(link->GetName(), nullptr, link);
+		});
 		
 		pListLinks->SortItems();
 	}
@@ -220,5 +210,5 @@ void seWindowCurves::UpdateCurve(){
 		pEditCurve->SetDefaultBezier();
 	}
 	
-	pEditCurve->SetEnabled(link != NULL);
+	pEditCurve->SetEnabled(link != nullptr);
 }

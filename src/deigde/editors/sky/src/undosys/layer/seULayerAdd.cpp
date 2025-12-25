@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seULayerAdd::seULayerAdd(seSky *sky, seLayer *layer) :
-pSky(NULL),
-pLayer(NULL)
+
+pLayer(nullptr)
 {
 	if(!sky || !layer){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pLayer(NULL)
 	SetShortInfo("Add Layer");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerAdd::~seULayerAdd(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

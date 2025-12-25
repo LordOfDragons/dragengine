@@ -49,6 +49,6 @@ igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
 		return new seIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }

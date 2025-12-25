@@ -25,37 +25,43 @@
 #ifndef _SEULINKREMOVE_H_
 #define _SEULINKREMOVE_H_
 
+#include "../../sky/seSky.h"
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/link/seLink.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
-
-class seLayer;
-class seLink;
-class seSky;
 
 
 /**
  * \brief Undo action remove link.
  */
 class seULinkRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<seULinkRemove> Ref;
+	
+	
 private:
-	struct sTarget{
-		seLayer *layer;
+	class cTarget : public deObject{
+	public:
+		typedef deTObjectReference<cTarget> Ref;
+		typedef decTObjectOrderedSet<cTarget> List;
+		
+		seLayer::Ref layer;
 		deSkyLayer::eTargets target;
+		
+		cTarget() = default;
 	};
 	
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
-	sTarget *pTargets;
-	int pTargetCount;
-	
+	cTarget::List pTargets;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULinkRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -77,11 +83,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

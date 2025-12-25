@@ -28,23 +28,24 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
  * \brief Undo action move body down.
  */
 class seUBodyMoveDown : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodyMoveDown> Ref;
+	
+	
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodyMoveDown> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -27,22 +27,23 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action toggle layer multiply by sky light.
  */
 class seULayerToggleMulBySkyLight : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerToggleMulBySkyLight> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerToggleMulBySkyLight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

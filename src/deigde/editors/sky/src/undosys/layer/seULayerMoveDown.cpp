@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seULayerMoveDown::seULayerMoveDown(seLayer *layer) :
-pLayer(NULL),
+
 pIndex(0)
 {
 	if(!layer){
@@ -61,13 +61,9 @@ pIndex(0)
 	}
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerMoveDown::~seULayerMoveDown(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seUBodyRemove::seUBodyRemove(seBody *body) :
-pLayer(NULL),
-pBody(NULL),
+
+
 pIndex(0)
 {
 	if(!body){
@@ -62,19 +62,10 @@ pIndex(0)
 	}
 	
 	pLayer = layer;
-	layer->AddReference();
-	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodyRemove::~seUBodyRemove(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

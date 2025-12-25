@@ -35,6 +35,9 @@ class seWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class seWPUndoHistoryListener : public seSkyListener{
+public:
+	typedef deTObjectReference<seWPUndoHistoryListener> Ref;
+	
 private:
 	seWPUndoHistory &pPanel;
 	

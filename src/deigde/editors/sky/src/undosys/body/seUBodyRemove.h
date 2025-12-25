@@ -27,25 +27,26 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
-class seBody;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/body/seBody.h"
 
 
 /**
  * \brief Undo action remove body.
  */
 class seUBodyRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodyRemove> Ref;
+	
+	
 private:
-	seLayer *pLayer;
-	seBody *pBody;
+	seLayer::Ref pLayer;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodyRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

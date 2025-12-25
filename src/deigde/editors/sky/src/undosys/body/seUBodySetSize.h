@@ -29,15 +29,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
  * \brief Undo action set body size.
  */
 class seUBodySetSize : public igdeUndo{
+public:
+	typedef deTObjectReference<seUBodySetSize> Ref;
+	
+	
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector2 pOldSize;
 	decVector2 pNewSize;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUBodySetSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

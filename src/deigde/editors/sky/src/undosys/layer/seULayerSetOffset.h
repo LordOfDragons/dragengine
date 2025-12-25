@@ -29,15 +29,19 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
  * \brief Undo action set layer offset.
  */
 class seULayerSetOffset : public igdeUndo{
+public:
+	typedef deTObjectReference<seULayerSetOffset> Ref;
+	
+	
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULayerSetOffset> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

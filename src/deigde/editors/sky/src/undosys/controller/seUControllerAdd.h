@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
-class seSky;
+#include "../../sky/controller/seController.h"
+#include "../../sky/seSky.h"
 
 
 
@@ -36,16 +36,17 @@ class seSky;
  * \brief Undo action add controller.
  */
 class seUControllerAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerAdd> Ref;
+	
+	
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

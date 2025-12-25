@@ -25,7 +25,7 @@
 #ifndef _SECONTROLLERTARGET_H_
 #define _SECONTROLLERTARGET_H_
 
-#include "../link/seLinkList.h"
+#include "../link/seLink.h"
 
 class deSkyControllerTarget;
 
@@ -36,7 +36,7 @@ class deSkyControllerTarget;
  */
 class seControllerTarget{
 private:
-	seLinkList pLinks;
+	seLink::List pLinks;
 	
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Links. */
-	const seLinkList &GetLinks() const{ return pLinks; }
+	const seLink::List &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);

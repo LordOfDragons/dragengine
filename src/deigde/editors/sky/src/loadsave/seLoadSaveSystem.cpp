@@ -34,8 +34,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -65,7 +63,7 @@
 
 seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
 pWindowMain(windowMain),
-pLSSky(NULL)
+pLSSky(nullptr)
 {
 	pLSSky = new seLoadSaveSky(*this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE);
 	pBuildFilePattern();
@@ -82,31 +80,17 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSky *seLoadSaveSystem::LoadSky(const char *filename){
+seSky::Ref seLoadSaveSystem::LoadSky(const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader::Ref fileReader;
-	seSky *sky = NULL;
-	decPath path;
-	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
-		sky = new seSky(&pWindowMain.GetEnvironment());
-		sky->SetFilePath(filename);
-		pLSSky->LoadSky(*this, *sky, fileReader);
-		sky->SetChanged(false);
-		sky->SetSaved(true);
-		
-	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
-		throw;
-	}
+	const seSky::Ref sky(seSky::Ref::New(&pWindowMain.GetEnvironment()));
+	sky->SetFilePath(filename);
+	pLSSky->LoadSky(*this, *sky, pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForReading(decPath::CreatePathUnix(filename)));
+	sky->SetChanged(false);
+	sky->SetSaved(true);
 	
 	return sky;
 }
@@ -116,22 +100,8 @@ void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
-		pLSSky->SaveSky(*this, *sky, *fileWriter);
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSSky->SaveSky(*this, *sky, pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
@@ -141,20 +111,7 @@ void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
 //////////////////////	
 
 void seLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
 	decString pattern;
-	
-	try{
-		pattern.Format("*%s", pLSSky->GetPattern().GetString());
-		
-		filePattern = new igdeFilePattern(pLSSky->GetName(), pattern, pLSSky->GetPattern());
-			
-		pFPSky.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	pattern.Format("*%s", pLSSky->GetPattern().GetString());
+	pFPSky.Add(igdeFilePattern::Ref::New(pLSSky->GetName(), pattern, pLSSky->GetPattern()));
 }

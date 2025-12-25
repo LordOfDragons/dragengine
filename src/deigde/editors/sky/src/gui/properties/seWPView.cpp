@@ -58,7 +58,7 @@ public:
 	igdeAction(text, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSky * const sky = pPanel.GetSky();
 		if(sky){
 			OnAction(*sky);
@@ -70,6 +70,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraChanged> Ref;
 	cActionCameraChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(seSky &sky) override{
@@ -79,6 +80,7 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnvObjChanged> Ref;
 	cActionEnvObjChanged(seWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(seSky &sky) override{
@@ -98,31 +100,25 @@ public:
 
 seWPView::seWPView(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pSky(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new seWPViewListener(*this);
+	pListener = seWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),
-		"Camera:", false, false, true);
-	helper.WPWObject(content, pWPEnvObject, new cActionEnvObjChanged(*this),
-		"Environment Object:", false, false, true);
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this),
+		"Camera:", false, false);
+	helper.WPWObject(content, pWPEnvObject, cActionEnvObjChanged::Ref::New(*this),
+		"Environment Object:", false, false);
 }
 
 seWPView::~seWPView(){
-	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSky(nullptr);
 }
 
 
@@ -136,20 +132,17 @@ void seWPView::SetSky(seSky *sky){
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPCamera->SetCamera(NULL);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
-		pSky = NULL;
+		pSky = nullptr;
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
-		
 		pWPCamera->SetCamera(sky->GetCamera());
 		pWPEnvObject->SetObject(sky->GetEnvObject());
 	}

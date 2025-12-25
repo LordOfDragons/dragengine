@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seULinkAdd::seULinkAdd(seSky *sky, seLink *link) :
-pSky(NULL),
-pLink(NULL)
+pSky(nullptr)
 {
 	if(!sky || !link){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pLink(NULL)
 	SetShortInfo("Add Link");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkAdd::~seULinkAdd(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

@@ -50,7 +50,7 @@
 seBody::seBody(deEngine *engine) :
 pEngine(engine),
 
-pLayer(NULL),
+pLayer(nullptr),
 
 pSize(5.0f, 5.0f),
 pColor(1.0f, 1.0f, 1.0f),
@@ -153,7 +153,7 @@ void seBody::NotifyBodyChanged(){
 
 void seBody::pUpdateSkin(){
 	if(pPathSkin.IsEmpty()){
-		pEngSkin = NULL;
+		pEngSkin = nullptr;
 		return;
 	}
 	
@@ -164,7 +164,7 @@ void seBody::pUpdateSkin(){
 	}
 	
 	try{
-		pEngSkin.TakeOver(skinMgr.LoadSkin(pPathSkin, basePath));
+		pEngSkin = skinMgr.LoadSkin(pPathSkin, basePath);
 		
 	}catch(const deException &){
 		if(pLayer && pLayer->GetSky()){

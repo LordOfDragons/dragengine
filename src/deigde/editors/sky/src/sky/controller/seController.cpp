@@ -42,7 +42,7 @@
 ////////////////////////////
 
 seController::seController() :
-pSky(NULL),
+pSky(nullptr),
 pIndex(-1),
 
 pName("Controller"),

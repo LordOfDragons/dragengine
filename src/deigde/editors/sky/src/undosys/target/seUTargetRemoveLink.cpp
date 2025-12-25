@@ -43,9 +43,8 @@
 
 seUTargetRemoveLink::seUTargetRemoveLink(seLayer *layer,
 deSkyLayer::eTargets target, seLink *link) :
-pLayer(NULL),
-pTarget(target),
-pLink(NULL)
+
+pTarget(target)
 {
 	if(!layer || !link){
 		DETHROW(deeInvalidParam);
@@ -57,19 +56,10 @@ pLink(NULL)
 	SetShortInfo("Target Remove Link");
 	
 	pLayer = layer;
-	layer->AddReference();
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seUTargetRemoveLink::~seUTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

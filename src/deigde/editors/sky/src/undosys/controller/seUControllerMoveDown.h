@@ -27,23 +27,24 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
  * \brief Undo action move controller down.
  */
 class seUControllerMoveDown : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerMoveDown> Ref;
+	
+	
 private:
-	seController *pController;
+	seController::Ref pController;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerMoveDown> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

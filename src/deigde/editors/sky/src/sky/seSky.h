@@ -25,28 +25,27 @@
 #ifndef _SESKY_H_
 #define _SESKY_H_
 
+#include "seSkyListener.h"
+#include "controller/seController.h"
+#include "layer/seLayer.h"
+#include "link/seLink.h"
+
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
-
-#include "controller/seControllerList.h"
-#include "layer/seLayerList.h"
-#include "link/seLinkList.h"
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/sky/deSky.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class seBody;
-class seSkyListener;
 
 class igdeCamera;
 
-class deDebugDrawer;
 class deLogger;
-class deSky;
-class deSkyInstance;
-class deWorld;
 
 
 
@@ -54,30 +53,33 @@ class deWorld;
  * \brief Sky.
  */
 class seSky : public igdeEditableEntity{
+public:
+	typedef deTObjectReference<seSky> Ref;
+	
 private:
-	deWorld *pEngWorld;
-	deSky *pEngSky;
-	deSkyInstance *pEngSkyInstance;
+	deWorld::Ref pEngWorld;
+	deSky::Ref pEngSky;
+	deSkyInstance::Ref pEngSkyInstance;
 	bool pNeedsRebuildSky;
 	
 	igdeWObject::Ref pEnvObject;
 	igdeCamera *pCamera;
 	
-	deDebugDrawer *pDDHorizon;
-	igdeWDebugDrawerShape pDDSHorizon;
+	deDebugDrawer::Ref pDDHorizon;
+	igdeWDebugDrawerShape::Ref pDDSHorizon;
 	
 	decColor pBgColor;
 	
-	seControllerList pControllers;
-	seController *pActiveController;
+	seController::List pControllers;
+	seController::Ref pActiveController;
 	
-	seLinkList pLinks;
-	seLink *pActiveLink;
+	seLink::List pLinks;
+	seLink::Ref pActiveLink;
 	
-	seLayerList pLayers;
-	seLayer *pActiveLayer;
+	seLayer::List pLayers;
+	seLayer::Ref pActiveLayer;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<seSkyListener> pListeners;
 	
 	
 	
@@ -98,13 +100,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine sky. */
-	inline deSky *GetEngineSky() const{ return pEngSky; }
+	inline const deSky::Ref &GetEngineSky() const{ return pEngSky; }
 	
 	/** \brief Engine sky instance. */
-	inline deSkyInstance *GetEngineSkyInstance() const{ return pEngSkyInstance; }
+	inline const deSkyInstance::Ref &GetEngineSkyInstance() const{ return pEngSkyInstance; }
 	
 	/** \brief Camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
@@ -116,7 +118,7 @@ public:
 	inline deDebugDrawer *GetDDHorizon(){ return pDDHorizon; }
 	
 	/** \brief Horizon debug drawer shape. */
-	inline igdeWDebugDrawerShape &GetDDSHorizon(){ return pDDSHorizon; }
+	inline const igdeWDebugDrawerShape::Ref &GetDDSHorizon(){ return pDDSHorizon; }
 	
 	/** \brief Sky compass overlay is drawn. */
 	bool GetDrawSkyCompass() const;
@@ -153,7 +155,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	const seControllerList &GetControllers() const{ return pControllers; }
+	const seController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(seController *controller);
@@ -170,10 +172,10 @@ public:
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
-	/** \brief Active controller or \em NULL. */
-	inline seController *GetActiveController() const{ return pActiveController; }
+	/** \brief Active controller or \em nullptr. */
+	inline const seController::Ref &GetActiveController() const{ return pActiveController; }
 	
-	/** \brief Set active controller or \em NULL. */
+	/** \brief Set active controller or \em nullptr. */
 	void SetActiveController(seController *controller);
 	
 	/** \brief Count controller usage. */
@@ -185,7 +187,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** \brief Links. */
-	const seLinkList &GetLinks() const{ return pLinks; }
+	const seLink::List &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);
@@ -196,10 +198,10 @@ public:
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Active link or \em NULL. */
-	inline seLink *GetActiveLink() const{ return pActiveLink; }
+	/** \brief Active link or \em nullptr. */
+	inline const seLink::Ref &GetActiveLink() const{ return pActiveLink; }
 	
-	/** \brief Set active link or \em NULL. */
+	/** \brief Set active link or \em nullptr. */
 	void SetActiveLink(seLink *link);
 	
 	/** \brief Count link usage. */
@@ -211,7 +213,7 @@ public:
 	/** \name Layers */
 	/*@{*/
 	/** \brief Layers. */
-	const seLayerList &GetLayers() const{ return pLayers; }
+	const seLayer::List &GetLayers() const{ return pLayers; }
 	
 	/** \brief Add layer. */
 	void AddLayer(seLayer *layer);
@@ -228,10 +230,10 @@ public:
 	/** \brief Remove all layers. */
 	void RemoveAllLayers();
 	
-	/** \brief Active layer or \em NULL. */
-	inline seLayer *GetActiveLayer() const{ return pActiveLayer; }
+	/** \brief Active layer or \em nullptr. */
+	inline const seLayer::Ref &GetActiveLayer() const{ return pActiveLayer; }
 	
-	/** \brief Set active layer or \em NULL. */
+	/** \brief Set active layer or \em nullptr. */
 	void SetActiveLayer(seLayer *layer);
 	/*@}*/
 	

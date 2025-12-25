@@ -25,26 +25,30 @@
 #ifndef _SEWINDOWCURVES_H_
 #define _SEWINDOWCURVES_H_
 
+#include "seWindowCurvesListener.h"
+#include "../../sky/seSky.h"
+
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
-class seSky;
 class seLink;
-class seWindowCurvesListener;
 
 
 /**
  * \brief Curves panel.
  */
 class seWindowCurves : public igdeContainerSplitted{
+public:
+	typedef deTObjectReference<seWindowCurves> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
-	seWindowCurvesListener *pListener;
+	seWindowCurvesListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeViewCurveBezier::Ref pEditCurve;
 	igdeListBox::Ref pListLinks;
@@ -73,12 +77,12 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
 	
-	/** \brief Active link or \em NULL. */
+	/** \brief Active link or \em nullptr. */
 	seLink *GetLink() const;
 	
 	/** \brief Update curve. */

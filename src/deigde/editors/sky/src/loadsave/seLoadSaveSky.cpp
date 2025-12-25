@@ -78,7 +78,7 @@ pPattern(".desky"){
 ///////////////////////
 
 void seLoadSaveSky::LoadSky(seLoadSaveSystem &lssys, seSky &sky, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(lssys.GetWindowMain().GetEnvironment().GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -113,7 +113,7 @@ void seLoadSaveSky::pWriteSky(decXmlWriter &writer, const seSky &sky){
 	
 	WriteColor(writer, "bgColor", sky.GetBgColor());
 	
-	const seControllerList &controllers = sky.GetControllers();
+	const seController::List &controllers = sky.GetControllers();
 	const int controllerCount = controllers.GetCount();
 	if(controllerCount > 0){
 		writer.WriteNewline();
@@ -122,7 +122,7 @@ void seLoadSaveSky::pWriteSky(decXmlWriter &writer, const seSky &sky){
 		}
 	}
 	
-	const seLinkList &links = sky.GetLinks();
+	const seLink::List &links = sky.GetLinks();
 	const int linkCount = links.GetCount();
 	if(linkCount > 0){
 		writer.WriteNewline();
@@ -131,7 +131,7 @@ void seLoadSaveSky::pWriteSky(decXmlWriter &writer, const seSky &sky){
 		}
 	}
 	
-	const seLayerList &layers = sky.GetLayers();
+	const seLayer::List &layers = sky.GetLayers();
 	const int layerCount = layers.GetCount();
 	if(layerCount > 0){
 		writer.WriteNewline();
@@ -235,7 +235,7 @@ void seLoadSaveSky::pWriteLayer(decXmlWriter &writer, const seLayer &layer){
 		writer.WriteDataTagFloat("ambientIntensity", layer.GetAmbientIntensity());
 	}
 	
-	const seBodyList &bodies = layer.GetBodies();
+	const seBody::List &bodies = layer.GetBodies();
 	int bodyCount = bodies.GetCount();
 	int i;
 	
@@ -255,7 +255,7 @@ void seLoadSaveSky::pWriteLayer(decXmlWriter &writer, const seLayer &layer){
 void seLoadSaveSky::pWriteTarget(decXmlWriter &writer, const seLayer &layer,
 deSkyLayer::eTargets target){
 	const seControllerTarget &ctarget = layer.GetTarget(target);
-	const seLinkList &links = ctarget.GetLinks();
+	const seLink::List &links = ctarget.GetLinks();
 	int linkCount = links.GetCount();
 	if(linkCount == 0){
 		return;
@@ -413,11 +413,11 @@ void seLoadSaveSky::pReadSky(const decXmlElementTag &root, seSky &sky){
 
 void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 	const int elementCount = root.GetElementCount();
-	seController *controller = NULL;
+	seController::Ref controller;
 	int i;
 	
 	try{
-		controller = new seController;
+		controller = seController::Ref::New();
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -446,18 +446,13 @@ void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 		}
 		
 		sky.AddController(controller);
-		controller->FreeReference();
-		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }
 
 void seLoadSaveSky::pReadLink(const decXmlElementTag &root, seSky &sky){
-	const seLink::Ref link(seLink::Ref::NewWith());
+	const seLink::Ref link(seLink::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -493,7 +488,7 @@ void seLoadSaveSky::pReadLink(const decXmlElementTag &root, seSky &sky){
 }
 
 void seLoadSaveSky::pReadLayer(const decXmlElementTag &root, seSky &sky){
-	const seLayer::Ref layer(seLayer::Ref::NewWith(*sky.GetEnvironment()));
+	const seLayer::Ref layer(seLayer::Ref::New(*sky.GetEnvironment()));
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -570,7 +565,7 @@ void seLoadSaveSky::pReadLayer(const decXmlElementTag &root, seSky &sky){
 
 void seLoadSaveSky::pReadTarget(const decXmlElementTag &root, seSky &sky, seLayer &layer){
 	const decString &type = GetAttributeString(root, "type");
-	seControllerTarget *target = NULL;
+	seControllerTarget *target = nullptr;
 	
 	if(type == "offsetX"){
 		target = &layer.GetTarget(deSkyLayer::etOffsetX);
@@ -657,7 +652,7 @@ void seLoadSaveSky::pReadTarget(const decXmlElementTag &root, seSky &sky, seLaye
 }
 
 void seLoadSaveSky::pReadBody(const decXmlElementTag &root, seSky &sky, seLayer &layer){
-	const seBody::Ref body(seBody::Ref::NewWith(sky.GetEngine()));
+	const seBody::Ref body(seBody::Ref::New(sky.GetEngine()));
 	const int elementCount = root.GetElementCount();
 	int i;
 	

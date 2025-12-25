@@ -27,24 +27,25 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seSky;
+#include "../../sky/link/seLink.h"
+#include "../../sky/seSky.h"
 
 
 /**
  * \brief Undo action add link.
  */
 class seULinkAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<seULinkAdd> Ref;
+	
+	
 private:
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULinkAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
