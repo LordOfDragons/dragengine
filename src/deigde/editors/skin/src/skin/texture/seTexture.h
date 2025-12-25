@@ -58,7 +58,7 @@ private:
 	
 	decString pName;
 	
-	seProperty::List pPropertyList;
+	seProperty::List pProperties;
 	seProperty::Ref pActiveProperty;
 	
 	decVector2 pTexCoordOffset;
@@ -126,7 +126,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the property list read-only. */
-	inline const seProperty::List &GetProperties() const{ return pPropertyList; }
+	inline const seProperty::List &GetProperties() const{ return pProperties; }
 	/** Adds a new property. */
 	void AddProperty(seProperty *property);
 	/** Removes a property. */

@@ -102,56 +102,43 @@ void sePropertyNodeSelection::Remove(sePropertyNode *node){
 }
 
 void sePropertyNodeSelection::RemoveAll(){
-	if(pSelection.GetCount() == 0){
+	if(pSelection.IsEmpty()){
 		return;
 	}
 	
 	SetActive(nullptr);
 	
-	const int count = pSelection.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pSelection.GetAt(i)->SetSelected(false);
-	}
+	pSelection.Visit([](sePropertyNode &node){
+		node.SetSelected(false);
+	});
 	pSelection.RemoveAll();
 	NotifyNodeSelectionChanged();
 }
 
 void sePropertyNodeSelection::SetSelected(const sePropertyNode::List &list){
 	const int count = list.GetCount();
-	if(count == pSelection.GetCount()){
-		int i;
-		for(i=0; i<count; i++){
-			if(!pSelection.Has(list.GetAt(i))){
-				break;
-			}
-		}
-		
-		if(i == count){
-			return; // same nodes no matter the order
-		}
+	if(count == pSelection.GetCount() && list == pSelection){
+		return; // same nodes in same order
 	}
 	
 	if(!list.Has(pActive)){
 		SetActive(nullptr);
 	}
 	
-	const int clearCount = pSelection.GetCount();
-	int i;
-	for(i=0; i<clearCount; i++){
-		pSelection.GetAt(i)->SetSelected(false);
-	}
+	pSelection.Visit([](sePropertyNode &node){
+		node.SetSelected(false);
+	});
 	
 	pSelection = list;
 	
-	for(i=0; i<count; i++){
-		pSelection.GetAt(i)->SetSelected(true);
-	}
+	pSelection.Visit([](sePropertyNode &node){
+		node.SetSelected(true);
+	});
 	
 	NotifyNodeSelectionChanged();
 	
-	if(pSelection.GetCount() > 0){
-		SetActive(pSelection.GetAt(0));
+	if(pSelection.IsNotEmpty()){
+		SetActive(pSelection.First());
 	}
 }
 

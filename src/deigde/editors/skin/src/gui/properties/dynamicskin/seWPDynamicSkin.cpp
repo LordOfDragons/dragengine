@@ -570,14 +570,9 @@ void seWPDynamicSkin::UpdateRenderableList(){
 	pListRenderable->RemoveAllItems();
 	
 	if(pSkin){
-		const seDynamicSkinRenderable::List &list = pSkin->GetDynamicSkin().GetRenderables();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seDynamicSkinRenderable * const renderable = list.GetAt(i);
+		pSkin->GetDynamicSkin().GetRenderables().Visit([&](seDynamicSkinRenderable *renderable){
 			pListRenderable->AddItem(renderable->GetName(), nullptr, renderable);
-		}
+		});
 		
 		pListRenderable->SortItems();
 	}

@@ -1116,11 +1116,7 @@ void seViewConstructedView::OnFrameUpdate(float elapsed){
 
 void seViewConstructedView::GetSelectionBoundary(const sePropertyNode::List &list,
 decVector2 &minBounds, decVector2 &maxBounds){
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const sePropertyNode &childNode = *list.GetAt(i);
+	list.VisitIndexed([&](int i, const sePropertyNode &childNode){
 		const decTexMatrix2 childTransform(childNode.CreateScreenTransformMatrix());
 		const decPoint3 &childSize = childNode.GetSize();
 		const decVector2 absSize((float)abs(childSize.x), (float)abs(childSize.y));
@@ -1141,7 +1137,7 @@ decVector2 &minBounds, decVector2 &maxBounds){
 			minBounds.SetSmallest(smallest);
 			maxBounds.SetLargest(largest);
 		}
-	}
+	});
 }
 
 
@@ -1185,14 +1181,11 @@ void seViewConstructedView::pCreateDarkeningCanvas(deCanvasPaint::Ref &canvas, f
 void seViewConstructedView::pRecreateContentCanvas(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView){
 	deCanvasManager &canvasManager = *pWindowMain.GetEngine()->GetCanvasManager();
 	const int activeLayer = GetActiveProperty()->GetActiveNodeLayer();
-	const int count = nodeGroup.GetNodes().GetCount();
 	deCanvas::Ref canvas;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const sePropertyNode &node = *nodeGroup.GetNodes().GetAt(i);
+	nodeGroup.GetNodes().Visit([&](const sePropertyNode &node){
 		if(activeLayer < node.GetPosition().z || activeLayer >= node.GetPosition().z + node.GetSize().z) {
-			continue;
+			return;
 		}
 		
 		switch(node.GetNodeType()){
@@ -1218,24 +1211,21 @@ void seViewConstructedView::pRecreateContentCanvas(const sePropertyNodeGroup &no
 		}
 		
 		canvasView.AddCanvas(canvas);
-	}
+	});
 }
 
 void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView){
-	const int count = nodeGroup.GetNodes().GetCount();
-	if(count == 0){
+	if(nodeGroup.GetNodes().IsEmpty()){
 		return;
 	}
 	
 	const int activeLayer = GetActiveProperty()->GetActiveNodeLayer();
 	deCanvas *canvas = canvasView.GetRootCanvas();
 	deCanvasVisitorIdentify identify;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const sePropertyNode &node = *nodeGroup.GetNodes().GetAt(i);
+	nodeGroup.GetNodes().Visit([&](const sePropertyNode &node){
 		if(activeLayer < node.GetPosition().z || activeLayer >= node.GetPosition().z + node.GetSize().z) {
-			continue;
+			return;
 		}
 		
 		if(!canvas){
@@ -1300,5 +1290,5 @@ void seViewConstructedView::pUpdateContentCanvasParams(const sePropertyNodeGroup
 		}
 		
 		canvas = canvas->GetLLViewNext();
-	}
+	});
 }

@@ -133,36 +133,30 @@ seDialogAddProperty::~seDialogAddProperty(){
 ///////////////
 
 decStringSet seDialogAddProperty::GetSelectedPropertyNames() const{
-	const int count = pListProperties->GetItems().GetCount();
 	decStringSet properties;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeListItem &item = pListProperties->GetItems().GetAt(i);
+	pListProperties->GetItems().Visit([&](const igdeListItem &item){
 		if(item.GetSelected()){
 			properties.Add(item.GetText());
 		}
-	}
+	});
 	
 	return properties;
 }
 
 void seDialogAddProperty::SetSelectedPropertyNames(const decStringSet &list){
-	const int count = list.GetCount();
-	int i;
-	
 	pListProperties->DeselectAllItems();
 	
-	if(list.GetCount() > 0){
-		pListProperties->SetSelection(pListProperties->IndexOfItem(list.GetAt(0)));
+	if(list.IsNotEmpty()){
+		pListProperties->SetSelection(pListProperties->IndexOfItem(list.First()));
 		
 	}else{
 		pListProperties->SetSelection(-1);
 	}
 	
-	for(i=0; i<count; i++){
-		pListProperties->SelectItem(pListProperties->IndexOfItem(list.GetAt(i)));
-	}
+	list.Visit([&](const decString &name){
+		pListProperties->SelectItem(pListProperties->IndexOfItem(name));
+	});
 }
 
 const decString &seDialogAddProperty::GetCustomPropertyName() const{

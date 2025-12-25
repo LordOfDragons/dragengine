@@ -239,10 +239,8 @@ void seWindowMain::LoadSkin(const char *filename){
 	const decStringList extensions(pLoadSaveSystem->GetLSSkinMatching(filename)->GetPattern().Split(','));
 	const decString sfilename(filename);
 	decString basePath;
-	int i, j;
 	
-	for(i=0; i<extensions.GetCount(); i++){
-		const decString extension = extensions.GetAt(i);
+	for(const auto &extension : extensions){
 		const int extlen = extension.GetLength() - 1;
 		if(sfilename.GetRight(extlen) == extension.GetMiddle(1)){
 			basePath = sfilename.GetMiddle(0, -extlen);
@@ -253,27 +251,22 @@ void seWindowMain::LoadSkin(const char *filename){
 	// try to locate a matching model in the same directory as the skin
 	const igdeFilePattern::List &fplist = *GetEnvironment().GetOpenFilePatternList(igdeEnvironment::efpltModel);
 	deVirtualFileSystem &vfs = *GetEngine()->GetVirtualFileSystem();
-	const int fpcount = fplist.GetCount();
 	decStringSet modelPatterns;
 	
-	for(i=0; i<fpcount; i++){
-		const decStringList patterns = fplist.GetAt(i)->GetPattern().Split(',');
-		const int patternCount = patterns.GetCount();
-		for(j=0; j<patternCount; j++){
-			modelPatterns.Add(patterns.GetAt(j));
-		}
-	}
+	fplist.Visit([&](const igdeFilePattern &fp){
+		fp.GetPattern().Split(',').Visit([&](const decString &p){
+			modelPatterns.Add(p);
+		});
+	});
 	
-	const int modelPatternCount = modelPatterns.GetCount();
-	for(i=0; i<modelPatternCount; i++){
-		const decString &pattern = modelPatterns.GetAt(i);
-		decPath testPath;
-		testPath.SetFromUnix(basePath + pattern.GetMiddle(1));
+	modelPatterns.HasMatching([&](const decString &pattern){
+		const decPath testPath(decPath::CreatePathUnix(basePath + pattern.GetMiddle(1)));
 		if(vfs.ExistsFile(testPath)){
 			skin->SetModelPath(testPath.GetPathUnix());
-			break;
+			return true;
 		}
-	}
+		return false;
+	});
 	
 	// otherwise select default material model
 	if(skin->GetModelPath().IsEmpty()){
@@ -829,23 +822,22 @@ public:
 		const seTexture::List &importTextures = importedSkin->GetTextures();
 		
 		// if there is no texture fail
-		if(importTextures.GetCount() == 0){
+		if(importTextures.IsEmpty()){
 			igdeCommonDialogs::Information(&pWindow, "Import skin texture", "The skin has no textures");
 			return {};
 		}
 		
 		// if there is exactly one texture use it. otherwise ask user which one to use
 		seTexture *importTexture = nullptr;
-		int i;
 		
 		if(importTextures.GetCount() == 1){
 			importTexture = importTextures.GetAt(0);
 			
 		}else{
 			decStringList names;
-			for(i=0; i<importTextures.GetCount(); i++){
-				names.Add(importTextures.GetAt(i)->GetName());
-			}
+			importTextures.Visit([&](const seTexture &t){
+				names.Add(t.GetName());
+			});
 			names.SortAscending();
 			
 			int selection = 0;
@@ -875,6 +867,7 @@ public:
 			decPath comparePath;
 			
 			// add conmponents until both path are no more equal. that is the common base
+			int i;
 			for(i=0; i<skinPath2.GetComponentCount(); i++){
 				pathChange.AddComponent(skinPath2.GetComponentAt(i));
 				comparePath.AddComponent(importSkinPath.GetComponentAt(i));
@@ -1010,21 +1003,17 @@ public:
 		
 		if(customName.IsEmpty()){
 			const decStringSet selection(dialog->GetSelectedPropertyNames());
-			const int count = selection.GetCount();
-			int i;
-			
-			for(i=0; i<count; i++){
-				const decString &name = selection.GetAt(i);
+			selection.Visit([&](const decString &name){
 				if(propertyList.HasMatching([&name](const seProperty &p){
 					return p.GetName() == name;
 				})){
-					continue;
+					return;
 				}
 				
 				property = seProperty::Ref::New(pWindow.GetEngine(), name);
 				property->InitDefaults(knownPropertyList);
 				addPropertyList.Add(property);
-			}
+			});
 			
 		}else if(!propertyList.HasMatching([&customName](const seProperty &p){
 			return p.GetName() == customName;
@@ -1034,7 +1023,7 @@ public:
 			addPropertyList.Add(property);
 		}
 		
-		return addPropertyList.GetCount() > 0 ? seUPropertyAdd::Ref::New(texture, addPropertyList) : seUPropertyAdd::Ref();
+		return addPropertyList.IsNotEmpty() ? seUPropertyAdd::Ref::New(texture, addPropertyList) : seUPropertyAdd::Ref();
 	}
 };
 

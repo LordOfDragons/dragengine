@@ -1274,14 +1274,9 @@ void seWPNode::UpdateMappedTargetList(){
 	pCBMappedTarget->RemoveAllItems();
 	
 	if(pSkin){
-		const seMapped::List &list = pSkin->GetMapped();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seMapped * const mapped = list.GetAt(i);
+		pSkin->GetMapped().Visit([this](seMapped *mapped){
 			pCBMappedTarget->AddItem(mapped->GetName(), nullptr, mapped);
-		}
+		});
 		pCBMappedTarget->SortItems();
 	}
 	

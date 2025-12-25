@@ -605,14 +605,9 @@ void seWPMapped::UpdateMappedList(){
 	pListMapped->RemoveAllItems();
 	
 	if(pSkin){
-		const seMapped::List &list = pSkin->GetMapped();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seMapped * const mapped = list.GetAt(i);
+		pSkin->GetMapped().Visit([&](seMapped *mapped){
 			pListMapped->AddItem(mapped->GetName(), nullptr, mapped);
-		}
+		});
 		
 		pListMapped->SortItems();
 	}

@@ -232,6 +232,9 @@ public:
 	
 	/** \name Component Management */
 	/*@{*/
+	/** \brief Components. */
+	inline const decStringList &GetComponents() const{ return pComponents; }
+	
 	/** \brief Number of path components. */
 	int GetComponentCount() const;
 	

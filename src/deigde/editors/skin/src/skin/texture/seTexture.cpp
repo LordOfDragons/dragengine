@@ -76,7 +76,7 @@ pSelected(false),
 pActive(false),
 pDirtySkin(true)
 {
-	texture.pPropertyList.Visit([&](const seProperty &p){
+	texture.pProperties.Visit([&](const seProperty &p){
 		AddProperty(seProperty::Ref::New(p));
 	});
 }
@@ -199,7 +199,7 @@ void seTexture::AssignSkinToLight(){
 
 
 void seTexture::UpdateResources(){
-	pPropertyList.Visit([](seProperty &p){
+	pProperties.Visit([](seProperty &p){
 		p.UpdateResources();
 	});
 }
@@ -210,7 +210,7 @@ void seTexture::UpdateResources(){
 ///////////////
 
 void seTexture::AddProperty(seProperty *property){
-	pPropertyList.Add(property);
+	pProperties.Add(property);
 	property->SetTexture(this);
 	
 	InvalidateEngineSkin();
@@ -229,11 +229,11 @@ void seTexture::RemoveProperty(seProperty *property){
 	}
 	
 	if(property->GetActive()){
-		if(pPropertyList.GetCount() > 1){
-			seProperty *activeProperty = pPropertyList.First();
+		if(pProperties.GetCount() > 1){
+			seProperty *activeProperty = pProperties.First();
 			
 			if(activeProperty == property){
-				activeProperty = pPropertyList.GetAt(1);
+				activeProperty = pProperties.GetAt(1);
 			}
 			
 			SetActiveProperty(activeProperty);
@@ -244,7 +244,7 @@ void seTexture::RemoveProperty(seProperty *property){
 	}
 	
 	property->SetTexture(nullptr);
-	pPropertyList.Remove(property);
+	pProperties.Remove(property);
 	
 	InvalidateEngineSkin();
 	if(pSkin){
@@ -253,15 +253,12 @@ void seTexture::RemoveProperty(seProperty *property){
 }
 
 void seTexture::RemoveAllProperties(){
-	const int count = pPropertyList.GetCount();
-	int p;
-	
 	SetActiveProperty(nullptr);
 	
-	for(p=0; p<count; p++){
-		pPropertyList.GetAt(p)->SetTexture(nullptr);
-	}
-	pPropertyList.RemoveAll();
+	pProperties.Visit([](seProperty &p){
+		p.SetTexture(nullptr);
+	});
+	pProperties.RemoveAll();
 	
 	InvalidateEngineSkin();
 	if(pSkin){
