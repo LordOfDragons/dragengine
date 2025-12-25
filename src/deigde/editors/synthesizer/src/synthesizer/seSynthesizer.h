@@ -25,26 +25,25 @@
 #ifndef _SESYNTHESIZER_H_
 #define _SESYNTHESIZER_H_
 
-#include "controller/seControllerList.h"
-#include "link/seLinkList.h"
-#include "source/seSourceList.h"
+#include "seSynthesizerNotifier.h"
+#include "controller/seController.h"
+#include "link/seLink.h"
+#include "source/seSource.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/synthesizer/deSynthesizer.h>
+#include <dragengine/resources/synthesizer/deSynthesizerInstance.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deMicrophone.h>
 
 class seEffect;
 class seLoadSaveSystem;
 
-class seSynthesizerNotifier;
-
 class igdeEnvironment;
-
-class deWorld;
-class deSynthesizer;
-class deSynthesizerInstance;
-class deSpeaker;
-class deMicrophone;
 
 
 
@@ -60,21 +59,21 @@ public:
 private:
 	seLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deSynthesizer *pEngSynthesizer;
-	deSynthesizerInstance *pEngSynthesizerInstance;
-	deSpeaker *pEngSpeaker;
-	deMicrophone *pEngMicrophone;
+	deSynthesizer::Ref pEngSynthesizer;
+	deSynthesizerInstance::Ref pEngSynthesizerInstance;
+	deSpeaker::Ref pEngSpeaker;
+	deMicrophone::Ref pEngMicrophone;
 	
-	seControllerList pControllers;
-	seController *pActiveController;
+	seController::List pControllers;
+	seController::Ref pActiveController;
 	
-	seLinkList pLinks;
-	seLink *pActiveLink;
+	seLink::List pLinks;
+	seLink::Ref pActiveLink;
 	
-	seSourceList pSources;
-	seSource *pActiveSource;
+	seSource::List pSources;
+	seSource::Ref pActiveSource;
 	
 	int pChannelCount;
 	int pSampleRate;
@@ -82,7 +81,7 @@ private:
 	int pSampleCount;
 	float pPlayTime;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<seSynthesizerNotifier> pListeners;
 	
 	
 	
@@ -104,13 +103,13 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine synthesizer. */
-	inline deSynthesizer *GetEngineSynthesizer() const{ return pEngSynthesizer; }
+	inline const deSynthesizer::Ref &GetEngineSynthesizer() const{ return pEngSynthesizer; }
 	
 	/** \brief Engine synthesizer instance. */
-	inline deSynthesizerInstance *GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
+	inline const deSynthesizerInstance::Ref &GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
 	
 	
 	
@@ -199,7 +198,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	inline const seControllerList &GetControllers() const{ return pControllers; }
+	inline const seController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(seController *controller);
@@ -216,10 +215,10 @@ public:
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
-	/** \brief Active controller or \em NULL if not set. */
-	inline seController *GetActiveController() const{ return pActiveController; }
+	/** \brief Active controller or \em nullptr if not set. */
+	inline const seController::Ref &GetActiveController() const{ return pActiveController; }
 	
-	/** \brief Set active controller or \em NULL if not set. */
+	/** \brief Set active controller or \em nullptr if not set. */
 	void SetActiveController(seController *controller);
 	/*@}*/
 	
@@ -228,7 +227,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** \brief Links. */
-	inline const seLinkList &GetLinks() const{ return pLinks; }
+	inline const seLink::List &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(seLink *link);
@@ -245,10 +244,10 @@ public:
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Active link or \em NULL if not set. */
-	inline seLink *GetActiveLink() const{ return pActiveLink; }
+	/** \brief Active link or \em nullptr if not set. */
+	inline const seLink::Ref &GetActiveLink() const{ return pActiveLink; }
 	
-	/** \brief Set active link or \em NULL if not set. */
+	/** \brief Set active link or \em nullptr if not set. */
 	void SetActiveLink(seLink *link);
 	
 	/** \brief Number of targets using link. */
@@ -260,7 +259,7 @@ public:
 	/** \name Sources */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{ return pSources; }
+	inline const seSource::List &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(seSource *source);
@@ -277,10 +276,10 @@ public:
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
 	
-	/** \brief Active source or \em NULL if not set. */
-	inline seSource *GetActiveSource() const{ return pActiveSource; }
+	/** \brief Active source or \em nullptr if not set. */
+	inline const seSource::Ref &GetActiveSource() const{ return pActiveSource; }
 	
-	/** \brief Set active source or \em NULL if not set. */
+	/** \brief Set active source or \em nullptr if not set. */
 	void SetActiveSource(seSource *source);
 	
 	/** \brief Rebuild sources. */

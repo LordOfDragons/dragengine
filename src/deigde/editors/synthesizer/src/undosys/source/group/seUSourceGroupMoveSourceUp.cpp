@@ -40,8 +40,8 @@
 ////////////////////////////
 
 seUSourceGroupMoveSourceUp::seUSourceGroupMoveSourceUp(seSourceGroup *group, seSource *source) :
-pGroup(NULL),
-pSource(NULL)
+
+pSource(nullptr)
 {
 	if(!group || !source){
 		DETHROW(deeInvalidParam);
@@ -53,19 +53,10 @@ pSource(NULL)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupMoveSourceUp::~seUSourceGroupMoveSourceUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

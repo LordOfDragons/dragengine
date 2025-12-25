@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceWave;
+#include "../../../synthesizer/source/seSourceWave.h"
 
 
 /**
  * \brief Undo source wave set minimum frequency.
  */
 class seUSourceWaveSetMinFrequency : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceWaveSetMinFrequency> Ref;
+	
+	
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	float pOldFrequency;
 	float pNewFrequency;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceWaveSetMinFrequency> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

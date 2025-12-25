@@ -26,13 +26,12 @@
 #ifndef _SEUSOURCEPASTEEFFECT_H_
 #define _SEUSOURCEPASTEEFFECT_H_
 
+#include "../../../synthesizer/controller/seController.h"
+#include "../../../synthesizer/effect/seEffect.h"
+#include "../../../synthesizer/link/seLink.h"
+#include "../../../synthesizer/source/seSource.h"
+
 #include <deigde/undo/igdeUndo.h>
-
-#include "../../../synthesizer/effect/seEffectList.h"
-#include "../../../synthesizer/link/seLinkList.h"
-#include "../../../synthesizer/controller/seControllerList.h"
-
-class seSource;
 
 
 
@@ -40,23 +39,24 @@ class seSource;
  * \brief Undo action source paste effects.
  */
 class seUSourcePasteEffect : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourcePasteEffect> Ref;
+	
+	
 private:
-	seSource *pSource;
-	seEffectList pEffectList;
-	seLinkList pRemoveLinkList;
-	seControllerList pRemoveControllerList;
+	seSource::Ref pSource;
+	seEffect::List pEffects;
+	seLink::List pRemoveLinkList;
+	seController::List pRemoveControllerList;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourcePasteEffect> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index);
+	seUSourcePasteEffect(seSource *source, const seEffect::List &effectList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */
@@ -74,11 +74,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

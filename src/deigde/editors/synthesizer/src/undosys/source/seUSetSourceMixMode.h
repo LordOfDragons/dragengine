@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -37,8 +37,12 @@ class seSource;
  * \brief Undo action source set mix mode.
  */
 class seUSetSourceMixMode : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceMixMode> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	deSynthesizerSource::eMixModes pOldMode;
 	deSynthesizerSource::eMixModes pNewMode;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceMixMode> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -70,11 +71,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

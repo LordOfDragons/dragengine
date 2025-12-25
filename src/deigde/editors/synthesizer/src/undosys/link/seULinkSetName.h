@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
+#include "../../synthesizer/link/seLink.h"
 
 
 
@@ -35,8 +35,12 @@ class seLink;
  * \brief Undo action link set name.
  */
 class seULinkSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<seULinkSetName> Ref;
+	
+	
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULinkSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

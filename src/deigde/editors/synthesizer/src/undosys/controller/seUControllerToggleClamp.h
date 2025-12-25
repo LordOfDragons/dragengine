@@ -34,14 +34,15 @@
  * \brief Undo controller set minimum value.
  */
 class seUControllerToggleClamp : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerToggleClamp> Ref;
+	
+	
 private:
 	const seController::Ref pController;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerToggleClamp> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

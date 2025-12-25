@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 
@@ -38,17 +38,18 @@ class seSourceChain;
  * \brief Undo set source chain remove all path sounds.
  */
 class seUSourceChainPathSoundRemoveAll : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceChainPathSoundRemoveAll> Ref;
+	
+	
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	decStringList pPathSounds;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceChainPathSoundRemoveAll> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -25,30 +25,33 @@
 #ifndef _SEVIEWSYNTHESIZER_H_
 #define _SEVIEWSYNTHESIZER_H_
 
+#include "properties/seWPSource.h"
+#include "properties/seWPLink.h"
+#include "properties/seWPController.h"
+#include "properties/seWPSynthesizer.h"
+#include "../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
-class seWPSource;
-class seWPLink;
-class seWPController;
-class seWPSynthesizer;
 class seWindowMain;
-class seSynthesizer;
-
 
 
 /**
  * \brief Synthesizer view.
  */
 class seViewSynthesizer : public igdeContainerBorder{
+public:
+	typedef deTObjectReference<seViewSynthesizer> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
-	seWPController *pWPController;
-	seWPLink *pWPLink;
-	seWPSource *pWPSource;
-	seWPSynthesizer *pWPSynthesizer;
+	seWPController::Ref pWPController;
+	seWPLink::Ref pWPLink;
+	seWPSource::Ref pWPSource;
+	seWPSynthesizer::Ref pWPSynthesizer;
 	
 	
 	
@@ -74,10 +77,10 @@ public:
 	/** \brief Reset view. */
 	void ResetView();
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Synthesizer path changed. */

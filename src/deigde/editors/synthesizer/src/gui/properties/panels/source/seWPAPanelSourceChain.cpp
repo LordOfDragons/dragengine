@@ -77,13 +77,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, source)));
+		igdeUndo::Ref undo(OnChanged(textField, source));
 		if(undo){
 			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSourceChain *source) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seSourceChain *source) = 0;
 };
 
 class cBaseAction : public igdeAction {
@@ -94,21 +94,21 @@ public:
 	cBaseAction(seWPAPanelSourceChain &panel, const char *text, igdeIcon *icon,
 		const char *description) : igdeAction(text, icon, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSourceChain * const source = (seSourceChain*)pPanel.GetSource();
 		if(!source){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(source)));
+		igdeUndo::Ref undo(OnAction(source));
 		if(undo){
 			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSourceChain *source) = 0;
+	virtual igdeUndo::Ref OnAction(seSourceChain *source) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const seSourceChain * const source = (seSourceChain*)pPanel.GetSource();
 		if(source){
 			Update(*source);
@@ -127,23 +127,25 @@ public:
 
 class cTextMinSpeed : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMinSpeed> Ref;
 	cTextMinSpeed(seWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceChain *source){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seSourceChain *source){
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinSpeed()) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceChainMinSpeed(source, value) : NULL;
+			? seUSetSourceChainMinSpeed::Ref::New(source, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMaxSpeed : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMaxSpeed> Ref;
 	cTextMaxSpeed(seWPAPanelSourceChain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceChain *source){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seSourceChain *source){
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxSpeed()) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceChainMaxSpeed(source, value) : NULL;
+			? seUSetSourceChainMaxSpeed::Ref::New(source, value) : igdeUndo::Ref();
 	}
 };
 
@@ -152,6 +154,7 @@ class cListSounds : public igdeListBoxListener{
 	seWPAPanelSourceChain &pPanel;
 	
 public:
+	typedef deTObjectReference<cListSounds> Ref;
 	cListSounds(seWPAPanelSourceChain &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -169,33 +172,35 @@ public:
 
 class cActionSoundAdd : public cBaseAction {
 public:
+	typedef deTObjectReference<cActionSoundAdd> Ref;
 	cActionSoundAdd(seWPAPanelSourceChain &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add sound to list"){}
 	
-	virtual igdeUndo *OnAction(seSourceChain *source){
+	igdeUndo::Ref OnAction(seSourceChain *source) override{
 		decString path;
 		if(!igdeCommonDialogs::GetFileOpen(&pPanel, "Add Sound",
 			*pPanel.GetEnvironment().GetFileSystemGame(),
 			*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSound ), path ) ){
-				return NULL;
+				return {};
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceChainPathSoundAdd::Ref::NewWith(source, path));
+			seUSourceChainPathSoundAdd::Ref::New(source, path));
 		
 		pPanel.SelectSoundInList(source->GetPathSounds().GetCount() - 1);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionSoundRemove : public cBaseAction {
 public:
+	typedef deTObjectReference<cActionSoundRemove> Ref;
 	cActionSoundRemove(seWPAPanelSourceChain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove sound from list"){}
 	
-	virtual igdeUndo *OnAction(seSourceChain *source){
+	igdeUndo::Ref OnAction(seSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
-		return selection != -1 ? new seUSourceChainPathSoundRemove(source, selection) : NULL;
+		return selection != -1 ? seUSourceChainPathSoundRemove::Ref::New(source, selection) : seUSourceChainPathSoundRemove::Ref();
 	}
 	
 	void Update(const seSourceChain &) override{
@@ -205,12 +210,13 @@ public:
 
 class cActionSoundUp : public cBaseAction {
 public:
+	typedef deTObjectReference<cActionSoundUp> Ref;
 	cActionSoundUp(seWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
 	
-	virtual igdeUndo *OnAction(seSourceChain *source){
+	igdeUndo::Ref OnAction(seSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
-		return selection > 0 ? new seUSourceChainPathSoundMoveUp(source, selection) : NULL;
+		return selection > 0 ? seUSourceChainPathSoundMoveUp::Ref::New(source, selection) : seUSourceChainPathSoundMoveUp::Ref();
 	}
 	
 	void Update(const seSourceChain &) override{
@@ -220,12 +226,13 @@ public:
 
 class cActionSoundDown : public cBaseAction {
 public:
+	typedef deTObjectReference<cActionSoundDown> Ref;
 	cActionSoundDown(seWPAPanelSourceChain &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move sound up in list"){}
 	
-	virtual igdeUndo *OnAction(seSourceChain *source){
+	igdeUndo::Ref OnAction(seSourceChain *source) override{
 		const int selection = pPanel.GetSelectedSoundInList();
-		return selection > 0 ? new seUSourceChainPathSoundMoveUp(source, selection) : NULL;
+		return selection > 0 ? seUSourceChainPathSoundMoveUp::Ref::New(source, selection) : seUSourceChainPathSoundMoveUp::Ref();
 	}
 	
 	void Update(const seSourceChain &source) override{
@@ -238,6 +245,7 @@ class cPathSound : public igdeEditPathListener{
 	seWPAPanelSourceChain &pPanel;
 	
 public:
+	typedef deTObjectReference<cPathSound> Ref;
 	cPathSound(seWPAPanelSourceChain &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
@@ -247,7 +255,7 @@ public:
 			return;
 		}
 		
-		source->GetSynthesizer()->GetUndoSystem()->Add(seUSourceChainSetPathSound::Ref::NewWith(
+		source->GetSynthesizer()->GetUndoSystem()->Add(seUSourceChainSetPathSound::Ref::New(
 			source, selection, editPath->GetPath()));
 	}
 };
@@ -270,31 +278,31 @@ seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estChain)
 	igdeContainer::Ref groupBox, form;
 	
 	
-	pActionSoundAdd.TakeOver(new cActionSoundAdd(*this));
-	pActionSoundRemove.TakeOver(new cActionSoundRemove(*this));
-	pActionSoundUp.TakeOver(new cActionSoundUp(*this));
-	pActionSoundDown.TakeOver(new cActionSoundDown(*this));
+	pActionSoundAdd = cActionSoundAdd::Ref::New(*this);
+	pActionSoundRemove = cActionSoundRemove::Ref::New(*this);
+	pActionSoundUp = cActionSoundUp::Ref::New(*this);
+	pActionSoundDown = cActionSoundDown::Ref::New(*this);
 	
 	
 	helper.GroupBox(*this, groupBox, "Chain:");
 	
 	helper.EditFloat(groupBox, "Minimum Speed:",
 		"Minimum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMinSpeed, new cTextMinSpeed(*this));
+		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
 	helper.EditFloat(groupBox, "Maximum Speed:",
 		"Maximum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMaxSpeed, new cTextMaxSpeed(*this));
+		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(*this, groupBox, "Sounds:");
-	helper.ListBox(groupBox, 5, "Sounds to play", pListSounds, new cListSounds(*this));
+	helper.ListBox(groupBox, 5, "Sounds to play", pListSounds, cListSounds::Ref::New(*this));
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
 	helper.EditPath(form, "Sound:", "Sound file", igdeEnvironment::efpltSound,
-		pEditPathSound, new cPathSound(*this));
-	helper.EditString(form, "", "", pLabSoundInfo, NULL);
+		pEditPathSound, cPathSound::Ref::New(*this));
+	helper.EditString(form, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);
 }
 
@@ -369,8 +377,8 @@ void seWPAPanelSourceChain::UpdateSoundList(){
 		}
 	}
 	
-	if(pListSounds->GetItemCount() > 0){
-		pListSounds->SetSelection(decMath::clamp(selection, 0, pListSounds->GetItemCount() - 1));
+	if(pListSounds->GetItems().IsNotEmpty()){
+		pListSounds->SetSelection(decMath::clamp(selection, 0, pListSounds->GetItems().GetCount() - 1));
 	}
 	
 	UpdateSound();
@@ -395,7 +403,7 @@ void seWPAPanelSourceChain::UpdateSound(){
 void seWPAPanelSourceChain::UpdateSoundInfo(){
 	const seSourceChain * const source = (const seSourceChain*)GetSource();
 	const int selection = pListSounds->GetSelection();
-	const deSound * const sound = source && selection != -1 ? source->GetSoundAt(selection) : NULL;
+	const deSound * const sound = source && selection != -1 ? source->GetSounds().GetAt(selection) : nullptr;
 	
 	if(sound){
 		decString text, description;

@@ -34,8 +34,6 @@
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
@@ -82,13 +80,9 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
-	if(!filename){
-		DETHROW(deeInvalidParam);
-	}
+seSynthesizer::Ref seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
+	DEASSERT_NOTNULL(filename)
 	
-	decBaseFileReader::Ref fileReader;
-	seSynthesizer *synthesizer = NULL;
 	decPath path;
 	
 	if(decPath::IsUnixPathAbsolute(filename)){
@@ -99,23 +93,14 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const cha
 		path.AddUnixPath(filename);
 	}
 	
-	fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
+	const seSynthesizer::Ref synthesizer(seSynthesizer::Ref::New(&pWindowMain.GetEnvironment(), *this));
+	synthesizer->SetFilePath(filename); // required for sources to use the right base directory
 	
-	try{
-		synthesizer = new seSynthesizer(&pWindowMain.GetEnvironment(), *this);
-		synthesizer->SetFilePath(filename); // required for sources to use the right base directory
-		
-		pLSSynthesizer->LoadSynthesizer(*synthesizer, fileReader);
-		
-		synthesizer->SetChanged(false);
-		synthesizer->SetSaved(true);
-		
-	}catch(const deException &){
-		if(synthesizer){
-			synthesizer->FreeReference();
-		}
-		throw;
-	}
+	pLSSynthesizer->LoadSynthesizer(synthesizer,
+		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
+	
+	synthesizer->SetChanged(false);
+	synthesizer->SetSaved(true);
 	
 	return synthesizer;
 }
@@ -125,23 +110,8 @@ void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *f
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
-		pLSSynthesizer->SaveSynthesizer(*synthesizer, *fileWriter);
-		
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSSynthesizer->SaveSynthesizer(*synthesizer, pWindowMain.GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
@@ -151,18 +121,7 @@ void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *f
 //////////////////////
 
 void seLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
 	decString pattern;
-	
-	try{
-		pattern.Format("*%s", pLSSynthesizer->GetPattern().GetString());
-		filePattern = new igdeFilePattern(pLSSynthesizer->GetName(), pattern, pLSSynthesizer->GetPattern());
-		pFPSynthesizer.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	pattern.Format("*%s", pLSSynthesizer->GetPattern().GetString());
+	pFPSynthesizer.Add(igdeFilePattern::Ref::New(pLSSynthesizer->GetName(), pattern, pLSSynthesizer->GetPattern()));
 }

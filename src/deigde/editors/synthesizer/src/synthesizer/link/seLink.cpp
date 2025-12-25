@@ -43,33 +43,22 @@
 ////////////////////////////
 
 seLink::seLink() :
-pSynthesizer(NULL),
-pEngLink(NULL),
+pSynthesizer(nullptr),
 pName("Link"),
-pController(NULL),
 pRepeat(1){
 }
 
 seLink::seLink(const seLink &copy) :
-pSynthesizer(NULL),
-pEngLink(NULL),
+pSynthesizer(nullptr),
 pName(copy.pName),
-pController(NULL),
 pRepeat(copy.pRepeat),
 pCurve(copy.pCurve)
 {
 	pController = copy.pController;
-	if(pController){
-		pController->AddReference();
-	}
 }
 
 seLink::~seLink(){
-	SetSynthesizer(NULL);
-	
-	if(pController){
-		pController->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -84,25 +73,14 @@ void seLink::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer && pEngLink){
 		pSynthesizer->GetEngineSynthesizer()->RemoveLink(pEngLink);
-		pEngLink = NULL;
+		pEngLink = nullptr;
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
-		deSynthesizerLink *link = NULL;
-		
-		try{
-			link = new deSynthesizerLink;
-			synthesizer->GetEngineSynthesizer()->AddLink(link);
-			pEngLink = link;
-			
-		}catch(const deException &){
-			if(link){
-				link->FreeReference();
-			}
-			throw;
-		}
+		pEngLink = deSynthesizerLink::Ref::New();
+		synthesizer->GetEngineSynthesizer()->AddLink(pEngLink);
 		
 		UpdateController();
 		
@@ -129,17 +107,7 @@ void seLink::SetController(seController *controller){
 	if(controller == pController){
 		return;
 	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	
 	pController = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	UpdateController();
 	
 	if(pSynthesizer){

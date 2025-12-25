@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
+#include "../../../synthesizer/effect/seEffect.h"
 
 
 
@@ -36,8 +36,12 @@ class seEffect;
  * \brief Undo action effect set strength.
  */
 class seUEffectSetStrength : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectSetStrength> Ref;
+	
+	
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	float pOldStrength;
 	float pNewStrength;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectSetStrength> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

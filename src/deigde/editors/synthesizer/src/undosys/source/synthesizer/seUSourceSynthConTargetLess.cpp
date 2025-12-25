@@ -41,31 +41,18 @@
 ////////////////////////////
 
 seUSourceSynthConTargetLess::seUSourceSynthConTargetLess(seSourceSynthesizer *source) :
-pSource(NULL),
-pOldController(NULL)
+
+pOldController(nullptr)
 {
-	if(!source){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(source)
 	
 	SetShortInfo("Synthesizer source less connection targets");
 	
-	pOldController = source->GetControllerAt(source->GetConnectionCount() - 1);
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
+	pOldController = source->GetConnections().Last();
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthConTargetLess::~seUSourceSynthConTargetLess(){
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 
@@ -74,12 +61,12 @@ seUSourceSynthConTargetLess::~seUSourceSynthConTargetLess(){
 ///////////////
 
 void seUSourceSynthConTargetLess::Undo(){
-	const int index = pSource->GetConnectionCount();
+	const int index = pSource->GetConnections().GetCount();
 	
 	pSource->SetConnectionCount(index + 1);
 	pSource->SetControllerAt(index, pOldController);
 }
 
 void seUSourceSynthConTargetLess::Redo(){
-	pSource->SetConnectionCount(pSource->GetConnectionCount() - 1);
+	pSource->SetConnectionCount(pSource->GetConnections().GetCount() - 1);
 }

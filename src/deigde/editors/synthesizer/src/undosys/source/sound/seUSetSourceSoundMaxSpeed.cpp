@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceSoundMaxSpeed::seUSetSourceSoundMaxSpeed(seSourceSound *source, float newSpeed) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewSpeed = newSpeed;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceSoundMaxSpeed::~seUSetSourceSoundMaxSpeed(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

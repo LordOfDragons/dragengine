@@ -76,10 +76,6 @@ seSourceChain::~seSourceChain(){
 // Management
 ///////////////
 
-deSound *seSourceChain::GetSoundAt(int index) const{
-	return (deSound*)pSounds.GetAt(index);
-}
-
 void seSourceChain::SetPathSound(int index, const char *path){
 	if(pPathSounds.GetAt(index) == path){
 		return;
@@ -96,7 +92,7 @@ void seSourceChain::AddPathSound(const char *path){
 }
 
 void seSourceChain::InsertPathSound(const char *path, int index){
-	pPathSounds.InsertAt(path, index);
+	pPathSounds.Insert(path, index);
 	UpdateSounds();
 	NotifySourceChanged();
 }
@@ -120,14 +116,10 @@ void seSourceChain::RemoveAllPathSounds(){
 }
 
 void seSourceChain::UpdateSounds(){
-	const int count = pPathSounds.GetCount();
-	int i;
-	
 	pSounds.RemoveAll();
 	
-	for(i=0; i<count; i++){
-		const decString &path = pPathSounds.GetAt(i);
-		deSound * sound = NULL;
+	pPathSounds.Visit([&](const decString &path){
+		deSound::Ref sound;
 		
 		if(!path.IsEmpty() && GetSynthesizer()){
 			const decString &basePath = GetSynthesizer()->GetDirectoryPath();
@@ -142,14 +134,14 @@ void seSourceChain::UpdateSounds(){
 		}
 		
 		pSounds.Add(sound);
-	}
+	});
 	
 	if(GetEngineSource()){
-		deSynthesizerSourceChain &source = *((deSynthesizerSourceChain*)GetEngineSource());
+		deSynthesizerSourceChain &source = GetEngineSource().DynamicCast<deSynthesizerSourceChain>();
 		source.RemoveAllSounds();
-		for(i=0; i<count; i++){
-			source.AddSound((deSound*)pSounds.GetAt(i));
-		}
+		pSounds.Visit([&](deSound *sound){
+			source.AddSound(sound);
+		});
 	}
 }
 
@@ -161,7 +153,7 @@ void seSourceChain::SetMinSpeed(float speed){
 	pMinSpeed = speed;
 	
 	if(GetEngineSource()){
-		((deSynthesizerSourceChain*)GetEngineSource())->SetMinSpeed(speed);
+		GetEngineSource().DynamicCast<deSynthesizerSourceChain>()->SetMinSpeed(speed);
 		NotifySourceChanged();
 	}
 }
@@ -174,7 +166,7 @@ void seSourceChain::SetMaxSpeed(float speed){
 	pMaxSpeed = speed;
 	
 	if(GetEngineSource()){
-		((deSynthesizerSourceChain*)GetEngineSource())->SetMaxSpeed(speed);
+		GetEngineSource().DynamicCast<deSynthesizerSourceChain>()->SetMaxSpeed(speed);
 		NotifySourceChanged();
 	}
 }
@@ -182,27 +174,30 @@ void seSourceChain::SetMaxSpeed(float speed){
 
 
 void seSourceChain::UpdateTargets(){
-	deSynthesizerSourceChain *source = (deSynthesizerSourceChain*)GetEngineSource();
+	deSynthesizerSourceChain *const source = GetEngineSource().DynamicCast<deSynthesizerSourceChain>();
 	
 	seSource::UpdateTargets();
 	
 	if(source){
-		pTargetSpeed.UpdateEngineTarget(GetSynthesizer(), source->GetTargetSpeed());
-		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), source->GetTargetSelect());
-		pTargetPlay.UpdateEngineTarget(GetSynthesizer(), source->GetTargetPlay());
+		seSynthesizer *const synthesizer = GetSynthesizer();
+		DEASSERT_NOTNULL(synthesizer);
+		
+		pTargetSpeed.UpdateEngineTarget(*synthesizer, source->GetTargetSpeed());
+		pTargetSelect.UpdateEngineTarget(*synthesizer, source->GetTargetSelect());
+		pTargetPlay.UpdateEngineTarget(*synthesizer, source->GetTargetPlay());
 	}
 }
 
 int seSourceChain::CountLinkUsage(seLink *link) const{
 	int usageCount = seSource::CountLinkUsage(link);
 	
-	if(pTargetSpeed.HasLink(link)){
+	if(pTargetSpeed.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetSelect.HasLink(link)){
+	if(pTargetSelect.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetPlay.HasLink(link)){
+	if(pTargetPlay.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -212,15 +207,9 @@ int seSourceChain::CountLinkUsage(seLink *link) const{
 void seSourceChain::RemoveLinkFromTargets(seLink *link){
 	seSource::RemoveLinkFromTargets(link);
 	
-	if(pTargetSpeed.HasLink(link)){
-		pTargetSpeed.RemoveLink(link);
-	}
-	if(pTargetSelect.HasLink(link)){
-		pTargetSelect.RemoveLink(link);
-	}
-	if(pTargetPlay.HasLink(link)){
-		pTargetPlay.RemoveLink(link);
-	}
+	pTargetSpeed.RemoveLink(link);
+	pTargetSelect.RemoveLink(link);
+	pTargetPlay.RemoveLink(link);
 	
 	UpdateTargets();
 }
@@ -237,50 +226,37 @@ void seSourceChain::RemoveLinksFromAllTargets(){
 
 
 
-deSynthesizerSource *seSourceChain::CreateEngineSource(){
-	const int count = pSounds.GetCount();
-	int i;
+deSynthesizerSource::Ref seSourceChain::CreateEngineSource(){
+	const deSynthesizerSourceChain::Ref engSource(deSynthesizerSourceChain::Ref::New());
 	
-	deSynthesizerSourceChain *engSource = NULL;
+	InitEngineSource(engSource);
 	
-	try{
-		// create source
-		engSource = new deSynthesizerSourceChain;
-		
-		// init source
-		InitEngineSource(engSource);
-		
-		engSource->RemoveAllSounds();
-		for(i=0; i<count; i++){
-			engSource->AddSound((deSound*)pSounds.GetAt(i));
-		}
-		engSource->SetMinSpeed(pMinSpeed);
-		engSource->SetMaxSpeed(pMaxSpeed);
-		
-		pTargetSpeed.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetSpeed());
-		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetSelect());
-		pTargetPlay.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetPlay());
-		
-	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
-		throw;
-	}
+	engSource->RemoveAllSounds();
+	pSounds.Visit([&](deSound *sound){
+		engSource->AddSound(sound);
+	});
+	engSource->SetMinSpeed(pMinSpeed);
+	engSource->SetMaxSpeed(pMaxSpeed);
 	
-	// finished
+	seSynthesizer * const synthesizer = GetSynthesizer();
+	DEASSERT_NOTNULL(synthesizer);
+	
+	pTargetSpeed.UpdateEngineTarget(*synthesizer, engSource->GetTargetSpeed());
+	pTargetSelect.UpdateEngineTarget(*synthesizer, engSource->GetTargetSelect());
+	pTargetPlay.UpdateEngineTarget(*synthesizer, engSource->GetTargetPlay());
+	
 	return engSource;
 }
 
 
 
-seSource *seSourceChain::CreateCopy() const{
-	return new seSourceChain(*this);
+seSource::Ref seSourceChain::CreateCopy() const{
+	return seSourceChain::Ref::New(*this);
 }
 
 
 
-void seSourceChain::ListLinks(seLinkList &list){
+void seSourceChain::ListLinks(seLink::List &list){
 	seSource::ListLinks(list);
 	pTargetSpeed.AddLinksToList(list);
 	pTargetSelect.AddLinksToList(list);

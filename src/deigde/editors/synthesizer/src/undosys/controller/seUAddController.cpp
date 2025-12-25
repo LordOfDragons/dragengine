@@ -42,18 +42,15 @@
 ////////////////////////////
 
 seUAddController::seUAddController(seSynthesizer *synthesizer, seController *controller) :
-pSynthesizer(NULL),
-pController(NULL)
+
+pController(nullptr)
 {
 	if(!synthesizer || !controller){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUAddController::~seUAddController(){
@@ -80,10 +77,4 @@ void seUAddController::Redo(){
 //////////////////////
 
 void seUAddController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

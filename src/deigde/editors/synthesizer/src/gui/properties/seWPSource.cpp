@@ -88,6 +88,7 @@ class cTreeSources : public igdeTreeListListener{
 	seWPSource &pPanel;
 	
 public:
+	typedef deTObjectReference<cTreeSources> Ref;
 	cTreeSources(seWPSource &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
@@ -98,12 +99,12 @@ public:
 		
 		const igdeTreeItem * const selection = treeList->GetSelection();
 		if(selection && !selection->GetData()){
-			// while updating the tree items do have NULL data until they a source is properly
+			// while updating the tree items do have nullptr data until they a source is properly
 			// assigned to them. ignore update in this situation
 			return;
 		}
 		
-		synthesizer->SetActiveSource(selection ? (seSource*)selection->GetData() : NULL);
+		synthesizer->SetActiveSource(selection ? (seSource*)selection->GetData() : nullptr);
 	}
 	
 	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem *item){
@@ -132,7 +133,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddChain());
@@ -140,7 +141,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Add Into Group"));
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add Into Group");
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddChain());
@@ -148,7 +149,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertChain());
@@ -173,21 +174,22 @@ class cActionSourceCopy : public igdeAction{
 	seWPSource &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionSourceCopy> Ref;
 	cActionSourceCopy(seWPSource &panel) : igdeAction("Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy source to clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
 		}
 		
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
-			seClipboardDataSource::Ref::NewWith(source));
+			seClipboardDataSource::Ref::New(source));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetSource());
 	}
 };
@@ -196,30 +198,31 @@ class cActionSourceCut : public igdeAction{
 	seWPSource &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionSourceCut> Ref;
 	cActionSourceCut(seWPSource &panel) : igdeAction("Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut source to clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSource * const source = pPanel.GetSource();
 		if(!source){
 			return;
 		}
 		
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
-			seClipboardDataSource::Ref::NewWith(source));
+			seClipboardDataSource::Ref::New(source));
 		
 		igdeUndo::Ref undo;
 		if(source->GetParentGroup()){
-			undo.TakeOver(new seUSourceGroupRemoveSource(source->GetParentGroup(), source));
+			undo = seUSourceGroupRemoveSource::Ref::New(source->GetParentGroup(), source);
 			
 		}else{
-			undo.TakeOver(new seURemoveSource(pPanel.GetSynthesizer(), source));
+			undo = seURemoveSource::Ref::New(pPanel.GetSynthesizer(), source);
 		}
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetSource());
 	}
 };
@@ -229,11 +232,12 @@ protected:
 	seWPSource &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionSourcePaste> Ref;
 	cActionSourcePaste(seWPSource &panel) : igdeAction("Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste source from clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSynthesizer()){
 			return;
 		}
@@ -245,23 +249,23 @@ public:
 		}
 		
 		seSource * const source = pPanel.GetSource();
-		seSourceGroup * const group = source ? source->GetParentGroup() : NULL;
+		seSourceGroup * const group = source ? source->GetParentGroup() : nullptr;
 		igdeUndo::Ref undo;
 		
 		if(group){
-			undo.TakeOver(new seUSourceGroupPasteSource(group, cdata->GetSources(),
-				group->GetSources().IndexOf(source)));
+			undo = seUSourceGroupPasteSource::Ref::New(group, cdata->GetSources(),
+				group->GetSources().IndexOf(source));
 			
 		}else{
-			const seSourceList &list = pPanel.GetSynthesizer()->GetSources();
+			const seSource::List &list = pPanel.GetSynthesizer()->GetSources();
 			const int index = source ? list.IndexOf(source) : list.GetCount();
-			undo.TakeOver(new seUPasteSource(pPanel.GetSynthesizer(), cdata->GetSources(), index));
+			undo = seUPasteSource::Ref::New(pPanel.GetSynthesizer(), cdata->GetSources(), index);
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetSynthesizer() && pPanel.GetViewSynthesizer().GetWindowMain()
 			.GetClipboard().HasWithTypeName(seClipboardDataSource::TYPE_NAME));
 	}
@@ -269,6 +273,7 @@ public:
 
 class cActionSourcePasteIntoGroup : public cActionSourcePaste{
 public:
+	typedef deTObjectReference<cActionSourcePasteIntoGroup> Ref;
 	cActionSourcePasteIntoGroup(seWPSource &panel) : cActionSourcePaste(panel){
 		SetText("Paste Into Group");
 		SetDescription("Paste source from clipboard into group");
@@ -288,7 +293,7 @@ public:
 		
 		igdeUndo::Ref undo;
 		seSourceGroup * const group = (seSourceGroup*)source;
-		undo.TakeOver(new seUSourceGroupPasteSource(group, cdata->GetSources(), group->GetSources().GetCount()));
+		undo = seUSourceGroupPasteSource::Ref::New(group, cdata->GetSources(), group->GetSources().GetCount());
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
@@ -314,66 +319,59 @@ public:
 seWPSource::seWPSource(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
-pPanelSound(NULL),
-pPanelWave(NULL),
-pPanelChain(NULL),
-pPanelGroup(NULL),
-pPanelSynthesizer(NULL),
-pActivePanel(NULL)
+pPanelSound(nullptr),
+pPanelWave(nullptr),
+pPanelChain(nullptr),
+pPanelGroup(nullptr),
+pPanelSynthesizer(nullptr),
+pActivePanel(nullptr)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new seWPSourceListener(*this);
+	pListener = seWPSourceListener::Ref::New(*this);
 	
 	
-	pActionSourceCopy.TakeOver(new cActionSourceCopy(*this));
-	pActionSourceCut.TakeOver(new cActionSourceCut(*this));
-	pActionSourcePaste.TakeOver(new cActionSourcePaste(*this));
-	pActionSourcePasteIntoGroup.TakeOver(new cActionSourcePasteIntoGroup(*this));
+	pActionSourceCopy = cActionSourceCopy::Ref::New(*this);
+	pActionSourceCut = cActionSourceCut::Ref::New(*this);
+	pActionSourcePaste = cActionSourcePaste::Ref::New(*this);
+	pActionSourcePasteIntoGroup = cActionSourcePasteIntoGroup::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	AddChild(content);
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "Sources:");
-	helper.TreeList(groupBox, pTreeSource, 10, "Sources", new cTreeSources(*this));
+	helper.TreeList(groupBox, pTreeSource, 10, "Sources", cTreeSources::Ref::New(*this));
 	
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	content->AddChild(pSwitcher);
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	pSwitcher->AddChild(panel);
+	pSwitcher->AddChild(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
 	
-	panel.TakeOver(pPanelSound = new seWPAPanelSourceSound(*this));
-	pSwitcher->AddChild(panel);
+	pPanelSound = seWPAPanelSourceSound::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSound);
 	
-	panel.TakeOver(pPanelWave = new seWPAPanelSourceWave(*this));
-	pSwitcher->AddChild(panel);
+	pPanelWave = seWPAPanelSourceWave::Ref::New(*this);
+	pSwitcher->AddChild(pPanelWave);
 	
-	panel.TakeOver(pPanelChain = new seWPAPanelSourceChain(*this));
-	pSwitcher->AddChild(panel);
+	pPanelChain = seWPAPanelSourceChain::Ref::New(*this);
+	pSwitcher->AddChild(pPanelChain);
 	
-	panel.TakeOver(pPanelGroup = new seWPAPanelSourceGroup(*this));
-	pSwitcher->AddChild(panel);
+	pPanelGroup = seWPAPanelSourceGroup::Ref::New(*this);
+	pSwitcher->AddChild(pPanelGroup);
 	
-	panel.TakeOver(pPanelSynthesizer = new seWPAPanelSourceSynthesizer(*this));
-	pSwitcher->AddChild(panel);
+	pPanelSynthesizer = seWPAPanelSourceSynthesizer::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSynthesizer);
 	
 	pSwitcher->SetCurrent(epEmpty);
 }
 
 seWPSource::~seWPSource(){
-	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -386,22 +384,19 @@ void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
 		return;
 	}
 	
-	pPanelChain->SetSynthesizer(NULL);
-	pPanelGroup->SetSynthesizer(NULL);
-	pPanelSound->SetSynthesizer(NULL);
-	pPanelSynthesizer->SetSynthesizer(NULL);
-	pPanelWave->SetSynthesizer(NULL);
+	pPanelChain->SetSynthesizer(nullptr);
+	pPanelGroup->SetSynthesizer(nullptr);
+	pPanelSound->SetSynthesizer(nullptr);
+	pPanelSynthesizer->SetSynthesizer(nullptr);
+	pPanelWave->SetSynthesizer(nullptr);
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
-		
 		pPanelChain->SetSynthesizer(synthesizer);
 		pPanelGroup->SetSynthesizer(synthesizer);
 		pPanelSound->SetSynthesizer(synthesizer);
@@ -418,7 +413,7 @@ void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
 }
 
 seSource *seWPSource::GetSource() const{
-	return pSynthesizer ? pSynthesizer->GetActiveSource() : NULL;
+	return pSynthesizer ? pSynthesizer->GetActiveSource() : nullptr;
 }
 
 void seWPSource::OnSynthesizerPathChanged(){
@@ -451,22 +446,19 @@ void seWPSource::UpdateSourceTree(){
 	int i;
 	
 	if(pSynthesizer){
-		const int sourceCount = pSynthesizer->GetSources().GetCount();
 		igdeTreeItem *nextItem = pTreeSource->GetFirstChild();
 		
-		for(i=0; i<sourceCount; i++){
-			seSource * const source = pSynthesizer->GetSources().GetAt(i);
-			
+		pSynthesizer->GetSources().Visit([&](seSource *source){
 			if(!nextItem){
-				igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(""));
-				pTreeSource->AppendItem(NULL, item);
+				const igdeTreeItem::Ref item(igdeTreeItem::Ref::New(""));
+				pTreeSource->AppendItem(nullptr, item);
 				nextItem = item;
 			}
 			
 			UpdateSourceTreeItem(nextItem, source);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;
@@ -506,20 +498,16 @@ void seWPSource::UpdateSourceTreeItem(igdeTreeItem *item, seSource *source){
 	
 	if(source->GetType() == deSynthesizerSourceVisitorIdentify::estGroup){
 		const seSourceGroup &sourceGroup = *((seSourceGroup*)source);
-		const int sourceCount = sourceGroup.GetSources().GetCount();
 		igdeTreeItem *nextItem = item->GetFirstChild();
-		int i;
 		
 		if(item->GetExpanded() != sourceGroup.GetTreeListExpanded()){
 			item->SetExpanded(sourceGroup.GetTreeListExpanded());
 			pTreeSource->ItemChanged(item);
 		}
 		
-		for(i=0; i<sourceCount; i++){
-			seSource * const source2 = sourceGroup.GetSources().GetAt(i);
-			
+		sourceGroup.GetSources().Visit([&](seSource *source2){
 			if(!nextItem){
-				igdeTreeItem::Ref child(igdeTreeItem::Ref::NewWith(""));
+				const igdeTreeItem::Ref child(igdeTreeItem::Ref::New(""));
 				pTreeSource->AppendItem(item, child);
 				nextItem = child;
 			}
@@ -527,7 +515,7 @@ void seWPSource::UpdateSourceTreeItem(igdeTreeItem *item, seSource *source){
 			UpdateSourceTreeItem(nextItem, source2);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;
@@ -576,7 +564,7 @@ void seWPSource::ShowActiveSourcePanel(){
 		
 	}else{
 		pSwitcher->SetCurrent(epEmpty);
-		pActivePanel = NULL;
+		pActivePanel = nullptr;
 	}
 	
 	if(pActivePanel != activePanel){

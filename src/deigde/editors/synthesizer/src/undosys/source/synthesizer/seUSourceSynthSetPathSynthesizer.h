@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSynthesizer;
+#include "../../../synthesizer/source/seSourceSynthesizer.h"
 
 
 
@@ -35,8 +35,12 @@ class seSourceSynthesizer;
  * \brief Undo source synthesizer set path synthesizer.
  */
 class seUSourceSynthSetPathSynthesizer : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceSynthSetPathSynthesizer> Ref;
+	
+	
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceSynthSetPathSynthesizer> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -25,6 +25,10 @@
 #ifndef _SEWPEFFECT_H_
 #define _SEWPEFFECT_H_
 
+#include "seWPEffectListener.h"
+#include "panels/effect/seWPAPanelEffectStretch.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -32,11 +36,8 @@
 
 class seEffect;
 class seSource;
-class seSynthesizer;
 class seWPAPanelEffect;
-class seWPAPanelEffectStretch;
 class seViewSynthesizer;
-class seWPEffectListener;
 
 
 
@@ -44,16 +45,19 @@ class seWPEffectListener;
  * \brief Base source effect properties panel.
  */
 class seWPEffect : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<seWPEffect> Ref;
+	
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPEffectListener *pListener;
+	seWPEffectListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListEffect;
 	
 	igdeSwitcher::Ref pSwitcher;
-	seWPAPanelEffectStretch *pPanelStretch;
+	seWPAPanelEffectStretch::Ref pPanelStretch;
 	seWPAPanelEffect *pActivePanel;
 	
 	igdeAction::Ref pActionEffectCut;
@@ -82,16 +86,16 @@ public:
 	/** \brief View synthesizer. */
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
-	/** \brief Source or \em NULL if not set. */
+	/** \brief Source or \em nullptr if not set. */
 	seSource *GetSource() const;
 	
-	/** \brief Effect or \em NULL if not set. */
+	/** \brief Effect or \em nullptr if not set. */
 	seEffect *GetEffect() const;
 	
 	
@@ -117,10 +121,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEffectCut() const{ return pActionEffectCut; }
-	inline igdeAction *GetActionEffectCopy() const{ return pActionEffectCopy; }
-	inline igdeAction *GetActionEffectPasteAdd() const{ return pActionEffectPasteAdd; }
-	inline igdeAction *GetActionEffectPasteInsert() const{ return pActionEffectPasteInsert; }
+	inline const igdeAction::Ref &GetActionEffectCut() const{ return pActionEffectCut; }
+	inline const igdeAction::Ref &GetActionEffectCopy() const{ return pActionEffectCopy; }
+	inline const igdeAction::Ref &GetActionEffectPasteAdd() const{ return pActionEffectPasteAdd; }
+	inline const igdeAction::Ref &GetActionEffectPasteInsert() const{ return pActionEffectPasteInsert; }
 	/*@}*/
 };
 

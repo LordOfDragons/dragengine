@@ -25,6 +25,9 @@
 #ifndef _SEWPLINK_H_
 #define _SEWPLINK_H_
 
+#include "seWPLinkListener.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeListBox.h>
@@ -33,10 +36,8 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
 class seLink;
 class seViewSynthesizer;
-class seWPLinkListener;
 
 
 
@@ -44,11 +45,14 @@ class seWPLinkListener;
  * \brief Link properties panel.
  */
 class seWPLink : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPLink> Ref;
+	
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPLinkListener *pListener;
+	seWPLinkListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
@@ -83,13 +87,13 @@ public:
 	/** \brief View. */
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
-	/** \brief Link or \em NULL if not set. */
+	/** \brief Link or \em nullptr if not set. */
 	seLink *GetLink() const;
 	
 	
@@ -112,8 +116,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

@@ -25,6 +25,9 @@
 #ifndef _SELSSYNTHESIZER_H_
 #define _SELSSYNTHESIZER_H_
 
+#include "../synthesizer/source/seSource.h"
+#include "../synthesizer/effect/seEffect.h"
+
 #include <deigde/utils/igdeBaseXML.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -34,9 +37,7 @@ class seSynthesizer;
 class seController;
 class seLink;
 class seLinkMapping;
-class seEffect;
 class seEffectStretch;
-class seSource;
 class seSourceSound;
 class seSourceWave;
 class seSourceChain;
@@ -134,26 +135,26 @@ private:
 	
 	void pReadLink(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSource(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSource(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceSound(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSourceSound(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceWave(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSourceWave(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceChain(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSourceChain(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceGroup(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSourceGroup(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seSource *pReadSourceSynthesizer(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seSource::Ref pReadSourceSynthesizer(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
 	bool pReadSourceCommon(const decXmlElementTag &root, seSynthesizer &synthesizer, seSource &source);
 	
 	void pReadControllerTarget(const decXmlElementTag &root,
 		seSynthesizer &synthesizer, seControllerTarget &target);
 	
-	seEffect *pReadEffect(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seEffect::Ref pReadEffect(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
-	seEffect *pReadEffectStretch(const decXmlElementTag &root, seSynthesizer &synthesizer);
+	seEffect::Ref pReadEffectStretch(const decXmlElementTag &root, seSynthesizer &synthesizer);
 	
 	bool pReadEffectCommon(const decXmlElementTag &root, seSynthesizer &synthesizer, seEffect &effect);
 };

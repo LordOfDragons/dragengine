@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceChainPathSoundRemoveAll::seUSourceChainPathSoundRemoveAll(seSourceChain *source) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -51,13 +51,9 @@ pSource(NULL)
 	SetShortInfo("Chain source remove all path sounds");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundRemoveAll::~seUSourceChainPathSoundRemoveAll(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

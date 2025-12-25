@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffectStretch;
+#include "../../../../synthesizer/effect/seEffectStretch.h"
 
 
 /**
  * \brief Undo effect stretch set maximum time.
  */
 class seUEffectStretchSetMaxTime : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectStretchSetMaxTime> Ref;
+	
+	
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldTime;
 	float pNewTime;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectStretchSetMaxTime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

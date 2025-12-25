@@ -35,6 +35,9 @@ class seWPController;
  * \brief Controller properties panel listener.
  */
 class seWPControllerListener : public seSynthesizerNotifier{
+public:
+	typedef deTObjectReference<seWPControllerListener> Ref;
+	
 private:
 	seWPController &pPanel;
 	
@@ -44,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPControllerListener(seWPController &panel);
+	explicit seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
 	~seWPControllerListener() override;

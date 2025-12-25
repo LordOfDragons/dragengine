@@ -42,7 +42,7 @@
 ////////////////////////////
 
 seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
-pLink(NULL)
+pLink(nullptr)
 {
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -54,13 +54,9 @@ pLink(NULL)
 	SetShortInfo("Set Link Curve");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

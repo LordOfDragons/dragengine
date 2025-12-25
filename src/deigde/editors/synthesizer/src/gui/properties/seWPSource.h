@@ -25,22 +25,21 @@
 #ifndef _SEWPSOURCE_H_
 #define _SEWPSOURCE_H_
 
+#include "seWPSourceListener.h"
+#include "panels/source/seWPAPanelSourceSound.h"
+#include "panels/source/seWPAPanelSourceWave.h"
+#include "panels/source/seWPAPanelSourceChain.h"
+#include "panels/source/seWPAPanelSourceGroup.h"
+#include "panels/source/seWPAPanelSourceSynthesizer.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-
-
-class seSynthesizer;
 class seSource;
 class seViewSynthesizer;
-class seWPSourceListener;
-class seWPAPanelSourceSound;
-class seWPAPanelSourceWave;
-class seWPAPanelSourceChain;
-class seWPAPanelSourceGroup;
-class seWPAPanelSourceSynthesizer;
 class seWPAPanelSource;
 
 class igdeTreeItem;
@@ -50,20 +49,23 @@ class igdeTreeItem;
  * \brief Base synthesizer source properties panel.
  */
 class seWPSource : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPSource> Ref;
+	
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPSourceListener *pListener;
+	seWPSourceListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeTreeList::Ref pTreeSource;
 	
 	igdeSwitcher::Ref pSwitcher;
-	seWPAPanelSourceSound *pPanelSound;
-	seWPAPanelSourceWave *pPanelWave;
-	seWPAPanelSourceChain *pPanelChain;
-	seWPAPanelSourceGroup *pPanelGroup;
-	seWPAPanelSourceSynthesizer *pPanelSynthesizer;
+	seWPAPanelSourceSound::Ref pPanelSound;
+	seWPAPanelSourceWave::Ref pPanelWave;
+	seWPAPanelSourceChain::Ref pPanelChain;
+	seWPAPanelSourceGroup::Ref pPanelGroup;
+	seWPAPanelSourceSynthesizer::Ref pPanelSynthesizer;
 	seWPAPanelSource *pActivePanel;
 	
 	igdeAction::Ref pActionSourceCut;
@@ -92,13 +94,13 @@ public:
 	/** \brief View synthesizer. */
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
-	/** \brief Source or \em NULL if not set. */
+	/** \brief Source or \em nullptr if not set. */
 	seSource *GetSource() const;
 	
 	
@@ -133,10 +135,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSourceCut() const{ return pActionSourceCut; }
-	inline igdeAction *GetActionSourceCopy() const{ return pActionSourceCopy; }
-	inline igdeAction *GetActionSourcePaste() const{ return pActionSourcePaste; }
-	inline igdeAction *GetActionSourcePasteIntoGroup() const{ return pActionSourcePasteIntoGroup; }
+	inline const igdeAction::Ref &GetActionSourceCut() const{ return pActionSourceCut; }
+	inline const igdeAction::Ref &GetActionSourceCopy() const{ return pActionSourceCopy; }
+	inline const igdeAction::Ref &GetActionSourcePaste() const{ return pActionSourcePaste; }
+	inline const igdeAction::Ref &GetActionSourcePasteIntoGroup() const{ return pActionSourcePasteIntoGroup; }
 	/*@}*/
 };
 

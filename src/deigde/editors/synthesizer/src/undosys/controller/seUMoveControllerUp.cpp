@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seUMoveControllerUp::seUMoveControllerUp(seSynthesizer *synthesizer, seController *controller) :
-pSynthesizer(NULL),
-pController(NULL)
+
+pController(nullptr)
 {
 	if(!synthesizer || !controller){
 		DETHROW(deeInvalidParam);
@@ -54,10 +54,7 @@ pController(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUMoveControllerUp::~seUMoveControllerUp(){
@@ -83,10 +80,4 @@ void seUMoveControllerUp::Redo(){
 //////////////////////
 
 void seUMoveControllerUp::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

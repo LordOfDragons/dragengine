@@ -25,7 +25,7 @@
 #ifndef _SECLIPBOARDDATASOURCE_H_
 #define _SECLIPBOARDDATASOURCE_H_
 
-#include "../synthesizer/source/seSourceList.h"
+#include "../synthesizer/source/seSource.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	seSourceList pSources;
+	seSource::List pSources;
 	
 	
 	
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	seClipboardDataSource(seSource *source);
+	explicit seClipboardDataSource(seSource *source);
 	
 	/** \brief Create clipboard data. */
-	seClipboardDataSource(const seSourceList &sources);
+	explicit seClipboardDataSource(const seSource::List &sources);
 	
 protected:
 	/**
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{ return pSources; }
+	inline const seSource::List &GetSources() const{ return pSources; }
 	/*@}*/
 };
 

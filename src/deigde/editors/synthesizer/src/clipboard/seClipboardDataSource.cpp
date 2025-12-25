@@ -45,44 +45,16 @@ const char * const seClipboardDataSource::TYPE_NAME = "source";
 seClipboardDataSource::seClipboardDataSource(seSource *source) :
 igdeClipboardData(TYPE_NAME)
 {
-	seSource *copySource = NULL;
-	
-	try{
-		copySource = source->CreateCopy();
-		pSources.Add(copySource);
-		copySource->FreeReference();
-		
-	}catch(const deException &){
-		if(copySource){
-			copySource->FreeReference();
-		}
-		throw;
-	}
+	pSources.Add(source->CreateCopy());
 }
 
-seClipboardDataSource::seClipboardDataSource(const seSourceList &sources) :
+seClipboardDataSource::seClipboardDataSource(const seSource::List &sources) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = sources.GetCount();
-	seSource *source = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			source = sources.GetAt(i)->CreateCopy();
-			pSources.Add(source);
-			source->FreeReference();
-			source = NULL;
-		}
-		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
-		throw;
-	}
+	sources.Visit([&](const seSource &source){
+		pSources.Add(source.CreateCopy());
+	});
 }
 
 seClipboardDataSource::~seClipboardDataSource(){
-	pSources.RemoveAll();
 }

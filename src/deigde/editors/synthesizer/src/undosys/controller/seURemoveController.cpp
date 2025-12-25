@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seURemoveController::seURemoveController(seSynthesizer *synthesizer, seController *controller) :
-pSynthesizer(NULL),
-pController(NULL)
+
+pController(nullptr)
 {
 	if(!synthesizer || !controller){
 		DETHROW(deeInvalidParam);
@@ -54,10 +54,7 @@ pController(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seURemoveController::~seURemoveController(){
@@ -83,10 +80,4 @@ void seURemoveController::Redo(){
 //////////////////////
 
 void seURemoveController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

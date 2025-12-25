@@ -33,6 +33,9 @@
  * \brief Stretch time/pitch effect Panel.
  */
 class seWPAPanelEffectStretch : public seWPAPanelEffect{
+public:
+	typedef deTObjectReference<seWPAPanelEffectStretch> Ref;
+	
 private:
 	igdeTextField::Ref pEditMinTime;
 	igdeTextField::Ref pEditMaxTime;

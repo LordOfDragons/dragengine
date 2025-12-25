@@ -28,9 +28,9 @@
 #include "seSource.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/sound/deSound.h>
 
 class deEngine;
-class deSound;
 
 
 
@@ -38,11 +38,14 @@ class deSound;
  * \brief Synthesizer source sound.
  */
 class seSourceSound : public seSource{
+public:
+	typedef deTObjectReference<seSourceSound> Ref;
+	
 private:
 	deEngine *pEngine;
 	
 	decString pPathSound;
-	deSound *pSound;
+	deSound::Ref pSound;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -80,7 +83,7 @@ public:
 	void UpdateSound();
 	
 	/** \brief Sound or \em null if silent. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline const deSound::Ref &GetSound() const{ return pSound; }
 	
 	
 	
@@ -135,7 +138,7 @@ public:
 	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource();
+	virtual deSynthesizerSource::Ref CreateEngineSource();
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;
@@ -150,10 +153,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this source. */
-	seSource *CreateCopy() const override;
+	seSource::Ref CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	void ListLinks(seLinkList& list) override;
+	void ListLinks(seLink::List& list) override;
 	
 	/** \brief Parent synthesizer changed. */
 	void SynthesizerChanged() override;

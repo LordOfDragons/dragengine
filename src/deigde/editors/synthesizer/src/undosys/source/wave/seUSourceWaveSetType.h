@@ -36,8 +36,12 @@
  * \brief Undo source wave set type.
  */
 class seUSourceWaveSetType : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceWaveSetType> Ref;
+	
+	
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	deSynthesizerSourceWave::eWaveType pOldType;
 	deSynthesizerSourceWave::eWaveType pNewType;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceWaveSetType> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

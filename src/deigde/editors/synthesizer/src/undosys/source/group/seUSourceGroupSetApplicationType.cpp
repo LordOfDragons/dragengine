@@ -41,7 +41,7 @@
 
 seUSourceGroupSetApplicationType::seUSourceGroupSetApplicationType(
 seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pSource(NULL)
 	SetShortInfo("Group source set application type");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceGroupSetApplicationType::~seUSourceGroupSetApplicationType(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

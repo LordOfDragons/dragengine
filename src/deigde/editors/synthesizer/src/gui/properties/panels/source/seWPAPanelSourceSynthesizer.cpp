@@ -62,6 +62,7 @@ class cPathSynthesizer : public igdeEditPathListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
+	typedef deTObjectReference<cPathSynthesizer> Ref;
 	cPathSynthesizer(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
@@ -71,7 +72,7 @@ public:
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceSynthSetPathSynthesizer::Ref::NewWith(source, editPath->GetPath()));
+			seUSourceSynthSetPathSynthesizer::Ref::New(source, editPath->GetPath()));
 	}
 };
 
@@ -79,6 +80,7 @@ class cComboConTarget : public igdeComboBoxListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboConTarget> Ref;
 	cComboConTarget(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -93,21 +95,22 @@ class cActionConTargetMore : public igdeAction {
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionConTargetMore> Ref;
 	cActionConTargetMore(seWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Increase the number of targets"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
 		if(!source){
 			return;
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceSynthConTargetMore::Ref::NewWith(source));
+			seUSourceSynthConTargetMore::Ref::New(source));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSource());
 	}
 };
@@ -116,23 +119,24 @@ class cActionConTargetLess : public igdeAction {
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionConTargetLess> Ref;
 	cActionConTargetLess(seWPAPanelSourceSynthesizer &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Decrease the number of targets"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
-		if(!source || source->GetConnectionCount() == 0){
+		if(!source || source->GetConnections().IsEmpty()){
 			return;
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceSynthConTargetLess::Ref::NewWith(source));
+			seUSourceSynthConTargetLess::Ref::New(source));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
-		SetEnabled(source && source->GetConnectionCount() > 0);
+		SetEnabled(source && source->GetConnections().IsNotEmpty());
 	}
 };
 
@@ -140,6 +144,7 @@ class cComboController : public igdeComboBoxListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboController> Ref;
 	cComboController(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -150,13 +155,13 @@ public:
 		}
 		
 		seController * const controller = comboBox->GetSelectedItem()
-			? (seController*)comboBox->GetSelectedItem()->GetData() : NULL;
-		if(source->GetControllerAt(target) == controller){
+			? (seController*)comboBox->GetSelectedItem()->GetData() : nullptr;
+		if(source->GetConnections().GetAt(target) == controller){
 			return;
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceSynthSetConController::Ref::NewWith(source, target, controller));
+			seUSourceSynthSetConController::Ref::New(source, target, controller));
 	}
 };
 
@@ -181,18 +186,18 @@ pPreventUpdate(false)
 	
 	helper.GroupBox(*this, groupBox, "Synthesizer:");
 	helper.EditPath(groupBox, "Path:", "Sets the synthesizer to use", igdeEnvironment::efpltSynthesizer,
-		pEditPathSynthesizer, new cPathSynthesizer(*this));
+		pEditPathSynthesizer, cPathSynthesizer::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, groupBox, "Connections:");
 	
 	helper.FormLineStretchFirst(groupBox, "Target:", "Target controller to edit", formLine);
-	helper.ComboBox(formLine, "Target controller", pCBConTarget, new cComboConTarget(*this));
-	helper.Button(formLine, pBtnConTargetMore, new cActionConTargetMore(*this), true);
-	helper.Button(formLine, pBtnConTargetLess, new cActionConTargetLess(*this), true);
+	helper.ComboBox(formLine, "Target controller", pCBConTarget, cComboConTarget::Ref::New(*this));
+	helper.Button(formLine, pBtnConTargetMore, cActionConTargetMore::Ref::New(*this));
+	helper.Button(formLine, pBtnConTargetLess, cActionConTargetLess::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Controller:", "Controller to take value from",
-		pCBConController, new cComboController(*this));
+		pCBConController, cComboController::Ref::New(*this));
 	
 	UpdateControllerList();
 }
@@ -218,21 +223,20 @@ void seWPAPanelSourceSynthesizer::OnSynthesizerPathChanged(){
 void seWPAPanelSourceSynthesizer::UpdateConTargetList(){
 	const seSourceSynthesizer * const source = (seSourceSynthesizer*)GetSource();
 	const int selection = pCBConTarget->GetSelection();
-	int subControllerCount = 0;
 	int connectionCount = 0;
 	
 	pCBConTarget->RemoveAllItems();
 	
 	if(source){
+		const decStringList &names = source->GetControllerNames();
 		decString text;
 		int i;
 		
-		connectionCount = source->GetConnectionCount();
-		subControllerCount = source->GetControllerNameCount();
+		connectionCount = source->GetConnections().GetCount();
 		
 		for(i=0; i<connectionCount; i++){
-			if(i < subControllerCount){
-				text.Format("%d: %s", i, source->GetControllerNameAt(i).GetString());
+			if(i < names.GetCount()){
+				text.Format("%d: %s", i, names.GetAt(i).GetString());
 				
 			}else{
 				text.Format("%d: < invalid >", i);
@@ -242,7 +246,7 @@ void seWPAPanelSourceSynthesizer::UpdateConTargetList(){
 		}
 	}
 	
-	pCBConTarget->SetSelection(selection >= connectionCount ? selection : connectionCount - 1);
+	pCBConTarget->SetSelection(decMath::min(selection, connectionCount - 1));
 	
 	UpdateConnection();
 }
@@ -254,22 +258,22 @@ int seWPAPanelSourceSynthesizer::GetCBControllerTarget() const{
 void seWPAPanelSourceSynthesizer::UpdateControllerList(){
 	const seSynthesizer * const synthesizer = GetSynthesizer();
 	seController * const selection = pCBConController->GetSelectedItem()
-		? (seController*)pCBConController->GetSelectedItem()->GetData() : NULL;
+		? (seController*)pCBConController->GetSelectedItem()->GetData() : nullptr;
 	
 	pPreventUpdate = true; // required since changing list causes text changes
 	
 	try{
 		pCBConController->RemoveAllItems();
-		pCBConController->AddItem("< No Controller >", NULL);
+		pCBConController->AddItem("< No Controller >", nullptr);
 		
 		if(synthesizer){
-			const seControllerList &list = synthesizer->GetControllers();
+			const seController::List &list = synthesizer->GetControllers();
 			const int count = list.GetCount();
 			int i;
 			
 			for(i=0; i<count; i++){
 				seController * const controller = list.GetAt(i);
-				pCBConController->AddItem(controller->GetName(), NULL, controller);
+				pCBConController->AddItem(controller->GetName(), nullptr, controller);
 			}
 		}
 		
@@ -314,7 +318,7 @@ void seWPAPanelSourceSynthesizer::UpdateConnection(){
 	const int selection = pCBConTarget->GetSelection();
 	
 	if(source && selection != -1){
-		pCBConController->SetSelectionWithData(source->GetControllerAt(selection));
+		pCBConController->SetSelectionWithData(source->GetConnections().GetAt(selection));
 	}
 	
 	pCBConController->SetEnabled(source && selection != -1);

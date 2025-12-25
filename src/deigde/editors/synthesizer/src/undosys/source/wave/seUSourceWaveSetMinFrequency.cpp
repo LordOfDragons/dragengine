@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceWaveSetMinFrequency::seUSourceWaveSetMinFrequency(seSourceWave *source, float newFrequency) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewFrequency = newFrequency;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceWaveSetMinFrequency::~seUSourceWaveSetMinFrequency(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

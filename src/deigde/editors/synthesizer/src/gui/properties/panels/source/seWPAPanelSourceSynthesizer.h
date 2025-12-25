@@ -35,6 +35,9 @@
  * \brief Synthesizer source panel.
  */
 class seWPAPanelSourceSynthesizer : public seWPAPanelSource{
+public:
+	typedef deTObjectReference<seWPAPanelSourceSynthesizer> Ref;
+	
 private:
 	igdeEditPath::Ref pEditPathSynthesizer;
 	igdeComboBox::Ref pCBConTarget;

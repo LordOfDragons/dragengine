@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffectStretch;
+#include "../../../../synthesizer/effect/seEffectStretch.h"
 
 
 /**
  * \brief Undo effect stretch set minimum pitch.
  */
 class seUEffectStretchSetMinPitch : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectStretchSetMinPitch> Ref;
+	
+	
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldPitch;
 	float pNewPitch;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectStretchSetMinPitch> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

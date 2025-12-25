@@ -35,6 +35,9 @@ class seWindowMain;
  * \brief Main window listener for synthesizer changes.
  */
 class seWindowMainListener : public seSynthesizerNotifier{
+public:
+	typedef deTObjectReference<seWindowMainListener> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
 	

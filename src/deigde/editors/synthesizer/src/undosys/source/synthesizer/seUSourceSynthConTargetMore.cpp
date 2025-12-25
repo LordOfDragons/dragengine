@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceSynthConTargetMore::seUSourceSynthConTargetMore(seSourceSynthesizer *source) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,13 +49,9 @@ pSource(NULL)
 	SetShortInfo("Synthesizer source more connection targets");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthConTargetMore::~seUSourceSynthConTargetMore(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 
@@ -64,12 +60,12 @@ seUSourceSynthConTargetMore::~seUSourceSynthConTargetMore(){
 ///////////////
 
 void seUSourceSynthConTargetMore::Undo(){
-	pSource->SetConnectionCount(pSource->GetConnectionCount() - 1);
+	pSource->SetConnectionCount(pSource->GetConnections().GetCount() - 1);
 }
 
 void seUSourceSynthConTargetMore::Redo(){
-	const int index = pSource->GetConnectionCount();
+	const int index = pSource->GetConnections().GetCount();
 	
 	pSource->SetConnectionCount(index + 1);
-	pSource->SetControllerAt(index, NULL);
+	pSource->SetControllerAt(index, nullptr);
 }

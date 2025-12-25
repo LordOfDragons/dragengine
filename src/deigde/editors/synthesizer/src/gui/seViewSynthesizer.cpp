@@ -54,12 +54,7 @@
 
 seViewSynthesizer::seViewSynthesizer(seWindowMain &windowMain) :
 igdeContainerBorder(windowMain.GetEnvironment(), 10),
-pWindowMain(windowMain),
-pSynthesizer(NULL),
-pWPController(NULL),
-pWPLink(NULL),
-pWPSource(NULL),
-pWPSynthesizer(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -67,41 +62,28 @@ pWPSynthesizer(NULL)
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	// content
-	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
+	igdeContainerBox::Ref panels(igdeContainerBox::Ref::New(env, igdeContainerBox::eaX, 10));
 	AddChild(panels, eaCenter);
 	
-	pWPController = new seWPController(*this);
+	pWPController = seWPController::Ref::New(*this);
 	panels->AddChild(pWPController);
 	helper.Separator(panels, false);
 	
-	pWPLink = new seWPLink(*this);
+	pWPLink = seWPLink::Ref::New(*this);
 	panels->AddChild(pWPLink);
 	helper.Separator(panels, false);
 	
-	pWPSource = new seWPSource(*this);
+	pWPSource = seWPSource::Ref::New(*this);
 	panels->AddChild(pWPSource);
 	helper.Separator(panels, false);
 	
 	// right
-	pWPSynthesizer = new seWPSynthesizer(*this);
+	pWPSynthesizer = seWPSynthesizer::Ref::New(*this);
 	AddChild(pWPSynthesizer, eaRight);
 }
 
 seViewSynthesizer::~seViewSynthesizer(){
-	SetSynthesizer(NULL);
-	
-	if(pWPController){
-		pWPController->FreeReference();
-	}
-	if(pWPLink){
-		pWPLink->FreeReference();
-	}
-	if(pWPSource){
-		pWPSource->FreeReference();
-	}
-	if(pWPSynthesizer){
-		pWPSynthesizer->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -113,17 +95,7 @@ void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
-	
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
-	
 	pSynthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	pWPController->SetSynthesizer(synthesizer);
 	pWPLink->SetSynthesizer(synthesizer);
 	pWPSource->SetSynthesizer(synthesizer);

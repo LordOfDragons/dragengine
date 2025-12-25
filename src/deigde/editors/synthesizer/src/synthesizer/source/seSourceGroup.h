@@ -26,7 +26,6 @@
 #define _SESOURCEGROUP_H_
 
 #include "seSource.h"
-#include "seSourceList.h"
 
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
 
@@ -36,8 +35,11 @@
  * \brief Synthesizer source group.
  */
 class seSourceGroup : public seSource{
+public:
+	typedef deTObjectReference<seSourceGroup> Ref;
+	
 private:
-	seSourceList pSources;
+	seSource::List pSources;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pApplicationType;
 	
@@ -65,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sources. */
-	inline const seSourceList &GetSources() const{ return pSources; }
+	inline const seSource::List &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(seSource *source);
@@ -97,7 +99,7 @@ public:
 	
 	
 	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource();
+	virtual deSynthesizerSource::Ref CreateEngineSource();
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;
@@ -112,10 +114,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this source. */
-	seSource *CreateCopy() const override;
+	seSource::Ref CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	void ListLinks(seLinkList& list) override;
+	void ListLinks(seLink::List& list) override;
 	
 	
 	

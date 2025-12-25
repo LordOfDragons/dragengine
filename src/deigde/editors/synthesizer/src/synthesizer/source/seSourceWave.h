@@ -35,6 +35,9 @@
  * \brief Synthesizer source wave generator.
  */
 class seSourceWave : public seSource{
+public:
+	typedef deTObjectReference<seSourceWave> Ref;
+	
 private:
 	deSynthesizerSourceWave::eWaveType pWaveType;
 	
@@ -91,7 +94,7 @@ public:
 	
 	
 	/** \brief Create engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource();
+	virtual deSynthesizerSource::Ref CreateEngineSource();
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;
@@ -106,10 +109,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this source. */
-	seSource *CreateCopy() const override;
+	seSource::Ref CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	void ListLinks(seLinkList& list) override;
+	void ListLinks(seLink::List& list) override;
 	/*@}*/
 	
 	

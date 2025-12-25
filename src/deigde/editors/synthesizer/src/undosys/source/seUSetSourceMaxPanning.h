@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -36,8 +36,12 @@ class seSource;
  * \brief Undo action source set maximum panning.
  */
 class seUSetSourceMaxPanning : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceMaxPanning> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldValue;
 	float pNewValue;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceMaxPanning> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -69,11 +70,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

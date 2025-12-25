@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceChainPathSoundMoveDown::seUSourceChainPathSoundMoveDown(seSourceChain *source, int index) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || index < 0 || index >= source->GetPathSounds().GetCount() - 1){
 		DETHROW(deeInvalidParam);
@@ -51,13 +51,9 @@ pSource(NULL)
 	SetShortInfo("Chain source move path sound down");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundMoveDown::~seUSourceChainPathSoundMoveDown(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

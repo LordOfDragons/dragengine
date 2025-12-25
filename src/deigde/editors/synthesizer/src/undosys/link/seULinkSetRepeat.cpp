@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
-pLink(NULL)
+pLink(nullptr)
 {
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -50,16 +50,11 @@ pLink(NULL)
 	SetShortInfo("Link set repeat");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldRepeat = link->GetRepeat();
 	pNewRepeat = newRepeat;
 }
 
 seULinkSetRepeat::~seULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

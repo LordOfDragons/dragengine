@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUSynthesizerSetBytesPerSample::seUSynthesizerSetBytesPerSample(seSynthesizer *synthesizer, int newBytesPerSample) :
-pSynthesizer(NULL)
+pSynthesizer(nullptr)
 {
 	if(!synthesizer){
 		DETHROW(deeInvalidParam);
@@ -50,20 +50,11 @@ pSynthesizer(NULL)
 	pOldBytesPerSample = synthesizer->GetBytesPerSample();
 	pNewBytesPerSample = newBytesPerSample;
 	
-	try{
-		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
-		
-		SetShortInfo("Synthesizer set bytes per sample");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSynthesizer = synthesizer;
+	SetShortInfo("Synthesizer set bytes per sample");
 }
 
 seUSynthesizerSetBytesPerSample::~seUSynthesizerSetBytesPerSample(){
-	pCleanUp();
 }
 
 
@@ -77,15 +68,4 @@ void seUSynthesizerSetBytesPerSample::Undo(){
 
 void seUSynthesizerSetBytesPerSample::Redo(){
 	pSynthesizer->SetBytesPerSample(pNewBytesPerSample);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSynthesizerSetBytesPerSample::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

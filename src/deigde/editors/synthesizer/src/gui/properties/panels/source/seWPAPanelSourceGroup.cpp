@@ -57,6 +57,7 @@ protected:
 	seWPAPanelSourceGroup &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboApplicationType> Ref;
 	cComboApplicationType(seWPAPanelSourceGroup &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -73,7 +74,7 @@ public:
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceGroupSetApplicationType::Ref::NewWith(source, type));
+			seUSourceGroupSetApplicationType::Ref::New(source, type));
 	}
 };
 
@@ -98,10 +99,10 @@ seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estGroup)
 	helper.GroupBox(*this, groupBox, "Group:");
 	helper.ComboBox(groupBox, "Group:", "Sets how child sources are process in the the group.\n"
 		"Apply all sources (all) or blend between two selected sources using the select target (select).",
-		pCBApplicationType, new cComboApplicationType(*this));
-	pCBApplicationType->AddItem("All", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
-	pCBApplicationType->AddItem("Select", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
-	pCBApplicationType->AddItem("Solo", NULL, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
+		pCBApplicationType, cComboApplicationType::Ref::New(*this));
+	pCBApplicationType->AddItem("All", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatAll);
+	pCBApplicationType->AddItem("Select", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSelect);
+	pCBApplicationType->AddItem("Solo", nullptr, (void*)(intptr_t)deSynthesizerSourceGroup::eatSolo);
 }
 
 seWPAPanelSourceGroup::~seWPAPanelSourceGroup(){

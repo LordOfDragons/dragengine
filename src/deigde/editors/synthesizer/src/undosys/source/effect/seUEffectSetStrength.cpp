@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUEffectSetStrength::seUEffectSetStrength(seEffect *effect, float newStrength) :
-pEffect(NULL)
+pEffect(nullptr)
 {
 	if(!effect){
 		DETHROW(deeInvalidParam);
@@ -52,8 +52,6 @@ pEffect(NULL)
 	
 	try{
 		pEffect = effect;
-		pEffect->AddReference();
-		
 		SetShortInfo("Effect set strength");
 		
 	}catch(const deException &){
@@ -85,7 +83,4 @@ void seUEffectSetStrength::Redo(){
 //////////////////////
 
 void seUEffectSetStrength::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }

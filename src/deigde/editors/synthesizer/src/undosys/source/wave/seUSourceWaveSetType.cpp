@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUSourceWaveSetType::seUSourceWaveSetType(seSourceWave *source, deSynthesizerSourceWave::eWaveType newType) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -51,13 +51,9 @@ pSource(NULL)
 	pNewType = newType;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceWaveSetType::~seUSourceWaveSetType(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

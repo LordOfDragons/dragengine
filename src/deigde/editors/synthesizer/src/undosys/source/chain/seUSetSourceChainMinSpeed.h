@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 
@@ -36,8 +36,12 @@ class seSourceChain;
  * \brief Undo set source chain minimum speed.
  */
 class seUSetSourceChainMinSpeed : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceChainMinSpeed> Ref;
+	
+	
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	float pOldSpeed;
 	float pNewSpeed;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceChainMinSpeed> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

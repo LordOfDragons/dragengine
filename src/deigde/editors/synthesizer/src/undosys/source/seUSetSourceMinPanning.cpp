@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceMinPanning::seUSetSourceMinPanning(seSource *source, float newFactor) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,20 +49,11 @@ pSource(NULL)
 	pOldValue = source->GetMinPanning();
 	pNewValue = newFactor;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set minimum panning");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set minimum panning");
 }
 
 seUSetSourceMinPanning::~seUSetSourceMinPanning(){
-	pCleanUp();
 }
 
 
@@ -76,15 +67,4 @@ void seUSetSourceMinPanning::Undo(){
 
 void seUSetSourceMinPanning::Redo(){
 	pSource->SetMinPanning(pNewValue);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceMinPanning::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

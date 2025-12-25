@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
+#include "../../synthesizer/link/seLink.h"
 
 
 
@@ -35,8 +35,12 @@ class seLink;
  * \brief Undo action set link repeat count.
  */
 class seULinkSetRepeat : public igdeUndo{
+public:
+	typedef deTObjectReference<seULinkSetRepeat> Ref;
+	
+	
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	int pOldRepeat;
 	int pNewRepeat;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seULinkSetRepeat> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
-class seSource;
+#include "../../../synthesizer/effect/seEffect.h"
+#include "../../../synthesizer/source/seSource.h"
 
 
 
@@ -37,17 +37,18 @@ class seSource;
  * \brief Undo action source move effect down.
  */
 class seUSourceMoveEffectDown : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceMoveEffectDown> Ref;
+	
+	
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceMoveEffectDown> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

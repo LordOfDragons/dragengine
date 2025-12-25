@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
-class seSynthesizer;
+#include "../../synthesizer/controller/seController.h"
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -37,17 +37,18 @@ class seSynthesizer;
  * \brief Undo action move controller down.
  */
 class seUMoveControllerDown : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMoveControllerDown> Ref;
+	
+	
 private:
-	seSynthesizer *pSynthesizer;
-	seController *pController;
+	seSynthesizer::Ref pSynthesizer;
+	seController::Ref pController;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMoveControllerDown> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

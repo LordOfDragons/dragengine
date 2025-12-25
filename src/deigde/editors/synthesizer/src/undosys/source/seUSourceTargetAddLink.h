@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
-class seLink;
+#include "../../synthesizer/source/seSource.h"
+#include "../../synthesizer/link/seLink.h"
 class seControllerTarget;
 
 
@@ -37,18 +37,19 @@ class seControllerTarget;
  * \brief Undo action source target add link.
  */
 class seUSourceTargetAddLink : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceTargetAddLink> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	seControllerTarget *pTarget;
 	
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceTargetAddLink> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

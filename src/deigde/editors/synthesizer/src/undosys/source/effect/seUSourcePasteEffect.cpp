@@ -42,40 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourcePasteEffect::seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index) :
-pSource(NULL),
+seUSourcePasteEffect::seUSourcePasteEffect(seSource *source, const seEffect::List &effects, int index) :
+
 pIndex(index)
 {
-	const int effectCount = effectList.GetCount();
-	
-	if(!source || effectCount == 0){
+	if(!source || effects.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	seEffect *effect = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<effectCount; i++){
-			effect = effectList.GetAt(i)->CreateCopy();
-			pEffectList.Add(effect);
-			effect->FreeReference();
-			effect = NULL;
-		}
-		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
-		throw;
-	}
+	effects.Visit([&](const seEffect &effect){
+		pEffects.Add(effect.CreateCopy());
+	});
 	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourcePasteEffect::~seUSourcePasteEffect(){
-	pCleanUp();
 }
 
 
@@ -85,72 +67,52 @@ seUSourcePasteEffect::~seUSourcePasteEffect(){
 
 void seUSourcePasteEffect::Undo(){
 	seSynthesizer * const synthesizer = pSource->GetSynthesizer();
-	const int effectCount = pEffectList.GetCount();
-	int i;
 	
-	// remove the effects
-	for(i=0; i<effectCount; i++){
-		pSource->RemoveEffect(pEffectList.GetAt(i));
-	}
+	// remove effects
+	pEffects.Visit([&](seEffect *effect){
+		pSource->RemoveEffect(effect);
+	});
 	
 	// remove links added in a prior redo
-	const int linkCount = pRemoveLinkList.GetCount();
-	for(i=0; i<linkCount; i++){
-		synthesizer->RemoveLink(pRemoveLinkList.GetAt(i));
-	}
+	pRemoveLinkList.Visit([&](seLink *link){
+		synthesizer->RemoveLink(link);
+	});
 	pRemoveLinkList.RemoveAll();
 	
 	// remove controller added in a prior redo
-	const int controllerCount = pRemoveControllerList.GetCount();
-	for(i=0; i<controllerCount; i++){
-		synthesizer->RemoveController(pRemoveControllerList.GetAt(i));
-	}
+	pRemoveControllerList.Visit([&](seController *controller){
+		synthesizer->RemoveController(controller);
+	});
 	pRemoveControllerList.RemoveAll();
 }
 
 void seUSourcePasteEffect::Redo(){
 	seSynthesizer * const synthesizer = pSource->GetSynthesizer();
-	const int effectCount = pEffectList.GetCount();
-	int i, j;
 	
 	pRemoveLinkList.RemoveAll();
 	pRemoveControllerList.RemoveAll();
 	
-	for(i=0; i<effectCount; i++){
-		seEffect * const effect = pEffectList.GetAt(i);
-		
+	pEffects.VisitIndexed([&](int i, seEffect *effect){
 		// check if links exist in the synthesizer. if not add them and mark them to remove during undo
-		seLinkList linkList;
-		effect->ListLinks(linkList);
+		seLink::List links;
+		effect->ListLinks(links);
 		
-		const int linkCount = linkList.GetCount();
-		for(j=0; j<linkCount; j++){
-			seLink * const link = linkList.GetAt(j);
-			
-			if(!synthesizer->GetLinks().Has(link)){
-				seController * const controller = link->GetController();
-				if(controller && !synthesizer->GetControllers().Has(controller)){
-					pRemoveControllerList.Add(controller);
-					synthesizer->AddController(controller);
-				}
-				
-				pRemoveLinkList.Add(link);
-				synthesizer->AddLink(link);
+		links.Visit([&](seLink *link){
+			if(synthesizer->GetLinks().Has(link)){
+				return;
 			}
-		}
+			
+			seController * const controller = link->GetController();
+			if(controller && !synthesizer->GetControllers().Has(controller)){
+				pRemoveControllerList.Add(controller);
+				synthesizer->AddController(controller);
+			}
+			
+			pRemoveLinkList.Add(link);
+			synthesizer->AddLink(link);
+		});
 		
 		// insert the source
 		pSource->InsertEffectAt(effect, pIndex + i);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSourcePasteEffect::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
+	});
 }

@@ -85,13 +85,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, link)));
+		igdeUndo::Ref undo(OnChanged(textField, link));
 		if(undo){
 			link->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seLink *link) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seLink *link) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -103,19 +103,19 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seLink * const link = pPanel.GetLink();
 		if(!link){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(link)));
+		igdeUndo::Ref undo(OnAction(link));
 		if(undo){
 			link->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seLink *link) = 0;
+	virtual igdeUndo::Ref OnAction(seLink *link) = 0;
 };
 
 
@@ -124,6 +124,7 @@ class cListLinks : public igdeListBoxListener{
 	seWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -133,7 +134,7 @@ public:
 		}
 		
 		synthesizer->SetActiveLink(listBox->GetSelectedItem()
-			? (seLink*)listBox->GetSelectedItem()->GetData() : NULL);
+			? (seLink*)listBox->GetSelectedItem()->GetData() : nullptr);
 		pPanel.UpdateLink();
 	}
 	
@@ -149,40 +150,43 @@ class cActionLinkAdd : public igdeAction{
 	seWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionLinkAdd> Ref;
 	cActionLinkAdd(seWPLink &panel) : igdeAction("Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add link"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
 		if(!synthesizer){
 			return;
 		}
 		
-		synthesizer->GetUndoSystem()->Add(seULinkAdd::Ref::NewWith(synthesizer, seLink::Ref::NewWith()));
+		synthesizer->GetUndoSystem()->Add(seULinkAdd::Ref::New(synthesizer, seLink::Ref::New()));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSynthesizer());
 	}
 };
 
 class cActionLinkRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLinkRemove> Ref;
 	cActionLinkRemove(seWPLink &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove link"){}
 	
-	virtual igdeUndo *OnAction(seLink *link){
-		return new seULinkRemove(link);
+	igdeUndo::Ref OnAction(seLink *link) override{
+		return seULinkRemove::Ref::New(link);
 	}
 };
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(seWPLink &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seLink *link){
-		return textField->GetText() != link->GetName() ? new seULinkSetName(link, textField->GetText()) : NULL;
+	igdeUndo::Ref OnChanged(igdeTextField *textField, seLink *link) override{
+		return textField->GetText() != link->GetName() ? seULinkSetName::Ref::New(link, textField->GetText()) : seULinkSetName::Ref();
 	}
 };
 
@@ -190,18 +194,19 @@ class cComboController : public igdeComboBoxListener{
 	seWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboController> Ref;
 	cComboController(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seLink * const link = pPanel.GetLink();
 		seController * const controller = comboBox->GetSelectedItem()
-			? (seController*)comboBox->GetSelectedItem()->GetData() : NULL;
+			? (seController*)comboBox->GetSelectedItem()->GetData() : nullptr;
 		if(!link || controller == link->GetController() || pPanel.GetPreventUpdate()){
 			return;
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
-			seULinkSetController::Ref::NewWith(link, controller));
+			seULinkSetController::Ref::New(link, controller));
 	}
 };
 
@@ -209,6 +214,7 @@ class cSpinRepeat : public igdeSpinTextFieldListener{
 	seWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cSpinRepeat> Ref;
 	cSpinRepeat(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
@@ -218,7 +224,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seULinkSetRepeat::Ref::NewWith(link, value));
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seULinkSetRepeat::Ref::New(link, value));
 	}
 };
 
@@ -227,6 +233,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
+	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(seWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
@@ -237,11 +244,11 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(pUndo);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
@@ -250,7 +257,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = seULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 	}
 };
@@ -268,42 +275,40 @@ public:
 seWPLink::seWPLink(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPLinkListener(*this);
+	pListener = seWPLinkListener::Ref::New(*this);
 	
 	
-	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
-	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this));
+	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
+	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "Links:");
-	helper.ListBox(groupBox, 10, "Links", pListLink, new cListLinks(*this));
+	helper.ListBox(groupBox, 10, "Links", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
 	helper.GroupBoxStatic(content, groupBox, "Link Settings:");
-	helper.EditString(groupBox, "Name:", "Name of link", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Name of link", pEditName, cTextName::Ref::New(*this));
 	helper.ComboBox(groupBox, "Controller:", "Controller to query values from",
-		pCBController, new cComboController(*this));
+		pCBController, cComboController::Ref::New(*this));
 	pCBController->SetDefaultSorter();
 	helper.EditSpinInteger(groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
-		pSpinRepeat, new cSpinRepeat(*this));
+		pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "Link Curve:");
 	
-	helper.ViewCurveBezier(groupBox, pEditCurve, new cEditCurve(*this));
+	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));
 	pEditCurve->ClearCurve();
 	pEditCurve->SetClamp(true);
@@ -312,10 +317,7 @@ pPreventUpdate(false)
 }
 
 seWPLink::~seWPLink(){
-	SetSynthesizer(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -330,14 +332,12 @@ void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateControllerList();
@@ -345,7 +345,7 @@ void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
 }
 
 seLink * seWPLink::GetLink() const{
-	return pSynthesizer ? pSynthesizer->GetActiveLink() : NULL;
+	return pSynthesizer ? pSynthesizer->GetActiveLink() : nullptr;
 }
 
 void seWPLink::SelectActiveLink(){
@@ -358,20 +358,15 @@ void seWPLink::UpdateLinkList(){
 	pListLink->RemoveAllItems();
 	
 	if(pSynthesizer){
-		const seLinkList &list = pSynthesizer->GetLinks();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seLink * const link = pSynthesizer->GetLinks().GetAt(i);
-			pListLink->AddItem(link->GetName(), NULL, link);
-		}
+		pSynthesizer->GetLinks().Visit([&](seLink *link){
+			pListLink->AddItem(link->GetName(), nullptr, link);
+		});
 	}
 	
 	pListLink->SortItems();
 	
 	pListLink->SetSelectionWithData(selection);
-	if(!pListLink->GetSelectedItem() && pListLink->GetItemCount() > 0){
+	if(!pListLink->GetSelectedItem() && pListLink->GetItems().IsNotEmpty()){
 		pListLink->SetSelection(0);
 	}
 }
@@ -387,7 +382,7 @@ void seWPLink::UpdateLink(){
 		
 	}else{
 		pEditName->ClearText();
-		pCBController->SetSelectionWithData(NULL);
+		pCBController->SetSelectionWithData(nullptr);
 		pSpinRepeat->SetValue(1);
 		pEditCurve->ClearCurve();
 	}
@@ -401,23 +396,18 @@ void seWPLink::UpdateLink(){
 
 void seWPLink::UpdateControllerList(){
 	seController * const selection = pCBController->GetSelectedItem()
-		? (seController*)pCBController->GetSelectedItem()->GetData() : NULL;
+		? (seController*)pCBController->GetSelectedItem()->GetData() : nullptr;
 	
 	pPreventUpdate = true; // required since changing list causes text changes
 	
 	try{
 		pCBController->RemoveAllItems();
-		pCBController->AddItem("< No Controller >", NULL);
+		pCBController->AddItem("< No Controller >", nullptr);
 		
 		if(pSynthesizer){
-			const seControllerList &list = pSynthesizer->GetControllers();
-			const int count = list.GetCount();
-			int i;
-			
-			for(i=0; i<count; i++){
-				seController * const controller = list.GetAt(i);
-				pCBController->AddItem(controller->GetName(), NULL, controller);
-			}
+			pSynthesizer->GetControllers().Visit([&](seController *controller){
+				pCBController->AddItem(controller->GetName(), nullptr, controller);
+			});
 		}
 		
 		pCBController->SortItems();

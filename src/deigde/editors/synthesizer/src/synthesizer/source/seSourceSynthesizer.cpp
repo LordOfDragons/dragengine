@@ -40,7 +40,7 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/synthesizer/deSynthesizer.h>
 #include <dragengine/resources/synthesizer/deSynthesizerManager.h>
-#include "dragengine/resources/synthesizer/deSynthesizerLink.h"
+#include <dragengine/resources/synthesizer/deSynthesizerLink.h>
 #include <dragengine/resources/synthesizer/deSynthesizerController.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceSynthesizer.h>
@@ -57,12 +57,7 @@
 
 seSourceSynthesizer::seSourceSynthesizer(deEngine *engine) :
 seSource(deSynthesizerSourceVisitorIdentify::estSynthesizer),
-pEngine(engine),
-pChildSynthesizer(NULL),
-pControllerNames(NULL),
-pControllerNameCount(0),
-pConnections(NULL),
-pConnectionCount(0){
+pEngine(engine){
 }
 
 seSourceSynthesizer::seSourceSynthesizer(const seSourceSynthesizer &copy) :
@@ -70,61 +65,11 @@ seSource(copy),
 pEngine(copy.pEngine),
 pPathSynthesizer(copy.pPathSynthesizer),
 pChildSynthesizer(copy.pChildSynthesizer),
-pControllerNames(NULL),
-pControllerNameCount(0),
-pConnections(NULL),
-pConnectionCount(0)
-{
-	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
-	}
-	
-	const int controllerNamesCount = copy.pControllerNameCount;
-	if(controllerNamesCount > 0){
-		pControllerNames = new decString[controllerNamesCount];
-		pControllerNameCount = controllerNamesCount;
-		
-		int i;
-		for(i=0; i<controllerNamesCount; i++){
-			pControllerNames[i] = copy.pControllerNames[i];
-		}
-	}
-	
-	const int connectionCount = copy.pConnectionCount;
-	if(connectionCount > 0){
-		pConnections = new seController*[connectionCount];
-		pConnectionCount = connectionCount;
-		
-		int i;
-		for(i=0; i<connectionCount; i++){
-			pConnections[i] = copy.pConnections[i];
-			if(pConnections[i]){
-				pConnections[i]->AddReference();
-			}
-		}
-	}
+pControllerNames(copy.pControllerNames),
+pConnections(copy.pConnections){
 }
 
 seSourceSynthesizer::~seSourceSynthesizer(){
-	if(pConnections){
-		while(pConnectionCount > 0){
-			pConnectionCount--;
-			
-			if(pConnections[pConnectionCount]){
-				pConnections[pConnectionCount]->FreeReference();
-			}
-		}
-		
-		delete [] pConnections;
-	}
-	
-	if(pControllerNames){
-		delete [] pControllerNames;
-	}
-	
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
-	}
 }
 
 
@@ -143,25 +88,11 @@ void seSourceSynthesizer::SetPathSynthesizer(const char *path){
 }
 
 void seSourceSynthesizer::UpdateChildSynthesizer(){
-	deSynthesizerSourceSynthesizer * const source = (deSynthesizerSourceSynthesizer*)GetEngineSource();
-	deSynthesizerController *engController = NULL;
-	deSynthesizerLink *engLink = NULL;
-	deSynthesizerSource *engSource = NULL;
-	seSynthesizer *synthesizer = NULL;
-	int c, l, s;
+	deSynthesizerSourceSynthesizer * const source = GetEngineSource().DynamicCast<deSynthesizerSourceSynthesizer>();
+	seSynthesizer::Ref synthesizer;
 	
-	// free controller name list
-	if(pControllerNames){
-		delete [] pControllerNames;
-		pControllerNames = NULL;
-		pControllerNameCount = 0;
-	}
-	
-	// release the sub synthesizer
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
-		pChildSynthesizer = NULL;
-	}
+	pControllerNames.RemoveAll();
+	pChildSynthesizer = nullptr;
 	
 	// try to load the synthesizer
 	if(!pPathSynthesizer.IsEmpty() && GetSynthesizer()){
@@ -175,25 +106,17 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			pChildSynthesizer = pEngine->GetSynthesizerManager()->CreateSynthesizer();
 			
 			// add controllers
-			const int controllerCount = synthesizer->GetControllers().GetCount();
-			for(c=0; c<controllerCount; c++){
-				const seController &controller = *synthesizer->GetControllers().GetAt(c);
-				
-				engController = new deSynthesizerController;
+			synthesizer->GetControllers().Visit([&](const seController &controller){
+				const deSynthesizerController::Ref engController(deSynthesizerController::Ref::New());
 				engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
 				engController->SetClamp(controller.GetClamp());
 				engController->SetCurve(controller.GetCurve());
-				
 				pChildSynthesizer->AddController(engController);
-				engController = NULL;
-			}
+			});
 			
 			// add links
-			const int linkCount = synthesizer->GetLinks().GetCount();
-			for(l=0; l<linkCount; l++){
-				const seLink &link = *synthesizer->GetLinks().GetAt(l);
-				
-				engLink = new deSynthesizerLink;
+			synthesizer->GetLinks().Visit([&](const seLink &link){
+				const deSynthesizerLink::Ref engLink(deSynthesizerLink::Ref::New());
 				
 				if(link.GetController()){
 					engLink->SetController(synthesizer->GetControllers().IndexOf(link.GetController()));
@@ -203,49 +126,24 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 				}
 				
 				engLink->GetCurve() = link.GetCurve();
-				
 				pChildSynthesizer->AddLink(engLink);
-				engLink = NULL;
-			}
+			});
 			
 			// add sources
-			const int sourceCount = synthesizer->GetSources().GetCount();
-			for(s=0; s<sourceCount; s++){
-				engSource = synthesizer->GetSources().GetAt(s)->CreateEngineSource();
-				
-				pChildSynthesizer->AddSource(engSource);
-				engSource->FreeReference();
-				engSource = NULL;
-			}
+			synthesizer->GetSources().Visit([&](seSource &child){
+				pChildSynthesizer->AddSource(child.CreateEngineSource());
+			});
 			
 			// update the controller name list
-			if(controllerCount > 0){
-				pControllerNames = new decString[controllerCount];
-				pControllerNameCount = controllerCount;
-				for(c=0; c<controllerCount; c++){
-					pControllerNames[c] = synthesizer->GetControllers().GetAt(c)->GetName();
-				}
+			const int controllerCount = synthesizer->GetControllers().GetCount();
+			int i;
+			for(i=0; i<controllerCount; i++){
+				pControllerNames.Add(synthesizer->GetControllers().GetAt(i)->GetName());
 			}
-			
-			// free the loaded synthesizer as it is no more needed
-			synthesizer->FreeReference();
 			
 		}catch(const deException &){
 			GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat("Synthesizer Editor",
 				"Failed to load child synthesizer '%s' (base directory '%s')", pPathSynthesizer.GetString(), basePath.GetString());
-			
-			if(engSource){
-				engSource->FreeReference();
-			}
-			if(engLink){
-				engLink->FreeReference();
-			}
-			if(engController){
-				engController->FreeReference();
-			}
-			if(synthesizer){
-				synthesizer->FreeReference();
-			}
 		}
 	}
 	
@@ -258,93 +156,45 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 
 
 
-const decString &seSourceSynthesizer::GetControllerNameAt(int position) const{
-	if(position < 0 || position >= pControllerNameCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllerNames[position];
-}
-
-
-
 void seSourceSynthesizer::SetConnectionCount(int count){
 	if(count < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pConnectionCount){
+	if(count == pConnections.GetCount()){
 		return;
 	}
+
+	deSynthesizerSourceSynthesizer *source = GetEngineSource().DynamicCast<deSynthesizerSourceSynthesizer>();
+	ConnectionList connections;
 	
-	deSynthesizerSourceSynthesizer *source = (deSynthesizerSourceSynthesizer*)GetEngineSource();
-	seController **newArray = NULL;
-	int c;
-	
-	if(count > 0){
-		newArray = new seController*[count];
-	}
-	
-	if(count > pConnectionCount){
-		for(c=0; c<pConnectionCount; c++){
-			newArray[c] = pConnections[c];
-		}
-		for(c=pConnectionCount; c<count; c++){
-			newArray[c] = NULL;
-		}
-		
-	}else{
-		for(c=0; c<count; c++){
-			newArray[c] = pConnections[c];
-		}
-		for(c=count; c<pConnectionCount; c++){
-			if(pConnections[c]){
-				pConnections[c]->FreeReference();
-			}
+	int i;
+	for(i=0; i<count; i++){
+		if(i < pConnections.GetCount()){
+			connections.Add(pConnections[i]);
+			
+		}else{
+			connections.Add(nullptr);
 		}
 	}
 	
-	if(pConnections){
-		delete [] pConnections;
-	}
-	
-	pConnections = newArray;
-	pConnectionCount = count;
+	pConnections = std::move(connections);
 	
 	if(source){
 		pUpdateConnections(*source);
 	}
 	
 	NotifySourceChanged();
-}
-
-seController *seSourceSynthesizer::GetControllerAt(int position) const{
-	if(position < 0 || position >= pConnectionCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pConnections[position];
 }
 
 void seSourceSynthesizer::SetControllerAt(int position, seController *controller){
-	if(position < 0 || position >= pConnectionCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(controller == pConnections[position]){
+	if(controller == pConnections.GetAt(position)){
 		return;
 	}
 	
-	deSynthesizerSourceSynthesizer *source = (deSynthesizerSourceSynthesizer*)GetEngineSource();
+	pConnections.SetAt(position, controller);
 	
-	if(pConnections[position]){
-		pConnections[position]->FreeReference();
-	}
-	
-	pConnections[position] = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
+	deSynthesizerSourceSynthesizer * const source = GetEngineSource().DynamicCast<deSynthesizerSourceSynthesizer>();
 	if(source){
 		pUpdateConnections(*source);
 	}
@@ -354,24 +204,14 @@ void seSourceSynthesizer::SetControllerAt(int position, seController *controller
 
 
 
-deSynthesizerSource *seSourceSynthesizer::CreateEngineSource(){
-	deSynthesizerSourceSynthesizer *engSource = NULL;
+deSynthesizerSource::Ref seSourceSynthesizer::CreateEngineSource(){
+	const deSynthesizerSourceSynthesizer::Ref engSource(deSynthesizerSourceSynthesizer::Ref::New());
 	
-	try{
-		engSource = new deSynthesizerSourceSynthesizer;
-		
-		InitEngineSource(engSource);
-		
-		engSource->SetSynthesizer(pChildSynthesizer);
-		
-		pUpdateConnections(*engSource);
-		
-	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
-		throw;
-	}
+	InitEngineSource(engSource);
+	
+	engSource->SetSynthesizer(pChildSynthesizer);
+	
+	pUpdateConnections(*engSource);
 	
 	return engSource;
 }
@@ -385,58 +225,13 @@ seSourceSynthesizer &seSourceSynthesizer::operator=(const seSourceSynthesizer &c
 	SetPathSynthesizer(copy.pPathSynthesizer);
 	
 	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
-		pChildSynthesizer = NULL;
+		pChildSynthesizer = nullptr;
 	}
 	pChildSynthesizer = copy.pChildSynthesizer;
-	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
-	}
+	pControllerNames = copy.pControllerNames;
+	pConnections = copy.pConnections;
 	
-	if(pControllerNames){
-		delete [] pControllerNames;
-		pControllerNames = NULL;
-		pControllerNameCount = 0;
-	}
-	
-	if(pConnections){
-		int i;
-		for(i=0; i<pConnectionCount; i++){
-			if(pConnections[i]){
-				pConnections[i]->FreeReference();
-			}
-		}
-		delete [] pConnections;
-		pConnections = NULL;
-		pConnectionCount = 0;
-	}
-	
-	const int controllerNamesCount = copy.pControllerNameCount;
-	if(controllerNamesCount > 0){
-		pControllerNames = new decString[controllerNamesCount];
-		pControllerNameCount = controllerNamesCount;
-		
-		int i;
-		for(i=0; i<controllerNamesCount; i++){
-			pControllerNames[i] = copy.pControllerNames[i];
-		}
-	}
-	
-	const int connectionCount = copy.pConnectionCount;
-	if(connectionCount > 0){
-		pConnections = new seController*[connectionCount];
-		pConnectionCount = connectionCount;
-		
-		int i;
-		for(i=0; i<connectionCount; i++){
-			pConnections[i] = copy.pConnections[i];
-			if(pConnections[i]){
-				pConnections[i]->AddReference();
-			}
-		}
-	}
-	
-	deSynthesizerSourceSynthesizer * const source = (deSynthesizerSourceSynthesizer*)GetEngineSource();
+	deSynthesizerSourceSynthesizer * const source = GetEngineSource().DynamicCast<deSynthesizerSourceSynthesizer>();
 	if(source){
 		pUpdateConnections(*source);
 	}
@@ -447,11 +242,11 @@ seSourceSynthesizer &seSourceSynthesizer::operator=(const seSourceSynthesizer &c
 
 
 
-seSource *seSourceSynthesizer::CreateCopy() const{
-	return new seSourceSynthesizer(*this);
+seSource::Ref seSourceSynthesizer::CreateCopy() const{
+	return seSourceSynthesizer::Ref::New(*this);
 }
 
-void seSourceSynthesizer::ListLinks(seLinkList &list){
+void seSourceSynthesizer::ListLinks(seLink::List &list){
 	seSource::ListLinks(list);
 }
 
@@ -481,8 +276,8 @@ void seSourceSynthesizer::pUpdateConnections(deSynthesizerSourceSynthesizer &sou
 	for(i=0; i<connectionCount; i++){
 		int engController = -1;
 		
-		if(i < pConnectionCount && pConnections[i]){
-			engController = pConnections[i]->GetEngineControllerIndex();
+		if(i < pConnections.GetCount() && pConnections.GetAt(i)){
+			engController = pConnections.GetAt(i)->GetEngineControllerIndex();
 		}
 		
 		source.SetConnectionAt(i, engController);

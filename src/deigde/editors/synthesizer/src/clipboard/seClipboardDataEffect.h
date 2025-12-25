@@ -25,7 +25,7 @@
 #ifndef _SECLIPBOARDDATAEFFECT_H_
 #define _SECLIPBOARDDATAEFFECT_H_
 
-#include "../synthesizer/effect/seEffectList.h"
+#include "../synthesizer/effect/seEffect.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	seEffectList pEffects;
+	seEffect::List pEffects;
 	
 	
 	
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	seClipboardDataEffect(seEffect *effect);
+	explicit seClipboardDataEffect(seEffect *effect);
 	
 	/** \brief Create clipboard data. */
-	seClipboardDataEffect(const seEffectList &effects);
+	explicit seClipboardDataEffect(const seEffect::List &effects);
 	
 protected:
 	/**
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Effects. */
-	inline const seEffectList &GetEffects() const{ return pEffects; }
+	inline const seEffect::List &GetEffects() const{ return pEffects; }
 	/*@}*/
 };
 

@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class seSource;
-class seSourceGroup;
+#include "../../../synthesizer/source/seSourceGroup.h"
 
 
 
@@ -37,17 +37,18 @@ class seSourceGroup;
  * \brief Undo action source group add source.
  */
 class seUSourceGroupAddSource : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceGroupAddSource> Ref;
+	
+	
 private:
-	seSourceGroup *pGroup;
-	seSource *pSource;
+	seSourceGroup::Ref pGroup;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceGroupAddSource> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

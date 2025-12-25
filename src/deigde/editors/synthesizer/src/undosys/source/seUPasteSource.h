@@ -26,36 +26,36 @@
 #ifndef _SEUPASTESOURCE_H_
 #define _SEUPASTESOURCE_H_
 
+#include "../../synthesizer/seSynthesizer.h"
+#include "../../synthesizer/controller/seController.h"
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/source/seSource.h"
+
 #include <deigde/undo/igdeUndo.h>
-#include "../../synthesizer/source/seSourceList.h"
-#include "../../synthesizer/link/seLinkList.h"
-#include "../../synthesizer/controller/seControllerList.h"
-
-class seSynthesizer;
-
 
 
 /**
  * \brief Undo action paste source.
  */
 class seUPasteSource : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPasteSource> Ref;
+	
+	
 private:
-	seSynthesizer *pSynthesizer;
-	seSourceList pSourceList;
-	seLinkList pRemoveLinkList;
-	seControllerList pRemoveControllerList;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::List pSources;
+	seLink::List pRemoveLinkList;
+	seController::List pRemoveControllerList;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPasteSource> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index);
+	seUPasteSource(seSynthesizer *synthesizer, const seSource::List &sourceList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */
@@ -73,11 +73,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

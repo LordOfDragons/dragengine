@@ -26,43 +26,43 @@
 #define _SESOURCESYNTHESIZER_H_
 
 #include "seSource.h"
+#include "../controller/seController.h"
 
-#include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/resources/synthesizer/deSynthesizer.h>
 
-class seController;
-
-class deSynthesizer;
 class deSynthesizerSourceSynthesizer;
 
 
-
 /**
- * \brief Synthesizer source synthesizer.
+ * Synthesizer source synthesizer.
  */
 class seSourceSynthesizer : public seSource{
+public:
+	typedef deTObjectReference<seSourceSynthesizer> Ref;
+	typedef decTObjectList<seController> ConnectionList;
+	
 private:
 	deEngine *pEngine;
 	
 	decString pPathSynthesizer;
-	deSynthesizer *pChildSynthesizer;
-	decString *pControllerNames;
-	int pControllerNameCount;
-	
-	seController **pConnections;
-	int pConnectionCount;
+	deSynthesizer::Ref pChildSynthesizer;
+	decStringList pControllerNames;
+	ConnectionList pConnections;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create source. */
+	/** Create source. */
 	seSourceSynthesizer(deEngine *engine);
 	
-	/** \brief Create copy of source. */
+	/** Create copy of source. */
 	seSourceSynthesizer(const seSourceSynthesizer &copy);
 	
-	/** \brief Clean up source. */
+	/** Clean up source. */
 	~seSourceSynthesizer() override;
 	/*@}*/
 	
@@ -70,55 +70,49 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Path to child synthesizer. */
+	/** Path to child synthesizer. */
 	inline const decString &GetPathSynthesizer() const{ return pPathSynthesizer; }
 	
-	/** \brief Set path to child synthesizer. */
+	/** Set path to child synthesizer. */
 	void SetPathSynthesizer(const char *path);
 	
-	/** \brief Child synthesizer or \em NULL if absent. */
-	inline deSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
+	/** Child synthesizer or \em nullptr if absent. */
+	inline const deSynthesizer::Ref &GetChildSynthesizer() const{ return pChildSynthesizer; }
 	
-	/** \brief Update child synthesizer using stored path. */
+	/** Update child synthesizer using stored path. */
 	void UpdateChildSynthesizer();
 	
 	
 	
-	/** \brief Number of controller names. */
-	inline int GetControllerNameCount() const{ return pControllerNameCount; }
-	
-	/** \brief Controller name at position. */
-	const decString &GetControllerNameAt(int position) const;
+	/** Controller names. */
+	inline const decStringList &GetControllerNames() const{ return pControllerNames; }
 	
 	
 	
-	/** \brief Number of connections. */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
+	/** Connections. */
+	inline const ConnectionList &GetConnections() const{ return pConnections; }
 	
-	/** \brief Set number of connections. */
+	/** Set number of connections. */
 	void SetConnectionCount(int count);
 	
-	/** \brief Controller for child controller or \em NULL if not set. */
-	seController *GetControllerAt(int position) const;
-	
-	/** \brief Set controller for child controller or \em NULL if not set. */
+	/** Set controller for child controller or \em nullptr if not set. */
 	void SetControllerAt(int position, seController *controller);
 	
 	
 	
-	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource();
+	/** Create an engine synthesizer source. */
+	virtual deSynthesizerSource::Ref CreateEngineSource();
 	
-	/** \brief Create a copy of this source. */
-	seSource *CreateCopy() const override;
+	/** Create a copy of this source. */
+	seSource::Ref CreateCopy() const override;
 	
-	/** \brief List all links of all source targets. */
-	void ListLinks(seLinkList& list) override;
+	/** List all links of all source targets. */
+	void ListLinks(seLink::List& list) override;
 	
-	/** \brief Parent synthesizer changed. */
+	/** Parent synthesizer changed. */
 	void SynthesizerChanged() override;
 	
-	/** \brief Synthesizer directory changed. */
+	/** Synthesizer directory changed. */
 	void SynthesizerDirectoryChanged() override;
 	/*@}*/
 	
@@ -126,7 +120,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another sub synthesizer source to this sub synthesizer source. */
+	/** Copy another sub synthesizer source to this sub synthesizer source. */
 	virtual seSourceSynthesizer &operator=(const seSourceSynthesizer &copy);
 	/*@}*/
 	

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUEffectStretchSetMinPitch::seUEffectStretchSetMinPitch(seEffectStretch *effect, float newPitch) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!effect){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewPitch = newPitch;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMinPitch::~seUEffectStretchSetMinPitch(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

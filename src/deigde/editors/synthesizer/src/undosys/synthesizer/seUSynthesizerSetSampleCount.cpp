@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUSynthesizerSetSampleCount::seUSynthesizerSetSampleCount(seSynthesizer *synthesizer, int newSampleCount) :
-pSynthesizer(NULL)
+pSynthesizer(nullptr)
 {
 	if(!synthesizer){
 		DETHROW(deeInvalidParam);
@@ -50,20 +50,11 @@ pSynthesizer(NULL)
 	pOldSampleCount = synthesizer->GetSampleCount();
 	pNewSampleCount = newSampleCount;
 	
-	try{
-		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
-		
-		SetShortInfo("Synthesizer set sample count");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSynthesizer = synthesizer;
+	SetShortInfo("Synthesizer set sample count");
 }
 
 seUSynthesizerSetSampleCount::~seUSynthesizerSetSampleCount(){
-	pCleanUp();
 }
 
 
@@ -77,15 +68,4 @@ void seUSynthesizerSetSampleCount::Undo(){
 
 void seUSynthesizerSetSampleCount::Redo(){
 	pSynthesizer->SetSampleCount(pNewSampleCount);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSynthesizerSetSampleCount::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

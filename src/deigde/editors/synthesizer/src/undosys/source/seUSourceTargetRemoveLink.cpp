@@ -43,9 +43,8 @@
 
 seUSourceTargetRemoveLink::seUSourceTargetRemoveLink(
 seSource *source, seControllerTarget *target, seLink *link) :
-pSource(NULL),
-pTarget(NULL),
-pLink(NULL)
+
+pTarget(nullptr)
 {
 	if(!source || !target || !link){
 		DETHROW(deeInvalidParam);
@@ -54,21 +53,12 @@ pLink(NULL)
 	SetShortInfo("Source Target Remove Link");
 	
 	pSource = source;
-	pSource->AddReference();
-	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUSourceTargetRemoveLink::~seUSourceTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

@@ -25,49 +25,54 @@
 #ifndef _SELINK_H_
 #define _SELINK_H_
 
+#include "../controller/seController.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include <dragengine/resources/synthesizer/deSynthesizerLink.h>
 
-class seController;
 class seLinkMapping;
 class seSynthesizer;
-class deSynthesizerLink;
 
 
 
 /**
- * \brief Synthesizer link.
+ * Synthesizer link.
  */
 class seLink : public deObject{
 private:
 	seSynthesizer *pSynthesizer;
 	
-	deSynthesizerLink *pEngLink;
+	deSynthesizerLink::Ref pEngLink;
 	
 	decString pName;
 	
-	seController *pController;
+	seController::Ref pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<seLink> Ref;
-
-
+	
+	/** Type holding list of objects. */
+	typedef decTObjectOrderedSet<seLink> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create link. */
+	/** Create link. */
 	seLink();
 	
-	/** \brief Create copy of link. */
+	/** Create copy of link. */
 	seLink(const seLink &copy);
 	
-	/** \brief Clean up link. */
+	/** Clean up link. */
 	virtual ~seLink();
 	/*@}*/
 	
@@ -75,57 +80,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**  \brief Synthesizer. */
+	/**  Synthesizer. */
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer. */
+	/** Set synthesizer. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	
-	/** \brief Engine controller link or \em NULL if not managed. */
-	inline deSynthesizerLink *GetEngineLink() const{ return pEngLink; }
+	/** Engine controller link or \em nullptr if not managed. */
+	inline const deSynthesizerLink::Ref &GetEngineLink() const{ return pEngLink; }
 	
 	
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName(const char *name);
 	
 	
 	
-	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	/** Controller or \em nullptr. */
+	inline const seController::Ref &GetController() const{ return pController; }
 	
-	/** \brief Set controller or \em NULL. */
+	/** Set controller or \em nullptr. */
 	void SetController(seController *controller);
 	
-	/** \brief Repeat count of input value. */
+	/** Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }
 	
 	/**
-	 * \brief Set repeat count of input value.
+	 * Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
 	void SetRepeat(int repeat);
 	
-	/** \brief Curve. */
+	/** Curve. */
 	inline decCurveBezier &GetCurve(){ return pCurve; }
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	
 	
-	/** \brief Notify engine object about changes in this link. */
+	/** Notify engine object about changes in this link. */
 	void NotifyLinkChanged();
 	
 	
 	
-	/** \brief Update controller. */
+	/** Update controller. */
 	void UpdateController();
 	
-	/** \brief Updates engine curve. */
+	/** Updates engine curve. */
 	void UpdateCurve();
 	/*@}*/
 	
@@ -133,7 +138,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy link to this link. */
+	/** Copy link to this link. */
 	seLink &operator=(const seLink &copy);
 	/*@}*/
 };

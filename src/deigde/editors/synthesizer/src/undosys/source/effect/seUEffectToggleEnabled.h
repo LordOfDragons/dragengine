@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
+#include "../../../synthesizer/effect/seEffect.h"
 
 
 
@@ -36,15 +36,16 @@ class seEffect;
  * \brief Undo action source set enabled.
  */
 class seUEffectToggleEnabled : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectToggleEnabled> Ref;
+	
+	
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectToggleEnabled> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

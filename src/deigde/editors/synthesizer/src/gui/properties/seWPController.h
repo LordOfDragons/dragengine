@@ -25,6 +25,9 @@
 #ifndef _SEWPCONTROLLER_H_
 #define _SEWPCONTROLLER_H_
 
+#include "seWPControllerListener.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeTextField.h>
@@ -32,10 +35,8 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
 class seController;
 class seViewSynthesizer;
-class seWPControllerListener;
 
 
 
@@ -43,11 +44,14 @@ class seWPControllerListener;
  * \brief Controller properties panel.
  */
 class seWPController : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPController> Ref;
+	
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListController;
 	igdeTextField::Ref pEditName;
@@ -84,13 +88,13 @@ public:
 	/** \brief View. */
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
-	/** \brief Controller or \em NULL if not set. */
+	/** \brief Controller or \em nullptr if not set. */
 	seController *GetController() const;
 	
 	

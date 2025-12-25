@@ -92,20 +92,16 @@
 seWindowMain::seWindowMain(seIGDEModule &module) : 
 igdeEditorWindow(module),
 
-pListener(NULL),
-
 pConfiguration(*this),
 pLoadSaveSystem(*this),
 
-pViewSynthesizer(NULL),
-
-pSynthesizer(NULL)
+pViewSynthesizer(nullptr)
 {
 	pLoadIcons();
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener = seWindowMainListener::Ref::New(*this);
 	
 	pConfiguration.LoadConfiguration();
 	
@@ -113,7 +109,7 @@ pSynthesizer(NULL)
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	pViewSynthesizer = new seViewSynthesizer(*this);
+	pViewSynthesizer = seViewSynthesizer::Ref::New(*this);
 	AddChild(pViewSynthesizer);
 	
 	CreateSynthesizer();
@@ -123,11 +119,7 @@ pSynthesizer(NULL)
 seWindowMain::~seWindowMain(){
 	pConfiguration.SaveConfiguration();
 	
-	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -150,21 +142,19 @@ void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 		return;
 	}
 	
-	pViewSynthesizer->SetSynthesizer(NULL);
+	pViewSynthesizer->SetSynthesizer(nullptr);
 	
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->Dispose();
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
-		synthesizer->AddReference();
 		synthesizer->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(synthesizer->GetUndoSystem());
@@ -179,7 +169,7 @@ void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 }
 
 void seWindowMain::CreateSynthesizer(){
-	SetSynthesizer(seSynthesizer::Ref::NewWith(&GetEnvironment(), pLoadSaveSystem));
+	SetSynthesizer(seSynthesizer::Ref::New(&GetEnvironment(), pLoadSaveSystem));
 }
 
 void seWindowMain::SaveSynthesizer(const char *filename){
@@ -209,7 +199,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 	
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	int index = pSynthesizer->GetSources().GetCount();
-	seSourceGroup *parentGroup = NULL;
+	seSourceGroup *parentGroup = nullptr;
 	igdeUndo::Ref undoGroup, undo;
 	
 	if(activeSource){
@@ -228,28 +218,28 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 		}
 	}
 	
-	const seSource::Ref source(seSource::Ref::New(seSource::CreateSourceFromType(GetEngine(), type)));
+	const seSource::Ref source(seSource::CreateSourceFromType(GetEngine(), type));
 	source->SetName(name);
 	
 	if(insert){
 		if(parentGroup){
-			undoGroup.TakeOver(new seUSourceGroupAddSource(parentGroup, source, index));
+			undoGroup = seUSourceGroupAddSource::Ref::New(parentGroup, source, index);
 			
 		}else{
-			undo.TakeOver(new seUAddSource(pSynthesizer, source, index));
+			undo = seUAddSource::Ref::New(pSynthesizer, source, index);
 		}
 		
 	}else{
 		if(group && activeSource && activeSource->GetType() == deSynthesizerSourceVisitorIdentify::estGroup){
 			seSourceGroup *sourceGroup = (seSourceGroup*)activeSource;
-			undoGroup.TakeOver(new seUSourceGroupAddSource(sourceGroup, source, sourceGroup->GetSources().GetCount()));
+			undoGroup = seUSourceGroupAddSource::Ref::New(sourceGroup, source, sourceGroup->GetSources().GetCount());
 			
 		}else{
 			if(parentGroup){
-				undoGroup.TakeOver(new seUSourceGroupAddSource(parentGroup, source, index));
+				undoGroup = seUSourceGroupAddSource::Ref::New(parentGroup, source, index);
 				
 			}else{
-				undo.TakeOver(new seUAddSource(pSynthesizer, source, index));
+				undo = seUAddSource::Ref::New(pSynthesizer, source, index);
 			}
 		}
 	}
@@ -277,9 +267,9 @@ void seWindowMain::CreateEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes
 		index = activeSource->GetEffects().IndexOf(activeEffect);
 	}
 	
-	const seEffect::Ref effect(seEffect::Ref::New(seEffect::CreateEffectFromType(GetEngine(), type)));
+	const seEffect::Ref effect(seEffect::CreateEffectFromType(GetEngine(), type));
 	
-	pSynthesizer->GetUndoSystem()->Add(seUSourceAddEffect::Ref::NewWith(activeSource, effect, index));
+	pSynthesizer->GetUndoSystem()->Add(seUSourceAddEffect::Ref::New(activeSource, effect, index));
 	
 	activeSource->SetActiveEffect(effect);
 }
@@ -356,7 +346,7 @@ void seWindowMain::OnActivate(){
 
 void seWindowMain::OnDeactivate(){
 	if(pSynthesizer){
-		GetEngine()->GetAudioSystem()->SetActiveMicrophone(NULL);
+		GetEngine()->GetAudioSystem()->SetActiveMicrophone(nullptr);
 	}
 	
 	igdeEditorWindow::OnDeactivate();
@@ -379,7 +369,7 @@ void seWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void seWindowMain::LoadDocument(const char *filename){
-	SetSynthesizer(seSynthesizer::Ref::New(pLoadSaveSystem.LoadSynthesizer(filename)));
+	SetSynthesizer(pLoadSaveSystem.LoadSynthesizer(filename));
 	GetRecentFiles().AddFile(filename);
 }
 
@@ -420,19 +410,19 @@ public:
 	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
 	pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetSynthesizer()){
 			return;
 		}
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetSynthesizer())));
+		igdeUndo::Ref undo(OnAction(pWindow.GetSynthesizer()));
 		if(undo){
 			pWindow.GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer) = 0;
+	virtual igdeUndo::Ref OnAction(seSynthesizer *synthesizer) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		if(pWindow.GetSynthesizer()){
 			Update(*pWindow.GetSynthesizer());
 			
@@ -454,12 +444,13 @@ class cActionFileNew : public igdeAction{
 	seWindowMain &pWindow;
 	
 public:
+	typedef deTObjectReference<cActionFileNew> Ref;
 	cActionFileNew(seWindowMain &window) :
 	igdeAction("New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
 		"Create new synthesizer", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
 	pWindow(window){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetSynthesizer() || !pWindow.GetSynthesizer()->GetChanged()
 		|| igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Synthesizer",
 		"Creating a new Synthesizer discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
@@ -470,43 +461,45 @@ public:
 
 class cActionFileOpen : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileOpen> Ref;
 	cActionFileOpen(seWindowMain &window) : cActionBase(window,
 		"Open...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Open synthesizer from file", deInputEvent::ekcO, deInputEvent::esmControl,
 		deInputEvent::ekcO){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
-			pWindow.SetSynthesizer(seSynthesizer::Ref::New(
-				pWindow.GetLoadSaveSystem().LoadSynthesizer(filename)));
+			pWindow.SetSynthesizer(pWindow.GetLoadSaveSystem().LoadSynthesizer(filename));
 			pWindow.GetRecentFiles().AddFile(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionFileSaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(seWindowMain &window) : cActionBase(window, "Save As...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves the synthesizer under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
 		decString filename(synthesizer->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename)){
 			pWindow.SaveSynthesizer(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionFileSave : public cActionFileSaveAs{
 public:
+	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(seWindowMain &window) : cActionFileSaveAs(window){
 		SetText("Save");
 		SetDescription("Saves the synthesizer to file");
@@ -515,7 +508,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
 		if(synthesizer->GetSaved()){
 			if(synthesizer->GetChanged()){
 				pWindow.SaveSynthesizer(synthesizer->GetFilePath());
@@ -524,7 +517,7 @@ public:
 		}else{
 			cActionFileSaveAs::OnAction(synthesizer);
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const seSynthesizer &synthesizer) override{
@@ -535,37 +528,40 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(seWindowMain &window) : cActionBase(window,
 		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::ekcT, deInputEvent::esmControl,
 		deInputEvent::ekcX){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer*){
-		return NULL;
+	igdeUndo::Ref OnAction(seSynthesizer*) override{
+		return {};
 	}
 };
 
 class cActionEditCopy : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(seWindowMain &window) : cActionBase(window,
 		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::ekcC, deInputEvent::esmControl,
 		deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer*){
-		return NULL;
+	igdeUndo::Ref OnAction(seSynthesizer*) override{
+		return {};
 	}
 };
 
 class cActionEditPaste : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(seWindowMain &window) : cActionBase(window,
 		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::ekcP, deInputEvent::esmControl,
 		deInputEvent::ekcV){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer*){
-		return NULL;
+	igdeUndo::Ref OnAction(seSynthesizer*) override{
+		return {};
 	}
 	
 	void Update(const seSynthesizer &) override{
@@ -576,31 +572,35 @@ public:
 
 class cActionControllerAdd : public cActionBase{
 public:
+	typedef deTObjectReference<cActionControllerAdd> Ref;
 	cActionControllerAdd(seWindowMain &window) : cActionBase(window,
 		"Add", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add controller", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		const seControllerList &list = synthesizer->GetControllers();
+	virtual igdeUndo::Ref OnAction(seSynthesizer *synthesizer){
+		const seController::List &list = synthesizer->GetControllers();
 		decString name("Controller");
 		int number = 2;
-		while(list.HasNamed(name)){
+		while(list.HasMatching([&name](const seController::Ref &c){
+			return c->GetName() == name;
+		})){
 			name.Format("Controller #%d", number++);
 		}
 		
-		const seController::Ref controller(seController::Ref::NewWith(name));
-		return new seUAddController(synthesizer, controller);
+		const seController::Ref controller(seController::Ref::New(name));
+		return seUAddController::Ref::New(synthesizer, controller);
 	}
 };
 
 class cActionControllerRemove : public cActionBase{
 public:
+	typedef deTObjectReference<cActionControllerRemove> Ref;
 	cActionControllerRemove(seWindowMain &window) : cActionBase(window,
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove controller", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		return new seURemoveController(synthesizer, synthesizer->GetActiveController());
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
+		return seURemoveController::Ref::New(synthesizer, synthesizer->GetActiveController());
 	}
 	
 	void Update(const seSynthesizer &synthesizer) override{
@@ -610,12 +610,13 @@ public:
 
 class cActionControllerUp : public cActionBase{
 public:
+	typedef deTObjectReference<cActionControllerUp> Ref;
 	cActionControllerUp(seWindowMain &window) : cActionBase(window,
 		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		return new seUMoveControllerUp(synthesizer, synthesizer->GetActiveController());
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
+		return seUMoveControllerUp::Ref::New(synthesizer, synthesizer->GetActiveController());
 	}
 	
 	void Update(const seSynthesizer &synthesizer) override{
@@ -625,12 +626,13 @@ public:
 
 class cActionControllerDown : public cActionBase{
 public:
+	typedef deTObjectReference<cActionControllerDown> Ref;
 	cActionControllerDown(seWindowMain &window) : cActionBase(window,
 		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		return new seUMoveControllerDown(synthesizer, synthesizer->GetActiveController());
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
+		return seUMoveControllerDown::Ref::New(synthesizer, synthesizer->GetActiveController());
 	}
 	
 	void Update(const seSynthesizer &synthesizer) override{
@@ -647,11 +649,12 @@ public:
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined) :
 	cActionBase(window, text, icon, description, mnemonic, modifiers, keyCode){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
-		return synthesizer->GetActiveSource() ? OnActionSource(synthesizer, synthesizer->GetActiveSource()) : NULL;
+	igdeUndo::Ref OnAction(seSynthesizer *synthesizer) override{
+		return synthesizer->GetActiveSource() ?
+			OnActionSource(synthesizer, synthesizer->GetActiveSource()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source) = 0;
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer *synthesizer, seSource *source) = 0;
 	
 	void Update(const seSynthesizer &synthesizer) override{
 		if(synthesizer.GetActiveSource()){
@@ -675,32 +678,34 @@ protected:
 	const bool pInsert;
 	
 public:
+	typedef deTObjectReference<cActionSourceAdd> Ref;
 	cActionSourceAdd(seWindowMain &window, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
 		bool insert, const char *name, igdeIcon *icon, const char *description,
 		deInputEvent::eKeyCodes mnemonic) :
 	cActionBase(window, name, icon, description, mnemonic), pType(type), pInsert(insert){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer*){
+	igdeUndo::Ref OnAction(seSynthesizer*) override{
 		decString name("Source");
 		if(igdeCommonDialogs::GetString(&pWindow, GetText(), "Name:", name)){
 			pWindow.CreateSource(name, pType, pInsert, false);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionSourceGroupAdd : public cActionSourceAdd{
 public:
+	typedef deTObjectReference<cActionSourceGroupAdd> Ref;
 	cActionSourceGroupAdd(seWindowMain &window, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
 		const char *name, igdeIcon *icon, const char *description, deInputEvent::eKeyCodes mnemonic) :
 	cActionSourceAdd(window, type, false, name, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer*){
+	igdeUndo::Ref OnAction(seSynthesizer*) override{
 		decString name("Source");
 		if(igdeCommonDialogs::GetString(&pWindow, GetText(), "Name:", name)){
 			pWindow.CreateSource(name, pType, pInsert, true);
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const seSynthesizer &synthesizer) override{
@@ -711,37 +716,39 @@ public:
 
 class cActionSourceRemove : public cActionBaseSource{
 public:
+	typedef deTObjectReference<cActionSourceRemove> Ref;
 	cActionSourceRemove(seWindowMain &window) : cActionBaseSource(window,
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove source", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
-			return new seUSourceGroupRemoveSource(source->GetParentGroup(), source);
+			return seUSourceGroupRemoveSource::Ref::New(source->GetParentGroup(), source);
 			
 		}else{
-			return new seURemoveSource(synthesizer, source);
+			return seURemoveSource::Ref::New(synthesizer, source);
 		}
 	}
 };
 
 class cActionSourceUp : public cActionBaseSource{
 public:
+	typedef deTObjectReference<cActionSourceUp> Ref;
 	cActionSourceUp(seWindowMain &window) : cActionBaseSource(window,
 		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move source up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
-			return new seUSourceGroupMoveSourceUp(source->GetParentGroup(), source);
+			return seUSourceGroupMoveSourceUp::Ref::New(source->GetParentGroup(), source);
 			
 		}else{
-			return new seUMoveSourceUp(synthesizer, source);
+			return seUMoveSourceUp::Ref::New(synthesizer, source);
 		}
 	}
 	
 	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
-		const seSourceList &list = source.GetParentGroup()
+		const seSource::List &list = source.GetParentGroup()
 			? source.GetParentGroup()->GetSources() : synthesizer.GetSources();
 		SetEnabled(list.IndexOf((seSource*)&source) > 0);
 	}
@@ -749,21 +756,22 @@ public:
 
 class cActionSourceDown : public cActionBaseSource{
 public:
+	typedef deTObjectReference<cActionSourceDown> Ref;
 	cActionSourceDown(seWindowMain &window) : cActionBaseSource(window,
 		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move source down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
-			return new seUSourceGroupMoveSourceDown(source->GetParentGroup(), source);
+			return seUSourceGroupMoveSourceDown::Ref::New(source->GetParentGroup(), source);
 			
 		}else{
-			return new seUMoveSourceDown(synthesizer, source);
+			return seUMoveSourceDown::Ref::New(synthesizer, source);
 		}
 	}
 	
 	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
-		const seSourceList &list = source.GetParentGroup()
+		const seSource::List &list = source.GetParentGroup()
 			? source.GetParentGroup()->GetSources() : synthesizer.GetSources();
 		SetEnabled(list.IndexOf((seSource*)&source) < list.GetCount() - 1);
 	}
@@ -778,11 +786,12 @@ public:
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined) :
 	cActionBaseSource(window, text, icon, description, mnemonic, modifiers, keyCode){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
-		return source->GetActiveEffect() ? OnActionEffect(synthesizer, source, source->GetActiveEffect()) : NULL;
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer *synthesizer, seSource *source){
+		return source->GetActiveEffect() ?
+			OnActionEffect(synthesizer, source, source->GetActiveEffect()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionEffect(seSynthesizer *synthesizer, seSource *source, seEffect *effect) = 0;
+	virtual igdeUndo::Ref OnActionEffect(seSynthesizer *synthesizer, seSource *source, seEffect *effect) = 0;
 	
 	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
 		if(source.GetActiveEffect()){
@@ -805,36 +814,39 @@ class cActionEffectAdd : public cActionBaseSource{
 	const bool pInsert;
 	
 public:
+	typedef deTObjectReference<cActionEffectAdd> Ref;
 	cActionEffectAdd(seWindowMain &window, deSynthesizerEffectVisitorIdentify::eEffectTypes type,
 		bool insert, const char *name, igdeIcon *icon, const char *description,
 		deInputEvent::eKeyCodes mnemonic) : cActionBaseSource(window, name, icon, description, mnemonic),
 		pType(type), pInsert(insert){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer*, seSource*){
+	virtual igdeUndo::Ref OnActionSource(seSynthesizer*, seSource*){
 		pWindow.CreateEffect(pType, pInsert);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionEffectRemove : public cActionBaseEffect{
 public:
+	typedef deTObjectReference<cActionEffectRemove> Ref;
 	cActionEffectRemove(seWindowMain &window) : cActionBaseEffect(window,
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove effect", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
-		return new seUSourceRemoveEffect(source, effect);
+	virtual igdeUndo::Ref OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
+		return seUSourceRemoveEffect::Ref::New(source, effect);
 	}
 };
 
 class cActionEffectUp : public cActionBaseEffect{
 public:
+	typedef deTObjectReference<cActionEffectUp> Ref;
 	cActionEffectUp(seWindowMain &window) : cActionBaseEffect(window,
 		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move effect up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
-		return new seUSourceMoveEffectUp(source, effect);
+	virtual igdeUndo::Ref OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
+		return seUSourceMoveEffectUp::Ref::New(source, effect);
 	}
 	
 	void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect) override{
@@ -844,12 +856,13 @@ public:
 
 class cActionEffectDown : public cActionBaseEffect{
 public:
+	typedef deTObjectReference<cActionEffectDown> Ref;
 	cActionEffectDown(seWindowMain &window) : cActionBaseEffect(window,
 		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move effect down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
-		return new seUSourceMoveEffectDown(source, effect);
+	virtual igdeUndo::Ref OnActionEffect(seSynthesizer*, seSource *source, seEffect *effect){
+		return seUSourceMoveEffectDown::Ref::New(source, effect);
 	}
 	
 	void UpdateEffect(const seSynthesizer &, const seSource &source, const seEffect &effect) override{
@@ -865,102 +878,102 @@ public:
 //////////////////////
 
 void seWindowMain::pLoadIcons(){
-	pIconSourceSound.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_sound.png"));
-	pIconSourceWave.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_wave.png"));
-	pIconSourceChain.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_chain.png"));
-	pIconSourceGroup.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_group.png"));
-	pIconSourceSynthesizer.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_synthesizer.png"));
+	pIconSourceSound = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_sound.png");
+	pIconSourceWave = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_wave.png");
+	pIconSourceChain = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_chain.png");
+	pIconSourceGroup = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_group.png");
+	pIconSourceSynthesizer = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_synthesizer.png");
 	
-	pIconEffectStretch.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/source_wave.png"));
+	pIconEffectStretch = igdeIcon::LoadPNG(GetEditorModule(), "icons/source_wave.png");
 	
-	pIconPlay.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/play.png"));
-	pIconPause.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/pause.png"));
-	pIconStop.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/stop.png"));
+	pIconPlay = igdeIcon::LoadPNG(GetEditorModule(), "icons/play.png");
+	pIconPause = igdeIcon::LoadPNG(GetEditorModule(), "icons/pause.png");
+	pIconStop = igdeIcon::LoadPNG(GetEditorModule(), "icons/stop.png");
 }
 
 void seWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew = cActionFileNew::Ref::New(*this);
+	pActionFileOpen = cActionFileOpen::Ref::New(*this);
+	pActionFileSave = cActionFileSave::Ref::New(*this);
+	pActionFileSaveAs = cActionFileSaveAs::Ref::New(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo = igdeActionUndo::Ref::New(environment);
+	pActionEditRedo = igdeActionRedo::Ref::New(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this));
-	pActionControllerUp.TakeOver(new cActionControllerUp(*this));
-	pActionControllerDown.TakeOver(new cActionControllerDown(*this));
+	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
+	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
+	pActionControllerUp = cActionControllerUp::Ref::New(*this);
+	pActionControllerDown = cActionControllerDown::Ref::New(*this);
 	
-	pActionSourceAddSound.TakeOver(new cActionSourceAdd(*this,
+	pActionSourceAddSound = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSound, false, "Sound",
-		pIconSourceSound, "Add sound source", deInputEvent::ekcS));
-	pActionSourceAddWave.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceSound, "Add sound source", deInputEvent::ekcS);
+	pActionSourceAddWave = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estWave, false, "Wave",
-		pIconSourceWave, "Add wave source", deInputEvent::ekcW));
-	pActionSourceAddChain.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceWave, "Add wave source", deInputEvent::ekcW);
+	pActionSourceAddChain = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estChain, false, "Chain",
-		pIconSourceChain, "Add chain source", deInputEvent::ekcC));
-	pActionSourceAddGroup.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceChain, "Add chain source", deInputEvent::ekcC);
+	pActionSourceAddGroup = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estGroup, false, "Group",
-		pIconSourceGroup, "Add group source", deInputEvent::ekcG));
-	pActionSourceAddSynthesizer.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceGroup, "Add group source", deInputEvent::ekcG);
+	pActionSourceAddSynthesizer = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSynthesizer, false, "Synthesizer",
-		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY));
+		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY);
 	
-	pActionSourceGroupAddSound.TakeOver(new cActionSourceGroupAdd(*this,
+	pActionSourceGroupAddSound = cActionSourceGroupAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSound, "Sound",
-		pIconSourceSound, "Add sound source", deInputEvent::ekcS));
-	pActionSourceGroupAddWave.TakeOver(new cActionSourceGroupAdd(*this,
+		pIconSourceSound, "Add sound source", deInputEvent::ekcS);
+	pActionSourceGroupAddWave = cActionSourceGroupAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estWave, "Wave",
-		pIconSourceWave, "Add wave source", deInputEvent::ekcW));
-	pActionSourceGroupAddChain.TakeOver(new cActionSourceGroupAdd(*this,
+		pIconSourceWave, "Add wave source", deInputEvent::ekcW);
+	pActionSourceGroupAddChain = cActionSourceGroupAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estChain, "Chain",
-		pIconSourceChain, "Add chain source", deInputEvent::ekcC));
-	pActionSourceGroupAddGroup.TakeOver(new cActionSourceGroupAdd(*this,
+		pIconSourceChain, "Add chain source", deInputEvent::ekcC);
+	pActionSourceGroupAddGroup = cActionSourceGroupAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estGroup, "Group",
-		pIconSourceGroup, "Add group source", deInputEvent::ekcG));
-	pActionSourceGroupAddSynthesizer.TakeOver(new cActionSourceGroupAdd(*this,
+		pIconSourceGroup, "Add group source", deInputEvent::ekcG);
+	pActionSourceGroupAddSynthesizer = cActionSourceGroupAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSynthesizer, "Synthesizer",
-		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY));
+		pIconSourceSynthesizer, "Add synthesizer source", deInputEvent::ekcY);
 	
-	pActionSourceInsertSound.TakeOver(new cActionSourceAdd(*this,
+	pActionSourceInsertSound = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSound, true, "Sound",
-		pIconSourceSound, "Insert sound source", deInputEvent::ekcS));
-	pActionSourceInsertWave.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceSound, "Insert sound source", deInputEvent::ekcS);
+	pActionSourceInsertWave = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estWave, true, "Wave",
-		pIconSourceWave, "Insert wave source", deInputEvent::ekcW));
-	pActionSourceInsertChain.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceWave, "Insert wave source", deInputEvent::ekcW);
+	pActionSourceInsertChain = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estChain, true, "Chain",
-		pIconSourceChain, "Insert chain source", deInputEvent::ekcC));
-	pActionSourceInsertGroup.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceChain, "Insert chain source", deInputEvent::ekcC);
+	pActionSourceInsertGroup = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estGroup, true, "Group",
-		pIconSourceGroup, "Insert group source", deInputEvent::ekcG));
-	pActionSourceInsertSynthesizer.TakeOver(new cActionSourceAdd(*this,
+		pIconSourceGroup, "Insert group source", deInputEvent::ekcG);
+	pActionSourceInsertSynthesizer = cActionSourceAdd::Ref::New(*this,
 		deSynthesizerSourceVisitorIdentify::estSynthesizer, true, "Synthesizer",
-		pIconSourceSynthesizer, "Insert synthesizer source", deInputEvent::ekcY));
+		pIconSourceSynthesizer, "Insert synthesizer source", deInputEvent::ekcY);
 	
-	pActionSourceRemove.TakeOver(new cActionSourceRemove(*this));
-	pActionSourceUp.TakeOver(new cActionSourceUp(*this));
-	pActionSourceDown.TakeOver(new cActionSourceDown(*this));
+	pActionSourceRemove = cActionSourceRemove::Ref::New(*this);
+	pActionSourceUp = cActionSourceUp::Ref::New(*this);
+	pActionSourceDown = cActionSourceDown::Ref::New(*this);
 	
-	pActionEffectAddStretch.TakeOver(new cActionEffectAdd(*this,
+	pActionEffectAddStretch = cActionEffectAdd::Ref::New(*this,
 		deSynthesizerEffectVisitorIdentify::eetStretch, false, "Stretch Time/Pitch",
-		pIconEffectStretch, "Add stretch pitch and time effect", deInputEvent::ekcS));
+		pIconEffectStretch, "Add stretch pitch and time effect", deInputEvent::ekcS);
 	
-	pActionEffectInsertStretch.TakeOver(new cActionEffectAdd(*this,
+	pActionEffectInsertStretch = cActionEffectAdd::Ref::New(*this,
 		deSynthesizerEffectVisitorIdentify::eetStretch, true, "Insert Time/Pitch",
-		pIconEffectStretch, "Insert stretch pitch and time effect", deInputEvent::ekcS));
+		pIconEffectStretch, "Insert stretch pitch and time effect", deInputEvent::ekcS);
 	
-	pActionEffectRemove.TakeOver(new cActionEffectRemove(*this));
-	pActionEffectUp.TakeOver(new cActionEffectUp(*this));
-	pActionEffectDown.TakeOver(new cActionEffectDown(*this));
+	pActionEffectRemove = cActionEffectRemove::Ref::New(*this);
+	pActionEffectUp = cActionEffectUp::Ref::New(*this);
+	pActionEffectDown = cActionEffectDown::Ref::New(*this);
 	
 	
 	// register for updating
@@ -1015,7 +1028,7 @@ void seWindowMain::pCreateActions(){
 void seWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1027,7 +1040,7 @@ void seWindowMain::pCreateToolBarFile(){
 void seWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1044,23 +1057,23 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
 	pCreateMenuSynthesizer(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Controller", deInputEvent::ekcC));
+	cascade = igdeMenuCascade::Ref::New(env, "Controller", deInputEvent::ekcC);
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Source", deInputEvent::ekcS));
+	cascade = igdeMenuCascade::Ref::New(env, "Source", deInputEvent::ekcS);
 	pCreateMenuSource(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Effect", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Effect", deInputEvent::ekcE);
 	pCreateMenuEffect(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1099,7 +1112,7 @@ void seWindowMain::pCreateMenuController(igdeMenuCascade &menu){
 void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
 		GetEnvironment(), "Add", deInputEvent::ekcA));
 	helper.MenuCommand(submenu, pActionSourceAddWave);
 	helper.MenuCommand(submenu, pActionSourceAddSound);
@@ -1108,7 +1121,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceAddSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionSourceInsertWave);
 	helper.MenuCommand(submenu, pActionSourceInsertSound);
 	helper.MenuCommand(submenu, pActionSourceInsertChain);
@@ -1116,7 +1129,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceInsertSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Add Into Group"));
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Add Into Group");
 	helper.MenuCommand(submenu, pActionSourceGroupAddWave);
 	helper.MenuCommand(submenu, pActionSourceGroupAddSound);
 	helper.MenuCommand(submenu, pActionSourceGroupAddChain);
@@ -1132,12 +1145,12 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 void seWindowMain::pCreateMenuEffect(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
 		GetEnvironment(), "Add", deInputEvent::ekcA));
 	helper.MenuCommand(submenu, pActionEffectAddStretch);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu = igdeMenuCascade::Ref::New(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionEffectInsertStretch);
 	menu.AddChild(submenu);
 	

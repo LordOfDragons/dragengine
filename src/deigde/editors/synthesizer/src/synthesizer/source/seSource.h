@@ -26,15 +26,16 @@
 #define _SESOURCE_H_
 
 #include "../controller/seControllerTarget.h"
-#include "../effect/seEffectList.h"
+#include "../effect/seEffect.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitorIdentify.h>
 
-class seLinkList;
+class seLink;
 class seLoadSaveSystem;
 class seSourceGroup;
 class seSynthesizer;
@@ -50,12 +51,15 @@ class seSource : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seSource> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<seSource> List;
 
 
 private:
 	seSynthesizer *pSynthesizer;
 	seSourceGroup *pParentGroup;
-	deSynthesizerSource *pEngSource;
+	deSynthesizerSource::Ref pEngSource;
 	
 	decString pName;
 	deSynthesizerSourceVisitorIdentify::eSourceTypes pType;
@@ -73,8 +77,8 @@ private:
 	seControllerTarget pTargetVolume;
 	seControllerTarget pTargetPanning;
 	
-	seEffectList pEffects;
-	seEffect *pActiveEffect;
+	seEffect::List pEffects;
+	seEffect::Ref pActiveEffect;
 	
 	
 	
@@ -103,14 +107,14 @@ public:
 	
 	
 	
-	/** \brief Engine synthesizer source or \em NULL. */
-	inline deSynthesizerSource *GetEngineSource() const{ return pEngSource; }
+	/** \brief Engine synthesizer source or \em nullptr. */
+	inline const deSynthesizerSource::Ref &GetEngineSource() const{ return pEngSource; }
 	
-	/** \brief Set the engine synthesizer source or \em NULL. */
+	/** \brief Set the engine synthesizer source or \em nullptr. */
 	void SetEngineSource(deSynthesizerSource *source);
 	
 	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource() = 0;
+	virtual deSynthesizerSource::Ref CreateEngineSource() = 0;
 	
 	/** \brief Init the given engine source with the default source properties. */
 	void InitEngineSource(deSynthesizerSource *engSource) const;
@@ -118,10 +122,10 @@ public:
 	/** \brief Retrieve the source type. */
 	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetType() const{ return pType; }
 	
-	/** \brief Retrieve the parent group or \em NULL if there is none. */
+	/** \brief Retrieve the parent group or \em nullptr if there is none. */
 	inline seSourceGroup *GetParentGroup() const{ return pParentGroup; }
 	
-	/** \brief Set the parent group or \em NULL if there is none. */
+	/** \brief Set the parent group or \em nullptr if there is none. */
 	void SetParentGroup(seSourceGroup *group);
 	
 	
@@ -203,7 +207,7 @@ public:
 	inline const seControllerTarget &GetTargetPanning() const{ return pTargetPanning; }
 	
 	/** \brief List all links of all source targets. */
-	virtual void ListLinks(seLinkList& list);
+	virtual void ListLinks(seLink::List& list);
 	
 	/** \brief Notify engine and listeners that the source changed. */
 	void NotifySourceChanged();
@@ -212,7 +216,7 @@ public:
 	void NotifyEngineOnlySourceChanged();
 	
 	/** \brief Create a copy of this source. */
-	virtual seSource *CreateCopy() const = 0;
+	virtual seSource::Ref CreateCopy() const = 0;
 	
 	/** \brief Parent synthesizer changed. */
 	virtual void SynthesizerChanged();
@@ -225,14 +229,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Active effect or \em NULL if none is active. */
-	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
+	/** \brief Active effect or \em nullptr if none is active. */
+	inline const seEffect::Ref &GetActiveEffect() const{ return pActiveEffect; }
 	
-	/** \brief Set active effect or \em NULL if none is active. */
+	/** \brief Set active effect or \em nullptr if none is active. */
 	void SetActiveEffect(seEffect *effect);
 	
 	/** \brief Effects. */
-	inline const seEffectList &GetEffects() const{ return pEffects; }
+	inline const seEffect::List &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
 	void AddEffect(seEffect *effect);
@@ -263,7 +267,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** \brief Create a new source from a source type. */
-	static seSource *CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type);
+	static seSource::Ref CreateSourceFromType(deEngine *engine, deSynthesizerSourceVisitorIdentify::eSourceTypes type);
 	/*@}*/
 };
 

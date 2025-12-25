@@ -34,6 +34,10 @@
  * \brief Undo controller set minimum value.
  */
 class seUControllerSetMinimumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetMinimumValue> Ref;
+	
+	
 private:
 	const seController::Ref pController;
 	float pOldValue;
@@ -41,9 +45,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetMinimumValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

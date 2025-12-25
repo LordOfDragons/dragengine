@@ -35,6 +35,10 @@ class seWPSynthesizer;
  * \brief Synthesizer properties panel listener.
  */
 class seWPSynthesizerListener : public seSynthesizerNotifier{
+public:
+	typedef deTObjectReference<seWPSynthesizerListener> Ref;
+	
+	
 private:
 	seWPSynthesizer &pPanel;
 	

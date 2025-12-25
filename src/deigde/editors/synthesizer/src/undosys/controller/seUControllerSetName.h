@@ -34,6 +34,10 @@
  * \brief Undo controller set name.
  */
 class seUControllerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetName> Ref;
+	
+	
 private:
 	const seController::Ref pController;
 	decString pOldValue;
@@ -41,9 +45,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

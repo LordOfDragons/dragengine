@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
-class seLink;
+#include "../../../synthesizer/effect/seEffect.h"
+#include "../../../synthesizer/link/seLink.h"
 class seControllerTarget;
 
 
@@ -37,18 +37,19 @@ class seControllerTarget;
  * \brief Undo action effect target remove link.
  */
 class seUEffectTargetRemoveLink : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectTargetRemoveLink> Ref;
+	
+	
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	seControllerTarget *pTarget;
 	
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectTargetRemoveLink> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

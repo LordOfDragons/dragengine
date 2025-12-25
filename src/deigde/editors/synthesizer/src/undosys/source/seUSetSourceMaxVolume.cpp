@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceMaxVolume::seUSetSourceMaxVolume(seSource *source, float newValue) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,20 +49,11 @@ pSource(NULL)
 	pOldValue = source->GetMaxVolume();
 	pNewValue = newValue;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set maximum volume");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set maximum volume");
 }
 
 seUSetSourceMaxVolume::~seUSetSourceMaxVolume(){
-	pCleanUp();
 }
 
 
@@ -76,15 +67,4 @@ void seUSetSourceMaxVolume::Undo(){
 
 void seUSetSourceMaxVolume::Redo(){
 	pSource->SetMaxVolume(pNewValue);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceMaxVolume::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

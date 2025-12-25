@@ -28,12 +28,13 @@
 #include "../controller/seControllerTarget.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffect.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitorIdentify.h>
 
-class seLinkList;
+class seLink;
 class seLoadSaveSystem;
 class seSource;
 class seSynthesizer;
@@ -49,7 +50,7 @@ class seEffect : public deObject{
 private:
 	seSynthesizer *pSynthesizer;
 	seSource *pParentSource;
-	deSynthesizerEffect *pEngEffect;
+	deSynthesizerEffect::Ref pEngEffect;
 	
 	deSynthesizerEffectVisitorIdentify::eEffectTypes pType;
 	
@@ -63,6 +64,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seEffect> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<seEffect> List;
 
 
 	/** \name Constructors and Destructors */
@@ -86,14 +90,14 @@ public:
 	
 	
 	
-	/** \brief Engine synthesizer effect or \em NULL. */
-	inline deSynthesizerEffect *GetEngineEffect() const{ return pEngEffect; }
+	/** \brief Engine synthesizer effect or \em nullptr. */
+	inline const deSynthesizerEffect::Ref GetEngineEffect() const{ return pEngEffect; }
 	
-	/** \brief Set the engine synthesizer effect or \em NULL. */
+	/** \brief Set the engine synthesizer effect or \em nullptr. */
 	void SetEngineEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Create an engine synthesizer effect. */
-	virtual deSynthesizerEffect *CreateEngineEffect() = 0;
+	virtual deSynthesizerEffect::Ref CreateEngineEffect() = 0;
 	
 	/** \brief Init the given engine effect with the default effect properties. */
 	void InitEngineEffect(deSynthesizerEffect *engEffect) const;
@@ -101,10 +105,10 @@ public:
 	/** \brief Retrieve the effect type. */
 	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetType() const{ return pType; }
 	
-	/** \brief Retrieve the parent source or \em NULL if there is none. */
+	/** \brief Retrieve the parent source or \em nullptr if there is none. */
 	inline seSource *GetParentSource() const{ return pParentSource; }
 	
-	/** \brief Set the parent source or \em NULL if there is none. */
+	/** \brief Set the parent source or \em nullptr if there is none. */
 	void SetParentSource(seSource *source);
 	
 	
@@ -140,7 +144,7 @@ public:
 	inline const seControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
 	
 	/** \brief List all links of all effect targets. */
-	virtual void ListLinks(seLinkList& list);
+	virtual void ListLinks(seLink::List& list);
 	
 	/** \brief Notify engine and listeners that the effect changed. */
 	void NotifyEffectChanged();
@@ -149,7 +153,7 @@ public:
 	void NotifyEngineOnlyEffectChanged();
 	
 	/** \brief Create a copy of this effect. */
-	virtual seEffect *CreateCopy() const = 0;
+	virtual seEffect::Ref CreateCopy() const = 0;
 	
 	/** \brief Parent synthesizer changed. */
 	virtual void SynthesizerChanged();
@@ -171,7 +175,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** \brief Create a new effect from a effect type. */
-	static seEffect *CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type);
+	static seEffect::Ref CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type);
 	/*@}*/
 };
 

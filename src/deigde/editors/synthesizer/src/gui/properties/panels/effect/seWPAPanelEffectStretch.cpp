@@ -67,57 +67,61 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, effect)));
+		igdeUndo::Ref undo(OnChanged(textField, effect));
 		if(undo){
 			effect->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seEffectStretch *effect) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seEffectStretch *effect) = 0;
 };
 
 
 class cTextMinTime : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMinTime> Ref;
 	cTextMinTime(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMinTime()) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMinTime(effect, value) : NULL;
+			? seUEffectStretchSetMinTime::Ref::New(effect, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMaxTime : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMaxTime> Ref;
 	cTextMaxTime(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMaxTime()) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMaxTime(effect, value) : NULL;
+			? seUEffectStretchSetMaxTime::Ref::New(effect, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMinPitch : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMinPitch> Ref;
 	cTextMinPitch(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMinPitch()) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMinPitch(effect, value) : NULL;
+			? seUEffectStretchSetMinPitch::Ref::New(effect, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMaxPitch : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMaxPitch> Ref;
 	cTextMaxPitch(seWPAPanelEffectStretch &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seEffectStretch *effect){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seEffectStretch *effect){
 		const float value = textField->GetFloat();
 		return fabsf(value - effect->GetMaxPitch()) > FLOAT_SAFE_EPSILON
-			? new seUEffectStretchSetMaxPitch(effect, value) : NULL;
+			? seUEffectStretchSetMaxPitch::Ref::New(effect, value) : igdeUndo::Ref();
 	}
 };
 
@@ -141,13 +145,13 @@ seWPAPanelEffect(wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch)
 	
 	helper.GroupBox(*this, groupBox, "Stretch Time/Pitch:");
 	helper.EditFloat(groupBox, "Time Minimum:", "Set minimum time stretch",
-		pEditMinTime, new cTextMinTime(*this));
+		pEditMinTime, cTextMinTime::Ref::New(*this));
 	helper.EditFloat(groupBox, "Time Maximum:", "Set maximum time stretch",
-		pEditMaxTime, new cTextMaxTime(*this));
+		pEditMaxTime, cTextMaxTime::Ref::New(*this));
 	helper.EditFloat(groupBox, "Pitch Minimum:", "Set minimum pitch stretch",
-		pEditMinPitch, new cTextMinPitch(*this));
+		pEditMinPitch, cTextMinPitch::Ref::New(*this));
 	helper.EditFloat(groupBox, "Pitch Maximum:", "Set maximum pitch stretch",
-		pEditMaxPitch, new cTextMaxPitch(*this));
+		pEditMaxPitch, cTextMaxPitch::Ref::New(*this));
 }
 
 seWPAPanelEffectStretch::~seWPAPanelEffectStretch(){

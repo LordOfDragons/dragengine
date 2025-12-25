@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seUSourceAddEffect::seUSourceAddEffect(seSource *source, seEffect *effect, int index) :
-pSource(NULL),
-pEffect(NULL),
+
 pIndex(index)
 {
 	if(!source || !effect){
@@ -50,10 +49,7 @@ pIndex(index)
 	}
 	
 	pSource = source;
-	source->AddReference();
-	
 	pEffect = effect;
-	effect->AddReference();
 }
 
 seUSourceAddEffect::~seUSourceAddEffect(){
@@ -79,10 +75,4 @@ void seUSourceAddEffect::Redo(){
 //////////////////////
 
 void seUSourceAddEffect::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

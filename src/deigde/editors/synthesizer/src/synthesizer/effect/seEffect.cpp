@@ -30,7 +30,7 @@
 #include "seEffect.h"
 #include "seEffectStretch.h"
 #include "../seSynthesizer.h"
-#include "../link/seLinkList.h"
+#include "../link/seLink.h"
 #include "../source/seSource.h"
 
 #include <dragengine/common/exceptions.h>
@@ -54,22 +54,16 @@
 ////////////////////////////
 
 seEffect::seEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type) :
-pSynthesizer(NULL),
-pParentSource(NULL),
-pEngEffect(NULL),
+pSynthesizer(nullptr),
+pParentSource(nullptr),
 pType(type),
 pEnabled(true),
-pStrength(1.0f)
-{
-	if(type < deSynthesizerEffectVisitorIdentify::eetStretch || type > deSynthesizerEffectVisitorIdentify::eetStretch){
-		DETHROW(deeInvalidParam);
-	}
+pStrength(1.0f){
 }
 
 seEffect::seEffect(const seEffect &copy) :
-pSynthesizer(NULL),
-pParentSource(NULL),
-pEngEffect(NULL),
+pSynthesizer(nullptr),
+pParentSource(nullptr),
 pType(copy.pType),
 pEnabled(copy.pEnabled),
 pStrength(copy.pStrength),
@@ -85,11 +79,7 @@ seEffect::~seEffect(){
 ///////////////
 
 seSynthesizer *seEffect::GetSynthesizer() const{
-	if(!pParentSource){
-		return NULL;
-	}
-	
-	return pParentSource->GetSynthesizer();
+	return pParentSource ? pParentSource->GetSynthesizer() : nullptr;
 }
 
 
@@ -99,16 +89,15 @@ void seEffect::SetEngineEffect(deSynthesizerEffect *engEffect){
 }
 
 void seEffect::InitEngineEffect(deSynthesizerEffect *engEffect) const{
-	if(!engEffect){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engEffect)
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
+	DEASSERT_NOTNULL(synthesizer)
 	
 	engEffect->SetEnabled(pEnabled);
 	engEffect->SetStrength(pStrength);
 	
-	pTargetStrength.UpdateEngineTarget(synthesizer, engEffect->GetTargetStrength());
+	pTargetStrength.UpdateEngineTarget(*synthesizer, engEffect->GetTargetStrength());
 }
 
 
@@ -151,16 +140,17 @@ void seEffect::SetStrength(float strength){
 
 void seEffect::UpdateTargets(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
+	DEASSERT_NOTNULL(synthesizer)
 	
 	if(pEngEffect && synthesizer){
-		pTargetStrength.UpdateEngineTarget(synthesizer, pEngEffect->GetTargetStrength());
+		pTargetStrength.UpdateEngineTarget(*synthesizer, pEngEffect->GetTargetStrength());
 	}
 }
 
 int seEffect::CountLinkUsage(seLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetStrength.HasLink(link)){
+	if(pTargetStrength.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -168,9 +158,7 @@ int seEffect::CountLinkUsage(seLink *link) const{
 }
 
 void seEffect::RemoveLinkFromTargets(seLink *link){
-	if(pTargetStrength.HasLink(link)){
-		pTargetStrength.RemoveLink(link);
-	}
+	pTargetStrength.RemoveLink(link);
 }
 
 void seEffect::RemoveLinksFromAllTargets(){
@@ -179,7 +167,7 @@ void seEffect::RemoveLinksFromAllTargets(){
 
 
 
-void seEffect::ListLinks(seLinkList &list){
+void seEffect::ListLinks(seLink::List &list){
 	pTargetStrength.AddLinksToList(list);
 }
 
@@ -233,10 +221,10 @@ seEffect &seEffect::operator=(const seEffect &copy){
 // Helper
 ///////////
 
-seEffect *seEffect::CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type){
+seEffect::Ref seEffect::CreateEffectFromType(deEngine *engine, deSynthesizerEffectVisitorIdentify::eEffectTypes type){
 	switch(type){
 	case deSynthesizerEffectVisitorIdentify::eetStretch:
-		return new seEffectStretch;
+		return seEffectStretch::Ref::New();
 		
 	default:
 		DETHROW(deeInvalidParam);

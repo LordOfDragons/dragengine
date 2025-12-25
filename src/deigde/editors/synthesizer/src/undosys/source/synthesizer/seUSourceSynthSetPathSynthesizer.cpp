@@ -41,7 +41,7 @@
 
 seUSourceSynthSetPathSynthesizer::seUSourceSynthSetPathSynthesizer(
 		seSourceSynthesizer *source, const char *newPath) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || !newPath){
 		DETHROW(deeInvalidParam);
@@ -50,18 +50,14 @@ pSource(NULL)
 	pOldPath = source->GetPathSynthesizer();
 	pNewPath = newPath;
 	
-	pOldConCount = source->GetConnectionCount();
+	pOldConCount = source->GetConnections().GetCount();
 	
 	SetShortInfo("Synthesizer source set synthesizer path");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthSetPathSynthesizer::~seUSourceSynthSetPathSynthesizer(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 
@@ -70,7 +66,7 @@ seUSourceSynthSetPathSynthesizer::~seUSourceSynthSetPathSynthesizer(){
 ///////////////
 
 void seUSourceSynthSetPathSynthesizer::Undo(){
-	if(pSource->GetConnectionCount() != pOldConCount){
+	if(pSource->GetConnections().GetCount() != pOldConCount){
 		pSource->SetConnectionCount(pOldConCount);
 	}
 	
@@ -80,7 +76,7 @@ void seUSourceSynthSetPathSynthesizer::Undo(){
 void seUSourceSynthSetPathSynthesizer::Redo(){
 	pSource->SetPathSynthesizer(pNewPath);
 	
-	const int count = pSource->GetControllerNameCount();
+	const int count = pSource->GetConnections().GetCount();
 	if(count > pOldConCount){
 		pSource->SetConnectionCount(count);
 	}

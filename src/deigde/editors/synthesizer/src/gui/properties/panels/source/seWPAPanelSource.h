@@ -25,6 +25,8 @@
 #ifndef _SEWPAPANELSOURCE_H_
 #define _SEWPAPANELSOURCE_H_
 
+#include "../../seWPEffect.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -38,7 +40,6 @@
 class seLink;
 class seSynthesizer;
 class seSource;
-class seWPEffect;
 class seWPSource;
 class seWindowMain;
 class seControllerTarget;
@@ -49,6 +50,9 @@ class seControllerTarget;
  * \brief Base source option panel.
  */
 class seWPAPanelSource : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<seWPAPanelSource> Ref;
+	
 private:
 	seWPSource &pWPSource;
 	deSynthesizerSourceVisitorIdentify::eSourceTypes pRequiredType;
@@ -70,7 +74,7 @@ private:
 	igdeComboBox::Ref pCBLinks;
 	igdeButton::Ref pBtnLinkAdd;
 	
-	seWPEffect *pWPEffect;
+	seWPEffect::Ref pWPEffect;
 	
 	
 	
@@ -99,19 +103,19 @@ public:
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
 	
-	/** \brief Synthesizer or \em NULL if not set. */
+	/** \brief Synthesizer or \em nullptr if not set. */
 	seSynthesizer *GetSynthesizer() const;
 	
-	/** \brief Source or \em NULL if not set. */
+	/** \brief Source or \em nullptr if not set. */
 	seSource *GetSource() const;
 	
-	/** \brief Target or \em NULL if not set. */
+	/** \brief Target or \em nullptr if not set. */
 	seControllerTarget *GetTarget() const;
 	
-	/** \brief Selected link in combo box or \em NULL if not set. */
+	/** \brief Selected link in combo box or \em nullptr if not set. */
 	seLink *GetCBLink() const;
 	
-	/** \brief Selected link in list box or \em NULL if not set. */
+	/** \brief Selected link in list box or \em nullptr if not set. */
 	seLink *GetListLink() const;
 	
 	

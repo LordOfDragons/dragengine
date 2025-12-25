@@ -70,19 +70,7 @@
 
 seSynthesizer::seSynthesizer(igdeEnvironment *environment, seLoadSaveSystem &lssys) :
 igdeEditableEntity(environment),
-
 pLoadSaveSystem(lssys),
-pEngWorld(NULL),
-
-pEngSynthesizer(NULL),
-pEngSynthesizerInstance(NULL),
-pEngSpeaker(NULL),
-pEngMicrophone(NULL),
-
-pActiveController(NULL),
-pActiveLink(NULL),
-pActiveSource(NULL),
-
 pChannelCount(1),
 pSampleRate(44100),
 pBytesPerSample(2),
@@ -310,7 +298,7 @@ void seSynthesizer::RemoveController(seController *controller){
 	
 	if(controller == pActiveController){
 		if(pControllers.GetCount() == 1){
-			SetActiveController(NULL);
+			SetActiveController(nullptr);
 			
 		}else if(index < pControllers.GetCount() - 1){
 			SetActiveController(pControllers.GetAt(index + 1));
@@ -320,7 +308,7 @@ void seSynthesizer::RemoveController(seController *controller){
 		}
 	}
 	
-	controller->SetSynthesizer(NULL);
+	controller->SetSynthesizer(nullptr);
 	pControllers.Remove(controller);
 	
 	pUpdateLinks();
@@ -328,12 +316,12 @@ void seSynthesizer::RemoveController(seController *controller){
 }
 
 void seSynthesizer::RemoveAllControllers(){
-	SetActiveController(NULL);
+	SetActiveController(nullptr);
 	
 	const int count = pControllers.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetSynthesizer(NULL);
+		pControllers.GetAt(i)->SetSynthesizer(nullptr);
 	}
 	pControllers.RemoveAll();
 	
@@ -383,7 +371,7 @@ void seSynthesizer::RemoveLink(seLink *link){
 	
 	if(link == pActiveLink){
 		if(pLinks.GetCount() == 1){
-			SetActiveLink(NULL);
+			SetActiveLink(nullptr);
 			
 		}else if(index < pLinks.GetCount() - 1){
 			SetActiveLink(pLinks.GetAt(index + 1));
@@ -400,13 +388,11 @@ void seSynthesizer::RemoveLink(seLink *link){
 }
 
 void seSynthesizer::RemoveAllLinks(){
-	SetActiveLink(NULL);
+	SetActiveLink(nullptr);
 	
-	const int count = pLinks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->SetSynthesizer(NULL);
-	}
+	pLinks.Visit([](seLink &link){
+		link.SetSynthesizer(nullptr);
+	});
 	pLinks.RemoveAll();
 	
 	RebuildSources();
@@ -423,12 +409,11 @@ void seSynthesizer::SetActiveLink(seLink *link){
 }
 
 int seSynthesizer::CountLinkUsage(seLink *link) const{
-	const int count = pSources.GetCount();
-	int i, usageCount = 0;
+	int usageCount = 0;
 	
-	for(i=0; i<count; i++){
-		usageCount += pSources.GetAt(i)->CountLinkUsage(link);
-	}
+	pSources.Visit([&](seSource &source){
+		usageCount += source.CountLinkUsage(link);
+	});
 	
 	return usageCount;
 }
@@ -470,7 +455,7 @@ void seSynthesizer::RemoveSource(seSource *source){
 	
 	if(source == pActiveSource){
 		if(pSources.GetCount() == 1){
-			SetActiveSource(NULL);
+			SetActiveSource(nullptr);
 			
 		}else if(index < pSources.GetCount() - 1){
 			SetActiveSource(pSources.GetAt(index + 1));
@@ -480,7 +465,7 @@ void seSynthesizer::RemoveSource(seSource *source){
 		}
 	}
 	
-	source->SetSynthesizer(NULL);
+	source->SetSynthesizer(nullptr);
 	pSources.Remove(source);
 	
 	RebuildSources();
@@ -488,12 +473,12 @@ void seSynthesizer::RemoveSource(seSource *source){
 }
 
 void seSynthesizer::RemoveAllSources(){
-	SetActiveSource(NULL);
+	SetActiveSource(nullptr);
 	
 	const int count = pSources.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pSources.GetAt(i)->SetSynthesizer(NULL);
+		pSources.GetAt(i)->SetSynthesizer(nullptr);
 	}
 	pSources.RemoveAll();
 	
@@ -511,42 +496,23 @@ void seSynthesizer::SetActiveSource(seSource *source){
 }
 
 void seSynthesizer::RebuildSources(){
-	deSynthesizerSource *engSource = NULL;
-	const int count = pSources.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pSources.GetAt(i)->SetEngineSource(NULL);
-	}
+	pSources.Visit([](seSource &source){
+		source.SetEngineSource(nullptr);
+	});
 	
 	pEngSynthesizer->RemoveAllSources();
 	
-	try{
-		for(i=0; i<count; i++){
-			seSource &source = *pSources.GetAt(i);
-			
-			engSource = source.CreateEngineSource();
-			pEngSynthesizer->AddSource(engSource);
-			source.SetEngineSource(engSource);
-			engSource->FreeReference();
-			engSource = NULL;
-		}
-		
-	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
-		throw;
-	}
+	pSources.Visit([&](seSource &source){
+		const deSynthesizerSource::Ref engSource(source.CreateEngineSource());
+		pEngSynthesizer->AddSource(engSource);
+		source.SetEngineSource(engSource);
+	});
 }
 
 void seSynthesizer::DirectoryChanged(){
-	const int count = pSources.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pSources.GetAt(i)->SynthesizerDirectoryChanged();
-	}
+	pSources.Visit([](seSource &source){
+		source.SynthesizerDirectoryChanged();
+	});
 }
 
 
@@ -562,110 +528,78 @@ void seSynthesizer::RemoveNotifier(seSynthesizerNotifier *notifier){
 	pListeners.Remove(notifier);
 }
 
-
-
 void seSynthesizer::NotifyStateChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->StateChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.StateChanged(this);
+	});
 }
 
 void seSynthesizer::NotifyUndoChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->UndoChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.UndoChanged(this);
+	});
 }
 
 void seSynthesizer::NotifySynthesizerChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->SynthesizerChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.SynthesizerChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyPlaybackChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->PlaybackChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.PlaybackChanged(this);
+	});
 }
 
 
 
 void seSynthesizer::NotifyActiveControllerChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ActiveControllerChanged(this, pActiveController);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ActiveControllerChanged(this, pActiveController);
+	});
 }
 
 void seSynthesizer::NotifyControllerChanged(seController *controller){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ControllerChanged(this, controller);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ControllerChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyControllerNameChanged(seController *controller){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ControllerNameChanged(this, controller);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ControllerNameChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyControllerRangeChanged(seController *controller){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ControllerRangeChanged(this, controller);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ControllerRangeChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyControllerCurveChanged(seController *controller){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ControllerCurveChanged(this, controller);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ControllerCurveChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyControllerStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
 	pUpdateEngineControllers();
 	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ControllerStructureChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ControllerStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -673,43 +607,31 @@ void seSynthesizer::NotifyControllerStructureChanged(){
 
 
 void seSynthesizer::NotifyActiveLinkChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ActiveLinkChanged(this, pActiveLink);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ActiveLinkChanged(this, pActiveLink);
+	});
 }
 
 void seSynthesizer::NotifyLinkChanged(seLink *link){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->LinkChanged(this, link);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.LinkChanged(this, link);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyLinkNameChanged(seLink *link){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->LinkNameChanged(this, link);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.LinkNameChanged(this, link);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyLinkStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->LinkStructureChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.LinkStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -717,78 +639,56 @@ void seSynthesizer::NotifyLinkStructureChanged(){
 
 
 void seSynthesizer::NotifyActiveSourceChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ActiveSourceChanged(this, pActiveSource);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ActiveSourceChanged(this, pActiveSource);
+	});
 }
 
 void seSynthesizer::NotifySourceChanged(seSource *source){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->SourceChanged(this, source);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.SourceChanged(this, source);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifySourceNameChanged(seSource *source){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->SourceNameChanged(this, source);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.SourceNameChanged(this, source);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifySourceStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->SourceStructureChanged(this);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.SourceStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyActiveEffectChanged(seSource *source){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->ActiveEffectChanged(this, source);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.ActiveEffectChanged(this, source);
+	});
 }
 
 void seSynthesizer::NotifyEffectChanged(seSource *source, seEffect *effect){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->EffectChanged(this, source, effect);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.EffectChanged(this, source, effect);
+	});
 	
 	SetChanged(true);
 }
 
 void seSynthesizer::NotifyEffectStructureChanged(seSource *source){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSynthesizerNotifier*)pListeners.GetAt(i))->EffectStructureChanged(this, source);
-	}
+	pListeners.Visit([&](seSynthesizerNotifier &l){
+		l.EffectStructureChanged(this, source);
+	});
 	
 	SetChanged(true);
 }
-
 
 
 // Private Functions
@@ -803,35 +703,25 @@ void seSynthesizer::pCleanUp(){
 	
 	if(pEngSynthesizerInstance){
 		if(pEngSpeaker){
-			pEngSpeaker->SetSynthesizer(NULL);
+			pEngSpeaker->SetSynthesizer(nullptr);
 		}
 		
-		pEngSynthesizerInstance->SetSynthesizer(NULL);
-		pEngSynthesizerInstance->FreeReference();
+		pEngSynthesizerInstance->SetSynthesizer(nullptr);
 	}
-	
-	if(pEngSynthesizer){
-		pEngSynthesizer->FreeReference();
-	}
-	
 	if(pEngSpeaker){
 		if(pEngMicrophone){
 			pEngMicrophone->RemoveSpeaker(pEngSpeaker);
 		}
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngWorld){
 		if(pEngMicrophone){
 			if(GetEngine()->GetAudioSystem()->GetActiveMicrophone() == pEngMicrophone){
-				GetEngine()->GetAudioSystem()->SetActiveMicrophone(NULL);
+				GetEngine()->GetAudioSystem()->SetActiveMicrophone(nullptr);
 			}
 			
 			pEngWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -875,50 +765,29 @@ void seSynthesizer::pCreateWorld(){
 }
 
 void seSynthesizer::pUpdateLinks(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->UpdateController();
-	}
+	pLinks.Visit([](seLink &link){
+		link.UpdateController();
+	});
 	
 	RebuildSources();
 }
 
 void seSynthesizer::pUpdateEngineControllers(){
 	// set all engine controller indices in our controllers to -1
-	const int count = pControllers.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetEngineControllerIndex(-1);
-	}
+	pControllers.Visit([](seController &controller){
+		controller.SetEngineControllerIndex(-1);
+	});
 	
 	// remove the synthesizer from the synthesizer instance
-	pEngSynthesizerInstance->SetSynthesizer(NULL);
+	pEngSynthesizerInstance->SetSynthesizer(nullptr);
 	
 	// remove all controllers
 	pEngSynthesizer->RemoveAllControllers();
 	
 	// add an engine controller for each controller we have
-	deSynthesizerController *engController = NULL;
-	
-	try{
-		const int controllerCount = pControllers.GetCount();
-		
-		for(i=0; i<controllerCount; i++){
-			engController = new deSynthesizerController;
-			pEngSynthesizer->AddController(engController);
-			engController = NULL;
-		}
-		
-	}catch(const deException &){
-		if(engController){
-			engController->FreeReference();
-		}
-		
-		throw;
-	}
+	pControllers.Visit([&](seController &){
+		pEngSynthesizer->AddController(deSynthesizerController::Ref::New());
+	});
 	
 	// assign the synthesizer to the synthesizer instance. this creates the controllers
 	// inside the synthesizer instance
@@ -926,9 +795,9 @@ void seSynthesizer::pUpdateEngineControllers(){
 	pEngSynthesizerInstance->SetSampleCount(pSampleCount);
 	
 	// now assign the matching engine controller indices to our controllers
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetEngineControllerIndex(i);
-	}
+	pControllers.VisitIndexed([&](int i, seController &controller){
+		controller.SetEngineControllerIndex(i);
+	});
 	
 	// links have to be updated now
 	pUpdateLinks();

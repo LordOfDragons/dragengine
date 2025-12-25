@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 
@@ -36,8 +36,12 @@ class seSourceChain;
  * \brief Undo set source chain remove path sound.
  */
 class seUSourceChainPathSoundRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceChainPathSoundRemove> Ref;
+	
+	
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	int pIndex;
 	decString pPath;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceChainPathSoundRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

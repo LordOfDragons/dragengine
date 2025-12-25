@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seUSourceRemoveEffect::seUSourceRemoveEffect(seSource *source, seEffect *effect) :
-pEffect(NULL),
-pSource(NULL)
+
+pSource(nullptr)
 {
 	if(!effect || !source){
 		DETHROW(deeInvalidParam);
@@ -54,14 +54,10 @@ pSource(NULL)
 	}
 	
 	pSource = source;
-	source->AddReference();
-	
 	pEffect = effect;
-	effect->AddReference();
 }
 
 seUSourceRemoveEffect::~seUSourceRemoveEffect(){
-	pCleanUp();
 }
 
 
@@ -75,18 +71,4 @@ void seUSourceRemoveEffect::Undo(){
 
 void seUSourceRemoveEffect::Redo(){
 	pSource->RemoveEffect(pEffect);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSourceRemoveEffect::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

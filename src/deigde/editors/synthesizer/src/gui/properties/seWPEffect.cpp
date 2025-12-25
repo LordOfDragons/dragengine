@@ -80,6 +80,7 @@ class cListEffects : public igdeListBoxListener{
 	seWPEffect &pPanel;
 	
 public:
+	typedef deTObjectReference<cListEffects> Ref;
 	cListEffects(seWPEffect &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -90,7 +91,7 @@ public:
 		
 		const igdeListItem * const selection = listBox->GetSelectedItem();
 		if(selection){
-			source->SetActiveEffect(selection ? (seEffect*)selection->GetData() : NULL);
+			source->SetActiveEffect(selection ? (seEffect*)selection->GetData() : nullptr);
 		}
 	}
 	
@@ -103,11 +104,11 @@ public:
 		helper.MenuCommand(menu, pPanel.GetActionEffectPasteInsert());
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionEffectAddStretch());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionEffectInsertStretch());
 		menu.AddChild(submenu);
 		
@@ -120,23 +121,24 @@ public:
 
 class cActionEffectCopy : public igdeAction{
 	seWPEffect &pPanel;
-	
+
 public:
+	typedef deTObjectReference<cActionEffectCopy> Ref;
 	cActionEffectCopy(seWPEffect &panel) : igdeAction("Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy effect to clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seEffect * const effect = pPanel.GetEffect();
 		if(!effect){
 			return;
 		}
 		
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
-			seClipboardDataEffect::Ref::NewWith(effect));
+			seClipboardDataEffect::Ref::New(effect));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetEffect());
 	}
 };
@@ -145,25 +147,26 @@ class cActionEffectCut : public igdeAction{
 	seWPEffect &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEffectCut> Ref;
 	cActionEffectCut(seWPEffect &panel) : igdeAction("Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut effect to clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seEffect * const effect = pPanel.GetEffect();
 		if(!effect){
 			return;
 		}
 		
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
-			seClipboardDataEffect::Ref::NewWith(effect));
+			seClipboardDataEffect::Ref::New(effect));
 		
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
-			seUSourceRemoveEffect::Ref::NewWith(pPanel.GetSource(), effect));
+			seUSourceRemoveEffect::Ref::New(pPanel.GetSource(), effect));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetEffect());
 	}
 };
@@ -173,11 +176,12 @@ protected:
 	seWPEffect &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEffectPasteAdd> Ref;
 	cActionEffectPasteAdd(seWPEffect &panel) : igdeAction("Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste effect from clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSource()){
 			return;
 		}
@@ -189,14 +193,14 @@ public:
 		}
 		
 		seEffect * const effect = pPanel.GetEffect();
-		const seEffectList &list = pPanel.GetSource()->GetEffects();
+		const seEffect::List &list = pPanel.GetSource()->GetEffects();
 		const int index = effect ? list.IndexOf(effect) : list.GetCount();
 		
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::NewWith(
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::New(
 			pPanel.GetSource(), cdata->GetEffects(), index));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pPanel.GetSource() && pPanel.GetViewSynthesizer().GetWindowMain()
 			.GetClipboard().HasWithTypeName(seClipboardDataEffect::TYPE_NAME));
 	}
@@ -204,6 +208,7 @@ public:
 
 class cActionEffectPasteInsert : public cActionEffectPasteAdd{
 public:
+	typedef deTObjectReference<cActionEffectPasteInsert> Ref;
 	cActionEffectPasteInsert(seWPEffect &panel) : cActionEffectPasteAdd(panel){
 		SetText("Paste Append");
 		SetDescription("Paste effect from clipboard");
@@ -220,7 +225,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::NewWith(
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::New(
 			pPanel.GetSource(), cdata->GetEffects(), pPanel.GetSource()->GetEffects().GetCount()));
 	}
 };
@@ -238,46 +243,39 @@ public:
 seWPEffect::seWPEffect(seViewSynthesizer &viewSynthesizer) :
 igdeContainerFlow(viewSynthesizer.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
-pPanelStretch(NULL),
-pActivePanel(NULL)
+pPanelStretch(nullptr),
+pActivePanel(nullptr)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
-	pListener = new seWPEffectListener(*this);
+	pListener = seWPEffectListener::Ref::New(*this);
 	
 	
-	pActionEffectCopy.TakeOver(new cActionEffectCopy(*this));
-	pActionEffectCut.TakeOver(new cActionEffectCut(*this));
-	pActionEffectPasteAdd.TakeOver(new cActionEffectPasteAdd(*this));
-	pActionEffectPasteInsert.TakeOver(new cActionEffectPasteInsert(*this));
+	pActionEffectCopy = cActionEffectCopy::Ref::New(*this);
+	pActionEffectCut = cActionEffectCut::Ref::New(*this);
+	pActionEffectPasteAdd = cActionEffectPasteAdd::Ref::New(*this);
+	pActionEffectPasteInsert = cActionEffectPasteInsert::Ref::New(*this);
 	
 	
 	helper.GroupBoxFlow(*this, groupBox, "Effects:");
-	helper.ListBox(groupBox, 3, "Effects", pListEffect, new cListEffects(*this));
+	helper.ListBox(groupBox, 3, "Effects", pListEffect, cListEffects::Ref::New(*this));
 	
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher);
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	pSwitcher->AddChild(panel);
+	pSwitcher->AddChild(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
 	
-	panel.TakeOver(pPanelStretch = new seWPAPanelEffectStretch(*this));
-	pSwitcher->AddChild(panel);
+	pPanelStretch = seWPAPanelEffectStretch::Ref::New(*this);
+	pSwitcher->AddChild(pPanelStretch);
 	
 	pSwitcher->SetCurrent(epEmpty);
 }
 
 seWPEffect::~seWPEffect(){
-	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSynthesizer(nullptr);
 }
 
 
@@ -292,14 +290,12 @@ void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateEffectList();
@@ -309,12 +305,12 @@ void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
 }
 
 seSource *seWPEffect::GetSource() const{
-	return pSynthesizer ? pSynthesizer->GetActiveSource() : NULL;
+	return pSynthesizer ? pSynthesizer->GetActiveSource() : nullptr;
 }
 
 seEffect *seWPEffect::GetEffect() const{
 	seSource * const source = GetSource();
-	return source ? source->GetActiveEffect() : NULL;
+	return source ? source->GetActiveEffect() : nullptr;
 }
 
 
@@ -338,22 +334,16 @@ void seWPEffect::UpdateEffectList(){
 	pListEffect->RemoveAllItems();
 	
 	if(source){
-		const seEffectList &list = source->GetEffects();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seEffect * const effect = list.GetAt(i);
-			
+		source->GetEffects().Visit([&](seEffect *effect){
 			switch(effect->GetType()){
 			case deSynthesizerEffectVisitorIdentify::eetStretch:
-				pListEffect->AddItem("Time/Pitch Stretch", NULL, effect);
+				pListEffect->AddItem("Time/Pitch Stretch", nullptr, effect);
 				break;
 				
 			default:
 				DETHROW(deeInvalidParam);
 			}
-		}
+		});
 	}
 	
 	pListEffect->SetSelectionWithData(selection);
@@ -380,7 +370,7 @@ void seWPEffect::ShowActiveEffectPanel(){
 		
 	}else{
 		pSwitcher->SetCurrent(epEmpty);
-		pActivePanel = NULL;
+		pActivePanel = nullptr;
 	}
 	
 	if(pActivePanel){

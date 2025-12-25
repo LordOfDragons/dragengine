@@ -37,6 +37,10 @@
  * \brief Undo controller set curve.
  */
 class seUControllerSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetCurve> Ref;
+	
+	
 private:
 	const seController::Ref pController;
 	decCurveBezier pOldValue;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetCurve> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

@@ -28,10 +28,10 @@
 #include "seSource.h"
 
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/sound/deSound.h>
 
 class deEngine;
-class deSound;
 
 
 
@@ -39,11 +39,14 @@ class deSound;
  * \brief Synthesizer source chain.
  */
 class seSourceChain : public seSource{
+public:
+	typedef deTObjectReference<seSourceChain> Ref;
+	
 private:
 	deEngine *pEngine;
 	
 	decStringList pPathSounds;
-	decObjectList pSounds;
+	decTObjectList<deSound> pSounds;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -95,8 +98,8 @@ public:
 	/** \brief Update sounds. */
 	void UpdateSounds();
 	
-	/** \brief Sound at index. */
-	deSound *GetSoundAt(int index) const;
+	/** \brief Sounds. */
+	inline const decTObjectList<deSound> &GetSounds() const{ return pSounds; }
 	
 	
 	
@@ -152,7 +155,7 @@ public:
 	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
-	virtual deSynthesizerSource *CreateEngineSource();
+	virtual deSynthesizerSource::Ref CreateEngineSource();
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;
@@ -167,10 +170,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this source. */
-	seSource *CreateCopy() const override;
+	seSource::Ref CreateCopy() const override;
 	
 	/** \brief List all links of all source targets. */
-	void ListLinks(seLinkList& list) override;
+	void ListLinks(seLink::List& list) override;
 	
 	/** \brief Parent synthesizer changed. */
 	void SynthesizerChanged() override;

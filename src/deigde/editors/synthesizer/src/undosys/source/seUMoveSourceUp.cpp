@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seUMoveSourceUp::seUMoveSourceUp(seSynthesizer *synthesizer, seSource *source) :
-pSynthesizer(NULL),
-pSource(NULL)
+pSynthesizer(nullptr)
 {
 	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
@@ -54,10 +53,7 @@ pSource(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUMoveSourceUp::~seUMoveSourceUp(){
@@ -83,10 +79,4 @@ void seUMoveSourceUp::Redo(){
 //////////////////////
 
 void seUMoveSourceUp::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

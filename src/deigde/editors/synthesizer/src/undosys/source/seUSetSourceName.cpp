@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceName::seUSetSourceName(seSource *source, const char *newName) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || !newName){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Set Source Name");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceName::~seUSetSourceName(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

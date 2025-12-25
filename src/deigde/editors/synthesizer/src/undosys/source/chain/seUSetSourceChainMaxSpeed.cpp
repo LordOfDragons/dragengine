@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceChainMaxSpeed::seUSetSourceChainMaxSpeed(seSourceChain *source, float newSpeed) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewSpeed = newSpeed;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceChainMaxSpeed::~seUSetSourceChainMaxSpeed(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

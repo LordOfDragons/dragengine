@@ -25,13 +25,13 @@
 #ifndef _SELOADSAVESYSTEM_H_
 #define _SELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include "../synthesizer/seSynthesizer.h"
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class seLoadSaveSynthesizer;
 class seWindowMain;
-class seSynthesizer;
 class igdeGameDefinition;
-class igdeFilePatternList;
 
 
 
@@ -43,7 +43,7 @@ private:
 	seWindowMain &pWindowMain;
 	
 	seLoadSaveSynthesizer *pLSSynthesizer;
-	igdeFilePatternList pFPSynthesizer;
+	igdeFilePattern::List pFPSynthesizer;
 	
 	
 	
@@ -68,13 +68,13 @@ public:
 	inline seLoadSaveSynthesizer *GetLSSynthesizer(){ return pLSSynthesizer; }
 	
 	/** \brief Load synthesizer from file. */
-	seSynthesizer *LoadSynthesizer(const char *filename, const char *basePath = "/");
+	seSynthesizer::Ref LoadSynthesizer(const char *filename, const char *basePath = "/");
 	
 	/** \brief Save synthesizer to file. */
 	void SaveSynthesizer(seSynthesizer *synthesizer, const char *filename);
 	
 	/** \brief Synthesizer file pattern list. */
-	inline const igdeFilePatternList &GetSynthesizerFilePatterns() const{ return pFPSynthesizer; }
+	inline const igdeFilePattern::List &GetSynthesizerFilePatterns() const{ return pFPSynthesizer; }
 	/*@}*/
 	
 	

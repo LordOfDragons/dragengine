@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUEffectStretchSetMaxPitch::seUEffectStretchSetMaxPitch(seEffectStretch *effect, float newPitch) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!effect){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewPitch = newPitch;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMaxPitch::~seUEffectStretchSetMaxPitch(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

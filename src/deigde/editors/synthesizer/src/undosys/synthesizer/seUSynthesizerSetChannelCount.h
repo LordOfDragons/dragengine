@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -36,8 +36,12 @@ class seSynthesizer;
  * \brief Undo action synthesizer set channel count.
  */
 class seUSynthesizerSetChannelCount : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSynthesizerSetChannelCount> Ref;
+	
+	
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldChannelCount;
 	int pNewChannelCount;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSynthesizerSetChannelCount> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -69,11 +70,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
-class seEffect;
+#include "../../../synthesizer/source/seSource.h"
+#include "../../../synthesizer/effect/seEffect.h"
 class seSynthesizer;
 
 
@@ -39,13 +39,14 @@ class seSynthesizer;
  */
 class seUSourceAddEffect : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seUSourceAddEffect> Ref;
 	
 	
+public:
+	
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	

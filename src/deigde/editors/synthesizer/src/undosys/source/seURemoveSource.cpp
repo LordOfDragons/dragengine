@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seURemoveSource::seURemoveSource(seSynthesizer *synthesizer, seSource *source) :
-pSynthesizer(NULL),
-pSource(NULL)
+pSynthesizer(nullptr)
 {
 	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
@@ -54,14 +53,10 @@ pSource(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seURemoveSource::~seURemoveSource(){
-	pCleanUp();
 }
 
 
@@ -75,18 +70,4 @@ void seURemoveSource::Undo(){
 
 void seURemoveSource::Redo(){
 	pSynthesizer->RemoveSource(pSource);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seURemoveSource::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

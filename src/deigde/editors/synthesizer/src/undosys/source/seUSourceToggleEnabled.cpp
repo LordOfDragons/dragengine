@@ -40,26 +40,17 @@
 ////////////////////////////
 
 seUSourceToggleEnabled::seUSourceToggleEnabled(seSource *source) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Toggle source enabled");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Toggle source enabled");
 }
 
 seUSourceToggleEnabled::~seUSourceToggleEnabled(){
-	pCleanUp();
 }
 
 
@@ -73,15 +64,4 @@ void seUSourceToggleEnabled::Undo(){
 
 void seUSourceToggleEnabled::Redo(){
 	pSource->SetEnabled(!pSource->GetEnabled());
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSourceToggleEnabled::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

@@ -33,6 +33,9 @@
  * \brief Group source panel.
  */
 class seWPAPanelSourceGroup : public seWPAPanelSource{
+public:
+	typedef deTObjectReference<seWPAPanelSourceGroup> Ref;
+	
 private:
 	igdeComboBox::Ref pCBApplicationType;
 	

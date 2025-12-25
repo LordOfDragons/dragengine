@@ -26,10 +26,10 @@
 #ifndef _SEUSOURCEGROUPSETAPPLICATIONTYPE_H_
 #define _SEUSOURCEGROUPSETAPPLICATIONTYPE_H_
 
+#include "../../../synthesizer/source/seSourceGroup.h"
+
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
-
-class seSourceGroup;
 
 
 
@@ -37,8 +37,12 @@ class seSourceGroup;
  * \brief Undo action group source set source application type.
  */
 class seUSourceGroupSetApplicationType : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceGroupSetApplicationType> Ref;
+	
+	
 private:
-	seSourceGroup *pSource;
+	seSourceGroup::Ref pSource;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pOldType;
 	deSynthesizerSourceGroup::eApplicationTypes pNewType;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceGroupSetApplicationType> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

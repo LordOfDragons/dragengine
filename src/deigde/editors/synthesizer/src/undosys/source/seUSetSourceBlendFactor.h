@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -36,8 +36,12 @@ class seSource;
  * \brief Undo action source set blend factor.
  */
 class seUSetSourceBlendFactor : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceBlendFactor> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldFactor;
 	float pNewFactor;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceBlendFactor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -69,11 +70,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

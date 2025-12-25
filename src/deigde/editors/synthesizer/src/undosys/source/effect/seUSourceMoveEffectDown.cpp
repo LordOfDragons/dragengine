@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seUSourceMoveEffectDown::seUSourceMoveEffectDown(seSource *source, seEffect *effect) :
-pSource(NULL),
-pEffect(NULL)
+pSource(nullptr)
 {
 	if(!effect || !source){
 		DETHROW(deeInvalidParam);
@@ -54,10 +53,7 @@ pEffect(NULL)
 	}
 	
 	pSource = source;
-	source->AddReference();
-	
 	pEffect = effect;
-	effect->AddReference();
 }
 
 seUSourceMoveEffectDown::~seUSourceMoveEffectDown(){
@@ -83,10 +79,4 @@ void seUSourceMoveEffectDown::Redo(){
 //////////////////////
 
 void seUSourceMoveEffectDown::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceMinVolume::seUSetSourceMinVolume(seSource *source, float newValue) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,20 +49,11 @@ pSource(NULL)
 	pOldValue = source->GetMinVolume();
 	pNewValue = newValue;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set minimum volume");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set minimum volume");
 }
 
 seUSetSourceMinVolume::~seUSetSourceMinVolume(){
-	pCleanUp();
 }
 
 
@@ -76,15 +67,4 @@ void seUSetSourceMinVolume::Undo(){
 
 void seUSetSourceMinVolume::Redo(){
 	pSource->SetMinVolume(pNewValue);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceMinVolume::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

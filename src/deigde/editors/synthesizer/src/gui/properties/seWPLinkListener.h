@@ -35,6 +35,9 @@ class seWPLink;
  * \brief Link properties panel listener.
  */
 class seWPLinkListener : public seSynthesizerNotifier{
+public:
+	typedef deTObjectReference<seWPLinkListener> Ref;
+	
 private:
 	seWPLink &pPanel;
 	
@@ -44,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPLinkListener(seWPLink &panel);
+	explicit seWPLinkListener(seWPLink &panel);
 	
 	/** \brief Clean up listener. */
 	~seWPLinkListener() override;

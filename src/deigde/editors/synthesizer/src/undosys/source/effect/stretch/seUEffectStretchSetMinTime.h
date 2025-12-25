@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffectStretch;
+#include "../../../../synthesizer/effect/seEffectStretch.h"
 
 
 /**
  * \brief Undo effect stretch set minimum time.
  */
 class seUEffectStretchSetMinTime : public igdeUndo{
+public:
+	typedef deTObjectReference<seUEffectStretchSetMinTime> Ref;
+	
+	
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldTime;
 	float pNewTime;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUEffectStretchSetMinTime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

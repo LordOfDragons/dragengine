@@ -35,6 +35,9 @@
  * \brief Sound source panel.
  */
 class seWPAPanelSourceSound : public seWPAPanelSource{
+public:
+	typedef deTObjectReference<seWPAPanelSourceSound> Ref;
+	
 private:
 	igdeEditPath::Ref pEditPathSound;
 	igdeTextField::Ref pEditMinSpeed;

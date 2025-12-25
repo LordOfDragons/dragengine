@@ -43,7 +43,7 @@
 ////////////////////////////
 
 seController::seController(const char *name) :
-pSynthesizer(NULL),
+pSynthesizer(nullptr),
 pEngControllerIndex(-1),
 
 pName(name),
@@ -56,7 +56,7 @@ pEditConstantValue(0.0f){
 }
 
 seController::seController(const seController &copy) :
-pSynthesizer(NULL),
+pSynthesizer(nullptr),
 pEngControllerIndex(-1),
 
 pName(copy.pName),
@@ -245,5 +245,5 @@ seController &seController::operator=(const seController &controller){
 //////////////////////
 
 void seController::pCleanUp(){
-	SetSynthesizer(NULL);
+	SetSynthesizer(nullptr);
 }

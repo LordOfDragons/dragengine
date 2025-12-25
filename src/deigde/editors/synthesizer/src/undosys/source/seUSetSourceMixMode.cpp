@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceMixMode::seUSetSourceMixMode(seSource *source, deSynthesizerSource::eMixModes newMode) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,20 +49,11 @@ pSource(NULL)
 	pOldMode = source->GetMixMode();
 	pNewMode = newMode;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set blend mode");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set blend mode");
 }
 
 seUSetSourceMixMode::~seUSetSourceMixMode(){
-	pCleanUp();
 }
 
 
@@ -76,15 +67,4 @@ void seUSetSourceMixMode::Undo(){
 
 void seUSetSourceMixMode::Redo(){
 	pSource->SetMixMode(pNewMode);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceMixMode::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

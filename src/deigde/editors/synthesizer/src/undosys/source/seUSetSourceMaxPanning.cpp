@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceMaxPanning::seUSetSourceMaxPanning(seSource *source, float newValue) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -49,20 +49,11 @@ pSource(NULL)
 	pOldValue = source->GetMaxPanning();
 	pNewValue = newValue;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set maximum panning");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set maximum panning");
 }
 
 seUSetSourceMaxPanning::~seUSetSourceMaxPanning(){
-	pCleanUp();
 }
 
 
@@ -76,15 +67,4 @@ void seUSetSourceMaxPanning::Undo(){
 
 void seUSetSourceMaxPanning::Redo(){
 	pSource->SetMaxPanning(pNewValue);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceMaxPanning::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

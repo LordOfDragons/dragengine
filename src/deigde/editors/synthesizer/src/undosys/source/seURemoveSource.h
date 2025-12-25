@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
-class seSynthesizer;
+#include "../../synthesizer/source/seSource.h"
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -37,17 +37,18 @@ class seSynthesizer;
  * \brief Undo action remove source.
  */
 class seURemoveSource : public igdeUndo{
+public:
+	typedef deTObjectReference<seURemoveSource> Ref;
+	
+	
 private:
-	seSynthesizer *pSynthesizer;
-	seSource *pSource;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seURemoveSource> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -69,11 +70,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

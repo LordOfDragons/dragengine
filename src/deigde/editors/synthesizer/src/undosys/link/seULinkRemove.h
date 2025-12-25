@@ -25,11 +25,12 @@
 #ifndef _SEULINKREMOVE_H_
 #define _SEULINKREMOVE_H_
 
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/source/seSource.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seSource;
-class seSynthesizer;
 class seControllerTarget;
 
 
@@ -38,26 +39,31 @@ class seControllerTarget;
  * \brief Undo action remove link.
  */
 class seULinkRemove : public igdeUndo{
-private:
-	struct sTarget{
-		seSource *source;
-		seControllerTarget *target;
-	};
-	
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
-	
-	sTarget *pTargets;
-	int pTargetCount;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seULinkRemove> Ref;
 	
+	
+private:
+	class cTarget : public deObject{
+	public:
+		typedef deTObjectReference<cTarget> Ref;
+		typedef decTObjectOrderedSet<cTarget> List;
+		
+		seSource::Ref source;
+		seControllerTarget::Ref target;
+		
+		cTarget() = default;
+	};
+	
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
+	cTarget::List pTargets;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkRemove(seLink *link);
+	explicit seULinkRemove(seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */
@@ -79,8 +85,7 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	void pAddTargetsForSource(seLink *link, int targetCount, seSource *source);
+	void pAddTargetsForSource(seLink *link, int targetCount, const seSource::Ref &source);
 	void pAddTarget(int targetCount, seSource *source, seControllerTarget *target);
 };
 

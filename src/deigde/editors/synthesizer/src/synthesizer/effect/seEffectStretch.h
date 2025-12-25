@@ -35,6 +35,9 @@
  * \brief Synthesizer effect stretch time and pitch.
  */
 class seEffectStretch : public seEffect{
+public:
+	typedef deTObjectReference<seEffectStretch> Ref;
+	
 private:
 	float pMinTime;
 	float pMaxTime;
@@ -100,7 +103,7 @@ public:
 	
 	
 	/** \brief Create engine synthesizer effect. */
-	virtual deSynthesizerEffect *CreateEngineEffect();
+	virtual deSynthesizerEffect::Ref CreateEngineEffect();
 	
 	/** \brief Update targets. */
 	void UpdateTargets() override;
@@ -115,10 +118,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** \brief Create a copy of this effect. */
-	seEffect *CreateCopy() const override;
+	seEffect::Ref CreateCopy() const override;
 	
 	/** \brief List all links of all effect targets. */
-	void ListLinks(seLinkList& list) override;
+	void ListLinks(seLink::List& list) override;
 	/*@}*/
 	
 	

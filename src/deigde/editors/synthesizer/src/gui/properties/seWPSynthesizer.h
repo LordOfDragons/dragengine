@@ -25,6 +25,9 @@
 #ifndef _SEWPSYNTHESIZER_H_
 #define _SEWPSYNTHESIZER_H_
 
+#include "seWPSynthesizerListener.h"
+#include "../../synthesizer/seSynthesizer.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -32,9 +35,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
 class seViewSynthesizer;
-class seWPSynthesizerListener;
 
 
 
@@ -42,11 +43,14 @@ class seWPSynthesizerListener;
  * \brief Synthesizer properties panel.
  */
 class seWPSynthesizer : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPSynthesizer> Ref;
+	
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPSynthesizerListener *pListener;
+	seWPSynthesizerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeAction::Ref pActionPlay;
 	igdeAction::Ref pActionPause;
@@ -85,10 +89,10 @@ public:
 	/** \brief View. */
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
-	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	/** \brief Synthesizer or \em nullptr if not set. */
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
-	/** \brief Set synthesizer or \em NULL if not set. */
+	/** \brief Set synthesizer or \em nullptr if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
@@ -102,9 +106,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPlay() const{ return pActionPlay; }
-	inline igdeAction *GetActionPause() const{ return pActionPause; }
-	inline igdeAction *GetActionStop() const{ return pActionStop; }
+	inline const igdeAction::Ref &GetActionPlay() const{ return pActionPlay; }
+	inline const igdeAction::Ref &GetActionPause() const{ return pActionPause; }
+	inline const igdeAction::Ref &GetActionStop() const{ return pActionStop; }
 	/*@}*/
 };
 

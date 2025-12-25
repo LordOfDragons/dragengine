@@ -59,22 +59,6 @@ seControllerTarget::~seControllerTarget(){
 // Management
 ///////////////
 
-int seControllerTarget::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-seLink *seControllerTarget::GetLinkAt(int index) const{
-	return (seLink*)pLinks.GetAt(index);
-}
-
-int seControllerTarget::IndexOfLink(seLink *link) const{
-	return pLinks.IndexOf(link);
-}
-
-bool seControllerTarget::HasLink(seLink *link) const{
-	return pLinks.Has(link);
-}
-
 void seControllerTarget::AddLink(seLink *link){
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -92,39 +76,32 @@ void seControllerTarget::RemoveAllLinks(){
 
 
 
-void seControllerTarget::UpdateEngineTarget(seSynthesizer *synthesizer, deSynthesizerControllerTarget &target) const{
-	if(!synthesizer){
-		DETHROW(deeInvalidParam);
-	}
-	
+void seControllerTarget::UpdateEngineTarget(const seSynthesizer &synthesizer, deSynthesizerControllerTarget &target) const{
 	target.RemoveAllLinks();
 	
-	deSynthesizer * const engSynthesizer = synthesizer->GetEngineSynthesizer();
+	deSynthesizer * const engSynthesizer = synthesizer.GetEngineSynthesizer();
 	if(!engSynthesizer){
 		return;
 	}
 	
-	const int linkCount = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<linkCount; i++){
-		deSynthesizerLink * const engLink = ((seLink*)pLinks.GetAt(i))->GetEngineLink();
+	pLinks.Visit([&](const seLink &link){
+		deSynthesizerLink * const engLink = link.GetEngineLink();
 		if(!engLink){
-			continue;
+			return;
 		}
 		
 		const int indexLink = engSynthesizer->IndexOfLink(engLink);
 		if(indexLink == -1){
-			continue;
+			return;
 		}
 		
 		target.AddLink(indexLink);
-	}
+	});
 }
 
 
 
-void seControllerTarget::AddLinksToList(seLinkList &list){
+void seControllerTarget::AddLinksToList(seLink::List &list){
 	list += pLinks;
 }
 

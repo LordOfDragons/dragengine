@@ -33,6 +33,9 @@
  * \brief Wave source Panel.
  */
 class seWPAPanelSourceWave : public seWPAPanelSource{
+public:
+	typedef deTObjectReference<seWPAPanelSourceWave> Ref;
+	
 private:
 	igdeComboBox::Ref pCBType;
 	igdeTextField::Ref pEditMinFrequency;

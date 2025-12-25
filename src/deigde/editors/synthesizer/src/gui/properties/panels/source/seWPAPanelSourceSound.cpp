@@ -72,13 +72,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, source)));
+		igdeUndo::Ref undo(OnChanged(textField, source));
 		if(undo){
 			source->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSourceSound *source) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, seSourceSound *source) = 0;
 };
 
 
@@ -86,6 +86,7 @@ class cPathSound : public igdeEditPathListener{
 	seWPAPanelSourceSound &pPanel;
 	
 public:
+	typedef deTObjectReference<cPathSound> Ref;
 	cPathSound(seWPAPanelSourceSound &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath * editPath){
@@ -95,29 +96,31 @@ public:
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUSetSourceSoundPathSound::Ref::NewWith(source, editPath->GetPath()));
+			seUSetSourceSoundPathSound::Ref::New(source, editPath->GetPath()));
 	}
 };
 
 class cTextMinSpeed : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMinSpeed> Ref;
 	cTextMinSpeed(seWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceSound *source){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seSourceSound *source){
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMinSpeed()) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceSoundMinSpeed(source, value) : NULL;
+			? seUSetSourceSoundMinSpeed::Ref::New(source, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMaxSpeed : public cBaseTextFieldListener {
 public:
+	typedef deTObjectReference<cTextMaxSpeed> Ref;
 	cTextMaxSpeed(seWPAPanelSourceSound &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo * OnChanged(igdeTextField *textField, seSourceSound *source){
+	virtual igdeUndo::Ref  OnChanged(igdeTextField *textField, seSourceSound *source){
 		const float value = textField->GetFloat();
 		return fabsf(value - source->GetMaxSpeed()) > FLOAT_SAFE_EPSILON
-			? new seUSetSourceSoundMaxSpeed(source, value) : NULL;
+			? seUSetSourceSoundMaxSpeed::Ref::New(source, value) : igdeUndo::Ref();
 	}
 };
 
@@ -125,17 +128,18 @@ class cActionLooping : public igdeAction {
 	seWPAPanelSourceSound &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionLooping> Ref;
 	cActionLooping(seWPAPanelSourceSound &panel) : igdeAction("Looping",
-		NULL, "Sound is played back looping"), pPanel(panel){}
+		nullptr, "Sound is played back looping"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSourceSound * const source = (seSourceSound*)pPanel.GetSource();
 		if(!source){
 			return;
 		}
 		
 		source->GetSynthesizer()->GetUndoSystem()->Add(
-			seUToggleSourceSoundLooping::Ref::NewWith(source));
+			seUToggleSourceSoundLooping::Ref::New(source));
 	}
 };
 
@@ -159,19 +163,19 @@ seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estSound)
 	
 	helper.GroupBox(*this, groupBox, "Sound:");
 	helper.EditPath(groupBox, "Sound:", "Sound file to use", igdeEnvironment::efpltSound,
-		pEditPathSound, new cPathSound(*this));
+		pEditPathSound, cPathSound::Ref::New(*this));
 	
-	helper.EditString(groupBox, "", "", pLabSoundInfo, NULL);
+	helper.EditString(groupBox, "", "", pLabSoundInfo, {});
 	pLabSoundInfo->SetEditable(false);
 	
 	helper.EditFloat(groupBox, "Minimum Speed:",
 		"Minimum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMinSpeed, new cTextMinSpeed(*this));
+		pEditMinSpeed, cTextMinSpeed::Ref::New(*this));
 	helper.EditFloat(groupBox, "Maximum Speed:",
 		"Maximum play speed in percentage of normal playback speed. Use negative values to play backwards.",
-		pEditMaxSpeed, new cTextMaxSpeed(*this));
+		pEditMaxSpeed, cTextMaxSpeed::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkLooping, new cActionLooping(*this), true);
+	helper.CheckBox(groupBox, pChkLooping, cActionLooping::Ref::New(*this));
 }
 
 seWPAPanelSourceSound::~seWPAPanelSourceSound(){

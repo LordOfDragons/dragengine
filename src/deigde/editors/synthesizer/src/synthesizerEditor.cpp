@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnviron
 ////////////////
 
 igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	seIGDEModule *module = NULL;
-	
 	try{
-		module = new seIGDEModule(*environment);
+		return new seIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSound;
+#include "../../../synthesizer/source/seSourceSound.h"
 
 
 
@@ -36,15 +36,16 @@ class seSourceSound;
  * \brief Undo toggle source sound looping.
  */
 class seUToggleSourceSoundLooping : public igdeUndo{
+public:
+	typedef deTObjectReference<seUToggleSourceSoundLooping> Ref;
+	
+	
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUToggleSourceSoundLooping> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

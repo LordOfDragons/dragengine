@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -36,8 +36,12 @@ class seSynthesizer;
  * \brief Undo action synthesizer set sample count.
  */
 class seUSynthesizerSetSampleCount : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSynthesizerSetSampleCount> Ref;
+	
+	
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldSampleCount;
 	int pNewSampleCount;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSynthesizerSetSampleCount> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -69,11 +70,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

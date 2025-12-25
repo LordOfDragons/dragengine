@@ -91,19 +91,19 @@ public:
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
 	
-	/** \brief Synthesizer or \em NULL if not set. */
+	/** \brief Synthesizer or \em nullptr if not set. */
 	seSynthesizer *GetSynthesizer() const;
 	
-	/** \brief Effect or \em NULL if not set. */
+	/** \brief Effect or \em nullptr if not set. */
 	seEffect *GetEffect() const;
 	
-	/** \brief Target or \em NULL if not set. */
+	/** \brief Target or \em nullptr if not set. */
 	seControllerTarget *GetTarget() const;
 	
-	/** \brief Selected link in combo box or \em NULL if not set. */
+	/** \brief Selected link in combo box or \em nullptr if not set. */
 	seLink *GetCBLink() const;
 	
-	/** \brief Selected link in list box or \em NULL if not set. */
+	/** \brief Selected link in list box or \em nullptr if not set. */
 	seLink *GetListLink() const;
 	
 	
@@ -135,8 +135,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

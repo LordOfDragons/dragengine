@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUSetSourceBlendFactor::seUSetSourceBlendFactor(seSource *source, float newFactor) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
@@ -50,20 +50,11 @@ pSource(NULL)
 	pOldFactor = source->GetBlendFactor();
 	pNewFactor = newFactor;
 	
-	try{
-		pSource = source;
-		pSource->AddReference();
-		
-		SetShortInfo("Source set blend factor");
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	pSource = source;
+	SetShortInfo("Source set blend factor");
 }
 
 seUSetSourceBlendFactor::~seUSetSourceBlendFactor(){
-	pCleanUp();
 }
 
 
@@ -77,15 +68,4 @@ void seUSetSourceBlendFactor::Undo(){
 
 void seUSetSourceBlendFactor::Redo(){
 	pSource->SetBlendFactor(pNewFactor);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUSetSourceBlendFactor::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

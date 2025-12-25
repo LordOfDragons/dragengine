@@ -35,6 +35,10 @@
  * \brief Undo controller set maximum value.
  */
 class seUControllerSetMaximumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<seUControllerSetMaximumValue> Ref;
+	
+	
 private:
 	const seController::Ref pController;
 	float pOldValue;
@@ -42,9 +46,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUControllerSetMaximumValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

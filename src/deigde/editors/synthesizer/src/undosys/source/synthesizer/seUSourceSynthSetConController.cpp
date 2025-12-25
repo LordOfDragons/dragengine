@@ -42,42 +42,24 @@
 
 seUSourceSynthSetConController::seUSourceSynthSetConController(
 seSourceSynthesizer *source, int target, seController *newController) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pTarget = target;
-	pOldController = NULL;
-	pNewController = NULL;
+	pOldController = nullptr;
+	pNewController = nullptr;
 	
 	SetShortInfo("Synthesizer source set connection controller");
 	
-	pOldController = source->GetControllerAt(target);
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
+	pOldController = source->GetConnections().GetAt(target);
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
-	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthSetConController::~seUSourceSynthSetConController(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

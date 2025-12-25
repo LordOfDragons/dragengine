@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUEffectStretchSetMaxTime::seUEffectStretchSetMaxTime(seEffectStretch *effect, float newTime) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!effect){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewTime = newTime;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMaxTime::~seUEffectStretchSetMaxTime(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

@@ -26,36 +26,35 @@
 #ifndef _SEUSOURCEGROUPPASTESOURCE_H_
 #define _SEUSOURCEGROUPPASTESOURCE_H_
 
+#include "../../../synthesizer/controller/seController.h"
+#include "../../../synthesizer/link/seLink.h"
+#include "../../../synthesizer/source/seSourceGroup.h"
+
 #include <deigde/undo/igdeUndo.h>
-#include "../../../synthesizer/source/seSourceList.h"
-#include "../../../synthesizer/link/seLinkList.h"
-#include "../../../synthesizer/controller/seControllerList.h"
-
-class seSourceGroup;
-
 
 
 /**
  * \brief Undo action source group paste source.
  */
 class seUSourceGroupPasteSource : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceGroupPasteSource> Ref;
+	
+	
 private:
-	seSourceGroup *pGroup;
-	seSourceList pSourceList;
-	seLinkList pRemoveLinkList;
-	seControllerList pRemoveControllerList;
+	seSourceGroup::Ref pGroup;
+	seSource::List pSourceList;
+	seLink::List pRemoveLinkList;
+	seController::List pRemoveControllerList;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceGroupPasteSource> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupPasteSource(seSourceGroup *group, const seSourceList &sourceList, int index);
+	seUSourceGroupPasteSource(seSourceGroup *group, const seSource::List &sourceList, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

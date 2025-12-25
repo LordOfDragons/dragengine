@@ -76,7 +76,7 @@ void seEffectStretch::SetMinTime(float time){
 	pMinTime = time;
 	
 	if(GetEngineEffect()){
-		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMinTime(time);
+		GetEngineEffect().DynamicCast<deSynthesizerEffectStretch>()->SetMinTime(time);
 		NotifyEffectChanged();
 	}
 }
@@ -89,7 +89,7 @@ void seEffectStretch::SetMaxTime(float time){
 	pMaxTime = time;
 	
 	if(GetEngineEffect()){
-		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMaxTime(time);
+		GetEngineEffect().DynamicCast<deSynthesizerEffectStretch>()->SetMaxTime(time);
 		NotifyEffectChanged();
 	}
 }
@@ -102,7 +102,7 @@ void seEffectStretch::SetMinPitch(float shift){
 	pMinPitch = shift;
 	
 	if(GetEngineEffect()){
-		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMinPitch(shift);
+		GetEngineEffect().DynamicCast<deSynthesizerEffectStretch>()->SetMinPitch(shift);
 		NotifyEffectChanged();
 	}
 }
@@ -115,7 +115,7 @@ void seEffectStretch::SetMaxPitch(float shift){
 	pMaxPitch = shift;
 	
 	if(GetEngineEffect()){
-		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMaxPitch(shift);
+		GetEngineEffect().DynamicCast<deSynthesizerEffectStretch>()->SetMaxPitch(shift);
 		NotifyEffectChanged();
 	}
 }
@@ -125,20 +125,23 @@ void seEffectStretch::SetMaxPitch(float shift){
 void seEffectStretch::UpdateTargets(){
 	seEffect::UpdateTargets();
 	
-	deSynthesizerEffectStretch * const effect = (deSynthesizerEffectStretch*)GetEngineEffect();
+	deSynthesizerEffectStretch * const effect = GetEngineEffect().DynamicCast<deSynthesizerEffectStretch>();
 	if(effect){
-		pTargetTime.UpdateEngineTarget(GetSynthesizer(), effect->GetTargetTime());
-		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), effect->GetTargetPitch());
+		seSynthesizer * const synthesizer = GetSynthesizer();
+		DEASSERT_NOTNULL(synthesizer)
+		
+		pTargetTime.UpdateEngineTarget(*synthesizer, effect->GetTargetTime());
+		pTargetPitch.UpdateEngineTarget(*synthesizer, effect->GetTargetPitch());
 	}
 }
 
 int seEffectStretch::CountLinkUsage(seLink *link) const{
 	int usageCount = seEffect::CountLinkUsage(link);
 	
-	if(pTargetTime.HasLink(link)){
+	if(pTargetTime.GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetPitch.HasLink(link)){
+	if(pTargetPitch.GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -148,12 +151,8 @@ int seEffectStretch::CountLinkUsage(seLink *link) const{
 void seEffectStretch::RemoveLinkFromTargets(seLink *link){
 	seEffect::RemoveLinkFromTargets(link);
 	
-	if(pTargetTime.HasLink(link)){
-		pTargetTime.RemoveLink(link);
-	}
-	if(pTargetPitch.HasLink(link)){
-		pTargetPitch.RemoveLink(link);
-	}
+	pTargetTime.RemoveLink(link);
+	pTargetPitch.RemoveLink(link);
 	
 	UpdateTargets();
 }
@@ -169,42 +168,32 @@ void seEffectStretch::RemoveLinksFromAllTargets(){
 
 
 
-deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
-	deSynthesizerEffectStretch *engEffect = NULL;
+deSynthesizerEffect::Ref seEffectStretch::CreateEngineEffect(){
+	const deSynthesizerEffectStretch::Ref engEffect(deSynthesizerEffectStretch::Ref::New());
 	
-	try{
-		// create effect
-		engEffect = new deSynthesizerEffectStretch;
-		
-		// init effect
-		InitEngineEffect(engEffect);
-		
-		engEffect->SetMinTime(pMinTime);
-		engEffect->SetMaxTime(pMaxTime);
-		engEffect->SetMinPitch(pMinPitch);
-		engEffect->SetMaxPitch(pMaxPitch);
-		
-		pTargetTime.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetTime());
-		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetPitch());
-		
-	}catch(const deException &){
-		if(engEffect){
-			engEffect->FreeReference();
-		}
-		throw;
-	}
+	InitEngineEffect(engEffect);
 	
-	// finished
+	engEffect->SetMinTime(pMinTime);
+	engEffect->SetMaxTime(pMaxTime);
+	engEffect->SetMinPitch(pMinPitch);
+	engEffect->SetMaxPitch(pMaxPitch);
+	
+	seSynthesizer * const synthesizer = GetSynthesizer();
+	DEASSERT_NOTNULL(synthesizer)
+	
+	pTargetTime.UpdateEngineTarget(*synthesizer, engEffect->GetTargetTime());
+	pTargetPitch.UpdateEngineTarget(*synthesizer, engEffect->GetTargetPitch());
+	
 	return engEffect;
 }
 
 
 
-seEffect *seEffectStretch::CreateCopy() const{
-	return new seEffectStretch(*this);
+seEffect::Ref seEffectStretch::CreateCopy() const{
+	return seEffectStretch::Ref::New(*this);
 }
 
-void seEffectStretch::ListLinks(seLinkList &list){
+void seEffectStretch::ListLinks(seLink::List &list){
 	seEffect::ListLinks(list);
 	pTargetTime.AddLinksToList(list);
 	pTargetPitch.AddLinksToList(list);

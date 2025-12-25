@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSound;
+#include "../../../synthesizer/source/seSourceSound.h"
 
 
 
@@ -36,8 +36,12 @@ class seSourceSound;
  * \brief Undo set source sound minimum speed.
  */
 class seUSetSourceSoundMinSpeed : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceSoundMinSpeed> Ref;
+	
+	
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	float pOldSpeed;
 	float pNewSpeed;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceSoundMinSpeed> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

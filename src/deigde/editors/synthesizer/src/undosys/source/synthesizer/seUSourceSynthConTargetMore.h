@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSynthesizer;
+#include "../../../synthesizer/source/seSourceSynthesizer.h"
 
 
 
@@ -35,15 +35,16 @@ class seSourceSynthesizer;
  * \brief Undo source synthesizer increase connection target count.
  */
 class seUSourceSynthConTargetMore : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceSynthConTargetMore> Ref;
+	
+	
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceSynthConTargetMore> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

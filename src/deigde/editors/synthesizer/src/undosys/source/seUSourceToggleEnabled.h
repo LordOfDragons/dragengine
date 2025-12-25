@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -36,15 +36,16 @@ class seSource;
  * \brief Undo action set source enabled.
  */
 class seUSourceToggleEnabled : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceToggleEnabled> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceToggleEnabled> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -66,11 +67,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

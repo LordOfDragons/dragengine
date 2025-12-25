@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSetSourceSoundPathSound::seUSetSourceSoundPathSound(seSourceSound *source, const char *newPath) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || !newPath){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Set sound source path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceSoundPathSound::~seUSetSourceSoundPathSound(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

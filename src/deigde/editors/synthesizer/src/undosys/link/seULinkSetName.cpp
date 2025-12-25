@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
-pLink(NULL)
+pLink(nullptr)
 {
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pLink(NULL)
 	SetShortInfo("Set Link Name");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkSetName::~seULinkSetName(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

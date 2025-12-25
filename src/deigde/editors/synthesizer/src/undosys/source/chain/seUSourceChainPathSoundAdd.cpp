@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceChainPathSoundAdd::seUSourceChainPathSoundAdd(seSourceChain *source, const char *path) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || !path){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Chain source add path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundAdd::~seUSourceChainPathSoundAdd(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

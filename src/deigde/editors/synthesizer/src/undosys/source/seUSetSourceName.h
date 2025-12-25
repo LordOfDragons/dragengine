@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -36,8 +36,12 @@ class seSource;
  * \brief Undo action set source name.
  */
 class seUSetSourceName : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSetSourceName> Ref;
+	
+	
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	decString pOldName;
 	decString pNewName;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSetSourceName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

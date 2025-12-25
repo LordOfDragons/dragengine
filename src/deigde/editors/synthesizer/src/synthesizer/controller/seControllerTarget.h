@@ -25,33 +25,43 @@
 #ifndef _SECONTROLLERTARGET_H_
 #define _SECONTROLLERTARGET_H_
 
-#include "../link/seLinkList.h"
+#include "../link/seLink.h"
 
-class seLink;
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class seSynthesizer;
 class deSynthesizerControllerTarget;
 
 
 
 /**
- * \brief Links for controller target.
+ * Links for controller target.
  */
-class seControllerTarget{
+class seControllerTarget : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<seControllerTarget> Ref;
+	
+	/** Type holding list of objects. */
+	typedef decTObjectOrderedSet<seControllerTarget> List;
+
+
 private:
-	seLinkList pLinks;
+	seLink::List pLinks;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create controller target. */
+	/** Create controller target. */
 	seControllerTarget();
 	
-	/** \brief Create copy of controller target. */
+	/** Create copy of controller target. */
 	seControllerTarget(const seControllerTarget &copy);
 	
-	/** \brief Clean up controller target. */
+	/** Clean up controller target. */
 	~seControllerTarget();
 	/*@}*/
 	
@@ -59,39 +69,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
-	int GetLinkCount() const;
+	/** Links. */
+	const seLink::List &GetLinks() const{ return pLinks; }
 	
-	/** \brief Link at index. */
-	seLink *GetLinkAt(int index) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink(seLink *link) const;
-	
-	/** \brief Link is present. */
-	bool HasLink(seLink *link) const;
-	
-	/** \brief Add link. */
+	/** Add link. */
 	void AddLink(seLink *link);
 	
-	/** \brief Remove link. */
+	/** Remove link. */
 	void RemoveLink(seLink *link);
 	
-	/** \brief Remove all links. */
+	/** Remove all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Update engine target. */
-	void UpdateEngineTarget(seSynthesizer *synthesizer, deSynthesizerControllerTarget &target) const;
+	/** Update engine target. */
+	void UpdateEngineTarget(const seSynthesizer &synthesizer, deSynthesizerControllerTarget &target) const;
 	
-	/** \brief Add links to list of links. */
-	void AddLinksToList(seLinkList &list);
+	/** Add links to list of links. */
+	void AddLinksToList(seLink::List &list);
 	/*@}*/
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Set from another controller target. */
+	/** Set from another controller target. */
 	seControllerTarget &operator=(const seControllerTarget &copy);
 	/*@}*/
 };

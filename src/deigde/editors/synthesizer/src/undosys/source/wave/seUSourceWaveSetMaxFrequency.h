@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceWave;
+#include "../../../synthesizer/source/seSourceWave.h"
 
 
 /**
  * \brief Undo source wave set maximum frequency.
  */
 class seUSourceWaveSetMaxFrequency : public igdeUndo{
+public:
+	typedef deTObjectReference<seUSourceWaveSetMaxFrequency> Ref;
+	
+	
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	float pOldFrequency;
 	float pNewFrequency;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUSourceWaveSetMaxFrequency> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

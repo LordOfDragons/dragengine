@@ -42,9 +42,9 @@
 ////////////////////////////
 
 seULinkSetController::seULinkSetController(seLink *link, seController *newController) :
-pLink(NULL),
-pOldController(NULL),
-pNewController(NULL)
+
+
+pNewController(nullptr)
 {
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -56,29 +56,11 @@ pNewController(NULL)
 	SetShortInfo("Set Link Controller");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldController = link->GetController();
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
 }
 
 seULinkSetController::~seULinkSetController(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceChainPathSoundRemove::seUSourceChainPathSoundRemove(seSourceChain *source, int index) :
-pSource(NULL)
+pSource(nullptr)
 {
 	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Chain source remove path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundRemove::~seUSourceChainPathSoundRemove(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 
