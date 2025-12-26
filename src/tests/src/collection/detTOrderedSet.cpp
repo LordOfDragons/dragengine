@@ -81,6 +81,8 @@ void detTOrderedSet::Run(){
 	TestIntIterators();
 	TestIntIndexOfMatching();
 	TestIntHasMatching();
+	TestIntAllMatching();
+	TestIntNoneMatching();
 	TestIntFold();
 	TestIntInject();
 	TestIntReverse();
@@ -2444,6 +2446,58 @@ void detTOrderedSet::TestIntHasMatching(){
 	ASSERT_TRUE(set.HasMatching(evaluator3));
 }
 
+void detTOrderedSet::TestIntAllMatching(){
+	SetSubTestNum(131);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	// All elements are > 5
+	auto evaluator1 = [](int val){ return val > 5; };
+	ASSERT_TRUE(set.AllMatching(evaluator1));
+	
+	// Not all elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(set.AllMatching(evaluator2));
+	
+	// All elements are < 50
+	auto evaluator3 = [](int val){ return val < 50; };
+	ASSERT_TRUE(set.AllMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetInt emptySet;
+	auto evaluator4 = [](int val){ return val > 100; };
+	ASSERT_TRUE(emptySet.AllMatching(evaluator4));
+}
+
+void detTOrderedSet::TestIntNoneMatching(){
+	SetSubTestNum(132);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	// None of the elements are > 50
+	auto evaluator1 = [](int val){ return val > 50; };
+	ASSERT_TRUE(set.NoneMatching(evaluator1));
+	
+	// Some elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(set.NoneMatching(evaluator2));
+	
+	// None are < 5
+	auto evaluator3 = [](int val){ return val < 5; };
+	ASSERT_TRUE(set.NoneMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetInt emptySet;
+	auto evaluator4 = [](int val){ return val > 0; };
+	ASSERT_TRUE(emptySet.NoneMatching(evaluator4));
+}
+
 void detTOrderedSet::TestIntFold(){
 	SetSubTestNum(122);
 
@@ -2594,6 +2648,58 @@ void detTOrderedSet::TestStringHasMatching(){
 	ASSERT_TRUE(set.HasMatching(evaluator3));
 }
 
+void detTOrderedSet::TestStringAllMatching(){
+	SetSubTestNum(133);
+
+	decTOrderedSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	// All elements have length > 3
+	auto evaluator1 = [](const decString &val){ return val.GetLength() > 3; };
+	ASSERT_TRUE(set.AllMatching(evaluator1));
+	
+	// Not all elements have length > 6
+	auto evaluator2 = [](const decString &val){ return val.GetLength() > 6; };
+	ASSERT_FALSE(set.AllMatching(evaluator2));
+	
+	// All elements contain 'a'
+	auto evaluator3 = [](const decString &val){ return val.Find('a') != -1; };
+	ASSERT_TRUE(set.AllMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetString emptySet;
+	auto evaluator4 = [](const decString &val){ return val.GetLength() > 100; };
+	ASSERT_TRUE(emptySet.AllMatching(evaluator4));
+}
+
+void detTOrderedSet::TestStringNoneMatching(){
+	SetSubTestNum(134);
+
+	decTOrderedSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	// None of the elements have length > 10
+	auto evaluator1 = [](const decString &val){ return val.GetLength() > 10; };
+	ASSERT_TRUE(set.NoneMatching(evaluator1));
+	
+	// Some elements contain 'b'
+	auto evaluator2 = [](const decString &val){ return val.Find('b') != -1; };
+	ASSERT_FALSE(set.NoneMatching(evaluator2));
+	
+	// None start with 'z'
+	auto evaluator3 = [](const decString &val){ return val[0] == 'z'; };
+	ASSERT_TRUE(set.NoneMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetString emptySet;
+	auto evaluator4 = [](const decString &val){ return val.GetLength() > 0; };
+	ASSERT_TRUE(emptySet.NoneMatching(evaluator4));
+}
+
 void detTOrderedSet::TestStringFold(){
 	SetSubTestNum(129);
 
@@ -2742,6 +2848,66 @@ void detTOrderedSet::TestObjectRefHasMatching(){
 	
 	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
 	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTOrderedSet::TestObjectRefAllMatching(){
+	SetSubTestNum(135);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	
+	// All elements have name length == 4
+	auto evaluator1 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_TRUE(set.AllMatching(evaluator1));
+	
+	// Not all elements have name starting with "tag1"
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag1"; };
+	ASSERT_FALSE(set.AllMatching(evaluator2));
+	
+	// All elements have name starting with "tag"
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().BeginsWith("tag"); };
+	ASSERT_TRUE(set.AllMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetXmlElementTag emptySet;
+	auto evaluator4 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() > 100; };
+	ASSERT_TRUE(emptySet.AllMatching(evaluator4));
+}
+
+void detTOrderedSet::TestObjectRefNoneMatching(){
+	SetSubTestNum(136);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	
+	// None of the elements have name length > 10
+	auto evaluator1 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() > 10; };
+	ASSERT_TRUE(set.NoneMatching(evaluator1));
+	
+	// Some elements have name == "tag2"
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag2"; };
+	ASSERT_FALSE(set.NoneMatching(evaluator2));
+	
+	// None have name starting with "xyz"
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().BeginsWith("xyz"); };
+	ASSERT_TRUE(set.NoneMatching(evaluator3));
+	
+	// Empty set should return true
+	decTOrderedSetXmlElementTag emptySet;
+	auto evaluator4 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() > 0; };
+	ASSERT_TRUE(emptySet.NoneMatching(evaluator4));
 }
 
 void detTOrderedSet::TestObjectRefFold(){

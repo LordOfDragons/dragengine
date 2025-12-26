@@ -37,6 +37,8 @@ void detTSet::Run(){
 	TestIntAlgorithms();
 	TestIntIndexOf();
 	TestIntHasMatching();
+	TestIntAllMatching();
+	TestIntNoneMatching();
 	TestIntFindOrDefault();
 	TestIntFold();
 	TestIntInject();
@@ -365,6 +367,58 @@ void detTSet::TestIntHasMatching(){
 	ASSERT_TRUE(set.HasMatching(evaluator3));
 }
 
+void detTSet::TestIntAllMatching(){
+	SetSubTestNum(81);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	// All elements are > 5
+	auto evaluator1 = [](int val){ return val > 5; };
+	ASSERT_TRUE(set.AllMatching(evaluator1));
+	
+	// Not all elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(set.AllMatching(evaluator2));
+	
+	// All elements are < 50
+	auto evaluator3 = [](int val){ return val < 50; };
+	ASSERT_TRUE(set.AllMatching(evaluator3));
+	
+	// Empty set should return true
+	decTSetInt emptySet;
+	auto evaluator4 = [](int val){ return val > 100; };
+	ASSERT_TRUE(emptySet.AllMatching(evaluator4));
+}
+
+void detTSet::TestIntNoneMatching(){
+	SetSubTestNum(82);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	// None of the elements are > 50
+	auto evaluator1 = [](int val){ return val > 50; };
+	ASSERT_TRUE(set.NoneMatching(evaluator1));
+	
+	// Some elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(set.NoneMatching(evaluator2));
+	
+	// None are < 5
+	auto evaluator3 = [](int val){ return val < 5; };
+	ASSERT_TRUE(set.NoneMatching(evaluator3));
+	
+	// Empty set should return true
+	decTSetInt emptySet;
+	auto evaluator4 = [](int val){ return val > 0; };
+	ASSERT_TRUE(emptySet.NoneMatching(evaluator4));
+}
+
 void detTSet::TestIntFindOrDefault(){
 	SetSubTestNum(9);
 
@@ -452,6 +506,58 @@ void detTSet::TestStringHasMatching(){
 	
 	auto evaluator3 = [](const decString &val){ return val.GetLength() == 5; };
 	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTSet::TestStringAllMatching(){
+	SetSubTestNum(83);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	// All elements have length > 3
+	auto evaluator1 = [](const decString &val){ return val.GetLength() > 3; };
+	ASSERT_TRUE(set.AllMatching(evaluator1));
+	
+	// Not all elements have length > 6
+	auto evaluator2 = [](const decString &val){ return val.GetLength() > 6; };
+	ASSERT_FALSE(set.AllMatching(evaluator2));
+	
+	// All elements contain 'a'
+	auto evaluator3 = [](const decString &val){ return val.Find('a') != -1; };
+	ASSERT_TRUE(set.AllMatching(evaluator3));
+	
+	// Empty set should return true
+	decTSetString emptySet;
+	auto evaluator4 = [](const decString &val){ return val.GetLength() > 100; };
+	ASSERT_TRUE(emptySet.AllMatching(evaluator4));
+}
+
+void detTSet::TestStringNoneMatching(){
+	SetSubTestNum(84);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	// None of the elements have length > 10
+	auto evaluator1 = [](const decString &val){ return val.GetLength() > 10; };
+	ASSERT_TRUE(set.NoneMatching(evaluator1));
+	
+	// Some elements contain 'b'
+	auto evaluator2 = [](const decString &val){ return val.Find('b') != -1; };
+	ASSERT_FALSE(set.NoneMatching(evaluator2));
+	
+	// None start with 'z'
+	auto evaluator3 = [](const decString &val){ return val[0] == 'z'; };
+	ASSERT_TRUE(set.NoneMatching(evaluator3));
+	
+	// Empty set should return true
+	decTSetString emptySet;
+	auto evaluator4 = [](const decString &val){ return val.GetLength() > 0; };
+	ASSERT_TRUE(emptySet.NoneMatching(evaluator4));
 }
 
 void detTSet::TestStringFindOrDefault(){

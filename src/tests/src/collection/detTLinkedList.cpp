@@ -43,7 +43,10 @@ void detTLinkedList::Run(){
 	TestIterators();
 	TestElementIteratorAdvanced();
 	TestStability();
+	// New functions tests
 	TestHasMatching();
+	TestAllMatching();
+	TestNoneMatching();
 	TestVisit();
 	TestFind();
 	TestFindReverse();
@@ -635,6 +638,66 @@ void detTLinkedList::TestHasMatching(){
 	
 	auto evaluator3 = [](TestLLObject *obj){ return obj->id < 15; };
 	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTLinkedList::TestAllMatching(){
+	SetSubTestNum(12);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	// All elements have id > 5
+	auto evaluator1 = [](TestLLObject *obj){ return obj->id > 5; };
+	ASSERT_TRUE(list.AllMatching(evaluator1));
+	
+	// Not all elements have id > 15
+	auto evaluator2 = [](TestLLObject *obj){ return obj->id > 15; };
+	ASSERT_FALSE(list.AllMatching(evaluator2));
+	
+	// All elements have id < 50
+	auto evaluator3 = [](TestLLObject *obj){ return obj->id < 50; };
+	ASSERT_TRUE(list.AllMatching(evaluator3));
+	
+	// Empty list should return true
+	TestLLList emptyList;
+	auto evaluator4 = [](TestLLObject *obj){ return obj->id > 100; };
+	ASSERT_TRUE(emptyList.AllMatching(evaluator4));
+}
+
+void detTLinkedList::TestNoneMatching(){
+	SetSubTestNum(13);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	// None of the elements have id > 50
+	auto evaluator1 = [](TestLLObject *obj){ return obj->id > 50; };
+	ASSERT_TRUE(list.NoneMatching(evaluator1));
+	
+	// Some elements have id > 15
+	auto evaluator2 = [](TestLLObject *obj){ return obj->id > 15; };
+	ASSERT_FALSE(list.NoneMatching(evaluator2));
+	
+	// None have id < 5
+	auto evaluator3 = [](TestLLObject *obj){ return obj->id < 5; };
+	ASSERT_TRUE(list.NoneMatching(evaluator3));
+	
+	// Empty list should return true
+	TestLLList emptyList;
+	auto evaluator4 = [](TestLLObject *obj){ return obj->id > 0; };
+	ASSERT_TRUE(emptyList.NoneMatching(evaluator4));
 }
 
 void detTLinkedList::TestFindReverse(){

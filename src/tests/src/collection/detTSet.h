@@ -16,6 +16,8 @@ private:
 	void TestIntAlgorithms();
 	void TestIntIndexOf();
 	void TestIntHasMatching();
+	void TestIntAllMatching();
+	void TestIntNoneMatching();
 	void TestIntFindOrDefault();
 	void TestIntFold();
 	void TestIntInject();
@@ -27,6 +29,8 @@ private:
 	void TestStringBasic();
 	void TestStringOperators();
 	void TestStringHasMatching();
+	void TestStringAllMatching();
+	void TestStringNoneMatching();
 	void TestStringFindOrDefault();
 	void TestStringFold();
 	void TestStringInject();

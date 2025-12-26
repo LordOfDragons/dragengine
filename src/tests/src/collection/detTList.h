@@ -17,6 +17,8 @@ private:
 	void TestIntAlgorithms();
 	void TestIntIndexOfMatching();
 	void TestIntHasMatching();
+	void TestIntAllMatching();
+	void TestIntNoneMatching();
 	void TestIntFold();
 	void TestIntInject();
 	void TestIntVisitVariants();
@@ -31,6 +33,8 @@ private:
 	void TestStringOperators();
 	void TestStringIndexOfMatching();
 	void TestStringHasMatching();
+	void TestStringAllMatching();
+	void TestStringNoneMatching();
 	void TestStringFold();
 	void TestStringInject();
 
@@ -39,6 +43,8 @@ private:
 	void TestObjectRefOperations();
 	void TestObjectRefIndexOfMatching();
 	void TestObjectRefHasMatching();
+	void TestObjectRefAllMatching();
+	void TestObjectRefNoneMatching();
 	void TestObjectRefFold();
 	void TestObjectRefInject();
 

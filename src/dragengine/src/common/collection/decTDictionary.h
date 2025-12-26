@@ -172,6 +172,58 @@ public:
 	}
 	
 	/**
+	 * \brief All elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool AllMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				if(!evaluator(iterEntry->key, iterEntry->value)){
+					return false;
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool AllMatching(Evaluator &&evaluator) const{
+		return AllMatching<Evaluator>(evaluator);
+	}
+	
+	/**
+	 * \brief No elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool NoneMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				if(evaluator(iterEntry->key, iterEntry->value)){
+					return false;
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool NoneMatching(Evaluator &&evaluator) const{
+		return NoneMatching<Evaluator>(evaluator);
+	}
+	
+	/**
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */

@@ -35,6 +35,8 @@ void detTDictionary::Run(){
 	TestStringObjectRefOperations();
 	TestGetAtOrDefault();
 	TestHasMatching();
+	TestAllMatching();
+	TestNoneMatching();
 	TestVisit();
 	TestFind();
 	TestFindOrDefault();
@@ -707,6 +709,58 @@ void detTDictionary::TestHasMatching(){
 	
 	auto evaluator3 = [](const decString &key, int val){ return key == "c"; };
 	ASSERT_TRUE(dict.HasMatching(evaluator3));
+}
+
+void detTDictionary::TestAllMatching(){
+	SetSubTestNum(9);
+
+	decTStringIntDict dict;
+	dict.SetAt("a", 10);
+	dict.SetAt("b", 20);
+	dict.SetAt("c", 30);
+	
+	// All values are > 5
+	auto evaluator1 = [](const decString &key, int val){ return val > 5; };
+	ASSERT_TRUE(dict.AllMatching(evaluator1));
+	
+	// Not all values are > 15
+	auto evaluator2 = [](const decString &key, int val){ return val > 15; };
+	ASSERT_FALSE(dict.AllMatching(evaluator2));
+	
+	// All keys have length == 1
+	auto evaluator3 = [](const decString &key, int val){ return key.GetLength() == 1; };
+	ASSERT_TRUE(dict.AllMatching(evaluator3));
+	
+	// Empty dictionary should return true
+	decTStringIntDict emptyDict;
+	auto evaluator4 = [](const decString &key, int val){ return val > 100; };
+	ASSERT_TRUE(emptyDict.AllMatching(evaluator4));
+}
+
+void detTDictionary::TestNoneMatching(){
+	SetSubTestNum(10);
+
+	decTStringIntDict dict;
+	dict.SetAt("a", 10);
+	dict.SetAt("b", 20);
+	dict.SetAt("c", 30);
+	
+	// None of the values are > 50
+	auto evaluator1 = [](const decString &key, int val){ return val > 50; };
+	ASSERT_TRUE(dict.NoneMatching(evaluator1));
+	
+	// Some values are > 15
+	auto evaluator2 = [](const decString &key, int val){ return val > 15; };
+	ASSERT_FALSE(dict.NoneMatching(evaluator2));
+	
+	// None of the keys have length > 1
+	auto evaluator3 = [](const decString &key, int val){ return key.GetLength() > 1; };
+	ASSERT_TRUE(dict.NoneMatching(evaluator3));
+	
+	// Empty dictionary should return true
+	decTStringIntDict emptyDict;
+	auto evaluator4 = [](const decString &key, int val){ return val > 0; };
+	ASSERT_TRUE(emptyDict.NoneMatching(evaluator4));
 }
 
 void detTDictionary::TestFold(){

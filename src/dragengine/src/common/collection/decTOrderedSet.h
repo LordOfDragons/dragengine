@@ -251,6 +251,50 @@ public:
 	}
 	
 	/**
+	 * \brief All elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool AllMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool AllMatching(Evaluator &&evaluator) const{
+		return AllMatching<Evaluator>(evaluator);
+	}
+	
+	/**
+	 * \brief No elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool NoneMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(evaluator(pElements[i])){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool NoneMatching(Evaluator &&evaluator) const{
+		return NoneMatching<Evaluator>(evaluator);
+	}
+	
+	/**
 	 * \brief Set element at index.
 	 * \throws deeInvalidParam \em element is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.

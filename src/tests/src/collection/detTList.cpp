@@ -38,6 +38,8 @@ void detTList::Run(){
 	TestIntAlgorithms();
 	TestIntIndexOfMatching();
 	TestIntHasMatching();
+	TestIntAllMatching();
+	TestIntNoneMatching();
 	TestIntFold();
 	TestIntInject();
 	TestIntVisitVariants();
@@ -51,6 +53,8 @@ void detTList::Run(){
 	TestStringOperators();
 	TestStringIndexOfMatching();
 	TestStringHasMatching();
+	TestStringAllMatching();
+	TestStringNoneMatching();
 	TestStringFold();
 	TestStringInject();
 	// object ref
@@ -58,6 +62,8 @@ void detTList::Run(){
 	TestObjectRefOperations();
 	TestObjectRefIndexOfMatching();
 	TestObjectRefHasMatching();
+	TestObjectRefAllMatching();
+	TestObjectRefNoneMatching();
 	TestObjectRefFold();
 	TestObjectRefInject();
 }
@@ -612,6 +618,58 @@ void detTList::TestIntHasMatching(){
 	ASSERT_TRUE(list.HasMatching(evaluator3));
 }
 
+void detTList::TestIntAllMatching(){
+	SetSubTestNum(131);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	
+	// All elements are > 5
+	auto evaluator1 = [](int val){ return val > 5; };
+	ASSERT_TRUE(list.AllMatching(evaluator1));
+	
+	// Not all elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(list.AllMatching(evaluator2));
+	
+	// All elements are < 50
+	auto evaluator3 = [](int val){ return val < 50; };
+	ASSERT_TRUE(list.AllMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListInt emptyList;
+	auto evaluator4 = [](int val){ return val > 100; };
+	ASSERT_TRUE(emptyList.AllMatching(evaluator4));
+}
+
+void detTList::TestIntNoneMatching(){
+	SetSubTestNum(132);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	
+	// None of the elements are > 50
+	auto evaluator1 = [](int val){ return val > 50; };
+	ASSERT_TRUE(list.NoneMatching(evaluator1));
+	
+	// Some elements are > 15
+	auto evaluator2 = [](int val){ return val > 15; };
+	ASSERT_FALSE(list.NoneMatching(evaluator2));
+	
+	// None are < 5
+	auto evaluator3 = [](int val){ return val < 5; };
+	ASSERT_TRUE(list.NoneMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListInt emptyList;
+	auto evaluator4 = [](int val){ return val > 0; };
+	ASSERT_TRUE(emptyList.NoneMatching(evaluator4));
+}
+
 void detTList::TestIntFold(){
 	SetSubTestNum(14);
 
@@ -699,6 +757,58 @@ void detTList::TestStringHasMatching(){
 	ASSERT_TRUE(list.HasMatching(evaluator3));
 }
 
+void detTList::TestStringAllMatching(){
+	SetSubTestNum(171);
+
+	decTListString list;
+	list.Add("apple");
+	list.Add("banana");
+	list.Add("cherry");
+	
+	// All strings have length > 3
+	auto evaluator1 = [](const decString &val){ return val.GetLength() > 3; };
+	ASSERT_TRUE(list.AllMatching(evaluator1));
+	
+	// Not all strings have length > 6
+	auto evaluator2 = [](const decString &val){ return val.GetLength() > 6; };
+	ASSERT_FALSE(list.AllMatching(evaluator2));
+	
+	// All strings are non-empty
+	auto evaluator3 = [](const decString &val){ return !val.IsEmpty(); };
+	ASSERT_TRUE(list.AllMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListString emptyList;
+	auto evaluator4 = [](const decString &val){ return val == "never"; };
+	ASSERT_TRUE(emptyList.AllMatching(evaluator4));
+}
+
+void detTList::TestStringNoneMatching(){
+	SetSubTestNum(172);
+
+	decTListString list;
+	list.Add("apple");
+	list.Add("banana");
+	list.Add("cherry");
+	
+	// None of the strings equal "grape"
+	auto evaluator1 = [](const decString &val){ return val == "grape"; };
+	ASSERT_TRUE(list.NoneMatching(evaluator1));
+	
+	// Some strings have length 5
+	auto evaluator2 = [](const decString &val){ return val.GetLength() == 5; };
+	ASSERT_FALSE(list.NoneMatching(evaluator2));
+	
+	// None are empty
+	auto evaluator3 = [](const decString &val){ return val.IsEmpty(); };
+	ASSERT_TRUE(list.NoneMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListString emptyList;
+	auto evaluator4 = [](const decString &val){ return !val.IsEmpty(); };
+	ASSERT_TRUE(emptyList.NoneMatching(evaluator4));
+}
+
 void detTList::TestStringFold(){
 	SetSubTestNum(18);
 
@@ -784,6 +894,66 @@ void detTList::TestObjectRefHasMatching(){
 	
 	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
 	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTList::TestObjectRefAllMatching(){
+	SetSubTestNum(211);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	
+	// All tag names have length 4
+	auto evaluator1 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_TRUE(list.AllMatching(evaluator1));
+	
+	// Not all tag names start with "tag2"
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag2"; };
+	ASSERT_FALSE(list.AllMatching(evaluator2));
+	
+	// All are non-null
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val.Pointer() != nullptr; };
+	ASSERT_TRUE(list.AllMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListXmlElementTag emptyList;
+	auto evaluator4 = [](decXmlElementTag::Ref val){ return val.Pointer() == nullptr; };
+	ASSERT_TRUE(emptyList.AllMatching(evaluator4));
+}
+
+void detTList::TestObjectRefNoneMatching(){
+	SetSubTestNum(212);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	
+	// None have name "tag5"
+	auto evaluator1 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_TRUE(list.NoneMatching(evaluator1));
+	
+	// Some have length 4
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_FALSE(list.NoneMatching(evaluator2));
+	
+	// None are null
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val.Pointer() == nullptr; };
+	ASSERT_TRUE(list.NoneMatching(evaluator3));
+	
+	// Empty list should return true
+	decTListXmlElementTag emptyList;
+	auto evaluator4 = [](decXmlElementTag::Ref val){ return val.Pointer() != nullptr; };
+	ASSERT_TRUE(emptyList.NoneMatching(evaluator4));
 }
 
 void detTList::TestObjectRefFold(){

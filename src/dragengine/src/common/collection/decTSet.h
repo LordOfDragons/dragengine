@@ -192,6 +192,50 @@ public:
 		return HasMatching<Evaluator>(evaluator);
 	}
 	
+	/**
+	 * \brief All elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool AllMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(!evaluator(pElements[i])){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool AllMatching(Evaluator &&evaluator) const{
+		return AllMatching<Evaluator>(evaluator);
+	}
+	
+	/**
+	 * \brief No elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool NoneMatching(Evaluator &evaluator) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(evaluator(pElements[i])){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool NoneMatching(Evaluator &&evaluator) const{
+		return NoneMatching<Evaluator>(evaluator);
+	}
+	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
 	int IndexOf(const TP &element) const{
 		int p;

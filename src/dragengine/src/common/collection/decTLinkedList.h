@@ -413,6 +413,52 @@ public:
 		return HasMatching<Evaluator>(evaluator);
 	}
 	
+	/**
+	 * \brief All elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool AllMatching(Evaluator &evaluator) const{
+		const Element *iter = pRoot;
+		while(iter){
+			if(!evaluator(iter->pOwner)){
+				return false;
+			}
+			iter = iter->pNext;
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool AllMatching(Evaluator &&evaluator) const{
+		return AllMatching<Evaluator>(evaluator);
+	}
+	
+	/**
+	 * \brief No elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * 
+	 * If list is empty true is returned.
+	 */
+	template<typename Evaluator>
+	bool NoneMatching(Evaluator &evaluator) const{
+		const Element *iter = pRoot;
+		while(iter){
+			if(evaluator(iter->pOwner)){
+				return false;
+			}
+			iter = iter->pNext;
+		}
+		return true;
+	}
+	
+	template<typename Evaluator>
+	inline bool NoneMatching(Evaluator &&evaluator) const{
+		return NoneMatching<Evaluator>(evaluator);
+	}
+	
 	/** \brief Add element. */
 	void Add(Element *entry){
 		DEASSERT_NOTNULL(entry)

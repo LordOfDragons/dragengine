@@ -52,6 +52,8 @@ private:
 	void TestIntIterators();
 	void TestIntIndexOfMatching();
 	void TestIntHasMatching();
+	void TestIntAllMatching();
+	void TestIntNoneMatching();
 	void TestIntFold();
 	void TestIntInject();
 	void TestIntReverse();
@@ -99,6 +101,8 @@ private:
 	void TestStringIterators();
 	void TestStringIndexOfMatching();
 	void TestStringHasMatching();
+	void TestStringAllMatching();
+	void TestStringNoneMatching();
 	void TestStringFold();
 	void TestStringInject();
 	void TestStringReverse();
@@ -146,6 +150,8 @@ private:
 	void TestObjectRefIterators();
 	void TestObjectRefIndexOfMatching();
 	void TestObjectRefHasMatching();
+	void TestObjectRefAllMatching();
+	void TestObjectRefNoneMatching();
 	void TestObjectRefFold();
 	void TestObjectRefInject();
 	void TestObjectRefReverse();
