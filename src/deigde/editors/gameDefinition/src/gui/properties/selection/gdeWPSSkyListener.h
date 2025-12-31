@@ -48,7 +48,9 @@ public:
 	gdeWPSSkyListener(gdeWPSSky &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSSkyListener() override;
+public:
 	/*@}*/
 	
 	

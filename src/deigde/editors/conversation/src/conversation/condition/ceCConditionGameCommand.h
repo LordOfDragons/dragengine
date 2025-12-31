@@ -54,7 +54,9 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionGameCommand(const ceCConditionGameCommand &condition);
 	/** \brief Cleans up the conversation condition. */
+protected:
 	~ceCConditionGameCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

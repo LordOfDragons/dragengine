@@ -87,7 +87,9 @@ public:
 	/** \brief Creates a copy of a rig push. */
 	reRigPush(const reRigPush &push);
 	/** \brief Cleans up the rig push. */
+protected:
 	virtual ~reRigPush();
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -64,7 +64,9 @@ public:
 	gdeOCSnapPoint(const gdeOCSnapPoint &snapPoint);
 	
 	/** \brief Clean up snap point. */
+protected:
 	virtual ~gdeOCSnapPoint();
+public:
 	/*@}*/
 	
 	

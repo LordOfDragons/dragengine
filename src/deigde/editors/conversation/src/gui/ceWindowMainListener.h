@@ -50,7 +50,9 @@ public:
 	ceWindowMainListener(ceWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

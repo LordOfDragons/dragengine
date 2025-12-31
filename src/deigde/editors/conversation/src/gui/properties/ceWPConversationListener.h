@@ -49,7 +49,9 @@ public:
 	/** Creates a new listener. */
 	ceWPConversationListener(ceWPConversation &panel);
 	/** Cleans up the listener. */
+protected:
 	~ceWPConversationListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

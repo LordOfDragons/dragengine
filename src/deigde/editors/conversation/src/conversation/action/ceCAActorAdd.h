@@ -49,7 +49,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAActorAdd(const ceCAActorAdd &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCAActorAdd() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

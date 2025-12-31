@@ -51,7 +51,9 @@ public:
 	/** Creates a new animator notifier. */
 	aeAnimatorNotifier();
 	/** Cleans up the animator notifier. */
+protected:
 	virtual ~aeAnimatorNotifier();
+public:
 	/*@}*/
 	
 	/** \name Notifications */

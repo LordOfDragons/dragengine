@@ -58,7 +58,9 @@ public:
 	/** Creates a new stack. */
 	cePlaybackActionStackEntry();
 	/** Cleans up the stack. */
+protected:
 	~cePlaybackActionStackEntry();
+public:
 	/*@}*/
 	
 	/** \name Management */

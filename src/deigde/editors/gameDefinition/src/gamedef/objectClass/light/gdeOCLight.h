@@ -144,7 +144,9 @@ public:
 	gdeOCLight(const gdeOCLight &light);
 	
 	/** \brief Clean up light. */
+protected:
 	virtual ~gdeOCLight();
+public:
 	/*@}*/
 	
 	

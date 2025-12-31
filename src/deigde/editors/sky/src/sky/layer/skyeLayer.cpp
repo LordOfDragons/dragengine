@@ -69,7 +69,11 @@ pMulBySkyColor(false),
 pActiveTarget(deSkyLayer::etRotationX),
 
 pSelected(false),
-pActive(false){
+pActive(false)
+{
+	for(int i=0; i<=(int)deSkyLayer::etAmbientIntensity; i++){
+		pTargets.Add(skyeControllerTarget::Ref::New());
+	}
 }
 
 skyeLayer::~skyeLayer(){
@@ -376,18 +380,8 @@ void skyeLayer::SetActiveBody(skyeBody *body){
 // Targets
 ////////////
 
-const skyeControllerTarget &skyeLayer::GetTarget(deSkyLayer::eTargets target) const{
-	if(target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
-		DETHROW(deeInvalidParam);
-	}
-	return pTargets[target];
-}
-
-skyeControllerTarget &skyeLayer::GetTarget(deSkyLayer::eTargets target){
-	if(target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
-		DETHROW(deeInvalidParam);
-	}
-	return pTargets[target];
+const skyeControllerTarget::Ref &skyeLayer::GetTarget(deSkyLayer::eTargets target) const{
+	return pTargets.GetAt((int)target);
 }
 
 void skyeLayer::SetActiveTarget(deSkyLayer::eTargets target){
@@ -417,23 +411,16 @@ void skyeLayer::NotifyTargetChanged(deSkyLayer::eTargets target){
 //////////////////////
 
 void skyeLayer::pUpdateSkin(){
-	if(pPathSkin.IsEmpty()){
+	if(pPathSkin.IsEmpty() || !pSky){
 		pEngSkin = nullptr;
 		return;
 	}
 	
-	deSkinManager &skinMgr = *pEnvironment.GetEngineController()->GetEngine()->GetSkinManager();
-	const char *basePath = "/";
-	if(pSky){
-		basePath = pSky->GetDirectoryPath();
-	}
-	
 	try{
-		pEngSkin = skinMgr.LoadSkin(pPathSkin, basePath);
+		pEngSkin = pEnvironment.GetEngineController()->GetEngine()->GetSkinManager()->
+			LoadSkin(pPathSkin, pSky->GetDirectoryPath());
 		
 	}catch(const deException &){
-		if(pSky){
-			pEngSkin = pSky->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-		}
+		pEngSkin = pSky->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 	}
 }

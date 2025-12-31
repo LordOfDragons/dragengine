@@ -166,7 +166,9 @@ public:
 	aeAnimator(aeWindowMain &windowMain);
 	
 	/** Cleans up the actor animator. */
+protected:
 	virtual ~aeAnimator();
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -51,7 +51,9 @@ public:
 	ceCASnippet(const ceCASnippet &snippet);
 	
 	/** Clean up snippet conversation action. */
+protected:
 	~ceCASnippet() override;
+public:
 	/*@}*/
 	
 	

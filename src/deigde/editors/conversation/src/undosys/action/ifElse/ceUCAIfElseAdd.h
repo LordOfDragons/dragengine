@@ -57,7 +57,9 @@ public:
 	ceCAIfElseCase *ifcase, ceConversationAction *action, int index);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseAdd();
+public:
 	/*@}*/
 	
 	

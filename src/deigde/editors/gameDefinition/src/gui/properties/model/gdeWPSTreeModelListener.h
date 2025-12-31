@@ -48,7 +48,9 @@ public:
 	gdeWPSTreeModelListener(gdeWPSTreeModel &model);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSTreeModelListener() override;
+public:
 	/*@}*/
 	
 	

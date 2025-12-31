@@ -50,7 +50,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakToggleUseSpeechAnimation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakToggleUseSpeechAnimation();
+public:
 	/*@}*/
 	
 public:

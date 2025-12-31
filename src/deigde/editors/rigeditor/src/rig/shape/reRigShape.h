@@ -91,7 +91,9 @@ public:
 	reRigShape(deEngine *engine, eShapeTypes shapeType);
 	
 	/** \brief Clean up rig shape. */
+protected:
 	virtual ~reRigShape();
+public:
 	/*@}*/
 	
 	

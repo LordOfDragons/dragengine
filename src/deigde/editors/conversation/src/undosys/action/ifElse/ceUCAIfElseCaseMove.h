@@ -55,7 +55,9 @@ public:
 	ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int newIndex);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseCaseMove();
+public:
 	/*@}*/
 	
 	

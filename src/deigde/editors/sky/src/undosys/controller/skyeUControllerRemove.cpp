@@ -60,7 +60,7 @@ pIndex(0)
 			int i;
 			for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
 				const deSkyLayer::eTargets target = (deSkyLayer::eTargets)i;
-				layer.GetTarget(target).GetLinks().Visit([&](skyeLink *link){
+				layer.GetTarget(target)->GetLinks().Visit([&](skyeLink *link){
 					if(link->GetController() == controller){
 						pLinks.Add(link);
 					}

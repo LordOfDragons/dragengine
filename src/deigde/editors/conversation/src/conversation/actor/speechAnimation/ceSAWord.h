@@ -50,7 +50,9 @@ public:
 	/** Creates a new word. */
 	ceSAWord(const char *name);
 	/** Cleans up the word. */
+protected:
 	virtual ~ceSAWord();
+public:
 	/*@}*/
 	
 	/** \name Management */

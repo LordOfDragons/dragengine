@@ -59,7 +59,9 @@ public:
 	/** \brief Create undo. */
 	seUPropertySetCurve(seSkyLayer *layer, seProperty *property);
 	/** \brief Clean up undo. */
+protected:
 	virtual ~seUPropertySetCurve();
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -25,12 +25,11 @@
 #ifndef _AEURULETARGETREMOVEALLLINKS_H_
 #define _AEURULETARGETREMOVEALLLINKS_H_
 
+#include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class aeControllerTarget;
 
 
 /**
@@ -43,7 +42,7 @@ public:
 	
 private:
 	aeRule::Ref pRule;
-	aeControllerTarget *pTarget;
+	aeControllerTarget::Ref pTarget;
 	
 	aeLink::List pLinks;
 	

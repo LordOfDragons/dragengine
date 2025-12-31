@@ -53,7 +53,9 @@ public:
 	ceUCCGameCmdToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
 		ceCConditionGameCommand *gameCommand);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCGameCmdToggleNegate();
+public:
 	/*@}*/
 	
 public:

@@ -48,7 +48,9 @@ public:
 	gdeWPSOCLightListener(gdeWPSOCLight &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCLightListener() override;
+public:
 	/*@}*/
 	
 	

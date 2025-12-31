@@ -43,7 +43,7 @@ private:
 	
 	deSynthesizerSourceGroup::eApplicationTypes pApplicationType;
 	
-	seControllerTarget pTargetSelect;
+	seControllerTarget::Ref pTargetSelect;
 	
 	bool pTreeListExpanded;
 	
@@ -59,7 +59,9 @@ public:
 	seSourceGroup(const seSourceGroup &copy);
 	
 	/** \brief Clean up source. */
+protected:
 	~seSourceGroup() override;
+public:
 	/*@}*/
 	
 	
@@ -93,8 +95,7 @@ public:
 	void SetApplicationType(deSynthesizerSourceGroup::eApplicationTypes type);
 	
 	/** \brief Select target. */
-	inline seControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const seControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline const seControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	

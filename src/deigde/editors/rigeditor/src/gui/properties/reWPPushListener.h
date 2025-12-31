@@ -50,7 +50,9 @@ public:
 	reWPPushListener(reWPPush &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPPushListener() override;
+public:
 	/*@}*/
 	
 	

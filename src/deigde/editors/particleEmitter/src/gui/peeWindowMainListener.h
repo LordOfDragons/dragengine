@@ -51,7 +51,9 @@ public:
 	peeWindowMainListener(peeWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

@@ -56,7 +56,9 @@ public:
 	ceUCAIfElseRemove(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase, ceConversationAction *action);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseRemove();
+public:
 	/*@}*/
 	
 	

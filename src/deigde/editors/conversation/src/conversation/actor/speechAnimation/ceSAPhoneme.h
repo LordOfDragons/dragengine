@@ -54,7 +54,9 @@ public:
 	/** Creates a new phoneme. */
 	ceSAPhoneme(int ipa);
 	/** Cleans up the phoneme. */
+protected:
 	virtual ~ceSAPhoneme();
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -50,7 +50,9 @@ public:
 	projPanelProfilesListener(projPanelProfiles &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~projPanelProfilesListener();
+public:
 	/*@}*/
 	
 	

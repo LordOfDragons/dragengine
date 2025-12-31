@@ -62,7 +62,9 @@ public:
 	ceUCFileSetID(const ceConversation &conversation, ceConversationFile *file, const char *newID);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCFileSetID();
+public:
 	/*@}*/
 	
 	

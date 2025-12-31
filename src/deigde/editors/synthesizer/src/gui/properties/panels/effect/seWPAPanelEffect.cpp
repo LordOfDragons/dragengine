@@ -381,7 +381,7 @@ void seWPAPanelEffect::UpdateTargetList(){
 	
 	seEffect * const effect = GetEffect();
 	if(effect){
-		AddTarget("Strength", &effect->GetTargetStrength());
+		AddTarget("Strength", effect->GetTargetStrength());
 	}
 }
 

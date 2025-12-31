@@ -82,7 +82,9 @@ public:
 	projPanelRemoteClient(projPanelTestRun &panelTestRun, const projRemoteClient::Ref &client);
 	
 	/** \brief Clean up view. */
+protected:
 	~projPanelRemoteClient() override;
+public:
 	/*@}*/
 	
 	

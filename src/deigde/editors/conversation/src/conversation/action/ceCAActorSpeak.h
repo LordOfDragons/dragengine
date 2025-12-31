@@ -78,7 +78,9 @@ public:
 	/** Creates a new actor speak conversation action. */
 	ceCAActorSpeak(const ceCAActorSpeak &action);
 	/** Cleans up the actor speak conversation action. */
+protected:
 	~ceCAActorSpeak() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

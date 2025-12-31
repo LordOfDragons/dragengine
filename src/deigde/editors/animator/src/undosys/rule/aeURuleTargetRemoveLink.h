@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _AEURULETARGETREMOVELINK_H_
 #define _AEURULETARGETREMOVELINK_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
 
-// predefinitions
+#include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/link/aeLink.h"
-class aeControllerTarget;
 
 
 
@@ -48,7 +45,7 @@ public:
 	
 private:
 	aeRule::Ref pRule;
-	aeControllerTarget *pTarget;
+	aeControllerTarget::Ref pTarget;
 	
 	aeLink::Ref pLink;
 	

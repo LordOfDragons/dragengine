@@ -76,7 +76,9 @@ public:
 	aeAttachment(igdeEnvironment *environment, const char *name = "Attachment");
 	
 	/** Clean up attachment. */
+protected:
 	virtual ~aeAttachment();
+public:
 	/*@}*/
 	
 	

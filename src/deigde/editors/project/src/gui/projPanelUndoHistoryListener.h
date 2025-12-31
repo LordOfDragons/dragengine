@@ -51,7 +51,9 @@ public:
 	projPanelUndoHistoryListener(projPanelUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~projPanelUndoHistoryListener();
+public:
 	/*@}*/
 	
 	

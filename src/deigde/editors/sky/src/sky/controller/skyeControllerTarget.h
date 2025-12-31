@@ -27,6 +27,9 @@
 
 #include "../link/skyeLink.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class deSkyControllerTarget;
 
 
@@ -34,7 +37,12 @@ class deSkyControllerTarget;
 /**
  * \brief Links for controller target.
  */
-class skyeControllerTarget{
+class skyeControllerTarget : public deObject{
+public:
+	typedef deTObjectReference<skyeControllerTarget> Ref;
+	typedef decTObjectOrderedSet<skyeControllerTarget> List;
+	
+	
 private:
 	skyeLink::List pLinks;
 	
@@ -49,12 +57,14 @@ public:
 	/** \brief Create copy of controller target. */
 	skyeControllerTarget(const skyeControllerTarget &copy);
 	
+protected:
 	/** \brief Clean up controller target. */
 	~skyeControllerTarget();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Links. */

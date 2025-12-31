@@ -53,10 +53,10 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetPosition;
-	aeControllerTarget pTargetOrientation;
-	aeControllerTarget pTargetSize;
-	aeControllerTarget pTargetVertexPositionSet;
+	aeControllerTarget::Ref pTargetPosition;
+	aeControllerTarget::Ref pTargetOrientation;
+	aeControllerTarget::Ref pTargetSize;
+	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -66,7 +66,9 @@ public:
 	/** Create a copy of a foreign state rule. */
 	aeRuleForeignState(const aeRuleForeignState &copy);
 	/** Clean up the foreign state rule. */
+protected:
 	~aeRuleForeignState() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -135,20 +137,16 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the scale position target. */
-	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Retrieve the scale orientation target. */
-	inline aeControllerTarget &GetTargetOrientation(){ return pTargetOrientation; }
-	inline const aeControllerTarget &GetTargetOrientation() const{ return pTargetOrientation; }
+	inline const aeControllerTarget::Ref &GetTargetOrientation() const{ return pTargetOrientation; }
 	
 	/** Retrieve the scale size target. */
-	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
-	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	inline const aeControllerTarget::Ref &GetTargetSize() const{ return pTargetSize; }
 	
 	/** Vertex position set size target. */
-	inline aeControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
-	inline const aeControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
+	inline const aeControllerTarget::Ref &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	
 	/** Creates an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

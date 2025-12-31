@@ -72,7 +72,9 @@ public:
 	seController(const seController &copy);
 	
 	/** \brief Clean up controller. */
+protected:
 	virtual ~seController();
+public:
 	/*@}*/
 	
 	

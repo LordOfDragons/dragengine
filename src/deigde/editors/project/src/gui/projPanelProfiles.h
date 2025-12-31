@@ -111,7 +111,9 @@ public:
 	projPanelProfiles(projWindowMain &windowMain);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~projPanelProfiles();
+public:
 	/*@}*/
 	
 	

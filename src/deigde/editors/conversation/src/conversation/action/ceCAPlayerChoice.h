@@ -57,7 +57,9 @@ public:
 	/** Creates a new player choice conversation action. */
 	ceCAPlayerChoice(const ceCAPlayerChoice &action);
 	/** Cleans up the player choice conversation action. */
+protected:
 	~ceCAPlayerChoice() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

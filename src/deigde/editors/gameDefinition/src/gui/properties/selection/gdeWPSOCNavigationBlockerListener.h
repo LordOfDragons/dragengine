@@ -48,7 +48,9 @@ public:
 	gdeWPSOCNavigationBlockerListener(gdeWPSOCNavigationBlocker &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCNavigationBlockerListener() override;
+public:
 	/*@}*/
 	
 	

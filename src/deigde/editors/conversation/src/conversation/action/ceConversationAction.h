@@ -96,7 +96,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceConversationAction(const ceConversationAction &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	virtual ~ceConversationAction();
+public:
 	/*@}*/
 	
 	/** \name Management */

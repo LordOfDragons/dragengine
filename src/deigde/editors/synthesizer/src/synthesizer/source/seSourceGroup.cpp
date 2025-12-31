@@ -45,13 +45,14 @@
 seSourceGroup::seSourceGroup() :
 seSource(deSynthesizerSourceVisitorIdentify::estGroup),
 pApplicationType(deSynthesizerSourceGroup::eatAll),
+pTargetSelect(seControllerTarget::Ref::New()),
 pTreeListExpanded(false){
 }
 
 seSourceGroup::seSourceGroup(const seSourceGroup &copy) :
 seSource(copy),
 pApplicationType(copy.pApplicationType),
-pTargetSelect(copy.pTargetSelect),
+pTargetSelect(seControllerTarget::Ref::New(copy.pTargetSelect)),
 pTreeListExpanded(copy.pTreeListExpanded)
 {
 	copy.pSources.Visit([&](const seSource &s){
@@ -190,7 +191,7 @@ void seSourceGroup::UpdateTargets(){
 		seSynthesizer *synthesizer = GetSynthesizer();
 		DEASSERT_NOTNULL(synthesizer)
 		
-		pTargetSelect.UpdateEngineTarget(*synthesizer, source->GetTargetSelect());
+		pTargetSelect->UpdateEngineTarget(*synthesizer, source->GetTargetSelect());
 	}
 	
 	pSources.Visit([](seSource &source){
@@ -201,7 +202,7 @@ void seSourceGroup::UpdateTargets(){
 int seSourceGroup::CountLinkUsage(seLink *link) const{
 	int usageCount = seSource::CountLinkUsage(link);
 	
-	if(pTargetSelect.GetLinks().Has(link)){
+	if(pTargetSelect->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -215,7 +216,7 @@ int seSourceGroup::CountLinkUsage(seLink *link) const{
 void seSourceGroup::RemoveLinkFromTargets(seLink *link){
 	seSource::RemoveLinkFromTargets(link);
 	
-	pTargetSelect.RemoveLink(link);
+	pTargetSelect->RemoveLink(link);
 	
 	pSources.Visit([&](seSource &source){
 		source.RemoveLinkFromTargets(link);
@@ -227,7 +228,7 @@ void seSourceGroup::RemoveLinkFromTargets(seLink *link){
 void seSourceGroup::RemoveLinksFromAllTargets(){
 	seSource::RemoveLinksFromAllTargets();
 	
-	pTargetSelect.RemoveAllLinks();
+	pTargetSelect->RemoveAllLinks();
 	
 	pSources.Visit([](seSource &source){
 		source.RemoveLinksFromAllTargets();
@@ -257,7 +258,7 @@ deSynthesizerSource::Ref seSourceGroup::CreateEngineSource(){
 	seSynthesizer *synthesizer = GetSynthesizer();
 	DEASSERT_NOTNULL(synthesizer)
 	
-	pTargetSelect.UpdateEngineTarget(*synthesizer, engSource->GetTargetSelect());
+	pTargetSelect->UpdateEngineTarget(*synthesizer, engSource->GetTargetSelect());
 	
 	return engSource;
 }
@@ -271,7 +272,7 @@ seSource::Ref seSourceGroup::CreateCopy() const{
 void seSourceGroup::ListLinks(seLink::List &list){
 	seSource::ListLinks(list);
 	
-	pTargetSelect.AddLinksToList(list);
+	pTargetSelect->AddLinksToList(list);
 	
 	pSources.Visit([&](seSource &source){
 		source.ListLinks(list);

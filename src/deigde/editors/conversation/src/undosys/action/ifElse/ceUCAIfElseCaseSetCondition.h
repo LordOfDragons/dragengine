@@ -57,7 +57,9 @@ public:
 	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseCaseSetCondition();
+public:
 	/*@}*/
 	
 	

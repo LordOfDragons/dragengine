@@ -48,7 +48,9 @@ public:
 	gdeWPViewListener(gdeWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

@@ -50,7 +50,9 @@ public:
 	/** Creates a new rig capsule shape. */
 	reRigShapeCapsule(deEngine *engine);
 	/** Cleans up the rig shape shape. */
+protected:
 	~reRigShapeCapsule() override;
+public:
 	/*@}*/
 	
 	/** @name Management */

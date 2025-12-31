@@ -68,7 +68,7 @@ private:
 	bool pInvertBlendFactor;
 	bool pEnabled;
 	
-	aeControllerTarget pTargetBlendFactor;
+	aeControllerTarget::Ref pTargetBlendFactor;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -78,7 +78,9 @@ public:
 	/** Create a copy of an animator rule. */
 	aeRule(const aeRule &copy);
 	/** Clean up the animator rule. */
+protected:
 	virtual ~aeRule();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -140,8 +142,7 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** Retrieve the source factor target. */
-	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline const aeControllerTarget::Ref &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** List all links of all rule targets. */
 	virtual void ListLinks(aeLink::List& list);

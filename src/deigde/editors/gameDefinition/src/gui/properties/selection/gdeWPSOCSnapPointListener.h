@@ -48,7 +48,9 @@ public:
 	gdeWPSOCSnapPointListener(gdeWPSOCSnapPoint &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCSnapPointListener() override;
+public:
 	/*@}*/
 	
 	

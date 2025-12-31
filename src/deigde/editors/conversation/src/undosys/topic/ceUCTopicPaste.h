@@ -53,7 +53,9 @@ public:
 	ceUCTopicPaste(ceConversationFile *file, const ceConversationTopic::List &topics);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCTopicPaste();
+public:
 	/*@}*/
 	
 	

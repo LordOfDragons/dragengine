@@ -133,6 +133,6 @@ void seWPAPanelSourceGroup::UpdateTargetList(){
 	seWPAPanelSource::UpdateTargetList();
 	
 	if(source){
-		AddTarget("Select", &source->GetTargetSelect());
+		AddTarget("Select", source->GetTargetSelect());
 	}
 }

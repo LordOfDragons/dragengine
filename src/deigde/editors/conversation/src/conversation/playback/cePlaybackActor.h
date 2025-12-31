@@ -57,7 +57,9 @@ public:
 	/** Creates a new playback actor. */
 	cePlaybackActor();
 	/** Cleans up the playback actor. */
+protected:
 	~cePlaybackActor();
+public:
 	/*@}*/
 	
 	/** \name Management */

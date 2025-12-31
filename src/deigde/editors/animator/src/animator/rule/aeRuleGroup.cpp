@@ -50,6 +50,7 @@ pEnableSize(false),
 pEnableVertexPositionSet(true),
 pUseCurrentState(false),
 pApplicationType(deAnimatorRuleGroup::eatAll),
+pTargetSelect(aeControllerTarget::Ref::New()),
 pTreeListExpanded(false)
 {
 	SetName("Group");
@@ -63,7 +64,7 @@ pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
 pUseCurrentState(copy.pUseCurrentState),
 pApplicationType(copy.pApplicationType),
-pTargetSelect(copy.pTargetSelect),
+pTargetSelect(aeControllerTarget::Ref::New(copy.pTargetSelect)),
 pTreeListExpanded(copy.pTreeListExpanded)
 {
 	const int ruleCount = copy.pRules.GetCount();
@@ -264,7 +265,7 @@ void aeRuleGroup::UpdateTargets(){
 	
 	deAnimatorRuleGroup * const rule = (deAnimatorRuleGroup*)GetEngineRule();
 	if(rule){
-		pTargetSelect.UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
+		pTargetSelect->UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
 	}
 	
 	const int count = pRules.GetCount();
@@ -279,7 +280,7 @@ int aeRuleGroup::CountLinkUsage(aeLink *link) const{
 	int i, usageCount = aeRule::CountLinkUsage(link);
 	const int count = pRules.GetCount();
 	
-	if(pTargetSelect.GetLinks().Has(link)){
+	if(pTargetSelect->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -293,8 +294,8 @@ int aeRuleGroup::CountLinkUsage(aeLink *link) const{
 void aeRuleGroup::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetSelect.GetLinks().Has(link)){
-		pTargetSelect.RemoveLink(link);
+	if(pTargetSelect->GetLinks().Has(link)){
+		pTargetSelect->RemoveLink(link);
 	}
 	
 	const int count = pRules.GetCount();
@@ -310,7 +311,7 @@ void aeRuleGroup::RemoveLinkFromTargets(aeLink *link){
 void aeRuleGroup::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetSelect.RemoveAllLinks();
+	pTargetSelect->RemoveAllLinks();
 	
 	const int count = pRules.GetCount();
 	int i;
@@ -352,7 +353,7 @@ deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 	engRule->SetUseCurrentState(pUseCurrentState);
 	engRule->SetApplicationType(pApplicationType);
 	
-	pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
+	pTargetSelect->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 	
 	return engRule;
 }
@@ -375,7 +376,7 @@ void aeRuleGroup::ListLinks(aeLink::List &list){
 	
 	aeRule::ListLinks(list);
 	
-	pTargetSelect.AddLinksToList(list);
+	pTargetSelect->AddLinksToList(list);
 	
 	for(i=0; i<count; i++){
 		pRules.GetAt(i)->ListLinks(list);

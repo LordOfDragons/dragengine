@@ -152,23 +152,15 @@ void skyeBody::NotifyBodyChanged(){
 //////////////////////
 
 void skyeBody::pUpdateSkin(){
-	if(pPathSkin.IsEmpty()){
+	if(pPathSkin.IsEmpty() || !pLayer || !pLayer->GetSky()){
 		pEngSkin = nullptr;
 		return;
 	}
 	
-	deSkinManager &skinMgr = *pEngine->GetSkinManager();
-	const char *basePath = "/";
-	if(pLayer && pLayer->GetSky()){
-		basePath = pLayer->GetSky()->GetDirectoryPath();
-	}
-	
 	try{
-		pEngSkin = skinMgr.LoadSkin(pPathSkin, basePath);
+		pEngSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin, pLayer->GetSky()->GetDirectoryPath());
 		
 	}catch(const deException &){
-		if(pLayer && pLayer->GetSky()){
-			pEngSkin = pLayer->GetSky()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-		}
+		pEngSkin = pLayer->GetSky()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 	}
 }

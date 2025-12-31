@@ -50,7 +50,9 @@ public:
 	reWPUndoHistoryListener(reWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

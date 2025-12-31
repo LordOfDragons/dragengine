@@ -48,7 +48,9 @@ public:
 	gdeWPSOCBillboardListener(gdeWPSOCBillboard &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCBillboardListener() override;
+public:
 	/*@}*/
 	
 	

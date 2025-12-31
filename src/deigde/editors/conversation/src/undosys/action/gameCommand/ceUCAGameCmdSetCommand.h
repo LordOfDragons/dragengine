@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAGameCmdSetCommand();
+public:
 	/*@}*/
 	
 public:

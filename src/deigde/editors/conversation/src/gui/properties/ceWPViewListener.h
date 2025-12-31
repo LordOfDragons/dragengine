@@ -50,7 +50,9 @@ public:
 	ceWPViewListener(ceWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWPViewListener() override;
+public:
 	/*@}*/
 	
 	

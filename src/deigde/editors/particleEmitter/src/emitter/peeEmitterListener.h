@@ -48,7 +48,9 @@ public:
 	/** \brief Create a new listener. */
 	peeEmitterListener();
 	/** \brief Clean up the listener. */
+protected:
 	virtual ~peeEmitterListener();
+public:
 	/*@}*/
 	
 	/** \name Notifications */

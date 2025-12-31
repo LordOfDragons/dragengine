@@ -121,7 +121,9 @@ public:
 	/** Creates a new skin. */
 	seSkin(igdeEnvironment *environment);
 	/** Cleans up the skin. */
+protected:
 	virtual ~seSkin();
+public:
 	/*@}*/
 	
 	/** \name Management */

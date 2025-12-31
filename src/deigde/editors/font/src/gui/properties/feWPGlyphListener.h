@@ -50,7 +50,9 @@ public:
 	feWPGlyphListener(feWPGlyph &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feWPGlyphListener() override;
+public:
 	/*@}*/
 	
 	

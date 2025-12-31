@@ -96,7 +96,9 @@ public:
 	gdeOCSpeaker(const gdeOCSpeaker &speaker);
 	
 	/** \brief Clean up speaker. */
+protected:
 	virtual ~gdeOCSpeaker();
+public:
 	/*@}*/
 	
 	

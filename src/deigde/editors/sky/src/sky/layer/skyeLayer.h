@@ -72,7 +72,7 @@ private:
 	skyeBody::List pBodies;
 	skyeBody::Ref pActiveBody;
 	
-	skyeControllerTarget pTargets[deSkyLayer::etAmbientIntensity + 1];
+	skyeControllerTarget::List pTargets;
 	deSkyLayer::eTargets pActiveTarget;
 	
 	bool pSelected;
@@ -94,7 +94,9 @@ public:
 	skyeLayer(igdeEnvironment &environment);
 	
 	/** \brief Clean up layer. */
+protected:
 	virtual ~skyeLayer();
+public:
 	/*@}*/
 	
 	
@@ -241,8 +243,7 @@ public:
 	/** \name Targets */
 	/*@{*/
 	/** \brief Target. */
-	const skyeControllerTarget &GetTarget(deSkyLayer::eTargets target) const;
-	skyeControllerTarget &GetTarget(deSkyLayer::eTargets target);
+	const skyeControllerTarget::Ref &GetTarget(deSkyLayer::eTargets target) const;
 	
 	/** \brief Active target. */
 	inline deSkyLayer::eTargets GetActiveTarget() const{ return pActiveTarget; }

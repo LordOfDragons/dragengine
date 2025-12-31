@@ -51,7 +51,9 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionHasActor(const ceCConditionHasActor &condition);
 	/** Cleans up the conversation condition. */
+protected:
 	~ceCConditionHasActor() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

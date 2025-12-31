@@ -56,7 +56,9 @@ public:
 	projUProfileSetWindowSize(projProfile *profile, const decPoint &newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetWindowSize();
+public:
 	/*@}*/
 	
 	

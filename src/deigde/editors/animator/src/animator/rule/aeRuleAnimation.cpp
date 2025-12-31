@@ -49,7 +49,8 @@ pMoveTime(0.0f),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true)
+pEnableVertexPositionSet(true),
+pTargetMoveTime(aeControllerTarget::Ref::New())
 {
 	SetName("Animation");
 }
@@ -62,7 +63,7 @@ pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pTargetMoveTime(copy.pTargetMoveTime){
+pTargetMoveTime(aeControllerTarget::Ref::New(copy.pTargetMoveTime)){
 }
 
 aeRuleAnimation::~aeRuleAnimation(){
@@ -143,14 +144,14 @@ void aeRuleAnimation::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
+		pTargetMoveTime->UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
 	}
 }
 
 int aeRuleAnimation::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetMoveTime.GetLinks().Has(link)) usageCount++;
+	if(pTargetMoveTime->GetLinks().Has(link)) usageCount++;
 	
 	return usageCount;
 }
@@ -158,8 +159,8 @@ int aeRuleAnimation::CountLinkUsage(aeLink *link) const{
 void aeRuleAnimation::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetMoveTime.GetLinks().Has(link)){
-		pTargetMoveTime.RemoveLink(link);
+	if(pTargetMoveTime->GetLinks().Has(link)){
+		pTargetMoveTime->RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -168,7 +169,7 @@ void aeRuleAnimation::RemoveLinkFromTargets(aeLink *link){
 void aeRuleAnimation::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetMoveTime.RemoveAllLinks();
+	pTargetMoveTime->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -190,7 +191,7 @@ deAnimatorRule::Ref aeRuleAnimation::CreateEngineRule(){
 	engRule->SetEnableSize(pEnableSize);
 	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 	
-	pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
+	pTargetMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
 	
 	// finished
 	return engRule;
@@ -206,7 +207,7 @@ aeRule::Ref aeRuleAnimation::CreateCopy() const{
 
 void aeRuleAnimation::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-	pTargetMoveTime.AddLinksToList(list);
+	pTargetMoveTime->AddLinksToList(list);
 }
 
 

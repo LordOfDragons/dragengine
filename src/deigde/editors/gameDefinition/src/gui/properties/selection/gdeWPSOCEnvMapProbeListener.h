@@ -48,7 +48,9 @@ public:
 	gdeWPSOCEnvMapProbeListener(gdeWPSOCEnvMapProbe &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCEnvMapProbeListener() override;
+public:
 	/*@}*/
 	
 	

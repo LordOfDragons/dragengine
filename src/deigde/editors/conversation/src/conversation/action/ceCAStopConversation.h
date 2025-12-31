@@ -47,7 +47,9 @@ public:
 	/** Creates a new stop conversation conversation action. */
 	ceCAStopConversation(const ceCAStopConversation &action);
 	/** Cleans up the stop conversation conversation action. */
+protected:
 	~ceCAStopConversation() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -86,7 +86,9 @@ public:
 	ceConversationCondition(const ceConversationCondition &condition);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	virtual ~ceConversationCondition();
+public:
 	/*@}*/
 	
 	

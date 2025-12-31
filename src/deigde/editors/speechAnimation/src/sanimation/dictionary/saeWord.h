@@ -66,7 +66,9 @@ public:
 	saeWord(const char *name, const decUnicodeString &phonetics);
 	
 	/** Cleans up the word. */
+protected:
 	virtual ~saeWord();
+public:
 	/*@}*/
 	
 	/** \name Management */

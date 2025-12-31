@@ -78,7 +78,9 @@ public:
 	/** Creates a new texture as a copy of another texture. */
 	seTexture(const seTexture &texture);
 	/** Cleans up the texture. */
+protected:
 	virtual ~seTexture();
+public:
 	/*@}*/
 	
 	/** @name Management */

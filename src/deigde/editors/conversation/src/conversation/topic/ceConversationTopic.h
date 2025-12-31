@@ -66,7 +66,9 @@ public:
 	ceConversationTopic(const ceConversationTopic &topic);
 	
 	/** \brief Clean up conversation topic. */
+protected:
 	virtual ~ceConversationTopic();
+public:
 	/*@}*/
 	
 	

@@ -50,7 +50,9 @@ public:
 	feWindowMainListener(feWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

@@ -61,7 +61,9 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionLogic(const ceCConditionLogic &condition);
 	/** Cleans up the conversation condition. */
+protected:
 	~ceCConditionLogic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

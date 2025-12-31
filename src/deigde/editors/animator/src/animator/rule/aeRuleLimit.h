@@ -85,7 +85,9 @@ public:
 	/** Create a copy of a limit rule. */
 	aeRuleLimit(const aeRuleLimit &copy);
 	/** Clean up the limit rule. */
+protected:
 	~aeRuleLimit() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

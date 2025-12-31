@@ -64,7 +64,9 @@ public:
 	/** Creates a new font image. */
 	feFontImage(deEngine *engine);
 	/** Cleans up the font image. */
+protected:
 	virtual ~feFontImage();
+public:
 	/*@}*/
 	
 	/** @name Management */

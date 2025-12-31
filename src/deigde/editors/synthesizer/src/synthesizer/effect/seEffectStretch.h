@@ -44,8 +44,8 @@ private:
 	float pMinPitch;
 	float pMaxPitch;
 	
-	seControllerTarget pTargetTime;
-	seControllerTarget pTargetPitch;
+	seControllerTarget::Ref pTargetTime;
+	seControllerTarget::Ref pTargetPitch;
 	
 	
 	
@@ -59,7 +59,9 @@ public:
 	seEffectStretch(const seEffectStretch &copy);
 	
 	/** \brief Clean up effect. */
+protected:
 	~seEffectStretch() override;
+public:
 	/*@}*/
 	
 	
@@ -93,12 +95,10 @@ public:
 	
 	
 	/** \brief Time stretch target. */
-	inline seControllerTarget &GetTargetTime(){ return pTargetTime; }
-	inline const seControllerTarget &GetTargetTime() const{ return pTargetTime; }
+	inline const seControllerTarget::Ref &GetTargetTime() const{ return pTargetTime; }
 	
 	/** \brief Pitch stretch target. */
-	inline seControllerTarget &GetTargetPitch(){ return pTargetPitch; }
-	inline const seControllerTarget &GetTargetPitch() const{ return pTargetPitch; }
+	inline const seControllerTarget::Ref &GetTargetPitch() const{ return pTargetPitch; }
 	
 	
 	

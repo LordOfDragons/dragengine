@@ -48,7 +48,9 @@ public:
 	gdeWPSOCParticleEmitterListener(gdeWPSOCParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCParticleEmitterListener() override;
+public:
 	/*@}*/
 	
 	

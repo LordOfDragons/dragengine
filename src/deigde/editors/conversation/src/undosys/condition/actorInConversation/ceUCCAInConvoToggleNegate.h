@@ -56,7 +56,9 @@ public:
 		ceCConditionActorInConversation *condition);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCCAInConvoToggleNegate();
+public:
 	/*@}*/
 	
 	

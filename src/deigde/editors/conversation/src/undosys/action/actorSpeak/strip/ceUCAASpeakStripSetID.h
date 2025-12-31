@@ -54,7 +54,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, const char *newID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakStripSetID();
+public:
 	/*@}*/
 	
 public:

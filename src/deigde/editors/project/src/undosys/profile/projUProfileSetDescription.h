@@ -54,7 +54,9 @@ public:
 	projUProfileSetDescription(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetDescription();
+public:
 	/*@}*/
 	
 	

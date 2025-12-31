@@ -61,7 +61,9 @@ public:
 	ceCAIfElse(const ceCAIfElse &action);
 	
 	/** \brief Clean up if-else conversation action. */
+protected:
 	~ceCAIfElse() override;
+public:
 	/*@}*/
 	
 	

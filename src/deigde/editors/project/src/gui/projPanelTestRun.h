@@ -106,7 +106,9 @@ public:
 	projPanelTestRun(projWindowMain &windowMain);
 	
 	/** \brief Clean up view. */
+protected:
 	virtual ~projPanelTestRun();
+public:
 	/*@}*/
 	
 	

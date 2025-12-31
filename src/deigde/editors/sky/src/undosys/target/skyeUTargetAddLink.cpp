@@ -48,7 +48,7 @@ pTarget(target)
 	if(!layer || !link){
 		DETHROW(deeInvalidParam);
 	}
-	if(layer->GetTarget(target).GetLinks().Has(link)){
+	if(layer->GetTarget(target)->GetLinks().Has(link)){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -67,11 +67,11 @@ skyeUTargetAddLink::~skyeUTargetAddLink(){
 ///////////////
 
 void skyeUTargetAddLink::Undo(){
-	pLayer->GetTarget(pTarget).RemoveLink(pLink);
+	pLayer->GetTarget(pTarget)->RemoveLink(pLink);
 	pLayer->NotifyTargetChanged(pTarget);
 }
 
 void skyeUTargetAddLink::Redo(){
-	pLayer->GetTarget(pTarget).AddLink(pLink);
+	pLayer->GetTarget(pTarget)->AddLink(pLink);
 	pLayer->NotifyTargetChanged(pTarget);
 }

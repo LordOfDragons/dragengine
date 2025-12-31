@@ -49,7 +49,9 @@ public:
 	skyeWindowCurvesListener(skyeWindowCurves &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWindowCurvesListener() override;
+public:
 	/*@}*/
 	
 	

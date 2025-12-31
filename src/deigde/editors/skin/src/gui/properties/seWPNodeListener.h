@@ -50,7 +50,9 @@ public:
 	seWPNodeListener(seWPNode &panel);
 	
 	/** Clean up listener. */
+protected:
 	~seWPNodeListener() override;
+public:
 	/*@}*/
 	
 	

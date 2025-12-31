@@ -73,7 +73,9 @@ public:
 	gdeSky(const gdeSky &particleEmitter);
 	
 	/** \brief Clean up sky. */
+protected:
 	virtual ~gdeSky();
+public:
 	/*@}*/
 	
 	

@@ -65,7 +65,9 @@ public:
 	feWPGlyph(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~feWPGlyph();
+public:
 	/*@}*/
 	
 	

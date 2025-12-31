@@ -25,15 +25,16 @@
 #ifndef _GDEWPSTREEMODEL_H_
 #define _GDEWPSTREEMODEL_H_
 
+#include "gdeWPSTreeModelListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
 #include <deigde/gui/igdeTreeList.h>
 
-#include "../../../gamedef/gdeGameDefinition.h"
 class gdeWPSTIMCategories;
 class gdeWPSTIMObjectClasses;
 class gdeWPSTIMParticleEmitters;
 class gdeWPSTIMSkins;
 class gdeWPSTIMSkies;
-class gdeWPSTreeModelListener;
 class gdeWindowMain;
 
 class igdeMenuCascade;
@@ -50,7 +51,7 @@ private:
 	igdeTreeList &pTreeList;
 	gdeWindowMain &pWindowMain;
 	gdeGameDefinition::Ref pGameDefinition;
-	gdeWPSTreeModelListener *pListener;
+	gdeWPSTreeModelListener::Ref pListener;
 	
 	gdeWPSTIMCategories *pCategories;
 	gdeWPSTIMObjectClasses *pObjectClasses;

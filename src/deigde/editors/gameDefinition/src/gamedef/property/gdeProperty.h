@@ -190,7 +190,9 @@ public:
 	gdeProperty(const gdeProperty &property);
 	
 	/** \brief Clean up property. */
+protected:
 	virtual ~gdeProperty();
+public:
 	/*@}*/
 	
 	

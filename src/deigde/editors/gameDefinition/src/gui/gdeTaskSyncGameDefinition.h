@@ -50,7 +50,9 @@ public:
 	gdeTaskSyncGameDefinition(gdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~gdeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

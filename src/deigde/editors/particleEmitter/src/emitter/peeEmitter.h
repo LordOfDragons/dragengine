@@ -120,7 +120,9 @@ public:
 	/** \brief Create a new emitter. */
 	peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem);
 	/** \brief Clean up the emitter. */
+protected:
 	virtual ~peeEmitter();
+public:
 	/*@}*/
 	
 	/** \name Management */

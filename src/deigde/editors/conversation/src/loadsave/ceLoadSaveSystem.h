@@ -77,7 +77,9 @@ public:
 	ceLoadSaveSystem(ceWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
+protected:
 	~ceLoadSaveSystem();
+public:
 	/*@}*/
 	
 	

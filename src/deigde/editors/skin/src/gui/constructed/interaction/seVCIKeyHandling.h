@@ -51,7 +51,9 @@ public:
 	seVCIKeyHandling(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~seVCIKeyHandling();
+public:
 	/*@}*/
 	
 	

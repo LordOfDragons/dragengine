@@ -50,7 +50,9 @@ public:
 	ceWPTTreeModelListener(ceWPTTreeModel &model);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWPTTreeModelListener() override;
+public:
 	/*@}*/
 	
 	

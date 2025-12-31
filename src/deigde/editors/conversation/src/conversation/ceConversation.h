@@ -166,7 +166,9 @@ public:
 	ceConversation(const ceConversation &) = delete;
 	
 	/** Cleans up the conversation. */
+protected:
 	virtual ~ceConversation();
+public:
 	/*@}*/
 	
 	/** \name Management */

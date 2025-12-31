@@ -49,7 +49,9 @@ public:
 	skyeWPLinkListener(skyeWPLink &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWPLinkListener() override;
+public:
 	/*@}*/
 	
 	

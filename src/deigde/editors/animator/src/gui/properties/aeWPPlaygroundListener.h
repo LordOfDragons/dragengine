@@ -51,7 +51,9 @@ public:
 	aeWPPlaygroundListener(aeWPPlayground &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPPlaygroundListener() override;
+public:
 	/*@}*/
 	
 	

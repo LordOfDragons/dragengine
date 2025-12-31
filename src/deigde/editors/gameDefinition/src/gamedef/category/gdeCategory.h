@@ -60,7 +60,9 @@ public:
 	gdeCategory(const gdeCategory &category);
 	
 	/** \brief Clean up category. */
+protected:
 	virtual ~gdeCategory();
+public:
 	/*@}*/
 	
 	

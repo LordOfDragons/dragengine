@@ -128,7 +128,9 @@ public:
 	seProperty(const seProperty &property);
 	
 	/** \brief Clean up property. */
+protected:
 	virtual ~seProperty();
+public:
 	/*@}*/
 	
 	

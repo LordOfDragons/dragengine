@@ -316,6 +316,6 @@ void aeWPAPanelRuleAnimation::UpdateTargetList(){
 	
 	aeRuleAnimation * const rule = (aeRuleAnimation*)GetRule();
 	if(rule){
-		AddTarget("Move Time", &rule->GetTargetMoveTime());
+		AddTarget("Move Time", rule->GetTargetMoveTime());
 	}
 }

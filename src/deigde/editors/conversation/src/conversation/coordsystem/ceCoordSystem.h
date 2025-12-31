@@ -55,7 +55,9 @@ public:
 	/** \brief Creates a new coordinate system. */
 	ceCoordSystem();
 	/** \brief Cleans up the conversation actor. */
+protected:
 	virtual ~ceCoordSystem();
+public:
 	/*@}*/
 	
 	/** \name Management */

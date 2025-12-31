@@ -54,7 +54,9 @@ public:
 	projUProfileSetDelgaPath(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetDelgaPath();
+public:
 	/*@}*/
 	
 	

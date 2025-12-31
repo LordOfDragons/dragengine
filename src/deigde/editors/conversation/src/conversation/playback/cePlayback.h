@@ -98,7 +98,9 @@ public:
 	cePlayback(ceConversation &conversation);
 	
 	/** Clean up playback. */
+protected:
 	~cePlayback();
+public:
 	/*@}*/
 	
 	

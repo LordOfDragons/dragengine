@@ -87,7 +87,9 @@ public:
 		cDopeSheet(ceWindowDopeSheet &window);
 		
 	protected:
+protected:
 		virtual ~cDopeSheet();
+public:
 		
 	public:
 		virtual void OnResize();

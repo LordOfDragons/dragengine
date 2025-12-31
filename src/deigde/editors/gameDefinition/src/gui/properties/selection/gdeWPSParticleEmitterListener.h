@@ -48,7 +48,9 @@ public:
 	gdeWPSParticleEmitterListener(gdeWPSParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSParticleEmitterListener() override;
+public:
 	/*@}*/
 	
 	

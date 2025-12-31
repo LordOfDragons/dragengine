@@ -101,41 +101,41 @@ void seULinkRemove::Redo(){
 //////////////////////
 
 void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, const seSource::Ref &source){
-	if(source->GetTargetBlendFactor().GetLinks().Has(link)){
-		pAddTarget(targetCount, source, &source->GetTargetBlendFactor());
+	if(source->GetTargetBlendFactor()->GetLinks().Has(link)){
+		pAddTarget(targetCount, source, source->GetTargetBlendFactor());
 	}
-	if(source->GetTargetPanning().GetLinks().Has(link)){
-		pAddTarget(targetCount, source, &source->GetTargetPanning());
+	if(source->GetTargetPanning()->GetLinks().Has(link)){
+		pAddTarget(targetCount, source, source->GetTargetPanning());
 	}
-	if(source->GetTargetVolume().GetLinks().Has(link)){
-		pAddTarget(targetCount, source, &source->GetTargetVolume());
+	if(source->GetTargetVolume()->GetLinks().Has(link)){
+		pAddTarget(targetCount, source, source->GetTargetVolume());
 	}
 	
 	switch(source->GetType()){
 	case deSynthesizerSourceVisitorIdentify::estSound:{
 		seSourceSound &sound = source.DynamicCast<seSourceSound>();
 		
-		if(sound.GetTargetSpeed().GetLinks().Has(link)){
-			pAddTarget(targetCount, source, &sound.GetTargetSpeed());
+		if(sound.GetTargetSpeed()->GetLinks().Has(link)){
+			pAddTarget(targetCount, source, sound.GetTargetSpeed());
 		}
-		if(sound.GetTargetPlay().GetLinks().Has(link)){
-			pAddTarget(targetCount, source, &sound.GetTargetPlay());
+		if(sound.GetTargetPlay()->GetLinks().Has(link)){
+			pAddTarget(targetCount, source, sound.GetTargetPlay());
 		}
 		}break;
 		
 	case deSynthesizerSourceVisitorIdentify::estWave:{
 		seSourceWave &wave = source.DynamicCast<seSourceWave>();
 		
-		if(wave.GetTargetFrequency().GetLinks().Has(link)){
-			pAddTarget(targetCount, source, &wave.GetTargetFrequency());
+		if(wave.GetTargetFrequency()->GetLinks().Has(link)){
+			pAddTarget(targetCount, source, wave.GetTargetFrequency());
 		}
 		}break;
 		
 	case deSynthesizerSourceVisitorIdentify::estGroup:{
 		seSourceGroup &group = source.DynamicCast<seSourceGroup>();
 		
-		if(group.GetTargetSelect().GetLinks().Has(link)){
-			pAddTarget(targetCount, source, &group.GetTargetSelect());
+		if(group.GetTargetSelect()->GetLinks().Has(link)){
+			pAddTarget(targetCount, source, group.GetTargetSelect());
 		}
 		
 		group.GetSources().Visit([&](const seSource::Ref &sub){

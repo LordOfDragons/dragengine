@@ -48,7 +48,9 @@ public:
 	ceViewConversationListener(ceViewConversation &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceViewConversationListener() override;
+public:
 	/*@}*/
 	
 	

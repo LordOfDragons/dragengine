@@ -96,7 +96,9 @@ public:
 	gdeOCEnvMapProbe(const gdeOCEnvMapProbe &probe);
 	
 	/** \brief Clean up environment map probe. */
+protected:
 	virtual ~gdeOCEnvMapProbe();
+public:
 	/*@}*/
 	
 	

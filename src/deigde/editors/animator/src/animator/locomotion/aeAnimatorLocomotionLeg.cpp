@@ -94,9 +94,6 @@ aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotio
 }
 
 aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
-	pDDSPredict->SetParentDebugDrawer(nullptr);
-	pDDSLockedCF.SetParentDebugDrawer(nullptr);
-	pDDSLocked->SetParentDebugDrawer(nullptr);
 }
 
 

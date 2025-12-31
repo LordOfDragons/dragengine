@@ -58,7 +58,9 @@ public:
 		ceCConditionActorInConversation *condition, const char *newID);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCCAInConvoSetActor();
+public:
 	/*@}*/
 	
 	

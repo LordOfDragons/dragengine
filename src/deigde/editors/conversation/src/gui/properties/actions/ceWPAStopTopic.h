@@ -43,7 +43,9 @@ public:
 	ceWPAStopTopic(ceWPTopic &parentPanel);
 	
 	/** \brief Clean up conversation action property window. */
+protected:
 	~ceWPAStopTopic() override;
+public:
 	/*@}*/
 	
 	

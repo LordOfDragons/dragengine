@@ -48,7 +48,9 @@ public:
 	gdeWPSSkinListener(gdeWPSSkin &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSSkinListener() override;
+public:
 	/*@}*/
 	
 	

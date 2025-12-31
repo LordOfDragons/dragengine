@@ -55,7 +55,9 @@ public:
 	/** Creates a new camera shot conversation action. */
 	ceCACameraShot(const ceCACameraShot &action);
 	/** Cleans up the camera shot conversation action. */
+protected:
 	~ceCACameraShot() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -48,7 +48,9 @@ public:
 	seWPDynamicSkinListener(seWPDynamicSkin &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPDynamicSkinListener() override;
+public:
 	/*@}*/
 	
 	

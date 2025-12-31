@@ -68,7 +68,9 @@ public:
 	gdeSkin(const gdeSkin &skin);
 	
 	/** \brief Clean up skin. */
+protected:
 	virtual ~gdeSkin();
+public:
 	/*@}*/
 	
 	

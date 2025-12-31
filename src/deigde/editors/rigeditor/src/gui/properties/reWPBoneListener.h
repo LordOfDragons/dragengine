@@ -50,7 +50,9 @@ public:
 	reWPBoneListener(reWPBone &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPBoneListener() override;
+public:
 	/*@}*/
 	
 	

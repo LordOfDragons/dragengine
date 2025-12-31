@@ -52,7 +52,9 @@ public:
 	aeWPControllerListener(aeWPController &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	

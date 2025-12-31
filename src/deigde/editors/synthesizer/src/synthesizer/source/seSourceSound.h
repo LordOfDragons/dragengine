@@ -51,8 +51,8 @@ private:
 	float pMaxSpeed;
 	bool pLooping;
 	
-	seControllerTarget pTargetSpeed;
-	seControllerTarget pTargetPlay;
+	seControllerTarget::Ref pTargetSpeed;
+	seControllerTarget::Ref pTargetPlay;
 	
 	
 	
@@ -66,7 +66,9 @@ public:
 	seSourceSound(const seSourceSound &copy);
 	
 	/** \brief Clean up synthesizer source. */
+protected:
 	~seSourceSound() override;
+public:
 	/*@}*/
 	
 	
@@ -124,8 +126,7 @@ public:
 	
 	
 	/** \brief Speed target. */
-	inline seControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
-	inline const seControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
+	inline const seControllerTarget::Ref &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/**
 	 * \brief Play target.
@@ -134,8 +135,7 @@ public:
 	 *          playback freezing playback position. A value of 0 stops playback and rewinds playback
 	 *          position to the beginning.
 	 */
-	inline seControllerTarget &GetTargetPlay(){ return pTargetPlay; }
-	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
+	inline const seControllerTarget::Ref &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
 	virtual deSynthesizerSource::Ref CreateEngineSource();

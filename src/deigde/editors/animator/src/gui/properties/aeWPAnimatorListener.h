@@ -51,7 +51,9 @@ public:
 	aeWPAnimatorListener(aeWPAnimator &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPAnimatorListener() override;
+public:
 	/*@}*/
 	
 	

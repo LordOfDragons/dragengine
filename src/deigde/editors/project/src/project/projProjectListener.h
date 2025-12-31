@@ -48,7 +48,9 @@ public:
 	projProjectListener();
 	
 	/** \brief Clean up project listener. */
+protected:
 	~projProjectListener() override;
+public:
 	/*@}*/
 	
 	

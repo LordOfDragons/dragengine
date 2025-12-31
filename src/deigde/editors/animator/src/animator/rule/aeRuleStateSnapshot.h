@@ -54,7 +54,9 @@ public:
 	/** Create a copy of a state snapshot rule. */
 	aeRuleStateSnapshot(const aeRuleStateSnapshot &copy);
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleStateSnapshot() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

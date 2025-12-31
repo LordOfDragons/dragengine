@@ -48,7 +48,9 @@ public:
 	/** Creates a new music conversation action. */
 	ceCAMusic(const ceCAMusic &action);
 	/** Cleans up the music conversation action. */
+protected:
 	~ceCAMusic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

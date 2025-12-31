@@ -56,7 +56,9 @@ public:
 	ceUCAASpeakHeadLAClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCAASpeakHeadLAClear();
+public:
 	/*@}*/
 	
 	

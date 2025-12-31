@@ -51,7 +51,9 @@ public:
 	ceCanvasRuleOfThirdsAid(igdeEnvironment &environment);
 	
 	/** \brief Clean up canvas. */
+protected:
 	~ceCanvasRuleOfThirdsAid();
+public:
 	/*@}*/
 	
 	

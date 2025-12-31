@@ -46,7 +46,8 @@ seSourceWave::seSourceWave() :
 seSource(deSynthesizerSourceVisitorIdentify::estWave),
 pWaveType(deSynthesizerSourceWave::ewtSine),
 pMinFrequency(440.0f),
-pMaxFrequency(440.0f){
+pMaxFrequency(440.0f),
+pTargetFrequency(seControllerTarget::Ref::New()){
 }
 
 seSourceWave::seSourceWave(const seSourceWave &copy) :
@@ -54,7 +55,7 @@ seSource(copy),
 pWaveType(copy.pWaveType),
 pMinFrequency(copy.pMinFrequency),
 pMaxFrequency(copy.pMaxFrequency),
-pTargetFrequency(copy.pTargetFrequency){
+pTargetFrequency(seControllerTarget::Ref::New(copy.pTargetFrequency)){
 }
 
 seSourceWave::~seSourceWave(){
@@ -120,14 +121,14 @@ void seSourceWave::UpdateTargets(){
 		seSynthesizer * const synthesizer = GetSynthesizer();
 		DEASSERT_NOTNULL(synthesizer);
 		
-		pTargetFrequency.UpdateEngineTarget(*synthesizer, source->GetTargetFrequency());
+		pTargetFrequency->UpdateEngineTarget(*synthesizer, source->GetTargetFrequency());
 	}
 }
 
 int seSourceWave::CountLinkUsage(seLink *link) const{
 	int usageCount = seSource::CountLinkUsage(link);
 	
-	if(pTargetFrequency.GetLinks().Has(link)){
+	if(pTargetFrequency->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -137,7 +138,7 @@ int seSourceWave::CountLinkUsage(seLink *link) const{
 void seSourceWave::RemoveLinkFromTargets(seLink *link){
 	seSource::RemoveLinkFromTargets(link);
 	
-	pTargetFrequency.RemoveLink(link);
+	pTargetFrequency->RemoveLink(link);
 	
 	UpdateTargets();
 }
@@ -145,7 +146,7 @@ void seSourceWave::RemoveLinkFromTargets(seLink *link){
 void seSourceWave::RemoveLinksFromAllTargets(){
 	seSource::RemoveLinksFromAllTargets();
 	
-	pTargetFrequency.RemoveAllLinks();
+	pTargetFrequency->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -164,7 +165,7 @@ deSynthesizerSource::Ref seSourceWave::CreateEngineSource(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	DEASSERT_NOTNULL(synthesizer);
 	
-	pTargetFrequency.UpdateEngineTarget(*synthesizer, engSource->GetTargetFrequency());
+	pTargetFrequency->UpdateEngineTarget(*synthesizer, engSource->GetTargetFrequency());
 	
 	return engSource;
 }
@@ -177,7 +178,7 @@ seSource::Ref seSourceWave::CreateCopy() const{
 
 void seSourceWave::ListLinks(seLink::List &list){
 	seSource::ListLinks(list);
-	pTargetFrequency.AddLinksToList(list);
+	pTargetFrequency->AddLinksToList(list);
 }
 
 

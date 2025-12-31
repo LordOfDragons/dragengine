@@ -50,7 +50,9 @@ public:
 	seWPTextureListener(seWPTexture &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPTextureListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

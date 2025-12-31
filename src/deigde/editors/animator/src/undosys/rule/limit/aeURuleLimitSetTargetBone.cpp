@@ -46,7 +46,7 @@ aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone(aeRuleLimit *rule, const ch
 	
 	pRule = nullptr;
 	
-	pOldBone = rule->GetTargetBone().GetString();
+	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
 	SetShortInfo("Limit set target bone");

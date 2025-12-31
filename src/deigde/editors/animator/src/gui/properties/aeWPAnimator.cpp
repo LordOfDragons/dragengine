@@ -520,7 +520,7 @@ public:
 			}
 		}
 		
-		const aeUAnimatorSetVertexPositionSets::Ref undo(new aeUAnimatorSetVertexPositionSets(
+		const aeUAnimatorSetVertexPositionSets::Ref undo(aeUAnimatorSetVertexPositionSets::Ref::New(
 			animator, animator->GetListVertexPositionSets() + sets));
 		undo->SetShortInfo("Animator import vertex position sets");
 		return undo;

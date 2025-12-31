@@ -51,7 +51,9 @@ public:
 	ceControllerValue(const char *controller, float value);
 	
 	/** Cleans up the controller value. */
+protected:
 	virtual ~ceControllerValue();
+public:
 	/*@}*/
 	
 	/** \name Management */

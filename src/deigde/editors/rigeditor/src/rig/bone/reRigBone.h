@@ -102,7 +102,9 @@ public:
 	/** \brief Creates a new rig controller. */
 	reRigBone(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
+protected:
 	virtual ~reRigBone();
+public:
 	/*@}*/
 	
 	/** \name Management */

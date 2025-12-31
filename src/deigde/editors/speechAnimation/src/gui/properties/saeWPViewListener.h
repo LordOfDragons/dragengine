@@ -50,7 +50,9 @@ public:
 	saeWPViewListener(saeWPView &panel);
 	
 	/** Clean up listener. */
+protected:
 	~saeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

@@ -420,7 +420,7 @@ int skyeSky::CountControllerUsage(skyeController *controller) const{
 	for(i=0; i<layerCount; i++){
 		const skyeLayer &layer = *pLayers.GetAt(i);
 		for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
-			const skyeLink::List &links = layer.GetTarget((deSkyLayer::eTargets)j).GetLinks();
+			const skyeLink::List &links = layer.GetTarget((deSkyLayer::eTargets)j)->GetLinks();
 			const int linkCount = links.GetCount();
 			for(k=0; k<linkCount; k++){
 				if(links.GetAt(k)->GetController() == controller){
@@ -526,7 +526,7 @@ int skyeSky::CountLinkUsage(skyeLink *link) const{
 	for(i=0; i<layerCount; i++){
 		const skyeLayer &layer = *pLayers.GetAt(i);
 		for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
-			if(layer.GetTarget((deSkyLayer::eTargets)j).GetLinks().Has(link)){
+			if(layer.GetTarget((deSkyLayer::eTargets)j)->GetLinks().Has(link)){
 				usageCount++;
 			}
 		}
@@ -885,18 +885,6 @@ void skyeSky::pCleanUp(){
 	RemoveAllControllers();
 	
 	pEnvObject = nullptr;
-	
-	if(pEngWorld){
-		pDDSHorizon->SetParentDebugDrawer(nullptr);
-		
-		if(pDDHorizon){
-			pEngWorld->RemoveDebugDrawer(pDDHorizon);
-		}
-		
-		if(pEngSkyInstance){
-			pEngWorld->RemoveSky(pEngSkyInstance);
-		}
-	}
 }
 
 void skyeSky::pBuildShapeHorizon(){

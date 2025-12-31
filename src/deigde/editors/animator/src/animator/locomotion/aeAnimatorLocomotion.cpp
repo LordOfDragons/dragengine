@@ -233,7 +233,7 @@ pTurnIP(0.0f)
 		
 		// create 4 legs
 		for(i=0; i<4; i++){
-			aeAnimatorLocomotionLeg::Ref leg(new aeAnimatorLocomotionLeg(this));
+			aeAnimatorLocomotionLeg::Ref leg(aeAnimatorLocomotionLeg::Ref::New(this));
 			leg->SetShapesVisible(i < 2);
 			pLegs.Add(leg);
 		}

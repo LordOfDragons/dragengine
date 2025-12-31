@@ -458,11 +458,11 @@ void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
 	
 	aeRuleInverseKinematic * const rule = (aeRuleInverseKinematic*)GetRule();
 	if(rule){
-		AddTarget("Goal Position", &rule->GetTargetGoalPosition());
-		AddTarget("Goal Orientation", &rule->GetTargetGoalOrientation());
-		AddTarget("Local Position", &rule->GetTargetLocalPosition());
-		AddTarget("Local Orientation", &rule->GetTargetLocalOrientation());
-		AddTarget("Reach Range", &rule->GetTargetReachRange());
-		AddTarget("Reach Center", &rule->GetTargetReachCenter());
+		AddTarget("Goal Position", rule->GetTargetGoalPosition());
+		AddTarget("Goal Orientation", rule->GetTargetGoalOrientation());
+		AddTarget("Local Position", rule->GetTargetLocalPosition());
+		AddTarget("Local Orientation", rule->GetTargetLocalOrientation());
+		AddTarget("Reach Range", rule->GetTargetReachRange());
+		AddTarget("Reach Center", rule->GetTargetReachCenter());
 	}
 }

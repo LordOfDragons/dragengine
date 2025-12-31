@@ -83,7 +83,9 @@ public:
 	gdeWPSOCSpeaker(gdeWindowProperties &windowMain);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~gdeWPSOCSpeaker();
+public:
 	/*@}*/
 	
 	

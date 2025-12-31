@@ -56,7 +56,9 @@ public:
 	projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetIdentifier();
+public:
 	/*@}*/
 	
 	

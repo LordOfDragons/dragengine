@@ -48,7 +48,9 @@ public:
 	gdeWPSelectionListener(gdeWPSelection &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSelectionListener() override;
+public:
 	/*@}*/
 	
 	

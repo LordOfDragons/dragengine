@@ -101,7 +101,9 @@ public:
 	/** Creates a new camera shot. */
 	ceCameraShot(const ceCameraShot &cameraShot);
 	/** Cleans up the camera shot. */
+protected:
 	virtual ~ceCameraShot();
+public:
 	/*@}*/
 	
 	/** \name Management */

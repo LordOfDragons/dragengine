@@ -55,7 +55,9 @@ public:
 	projPanelUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up view. */
+protected:
 	virtual ~projPanelUndoHistory();
+public:
 	/*@}*/
 	
 	

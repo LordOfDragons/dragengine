@@ -423,9 +423,9 @@ void aeWPAPanelRuleStateManipulator::UpdateTargetList(){
 	
 	aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)GetRule();
 	if(rule){
-		AddTarget("Position", &rule->GetTargetPosition());
-		AddTarget("Rotation ", &rule->GetTargetRotation());
-		AddTarget("Size", &rule->GetTargetSize());
-		AddTarget("Vertex Position Set", &rule->GetTargetVertexPositionSet());
+		AddTarget("Position", rule->GetTargetPosition());
+		AddTarget("Rotation ", rule->GetTargetRotation());
+		AddTarget("Size", rule->GetTargetSize());
+		AddTarget("Vertex Position Set", rule->GetTargetVertexPositionSet());
 	}
 }

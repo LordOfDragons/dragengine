@@ -48,7 +48,9 @@ public:
 	gdeWPSOCComponentListener(gdeWPSOCComponent &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCComponentListener() override;
+public:
 	/*@}*/
 	
 	

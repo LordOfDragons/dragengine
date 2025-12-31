@@ -63,7 +63,9 @@ public:
 	/** \brief Creates a new trigger conversation action. */
 	ceCATrigger(const ceCATrigger &action);
 	/** \brief Cleans up the trigger conversation action. */
+protected:
 	~ceCATrigger() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

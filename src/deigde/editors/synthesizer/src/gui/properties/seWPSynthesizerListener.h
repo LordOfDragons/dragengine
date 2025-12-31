@@ -51,7 +51,9 @@ public:
 	seWPSynthesizerListener(seWPSynthesizer &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPSynthesizerListener() override;
+public:
 	/*@}*/
 	
 	

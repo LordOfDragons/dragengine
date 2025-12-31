@@ -54,7 +54,9 @@ public:
 	peeUControllerSetLower(peeController *controller, float newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
     virtual ~peeUControllerSetLower();
+public:
 	/*@}*/
 	
 	

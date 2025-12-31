@@ -51,7 +51,9 @@ public:
 	ceUCGestureToggleHold(ceGesture *file);
 	
 	/** \breif Clean up undo action. */
+protected:
 	virtual ~ceUCGestureToggleHold();
+public:
 	/*@}*/
 	
 	

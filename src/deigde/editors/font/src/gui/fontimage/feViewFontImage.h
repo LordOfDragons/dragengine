@@ -70,7 +70,9 @@ public:
 	feViewFontImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up font image view. */
+protected:
 	virtual ~feViewFontImage();
+public:
 	/*@}*/
 	
 	

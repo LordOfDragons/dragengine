@@ -63,7 +63,9 @@ public:
 	ceConversationFile(const ceConversationFile &file);
 	
 	/** \brief Clean up conversation file. */
+protected:
 	virtual ~ceConversationFile();
+public:
 	/*@}*/
 	
 	

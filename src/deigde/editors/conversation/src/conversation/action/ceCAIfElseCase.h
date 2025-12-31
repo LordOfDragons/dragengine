@@ -55,7 +55,9 @@ public:
 	ceCAIfElseCase(const ceCAIfElseCase &ifcase);
 	
 	/** \brief Clean up the if else case. */
+protected:
 	virtual ~ceCAIfElseCase();
+public:
 	/*@}*/
 	
 	

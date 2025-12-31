@@ -48,7 +48,9 @@ public:
 	gdeWPSObjectClassListener(gdeWPSObjectClass &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSObjectClassListener() override;
+public:
 	/*@}*/
 	
 	

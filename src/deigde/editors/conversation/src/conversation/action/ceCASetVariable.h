@@ -71,7 +71,9 @@ public:
 	ceCASetVariable(const ceCASetVariable &action);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	~ceCASetVariable() override;
+public:
 	/*@}*/
 	
 	

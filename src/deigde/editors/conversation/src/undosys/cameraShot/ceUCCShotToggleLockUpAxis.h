@@ -48,7 +48,9 @@ public:
 	/** \brief Creates a new undo action. */
 	ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot);
 	/** \brief Cleans up the undo action. */
+protected:
 	virtual ~ceUCCShotToggleLockUpAxis();
+public:
 	/*@}*/
 	
 public:

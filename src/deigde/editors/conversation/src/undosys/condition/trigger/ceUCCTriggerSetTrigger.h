@@ -55,7 +55,9 @@ public:
 	ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
 		ceCConditionTrigger *condition, const char *newTrigger);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCTriggerSetTrigger();
+public:
 	/*@}*/
 	
 public:

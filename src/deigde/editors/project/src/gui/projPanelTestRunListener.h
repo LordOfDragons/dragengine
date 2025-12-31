@@ -49,7 +49,9 @@ public:
 	projPanelTestRunListener(projPanelTestRun &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~projPanelTestRunListener() override;
+public:
 	/*@}*/
 	
 	

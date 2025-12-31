@@ -50,7 +50,7 @@ private:
 	bool pUseCurrentState;
 	deAnimatorRuleGroup::eApplicationTypes pApplicationType;
 	
-	aeControllerTarget pTargetSelect;
+	aeControllerTarget::Ref pTargetSelect;
 	
 	bool pTreeListExpanded;
 	
@@ -62,7 +62,9 @@ public:
 	/** Create a copy of a group rule. */
 	aeRuleGroup(const aeRuleGroup &copy);
 	/** Clean up the group rule. */
+protected:
 	~aeRuleGroup() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -113,8 +115,7 @@ public:
 	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
 	
 	/** Retrieve the select target. */
-	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

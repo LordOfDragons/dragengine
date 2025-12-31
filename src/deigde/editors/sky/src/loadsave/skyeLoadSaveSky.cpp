@@ -568,61 +568,61 @@ void skyeLoadSaveSky::pReadTarget(const decXmlElementTag &root, skyeSky &sky, sk
 	skyeControllerTarget *target = nullptr;
 	
 	if(type == "offsetX"){
-		target = &layer.GetTarget(deSkyLayer::etOffsetX);
+		target = layer.GetTarget(deSkyLayer::etOffsetX);
 		
 	}else if(type == "offsetY"){
-		target = &layer.GetTarget(deSkyLayer::etOffsetY);
+		target = layer.GetTarget(deSkyLayer::etOffsetY);
 		
 	}else if(type == "offsetZ"){
-		target = &layer.GetTarget(deSkyLayer::etOffsetZ);
+		target = layer.GetTarget(deSkyLayer::etOffsetZ);
 		
 	}else if(type == "orientationX"){
-		target = &layer.GetTarget(deSkyLayer::etOrientationX);
+		target = layer.GetTarget(deSkyLayer::etOrientationX);
 		
 	}else if(type == "orientationY"){
-		target = &layer.GetTarget(deSkyLayer::etOrientationY);
+		target = layer.GetTarget(deSkyLayer::etOrientationY);
 		
 	}else if(type == "orientationZ"){
-		target = &layer.GetTarget(deSkyLayer::etOrientationZ);
+		target = layer.GetTarget(deSkyLayer::etOrientationZ);
 		
 	}else if(type == "rotationX"){
-		target = &layer.GetTarget(deSkyLayer::etRotationX);
+		target = layer.GetTarget(deSkyLayer::etRotationX);
 		
 	}else if(type == "rotationY"){
-		target = &layer.GetTarget(deSkyLayer::etRotationY);
+		target = layer.GetTarget(deSkyLayer::etRotationY);
 		
 	}else if(type == "rotationZ"){
-		target = &layer.GetTarget(deSkyLayer::etRotationZ);
+		target = layer.GetTarget(deSkyLayer::etRotationZ);
 		
 	}else if(type == "colorR"){
-		target = &layer.GetTarget(deSkyLayer::etColorR);
+		target = layer.GetTarget(deSkyLayer::etColorR);
 		
 	}else if(type == "colorG"){
-		target = &layer.GetTarget(deSkyLayer::etColorG);
+		target = layer.GetTarget(deSkyLayer::etColorG);
 		
 	}else if(type == "colorB"){
-		target = &layer.GetTarget(deSkyLayer::etColorB);
+		target = layer.GetTarget(deSkyLayer::etColorB);
 		
 	}else if(type == "intensity"){
-		target = &layer.GetTarget(deSkyLayer::etIntensity);
+		target = layer.GetTarget(deSkyLayer::etIntensity);
 		
 	}else if(type == "transparency"){
-		target = &layer.GetTarget(deSkyLayer::etTransparency);
+		target = layer.GetTarget(deSkyLayer::etTransparency);
 		
 	}else if(type == "lightColorR"){
-		target = &layer.GetTarget(deSkyLayer::etLightColorR);
+		target = layer.GetTarget(deSkyLayer::etLightColorR);
 		
 	}else if(type == "lightColorG"){
-		target = &layer.GetTarget(deSkyLayer::etLightColorG);
+		target = layer.GetTarget(deSkyLayer::etLightColorG);
 		
 	}else if(type == "lightColorB"){
-		target = &layer.GetTarget(deSkyLayer::etLightColorB);
+		target = layer.GetTarget(deSkyLayer::etLightColorB);
 		
 	}else if(type == "lightIntensity"){
-		target = &layer.GetTarget(deSkyLayer::etLightIntensity);
+		target = layer.GetTarget(deSkyLayer::etLightIntensity);
 		
 	}else if(type == "ambientIntensity"){
-		target = &layer.GetTarget(deSkyLayer::etAmbientIntensity);
+		target = layer.GetTarget(deSkyLayer::etAmbientIntensity);
 		
 	}else{
 		return;

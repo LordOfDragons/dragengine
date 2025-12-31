@@ -54,7 +54,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakStripSetDuration();
+public:
 	/*@}*/
 	
 public:

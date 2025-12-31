@@ -49,7 +49,9 @@ public:
 	peeWPUndoHistoryListener(peeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

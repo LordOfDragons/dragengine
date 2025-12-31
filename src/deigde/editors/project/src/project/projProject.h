@@ -69,7 +69,9 @@ public:
 	projProject(igdeEnvironment *environment);
 	
 	/** \brief Clean up project. */
+protected:
 	virtual ~projProject();
+public:
 	/*@}*/
 	
 	

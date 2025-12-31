@@ -61,7 +61,9 @@ public:
 	/** Creates a new stack. */
 	cePlaybackActionStack();
 	/** Cleans up the stack. */
+protected:
 	~cePlaybackActionStack() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

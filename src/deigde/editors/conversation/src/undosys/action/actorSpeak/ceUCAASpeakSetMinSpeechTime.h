@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakSetMinSpeechTime();
+public:
 	/*@}*/
 	
 public:

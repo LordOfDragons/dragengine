@@ -102,7 +102,9 @@ public:
 	gdeOCNavigationSpace(const gdeOCNavigationSpace &space);
 	
 	/** \brief Clean up navigation space. */
+protected:
 	virtual ~gdeOCNavigationSpace();
+public:
 	/*@}*/
 	
 	

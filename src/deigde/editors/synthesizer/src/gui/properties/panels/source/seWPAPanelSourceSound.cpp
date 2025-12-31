@@ -231,8 +231,8 @@ void seWPAPanelSourceSound::UpdateTargetList(){
 	
 	seSourceSound * const source = (seSourceSound*)GetSource();
 	if(source){
-		AddTarget("Speed", &source->GetTargetSpeed());
-		AddTarget("Play", &source->GetTargetPlay());
+		AddTarget("Speed", source->GetTargetSpeed());
+		AddTarget("Play", source->GetTargetPlay());
 	}
 }
 

@@ -51,7 +51,9 @@ public:
 	projWindowMainListener(projWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~projWindowMainListener();
+public:
 	/*@}*/
 	
 	

@@ -54,7 +54,10 @@ pEnablePosition(false),
 pEnableOrientation(true),
 pEnableSize(false),
 pUseAxis(false),
-pInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend)
+pInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend),
+pTargetTranslation(aeControllerTarget::Ref::New()),
+pTargetRotation(aeControllerTarget::Ref::New()),
+pTargetScaling(aeControllerTarget::Ref::New())
 {
 	SetName("Bone Transformator");
 }
@@ -78,9 +81,9 @@ pUseAxis(copy.pUseAxis),
 pTargetBone(copy.pTargetBone),
 pInputBone(copy.pInputBone),
 pInputSource(copy.pInputSource),
-pTargetTranslation(copy.pTargetTranslation),
-pTargetRotation(copy.pTargetRotation),
-pTargetScaling(copy.pTargetScaling){
+pTargetTranslation(aeControllerTarget::Ref::New(copy.pTargetTranslation)),
+pTargetRotation(aeControllerTarget::Ref::New(copy.pTargetRotation)),
+pTargetScaling(aeControllerTarget::Ref::New(copy.pTargetScaling)){
 }
 
 aeRuleBoneTransformator::~aeRuleBoneTransformator(){
@@ -347,21 +350,21 @@ void aeRuleBoneTransformator::UpdateTargets(){
 		return;
 	}
 	
-	pTargetTranslation.UpdateEngineTarget(GetAnimator(), rule->GetTargetTranslation());
-	pTargetRotation.UpdateEngineTarget(GetAnimator(), rule->GetTargetRotation());
-	pTargetScaling.UpdateEngineTarget(GetAnimator(), rule->GetTargetScaling());
+	pTargetTranslation->UpdateEngineTarget(GetAnimator(), rule->GetTargetTranslation());
+	pTargetRotation->UpdateEngineTarget(GetAnimator(), rule->GetTargetRotation());
+	pTargetScaling->UpdateEngineTarget(GetAnimator(), rule->GetTargetScaling());
 }
 
 int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetTranslation.GetLinks().Has(link)){
+	if(pTargetTranslation->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetRotation.GetLinks().Has(link)){
+	if(pTargetRotation->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetScaling.GetLinks().Has(link)){
+	if(pTargetScaling->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -371,14 +374,14 @@ int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
 void aeRuleBoneTransformator::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetTranslation.GetLinks().Has(link)){
-		pTargetTranslation.RemoveLink(link);
+	if(pTargetTranslation->GetLinks().Has(link)){
+		pTargetTranslation->RemoveLink(link);
 	}
-	if(pTargetRotation.GetLinks().Has(link)){
-		pTargetRotation.RemoveLink(link);
+	if(pTargetRotation->GetLinks().Has(link)){
+		pTargetRotation->RemoveLink(link);
 	}
-	if(pTargetScaling.GetLinks().Has(link)){
-		pTargetScaling.RemoveLink(link);
+	if(pTargetScaling->GetLinks().Has(link)){
+		pTargetScaling->RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -387,9 +390,9 @@ void aeRuleBoneTransformator::RemoveLinkFromTargets(aeLink *link){
 void aeRuleBoneTransformator::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetTranslation.RemoveAllLinks();
-	pTargetRotation.RemoveAllLinks();
-	pTargetScaling.RemoveAllLinks();
+	pTargetTranslation->RemoveAllLinks();
+	pTargetRotation->RemoveAllLinks();
+	pTargetScaling->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -419,9 +422,9 @@ deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 	engRule->SetInputBone(pInputBone);
 	engRule->SetInputSource(pInputSource);
 	
-	pTargetTranslation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
-	pTargetRotation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
-	pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
+	pTargetTranslation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
+	pTargetRotation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
+	pTargetScaling->UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
 	
 	// finished
 	return engRule;
@@ -435,9 +438,9 @@ aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
 
 void aeRuleBoneTransformator::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-	pTargetRotation.AddLinksToList(list);
-	pTargetScaling.AddLinksToList(list);
-	pTargetTranslation.AddLinksToList(list);
+	pTargetRotation->AddLinksToList(list);
+	pTargetScaling->AddLinksToList(list);
+	pTargetTranslation->AddLinksToList(list);
 }
 
 

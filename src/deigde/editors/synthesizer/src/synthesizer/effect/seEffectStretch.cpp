@@ -130,18 +130,18 @@ void seEffectStretch::UpdateTargets(){
 		seSynthesizer * const synthesizer = GetSynthesizer();
 		DEASSERT_NOTNULL(synthesizer)
 		
-		pTargetTime.UpdateEngineTarget(*synthesizer, effect->GetTargetTime());
-		pTargetPitch.UpdateEngineTarget(*synthesizer, effect->GetTargetPitch());
+		pTargetTime->UpdateEngineTarget(*synthesizer, effect->GetTargetTime());
+		pTargetPitch->UpdateEngineTarget(*synthesizer, effect->GetTargetPitch());
 	}
 }
 
 int seEffectStretch::CountLinkUsage(seLink *link) const{
 	int usageCount = seEffect::CountLinkUsage(link);
 	
-	if(pTargetTime.GetLinks().Has(link)){
+	if(pTargetTime->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetPitch.GetLinks().Has(link)){
+	if(pTargetPitch->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -151,8 +151,8 @@ int seEffectStretch::CountLinkUsage(seLink *link) const{
 void seEffectStretch::RemoveLinkFromTargets(seLink *link){
 	seEffect::RemoveLinkFromTargets(link);
 	
-	pTargetTime.RemoveLink(link);
-	pTargetPitch.RemoveLink(link);
+	pTargetTime->RemoveLink(link);
+	pTargetPitch->RemoveLink(link);
 	
 	UpdateTargets();
 }
@@ -160,8 +160,8 @@ void seEffectStretch::RemoveLinkFromTargets(seLink *link){
 void seEffectStretch::RemoveLinksFromAllTargets(){
 	seEffect::RemoveLinksFromAllTargets();
 	
-	pTargetTime.RemoveAllLinks();
-	pTargetPitch.RemoveAllLinks();
+	pTargetTime->RemoveAllLinks();
+	pTargetPitch->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -181,8 +181,8 @@ deSynthesizerEffect::Ref seEffectStretch::CreateEngineEffect(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	DEASSERT_NOTNULL(synthesizer)
 	
-	pTargetTime.UpdateEngineTarget(*synthesizer, engEffect->GetTargetTime());
-	pTargetPitch.UpdateEngineTarget(*synthesizer, engEffect->GetTargetPitch());
+	pTargetTime->UpdateEngineTarget(*synthesizer, engEffect->GetTargetTime());
+	pTargetPitch->UpdateEngineTarget(*synthesizer, engEffect->GetTargetPitch());
 	
 	return engEffect;
 }
@@ -195,8 +195,8 @@ seEffect::Ref seEffectStretch::CreateCopy() const{
 
 void seEffectStretch::ListLinks(seLink::List &list){
 	seEffect::ListLinks(list);
-	pTargetTime.AddLinksToList(list);
-	pTargetPitch.AddLinksToList(list);
+	pTargetTime->AddLinksToList(list);
+	pTargetPitch->AddLinksToList(list);
 }
 
 

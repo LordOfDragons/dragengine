@@ -50,7 +50,9 @@ public:
 	/** Creates a new rig cylinder shape. */
 	reRigShapeCylinder(deEngine *engine);
 	/** Cleans up the rig shape shape. */
+protected:
 	~reRigShapeCylinder() override;
+public:
 	/*@}*/
 	
 	/** @name Management */

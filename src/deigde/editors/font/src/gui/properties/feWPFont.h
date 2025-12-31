@@ -64,7 +64,9 @@ public:
 	feWPFont(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~feWPFont();
+public:
 	/*@}*/
 	
 	

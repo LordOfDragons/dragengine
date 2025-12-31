@@ -50,7 +50,9 @@ public:
 	reWPRigListener(reWPRig &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPRigListener() override;
+public:
 	/*@}*/
 	
 	

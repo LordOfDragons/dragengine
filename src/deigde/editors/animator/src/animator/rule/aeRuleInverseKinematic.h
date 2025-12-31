@@ -51,12 +51,12 @@ private:
 	decString pReachBone;
 	decVector pReachCenter;
 	
-	aeControllerTarget pTargetGoalPosition;
-	aeControllerTarget pTargetGoalOrientation;
-	aeControllerTarget pTargetLocalPosition;
-	aeControllerTarget pTargetLocalOrientation;
-	aeControllerTarget pTargetReachRange;
-	aeControllerTarget pTargetReachCenter;
+	aeControllerTarget::Ref pTargetGoalPosition;
+	aeControllerTarget::Ref pTargetGoalOrientation;
+	aeControllerTarget::Ref pTargetLocalPosition;
+	aeControllerTarget::Ref pTargetLocalOrientation;
+	aeControllerTarget::Ref pTargetReachRange;
+	aeControllerTarget::Ref pTargetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -68,7 +68,9 @@ public:
 	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);
 	
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleInverseKinematic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -141,28 +143,22 @@ public:
 	
 	
 	/** Goal position target. */
-	inline aeControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
-	inline const aeControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
+	inline const aeControllerTarget::Ref &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
 	
 	/** Goal orientation target. */
-	inline aeControllerTarget &GetTargetGoalOrientation(){ return pTargetGoalOrientation; }
-	inline const aeControllerTarget &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
+	inline const aeControllerTarget::Ref &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
 	
 	/** Local position target. */
-	inline aeControllerTarget &GetTargetLocalPosition(){ return pTargetLocalPosition; }
-	inline const aeControllerTarget &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
+	inline const aeControllerTarget::Ref &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
 	
 	/** Local orientation target. */
-	inline aeControllerTarget &GetTargetLocalOrientation(){ return pTargetLocalOrientation; }
-	inline const aeControllerTarget &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
+	inline const aeControllerTarget::Ref &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
 	
 	/** Reach range target. */
-	inline aeControllerTarget &GetTargetReachRange(){ return pTargetReachRange; }
-	inline const aeControllerTarget &GetTargetReachRange() const{ return pTargetReachRange; }
+	inline const aeControllerTarget::Ref &GetTargetReachRange() const{ return pTargetReachRange; }
 	
 	/** Reach center target. */
-	inline aeControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
-	inline const aeControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
+	inline const aeControllerTarget::Ref &GetTargetReachCenter() const{ return pTargetReachCenter; }
 	
 	
 	

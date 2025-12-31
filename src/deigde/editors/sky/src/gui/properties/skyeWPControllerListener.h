@@ -49,7 +49,9 @@ public:
 	skyeWPControllerListener(skyeWPController &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	

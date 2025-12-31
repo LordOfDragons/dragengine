@@ -62,7 +62,9 @@ public:
 	gdeFilePattern(const gdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
+protected:
 	virtual ~gdeFilePattern();
+public:
 	/*@}*/
 	
 	

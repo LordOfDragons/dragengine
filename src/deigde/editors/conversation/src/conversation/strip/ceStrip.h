@@ -54,7 +54,9 @@ public:
 	/** \brief Creates a new strip. */
 	ceStrip(const ceStrip &strip);
 	/** \brief Cleans up the strip. */
+protected:
 	virtual ~ceStrip();
+public:
 	/*@}*/
 	
 	/** \name Management */

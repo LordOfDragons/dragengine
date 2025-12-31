@@ -99,7 +99,9 @@ public:
 	gdeOCBillboard(const gdeOCBillboard &billboard);
 	
 	/** \brief Clean up billboard. */
+protected:
 	virtual ~gdeOCBillboard();
+public:
 	/*@}*/
 	
 	

@@ -58,7 +58,9 @@ public:
 		ceConversationAction *action, ceCConditionLogic *logic);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCCLogicRemoveAll();
+public:
 	/*@}*/
 	
 	

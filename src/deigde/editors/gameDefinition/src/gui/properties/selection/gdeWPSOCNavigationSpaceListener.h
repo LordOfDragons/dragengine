@@ -48,7 +48,9 @@ public:
 	gdeWPSOCNavigationSpaceListener(gdeWPSOCNavigationSpace &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCNavigationSpaceListener() override;
+public:
 	/*@}*/
 	
 	

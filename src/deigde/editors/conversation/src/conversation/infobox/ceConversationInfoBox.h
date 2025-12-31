@@ -71,7 +71,9 @@ public:
 	ceConversationInfoBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
+protected:
 	~ceConversationInfoBox();
+public:
 	/*@}*/
 	
 	

@@ -55,7 +55,9 @@ public:
 	ceUCCACommandSetCommand(ceConversationTopic *topic, ceConversationAction *action,
 		ceCConditionActorCommand *condition, const char *newCommand);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCACommandSetCommand();
+public:
 	/*@}*/
 	
 public:

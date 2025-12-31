@@ -48,7 +48,9 @@ public:
 	gdeWPSCategoryListener(gdeWPSCategory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSCategoryListener() override;
+public:
 	/*@}*/
 	
 	

@@ -55,7 +55,9 @@ public:
 	ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
 		ceCConditionGameCommand *condition, const char *newCommand);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCGameCmdSetCommand();
+public:
 	/*@}*/
 	
 public:

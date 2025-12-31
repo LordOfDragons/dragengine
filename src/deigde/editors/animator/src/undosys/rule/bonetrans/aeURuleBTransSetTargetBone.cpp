@@ -46,7 +46,7 @@ aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *
 	
 	pRule = nullptr;
 	
-	pOldBone = rule->GetTargetBone().GetString();
+	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
 	SetShortInfo("Bone transformator set target bone");

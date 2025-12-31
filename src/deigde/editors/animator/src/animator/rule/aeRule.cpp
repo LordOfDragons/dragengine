@@ -73,7 +73,8 @@ pType(type),
 pBlendMode(deAnimatorRule::ebmBlend),
 pBlendFactor(1.0f),
 pInvertBlendFactor(false),
-pEnabled(true){
+pEnabled(true),
+pTargetBlendFactor(aeControllerTarget::Ref::New()){
 }
 
 aeRule::aeRule(const aeRule &copy) :
@@ -88,7 +89,7 @@ pBlendMode(copy.pBlendMode),
 pBlendFactor(copy.pBlendFactor),
 pInvertBlendFactor(copy.pInvertBlendFactor),
 pEnabled(copy.pEnabled),
-pTargetBlendFactor(copy.pTargetBlendFactor){
+pTargetBlendFactor(aeControllerTarget::Ref::New(copy.pTargetBlendFactor)){
 }
 
 aeRule::~aeRule(){
@@ -140,7 +141,7 @@ void aeRule::InitEngineRule(deAnimatorRule *engRule) const{
 	engRule->GetListBones() = pListBones;
 	engRule->GetListVertexPositionSets() = pListVertexPositionSets;
 	
-	pTargetBlendFactor.UpdateEngineTarget(animator, engRule->GetTargetBlendFactor());
+	pTargetBlendFactor->UpdateEngineTarget(animator, engRule->GetTargetBlendFactor());
 }
 
 
@@ -224,14 +225,14 @@ void aeRule::UpdateCompAnim(){
 void aeRule::UpdateTargets(){
 	aeAnimator * const animator = GetAnimator();
 	if(pEngRule && animator){
-		pTargetBlendFactor.UpdateEngineTarget(animator, pEngRule->GetTargetBlendFactor());
+		pTargetBlendFactor->UpdateEngineTarget(animator, pEngRule->GetTargetBlendFactor());
 	}
 }
 
 int aeRule::CountLinkUsage(aeLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetBlendFactor.GetLinks().Has(link)){
+	if(pTargetBlendFactor->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -239,19 +240,19 @@ int aeRule::CountLinkUsage(aeLink *link) const{
 }
 
 void aeRule::RemoveLinkFromTargets(aeLink *link){
-	if(pTargetBlendFactor.GetLinks().Has(link)){
-		pTargetBlendFactor.RemoveLink(link);
+	if(pTargetBlendFactor->GetLinks().Has(link)){
+		pTargetBlendFactor->RemoveLink(link);
 	}
 }
 
 void aeRule::RemoveLinksFromAllTargets(){
-	pTargetBlendFactor.RemoveAllLinks();
+	pTargetBlendFactor->RemoveAllLinks();
 }
 
 
 
 void aeRule::ListLinks(aeLink::List &list){
-	pTargetBlendFactor.AddLinksToList(list);
+	pTargetBlendFactor->AddLinksToList(list);
 }
 
 

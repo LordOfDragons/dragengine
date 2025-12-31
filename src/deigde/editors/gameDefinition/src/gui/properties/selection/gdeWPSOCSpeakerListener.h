@@ -48,7 +48,9 @@ public:
 	gdeWPSOCSpeakerListener(gdeWPSOCSpeaker &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCSpeakerListener() override;
+public:
 	/*@}*/
 	
 	

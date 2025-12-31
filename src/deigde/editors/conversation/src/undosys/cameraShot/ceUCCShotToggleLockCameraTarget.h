@@ -48,7 +48,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCCShotToggleLockCameraTarget(ceCameraShot *cameraShot);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCShotToggleLockCameraTarget();
+public:
 	/*@}*/
 	
 public:

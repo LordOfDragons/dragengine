@@ -80,7 +80,9 @@ public:
 	ceCConditionVariable(const ceCConditionVariable &condition);
 	
 	/** \brief Clean up conversation condition. */
+protected:
 	~ceCConditionVariable() override;
+public:
 	/*@}*/
 	
 	

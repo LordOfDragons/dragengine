@@ -51,10 +51,10 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetPosition;
-	aeControllerTarget pTargetRotation;
-	aeControllerTarget pTargetSize;
-	aeControllerTarget pTargetVertexPositionSet;
+	aeControllerTarget::Ref pTargetPosition;
+	aeControllerTarget::Ref pTargetRotation;
+	aeControllerTarget::Ref pTargetSize;
+	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
 	
 	
@@ -68,7 +68,9 @@ public:
 	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
 	
 	/** Clean up rule. */
+protected:
 	~aeRuleStateManipulator() override;
+public:
 	/*@}*/
 	
 	
@@ -152,20 +154,16 @@ public:
 	
 	
 	/** Position target. */
-	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Rotation target. */
-	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
-	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
+	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** Size target. */
-	inline aeControllerTarget &GetTargetSize(){ return pTargetSize; }
-	inline const aeControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	inline const aeControllerTarget::Ref &GetTargetSize() const{ return pTargetSize; }
 	
 	/** Vertex position set target. */
-	inline aeControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSet; }
-	inline const aeControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
+	inline const aeControllerTarget::Ref &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSet; }
 	
 	
 	

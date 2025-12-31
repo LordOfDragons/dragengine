@@ -50,7 +50,9 @@ public:
 	skyeTaskSyncGameDefinition(skyeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~skyeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

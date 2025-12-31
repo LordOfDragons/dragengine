@@ -56,7 +56,9 @@ public:
 	ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
 		ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCCTriggerSetTestMode();
+public:
 	/*@}*/
 	
 public:

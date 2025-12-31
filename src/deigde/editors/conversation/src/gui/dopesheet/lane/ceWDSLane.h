@@ -70,7 +70,9 @@ private:
 		cStrip();
 		
 	protected:
+protected:
 		virtual ~cStrip();
+public:
 	};
 	
 	

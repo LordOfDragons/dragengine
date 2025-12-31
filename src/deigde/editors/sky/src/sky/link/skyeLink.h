@@ -69,7 +69,9 @@ public:
 	skyeLink();
 	
 	/** \brief Clean up link. */
+protected:
 	virtual ~skyeLink();
+public:
 	/*@}*/
 	
 	

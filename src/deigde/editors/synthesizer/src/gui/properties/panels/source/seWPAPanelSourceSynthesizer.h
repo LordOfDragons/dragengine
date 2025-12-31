@@ -55,7 +55,9 @@ public:
 	seWPAPanelSourceSynthesizer(seWPSource &wpSources);
 	
 	/** \brief Clean up panel. */
+protected:
 	~seWPAPanelSourceSynthesizer() override;
+public:
 	/*@}*/
 	
 	

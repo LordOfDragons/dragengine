@@ -103,7 +103,9 @@ public:
 	/** Creates a new renderable. */
 	explicit seDynamicSkinRenderable(deEngine *engine, const char *name = "Renderable");
 	/** Cleans up the renderable. */
+protected:
 	virtual ~seDynamicSkinRenderable();
+public:
 	/*@}*/
 	
 	/** \name Management */

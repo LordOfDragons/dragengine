@@ -523,9 +523,9 @@ void seWPAPanelSource::UpdateTargetList(){
 	
 	seSource * const source = GetSource();
 	if(source){
-		AddTarget("Blend Factor", &source->GetTargetBlendFactor());
-		AddTarget("Volume", &source->GetTargetVolume());
-		AddTarget("Panning", &source->GetTargetPanning());
+		AddTarget("Blend Factor", source->GetTargetBlendFactor());
+		AddTarget("Volume", source->GetTargetVolume());
+		AddTarget("Panning", source->GetTargetPanning());
 	}
 }
 

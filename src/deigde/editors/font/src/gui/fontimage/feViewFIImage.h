@@ -66,7 +66,9 @@ public:
 	feViewFIImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up view font image renderer. */
+protected:
 	virtual ~feViewFIImage();
+public:
 	/*@}*/
 	
 	

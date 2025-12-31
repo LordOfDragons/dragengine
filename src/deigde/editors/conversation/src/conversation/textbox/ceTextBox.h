@@ -72,7 +72,9 @@ public:
 	ceTextBox(deEngine &engine, deLogger &logger);
 	
 	/** \brief Clean up text box. */
+protected:
 	~ceTextBox();
+public:
 	/*@}*/
 	
 	

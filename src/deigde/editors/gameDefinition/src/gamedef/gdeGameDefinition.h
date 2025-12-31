@@ -226,7 +226,9 @@ public:
 	gdeGameDefinition(igdeEnvironment *environment);
 	
 	/** Clean up speech animation. */
+protected:
 	virtual ~gdeGameDefinition();
+public:
 	/*@}*/
 	
 	

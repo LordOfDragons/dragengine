@@ -50,7 +50,9 @@ public:
 	/** \brief Creates a copy of a conversation action. */
 	ceCAComment(const ceCAComment &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCAComment() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

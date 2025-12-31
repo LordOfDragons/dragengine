@@ -62,7 +62,9 @@ public:
 	/** Create a copy of a sub animator rule. */
 	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
+protected:
 	~aeRuleSubAnimator() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

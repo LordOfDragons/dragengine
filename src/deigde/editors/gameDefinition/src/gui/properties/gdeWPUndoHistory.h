@@ -52,7 +52,9 @@ public:
 	gdeWPUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up rig. */
+protected:
 	virtual ~gdeWPUndoHistory();
+public:
 	/*@}*/
 	
 	

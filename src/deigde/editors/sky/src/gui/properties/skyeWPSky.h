@@ -57,7 +57,9 @@ public:
 	skyeWPSky(skyeWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~skyeWPSky();
+public:
 	/*@}*/
 	
 	

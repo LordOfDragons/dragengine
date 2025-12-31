@@ -61,7 +61,9 @@ public:
 	feWindowProperties(feWindowMain &windowMain);
 	
 	/** \brief Clean up window. */
+protected:
 	virtual ~feWindowProperties();
+public:
 	/*@}*/
 	
 	/** \name Management */

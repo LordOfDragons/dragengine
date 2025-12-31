@@ -48,7 +48,9 @@ public:
 	gdeViewActiveObjectListener(gdeViewActiveObject &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeViewActiveObjectListener() override;
+public:
 	/*@}*/
 	
 	

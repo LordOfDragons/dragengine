@@ -54,7 +54,9 @@ public:
 	ceUCAIfElseCaseAdd(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int index);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseCaseAdd();
+public:
 	/*@}*/
 	
 	

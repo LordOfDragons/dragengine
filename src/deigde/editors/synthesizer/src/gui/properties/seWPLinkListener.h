@@ -50,7 +50,9 @@ public:
 	explicit seWPLinkListener(seWPLink &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPLinkListener() override;
+public:
 	/*@}*/
 	
 	

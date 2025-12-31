@@ -92,7 +92,9 @@ public:
 	seSynthesizer(igdeEnvironment *environment, seLoadSaveSystem &lssys);
 	
 	/** \brief Clean up synthesizer. */
+protected:
 	virtual ~seSynthesizer();
+public:
 	/*@}*/
 	
 	

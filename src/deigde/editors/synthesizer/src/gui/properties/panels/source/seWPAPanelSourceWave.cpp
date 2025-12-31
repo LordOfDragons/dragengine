@@ -194,6 +194,6 @@ void seWPAPanelSourceWave::UpdateTargetList(){
 	seWPAPanelSource::UpdateTargetList();
 	
 	if(source){
-		AddTarget("Frequency", &source->GetTargetFrequency());
+		AddTarget("Frequency", source->GetTargetFrequency());
 	}
 }

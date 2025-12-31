@@ -69,7 +69,9 @@ public:
 	gdeOCComponentTexture(const gdeOCComponentTexture &texture);
 	
 	/** \brief Clean up object class component texture. */
+protected:
 	virtual ~gdeOCComponentTexture();
+public:
 	/*@}*/
 	
 	

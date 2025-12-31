@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCATriggerSetName();
+public:
 	/*@}*/
 	
 public:

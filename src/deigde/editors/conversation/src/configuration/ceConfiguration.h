@@ -50,7 +50,9 @@ public:
 	ceConfiguration(ceWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
+protected:
 	~ceConfiguration();
+public:
 	/*@}*/
 	
 	

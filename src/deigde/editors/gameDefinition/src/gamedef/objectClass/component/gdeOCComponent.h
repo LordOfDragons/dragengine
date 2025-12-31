@@ -132,7 +132,9 @@ public:
 	gdeOCComponent(const gdeOCComponent &component);
 	
 	/** \brief Clean up component. */
+protected:
 	virtual ~gdeOCComponent();
+public:
 	/*@}*/
 	
 	

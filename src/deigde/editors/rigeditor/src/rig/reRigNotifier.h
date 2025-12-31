@@ -51,7 +51,9 @@ public:
 	/** Creates a new rig notifier. */
 	reRigNotifier();
 	/** Cleans up the rig notifier. */
+protected:
 	virtual ~reRigNotifier();
+public:
 	/*@}*/
 	
 	/** @name Notifications */

@@ -60,7 +60,9 @@ public:
 	gdeOCCamera(const gdeOCCamera &camera);
 	
 	/** \brief Clean up camera. */
+protected:
 	virtual ~gdeOCCamera();
+public:
 	/*@}*/
 	
 	

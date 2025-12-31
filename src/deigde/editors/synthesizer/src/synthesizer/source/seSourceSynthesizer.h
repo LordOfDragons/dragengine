@@ -63,7 +63,9 @@ public:
 	seSourceSynthesizer(const seSourceSynthesizer &copy);
 	
 	/** Clean up source. */
+protected:
 	~seSourceSynthesizer() override;
+public:
 	/*@}*/
 	
 	

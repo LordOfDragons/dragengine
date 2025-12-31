@@ -25,6 +25,8 @@
 #ifndef _PROJDIALOGDISTRIBUTE_H_
 #define _PROJDIALOGDISTRIBUTE_H_
 
+#include "../task/projTaskDistribute.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
@@ -35,7 +37,6 @@
 
 class projWindowMain;
 class projProfile;
-class projTaskDistribute;
 
 
 /**
@@ -63,7 +64,7 @@ private:
 	igdeTextArea::Ref pEditLogs;
 	igdeButton::Ref pBtnShowInFSMgr;
 	
-	projTaskDistribute *pTaskDistribute;
+	projTaskDistribute::Ref pTaskDistribute;
 	decString pLastTaskMessage;
 	
 	bool pCloseDialogOnFinished;
@@ -80,7 +81,9 @@ public:
 	projDialogDistribute(projWindowMain &windowMain, projProfile *profile);
 	
 	/** Clean up dialog. */
+protected:
 	virtual ~projDialogDistribute();
+public:
 	/*@}*/
 	
 	

@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCACoordSysRemoveSetCoordSysID();
+public:
 	/*@}*/
 	
 public:

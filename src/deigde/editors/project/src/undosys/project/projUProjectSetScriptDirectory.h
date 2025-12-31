@@ -54,7 +54,9 @@ public:
 	projUProjectSetScriptDirectory(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProjectSetScriptDirectory();
+public:
 	/*@}*/
 	
 	

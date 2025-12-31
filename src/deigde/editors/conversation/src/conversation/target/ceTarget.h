@@ -70,7 +70,9 @@ public:
 	/** Creates a new target. */
 	ceTarget(const ceTarget &target);
 	/** Cleans up the target. */
+protected:
 	virtual ~ceTarget();
+public:
 	/*@}*/
 	
 	/** \name Management */

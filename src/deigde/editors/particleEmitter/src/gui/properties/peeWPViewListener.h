@@ -51,7 +51,9 @@ public:
 	peeWPViewListener(peeWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

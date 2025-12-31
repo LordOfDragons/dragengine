@@ -73,9 +73,9 @@ private:
 	float pMinPanning;
 	float pMaxPanning;
 	
-	seControllerTarget pTargetBlendFactor;
-	seControllerTarget pTargetVolume;
-	seControllerTarget pTargetPanning;
+	seControllerTarget::Ref pTargetBlendFactor;
+	seControllerTarget::Ref pTargetVolume;
+	seControllerTarget::Ref pTargetPanning;
 	
 	seEffect::List pEffects;
 	seEffect::Ref pActiveEffect;
@@ -92,7 +92,9 @@ public:
 	seSource(const seSource &copy);
 	
 	/** \brief Clean up the synthesizer source. */
+protected:
 	virtual ~seSource();
+public:
 	/*@}*/
 	
 	
@@ -195,16 +197,13 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** \brief Source factor target. */
-	inline seControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const seControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline const seControllerTarget::Ref &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** \brief Source volume target. */
-	inline seControllerTarget &GetTargetVolume(){ return pTargetVolume; }
-	inline const seControllerTarget &GetTargetVolume() const{ return pTargetVolume; }
+	inline const seControllerTarget::Ref &GetTargetVolume() const{ return pTargetVolume; }
 	
 	/** \brief Source panning target. */
-	inline seControllerTarget &GetTargetPanning(){ return pTargetPanning; }
-	inline const seControllerTarget &GetTargetPanning() const{ return pTargetPanning; }
+	inline const seControllerTarget::Ref &GetTargetPanning() const{ return pTargetPanning; }
 	
 	/** \brief List all links of all source targets. */
 	virtual void ListLinks(seLink::List& list);

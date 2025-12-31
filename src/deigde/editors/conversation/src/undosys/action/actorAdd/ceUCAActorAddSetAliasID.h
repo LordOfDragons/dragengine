@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAActorAddSetAliasID();
+public:
 	/*@}*/
 	
 public:

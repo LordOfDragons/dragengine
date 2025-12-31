@@ -44,7 +44,7 @@ private:
 	float pMinFrequency;
 	float pMaxFrequency;
 	
-	seControllerTarget pTargetFrequency;
+	seControllerTarget::Ref pTargetFrequency;
 	
 	
 	
@@ -58,7 +58,9 @@ public:
 	seSourceWave(const seSourceWave &copy);
 	
 	/** \brief Clean up source. */
+protected:
 	~seSourceWave() override;
+public:
 	/*@}*/
 	
 	
@@ -88,8 +90,7 @@ public:
 	
 	
 	/** \brief Play frequency target. */
-	inline seControllerTarget &GetTargetFrequency(){ return pTargetFrequency; }
-	inline const seControllerTarget &GetTargetFrequency() const{ return pTargetFrequency; }
+	inline const seControllerTarget::Ref &GetTargetFrequency() const{ return pTargetFrequency; }
 	
 	
 	

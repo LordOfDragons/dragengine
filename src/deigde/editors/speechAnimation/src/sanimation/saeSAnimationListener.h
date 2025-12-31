@@ -46,7 +46,9 @@ public:
 	/** Creates a new listener. */
 	saeSAnimationListener();
 	/** Cleans up the listener. */
+protected:
 	virtual ~saeSAnimationListener();
+public:
 	/*@}*/
 	
 	/** \name Notifications */

@@ -48,7 +48,9 @@ public:
 	/** Creates a new rig box shape. */
 	reRigShapeBox(deEngine *engine);
 	/** Cleans up the rig shape shape. */
+protected:
 	~reRigShapeBox() override;
+public:
 	/*@}*/
 	
 	/** @name Management */

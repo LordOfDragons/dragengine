@@ -105,7 +105,9 @@ public:
 	/** \brief Creates a new rig controller. */
 	reRigConstraint(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
+protected:
 	virtual ~reRigConstraint();
+public:
 	/*@}*/
 	
 	/** \name Management */

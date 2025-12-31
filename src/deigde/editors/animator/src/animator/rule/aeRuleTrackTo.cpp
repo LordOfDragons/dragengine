@@ -46,7 +46,9 @@ aeRule(deAnimatorRuleVisitorIdentify::ertTrackTo),
 pTrackAxis(deAnimatorRuleTrackTo::etaPosZ),
 pUpAxis(deAnimatorRuleTrackTo::etaPosY),
 pUpTarget(deAnimatorRuleTrackTo::eutComponentY),
-pLockedAxis(deAnimatorRuleTrackTo::elaNone)
+pLockedAxis(deAnimatorRuleTrackTo::elaNone),
+pTargetPosition(aeControllerTarget::Ref::New()),
+pTargetUp(aeControllerTarget::Ref::New())
 {
 	SetName("Track To");
 }
@@ -58,8 +60,8 @@ pTrackAxis(copy.pTrackAxis),
 pUpAxis(copy.pUpAxis),
 pUpTarget(copy.pUpTarget),
 pLockedAxis(copy.pLockedAxis),
-pTargetPosition(copy.pTargetPosition),
-pTargetUp(copy.pTargetUp){
+pTargetPosition(aeControllerTarget::Ref::New(copy.pTargetPosition)),
+pTargetUp(aeControllerTarget::Ref::New(copy.pTargetUp)){
 }
 
 aeRuleTrackTo::~aeRuleTrackTo(){
@@ -170,18 +172,18 @@ void aeRuleTrackTo::UpdateTargets(){
 	if(engRule){
 		aeAnimator *animator = GetAnimator();
 		
-		pTargetPosition.UpdateEngineTarget(animator, engRule->GetTargetPosition());
-		pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
+		pTargetPosition->UpdateEngineTarget(animator, engRule->GetTargetPosition());
+		pTargetUp->UpdateEngineTarget(animator, engRule->GetTargetUp());
 	}
 }
 
 int aeRuleTrackTo::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition.GetLinks().Has(link)){
+	if(pTargetPosition->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetUp.GetLinks().Has(link)){
+	if(pTargetUp->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -191,12 +193,12 @@ int aeRuleTrackTo::CountLinkUsage(aeLink *link) const{
 void aeRuleTrackTo::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetPosition.GetLinks().Has(link)){
-		pTargetPosition.RemoveLink(link);
+	if(pTargetPosition->GetLinks().Has(link)){
+		pTargetPosition->RemoveLink(link);
 	}
 	
-	if(pTargetUp.GetLinks().Has(link)){
-		pTargetUp.RemoveLink(link);
+	if(pTargetUp->GetLinks().Has(link)){
+		pTargetUp->RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -205,8 +207,8 @@ void aeRuleTrackTo::RemoveLinkFromTargets(aeLink *link){
 void aeRuleTrackTo::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetPosition.RemoveAllLinks();
-	pTargetUp.RemoveAllLinks();
+	pTargetPosition->RemoveAllLinks();
+	pTargetUp->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -225,8 +227,8 @@ deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
 	engRule->SetLockedAxis(pLockedAxis);
 	
 	aeAnimator * const animator = GetAnimator();
-	pTargetPosition.UpdateEngineTarget(animator, engRule->GetTargetPosition());
-	pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
+	pTargetPosition->UpdateEngineTarget(animator, engRule->GetTargetPosition());
+	pTargetUp->UpdateEngineTarget(animator, engRule->GetTargetUp());
 	
 	return engRule;
 }
@@ -239,8 +241,8 @@ aeRule::Ref aeRuleTrackTo::CreateCopy() const{
 
 void aeRuleTrackTo::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-	pTargetPosition.AddLinksToList(list);
-	pTargetUp.AddLinksToList(list);
+	pTargetPosition->AddLinksToList(list);
+	pTargetUp->AddLinksToList(list);
 }
 
 

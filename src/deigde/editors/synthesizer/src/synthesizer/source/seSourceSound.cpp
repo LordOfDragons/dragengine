@@ -54,7 +54,9 @@ seSource(deSynthesizerSourceVisitorIdentify::estSound),
 pEngine(engine),
 pMinSpeed(1.0f),
 pMaxSpeed(1.0f),
-pLooping(false){
+pLooping(false),
+pTargetSpeed(seControllerTarget::Ref::New()),
+pTargetPlay(seControllerTarget::Ref::New()){
 }
 
 seSourceSound::seSourceSound(const seSourceSound &copy) : 
@@ -65,8 +67,8 @@ pSound(copy.pSound),
 pMinSpeed(copy.pMinSpeed),
 pMaxSpeed(copy.pMaxSpeed),
 pLooping(copy.pLooping),
-pTargetSpeed(copy.pTargetSpeed),
-pTargetPlay(copy.pTargetPlay){
+pTargetSpeed(seControllerTarget::Ref::New(copy.pTargetSpeed)),
+pTargetPlay(seControllerTarget::Ref::New(copy.pTargetPlay)){
 }
 
 seSourceSound::~seSourceSound(){
@@ -159,18 +161,18 @@ void seSourceSound::UpdateTargets(){
 		seSynthesizer * const synthesizer = GetSynthesizer();
 		DEASSERT_NOTNULL(synthesizer);
 		
-		pTargetSpeed.UpdateEngineTarget(*synthesizer, source->GetTargetSpeed());
-		pTargetPlay.UpdateEngineTarget(*synthesizer, source->GetTargetPlay());
+		pTargetSpeed->UpdateEngineTarget(*synthesizer, source->GetTargetSpeed());
+		pTargetPlay->UpdateEngineTarget(*synthesizer, source->GetTargetPlay());
 	}
 }
 
 int seSourceSound::CountLinkUsage(seLink *link) const{
 	int usageCount = seSource::CountLinkUsage(link);
 	
-	if(pTargetSpeed.GetLinks().Has(link)){
+	if(pTargetSpeed->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetPlay.GetLinks().Has(link)){
+	if(pTargetPlay->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -180,8 +182,8 @@ int seSourceSound::CountLinkUsage(seLink *link) const{
 void seSourceSound::RemoveLinkFromTargets(seLink *link){
 	seSource::RemoveLinkFromTargets(link);
 	
-	pTargetSpeed.RemoveLink(link);
-	pTargetPlay.RemoveLink(link);
+	pTargetSpeed->RemoveLink(link);
+	pTargetPlay->RemoveLink(link);
 	
 	UpdateTargets();
 }
@@ -189,8 +191,8 @@ void seSourceSound::RemoveLinkFromTargets(seLink *link){
 void seSourceSound::RemoveLinksFromAllTargets(){
 	seSource::RemoveLinksFromAllTargets();
 	
-	pTargetSpeed.RemoveAllLinks();
-	pTargetPlay.RemoveAllLinks();
+	pTargetSpeed->RemoveAllLinks();
+	pTargetPlay->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -210,8 +212,8 @@ deSynthesizerSource::Ref seSourceSound::CreateEngineSource(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	DEASSERT_NOTNULL(synthesizer);
 	
-	pTargetSpeed.UpdateEngineTarget(*synthesizer, engSource->GetTargetSpeed());
-	pTargetPlay.UpdateEngineTarget(*synthesizer, engSource->GetTargetPlay());
+	pTargetSpeed->UpdateEngineTarget(*synthesizer, engSource->GetTargetSpeed());
+	pTargetPlay->UpdateEngineTarget(*synthesizer, engSource->GetTargetPlay());
 	
 	return engSource;
 }
@@ -226,8 +228,8 @@ seSource::Ref seSourceSound::CreateCopy() const{
 
 void seSourceSound::ListLinks(seLink::List &list){
 	seSource::ListLinks(list);
-	pTargetSpeed.AddLinksToList(list);
-	pTargetPlay.AddLinksToList(list);
+	pTargetSpeed->AddLinksToList(list);
+	pTargetPlay->AddLinksToList(list);
 }
 
 

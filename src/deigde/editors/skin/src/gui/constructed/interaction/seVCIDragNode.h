@@ -77,7 +77,9 @@ public:
 	seVCIDragNode(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~seVCIDragNode();
+public:
 	/*@}*/
 	
 	

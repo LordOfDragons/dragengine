@@ -50,7 +50,9 @@ public:
 	explicit seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPControllerListener() override;
+public:
 	/*@}*/
 	
 	

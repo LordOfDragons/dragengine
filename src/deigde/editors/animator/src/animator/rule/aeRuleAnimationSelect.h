@@ -47,8 +47,8 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetMoveTime;
-	aeControllerTarget pTargetSelect;
+	aeControllerTarget::Ref pTargetMoveTime;
+	aeControllerTarget::Ref pTargetSelect;
 	
 	
 	
@@ -62,7 +62,9 @@ public:
 	aeRuleAnimationSelect(const aeRuleAnimationSelect &copy);
 	
 	/** Clean up animator select rule. */
+protected:
 	~aeRuleAnimationSelect() override;
+public:
 	/*@}*/
 	
 	
@@ -104,12 +106,10 @@ public:
 	
 	
 	/** Move time target. */
-	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
-	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
+	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Select target. */
-	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	

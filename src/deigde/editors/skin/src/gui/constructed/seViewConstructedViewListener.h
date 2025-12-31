@@ -50,7 +50,9 @@ public:
 	seViewConstructedViewListener(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seViewConstructedViewListener() override;
+public:
 	/*@}*/
 	
 	

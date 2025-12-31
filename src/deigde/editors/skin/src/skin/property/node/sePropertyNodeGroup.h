@@ -54,7 +54,9 @@ public:
 	sePropertyNodeGroup(const sePropertyNodeGroup &node);
 	
 	/** Clean up node. */
+protected:
 	~sePropertyNodeGroup() override;
+public:
 	/*@}*/
 	
 	

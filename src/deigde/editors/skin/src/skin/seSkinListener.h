@@ -51,7 +51,9 @@ public:
 	seSkinListener();
 	
 	/** Clean up listener. */
+protected:
 	virtual ~seSkinListener();
+public:
 	/*@}*/
 	
 	

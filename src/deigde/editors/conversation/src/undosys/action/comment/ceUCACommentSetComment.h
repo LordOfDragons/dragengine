@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCACommentSetComment();
+public:
 	/*@}*/
 	
 public:

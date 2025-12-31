@@ -56,7 +56,9 @@ public:
 	ceUCAASpeakGestureClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCAASpeakGestureClear();
+public:
 	/*@}*/
 	
 	

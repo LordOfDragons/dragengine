@@ -57,7 +57,9 @@ public:
 	/** Creates a new conversation action. */
 	ceCAActorCommand(const ceCAActorCommand &action);
 	/** Cleans up the conversation action. */
+protected:
 	~ceCAActorCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

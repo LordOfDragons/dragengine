@@ -51,9 +51,9 @@ private:
 	float pMinSpeed;
 	float pMaxSpeed;
 	
-	seControllerTarget pTargetSpeed;
-	seControllerTarget pTargetSelect;
-	seControllerTarget pTargetPlay;
+	seControllerTarget::Ref pTargetSpeed;
+	seControllerTarget::Ref pTargetSelect;
+	seControllerTarget::Ref pTargetPlay;
 	
 	
 	
@@ -67,7 +67,9 @@ public:
 	seSourceChain(const seSourceChain &copy);
 	
 	/** \brief Clean up synthesizer source. */
+protected:
 	~seSourceChain() override;
+public:
 	/*@}*/
 	
 	
@@ -134,12 +136,10 @@ public:
 	
 	
 	/** \brief Speed target. */
-	inline seControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
-	inline const seControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
+	inline const seControllerTarget::Ref &GetTargetSpeed() const{ return pTargetSpeed; }
 	
 	/** \brief Select sound target. */
-	inline seControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const seControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline const seControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/**
 	 * \brief Play target.
@@ -151,8 +151,7 @@ public:
 	 *          sounds. A value of 1/3 pauses the playback freezing playback position. A value of 0
 	 *          stops playback and rewinds playback position to the beginning.
 	 */
-	inline seControllerTarget &GetTargetPlay(){ return pTargetPlay; }
-	inline const seControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
+	inline const seControllerTarget::Ref &GetTargetPlay() const{ return pTargetPlay; }
 	
 	/** \brief Create an engine synthesizer source. */
 	virtual deSynthesizerSource::Ref CreateEngineSource();

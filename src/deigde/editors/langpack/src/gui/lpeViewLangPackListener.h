@@ -50,7 +50,9 @@ public:
 	lpeViewLangPackListener(lpeViewLangPack &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~lpeViewLangPackListener();
+public:
 	/*@}*/
 	
 	

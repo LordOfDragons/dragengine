@@ -74,7 +74,9 @@ public:
 	ceCASetActorParameter(const ceCASetActorParameter &action);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	~ceCASetActorParameter() override;
+public:
 	/*@}*/
 	
 	

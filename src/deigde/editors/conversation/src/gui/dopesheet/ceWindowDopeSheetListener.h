@@ -49,7 +49,9 @@ public:
 	ceWindowDopeSheetListener(ceWindowDopeSheet &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWindowDopeSheetListener() override;
+public:
 	/*@}*/
 	
 	

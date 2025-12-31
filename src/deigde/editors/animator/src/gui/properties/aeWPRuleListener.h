@@ -51,7 +51,9 @@ public:
 	aeWPRuleListener(aeWPRule &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPRuleListener() override;
+public:
 	/*@}*/
 	
 	

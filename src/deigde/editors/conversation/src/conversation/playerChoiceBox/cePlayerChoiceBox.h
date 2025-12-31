@@ -73,7 +73,9 @@ public:
 	cePlayerChoiceBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
+protected:
 	~cePlayerChoiceBox();
+public:
 	/*@}*/
 	
 	

@@ -64,7 +64,9 @@ public:
 	lpeLangPack(igdeEnvironment *environment);
 	
 	/** Cleans up the skin. */
+protected:
 	~lpeLangPack() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

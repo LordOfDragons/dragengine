@@ -57,7 +57,7 @@ private:
 	bool pEnabled;
 	float pStrength;
 	
-	seControllerTarget pTargetStrength;
+	seControllerTarget::Ref pTargetStrength;
 	
 	
 	
@@ -78,7 +78,9 @@ public:
 	seEffect(const seEffect &copy);
 	
 	/** \brief Clean up the synthesizer effect. */
+protected:
 	virtual ~seEffect();
+public:
 	/*@}*/
 	
 	
@@ -140,8 +142,7 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** \brief Strength target. */
-	inline seControllerTarget &GetTargetStrength(){ return pTargetStrength; }
-	inline const seControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
+	inline const seControllerTarget::Ref &GetTargetStrength() const{ return pTargetStrength; }
 	
 	/** \brief List all links of all effect targets. */
 	virtual void ListLinks(seLink::List& list);

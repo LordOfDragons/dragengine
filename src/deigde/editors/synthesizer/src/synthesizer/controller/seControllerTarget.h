@@ -62,7 +62,9 @@ public:
 	seControllerTarget(const seControllerTarget &copy);
 	
 	/** Clean up controller target. */
+protected:
 	~seControllerTarget();
+public:
 	/*@}*/
 	
 	

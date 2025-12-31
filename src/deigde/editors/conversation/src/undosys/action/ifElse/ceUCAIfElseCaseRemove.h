@@ -54,7 +54,9 @@ public:
 	ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseCaseRemove();
+public:
 	/*@}*/
 	
 	

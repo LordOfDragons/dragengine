@@ -48,7 +48,9 @@ public:
 	gdeWPGameDefinitionListener(gdeWPGameDefinition &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPGameDefinitionListener() override;
+public:
 	/*@}*/
 	
 	

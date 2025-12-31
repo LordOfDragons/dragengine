@@ -49,7 +49,7 @@ private:
 	decString pTargetBone, pInputBone;
 	deAnimatorRuleBoneTransformator::eInputSources pInputSource;
 	
-	aeControllerTarget pTargetTranslation, pTargetRotation, pTargetScaling;
+	aeControllerTarget::Ref pTargetTranslation, pTargetRotation, pTargetScaling;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -59,7 +59,9 @@ public:
 	/** Create a copy of a bone transformator rule. */
 	aeRuleBoneTransformator(const aeRuleBoneTransformator &copy);
 	/** Clean up the bone transformator rule. */
+protected:
 	~aeRuleBoneTransformator() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -149,16 +151,13 @@ public:
 	void SetInputSource(deAnimatorRuleBoneTransformator::eInputSources source);
 	
 	/** Retrieve the translation target. */
-	inline aeControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }
-	inline const aeControllerTarget &GetTargetTranslation() const{ return pTargetTranslation; }
+	inline const aeControllerTarget::Ref &GetTargetTranslation() const{ return pTargetTranslation; }
 	
 	/** Retrieve the rotation target. */
-	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
-	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
+	inline const aeControllerTarget::Ref &GetTargetRotation() const{ return pTargetRotation; }
 	
 	/** Retrieve the scaling target. */
-	inline aeControllerTarget &GetTargetScaling(){ return pTargetScaling; }
-	inline const aeControllerTarget &GetTargetScaling() const{ return pTargetScaling; }
+	inline const aeControllerTarget::Ref &GetTargetScaling() const{ return pTargetScaling; }
 	
 	/** Creates an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

@@ -55,7 +55,9 @@ public:
 	sePropertyNodeImage(const sePropertyNodeImage &node);
 	
 	/** \brief Clean up node. */
+protected:
 	~sePropertyNodeImage() override;
+public:
 	/*@}*/
 	
 	

@@ -82,7 +82,9 @@ public:
 	ceSpeechAnimation(deEngine *engine);
 	
 	/** Clean up speech animation. */
+protected:
 	~ceSpeechAnimation();
+public:
 	/*@}*/
 	
 	

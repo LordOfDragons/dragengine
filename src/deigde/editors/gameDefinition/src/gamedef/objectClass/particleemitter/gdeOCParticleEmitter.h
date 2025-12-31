@@ -89,7 +89,9 @@ public:
 	gdeOCParticleEmitter(const gdeOCParticleEmitter &emitter);
 	
 	/** \brief Clean up particle emitter. */
+protected:
 	virtual ~gdeOCParticleEmitter();
+public:
 	/*@}*/
 	
 	

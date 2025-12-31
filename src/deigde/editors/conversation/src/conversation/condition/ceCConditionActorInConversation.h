@@ -54,7 +54,9 @@ public:
 	ceCConditionActorInConversation(const ceCConditionActorInConversation &condition);
 	
 	/** \brief Clean up conversation condition. */
+protected:
 	~ceCConditionActorInConversation() override;
+public:
 	/*@}*/
 	
 	

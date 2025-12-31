@@ -50,7 +50,9 @@ public:
 	seTaskSyncGameDefinition(seWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~seTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

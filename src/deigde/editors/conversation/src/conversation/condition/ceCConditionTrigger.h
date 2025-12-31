@@ -72,7 +72,9 @@ public:
 	ceCConditionTrigger(const ceCConditionTrigger &condition);
 	
 	/** \brief Cleans up the conversation condition. */
+protected:
 	~ceCConditionTrigger() override;
+public:
 	/*@}*/
 	
 	

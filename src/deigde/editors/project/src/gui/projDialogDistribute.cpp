@@ -59,7 +59,6 @@ igdeDialog(windowMain.GetEnvironment(), "Distribute"),
 
 pWindowMain(windowMain),
 pProfile(profile),
-pTaskDistribute(nullptr),
 pCloseDialogOnFinished(false),
 pPrintToConsole(false),
 pSuccess(true)
@@ -120,9 +119,6 @@ pSuccess(true)
 }
 
 projDialogDistribute::~projDialogDistribute(){
-	if(pTaskDistribute){
-		delete pTaskDistribute;
-	}
 }
 
 
@@ -220,5 +216,5 @@ void projDialogDistribute::pStartBuilding(){
 	pEditDelgaFileCount->SetText("0");
 	pEditDelgaDirCount->SetText("0");
 	
-	pTaskDistribute = new projTaskDistribute(pWindowMain, *pWindowMain.GetProject(), *pProfile);
+	pTaskDistribute = projTaskDistribute::Ref::New(pWindowMain, *pWindowMain.GetProject(), *pProfile);
 }

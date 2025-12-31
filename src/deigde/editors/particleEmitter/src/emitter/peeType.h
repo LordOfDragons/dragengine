@@ -98,7 +98,9 @@ public:
 	peeType(deEngine *engine, const char *name = "Type");
 	
 	/** \brief Clean up controller. */
+protected:
 	virtual ~peeType();
+public:
 	/*@}*/
 	
 	

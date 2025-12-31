@@ -50,7 +50,9 @@ public:
 	skyeWPUndoHistoryListener(skyeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

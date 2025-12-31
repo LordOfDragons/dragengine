@@ -25,6 +25,8 @@
 #ifndef _AEWPAPANELRULE_H_
 #define _AEWPAPANELRULE_H_
 
+#include "../../../animator/controller/aeControllerTarget.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -41,7 +43,6 @@ class aeRule;
 class aeLink;
 class aeWPRule;
 class aeWindowMain;
-class aeControllerTarget;
 
 
 
@@ -57,7 +58,7 @@ public:
 private:
 	aeWPRule &pWPRule;
 	deAnimatorRuleVisitorIdentify::eRuleTypes pRequiredType;
-	aeControllerTarget *pTarget;
+	aeControllerTarget::Ref pTarget;
 	
 	igdeTextField::Ref pEditName;
 	igdeComboBox::Ref pCBBlendMode;
@@ -116,7 +117,7 @@ public:
 	aeRule *GetRule() const;
 	
 	/** Target or \em nullptr. */
-	inline aeControllerTarget *GetTarget() const{ return pTarget; }
+	inline const aeControllerTarget::Ref &GetTarget() const{ return pTarget; }
 	
 	/** Set target or \em nullptr. */
 	void SetTarget(aeControllerTarget *target);

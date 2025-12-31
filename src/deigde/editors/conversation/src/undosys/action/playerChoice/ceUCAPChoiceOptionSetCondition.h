@@ -58,7 +58,9 @@ public:
 		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAPChoiceOptionSetCondition();
+public:
 	/*@}*/
 	
 	

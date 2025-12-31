@@ -73,7 +73,9 @@ public:
 	sePropertyNodeShape(const sePropertyNodeShape &node);
 	
 	/** \brief Clean up node. */
+protected:
 	~sePropertyNodeShape() override;
+public:
 	/*@}*/
 	
 	

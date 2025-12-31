@@ -48,7 +48,9 @@ public:
 	gdeWPUndoHistoryListener(gdeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

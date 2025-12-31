@@ -57,7 +57,9 @@ class ceConversationListener : public deObject{
 	/** Creates a new listener. */
 	ceConversationListener();
 	/** Cleans up the listener. */
+protected:
 	virtual ~ceConversationListener();
+public:
 	/*@}*/
 	
 	/** \name Notifications */

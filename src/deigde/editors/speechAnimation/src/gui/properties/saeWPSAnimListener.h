@@ -50,7 +50,9 @@ public:
 	saeWPSAnimListener(saeWPSAnim &panel);
 	
 	/** Clean up listener. */
+protected:
 	~saeWPSAnimListener() override;
+public:
 	/*@}*/
 	
 	

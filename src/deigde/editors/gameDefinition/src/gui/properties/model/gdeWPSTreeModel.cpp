@@ -98,7 +98,6 @@ gdeWPSTreeModel::gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMa
 	gdeGameDefinition *gameDefinition) :
 pTreeList(treeList),
 pWindowMain(windowMain),
-pListener(nullptr),
 
 pCategories(nullptr),
 pObjectClasses(nullptr),
@@ -149,7 +148,7 @@ pIgnoreSelectionChange(false)
 		pSkies->OnAddedToTree();
 		
 		// add listener
-		pListener = new gdeWPSTreeModelListener(*this);
+		pListener = gdeWPSTreeModelListener::Ref::New(*this);
 		gameDefinition->AddListener(pListener);
 		
 	}catch(const deException &){
@@ -374,11 +373,8 @@ gdeWPSTreeModel::HelperIgnoreSelection::~HelperIgnoreSelection(){
 //////////////////////
 
 void gdeWPSTreeModel::pCleanUp(){
-	if(pListener){
-		if(pGameDefinition){
-			pGameDefinition->RemoveListener(pListener);
-		}
-		delete pListener;
+	if(pListener && pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pTreeList.RemoveAllItems();

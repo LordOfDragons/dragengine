@@ -51,7 +51,9 @@ public:
 	aeWPViewListener(aeWPView &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

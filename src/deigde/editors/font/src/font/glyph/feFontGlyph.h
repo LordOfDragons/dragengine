@@ -57,7 +57,9 @@ public:
 	/** Creates a new font glyph. */
 	feFontGlyph();
 	/** Cleans up the font glyph. */
+protected:
 	virtual ~feFontGlyph();
+public:
 	/*@}*/
 	
 	/** @name Management */

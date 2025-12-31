@@ -115,7 +115,9 @@ public:
 	/** Creates a new playback camera. */
 	cePlaybackCamera(cePlayback &playback);
 	/** Cleans up the playback camera. */
+protected:
 	~cePlaybackCamera();
+public:
 	/*@}*/
 	
 	/** \name Management */

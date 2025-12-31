@@ -68,7 +68,10 @@ pEnabled(true),
 pMinVolume(1.0f),
 pMaxVolume(1.0f),
 pMinPanning(0.0f),
-pMaxPanning(0.0f)
+pMaxPanning(0.0f),
+pTargetBlendFactor(seControllerTarget::Ref::New()),
+pTargetVolume(seControllerTarget::Ref::New()),
+pTargetPanning(seControllerTarget::Ref::New())
 {
 	if(type < deSynthesizerSourceVisitorIdentify::estSound || type > deSynthesizerSourceVisitorIdentify::estGroup){
 		DETHROW(deeInvalidParam);
@@ -87,9 +90,9 @@ pMinVolume(1.0f),
 pMaxVolume(1.0f),
 pMinPanning(0.0f),
 pMaxPanning(0.0f),
-pTargetBlendFactor(copy.pTargetBlendFactor),
-pTargetVolume(copy.pTargetVolume),
-pTargetPanning(copy.pTargetPanning)
+pTargetBlendFactor(seControllerTarget::Ref::New(copy.pTargetBlendFactor)),
+pTargetVolume(seControllerTarget::Ref::New(copy.pTargetVolume)),
+pTargetPanning(seControllerTarget::Ref::New(copy.pTargetPanning))
 {
 	copy.pEffects.Visit([&](const seEffect &e){
 		const seEffect::Ref effect(e.CreateCopy());
@@ -143,9 +146,9 @@ void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
 	engSource->SetMinPanning(pMinPanning);
 	engSource->SetMaxPanning(pMaxPanning);
 	
-	pTargetBlendFactor.UpdateEngineTarget(*synthesizer, engSource->GetTargetBlendFactor());
-	pTargetVolume.UpdateEngineTarget(*synthesizer, engSource->GetTargetVolume());
-	pTargetPanning.UpdateEngineTarget(*synthesizer, engSource->GetTargetPanning());
+	pTargetBlendFactor->UpdateEngineTarget(*synthesizer, engSource->GetTargetBlendFactor());
+	pTargetVolume->UpdateEngineTarget(*synthesizer, engSource->GetTargetVolume());
+	pTargetPanning->UpdateEngineTarget(*synthesizer, engSource->GetTargetPanning());
 	
 	// effects
 	pEffects.Visit([&](seEffect &effect){
@@ -287,9 +290,9 @@ void seSource::SetMaxPanning(float panning){
 void seSource::UpdateTargets(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	if(pEngSource && synthesizer){
-		pTargetBlendFactor.UpdateEngineTarget(*synthesizer, pEngSource->GetTargetBlendFactor());
-		pTargetVolume.UpdateEngineTarget(*synthesizer, pEngSource->GetTargetVolume());
-		pTargetPanning.UpdateEngineTarget(*synthesizer, pEngSource->GetTargetPanning());
+		pTargetBlendFactor->UpdateEngineTarget(*synthesizer, pEngSource->GetTargetBlendFactor());
+		pTargetVolume->UpdateEngineTarget(*synthesizer, pEngSource->GetTargetVolume());
+		pTargetPanning->UpdateEngineTarget(*synthesizer, pEngSource->GetTargetPanning());
 	}
 	
 	const int effectCount = pEffects.GetCount();
@@ -302,13 +305,13 @@ void seSource::UpdateTargets(){
 int seSource::CountLinkUsage(seLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetBlendFactor.GetLinks().Has(link)){
+	if(pTargetBlendFactor->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetVolume.GetLinks().Has(link)){
+	if(pTargetVolume->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetPanning.GetLinks().Has(link)){
+	if(pTargetPanning->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -320,9 +323,9 @@ int seSource::CountLinkUsage(seLink *link) const{
 }
 
 void seSource::RemoveLinkFromTargets(seLink *link){
-	pTargetBlendFactor.RemoveLink(link);
-	pTargetVolume.RemoveLink(link);
-	pTargetPanning.RemoveLink(link);
+	pTargetBlendFactor->RemoveLink(link);
+	pTargetVolume->RemoveLink(link);
+	pTargetPanning->RemoveLink(link);
 	
 	pEffects.Visit([&](seEffect &effect){
 		effect.RemoveLinkFromTargets(link);
@@ -330,9 +333,9 @@ void seSource::RemoveLinkFromTargets(seLink *link){
 }
 
 void seSource::RemoveLinksFromAllTargets(){
-	pTargetBlendFactor.RemoveAllLinks();
-	pTargetVolume.RemoveAllLinks();
-	pTargetPanning.RemoveAllLinks();
+	pTargetBlendFactor->RemoveAllLinks();
+	pTargetVolume->RemoveAllLinks();
+	pTargetPanning->RemoveAllLinks();
 	
 	pEffects.Visit([&](seEffect &effect){
 		effect.RemoveLinksFromAllTargets();
@@ -342,9 +345,9 @@ void seSource::RemoveLinksFromAllTargets(){
 
 
 void seSource::ListLinks(seLink::List &list){
-	pTargetBlendFactor.AddLinksToList(list);
-	pTargetVolume.AddLinksToList(list);
-	pTargetPanning.AddLinksToList(list);
+	pTargetBlendFactor->AddLinksToList(list);
+	pTargetVolume->AddLinksToList(list);
+	pTargetPanning->AddLinksToList(list);
 	
 	pEffects.Visit([&](seEffect &effect){
 		effect.ListLinks(list);

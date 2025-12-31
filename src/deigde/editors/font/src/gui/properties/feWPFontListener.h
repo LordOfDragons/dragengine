@@ -50,7 +50,9 @@ public:
 	feWPFontListener(feWPFont &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feWPFontListener() override;
+public:
 	/*@}*/
 	
 	

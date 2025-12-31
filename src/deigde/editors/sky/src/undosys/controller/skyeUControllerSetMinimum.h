@@ -54,7 +54,9 @@ public:
 	skyeUControllerSetMinimum(skyeController *controller, float newMinimum);
 	
 	/** \brief Clean up undo action. */
+protected:
     virtual ~skyeUControllerSetMinimum();
+public:
 	/*@}*/
 	
 	

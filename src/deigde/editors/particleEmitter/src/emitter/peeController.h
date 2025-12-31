@@ -69,7 +69,9 @@ public:
 	/** \brief Create a new controller. */
 	peeController();
 	/** \brief Clean up the controller. */
+protected:
 	virtual ~peeController();
+public:
 	/*@}*/
 	
 	/** \name Management */

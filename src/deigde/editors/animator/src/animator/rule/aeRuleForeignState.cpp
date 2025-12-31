@@ -54,7 +54,11 @@ pScaleVertexPositionSet(1.0f),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true)
+pEnableVertexPositionSet(true),
+pTargetPosition(aeControllerTarget::Ref::New()),
+pTargetOrientation(aeControllerTarget::Ref::New()),
+pTargetSize(aeControllerTarget::Ref::New()),
+pTargetVertexPositionSet(aeControllerTarget::Ref::New())
 {
 	SetName("Foreign State");
 }
@@ -73,10 +77,10 @@ pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pTargetPosition(copy.pTargetPosition),
-pTargetOrientation(copy.pTargetOrientation),
-pTargetSize(copy.pTargetSize),
-pTargetVertexPositionSet(copy.pTargetVertexPositionSet){
+pTargetPosition(aeControllerTarget::Ref::New(copy.pTargetPosition)),
+pTargetOrientation(aeControllerTarget::Ref::New(copy.pTargetOrientation)),
+pTargetSize(aeControllerTarget::Ref::New(copy.pTargetSize)),
+pTargetVertexPositionSet(aeControllerTarget::Ref::New(copy.pTargetVertexPositionSet)){
 }
 
 aeRuleForeignState::~aeRuleForeignState(){
@@ -203,20 +207,20 @@ void aeRuleForeignState::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetPosition.UpdateEngineTarget(GetAnimator(), rule->GetTargetPosition());
-		pTargetOrientation.UpdateEngineTarget(GetAnimator(), rule->GetTargetOrientation());
-		pTargetSize.UpdateEngineTarget(GetAnimator(), rule->GetTargetSize());
-		pTargetVertexPositionSet.UpdateEngineTarget(GetAnimator(), rule->GetTargetVertexPositionSet());
+		pTargetPosition->UpdateEngineTarget(GetAnimator(), rule->GetTargetPosition());
+		pTargetOrientation->UpdateEngineTarget(GetAnimator(), rule->GetTargetOrientation());
+		pTargetSize->UpdateEngineTarget(GetAnimator(), rule->GetTargetSize());
+		pTargetVertexPositionSet->UpdateEngineTarget(GetAnimator(), rule->GetTargetVertexPositionSet());
 	}
 }
 
 int aeRuleForeignState::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetPosition.GetLinks().Has(link)) usageCount++;
-	if(pTargetOrientation.GetLinks().Has(link)) usageCount++;
-	if(pTargetSize.GetLinks().Has(link)) usageCount++;
-	if(pTargetVertexPositionSet.GetLinks().Has(link)) usageCount++;
+	if(pTargetPosition->GetLinks().Has(link)) usageCount++;
+	if(pTargetOrientation->GetLinks().Has(link)) usageCount++;
+	if(pTargetSize->GetLinks().Has(link)) usageCount++;
+	if(pTargetVertexPositionSet->GetLinks().Has(link)) usageCount++;
 	
 	return usageCount;
 }
@@ -224,17 +228,17 @@ int aeRuleForeignState::CountLinkUsage(aeLink *link) const{
 void aeRuleForeignState::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetPosition.GetLinks().Has(link)){
-		pTargetPosition.RemoveLink(link);
+	if(pTargetPosition->GetLinks().Has(link)){
+		pTargetPosition->RemoveLink(link);
 	}
-	if(pTargetOrientation.GetLinks().Has(link)){
-		pTargetOrientation.RemoveLink(link);
+	if(pTargetOrientation->GetLinks().Has(link)){
+		pTargetOrientation->RemoveLink(link);
 	}
-	if(pTargetSize.GetLinks().Has(link)){
-		pTargetSize.RemoveLink(link);
+	if(pTargetSize->GetLinks().Has(link)){
+		pTargetSize->RemoveLink(link);
 	}
-	if(pTargetVertexPositionSet.GetLinks().Has(link)){
-		pTargetVertexPositionSet.RemoveLink(link);
+	if(pTargetVertexPositionSet->GetLinks().Has(link)){
+		pTargetVertexPositionSet->RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -243,10 +247,10 @@ void aeRuleForeignState::RemoveLinkFromTargets(aeLink *link){
 void aeRuleForeignState::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetPosition.RemoveAllLinks();
-	pTargetOrientation.RemoveAllLinks();
-	pTargetSize.RemoveAllLinks();
-	pTargetVertexPositionSet.RemoveAllLinks();
+	pTargetPosition->RemoveAllLinks();
+	pTargetOrientation->RemoveAllLinks();
+	pTargetSize->RemoveAllLinks();
+	pTargetVertexPositionSet->RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -271,10 +275,10 @@ deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 	engRule->SetSourceCoordinateFrame(pSourceCoordinateFrame);
 	engRule->SetDestCoordinateFrame(pDestCoordinateFrame);
 	
-	pTargetPosition.UpdateEngineTarget(GetAnimator(), engRule->GetTargetPosition());
-	pTargetOrientation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetOrientation());
-	pTargetSize.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSize());
-	pTargetVertexPositionSet.UpdateEngineTarget(GetAnimator(), engRule->GetTargetVertexPositionSet());
+	pTargetPosition->UpdateEngineTarget(GetAnimator(), engRule->GetTargetPosition());
+	pTargetOrientation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetOrientation());
+	pTargetSize->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSize());
+	pTargetVertexPositionSet->UpdateEngineTarget(GetAnimator(), engRule->GetTargetVertexPositionSet());
 	
 	return engRule;
 }
@@ -287,10 +291,10 @@ aeRule::Ref aeRuleForeignState::CreateCopy() const{
 
 void aeRuleForeignState::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-	pTargetOrientation.AddLinksToList(list);
-	pTargetPosition.AddLinksToList(list);
-	pTargetSize.AddLinksToList(list);
-	pTargetVertexPositionSet.AddLinksToList(list);
+	pTargetOrientation->AddLinksToList(list);
+	pTargetPosition->AddLinksToList(list);
+	pTargetSize->AddLinksToList(list);
+	pTargetVertexPositionSet->AddLinksToList(list);
 }
 
 

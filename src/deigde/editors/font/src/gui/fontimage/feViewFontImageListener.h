@@ -49,7 +49,9 @@ public:
 	feViewFontImageListener(feViewFontImage &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feViewFontImageListener() override;
+public:
 	/*@}*/
 	
 	

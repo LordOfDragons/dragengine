@@ -61,7 +61,9 @@ public:
 	cePCBOption();
 	
 	/** \brief Clean up player choice box option. */
+protected:
 	virtual ~cePCBOption();
+public:
 	/*@}*/
 	
 	

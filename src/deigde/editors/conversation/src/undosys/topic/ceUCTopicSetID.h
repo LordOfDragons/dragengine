@@ -63,7 +63,9 @@ public:
 		ceConversationTopic *topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCTopicSetID();
+public:
 	/*@}*/
 	
 	

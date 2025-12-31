@@ -353,9 +353,9 @@ void seWPAPanelSourceChain::UpdateTargetList(){
 	
 	seSourceChain *source = (seSourceChain*)GetSource();
 	if(source){
-		AddTarget("Speed", &source->GetTargetSpeed());
-		AddTarget("Select", &source->GetTargetSelect());
-		AddTarget("Play", &source->GetTargetPlay());
+		AddTarget("Speed", source->GetTargetSpeed());
+		AddTarget("Select", source->GetTargetSelect());
+		AddTarget("Play", source->GetTargetPlay());
 	}
 }
 

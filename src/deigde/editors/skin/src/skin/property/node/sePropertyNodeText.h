@@ -71,7 +71,9 @@ public:
 	sePropertyNodeText(const sePropertyNodeText &node);
 	
 	/** \brief Clean up node. */
+protected:
 	~sePropertyNodeText() override;
+public:
 	/*@}*/
 	
 	

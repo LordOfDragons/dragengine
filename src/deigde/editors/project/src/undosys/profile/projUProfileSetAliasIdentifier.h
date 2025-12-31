@@ -54,7 +54,9 @@ public:
 	projUProfileSetAliasIdentifier(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetAliasIdentifier();
+public:
 	/*@}*/
 	
 	

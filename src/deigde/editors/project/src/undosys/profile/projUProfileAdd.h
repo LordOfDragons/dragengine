@@ -53,7 +53,9 @@ public:
 	projUProfileAdd(projProject *project, projProfile *profile);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileAdd();
+public:
 	/*@}*/
 	
 	

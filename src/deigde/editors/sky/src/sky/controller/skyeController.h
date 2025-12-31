@@ -69,7 +69,9 @@ public:
 	skyeController();
 	
 	/** \brief Clean up sky controller. */
+protected:
 	virtual ~skyeController();
+public:
 	/*@}*/
 	
 	

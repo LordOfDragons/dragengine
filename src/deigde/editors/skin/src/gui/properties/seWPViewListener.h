@@ -50,7 +50,9 @@ public:
 	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPViewListener() override;
+public:
 	/*@}*/
 	
 	

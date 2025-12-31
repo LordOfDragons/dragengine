@@ -124,7 +124,9 @@ public:
 	gdeObjectClass(const gdeObjectClass &objectClass);
 	
 	/** Clean up object class. */
+protected:
 	virtual ~gdeObjectClass();
+public:
 	/*@}*/
 	
 	

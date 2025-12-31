@@ -66,7 +66,9 @@ public:
 	gdeGameDefinitionListener();
 	
 	/** Clean up listener. */
+protected:
 	virtual ~gdeGameDefinitionListener();
+public:
 	/*@}*/
 	
 	

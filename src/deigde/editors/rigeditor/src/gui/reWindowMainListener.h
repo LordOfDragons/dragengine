@@ -50,7 +50,9 @@ public:
 	reWindowMainListener(reWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

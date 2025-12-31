@@ -65,7 +65,9 @@ public:
 	/** Creates a new wait conversation action. */
 	ceCAWait(const ceCAWait &action);
 	/** Cleans up the wait conversation action. */
+protected:
 	~ceCAWait() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

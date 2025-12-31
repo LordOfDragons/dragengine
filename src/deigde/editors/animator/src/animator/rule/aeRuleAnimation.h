@@ -46,7 +46,7 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetMoveTime;
+	aeControllerTarget::Ref pTargetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -56,7 +56,9 @@ public:
 	/** Create a copy of a animator rule. */
 	aeRuleAnimation(const aeRuleAnimation &copy);
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleAnimation() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -90,8 +92,7 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the move time target. */
-	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
-	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
+	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

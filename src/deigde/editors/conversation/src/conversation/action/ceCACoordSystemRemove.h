@@ -48,7 +48,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemRemove(const ceCACoordSystemRemove &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCACoordSystemRemove() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

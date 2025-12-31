@@ -55,7 +55,9 @@ public:
 	/** Create a copy of a controller target. */
 	aeControllerTarget(const aeControllerTarget &copy);
 	/** Cleans up the controller target. */
+protected:
 	~aeControllerTarget();
+public:
 	/*@}*/
 	
 	/** \name Management */

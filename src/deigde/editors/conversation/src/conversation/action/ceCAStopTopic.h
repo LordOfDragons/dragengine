@@ -49,7 +49,9 @@ public:
 	ceCAStopTopic(const ceCAStopTopic &action);
 	
 	/** \brief Clean up stop conversation conversation action. */
+protected:
 	~ceCAStopTopic() override;
+public:
 	/*@}*/
 	
 	

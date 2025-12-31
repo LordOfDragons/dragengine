@@ -50,7 +50,9 @@ public:
 	seWPUndoHistoryListener(seWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

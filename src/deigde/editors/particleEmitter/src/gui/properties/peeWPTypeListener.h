@@ -51,7 +51,9 @@ public:
 	peeWPTypeListener(peeWPType &panel);
 	
 	/** \brief Clean up the listener. */
+protected:
 	~peeWPTypeListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

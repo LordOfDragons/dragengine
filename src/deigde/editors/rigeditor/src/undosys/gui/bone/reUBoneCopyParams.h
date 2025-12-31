@@ -64,7 +64,9 @@ public:
 	/** \brief Create a new CLASS. */
 	reUBoneCopy();
 	/** \brief Clean up the CLASS. */
+protected:
 	~reUBoneCopy();
+public:
 	/*@}*/
 	
 	/** \name Management */

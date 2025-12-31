@@ -856,8 +856,7 @@ public:
 aeWPAPanelRule::aeWPAPanelRule(aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType) :
 igdeContainerFlow(wpRule.GetEnvironment(), igdeContainerFlow::eaY),
 pWPRule(wpRule),
-pRequiredType(requiredType),
-pTarget(nullptr)
+pRequiredType(requiredType)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -1111,7 +1110,7 @@ void aeWPAPanelRule::UpdateRule(){
 void aeWPAPanelRule::UpdateTargetList(){
 	pCBTarget->RemoveAllItems();
 	if(GetRule()){
-		AddTarget("Blend Factor", &GetRule()->GetTargetBlendFactor());
+		AddTarget("Blend Factor", GetRule()->GetTargetBlendFactor());
 	}
 }
 

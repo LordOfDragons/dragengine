@@ -53,7 +53,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCATriggerSetAction();
+public:
 	/*@}*/
 	
 public:

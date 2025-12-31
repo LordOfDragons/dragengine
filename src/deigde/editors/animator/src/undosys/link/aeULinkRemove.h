@@ -28,10 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include "../../animator/aeAnimator.h"
+#include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
-
-class aeControllerTarget;
 
 
 
@@ -46,7 +45,7 @@ public:
 private:
 	struct sTarget{
 		aeRule::Ref rule;
-		aeControllerTarget *target;
+		aeControllerTarget::Ref target;
 	};
 	
 	aeAnimator::Ref pAnimator;

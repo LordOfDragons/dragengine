@@ -51,7 +51,9 @@ public:
 	aeWindowMainListener(aeWindowMain &windowMain);
 	
 	/** Clean up listener. */
+protected:
 	~aeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

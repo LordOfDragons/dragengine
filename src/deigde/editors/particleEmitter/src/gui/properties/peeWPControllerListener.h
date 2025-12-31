@@ -51,7 +51,9 @@ public:
 	peeWPControllerListener(peeWPController &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	

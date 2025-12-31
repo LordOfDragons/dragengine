@@ -61,7 +61,9 @@ public:
 	/** \brief Creates a new prop. */
 	ceProp();
 	/** \brief Cleans up the prop. */
+protected:
 	virtual ~ceProp();
+public:
 	/*@}*/
 	
 	/** \name Management */

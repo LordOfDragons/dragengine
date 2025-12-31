@@ -50,7 +50,9 @@ public:
 	aeTaskSyncGameDefinition(aeWindowMain &windowMain);
 	
 	/** Clean up task. */
+protected:
 	virtual ~aeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

@@ -54,7 +54,9 @@ public:
 		virtual float DefaultDuration(const decString &id);
 		
 	protected:
+protected:
 		virtual ~Listener();
+public:
 	};
 	
 private:

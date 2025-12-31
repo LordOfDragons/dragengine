@@ -50,7 +50,9 @@ public:
 	reWPShapeListener(reWPShape &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPShapeListener() override;
+public:
 	/*@}*/
 	
 	

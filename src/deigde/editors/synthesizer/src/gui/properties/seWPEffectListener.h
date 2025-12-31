@@ -50,7 +50,9 @@ public:
 	seWPEffectListener(seWPEffect &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPEffectListener() override;
+public:
 	/*@}*/
 	
 	

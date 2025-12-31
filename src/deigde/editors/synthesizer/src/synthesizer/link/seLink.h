@@ -73,7 +73,9 @@ public:
 	seLink(const seLink &copy);
 	
 	/** Clean up link. */
+protected:
 	virtual ~seLink();
+public:
 	/*@}*/
 	
 	

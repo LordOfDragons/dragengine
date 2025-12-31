@@ -50,7 +50,9 @@ public:
 	reTaskSyncGameDefinition(reWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~reTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

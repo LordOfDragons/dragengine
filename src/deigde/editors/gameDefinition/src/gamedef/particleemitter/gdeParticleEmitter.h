@@ -67,7 +67,9 @@ public:
 	gdeParticleEmitter(const gdeParticleEmitter &particleEmitter);
 	
 	/** \brief Clean up particle emitter. */
+protected:
 	virtual ~gdeParticleEmitter();
+public:
 	/*@}*/
 	
 	

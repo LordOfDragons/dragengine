@@ -50,7 +50,9 @@ public:
 	reWPConstraintListener(reWPConstraint &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPConstraintListener() override;
+public:
 	/*@}*/
 	
 	

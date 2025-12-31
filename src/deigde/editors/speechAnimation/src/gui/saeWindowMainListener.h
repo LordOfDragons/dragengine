@@ -50,7 +50,9 @@ public:
 	saeWindowMainListener(saeWindowMain &window);
 	
 	/** Clean up listener. */
+protected:
 	~saeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

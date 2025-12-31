@@ -95,7 +95,9 @@ public:
 	gdeOCNavigationBlocker(const gdeOCNavigationBlocker &blocker);
 	
 	/** \brief Clean up navigation blocker. */
+protected:
 	virtual ~gdeOCNavigationBlocker();
+public:
 	/*@}*/
 	
 	

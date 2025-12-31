@@ -443,8 +443,6 @@ void seWPSource::UpdateLinkList(){
 }
 
 void seWPSource::UpdateSourceTree(){
-	int i;
-	
 	if(pSynthesizer){
 		igdeTreeItem *nextItem = pTreeSource->GetFirstChild();
 		

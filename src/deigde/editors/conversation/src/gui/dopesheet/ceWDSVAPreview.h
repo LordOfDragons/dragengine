@@ -69,7 +69,9 @@ public:
 	ceWDSVAPreview(ceWindowDopeSheet &dopeSheet);
 	
 	/** \brief Clean up dope sheet lane. */
+protected:
 	~ceWDSVAPreview();
+public:
 	/*@}*/
 	
 	

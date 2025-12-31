@@ -50,7 +50,9 @@ public:
 	peeTaskSyncGameDefinition(peeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~peeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

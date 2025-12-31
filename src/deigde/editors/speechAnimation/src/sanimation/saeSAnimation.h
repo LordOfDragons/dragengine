@@ -100,7 +100,9 @@ public:
 	/** Creates a new speech animation. */
 	saeSAnimation(igdeEnvironment *environment);
 	/** Cleans up the speech animation. */
+protected:
 	virtual ~saeSAnimation();
+public:
 	/*@}*/
 	
 	/** \name Management */

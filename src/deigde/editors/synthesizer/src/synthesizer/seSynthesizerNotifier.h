@@ -50,7 +50,9 @@ public:
 	seSynthesizerNotifier();
 	
 	/** \brief Clean up synthesizer notifier. */
+protected:
 	virtual ~seSynthesizerNotifier();
+public:
 	/*@}*/
 	
 	

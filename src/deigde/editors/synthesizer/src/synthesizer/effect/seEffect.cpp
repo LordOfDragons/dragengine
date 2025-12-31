@@ -97,7 +97,7 @@ void seEffect::InitEngineEffect(deSynthesizerEffect *engEffect) const{
 	engEffect->SetEnabled(pEnabled);
 	engEffect->SetStrength(pStrength);
 	
-	pTargetStrength.UpdateEngineTarget(*synthesizer, engEffect->GetTargetStrength());
+	pTargetStrength->UpdateEngineTarget(*synthesizer, engEffect->GetTargetStrength());
 }
 
 
@@ -143,14 +143,14 @@ void seEffect::UpdateTargets(){
 	DEASSERT_NOTNULL(synthesizer)
 	
 	if(pEngEffect && synthesizer){
-		pTargetStrength.UpdateEngineTarget(*synthesizer, pEngEffect->GetTargetStrength());
+		pTargetStrength->UpdateEngineTarget(*synthesizer, pEngEffect->GetTargetStrength());
 	}
 }
 
 int seEffect::CountLinkUsage(seLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetStrength.GetLinks().Has(link)){
+	if(pTargetStrength->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -158,17 +158,17 @@ int seEffect::CountLinkUsage(seLink *link) const{
 }
 
 void seEffect::RemoveLinkFromTargets(seLink *link){
-	pTargetStrength.RemoveLink(link);
+	pTargetStrength->RemoveLink(link);
 }
 
 void seEffect::RemoveLinksFromAllTargets(){
-	pTargetStrength.RemoveAllLinks();
+	pTargetStrength->RemoveAllLinks();
 }
 
 
 
 void seEffect::ListLinks(seLink::List &list){
-	pTargetStrength.AddLinksToList(list);
+	pTargetStrength->AddLinksToList(list);
 }
 
 

@@ -54,7 +54,9 @@ public:
 	projUProjectSetPathConfig(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProjectSetPathConfig();
+public:
 	/*@}*/
 	
 	

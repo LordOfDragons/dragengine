@@ -54,7 +54,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAGameCommand(const ceCAGameCommand &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCAGameCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

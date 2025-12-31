@@ -58,7 +58,7 @@ skyeULinkRemove::skyeULinkRemove(skyeLink *link){
 			for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
 				const deSkyLayer::eTargets target = (deSkyLayer::eTargets)i;
 				
-				if(!layer->GetTarget(target).GetLinks().Has(link)){
+				if(!layer->GetTarget(target)->GetLinks().Has(link)){
 					continue;
 				}
 				
@@ -86,14 +86,14 @@ void skyeULinkRemove::Undo(){
 	pSky->AddLink(pLink);
 	
 	pTargets.Visit([&](cTarget &target){
-		target.layer->GetTarget(target.target).AddLink(pLink);
+		target.layer->GetTarget(target.target)->AddLink(pLink);
 		target.layer->NotifyTargetChanged(target.target);
 	});
 }
 
 void skyeULinkRemove::Redo(){
 	pTargets.Visit([&](cTarget &target){
-		target.layer->GetTarget(target.target).RemoveLink(pLink);
+		target.layer->GetTarget(target.target)->RemoveLink(pLink);
 		target.layer->NotifyTargetChanged(target.target);
 	});
 	

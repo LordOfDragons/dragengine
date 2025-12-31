@@ -50,7 +50,9 @@ public:
 	reWPViewListener(reWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPViewListener() override;
+public:
 	/*@}*/
 	
 	

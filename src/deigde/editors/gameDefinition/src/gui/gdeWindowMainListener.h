@@ -50,7 +50,9 @@ public:
 	gdeWindowMainListener(gdeWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

@@ -50,7 +50,9 @@ public:
 	ceTaskSyncGameDefinition(ceWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~ceTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

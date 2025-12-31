@@ -115,7 +115,9 @@ public:
 	ceGesture(const char *name = "Gesture");
 	
 	/** Clean up gesture. */
+protected:
 	virtual ~ceGesture();
+public:
 	/*@}*/
 	
 	

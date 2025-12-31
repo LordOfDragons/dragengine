@@ -53,7 +53,9 @@ public:
 	ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCFileDuplicate();
+public:
 	/*@}*/
 	
 	

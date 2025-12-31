@@ -110,7 +110,9 @@ public:
 	feFont(igdeEnvironment *environment);
 	
 	/** \brief Clean up font. */
+protected:
 	virtual ~feFont();
+public:
 	/*@}*/
 	
 	

@@ -56,7 +56,9 @@ public:
 	projUProfileSetIcons(projProfile *profile, const decStringSet &newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetIcons();
+public:
 	/*@}*/
 	
 	

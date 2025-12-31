@@ -52,7 +52,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAActorRemoveSetActor(ceConversationTopic *topic, ceCAActorRemove *action, const char *newActorID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAActorRemoveSetActor();
+public:
 	/*@}*/
 	
 public:

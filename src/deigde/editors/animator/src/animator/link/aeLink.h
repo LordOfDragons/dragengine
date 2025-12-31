@@ -79,7 +79,9 @@ public:
 	aeLink(const aeLink &copy);
 	
 	/** Clean up link. */
+protected:
 	virtual ~aeLink();
+public:
 	/*@}*/
 	
 	

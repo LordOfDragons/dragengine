@@ -816,7 +816,7 @@ public:
 		
 		const deSkyLayer::eTargets target = layer->GetActiveTarget();
 		skyeLink * const link = (skyeLink*)selection->GetData();
-		if(layer->GetTarget(target).GetLinks().Has(link)){
+		if(layer->GetTarget(target)->GetLinks().Has(link)){
 			return {};
 		}
 		
@@ -845,7 +845,7 @@ public:
 		
 		const deSkyLayer::eTargets target = layer->GetActiveTarget();
 		skyeLink * const link = (skyeLink*)selection->GetData();
-		if(!layer->GetTarget(target).GetLinks().Has(link)){
+		if(!layer->GetTarget(target)->GetLinks().Has(link)){
 			return {};
 		}
 		
@@ -853,7 +853,7 @@ public:
 	}
 	
 	void UpdateLayer(const skyeSky &, const skyeLayer &layer) override{
-		SetEnabled(layer.GetTarget(layer.GetActiveTarget()).GetLinks().GetCount() > 0);
+		SetEnabled(layer.GetTarget(layer.GetActiveTarget())->GetLinks().IsNotEmpty());
 	}
 };
 

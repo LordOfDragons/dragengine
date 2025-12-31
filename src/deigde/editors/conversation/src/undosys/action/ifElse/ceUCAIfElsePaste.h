@@ -51,7 +51,9 @@ public:
 	ceCAIfElseCase *ifcase, const ceConversationAction::List &actions, int index);
 	
 	/** \brief Clean up undo object. */
+protected:
 	~ceUCAIfElsePaste() override;
+public:
 	/*@}*/
 	
 	

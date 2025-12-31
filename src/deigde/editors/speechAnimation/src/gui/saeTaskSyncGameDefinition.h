@@ -50,7 +50,9 @@ public:
 	saeTaskSyncGameDefinition(saeWindowMain &windowMain);
 	
 	/** Clean up task. */
+protected:
 	virtual ~saeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

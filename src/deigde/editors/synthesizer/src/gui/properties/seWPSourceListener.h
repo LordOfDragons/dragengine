@@ -50,7 +50,9 @@ public:
 	seWPSourceListener(seWPSource &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPSourceListener() override;
+public:
 	/*@}*/
 	
 	

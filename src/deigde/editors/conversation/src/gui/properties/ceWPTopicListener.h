@@ -50,7 +50,9 @@ public:
 	ceWPTopicListener(ceWPTopic &panel);
 	
 	/** Clean up listener. */
+protected:
 	~ceWPTopicListener() override;
+public:
 	/*@}*/
 	
 	

@@ -53,7 +53,9 @@ public:
 	/** \brief Creates a new undo action. */
 	ceUCCShotSetRotFrom(ceCameraShot *cameraShot, const decVector &newRot);
 	/** \brief Cleans up the undo action. */
+protected:
 	virtual ~ceUCCShotSetRotFrom();
+public:
 	/*@}*/
 	
 public:

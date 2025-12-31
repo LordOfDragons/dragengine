@@ -56,7 +56,9 @@ public:
 	ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCAASpeakWordClear();
+public:
 	/*@}*/
 	
 	

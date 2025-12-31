@@ -51,7 +51,9 @@ public:
 	/** Creates a new font notifier. */
 	feFontNotifier();
 	/** Cleans up the font notifier. */
+protected:
 	virtual ~feFontNotifier();
+public:
 	/*@}*/
 	
 	/** @name Notifications */

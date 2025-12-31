@@ -50,7 +50,9 @@ public:
 	skyeWindowMainListener(skyeWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

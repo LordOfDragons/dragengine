@@ -55,7 +55,9 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionActorCommand(const ceCConditionActorCommand &condition);
 	/** \brief Cleans up the conversation condition. */
+protected:
 	~ceCConditionActorCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

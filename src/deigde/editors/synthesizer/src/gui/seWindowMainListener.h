@@ -50,7 +50,9 @@ public:
 	seWindowMainListener(seWindowMain &windowMain);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

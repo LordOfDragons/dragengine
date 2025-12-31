@@ -48,7 +48,9 @@ public:
 	gdeWPSOCCameraListener(gdeWPSOCCamera &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCCameraListener() override;
+public:
 	/*@}*/
 	
 	

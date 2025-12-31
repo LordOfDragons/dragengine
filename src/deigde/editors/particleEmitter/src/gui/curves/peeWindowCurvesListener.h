@@ -51,7 +51,9 @@ public:
 	peeWindowCurvesListener(peeWindowCurves &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWindowCurvesListener() override;
+public:
 	/*@}*/
 	
 	

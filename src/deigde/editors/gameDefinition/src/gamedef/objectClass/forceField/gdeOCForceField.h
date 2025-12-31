@@ -129,7 +129,9 @@ public:
 	gdeOCForceField(const gdeOCForceField &emitter);
 	
 	/** \brief Clean up force field. */
+protected:
 	virtual ~gdeOCForceField();
+public:
 	/*@}*/
 	
 	

@@ -400,8 +400,8 @@ void aeWPAPanelRuleAnimationSelect::UpdateTargetList(){
 	
 	aeRuleAnimationSelect * const rule = (aeRuleAnimationSelect*)GetRule();
 	if(rule){
-		AddTarget("Move Time", &rule->GetTargetMoveTime());
-		AddTarget("Select", &rule->GetTargetSelect());
+		AddTarget("Move Time", rule->GetTargetMoveTime());
+		AddTarget("Select", rule->GetTargetSelect());
 	}
 }
 

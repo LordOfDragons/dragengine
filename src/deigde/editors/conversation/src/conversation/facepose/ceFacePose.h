@@ -55,7 +55,9 @@ public:
 	/** Creates a new face pose. */
 	ceFacePose(const char *name = "Face Pose");
 	/** Cleans up the face pose. */
+protected:
 	virtual ~ceFacePose();
+public:
 	/*@}*/
 	
 	/** \name Management */

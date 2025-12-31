@@ -79,7 +79,9 @@ public:
 	ceCConditionActorParameter(const ceCConditionActorParameter &condition);
 	
 	/** \brief Clean up conversation condition. */
+protected:
 	~ceCConditionActorParameter() override;
+public:
 	/*@}*/
 	
 	

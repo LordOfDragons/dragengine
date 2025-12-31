@@ -50,7 +50,9 @@ public:
 	skyeWPViewListener(skyeWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~skyeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

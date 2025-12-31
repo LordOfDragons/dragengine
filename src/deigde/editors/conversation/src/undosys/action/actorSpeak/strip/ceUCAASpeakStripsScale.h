@@ -64,7 +64,9 @@ public:
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakStripsScale();
+public:
 	/*@}*/
 	
 public:

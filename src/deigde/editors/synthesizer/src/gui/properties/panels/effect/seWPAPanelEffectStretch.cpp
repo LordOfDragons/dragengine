@@ -191,7 +191,7 @@ void seWPAPanelEffectStretch::UpdateTargetList(){
 	
 	seEffectStretch * const effect = (seEffectStretch*)GetEffect();
 	if(effect){
-		AddTarget("Time", &effect->GetTargetTime());
-		AddTarget("Pitch", &effect->GetTargetPitch());
+		AddTarget("Time", effect->GetTargetTime());
+		AddTarget("Pitch", effect->GetTargetPitch());
 	}
 }

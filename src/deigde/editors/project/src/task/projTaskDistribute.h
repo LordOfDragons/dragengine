@@ -108,7 +108,9 @@ public:
 		const projProject &project, const projProfile &profile);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~projTaskDistribute();
+public:
 	/*@}*/
 	
 	

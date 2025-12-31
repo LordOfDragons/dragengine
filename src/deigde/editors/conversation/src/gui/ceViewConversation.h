@@ -68,7 +68,9 @@ public:
 	ceViewConversation(ceWindowMain &windowMain);
 	
 	/** \brief Cleans up conversation view. */
+protected:
 	virtual ~ceViewConversation();
+public:
 	/*@}*/
 	
 	

@@ -112,7 +112,9 @@ public:
 	projWindowMain(igdeEditorModule &module);
 	
 	/** \brief Clean up window. */
+protected:
 	virtual ~projWindowMain();
+public:
 	/*@}*/
 	
 	

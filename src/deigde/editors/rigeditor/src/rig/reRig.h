@@ -199,7 +199,9 @@ public:
 	/** Creates a new rig. */
 	reRig(igdeEnvironment *environment);
 	/** Cleans up the rig. */
+protected:
 	virtual ~reRig();
+public:
 	/*@}*/
 	
 	/** @name Management */
