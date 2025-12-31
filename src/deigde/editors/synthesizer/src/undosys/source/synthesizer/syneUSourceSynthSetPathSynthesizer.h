@@ -22,33 +22,55 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEUSOURCESYNTHSETPATHSYNTHESIZER_H_
+#define _SYNEUSOURCESYNTHSETPATHSYNTHESIZER_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../../synthesizer/source/syneSourceSynthesizer.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo source synthesizer set path synthesizer.
+ */
+class syneUSourceSynthSetPathSynthesizer : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceSynthSetPathSynthesizer> Ref;
+	
+	
+private:
+	syneSourceSynthesizer::Ref pSource;
+	
+	decString pOldPath;
+	decString pNewPath;
+	
+	int pOldConCount;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceSynthSetPathSynthesizer(syneSourceSynthesizer *source, const char *newPath);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceSynthSetPathSynthesizer();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

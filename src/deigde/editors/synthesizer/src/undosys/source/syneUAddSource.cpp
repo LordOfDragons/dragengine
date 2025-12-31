@@ -22,33 +22,57 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUAddSource.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUAddSource
+/////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUAddSource::syneUAddSource(syneSynthesizer *synthesizer, syneSource *source, int index) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(index)
+{
+	if(!synthesizer || !source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pSynthesizer = synthesizer;
+	pSource = source;
+}
+
+syneUAddSource::~syneUAddSource(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUAddSource::Undo(){
+	pSynthesizer->RemoveSource(pSource);
+}
+
+void syneUAddSource::Redo(){
+	pSynthesizer->InsertSourceAt(pSource, pIndex);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUAddSource::pCleanUp(){
 }

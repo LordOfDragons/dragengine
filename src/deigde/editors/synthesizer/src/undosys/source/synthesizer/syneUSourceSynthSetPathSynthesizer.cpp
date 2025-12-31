@@ -22,33 +22,62 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceSynthSetPathSynthesizer.h"
+#include "../../../synthesizer/source/syneSourceSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneUSourceSynthSetPathSynthesizer
+///////////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneUSourceSynthSetPathSynthesizer::syneUSourceSynthSetPathSynthesizer(
+		syneSourceSynthesizer *source, const char *newPath) :
+pSource(nullptr)
+{
+	if(!source || !newPath){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pOldPath = source->GetPathSynthesizer();
+	pNewPath = newPath;
+	
+	pOldConCount = source->GetConnections().GetCount();
+	
+	SetShortInfo("Synthesizer source set synthesizer path");
+	
+	pSource = source;
 }
-#endif
+
+syneUSourceSynthSetPathSynthesizer::~syneUSourceSynthSetPathSynthesizer(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void syneUSourceSynthSetPathSynthesizer::Undo(){
+	if(pSource->GetConnections().GetCount() != pOldConCount){
+		pSource->SetConnectionCount(pOldConCount);
+	}
+	
+	pSource->SetPathSynthesizer(pOldPath);
+}
+
+void syneUSourceSynthSetPathSynthesizer::Redo(){
+	pSource->SetPathSynthesizer(pNewPath);
+	
+	const int count = pSource->GetConnections().GetCount();
+	if(count > pOldConCount){
+		pSource->SetConnectionCount(count);
 	}
 }

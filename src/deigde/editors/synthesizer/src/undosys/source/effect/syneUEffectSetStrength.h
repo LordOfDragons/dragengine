@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUEFFECTSETSTRENGTH_H_
+#define _SYNEUEFFECTSETSTRENGTH_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/effect/syneEffect.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action effect set strength.
+ */
+class syneUEffectSetStrength : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUEffectSetStrength> Ref;
+	
+	
+private:
+	syneEffect::Ref pEffect;
+	
+	float pOldStrength;
+	float pNewStrength;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUEffectSetStrength(syneEffect *effect, float newStrength);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUEffectSetStrength();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

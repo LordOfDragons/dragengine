@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceMaxPanning.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceMaxPanning
+// //////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceMaxPanning::syneUSetSourceMaxPanning(syneSource *source, float newValue) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldValue = source->GetMaxPanning();
+	pNewValue = newValue;
+	
+	pSource = source;
+	SetShortInfo("Source set maximum panning");
+}
+
+syneUSetSourceMaxPanning::~syneUSetSourceMaxPanning(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceMaxPanning::Undo(){
+	pSource->SetMaxPanning(pOldValue);
+}
+
+void syneUSetSourceMaxPanning::Redo(){
+	pSource->SetMaxPanning(pNewValue);
 }

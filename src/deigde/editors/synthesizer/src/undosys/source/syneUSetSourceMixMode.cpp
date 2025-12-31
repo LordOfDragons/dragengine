@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceMixMode.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceMixMode
+//////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceMixMode::syneUSetSourceMixMode(syneSource *source, deSynthesizerSource::eMixModes newMode) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldMode = source->GetMixMode();
+	pNewMode = newMode;
+	
+	pSource = source;
+	SetShortInfo("Source set blend mode");
+}
+
+syneUSetSourceMixMode::~syneUSetSourceMixMode(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceMixMode::Undo(){
+	pSource->SetMixMode(pOldMode);
+}
+
+void syneUSetSourceMixMode::Redo(){
+	pSource->SetMixMode(pNewMode);
 }

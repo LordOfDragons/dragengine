@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectStretchSetMinPitch.h"
+#include "../../../../synthesizer/effect/syneEffectStretch.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectStretchSetMinPitch
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUEffectStretchSetMinPitch::syneUEffectStretchSetMinPitch(syneEffectStretch *effect, float newPitch) :
+pSource(nullptr)
+{
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Effect stretch set minimum pitch");
+	
+	pOldPitch = effect->GetMinPitch();
+	pNewPitch = newPitch;
+	
+	pSource = effect;
+}
+
+syneUEffectStretchSetMinPitch::~syneUEffectStretchSetMinPitch(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectStretchSetMinPitch::Undo(){
+	pSource->SetMinPitch(pOldPitch);
+}
+
+void syneUEffectStretchSetMinPitch::Redo(){
+	pSource->SetMinPitch(pNewPitch);
 }

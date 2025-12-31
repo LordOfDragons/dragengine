@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUToggleSourceSoundLooping.h"
+#include "../../../synthesizer/source/syneSourceSound.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUToggleSourceSoundLooping
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUToggleSourceSoundLooping::syneUToggleSourceSoundLooping(syneSourceSound *source) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Toggle sound source looping");
+	
+	pSource = source;
+}
+
+syneUToggleSourceSoundLooping::~syneUToggleSourceSoundLooping(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUToggleSourceSoundLooping::Undo(){
+	Redo();
+}
+
+void syneUToggleSourceSoundLooping::Redo(){
+	pSource->SetLooping(!pSource->GetLooping());
 }

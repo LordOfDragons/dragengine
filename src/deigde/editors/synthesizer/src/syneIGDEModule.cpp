@@ -22,33 +22,36 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "syneIGDEModule.h"
+#include "gui/syneWindowMain.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneIGDEModule
+///////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneIGDEModule::syneIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
-#endif
+
+syneIGDEModule::~syneIGDEModule(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void syneIGDEModule::Start(){
+	if(!GetEditorWindow()){
+		SetEditorWindow(syneWindowMain::Ref::New(*this));
 	}
 }

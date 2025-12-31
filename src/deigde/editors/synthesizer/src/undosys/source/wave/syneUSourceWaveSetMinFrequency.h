@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSOURCEWAVESETMINFREQUENCY_H_
+#define _SYNEUSOURCEWAVESETMINFREQUENCY_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceWave.h"
 
 
+/**
+ * \brief Undo source wave set minimum frequency.
+ */
+class syneUSourceWaveSetMinFrequency : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceWaveSetMinFrequency> Ref;
+	
+	
+private:
+	syneSourceWave::Ref pSource;
+	
+	float pOldFrequency;
+	float pNewFrequency;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceWaveSetMinFrequency(syneSourceWave *source, float newFrequency);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceWaveSetMinFrequency();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

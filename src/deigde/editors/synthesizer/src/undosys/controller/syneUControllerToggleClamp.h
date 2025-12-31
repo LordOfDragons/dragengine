@@ -22,33 +22,48 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUCONTROLLERTOGGLECLAMP_H_
+#define _SYNEUCONTROLLERTOGGLECLAMP_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/controller/syneController.h"
+#include <deigde/undo/igdeUndo.h>
 
 
+/**
+ * \brief Undo controller set minimum value.
+ */
+class syneUControllerToggleClamp : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUControllerToggleClamp> Ref;
+	
+	
+private:
+	const syneController::Ref pController;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo object. */
+	syneUControllerToggleClamp(syneController *controller);
+	
+protected:
+	/** \brief Clean up undo object. */
+	virtual ~syneUControllerToggleClamp();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

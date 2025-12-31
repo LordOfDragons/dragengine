@@ -22,33 +22,57 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceAddEffect.h"
+#include "../../../synthesizer/effect/syneEffect.h"
+#include "../../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceAddEffect
+/////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUSourceAddEffect::syneUSourceAddEffect(syneSource *source, syneEffect *effect, int index) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pIndex(index)
+{
+	if(!source || !effect){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pSource = source;
+	pEffect = effect;
+}
+
+syneUSourceAddEffect::~syneUSourceAddEffect(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceAddEffect::Undo(){
+	pSource->RemoveEffect(pEffect);
+}
+
+void syneUSourceAddEffect::Redo(){
+	pSource->InsertEffectAt(pEffect, pIndex);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUSourceAddEffect::pCleanUp(){
 }

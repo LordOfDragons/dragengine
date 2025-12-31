@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUControllerSetMinimumValue.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/controller/syneController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUControllerSetMinimumValue
+///////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUControllerSetMinimumValue::syneUControllerSetMinimumValue(syneController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	pOldValue = controller->GetMinimumValue();
+}
+
+syneUControllerSetMinimumValue::~syneUControllerSetMinimumValue(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUControllerSetMinimumValue::Undo(){
+	((syneController&)(deObject&)pController).SetMinimumValue(pOldValue);
+}
+
+void syneUControllerSetMinimumValue::Redo(){
+	((syneController&)(deObject&)pController).SetMinimumValue(pNewValue);
 }

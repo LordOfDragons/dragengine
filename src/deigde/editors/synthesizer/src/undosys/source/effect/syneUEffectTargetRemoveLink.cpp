@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectTargetRemoveLink.h"
+#include "../../../synthesizer/effect/syneEffect.h"
+#include "../../../synthesizer/link/syneLink.h"
+#include "../../../synthesizer/controller/syneControllerTarget.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectTargetRemoveLink
+////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUEffectTargetRemoveLink::syneUEffectTargetRemoveLink(
+syneEffect *effect, syneControllerTarget *target, syneLink *link) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pTarget(nullptr)
+{
+	if(!effect || !target || !link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Effect target remove link");
+	
+	pEffect = effect;
+	pTarget = target;
+	
+	pLink = link;
+}
+
+syneUEffectTargetRemoveLink::~syneUEffectTargetRemoveLink(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectTargetRemoveLink::Undo(){
+	pTarget->AddLink(pLink);
+	pEffect->NotifyEffectChanged();
+}
+
+void syneUEffectTargetRemoveLink::Redo(){
+	pTarget->RemoveLink(pLink);
+	pEffect->NotifyEffectChanged();
 }

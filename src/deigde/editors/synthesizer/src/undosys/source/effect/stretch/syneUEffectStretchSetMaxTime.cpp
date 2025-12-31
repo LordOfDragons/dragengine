@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectStretchSetMaxTime.h"
+#include "../../../../synthesizer/effect/syneEffectStretch.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectStretchSetMaxTime
+/////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUEffectStretchSetMaxTime::syneUEffectStretchSetMaxTime(syneEffectStretch *effect, float newTime) :
+pSource(nullptr)
+{
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Effect stretch set maximum time");
+	
+	pOldTime = effect->GetMaxTime();
+	pNewTime = newTime;
+	
+	pSource = effect;
+}
+
+syneUEffectStretchSetMaxTime::~syneUEffectStretchSetMaxTime(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectStretchSetMaxTime::Undo(){
+	pSource->SetMaxTime(pOldTime);
+}
+
+void syneUEffectStretchSetMaxTime::Redo(){
+	pSource->SetMaxTime(pNewTime);
 }

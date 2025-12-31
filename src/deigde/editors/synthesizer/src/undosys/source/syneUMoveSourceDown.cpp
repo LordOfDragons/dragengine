@@ -22,33 +22,61 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUMoveSourceDown.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUMoveSourceDown
+////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUMoveSourceDown::syneUMoveSourceDown(syneSynthesizer *synthesizer, syneSource *source) :
+pSynthesizer(nullptr)
+{
+	if(!synthesizer || !source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = synthesizer->GetSources().IndexOf(source);
+	if(pIndex == -1 || pIndex == synthesizer->GetSources().GetCount() - 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pSynthesizer = synthesizer;
+	pSource = source;
+}
+
+syneUMoveSourceDown::~syneUMoveSourceDown(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUMoveSourceDown::Undo(){
+	pSynthesizer->MoveSourceTo(pSource, pIndex);
+}
+
+void syneUMoveSourceDown::Redo(){
+	pSynthesizer->MoveSourceTo(pSource, pIndex + 1);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUMoveSourceDown::pCleanUp(){
 }

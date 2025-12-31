@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEUSOURCESYNTHCONTARGETMORE_H_
+#define _SYNEUSOURCESYNTHCONTARGETMORE_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../../synthesizer/source/syneSourceSynthesizer.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo source synthesizer increase connection target count.
+ */
+class syneUSourceSynthConTargetMore : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceSynthConTargetMore> Ref;
+	
+	
+private:
+	syneSourceSynthesizer::Ref pSource;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceSynthConTargetMore(syneSourceSynthesizer *source);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceSynthConTargetMore();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

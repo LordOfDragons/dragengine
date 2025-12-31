@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectStretchSetMaxPitch.h"
+#include "../../../../synthesizer/effect/syneEffectStretch.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectStretchSetMaxPitch
+//////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUEffectStretchSetMaxPitch::syneUEffectStretchSetMaxPitch(syneEffectStretch *effect, float newPitch) :
+pSource(nullptr)
+{
+	if(!effect){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Effect stretch set maximum pitch");
+	
+	pOldPitch = effect->GetMaxPitch();
+	pNewPitch = newPitch;
+	
+	pSource = effect;
+}
+
+syneUEffectStretchSetMaxPitch::~syneUEffectStretchSetMaxPitch(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectStretchSetMaxPitch::Undo(){
+	pSource->SetMaxPitch(pOldPitch);
+}
+
+void syneUEffectStretchSetMaxPitch::Redo(){
+	pSource->SetMaxPitch(pNewPitch);
 }

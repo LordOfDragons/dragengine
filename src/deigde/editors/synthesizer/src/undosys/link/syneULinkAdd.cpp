@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneULinkAdd.h"
+
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/link/syneLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneULinkAdd
+/////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneULinkAdd::syneULinkAdd(syneSynthesizer *synthesizer, syneLink *link) :
+pSynthesizer(nullptr)
+{
+	if(!link || !synthesizer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Add Link");
+	
+	pSynthesizer = synthesizer;
+	pLink = link;
+}
+
+syneULinkAdd::~syneULinkAdd(){
+}
+
+
+
+// Management
+///////////////
+
+void syneULinkAdd::Undo(){
+	pSynthesizer->RemoveLink(pLink);
+}
+
+void syneULinkAdd::Redo(){
+	pSynthesizer->AddLink(pLink);
+	pSynthesizer->SetActiveLink(pLink);
 }

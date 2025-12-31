@@ -22,33 +22,65 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectSetStrength.h"
+#include "../../../synthesizer/effect/syneEffect.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectSetStrength
+// ////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
+syneUEffectSetStrength::syneUEffectSetStrength(syneEffect *effect, float newStrength) :
+pEffect(nullptr)
+{
+	if(!effect){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pOldStrength = effect->GetStrength();
+	pNewStrength = newStrength;
+	
 	try{
-		return new syneIGDEModule(*environment);
+		pEffect = effect;
+		SetShortInfo("Effect set strength");
 		
 	}catch(const deException &){
-		return nullptr;
+		pCleanUp();
+		throw;
 	}
+}
+
+syneUEffectSetStrength::~syneUEffectSetStrength(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectSetStrength::Undo(){
+	pEffect->SetStrength(pOldStrength);
+}
+
+void syneUEffectSetStrength::Redo(){
+	pEffect->SetStrength(pNewStrength);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUEffectSetStrength::pCleanUp(){
 }

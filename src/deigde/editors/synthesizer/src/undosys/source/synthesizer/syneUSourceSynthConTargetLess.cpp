@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceSynthConTargetLess.h"
+#include "../../../synthesizer/controller/syneController.h"
+#include "../../../synthesizer/source/syneSourceSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneUSourceSynthConTargetLess
+//////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneUSourceSynthConTargetLess::syneUSourceSynthConTargetLess(syneSourceSynthesizer *source) :
+
+pOldController(nullptr)
+{
+	DEASSERT_NOTNULL(source)
+	
+	SetShortInfo("Synthesizer source less connection targets");
+	
+	pOldController = source->GetConnections().Last();
+	pSource = source;
 }
-#endif
+
+syneUSourceSynthConTargetLess::~syneUSourceSynthConTargetLess(){
+}
 
 
 
-// entry point
-////////////////
+// Management
+///////////////
 
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+void syneUSourceSynthConTargetLess::Undo(){
+	const int index = pSource->GetConnections().GetCount();
+	
+	pSource->SetConnectionCount(index + 1);
+	pSource->SetControllerAt(index, pOldController);
+}
+
+void syneUSourceSynthConTargetLess::Redo(){
+	pSource->SetConnectionCount(pSource->GetConnections().GetCount() - 1);
 }

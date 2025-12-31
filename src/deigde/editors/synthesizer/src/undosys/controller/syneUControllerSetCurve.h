@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUCONTROLLERSETCURVE_H_
+#define _SYNEUCONTROLLERSETCURVE_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/controller/syneController.h"
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/curve/decCurveBezier.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo controller set curve.
+ */
+class syneUControllerSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUControllerSetCurve> Ref;
+	
+	
+private:
+	const syneController::Ref pController;
+	decCurveBezier pOldValue;
+	decCurveBezier pNewValue;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo object. */
+	syneUControllerSetCurve(syneController *controller, const decCurveBezier &newValue);
+	
+protected:
+	/** \brief Clean up undo object. */
+	virtual ~syneUControllerSetCurve();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Set new curve. */
+	void SetNewValue(const decCurveBezier &value);
+	
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneULinkSetName.h"
+
+#include "../../synthesizer/link/syneLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneULinkSetName
+/////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneULinkSetName::syneULinkSetName(syneLink *link, const char *newName) :
+pLink(nullptr)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldName = link->GetName();
+	pNewName = newName;
+	
+	SetShortInfo("Set Link Name");
+	
+	pLink = link;
+}
+
+syneULinkSetName::~syneULinkSetName(){
+}
+
+
+
+// Management
+///////////////
+
+void syneULinkSetName::Undo(){
+	pLink->SetName(pOldName);
+}
+
+void syneULinkSetName::Redo(){
+	pLink->SetName(pNewName);
 }

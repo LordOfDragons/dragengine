@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneURemoveSource.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneURemoveSource
+////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneURemoveSource::syneURemoveSource(syneSynthesizer *synthesizer, syneSource *source) :
+pSynthesizer(nullptr)
+{
+	if(!synthesizer || !source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = synthesizer->GetSources().IndexOf(source);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pSynthesizer = synthesizer;
+	pSource = source;
+}
+
+syneURemoveSource::~syneURemoveSource(){
+}
+
+
+
+// Management
+///////////////
+
+void syneURemoveSource::Undo(){
+	pSynthesizer->InsertSourceAt(pSource, pIndex);
+}
+
+void syneURemoveSource::Redo(){
+	pSynthesizer->RemoveSource(pSource);
 }

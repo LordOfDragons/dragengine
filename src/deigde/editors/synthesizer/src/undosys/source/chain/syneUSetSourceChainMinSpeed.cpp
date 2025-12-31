@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceChainMinSpeed.h"
+#include "../../../synthesizer/source/syneSourceChain.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceChainMinSpeed
+////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceChainMinSpeed::syneUSetSourceChainMinSpeed(syneSourceChain *source, float newSpeed) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set chain source minimum speed");
+	
+	pOldSpeed = source->GetMinSpeed();
+	pNewSpeed = newSpeed;
+	
+	pSource = source;
+}
+
+syneUSetSourceChainMinSpeed::~syneUSetSourceChainMinSpeed(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceChainMinSpeed::Undo(){
+	pSource->SetMinSpeed(pOldSpeed);
+}
+
+void syneUSetSourceChainMinSpeed::Redo(){
+	pSource->SetMinSpeed(pNewSpeed);
 }

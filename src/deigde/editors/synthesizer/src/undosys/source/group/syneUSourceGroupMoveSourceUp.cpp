@@ -22,33 +22,52 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceGroupMoveSourceUp.h"
+#include "../../../synthesizer/source/syneSourceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceGroupMoveSourceUp
+/////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUSourceGroupMoveSourceUp::syneUSourceGroupMoveSourceUp(syneSourceGroup *group, syneSource *source) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pSource(nullptr)
+{
+	if(!group || !source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = group->GetSources().IndexOf(source);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pGroup = group;
+	pSource = source;
+}
+
+syneUSourceGroupMoveSourceUp::~syneUSourceGroupMoveSourceUp(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceGroupMoveSourceUp::Undo(){
+	pGroup->MoveSourceTo(pSource, pIndex);
+}
+
+void syneUSourceGroupMoveSourceUp::Redo(){
+	pGroup->MoveSourceTo(pSource, pIndex - 1);
 }

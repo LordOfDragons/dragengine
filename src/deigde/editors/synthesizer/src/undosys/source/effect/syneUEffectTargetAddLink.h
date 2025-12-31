@@ -22,33 +22,55 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEUEFFECTTARGETADDLINK_H_
+#define _SYNEUEFFECTTARGETADDLINK_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../../synthesizer/effect/syneEffect.h"
+#include "../../../synthesizer/link/syneLink.h"
+class syneControllerTarget;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action effect target add link.
+ */
+class syneUEffectTargetAddLink : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUEffectTargetAddLink> Ref;
+	
+	
+private:
+	syneEffect::Ref pEffect;
+	syneControllerTarget *pTarget;
+	
+	syneLink::Ref pLink;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUEffectTargetAddLink(syneEffect *effect, syneControllerTarget *target, syneLink *link);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUEffectTargetAddLink();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

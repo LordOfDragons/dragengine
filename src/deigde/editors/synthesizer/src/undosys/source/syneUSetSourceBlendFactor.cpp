@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceBlendFactor.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceBlendFactor
+// /////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceBlendFactor::syneUSetSourceBlendFactor(syneSource *source, float newFactor) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldFactor = source->GetBlendFactor();
+	pNewFactor = newFactor;
+	
+	pSource = source;
+	SetShortInfo("Source set blend factor");
+}
+
+syneUSetSourceBlendFactor::~syneUSetSourceBlendFactor(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceBlendFactor::Undo(){
+	pSource->SetBlendFactor(pOldFactor);
+}
+
+void syneUSetSourceBlendFactor::Redo(){
+	pSource->SetBlendFactor(pNewFactor);
 }

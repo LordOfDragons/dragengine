@@ -22,33 +22,39 @@
  * SOFTWARE.
  */
 
+#include <math.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-#include "syneIGDEModule.h"
+#include "syneClipboardDataSource.h"
+#include "../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneClipboardDataSource
+//////////////////////////////
+
+const char * const syneClipboardDataSource::TYPE_NAME = "source";
+
+// Constructor, destructor
+////////////////////////////
+
+syneClipboardDataSource::syneClipboardDataSource(syneSource *source) :
+igdeClipboardData(TYPE_NAME)
+{
+	pSources.Add(source->CreateCopy());
 }
-#endif
 
+syneClipboardDataSource::syneClipboardDataSource(const syneSource::List &sources) :
+igdeClipboardData(TYPE_NAME)
+{
+	sources.Visit([&](const syneSource &source){
+		pSources.Add(source.CreateCopy());
+	});
+}
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+syneClipboardDataSource::~syneClipboardDataSource(){
 }

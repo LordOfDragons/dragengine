@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUTOGGLESOURCESOUNDLOOPING_H_
+#define _SYNEUTOGGLESOURCESOUNDLOOPING_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceSound.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo toggle source sound looping.
+ */
+class syneUToggleSourceSoundLooping : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUToggleSourceSoundLooping> Ref;
+	
+	
+private:
+	syneSourceSound::Ref pSource;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUToggleSourceSoundLooping(syneSourceSound *source);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUToggleSourceSoundLooping();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

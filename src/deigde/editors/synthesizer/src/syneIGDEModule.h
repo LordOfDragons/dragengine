@@ -22,33 +22,36 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEIGDEMODULE_H_
+#define _SYNEIGDEMODULE_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/module/igdeEditorModule.h>
 
-#include <dragengine/common/exceptions.h>
+class syneWindowMain;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief DEIGDE Synthesizer Editor.
+ */
+class syneIGDEModule : public igdeEditorModule{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create module. */
+	syneIGDEModule(igdeEnvironment &environment);
+	
+	/** \brief Clean up module. */
+	virtual ~syneIGDEModule();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Start module. */
+	virtual void Start();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

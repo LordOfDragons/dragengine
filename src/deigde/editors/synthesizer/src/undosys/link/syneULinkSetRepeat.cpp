@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneULinkSetRepeat.h"
+
+#include "../../synthesizer/link/syneLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneULinkSetRepeat
+///////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneULinkSetRepeat::syneULinkSetRepeat(syneLink *link, int newRepeat) :
+pLink(nullptr)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Link set repeat");
+	
+	pLink = link;
+	pOldRepeat = link->GetRepeat();
+	pNewRepeat = newRepeat;
+}
+
+syneULinkSetRepeat::~syneULinkSetRepeat(){
+}
+
+
+
+// Management
+///////////////
+
+void syneULinkSetRepeat::Undo(){
+	pLink->SetRepeat(pOldRepeat);
+}
+
+void syneULinkSetRepeat::Redo(){
+	pLink->SetRepeat(pNewRepeat);
 }

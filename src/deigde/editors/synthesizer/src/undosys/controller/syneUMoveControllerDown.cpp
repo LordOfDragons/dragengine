@@ -22,33 +22,62 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUMoveControllerDown.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/controller/syneController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUMoveControllerDown
+////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUMoveControllerDown::syneUMoveControllerDown(syneSynthesizer *synthesizer, syneController *controller) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pController(nullptr)
+{
+	if(!synthesizer || !controller){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = synthesizer->GetControllers().IndexOf(controller);
+	if(pIndex == -1 || pIndex == synthesizer->GetControllers().GetCount() - 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pSynthesizer = synthesizer;
+	pController = controller;
+}
+
+syneUMoveControllerDown::~syneUMoveControllerDown(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUMoveControllerDown::Undo(){
+	pSynthesizer->MoveControllerTo(pController, pIndex);
+}
+
+void syneUMoveControllerDown::Redo(){
+	pSynthesizer->MoveControllerTo(pController, pIndex + 1);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUMoveControllerDown::pCleanUp(){
 }

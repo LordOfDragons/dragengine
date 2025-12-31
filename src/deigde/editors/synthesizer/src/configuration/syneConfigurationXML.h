@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNECONFIGURATIONXML_H_
+#define _SYNECONFIGURATIONXML_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/utils/igdeBaseXML.h>
 
-#include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decString.h>
+
+class syneConfiguration;
+
+class decBaseFileReader;
+class decBaseFileWriter;
+class decXmlWriter;
+class decXmlElementTag;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Load/Save configuration as xml file.
+ */
+class syneConfigurationXML : public igdeBaseXML{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create xml configuration read/write. */
+	syneConfigurationXML(deLogger *logger, const char *loggerSource);
+	
+	/** \brief Clean up xml configuration read/write. */
+	virtual ~syneConfigurationXML();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Read configuration from xml file. */
+	void ReadFromFile(decBaseFileReader &reader, syneConfiguration &config);
+	
+	/** \brief Write configuration to xml file. */
+	void WriteToFile(decBaseFileWriter &writer, const syneConfiguration &config);
+	/*@}*/
+	
+	
+	
+private:
+	void pWriteConfig(decXmlWriter &writer, const syneConfiguration &config);
+	
+	void pReadConfig(const decXmlElementTag &root, syneConfiguration &config);
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEWPAPANELEFFECTSTRETCH_H_
+#define _SYNEWPAPANELEFFECTSTRETCH_H_
 
-#include "syneIGDEModule.h"
-
-#include <dragengine/common/exceptions.h>
-
+#include "syneWPAPanelEffect.h"
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+
+/**
+ * \brief Stretch time/pitch effect Panel.
+ */
+class syneWPAPanelEffectStretch : public syneWPAPanelEffect{
+public:
+	typedef deTObjectReference<syneWPAPanelEffectStretch> Ref;
+	
+private:
+	igdeTextField::Ref pEditMinTime;
+	igdeTextField::Ref pEditMaxTime;
+	igdeTextField::Ref pEditMinPitch;
+	igdeTextField::Ref pEditMaxPitch;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Creat panel. */
+	syneWPAPanelEffectStretch(syneWPEffect &wpEffect);
+	
+protected:
+	/** \brief Clean up panel. */
+	~syneWPAPanelEffectStretch() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Update effect. */
+	void UpdateEffect() override;
+	
+	/** \brief Update target list. */
+	void UpdateTargetList() override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

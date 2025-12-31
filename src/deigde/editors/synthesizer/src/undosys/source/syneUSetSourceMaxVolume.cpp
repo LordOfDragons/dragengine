@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceMaxVolume.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceMaxVolume
+// /////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceMaxVolume::syneUSetSourceMaxVolume(syneSource *source, float newValue) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldValue = source->GetMaxVolume();
+	pNewValue = newValue;
+	
+	pSource = source;
+	SetShortInfo("Source set maximum volume");
+}
+
+syneUSetSourceMaxVolume::~syneUSetSourceMaxVolume(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceMaxVolume::Undo(){
+	pSource->SetMaxVolume(pOldValue);
+}
+
+void syneUSetSourceMaxVolume::Redo(){
+	pSource->SetMaxVolume(pNewValue);
 }

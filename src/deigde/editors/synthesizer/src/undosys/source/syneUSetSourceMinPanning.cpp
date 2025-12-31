@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceMinPanning.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceMinPanning
+// //////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceMinPanning::syneUSetSourceMinPanning(syneSource *source, float newFactor) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldValue = source->GetMinPanning();
+	pNewValue = newFactor;
+	
+	pSource = source;
+	SetShortInfo("Source set minimum panning");
+}
+
+syneUSetSourceMinPanning::~syneUSetSourceMinPanning(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceMinPanning::Undo(){
+	pSource->SetMinPanning(pOldValue);
+}
+
+void syneUSetSourceMinPanning::Redo(){
+	pSource->SetMinPanning(pNewValue);
 }

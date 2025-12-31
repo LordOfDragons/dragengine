@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSETSOURCEMAXPANNING_H_
+#define _SYNEUSETSOURCEMAXPANNING_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../synthesizer/source/syneSource.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action source set maximum panning.
+ */
+class syneUSetSourceMaxPanning : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSetSourceMaxPanning> Ref;
+	
+	
+private:
+	syneSource::Ref pSource;
+	
+	float pOldValue;
+	float pNewValue;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSetSourceMaxPanning(syneSource *source, float newValue);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSetSourceMaxPanning();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

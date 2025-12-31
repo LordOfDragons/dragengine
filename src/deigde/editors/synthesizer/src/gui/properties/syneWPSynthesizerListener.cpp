@@ -23,32 +23,46 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneWPSynthesizer.h"
+#include "syneWPSynthesizerListener.h"
+#include "../../synthesizer/syneSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneWPSynthesizerListener
+//////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneWPSynthesizerListener::syneWPSynthesizerListener(syneWPSynthesizer &panel) :
+pPanel(panel){
 }
-#endif
+
+syneWPSynthesizerListener::~syneWPSynthesizerListener(){
+}
 
 
 
-// entry point
-////////////////
+// Notifications
+//////////////////
 
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+void syneWPSynthesizerListener::SynthesizerChanged(syneSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
+		return;
 	}
+	
+	pPanel.UpdateSynthesizer();
+}
+
+void syneWPSynthesizerListener::PlaybackChanged(syneSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
+		return;
+	}
+	
+	pPanel.UpdatePlayback();
 }

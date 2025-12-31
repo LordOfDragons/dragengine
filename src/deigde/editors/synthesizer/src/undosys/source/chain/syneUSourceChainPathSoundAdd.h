@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSOURCECHAINPATHSOUNDADD_H_
+#define _SYNEUSOURCECHAINPATHSOUNDADD_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceChain.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo set source chain add path sound.
+ */
+class syneUSourceChainPathSoundAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceChainPathSoundAdd> Ref;
+	
+	
+private:
+	syneSourceChain::Ref pSource;
+	
+	int pIndex;
+	decString pPath;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceChainPathSoundAdd(syneSourceChain *source, const char *path);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceChainPathSoundAdd();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

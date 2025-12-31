@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceWaveSetMaxFrequency.h"
+#include "../../../synthesizer/source/syneSourceWave.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceWaveSetMaxFrequency
+///////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceWaveSetMaxFrequency::syneUSourceWaveSetMaxFrequency(syneSourceWave *source, float newFrequency) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Source wave set maximum frequency");
+	
+	pOldFrequency = source->GetMaxFrequency();
+	pNewFrequency = newFrequency;
+	
+	pSource = source;
+}
+
+syneUSourceWaveSetMaxFrequency::~syneUSourceWaveSetMaxFrequency(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceWaveSetMaxFrequency::Undo(){
+	pSource->SetMaxFrequency(pOldFrequency);
+}
+
+void syneUSourceWaveSetMaxFrequency::Redo(){
+	pSource->SetMaxFrequency(pNewFrequency);
 }

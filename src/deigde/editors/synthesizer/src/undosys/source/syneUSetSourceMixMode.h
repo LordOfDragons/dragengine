@@ -22,33 +22,55 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSETSOURCEMIXMODE_H_
+#define _SYNEUSETSOURCEMIXMODE_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+#include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
+
+#include "../../synthesizer/source/syneSource.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action source set mix mode.
+ */
+class syneUSetSourceMixMode : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSetSourceMixMode> Ref;
+	
+	
+private:
+	syneSource::Ref pSource;
+	
+	deSynthesizerSource::eMixModes pOldMode;
+	deSynthesizerSource::eMixModes pNewMode;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSetSourceMixMode(syneSource *source, deSynthesizerSource::eMixModes newMode);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSetSourceMixMode();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceChainPathSoundRemove.h"
+#include "../../../synthesizer/source/syneSourceChain.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceChainPathSoundRemove
+////////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceChainPathSoundRemove::syneUSourceChainPathSoundRemove(syneSourceChain *source, int index) :
+pSource(nullptr)
+{
+	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = index;
+	pPath = source->GetPathSounds().GetAt(index);
+	
+	SetShortInfo("Chain source remove path sound");
+	
+	pSource = source;
+}
+
+syneUSourceChainPathSoundRemove::~syneUSourceChainPathSoundRemove(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceChainPathSoundRemove::Undo(){
+	pSource->InsertPathSound(pPath, pIndex);
+}
+
+void syneUSourceChainPathSoundRemove::Redo(){
+	pSource->RemovePathSound(pIndex);
 }

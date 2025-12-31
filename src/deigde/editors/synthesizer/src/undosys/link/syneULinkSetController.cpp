@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneULinkSetController.h"
+
+#include "../../synthesizer/controller/syneController.h"
+#include "../../synthesizer/link/syneLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneULinkSetController
+///////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+syneULinkSetController::syneULinkSetController(syneLink *link, syneController *newController) :
 
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pNewController(nullptr)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	if(link->GetController() == newController){
+		DETHROW(deeInvalidParam);
+	}
+	
+	SetShortInfo("Set Link Controller");
+	
+	pLink = link;
+	pOldController = link->GetController();
+	pNewController = newController;
+}
+
+syneULinkSetController::~syneULinkSetController(){
+}
+
+
+
+// Management
+///////////////
+
+void syneULinkSetController::Undo(){
+	pLink->SetController(pOldController);
+}
+
+void syneULinkSetController::Redo(){
+	pLink->SetController(pNewController);
 }

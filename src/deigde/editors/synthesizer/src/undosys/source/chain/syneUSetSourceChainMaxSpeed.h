@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSETSOURCECHAINMAXSPEED_H_
+#define _SYNEUSETSOURCECHAINMAXSPEED_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceChain.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo set source chain maximum speed.
+ */
+class syneUSetSourceChainMaxSpeed : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSetSourceChainMaxSpeed> Ref;
+	
+	
+private:
+	syneSourceChain::Ref pSource;
+	
+	float pOldSpeed;
+	float pNewSpeed;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSetSourceChainMaxSpeed(syneSourceChain *source, float newSpeed);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSetSourceChainMaxSpeed();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

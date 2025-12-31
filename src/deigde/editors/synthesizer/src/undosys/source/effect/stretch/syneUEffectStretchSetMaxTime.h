@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUEFFECTSTRETCHSETMAXTIME_H_
+#define _SYNEUEFFECTSTRETCHSETMAXTIME_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../../synthesizer/effect/syneEffectStretch.h"
 
 
+/**
+ * \brief Undo effect stretch set maximum time.
+ */
+class syneUEffectStretchSetMaxTime : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUEffectStretchSetMaxTime> Ref;
+	
+	
+private:
+	syneEffectStretch::Ref pSource;
+	
+	float pOldTime;
+	float pNewTime;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUEffectStretchSetMaxTime(syneEffectStretch *effect, float newTime);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUEffectStretchSetMaxTime();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

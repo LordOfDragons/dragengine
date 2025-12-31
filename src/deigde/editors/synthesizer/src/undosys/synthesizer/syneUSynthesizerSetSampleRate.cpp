@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSynthesizerSetSampleRate.h"
+#include "../../synthesizer/syneSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSynthesizerSetSampleRate
+// ///////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSynthesizerSetSampleRate::syneUSynthesizerSetSampleRate(syneSynthesizer *synthesizer, int newSampleRate) :
+pSynthesizer(nullptr)
+{
+	if(!synthesizer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldSampleRate = synthesizer->GetSampleRate();
+	pNewSampleRate = newSampleRate;
+	
+	pSynthesizer = synthesizer;
+	SetShortInfo("Synthesizer set sample rate");
+}
+
+syneUSynthesizerSetSampleRate::~syneUSynthesizerSetSampleRate(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSynthesizerSetSampleRate::Undo(){
+	pSynthesizer->SetSampleRate(pOldSampleRate);
+}
+
+void syneUSynthesizerSetSampleRate::Redo(){
+	pSynthesizer->SetSampleRate(pNewSampleRate);
 }

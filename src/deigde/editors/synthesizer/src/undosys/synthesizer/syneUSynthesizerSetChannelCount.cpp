@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSynthesizerSetChannelCount.h"
+#include "../../synthesizer/syneSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSynthesizerSetChannelCount
+// /////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSynthesizerSetChannelCount::syneUSynthesizerSetChannelCount(syneSynthesizer *synthesizer, int newChannelCount) :
+pSynthesizer(nullptr)
+{
+	if(!synthesizer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldChannelCount = synthesizer->GetChannelCount();
+	pNewChannelCount = newChannelCount;
+	
+	pSynthesizer = synthesizer;
+	SetShortInfo("Synthesizer set channel count");
+}
+
+syneUSynthesizerSetChannelCount::~syneUSynthesizerSetChannelCount(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSynthesizerSetChannelCount::Undo(){
+	pSynthesizer->SetChannelCount(pOldChannelCount);
+}
+
+void syneUSynthesizerSetChannelCount::Redo(){
+	pSynthesizer->SetChannelCount(pNewChannelCount);
 }

@@ -22,33 +22,61 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUEffectToggleEnabled.h"
+#include "../../../synthesizer/effect/syneEffect.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUEffectToggleEnabled
+/////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
+syneUEffectToggleEnabled::syneUEffectToggleEnabled(syneEffect *effect) :
+pEffect(nullptr)
+{
+	if(!effect){
+		DETHROW(deeInvalidParam);
+	}
+	
 	try{
-		return new syneIGDEModule(*environment);
+		pEffect = effect;
+		SetShortInfo("Effect toggle enabled");
 		
 	}catch(const deException &){
-		return nullptr;
+		pCleanUp();
+		throw;
 	}
+}
+
+syneUEffectToggleEnabled::~syneUEffectToggleEnabled(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUEffectToggleEnabled::Undo(){
+	pEffect->SetEnabled(!pEffect->GetEnabled());
+}
+
+void syneUEffectToggleEnabled::Redo(){
+	pEffect->SetEnabled(!pEffect->GetEnabled());
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUEffectToggleEnabled::pCleanUp(){
 }

@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSOURCEGROUPPASTESOURCE_H_
+#define _SYNEUSOURCEGROUPPASTESOURCE_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../../synthesizer/controller/syneController.h"
+#include "../../../synthesizer/link/syneLink.h"
+#include "../../../synthesizer/source/syneSourceGroup.h"
+
+#include <deigde/undo/igdeUndo.h>
 
 
+/**
+ * \brief Undo action source group paste source.
+ */
+class syneUSourceGroupPasteSource : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceGroupPasteSource> Ref;
+	
+	
+private:
+	syneSourceGroup::Ref pGroup;
+	syneSource::List pSourceList;
+	syneLink::List pRemoveLinkList;
+	syneController::List pRemoveControllerList;
+	int pIndex;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceGroupPasteSource(syneSourceGroup *group, const syneSource::List &sourceList, int index);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceGroupPasteSource();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

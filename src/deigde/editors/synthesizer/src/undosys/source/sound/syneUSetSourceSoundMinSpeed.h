@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSETSOURCESOUNDMINSPEED_H_
+#define _SYNEUSETSOURCESOUNDMINSPEED_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceSound.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo set source sound minimum speed.
+ */
+class syneUSetSourceSoundMinSpeed : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSetSourceSoundMinSpeed> Ref;
+	
+	
+private:
+	syneSourceSound::Ref pSource;
+	
+	float pOldSpeed;
+	float pNewSpeed;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSetSourceSoundMinSpeed(syneSourceSound *source, float newSpeed);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSetSourceSoundMinSpeed();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

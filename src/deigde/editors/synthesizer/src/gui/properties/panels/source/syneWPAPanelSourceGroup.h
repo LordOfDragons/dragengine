@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEWPAPANELSOURCEGROUP_H_
+#define _SYNEWPAPANELSOURCEGROUP_H_
 
-#include "syneIGDEModule.h"
-
-#include <dragengine/common/exceptions.h>
-
+#include "syneWPAPanelSource.h"
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+
+/**
+ * \brief Group source panel.
+ */
+class syneWPAPanelSourceGroup : public syneWPAPanelSource{
+public:
+	typedef deTObjectReference<syneWPAPanelSourceGroup> Ref;
+	
+private:
+	igdeComboBox::Ref pCBApplicationType;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Creates panel. */
+	syneWPAPanelSourceGroup(syneWPSource &wpSource);
+	
+protected:
+	/** \brief Clean up panel. */
+	~syneWPAPanelSourceGroup() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Update source. */
+	void UpdateSource() override;
+	
+	/** \brief Updates target list. */
+	void UpdateTargetList() override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

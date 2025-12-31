@@ -22,33 +22,39 @@
  * SOFTWARE.
  */
 
+#include <math.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-#include "syneIGDEModule.h"
+#include "syneClipboardDataEffect.h"
+#include "../synthesizer/effect/syneEffect.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
+// Class syneClipboardDataEffect
+////////////////////////////////
+
+const char * const syneClipboardDataEffect::TYPE_NAME = "effect";
+
+// Constructor, destructor
+////////////////////////////
+
+syneClipboardDataEffect::syneClipboardDataEffect(syneEffect *effect) :
+igdeClipboardData(TYPE_NAME)
+{
+	pEffects.Add(effect->CreateCopy());
 }
-#endif
 
+syneClipboardDataEffect::syneClipboardDataEffect(const syneEffect::List &effects) :
+igdeClipboardData(TYPE_NAME)
+{
+	effects.Visit([&](const syneEffect &effect){
+		pEffects.Add(effect.CreateCopy());
+	});
+}
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
+syneClipboardDataEffect::~syneClipboardDataEffect(){
 }

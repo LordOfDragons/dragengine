@@ -19,720 +19,720 @@
     <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\seClipboardDataEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\syneClipboardDataEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\seClipboardDataSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\syneClipboardDataSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\seConfiguration.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\syneConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\seConfigurationXML.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\syneConfigurationXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\seWPAPanelEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\syneWPAPanelEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\seWPAPanelEffectStretch.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\syneWPAPanelEffectStretch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceChain.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceGroup.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceSound.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceWave.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceWave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPControllerListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPControllerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPEffectListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPEffectListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPLinkListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPLinkListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSourceListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSourceListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSynthesizerListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSynthesizerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seViewSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneViewSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seWindowMain.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneWindowMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seWindowMainListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneWindowMainListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\seLoadSaveSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\syneLoadSaveSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\seLoadSaveSystem.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\syneLoadSaveSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\seIGDEModule.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\syneIGDEModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerTarget.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerTargetList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerTargetList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffectList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffectList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffectStretch.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffectStretch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\seLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\syneLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\seLinkList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\syneLinkList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\seSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\syneSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\seSynthesizerNotifier.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\syneSynthesizerNotifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceChain.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceGroup.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceList.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceSound.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceWave.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceWave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizerEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUAddController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUAddController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetCurve.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetMaximumValue.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetMaximumValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetMinimumValue.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetMinimumValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerToggleClamp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerToggleClamp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUMoveControllerDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUMoveControllerDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUMoveControllerUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUMoveControllerUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seURemoveController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneURemoveController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetCurve.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetRepeat.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetRepeat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSetSourceChainMaxSpeed.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSetSourceChainMaxSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSetSourceChainMinSpeed.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSetSourceChainMinSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundMoveDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundMoveDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundMoveUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundMoveUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundRemoveAll.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundRemoveAll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainSetPathSound.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainSetPathSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectSetStrength.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectSetStrength.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectTargetAddLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectTargetAddLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectTargetRemoveLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectTargetRemoveLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectToggleEnabled.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectToggleEnabled.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceAddEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceAddEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceMoveEffectDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceMoveEffectDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceMoveEffectUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceMoveEffectUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourcePasteEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourcePasteEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceRemoveEffect.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceRemoveEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMaxPitch.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMaxPitch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMaxTime.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMaxTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMinPitch.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMinPitch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMinTime.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMinTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupAddSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupAddSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupMoveSourceDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupMoveSourceDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupMoveSourceUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupMoveSourceUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupPasteSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupPasteSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupRemoveSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupRemoveSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupSetApplicationType.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupSetApplicationType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUAddSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUAddSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUMoveSourceDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUMoveSourceDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUMoveSourceUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUMoveSourceUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUPasteSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUPasteSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seURemoveSource.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneURemoveSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceBlendFactor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceBlendFactor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMaxPanning.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMaxPanning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMaxVolume.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMaxVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMinPanning.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMinPanning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMinVolume.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMinVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMixMode.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMixMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceTargetAddLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceTargetAddLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceTargetRemoveLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceTargetRemoveLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceToggleEnabled.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceToggleEnabled.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundMaxSpeed.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundMaxSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundMinSpeed.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundMinSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundPathSound.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundPathSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUToggleSourceSoundLooping.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUToggleSourceSoundLooping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthConTargetLess.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthConTargetLess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthConTargetMore.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthConTargetMore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthSetConController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthSetConController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthSetPathSynthesizer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthSetPathSynthesizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetMaxFrequency.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetMaxFrequency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetMinFrequency.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetMinFrequency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetType.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetBytesPerSample.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetBytesPerSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetChannelCount.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetChannelCount.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetSampleCount.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetSampleCount.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetSampleRate.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetSampleRate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\seClipboardDataEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\syneClipboardDataEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\seClipboardDataSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\clipboard\syneClipboardDataSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\seConfiguration.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\syneConfiguration.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\seConfigurationXML.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\configuration\syneConfigurationXML.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\seWPAPanelEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\syneWPAPanelEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\seWPAPanelEffectStretch.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\effect\syneWPAPanelEffectStretch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceChain.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceChain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceGroup.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceGroup.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceSound.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceSound.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\seWPAPanelSourceWave.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\panels\source\syneWPAPanelSourceWave.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPControllerListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPControllerListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPEffectListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPEffectListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPLinkListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPLinkListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSourceListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSourceListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\seWPSynthesizerListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\properties\syneWPSynthesizerListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seViewSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneViewSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seWindowMain.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneWindowMain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\seWindowMainListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\gui\syneWindowMainListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\seLoadSaveSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\syneLoadSaveSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\seLoadSaveSystem.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\loadsave\syneLoadSaveSystem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\seIGDEModule.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\syneIGDEModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerTarget.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerTarget.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\seControllerTargetList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\controller\syneControllerTargetList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffectList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffectList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\seEffectStretch.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\effect\syneEffectStretch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\seLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\syneLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\seLinkList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\link\syneLinkList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\seSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\syneSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\seSynthesizerNotifier.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\syneSynthesizerNotifier.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceChain.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceChain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceGroup.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceGroup.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceList.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceSound.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceSound.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\seSourceWave.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizer\source\syneSourceWave.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\synthesizerEditor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUAddController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUAddController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetCurve.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetCurve.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetMaximumValue.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetMaximumValue.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetMinimumValue.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetMinimumValue.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerSetName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerSetName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUControllerToggleClamp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUControllerToggleClamp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUMoveControllerDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUMoveControllerDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seUMoveControllerUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneUMoveControllerUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\seURemoveController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\controller\syneURemoveController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetCurve.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetCurve.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\seULinkSetRepeat.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\link\syneULinkSetRepeat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSetSourceChainMaxSpeed.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSetSourceChainMaxSpeed.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSetSourceChainMinSpeed.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSetSourceChainMinSpeed.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundMoveDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundMoveDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundMoveUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundMoveUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainPathSoundRemoveAll.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainPathSoundRemoveAll.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\seUSourceChainSetPathSound.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\chain\syneUSourceChainSetPathSound.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectSetStrength.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectSetStrength.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectTargetAddLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectTargetAddLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectTargetRemoveLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectTargetRemoveLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUEffectToggleEnabled.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUEffectToggleEnabled.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceAddEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceAddEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceMoveEffectDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceMoveEffectDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceMoveEffectUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceMoveEffectUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourcePasteEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourcePasteEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\seUSourceRemoveEffect.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\syneUSourceRemoveEffect.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMaxPitch.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMaxPitch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMaxTime.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMaxTime.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMinPitch.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMinPitch.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\seUEffectStretchSetMinTime.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\effect\stretch\syneUEffectStretchSetMinTime.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupAddSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupAddSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupMoveSourceDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupMoveSourceDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupMoveSourceUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupMoveSourceUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupPasteSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupPasteSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupRemoveSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupRemoveSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\seUSourceGroupSetApplicationType.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\group\syneUSourceGroupSetApplicationType.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUAddSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUAddSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUMoveSourceDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUMoveSourceDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUMoveSourceUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUMoveSourceUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUPasteSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUPasteSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seURemoveSource.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneURemoveSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceBlendFactor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceBlendFactor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMaxPanning.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMaxPanning.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMaxVolume.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMaxVolume.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMinPanning.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMinPanning.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMinVolume.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMinVolume.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceMixMode.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceMixMode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSetSourceName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSetSourceName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceTargetAddLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceTargetAddLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceTargetRemoveLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceTargetRemoveLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\seUSourceToggleEnabled.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\syneUSourceToggleEnabled.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundMaxSpeed.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundMaxSpeed.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundMinSpeed.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundMinSpeed.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUSetSourceSoundPathSound.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUSetSourceSoundPathSound.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\seUToggleSourceSoundLooping.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\sound\syneUToggleSourceSoundLooping.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthConTargetLess.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthConTargetLess.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthConTargetMore.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthConTargetMore.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthSetConController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthSetConController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\seUSourceSynthSetPathSynthesizer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\synthesizer\syneUSourceSynthSetPathSynthesizer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetMaxFrequency.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetMaxFrequency.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetMinFrequency.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetMinFrequency.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\seUSourceWaveSetType.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\source\wave\syneUSourceWaveSetType.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetBytesPerSample.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetBytesPerSample.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetChannelCount.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetChannelCount.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetSampleCount.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetSampleCount.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\seUSynthesizerSetSampleRate.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\synthesizer\src\undosys\synthesizer\syneUSynthesizerSetSampleRate.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

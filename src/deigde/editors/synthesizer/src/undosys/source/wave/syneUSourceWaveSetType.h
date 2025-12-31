@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUSOURCEWAVESETTYPE_H_
+#define _SYNEUSOURCEWAVESETTYPE_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../synthesizer/source/syneSourceWave.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo source wave set type.
+ */
+class syneUSourceWaveSetType : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUSourceWaveSetType> Ref;
+	
+	
+private:
+	syneSourceWave::Ref pSource;
+	
+	deSynthesizerSourceWave::eWaveType pOldType;
+	deSynthesizerSourceWave::eWaveType pNewType;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUSourceWaveSetType(syneSourceWave *source, deSynthesizerSourceWave::eWaveType newType);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneUSourceWaveSetType();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

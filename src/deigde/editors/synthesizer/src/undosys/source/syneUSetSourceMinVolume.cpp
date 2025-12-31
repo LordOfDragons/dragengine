@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceMinVolume.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceMinVolume
+// /////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceMinVolume::syneUSetSourceMinVolume(syneSource *source, float newValue) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldValue = source->GetMinVolume();
+	pNewValue = newValue;
+	
+	pSource = source;
+	SetShortInfo("Source set minimum volume");
+}
+
+syneUSetSourceMinVolume::~syneUSetSourceMinVolume(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceMinVolume::Undo(){
+	pSource->SetMinVolume(pOldValue);
+}
+
+void syneUSetSourceMinVolume::Redo(){
+	pSource->SetMinVolume(pNewValue);
 }

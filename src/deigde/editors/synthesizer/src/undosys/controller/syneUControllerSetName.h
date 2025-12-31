@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUCONTROLLERSETNAME_H_
+#define _SYNEUCONTROLLERSETNAME_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/controller/syneController.h"
+#include <deigde/undo/igdeUndo.h>
 
 
+/**
+ * \brief Undo controller set name.
+ */
+class syneUControllerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUControllerSetName> Ref;
+	
+	
+private:
+	const syneController::Ref pController;
+	decString pOldValue;
+	decString pNewValue;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo object. */
+	syneUControllerSetName(syneController *controller, const char *newValue);
+	
+protected:
+	/** \brief Clean up undo object. */
+	virtual ~syneUControllerSetName();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

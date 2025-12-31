@@ -22,33 +22,61 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceMoveEffectDown.h"
+#include "../../../synthesizer/effect/syneEffect.h"
+#include "../../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceMoveEffectDown
+//////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceMoveEffectDown::syneUSourceMoveEffectDown(syneSource *source, syneEffect *effect) :
+pSource(nullptr)
+{
+	if(!effect || !source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pIndex = source->GetEffects().IndexOf(effect);
+	if(pIndex == -1 || pIndex == source->GetEffects().GetCount() - 1){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pSource = source;
+	pEffect = effect;
+}
+
+syneUSourceMoveEffectDown::~syneUSourceMoveEffectDown(){
+	pCleanUp();
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceMoveEffectDown::Undo(){
+	pSource->MoveEffectTo(pEffect, pIndex);
+}
+
+void syneUSourceMoveEffectDown::Redo(){
+	pSource->MoveEffectTo(pEffect, pIndex + 1);
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void syneUSourceMoveEffectDown::pCleanUp(){
 }

@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEWPSYNTHESIZERLISTENER_H_
+#define _SYNEWPSYNTHESIZERLISTENER_H_
 
-#include "syneIGDEModule.h"
+#include "../../synthesizer/syneSynthesizerNotifier.h"
 
-#include <dragengine/common/exceptions.h>
+class syneWPSynthesizer;
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Synthesizer properties panel listener.
+ */
+class syneWPSynthesizerListener : public syneSynthesizerNotifier{
+public:
+	typedef deTObjectReference<syneWPSynthesizerListener> Ref;
+	
+	
+private:
+	syneWPSynthesizer &pPanel;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create listener. */
+	syneWPSynthesizerListener(syneWPSynthesizer &panel);
+	
+	/** \brief Clean up listener. */
+protected:
+	~syneWPSynthesizerListener() override;
+public:
+	/*@}*/
+	
+	
+	
+	/** \name Notifications */
+	/*@{*/
+	/** \brief Synthesizer changed. */
+	void SynthesizerChanged(syneSynthesizer *synthesizer) override;
+	
+	/** \brief Playback properties changed. */
+	void PlaybackChanged(syneSynthesizer *synthesizer) override;
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

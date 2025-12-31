@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUControllerSetMaximumValue.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/controller/syneController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUControllerSetMaximumValue
+///////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUControllerSetMaximumValue::syneUControllerSetMaximumValue(syneController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	pOldValue = controller->GetMaximumValue();
+}
+
+syneUControllerSetMaximumValue::~syneUControllerSetMaximumValue(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUControllerSetMaximumValue::Undo(){
+	((syneController&)(deObject&)pController).SetMaximumValue(pOldValue);
+}
+
+void syneUControllerSetMaximumValue::Redo(){
+	((syneController&)(deObject&)pController).SetMaximumValue(pNewValue);
 }

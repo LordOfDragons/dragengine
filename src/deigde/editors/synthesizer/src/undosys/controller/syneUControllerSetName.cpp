@@ -22,33 +22,47 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUControllerSetName.h"
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/controller/syneController.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUControllerSetName
+///////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUControllerSetName::syneUControllerSetName(syneController *controller, const char *newValue) :
+pController(controller),
+pNewValue(newValue)
+{
+	if(!controller){
+		DETHROW(deeInvalidParam);
 	}
+	pOldValue = controller->GetName();
+}
+
+syneUControllerSetName::~syneUControllerSetName(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUControllerSetName::Undo(){
+	((syneController&)(deObject&)pController).SetName(pOldValue);
+}
+
+void syneUControllerSetName::Redo(){
+	((syneController&)(deObject&)pController).SetName(pNewValue);
 }

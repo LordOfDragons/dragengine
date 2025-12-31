@@ -22,33 +22,46 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceToggleEnabled.h"
+#include "../../synthesizer/source/syneSource.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceToggleEnabled
+/////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceToggleEnabled::syneUSourceToggleEnabled(syneSource *source) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pSource = source;
+	SetShortInfo("Toggle source enabled");
+}
+
+syneUSourceToggleEnabled::~syneUSourceToggleEnabled(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceToggleEnabled::Undo(){
+	pSource->SetEnabled(!pSource->GetEnabled());
+}
+
+void syneUSourceToggleEnabled::Redo(){
+	pSource->SetEnabled(!pSource->GetEnabled());
 }

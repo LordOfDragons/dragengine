@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUCONTROLLERSETMINAXUMVALUE_H_
+#define _SYNEUCONTROLLERSETMINAXUMVALUE_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/controller/syneController.h"
+#include <deigde/undo/igdeUndo.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo controller set maximum value.
+ */
+class syneUControllerSetMaximumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUControllerSetMaximumValue> Ref;
+	
+	
+private:
+	const syneController::Ref pController;
+	float pOldValue;
+	float pNewValue;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo object. */
+	syneUControllerSetMaximumValue(syneController *controller, float newValue);
+	
+protected:
+	/** \brief Clean up undo object. */
+	virtual ~syneUControllerSetMaximumValue();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

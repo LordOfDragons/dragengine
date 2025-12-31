@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUCONTROLLERSETMINIMUMVALUE_H_
+#define _SYNEUCONTROLLERSETMINIMUMVALUE_H_
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/controller/syneController.h"
+#include <deigde/undo/igdeUndo.h>
 
 
+/**
+ * \brief Undo controller set minimum value.
+ */
+class syneUControllerSetMinimumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUControllerSetMinimumValue> Ref;
+	
+	
+private:
+	const syneController::Ref pController;
+	float pOldValue;
+	float pNewValue;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo object. */
+	syneUControllerSetMinimumValue(syneController *controller, float newValue);
+	
+protected:
+	/** \brief Clean up undo object. */
+	virtual ~syneUControllerSetMinimumValue();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

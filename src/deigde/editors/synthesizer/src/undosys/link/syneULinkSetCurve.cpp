@@ -22,33 +22,64 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneULinkSetCurve.h"
+
+#include "../../synthesizer/syneSynthesizer.h"
+#include "../../synthesizer/link/syneLink.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneULinkSetCurve
+//////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneULinkSetCurve::syneULinkSetCurve(syneLink *link, const decCurveBezier &newCurve) :
+pLink(nullptr)
+{
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldCurve = link->GetCurve();
+	pNewCurve = newCurve;
+	
+	SetShortInfo("Set Link Curve");
+	
+	pLink = link;
+}
+
+syneULinkSetCurve::~syneULinkSetCurve(){
+}
+
+
+
+// Management
+///////////////
+
+void syneULinkSetCurve::SetNewCurve(const decCurveBezier &curve){
+	pNewCurve = curve;
+}
+
+
+
+void syneULinkSetCurve::Undo(){
+	pLink->GetCurve() = pOldCurve;
+	pLink->UpdateCurve();
+	
+	pLink->GetSynthesizer()->NotifyLinkChanged(pLink);
+}
+
+void syneULinkSetCurve::Redo(){
+	pLink->GetCurve() = pNewCurve;
+	pLink->UpdateCurve();
+	
+	pLink->GetSynthesizer()->NotifyLinkChanged(pLink);
 }

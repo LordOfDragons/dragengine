@@ -22,33 +22,51 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceGroupSetApplicationType.h"
+#include "../../../synthesizer/source/syneSourceGroup.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceGroupSetApplicationType
+///////////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceGroupSetApplicationType::syneUSourceGroupSetApplicationType(
+syneSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldType = source->GetApplicationType();
+	pNewType = newType;
+	
+	SetShortInfo("Group source set application type");
+	
+	pSource = source;
+}
+
+syneUSourceGroupSetApplicationType::~syneUSourceGroupSetApplicationType(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceGroupSetApplicationType::Undo(){
+	pSource->SetApplicationType(pOldType);
+}
+
+void syneUSourceGroupSetApplicationType::Redo(){
+	pSource->SetApplicationType(pNewType);
 }

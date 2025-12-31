@@ -22,33 +22,55 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceSynthSetConController.h"
+#include "../../../synthesizer/controller/syneController.h"
+#include "../../../synthesizer/source/syneSourceSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceSynthSetConController
+/////////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceSynthSetConController::syneUSourceSynthSetConController(
+syneSourceSynthesizer *source, int target, syneController *newController) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pTarget = target;
+	pOldController = nullptr;
+	pNewController = nullptr;
+	
+	SetShortInfo("Synthesizer source set connection controller");
+	
+	pOldController = source->GetConnections().GetAt(target);
+	pNewController = newController;
+	pSource = source;
+}
+
+syneUSourceSynthSetConController::~syneUSourceSynthSetConController(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceSynthSetConController::Undo(){
+	pSource->SetControllerAt(pTarget, pOldController);
+}
+
+void syneUSourceSynthSetConController::Redo(){
+	pSource->SetControllerAt(pTarget, pNewController);
 }

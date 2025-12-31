@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSynthesizerSetBytesPerSample.h"
+#include "../../synthesizer/syneSynthesizer.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSynthesizerSetBytesPerSample
+// ///////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSynthesizerSetBytesPerSample::syneUSynthesizerSetBytesPerSample(syneSynthesizer *synthesizer, int newBytesPerSample) :
+pSynthesizer(nullptr)
+{
+	if(!synthesizer){
+		DETHROW(deeInvalidParam);
 	}
+	
+	pOldBytesPerSample = synthesizer->GetBytesPerSample();
+	pNewBytesPerSample = newBytesPerSample;
+	
+	pSynthesizer = synthesizer;
+	SetShortInfo("Synthesizer set bytes per sample");
+}
+
+syneUSynthesizerSetBytesPerSample::~syneUSynthesizerSetBytesPerSample(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSynthesizerSetBytesPerSample::Undo(){
+	pSynthesizer->SetBytesPerSample(pOldBytesPerSample);
+}
+
+void syneUSynthesizerSetBytesPerSample::Redo(){
+	pSynthesizer->SetBytesPerSample(pNewBytesPerSample);
 }

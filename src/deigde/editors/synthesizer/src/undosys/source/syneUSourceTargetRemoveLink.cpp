@@ -22,33 +22,56 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceTargetRemoveLink.h"
+#include "../../synthesizer/source/syneSource.h"
+#include "../../synthesizer/link/syneLink.h"
+#include "../../synthesizer/controller/syneControllerTarget.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceTargetRemoveLink
+////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
+syneUSourceTargetRemoveLink::syneUSourceTargetRemoveLink(
+syneSource *source, syneControllerTarget *target, syneLink *link) :
 
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+pTarget(nullptr)
+{
+	if(!source || !target || !link){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Source Target Remove Link");
+	
+	pSource = source;
+	pTarget = target;
+	
+	pLink = link;
+}
+
+syneUSourceTargetRemoveLink::~syneUSourceTargetRemoveLink(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceTargetRemoveLink::Undo(){
+	pTarget->AddLink(pLink);
+	pSource->NotifySourceChanged();
+}
+
+void syneUSourceTargetRemoveLink::Redo(){
+	pTarget->RemoveLink(pLink);
+	pSource->NotifySourceChanged();
 }

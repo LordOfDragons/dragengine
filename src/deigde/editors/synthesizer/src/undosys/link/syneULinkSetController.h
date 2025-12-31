@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#ifndef _SYNEULINKSETCONTROLLER_H_
+#define _SYNEULINKSETCONTROLLER_H_
 
-#include "syneIGDEModule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
+#include "../../synthesizer/link/syneLink.h"
+#include "../../synthesizer/controller/syneController.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action link set controller.
+ */
+class syneULinkSetController : public igdeUndo{
+public:
+	typedef deTObjectReference<syneULinkSetController> Ref;
+	
+	
+private:
+	syneLink::Ref pLink;
+	
+	syneController::Ref pOldController;
+	syneController::Ref pNewController;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneULinkSetController(syneLink *link, syneController *newController);
+	
+protected:
+	/** \brief Clean up undo action. */
+	virtual ~syneULinkSetController();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

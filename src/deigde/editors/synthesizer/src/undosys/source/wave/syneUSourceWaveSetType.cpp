@@ -22,33 +22,49 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSourceWaveSetType.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSourceWaveSetType
+///////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSourceWaveSetType::syneUSourceWaveSetType(syneSourceWave *source, deSynthesizerSourceWave::eWaveType newType) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Source wave set type");
+	
+	pOldType = source->GetWaveType();
+	pNewType = newType;
+	
+	pSource = source;
+}
+
+syneUSourceWaveSetType::~syneUSourceWaveSetType(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSourceWaveSetType::Undo(){
+	pSource->SetWaveType(pOldType);
+}
+
+void syneUSourceWaveSetType::Redo(){
+	pSource->SetWaveType(pNewType);
 }

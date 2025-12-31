@@ -22,33 +22,59 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#ifndef _SYNEUMOVECONTROLLERDOWN_H_
+#define _SYNEUMOVECONTROLLERDOWN_H_
 
-#include <dragengine/common/exceptions.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../synthesizer/controller/syneController.h"
+#include "../../synthesizer/syneSynthesizer.h"
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
+/**
+ * \brief Undo action move controller down.
+ */
+class syneUMoveControllerDown : public igdeUndo{
+public:
+	typedef deTObjectReference<syneUMoveControllerDown> Ref;
+	
+	
+private:
+	syneSynthesizer::Ref pSynthesizer;
+	syneController::Ref pController;
+	int pIndex;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	syneUMoveControllerDown(syneSynthesizer *synthesizer, syneController *controller);
+	
+protected:
+	/** \brief Clean up action. */
+	virtual ~syneUMoveControllerDown();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo action. */
+	virtual void Undo();
+	
+	/** \brief Redo action. */
+	virtual void Redo();
+	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
+};
+
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
-
-
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
-	}
-}

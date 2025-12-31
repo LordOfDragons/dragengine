@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-#include "syneIGDEModule.h"
+#include "syneUSetSourceSoundMaxSpeed.h"
+#include "../../../synthesizer/source/syneSourceSound.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// export definition
-#ifdef __cplusplus
-extern "C" {
-#endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment);
-#ifdef  __cplusplus
-}
-#endif
+// Class syneUSetSourceSoundMaxSpeed
+////////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-
-// entry point
-////////////////
-
-igdeEditorModule *SynthesizerEditorCreateModule(igdeEnvironment *environment){
-	try{
-		return new syneIGDEModule(*environment);
-		
-	}catch(const deException &){
-		return nullptr;
+syneUSetSourceSoundMaxSpeed::syneUSetSourceSoundMaxSpeed(syneSourceSound *source, float newSpeed) :
+pSource(nullptr)
+{
+	if(!source){
+		DETHROW(deeInvalidParam);
 	}
+	
+	SetShortInfo("Set sound source maximum speed");
+	
+	pOldSpeed = source->GetMaxSpeed();
+	pNewSpeed = newSpeed;
+	
+	pSource = source;
+}
+
+syneUSetSourceSoundMaxSpeed::~syneUSetSourceSoundMaxSpeed(){
+}
+
+
+
+// Management
+///////////////
+
+void syneUSetSourceSoundMaxSpeed::Undo(){
+	pSource->SetMaxSpeed(pOldSpeed);
+}
+
+void syneUSetSourceSoundMaxSpeed::Redo(){
+	pSource->SetMaxSpeed(pNewSpeed);
 }
