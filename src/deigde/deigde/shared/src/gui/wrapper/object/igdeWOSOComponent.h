@@ -80,11 +80,12 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOComponent(igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	~igdeWOSOComponent() override;
-	/*@}*/
+	virtual ~igdeWOSOComponent();
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/

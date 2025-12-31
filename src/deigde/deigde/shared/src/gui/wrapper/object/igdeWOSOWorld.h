@@ -195,8 +195,11 @@ public:
 	/** \brief Create object wrapper sub world. */
 	igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub world. */
 	~igdeWOSOWorld() override;
+	
+public:
 	/*@}*/
 	
 	

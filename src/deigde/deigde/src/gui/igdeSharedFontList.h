@@ -47,6 +47,8 @@ private:
 		const igdeFont::Ref font;
 		
 		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
+		
+	protected:
 		~cFont() override = default;
 	};
 	

@@ -49,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	igdeLoggerHistoryListener();
 	
+protected:
 	/** \brief Clean up listener. */
 	virtual ~igdeLoggerHistoryListener();
+	
+public:
 	/*@}*/
 	
 	

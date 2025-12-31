@@ -42,7 +42,11 @@ public:
 	public:
 		typedef deTObjectReference<cModule> Ref;
 		cModule(deModuleSystem *system);
+		
+	protected:
 		virtual ~cModule();
+		
+	public:
 		virtual void CreateModule();
 	};
 	

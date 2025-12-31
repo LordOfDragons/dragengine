@@ -51,8 +51,11 @@ public:
 	/** \brief Create listener. */
 	igdeWindowLoggerListener(igdeWindowLogger &window);
 	
+protected:
 	/** \brief Clean up listener. */
 	virtual ~igdeWindowLoggerListener();
+	
+public:
 	/*@}*/
 	
 	

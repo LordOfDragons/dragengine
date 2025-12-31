@@ -63,8 +63,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOSpeaker(igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOSpeaker();
+	
+public:
 	/*@}*/
 	
 	

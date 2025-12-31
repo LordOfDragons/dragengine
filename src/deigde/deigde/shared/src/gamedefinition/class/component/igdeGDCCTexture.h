@@ -64,8 +64,11 @@ public:
 	/** \brief Create copy of texture definition. */
 	igdeGDCCTexture(const igdeGDCCTexture &texture);
 	
+protected:
 	/** \brief Clean up texture definition. */
 	virtual ~igdeGDCCTexture();
+	
+public:
 	/*@}*/
 	
 	

@@ -57,8 +57,11 @@ public:
 	/** \brief Create engine module parameter. */
 	delEMParameter(int index, const deModuleParameter &info, const char *value);
 	
+protected:
 	/** \brief Clean up engine module parameter. */
 	virtual ~delEMParameter();
+	
+public:
 	/*@}*/
 	
 	

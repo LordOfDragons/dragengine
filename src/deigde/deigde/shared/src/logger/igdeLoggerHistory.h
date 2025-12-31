@@ -74,8 +74,11 @@ public:
 	/** \brief Create logger history. */
 	igdeLoggerHistory();
 	
+protected:
 	/** \brief Clean up logger history. */
 	virtual ~igdeLoggerHistory();
+	
+public:
 	/*@}*/
 	
 	

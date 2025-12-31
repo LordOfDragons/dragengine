@@ -59,8 +59,11 @@ public:
 		typedef deTObjectReference<AcceptDialog> Ref;
 		
 		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
 		virtual ~AcceptDialog();
 		
+	public:
 		virtual void OnAction();
 	};
 	
@@ -76,8 +79,11 @@ public:
 		typedef deTObjectReference<CancelDialog> Ref;
 		
 		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
 		virtual ~CancelDialog();
 		
+	public:
 		virtual void OnAction();
 	};
 	

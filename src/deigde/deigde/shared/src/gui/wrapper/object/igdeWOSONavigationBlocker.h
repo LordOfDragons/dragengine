@@ -59,8 +59,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSONavigationBlocker(igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationBlocker();
+	
+public:
 	/*@}*/
 	
 	

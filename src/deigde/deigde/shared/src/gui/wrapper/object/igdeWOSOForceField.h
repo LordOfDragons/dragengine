@@ -61,8 +61,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOForceField(igdeWObject &wrapper, const igdeGDCForceField &gdForceField, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOForceField();
+	
+public:
 	/*@}*/
 	
 	

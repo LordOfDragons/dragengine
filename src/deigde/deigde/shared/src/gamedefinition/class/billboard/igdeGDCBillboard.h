@@ -79,14 +79,17 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition billboard. */
+		/** \brief Create billboard. */
 	igdeGDCBillboard();
 	
-	/** \brief Create game definition billboard as a copy of another game definition billboard. */
+	/** \brief Create copy of billboard. */
 	igdeGDCBillboard(const igdeGDCBillboard &billboard);
 	
-	/** \brief Clean up game definition billboard. */
+protected:
+	/** \brief Clean up billboard. */
 	virtual ~igdeGDCBillboard();
+	
+public:
 	/*@}*/
 	
 	

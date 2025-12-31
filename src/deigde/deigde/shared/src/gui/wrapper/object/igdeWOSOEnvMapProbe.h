@@ -58,8 +58,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOEnvMapProbe(igdeWObject &wrapper, const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOEnvMapProbe();
+	
+public:
 	/*@}*/
 	
 	

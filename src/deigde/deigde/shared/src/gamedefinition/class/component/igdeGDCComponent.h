@@ -100,14 +100,17 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition component. */
+		/** \brief Create component. */
 	igdeGDCComponent();
 	
-	/** \brief Create copy of a game definition component. */
+	/** \brief Create copy of component. */
 	igdeGDCComponent(const igdeGDCComponent &component);
 	
-	/** \brief Clean up game definition component. */
+protected:
+	/** \brief Clean up component. */
 	virtual ~igdeGDCComponent();
+	
+public:
 	/*@}*/
 	
 	

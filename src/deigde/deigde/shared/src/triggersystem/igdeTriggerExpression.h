@@ -61,8 +61,11 @@ public:
 	/** \brief Create trigger expression. */
 	igdeTriggerExpression();
 	
+protected:
 	/** \brief Clean up trigger expression. */
 	~igdeTriggerExpression() override;
+	
+public:
 	/*@}*/
 	
 	

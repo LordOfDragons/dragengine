@@ -66,17 +66,18 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition world. */
+	/** \brief Create world property. */
 	igdeGDCWorld();
 	
-	/** \brief Create copy of a game definition world. */
+	/** \brief Create copy of world property. */
 	igdeGDCWorld(const igdeGDCWorld &world);
 	
-	/** \brief Clean up game definition world. */
-	~igdeGDCWorld() override;
-	/*@}*/
+protected:
+	/** \brief Clean up world property. */
+	virtual ~igdeGDCWorld();
 	
-	
+public:
+	/*@}*/	
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */

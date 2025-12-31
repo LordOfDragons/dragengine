@@ -61,10 +61,13 @@ protected:
 	public:
 		typedef deTObjectReference<cListener> Ref;
 		
-		cListener(igdeEditDVector &editDVector, igdeTextField *textX,
+		cListener(igdeEditDVector &editVector, igdeTextField *textX,
 			igdeTextField *textY, igdeTextField *textz);
 		
+	protected:
 		virtual ~cListener();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 		virtual void OnTextChanging(igdeTextField *textField);
 	};

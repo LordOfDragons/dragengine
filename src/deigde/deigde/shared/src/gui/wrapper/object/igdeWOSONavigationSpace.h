@@ -60,8 +60,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSONavigationSpace(igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationSpace();
+	
+public:
 	/*@}*/
 	
 	

@@ -54,8 +54,11 @@ public:
 	/** \brief Create icon. */
 	delGameIcon(int size, const char *path);
 	
+protected:
 	/** \brief Clean up icon. */
 	virtual ~delGameIcon();
+	
+public:
 	/*@}*/
 	
 	

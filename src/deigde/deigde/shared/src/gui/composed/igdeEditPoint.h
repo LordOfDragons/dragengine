@@ -62,7 +62,10 @@ protected:
 		
 		cListener(igdeEditPoint &editPoint, igdeTextField *textX, igdeTextField *textY);
 		
+	protected:
 		virtual ~cListener();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 		virtual void OnTextChanging(igdeTextField *textField);
 	};

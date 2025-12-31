@@ -64,8 +64,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOParticleEmitter(igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOParticleEmitter();
+	
+public:
 	/*@}*/
 	
 	

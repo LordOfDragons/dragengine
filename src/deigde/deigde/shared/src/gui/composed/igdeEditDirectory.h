@@ -62,7 +62,11 @@ protected:
 	public:
 		typedef deTObjectReference<cListenerTextField> Ref;
 		explicit cListenerTextField(igdeEditDirectory &editDirectory);
+		
+	protected:
 		virtual ~cListenerTextField();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
@@ -74,7 +78,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionButton> Ref;
 		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
+		
+	protected:
 		virtual ~cActionButton();
+		
+	public:
 		virtual decString DefaultDirectory();
 		virtual void Update();
 	};

@@ -76,17 +76,18 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition class environment map probe. */
+	/** \brief Create environment map probe. */
 	igdeGDCEnvMapProbe();
 	
-	/** \brief Create copy of a game definition class environment map probe. */
+	/** \brief Create copy of environment map probe. */
 	igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe);
 	
-	/** \brief Clean up game definition class environment map probe. */
+protected:
+	/** \brief Clean up environment map probe. */
 	virtual ~igdeGDCEnvMapProbe();
-	/*@}*/
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/

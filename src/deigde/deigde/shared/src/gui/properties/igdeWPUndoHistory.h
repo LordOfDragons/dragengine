@@ -60,8 +60,11 @@ public:
 	/** \brief Create panel. */
 	igdeWPUndoHistory(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up panel. */
 	virtual ~igdeWPUndoHistory();
+	
+public:
 	/*@}*/
 	
 	

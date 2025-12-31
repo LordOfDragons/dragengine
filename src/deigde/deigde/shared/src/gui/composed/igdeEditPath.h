@@ -68,7 +68,11 @@ protected:
 	public:
 		typedef deTObjectReference<cListenerTextField> Ref;
 		cListenerTextField(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cListenerTextField();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
@@ -80,7 +84,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionButton> Ref;
 		cActionButton(igdeEditPath &editPath, const char *description);
+		
+	protected:
 		virtual ~cActionButton();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -93,7 +101,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionButtonMenu> Ref;
 		cActionButtonMenu(igdeEditPath &editPath, const char *description);
+		
+	protected:
 		virtual ~cActionButtonMenu();
+		
+	public:
 		virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 		virtual void Update();
 	};
@@ -107,7 +119,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionSelectFileDialog> Ref;
 		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
+		
+	protected:
 		virtual ~cActionSelectFileDialog();
+		
+	public:
 		virtual void PrepareFile(decString &path);
 		virtual bool AcceptFile(decString &path);
 		virtual decString DefaultPath();
@@ -121,7 +137,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionSkinSelectDialog> Ref;
 		cActionSkinSelectDialog(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionSkinSelectDialog();
+		
+	public:
 		virtual void OnAction();
 	};
 	
@@ -133,7 +153,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionBrowseFile> Ref;
 		cActionBrowseFile(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionBrowseFile();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -146,7 +170,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionConvertAbsolute> Ref;
 		cActionConvertAbsolute(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionConvertAbsolute();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -159,7 +187,11 @@ protected:
 	public:
 		typedef deTObjectReference<cActionConvertRelative> Ref;
 		cActionConvertRelative(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionConvertRelative();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};

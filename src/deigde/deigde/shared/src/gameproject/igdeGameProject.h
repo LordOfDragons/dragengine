@@ -81,8 +81,11 @@ public:
 	/** \brief Create project. */
 	explicit igdeGameProject(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up game definition. */
 	virtual ~igdeGameProject();
+	
+public:
 	/*@}*/
 	
 	

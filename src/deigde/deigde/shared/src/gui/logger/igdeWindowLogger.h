@@ -64,10 +64,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger window. */
-	igdeWindowLogger(igdeEnvironment &environment);
+	explicit igdeWindowLogger(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up logger window. */
 	virtual ~igdeWindowLogger();
+	
+public:
 	/*@}*/
 	
 	

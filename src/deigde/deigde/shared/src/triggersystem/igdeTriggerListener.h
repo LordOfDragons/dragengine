@@ -45,8 +45,11 @@ public:
 	/** \brief Create trigger listener. */
 	igdeTriggerListener();
 	
+protected:
 	/** \brief Clean up trigger listener. */
 	virtual ~igdeTriggerListener();
+	
+public:
 	/*@}*/
 	
 	

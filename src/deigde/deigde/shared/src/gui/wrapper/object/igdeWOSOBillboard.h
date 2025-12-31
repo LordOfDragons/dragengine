@@ -63,11 +63,12 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOBillboard(igdeWObject &wrapper, const igdeGDCBillboard &gdBillboard, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	~igdeWOSOBillboard() override;
-	/*@}*/
+	virtual ~igdeWOSOBillboard();
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/

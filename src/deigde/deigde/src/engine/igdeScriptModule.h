@@ -45,7 +45,11 @@ public:
 		igdeWindowMain &pWindowMain;
 	public:
 		cModule(deModuleSystem *system, igdeWindowMain &windowMain);
+		
+	protected:
 		virtual ~cModule();
+		
+	public:
 		virtual void CreateModule();
 	};
 	

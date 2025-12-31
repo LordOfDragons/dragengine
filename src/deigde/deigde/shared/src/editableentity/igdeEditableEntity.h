@@ -88,8 +88,11 @@ public:
 	 */
 	igdeEditableEntity(igdeEnvironment *environment);
 	
+protected:
 	/** \brief Clean up editable entity. */
 	virtual ~igdeEditableEntity();
+	
+public:
 	/*@}*/
 	
 	
