@@ -65,6 +65,9 @@ public:
 	/** \brief Sky list. */
 	inline const igdeGDSky::List &GetSkyList() const{ return pSkyList; }
 	
+	/** \brief Game sky with path or nullptr if absent. */
+	igdeGDSky *GetSkyWithPath(const char *path) const;
+	
 	/** \brief Add sky. */
 	void AddSky(igdeGDSky *sky);
 	

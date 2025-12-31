@@ -58,6 +58,12 @@ igdeGDSkyManager::~igdeGDSkyManager(){
 // Management
 ///////////////
 
+igdeGDSky *igdeGDSkyManager::GetSkyWithPath(const char * path) const{
+	return pSkyList.FindOrDefault([&](const igdeGDSky &s){
+		return s.GetPath() == path;
+	});
+}
+
 void igdeGDSkyManager::AddSky(igdeGDSky *sky){
 	if(!sky){
 		DETHROW(deeInvalidParam);

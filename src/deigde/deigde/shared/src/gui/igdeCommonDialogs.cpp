@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "igdeApplication.h"
 #include "igdeCommonDialogs.h"
 #include "igdeWidget.h"
 #include "igdeContainer.h"
@@ -227,9 +228,10 @@ const char *text, decString &value, const decTList<decString> &proposals){
 	igdeEnvironment &environment = owner->GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
 	igdeDialog::Ref dialog(igdeDialog::Ref::New(environment, title));
+	dialog->SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 100)));
 	
 	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
-		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
+		environment, igdeContainerFlow::eaY, igdeContainerFlow::esNone, 10));
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);

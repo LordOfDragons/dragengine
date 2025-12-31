@@ -63,7 +63,6 @@ public:
 	
 	
 	
-protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger. */
