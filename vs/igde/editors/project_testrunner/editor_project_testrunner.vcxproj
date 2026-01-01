@@ -275,15 +275,17 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameterList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRProfile.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\projTestRunner.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\testrun\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunCommandThread.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunEngine.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunLauncher.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameterList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRProfile.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\projTestRunner.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunCommandThread.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunConstants.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunEngine.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunLauncher.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\testrun\projTestRunProcess.h" />
   </ItemGroup>
 </Project>

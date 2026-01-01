@@ -343,6 +343,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\project\projUProjectSetPathCapture.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\project\projUProjectSetPathConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\project\projUProjectSetScriptDirectory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\zip.c" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\unzip.c" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\configuration\projConfiguration.h" />

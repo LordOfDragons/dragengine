@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -467,6 +467,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
@@ -582,8 +583,8 @@
     <ClCompile Include="..\..\src\dragengine\src\deEngine.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\deObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\deObjectDebug.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\debug\deDebugBlockInfo.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\deTObjectReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\debug\deDebugBlockInfo.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTrace.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTracePoint.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTraceValue.cpp" />
@@ -1059,11 +1060,10 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deReadLockGuard.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deReadWriteLock.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deSemaphore.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>

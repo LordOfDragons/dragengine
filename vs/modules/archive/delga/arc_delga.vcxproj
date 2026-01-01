@@ -444,6 +444,8 @@
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadArchiveFileReader.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadContainer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\archive\delga\src\deadContextUnpack.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\archive\delga\minizip\unzip.c" />
+    <ClCompile Include="..\..\..\..\src\modules\archive\delga\minizip\ioapi.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\archive\delga\src\deArchiveDelga.h" />
