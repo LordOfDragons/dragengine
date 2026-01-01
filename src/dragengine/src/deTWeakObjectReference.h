@@ -228,4 +228,16 @@ public:
 	/*@}*/
 };
 
+
+// avoid compile errors with reverse order checks like "a == b" if b is T::Ref
+template<class T>
+inline bool operator==(T *a, const deTWeakObjectReference<T> &b){
+	return b == a;
+}
+
+template<class T>
+inline bool operator!=(T *a, const deTWeakObjectReference<T> &b){
+	return b != a;
+}
+
 #endif

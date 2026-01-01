@@ -467,14 +467,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
-    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSAndroid.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSBeOS.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSConsole.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSUnix.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSWebWasm.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.cpp" />
@@ -1067,16 +1061,11 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h" />
     <ClInclude Include="..\..\src\dragengine\src\app\deOS.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSAndroid.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSBeOS.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSConsole.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSMacOS.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSUnix.h" />
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSWebWasm.h" />
     <ClInclude Include="..\..\src\dragengine\src\app\deOSWindows.h" />
     <ClInclude Include="..\..\src\dragengine\src\app\include_windows.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h" />

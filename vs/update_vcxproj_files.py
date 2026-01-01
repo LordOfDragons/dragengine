@@ -20,6 +20,16 @@ from typing import List, Tuple, Set
 NS = {'msbuild': 'http://schemas.microsoft.com/developer/msbuild/2003'}
 ET.register_namespace('', 'http://schemas.microsoft.com/developer/msbuild/2003')
 
+exclude_files = {
+    # Add any files to be excluded from the project here
+    'deOSConsole.cpp', 'deOSConsole.h',
+    'deOSAndroid.cpp', 'deOSAndroid.h',
+    'deOSBeOS.cpp', 'deOSBeOS.h',
+    'deOSMacOS.cpp', 'deOSMacOS.h',
+    'deOSUnix.cpp', 'deOSUnix.h',
+    'deOSWebWasm.cpp', 'deOSWebWasm.h'
+}
+
 
 def find_source_files(src_dir: Path, extensions: Set[str]) -> List[str]:
     """Find all source files with given extensions in a directory."""
@@ -222,6 +232,9 @@ def update_vcxproj_file(vcxproj_path: Path, dry_run: bool = False) -> bool:
     # Find all source and header files
     cpp_files = find_source_files(src_dir, {'.cpp', '.c'})
     header_files = find_source_files(src_dir, {'.h', '.hpp'})
+    
+    cpp_files = [f for f in cpp_files if Path(f).name not in exclude_files]
+    header_files = [f for f in header_files if Path(f).name not in exclude_files]
     
     print(f"  Found {len(cpp_files)} source files and {len(header_files)} header files")
     
