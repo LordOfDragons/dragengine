@@ -329,7 +329,17 @@ inline bool operator==(T *a, const deTObjectReference<T> &b){
 }
 
 template<class T>
+inline bool operator==(const T *a, const deTObjectReference<T> &b){
+	return b == a;
+}
+
+template<class T>
 inline bool operator!=(T *a, const deTObjectReference<T> &b){
+	return b != a;
+}
+
+template<class T>
+inline bool operator!=(const T *a, const deTObjectReference<T> &b){
 	return b != a;
 }
 

@@ -230,8 +230,8 @@ void deMicrosoftGdk::pInitGdk(const deServiceObject::Ref& data)
 
 	const decPath pathGameConfig(decPath::CreatePathUnix(
 		data->GetChildAt("pathGameConfig")->GetString()));
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		GetGameEngine()->GetVirtualFileSystem()->OpenFileForReading(pathGameConfig)));
+	const decBaseFileReader::Ref reader(
+		GetGameEngine()->GetVirtualFileSystem()->OpenFileForReading(pathGameConfig));
 	const int lenGameConfig = reader->GetLength();
 	char *gameConfig = nullptr;
 

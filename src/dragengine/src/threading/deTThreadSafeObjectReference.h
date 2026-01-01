@@ -317,7 +317,17 @@ inline bool operator==(T *a, const deTThreadSafeObjectReference<T> &b){
 }
 
 template<class T>
+inline bool operator==(const T *a, const deTThreadSafeObjectReference<T> &b){
+	return b == a;
+}
+
+template<class T>
 inline bool operator!=(T *a, const deTThreadSafeObjectReference<T> &b){
+	return b != a;
+}
+
+template<class T>
+inline bool operator!=(const T *a, const deTThreadSafeObjectReference<T> &b){
 	return b != a;
 }
 

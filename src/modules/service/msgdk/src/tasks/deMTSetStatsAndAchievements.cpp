@@ -5,6 +5,7 @@
 #include "../convert/deMCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 
@@ -19,7 +20,7 @@ deMTSetStatsAndAchievements::deMTSetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pResultData(deServiceObject::Ref::NewWith()),
+pResultData(deServiceObject::Ref::New()),
 pWaitAchievementsSynced(false)
 {
 	pService.GetModule().LogInfo("deMTSetStatsAndAchievements: Set stats and achievements");
@@ -28,20 +29,20 @@ pWaitAchievementsSynced(false)
 	
 	so = request.GetChildAt("stats");
 	if(so){
-		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith(so, true));
+		pResultData->SetChildAt("stats", deServiceObject::Ref::New(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
+		pResultData->SetChildAt("stats", deServiceObject::Ref::New());
 	}
 	
 	so = request.GetChildAt("achievements");
 	if(so){
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith(so, true));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New());
 	}
 
 	pService.NewPendingRequest(pRequestId, "setStatsAndAchievements", pResultData);

@@ -237,7 +237,7 @@ void projTestRunProcess::Run(){
 			
 		}else{
 #ifdef OS_W32
-			MessageBoxA(nullptr, e.FormatOutput().Join("\n").GetString(),
+			MessageBoxA(nullptr, DEJoin(e.FormatOutput(), "\n").GetString(),
 				"Test-Runner Error", MB_OK | MB_ICONERROR);
 #else
 			e.PrintError();

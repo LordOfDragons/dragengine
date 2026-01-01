@@ -240,7 +240,17 @@ inline bool operator==(T *a, const deTWeakObjectReference<T> &b){
 }
 
 template<class T>
+inline bool operator==(const T *a, const deTWeakObjectReference<T> &b){
+	return b == a;
+}
+
+template<class T>
 inline bool operator!=(T *a, const deTWeakObjectReference<T> &b){
+	return b != a;
+}
+
+template<class T>
+inline bool operator!=(const T *a, const deTWeakObjectReference<T> &b){
 	return b != a;
 }
 

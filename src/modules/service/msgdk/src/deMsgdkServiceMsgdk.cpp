@@ -36,6 +36,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSWindows.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/image/deImageManager.h>
@@ -61,7 +62,7 @@ deMsgdkServiceMsgdk::deMsgdkServiceMsgdk(deMicrosoftGdk &module,
 pModule(module),
 pService(service),
 pIsInitialized(false),
-pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::NewWith()),
+pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New()),
 pUser(nullptr),
 pUserId(0),
 pUserLocalId({}),
@@ -137,7 +138,7 @@ void deMsgdkServiceMsgdk::CancelRequest(const decUniqueID& id)
 	
 	pPendingRequests.RemoveFrom(pPendingRequests.IndexOf(pr));
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("error", "Cancelled");
 	so->SetStringChildAt("message", "Request cancelled");
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
@@ -162,7 +163,7 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction(const deServiceObject &actio
 	else if(function == "userRemove")
 	{
 		SetUser(nullptr);
-		return nullptr;
+		return {};
 	}
 	else if(function == "resetAllStats")
 	{
@@ -261,34 +262,33 @@ deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithId(
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithFunction(
-	const char *function)
+	const char* function)
 {
 	const int count = pPendingRequests.GetCount();
 	int i;
-	
-	for(i=0; i<count; i++)
+
+	for (i = 0; i < count; i++)
 	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->function == function)
+		deMsgdkPendingRequest* const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
+		if (pr->function == function)
 		{
 			const deMsgdkPendingRequest::Ref prr(pr);
 			pPendingRequests.RemoveFrom(i);
 			return prr;
 		}
 	}
-	
-	return nullptr;
+
+	return {};
 }
 
 deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::NewPendingRequest(
 const decUniqueID &id, const decString &function, const deServiceObject::Ref &data)
 {
-	const deMsgdkPendingRequest::Ref pr(deMsgdkPendingRequest::Ref::New(
-		new deMsgdkPendingRequest(data)));
+	const deMsgdkPendingRequest::Ref pr(deMsgdkPendingRequest::Ref::New(data));
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt("function", function);
@@ -300,21 +300,21 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserFeatures()
 {
 	if(!pAuthProviderIcon)
 	{
-		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
+		pAuthProviderIcon = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/");
 	}
 	if(!pAuthProviderImage)
 	{
-		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
+		pAuthProviderImage = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetBoolChildAt("canManualLogin", false);
 	so->SetBoolChildAt("canAutomaticLogin", true);
 	so->SetBoolChildAt("canLogout", false);
 	
-	const deServiceObject::Ref soAtp(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soAtp(deServiceObject::Ref::New());
 	soAtp->SetStringChildAt("id", "xboxLive");
 	soAtp->SetResourceChildAt("icon", pAuthProviderIcon);
 	soAtp->SetResourceChildAt("image", pAuthProviderImage);
@@ -331,7 +331,7 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
 		DETHROW_INFO(deeInvalidAction, "No user logged in");
 	}
 
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	char gamertag[101] = {};
 	size_t gamertagLen;
 

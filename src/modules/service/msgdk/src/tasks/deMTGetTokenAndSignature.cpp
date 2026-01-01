@@ -3,6 +3,7 @@
 #include "../deMicrosoftGdk.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 

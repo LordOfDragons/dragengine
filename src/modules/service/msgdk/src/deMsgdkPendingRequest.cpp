@@ -32,7 +32,7 @@
 ////////////////////////////
 
 deMsgdkPendingRequest::deMsgdkPendingRequest(const deServiceObject::Ref &ndata) :
-data(ndata ? ndata : deServiceObject::Ref::NewWith()){
+data(ndata ? ndata : deServiceObject::Ref::New()){
 }
 
 deMsgdkPendingRequest::~deMsgdkPendingRequest(){

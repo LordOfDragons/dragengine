@@ -132,7 +132,7 @@ public:
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
 	deMsgdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr);
+		const decString& function, const deServiceObject::Ref& data = {});
 	
 	deServiceObject::Ref GetUserFeatures();
 	deServiceObject::Ref GetUserInfo();

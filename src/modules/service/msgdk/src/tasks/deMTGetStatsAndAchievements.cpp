@@ -5,6 +5,7 @@
 #include "../convert/deMCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 
@@ -20,7 +21,7 @@ deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
 pStatNames(nullptr),
-pResultData(deServiceObject::Ref::NewWith()),
+pResultData(deServiceObject::Ref::New()),
 pWaitAchievementsSynced(false)
 {
 	deServiceObject::Ref so;
@@ -105,7 +106,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 {
 	if(pAchievements.GetCount() == 0)
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New());
 		return;
 	}
 	
@@ -124,7 +125,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 			achievementResult, &achievements, &achievementsCount),
 			"deMTGetStatsAndAchievements.pGetAchievements.XblAchievementsManagerResultGetAchievements");
 
-		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		
 		for(i=0; i<achievementsCount; i++){
 			const char * const name = achievements[i].id;
@@ -152,7 +153,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 		const deMsgdkPendingRequest::Ref pr(pService.GetPendingRequestWithId(pRequestId));
 		if(pr)
 		{
-			pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
+			pResultData->SetChildAt("stats", deServiceObject::Ref::New());
 			pService.GetModule().GetGameEngine()->GetServiceManager()->
 				QueueRequestResponse(pService.GetService(), pr->id, pr->data, true);
 		}
@@ -207,7 +208,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 			return;
 		}
 		
-		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		const decString &scid = pService.GetModule().GetGameConfig().scid;
 		uint32_t i, j;
 
@@ -269,7 +270,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 		{
 			if(!found[i])
 			{
-				so->SetChildAt(pStats.GetAt(i), nullptr);
+				so->SetChildAt(pStats.GetAt(i), {});
 			}
 		}
 
