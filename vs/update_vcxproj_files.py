@@ -104,7 +104,8 @@ def get_source_dir_from_vcxproj(vcxproj_path: Path) -> List[Path]:
 	if '/modules/graphic/null/' in vcxproj_str:
 		return [root_dir / 'src' / 'modules' / 'graphic' / 'null' / 'src']
 	if '/modules/graphic/opengl/' in vcxproj_str:
-		return [root_dir / 'src' / 'modules' / 'graphic' / 'opengl' / 'src']
+		return [root_dir / 'src' / 'modules' / 'graphic' / 'opengl' / 'src',
+			root_dir / 'src' / 'modules' / 'graphic' / 'opengl' / 'squish']
 	if '/modules/image/ies/' in vcxproj_str:
 		return [root_dir / 'src' / 'modules' / 'image' / 'ies' / 'src']
 	if '/modules/image/jpeg/' in vcxproj_str:
