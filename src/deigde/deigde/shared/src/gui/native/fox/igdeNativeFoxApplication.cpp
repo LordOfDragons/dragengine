@@ -189,16 +189,22 @@ void igdeNativeFoxApplication::Initialize(decUnicodeStringList &arguments){
 	pDisplayScaleFactor = deOSWindows().GetDisplayCurrentScaleFactor(0);
 	#endif
 	
+	float scaleFont = 1.0f;
+	#ifdef OS_W32
+	// on windows the font size is for some strange reason rather large
+	scaleFont = 0.7f;
+	#endif
+
 	const FXFont &fontNormal = *getNormalFont();
 	pAppFontConfig.name = fontNormal.getName().text();
-	pAppFontConfig.size = (float)fontNormal.getSize() * 0.1f; // fox fonts are in 1/10pt
+	pAppFontConfig.size = (float)fontNormal.getSize() * scaleFont * 0.1f; // fox fonts are in 1/10pt
 	pAppFontConfig.bold = fontNormal.getActualWeight() > FXFont::Normal;
 	pAppFontConfig.italic = fontNormal.getActualSlant() == FXFont::Italic;
 	pAppFontConfig.underline = false;
 	pAppFontConfig.strikeThrough = false;
-	
+
 	FXFontDesc fontDesc(fontNormal.getFontDesc());
-	fontDesc.size = (FXuint)((int)fontDesc.size * pDisplayScaleFactor / 100);
+	fontDesc.size = (FXushort)((float)fontDesc.size * scaleFont * ((float)pDisplayScaleFactor / 100.0f));
 	setNormalFont(new FXFont(this, fontDesc));
 	pDeleteNormalFont = true;
 	

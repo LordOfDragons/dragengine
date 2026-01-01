@@ -26,6 +26,7 @@
 
 #include "igdeNativeFoxGroupBox.h"
 #include "foxIcons.h"
+#include "../../igdeApplication.h"
 #include "../../igdeGroupBox.h"
 #include "../../igdeContainer.h"
 #include "../../igdeCommonDialogs.h"
@@ -119,7 +120,7 @@ void igdeNativeFoxGroupBox::DestroyNativeWidget(){
 
 FXint igdeNativeFoxGroupBox::getDefaultHeight(){
 	if(pOwner->GetCollapsed()){
-		return getFont()->getSize() / 10 + 11;
+		return getFont()->getSize() / 10 + igdeApplication::app().DisplayScaled(11);
 		
 	}else{
 		return FXGroupBox::getDefaultHeight();
@@ -234,7 +235,7 @@ long igdeNativeFoxGroupBox::onLeftMouseDown(FXObject*, FXSelector, void *pdata){
 	// change collapsed state only if clicked in the area of the caption
 	// TODO figure out the correct height. check out FXPacker source to see where it places
 	//      the first child item using LAYOUT_SIDE_TOP. this should give a hint
-	if(y >= 0 && y < /*15*/ (int)getFont()->getSize() / 10 + 11){
+	if(y >= 0 && y < /*15*/ (int)getFont()->getSize() / 10 + igdeApplication::app().DisplayScaled(11)){
 		pOwner->SetCollapsed(!pOwner->GetCollapsed());
 	}
 	
