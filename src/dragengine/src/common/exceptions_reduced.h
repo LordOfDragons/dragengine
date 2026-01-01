@@ -25,9 +25,10 @@
 #ifndef _EXCEPTIONS_REDUCED_H_
 #define _EXCEPTIONS_REDUCED_H_
 
+#include "../dragengine_export.h"
 
-extern void DEThrowNullPointer(const char *file, int line, const char *message);
-extern void DEThrowInvalidParam(const char *file, int line, const char *message);
+extern DE_DLL_EXPORT void DEThrowNullPointer(const char *file, int line, const char *message);
+extern DE_DLL_EXPORT void DEThrowInvalidParam(const char *file, int line, const char *message);
 
 
 /**
