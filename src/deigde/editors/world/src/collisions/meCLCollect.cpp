@@ -28,7 +28,6 @@
 
 #include "meCLCollect.h"
 #include "meCLHitListEntry.h"
-#include "../filter/meFilterObjects.h"
 #include "../world/meWorld.h"
 #include "../world/meColliderOwner.h"
 #include "../world/decal/meDecal.h"
@@ -57,7 +56,6 @@ pTestHeightTerrain(false),
 pTestObjects(false),
 pTestDecals(false),
 pTestSnapPoints(false),
-pFilterObjects(nullptr),
 pIgnoreDecal(nullptr){
 }
 
@@ -84,7 +82,7 @@ void meCLCollect::SetTestSnapPoints(bool test){
 	pTestSnapPoints = test;
 }
 
-void meCLCollect::SetFilterObjects(const meFilterObjects *filter){
+void meCLCollect::SetFilterObjects(meFilterObjects *filter){
 	pFilterObjects = filter;
 }
 
@@ -94,7 +92,7 @@ void meCLCollect::SetIgnoreDecal(meDecal *decal){
 
 
 void meCLCollect::Reset(){
-	pElements.RemoveAllEntries();
+	pElements.RemoveAll();
 }
 
 
@@ -110,15 +108,15 @@ void meCLCollect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 		meHeightTerrainSector * const htsector = pWorld.GetHeightTerrain()->
 			GetSectorWith(info->GetHTSector()->GetSector());
 		
-		if(htsector->GetTextureCount() == 0){
+		if(htsector->GetTextures().IsEmpty()){
 			return;
 		}
 		
-		const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+		const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 		entry->SetHTSector(htsector);
 		entry->SetDistance(info->GetDistance());
 		entry->SetNormal(info->GetNormal());
-		pElements.AddEntry(entry);
+		pElements.Add(entry);
 		
 	}else if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
@@ -138,11 +136,11 @@ void meCLCollect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetObject(colliderOwner->GetObject());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
-			pElements.AddEntry(entry);
+			pElements.Add(entry);
 			
 		}else if(colliderOwner->GetDecal()){
 			if(!pTestDecals){
@@ -152,22 +150,22 @@ void meCLCollect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetDecal(colliderOwner->GetDecal());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
-			pElements.AddEntry(entry);
+			pElements.Add(entry);
 			
 		}else if(colliderOwner->GetSnapPoint()){
 			if(!pTestSnapPoints){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetSnapPoint(colliderOwner->GetSnapPoint());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
-			pElements.AddEntry(entry);
+			pElements.Add(entry);
 		}
 	}
 }

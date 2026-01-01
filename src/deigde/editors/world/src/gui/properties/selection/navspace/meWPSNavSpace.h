@@ -25,6 +25,9 @@
 #ifndef _MEWPSNAVSPACE_H_
 #define _MEWPSNAVSPACE_H_
 
+#include "meWPSNavSpaceListener.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
@@ -33,9 +36,7 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class meWPSNavSpaceListener;
 class meWPSelection;
-class meWorld;
 class meNavigationSpace;
 
 
@@ -44,11 +45,14 @@ class meNavigationSpace;
  * \brief Navigation space selection panel.
  */
 class meWPSNavSpace : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPSNavSpace> Ref;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSNavSpaceListener *pListener;
+	meWPSNavSpaceListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -79,7 +83,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

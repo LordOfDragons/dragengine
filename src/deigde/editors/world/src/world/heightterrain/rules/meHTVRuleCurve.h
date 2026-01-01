@@ -85,7 +85,7 @@ public:
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

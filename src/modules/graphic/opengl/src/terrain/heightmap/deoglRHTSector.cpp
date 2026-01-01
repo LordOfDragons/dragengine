@@ -358,11 +358,9 @@ void deoglRHTSector::pCreateHeightMap(const deHeightTerrainSector &sector){
 	// instead of calculating these identical LOD chains multiple times they
 	// could be pushed into a LOD chain cache instead which reduces not only
 	// memory consumption but also processing time during loading time.
-	int offset;
 	
 	for(z=0; z<pClusterCount; z++){
-		offset = pClusterCount * z;
-		
+		const int offset = pClusterCount * z;
 		for(x=0; x<pClusterCount; x++){
 			pClusters[offset + x].InitFromHeightImage(sector);
 		}

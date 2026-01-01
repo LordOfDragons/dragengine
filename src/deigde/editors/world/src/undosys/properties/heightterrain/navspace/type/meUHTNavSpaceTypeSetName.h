@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpaceType;
+#include "../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
 
 
 
@@ -35,17 +35,18 @@ class meHeightTerrainNavSpaceType;
  * \brief Undo action height terrain navigation space type set name.
  */
 class meUHTNavSpaceTypeSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTNavSpaceTypeSetName> Ref;
+	
+	
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	decString pOldName;
 	decString pNewName;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTNavSpaceTypeSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
+
+protected:
 	virtual ~meUHTNavSpaceTypeSetName();
+
+public:
 	/*@}*/
 	
 	

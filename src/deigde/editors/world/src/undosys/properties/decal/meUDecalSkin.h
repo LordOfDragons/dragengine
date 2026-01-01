@@ -25,39 +25,42 @@
 #ifndef _MEUDECALSKIN_H_
 #define _MEUDECALSKIN_H_
 
+#include "../../../world/decal/meDecal.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meDecal;
-class meDecalList;
-
 
 
 /**
  * \brief Undo Action Set Decal Skin.
  */
 class meUDecalSkin : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDecalSkin> Ref;
+	
+	
 private:
-	struct sDecal{
-		meDecal *decal;
-		decString oldskin;
-		decString newskin;
+	class cDecal : public deObject{
+	public:
+		typedef deTObjectReference<cDecal> Ref;
+		typedef decTObjectOrderedSet<cDecal> List;
+		
+		meDecal::Ref decal;
+		decString oldskin, newskin;
+		
+		cDecal() = default;
 	};
 	
 private:
-	sDecal *pDecals;
-	int pDecalCount;
+	cDecal::List pDecals;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDecalSkin> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
 	meUDecalSkin(meDecal *decal, const char *newskin);
-	meUDecalSkin(meDecalList &decals, const char *newskin);
+	meUDecalSkin(meDecal::List &decals, const char *newskin);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -72,9 +75,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

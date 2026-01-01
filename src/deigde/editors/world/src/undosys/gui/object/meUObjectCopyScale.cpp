@@ -47,16 +47,12 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	int i;
-	
 	SetShortInfo("Copy Object Scale");
 	SetLongInfo("Copy Object Scale");
 	
-	for(i=0; i<count; i++){
-		pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
-	}
+	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
 	
 	pNewSize = world->GetSelectionObject().GetActive()->GetSize();
 }
@@ -70,24 +66,16 @@ meUObjectCopyScale::~meUObjectCopyScale(){
 ///////////////
 
 void meUObjectCopyScale::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
 		object->SetSize(data.GetOldSize());
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }
 
 void meUObjectCopyScale::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
 		decVector size(data.GetOldSize());
@@ -104,5 +92,5 @@ void meUObjectCopyScale::Redo(){
 		
 		object->SetSize(size);
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }

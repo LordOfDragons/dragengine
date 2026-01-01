@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVVariation;
+#include "../../../../world/heightterrain/meHTVVariation.h"
 
 
 
@@ -40,15 +40,16 @@ class meHTVVariation;
  * Undo action to set the rotation per force of a vegetation layer variation.
  */
 class meUHTVVarSetRotPerForce : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTVVarSetRotPerForce> Ref;
+	
+	
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRotPerForce;
 	float pNewRotPerForce;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTVVarSetRotPerForce> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -56,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUHTVVarSetRotPerForce();
+
+public:
 	/*@}*/
 	
 public:

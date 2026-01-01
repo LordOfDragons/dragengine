@@ -22,14 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUSetObjectClass.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
-#include "../../../world/object/meObjectList.h"
+#include "../../../world/object/meObject.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -42,69 +38,37 @@
 ////////////////////////////
 
 meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
-	if(!object || !newcname) DETHROW(deeInvalidParam);
-	
-	meWorld *world = object->GetWorld();
-	if(!world) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(object)
+	DEASSERT_NOTNULL(object->GetWorld())
 	
 	SetShortInfo("Set Object class");
 	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
-	try{
-		pObjects = new sObject[1];
-		if(!pObjects) DETHROW(deeOutOfMemory);
-		
-		pObjects[0].oldcname = object->GetClassName();
-		pObjects[0].newcname = newcname;
-		pObjects[0].oldsize = object->GetSize();
-		pObjects[0].oldscaling = object->GetScaling();
-		pObjects[0].object = object;
-		object->AddReference();
-		
-		pObjectCount = 1;
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	const cObject::Ref udata(cObject::Ref::New());
+	udata->oldcname = object->GetClassName();
+	udata->object = object;
+	udata->newcname = newcname;
+	udata->oldsize = object->GetSize();
+	udata->oldscaling = object->GetScaling();
+	pObjects.Add(udata);
 }
 
-meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname){
-	int count = objects.GetCount();
-	meObject *object;
-	
-	if(count == 0 || !newcname) DETHROW(deeInvalidParam);
+meUSetObjectClass::meUSetObjectClass(meObject::List &objects, const char *newcname){
+	DEASSERT_TRUE(objects.IsNotEmpty())
 	
 	SetShortInfo("Set Object classes");
 	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
-	try{
-		pObjects = new sObject[count];
-		if(!pObjects) DETHROW(deeOutOfMemory);
-		
-		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
-			object = objects.GetAt(pObjectCount);
-			
-			pObjects[pObjectCount].oldcname = object->GetClassName();
-			pObjects[pObjectCount].newcname = newcname;
-			pObjects[pObjectCount].oldsize = object->GetSize();
-			pObjects[pObjectCount].oldscaling = object->GetScaling();
-			pObjects[pObjectCount].object = object;
-			object->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	objects.Visit([&](meObject *object){
+		const cObject::Ref udata(cObject::Ref::New());
+		udata->oldcname = object->GetClassName();
+		udata->object = object;
+		udata->newcname = newcname;
+		udata->oldsize = object->GetSize();
+		udata->oldscaling = object->GetScaling();
+		pObjects.Add(udata);
+	});
 }
 
 meUSetObjectClass::~meUSetObjectClass(){
-	pCleanUp();
 }
 
 
@@ -113,50 +77,26 @@ meUSetObjectClass::~meUSetObjectClass(){
 ///////////////
 
 void meUSetObjectClass::Undo(){
-	meObject *object;
-	meWorld *world;
-	int o;
-	
-	for(o=0; o<pObjectCount; o++){
-		object = pObjects[o].object;
-		world = object->GetWorld();
+	pObjects.Visit([&](const cObject &data){
+		meObject * object = data.object;
+		meWorld * const world = object->GetWorld();
 		
-		object->SetClassName(pObjects[o].oldcname.GetString());
-		object->SetSizeAndScaling(pObjects[o].oldsize, pObjects[o].oldscaling);
+		object->SetClassName(data.oldcname);
+		object->SetSizeAndScaling(data.oldsize, data.oldscaling);
 		
 		world->NotifyObjectClassChanged(object);
 		world->NotifyObjectGeometryChanged(object);
-	}
+	});
 }
 
 void meUSetObjectClass::Redo(){
-	meObject *object;
-	meWorld *world;
-	int o;
-	
-	for(o=0; o<pObjectCount; o++){
-		object = pObjects[o].object;
-		world = object->GetWorld();
+	pObjects.Visit([&](const cObject &data){
+		meObject * object = data.object;
+		meWorld * const world = object->GetWorld();
 		
-		object->SetClassName(pObjects[o].newcname.GetString());
+		object->SetClassName(data.newcname);
 		
 		world->NotifyObjectClassChanged(object);
 		world->NotifyObjectGeometryChanged(object);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUSetObjectClass::pCleanUp(){
-	if(pObjects){
-		while(pObjectCount > 0){
-			pObjectCount--;
-			pObjects[pObjectCount].object->FreeReference();
-		}
-		
-		delete [] pObjects;
-	}
+	});
 }

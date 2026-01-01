@@ -35,6 +35,9 @@ class meWPSObject;
  * \brief Object panel listener.
  */
 class meWPSObjectListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPSObjectListener> Ref;
+	
 private:
 	meWPSObject &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPSObjectListener(meWPSObject &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPSObjectListener() override;
+	
+public:
 	/*@}*/
 	
 	

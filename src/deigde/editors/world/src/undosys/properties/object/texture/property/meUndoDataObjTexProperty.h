@@ -26,9 +26,10 @@
 #define _MEUNDODATAOBJTEXPROPERTY_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,7 +38,7 @@ class meObjectTexture;
  */
 class meUndoDataObjTexProperty : public deObject{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -45,10 +46,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUndoDataObjTexProperty> Ref;
-
-
+	typedef decTObjectOrderedSet<meUndoDataObjTexProperty> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */
@@ -56,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo data. */
+
+protected:
 	virtual ~meUndoDataObjTexProperty();
+
+public:
 	/*@}*/
 	
 	
@@ -65,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Texture. */
-	inline meObjectTexture *GetTexture() const{ return pTexture; }
+	inline const meObjectTexture::Ref &GetTexture() const{ return pTexture; }
 	
 	/** \brief Old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }

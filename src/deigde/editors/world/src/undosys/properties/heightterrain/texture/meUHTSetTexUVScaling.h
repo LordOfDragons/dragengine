@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -44,18 +44,19 @@ class meHeightTerrainTexture;
  * Undo action to set the uv scaling of a height image texture.
  */
 class meUHTSetTexUVScaling : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTSetTexUVScaling> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTSetTexUVScaling> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -63,7 +64,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTSetTexUVScaling();
+
+public:
 	/*@}*/
 	
 public:

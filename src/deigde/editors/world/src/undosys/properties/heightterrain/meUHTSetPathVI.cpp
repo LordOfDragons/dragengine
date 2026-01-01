@@ -51,12 +51,9 @@ meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, co
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Visibility Image Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathVI::~meUHTSetPathVI(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

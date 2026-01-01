@@ -26,12 +26,9 @@
 #ifndef _MEDECALMOVE_H_
 #define _MEDECALMOVE_H_
 
-// includes
+#include "meUndoDataDecal.h"
 #include "../meBaseUndoMove.h"
-
-// predefinitions
-class meUndoDataDecal;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -41,19 +38,25 @@ class meWorld;
  * Undo Action for interactively moving decals.
  */
 class meUDecalMove : public meBaseUndoMove{
-private:
-	meWorld *pWorld;
+public:
+	typedef deTObjectReference<meUDecalMove> Ref;
 	
-	meUndoDataDecal **pDecals;
-	int pDecalCount;
+private:
+	meWorld::Ref pWorld;
+	
+	meUndoDataDecal::List pDecals;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
 	meUDecalMove(meWorld *world);
+	
+protected:
 	/** \brief Clean up undo. */
 	~meUDecalMove() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -62,10 +65,6 @@ public:
 	virtual void Redo();
 	void ProgressiveRedo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

@@ -29,6 +29,8 @@
 #include "meUHTVRuleRemove.h"
 #include "../../../../../world/heightterrain/meHTVegetationLayer.h"
 #include "../../../../../world/heightterrain/rules/meHTVRule.h"
+#include "../../../../../world/heightterrain/rules/meHTVRSlot.h"
+#include "../../../../../world/heightterrain/rules/meHTVRLink.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,11 +41,14 @@
 
 // Constructor, destructor
 ////////////////////////////
-
 meUHTVRuleRemove::meUHTVRuleRemove(meHTVegetationLayer *vlayer, meHTVRule *rule) :
 pVLayer(vlayer),
 pRule(rule)
 {
+	rule->GetSlots().Visit([&](const meHTVRSlot &slot){
+		pLinks += slot.GetLinks();
+	});
+	
 	SetShortInfo("Vegetation layer remove rule");
 	SetMemoryConsumption(sizeof(meUHTVRuleRemove));
 }
@@ -57,9 +62,23 @@ meUHTVRuleRemove::~meUHTVRuleRemove(){
 ///////////////
 
 void meUHTVRuleRemove::Undo(){
-	((meHTVegetationLayer&)(deObject&)pVLayer).AddRule((meHTVRule*)(deObject*)pRule);
+	pVLayer->AddRule(pRule);
+	
+	pLinks.Visit([&](meHTVRLink *link){
+		link->GetSourceRule()->GetSlots().GetAt(link->GetSourceSlot())->AddLink(link);
+		link->GetDestinationRule()->GetSlots().GetAt(link->GetDestinationSlot())->AddLink(link);
+		
+		pVLayer->AddLink(link);
+	});
 }
 
 void meUHTVRuleRemove::Redo(){
-	((meHTVegetationLayer&)(deObject&)pVLayer).RemoveRule((meHTVRule*)(deObject*)pRule);
+	pLinks.Visit([&](meHTVRLink *link){
+		link->GetSourceRule()->GetSlots().GetAt(link->GetSourceSlot())->RemoveLink(link);
+		link->GetDestinationRule()->GetSlots().GetAt(link->GetDestinationSlot())->RemoveLink(link);
+		
+		pVLayer->RemoveLink(link);
+	});
+	
+	pVLayer->RemoveRule(pRule);
 }

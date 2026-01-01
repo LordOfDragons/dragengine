@@ -26,11 +26,11 @@
 #define _MEUOBJECTADDUSEDTEXTURES_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../../world/object/texture/meObjectTextureList.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
+#include "../../../../world/object/meObject.h"
 
 #include <dragengine/common/string/decStringList.h>
 
-class meObject;
 
 
 
@@ -38,15 +38,16 @@ class meObject;
  * \brief Undo Action Object Add Used Textures.
  */
 class meUObjectAddUsedTextures : public igdeUndo{
-private:
-	meObject *pObject;
-	decStringList pTextureNameList;
-	meObjectTextureList pTextureList;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjectAddUsedTextures> Ref;
 	
+	
+private:
+	meObject::Ref pObject;
+	decStringList pTextureNameList;
+	meObjectTexture::List pTextureList;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -54,7 +55,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectAddUsedTextures();
+
+public:
 	/*@}*/
 	
 public:
@@ -64,8 +69,8 @@ public:
 	inline decStringList &GetTextureNameList(){ return pTextureNameList; }
 	inline const decStringList &GetTextureNameList() const{ return pTextureNameList; }
 	/** Retrieves the list of added textures if existing already. */
-	inline meObjectTextureList &GetTextureList(){ return pTextureList; }
-	inline const meObjectTextureList &GetTextureList() const{ return pTextureList; }
+	inline meObjectTexture::List &GetTextureList(){ return pTextureList; }
+	inline const meObjectTexture::List &GetTextureList() const{ return pTextureList; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

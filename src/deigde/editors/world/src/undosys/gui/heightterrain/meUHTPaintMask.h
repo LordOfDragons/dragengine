@@ -26,14 +26,13 @@
 #ifndef _MEUHTPAINTMASK_H_
 #define _MEUHTPAINTMASK_H_
 
-// includes
+#include "../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../world/terrain/meHeightTerrainTexture.h"
+
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
 
 
 
@@ -43,10 +42,14 @@ class meHeightTerrainTexture;
  * Undo action to undo and redo mask painting on a height terrain.
  */
 class meUHTPaintMask : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTPaintMask> Ref;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decBoundary pGrid;
 	decPoint pSize;
@@ -55,16 +58,17 @@ private:
 	unsigned char *pNewValues;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTPaintMask> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
 		const decPoint &grid, const decPoint &size, unsigned char *oldValues);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTPaintMask();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

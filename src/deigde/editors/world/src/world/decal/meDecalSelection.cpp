@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "meDecal.h"
-#include "meDecalList.h"
+#include "meDecal.h"
 #include "meDecalSelection.h"
 #include "../meWorld.h"
 
@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meDecalSelection::meDecalSelection(){
-	pActive = NULL;
+	pActive = nullptr;
 }
 
 meDecalSelection::~meDecalSelection(){
@@ -55,57 +55,47 @@ meDecalSelection::~meDecalSelection(){
 ///////////////
 
 void meDecalSelection::Add(meDecal *object){
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(object)
 	
 	object->SetSelected(true);
-	pSelection.AddIfAbsent(object);
+	pSelection.Add(object);
 }
 
 void meDecalSelection::Remove(meDecal *object){
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(object)
 	
 	object->SetSelected(false);
-	pSelection.RemoveIfPresent(object);
+	pSelection.Remove(object);
 }
 
 void meDecalSelection::RemoveAll(){
-	const int count = pSelection.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pSelection.GetAt(i)->SetSelected(false);
-	}
-	
+	pSelection.Visit([&](meDecal &decal){
+		decal.SetSelected(false);
+	});
 	pSelection.RemoveAll();
 }
 
 
 
 bool meDecalSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void meDecalSelection::SetActive(meDecal *object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;
 	
 	if(object){
-		object->AddReference();
 		object->SetActive(true);
 	}
 }
 
 void meDecalSelection::ActivateNext(){
 	const int count = pSelection.GetCount();
-	meDecal *next = NULL;
+	meDecal *next = nullptr;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -120,5 +110,5 @@ void meDecalSelection::ActivateNext(){
 
 void meDecalSelection::Reset(){
 	RemoveAll();
-	SetActive(NULL);
+	SetActive(nullptr);
 }

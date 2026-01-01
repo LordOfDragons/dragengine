@@ -137,6 +137,13 @@ deoglRSkin *deoglSkinState::GetOwnerSkin() const{
 	}
 }
 
+void deoglSkinState::DropOwner(){
+	pOwnerComponent = nullptr;
+	pOwnerBillboard = nullptr;
+	pOwnerDecal = nullptr;
+	pOwnerLight = nullptr;
+}
+
 deoglRDynamicSkin *deoglSkinState::GetOwnerDynamicSkin() const{
 	if(pOwnerComponent){
 		if(pOwnerComponentTexture != -1){

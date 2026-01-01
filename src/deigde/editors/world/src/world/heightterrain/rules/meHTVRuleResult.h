@@ -66,8 +66,11 @@ public:
 	/** \brief Create copy of rule. */
 	meHTVRuleResult(const meHTVRuleResult &rule);
 	
+protected:
 	/** Cleans up the rule. */
 	~meHTVRuleResult() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -85,7 +88,7 @@ public:
 	void Evaluate(meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

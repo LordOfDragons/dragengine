@@ -25,39 +25,40 @@
 #ifndef _MEUDECALCLONEPROPERTIESTOSELECTED_H_
 #define _MEUDECALCLONEPROPERTIESTOSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataDecalProperty.h"
+
 #include <dragengine/common/string/decStringDictionary.h>
 
 #include <deigde/undo/igdeUndo.h>
-
-class meDecal;
-class meDecalList;
-class meUndoDataDecalProperty;
-
 
 
 /**
  * \brief Undo action decal clone properties to all selected decals.
  */
 class meUDecalClonePropertiesToSelected : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDecalClonePropertiesToSelected> Ref;
+	
+	
 private:
-	decObjectList pList;
+	meUndoDataDecalProperty::List pList;
 	decStringDictionary pPropertyList;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDecalClonePropertiesToSelected> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalClonePropertiesToSelected(const meDecalList &list, const decStringDictionary &propertyList);
+	meUDecalClonePropertiesToSelected(const meDecal::List &list, const decStringDictionary &propertyList);
 	
 protected:
 	/** \brief Clean up undo decal. */
+
+protected:
 	virtual ~meUDecalClonePropertiesToSelected();
+
+public:
 	/*@}*/
 	
 	
@@ -66,8 +67,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of decals to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataDecalProperty::List &GetList(){ return pList; }
+	inline const meUndoDataDecalProperty::List &GetList() const{ return pList; }
 	
 	/** \brief List of properties to apply. */
 	inline decStringDictionary &GetPropertyList(){ return pPropertyList; }
@@ -79,11 +80,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

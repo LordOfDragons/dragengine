@@ -25,32 +25,30 @@
 #ifndef _MEHEIGHTTERRAIN_H_
 #define _MEHEIGHTTERRAIN_H_
 
+#include "meHeightTerrainSector.h"
+#include "../heightterrain/meHTVegetationLayer.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decIntList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
-class meHeightTerrainSector;
-class meHTVegetationLayer;
 class meObject;
 class meWorld;
 
 class deDebugDrawer;
-class deHeightTerrain;
 
 class igdeEnvironment;
 
 
 
 /**
- * \brief Height terrain.
+ * Height terrain.
  */
 class meHeightTerrain : public deObject{
 private:
 	meWorld &pWorld;
-	deHeightTerrain *pEngHT;
+	deHeightTerrain::Ref pEngHT;
 	
 	decString pPathHT;
 	bool pChanged;
@@ -62,29 +60,29 @@ private:
 	float pBaseHeight;
 	float pHeightScaling;
 	
-	decObjectOrderedSet pSectors;
-	meHeightTerrainSector *pActiveSector;
+	meHeightTerrainSector::List pSectors;
+	meHeightTerrainSector::Ref pActiveSector;
 	
-	decObjectOrderedSet pVLayers;
-	meHTVegetationLayer *pActiveVLayer;
+	meHTVegetationLayer::List pVLayers;
+	meHTVegetationLayer::Ref pActiveVLayer;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<meHeightTerrain> Ref;
 
 
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create object. */
-	meHeightTerrain(meWorld &world);
+	/** Create object. */
+	explicit meHeightTerrain(meWorld &world);
 	
 	
 	
 protected:
-	/** \brief Clean up object. */
-	virtual ~meHeightTerrain();
+	/** Clean up object. */
+	~meHeightTerrain() override;
 	/*@}*/
 	
 	
@@ -92,128 +90,128 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief World. */
+	/** World. */
 	inline meWorld &GetWorld() const{ return pWorld; }
 	
-	/** \brief Engine height terrain. */
-	inline deHeightTerrain *GetEngineHeightTerrain() const{ return pEngHT; }
+	/** Engine height terrain. */
+	inline const deHeightTerrain::Ref &GetEngineHeightTerrain() const{ return pEngHT; }
 	
 	
 	
-	/** \brief Height terrain file path. */
+	/** Height terrain file path. */
 	inline const decString &GetPathHT() const{ return pPathHT; }
 	
-	/** \brief Set height terrain file path. */
+	/** Set height terrain file path. */
 	void SetPathHT(const char *path);
 	
-	/** \brief Base directory. */
+	/** Base directory. */
 	decString GetBaseDirectory() const;
 	
-	/** \brief World dependency has changed. */
+	/** World dependency has changed. */
 	inline bool GetDepChanged() const{ return pDepChanged; }
 	
-	/** \brief Set if world dependency has changed. */
+	/** Set if world dependency has changed. */
 	void SetDepChanged(bool changed);
 	
-	/** \brief World has changed. */
+	/** World has changed. */
 	inline bool GetChanged() const{ return pChanged; }
 	
-	/** \brief Set if world has changed. */
+	/** Set if world has changed. */
 	void SetChanged(bool changed);
 	
-	/** \brief World has saved. */
+	/** World has saved. */
 	inline bool GetSaved() const{ return pSaved; }
 	
-	/** \brief Set if world has saved. */
+	/** Set if world has saved. */
 	void SetSaved(bool saved);
 	
 	
 	
-	/** \brief Sector size. */
+	/** Sector size. */
 	inline float GetSectorSize() const{ return pSectorSize; }
 	
-	/** \brief Set sector size. */
+	/** Set sector size. */
 	void SetSectorSize(float size);
 	
-	/** \brief Sector resolution. */
+	/** Sector resolution. */
 	inline int GetSectorResolution() const{ return pSectorResolution; }
 	
-	/** \brief Set sector resolution. */
+	/** Set sector resolution. */
 	void SetSectorResolution(int resolution);
 	
-	/** \brief Base height. */
+	/** Base height. */
 	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
-	/** \brief Set base height. */
+	/** Set base height. */
 	void SetBaseHeight(float height);
 	
-	/** \brief Height scaling. */
+	/** Height scaling. */
 	inline float GetHeightScaling() const{ return pHeightScaling; }
 	
-	/** \brief Set height scaling. */
+	/** Set height scaling. */
 	void SetHeightScaling(float scaling);
 	
 	
 	
-	/** \brief Set world changed. */
+	/** Set world changed. */
 	void SetWorldChanged();
 	
 	
 	
-	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
+	/** Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
 	
 	
 	
-	/** \brief Notify engine height values changed. */
+	/** Notify engine height values changed. */
 	void NotifyHeightsChanged(const decPoint &fromSector, const decPoint &fromGrid,
 		const decPoint &toSector, const decPoint &toGrid);
 	
-	/** \brief Notify engine height values changed. */
+	/** Notify engine height values changed. */
 	void NotifyHeightsChanged(const decBoundary &areaSector, const decBoundary &areaGrid);
 	
-	/** \brief Invalidate heights. */
+	/** Invalidate heights. */
 	void InvalidateHeights(const decPoint &fromSector, const decPoint &fromGrid,
 		const decPoint &toSector, const decPoint &toGrid);
 	
-	/** \brief Invalidate all heights. */
+	/** Invalidate all heights. */
 	void InvalidateAllHeights();
 	
 	
 	
-	/** \brief Invalidate prop fields. */
+	/** Invalidate prop fields. */
 	void InvalidatePropFields(const decPoint &fromSector, const decPoint &fromGrid,
 		const decPoint &toSector, const decPoint &toGrid);
 	
-	/** \brief Invalidate prop fields. */
+	/** Invalidate prop fields. */
 	void InvalidatePropFields(const decBoundary &areaSector, const decBoundary &areaGrid);
 	
-	/** \brief Invalidate prop fields. */
+	/** Invalidate prop fields. */
 	void InvalidatePropFields(meHeightTerrainSector *sector);
 	
-	/** \brief Invalidate prop fields. */
+	/** Invalidate prop fields. */
 	void InvalidatePropFields(meObject *object);
 	
-	/** \brief Invalidate all prop fields. */
+	/** Invalidate all prop fields. */
 	void InvalidateAllPropFields();
 	
 	
 	
-	/** \brief Init delegates. */
+	/** Init delegates. */
 	void InitDelegates(igdeEnvironment *environment);
 	
 	
 	
-	/** \brief Update height terrain. */
+	/** Update height terrain. */
 	void Update();
 	
-	/** \brief Force update of vegetation. */
+	/** Force update of vegetation. */
 	void ForceUpdateVegetation(bool fullUpdate);
 	
-	/** \brief Clear vegetation. */
+	/** Clear vegetation. */
 	void ClearVegetation();
 	
-	/** \brief Rebuild height terrain engine prop field types. */
+	/** Rebuild height terrain engine prop field types. */
 	void RebuildVegetationPropFieldTypes();
 	/*@}*/
 	
@@ -221,31 +219,25 @@ public:
 	
 	/** \name Sectors */
 	/*@{*/
-	/** \brief Number of sectors. */
-	int GetSectorCount() const;
+	/** Sectors. */
+	inline const meHeightTerrainSector::List &GetSectors() const{ return pSectors; }
 	
-	/** \brief Sector at index. */
-	meHeightTerrainSector *GetSectorAt(int index) const;
-	
-	/** \brief Sector at coordinates or \em NULL if absent. */
+	/** Sector at coordinates or \em nullptr if absent. */
 	meHeightTerrainSector *GetSectorWith(const decPoint &coordinates) const;
 	
-	/** \brief Index of sector or -1 if absent. */
-	int IndexOfSector(meHeightTerrainSector *sector) const;
-	
-	/** \brief Add sector. */
+	/** Add sector. */
 	void AddSector(meHeightTerrainSector *sector);
 	
-	/** \brief Remove sector. */
+	/** Remove sector. */
 	void RemoveSector(meHeightTerrainSector *sector);
 	
-	/** \brief Remove all sectors. */
+	/** Remove all sectors. */
 	void RemoveAllSectors();
 	
-	/** \brief Active sector. */
-	inline meHeightTerrainSector *GetActiveSector() const{ return pActiveSector; }
+	/** Active sector. */
+	inline const meHeightTerrainSector::Ref &GetActiveSector() const{ return pActiveSector; }
 	
-	/** \brief Set active sector. */
+	/** Set active sector. */
 	void SetActiveSector(meHeightTerrainSector *sector);
 	/*@}*/
 	
@@ -253,40 +245,31 @@ public:
 	
 	/** \name Vegetation */
 	/*@{*/
-	/** \brief Count of vegetation layers. */
-	int GetVLayerCount() const;
+	/** Vegetation layers. */
+	inline const meHTVegetationLayer::List &GetVLayers() const{ return pVLayers; }
 	
-	/** \brief Vegetation layer at index. */
-	meHTVegetationLayer *GetVLayerAt(int index) const;
-	
-	/** \brief Index of the vegetation layer or -1 if absent. */
-	int IndexOfVLayer(meHTVegetationLayer *vlayer) const;
-	
-	/** \brief Vegetation layer is present. */
-	bool HasVLayer(meHTVegetationLayer *vlayer) const;
-	
-	/** \brief Add vegetation layer. */
+	/** Add vegetation layer. */
 	void AddVLayer(meHTVegetationLayer *vlayer);
 	
-	/** \brief Inserts vegetation layer. */
+	/** Inserts vegetation layer. */
 	void InsertVLayer(int before, meHTVegetationLayer *vlayer);
 	
-	/** \brief Move vegetation layer to new position. */
+	/** Move vegetation layer to new position. */
 	void MoveVLayer(meHTVegetationLayer *vlayer, int moveTo);
 	
-	/** \brief Remove vegetation layer. */
+	/** Remove vegetation layer. */
 	void RemoveVLayer(meHTVegetationLayer *vlayer);
 	
-	/** \brief Remove all vegetation layers. */
+	/** Remove all vegetation layers. */
 	void RemoveAllVLayers();
 	
-	/** \brief Active vegetation layer or NULL. */
+	/** Active vegetation layer or nullptr. */
 	inline meHTVegetationLayer *GetActiveVLayer() const{ return pActiveVLayer; }
 	
-	/** \brief Set active vegetation layer or NULL. */
+	/** Set active vegetation layer or nullptr. */
 	void SetActiveVLayer(meHTVegetationLayer *vlayer);
 	
-	/** \brief Notify world vegetation layer changed. */
+	/** Notify world vegetation layer changed. */
 	void NotifyVLayerChanged(meHTVegetationLayer *vlayer);
 	/*@}*/
 	

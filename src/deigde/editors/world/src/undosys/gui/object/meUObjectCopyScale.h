@@ -25,9 +25,10 @@
 #ifndef _MEUOBJECTCOPYSCALE_H_
 #define _MEUOBJECTCOPYSCALE_H_
 
+#include "meUndoDataObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class meWorld;
@@ -37,19 +38,18 @@ class meWorld;
  * Undo action for setting copy object scale.
  */
 class meUObjectCopyScale : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectCopyScale> Ref;
+	
+	
 private:
-	decObjectOrderedSet pObjects;
+	meUndoDataObject::List pObjects;
 	decVector pNewSize;
-	bool pCopyX;
-	bool pCopyY;
-	bool pCopyZ;
+	bool pCopyX, pCopyY, pCopyZ;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectCopyScale> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -57,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectCopyScale();
+
+public:
 	/*@}*/
 	
 	

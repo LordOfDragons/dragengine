@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meDecal.h"
 #include "meAttachedDecal.h"
 #include "../object/meObject.h"
@@ -47,21 +43,17 @@
 
 meAttachedDecal::meAttachedDecal(deEngine *engine, meDecal *decal) :
 pEngine(engine),
-pDecal(decal),
-pParentObject(NULL)
+pDecal(decal)
 {
 	if(!engine || !decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEngDecal.TakeOver(engine->GetDecalManager()->CreateDecal());
+	pEngDecal = engine->GetDecalManager()->CreateDecal();
 }
 
 meAttachedDecal::~meAttachedDecal(){
 	RemoveFromParent();
-	if(pParentObject){
-		pParentObject->FreeReference();
-	}
 }
 
 
@@ -77,16 +69,10 @@ void meAttachedDecal::SetParentObject(meObject *object){
 	RemoveFromParent();
 	
 	if(pParentObject){
-		pParentObject->FreeReference();
-		pParentObject = NULL;
+		pParentObject = nullptr;
 	}
 	
 	pParentObject = object;
-	
-	if(object){
-		object->AddReference();
-	}
-	
 	AttachToParent();
 }
 

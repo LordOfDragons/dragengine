@@ -333,7 +333,7 @@ deoglSkinTexturePipelines::eTypes shaderType) const{
 	
 	if(skinShader.GetTextureUnitCount() > 0){
 		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
+		deoglSkinState *skinState = nullptr;
 		
 		if(pDynamicSkin){
 			dynamicSkin = pDynamicSkin;

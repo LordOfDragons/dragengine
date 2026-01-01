@@ -53,7 +53,6 @@
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../texture/deoglTextureStageManager.h"
@@ -77,13 +76,9 @@
 deoglRComponentTexture::deoglRComponentTexture(deoglRComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pSkinState(NULL),
 
-pUseSkin(NULL),
 pUseTextureNumber(0),
 pUseSkinTexture(NULL),
-pUseSkinState(NULL),
-pUseDynamicSkin(NULL),
 pUseDoubleSided(false),
 pUseDecal(false),
 pIsRendered(false),
@@ -148,7 +143,7 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 		pTUCGIMaterial->RemoveUsage();
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 }
 
@@ -192,22 +187,8 @@ void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::SetSkinState(deoglSkinState *skinState){
-	if(skinState == pSkinState){
-		return;
-	}
-	
-	if(pSkinState){
-		delete pSkinState;
-	}
-	
-	pSkinState = skinState;
-	
-	pIsRendered = false;
-	InvalidateParamBlocks();
-	MarkTUCsDirty();
-	pComponent.GetSkinRendered().SetDirty();
-	pUpdateRenderTaskFilters();
+void deoglRComponentTexture::DropSkinState(){
+	pSetSkinState(nullptr);
 }
 
 void deoglRComponentTexture::UpdateSkinState(deoglComponent &component){
@@ -229,14 +210,14 @@ void deoglRComponentTexture::UpdateSkinState(deoglComponent &component){
 	if(pSkin && (pDynamicSkin || pComponent.GetDynamicSkin()
 	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0)){
 		if(!pSkinState){
-			SetSkinState(new deoglSkinState(pComponent.GetRenderThread(), pComponent, pIndex));
+			pSetSkinState(deoglSkinState::Ref::New(pComponent.GetRenderThread(), pComponent, pIndex));
 			component.DirtyRenderableMapping();
 			component.DirtyTextureUseSkin();
 		}
 		
 	}else{
 		if(pSkinState){
-			SetSkinState(nullptr);
+			pSetSkinState(nullptr);
 			component.DirtyRenderableMapping();
 			component.DirtyTextureUseSkin();
 		}
@@ -303,7 +284,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 
 decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 	deoglRDynamicSkin *useDynamicSkin = NULL;
-	deoglSkinState *useSkinState = NULL;
+	deoglSkinState *useSkinState = nullptr;
 	
 	if(pSkinState){
 		useSkinState = pSkinState;
@@ -617,7 +598,7 @@ void deoglRComponentTexture::PrepareTUCs(){
 		if(pUseSkinTexture){
 			deoglRenderThread &renderThread = pComponent.GetRenderThread();
 			deoglRDynamicSkin *dynamicSkin = NULL;
-			deoglSkinState *skinState = NULL;
+			deoglSkinState *skinState = nullptr;
 			deoglTexUnitConfig unit[8];
 			
 			if(pSkinState){
@@ -713,7 +694,7 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipel
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglSkinState *skinState = nullptr;
 	deoglTexUnitsConfig *tuc = NULL;
 	
 	if(pSkinState){
@@ -757,7 +738,7 @@ deoglSkinTexturePipelines::eTypes type) const{
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglSkinState *skinState = nullptr;
 	deoglTexUnitsConfig *tuc = NULL;
 	
 	if(pSkinState){
@@ -1065,4 +1046,22 @@ int deoglRComponentTexture::pShadowCombineCount(int lodLevel) const{
 	
 	const int combineCount = i - pIndex;
 	return combineCount - emptyCount > 1 ? combineCount : 1;
+}
+
+void deoglRComponentTexture::pSetSkinState(deoglSkinState *skinState){
+	if(skinState == pSkinState){
+		return;
+	}
+	
+	if(pSkinState){
+		pSkinState->DropOwner();
+	}
+	
+	pSkinState = skinState;
+	
+	pIsRendered = false;
+	InvalidateParamBlocks();
+	MarkTUCsDirty();
+	pComponent.GetSkinRendered().SetDirty();
+	pUpdateRenderTaskFilters();
 }

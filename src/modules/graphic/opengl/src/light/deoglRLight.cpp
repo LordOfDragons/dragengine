@@ -61,7 +61,6 @@
 #include "../skin/deoglSkinRenderable.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../triangles/deoglTriangleSorter.h"
 #include "../visitors/deoglTransformVolume.h"
@@ -133,7 +132,6 @@ pHintShadowImportance(100),
 pIntensity(0.0f),
 pAmbientRatio(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
-pSkinState(NULL),
 pUseSkinTexture(NULL),
 pDirtyPrepareSkinStateRenderables(true),
 pDirtyRenderSkinStateRenderables(true),
@@ -320,7 +318,7 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	}
 	
 	if(!pSkinState){
-		pSkinState = new deoglSkinState(pRenderThread, *this);
+		pSkinState = deoglSkinState::Ref::New(pRenderThread, *this);
 	}
 }
 
@@ -1078,7 +1076,7 @@ void deoglRLight::pCleanUp(){
 		delete pShadowCaster;
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 }
 

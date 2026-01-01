@@ -89,9 +89,7 @@ meLSXMLWorld::~meLSXMLWorld(){
 ///////////////////////
 
 void meLSXMLWorld::SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file){
-	if(!file){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(file)
 	
 	decXmlWriter writer(file);
 	
@@ -99,11 +97,10 @@ void meLSXMLWorld::SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decB
 	pWriteWorld(writer, world);
 }
 
-igdeStepableTask *meLSXMLWorld::CreateLoadTask(meWorld *world, decBaseFileReader *file){
-	if(!world || !file){
-		DETHROW(deeInvalidParam);
-	}
-	return new meLoadXMLWorldTask(pLSSys, world, file);
+igdeStepableTask::Ref meLSXMLWorld::CreateLoadTask(meWorld *world, decBaseFileReader *file){
+	DEASSERT_NOTNULL(world)
+	DEASSERT_NOTNULL(file)
+	return meLoadXMLWorldTask::Ref::New(pLSSys, world, file);
 }
 
 
@@ -125,7 +122,7 @@ const char *meLSXMLWorld::pGetAttributeString(const decXmlElementTag &tag, const
 int meLSXMLWorld::pGetAttributeInt(const decXmlElementTag &tag, const char *name) const{
 	const decXmlAttValue * const value = tag.FindAttribute(name);
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return value->GetValue().ToIntValid();
 	}
 	
 	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat(LOGSOURCE,
@@ -136,7 +133,7 @@ int meLSXMLWorld::pGetAttributeInt(const decXmlElementTag &tag, const char *name
 float meLSXMLWorld::pGetAttributeFloat(const decXmlElementTag &tag, const char *name) const{
 	const decXmlAttValue *value = tag.FindAttribute(name);
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return value->GetValue().ToFloatValid();
 	}
 	
 	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat(LOGSOURCE,
@@ -147,8 +144,6 @@ float meLSXMLWorld::pGetAttributeFloat(const decXmlElementTag &tag, const char *
 
 
 void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
-	int i;
-	
 	writer.WriteOpeningTag("world");
 	
 	WriteDVector(writer, "size", world.GetSize());
@@ -165,31 +160,25 @@ void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
 	
 	writer.WriteDataTagString("nextObjectID", world.GetNextObjectID().ToHexString());
 	
-	const meObjectList &objects = world.GetObjects();
-	const int objectCount = objects.GetCount();
-	if(objectCount > 0){
+	if(world.GetObjects().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<objectCount; i++){
-			pWriteObject(writer, *objects.GetAt(i));
-		}
+		world.GetObjects().Visit([&](const meObject &object){
+			pWriteObject(writer, object);
+		});
 	}
 	
-	const meDecalList &decals = world.GetDecals();
-	const int decalCount = decals.GetCount();
-	if(decalCount > 0){
+	if(world.GetDecals().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<decalCount; i++){
-			pWriteDecal(writer, *decals.GetAt(i));
-		}
+		world.GetDecals().Visit([&](const meDecal &decal){
+			pWriteDecal(writer, decal);
+		});
 	}
 	
-	const meNavigationSpaceList &navspaces = world.GetNavSpaces();
-	const int navspaceCount = navspaces.GetCount();
-	if(navspaceCount > 0){
+	if(world.GetNavSpaces().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<navspaceCount; i++){
-			pWriteNavigationSystem(writer, *navspaces.GetAt(i));
-		}
+		world.GetNavSpaces().Visit([&](const meNavigationSpace &navspace){
+			pWriteNavigationSystem(writer, navspace);
+		});
 	}
 	
 	writer.WriteClosingTag("world");
@@ -279,7 +268,6 @@ void meLSXMLWorld::pWriteWorldEditorLimitBox(decXmlWriter &writer, const meWorld
 }
 
 void meLSXMLWorld::pWriteObject(decXmlWriter &writer, const meObject &object){
-	const int textureCount = object.GetTextureCount();
 	const decDVector &position = object.GetPosition();
 	const decVector &rotation = object.GetRotation();
 	const decVector &scaling = object.GetScaling();
@@ -315,9 +303,9 @@ void meLSXMLWorld::pWriteObject(decXmlWriter &writer, const meObject &object){
 	
 	pWriteProperties(writer, object.GetProperties());
 	
-	for(i=0; i<textureCount; i++){
-		pWriteObjectTexture(writer, *object.GetTextureAt(i));
-	}
+	object.GetTextures().Visit([&](const meObjectTexture &texture){
+		pWriteObjectTexture(writer, texture);
+	});
 	
 	if(object.GetAttachedTo()){
 		writer.WriteDataTagString("attachTo", object.GetAttachedTo()->GetID().ToHexString());
@@ -488,16 +476,11 @@ void meLSXMLWorld::pWriteNavigationSystem(decXmlWriter &writer, const meNavigati
 }
 
 void meLSXMLWorld::pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties){
-	const decStringList keys(properties.GetKeys());
-	const decStringList values(properties.GetValues());
-	const int count = keys.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
+	properties.Visit([&](const decString &key, const decString &value){
 		writer.WriteOpeningTagStart("property");
-		writer.WriteAttributeString("key", keys.GetAt(i));
+		writer.WriteAttributeString("key", key);
 		writer.WriteOpeningTagEnd(false, false);
-		WriteTextMultilineString(writer, values.GetAt(i));
+		WriteTextMultilineString(writer, value);
 		writer.WriteClosingTag("property", false, true);
-	}
+	});
 }

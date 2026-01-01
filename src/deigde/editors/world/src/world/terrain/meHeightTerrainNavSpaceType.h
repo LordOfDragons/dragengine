@@ -25,13 +25,13 @@
 #ifndef _MEHEIGHTTERRAINNAVSPACETYPE_H_
 #define _MEHEIGHTTERRAINNAVSPACETYPE_H_
 
+#include "meHeightTerrainNavSpaceFace.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
-class decPointerList;
-class meHeightTerrainNavSpaceFace;
 class meHeightTerrainNavSpace;
 
 class deDebugDrawerShape;
@@ -39,11 +39,12 @@ class deDebugDrawerShape;
 
 
 /**
- * \brief Height terrain navigation space type.
+ * Height terrain navigation space type.
  */
 class meHeightTerrainNavSpaceType : public deObject{
 public:
 	typedef deTObjectReference<meHeightTerrainNavSpaceType> Ref;
+	typedef decTObjectOrderedSet<meHeightTerrainNavSpaceType> List;
 	
 	
 private:
@@ -55,7 +56,7 @@ private:
 	
 	bool pActive;
 	
-	decObjectOrderedSet pFaces;
+	meHeightTerrainNavSpaceFace::List pFaces;
 	deDebugDrawerShape *pDDShape;
 	
 	
@@ -63,60 +64,61 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates height terrain navigation space type. */
-	meHeightTerrainNavSpaceType(const char *name = "");
+	/** Creates height terrain navigation space type. */
+	explicit meHeightTerrainNavSpaceType(const char *name = "");
 	
-	/** \brief Clean up height terrain navigation space type. */
-	virtual ~meHeightTerrainNavSpaceType();
+protected:
+	/** Clean up height terrain navigation space type. */
+	~meHeightTerrainNavSpaceType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent height terrain navigation space. */
+	/** Parent height terrain navigation space. */
 	meHeightTerrainNavSpace *GetNavSpace() const{ return pNavSpace; }
 	
-	/** \brief Set parent height terrain navigation space. */
+	/** Set parent height terrain navigation space. */
 	void SetNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	
 	
-	/** \brief Display name. */
+	/** Display name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set display name. */
+	/** Set display name. */
 	void SetName(const char *name);
 	
-	/** \brief Display color. */
+	/** Display color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Set display color. */
+	/** Set display color. */
 	void SetColor(const decColor &color);
 	
-	/** \brief Navigation space type. */
+	/** Navigation space type. */
 	inline int GetType() const{ return pType; }
 	
-	/** \brief Set navigation type. */
+	/** Set navigation type. */
 	void SetType(int type);
 	
 	
 	
-	/** \brief Notify listeners navigation space changed. */
+	/** Notify listeners navigation space changed. */
 	void NotifyChanged();
 	
-	/** \brief Notify listeners navigation space type changed. */
+	/** Notify listeners navigation space type changed. */
 	void NotifyTypeChanged();
 	
 	
 	
-	/** \brief Debug drawer shape or \em NULL. */
+	/** Debug drawer shape or \em nullptr. */
 	inline deDebugDrawerShape *GetDDShape() const{ return pDDShape; }
 	
-	/** \brief Set debug drawer shape or \em NULL. */
+	/** Set debug drawer shape or \em nullptr. */
 	void SetDDShape(deDebugDrawerShape *shape);
 	
-	/** \brief Update heights. */
+	/** Update heights. */
 	void UpdateHeights();
 	/*@}*/
 	
@@ -124,38 +126,29 @@ public:
 	
 	/** \name Faces */
 	/*@{*/
-	/** \brief Number of faces. */
-	int GetFaceCount() const;
+	/** Faces. */
+	inline const meHeightTerrainNavSpaceFace::List &GetFaces() const{ return pFaces; }
 	
-	/** \brief Face at index. */
-	meHeightTerrainNavSpaceFace *GetFaceAt(int index) const;
-	
-	/** \brief Face is present. */
-	bool HasFace(meHeightTerrainNavSpaceFace *face) const;
-	
-	/** \brief Index of the face or -1 if absent. */
-	int IndexOfFace(meHeightTerrainNavSpaceFace *face) const;
-	
-	/** \brief Add face. */
+	/** Add face. */
 	void AddFace(meHeightTerrainNavSpaceFace *face);
 	
-	/** \brief Remove face. */
+	/** Remove face. */
 	void RemoveFace(meHeightTerrainNavSpaceFace *face);
 	
-	/** \brief Remove all faces. */
+	/** Remove all faces. */
 	void RemoveAllFaces();
 	
-	/** \brief Notify listeners faces changed. */
+	/** Notify listeners faces changed. */
 	void NotifyFacesChanged();
 	
-	/** \brief Update debug drawer faces (for internal use only). */
+	/** Update debug drawer faces (for internal use only). */
 	void UpdateDDFaces();
 	/*@}*/
 	
 	
 	
 private:
-	/** \brief Update debug drawer faces. */
+	/** Update debug drawer faces. */
 	void pUpdateDDFaces();
 };
 

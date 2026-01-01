@@ -26,11 +26,12 @@
 #define _MEUNDODATAOBJECTTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-#include "../../../../world/object/texture/meObjectTextureList.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -39,17 +40,17 @@ class meObject;
  */
 class meUndoDataObjectTexture : public deObject{
 private:
-	meObject *pObject;
-	meObjectTexture *pOldTexture;
-	meObjectTexture *pNewTexture;
-	meObjectTextureList pOldTextureList;
-	meObjectTextureList pNewTextureList;
+	meObject::Ref pObject;
+	meObjectTexture::Ref pOldTexture;
+	meObjectTexture::Ref pNewTexture;
+	meObjectTexture::List pOldTextureList;
+	meObjectTexture::List pNewTextureList;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUndoDataObjectTexture> Ref;
-
-
+	typedef decTObjectOrderedSet<meUndoDataObjectTexture> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
@@ -57,28 +58,32 @@ public:
 	
 protected:
 	/** \brief Clean up undo data object. */
+
+protected:
 	virtual ~meUndoDataObjectTexture();
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object pointer. */
-	inline meObject *GetObject() const{ return pObject; }
-	/** Retrieves the old texture object or NULL if not existing. */
-	inline meObjectTexture *GetOldTexture() const{ return pOldTexture; }
-	/** Sets the old texture object or NULL if not existing. */
+	inline const meObject::Ref &GetObject() const{ return pObject; }
+	/** Retrieves the old texture object or nullptr if not existing. */
+	inline const meObjectTexture::Ref &GetOldTexture() const{ return pOldTexture; }
+	/** Sets the old texture object or nullptr if not existing. */
 	void SetOldTexture(meObjectTexture *texture);
-	/** Retrieves the new texture object or NULL if not existing. */
-	inline meObjectTexture *GetNewTexture() const{ return pNewTexture; }
-	/** Sets the new texture object or NULL if not existing. */
+	/** Retrieves the new texture object or nullptr if not existing. */
+	inline const meObjectTexture::Ref &GetNewTexture() const{ return pNewTexture; }
+	/** Sets the new texture object or nullptr if not existing. */
 	void SetNewTexture(meObjectTexture *texture);
 	/** Retrieves the old texture list if used. */
-	inline meObjectTextureList &GetOldTextureList(){ return pOldTextureList; }
-	inline const meObjectTextureList &GetOldTextureList() const{ return pOldTextureList; }
+	inline meObjectTexture::List &GetOldTextureList(){ return pOldTextureList; }
+	inline const meObjectTexture::List &GetOldTextureList() const{ return pOldTextureList; }
 	/** Retrieves the new texture list if used. */
-	inline meObjectTextureList &GetNewTextureList(){ return pNewTextureList; }
-	inline const meObjectTextureList &GetNewTextureList() const{ return pNewTextureList; }
+	inline meObjectTexture::List &GetNewTextureList(){ return pNewTextureList; }
+	inline const meObjectTexture::List &GetNewTextureList() const{ return pNewTextureList; }
 	/*@}*/
 };
 

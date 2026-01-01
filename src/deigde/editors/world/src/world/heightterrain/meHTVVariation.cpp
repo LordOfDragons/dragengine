@@ -53,10 +53,10 @@ meHTVVariation::meHTVVariation(deEngine *engine){
 	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
-	pVLayer = NULL;
+	pVLayer = nullptr;
 	
-	pModel = NULL;
-	pSkin = NULL;
+	pModel = nullptr;
+	pSkin = nullptr;
 	pRotationPerForce = 5.0f;
 	pRestitution = 0.5f;
 	
@@ -67,8 +67,6 @@ meHTVVariation::meHTVVariation(deEngine *engine){
 }
 
 meHTVVariation::~meHTVVariation(){
-	if(pSkin) pSkin->FreeReference();
-	if(pModel) pModel->FreeReference();
 }
 
 
@@ -88,10 +86,7 @@ void meHTVVariation::SetPathModel(const char *path){
 	if(!pPathModel.Equals(path)){
 		pPathModel = path;
 		
-		if(pModel){
-			pModel->FreeReference();
-			pModel = NULL;
-		}
+		pModel = nullptr;
 		
 		if(!pPathModel.IsEmpty()){
 			try{
@@ -111,10 +106,7 @@ void meHTVVariation::SetPathSkin(const char *path){
 	if(!pPathSkin.Equals(path)){
 		pPathSkin = path;
 		
-		if(pSkin){
-			pSkin->FreeReference();
-			pSkin = NULL;
-		}
+		pSkin = nullptr;
 		
 		if(!pPathSkin.IsEmpty()){
 			try{
@@ -124,7 +116,6 @@ void meHTVVariation::SetPathSkin(const char *path){
 				if(pVLayer && pVLayer->GetHeightTerrain()){
 					pSkin = pVLayer->GetHeightTerrain()->GetWorld().GetEnvironment()->
 						GetStockSkin(igdeEnvironment::essError);
-					pSkin->AddReference();
 				}
 			}
 		}

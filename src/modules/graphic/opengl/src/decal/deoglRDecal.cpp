@@ -57,7 +57,6 @@
 #include "../skin/deoglSkinRenderable.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
@@ -171,15 +170,8 @@ pStaticTexture(true),
 
 pListenerIndex(0)
 {
-	pSkin = NULL;
-	pDynamicSkin = NULL;
-	pSkinState = NULL;
-	
-	pUseSkin = NULL;
 	pUseTextureNumber = -1;
 	pUseSkinTexture = NULL;
-	pUseDynamicSkin = NULL;
-	pUseSkinState = NULL;
 	
 	pDirtyPrepareSkinStateRenderables = true;
 	pDirtyRenderSkinStateRenderables = true;
@@ -224,7 +216,7 @@ deoglRDecal::~deoglRDecal(){
 		pTUCEnvMap->RemoveUsage();
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 	if(pGIBVHLocal){
 		delete pGIBVHLocal;
@@ -330,26 +322,8 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	pRequiresPrepareForRender();
 }
 
-void deoglRDecal::SetSkinState(deoglSkinState *skinState){
-	if(skinState == pSkinState){
-		return;
-	}
-	
-	if(pSkinState){
-		delete pSkinState;
-	}
-	
-	pSkinState = skinState;
-	
-	pDirtyUseTexture = true;
-	pDirtyPrepareSkinStateRenderables = true;
-	
-	InvalidateParamBlocks();
-	MarkTUCsDirty();
-	
-	UpdateSkinState();
-	
-	pRequiresPrepareForRender();
+void deoglRDecal::DropSkinState(){
+	pSetSkinState(nullptr);
 }
 
 void deoglRDecal::UpdateSkinState(){
@@ -359,13 +333,13 @@ void deoglRDecal::UpdateSkinState(){
 	
 	if(pSkin && (pDynamicSkin || (pParentComponent && pParentComponent->GetDynamicSkin()))){
 		if(!pSkinState){
-			pSkinState = new deoglSkinState(pRenderThread, *this);
+			pSkinState = deoglSkinState::Ref::New(pRenderThread, *this);
 			changed = true;
 		}
 		
 	}else{
 		if(pSkinState){
-			SetSkinState(NULL);
+			pSetSkinState(nullptr);
 			changed = true;
 		}
 	}
@@ -418,7 +392,7 @@ void deoglRDecal::SetParentComponent(deoglRComponent *component){
 	SetDirtyVBO();
 	SetDirtyGIBVH();
 	
-	SetSkinState(NULL); // required since UpdateSkinState can not figure out dynamic skin changed
+	pSetSkinState(nullptr); // required since UpdateSkinState can not figure out dynamic skin changed
 	UpdateSkinState();
 	
 // 	NotifyGeometryChanged(); // either removed from component (notify destroyed) or added (no listener)
@@ -900,11 +874,11 @@ void deoglRDecal::pUpdateUseSkin(){
 		return;
 	}
 	
-	pUseSkin = NULL;
+	pUseSkin = nullptr;
 	pUseTextureNumber = -1;
 	pUseSkinTexture = NULL;
-	pUseDynamicSkin = NULL;
-	pUseSkinState = NULL;
+	pUseDynamicSkin = nullptr;
+	pUseSkinState = nullptr;
 	
 	pDirtySharedSPBElement = true;
 	
@@ -1171,4 +1145,26 @@ void deoglRDecal::pRequiresPrepareForRender(){
 	if(pParentComponent){
 		pParentComponent->DecalRequiresPrepareForRender();
 	}
+}
+
+void deoglRDecal::pSetSkinState(deoglSkinState *skinState){
+	if(skinState == pSkinState){
+		return;
+	}
+	
+	if(pSkinState){
+		pSkinState->DropOwner();
+	}
+	
+	pSkinState = skinState;
+	
+	pDirtyUseTexture = true;
+	pDirtyPrepareSkinStateRenderables = true;
+	
+	InvalidateParamBlocks();
+	MarkTUCsDirty();
+	
+	UpdateSkinState();
+	
+	pRequiresPrepareForRender();
 }

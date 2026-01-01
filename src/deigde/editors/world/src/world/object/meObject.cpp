@@ -34,7 +34,6 @@
 #include "../meCamera.h"
 #include "../pathfinding/mePathFindTest.h"
 #include "../meWorldGuiParameters.h"
-#include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
 #include "../../collisions/meCLInvalidateDecals.h"
 #include "../../configuration/meConfiguration.h"
@@ -183,27 +182,11 @@ pWOAsyncFinished(*this)
 	pEnvironment = environment;
 	pWorld = nullptr;
 	
-	pDebugDrawer = nullptr;
-	pDDSObject = nullptr;
-	pDDSLightAoE = nullptr;
-	pDDSOcclusionMesh = nullptr;
-	pDDSObjectShapes = nullptr;
 	pDDSCoordSysArrows = nullptr;
 	
-	pEngComponentBroken = nullptr;
-	pColDetCollider = nullptr;
 	pCamera = nullptr;
 	
 	pRange = 10.0f; //pGetRangeFor(1.0f, 2.0f, 0.01f);
-	
-	pTextures = nullptr;
-	pTextureCount = 0;
-	pTextureSize = 0;
-	pActiveTexture = nullptr;
-	
-	pDecals = nullptr;
-	pDecalCount = 0;
-	pDecalSize = 0;
 	
 	pClassDef = nullptr;
 	pSelected = false;
@@ -215,7 +198,7 @@ pWOAsyncFinished(*this)
 	pAttachedTo = nullptr;
 	
 	try{
-		pWObject.TakeOver(new igdeWObject(*environment));
+		pWObject = igdeWObject::Ref::New(*environment);
 		
 		// collision filter
 		decLayerMask collisionCategory;
@@ -275,19 +258,19 @@ pWOAsyncFinished(*this)
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSObject = new igdeWDebugDrawerShape;
+		pDDSObject = igdeWDebugDrawerShape::Ref::New();
 		pDDSObject->SetVisible(false);
 		pDDSObject->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSLightAoE = new igdeWDebugDrawerShape;
+		pDDSLightAoE = igdeWDebugDrawerShape::Ref::New();
 		pDDSLightAoE->SetVisible(false);
 		pDDSLightAoE->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSOcclusionMesh = new igdeWDebugDrawerShape;
+		pDDSOcclusionMesh = igdeWDebugDrawerShape::Ref::New();
 		pDDSOcclusionMesh->SetVisible(false);
 		pDDSOcclusionMesh->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSObjectShapes = new igdeWDebugDrawerShape;
+		pDDSObjectShapes = igdeWDebugDrawerShape::Ref::New();
 		pDDSObjectShapes->SetVisible(false);
 		pDDSObjectShapes->SetEdgeColor(decColor(0.35f, 0.35f, 0.35f, 1.0f));
 		pDDSObjectShapes->SetFillColor(decColor(0.35f, 0.35f, 0.35f, 0.1f));
@@ -325,11 +308,10 @@ void meObject::Dispose(){
 	RemoveAllLinks();
 	pRemoveAllSnapPoints();
 	
-	SetAttachedTo(NULL);
-	while(pAttachedObjectsList.GetCount() > 0){
-		((meObject*)pAttachedObjectsList.GetAt(
-			pAttachedObjectsList.GetCount() - 1))->SetAttachedTo(NULL);
-	}
+	SetAttachedTo(nullptr);
+	pAttachedObjects.Visit([&](meObject &o){
+		o.SetAttachedTo(nullptr);
+	});
 }
 
 void meObject::SetWorld(meWorld *world){
@@ -337,7 +319,7 @@ void meObject::SetWorld(meWorld *world){
 		return;
 	}
 	
-	SetAttachedTo(NULL);
+	SetAttachedTo(nullptr);
 	pRemoveAllSnapPoints();
 	
 	if(pWorld){
@@ -368,14 +350,13 @@ void meObject::SetWorld(meWorld *world){
 		pWObject->SetTriggerTable(&world->GetTriggerTable()); // can trigger WOAsyncFinished in the future
 		
 	}else{
-		pWObject->SetWorld(NULL);
-		pWObject->SetTriggerTable(NULL);
+		pWObject->SetWorld(nullptr);
+		pWObject->SetTriggerTable(nullptr);
 	}
 	
-	int i;
-	for(i=0; i<pDecalCount; i++){
-		pDecals[i]->SetWorld(world);
-	}
+	pDecals.Visit([&](meDecal &d){
+		d.SetWorld(world);
+	});
 	
 	pUpdateComponent();
 	pUpdateCamera();
@@ -397,6 +378,7 @@ void meObject::SetSelected(bool selected){
 	
 	pUpdateDDSColors();
 	pUpdateOutline();
+	CheckLinks();
 }
 
 void meObject::SetActive(bool active){
@@ -409,7 +391,6 @@ void meObject::SetActive(bool active){
 	pUpdateDDSColors();
 	UpdateDDSObjectShapes();
 	pUpdateOutline();
-	CheckLinks();
 }
 
 void meObject::SetVisible(bool visible){
@@ -665,31 +646,25 @@ void meObject::UpdateDDSObjectShapes(){
 		return;
 	}
 	
-	const decStringList keys(pProperties.GetKeys());
-	const int keyCount = keys.GetCount();
 	igdeCodecPropertyString codec;
-	int i;
-	
-	for(i=0; i<keyCount; i++){
-		const decString &key = keys.GetAt(i);
+	pProperties.Visit([&](const decString &key, const decString &value){
 		if(!IsPropertyShapeOrShapeList(key)){
-			continue;
+			return;
 		}
-		
 		if(pActive && pActiveProperty == key){
-			continue;
+			return;
 		}
 		
 		decShapeList shapeList;
-		codec.DecodeShapeList(pProperties.GetAt(key), shapeList);
+		codec.DecodeShapeList(value, shapeList);
 		
 		const int shapeCount = shapeList.GetCount();
 		decShape *shape = nullptr;
-		int j;
+		int i;
 		
 		try{
-			for(j=0; j<shapeCount; j++){
-				shape = shapeList.GetAt(j)->Copy();
+			for(i=0; i<shapeCount; i++){
+				shape = shapeList.GetAt(i)->Copy();
 				pDDSObjectShapes->AddShape(shape);
 				shape = nullptr;
 			}
@@ -700,7 +675,7 @@ void meObject::UpdateDDSObjectShapes(){
 			}
 			throw;
 		}
-	}
+	});
 }
 
 
@@ -716,16 +691,14 @@ void meObject::SetAttachedTo(meObject *object){
 			pAttachedTo->RemoveLink(link);
 		}
 		
-		pAttachedTo->GetAttachedObjectsList().Remove(this);
-		pAttachedTo->FreeReference();
+		pAttachedTo->GetAttachedObjects().Remove(this);
 	}
 	
 	meObject * const oldObject = pAttachedTo;
 	pAttachedTo = object;
 	
 	if(object){
-		object->AddReference();
-		object->GetAttachedObjectsList().Add(this);
+		object->GetAttachedObjects().Add(this);
 	}
 	
 	if(pWorld){
@@ -738,6 +711,15 @@ void meObject::SetAttachedTo(meObject *object){
 	if(object){
 		object->CheckLinks();
 	}
+	CheckLinks();
+}
+
+meObject::List meObject::GetAllAttachedObjects() const{
+	List list;
+	pAttachedObjects.Visit([&](meObject &o){
+		o.pAddAttachedObject(list);
+	});
+	return list;
 }
 
 void meObject::SetAttachedToID(const char *id){
@@ -775,55 +757,42 @@ void meObject::DecrementIDGroupIDUsage(){
 	}
 	
 	// object properties
-	const int mapCount = pMapIDGroup.GetCount();
-	int i;
-	
-	for(i=0; i<mapCount; i++){
-		const meMapIDGroup &map = *((meMapIDGroup*)pMapIDGroup.GetAt(i));
+	pMapIDGroup.Visit([&](meMapIDGroup &map){
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
-		
 		if(!pProperties.Has(name)){
-			continue;
+			return;
 		}
 		
 		const decString &value = pProperties.GetAt(name);
 		if(value.IsEmpty()){
-			continue; // ignore empty identifier
+			return; // ignore empty identifier
 		}
 		
 		//printf( "Object %p Class '%s' IDGroup %s Remove '%s' (%i)\n", this, pClassDef->GetName().GetString(),
 		//	map.GetGroup()->GetName().GetString(), value, map.GetGroup()->GetUsageCountFor( value ) );
 		map.GetGroup()->Remove(value);
-	}
+	});
 	
 	// texture properties
-	const int texMapCount = pTexMapIDGroup.GetCount();
-	int j;
-	
-	for(i=0; i<texMapCount; i++){
-		const meMapIDGroup &map = *((meMapIDGroup*)pTexMapIDGroup.GetAt(i));
+	pTexMapIDGroup.Visit([&](meMapIDGroup &map){
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
 		
-		for(j=0; j<pTextureCount; j++){
-			const meObjectTexture &texture = *pTextures[j];
-			const decStringDictionary properties = texture.GetProperties();
+		pTextures.Visit([&](const meObjectTexture &t){
 			const decString *value;
-			
-			if(!properties.GetAt(name, &value)){
-				continue;
+			if(!t.GetProperties().GetAt(name, value)){
+				return;
 			}
-			
 			if(value->IsEmpty()){
-				continue; // ignore empty identifier
+				return; // ignore empty identifier
 			}
 			
 			//printf( "Object %p Class '%s' Texture '%s' IDGroup %s Remove '%s' (%i)\n", this,
 			//	pClassDef->GetName().GetString(), texture.GetName().GetString(),
 			//	map.GetGroup()->GetName().GetString(), value->GetString(),
 			//	map.GetGroup()->GetUsageCountFor( value->GetString() ) );
-			map.GetGroup()->Remove(value->GetString());
-		}
-	}
+			map.GetGroup()->Remove(*value);
+		});
+	});
 }
 
 void meObject::IncrementIDGroupIDUsage(){
@@ -832,55 +801,43 @@ void meObject::IncrementIDGroupIDUsage(){
 	}
 	
 	// object properties
-	const int mapCount = pMapIDGroup.GetCount();
-	int i;
-	
-	for(i=0; i<mapCount; i++){
-		const meMapIDGroup &map = *((meMapIDGroup*)pMapIDGroup.GetAt(i));
+	pMapIDGroup.Visit([&](meMapIDGroup &map){
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
 		const decString *value = nullptr;
 		
-		if(!pProperties.GetAt(name, &value)){
-			continue;
+		if(!pProperties.GetAt(name, value)){
+			return;
 		}
 		
 		if(value->IsEmpty()){
-			continue; // ignore empty identifier
+			return; // ignore empty identifier
 		}
 		
 		map.GetGroup()->Add(value->GetString());
 		// printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
 			// map.GetGroup()->GetName().GetString(), value->GetString(), map.GetGroup()->GetUsageCountFor( *value ) );
-	}
+	});
 	
 	// texture properties
-	const int texMapCount = pTexMapIDGroup.GetCount();
-	int j;
-	
-	for(i=0; i<texMapCount; i++){
-		const meMapIDGroup &map = *((meMapIDGroup*)pTexMapIDGroup.GetAt(i));
+	pTexMapIDGroup.Visit([&](meMapIDGroup &map){
 		const decString name(map.GetPropertyPrefix() + map.GetProperty()->GetName());
 		
-		for(j=0; j<pTextureCount; j++){
-			const meObjectTexture &texture = *pTextures[j];
-			const decStringDictionary properties = texture.GetProperties();
+		pTextures.Visit([&](const meObjectTexture &t){
 			const decString *value;
-			
-			if(!properties.GetAt(name, &value)){
-				continue;
+			if(!t.GetProperties().GetAt(name, value)){
+				return;
 			}
-			
 			if(value->IsEmpty()){
-				continue; // ignore empty identifier
+				return; // ignore empty identifier
 			}
 			
 			//printf( "Object %p Class '%s' Texture '%s' IDGroup %s Add '%s' (%i)\n", this,
 			//	pClassDef->GetName().GetString(), texture.GetName().GetString(),
 			//	map.GetGroup()->GetName().GetString(), value->GetString(),
 			//	map.GetGroup()->GetUsageCountFor( value->GetString() ) );
-			map.GetGroup()->Add(value->GetString());
-		}
-	}
+			map.GetGroup()->Add(*value);
+		});
+	});
 }
 
 void meObject::UpdateIDGroupList(){
@@ -910,16 +867,20 @@ void meObject::ShowStateChanged(){
 		pDDSObjectShapes->SetVisible((modeObjShape && pSelected && pVisible)
 			|| guiParams.GetShowShapes()
 			|| (visible && guiParams.GetShowShapesSelected()));
-		pDDSListNavSpaces.SetVisibleAll(modeNavSpace
+		
+		const bool navSpaceVisible = modeNavSpace
 			|| guiParams.GetShowNavigationSpaces()
-			|| (visible && guiParams.GetShowNavigationSpacesSelected()));
+			|| (visible && guiParams.GetShowNavigationSpacesSelected());
+		pDDSListNavSpaces.Visit([navSpaceVisible](igdeWDebugDrawerShape &s){
+			s.SetVisible(navSpaceVisible);
+		});
+		
 		pDDSCoordSysArrows->SetVisible(visible);
 	}
 	
-	int i;
-	for(i=0; i<pDecalCount; i++){
-		pDecals[i]->ShowStateChanged();
-	}
+	pDecals.Visit([](meDecal &d){
+		d.ShowStateChanged();
+	});
 }
 
 void meObject::WOAsyncFinished(){
@@ -931,7 +892,7 @@ void meObject::WOAsyncFinished(){
 		const int textureCount = component->GetTextureCount();
 		int i;
 		for(i=0; i<textureCount; i++){
-			pWOTextures.Add(deObject::Ref::New(new cWOTexture(component->GetTextureAt(i))));
+			pWOTextures.Add(cWOTexture::Ref::New(component->GetTextureAt(i)));
 		}
 	}
 	
@@ -992,43 +953,16 @@ void meObject::WOExtendsChanged(){
 // Links
 //////////
 
-int meObject::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-meObjectLink *meObject::GetLinkAt(int index) const{
-	return (meObjectLink*)pLinks.GetAt(index);
-}
-
 meObjectLink *meObject::GetLinkTo(meObject *target) const{
-	if(!target){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(target)
 	
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		meObjectLink * const link = (meObjectLink*)pLinks.GetAt(i);
-		
-		if(target == link->GetTarget()){
-			return link;
-		}
-	}
-	
-	return NULL;
+	return pLinks.FindOrDefault([&](const meObjectLink &link){
+		return link.GetTarget() == target;
+	});
 }
 
 bool meObject::HasLinkTo(meObject *target) const{
-	return GetLinkTo(target) != NULL;
-}
-
-bool meObject::HasLink(meObjectLink *link) const{
-	return pLinks.Has(link);
-}
-
-int meObject::IndexOfLink(meObjectLink *link) const{
-	return pLinks.IndexOf(link);
+	return GetLinkTo(target) != nullptr;
 }
 
 void meObject::AddLink(meObjectLink *link){
@@ -1038,46 +972,34 @@ void meObject::AddLink(meObjectLink *link){
 		link->SetWorld(pWorld);
 		
 	}else{
-		link->SetWorld(NULL);
+		link->SetWorld(nullptr);
 	}
 }
 
 void meObject::RemoveLink(meObjectLink *link){
-	const int index = pLinks.IndexOf(link);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	link->SetWorld(NULL);
-	pLinks.RemoveFrom(index);
+	const meObjectLink::Ref guard(link);
+	DEASSERT_TRUE(pLinks.Remove(link))
+	link->SetWorld(nullptr);
 }
 
 void meObject::RemoveAllLinks(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((meObjectLink*)pLinks.GetAt(i))->SetWorld(NULL);
-	}
+	pLinks.Visit([](meObjectLink &l){
+		l.SetWorld(nullptr);
+	});
 	pLinks.RemoveAll();
 }
 
 bool meObject::CanLinkTo(meObject *object) const{
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(object)
 	
-	// no link with yourself
 	if(object == this){
 		return false;
 	}
 	
-	// link due to attaching
 	if(pAttachedTo == object){
 		return true;
 	}
 	
-	// no link has been found
 	return false;
 }
 
@@ -1089,27 +1011,19 @@ void meObject::UpdateTriggerTargets(){
 }
 
 void meObject::CheckLinks(){
-	int i;
-	
-	// if we are not active or there is no game definition class remove all links
-	if(!pActive || !pClassDef){
-		for(i=0; i<pLinks.GetCount(); i++){
-			meObjectLink * const link = (meObjectLink*)pLinks.GetAt(i);
-			meObject *object = nullptr;
-			
-			if(link->GetAnchor() == this){
-				object = link->GetTarget();
-				
-			}else{
-				object = link->GetAnchor();
+	// if we are not selected or there is no game definition class remove all links
+	if(!pSelected || !pClassDef){
+		pLinks.RemoveIf([&](meObjectLink *link){
+			if(link->GetAnchor() != this && link->GetAnchor()->GetSelected()){
+				return false; // keep links where we are not the anchor and anchor is selected
 			}
 			
-			if(object->HasLink(link)){
-				object->RemoveLink(link);
+			meObject &object = link->GetAnchor() == this ? link->GetTarget() : link->GetAnchor();
+			if(object.GetLinks().Has(link)){
+				object.RemoveLink(link);
 			}
-		}
-		
-		RemoveAllLinks();
+			return true;
+		});
 		return;
 	}
 	
@@ -1118,22 +1032,19 @@ void meObject::CheckLinks(){
 		return;
 	}
 	
-	const meObjectList &objects = pWorld->GetObjects();
-	const int objectCount = objects.GetCount();
-	for(i=0; i<objectCount; i++){
-		meObject * const object = objects.GetAt(i);
+	pWorld->GetObjects().Visit([&](meObject *object){
 		if(object == this){
-			continue;
+			return;
 		}
 		
 		// if we are the anchor make sure the link starts with us
 		const bool isAnchor = CanLinkTo(object);
 		
-		if(isAnchor || object->CanLinkTo(this)){
-			meObjectLink *link = GetLinkTo(object);
+		if(isAnchor){
+			meObjectLink::Ref link(GetLinkTo(object));
 			
 			if(link){
-				if(!object->HasLink(link)){
+				if(!object->pLinks.Has(link)){
 					object->AddLink(link);
 				}
 				
@@ -1141,35 +1052,17 @@ void meObject::CheckLinks(){
 				link = object->GetLinkTo(this);
 				
 				if(link){
-					if(!HasLink(link)){
+					if(!pLinks.Has(link)){
 						AddLink(link);
 					}
 					
 				}else{
-					link = nullptr;
-					try{
-						// create the link in the proper direction
-						if(isAnchor){
-							link = new meObjectLink(pEnvironment, this, object);
-							
-						}else{
-							link = new meObjectLink(pEnvironment, object, this);
-						}
-						if(!link){
-							DETHROW(deeOutOfMemory);
-						}
-						
-						// add the link and give up the reference we hold
-						AddLink(link);
-						object->AddLink(link);
-						link->FreeReference();
-						
-					}catch(const deException &){
-						if(link){
-							link->FreeReference();
-						}
-						throw;
-					}
+					// create the link in the proper direction
+					link = meObjectLink::Ref::New(pEnvironment, this, object);
+					
+					// add the link and give up the reference we hold
+					AddLink(link);
+					object->AddLink(link);
 				}
 			}
 			
@@ -1178,14 +1071,19 @@ void meObject::CheckLinks(){
 			meObjectLink * const link = GetLinkTo(object);
 			
 			if(link){
-				if(object->HasLink(link)){
+				if(object->pLinks.Has(link)){
 					object->RemoveLink(link);
 				}
 				
 				RemoveLink(link); // remove last otherwise the link could be dangling all of a sudden
 			}
 		}
-	}
+	});
+	
+	// Update colors of all links
+	pLinks.Visit([](meObjectLink &link){
+		link.UpdateColor();
+	});
 }
 
 
@@ -1199,91 +1097,29 @@ void meObject::Update(float elapsed){
 // Textures
 /////////////
 
-meObjectTexture *meObject::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount) DETHROW(deeInvalidParam);
-	
-	return pTextures[index];
-}
-
 meObjectTexture *meObject::GetTextureNamed(const char *name) const{
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(pTextures[i]->GetName() == name){
-			return pTextures[i];
-		}
-	}
-	
-	return NULL;
+	return pTextures.FindOrDefault([&](const meObjectTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 bool meObject::HasTextureNamed(const char *name) const{
-	if(!name) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(strcmp(name, pTextures[i]->GetName()) == 0){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int meObject::IndexOfTexture(meObjectTexture *texture) const{
-	if(!texture) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(texture == pTextures[i]) return i;
-	}
-	
-	return -1;
+	return pTextures.HasMatching([&](const meObjectTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 int meObject::IndexOfTextureNamed(const char *name) const{
-	if(!name) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(strcmp(name, pTextures[i]->GetName()) == 0){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool meObject::HasTexture(meObjectTexture *texture) const{
-	if(!texture) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pTextureCount; i++){
-		if(texture == pTextures[i]) return true;
-	}
-	
-	return false;
+	return pTextures.IndexOfMatching([&](const meObjectTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 void meObject::AddTexture(meObjectTexture *texture){
-	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(texture)
+	DEASSERT_FALSE(HasTextureNamed(texture->GetName()))
 	
-	if(pTextureCount == pTextureSize){
-		int newSize = pTextureCount * 3 / 2 + 1;
-		meObjectTexture **newArray = new meObjectTexture*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pTextures){
-			memcpy(newArray, pTextures, sizeof(meObjectTexture*) * pTextureSize);
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	pTextures[pTextureCount] = texture;
-	pTextureCount++;
-	
-	texture->AddReference();
+	pTextures.Add(texture);
 	texture->SetObject(this);
 	
 	pUpdateComponent();
@@ -1295,24 +1131,14 @@ void meObject::AddTexture(meObjectTexture *texture){
 }
 
 void meObject::RemoveTexture(meObjectTexture *texture){
-	const int index = IndexOfTexture(texture);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const meObjectTexture::Ref guard(texture);
 	
 	if(texture == pActiveTexture){
-		SetActiveTexture(NULL);
+		SetActiveTexture(nullptr);
 	}
 	
-	int i;
-	for(i=index+1; i<pTextureCount; i++){
-		pTextures[i - 1] = pTextures[i];
-	}
-	pTextureCount--;
-	
-	texture->SetObject(NULL);
-	texture->FreeReference();
-	
+	DEASSERT_TRUE(pTextures.Remove(texture))
+	texture->SetObject(nullptr);
 	pWObject->ResetComponentTextures();
 	pUpdateComponent();
 	
@@ -1323,14 +1149,11 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 }
 
 void meObject::RemoveAllTextures(){
-	SetActiveTexture(NULL);
+	SetActiveTexture(nullptr);
 	
-	while(pTextureCount > 0){
-		pTextureCount--;
-		
-		pTextures[pTextureCount]->SetObject(NULL);
-		pTextures[pTextureCount]->FreeReference();
-	}
+	pTextures.Visit([](meObjectTexture &t){
+		t.SetObject(nullptr);
+	});
 	
 	// this is a problem here. on clean up it makes no sense to recreate textures in the component.
 	// we need a way to prevent any kind of updates during clean up which are no more needed at that time
@@ -1344,12 +1167,14 @@ void meObject::RemoveAllTextures(){
 }
 
 void meObject::SetActiveTexture(meObjectTexture *texture){
-	if(texture != pActiveTexture){
-		pActiveTexture = texture;
-		
-		if(pWorld){
-			pWorld->NotifyObjectActiveTextureChanged(this);
-		}
+	if(texture == pActiveTexture){
+		return;
+	}
+	
+	pActiveTexture = texture;
+	
+	if(pWorld){
+		pWorld->NotifyObjectActiveTextureChanged(this);
 	}
 }
 
@@ -1436,7 +1261,7 @@ bool meObject::IsComponentBroken() const{
 	}
 	
 	// if the component has no textures it is broken
-	const int textureCount = engModel->GetTextureCount();
+	const int textureCount = engModel->GetTextures().GetCount();
 	if(textureCount == 0){
 		return false;
 	}
@@ -1452,13 +1277,13 @@ bool meObject::IsComponentBroken() const{
 	int i;
 	
 	for(i=0; i<textureCount; i++){
-		const deComponentTexture &componentTexture = component->GetTextureAt(i);
+		const deComponentTexture &componentTexture = component->GetTextures().GetAt(i);
 		const deSkin * const engCompTexSkin = componentTexture.GetSkin();
 		
 		// check if the component texture is overwritten with a valid texture
 		if(engCompTexSkin){
 			const int compTexTex = componentTexture.GetTexture();
-			if(compTexTex >= 0 && compTexTex < engCompTexSkin->GetTextureCount()){
+			if(compTexTex >= 0 && compTexTex < engCompTexSkin->GetTextures().GetCount()){
 				// texture has a skin assigned and the texture number is inside valid boundaries.
 				// the user can see at least this texture
 				return false;
@@ -1466,7 +1291,7 @@ bool meObject::IsComponentBroken() const{
 		}
 		
 		// check if the component texture matches the component skin
-		if(engSkin && engSkin->IndexOfTextureNamed(engModel->GetTextureAt(i)->GetName()) != -1){
+		if(engSkin && engSkin->IndexOfTextureNamed(engModel->GetTextures().GetAt(i)->GetName()) != -1){
 			return false;
 		}
 	}
@@ -1477,13 +1302,10 @@ bool meObject::IsComponentBroken() const{
 }
 
 void meObject::GetTextureNameList(decStringList &list) const{
-	int i;
-	
 	list.RemoveAll();
-	
-	for(i=0; i<pTextureCount; i++){
-		list.Add(pTextures[i]->GetName());
-	}
+	pTextures.Visit([&](const meObjectTexture &t){
+		list.Add(t.GetName());
+	});
 }
 
 void meObject::GetModelTextureNameList(decStringList &list) const{
@@ -1509,7 +1331,7 @@ void meObject::GetModelTextureNameList(decStringList &list) const{
 
 void meObject::SetProperty(const char *key, const char *value){
 	const decString *checkString = nullptr;
-	if(pProperties.GetAt(key, &checkString) && *checkString == value){
+	if(pProperties.GetAt(key, checkString) && *checkString == value){
 		return;
 	}
 	
@@ -1553,7 +1375,7 @@ void meObject::SetProperties(const decStringDictionary &properties){
 	
 	pProperties = properties;
 	
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		pActiveProperty = "";
 		
 	}else{
@@ -1585,7 +1407,7 @@ void meObject::RemoveProperty(const char *key){
 	pProperties.Remove(key);
 	
 	if(pActiveProperty == key){
-		if(pProperties.GetCount() == 0){
+		if(pProperties.IsEmpty()){
 			pActiveProperty = "";
 			
 		}else{
@@ -1619,7 +1441,7 @@ void meObject::RemoveProperty(const char *key){
 }
 
 void meObject::RemoveAllProperties(){
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		return;
 	}
 	
@@ -1661,7 +1483,7 @@ bool meObject::IsPropertyShape(const char *property) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : NULL;
+	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : nullptr;
 	if(gdproperty){
 		return gdproperty->GetType() == igdeGDProperty::eptShape;
 	}
@@ -1674,7 +1496,7 @@ bool meObject::IsPropertyShapeList(const char *property) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : NULL;
+	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : nullptr;
 	if(gdproperty){
 		return gdproperty->GetType() == igdeGDProperty::eptShapeList;
 	}
@@ -1687,7 +1509,7 @@ bool meObject::IsPropertyShapeOrShapeList(const char *property) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : NULL;
+	const igdeGDProperty * const gdproperty = pClassDef ? pClassDef->GetPropertyNamed(property) : nullptr;
 	if(gdproperty){
 		const int propertyType = gdproperty->GetType();
 		return propertyType == igdeGDProperty::eptShapeList || propertyType == igdeGDProperty::eptShape;
@@ -1704,7 +1526,7 @@ bool meObject::IsPropertyShapeOrShapeList(const char *property) const{
 void meObject::SetAttachBehaviors(const decStringList &list){
 	pAttachBehaviors = list;
 	
-	pActiveAttachBehavior = pAttachBehaviors.GetCount() == 0 ? -1 : 0;
+	pActiveAttachBehavior = pAttachBehaviors.IsEmpty() ? -1 : 0;
 	
 	if(pWorld){
 		pWorld->SetChanged(true);
@@ -1732,134 +1554,58 @@ void meObject::SetActiveAttachBehavior(int attachBehavior){
 // Decals
 ///////////
 
-meDecal *meObject::GetDecalAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pDecalCount)
-	
-	return pDecals[index];
-}
-
-int meObject::IndexOfDecal(meDecal *decal) const{
-	if(!decal){
-		return -1;
-	}
-	
-	int i;
-	for(i=0; i<pDecalCount; i++){
-		if(decal == pDecals[i]){
-			return i;
-		}
-	}
-	return -1;
-}
-
-bool meObject::HasDecal(meDecal *decal) const{
-	if(!decal){
-		return false;
-	}
-	
-	int i;
-	for(i=0; i<pDecalCount; i++){
-		if(decal == pDecals[i]){
-			return true;
-		}
-	}
-	return false;
-}
-
 void meObject::AddDecal(meDecal *decal){
-	DEASSERT_FALSE(HasDecal(decal))
+	DEASSERT_FALSE(pDecals.Has(decal))
 	
-	if(pDecalCount == pDecalSize){
-		int newSize = pDecalCount * 3 / 2 + 1;
-		meDecal **newArray = new meDecal*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pDecals){
-			memcpy(newArray, pDecals, sizeof(meDecal*) * pDecalSize);
-			delete [] pDecals;
-		}
-		pDecals = newArray;
-		pDecalSize = newSize;
-	}
-	
-	pDecals[pDecalCount] = decal;
-	pDecalCount++;
-	
-	decal->AddReference();
+	pDecals.Add(decal);
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
-	if(pWorld) pWorld->SetChanged(true);
+	if(pWorld){
+		pWorld->SetChanged(true);
+	}
 }
 
 void meObject::InsertDecalAt(meDecal *decal, int index){
-	DEASSERT_FALSE(HasDecal(decal))
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index <= pDecalCount)
+	DEASSERT_FALSE(pDecals.Has(decal))
 	
-	int i;
-	for(i=pDecalCount-1; i>index; i--){
-		pDecals[i] = pDecals[i - 1];
-	}
-	
-	pDecals[index] = decal;
-	pDecalCount++;
-	
-	decal->AddReference();
+	pDecals.Insert(decal, index);
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
-	if(pWorld) pWorld->SetChanged(true);
+	if(pWorld){
+		pWorld->SetChanged(true);
+	}
 }
 
 void meObject::RemoveDecal(meDecal *decal){
-	int i, index = IndexOfDecal(decal);
-	DEASSERT_TRUE(index != -1)
+	const meDecal::Ref guard(decal);
 	
-	for(i=index+1; i<pDecalCount; i++){
-		pDecals[i - 1] = pDecals[i];
+	DEASSERT_TRUE(pDecals.Remove(decal))
+	decal->SetWorld(nullptr);
+	decal->SetParentObject(nullptr);
+	
+	if(pWorld){
+		pWorld->SetChanged(true);
 	}
-	pDecalCount--;
-	
-	decal->SetWorld(NULL);
-	decal->SetParentObject(NULL);
-	decal->FreeReference();
-	
-	if(pWorld) pWorld->SetChanged(true);
 }
 
 void meObject::RemoveAllDecals(){
-	while(pDecalCount > 0){
-		pDecalCount--;
-		
-		pDecals[pDecalCount]->SetWorld(NULL);
-		pDecals[pDecalCount]->SetParentObject(NULL);
-		pDecals[pDecalCount]->FreeReference();
-	}
+	pDecals.Visit([](meDecal &d){
+		d.SetWorld(nullptr);
+		d.SetParentObject(nullptr);
+	});
 	
-	if(pWorld) pWorld->SetChanged(true);
+	if(pWorld){
+		pWorld->SetChanged(true);
+	}
 }
 
 void meObject::MoveDecalTo(meDecal *decal, int index){
-	if(index < 0 || index > pDecalCount) DETHROW(deeInvalidParam);
-	int i, oldIndex = IndexOfDecal(decal);
-	if(oldIndex == -1) DETHROW(deeInvalidParam);
+	pDecals.Move(decal, index);
 	
-	if(index < oldIndex){
-		for(i=oldIndex; i>index; i--){
-			pDecals[i] = pDecals[i - 1];
-		}
-		pDecals[index] = decal;
-		
-		if(pWorld) pWorld->SetChanged(true);
-		
-	}else if(index > oldIndex){
-		for(i=oldIndex; i<index; i++){
-			pDecals[i] = pDecals[i + 1];
-		}
-		pDecals[index] = decal;
-		
-		if(pWorld) pWorld->SetChanged(true);
+	if(pWorld){
+		pWorld->SetChanged(true);
 	}
 }
 
@@ -1890,28 +1636,13 @@ void meObject::FindDecalsTouching(decShape *shape, deDecalList *list){
 //////////////////////
 
 void meObject::pCleanUp(){
-	SetWorld(NULL);
+	SetWorld(nullptr);
 	
 	pRemoveAllSnapPoints();
-	
 	RemoveAllDecals();
-	if(pDecals){
-		delete [] pDecals;
-	}
-	
 	RemoveAllLinks();
-	
 	RemoveAllTextures();
-	if(pTextures){
-		delete [] pTextures;
-	}
 	
-	if(pColDetCollider){
-		pColDetCollider->FreeReference();
-	}
-	if(pEngComponentBroken){
-		pEngComponentBroken->FreeReference();
-	}
 	pWObject = nullptr;
 	
 	if(pCamera){
@@ -1920,21 +1651,6 @@ void meObject::pCleanUp(){
 	
 	if(pDDSCoordSysArrows){
 		delete pDDSCoordSysArrows;
-	}
-	if(pDDSObjectShapes){
-		delete pDDSObjectShapes;
-	}
-	if(pDDSOcclusionMesh){
-		delete pDDSOcclusionMesh;
-	}
-	if(pDDSLightAoE){
-		delete pDDSLightAoE;
-	}
-	if(pDDSObject){
-		delete pDDSObject;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -1962,6 +1678,10 @@ void meObject::pUpdateDDSColors(){
 	pDDSLightAoE->SetEdgeColor(decColor(0.75f, 0.75f, 0.0f, 1.0));
 	pDDSLightAoE->SetFillColor(decColor(1.0f, 1.0f, 0.0f, 0.01f));
 	
+	pLinks.Visit([](meObjectLink &link){
+		link.UpdateColor();
+	});
+	
 	ShowStateChanged();
 }
 
@@ -1976,11 +1696,11 @@ void meObject::pUpdateDDSNavSpaces(){
 	class cWOSONavSpaceVisitor : public igdeWOSOVisitor{
 	public:
 		deDebugDrawer * const debugDrawer;
-		igdeWDebugDrawerShapeList &ddShapes;
+		igdeWDebugDrawerShape::List &ddShapes;
 		int count;
 		bool requiresReposition;
 		
-		cWOSONavSpaceVisitor(deDebugDrawer *ddebugDrawer, igdeWDebugDrawerShapeList &dddShapes) :
+		cWOSONavSpaceVisitor(deDebugDrawer *ddebugDrawer, igdeWDebugDrawerShape::List &dddShapes) :
 		debugDrawer(ddebugDrawer), ddShapes(dddShapes), count(0), requiresReposition(false){
 		}
 		
@@ -1996,26 +1716,19 @@ void meObject::pUpdateDDSNavSpaces(){
 			}
 			
 			// navigation space
-			igdeWDebugDrawerShape *ddshape = nullptr;
+			igdeWDebugDrawerShape::Ref ddshape;
 			
 			if(count < ddShapes.GetCount()){
 				ddshape = ddShapes.GetAt(count);
 				
 			}else{
-				try{
-					ddshape = new igdeWDebugDrawerShape;
-					ddshape->SetParentDebugDrawer(debugDrawer);
-					ddshape->SetEdgeColor(decColor(0.5f, 0.5f, 0.5f, 1.0f));
-					ddshape->SetFillColor(decColor(0.5f, 0.5f, 0.5f, 0.1f));
-					ddShapes.Add(ddshape);
-					requiresReposition = true;
-					
-				}catch(const deException &){
-					if(ddshape){
-						delete ddshape;
-					}
-					throw;
-				}
+				const igdeWDebugDrawerShape::Ref ndds(igdeWDebugDrawerShape::Ref::New());
+				ndds->SetParentDebugDrawer(debugDrawer);
+				ndds->SetEdgeColor(decColor(0.5f, 0.5f, 0.5f, 1.0f));
+				ndds->SetFillColor(decColor(0.5f, 0.5f, 0.5f, 0.1f));
+				ddShapes.Add(ndds);
+				ddshape = ndds;
+				requiresReposition = true;
 			}
 			
 			count++;
@@ -2037,26 +1750,19 @@ void meObject::pUpdateDDSNavSpaces(){
 		}
 		
 		void Blocker(const decShapeList &shapes){
-			igdeWDebugDrawerShape *ddshape = nullptr;
+			igdeWDebugDrawerShape::Ref ddshape;
 			
 			if(count < ddShapes.GetCount()){
 				ddshape = ddShapes.GetAt(count);
 				
 			}else{
-				try{
-					ddshape = new igdeWDebugDrawerShape;
-					ddshape->SetParentDebugDrawer(debugDrawer);
-					ddshape->SetEdgeColor(decColor(0.25f, 0.25f, 0.35f, 1.0f));
-					ddshape->SetFillColor(decColor(0.25f, 0.25f, 0.35f, 0.1f));
-					ddShapes.Add(ddshape);
-					requiresReposition = true;
-					
-				}catch(const deException &){
-					if(ddshape){
-						delete ddshape;
-					}
-					throw;
-				}
+				const igdeWDebugDrawerShape::Ref ndds(igdeWDebugDrawerShape::Ref::New());
+				ndds->SetParentDebugDrawer(debugDrawer);
+				ndds->SetEdgeColor(decColor(0.25f, 0.25f, 0.35f, 1.0f));
+				ndds->SetFillColor(decColor(0.25f, 0.25f, 0.35f, 0.1f));
+				ddShapes.Add(ndds);
+				ddshape = ndds;
+				requiresReposition = true;
 			}
 			
 			count++;
@@ -2085,21 +1791,17 @@ void meObject::pRepositionDDSNavSpaces(){
 		return;
 	}
 	
-	const igdeGDCNavigationSpaceList &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
-	const int count = pDDSListNavSpaces.GetCount();
-	int i;
+	const igdeGDCNavigationSpace::List &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
 	
-	for(i=0; i<count; i++){
+	pDDSListNavSpaces.VisitIndexed([&](int i, igdeWDebugDrawerShape &ddshape){
 		if(i >= gdcNavSpaceList.GetCount()){
-			break;
+			return;
 		}
 		
-		igdeWDebugDrawerShape &ddshape = *pDDSListNavSpaces.GetAt(i);
-		
 		if(pClassDef){
-			const igdeGDCNavigationSpace &gdNavSpace = *gdcNavSpaceList.GetAt(i);
-			ddshape.SetPosition(gdNavSpace.GetPosition());
-			ddshape.SetOrientation(gdNavSpace.GetOrientation());
+			const igdeGDCNavigationSpace &gdns = gdcNavSpaceList.GetAt(i);
+			ddshape.SetPosition(gdns.GetPosition());
+			ddshape.SetOrientation(gdns.GetOrientation());
 			ddshape.SetScale(pScaling);
 			
 		}else{
@@ -2107,7 +1809,7 @@ void meObject::pRepositionDDSNavSpaces(){
 			ddshape.SetOrientation(decQuaternion());
 			ddshape.SetScale(decVector(1.0f, 1.0f, 1.0f));
 		}
-	}
+	});
 }
 
 void meObject::pUpdateOutline(){
@@ -2317,7 +2019,6 @@ void meObject::pUpdateBrokenComponent(){
 		if(pWorld){
 			pWorld->GetEngineWorld()->RemoveComponent(pEngComponentBroken);
 		}
-		pEngComponentBroken->FreeReference();
 		pEngComponentBroken = nullptr;
 	}
 }
@@ -2407,7 +2108,7 @@ void meObject::pCheckCameraProps(){
 	igdeCodecPropertyString codec;
 	
 	if(!propPosition.IsEmpty()){
-		found = pProperties.GetAt(propPosition, &pvalue);
+		found = pProperties.GetAt(propPosition, pvalue);
 		if(!found){
 			found = pClassDef->GetDefaultPropertyValue(propPosition, value);
 			if(found){
@@ -2425,7 +2126,7 @@ void meObject::pCheckCameraProps(){
 	}
 	
 	if(!propRotation.IsEmpty()){
-		found = pProperties.GetAt(propRotation, &pvalue);
+		found = pProperties.GetAt(propRotation, pvalue);
 		if(!found){
 			found = pClassDef->GetDefaultPropertyValue(propRotation, value);
 			if(found){
@@ -2460,18 +2161,15 @@ void meObject::pRepositionCamera(){
 }
 
 void meObject::pRepositionLinks(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((meObjectLink*)pLinks.GetAt(i))->ObjectsMoved();
-	}
+	pLinks.Visit([&](meObjectLink &l){
+		l.ObjectsMoved();
+	});
 }
 
 
 
 void meObject::pRemoveAllSnapPoints(){
-	if(pSnapPoints.GetCount() == 0){
+	if(pSnapPoints.IsEmpty()){
 		return;
 	}
 	
@@ -2485,30 +2183,15 @@ void meObject::pCreateSnapPoints(){
 		return;
 	}
 	
-	const igdeGDCSnapPointList &list = pClassDef->GetSnapPointList();
-	const int count = list.GetCount();
-	if(count == 0){
+	if(pClassDef->GetSnapPointList().IsEmpty()){
 		return;
 	}
 	
-	meObjectSnapPoint *snapPoint = nullptr;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			snapPoint = new meObjectSnapPoint(this, list.GetAt(i));
-			snapPoint->SetWorld(pWorld);
-			pSnapPoints.Add(snapPoint);
-			snapPoint->FreeReference();
-			snapPoint = nullptr;
-		}
-		
-	}catch(const deException &){
-		if(snapPoint){
-			snapPoint->FreeReference();
-		}
-		throw;
-	}
+	pClassDef->GetSnapPointList().Visit([&](igdeGDCSnapPoint *s){
+		const meObjectSnapPoint::Ref snapPoint(meObjectSnapPoint::Ref::New(this, s));
+		snapPoint->SetWorld(pWorld);
+		pSnapPoints.Add(snapPoint);
+	});
 	
 	pDebugDrawer->NotifyShapeLayoutChanged();
 	pColDetCollider->AttachmentsForceUpdate();
@@ -2560,11 +2243,9 @@ float meObject::pGetRangeFor(float halfIntDist, float attExp, float targetIntens
 
 
 void meObject::pNotifyDecalsAboutChange(){
-	int i;
-	
-	for(i=0; i<pDecalCount; i++){
-		pDecals[i]->NotifyParentChanged();
-	}
+	pDecals.Visit([&](meDecal &d){
+		d.NotifyParentChanged();
+	});
 }
 
 bool meObject::pAnyGDClassHasAnyPartialVisOf(const igdeGDClass &gdclass, const igdeTagManager &tags) const{
@@ -2572,66 +2253,64 @@ bool meObject::pAnyGDClassHasAnyPartialVisOf(const igdeGDClass &gdclass, const i
 		return true;
 	}
 	
-	const int count = gdclass.GetInheritClassCount();
-	int i;
-	for(i=0; i<count; i++){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
-		if(inherit.GetClass() && pAnyGDClassHasAnyPartialVisOf(*inherit.GetClass(), tags)){
-			return true;
-		}
-	}
-	
-	return false;
+	return gdclass.GetInheritClasses().HasMatching([&](const igdeGDClassInherit &i){
+		return i.GetClass() && pAnyGDClassHasAnyPartialVisOf(i.GetClass(), tags);
+	});
 }
 
 void meObject::pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &prefix){
-	meIDGroupList &groupList = pWorld->GetIDGroupList();
+	meIDGroup::List &groupList = pWorld->GetIDGroupList();
 	
 	// object properties
-	const igdeGDPropertyList &gdProperties = gdclass.GetListProperties();
-	const int gdPropertyCount = gdProperties.GetCount();
-	int i;
+	const igdeGDProperty::List &gdProperties = gdclass.GetListProperties();
 	
-	for(i=0; i<gdPropertyCount; i++){
-		igdeGDProperty &gdProperty = *gdProperties.GetAt(i);
-		
-		if(gdProperty.GetType() != igdeGDProperty::eptIdentifier
-		|| gdProperty.GetIdentifierGroup().IsEmpty() || !gdProperty.GetIdentifierUsage()){
-			continue;
+	gdProperties.Visit([&](igdeGDProperty *p){
+		if(p->GetType() != igdeGDProperty::eptIdentifier
+		|| p->GetIdentifierGroup().IsEmpty() || !p->GetIdentifierUsage()){
+			return;
 		}
 		
 		// printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
 		// 	gdProperty.GetIdentifierGroup().GetString() );
-		pMapIDGroup.Add(meMapIDGroup::Ref::New(new meMapIDGroup(&gdProperty,
-			groupList.GetOrAddNamed(gdProperty.GetIdentifierGroup()), prefix)));
-	}
+		meIDGroup *group = groupList.FindOrDefault([&](const meIDGroup &g){
+			return g.GetName() == p->GetIdentifierGroup();
+		});
+		if(!group){
+			const meIDGroup::Ref newGroup(meIDGroup::Ref::New(p->GetIdentifierGroup()));
+			groupList.Add(newGroup);
+			group = newGroup;
+		}
+		pMapIDGroup.Add(meMapIDGroup::Ref::New(p, group, prefix));
+	});
 	
 	// texture properties
-	const igdeGDPropertyList &gdTexProperties = gdclass.GetTextureProperties();
-	const int gdTexPropertyCount = gdTexProperties.GetCount();
+	const igdeGDProperty::List &gdTexProperties = gdclass.GetTextureProperties();
 	
-	for(i=0; i<gdTexPropertyCount; i++){
-		igdeGDProperty &gdProperty = *gdTexProperties.GetAt(i);
-		
-		if(gdProperty.GetType() != igdeGDProperty::eptIdentifier
-		|| gdProperty.GetIdentifierGroup().IsEmpty() || !gdProperty.GetIdentifierUsage()){
-			continue;
+	gdTexProperties.Visit([&](igdeGDProperty *p){
+		if(p->GetType() != igdeGDProperty::eptIdentifier
+		|| p->GetIdentifierGroup().IsEmpty() || !p->GetIdentifierUsage()){
+			return;
 		}
 		
 		//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
 		//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
-		pTexMapIDGroup.Add(meMapIDGroup::Ref::New(new meMapIDGroup(&gdProperty,
-			groupList.GetOrAddNamed(gdProperty.GetIdentifierGroup()), prefix)));
-	}
+		meIDGroup *group = groupList.FindOrDefault([&](const meIDGroup &g){
+			return g.GetName() == p->GetIdentifierGroup();
+		});
+		if(!group){
+			const meIDGroup::Ref newGroup(meIDGroup::Ref::New(p->GetIdentifierGroup()));
+			groupList.Add(newGroup);
+			group = newGroup;
+		}
+		pTexMapIDGroup.Add(meMapIDGroup::Ref::New(p, group, prefix));
+	});
 	
 	// inherits
-	const int inheritCount = gdclass.GetInheritClassCount();
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
-		if(inherit.GetClass()){
-			pUpdateIDGroupList(*inherit.GetClass(), prefix + inherit.GetPropertyPrefix());
+	gdclass.GetInheritClasses().Visit([&](const igdeGDClassInherit &i){
+		if(i.GetClass()){
+			pUpdateIDGroupList(i.GetClass(), prefix + i.GetPropertyPrefix());
 		}
-	}
+	});
 }
 
 bool meObject::pShowStateIsVisible(){
@@ -2653,4 +2332,11 @@ bool meObject::pShowStateIsVisible(){
 	}
 	
 	return pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
+}
+
+void meObject::pAddAttachedObject(meObject::List &list){
+	list.Add(this);
+	pAttachedObjects.Visit([&](meObject &o){
+		o.pAddAttachedObject(list);
+	});
 }

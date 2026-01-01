@@ -25,65 +25,63 @@
 #ifndef _MEIDGROUP_H_
 #define _MEIDGROUP_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/common/string/decString.h>
+#include "meIDGroupID.h"
 
-class meIDGroupID;
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 /**
- * \brief Identifier group.
+ * Identifier group.
  */
 class meIDGroup : public deObject{
+public:
+	typedef deTObjectReference<meIDGroup> Ref;
+	typedef decTObjectOrderedSet<meIDGroup> List;
+	
+	
 private:
 	decString pName;
-	decObjectDictionary pIDs;
-	
+	meIDGroupID::Map pIDs;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meIDGroup> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create id group. */
-	meIDGroup(const char *name);
+	/** Create id group. */
+	explicit meIDGroup(const char *name);
 	
-	/** \brief Clean up id group. */
-	virtual ~meIDGroup();
+protected:
+	/** Clean up id group. */
+	~meIDGroup() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Identifier. */
+	/** Identifier. */
 	inline const decString &GetName() const{ return pName; }
 	
 	
 	
-	/** \brief Number of identifiers. */
-	int GetCount() const;
+	/** Identifier map. */
+	inline const meIDGroupID::Map &GetIDMap() const{ return pIDs; }
 	
-	/** \brief List of identifiers. */
+	/** List of identifiers. */
 	decStringList GetIDList() const;
 	
-	/** \brief Get identifier usage count or 0 if absent. */
+	/** Get identifier usage count or 0 if absent. */
 	int GetUsageCountFor(const char *id) const;
 	
-	/** \brief Identifier is present. */
-	bool Has(const char *id) const;
-	
-	/** \brief Increase usage count of identifier adding it if absent. */
+	/** Increase usage count of identifier adding it if absent. */
 	void Add(const char *id);
 	
-	/** \brief Decrease usage count of identifier removing it if dropping to 0. */
+	/** Decrease usage count of identifier removing it if dropping to 0. */
 	void Remove(const char *id);
 	
-	/** \brief Remove all identifiers. */
+	/** Remove all identifiers. */
 	void RemoveAll();
 	/*@}*/
 };

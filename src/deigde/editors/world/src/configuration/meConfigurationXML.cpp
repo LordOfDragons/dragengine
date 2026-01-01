@@ -63,7 +63,7 @@ meConfigurationXML::~meConfigurationXML(){
 ///////////////
 
 void meConfigurationXML::ReadFromFile(decBaseFileReader &reader, meConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	

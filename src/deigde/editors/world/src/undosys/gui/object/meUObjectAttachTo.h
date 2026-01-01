@@ -25,13 +25,12 @@
 #ifndef _MEUOBJECTATTACHTO_H_
 #define _MEUOBJECTATTACHTO_H_
 
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meWorld;
-class meObject;
-class meObjectList;
 
 
 
@@ -39,30 +38,39 @@ class meObjectList;
  * \brief Undo Action Attach Objects.
  */
 class meUObjectAttachTo : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectAttachTo> Ref;
+	
+	
 private:
-	struct sObject{
-		meObject *object;
-		meObject *oldAttachTo;
+	class cObject : public deObject{
+	public:
+		typedef deTObjectReference<cObject> Ref;
+		typedef decTObjectOrderedSet<cObject> List;
+		
+		meObject::Ref object, oldAttachTo;
+		
+		cObject() = default;
 	};
 	
-	meWorld *pWorld;
-	sObject *pObjects;
-	int pObjectCount;
-	meObject *pAttachTo;
+	meWorld::Ref pWorld;
+	cObject::List pObjects;
+	meObject::Ref pAttachTo;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectAttachTo> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo);
+	meUObjectAttachTo(meWorld *world, const meObject::List &objects, meObject *attachTo);
 	
 	/** \brief Clean up undo action. */
+
+protected:
 	virtual ~meUObjectAttachTo();
+
+public:
 	/*@}*/
 	
 	
@@ -75,11 +83,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

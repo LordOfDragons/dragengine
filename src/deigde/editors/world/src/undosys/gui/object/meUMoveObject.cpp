@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meUMoveObject.h"
-#include "meUndoDataObject.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -41,34 +37,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUMoveObject::meUMoveObject(meWorld *world, const meObjectList &objects){
+meUMoveObject::meUMoveObject(meWorld *world, const meObject::List &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = objects.GetCount();
-	
 	SetShortInfo("Move Object");
 	
-	pWorld = NULL;
+	pWorld = world;
 	
-	try{
-		pWorld = world;
-		world->AddReference();
-		
-		int i;
-		for(i=0; i<count; i++){
-			pObjects.Add(meUndoDataObject::Ref::NewWith(objects.GetAt(i)));
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
 }
 
 meUMoveObject::~meUMoveObject(){
-	pCleanUp();
 }
 
 
@@ -77,62 +58,55 @@ meUMoveObject::~meUMoveObject(){
 /////////////////////////////
 
 void meUMoveObject::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
-		meObject * const object = data.GetObject();
-		object->SetPosition(data.GetOldPosition());
-		object->SetRotation(data.GetOldOrientation());
-		pWorld->NotifyObjectGeometryChanged(object);
-	}
+	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
 }
 
 void meUMoveObject::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
 	if(GetModifyOrientation()){
-		
-		for(i=0; i<count; i++){
-			const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+		pObjects.Visit([&](const meUndoDataObject &data){
 			meObject * const object = data.GetObject();
 			
 			decDVector position(data.GetOldPosition());
-			decDVector rotation(data.GetOldOrientation());
+			decDVector rotation(data.GetOldRotation());
 			
 			TransformElement(position, rotation);
 			
 			object->SetRotation(rotation.ToVector());
 			object->SetPosition(position);
 			pWorld->NotifyObjectGeometryChanged(object);
-		}
+			
+			if(data.GetAttachedObjects().IsNotEmpty()){
+				const decDMatrix m(data.GetOldMatrixInverse() * object->GetObjectMatrix());
+				
+				data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+					const decDMatrix m2(attachedData.GetOldMatrix() * m);
+					meObject * const attached = attachedData.GetObject();
+					attached->SetPosition(m2.GetPosition());
+					attached->SetRotation(m2.Normalized().GetEulerAngles().ToVector() * RAD2DEG);
+					pWorld->NotifyObjectGeometryChanged(attached);
+				});
+			}
+		});
 		
 	}else{
 		const decDVector &distance = GetDistance();
 		
-		for(i=0; i<count; i++){
-			const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+		pObjects.Visit([&](const meUndoDataObject &data){
 			meObject * const object = data.GetObject();
 			object->SetPosition(data.GetOldPosition() + distance);
-			object->SetRotation(data.GetOldOrientation());
+			object->SetRotation(data.GetOldRotation());
 			pWorld->NotifyObjectGeometryChanged(object);
-		}
+			
+			data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+				meObject * const attachedObject = attachedData.GetObject();
+				attachedObject->SetPosition(attachedData.GetOldPosition() + distance);
+				attachedObject->SetRotation(attachedData.GetOldRotation());
+				pWorld->NotifyObjectGeometryChanged(attachedObject);
+			});
+		});
 	}
 }
 
 void meUMoveObject::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUMoveObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

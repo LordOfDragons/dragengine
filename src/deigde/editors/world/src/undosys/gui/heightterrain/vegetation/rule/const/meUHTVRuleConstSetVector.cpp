@@ -43,8 +43,8 @@
 meUHTVRuleConstSetVector::meUHTVRuleConstSetVector(meHTVegetationLayer *vlayer, meHTVRuleConstant *rule, const decVector &nvector){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Constant Set Vector");
 	SetMemoryConsumption(sizeof(meUHTVRuleConstSetVector));
@@ -53,14 +53,10 @@ meUHTVRuleConstSetVector::meUHTVRuleConstSetVector(meHTVegetationLayer *vlayer, 
 	pNewVector = nvector;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleConstSetVector::~meUHTVRuleConstSetVector(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

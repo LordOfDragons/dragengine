@@ -52,12 +52,9 @@ meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTe
 	pNewSectorSize = newSectorSize;
 	
 	SetShortInfo("Set Height Terrain Sector Size");
-	
-	world->AddReference();
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

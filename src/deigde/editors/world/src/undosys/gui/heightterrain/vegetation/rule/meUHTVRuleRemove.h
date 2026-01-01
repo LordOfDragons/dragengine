@@ -27,6 +27,7 @@
 
 #include "../../../../../world/heightterrain/meHTVegetationLayer.h"
 #include "../../../../../world/heightterrain/rules/meHTVRule.h"
+#include "../../../../../world/heightterrain/rules/meHTVRLink.h"
 #include <deigde/undo/igdeUndo.h>
 
 
@@ -35,13 +36,13 @@
  */
 class meUHTVRuleRemove : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleRemove> Ref;
 	
 	
 private:
 	const meHTVegetationLayer::Ref pVLayer;
 	const meHTVRule::Ref pRule;
+	meHTVRLink::List pLinks;
 	
 	
 	
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleRemove();
+
+protected:
+	~meUHTVRuleRemove() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

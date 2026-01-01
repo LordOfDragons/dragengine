@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 
 class meWorld;
-class meDecal;
-class meObject;
+#include "../../../world/decal/meDecal.h"
+#include "../../../world/object/meObject.h"
 
 
 
@@ -39,24 +39,28 @@ class meObject;
  * Adds a new decal to the an object.
  */
 class meUAddObjectDecal : public igdeUndo{
-private:
-	meWorld *pWorld;
-	meDecal *pDecal;
-	meObject *pParentObject;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUAddObjectDecal> Ref;
 	
+	
+private:
+	meWorld *pWorld;
+	meDecal::Ref pDecal;
+	meObject::Ref pParentObject;
+	
+public:
 	// constructor, destructor
 	meUAddObjectDecal(meWorld *world, meObject *parentObject);
+	
+protected:
 	~meUAddObjectDecal();
 	
+public:
 	// Management
 	/** Retrieves the decal. */
-	inline meDecal *GetDecal() const{ return pDecal; }
-	/** Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
+	/** Retrieves the parent object or nullptr. */
+	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
 	
 	// undo and redo operations
 	virtual void Undo();

@@ -30,6 +30,7 @@
 #include "../meWorld.h"
 #include "../meWorldGuiParameters.h"
 
+#include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
@@ -69,13 +70,10 @@ pColliderOwner(this)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pWorld = NULL;
-	pParentObject = NULL;
+	pWorld = nullptr;
+	pParentObject = nullptr;
 	
-	pDDSShape = NULL;
-	pEngCollider = NULL;
-	
-	pShape = NULL;
+	pShape = nullptr;
 	
 	pSelected = false;
 	pActive = false;
@@ -102,7 +100,7 @@ pColliderOwner(this)
 		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSShape = new igdeWDebugDrawerShape;
+		pDDSShape = igdeWDebugDrawerShape::Ref::New();
 		pDDSShape->SetVisible(true);
 		pDDSShape->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -157,7 +155,7 @@ void meObjectShape::SetParentObject(meObject *parentObject){
 
 
 void meObjectShape::SetShape(const decShape &shape){
-	decShape *newShape = NULL;
+	decShape *newShape = nullptr;
 	
 	try{
 		newShape = shape.Copy();
@@ -202,7 +200,7 @@ void meObjectShape::SetActive(bool active){
 void meObjectShape::UpdateShape(){
 	// scaling is a problem. get first the scaling from the parent object or whatever parent we have.
 	// then for the created shape the scaling would have to be applied which is a problem.
-	decShape *shape = NULL;
+	decShape *shape = nullptr;
 	decShapeList shapeList;
 	
 	pDDSShape->RemoveAllShapes();
@@ -210,7 +208,7 @@ void meObjectShape::UpdateShape(){
 	try{
 		shape = pShape->Copy();
 		shapeList.Add(shape);
-		shape = NULL;
+		shape = nullptr;
 		
 		shape = pShape->Copy();
 		pDDSShape->AddShape(shape);
@@ -272,21 +270,46 @@ void meObjectShape::ShowStateChanged(){
 
 
 
+void meObjectShape::CreateShapeList(const List &list, decShapeList &result){
+	decShape *shape = nullptr;
+	
+	result.RemoveAll();
+	
+	try{
+		list.Visit([&](const meObjectShape &s){
+			shape = s.GetShape()->Copy();
+			result.Add(shape);
+			shape = nullptr;
+		});
+		
+	}catch(const deException &){
+		if(shape){
+			delete shape;
+		}
+		throw;
+	}
+}
+
+void meObjectShape::CreatePropertyString(const List &list, decString &result){
+	igdeCodecPropertyString codec;
+	decShapeList sl;
+	CreateShapeList(list, sl);
+	codec.EncodeShapeList(sl, result);
+}
+
+
+
 // Private Functions
 //////////////////////
 
 void meObjectShape::pCleanUp(){
-	SetWorld(NULL);
+	SetWorld(nullptr);
 	
 	if(pEngCollider){
-		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
+		pEnvironment->SetColliderUserPointer(pEngCollider, nullptr);
 	}
 	
-	if(pDDSShape){
-		delete pDDSShape;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
+	if(pShape){
+		delete pShape;
 	}
 }

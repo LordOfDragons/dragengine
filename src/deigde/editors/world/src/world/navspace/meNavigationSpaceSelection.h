@@ -25,7 +25,7 @@
 #ifndef _MENAVIGATIONSPACESELECTION_H_
 #define _MENAVIGATIONSPACESELECTION_H_
 
-#include "meNavigationSpaceList.h"
+#include "meNavigationSpace.h"
 
 
 
@@ -34,8 +34,8 @@
  */
 class meNavigationSpaceSelection{
 private:
-	meNavigationSpaceList pSelection;
-	meNavigationSpace *pActive;
+	meNavigationSpace::List pSelection;
+	meNavigationSpace::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected navigation spacess. */
-	inline const meNavigationSpaceList &GetSelected() const{ return pSelection; }
+	inline const meNavigationSpace::List &GetSelected() const{ return pSelection; }
 	/** Adds a navigation spaces to the selection if not included already. */
 	void Add(meNavigationSpace *navspaces);
 	/** Removes a navigation spaces from the selection if included. */
@@ -57,16 +57,16 @@ public:
 	/** Removes all navigation spacess from the selection. */
 	void RemoveAll();
 	
-	/** Retrieves the active navigation spaces or NULL if there is none. */
-	inline meNavigationSpace *GetActive() const{ return pActive; }
+	/** Retrieves the active navigation spaces or nullptr if there is none. */
+	inline const meNavigationSpace::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active navigation spaces. */
 	bool HasActive() const;
-	/** Sets the active navigation spaces or NULL if there is none. */
+	/** Sets the active navigation spaces or nullptr if there is none. */
 	void SetActive(meNavigationSpace *navspaces);
 	/** Activate the first navigation spaces in the selection. */
 	void ActivateNext();
 	
-	/** Resets the selection removing all navigation spacess and setting the active one to NULL. */
+	/** Resets the selection removing all navigation spacess and setting the active one to nullptr. */
 	void Reset();
 };
 

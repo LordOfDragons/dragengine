@@ -26,9 +26,11 @@
 #define _MEHELPERS_H_
 
 #include "../world/object/texture/meObjectTexture.h"
-#include <dragengine/common/math/decMath.h>
 
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
+
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 class meObject;
@@ -37,20 +39,13 @@ class igdeGDCComponent;
 class igdeGDCamera;
 class igdeGDCLight;
 class igdeGDCCTexture;
-class igdeGDPropertyList;
 class igdeGDCNavigationSpace;
 class igdeGDCNavigationBlocker;
-
-class decString;
-class decStringList;
 
 
 namespace meHelpers{
 	/** \brief Find first game definition component. */
 	igdeGDCComponent *FindFirstComponent(const igdeGDClass *gdclass);
-	
-	/** \brief Find first game definition component. */
-	igdeGDCComponent *FindFirstComponent(const igdeGDClass &gdclass);
 	
 	/** \brief Find first game definition component. */
 	bool FindFirstComponent(const igdeGDClass &gdclass, igdeGDCComponent* &component);

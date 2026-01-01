@@ -40,15 +40,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a builder to create a box of the given size. */
-	meModelBuilderBox(float size);
+	explicit meModelBuilderBox(float size);
 	/** \brief Cleans up the builder. */
-	virtual ~meModelBuilderBox();
+	~meModelBuilderBox() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Build model into the provided model object. */
-	virtual void BuildModel(deModel *model);
+	void BuildModel(deModel *model) override;
 	/*@}*/
 };
 

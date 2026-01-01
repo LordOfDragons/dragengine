@@ -47,11 +47,11 @@ meHTVRuleMapping::meHTVRuleMapping() : meHTVRule(ertMapping, 4){
 	pUpper = 1.0f;
 	pInversed = false;
 	
-	GetSlotAt(eisLower).SetIsInput(true);
-	GetSlotAt(eisUpper).SetIsInput(true);
-	GetSlotAt(eisValue).SetIsInput(true);
+	GetSlots().GetAt(eisLower)->SetIsInput(true);
+	GetSlots().GetAt(eisUpper)->SetIsInput(true);
+	GetSlots().GetAt(eisValue)->SetIsInput(true);
 	
-	GetSlotAt(eosValue).SetIsInput(false);
+	GetSlots().GetAt(eosValue)->SetIsInput(false);
 }
 
 meHTVRuleMapping::meHTVRuleMapping(const meHTVRuleMapping &rule) :
@@ -91,28 +91,28 @@ void meHTVRuleMapping::SetInversed(bool inversed){
 float meHTVRuleMapping::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
 	if(slot != eosValue) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputValue = GetSlotAt(eisValue);
-	meHTVRSlot &inputLower = GetSlotAt(eisLower);
-	meHTVRSlot &inputUpper = GetSlotAt(eisUpper);
+	meHTVRSlot &inputValue = GetSlots().GetAt(eisValue);
+	meHTVRSlot &inputLower = GetSlots().GetAt(eisLower);
+	meHTVRSlot &inputUpper = GetSlots().GetAt(eisUpper);
 	
 	float value = pValue;
 	float lower = pLower;
 	float upper = pUpper;
 	
-	if(inputValue.GetLinkCount() > 0){
-		meHTVRLink &link = *inputValue.GetLinkAt(0);
+	if(inputValue.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputValue.GetLinks().GetAt(0);
 		
 		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if(inputLower.GetLinkCount() > 0){
-		meHTVRLink &link = *inputLower.GetLinkAt(0);
+	if(inputLower.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputLower.GetLinks().GetAt(0);
 		
 		lower = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if(inputUpper.GetLinkCount() > 0){
-		meHTVRLink &link = *inputUpper.GetLinkAt(0);
+	if(inputUpper.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputUpper.GetLinks().GetAt(0);
 		
 		upper = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
@@ -154,6 +154,6 @@ decVector meHTVRuleMapping::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvir
 	return decVector(value, value, value);
 }
 
-meHTVRule *meHTVRuleMapping::Copy() const{
-	return new meHTVRuleMapping(*this);
+meHTVRule::Ref meHTVRuleMapping::Copy() const{
+	return meHTVRuleMapping::Ref::New(*this);
 }

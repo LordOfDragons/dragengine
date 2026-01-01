@@ -53,15 +53,10 @@ meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
 	SetShortInfo("Remove Object Texture");
 	
 	pObject = object;
-	object->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectRemoveTexture::~meUObjectRemoveTexture(){
-	if(pTexture) pTexture->FreeReference();
-	if(pObject) pObject->FreeReference();
 }
 
 

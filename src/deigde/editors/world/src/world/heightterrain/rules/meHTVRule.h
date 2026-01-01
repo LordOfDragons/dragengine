@@ -22,18 +22,17 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVRULE_H_
 #define _MEHTVRULE_H_
 
-// includes
+#include "meHTVRSlot.h"
+
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
-class meHTVRSlot;
 class meHTVRLink;
 class meHTVEvaluationEnvironment;
 
@@ -51,8 +50,8 @@ class meHTVEvaluationEnvironment;
  */
 class meHTVRule : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHTVRule> Ref;
+	typedef decTObjectOrderedSet<meHTVRule> List;
 	
 	
 	/** Rule types. */
@@ -95,8 +94,7 @@ private:
 	decVector2 pPosition;
 	bool pShowParameters;
 	
-	int pSlotCount;
-	meHTVRSlot *pSlots;
+	meHTVRSlot::List pSlots;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -105,7 +103,7 @@ public:
 	meHTVRule(int type, int slotCount);
 	
 protected:
-	/** \brief Create copy of rule. */
+	/** Create copy of rule. */
 	meHTVRule(const meHTVRule &rule);
 	
 	/** Cleans up the rule. */
@@ -132,11 +130,8 @@ public:
 	/** Sets if parameters are shown. */
 	void SetShowParameters(bool showParameters);
 	
-	/** \brief Count of slots. */
-	inline int GetSlotCount() const{ return pSlotCount; }
-	
-	/** \brief Slot at index. */
-	meHTVRSlot &GetSlotAt(int slot) const;
+	/** Slots. */
+	inline const meHTVRSlot::List &GetSlots() const{ return pSlots; }
 	
 	/**
 	 * Determines if this rule depends directly or indirectly on another rule.
@@ -154,8 +149,8 @@ public:
 	/** Retrieves the vector of a given output slot. */
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
-	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const = 0;
+	/** Copy rule. */
+	virtual meHTVRule::Ref Copy() const = 0;
 	/*@}*/
 };
 

@@ -52,12 +52,9 @@ meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTe
 	pNewBaseHeight = newBaseHeight;
 	
 	SetShortInfo("Set Height Terrain Base Height");
-	
-	world->AddReference();
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

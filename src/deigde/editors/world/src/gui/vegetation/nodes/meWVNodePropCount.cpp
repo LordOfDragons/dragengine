@@ -67,6 +67,7 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
+	typedef deTObjectReference<cComboClass> Ref;
 	cComboClass(meWVNodePropCount &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -75,7 +76,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRulePCSetClass::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRulePCSetClass::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRulePropCount(), comboBox->GetText()));
 	}
 };
@@ -85,6 +86,7 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
+	typedef deTObjectReference<cActionMenuClass> Ref;
 	cActionMenuClass(meWVNodePropCount &node) : igdeActionContextMenu("",
 		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
 		pNode(node){}
@@ -99,6 +101,7 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
+	typedef deTObjectReference<cTextSearchRadius> Ref;
 	cTextSearchRadius(meWVNodePropCount &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -108,7 +111,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRulePCSetRadius::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRulePCSetRadius::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRulePropCount(), value));
 	}
 };
@@ -133,25 +136,27 @@ pRulePC(rule)
 	
 	SetTitle("Prop Count");
 	
-	pActionMenuClass.TakeOver(new cActionMenuClass(*this));
+	pActionMenuClass = cActionMenuClass::Ref::New(*this);
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Distance", "Distance in meters from closest prop",
 		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
 	helper.FormLineStretchFirst(pFraParameters, "Class:", "Select class name of prop to search for.", formLine);
 	helper.ComboBoxFilter(formLine, true, "Select class name of prop to search for.",
-		pCBPropClass, new cComboClass(*this));
+		pCBPropClass, cComboClass::Ref::New(*this));
 	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
 	pActionMenuClass->SetWidget(pBtnPropClass);
 	
 	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
-		pEditSearchRadius, new cTextSearchRadius(*this));
+		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
+	
+	UpdateClassLists();
 }
 
 meWVNodePropCount::~meWVNodePropCount(){
@@ -174,19 +179,19 @@ void meWVNodePropCount::UpdateClassLists(){
 	
 	pCBPropClass->RemoveAllItems();
 	
-	const igdeGDClassManager &classes = *GetWindowVegetation().GetWorld()->GetGameDefinition()->GetClassManager();
-	const int count = classes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeGDClass &objectClass = *classes.GetAt(i);
-		if(objectClass.GetCanInstantiate()){
-			pCBPropClass->AddItem(objectClass.GetName());
+	GetWindowVegetation().GetWorld()->GetGameDefinition()->GetClassManager()->GetClasses().Visit([&](const igdeGDClass &c){
+		if(c.GetCanInstantiate()){
+			pCBPropClass->AddItem(c.GetName());
 		}
-	}
+	});
 	
 	pCBPropClass->SortItems();
 	pCBPropClass->StoreFilterItems();
 	
 	pCBPropClass->SetText(selection);
+}
+
+
+void meWVNodePropCount::OnGameDefinitionChanged(){
+	UpdateClassLists();
 }

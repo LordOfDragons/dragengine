@@ -25,12 +25,12 @@
 #ifndef _MEUNDODATADECALPROPERTY_H_
 #define _MEUNDODATADECALPROPERTY_H_
 
+#include "../../../../world/decal/meDecal.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
-
-class meDecal;
-
 
 
 /**
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUndoDataDecalProperty : public deObject{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -46,10 +46,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUndoDataDecalProperty> Ref;
-
-
+	typedef decTObjectOrderedSet<meUndoDataDecalProperty> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
@@ -57,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo data object. */
+
+protected:
 	virtual ~meUndoDataDecalProperty();
+
+public:
 	/*@}*/
 	
 	
@@ -66,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Decal pointer. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }

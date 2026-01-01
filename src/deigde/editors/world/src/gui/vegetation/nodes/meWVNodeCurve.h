@@ -38,6 +38,9 @@ class meHTVRuleCurve;
  * \brief Vegetation Editing Window Node Curve.
  */
 class meWVNodeCurve : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeCurve> Ref;
+	
 private:
 	meHTVRuleCurve *pRuleCurve;
 	

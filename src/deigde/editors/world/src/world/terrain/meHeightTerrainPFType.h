@@ -27,13 +27,14 @@
 
 #include <dragengine/common/string/decString.h>
 
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 
 class meHeightTerrainPFLayer;
 
-class deSkin;
-class deModel;
 class deEngine;
 
 
@@ -48,9 +49,9 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	
@@ -63,27 +64,28 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHeightTerrainPFType> Ref;
-
-
+	typedef decTObjectOrderedSet<meHeightTerrainPFType> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meHeightTerrainPFType(deEngine *engine);
+	explicit meHeightTerrainPFType(deEngine *engine);
 	
+protected:
 	/** \brief Clean up object. */
-	virtual ~meHeightTerrainPFType();
+	~meHeightTerrainPFType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent prop field or \em NULL. */
+	/** \brief Parent prop field or \em nullptr. */
 	inline meHeightTerrainPFLayer *GetPFLayer() const{ return pPFLayer; }
 	
-	/** \brief Set parent prop field or \em NULL. */
+	/** \brief Set parent prop field or \em nullptr. */
 	void SetPFLayer(meHeightTerrainPFLayer *propField);
 	
 	
@@ -94,8 +96,8 @@ public:
 	/** \brief Set model path. */
 	void SetPathModel(const char *path);
 	
-	/** \brief Engine model or \em NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	/** \brief Engine model or \em nullptr if not valid. */
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
@@ -103,8 +105,8 @@ public:
 	/** \brief Set skin path. */
 	void SetPathSkin(const char *path);
 	
-	/** \brief Engine skin or \em NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	/** \brief Engine skin or \em nullptr if not valid. */
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }

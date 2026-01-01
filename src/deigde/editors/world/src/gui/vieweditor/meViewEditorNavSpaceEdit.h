@@ -37,6 +37,9 @@ class meCLSelect;
  * \brief View editor navigation space edit.
  */
 class meViewEditorNavSpaceEdit : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorNavSpaceEdit> Ref;
+	
 private:
 	deCollider::Ref pColVol;
 	meCLSelect *pCLSelect;
@@ -50,8 +53,11 @@ public:
 	/** \brief Create view editor. */
 	meViewEditorNavSpaceEdit(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
 	~meViewEditorNavSpaceEdit() override;
+	
+public:
 	/*@}*/
 	
 	

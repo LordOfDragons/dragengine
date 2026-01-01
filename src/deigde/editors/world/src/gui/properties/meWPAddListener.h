@@ -35,6 +35,9 @@ class meWPAdd;
  * \brief Add panel listener.
  */
 class meWPAddListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPAddListener> Ref;
+	
 private:
 	meWPAdd &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPAddListener(meWPAdd &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPAddListener() override;
+	
+public:
 	/*@}*/
 	
 	

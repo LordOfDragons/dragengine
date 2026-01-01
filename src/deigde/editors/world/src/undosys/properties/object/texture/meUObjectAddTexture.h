@@ -31,8 +31,8 @@
 
 // predefinitions
 class meWorld;
-class meObject;
-class meObjectTexture;
+#include "../../../../world/object/meObject.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -41,13 +41,14 @@ class meObjectTexture;
  */
 class meUObjectAddTexture : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjectAddTexture> Ref;
 	
 	
+public:
+	
 private:
-	meObject *pObject;
-	meObjectTexture *pTexture;
+	meObject::Ref pObject;
+	meObjectTexture::Ref pTexture;
 	
 public:
 	// constructor, destructor

@@ -25,9 +25,9 @@
 #ifndef _MEOBJECTSHAPESELECTION_H_
 #define _MEOBJECTSHAPESELECTION_H_
 
-#include "meObjectShapeList.h"
+#include "meObjectShape.h"
 
-class decIntList;
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -36,8 +36,8 @@ class decIntList;
  */
 class meObjectShapeSelection{
 private:
-	meObjectShapeList pSelection;
-	meObjectShape *pActive;
+	meObjectShape::List pSelection;
+	meObjectShape::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -51,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected object shapes. */
-	inline const meObjectShapeList &GetSelected() const{ return pSelection; }
+	inline const meObjectShape::List &GetSelected() const{ return pSelection; }
 	/** Adds an object shape to the selection if not included already. */
 	void Add(meObjectShape *objectShape);
 	/** Removes an object shape from the selection if included. */
@@ -59,22 +59,22 @@ public:
 	/** Removes all object shapes from the selection. */
 	void RemoveAll();
 	
-	/** Retrieves the active object shape or NULL if there is none. */
-	inline meObjectShape *GetActive() const{ return pActive; }
+	/** Retrieves the active object shape or nullptr if there is none. */
+	inline const meObjectShape::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active object shape. */
 	bool HasActive() const;
-	/** Sets the active object shape or NULL if there is none. */
+	/** Sets the active object shape or nullptr if there is none. */
 	void SetActive(meObjectShape *object);
 	/** Activate the first object shape in the selection. */
 	void ActivateNext();
 	
-	/** Resets the selection removing all object shapes and setting the active one to NULL. */
+	/** Resets the selection removing all object shapes and setting the active one to nullptr. */
 	void Reset();
 	
 	/** Backup the selection and active as indicies relative to a list of shapes. */
-	void Backup(const meObjectShapeList &shapeList, decIntList &indicesSelected, int &indexActive);
+	void Backup(const meObjectShape::List &shapeList, decTList<int> &indicesSelected, int &indexActive);
 	/** Restores the selection and active from indices relative to a list of shapes if possible. */
-	void Restore(const meObjectShapeList &shapeList, const decIntList &indicesSelected, int indexActive);
+	void Restore(const meObjectShape::List &shapeList, const decTList<int> &indicesSelected, int indexActive);
 };
 
 #endif

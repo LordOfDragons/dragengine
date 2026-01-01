@@ -38,6 +38,9 @@ class meHTVRuleResult;
  * \brief Vegetation Editing Window Node Result.
  */
 class meWVNodeResult : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeResult> Ref;
+	
 private:
 	meHTVRuleResult *pRuleResult;
 	

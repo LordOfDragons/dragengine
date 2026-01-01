@@ -64,14 +64,11 @@
 ////////////////////////////
 
 meHeightTerrainPFLayer::meHeightTerrainPFLayer(deEngine *engine) :
-pHTSector(NULL),
+pHTSector(nullptr),
 pEngine(engine),
-pMask(NULL),
+pMask(nullptr),
 pMaskChanged(false),
-pMaskSaved(false),
-pTypes(NULL),
-pTypeCount(0),
-pTypeSize(0)
+pMaskSaved(false)
 {
 	if(!engine){
 		DETHROW(deeInvalidParam);
@@ -158,7 +155,7 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	deImage *image = NULL;
+	deImage::Ref image;
 	decPath path;
 	int x, y, i;
 	
@@ -215,15 +212,10 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 							}
 						}
 					}
-					
-					image->FreeReference();
 				}
 				
 			}catch(const deException &e){
-				if(image){
-					image->FreeReference();
-					image = NULL;
-				}
+				image = nullptr;
 				if(pHTSector && pHTSector->GetHeightTerrain()){
 					pHTSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 				}
@@ -231,7 +223,7 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 		}
 	}
 	
-	SetMaskSaved(image != NULL);
+	SetMaskSaved(image.IsNotNull());
 	SetMaskChanged(true);
 	
 	if(pHTSector){
@@ -256,63 +248,9 @@ void meHeightTerrainPFLayer::RebuildInstances(){
 // Types
 //////////
 
-meHeightTerrainPFType *meHeightTerrainPFLayer::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pTypes[index];
-}
-
-int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
-	if(!type){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	for(i=0; i<pTypeCount; i++){
-		if(type == pTypes[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
-	if(!type){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	for(i=0; i<pTypeCount; i++){
-		if(type == pTypes[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
-	if(!type){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pTypeCount == pTypeSize){
-		const int newSize = pTypeCount * 3 / 2 + 1;
-		meHeightTerrainPFType ** const newArray = new meHeightTerrainPFType*[newSize];
-		if(pTypes){
-			memcpy(newArray, pTypes, sizeof(meHeightTerrainPFType*) * pTypeSize);
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeSize = newSize;
-	}
-	
-	pTypes[pTypeCount] = type;
-	pTypeCount++;
-	
-	type->AddReference();
+	DEASSERT_NOTNULL(type)
+	pTypes.Add(type);
 	type->SetPFLayer(this);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -323,19 +261,9 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 }
 
 void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
-	const int index = IndexOfType(type);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	for(i=index+1; i<pTypeCount; i++){
-		pTypes[i - 1] = pTypes[i];
-	}
-	pTypeCount--;
-	
-	type->SetPFLayer(NULL);
-	type->FreeReference();
+	const meHeightTerrainPFType::Ref guard(type);
+	pTypes.Remove(type);
+	type->SetPFLayer(nullptr);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
 		pHTSector->GetHeightTerrain()->SetChanged(true);
@@ -345,11 +273,9 @@ void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 }
 
 void meHeightTerrainPFLayer::RemoveAllTypes(){
-	while(pTypeCount > 0){
-		pTypeCount--;
-		pTypes[pTypeCount]->SetPFLayer(NULL);
-		pTypes[pTypeCount]->FreeReference();
-	}
+	pTypes.Visit([](meHeightTerrainPFType &type){
+		type.SetPFLayer(nullptr);
+	});
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
 		pHTSector->GetHeightTerrain()->SetChanged(true);
@@ -366,9 +292,6 @@ void meHeightTerrainPFLayer::RemoveAllTypes(){
 
 void meHeightTerrainPFLayer::pCleanUp(){
 	RemoveAllTypes();
-	if(pTypes){
-		delete [] pTypes;
-	}
 	
 	if(pMask){
 		delete pMask;
@@ -381,7 +304,7 @@ void meHeightTerrainPFLayer::pResizeMask(){
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	meByteArray *newMask = NULL;
+	meByteArray *newMask = nullptr;
 	try{
 		newMask = new meByteArray(resolution, resolution);
 		newMask->SetAll(255);

@@ -25,6 +25,9 @@
 #ifndef _MEWPSOBJECTSHAPE_H_
 #define _MEWPSOBJECTSHAPE_H_
 
+#include "meWPSObjectShapeListener.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextArea.h>
@@ -35,9 +38,7 @@
 
 class meObject;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectShapeListener;
 
 class igdeGDProperty;
 
@@ -52,11 +53,14 @@ class decShapeCapsule;
  * \brief Object Shape Selection Panel.
  */
 class meWPSObjectShape : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPSObjectShape> Ref;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectShapeListener *pListener;
+	meWPSObjectShapeListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pPreventUpdate;
 	
 	igdeTextField::Ref pEditObjectClass;
@@ -110,7 +114,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

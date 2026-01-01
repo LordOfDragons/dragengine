@@ -33,6 +33,7 @@
 #include "../../configuration/meConfiguration.h"
 #include "../../undosys/gui/object/meUScaleObject.h"
 #include "../../undosys/gui/decal/meUDecalScale.h"
+#include "../../undosys/gui/objectshape/meUObjectShapeScale.h"
 #include "../../world/meCamera.h"
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
@@ -92,28 +93,47 @@ void meViewEditorScale::OnLeftMouseButtonPress(int x, int y, bool shift, bool co
 	const int elementMode = GetElementMode();
 	meWorld &world = GetWorld();
 	
-	pUndoScale = NULL;
+	pUndoScale = nullptr;
 	
 	if(elementMode == meWorldGuiParameters::eemObject){
 		const meObjectSelection &selection = world.GetSelectionObject();
-		const meObjectList &listSelected = selection.GetSelected();
+		const meObject::List &listSelected = selection.GetSelected();
 		
-		if(listSelected.GetCount() > 0){
-			meObjectList list;
-			GetSelectedObjectsWithAttached(list);
-			pUndoScale.TakeOver(new meUScaleObject(&world, list));
+		if(listSelected.IsNotEmpty()){
+			pUndoScale = meUScaleObject::Ref::New(&world, GetWorld().GetSelectionObject().GetSelected());
+		}
+		
+	}else if(elementMode == meWorldGuiParameters::eemObjectShape){
+		meObject * const activeObject = world.GetSelectionObject().GetActive();
+		if(!activeObject){
+			return;
+		}
+		
+		const decString activeProperty(activeObject->GetActiveProperty());
+		if(activeProperty.IsEmpty()){
+			return;
+		}
+		
+		if(!activeObject->IsPropertyShape(activeProperty)
+		&& !activeObject->IsPropertyShapeList(activeProperty)){
+			return;
+		}
+		
+		const meObjectShapeSelection &selection = world.GetSelectionObjectShape();
+		if(selection.GetSelected().IsNotEmpty()){
+			pUndoScale = meUObjectShapeScale::Ref::New(activeObject, activeProperty, selection.GetSelected());
 		}
 		
 	}else if(elementMode == meWorldGuiParameters::eemDecal){
 		const meDecalSelection &selection = world.GetSelectionDecal();
 		
-		if(selection.GetSelected().GetCount() > 0){
-			pUndoScale.TakeOver(new meUDecalScale(&world));
+		if(selection.GetSelected().IsNotEmpty()){
+			pUndoScale = meUDecalScale::Ref::New(&world);
 		}
 	}
 	
 	if(pUndoScale){
-		((meBaseUndoScale&)(igdeUndo&)pUndoScale).SetModifyPosition(false);
+		pUndoScale->SetModifyPosition(false);
 	}
 }
 
@@ -121,10 +141,10 @@ void meViewEditorScale::OnLeftMouseButtonRelease(int x, int y, bool shift, bool 
 	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
 	if(pUndoScale){
-		if(!(((meBaseUndoScale&)(igdeUndo&)pUndoScale).GetFactors().IsEqualTo(decVector(1.0f, 1.0f, 1.0f)))){
+		if(!pUndoScale->GetFactors().IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 			GetWorld().GetUndoSystem()->Add(pUndoScale, false);
 		}
-		pUndoScale = NULL;
+		pUndoScale = nullptr;
 	}
 }
 
@@ -160,9 +180,21 @@ void meViewEditorScale::OnMouseMove(int x, int y, bool shift, bool control){
 		}
 		*/
 		
-		// determine new scaling
-		vector = matrixView.TransformRight() * (ME_DRAG_SCALE * (double)dragDist.x * (double)sensitivity);
-		vector += matrixView.TransformUp() * (ME_DRAG_SCALE * (double)dragDist.y * (double)sensitivity);
+		// determine new scaling (camera-relative but applied to world axes)
+		// extract camera view direction to determine which world axes to scale
+		const decDVector viewRight = matrixView.TransformRight();
+		const decDVector viewUp = matrixView.TransformUp();
+		
+		// apply drag distance to world axes based on camera orientation
+		// dragDist.x: right is positive (increase scale)
+		// dragDist.y: down is positive, but we want up to increase scale, so negate
+		const double scaleX = ME_DRAG_SCALE * (double)dragDist.x * (double)sensitivity;
+		const double scaleY = ME_DRAG_SCALE * (double)dragDist.y * (double)sensitivity;
+		
+		// map camera movement to world axes using absolute values
+		vector.x = (fabs(viewRight.x) * scaleX + fabs(viewUp.x) * scaleY);
+		vector.y = (fabs(viewRight.y) * scaleX + fabs(viewUp.y) * scaleY);
+		vector.z = (fabs(viewRight.z) * scaleX + fabs(viewUp.z) * scaleY);
 		
 		if(guiparams.GetLockAxisX()){
 			vector.x = 0.0;
@@ -195,10 +227,9 @@ void meViewEditorScale::OnMouseMove(int x, int y, bool shift, bool control){
 			}
 		}
 		
-		meBaseUndoScale &undo = (meBaseUndoScale&)(igdeUndo&)pUndoScale;
-		undo.SetFactors(decVector(1.0f, 1.0f, 1.0f) + vector);
-		undo.SetUniformFactor(uniformFactor);
-		undo.SetScaleUniform(control);
-		undo.ProgressiveRedo();
+		pUndoScale->SetFactors(decVector(1.0f, 1.0f, 1.0f) + vector);
+		pUndoScale->SetUniformFactor(uniformFactor);
+		pUndoScale->SetScaleUniform(control);
+		pUndoScale->ProgressiveRedo();
 	}
 }

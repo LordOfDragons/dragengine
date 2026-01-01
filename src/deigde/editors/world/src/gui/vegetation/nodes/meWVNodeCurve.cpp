@@ -58,11 +58,12 @@ protected:
 	igdeUndo::Ref pUndo;
 	
 public:
+	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(meWVNodeCurve &node) : pNode(node){}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
 		OnCurveChanging(viewCurveBezier);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
@@ -71,8 +72,8 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver(new meUHTVRuleCurveSetCurve(pNode.GetWindowVegetation().GetVLayer(),
-				pNode.GetRuleCurve(), viewCurveBezier->GetCurve()));
+			pUndo = meUHTVRuleCurveSetCurve::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCurve(), viewCurveBezier->GetCurve());
 			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -99,17 +100,17 @@ pRuleCurve(rule)
 	SetTitle("Curve");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env, "Value", "Value of curve at input value",
+	AddSlot(meWVNodeSlot::Ref::New(env, "Value", "Value of curve at input value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env, "Value", "Value to evaluate curve at",
+	AddSlot(meWVNodeSlot::Ref::New(env, "Value", "Value to evaluate curve at",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	pFraParameters = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(pFraParameters);
 	
-	helper.ViewCurveBezier(pFraParameters, pCurve, new cEditCurve(*this));
+	helper.ViewCurveBezier(pFraParameters, pCurve, cEditCurve::Ref::New(*this));
 }
 
 meWVNodeCurve::~meWVNodeCurve(){

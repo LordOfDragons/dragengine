@@ -38,22 +38,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoggerHistoryEntry::igdeLoggerHistoryEntry(){
-	pType = emtInfo;
+igdeLoggerHistoryEntry::igdeLoggerHistoryEntry() :
+pType(emtInfo){
+}
+
+igdeLoggerHistoryEntry::igdeLoggerHistoryEntry(const igdeLoggerHistoryEntry &entry) :
+pType(entry.pType),
+pSource(entry.pSource),
+pMessage(entry.pMessage){
+}
+
+igdeLoggerHistoryEntry::igdeLoggerHistoryEntry(igdeLoggerHistoryEntry &&entry) :
+pType(entry.pType),
+pSource(std::move(entry.pSource)),
+pMessage(std::move(entry.pMessage)){
 }
 
 igdeLoggerHistoryEntry::~igdeLoggerHistoryEntry(){
 }
 
 
-
 // Management
 ///////////////
 
-void igdeLoggerHistoryEntry::SetType(int type){
-	if(type < emtInfo || type > emtError) DETHROW(deeInvalidParam);
-	
+void igdeLoggerHistoryEntry::SetType(eMessageTypes type){
 	pType = type;
+}
+
+void igdeLoggerHistoryEntry::SetSource(const char *source){
+	pSource = source;
+}
+
+void igdeLoggerHistoryEntry::SetMessage(const char *message){
+	pMessage = message;
 }
 
 void igdeLoggerHistoryEntry::Clear(){
@@ -63,11 +80,11 @@ void igdeLoggerHistoryEntry::Clear(){
 }
 
 void igdeLoggerHistoryEntry::CleanUpMessage(){
-	int len = pMessage.GetLength();
-	int found, character;
+	const int len = pMessage.GetLength();
+	int found;
 	
 	for(found=len; found>0; found--){
-		character = pMessage.GetAt(found - 1);
+		const int character = pMessage.GetAt(found - 1);
 		
 		if(!isspace(character) && character != '\n' && character != '\r'){
 			break;
@@ -77,4 +94,22 @@ void igdeLoggerHistoryEntry::CleanUpMessage(){
 	if(found < len){
 		pMessage.SetAt(found, '\0');
 	}
+}
+
+igdeLoggerHistoryEntry &igdeLoggerHistoryEntry::operator=(const igdeLoggerHistoryEntry &entry){
+	if(this != &entry){
+		pType = entry.pType;
+		pSource = entry.pSource;
+		pMessage = entry.pMessage;
+	}
+	return *this;
+}
+
+igdeLoggerHistoryEntry &igdeLoggerHistoryEntry::operator=(igdeLoggerHistoryEntry &&entry) noexcept{
+	if(this != &entry){
+		pType = entry.pType;
+		pSource = std::move(entry.pSource);
+		pMessage = std::move(entry.pMessage);
+	}
+	return *this;
 }

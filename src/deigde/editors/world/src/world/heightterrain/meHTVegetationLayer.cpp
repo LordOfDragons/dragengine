@@ -53,22 +53,8 @@ meHTVegetationLayer::meHTVegetationLayer(deEngine *engine, const char *name){
 	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
-	pHeightTerrain = NULL;
+	pHeightTerrain = nullptr;
 	pName = name;
-	
-	pVariations = NULL;
-	pVariationCount = 0;
-	pVariationSize = 0;
-	pActiveVariation = NULL;
-	
-	pRules = NULL;
-	pRuleCount = 0;
-	pRuleSize = 0;
-	pActiveRule = NULL;
-	
-	pLinks = NULL;
-	pLinkCount = 0;
-	pLinkSize = 0;
 }
 
 meHTVegetationLayer::~meHTVegetationLayer(){
@@ -111,56 +97,15 @@ void meHTVegetationLayer::SetName(const char *name){
 // Variations
 ///////////////
 
-meHTVVariation *meHTVegetationLayer::GetVariationAt(int index) const{
-	if(index < 0 || index >= pVariationCount) DETHROW(deeInvalidParam);
-	
-	return pVariations[index];
-}
-
-int meHTVegetationLayer::IndexOfVariation(meHTVVariation *variation) const{
-	if(!variation) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pVariationCount; i++){
-		if(variation == pVariations[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool meHTVegetationLayer::HasVariation(meHTVVariation *variation) const{
-	if(!variation) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pVariationCount; i++){
-		if(variation == pVariations[i]) return true;
-	}
-	
-	return false;
-}
-
 void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
-	if(!variation) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(variation)
 	
-	if(pVariationCount == pVariationSize){
-		int newSize = pVariationCount * 3 / 2 + 1;
-		meHTVVariation **newArray = new meHTVVariation*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pVariations){
-			memcpy(newArray, pVariations, sizeof(meHTVVariation*) * pVariationSize);
-			delete [] pVariations;
-		}
-		pVariations = newArray;
-		pVariationSize = newSize;
-	}
-	
-	pVariations[pVariationCount] = variation;
-	pVariationCount++;
-	
-	variation->AddReference();
+	pVariations.Add(variation);
 	variation->SetVLayer(this);
 	
-	if(!pActiveVariation) SetActiveVariation(variation);
+	if(!pActiveVariation){
+		SetActiveVariation(variation);
+	}
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -170,32 +115,14 @@ void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
 }
 
 void meHTVegetationLayer::InsertVariation(int before, meHTVVariation *variation){
-	if(before < 0 || before > pVariationCount || !variation) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(variation)
 	
-	int i;
-	
-	if(pVariationCount == pVariationSize){
-		int newSize = pVariationCount * 3 / 2 + 1;
-		meHTVVariation **newArray = new meHTVVariation*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pVariations){
-			memcpy(newArray, pVariations, sizeof(meHTVVariation*) * pVariationSize);
-			delete [] pVariations;
-		}
-		pVariations = newArray;
-		pVariationSize = newSize;
-	}
-	
-	for(i=pVariationCount; i>before; i--){
-		pVariations[i] = pVariations[i - 1];
-	}
-	pVariations[before] = variation;
-	pVariationCount++;
-	
-	variation->AddReference();
+	pVariations.Insert(variation, before);
 	variation->SetVLayer(this);
 	
-	if(!pActiveVariation) SetActiveVariation(variation);
+	if(!pActiveVariation){
+		SetActiveVariation(variation);
+	}
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -205,24 +132,7 @@ void meHTVegetationLayer::InsertVariation(int before, meHTVVariation *variation)
 }
 
 void meHTVegetationLayer::MoveVariation(meHTVVariation *variation, int moveTo){
-	if(moveTo < 0 || moveTo > pVariationCount) DETHROW(deeInvalidParam);
-	
-	int i, moveFrom = IndexOfVariation(variation);
-	
-	if(moveFrom == -1) DETHROW(deeInvalidParam);
-	
-	if(moveTo > moveFrom){
-		for(i=moveFrom; i<moveTo; i++){
-			pVariations[i] = pVariations[i + 1];
-		}
-		pVariations[moveTo] = variation;
-		
-	}else if(moveTo < moveFrom){
-		for(i=moveFrom; i>moveTo; i--){
-			pVariations[i] = pVariations[i - 1];
-		}
-		pVariations[moveTo] = variation;
-	}
+	pVariations.Move(variation, moveTo);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -232,18 +142,14 @@ void meHTVegetationLayer::MoveVariation(meHTVVariation *variation, int moveTo){
 }
 
 void meHTVegetationLayer::RemoveVariation(meHTVVariation *variation){
-	int i, index = IndexOfVariation(variation);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const meHTVVariation::Ref guard(variation);
 	
-	if(variation == pActiveVariation) SetActiveVariation(NULL);
-	
-	for(i=index+1; i<pVariationCount; i++){
-		pVariations[i - 1] = pVariations[i];
+	if(variation == pActiveVariation){
+		SetActiveVariation(nullptr);
 	}
-	pVariationCount--;
 	
-	variation->SetVLayer(NULL);
-	variation->FreeReference();
+	pVariations.Remove(variation);
+	variation->SetVLayer(nullptr);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -253,13 +159,11 @@ void meHTVegetationLayer::RemoveVariation(meHTVVariation *variation){
 }
 
 void meHTVegetationLayer::RemoveAllVariations(){
-	SetActiveVariation(NULL);
+	SetActiveVariation(nullptr);
 	
-	while(pVariationCount > 0){
-		pVariationCount--;
-		pVariations[pVariationCount]->SetVLayer(NULL);
-		pVariations[pVariationCount]->FreeReference();
-	}
+	pVariations.Visit([](meHTVVariation &variation){
+		variation.SetVLayer(nullptr);
+	});
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
@@ -283,53 +187,10 @@ void meHTVegetationLayer::SetActiveVariation(meHTVVariation *variation){
 // Rules
 //////////
 
-meHTVRule *meHTVegetationLayer::GetRuleAt(int index) const{
-	if(index < 0 || index >= pRuleCount) DETHROW(deeInvalidParam);
-	
-	return pRules[index];
-}
-
-int meHTVegetationLayer::IndexOfRule(meHTVRule *rule) const{
-	if(!rule) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pRuleCount; i++){
-		if(rule == pRules[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool meHTVegetationLayer::HasRule(meHTVRule *rule) const{
-	if(!rule) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pRuleCount; i++){
-		if(rule == pRules[i]) return true;
-	}
-	
-	return false;
-}
-
 void meHTVegetationLayer::AddRule(meHTVRule *rule){
-	if(!rule) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rule)
 	
-	if(pRuleCount == pRuleSize){
-		int newSize = pRuleCount * 3 / 2 + 1;
-		meHTVRule **newArray = new meHTVRule*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pRules){
-			memcpy(newArray, pRules, sizeof(meHTVRule*) * pRuleSize);
-			delete [] pRules;
-		}
-		pRules = newArray;
-		pRuleSize = newSize;
-	}
-	
-	pRules[pRuleCount] = rule;
-	pRuleCount++;
-	
-	rule->AddReference();
+	pRules.Add(rule);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLRuleCountChanged(this);
@@ -337,21 +198,19 @@ void meHTVegetationLayer::AddRule(meHTVRule *rule){
 		pHeightTerrain->InvalidateAllPropFields();
 	}
 	
-	if(!pActiveRule) SetActiveRule(rule);
+	if(!pActiveRule){
+		SetActiveRule(rule);
+	}
 }
 
 void meHTVegetationLayer::RemoveRule(meHTVRule *rule){
-	int i, index = IndexOfRule(rule);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const meHTVRule::Ref guard(rule);
 	
-	if(rule == pActiveRule) SetActiveRule(NULL);
-	
-	for(i=index+1; i<pRuleCount; i++){
-		pRules[i - 1] = pRules[i];
+	if(rule == pActiveRule){
+		SetActiveRule(nullptr);
 	}
-	pRuleCount--;
 	
-	rule->FreeReference();
+	pRules.Remove(rule);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLRuleCountChanged(this);
@@ -361,12 +220,9 @@ void meHTVegetationLayer::RemoveRule(meHTVRule *rule){
 }
 
 void meHTVegetationLayer::RemoveAllRules(){
-	SetActiveRule(NULL);
+	SetActiveRule(nullptr);
 	
-	while(pRuleCount > 0){
-		pRuleCount--;
-		pRules[pRuleCount]->FreeReference();
-	}
+	pRules.RemoveAll();
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLRuleCountChanged(this);
@@ -403,17 +259,15 @@ void meHTVegetationLayer::NotifyRuleMoved(meHTVRule *rule){
 
 
 void meHTVegetationLayer::EvaluateRules(meHTVEvaluationEnvironment &evalEnv){
-	int r;
-	
 	// reset rule states
-	for(r=0; r<pRuleCount; r++){
-		pRules[r]->Reset();
-	}
+	pRules.Visit([](meHTVRule &rule){
+		rule.Reset();
+	});
 	
 	// evaluate sink type rules
-	for(r=0; r<pRuleCount; r++){
-		pRules[r]->Evaluate(evalEnv);
-	}
+	pRules.Visit([&](meHTVRule &rule){
+		rule.Evaluate(evalEnv);
+	});
 }
 
 
@@ -421,53 +275,10 @@ void meHTVegetationLayer::EvaluateRules(meHTVEvaluationEnvironment &evalEnv){
 // Links
 //////////
 
-meHTVRLink *meHTVegetationLayer::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount) DETHROW(deeInvalidParam);
-	
-	return pLinks[index];
-}
-
-int meHTVegetationLayer::IndexOfLink(meHTVRLink *link) const{
-	if(!link) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLinkCount; i++){
-		if(link == pLinks[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool meHTVegetationLayer::HasLink(meHTVRLink *link) const{
-	if(!link) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLinkCount; i++){
-		if(link == pLinks[i]) return true;
-	}
-	
-	return false;
-}
-
 void meHTVegetationLayer::AddLink(meHTVRLink *link){
-	if(!link) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(link)
 	
-	if(pLinkCount == pLinkSize){
-		int newSize = pLinkCount * 3 / 2 + 1;
-		meHTVRLink **newArray = new meHTVRLink*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pLinks){
-			memcpy(newArray, pLinks, sizeof(meHTVRLink*) * pLinkSize);
-			delete [] pLinks;
-		}
-		pLinks = newArray;
-		pLinkSize = newSize;
-	}
-	
-	pLinks[pLinkCount] = link;
-	pLinkCount++;
-	
-	link->AddReference();
+	pLinks.Add(link);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLLinkCountChanged(this);
@@ -477,15 +288,9 @@ void meHTVegetationLayer::AddLink(meHTVRLink *link){
 }
 
 void meHTVegetationLayer::RemoveLink(meHTVRLink *link){
-	int i, index = IndexOfLink(link);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const meHTVRLink::Ref guard(link);
 	
-	for(i=index+1; i<pLinkCount; i++){
-		pLinks[i - 1] = pLinks[i];
-	}
-	pLinkCount--;
-	
-	link->FreeReference();
+	pLinks.Remove(link);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLLinkCountChanged(this);
@@ -495,10 +300,7 @@ void meHTVegetationLayer::RemoveLink(meHTVRLink *link){
 }
 
 void meHTVegetationLayer::RemoveAllLinks(){
-	while(pLinkCount > 0){
-		pLinkCount--;
-		pLinks[pLinkCount]->FreeReference();
-	}
+	pLinks.RemoveAll();
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLLinkCountChanged(this);
@@ -508,10 +310,10 @@ void meHTVegetationLayer::RemoveAllLinks(){
 }
 
 bool meHTVegetationLayer::LinkProducesLoop(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot){
-	if(!sourceRule || sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){
+	if(!sourceRule || sourceSlot < 0 || sourceSlot >= sourceRule->GetSlots().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
-	if(!destinationRule || destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount()){
+	if(!destinationRule || destinationSlot < 0 || destinationSlot >= destinationRule->GetSlots().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -525,11 +327,6 @@ bool meHTVegetationLayer::LinkProducesLoop(meHTVRule *sourceRule, int sourceSlot
 
 void meHTVegetationLayer::pCleanUp(){
 	RemoveAllLinks();
-	if(pLinks) delete [] pLinks;
-	
 	RemoveAllRules();
-	if(pRules) delete [] pRules;
-	
 	RemoveAllVariations();
-	if(pVariations) delete [] pVariations;
 }

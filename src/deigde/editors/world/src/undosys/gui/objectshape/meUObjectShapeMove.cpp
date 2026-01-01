@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list){
-	if(list.GetCount() == 0){
+meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, const meObjectShape::List &list){
+	if(list.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	if(!object || !property){
@@ -54,11 +54,11 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectShapeList &shapeList = object->GetWorld()->GetObjectShapes();
+	const meObjectShape::List &shapeList = object->GetWorld()->GetObjectShapes();
 	const int count = list.GetCount();
 	int i;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Move object shapes");
 	SetLongInfo("Move object shapes");
@@ -74,13 +74,9 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeMove::~meUObjectShapeMove(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

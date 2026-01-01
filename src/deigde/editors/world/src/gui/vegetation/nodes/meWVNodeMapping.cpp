@@ -62,6 +62,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
+	typedef deTObjectReference<cTextLower> Ref;
 	cTextLower(meWVNodeMapping &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -71,7 +72,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMapSetLower::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMapSetLower::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMapping(), value));
 	}
 };
@@ -81,6 +82,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
+	typedef deTObjectReference<cTextUpper> Ref;
 	cTextUpper(meWVNodeMapping &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -90,7 +92,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMapSetUpper::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMapSetUpper::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMapping(), value));
 	}
 };
@@ -100,6 +102,7 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
+	typedef deTObjectReference<cTextValue> Ref;
 	cTextValue(meWVNodeMapping &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -109,7 +112,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMapSetValue::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMapSetValue::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMapping(), value));
 	}
 };
@@ -119,12 +122,13 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
+	typedef deTObjectReference<cActionInversed> Ref;
 	cActionInversed(meWVNodeMapping &node) :
-		igdeAction("Inversed", NULL, "Invert value"), pNode(node){}
+		igdeAction("Inversed", nullptr, "Invert value"), pNode(node){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMapToggleInversed::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMapToggleInversed::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMapping()));
 	}
 };
@@ -150,34 +154,34 @@ pRuleMapping(rule)
 	SetTitle("Mapping");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Value", "Mapped value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
 	
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"Lower", "Lower value",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
 	helper.EditFloat(slot, "Lower value if slot is not connected.",
-		pEditLower, new cTextLower(*this));
+		pEditLower, cTextLower::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot.TakeOverWith(env, "Upper", "Upper value",
+	slot = meWVNodeSlot::Ref::New(env, "Upper", "Upper value",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
 	helper.EditFloat(slot, "Upper value if slot is not connected.",
-		pEditUpper, new cTextUpper(*this));
+		pEditUpper, cTextUpper::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot.TakeOverWith(env, "Value", "Value to map",
+	slot = meWVNodeSlot::Ref::New(env, "Value", "Value to map",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
 	helper.EditFloat(slot, "Value to map if slot is not connected.",
-		pEditValue, new cTextValue(*this));
+		pEditValue, cTextValue::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.CheckBox(pFraParameters, pChkInversed, new cActionInversed(*this));
+	helper.CheckBox(pFraParameters, pChkInversed, cActionInversed::Ref::New(*this));
 }
 
 meWVNodeMapping::~meWVNodeMapping(){

@@ -217,7 +217,7 @@ void meConfiguration::LoadConfiguration(){
 		}
 		
 		meConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
-			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
 	}catch(const deException &e){
@@ -240,7 +240,7 @@ void meConfiguration::SaveConfiguration(){
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		writer = vfs.OpenFileForWriting(pathFile);
 		meConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
 	}catch(const deException &e){

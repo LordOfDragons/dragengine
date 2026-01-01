@@ -38,6 +38,9 @@ class meHTVRuleClosestVegetation;
  * \brief Vegetation Editing Window Node Closest Vegetation.
  */
 class meWVNodeClosestVegetation : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeClosestVegetation> Ref;
+	
 private:
 	meHTVRuleClosestVegetation *pRuleCV;
 	

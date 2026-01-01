@@ -41,6 +41,9 @@ class meHTVRulePropCount;
  * \brief Vegetation Editing Window Node Prop Count.
  */
 class meWVNodePropCount : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodePropCount> Ref;
+	
 private:
 	meHTVRulePropCount *pRulePC;
 	
@@ -75,6 +78,10 @@ public:
 	
 	/** \brief Update class lists. */
 	void UpdateClassLists() override;
+	
+	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged() override;
 	/*@}*/
 };
 

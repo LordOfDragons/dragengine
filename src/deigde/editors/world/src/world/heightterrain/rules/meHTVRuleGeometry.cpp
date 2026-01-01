@@ -43,9 +43,9 @@
 ////////////////////////////
 
 meHTVRuleGeometry::meHTVRuleGeometry() : meHTVRule(ertGeometry, 3){
-	GetSlotAt(eosHeight).SetIsInput(false);
-	GetSlotAt(eosNormal).SetIsInput(false);
-	GetSlotAt(eosTerrainType).SetIsInput(false);
+	GetSlots().GetAt(eosHeight)->SetIsInput(false);
+	GetSlots().GetAt(eosNormal)->SetIsInput(false);
+	GetSlots().GetAt(eosTerrainType)->SetIsInput(false);
 }
 
 meHTVRuleGeometry::meHTVRuleGeometry(const meHTVRuleGeometry &rule) :
@@ -101,6 +101,6 @@ decVector meHTVRuleGeometry::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvi
 	return decVector();
 }
 
-meHTVRule *meHTVRuleGeometry::Copy() const{
-	return new meHTVRuleGeometry(*this);
+meHTVRule::Ref meHTVRuleGeometry::Copy() const{
+	return meHTVRuleGeometry::Ref::New(*this);
 }

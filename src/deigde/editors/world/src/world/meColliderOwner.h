@@ -58,43 +58,43 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create collider owner for object. */
-	meColliderOwner(meObject *object);
+	explicit meColliderOwner(meObject *object);
 	
 	/** \brief Create collider owner for object shape. */
-	meColliderOwner(meObjectShape *shape);
+	explicit meColliderOwner(meObjectShape *shape);
 	
 	/** \brief Create collider owner for object snap point. */
-	meColliderOwner(meObjectSnapPoint *snapPoint);
+	explicit meColliderOwner(meObjectSnapPoint *snapPoint);
 	
 	/** \brief Create collider owner for decal. */
-	meColliderOwner(meDecal *decal);
+	explicit meColliderOwner(meDecal *decal);
 	
 	/** \brief Create collider owner for navigation space. */
-	meColliderOwner(meNavigationSpace *navspace);
+	explicit meColliderOwner(meNavigationSpace *navspace);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Owner object class or \em NULL if not set. */
+	/** \brief Owner object class or \em nullptr if not set. */
 	inline meObject *GetObject() const{ return pObject; }
 	
-	/** \brief Object shape or \em NULL if not set. */
+	/** \brief Object shape or \em nullptr if not set. */
 	inline meObjectShape *GetShape() const{ return pShape; }
 	
-	/** \brief Snap point or \em NULL if not set. */
+	/** \brief Snap point or \em nullptr if not set. */
 	inline meObjectSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
 	
-	/** \brief Owner decal or \em NULL if not set. */
+	/** \brief Owner decal or \em nullptr if not set. */
 	inline meDecal *GetDecal() const{ return pDecal; }
 	
-	/** \brief Owner navigation space or \em NULL if not set. */
+	/** \brief Owner navigation space or \em nullptr if not set. */
 	inline meNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	
 	
-	/** \brief Get collider owner for collider or \em NULL if not set. */
+	/** \brief Get collider owner for collider or \em nullptr if not set. */
 	static const meColliderOwner *GetColliderOwner(
 		igdeEnvironment &environment, deCollider *collider);
 	/*@}*/

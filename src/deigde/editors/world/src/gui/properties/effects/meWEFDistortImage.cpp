@@ -32,14 +32,14 @@
 #include "../../world/meWorld.h"
 #include "../../worldedit.h"
 
-#include "dragengine/deEngine.h"
+#include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
-#include "dragengine/resources/effect/deEffectDistortImage.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/resources/image/deImageManager.h"
-#include "dragengine/filesystem/deVirtualFileSystem.h"
-#include "dragengine/common/file/decPath.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/effect/deEffectDistortImage.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -90,8 +90,8 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Image:");
 	pEditImage = new FXTextField(frameLine, 10, this, ID_EDITIMAGE, FRAME_SUNKEN | LAYOUT_FILL_X);
-// 	new FXButton( frameLine, "...", NULL, this, ID_BTNSELECTCLASS, BUTTON_NORMAL );
- 	new FXButton(frameLine, "...", NULL, NULL, 0, BUTTON_NORMAL);
+// 	new FXButton( frameLine, "...", nullptr, this, ID_BTNSELECTCLASS, BUTTON_NORMAL );
+ 	new FXButton(frameLine, "...", nullptr, nullptr, 0, BUTTON_NORMAL);
 	
 	// transparency
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
@@ -108,7 +108,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	pChkEnable->setCheck(pEffectDistort->GetEnabled());
 	
 	// set values
-	deImage *image = pEffectDistort->GetImage();
+	deImage::Ref image = pEffectDistort->GetImage();
 	if(image){
 		pEditImage->setText(image->GetFilename().GetString());
 	}else{
@@ -140,7 +140,7 @@ long meWEFDistortImage::onEditImageCommand(FXObject *sender, FXSelector selector
 	deImageManager *imageManager = pEngine->GetImageManager();
 	deVirtualFileSystem *vfs = pEngine->GetVirtualFileSystem();
 	const FXString &filename = pEditImage->getText();
-	deImage *image = NULL;
+	deImage::Ref image;
 	decPath path;
 	
 	path.SetFromUnix(filename.text());
@@ -148,10 +148,7 @@ long meWEFDistortImage::onEditImageCommand(FXObject *sender, FXSelector selector
 		try{
 			image = imageManager->LoadImage(filename.text(), "/");
 			pEffectDistort->SetImage(image);
-			image->FreeReference();
-			
 		}catch(const deException &e){
-			if(image) image->FreeReference();
 			pWndEffects->GetWindowMain()->GetLogger()->LogException("World Editor", e);
 		}
 	}
@@ -162,7 +159,7 @@ long meWEFDistortImage::onEditImageCommand(FXObject *sender, FXSelector selector
 }
 
 long meWEFDistortImage::onEditStrengthUCommand(FXObject *sender, FXSelector selector, void *data){
-	pEffectDistort->SetStrengthU(strtof(pEditStrengthU->getText().text(), NULL));
+	pEffectDistort->SetStrengthU(strtof(pEditStrengthU->getText().text(), nullptr));
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
 	
@@ -170,7 +167,7 @@ long meWEFDistortImage::onEditStrengthUCommand(FXObject *sender, FXSelector sele
 }
 
 long meWEFDistortImage::onEditStrengthVCommand(FXObject *sender, FXSelector selector, void *data){
-	pEffectDistort->SetStrengthV(strtof(pEditStrengthV->getText().text(), NULL));
+	pEffectDistort->SetStrengthV(strtof(pEditStrengthV->getText().text(), nullptr));
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
 	

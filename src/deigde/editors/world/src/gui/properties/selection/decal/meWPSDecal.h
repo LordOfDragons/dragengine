@@ -25,6 +25,10 @@
 #ifndef _MEWPSDECAL_H_
 #define _MEWPSDECAL_H_
 
+#include "meWPSDecalListener.h"
+#include "../../meWPPropertyList.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -40,9 +44,7 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWPSelection;
-class meWPSDecalListener;
 class meDecal;
-class meWorld;
 
 
 
@@ -50,10 +52,13 @@ class meWorld;
  * \brief Decal Selection Panel.
  */
 class meWPSDecal : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPSDecal> Ref;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSDecalListener *pListener;
-	meWorld *pWorld;
+	meWPSDecalListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -77,7 +82,7 @@ private:
 	igdeTextField::Ref pEditTexCoordRotation;
 	igdeColorBox::Ref pClrColorTint;
 	
-	igdeWidget::Ref pEditProperties;
+	meWPPropertyList::Ref pEditProperties;
 	
 	
 	
@@ -101,12 +106,12 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
 	
-	/** \brief Active decal or NULL. */
+	/** \brief Active decal or nullptr. */
 	meDecal *GetActiveDecal() const;
 	
 	/** \brief Active property or an empty string. */
@@ -142,9 +147,9 @@ public:
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline const igdeAction::Ref &GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline const igdeAction::Ref &GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline const igdeAction::Ref &GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 };
 

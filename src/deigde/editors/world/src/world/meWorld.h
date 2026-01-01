@@ -25,42 +25,39 @@
 #ifndef _MEWORLD_H_
 #define _MEWORLD_H_
 
+#include "meMusic.h"
+#include "meLumimeter.h"
+#include "object/meObject.h"
+#include "object/meObjectSelection.h"
+#include "idgroup/meIDGroupID.h"
+#include "objectshape/meObjectShapeSelection.h"
+#include "decal/meDecal.h"
+#include "decal/meDecalSelection.h"
+#include "navspace/meNavigationSpace.h"
+#include "navspace/meNavigationSpaceSelection.h"
+#include "idgroup/meIDGroup.h"
+#include "pathfinding/mePathFindTest.h"
+#include "terrain/meHeightTerrain.h"
+
 #include <deigde/triggersystem/igdeTriggerTargetList.h>
 #include <deigde/triggersystem/igdeTriggerExpressionParser.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-#include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/forcefield/deForceField.h>
+#include <dragengine/resources/sound/deMicrophone.h>
+#include <dragengine/resources/world/deWorld.h>
 
-#include "meMusic.h"
-#include "object/meObjectList.h"
-#include "object/meObjectSelection.h"
-#include "objectshape/meObjectShapeSelection.h"
-#include "decal/meDecalList.h"
-#include "decal/meDecalSelection.h"
-#include "navspace/meNavigationSpaceList.h"
-#include "navspace/meNavigationSpaceSelection.h"
-#include "idgroup/meIDGroupList.h"
-
-class decCollisionFilter;
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainNavSpace;
-class deMicrophone;
-class deEngine;
-class deWorld;
-class deImage;
-class deCollider;
-
 class meCamera;
-class meLumimeter;
-class mePathFindTest;
 class meUndoSystem;
-class meHeightTerrain;
 class meHeightTerrainSector;
 class meHeightTerrainTexture;
 class meHeightTerrainPropField;
@@ -70,32 +67,29 @@ class meHTVVariation;
 class meHTVRule;
 class mePropField;
 class mePropFieldType;
-
 class meWorldNotifier;
 class meNavigationSpace;
 class meObject;
 class meObjectTexture;
 class meDecal;
-
 class meWeather;
-
 class meWorldGuiParameters;
 class meWindowMain;
 
 class igdeEnvironment;
 class igdeWSky;
 
-class deForceField;
-
-class deBaseScriptingCollider;
-class deColliderVolume;
+class decCollisionFilter;
 class decLayerMask;
-
+class deEngine;
+class deImage;
+class deCollider;
 class deVideo;
 class deVideoPlayer;
 class deComponent;
 class deDynamicSkin;
 class deLogger;
+class deBaseScriptingCollider;
 
 
 
@@ -108,7 +102,6 @@ class deLogger;
  */
 class meWorld : public igdeEditableEntity{
 public:
-	/** Reference. */
 	typedef deTObjectReference<meWorld> Ref;
 	
 	
@@ -161,30 +154,30 @@ public:
 private:
 	meWindowMain &pWindowMain;
 	
-	deWorld *pDEWorld;
-	deColliderVolume *pEngColCollider;
+	deWorld::Ref pDEWorld;
+	deColliderVolume::Ref pEngColCollider;
 	igdeWSky *pSky;
 	igdeWObject::Ref pBgObject;
-	deMicrophone *pEngMicrophone;
+	deMicrophone::Ref pEngMicrophone;
 	decVector pLimitBoxMinExtend, pLimitBoxMaxExtend;
 	
-	deForceField *pEngForceField;
+	deForceField::Ref pEngForceField;
 	
 	decDVector pSize;
 	decVector pGravity;
-	meHeightTerrain *pHeightTerrain;
+	meHeightTerrain::Ref pHeightTerrain;
 	
-	meObjectList pObjects;
-	meDecalList pDecals;
-	meNavigationSpaceList pNavSpaces;
+	meObject::List pObjects;
+	meDecal::List pDecals;
+	meNavigationSpace::List pNavSpaces;
 	decStringDictionary pProperties;
 	decString pActiveProperty;
 	
-	decObjectDictionary pObjectIDMap;
+	decTObjectDictionary<meObject> pObjectIDMap;
 	
 	meWeather *pWeather;
 	
-	meObjectShapeList pObjectShapes;
+	meObjectShape::List pObjectShapes;
 	
 	meObjectSelection pSelectionObject;
 	meObjectShapeSelection pSelectionObjectShape;
@@ -195,8 +188,8 @@ private:
 	meCamera *pPlayerCamera;
 	meCamera *pActiveCamera;
 	
-	meLumimeter *pLumimeter;
-	mePathFindTest *pPathFindTest;
+	meLumimeter::Ref pLumimeter;
+	mePathFindTest::Ref pPathFindTest;
 	meMusic::Ref pMusic;
 	
 	bool pDepChanged;
@@ -208,16 +201,14 @@ private:
 	meWorldGuiParameters *pGuiParams;
 	igdeTriggerTargetList pTriggerTable;
 	igdeTriggerExpressionParser pTriggerExpressionParser;
-	meIDGroupList pIDGroupList;
+	meIDGroup::List pIDGroupList;
 	
 	decUniqueID pNextObjectID;
 	
 	deDebugDrawer::Ref pDDLimitBox;
-	igdeWDebugDrawerShape pDDSLimitBox;
+	igdeWDebugDrawerShape::Ref pDDSLimitBox;
 	
-	meWorldNotifier **pNotifiers;
-	int pNotifierCount;
-	int pNotifierSize;
+	decTObjectOrderedSet<meWorldNotifier> pNotifiers;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -239,13 +230,13 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the engine side world resource. */
-	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Background object wrapper. */
 	inline const igdeWObject::Ref &GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
-	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
+	inline const deMicrophone::Ref &GetMicrophone() const{ return pEngMicrophone; }
 	
 	/** Limit box extends. */
 	inline const decVector &GetLimitBoxMinExtend() const{ return pLimitBoxMinExtend; }
@@ -255,7 +246,7 @@ public:
 	void SetLimitBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** Retrieves the height terrain. */
-	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const meHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	/** Retrieves the weather. */
 	inline meWeather *GetWeather() const{ return pWeather; }
 	/** Retrieves the gui parameters. */
@@ -268,8 +259,8 @@ public:
 	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
 	
 	/** Identifier group list. */
-	inline meIDGroupList &GetIDGroupList(){ return pIDGroupList; }
-	inline const meIDGroupList &GetIDGroupList() const{ return pIDGroupList; }
+	inline meIDGroup::List &GetIDGroupList(){ return pIDGroupList; }
+	inline const meIDGroup::List &GetIDGroupList() const{ return pIDGroupList; }
 	
 	
 	
@@ -339,8 +330,8 @@ public:
 	void ClearScalingOfNonScaledElements();
 	
 	/** Retrieves the editing object shape list. */
-	inline meObjectShapeList &GetObjectShapes(){ return pObjectShapes; }
-	inline const meObjectShapeList &GetObjectShapes() const{ return pObjectShapes; }
+	inline meObjectShape::List &GetObjectShapes(){ return pObjectShapes; }
+	inline const meObjectShape::List &GetObjectShapes() const{ return pObjectShapes; }
 	/*@}*/
 	
 	
@@ -348,7 +339,7 @@ public:
 	/** \name Objects */
 	/*@{*/
 	/** List of objects. */
-	inline const meObjectList &GetObjects() const{ return pObjects; }
+	inline const meObject::List &GetObjects() const{ return pObjects; }
 	
 	/** Add object. */
 	void AddObject(meObject *object);
@@ -362,10 +353,10 @@ public:
 	/** Reassin object identifiers. */
 	void ReassignObjectIDs();
 	
-	/** Object by ID or \em NULL if absent. */
+	/** Object by ID or \em nullptr if absent. */
 	meObject *GetObjectWithID(const decUniqueID &id) const;
 	
-	/** Object by ID in hex format or \em NULL if absent. */
+	/** Object by ID in hex format or \em nullptr if absent. */
 	meObject *GetObjectWithID(const char *hexID) const;
 	/*@}*/
 	
@@ -374,7 +365,7 @@ public:
 	/** \name Decals */
 	/*@{*/
 	/** List of decals. */
-	inline const meDecalList &GetDecals() const{ return pDecals; }
+	inline const meDecal::List &GetDecals() const{ return pDecals; }
 	
 	/** Add decal. */
 	void AddDecal(meDecal *decal);
@@ -391,7 +382,7 @@ public:
 	/** \name Navigation Spaces */
 	/*@{*/
 	/** List of navigation spaces. */
-	inline const meNavigationSpaceList &GetNavSpaces() const{ return pNavSpaces; }
+	inline const meNavigationSpace::List &GetNavSpaces() const{ return pNavSpaces; }
 	
 	/** Add navigation space. */
 	void AddNavSpace(meNavigationSpace *navspace);
@@ -485,7 +476,7 @@ public:
 	/** \name Sensors */
 	/*@{*/
 	/** Retrieves the lumimeter sensor. */
-	inline meLumimeter *GetLumimeter() const{ return pLumimeter; }
+	inline const meLumimeter::Ref &GetLumimeter() const{ return pLumimeter; }
 	/** Updates sensors. */
 	void UpdateSensors();
 	/*@}*/
@@ -493,7 +484,7 @@ public:
 	/** \name Testing */
 	/*@{*/
 	/** Retrieves the path find test. */
-	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
+	inline const mePathFindTest::Ref &GetPathFindTest() const{ return pPathFindTest; }
 	/** Retrieves the last path used for loading/saving navigation test files. */
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
 	/** Sets the last path used for loading/saving navigation test files. */
@@ -513,20 +504,11 @@ public:
 	
 	/** \name Notifiers */
 	/*@{*/
-	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{ return pNotifierCount; }
-	/** Retrieves the notifier at the given index. */
-	meWorldNotifier *GetNotifierAt(int index) const;
-	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(meWorldNotifier *notifier) const;
-	/** Determines if the notifier exists. */
-	bool HasNotifier(meWorldNotifier *notifier) const;
 	/** Adds a new notifier. */
 	void AddNotifier(meWorldNotifier *notifier);
+	
 	/** Removes the given notifier. */
 	void RemoveNotifier(meWorldNotifier *notifier);
-	/** Removes all notifiers. */
-	void RemoveAllNotifiers();
 	
 	/** Notify world parameters changed. */
 	void NotifyWorldParametersChanged();

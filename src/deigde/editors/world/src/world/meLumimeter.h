@@ -22,20 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MELUMIMETER_H_
 #define _MELUMIMETER_H_
 
+#include "object/meObject.h"
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/deObject.h>
+#include <dragengine/resources/sensor/deLumimeter.h>
 
-// predefinitions
-class meObject;
 class meWorld;
-class deLumimeter;
 class deEngine;
-class deDebugDrawerVolume;
 
 
 
@@ -49,8 +47,7 @@ class deDebugDrawerVolume;
 class meLumimeter : public deObject{
 private:
 	deEngine *pEngine;
-	deLumimeter *pLumimeter;
-	deDebugDrawerVolume *pDDVolume;
+	deLumimeter::Ref pLumimeter;
 	meWorld *pWorld;
 	
 	decString pName;
@@ -62,7 +59,7 @@ private:
 	
 	bool pTrackCamera;
 	
-	meObject *pHostObject;
+	meObject::Ref pHostObject;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -73,8 +70,12 @@ public:
 	/*@{*/
 	/** Creates a new lumimeter. */
 	meLumimeter(deEngine *engine);
+	
+protected:
 	/** Cleans up the lumimeter object. */
 	~meLumimeter();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -82,7 +83,7 @@ public:
 	/** Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the engine lumimeter. */
-	inline deLumimeter *GetLumimeter() const{ return pLumimeter; }
+	inline const deLumimeter::Ref &GetLumimeter() const{ return pLumimeter; }
 	
 	/** Retrieves the parent world. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -120,9 +121,9 @@ public:
 	/** Sets if the sensor tracks the active camera. */
 	void SetTrackCamera(bool trackCamera);
 	
-	/** Retrieves the host object or NULL if not attached to any object. */
-	inline meObject *GetHostObject() const{ return pHostObject; }
-	/** Sets the host object or NULL if not attached to any object. */
+	/** Retrieves the host object or nullptr if not attached to any object. */
+	inline const meObject::Ref &GetHostObject() const{ return pHostObject; }
+	/** Sets the host object or nullptr if not attached to any object. */
 	void SetHostObject(meObject *object);
 	/** Determines if this lumimeter has a host object. */
 	bool HasHostObject() const;
@@ -138,7 +139,6 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateLumimeterPosition();
 	void pUpdateDDVGeometry();
 	void pUpdateDDVolume();
 };

@@ -32,7 +32,7 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meHTVVariation;
+#include "../../../../world/heightterrain/meHTVVariation.h"
 
 
 
@@ -42,15 +42,16 @@ class meHTVVariation;
  * Undo action to set the model of a vegetation layer variation.
  */
 class meUHTVVarSetModel : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTVVarSetModel> Ref;
+	
+	
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	decString pOldPath;
 	decString pNewPath;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTVVarSetModel> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -58,7 +59,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUHTVVarSetModel();
+
+public:
 	/*@}*/
 	
 public:

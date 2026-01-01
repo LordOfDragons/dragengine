@@ -43,21 +43,17 @@
 meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Add Vegetation Layer Rule");
 	SetMemoryConsumption(sizeof(meUHTVRuleAdd));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleAdd::~meUHTVRuleAdd(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

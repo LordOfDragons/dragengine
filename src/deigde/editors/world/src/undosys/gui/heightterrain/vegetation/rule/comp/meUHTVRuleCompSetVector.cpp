@@ -43,8 +43,8 @@
 meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Combine Set Vector");
 	SetMemoryConsumption(sizeof(meUHTVRuleCompSetVector));
@@ -53,14 +53,10 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, me
 	pNewVector = nvector;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

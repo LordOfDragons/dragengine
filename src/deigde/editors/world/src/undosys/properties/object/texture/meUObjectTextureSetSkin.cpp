@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUObjectTextureSetSkin.h"
 #include "../../../../world/meWorld.h"
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
-#include "../../../../world/object/texture/meObjectTextureList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -43,67 +38,39 @@
 ////////////////////////////
 
 meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin){
-	if(!texture || !newskin) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(texture)
+	DEASSERT_NOTNULL(newskin)
 	
-	meObject *object = texture->GetObject();
-	if(!object) DETHROW(deeInvalidParam);
+	meObject * const object = texture->GetObject();
+	DEASSERT_NOTNULL(object)
 	
-	meWorld *world = object->GetWorld();
-	if(!world) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(object->GetWorld())
 	
 	SetShortInfo("Set object texture skin");
 	
-	pTextures = NULL;
-	pTextureCount = 0;
-	
-	try{
-		pTextures = new sTexture[1];
-		if(!pTextures) DETHROW(deeOutOfMemory);
-		
-		pTextures[0].oldskin = texture->GetSkinPath();
-		pTextures[0].newskin = newskin;
-		pTextures[0].texture = texture;
-		texture->AddReference();
-		
-		pTextureCount = 1;
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	const cTexture::Ref udata(cTexture::Ref::New());
+	udata->oldskin = texture->GetSkinPath();
+	udata->newskin = newskin;
+	udata->texture = texture;
+	pTextures.Add(udata);
 }
 
-meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin){
-	int count = textures.GetTextureCount();
-	meObjectTexture *texture;
-	
-	if(count == 0 || !newskin) DETHROW(deeInvalidParam);
+meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture::List &textures, const char *newskin){
+	DEASSERT_NOTNULL(newskin)
+	DEASSERT_TRUE(textures.IsNotEmpty())
 	
 	SetShortInfo("Set object texture skins");
 	
-	pTextures = NULL;
-	pTextureCount = 0;
-	
-	try{
-		pTextures = new sTexture[count];
-		if(!pTextures) DETHROW(deeOutOfMemory);
-		
-		for(pTextureCount=0; pTextureCount<count; pTextureCount++){
-			texture = textures.GetTextureAt(pTextureCount);
-			pTextures[pTextureCount].oldskin = texture->GetSkinPath();
-			pTextures[pTextureCount].newskin = newskin;
-			pTextures[pTextureCount].texture = texture;
-			texture->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	textures.Visit([&](meObjectTexture *texture){
+		const cTexture::Ref udata(cTexture::Ref::New());
+		udata->oldskin = texture->GetSkinPath();
+		udata->newskin = newskin;
+		udata->texture = texture;
+		pTextures.Add(udata);
+	});
 }
 
 meUObjectTextureSetSkin::~meUObjectTextureSetSkin(){
-	pCleanUp();
 }
 
 
@@ -112,30 +79,13 @@ meUObjectTextureSetSkin::~meUObjectTextureSetSkin(){
 ///////////////
 
 void meUObjectTextureSetSkin::Undo(){
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i].texture->SetSkinPath(pTextures[i].oldskin);
-	}
+	pTextures.Visit([&](const cTexture &data){
+		data.texture->SetSkinPath(data.oldskin);
+	});
 }
 
 void meUObjectTextureSetSkin::Redo(){
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i].texture->SetSkinPath(pTextures[i].newskin);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectTextureSetSkin::pCleanUp(){
-	if(pTextures){
-		while(pTextureCount > 0){
-			pTextureCount--;
-			pTextures[pTextureCount].texture->FreeReference();
-		}
-		delete [] pTextures;
-	}
+	pTextures.Visit([&](const cTexture &data){
+		data.texture->SetSkinPath(data.newskin);
+	});
 }

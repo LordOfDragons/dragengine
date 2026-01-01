@@ -84,10 +84,10 @@ void meModelBuilderNavSpace::BuildNavGrid(deModel* model){
 	const deNavigationSpaceEdge * const edges = pNavSpace->GetEdges();
 	const decVector * const vertices = pNavSpace->GetVertices();
 	const int edgeCount = pNavSpace->GetEdgeCount();
-	deModelTexture *modelTexture = NULL;
+	deModelTexture *modelTexture = nullptr;
 	const float halfExtend = 0.05f;
 	int indexNormal, indexVertex;
-	deModelLOD *modelLOD = NULL;
+	deModelLOD *modelLOD = nullptr;
 	decVector boxVertices[8];
 	decVector boxNormals[6];
 	decMatrix matrix;
@@ -222,9 +222,9 @@ void meModelBuilderNavSpace::BuildNavMesh(deModel* model){
 	const decVector tangent = decVector(1.0f, 0.0f, 0.0f);
 	const int vertexCount = pNavSpace->GetVertexCount();
 	const int faceCount = pNavSpace->GetFaceCount();
-	deModelTexture *modelTexture = NULL;
+	deModelTexture *modelTexture = nullptr;
 	deNavigationSpaceCorner *corners;
-	deModelLOD *modelLOD = NULL;
+	deModelLOD *modelLOD = nullptr;
 	int totalFaceCount = 0;
 	int normalCount = 0;
 	decVector normal;

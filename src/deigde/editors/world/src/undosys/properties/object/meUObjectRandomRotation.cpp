@@ -26,7 +26,8 @@
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 // Class meUObjectRandomRotation
@@ -35,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRandomRotation::meUObjectRandomRotation(meWorld *world, const meObjectList &objects,
+meUObjectRandomRotation::meUObjectRandomRotation(meWorld *world, const meObject::List &objects,
 	bool randomizeX, bool randomizeY, bool randomizeZ) :
 pWorld(world)
 {
@@ -43,11 +44,27 @@ pWorld(world)
 	
 	SetShortInfo("Randomize Object Rotation");
 	
-	const int count = objects.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pObjects.Add(ObjectData::Ref::NewWith(objects.GetAt(i), randomizeX, randomizeY, randomizeZ));
-	}
+	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
+	
+	pObjects.Visit([&](meUndoDataObject &data){
+		decVector r(data.GetOldRotation());
+		if(randomizeX){
+			r.x = decMath::random(-180.0f, 180.0f);
+		}
+		if(randomizeY){
+			r.y = decMath::random(-180.0f, 180.0f);
+		}
+		if(randomizeZ){
+			r.z = decMath::random(-180.0f, 180.0f);
+		}
+		data.SetNewRotation(r);
+		
+		pObjects.Visit([&](meUndoDataObject &data2){
+			if(data2.GetObject()->GetAttachedTo() == data.GetObject()){
+				data2.TransformNew(data.GetOldMatrixInverse() * data.GetNewMatrix());
+			}
+		});
+	});
 }
 
 
@@ -55,25 +72,9 @@ pWorld(world)
 ///////////////
 
 void meUObjectRandomRotation::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const ObjectData &data = *((ObjectData*)pObjects.GetAt(i));
-		meObject &object = data.GetObject();
-		object.SetRotation(data.GetOldOrientation());
-		pWorld->NotifyObjectGeometryChanged(&object);
-	}
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUObjectRandomRotation::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const ObjectData &data = *((ObjectData*)pObjects.GetAt(i));
-		meObject &object = data.GetObject();
-		object.SetRotation(data.GetNewOrientation());
-		pWorld->NotifyObjectGeometryChanged(&object);
-	}
+	meUndoDataObject::ApplyNewGeometry(pObjects, pWorld);
 }

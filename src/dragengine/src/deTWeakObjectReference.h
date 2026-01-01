@@ -27,14 +27,15 @@
 
 #include <type_traits>
 
-#include "common/exceptions.h"
+#include "deObject.h"
+
 
 /**
  * \brief Weak object reference.
  */
 template<class T> class deTWeakObjectReference{
 private:
-	typename T::cWeakRefData *pReference;
+	typename deObject::cWeakRefData *pReference;
 	
 	
 public:
@@ -45,7 +46,10 @@ public:
 	}
 	
 	/** \brief Create weak object reference or nullptr. */
-	explicit deTWeakObjectReference(T *object) : pReference(object->AddWeakReference()){
+	explicit deTWeakObjectReference(T *object) : pReference(nullptr){
+		if(object){
+			pReference = object->AddWeakReference();
+		}
 	}
 	
 	/** \brief Copy constructor. */

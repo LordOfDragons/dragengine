@@ -67,12 +67,12 @@ pRuleRandom(rule)
 	SetTitle("Random");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Random", "Random value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 }
 

@@ -47,20 +47,14 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	pIndex = heightTerrain->IndexOfVLayer(vlayer);
+	pIndex = heightTerrain->GetVLayers().IndexOf(vlayer);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Height Terrain Vegetation Layer");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerRemove::~meUHTVLayerRemove(){
-	if(pVLayer) pVLayer->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

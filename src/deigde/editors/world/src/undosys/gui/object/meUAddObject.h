@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
-class meObject;
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
 
 
 
@@ -37,15 +37,16 @@ class meObject;
  * \brief Undo action add object.
  */
 class meUAddObject : public igdeUndo{
-private:
-	meWorld *pWorld;
-	
-	meObject *pObject;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUAddObject> Ref;
 	
+	
+private:
+	meWorld::Ref pWorld;
+	
+	meObject::Ref pObject;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,13 +54,17 @@ public:
 	/** \brief Create new undo object. */
 	meUAddObject(meWorld *world, const decDVector &position, const char *classname);
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUAddObject();
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object to add. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

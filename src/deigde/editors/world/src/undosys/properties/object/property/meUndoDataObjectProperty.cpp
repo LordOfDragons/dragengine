@@ -40,22 +40,14 @@
 ////////////////////////////
 
 meUndoDataObjectProperty::meUndoDataObjectProperty(meObject *object) :
-pObject(NULL),
+
 pPropertyExists(false)
 {
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
-	
+	DEASSERT_NOTNULL(object)
 	pObject = object;
-	object->AddReference();
 }
 
 meUndoDataObjectProperty::~meUndoDataObjectProperty(){
-	pOldProperties.RemoveAll();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

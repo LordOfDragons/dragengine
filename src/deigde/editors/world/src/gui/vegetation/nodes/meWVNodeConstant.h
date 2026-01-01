@@ -38,6 +38,9 @@ class meHTVRuleConstant;
  * \brief Vegetation Editing Window Node Constant.
  */
 class meWVNodeConstant : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeConstant> Ref;
+	
 private:
 	meHTVRuleConstant *pRuleConstant;
 	

@@ -46,7 +46,7 @@
 ////////////////////////////
 
 meHTVRuleRandom::meHTVRuleRandom() : meHTVRule(ertRandom, 1){
-	GetSlotAt(eosRandom).SetIsInput(false);
+	GetSlots().GetAt(eosRandom)->SetIsInput(false);
 }
 
 meHTVRuleRandom::meHTVRuleRandom(const meHTVRuleRandom &rule) :
@@ -78,6 +78,6 @@ decVector meHTVRuleRandom::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnviro
 	return decVector(pRandom, pRandom, pRandom);
 }
 
-meHTVRule *meHTVRuleRandom::Copy() const{
-	return new meHTVRuleRandom(*this);
+meHTVRule::Ref meHTVRuleRandom::Copy() const{
+	return meHTVRuleRandom::Ref::New(*this);
 }

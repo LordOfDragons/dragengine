@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "meWTFilterKernel.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -45,21 +45,16 @@ meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float s
 	if((rows % 2) == 0 || (cols % 2) == 0) DETHROW(deeInvalidParam);
 	int i, size;
 	
-	pName = NULL;
-	pKernel = NULL;
+	pName = nullptr;
+	pKernel = nullptr;
 	pKernelRows = rows;
 	pKernelCols = cols;
 	pScale = decMath::max(scale, 0.0f);
 	
 	try{
-		pName = new char[strlen(name) + 1];
-		if(!pName) DETHROW(deeOutOfMemory);
-		strcpy(pName, name);
+		pName = new char[strlen(name) + 1];		strcpy(pName, name);
 		
-		pKernel = new float[rows * cols];
-		if(!pKernel) DETHROW(deeOutOfMemory);
-		
-		size = rows * cols;
+		pKernel = new float[rows * cols]		size = rows * cols;
 		for(i=0; i<size; i++) pKernel[i] = 0.0f;
 		pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
 		

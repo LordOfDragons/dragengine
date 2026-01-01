@@ -40,50 +40,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const meObjectList &list, const char *key){
-	meUndoDataObjectProperty *undoData = NULL;
-	const int count = list.GetCount();
-	meObject *object;
-	int i;
+meUObjectPropertyRemoveFromSelected::meUObjectPropertyRemoveFromSelected(const meObject::List &list, const char *key){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(!key || count < 1){
-		DETHROW(deeInvalidParam);
-	}
+	SetShortInfo("Remove object property from selected");
+	pKey = key;
 	
-	try{
-		SetShortInfo("Remove object property from selected");
-		pKey = key;
+	list.Visit([&](meObject *object){
+		DEASSERT_NOTNULL(object->GetWorld())
 		
-		for(i=0; i<count; i++){
-			object = list.GetAt(i);
-			if(!object->GetWorld()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			const decStringDictionary &properties = object->GetProperties();
-			
-			undoData = new meUndoDataObjectProperty(object);
-			undoData->SetPropertyExists(properties.Has(key));
-			if(undoData->GetPropertyExists()){
-				undoData->SetOldValue(properties.GetAt(key));
-			}
-			
-			pList.Add(undoData);
-			undoData->FreeReference();
-			undoData = NULL;
+		const decStringDictionary &properties = object->GetProperties();
+		
+		const meUndoDataObjectProperty::Ref udata(meUndoDataObjectProperty::Ref::New(object));
+		udata->SetPropertyExists(properties.Has(key));
+		if(udata->GetPropertyExists()){
+			udata->SetOldValue(properties.GetAt(key));
 		}
 		
-	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+		pList.Add(udata);
+	});
 }
 
 meUObjectPropertyRemoveFromSelected::~meUObjectPropertyRemoveFromSelected(){
-	pCleanUp();
 }
 
 
@@ -92,36 +70,17 @@ meUObjectPropertyRemoveFromSelected::~meUObjectPropertyRemoveFromSelected(){
 ///////////////
 
 void meUObjectPropertyRemoveFromSelected::Undo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
-		
-		if(undoData.GetPropertyExists()){
-			undoData.GetObject()->SetProperty(pKey, undoData.GetOldValue());
+	pList.Visit([&](const meUndoDataObjectProperty &data){
+		if(data.GetPropertyExists()){
+			data.GetObject()->SetProperty(pKey, data.GetOldValue());
 		}
-	}
+	});
 }
 
 void meUObjectPropertyRemoveFromSelected::Redo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
-		
-		if(undoData.GetPropertyExists()){
-			undoData.GetObject()->RemoveProperty(pKey);
+	pList.Visit([&](const meUndoDataObjectProperty &data){
+		if(data.GetPropertyExists()){
+			data.GetObject()->RemoveProperty(pKey);
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectPropertyRemoveFromSelected::pCleanUp(){
-	pList.RemoveAll();
+	});
 }

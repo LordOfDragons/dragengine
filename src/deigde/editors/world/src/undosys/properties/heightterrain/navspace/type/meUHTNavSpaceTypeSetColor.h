@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpaceType;
+#include "../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
 
 
 
@@ -38,12 +38,13 @@ class meHeightTerrainNavSpaceType;
  */
 class meUHTNavSpaceTypeSetColor : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTNavSpaceTypeSetColor> Ref;
 	
 	
+public:
+	
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	decColor pOldColor;
 	decColor pNewColor;
 	
@@ -57,7 +58,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo action. */
+
+protected:
 	virtual ~meUHTNavSpaceTypeSetColor();
+
+public:
 	/*@}*/
 	
 	

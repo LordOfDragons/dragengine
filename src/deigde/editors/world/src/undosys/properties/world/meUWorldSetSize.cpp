@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUWorldSetSize::meUWorldSetSize(meWorld *world, const decDVector &newValue) :
-pWorld(NULL),
+
 pNewValue(newValue)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = world->GetSize();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetSize::~meUWorldSetSize(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

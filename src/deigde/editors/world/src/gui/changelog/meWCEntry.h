@@ -25,14 +25,15 @@
 #ifndef _MEWCENTRY_H_
 #define _MEWCENTRY_H_
 
+#include "../../world/meWorld.h"
+#include "../../world/terrain/meHeightTerrainNavSpace.h"
+#include "../../world/terrain/meHeightTerrainTexture.h"
+
 #include <deigde/gui/model/igdeListItem.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class meHeightTerrainNavSpace;
-class meHeightTerrainTexture;
 class meWindowChangelog;
-class meWorld;
 
 
 
@@ -41,6 +42,8 @@ class meWorld;
  */
 class meWCEntry : public igdeListItem{
 public:
+	typedef deTObjectReference<meWCEntry> Ref;
+	
 	/** \brief Element type. */
 	enum eElementTypes{
 		/** \brief World. */
@@ -72,9 +75,9 @@ private:
 	
 	eElementTypes pType;
 	decPoint3 pSector;
-	meWorld *pWorld;
-	meHeightTerrainTexture *pHTTexture;
-	meHeightTerrainNavSpace *pHTNavSpace;
+	meWorld::Ref pWorld;
+	meHeightTerrainTexture::Ref pHTTexture;
+	meHeightTerrainNavSpace::Ref pHTNavSpace;
 	
 	
 	
@@ -106,22 +109,22 @@ public:
 	/** \brief Set sector. */
 	void SetSector(const decPoint3 &sector);
 	
-	/** \brief World or \em NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	/** \brief World or \em nullptr. */
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world or \em NULL. */
+	/** \brief Set world or \em nullptr. */
 	void SetWorld(meWorld *world);
 	
-	/** \brief Height terrain texture or \em NULL. */
-	inline meHeightTerrainTexture *GetHTTexture() const{ return pHTTexture; }
+	/** \brief Height terrain texture or \em nullptr. */
+	inline const meHeightTerrainTexture::Ref &GetHTTexture() const{ return pHTTexture; }
 	
-	/** \brief Set height terrain texture or \em NULL. */
+	/** \brief Set height terrain texture or \em nullptr. */
 	void SetHTTexture(meHeightTerrainTexture *texture);
 	
-	/** \brief Height terrain navigation space or \em NULL. */
-	inline meHeightTerrainNavSpace *GetHTNavSpace() const{ return pHTNavSpace; }
+	/** \brief Height terrain navigation space or \em nullptr. */
+	inline const meHeightTerrainNavSpace::Ref &GetHTNavSpace() const{ return pHTNavSpace; }
 	
-	/** \brief Set height terrain navigation space or \em NULL. */
+	/** \brief Set height terrain navigation space or \em nullptr. */
 	void SetHTNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Update item text. */

@@ -31,6 +31,7 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
@@ -51,7 +52,6 @@ class deoglRenderPlanMasked;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglShadowCaster;
-class deoglSkinState;
 class deoglSkinTexture;
 class deoglWorldOctree;
 
@@ -109,7 +109,7 @@ private:
 	deoglRDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinTexture *pUseSkinTexture;
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
@@ -344,7 +344,7 @@ public:
 	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Skin state or \em NULL if not used. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Skin texture to use or \em NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }

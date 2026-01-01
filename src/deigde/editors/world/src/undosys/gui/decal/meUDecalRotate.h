@@ -26,12 +26,9 @@
 #ifndef _MEDECALROTATE_H_
 #define _MEDECALROTATE_H_
 
-// includes
+#include "meUndoDataDecal.h"
 #include "../meBaseUndoRotate.h"
-
-// predefinitions
-class meUndoDataDecal;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -41,11 +38,13 @@ class meWorld;
  * Undo Action for interactively rotating decals.
  */
 class meUDecalRotate : public meBaseUndoRotate{
-private:
-	meWorld *pWorld;
+public:
+	typedef deTObjectReference<meUDecalRotate> Ref;
 	
-	meUndoDataDecal **pDecals;
-	int pDecalCount;
+private:
+	meWorld::Ref pWorld;
+	
+	meUndoDataDecal::List pDecals;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -53,7 +52,11 @@ public:
 	/** \brief Create new undo. */
 	meUDecalRotate(meWorld *world);
 	/** \brief Clean up undo. */
+
+protected:
 	virtual ~meUDecalRotate();
+
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -62,10 +65,6 @@ public:
 	virtual void Redo();
 	void ProgressiveRedo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

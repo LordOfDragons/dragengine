@@ -52,16 +52,10 @@ meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, 
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Texture Mask");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexMask::~meUHTSetTexMask(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,8 +37,12 @@ class meObjectTexture;
  * \brief Undo action object texture add property.
  */
 class meUObjTexAddProperty : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjTexAddProperty> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	
 	decString pKey;
 	decString pValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjTexAddProperty> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -56,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjTexAddProperty();
+
+public:
 	/*@}*/
 	
 	
@@ -76,11 +81,6 @@ public:
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -41,8 +41,7 @@
 ////////////////////////////
 
 meUHTNavSpaceRemove::meUHTNavSpaceRemove(meHeightTerrainSector *sector, meHeightTerrainNavSpace *navspace) :
-pSector(NULL),
-pNavSpace(NULL)
+pSector(nullptr)
 {
 	if(!sector || !navspace){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pNavSpace(NULL)
 	SetShortInfo("Height terrain remove nav-space");
 	
 	pSector = sector;
-	sector->AddReference();
-	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceRemove::~meUHTNavSpaceRemove(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pSector){
-		pSector->FreeReference();
-	}
 }
 
 

@@ -26,10 +26,10 @@
 #define _MEUHTVRULEVECMATHOP_H_
 
 #include "../../../../../../world/heightterrain/rules/meHTVRuleVectorMath.h"
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHTVegetationLayer;
 class meHTVRuleVectorMath;
 
 
@@ -39,13 +39,14 @@ class meHTVRuleVectorMath;
  */
 class meUHTVRuleVecMathSetOp : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleVecMathSetOp> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleVectorMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleVectorMath::Ref pRule;
 	
 	meHTVRuleVectorMath::eOperators pOldOp;
 	meHTVRuleVectorMath::eOperators pNewOp;
@@ -59,7 +60,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleVecMathSetOp();
+
+public:
 	/*@}*/
 	
 	

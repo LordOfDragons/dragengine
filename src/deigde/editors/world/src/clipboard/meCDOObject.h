@@ -25,8 +25,10 @@
 #ifndef _MECDOOBJECT_H_
 #define _MECDOOBJECT_H_
 
-#include "../world/object/texture/meObjectTextureList.h"
+#include "../world/object/texture/meObjectTexture.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
@@ -35,13 +37,17 @@
 class meObject;
 
 
-
 /**
- * \brief Object data for clipboard clips.
+ * Object data for clipboard clips.
  * 
  * Stores information about an object suitable for clipboard clips.
  */
-class meCDOObject{
+class meCDOObject : public deObject{
+public:
+	typedef deTObjectReference<meCDOObject> Ref;
+	typedef decTObjectOrderedSet<meCDOObject> List;
+	
+	
 private:
 	decString pClassname;
 	decDVector pPosition;
@@ -49,7 +55,7 @@ private:
 	decVector pScale;
 	decStringDictionary pProperties;
 	decStringList pAttachBehaviors;
-	meObjectTextureList pTextures;
+	meObjectTexture::List pTextures;
 	int pAttachToIndex;
 	decString pAttachToID;
 	
@@ -58,48 +64,52 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create object clip data. */
-	meCDOObject(const meObject &object);
+	/** Create object clip data. */
+	explicit meCDOObject(const meObject &object);
 	
-	/** \brief Clean up object data object. */
+protected:
+	/** Clean up object data object. */
 	~meCDOObject();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Classname. */
+	/** Classname. */
 	inline const decString &GetClassname() const{ return pClassname; }
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Rotation. */
+	/** Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
-	/** \brief Scale. */
+	/** Scale. */
 	inline const decVector &GetScale() const{ return pScale; }
 	
-	/** \brief Properties. */
+	/** Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
-	/** \brief Textures. */
-	inline const meObjectTextureList &GetTextures() const{ return pTextures; }
+	/** Textures. */
+	inline const meObjectTexture::List &GetTextures() const{ return pTextures; }
 	
-	/** \brief Attach to index or -1 if not attached to an object. */
+	/** Attach to index or -1 if not attached to an object. */
 	inline int GetAttachToIndex() const{ return pAttachToIndex; }
 	
-	/** \brief Set attach to index or -1 if not attached to an object. */
+	/** Set attach to index or -1 if not attached to an object. */
 	void SetAttachToIndex(int index);
 	
-	/** \brief Attach to ID in hex string format or empty string  if not attached. */
+	/** Attach to ID in hex string format or empty string  if not attached. */
 	inline const decString &GetAttachToID() const{ return pAttachToID; }
 	
-	/** \brief Set attach to ID in hex string format or empty string  if not attached. */
+	/** Set attach to ID in hex string format or empty string  if not attached. */
 	void SetAttachToID(const char *id);
 	
-	/** \brief Update object with stored data. */
+	/**
+	 * Update object with stored data.
+	 * \warning Call this only on a newly created object.
+	 */
 	void UpdateObject(meObject &object) const;
 	/*@}*/
 };

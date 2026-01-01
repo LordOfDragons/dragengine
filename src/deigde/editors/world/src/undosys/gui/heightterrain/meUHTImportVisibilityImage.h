@@ -26,14 +26,14 @@
 #ifndef _MEUHTIMPORTVISIBILITYIMAGE_H_
 #define _MEUHTIMPORTVISIBILITYIMAGE_H_
 
-// includes
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrainSector.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
 class meBitArray;
 
 class deImage;
@@ -46,23 +46,28 @@ class deImage;
  * Undo action to import a visibility image into a visibility terrain.
  */
 class meUHTImportVisibilityImage : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTImportVisibilityImage> Ref;
+	
+	
 private:
-	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
+	meWorld::Ref pWorld;
+	meHeightTerrainSector::Ref pSector;
 	
 	meBitArray *pOldVis;
 	meBitArray *pNewVis;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTImportVisibilityImage> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTImportVisibilityImage();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

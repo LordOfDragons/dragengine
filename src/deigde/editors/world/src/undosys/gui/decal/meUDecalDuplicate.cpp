@@ -42,57 +42,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalDuplicate::meUDecalDuplicate(meWorld *world, const decVector &offset) :
-pWorld(NULL),
-pDecals(NULL),
-pDecalCount(0)
-{
+meUDecalDuplicate::meUDecalDuplicate(meWorld *world, const decVector &offset){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meDecalList &list = world->GetSelectionDecal().GetSelected();
-	int count = list.GetCount();
-	meDecal *duplicate = NULL;
-	meDecal *decal;
-	
 	SetShortInfo("Duplicate decals");
 	
-	pWorld = NULL;
-	pDecals = NULL;
-	pDecalCount = 0;
+	pWorld = nullptr;
 	
-	try{
-		if(count > 0){
-			pDecals = new meUndoDataDecal*[count];
-			
-			while(pDecalCount < count){
-				decal = list.GetAt(pDecalCount);
-				
-				duplicate = new meDecal(*decal);
-				duplicate->SetPosition(decal->GetPosition() + offset);
-				pDecals[pDecalCount] = new meUndoDataDecal(duplicate);
-				pDecalCount++;
-				
-				duplicate->FreeReference();
-				duplicate = NULL;
-			}
-		}
-		
-	}catch(const deException &){
-		if(duplicate){
-			duplicate->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+	world->GetSelectionDecal().GetSelected().Visit([&](const meDecal &decal){
+		const meUndoDataDecal::Ref udecal(meUndoDataDecal::Ref::New(meDecal::Ref::New(decal)));
+		udecal->GetDecal()->SetPosition(decal.GetPosition() + offset);
+		pDecals.Add(udecal);
+	});
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalDuplicate::~meUDecalDuplicate(){
-	pCleanUp();
 }
 
 
@@ -102,20 +70,17 @@ meUDecalDuplicate::~meUDecalDuplicate(){
 
 void meUDecalDuplicate::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
-	int i;
 	
-	for(i=0; i<pDecalCount; i++){
-		meDecal * const decal = pDecals[i]->GetDecal();
-		
-		selection.Remove(decal);
-		if(decal->GetActive()){
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		selection.Remove(data.GetDecal());
+		if(data.GetDecal()->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveDecal(pDecals[i]->GetDecal());
+		pWorld->RemoveDecal(data.GetDecal());
 		
 		//pWorld->NotifyDecalRemoved( decal );
-	}
+	});
 	pWorld->NotifyDecalCountChanged();
 	
 	pWorld->NotifyDecalSelectionChanged();
@@ -123,40 +88,17 @@ void meUDecalDuplicate::Undo(){
 
 void meUDecalDuplicate::Redo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
-	int i;
 	
 	selection.Reset();
 	
-	for(i=0; i<pDecalCount; i++){
-		meDecal * const decal = pDecals[i]->GetDecal();
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		pWorld->AddDecal(data.GetDecal());
+		selection.Add(data.GetDecal());
 		
-		pWorld->AddDecal(decal);
-		selection.Add(decal);
-		
-		//pWorld->NotifyDecalAdded( decal );
-	}
+		//pWorld->NotifyDecalAdded(data.GetDecal());
+	});
 	pWorld->NotifyDecalCountChanged();
 	
 	selection.ActivateNext();
 	pWorld->NotifyDecalSelectionChanged();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDecalDuplicate::pCleanUp(){
-	if(pDecals){
-		while(pDecalCount > 0){
-			pDecalCount--;
-			delete pDecals[pDecalCount];
-		}
-		
-		delete [] pDecals;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

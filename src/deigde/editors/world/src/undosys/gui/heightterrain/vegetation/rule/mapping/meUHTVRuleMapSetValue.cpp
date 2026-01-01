@@ -43,8 +43,8 @@
 meUHTVRuleMapSetValue::meUHTVRuleMapSetValue(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nvalue){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Mapping Set Value");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapSetValue));
@@ -53,14 +53,10 @@ meUHTVRuleMapSetValue::meUHTVRuleMapSetValue(meHTVegetationLayer *vlayer, meHTVR
 	pNewValue = nvalue;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetValue::~meUHTVRuleMapSetValue(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

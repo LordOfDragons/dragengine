@@ -64,6 +64,9 @@ class decXmlWriter;
  * Load/Save XML Height Terrain.
  */
 class meLSXMLHeightTerrain : public meLSHeightTerrain{
+public:
+	typedef deTObjectReference<meLSXMLHeightTerrain> Ref;
+	
 private:
 	meLoadSaveSystem *pLSSys;
 	
@@ -71,9 +74,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	meLSXMLHeightTerrain(meLoadSaveSystem *lssys);
+	explicit meLSXMLHeightTerrain(meLoadSaveSystem *lssys);
+	
+protected:
 	/** Cleans up the object. */
 	~meLSXMLHeightTerrain() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -41,6 +41,9 @@ class meWindowProperties;
  * \brief Sensors property panel.
  */
 class meWPSensors : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPSensors> Ref;
+	
 private:
 	meWindowProperties &pWindowProperties;
 	

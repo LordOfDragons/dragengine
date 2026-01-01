@@ -57,21 +57,22 @@ class cActionDeleteNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
+	typedef deTObjectReference<cActionDeleteNode> Ref;
 	cActionDeleteNode(meWVNode &node) : igdeAction("Delete Node",
 		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Delete Node"),
 	pNode(node){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pNode.CanDelete()){
 			return;
 		}
 		
 		meWindowVegetation &view = *((meWindowVegetation*)pNode.GetOwnerBoard());
 		view.GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleRemove::Ref::NewWith(view.GetVLayer(), pNode.GetRule()));
+			meUHTVRuleRemove::Ref::New(view.GetVLayer(), pNode.GetRule()));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pNode.CanDelete());
 	}
 };
@@ -80,24 +81,25 @@ class cActionDuplicateNode : public igdeAction {
 	meWVNode &pNode;
 	
 public:
+	typedef deTObjectReference<cActionDuplicateNode> Ref;
 	cActionDuplicateNode(meWVNode &node) : igdeAction("Duplicate Node",
 		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate Node"),
 	pNode(node){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pNode.CanDuplicate()){
 			return;
 		}
 		
 		meWindowVegetation &view = pNode.GetWindowVegetation();
 		
-		const meHTVRule::Ref rule(meHTVRule::Ref::New(pNode.GetRule()->Copy()));
+		const meHTVRule::Ref rule(pNode.GetRule()->Copy());
 		rule->SetPosition(rule->GetPosition() + decVector2(0.5f, 0.5f));
 		
-		view.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::NewWith(view.GetVLayer(), rule));
+		view.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::New(view.GetVLayer(), rule));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pNode.CanDuplicate());
 	}
 };
@@ -121,8 +123,8 @@ public:
 	virtual void AddContextMenuEntries(igdeNVNode*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand(menu, new cActionDeleteNode(pNode), true);
-		helper.MenuCommand(menu, new cActionDuplicateNode(pNode), true);
+		helper.MenuCommand(menu, cActionDeleteNode::Ref::New(pNode));
+		helper.MenuCommand(menu, cActionDuplicateNode::Ref::New(pNode));
 	}
 };
 
@@ -139,7 +141,7 @@ public:
 	virtual void OnDragBegin(igdeNVNode*){
 		meHTVegetationLayer * const vlayer = pNode.GetWindowVegetation().GetVLayer();
 		if(vlayer){
-			pUndo.TakeOver(new meUHTVRuleMove(vlayer, pNode.GetRule()));
+			pUndo = meUHTVRuleMove::Ref::New(vlayer, pNode.GetRule());
 		}
 	}
 	
@@ -159,7 +161,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(pUndo, false);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 };
 
@@ -175,24 +177,19 @@ public:
 
 meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule) :
 igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
-pWindowVegetation(windowVegetation),
-pRule(NULL)
+pWindowVegetation(windowVegetation)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	AddListener(cActivationListener::Ref::NewWith(*this));
-	AddListener(cDragNodeListener::Ref::NewWith(*this, pUndoMove));
+	AddListener(cActivationListener::Ref::New(*this));
+	AddListener(cDragNodeListener::Ref::New(*this, pUndoMove));
 	
 	pRule = rule;
-	rule->AddReference();
 }
 
 meWVNode::~meWVNode(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -216,4 +213,7 @@ bool meWVNode::CanDelete() const{
 
 bool meWVNode::CanDuplicate() const{
 	return true;
+}
+
+void meWVNode::OnGameDefinitionChanged(){
 }

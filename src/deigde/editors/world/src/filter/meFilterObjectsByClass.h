@@ -22,19 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEFILTEROBJECTSBYCLASS_H_
 #define _MEFILTEROBJECTSBYCLASS_H_
 
-// includes
 #include "meFilterObjects.h"
+#include "../world/object/meObject.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
-
-// predefinitions
-class meObject;
-
 
 
 /**
@@ -52,11 +47,14 @@ class meObject;
  * objects are rejected.
  */
 class meFilterObjectsByClass : public meFilterObjects{
+public:
+	typedef deTObjectReference<meFilterObjectsByClass> Ref;
+	
 private:
 	decStringSet pClassNames;
 	bool pMatchInclusive;
 	
-	meObject *pRejectObject;
+	meObject::List pRejectObjects;
 	bool pRejectGhosts;
 	
 public:
@@ -64,8 +62,12 @@ public:
 	/*@{*/
 	/** Creates a new filter. */
 	meFilterObjectsByClass();
+	
+protected:
 	/** Cleans up the filter. */
 	~meFilterObjectsByClass() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -78,10 +80,9 @@ public:
 	inline bool GetRejectGhosts() const{ return pRejectGhosts; }
 	/** Sets if ghost objects are rejected. */
 	void SetRejectGhosts(bool rejectGhosts);
-	/** Retrieves the object to reject or NULL. */
-	inline meObject *GetRejectObject() const{ return pRejectObject; }
-	/** Sets the object to reject or NULL. */
-	void SetRejectObject(meObject *object);
+	/** Objects to reject. */
+	inline meObject::List &GetRejectObjects(){ return pRejectObjects; }
+	inline const meObject::List &GetRejectObjects() const{ return pRejectObjects; }
 	
 	/** Adds a class name. */
 	void AddClassName(const char *className);

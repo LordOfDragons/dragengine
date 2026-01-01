@@ -68,7 +68,7 @@ igdeBaseXML(logger, loggerSource){
 ///////////////////////
 
 void meLoadSaveNavTest::LoadNavTest(meWorld &world, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -137,13 +137,9 @@ void meLoadSaveNavTest::pWriteNavTest(decXmlWriter &writer, const meWorld &world
 	writer.WriteDataTagInt("blockingCost", (int)pathFindTest.GetBlockingCost());
 	
 	// cost types
-	const mePathFindTestTypeList &typeList = pathFindTest.GetTypeList();
-	const int typeCount = typeList.GetCount();
-	int i;
-	
-	for(i=0; i<typeCount; i++){
-		pWriteNavTestType(writer, *typeList.GetAt(i));
-	}
+	pathFindTest.GetTypeList().Visit([&](const mePathFindTestType &type){
+		pWriteNavTestType(writer, type);
+	});
 	
 	writer.WriteClosingTag("navigationTest", true);
 }
@@ -164,7 +160,7 @@ void meLoadSaveNavTest::pWriteNavTestType(decXmlWriter &writer, const mePathFind
 
 void meLoadSaveNavTest::pReadNavTest(const decXmlElementTag &root, meWorld &world){
 	mePathFindTest &pathFindTest = *world.GetPathFindTest();
-	mePathFindTestTypeList &typeList = pathFindTest.GetTypeList();
+	mePathFindTestType::List &typeList = pathFindTest.GetTypeList();
 	const int elementCount = root.GetElementCount();
 	int e;
 	
@@ -220,44 +216,33 @@ void meLoadSaveNavTest::pReadNavTest(const decXmlElementTag &root, meWorld &worl
 }
 
 void meLoadSaveNavTest::pReadNavTestType(const decXmlElementTag &root, meWorld &world){
+	const mePathFindTestType::Ref type(mePathFindTestType::Ref::New(0));
 	const int elementCount = root.GetElementCount();
-	mePathFindTestType *type = NULL;
 	int e;
 	
-	try{
-		type = new mePathFindTestType(0);
+	
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			
-			if(tag){
-				if(strcmp(tag->GetName(), "number") == 0){
-					type->SetTypeNumber(GetCDataInt(*tag));
-					
-				}else if(strcmp(tag->GetName(), "name") == 0){
-					type->SetName(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "fixCost") == 0){
-					type->SetFixCost(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "costPerMeter") == 0){
-					type->SetCostPerMeter(GetCDataFloat(*tag));
-					
-				}else{
-					LogWarnUnknownTag(root, *tag);
-				}
+		if(tag){
+			if(strcmp(tag->GetName(), "number") == 0){
+				type->SetTypeNumber(GetCDataInt(*tag));
+				
+			}else if(strcmp(tag->GetName(), "name") == 0){
+				type->SetName(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "fixCost") == 0){
+				type->SetFixCost(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "costPerMeter") == 0){
+				type->SetCostPerMeter(GetCDataFloat(*tag));
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
-		
-		world.GetPathFindTest()->GetTypeList().Add(type);
-		type->FreeReference();
-		
-		world.GetPathFindTest()->NotifyTypesChanged();
-		
-	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
-		throw;
 	}
+	
+	world.GetPathFindTest()->GetTypeList().Add(type);
+	world.GetPathFindTest()->NotifyTypesChanged();
 }

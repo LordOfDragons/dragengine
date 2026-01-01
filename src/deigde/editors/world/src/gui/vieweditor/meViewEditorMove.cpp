@@ -67,9 +67,9 @@
 
 meViewEditorMove::meViewEditorMove(meView3D &view) :
 meViewEditorNavigation(view),
-pCLSnapPoint(NULL)
+pCLSnapPoint(nullptr)
 {
-	pCLCollider.TakeOver(view.GetEngine()->GetColliderManager()->CreateColliderVolume());
+	pCLCollider = view.GetEngine()->GetColliderManager()->CreateColliderVolume();
 	
 	decLayerMask collisionCategory;
 	collisionCategory.SetBit(meWorld::eclmEditing);
@@ -113,33 +113,33 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 	
 	if(pCLSnapPoint){
 		delete pCLSnapPoint;
-		pCLSnapPoint = NULL;
+		pCLSnapPoint = nullptr;
 	}
-	pUndoMove = NULL;
+	pUndoMove = nullptr;
 	
 	if(elementMode == meWorldGuiParameters::eemObject){
 		const meObjectSelection &selection = world.GetSelectionObject();
-		if(selection.GetSelected().GetCount() == 0){
+		if(selection.GetSelected().IsEmpty()){
 			return;
 		}
 		
-		meObjectList list;
-		GetSelectedObjectsWithAttached(list);
-		pUndoMove.TakeOver(new meUMoveObject(&world, list));
+		const meObject::List &objects = selection.GetSelected();
+		pUndoMove = meUMoveObject::Ref::New(&world, objects);
 		
 		// create snap point visitor
 		meObject * const refObject = selection.GetActive();
 		
 		pCLSnapPoint = new meCLSnapPoint(world, refObject);
-		const int count = list.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			pCLSnapPoint->AddIgnoreObject(list.GetAt(i));
-		}
+		objects.Visit([&](meObject *object){
+			pCLSnapPoint->AddIgnoreObject(object);
+			object->GetAllAttachedObjects().Visit([&](meObject *attached){
+				pCLSnapPoint->AddIgnoreObject(attached);
+			});
+		});
 		
 		decShapeList shapeList;
 		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
-		((deColliderVolume&)(deCollider&)pCLCollider).SetShapes(shapeList);
+		pCLCollider.DynamicCast<deColliderVolume>()->SetShapes(shapeList);
 		
 	}else if(elementMode == meWorldGuiParameters::eemObjectShape){
 		const meObjectShapeSelection &selection = world.GetSelectionObjectShape();
@@ -158,20 +158,20 @@ void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool con
 				activeProperty.Empty();
 			}
 			
-			if(selection.GetSelected().GetCount() == 0){
+			if(selection.GetSelected().IsEmpty()){
 				activeProperty.Empty();
 			}
 		}
 		
 		if(!activeProperty.IsEmpty()){
-			pUndoMove.TakeOver(new meUObjectShapeMove(activeObject, activeProperty, selection.GetSelected()));
+			pUndoMove = meUObjectShapeMove::Ref::New(activeObject, activeProperty, selection.GetSelected());
 		}
 		
 	}else if(elementMode == meWorldGuiParameters::eemDecal){
 		const meDecalSelection &selection = world.GetSelectionDecal();
 		
-		if(selection.GetSelected().GetCount() > 0){
-			pUndoMove.TakeOver(new meUDecalMove(&world));
+		if(selection.GetSelected().IsNotEmpty()){
+			pUndoMove = meUDecalMove::Ref::New(&world);
 		}
 		
 	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
@@ -183,15 +183,15 @@ void meViewEditorMove::OnLeftMouseButtonRelease(int x, int y, bool shift, bool c
 	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
 	if(pUndoMove){
-		if(!((meBaseUndoMove&)(igdeUndo&)pUndoMove).GetDistance().IsZero()){
+		if(!pUndoMove->GetDistance().IsZero()){
 			GetWorld().GetUndoSystem()->Add(pUndoMove, false);
 		}
-		pUndoMove = NULL;
+		pUndoMove = nullptr;
 	}
 	
 	if(pCLSnapPoint){
 		delete pCLSnapPoint;
-		pCLSnapPoint = NULL;
+		pCLSnapPoint = nullptr;
 	}
 }
 
@@ -245,10 +245,9 @@ void meViewEditorMove::OnMouseMove(int x, int y, bool shift, bool control){
 		}
 	}
 	
-	meBaseUndoMove &undo = (meBaseUndoMove&)(igdeUndo&)pUndoMove;
-	undo.SetModifyOrientation(false);
-	undo.SetDistance(vector);
-	undo.ProgressiveRedo();
+	pUndoMove->SetModifyOrientation(false);
+	pUndoMove->SetDistance(vector);
+	pUndoMove->ProgressiveRedo();
 	
 	// snapping
 	if(pCLSnapPoint && pCLSnapPoint->IsSnappingEnabled()){
@@ -261,15 +260,15 @@ void meViewEditorMove::OnMouseMove(int x, int y, bool shift, bool control){
 		
 		if(pCLSnapPoint->GetTargetSnapPoint()){
 			if(pCLSnapPoint->GetTargetSnapPoint()->GetSnapToRotation()){
-				undo.SetModifyOrientation(true);
-				undo.SetMatrix(decDMatrix::CreateTranslation(vector)
+				pUndoMove->SetModifyOrientation(true);
+				pUndoMove->SetMatrix(decDMatrix::CreateTranslation(vector)
 					* pCLSnapPoint->CalcCorrectionMatrix() );
 				
 			}else{
-				undo.SetDistance(vector + pCLSnapPoint->CalcCorrectionMatrix().GetPosition());
+				pUndoMove->SetDistance(vector + pCLSnapPoint->CalcCorrectionMatrix().GetPosition());
 			}
 			
-			undo.ProgressiveRedo();
+			pUndoMove->ProgressiveRedo();
 		}
 	}
 }

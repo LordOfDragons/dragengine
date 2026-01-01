@@ -29,13 +29,13 @@
 #include "meCamera.h"
 #include "object/meObject.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/resources/camera/deCamera.h"
-#include "dragengine/resources/camera/deCameraManager.h"
-#include "dragengine/resources/debug/deDebugDrawer.h"
-#include "dragengine/resources/debug/deDebugDrawerShape.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/camera/deCameraManager.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerShape.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -48,9 +48,9 @@
 meCamera::meCamera(deEngine *engine) :
 igdeCamera(engine),
 
-pDDVolume(NULL),
-pWorld(NULL),
-pHostObject(NULL)
+pDDVolume(nullptr),
+pWorld(nullptr),
+pHostObject(nullptr)
 {
 	SetLowestIntensity(1.0f);
 	SetHighestIntensity(20.0f);
@@ -61,7 +61,7 @@ pHostObject(NULL)
 }
 
 meCamera::~meCamera(){
-	SetWorld(NULL);
+	SetWorld(nullptr);
 }
 
 
@@ -70,7 +70,7 @@ meCamera::~meCamera(){
 ///////////////
 
 void meCamera::Dispose(){
-	SetHostObject(NULL);
+	SetHostObject(nullptr);
 }
 
 void meCamera::SetWorld(meWorld *world){
@@ -79,7 +79,7 @@ void meCamera::SetWorld(meWorld *world){
 	if(pWorld){
 		if(pDDVolume){
 			//pWorld->GetDDCameras()->RemoveVolume( pDDVolume );
-			pDDVolume = NULL;
+			pDDVolume = nullptr;
 		}
 	}
 	
@@ -89,7 +89,7 @@ void meCamera::SetWorld(meWorld *world){
 		SetEngineWorld(world->GetEngineWorld());
 		
 	}else{
-		SetEngineWorld(NULL);
+		SetEngineWorld(nullptr);
 	}
 	
 	pUpdateDDVGeometry();
@@ -99,7 +99,7 @@ void meCamera::SetWorld(meWorld *world){
 
 
 bool meCamera::HasHostObject() const{
-	return pHostObject != NULL;
+	return pHostObject != nullptr;
 }
 
 void meCamera::SetHostObject(meObject *object){
@@ -135,14 +135,12 @@ void meCamera::pUpdateDDVolume(){
 	if(pWorld && pVisible && (pCurrent || pSelected)){
 		if(!pDDVolume){
 			try{
-				pDDVolume = new deDebugDrawerShape;
-				if(!pDDVolume) DETHROW(deeOutOfMemory);
-				pWorld->GetDDObjects()->AddVolume(pDDVolume);
+				pDDVolume = new deDebugDrawerShape;				pWorld->GetDDObjects()->AddVolume(pDDVolume);
 				
 			}catch(const deException &){
 				if(pDDVolume){
 					delete pDDVolume;
-					pDDVolume = NULL;
+					pDDVolume = nullptr;
 				}
 				throw;
 			}
@@ -151,7 +149,7 @@ void meCamera::pUpdateDDVolume(){
 		
 	}else if(pDDVolume){
 		pWorld->GetDDObjects()->RemoveVolume(pDDVolume);
-		pDDVolume = NULL;
+		pDDVolume = nullptr;
 	}
 	
 	// update color if volume exists
@@ -171,7 +169,7 @@ void meCamera::pUpdateDDVolume(){
 void meCamera::pUpdateDDVGeometry(){
 	/*
 	if(pDDVolume){
-		decCollisionBox *colBox = NULL;
+		decCollisionBox *colBox = nullptr;
 		
 		try{
 			colBox = new decCollisionBox(pPosition,

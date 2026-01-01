@@ -31,9 +31,9 @@
 #include "meWTColorMatrix.h"
 #include "../meWindowMain.h"
 #include "../../worldedit.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/resources/effect/deEffectColorMatrix.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/effect/deEffectColorMatrix.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -70,7 +70,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	// prepare
 	pWndEffects = windowEffects;
 	pEffectColorMatrix = effectColorMatrix;
-	pTemplates = NULL;
+	pTemplates = nullptr;
 	pTemplateCount = 0;
 	pTemplateSize = 0;
 	
@@ -127,8 +127,8 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	pCBTemplates = new FXComboBox(frameLine, 10, this, ID_CBTEMPLATES, FRAME_SUNKEN | LAYOUT_FILL_X);
 	pCBTemplates->setEditable(true);
 	pCBTemplates->setNumVisible(6);
- 	new FXButton(frameLine, "Apply", NULL, this, ID_BTNAPPLYTEMPLATE, BUTTON_NORMAL);
- 	new FXButton(frameLine, "Save", NULL, this, ID_BTNSAVETEMPLATE, BUTTON_NORMAL);
+ 	new FXButton(frameLine, "Apply", nullptr, this, ID_BTNAPPLYTEMPLATE, BUTTON_NORMAL);
+ 	new FXButton(frameLine, "Save", nullptr, this, ID_BTNSAVETEMPLATE, BUTTON_NORMAL);
 	for(i=0; i<pTemplateCount; i++){
 		pCBTemplates->appendItem(pTemplates[i]->GetName(), pTemplates[i]);
 	}
@@ -213,10 +213,7 @@ void meWEFColorMatrix::AddTemplate(meWTColorMatrix *aTemplate){
 	
 	if(pTemplateCount == pTemplateSize){
 		int i, newSize = pTemplateCount * 3 / 2 + 1;
-		meWTColorMatrix **newArray = new meWTColorMatrix*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		
-		if(pTemplates){
+		meWTColorMatrix **newArray = new meWTColorMatrix*[newSize]		if(pTemplates){
 			for(i=0; i<pTemplateCount; i++) newArray[i] = pTemplates[i];
 			delete [] pTemplates;
 		}
@@ -242,7 +239,7 @@ long meWEFColorMatrix::onTableMatrixChanged(FXObject *sender, FXSelector selecto
 	
 	if(row == -1 || col == -1) return 1;
 	
-	value = strtof(pTblMatrix->getItemText(row, col).text(), NULL);
+	value = strtof(pTblMatrix->getItemText(row, col).text(), nullptr);
 	
 	if(row == 0){
 		if(col == 0){
@@ -346,49 +343,34 @@ void meWEFColorMatrix::pAddTemplates(){
 	float luminanceRed = 0.3086f;
 	float luminanceGreen = 0.6094f;
 	float luminanceBlue = 0.0820;
-	meWTColorMatrix *aTemplate = NULL;
+	meWTColorMatrix *aTemplate = nullptr;
 	decColorMatrix cmDesaturate;
 	decColorMatrix colorMatrix;
 	
 	try{
 		// Identity
-		aTemplate = new meWTColorMatrix("Null Matrix", decColorMatrix());
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = new meWTColorMatrix("Null Matrix", decColorMatrix())		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Raise intensity
 		aTemplate = new meWTColorMatrix("Raise Intensity 25%",
-			decColorMatrix::CreateTranslation(0.25f, 0.25f, 0.25f, 0.0f));
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+			decColorMatrix::CreateTranslation(0.25f, 0.25f, 0.25f, 0.0f))		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Lower intensity
 		aTemplate = new meWTColorMatrix("Lower Intensity 25%",
-			decColorMatrix::CreateTranslation(-0.25f, -0.25f, -0.25f, 0.0f));
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+			decColorMatrix::CreateTranslation(-0.25f, -0.25f, -0.25f, 0.0f))		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Raise Brightness
 		aTemplate = new meWTColorMatrix("Raise Brightness 25%",
-			decColorMatrix::CreateScaling(1.25f, 1.25f, 1.25f, 0.0f));
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+			decColorMatrix::CreateScaling(1.25f, 1.25f, 1.25f, 0.0f))		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Lower Brightness
 		aTemplate = new meWTColorMatrix("Lower Brightness 25%",
-			decColorMatrix::CreateScaling(0.75f, 0.75f, 0.75f, 0.0f));
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+			decColorMatrix::CreateScaling(0.75f, 0.75f, 0.75f, 0.0f))		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Desaturate
 		cmDesaturate.SetFrom(decColor(luminanceRed, luminanceRed, luminanceRed, 0.0f),
@@ -396,21 +378,15 @@ void meWEFColorMatrix::pAddTemplates(){
 				decColor(luminanceBlue, luminanceBlue, luminanceBlue, 0.0f),
 				decColor(0.0f, 0.0f, 0.0f, 1.0f), decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		
-		aTemplate = new meWTColorMatrix("Desaturate", cmDesaturate);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = new meWTColorMatrix("Desaturate", cmDesaturate)		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Night Vision Googles
 		colorMatrix = cmDesaturate * decColorMatrix::CreateScaling(0.0f, 2.0f, 0.0f, 1.0f)
 			* decColorMatrix::CreateTranslation( 0.0f, 0.1f, 0.0f, 0.0f );
 		
-		aTemplate = new meWTColorMatrix("Night Vision Googles", colorMatrix);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = new meWTColorMatrix("Night Vision Googles", colorMatrix)		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 	}catch(const deException &){
 		if(aTemplate) delete aTemplate;

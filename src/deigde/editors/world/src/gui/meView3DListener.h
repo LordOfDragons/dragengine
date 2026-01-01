@@ -35,6 +35,9 @@ class meView3D;
  * \brief View 3D Listener
  */
 class meView3DListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meView3DListener> Ref;
+	
 private:
 	meView3D &pView3D;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meView3DListener(meView3D &view3D);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meView3DListener() override;
+	
+public:
 	/*@}*/
 	
 	

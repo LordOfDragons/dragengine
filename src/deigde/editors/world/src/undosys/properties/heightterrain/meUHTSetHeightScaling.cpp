@@ -52,12 +52,9 @@ meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *he
 	pNewHeightScaling = newHeightScaling;
 	
 	SetShortInfo("Set Height Terrain Height Scaling");
-	
-	world->AddReference();
 }
 
 meUHTSetHeightScaling::~meUHTSetHeightScaling(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

@@ -46,8 +46,8 @@
 meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	pOldPosition = rule->GetPosition();
 	pNewPosition = pOldPosition;
@@ -56,14 +56,10 @@ meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	SetMemoryConsumption(sizeof(meUHTVRuleMove));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMove::~meUHTVRuleMove(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

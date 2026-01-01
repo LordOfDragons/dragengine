@@ -45,9 +45,9 @@
 meHTVRuleCurve::meHTVRuleCurve() : meHTVRule(ertCurve, 2){
 	pCurve.SetDefaultLinear();
 	
-	GetSlotAt(eisValue).SetIsInput(true);
+	GetSlots().GetAt(eisValue)->SetIsInput(true);
 	
-	GetSlotAt(eosValue).SetIsInput(false);
+	GetSlots().GetAt(eosValue)->SetIsInput(false);
 }
 
 meHTVRuleCurve::meHTVRuleCurve(const meHTVRuleCurve &rule) :
@@ -74,11 +74,11 @@ float meHTVRuleCurve::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment 
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meHTVRSlot &inputValue = GetSlotAt(eisValue);
+	const meHTVRSlot &inputValue = GetSlots().GetAt(eisValue);
 	float value = 0.0f;
 	
-	if(inputValue.GetLinkCount() > 0){
-		meHTVRLink &link = *inputValue.GetLinkAt(0);
+	if(inputValue.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputValue.GetLinks().GetAt(0);
 		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
@@ -90,6 +90,6 @@ decVector meHTVRuleCurve::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnviron
 	return decVector(value, value, value);
 }
 
-meHTVRule *meHTVRuleCurve::Copy() const{
-	return new meHTVRuleCurve(*this);
+meHTVRule::Ref meHTVRuleCurve::Copy() const{
+	return meHTVRuleCurve::Ref::New(*this);
 }

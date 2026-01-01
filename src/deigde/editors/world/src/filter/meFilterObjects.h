@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEFILTEROBJECTS_H_
 #define _MEFILTEROBJECTS_H_
 
-// includes
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-// predefinitions
 class meObject;
 
 
@@ -41,16 +40,24 @@ class meObject;
  * rather generic in that any kind of process can simply ask an
  * instance of this class if a given object is accepted or rejected.
  */
-class meFilterObjects{
+class meFilterObjects : public deObject{
 public:
+	typedef deTObjectReference<meFilterObjects> Ref;
+	typedef decTObjectOrderedSet<meFilterObjects> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new filter. */
 	meFilterObjects();
+	
+protected:
 	/** Cleans up the filter. */
-	virtual ~meFilterObjects();
+	~meFilterObjects() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/**

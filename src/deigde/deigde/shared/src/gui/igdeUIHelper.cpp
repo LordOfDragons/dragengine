@@ -104,6 +104,19 @@
 
 
 
+// Class igdeUIHelper::EnableBoolGuard
+/////////////////////////////////////////
+
+igdeUIHelper::EnableBoolGuard::EnableBoolGuard(bool &flag) : pFlag(flag){
+	pFlag = true;
+}
+
+igdeUIHelper::EnableBoolGuard::~EnableBoolGuard(){
+	pFlag = false;
+}
+
+
+
 // struct igdeUIHelper::sColumnHeader
 ///////////////////////////////////////
 

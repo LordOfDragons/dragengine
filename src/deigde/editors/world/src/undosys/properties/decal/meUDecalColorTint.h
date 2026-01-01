@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,15 +37,16 @@ class meDecal;
  * \brief Undo Action Decal Color Tint.
  */
 class meUDecalColorTint : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDecalColorTint> Ref;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decColor pOldColor;
 	decColor pNewColor;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDecalColorTint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUDecalColorTint();
+
+public:
 	/*@}*/
 	
 public:

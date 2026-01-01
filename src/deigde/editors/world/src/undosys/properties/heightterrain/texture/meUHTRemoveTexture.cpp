@@ -49,16 +49,10 @@ meUHTRemoveTexture::meUHTRemoveTexture(meWorld *world, meHeightTerrainSector *se
 	pSector = sector;
 	
 	SetShortInfo("Height Terrain Add Texture");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTRemoveTexture::~meUHTRemoveTexture(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

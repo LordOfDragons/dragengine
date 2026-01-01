@@ -43,8 +43,8 @@
 meUHTVRuleMathSetValueB::meUHTVRuleMathSetValueB(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, float nvalue){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Math Set Value B");
 	SetMemoryConsumption(sizeof(meUHTVRuleMathSetValueB));
@@ -53,14 +53,10 @@ meUHTVRuleMathSetValueB::meUHTVRuleMathSetValueB(meHTVegetationLayer *vlayer, me
 	pNewValueB = nvalue;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMathSetValueB::~meUHTVRuleMathSetValueB(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -37,16 +37,17 @@ class meNavigationSpace;
  * \brief Undo Action Navigation Space Set Position.
  */
 class meUNavSpaceSetPosition : public igdeUndo{
+public:
+	typedef deTObjectReference<meUNavSpaceSetPosition> Ref;
+	
+	
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUNavSpaceSetPosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -54,7 +55,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUNavSpaceSetPosition();
+
+public:
 	/*@}*/
 	
 public:

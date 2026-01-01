@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -35,17 +35,18 @@ class meObject;
  * \brief Undo Action Set Object Property.
  */
 class meUObjectSetProperty : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectSetProperty> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pOldValue;
 	decString pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectSetProperty> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectSetProperty();
+
+public:
 	/*@}*/
 	
 public:
@@ -69,9 +74,6 @@ public:
 	/** Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

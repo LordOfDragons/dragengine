@@ -52,8 +52,11 @@ public:
 	/** Creates music. */
 	meMusic(meWorld &world);
 	
+protected:
 	/** Clean up music. */
 	~meMusic() override;
+	
+public:
 	/*@}*/
 	
 	

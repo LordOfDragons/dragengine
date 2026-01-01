@@ -47,14 +47,9 @@ meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariati
 	pVariation = variation;
 	
 	SetShortInfo("Add Vegetation Layer Variation");
-	
-	vlayer->AddReference();
-	variation->AddReference();
 }
 
 meUHTVVariationAdd::~meUHTVVariationAdd(){
-	if(pVariation) pVariation->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

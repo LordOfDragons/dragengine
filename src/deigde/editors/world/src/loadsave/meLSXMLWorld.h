@@ -26,9 +26,13 @@
 #define _MELSXMLWORLD_H_
 
 #include "meLSWorld.h"
-#include <deigde/utils/igdeBaseXML.h>
 
-class decStringDictionary;
+#include <deigde/utils/igdeBaseXML.h>
+#include <deigde/gui/igdeStepableTask.h>
+
+#include <dragengine/common/string/decStringDictionary.h>
+
+
 class meDecal;
 class meObject;
 class meObjectTexture;
@@ -43,18 +47,25 @@ class decXmlWriter;
  * Load and save world in the Drag[en]gine World XML format.
  */
 class meLSXMLWorld : public meLSWorld, igdeBaseXML{
+public:
+	typedef deTObjectReference<meLSXMLWorld> Ref;
+	
 private:
 	meLoadSaveSystem *pLSSys;
 	
 public:
 	// constructor, destructor
-	meLSXMLWorld(meLoadSaveSystem *lssys);
+	explicit meLSXMLWorld(meLoadSaveSystem *lssys);
+	
+protected:
 	~meLSXMLWorld() override;
+	
+public:
 	// loading and saving
 	void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file) override;
 	
 	/** Creates a stepable loader. */
-	igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file) override;
+	igdeStepableTask::Ref CreateLoadTask(meWorld *world, decBaseFileReader *file) override;
 	
 	
 	

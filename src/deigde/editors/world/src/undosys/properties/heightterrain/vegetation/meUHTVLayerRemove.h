@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrain;
-class meHTVegetationLayer;
+#include "../../../../world/heightterrain/meHTVegetationLayer.h"
 
 
 
@@ -42,16 +42,17 @@ class meHTVegetationLayer;
  * Undo action to remove a vegetation layer to a height terrain heightTerrain.
  */
 class meUHTVLayerRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTVLayerRemove> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTVLayerRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -59,7 +60,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUHTVLayerRemove();
+
+public:
 	/*@}*/
 	
 public:

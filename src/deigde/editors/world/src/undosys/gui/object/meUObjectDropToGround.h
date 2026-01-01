@@ -22,19 +22,16 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUOBJECTDROPTOGROUND_H_
 #define _MEUOBJECTDROPTOGROUND_H_
 
-// includes
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-// predefinitions
-class meWorld;
-class meObject;
-class meObjectList;
 
 
 
@@ -44,32 +41,28 @@ class meObjectList;
  * Undo action dropping a list of objects individually onto the ground.
  */
 class meUObjectDropToGround : public igdeUndo{
-private:
-	struct sObject{
-		meObject *object;
-		decDVector oldpos;
-		decVector oldrot;
-	};
+public:
+	typedef deTObjectReference<meUObjectDropToGround> Ref;
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	sObject *pObjects;
-	int pObjectCount;
+	meUndoDataObject::List pObjects;
 	
 	bool pDropOnObjects;
 	bool pAlign;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectDropToGround> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUObjectDropToGround(meWorld *world, const meObjectList &objects);
+	meUObjectDropToGround(meWorld *world, const meObject::List &objects);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUObjectDropToGround();
+
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -84,10 +77,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

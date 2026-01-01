@@ -111,6 +111,13 @@ void deoglHeightTerrain::SyncToRender(){
 //////////////////
 
 void deoglHeightTerrain::ParametersChanged(){
+	const int count = pSectors.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((deoglHTSector*)pSectors.GetAt(i))->SectorChanged();
+	}
+	
 	pDirtySectors = true;
 }
 

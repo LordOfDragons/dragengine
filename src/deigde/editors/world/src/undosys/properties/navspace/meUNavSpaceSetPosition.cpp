@@ -51,7 +51,7 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNavSpace = NULL;
+	pNavSpace = nullptr;
 	
 	SetShortInfo("NavSpace Set Position");
 	
@@ -59,13 +59,9 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 	pNewPosition = newPosition;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

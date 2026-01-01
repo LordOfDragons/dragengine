@@ -26,10 +26,11 @@
 #define _MEVIEWEDITORROTATE_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../undosys/gui/meBaseUndoRotate.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObjectList;
+class meObject;
 
 
 
@@ -38,8 +39,11 @@ class meObjectList;
  * View editor for rotating scene elements.
  */
 class meViewEditorRotate : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorRotate> Ref;
+	
 private:
-	igdeUndo::Ref pUndoRotate;
+	meBaseUndoRotate::Ref pUndoRotate;
 	float pNullAngle;
 	
 public:
@@ -47,8 +51,12 @@ public:
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorRotate(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
 	~meViewEditorRotate() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUObjectSnapToGrid.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
@@ -41,45 +37,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid) :
-pWorld(NULL),
-pObjects(NULL),
-pObjectCount(0),
+meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld *world, const meObject::List &objects, float grid) :
+
 pGrid((double)grid)
 {
-	if(!world){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = objects.GetCount();
-	if(count == 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(world)
+	DEASSERT_TRUE(objects.IsNotEmpty())
 	
 	SetShortInfo("Snap objects to grid");
 	
-	try{
-		pObjects = new sObject[count];
-		
-		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
-			meObject * const object = objects.GetAt(pObjectCount);
-			
-			pObjects[pObjectCount].object = object;
-			pObjects[pObjectCount].position = object->GetPosition();
-			object->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	meUndoDataObject::AddObjectsWithAttachments(objects, pObjects);
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectSnapToGrid::~meUObjectSnapToGrid(){
-	pCleanUp();
 }
 
 
@@ -88,41 +60,22 @@ meUObjectSnapToGrid::~meUObjectSnapToGrid(){
 ///////////////
 
 void meUObjectSnapToGrid::Undo(){
-	int i;
-	
-	for(i=0; i<pObjectCount; i++){
-		pObjects[i].object->SetPosition(pObjects[i].position);
-		pWorld->NotifyObjectGeometryChanged(pObjects[i].object);
-	}
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUObjectSnapToGrid::Redo(){
-	int i;
-	
-	for(i =0; i <pObjectCount; i++){
-		decDVector position(pObjects[i].position);
+	pObjects.Visit([&](const meUndoDataObject &data){
+		decDVector position(data.GetOldPosition());
 		position.Snap(pGrid);
-		pObjects[i].object->SetPosition(position);
-		pWorld->NotifyObjectGeometryChanged(pObjects[i].object);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectSnapToGrid::pCleanUp(){
-	if(pObjects){
-		while(pObjectCount > 0){
-			pObjectCount--;
-			pObjects[pObjectCount].object->FreeReference();
-		}
 		
-		delete [] pObjects;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
+		const decDVector offset = position - data.GetOldPosition();
+		
+		data.GetObject()->SetPosition(position);
+		pWorld->NotifyObjectGeometryChanged(data.GetObject());
+		
+		data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+			attachedData.GetObject()->SetPosition(attachedData.GetOldPosition() + offset);
+			pWorld->NotifyObjectGeometryChanged(attachedData.GetObject());
+		});
+	});
 }

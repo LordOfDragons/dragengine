@@ -60,7 +60,6 @@
 
 meHeightTerrain::meHeightTerrain(meWorld &world) :
 pWorld(world),
-pEngHT(NULL),
 pChanged(false),
 pDepChanged(false),
 pSaved(false),
@@ -68,8 +67,7 @@ pSectorSize(500),
 pSectorResolution(1024),
 pBaseHeight(0.0f),
 pHeightScaling(100.0f),
-pActiveSector(NULL),
-pActiveVLayer(NULL)
+pActiveSector(nullptr)
 {
 	try{
 		pUpdateHeightTerrain();
@@ -154,25 +152,22 @@ void meHeightTerrain::SetSectorSize(float size){
 		return;
 	}
 	
-	const int sectorCount = pSectors.GetCount();
-	int i;
-	for(i=0; i<sectorCount; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->SetSelectedNavPoints(decIntList());
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.SetSelectedNavPoints({});
+	});
 	
 	if(pEngHT){
-		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
-		pEngHT = NULL;
+		pWorld.GetEngineWorld()->SetHeightTerrain(nullptr);
+		pEngHT = nullptr;
 	}
 	
 	pSectorSize = size;
 	
 	pUpdateHeightTerrain();
 	
-	for(i=0; i<sectorCount; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->SectorSizeOrResChanged();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.SectorSizeOrResChanged();
+	});
 	
 	SetChanged(true);
 	pWorld.NotifyHTChanged();
@@ -187,25 +182,22 @@ void meHeightTerrain::SetSectorResolution(int dimension){
 		return;
 	}
 	
-	const int sectorCount = pSectors.GetCount();
-	int i;
-	for(i=0; i<sectorCount; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->SetSelectedNavPoints(decIntList());
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.SetSelectedNavPoints({});
+	});
 	
 	if(pEngHT){
-		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
-		pEngHT = NULL;
+		pWorld.GetEngineWorld()->SetHeightTerrain(nullptr);
+		pEngHT = nullptr;
 	}
 	
 	pSectorResolution = dimension;
 	
 	pUpdateHeightTerrain();
 	
-	for(i=0; i<sectorCount; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->SectorSizeOrResChanged();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.SectorSizeOrResChanged();
+	});
 	
 	SetChanged(true);
 	pWorld.NotifyHTChanged();
@@ -224,8 +216,6 @@ void meHeightTerrain::SetBaseHeight(float height){
 	
 	SetChanged(true);
 	pWorld.NotifyHTChanged();
-	
-	InvalidateAllHeights();
 }
 
 void meHeightTerrain::SetHeightScaling(float scaling){
@@ -243,8 +233,6 @@ void meHeightTerrain::SetHeightScaling(float scaling){
 	
 	SetChanged(true);
 	pWorld.NotifyHTChanged();
-	
-	InvalidateAllHeights();
 }
 
 void meHeightTerrain::SetWorldChanged(){
@@ -283,27 +271,21 @@ void meHeightTerrain::NotifyHeightsChanged(const decBoundary &areaSector, const 
 
 void meHeightTerrain::InvalidateHeights(const decPoint &fromSector,
 const decPoint &fromGrid, const decPoint &toSector, const decPoint &toGrid){
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		meHeightTerrainSector &sector = *((meHeightTerrainSector*)pSectors.GetAt(i));
-		const decPoint &scoord = sector.GetCoordinates();
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		const decPoint &scoord = s.GetCoordinates();
 		
 		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x
 		&& scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
-			sector.InvalidateHeights(fromGrid, toGrid);
+			s.InvalidateHeights(fromGrid, toGrid);
 		}
-	}
+	});
 }
 
 void meHeightTerrain::InvalidateAllHeights(){
 	const decPoint from, to(pSectorResolution - 1, pSectorResolution - 1);
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->InvalidateHeights(from, to);
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.InvalidateHeights(from, to);
+	});
 }
 
 
@@ -326,18 +308,14 @@ const decPoint &fromGrid, const decPoint &toSector, const decPoint &toGrid){
 	// to the required ones but all sectors outside are not tested improving
 	// performance in large worlds with many sectors
 	
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		meHeightTerrainSector &sector = *((meHeightTerrainSector*)pSectors.GetAt(i));
-		const decPoint &scoord = sector.GetCoordinates();
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		const decPoint &scoord = s.GetCoordinates();
 		
 		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x
 		&& scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
-			sector.InvalidatePropFields(fromGrid, toGrid);
+			s.InvalidatePropFields(fromGrid, toGrid);
 		}
-	}
+	});
 }
 
 void meHeightTerrain::InvalidatePropFields(const decBoundary &areaSector, const decBoundary &areaGrid){
@@ -371,34 +349,28 @@ void meHeightTerrain::InvalidatePropFields(meObject *object){
 
 void meHeightTerrain::InvalidateAllPropFields(){
 	const decPoint from, to(pSectorResolution - 1, pSectorResolution - 1);
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->InvalidatePropFields(from, to);
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.InvalidatePropFields(from, to);
+	});
 }
 
 
 
 void meHeightTerrain::InitDelegates(igdeEnvironment *environment){
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->InitDelegates(environment);
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.InitDelegates(environment);
+	});
 }
 
 /*
 void meHeightTerrain::CheckDepChanged(){
 	bool depChanged = false;
 	
-	const int navSpaceCount = pNavSpaces.GetCount();
-	for(i=0; i<navSpaceCount; i++){
-		if(((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->GetNavSpaceChanged()){
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+		if(n.GetNavSpaceChanged()){
 			depChanged = true;
 		}
-	}
+	});
 }
 */
 
@@ -409,32 +381,24 @@ void meHeightTerrain::Update(){
 }
 
 void meHeightTerrain::ForceUpdateVegetation(bool fullUpdate){
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		meHeightTerrainSector &sector = *((meHeightTerrainSector*)pSectors.GetAt(i));
-		sector.Update();
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.Update();
 		if(fullUpdate){
-			sector.UpdateVInstances();
+			s.UpdateVInstances();
 		}
-	}
+	});
 }
 
 void meHeightTerrain::ClearVegetation(){
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->ClearVegetation();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.ClearVegetation();
+	});
 }
 
 void meHeightTerrain::RebuildVegetationPropFieldTypes(){
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->RebuildVegetationPropFieldTypes();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.RebuildVegetationPropFieldTypes();
+	});
 }
 
 
@@ -442,30 +406,10 @@ void meHeightTerrain::RebuildVegetationPropFieldTypes(){
 // Sectors
 ////////////
 
-int meHeightTerrain::GetSectorCount() const{
-	return pSectors.GetCount();
-}
-
-meHeightTerrainSector *meHeightTerrain::GetSectorAt(int index) const{
-	return (meHeightTerrainSector*)pSectors.GetAt(index);
-}
-
 meHeightTerrainSector *meHeightTerrain::GetSectorWith(const decPoint &coordinates) const{
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		meHeightTerrainSector * const sector = (meHeightTerrainSector*)pSectors.GetAt(i);
-		if(sector->GetCoordinates() == coordinates){
-			return sector;
-		}
-	}
-	
-	return NULL;
-}
-
-int meHeightTerrain::IndexOfSector(meHeightTerrainSector *sector) const{
-	return pSectors.IndexOf(sector);
+	return pSectors.FindOrDefault([&](const meHeightTerrainSector &s){
+		return s.GetCoordinates() == coordinates;
+	});
 }
 
 void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
@@ -485,33 +429,28 @@ void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
 }
 
 void meHeightTerrain::RemoveSector(meHeightTerrainSector *sector){
-	if(!pSectors.Has(sector)){
-		DETHROW(deeInvalidParam);
-	}
+	const meHeightTerrainSector::Ref guard(sector);
 	
 	if(pActiveSector == sector){
-		pActiveSector = NULL;
+		pActiveSector = nullptr;
 	}
 	
-	sector->SetHeightTerrain(NULL);
 	pSectors.Remove(sector);
+	sector->SetHeightTerrain(nullptr);
 	
-	if(pSectors.GetCount() > 0){
-		SetActiveSector((meHeightTerrainSector*)pSectors.GetAt(0));
+	if(pSectors.IsNotEmpty()){
+		SetActiveSector(pSectors.First());
 	}
 	
 	SetWorldChanged();
 }
 
 void meHeightTerrain::RemoveAllSectors(){
-	SetActiveSector(NULL);
+	SetActiveSector(nullptr);
 	
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->SetHeightTerrain(NULL);
-	}
-	
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.SetHeightTerrain(nullptr);
+	});
 	pSectors.RemoveAll();
 	
 	SetWorldChanged();
@@ -540,26 +479,8 @@ void meHeightTerrain::SetActiveSector(meHeightTerrainSector *sector){
 // Vegetation
 ///////////////
 
-int meHeightTerrain::GetVLayerCount() const{
-	return pVLayers.GetCount();
-}
-
-meHTVegetationLayer *meHeightTerrain::GetVLayerAt(int index) const{
-	return (meHTVegetationLayer*)pVLayers.GetAt(index);
-}
-
-int meHeightTerrain::IndexOfVLayer(meHTVegetationLayer *vlayer) const{
-	return pVLayers.IndexOf(vlayer);
-}
-
-bool meHeightTerrain::HasVLayer(meHTVegetationLayer *vlayer) const{
-	return pVLayers.Has(vlayer);
-}
-
 void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
-	if(!vlayer){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vlayer)
 	
 	pVLayers.Add(vlayer);
 	vlayer->SetHeightTerrain(this);
@@ -575,9 +496,7 @@ void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meHeightTerrain::InsertVLayer(int before, meHTVegetationLayer *vlayer){
-	if(!vlayer){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vlayer)
 	
 	pVLayers.Insert(vlayer, before);
 	vlayer->SetHeightTerrain(this);
@@ -600,17 +519,14 @@ void meHeightTerrain::MoveVLayer(meHTVegetationLayer *vlayer, int moveTo){
 }
 
 void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
-	const int index = pVLayers.IndexOf(vlayer);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const meHTVegetationLayer::Ref guard(vlayer);
 	
 	if(vlayer == pActiveVLayer){
-		SetActiveVLayer(NULL);
+		SetActiveVLayer(nullptr);
 	}
 	
-	vlayer->SetHeightTerrain(NULL);
-	pVLayers.RemoveFrom(index);
+	pVLayers.Remove(vlayer);
+	vlayer->SetHeightTerrain(nullptr);
 	
 	SetChanged(true);
 	pWorld.NotifyHTVLayerCountChanged();
@@ -618,13 +534,11 @@ void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meHeightTerrain::RemoveAllVLayers(){
-	SetActiveVLayer(NULL);
+	SetActiveVLayer(nullptr);
 	
-	const int count = pVLayers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHTVegetationLayer*)pVLayers.GetAt(i))->SetHeightTerrain(NULL);
-	}
+	pVLayers.Visit([](meHTVegetationLayer &vlayer){
+		vlayer.SetHeightTerrain(nullptr);
+	});
 	pVLayers.RemoveAll();
 	
 	SetChanged(true);
@@ -633,14 +547,16 @@ void meHeightTerrain::RemoveAllVLayers(){
 }
 
 void meHeightTerrain::SetActiveVLayer(meHTVegetationLayer *vlayer){
-	if(vlayer != pActiveVLayer){
-		pActiveVLayer = vlayer;
-		pWorld.NotifyHTActiveVLayerChanged();
+	if(vlayer == pActiveVLayer){
+		return;
 	}
+	
+	pActiveVLayer = vlayer;
+	pWorld.NotifyHTActiveVLayerChanged();
 }
 
 void meHeightTerrain::NotifyVLayerChanged(meHTVegetationLayer *vlayer){
-	if(!vlayer) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(vlayer)
 	pWorld.NotifyHTVLayerChanged(vlayer);
 }
 
@@ -654,29 +570,25 @@ void meHeightTerrain::pCleanUp(){
 	RemoveAllSectors();
 	
 	if(pEngHT){
-		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
+		pWorld.GetEngineWorld()->SetHeightTerrain(nullptr);
 	}
 }
 
 void meHeightTerrain::pUpdateHeightTerrain(){
 	deWorld &world = *pWorld.GetEngineWorld();
-	const int count = pSectors.GetCount();
-	int i;
 	
 	// remove all sectors from the height terrain
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->DestroyEngineSector();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.DestroyEngineSector();
+	});
 	
 	// remove from the world
-	world.SetHeightTerrain(NULL);
+	world.SetHeightTerrain(nullptr);
 	
 	// release the height terrain
 	if(pEngHT){
-		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
-		pEngHT = NULL;
+		pWorld.GetEngineWorld()->SetHeightTerrain(nullptr);
+		pEngHT = nullptr;
 	}
 	
 	// create a new height terrain
@@ -698,7 +610,7 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	world.SetHeightTerrain(pEngHT);
 	
 	// add sectors to the height terrain
-	for(i=0; i<count; i++){
-		((meHeightTerrainSector*)pSectors.GetAt(i))->CreateEngineSector();
-	}
+	pSectors.Visit([&](meHeightTerrainSector &s){
+		s.CreateEngineSector();
+	});
 }

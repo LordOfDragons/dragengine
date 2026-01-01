@@ -459,12 +459,11 @@ void deFont::pCreateGlyphMap(){
 			const int newCount = pGlyphGroupCount + 1;
 			unsigned short * const groups = new unsigned short[newCount * 256];
 			if(pGlyphGroups){
-				memcpy(groups, pGlyphGroups, sizeof(unsigned short)
-					* pGlyphGroupCount * 256 );
+				memcpy(groups, pGlyphGroups, sizeof(unsigned short) * pGlyphGroupCount * 256);
 				delete [] pGlyphGroups;
 			}
-			memset(groups + pGlyphGroupCount * 256, 0, sizeof(unsigned short)
-				* ( newCount - pGlyphGroupCount ) * 256 );
+			memset(groups + pGlyphGroupCount * 256, 0,
+				sizeof(unsigned short) * (newCount - pGlyphGroupCount) * 256);
 			pGlyphGroups = groups;
 			pGlyphGroupCount = newCount;
 			

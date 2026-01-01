@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUObjectDropToGround.h"
 #include "../../../collisions/meCLClosestElement.h"
 #include "../../../filter/meFilterObjectsByClass.h"
@@ -40,71 +36,42 @@
 #include <dragengine/common/exceptions.h>
 
 
-class cSorter : public meObjectList::Comparator{
-public:
-	cSorter() = default;
-	int operator() (meObject &a, meObject &b) override{
-		const double d = a.GetPosition().y - b.GetPosition().y;
-		return d > DOUBLE_SAFE_EPSILON ? 1 : (d < -DOUBLE_SAFE_EPSILON ? -1 : 0);
-	}
-};
-
-
 // Class meUObjectDropToGround
 ////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectDropToGround::meUObjectDropToGround(meWorld *world, const meObjectList &objects) :
-pWorld(nullptr),
-pObjects(nullptr),
-pObjectCount(0),
+meUObjectDropToGround::meUObjectDropToGround(meWorld *world, const meObject::List &objects) :
+
 pDropOnObjects(true),
 pAlign(false)
 {
 	DEASSERT_NOTNULL(world)
-	
-	const int count = objects.GetCount();
-	DEASSERT_TRUE(count > 0)
+	DEASSERT_TRUE(objects.IsNotEmpty())
 	
 	SetShortInfo("Drop objects to ground");
 	
 	decString text;
-	if(count > 1){
-		text.Format("%d objects", count);
+	if(objects.GetCount() > 1){
+		text.Format("%d objects", objects.GetCount());
 		
 	}else{
 		text = "1 object";
 	}
 	SetLongInfo(text);
 	
-	cSorter sorter;
-	const meObjectList sorted(objects.GetSorted(sorter));
-	
-	try{
-		pObjects = new sObject[count];
-		
-		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
-			meObject * const object = sorted.GetAt(pObjectCount);
-			
-			pObjects[pObjectCount].oldpos = object->GetPosition();
-			pObjects[pObjectCount].oldrot = object->GetRotation();
-			pObjects[pObjectCount].object = object;
-			object->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	meUndoDataObject::AddObjectsWithAttachments(
+		objects.GetSorted([&](const meObject &a, const meObject &b){
+			const double d = a.GetPosition().y - b.GetPosition().y;
+			return d < -DOUBLE_SAFE_EPSILON ? -1 : (d > DOUBLE_SAFE_EPSILON ? 1 : 0);
+		}),
+		pObjects);
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectDropToGround::~meUObjectDropToGround(){
-	pCleanUp();
 }
 
 
@@ -123,15 +90,7 @@ void meUObjectDropToGround::SetAlign(bool align){
 
 
 void meUObjectDropToGround::Undo(){
-	meObject *object;
-	int o;
-	
-	for(o=0; o<pObjectCount; o++){
-		object = pObjects[o].object;
-		object->SetPosition(pObjects[o].oldpos);
-		object->SetRotation(pObjects[o].oldrot);
-		pWorld->NotifyObjectGeometryChanged(object);
-	}
+	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
 }
 
 void meUObjectDropToGround::Redo(){
@@ -140,23 +99,29 @@ void meUObjectDropToGround::Redo(){
 	meCLClosestElement closestElement(*pWorld);
 	decDVector oldPosition, newPosition;
 	decVector oldRotation, newRotation;
-	meFilterObjectsByClass filter;
 	deColliderVolume *collider;
 	int testCounter = 0;
-	meObject *object;
 	float distance;
-	int o;
 	
 	if(!phyWorld) return;
 	
 	closestElement.SetTestHeightTerrain(true);
 	closestElement.SetTestObjects(pDropOnObjects);
 	closestElement.SetTestDecals(false);
-	closestElement.SetFilterObjects(&filter);
 	
-	filter.SetRejectGhosts(true);
-	//filter.SetClassNamesFrom( guiparams.GetAddFilterObjectList() );
-	//filter.SetMatchInclusive( guiparams.GetAddFilterObjectInclusive() );
+	const meFilterObjectsByClass::Ref filter(meFilterObjectsByClass::Ref::New());
+	filter->SetRejectGhosts(true);
+	//filter->SetClassNamesFrom(guiparams.GetAddFilterObjectList());
+	//filter->SetMatchInclusive(guiparams.GetAddFilterObjectInclusive());
+	
+	pObjects.Visit([&](const meUndoDataObject &data){
+		filter->GetRejectObjects().Add(data.GetObject());
+		data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+			filter->GetRejectObjects().Add(attachedData.GetObject());
+		});
+	});
+	
+	closestElement.SetFilterObjects(filter);
 	
 	decLayerMask collisionCategory;
 	collisionCategory.SetBit(meWorld::eclmEditing);
@@ -165,20 +130,19 @@ void meUObjectDropToGround::Redo(){
 	collisionFilter.SetBit(meWorld::eclmObjects);
 	collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 	
-	for(o=0; o<pObjectCount; o++){
-		object = pObjects[o].object;
+	
+	pObjects.Visit([&](const meUndoDataObject &data){
+		meObject * const object = data.GetObject();
 		
 		collider = object->GetColDetCollider();
 		if(!collider){
-			continue;
+			return;
 		}
 		
 		collider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		oldPosition = pObjects[o].oldpos;
-		oldRotation = pObjects[o].oldrot;
-		
-		filter.SetRejectObject(object);
+		oldPosition = data.GetOldPosition();
+		oldRotation = data.GetOldRotation();
 		
 		while(testCounter < 50){
 			closestElement.Reset();
@@ -224,8 +188,6 @@ void meUObjectDropToGround::Redo(){
 					if(pAlign){
 						object->SetRotation(newRotation);
 					}
-					//pObjects[ o ]->SetNewSector( wsNew->GetCoordinates() );
-					
 					pWorld->NotifyObjectGeometryChanged(object);
 					
 					break;
@@ -235,23 +197,18 @@ void meUObjectDropToGround::Redo(){
 			oldPosition.y += 0.1f;
 			testCounter++;
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectDropToGround::pCleanUp(){
-	if(pObjects){
-		while(pObjectCount > 0){
-			pObjectCount--;
-			pObjects[pObjectCount].object->FreeReference();
+		
+		if(data.GetAttachedObjects().IsNotEmpty()){
+			const decDMatrix m(data.GetOldMatrixInverse() * object->GetObjectMatrix());
+			data.GetAttachedObjects().Visit([&](const meUndoDataObject &attachedData){
+				const decDMatrix m2(attachedData.GetOldMatrix() * m);
+				meObject * const attached = attachedData.GetObject();
+				attached->SetPosition(m2.GetPosition());
+				attached->SetRotation(m2.GetEulerAngles().ToVector() * RAD2DEG);
+				pWorld->NotifyObjectGeometryChanged(attached);
+			});
 		}
 		
-		delete [] pObjects;
-	}
-	
-	if(pWorld) pWorld->FreeReference();
+		filter->GetRejectObjects().Remove(object);
+	});
 }

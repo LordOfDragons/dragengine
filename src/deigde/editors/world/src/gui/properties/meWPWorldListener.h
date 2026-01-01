@@ -35,6 +35,9 @@ class meWPWorld;
  * World panel listener
  */
 class meWPWorldListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPWorldListener> Ref;
+	
 private:
 	meWPWorld &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** Create listener. */
 	meWPWorldListener(meWPWorld &panel);
 	
+protected:
 	/** Clean up listener. */
 	~meWPWorldListener() override;
+	
+public:
 	/*@}*/
 	
 	

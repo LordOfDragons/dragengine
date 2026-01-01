@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "meWTPixelMatrix.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -40,9 +40,7 @@
 ////////////////////////////
 
 meWTPixelMatrix::meWTPixelMatrix(const char *name, const decTexMatrix &matrix){
-	pName = new char[strlen(name) + 1];
-	if(!pName) DETHROW(deeOutOfMemory);
-	strcpy(pName, name);
+	pName = new char[strlen(name) + 1];	strcpy(pName, name);
 	
 	pPixelMatrix = matrix;
 }

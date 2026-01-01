@@ -145,13 +145,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, world)));
+		igdeUndo::Ref undo(OnChanged(textField, world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -163,19 +163,19 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(world)));
+		igdeUndo::Ref undo(OnAction(world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(meWorld *world) = 0;
+	virtual igdeUndo::Ref OnAction(meWorld *world) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -191,13 +191,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, world)));
+		igdeUndo::Ref undo(OnChanged(comboBox, world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld *world) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld *world) = 0;
 };
 
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
@@ -207,19 +207,19 @@ protected:
 public:
 	cBaseEditVector2Listener(meWPHeightTerrain &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged(igdeEditVector2 *editVector2){
+	void OnVector2Changed(igdeEditVector2 *editVector2) override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector2->GetVector2(), world)));
+		igdeUndo::Ref undo(OnChanged(editVector2->GetVector2(), world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector2 &vector, meWorld *world) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector2 &vector, meWorld *world) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -235,13 +235,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editPath, world)));
+		igdeUndo::Ref undo(OnChanged(editPath, world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -257,79 +257,85 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(sliderText, world)));
+		igdeUndo::Ref undo(OnChanged(sliderText, world));
 		if(undo){
 			world->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditSliderText *sliderText, meWorld *world) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditSliderText *sliderText, meWorld *world) = 0;
 };
 
 
 class cEditPathHT : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditPathHT> Ref;
 	cEditPathHT(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		return world->GetHeightTerrain()->GetPathHT() != editPath->GetPath()
-			? new meUHTSetPathHT(world, world->GetHeightTerrain(), editPath->GetPath()) : NULL;
+			? meUHTSetPathHT::Ref::New(world, world->GetHeightTerrain(), editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cEditSectorSize : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditSectorSize> Ref;
 	cEditSectorSize(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - world->GetHeightTerrain()->GetSectorSize()) > FLOAT_SAFE_EPSILON
-			? new meUHTSetSectorSize(world, world->GetHeightTerrain(), value) : NULL;
+			? meUHTSetSectorSize::Ref::New(world, world->GetHeightTerrain(), value) : igdeUndo::Ref();
 	}
 };
 
 class cEditSectorResolution : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditSectorResolution> Ref;
 	cEditSectorResolution(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		const int value = textField->GetInteger();
 		return value != world->GetHeightTerrain()->GetSectorResolution()
-			? new meUHTSetSectorResolution(world, world->GetHeightTerrain(), value) : NULL;
+			? meUHTSetSectorResolution::Ref::New(world, world->GetHeightTerrain(), value) : igdeUndo::Ref();
 	}
 };
 
 class cEditBaseHeight : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditBaseHeight> Ref;
 	cEditBaseHeight(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - world->GetHeightTerrain()->GetBaseHeight()) > FLOAT_SAFE_EPSILON
-			? new meUHTSetBaseHeight(world, world->GetHeightTerrain(), value) : NULL;
+			? meUHTSetBaseHeight::Ref::New(world, world->GetHeightTerrain(), value) : igdeUndo::Ref();
 	}
 };
 
 class cEditHeightScale : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditHeightScale> Ref;
 	cEditHeightScale(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - world->GetHeightTerrain()->GetHeightScaling()) > FLOAT_SAFE_EPSILON
-			? new meUHTSetHeightScaling(world, world->GetHeightTerrain(), value) : NULL;
+			? meUHTSetHeightScaling::Ref::New(world, world->GetHeightTerrain(), value) : igdeUndo::Ref();
 	}
 };
 
 
 class cEditPathHeightImage : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditPathHeightImage> Ref;
 	cEditPathHeightImage(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(!sector || sector->GetPathHeightImage() == editPath->GetPath()){
-			return NULL;
+			return {};
 		}
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
@@ -342,22 +348,21 @@ public:
 				"[CANCEL] Do no import image nor change path.");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
-				return NULL;
+				return {};
 				
 			}else if(answer == igdeCommonDialogs::ebYes){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImage::Ref image(deImage::Ref::New(
-					 pPanel.GetEngine()->GetImageManager()->LoadImage(editPath->GetPath(), "/")));
+				deImage::Ref image(pPanel.GetEngine()->GetImageManager()->LoadImage(editPath->GetPath(), "/"));
 				
 				if(image->GetComponentCount() != 1){
-					image = NULL;
+					image = nullptr;
 					igdeCommonDialogs::Error(&pPanel, "Import Height Image",
 						"The height image does not have exactly 1 color channel. Only\n"
 						"images with 1 color channel can be used for height terrains.");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
-					image = NULL;
+					image = nullptr;
 					igdeCommonDialogs::Error(&pPanel, "Import Height Image",
 						"The image does not match the height image dimension set in the height terrain.");
 					// NOTE allow the user to scale the height image... maybe.. scaling is tricky
@@ -365,23 +370,24 @@ public:
 				
 				if(image){
 					world->GetUndoSystem()->Add(
-						meUHTImportHeightImage::Ref::NewWith(world, sector, image));
+						meUHTImportHeightImage::Ref::New(world, sector, image));
 				}
 			}
 		}
 		
-		return new meUHTSetPathHI(world, sector, editPath->GetPath());
+		return meUHTSetPathHI::Ref::New(world, sector, editPath->GetPath());
 	}
 };
 
 class cEditPathVisibilityImage : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditPathVisibilityImage> Ref;
 	cEditPathVisibilityImage(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(!sector || sector->GetPathVisibilityImage() == editPath->GetPath()){
-			return NULL;
+			return {};
 		}
 		
 		if(pPanel.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(editPath->GetPath()))){
@@ -394,52 +400,53 @@ public:
 				"[CANCEL] Do no import image nor change path.");
 			
 			if(answer == igdeCommonDialogs::ebCancel){
-				return NULL;
+				return {};
 				
 			}else if(answer == igdeCommonDialogs::ebYes){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
 				deImage::Ref image;
 				
-				image.TakeOver(pPanel.GetEngine()->GetImageManager()->LoadImage(editPath->GetPath(), "/"));
+				image = pPanel.GetEngine()->GetImageManager()->LoadImage(editPath->GetPath(), "/");
 				
 				if(image->GetComponentCount() != 1){
-					image = NULL;
+					image = nullptr;
 					igdeCommonDialogs::Error(&pPanel, "Import Visibility Image",
 						"The visibility image does not have exactly 1 color channel. Only\n"
 						"images with 1 color channel can be used for visibility terrains.");
 				}
 				
 				if(image && (image->GetWidth() != resolution || image->GetHeight() != resolution)){
-					image = NULL;
+					image = nullptr;
 					igdeCommonDialogs::Error(&pPanel, "Import Visibility Image",
 						"The image does not match the visibility image dimension set in the visibility terrain.");
 					// NOTE allow the user to scale the visibility image... maybe.. scaling is tricky
 				}
 				
 				if(image){
-					meUHTImportVisibilityImage::Ref undo(meUHTImportVisibilityImage::Ref::NewWith(
+					meUHTImportVisibilityImage::Ref undo(meUHTImportVisibilityImage::Ref::New(
 						world, sector, image));
 					world->GetUndoSystem()->Add(undo);
 				}
 			}
 		}
 		
-		return new meUHTSetPathHI(world, sector, editPath->GetPath());
+		return meUHTSetPathHI::Ref::New(world, sector, editPath->GetPath());
 	}
 };
 
 
 class cComboTexture : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTexture> Ref;
 	cComboTexture(meWPHeightTerrain &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld*){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld*) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(sector){
-			sector->SetActiveTexture(selection ? (meHeightTerrainTexture*)selection->GetData() : NULL);
+			sector->SetActiveTexture(selection ? (meHeightTerrainTexture*)selection->GetData() : nullptr);
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -447,6 +454,7 @@ class cActionMenuTexture : public igdeActionContextMenu{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuTexture> Ref;
 	cActionMenuTexture(meWPHeightTerrain &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Texture menu"),
 	pPanel(panel){}
@@ -464,13 +472,14 @@ public:
 
 class cActionTextureAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTextureAdd> Ref;
 	cActionTextureAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add texture"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(!sector){
-			return NULL;
+			return {};
 		}
 		
 		decString name("texture");
@@ -480,111 +489,119 @@ public:
 				continue;
 			}
 			
-			const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::NewWith(world->GetEngine(), name));
-			return new meUHTAddTexture(world, sector, texture);
+			const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::New(world->GetEngine(), name));
+			return meUHTAddTexture::Ref::New(world, sector, texture);
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSector());
 	}
 };
 
 class cActionTextureRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTextureRemove> Ref;
 	cActionTextureRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove texture"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
-		return texture ? new meUHTRemoveTexture(world, pPanel.GetSector(), texture) : NULL;
+		return texture ? meUHTRemoveTexture::Ref::New(world, pPanel.GetSector(), texture) : meUHTRemoveTexture::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTexture());
 	}
 };
 
 class cTextTexTypeNumber : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextTexTypeNumber> Ref;
 	cTextTexTypeNumber(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		const int value = textField->GetInteger();
-		return texture && value != texture->GetTypeNumber() ? new meUHTTexSetTypeNum(texture, value) : NULL;
+		return texture && value != texture->GetTypeNumber() ? meUHTTexSetTypeNum::Ref::New(texture, value) : meUHTTexSetTypeNum::Ref();
 	}
 };
 
 class cPathTexSkin : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathTexSkin> Ref;
 	cPathTexSkin(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		return texture && editPath->GetPath() != texture->GetPathSkin()
-			? new meUHTSetTexSkin(world, pPanel.GetSector(), texture, editPath->GetPath()) : NULL;
+			? meUHTSetTexSkin::Ref::New(world, pPanel.GetSector(), texture, editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cPathTexMask : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathTexMask> Ref;
 	cPathTexMask(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		return texture && editPath->GetPath() != texture->GetPathMask()
-			? new meUHTSetTexMask(world, pPanel.GetSector(), texture, editPath->GetPath()) : NULL;
+			? meUHTSetTexMask::Ref::New(world, pPanel.GetSector(), texture, editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cEditTexUVOffset : public cBaseEditVector2Listener{
 public:
+	typedef deTObjectReference<cEditTexUVOffset> Ref;
 	cEditTexUVOffset(meWPHeightTerrain &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector2 &vector, meWorld *world){
+	igdeUndo::Ref OnChanged(const decVector2 &vector, meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		return texture && !vector.IsEqualTo(decVector2(texture->GetProjectionOffsetU(), texture->GetProjectionOffsetV()))
-			? new meUHTSetTexUVOffset(world, pPanel.GetSector(), texture, vector) : NULL;
+			? meUHTSetTexUVOffset::Ref::New(world, pPanel.GetSector(), texture, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditTexUVScale : public cBaseEditVector2Listener{
 public:
+	typedef deTObjectReference<cEditTexUVScale> Ref;
 	cEditTexUVScale(meWPHeightTerrain &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector2 &vector, meWorld *world){
+	igdeUndo::Ref OnChanged(const decVector2 &vector, meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		return texture && !vector.IsEqualTo(decVector2(texture->GetProjectionScalingU(), texture->GetProjectionScalingV()))
-			? new meUHTSetTexUVScaling(world, pPanel.GetSector(), texture, vector) : NULL;
+			? meUHTSetTexUVScaling::Ref::New(world, pPanel.GetSector(), texture, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditTexUVRotation : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditTexUVRotation> Ref;
 	cEditTexUVRotation(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld *world) override{
 		meHeightTerrainTexture * const texture = pPanel.GetTexture();
 		const float value = textField->GetFloat();
 		return texture && fabsf(value - texture->GetProjectionRotation()) > FLOAT_SAFE_EPSILON
-			? new meUHTSetTexUVRotation(world, pPanel.GetSector(), texture, value) : NULL;
+			? meUHTSetTexUVRotation::Ref::New(world, pPanel.GetSector(), texture, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboNavSpace : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboNavSpace> Ref;
 	cComboNavSpace(meWPHeightTerrain &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(sector){
 			const igdeListItem * const selection = comboBox->GetSelectedItem();
-			sector->SetActiveNavSpace(selection ? (meHeightTerrainNavSpace*)selection->GetData() : NULL);
+			sector->SetActiveNavSpace(selection ? (meHeightTerrainNavSpace*)selection->GetData() : nullptr);
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -592,6 +609,7 @@ class cActionMenuNavSpace : public igdeActionContextMenu{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuNavSpace> Ref;
 	cActionMenuNavSpace(meWPHeightTerrain &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Navigation Space menu"),
 	pPanel(panel){}
@@ -609,10 +627,11 @@ public:
 
 class cActionNavSpaceAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceAdd> Ref;
 	cActionNavSpaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Navigation Space"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		if(sector){
 			decString name("navspace");
@@ -624,80 +643,85 @@ public:
 					continue;
 				}
 				
-				const meHeightTerrainNavSpace::Ref navspace(meHeightTerrainNavSpace::Ref::NewWith(*world->GetEngine(), name));
-				return new meUHTNavSpaceAdd(sector, navspace);
+				const meHeightTerrainNavSpace::Ref navspace(meHeightTerrainNavSpace::Ref::New(*world->GetEngine(), name));
+				return meUHTNavSpaceAdd::Ref::New(sector, navspace);
 			}
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld() && pPanel.GetWorld()->GetHeightTerrain());
 	}
 };
 
 class cActionNavSpaceRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceRemove> Ref;
 	cActionNavSpaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Navigation Space"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
-		return navspace ? new meUHTNavSpaceRemove(navspace->GetHTSector(), navspace) : NULL;
+		return navspace ? meUHTNavSpaceRemove::Ref::New(navspace->GetHTSector(), navspace) : meUHTNavSpaceRemove::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveNavSpace());
 	}
 };
 
 class cTextNavSpaceLayer : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextNavSpaceLayer> Ref;
 	cTextNavSpaceLayer(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		const int value = textField->GetInteger();
-		return navspace && value != navspace->GetLayer() ? new meUHTNavSpaceSetLayer(navspace, value) : NULL;
+		return navspace && value != navspace->GetLayer() ? meUHTNavSpaceSetLayer::Ref::New(navspace, value) : meUHTNavSpaceSetLayer::Ref();
 	}
 };
 
 class cTextNavSpaceSnapDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextNavSpaceSnapDistance> Ref;
 	cTextNavSpaceSnapDistance(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		const float value = textField->GetFloat();
 		return navspace && fabsf(value - navspace->GetSnapDistance()) > FLOAT_SAFE_EPSILON
-			? new meUHTNavSpaceSetSnapDist(navspace, value) : NULL;
+			? meUHTNavSpaceSetSnapDist::Ref::New(navspace, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextNavSpaceSnapAngle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextNavSpaceSnapAngle> Ref;
 	cTextNavSpaceSnapAngle(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		const float value = textField->GetFloat();
 		return navspace && fabsf(value - navspace->GetSnapAngle()) > FLOAT_SAFE_EPSILON
-			? new meUHTNavSpaceSetSnapAngle(navspace, value) : NULL;
+			? meUHTNavSpaceSetSnapAngle::Ref::New(navspace, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboNavSpaceType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboNavSpaceType> Ref;
 	cComboNavSpaceType(meWPHeightTerrain &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld*){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(navspace){
-			navspace->SetActiveType(selection ? (meHeightTerrainNavSpaceType*)selection->GetData() : NULL);
+			navspace->SetActiveType(selection ? (meHeightTerrainNavSpaceType*)selection->GetData() : nullptr);
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -705,6 +729,7 @@ class cActionMenuNavSpaceType : public igdeActionContextMenu{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuNavSpaceType> Ref;
 	cActionMenuNavSpaceType(meWPHeightTerrain &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Navigation Space Type menu"),
 	pPanel(panel){}
@@ -722,10 +747,11 @@ public:
 
 class cActionNavSpaceTypeAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceTypeAdd> Ref;
 	cActionNavSpaceTypeAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Navigation Space Type"){}
 	
-	virtual igdeUndo *OnAction(meWorld*){
+	igdeUndo::Ref OnAction(meWorld*) override{
 		meHeightTerrainNavSpace * const navspace = pPanel.GetActiveNavSpace();
 		decString name("type");
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Navigation Space Type",
@@ -736,58 +762,61 @@ public:
 				continue;
 			}
 			
-			const meHeightTerrainNavSpaceType::Ref type(meHeightTerrainNavSpaceType::Ref::NewWith(name));
-			return new meUHTNavSpaceTypeAdd(navspace, type);
+			const meHeightTerrainNavSpaceType::Ref type(meHeightTerrainNavSpaceType::Ref::New(name));
+			return meUHTNavSpaceTypeAdd::Ref::New(navspace, type);
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveNavSpace());
 	}
 };
 
 class cActionNavSpaceTypeRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceTypeRemove> Ref;
 	cActionNavSpaceTypeRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Navigation Space Type"){}
 	
-	virtual igdeUndo *OnAction(meWorld*){
+	igdeUndo::Ref OnAction(meWorld*) override{
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
-		return type ? new meUHTNavSpaceTypeRemove(type) : NULL;
+		return type ? meUHTNavSpaceTypeRemove::Ref::New(type) : meUHTNavSpaceTypeRemove::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetActiveNavSpaceType());
 	}
 };
 
 class cTextNavSpaceTypeName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextNavSpaceTypeName> Ref;
 	cTextNavSpaceTypeName(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
 		if(!type || textField->GetText() == type->GetName()){
-			return NULL;
+			return {};
 		}
 		if(pPanel.GetActiveNavSpace()->HasTypeNamed(textField->GetText())){
 			igdeCommonDialogs::Error(&pPanel, "Invalid Name", "A navigation space type with this name exists already.");
 			pPanel.UpdateNavSpaceType();
-			return NULL;
+			return {};
 		}
-		return new meUHTNavSpaceTypeSetName(type, textField->GetText());
+		return meUHTNavSpaceTypeSetName::Ref::New(type, textField->GetText());
 	}
 };
 
 class cTextNavSpaceTypeType : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextNavSpaceTypeType> Ref;
 	cTextNavSpaceTypeType(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHeightTerrainNavSpaceType * const type = pPanel.GetActiveNavSpaceType();
 		const int value = textField->GetInteger();
-		return type && type->GetType() != value ? new meUHTNavSpaceTypeSetType(type, value) : NULL;
+		return type && type->GetType() != value ? meUHTNavSpaceTypeSetType::Ref::New(type, value) : meUHTNavSpaceTypeSetType::Ref();
 	}
 };
 
@@ -795,6 +824,7 @@ class cTextNavSpaceTypeColor : public igdeColorBoxListener{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextNavSpaceTypeColor> Ref;
 	cTextNavSpaceTypeColor(meWPHeightTerrain &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -802,13 +832,14 @@ public:
 		if(!type || colorBox->GetColor().IsEqualTo(type->GetColor())){
 			return;
 		}
-		pPanel.GetWorld()->GetUndoSystem()->Add(meUHTNavSpaceTypeSetColor::Ref::NewWith(
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUHTNavSpaceTypeSetColor::Ref::New(
 			type, colorBox->GetColor()));
 	}
 };
 
 class cActionNavSpaceFaceAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceFaceAdd> Ref;
 	cActionNavSpaceFaceAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add face with selected navigation points"){}
 	
@@ -818,20 +849,14 @@ public:
 			return false;
 		}
 		
-		const decIntList &selNavPoints = navspace->GetHTSector()->GetSelectedNavPoints();
+		const decTList<int> &selNavPoints = navspace->GetHTSector()->GetSelectedNavPoints();
 		if(selNavPoints.GetCount() < 3){
 			return false;
 		}
 		
-		const int typeCount = navspace->GetTypeCount();
-		int i, j;
-		
-		for(i=0; i<typeCount; i++){
-			const meHeightTerrainNavSpaceType &checkType = *navspace->GetTypeAt(i);
-			const int faceCount = checkType.GetFaceCount();
-			
-			for(j=0; j<faceCount; j++){
-				if(checkType.GetFaceAt(j)->NavPointsMatch(selNavPoints)){
+		for(const auto &type : navspace->GetTypes()){
+			for(const auto &face : type->GetFaces()){
+				if(face->NavPointsMatch(selNavPoints)){
 					return false;
 				}
 			}
@@ -840,24 +865,25 @@ public:
 		return true;
 	}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		if(!CanUse(*world)){
-			return NULL;
+			return {};
 		}
 		
-		const meHeightTerrainNavSpaceFace::Ref face(meHeightTerrainNavSpaceFace::Ref::NewWith());
+		const meHeightTerrainNavSpaceFace::Ref face(meHeightTerrainNavSpaceFace::Ref::New());
 		face->GetNavPoints() = pPanel.GetSector()->GetSelectedNavPoints();
 		face->OrderClockwise(world->GetHeightTerrain()->GetSectorResolution());
-		return new meUHTNavSpaceFaceAdd(pPanel.GetActiveNavSpaceType(), face);
+		return meUHTNavSpaceFaceAdd::Ref::New(pPanel.GetActiveNavSpaceType(), face);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld() && CanUse(*pPanel.GetWorld()));
 	}
 };
 
 class cActionNavSpaceFaceRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionNavSpaceFaceRemove> Ref;
 	cActionNavSpaceFaceRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove face matching selected navigation points"){}
@@ -865,77 +891,62 @@ public:
 	bool CanUse(const meWorld &world) const{
 		return pPanel.GetActiveNavSpace()
 			&& world.GetGuiParameters().GetWorkMode() == meWorldGuiParameters::ewmNavSpaceEdit
-			&& pPanel.GetSector()->GetSelectedNavPoints().GetCount() > 0;
+			&& pPanel.GetSector()->GetSelectedNavPoints().IsNotEmpty();
 	}
 	
-	void FindFaces(const meWorld &world, decObjectOrderedSet &faces){
-		const decIntList &selNavPoints = pPanel.GetSector()->GetSelectedNavPoints();
+	void FindFaces(const meWorld &world, meHeightTerrainNavSpaceFace::List &faces){
+		const decTList<int> &selNavPoints = pPanel.GetSector()->GetSelectedNavPoints();
 		const meHeightTerrainNavSpace &navspace = *pPanel.GetActiveNavSpace();
-		const int typeCount = navspace.GetTypeCount();
-		int i, j;
 		
 		if(selNavPoints.GetCount() == 1){
-			const int navpoint = selNavPoints.GetAt(0);
-			
-			for(i=0; i<typeCount; i++){
-				const meHeightTerrainNavSpaceType &type = *navspace.GetTypeAt(i);
-				const int faceCount = type.GetFaceCount();
-				
-				for(j=0; j<faceCount; j++){
-					meHeightTerrainNavSpaceFace * const face = type.GetFaceAt(j);
+			const int navpoint = selNavPoints.First();
+			navspace.GetTypes().Visit([&](const meHeightTerrainNavSpaceType &type){
+				type.GetFaces().Visit([&](meHeightTerrainNavSpaceFace * const face){
 					if(face->HasNavPoint(navpoint)){
 						faces.Add(face);
 					}
-				}
-			}
+				});
+			});
 			
 		}else if(selNavPoints.GetCount() == 2){
-			const int navpoint1 = selNavPoints.GetAt(0);
+			const int navpoint1 = selNavPoints.First();
 			const int navpoint2 = selNavPoints.GetAt(1);
 			
-			for(i=0; i<typeCount; i++){
-				const meHeightTerrainNavSpaceType &type = *navspace.GetTypeAt(i);
-				const int faceCount = type.GetFaceCount();
-				
-				for(j=0; j<faceCount; j++){
-					meHeightTerrainNavSpaceFace * const face = type.GetFaceAt(j);
+			navspace.GetTypes().Visit([&](const meHeightTerrainNavSpaceType &type){
+				type.GetFaces().Visit([&](meHeightTerrainNavSpaceFace * const face){
 					if(face->HasNavEdge(navpoint1, navpoint2)){
 						faces.Add(face);
 					}
-				}
-			}
+				});
+			});
 			
 		}else{ //selNavPoints.GetCount() > 2
-			for(i=0; i<typeCount; i++){
-				const meHeightTerrainNavSpaceType &type = *navspace.GetTypeAt(i);
-				const int faceCount = type.GetFaceCount();
-				
-				for(j=0; j<faceCount; j++){
-					meHeightTerrainNavSpaceFace * const face = type.GetFaceAt(j);
+			navspace.GetTypes().Visit([&](const meHeightTerrainNavSpaceType &type){
+				type.GetFaces().Visit([&](meHeightTerrainNavSpaceFace * const face){
 					if(face->HasAllNavPointsIn(selNavPoints)){
 						faces.Add(face);
 					}
-				}
-			}
+				});
+			});
 		}
 	}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		if(!CanUse(*world)){
-			return NULL;
+			return {};
 		}
 		
-		decObjectOrderedSet faces;
+		meHeightTerrainNavSpaceFace::List faces;
 		FindFaces(*world, faces);
-		return faces.GetCount() > 0 ? new meUHTNavSpaceFaceRemove(faces) : NULL;
+		return faces.IsNotEmpty() ? meUHTNavSpaceFaceRemove::Ref::New(faces) : meUHTNavSpaceFaceRemove::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		bool enabled = pPanel.GetWorld() && CanUse(*pPanel.GetWorld());
 		if(enabled){
-			decObjectOrderedSet faces;
+			meHeightTerrainNavSpaceFace::List faces;
 			FindFaces(*pPanel.GetWorld(), faces);
-			enabled = faces.GetCount() > 0;
+			enabled = faces.IsNotEmpty();
 		}
 		SetEnabled(enabled);
 	}
@@ -945,69 +956,74 @@ public:
 
 class cActionUpdateVegetation : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionUpdateVegetation> Ref;
 	cActionUpdateVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "Visible",
-		NULL, "Updates the visible vegetation system (can take some time)"){}
+		nullptr, "Updates the visible vegetation system (can take some time)"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ForceUpdateVegetation(false);
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cActionUpdateVegetationAll : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionUpdateVegetationAll> Ref;
 	cActionUpdateVegetationAll(meWPHeightTerrain &panel) : cBaseAction(panel, "All",
-		NULL, "Updates entire the vegetation system (lengthy operation!)"){}
+		nullptr, "Updates entire the vegetation system (lengthy operation!)"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ForceUpdateVegetation(true);
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cActionClearVegetation : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionClearVegetation> Ref;
 	cActionClearVegetation(meWPHeightTerrain &panel) : cBaseAction(panel, "Clear",
-		NULL, "Clear vegetation (hides all)"){}
+		nullptr, "Clear vegetation (hides all)"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->ClearVegetation();
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 	}
 };
 
 class cPathPathPFCache : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathPathPFCache> Ref;
 	cPathPathPFCache(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld *world) override{
 		meHeightTerrainSector * const sector = pPanel.GetSector();
 		return sector && editPath->GetPath() != sector->GetPathPFCacheImage()
-			? new meUHTSetPathPFCache(world, sector, editPath->GetPath()) : NULL;
+			? meUHTSetPathPFCache::Ref::New(world, sector, editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboVLayer : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboVLayer> Ref;
 	cComboVLayer(meWPHeightTerrain &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld *world) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		world->GetHeightTerrain()->SetActiveVLayer(selection ? (meHTVegetationLayer*)selection->GetData() : NULL);
-		return NULL;
+		world->GetHeightTerrain()->SetActiveVLayer(selection ? (meHTVegetationLayer*)selection->GetData() : nullptr);
+		return {};
 	}
 };
 
@@ -1015,6 +1031,7 @@ class cActionMenuVLayer : public igdeActionContextMenu{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuVLayer> Ref;
 	cActionMenuVLayer(meWPHeightTerrain &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Vegetation Layer menu"),
 	pPanel(panel){}
@@ -1034,89 +1051,94 @@ public:
 
 class cActionVLayerAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVLayerAdd> Ref;
 	cActionVLayerAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vegetation layer"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	virtual igdeUndo::Ref OnAction(meWorld *world){
 		decString name("vlayer");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Vegetation Layer", "Enter name of new layer", name)){
-			return NULL;
+			return {};
 		}
 		
-		const meHTVegetationLayer::Ref vlayer(meHTVegetationLayer::Ref::NewWith(world->GetEngine(), name));
+		const meHTVegetationLayer::Ref vlayer(meHTVegetationLayer::Ref::New(world->GetEngine(), name));
 		
-		vlayer->AddRule(meHTVRuleResult::Ref::NewWith());
+		vlayer->AddRule(meHTVRuleResult::Ref::New());
 		
-		return new meUHTVLayerAdd(world, world->GetHeightTerrain(), vlayer);
+		return meUHTVLayerAdd::Ref::New(world, world->GetHeightTerrain(), vlayer);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSector());
 	}
 };
 
 class cActionVLayerRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVLayerRemove> Ref;
 	cActionVLayerRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vegetation layer"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
-		return vlayer ? new meUHTVLayerRemove(world, world->GetHeightTerrain(), vlayer) : NULL;
+		return vlayer ? meUHTVLayerRemove::Ref::New(world, world->GetHeightTerrain(), vlayer) : meUHTVLayerRemove::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetVLayer());
 	}
 };
 
 class cActionVLayerUp : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVLayerUp> Ref;
 	cActionVLayerUp(meWPHeightTerrain &panel) : cBaseAction(panel, "Move Up",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move vegetation layer up"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
-		return vlayer && world->GetHeightTerrain()->GetVLayerCount() > 1
-			? new meUHTVLayerUp(world, world->GetHeightTerrain(), vlayer) : NULL;
+		return vlayer && world->GetHeightTerrain()->GetVLayers().GetCount() > 1
+			? meUHTVLayerUp::Ref::New(world, world->GetHeightTerrain(), vlayer) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetVLayer() && pPanel.GetWorld()->GetHeightTerrain()->GetVLayerCount() > 1);
+	void Update() override{
+		SetEnabled(pPanel.GetVLayer() && pPanel.GetWorld()->GetHeightTerrain()->GetVLayers().GetCount() > 1);
 	}
 };
 
 class cActionVLayerDown : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVLayerDown> Ref;
 	cActionVLayerDown(meWPHeightTerrain &panel) : cBaseAction(panel, "Move Down",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move vegetation layer down"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
-		return vlayer && world->GetHeightTerrain()->IndexOfVLayer(vlayer)
-			< world->GetHeightTerrain()->GetVLayerCount() - 1
-				? new meUHTVLayerUp(world, world->GetHeightTerrain(), vlayer) : NULL;
+		return vlayer && world->GetHeightTerrain()->GetVLayers().IndexOf(vlayer)
+			< world->GetHeightTerrain()->GetVLayers().GetCount() - 1
+				? meUHTVLayerUp::Ref::New(world, world->GetHeightTerrain(), vlayer) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
-		SetEnabled(vlayer && pPanel.GetWorld()->GetHeightTerrain()->IndexOfVLayer(vlayer)
-			< pPanel.GetWorld()->GetHeightTerrain()->GetVLayerCount() - 1);
+		SetEnabled(vlayer && pPanel.GetWorld()->GetHeightTerrain()->GetVLayers().IndexOf(vlayer)
+			< pPanel.GetWorld()->GetHeightTerrain()->GetVLayers().GetCount() - 1);
 	}
 };
 
 
 class cComboVVariation : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboVVariation> Ref;
 	cComboVVariation(meWPHeightTerrain &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld*){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld*) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
 		if(vlayer){
 			const igdeListItem * const selection = comboBox->GetSelectedItem();
-			vlayer->SetActiveVariation(selection ? (meHTVVariation*)selection->GetData() : NULL);
+			vlayer->SetActiveVariation(selection ? (meHTVVariation*)selection->GetData() : nullptr);
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -1124,6 +1146,7 @@ class cActionMenuVVariation : public igdeActionContextMenu{
 	meWPHeightTerrain &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuVVariation> Ref;
 	cActionMenuVVariation(meWPHeightTerrain &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Vegetation Variation menu"),
 	pPanel(panel){}
@@ -1141,82 +1164,88 @@ public:
 
 class cActionVVariationAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVVariationAdd> Ref;
 	cActionVVariationAdd(meWPHeightTerrain &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add variation"){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	virtual igdeUndo::Ref OnAction(meWorld *world){
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
 		if(!vlayer){
-			return NULL;
+			return {};
 		}
 		
-		const meHTVVariation::Ref variation(meHTVVariation::Ref::NewWith(world->GetEngine()));
-		return new meUHTVVariationAdd(vlayer, variation);
+		const meHTVVariation::Ref variation(meHTVVariation::Ref::New(world->GetEngine()));
+		return meUHTVVariationAdd::Ref::New(vlayer, variation);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetVLayer());
 	}
 };
 
 class cActionVVariationRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionVVariationRemove> Ref;
 	cActionVVariationRemove(meWPHeightTerrain &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove variation"){}
 	
-	virtual igdeUndo *OnAction(meWorld*){
+	igdeUndo::Ref OnAction(meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
-		return variation ? new meUHTVVariationRemove(pPanel.GetVLayer(), variation) : NULL;
+		return variation ? meUHTVVariationRemove::Ref::New(pPanel.GetVLayer(), variation) : meUHTVVariationRemove::Ref();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetVVariation());
 	}
 };
 
 class cPathVVModel : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathVVModel> Ref;
 	cPathVVModel(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld*){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
 		return variation && editPath->GetPath() != variation->GetPathModel()
-			? new meUHTVVarSetModel(variation, editPath->GetPath()) : NULL;
+			? meUHTVVarSetModel::Ref::New(variation, editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cPathVVSkin : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathVVSkin> Ref;
 	cPathVVSkin(meWPHeightTerrain &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath *editPath, meWorld*){
+	igdeUndo::Ref OnChanged(igdeEditPath *editPath, meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
 		return variation && editPath->GetPath() != variation->GetPathSkin()
-			? new meUHTVVarSetSkin(variation, editPath->GetPath()) : NULL;
+			? meUHTVVarSetSkin::Ref::New(variation, editPath->GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cTextVVRotPerForce : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextVVRotPerForce> Ref;
 	cTextVVRotPerForce(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
 		const float value = textField->GetFloat();
 		return variation && fabsf(value - variation->GetRotationPerForce()) > FLOAT_SAFE_EPSILON
-			? new meUHTVVarSetRotPerForce(variation, value) : NULL;
+			? meUHTVVarSetRotPerForce::Ref::New(variation, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextVVRestitution : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextVVRestitution> Ref;
 	cTextVVRestitution(meWPHeightTerrain &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld*){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meWorld*) override{
 		meHTVVariation * const variation = pPanel.GetVVariation();
 		const float value = textField->GetFloat();
 		return variation && fabsf(value - variation->GetRestitution()) > FLOAT_SAFE_EPSILON
-			? new meUHTVVarSetRestitution(variation, value) : NULL;
+			? meUHTVVarSetRestitution::Ref::New(variation, value) : igdeUndo::Ref();
 	}
 };
 
@@ -1225,16 +1254,17 @@ class cActionHPMode : public cBaseAction{
 	const meWorldGuiParameters::eHPDrawModes pMode;
 	
 public:
+	typedef deTObjectReference<cActionHPMode> Ref;
 	cActionHPMode(meWPHeightTerrain &panel, meWorldGuiParameters::eHPDrawModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description), pMode(mode){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetHPDrawMode(pMode);
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetWorld() && pPanel.GetWorld()->GetGuiParameters().GetHPDrawMode() == pMode);
 	}
@@ -1242,19 +1272,21 @@ public:
 
 class cSliderHPRadius : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderHPRadius> Ref;
 	cSliderHPRadius(meWPHeightTerrain &panel) : cBaseEditSliderTextListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditSliderText *sliderText, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditSliderText *sliderText, meWorld *world) override{
 		world->GetGuiParameters().SetHPRadius(sliderText->GetValue());
-		return NULL;
+		return {};
 	}
 };
 
 class cSliderHPStrength : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderHPStrength> Ref;
 	cSliderHPStrength(meWPHeightTerrain &panel) : cBaseEditSliderTextListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditSliderText *sliderText, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditSliderText *sliderText, meWorld *world) override{
 		switch(world->GetGuiParameters().GetHPDrawMode()){
 		case meWorldGuiParameters::ehpdmRaise:
 		case meWorldGuiParameters::ehpdmLower:
@@ -1269,7 +1301,7 @@ public:
 			world->GetGuiParameters().SetHPSmoothStrength(sliderText->GetValue());
 			break;
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -1278,16 +1310,17 @@ class cActionMPMode : public cBaseAction{
 	const meWorldGuiParameters::eMPDrawModes pMode;
 	
 public:
+	typedef deTObjectReference<cActionMPMode> Ref;
 	cActionMPMode(meWPHeightTerrain &panel, meWorldGuiParameters::eMPDrawModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description), pMode(mode){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetMPDrawMode(pMode);
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetWorld() && pPanel.GetWorld()->GetGuiParameters().GetMPDrawMode() == pMode);
 	}
@@ -1295,11 +1328,12 @@ public:
 
 class cSliderMPRadius : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderMPRadius> Ref;
 	cSliderMPRadius(meWPHeightTerrain &panel) : cBaseEditSliderTextListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditSliderText *sliderText, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditSliderText *sliderText, meWorld *world) override{
 		world->GetGuiParameters().SetMPRadius(sliderText->GetValue());
-		return NULL;
+		return {};
 	}
 };
 
@@ -1308,16 +1342,17 @@ class cActionVPMode : public cBaseAction{
 	const meWorldGuiParameters::eVPDrawModes pMode;
 	
 public:
+	typedef deTObjectReference<cActionVPMode> Ref;
 	cActionVPMode(meWPHeightTerrain &panel, meWorldGuiParameters::eVPDrawModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		cBaseAction(panel, text, icon, description), pMode(mode){}
 	
-	virtual igdeUndo *OnAction(meWorld *world){
+	igdeUndo::Ref OnAction(meWorld *world) override{
 		world->GetGuiParameters().SetVPDrawMode(pMode);
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetWorld() && pPanel.GetWorld()->GetGuiParameters().GetVPDrawMode() == pMode);
 	}
@@ -1325,11 +1360,12 @@ public:
 
 class cSliderVPRadius : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderVPRadius> Ref;
 	cSliderVPRadius(meWPHeightTerrain &panel) : cBaseEditSliderTextListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditSliderText *sliderText, meWorld *world){
+	igdeUndo::Ref OnChanged(igdeEditSliderText *sliderText, meWorld *world) override{
 		world->GetGuiParameters().SetVPRadius(sliderText->GetValue());
-		return NULL;
+		return {};
 	}
 };
 
@@ -1345,128 +1381,123 @@ public:
 
 meWPHeightTerrain::meWPHeightTerrain(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL),
-pTexture(NULL),
-pVLayer(NULL),
-pVVariation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPHeightTerrainListener(*this);
+	pListener = meWPHeightTerrainListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
-	pActionMenuTexture.TakeOver(new cActionMenuTexture(*this));
-	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
-	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
+	pActionMenuTexture = cActionMenuTexture::Ref::New(*this);
+	pActionTextureAdd = cActionTextureAdd::Ref::New(*this);
+	pActionTextureRemove = cActionTextureRemove::Ref::New(*this);
 	
-	pActionMenuNavSpace.TakeOver(new cActionMenuNavSpace(*this));
-	pActionNavSpaceAdd.TakeOver(new cActionNavSpaceAdd(*this));
-	pActionNavSpaceRemove.TakeOver(new cActionNavSpaceRemove(*this));
+	pActionMenuNavSpace = cActionMenuNavSpace::Ref::New(*this);
+	pActionNavSpaceAdd = cActionNavSpaceAdd::Ref::New(*this);
+	pActionNavSpaceRemove = cActionNavSpaceRemove::Ref::New(*this);
 	
-	pActionMenuNavSpaceType.TakeOver(new cActionMenuNavSpaceType(*this));
-	pActionNavSpaceTypeAdd.TakeOver(new cActionNavSpaceTypeAdd(*this));
-	pActionNavSpaceTypeRemove.TakeOver(new cActionNavSpaceTypeRemove(*this));
+	pActionMenuNavSpaceType = cActionMenuNavSpaceType::Ref::New(*this);
+	pActionNavSpaceTypeAdd = cActionNavSpaceTypeAdd::Ref::New(*this);
+	pActionNavSpaceTypeRemove = cActionNavSpaceTypeRemove::Ref::New(*this);
 	
-	pActionNavSpaceFaceAdd.TakeOver(new cActionNavSpaceFaceAdd(*this));
-	pActionNavSpaceFaceRemove.TakeOver(new cActionNavSpaceFaceRemove(*this));
+	pActionNavSpaceFaceAdd = cActionNavSpaceFaceAdd::Ref::New(*this);
+	pActionNavSpaceFaceRemove = cActionNavSpaceFaceRemove::Ref::New(*this);
 	
-	pActionMenuVLayer.TakeOver(new cActionMenuVLayer(*this));
-	pActionVLayerAdd.TakeOver(new cActionVLayerAdd(*this));
-	pActionVLayerRemove.TakeOver(new cActionVLayerRemove(*this));
-	pActionVLayerUp.TakeOver(new cActionVLayerUp(*this));
-	pActionVLayerDown.TakeOver(new cActionVLayerDown(*this));
+	pActionMenuVLayer = cActionMenuVLayer::Ref::New(*this);
+	pActionVLayerAdd = cActionVLayerAdd::Ref::New(*this);
+	pActionVLayerRemove = cActionVLayerRemove::Ref::New(*this);
+	pActionVLayerUp = cActionVLayerUp::Ref::New(*this);
+	pActionVLayerDown = cActionVLayerDown::Ref::New(*this);
 	
-	pActionMenuVVariation.TakeOver(new cActionMenuVVariation(*this));
-	pActionVVariationAdd.TakeOver(new cActionVVariationAdd(*this));
-	pActionVVariationRemove.TakeOver(new cActionVVariationRemove(*this));
+	pActionMenuVVariation = cActionMenuVVariation::Ref::New(*this);
+	pActionVVariationAdd = cActionVVariationAdd::Ref::New(*this);
+	pActionVVariationRemove = cActionVVariationRemove::Ref::New(*this);
 	
 	
 	// height terrain
 	helper.GroupBox(content, groupBox, "Height Terrain:");
 	
-	igdeFilePatternList filePatterns;
-	filePatterns.AddFilePattern(new igdeFilePattern(
+	igdeFilePattern::List filePatterns;
+	filePatterns.Add(new igdeFilePattern(
 		"Drag[en]gine Height Terrain", "*.deterrain", ".deterrain"));
 	helper.EditPath(groupBox, "Height Terrain:", "File to save height terrain to",
-		filePatterns, pEditPathHTerrain, new cEditPathHT(*this));
+		filePatterns, pEditPathHTerrain, cEditPathHT::Ref::New(*this));
 	helper.EditFloat(groupBox, "Sector Size:", "Size of sectors along X and Z axis",
-		pEditSectorSize, new cEditSectorSize(*this));
+		pEditSectorSize, cEditSectorSize::Ref::New(*this));
 	helper.EditInteger(groupBox, "Sector Resolution:", "Resolution of height images in sectors (width and height)",
-		pEditSectorResolution, new cEditSectorResolution(*this));
+		pEditSectorResolution, cEditSectorResolution::Ref::New(*this));
 	helper.EditFloat(groupBox, "Base Height:", "Set base height of height image values",
-		pEditBaseHeight, new cEditBaseHeight(*this));
+		pEditBaseHeight, cEditBaseHeight::Ref::New(*this));
 	helper.EditFloat(groupBox, "Height Scaling:", "Set height scaling of height image values",
-		pEditHeightScale, new cEditHeightScale(*this));
+		pEditHeightScale, cEditHeightScale::Ref::New(*this));
 	
 	
 	// sector
 	helper.GroupBox(content, groupBox, "Sector:");
 	
 	helper.EditPath(groupBox, "Height Image:", "File to save height image to",
-		igdeEnvironment::efpltImage, pEditPathHeightImage, new cEditPathHeightImage(*this));
+		igdeEnvironment::efpltImage, pEditPathHeightImage, cEditPathHeightImage::Ref::New(*this));
 	helper.EditPath(groupBox, "Visibility Image:", "File to save visibility image to",
-		igdeEnvironment::efpltImage, pEditPathVisImage, new cEditPathVisibilityImage(*this));
+		igdeEnvironment::efpltImage, pEditPathVisImage, cEditPathVisibilityImage::Ref::New(*this));
 	
 	
 	// texture
 	helper.GroupBox(content, groupBox, "Texture:");
 	
 	helper.FormLineStretchFirst(groupBox, "Texture:", "Texture to edit", formLine);
-	helper.ComboBox(formLine, "Texture to edit", pCBTexture, new cComboTexture(*this));
+	helper.ComboBox(formLine, "Texture to edit", pCBTexture, cComboTexture::Ref::New(*this));
 	helper.Button(formLine, pBtnTexture, pActionMenuTexture);
 	pActionMenuTexture->SetWidget(pBtnTexture);
 	
 	helper.EditInteger(groupBox, "Type Number:", "Type number of the texture.",
-		pEditTexTypeNum, new cTextTexTypeNumber(*this));
+		pEditTexTypeNum, cTextTexTypeNumber::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture.",
-		igdeEnvironment::efpltSkin, pEditTexSkin, new cPathTexSkin(*this));
+		igdeEnvironment::efpltSkin, pEditTexSkin, cPathTexSkin::Ref::New(*this));
 	helper.EditPath(groupBox, "Mask:", "Mask to use for the texture.",
-		igdeEnvironment::efpltSkin, pEditTexMask, new cPathTexMask(*this));
+		igdeEnvironment::efpltSkin, pEditTexMask, cPathTexMask::Ref::New(*this));
 	helper.EditVector2(groupBox, "Offset:", "Offsets the projected texture relative to the world origin.",
-		pEditTexUVOffset, new cEditTexUVOffset(*this));
+		pEditTexUVOffset, cEditTexUVOffset::Ref::New(*this));
 	helper.EditVector2(groupBox, "Scaling:", "Scaling of the projected texture.",
-		pEditTexUVScale, new cEditTexUVScale(*this));
+		pEditTexUVScale, cEditTexUVScale::Ref::New(*this));
 	helper.EditFloat(groupBox, "Rotation:", "Rotation of the projected texture.",
-		pEditTexUVRot, new cEditTexUVRotation(*this));
+		pEditTexUVRot, cEditTexUVRotation::Ref::New(*this));
 	
 	
 	// navigation space
 	helper.GroupBox(content, groupBox, "Navigation-Space:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Nav-Space:", "Nav-Space", formLine);
-	helper.ComboBox(formLine, "Nav-Space", pCBNavSpace, new cComboNavSpace(*this));
+	helper.ComboBox(formLine, "Nav-Space", pCBNavSpace, cComboNavSpace::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpace, pActionMenuNavSpace);
 	pActionMenuNavSpace->SetWidget(pBtnNavSpace);
 	
 	helper.EditInteger(groupBox, "Layer:", "Navigation layer.",
-		pEditNavSpaceLayer, new cTextNavSpaceLayer(*this));
+		pEditNavSpaceLayer, cTextNavSpaceLayer::Ref::New(*this));
 	helper.EditFloat(groupBox, "Snap Distance:", "Snap distance.",
-		pEditNavSpaceSnapDist, new cTextNavSpaceSnapDistance(*this));
+		pEditNavSpaceSnapDist, cTextNavSpaceSnapDistance::Ref::New(*this));
 	helper.EditFloat(groupBox, "Snap Angle:", "Snap angle.",
-		pEditNavSpaceSnapAngle, new cTextNavSpaceSnapAngle(*this));
+		pEditNavSpaceSnapAngle, cTextNavSpaceSnapAngle::Ref::New(*this));
 	
 	
 	// navigation space type
 	helper.GroupBox(content, groupBox, "Navigation Type:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Type:", "Navigation type to edit", formLine);
-	helper.ComboBox(formLine, "Navigation type to edit", pCBNavSpaceType, new cComboNavSpaceType(*this));
+	helper.ComboBox(formLine, "Navigation type to edit", pCBNavSpaceType, cComboNavSpaceType::Ref::New(*this));
 	helper.Button(formLine, pBtnNavSpaceType, pActionMenuNavSpaceType);
 	pActionMenuNavSpaceType->SetWidget(pBtnNavSpaceType);
 	
 	helper.EditString(groupBox, "Name:", "Navigation space type name.",
-		pEditNavSpaceTypeName, new cTextNavSpaceTypeName(*this));
+		pEditNavSpaceTypeName, cTextNavSpaceTypeName::Ref::New(*this));
 	helper.EditInteger(groupBox, "Type:", "Navigation space type number.",
-		pEditNavSpaceTypeType, new cTextNavSpaceTypeType(*this));
+		pEditNavSpaceTypeType, cTextNavSpaceTypeType::Ref::New(*this));
 	helper.ColorBox(groupBox, "Color:", "Navigation space type color for visualization purpose.",
-		pEditNavSpaceTypeColor, new cTextNavSpaceTypeColor(*this));
+		pEditNavSpaceTypeColor, cTextNavSpaceTypeColor::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Faces:", "Navigation space faces", formLine);
 	helper.Button(formLine, pBtnNavSpaceFaceAdd, pActionNavSpaceFaceAdd);
@@ -1477,86 +1508,83 @@ pVVariation(NULL)
 	helper.GroupBox(content, groupBox, "Vegetation:", true);
 	
 	helper.FormLine(groupBox, "Update:", "Update vegetation", formLine);
-	helper.Button(formLine, pBtnUpdateVegetation, new cActionUpdateVegetation(*this), true);
-	helper.Button(formLine, pBtnUpdateVegetationAll, new cActionUpdateVegetationAll(*this), true);
-	helper.Button(formLine, pBtnClearVegetation, new cActionClearVegetation(*this), true);
+	helper.Button(formLine, pBtnUpdateVegetation, cActionUpdateVegetation::Ref::New(*this));
+	helper.Button(formLine, pBtnUpdateVegetationAll, cActionUpdateVegetationAll::Ref::New(*this));
+	helper.Button(formLine, pBtnClearVegetation, cActionClearVegetation::Ref::New(*this));
 	
-	filePatterns.RemoveAllFilePatterns();
-	filePatterns.AddFilePattern(new igdeFilePattern(
+	filePatterns.RemoveAll();
+	filePatterns.Add(new igdeFilePattern(
 		"Drag[en]gine Prop Field Cache", "*.depfc", ".depfc"));
 	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture.",
-		filePatterns, pEditPathPFCache, new cPathPathPFCache(*this));
+		filePatterns, pEditPathPFCache, cPathPathPFCache::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Layer:", "Layer to edit", formLine);
-	helper.ComboBox(formLine, "Layer to edit", pCBVLayer, new cComboVLayer(*this));
+	helper.ComboBox(formLine, "Layer to edit", pCBVLayer, cComboVLayer::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVLayer, pActionMenuVLayer);
 	pActionMenuVLayer->SetWidget(pBtnMenuVLayer);
 	
 	helper.FormLineStretchFirst(groupBox, "Variation:", "Variation to edit", formLine);
-	helper.ComboBox(formLine, "Variation to edit", pCBVVariation, new cComboVVariation(*this));
+	helper.ComboBox(formLine, "Variation to edit", pCBVVariation, cComboVVariation::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuVVariation, pActionMenuVVariation);
 	pActionMenuVVariation->SetWidget(pBtnMenuVVariation);
 	
 	helper.EditPath(groupBox, "Model:", "Model to use for the variation",
-		igdeEnvironment::efpltModel, pEditVVModel, new cPathVVModel(*this));
+		igdeEnvironment::efpltModel, pEditVVModel, cPathVVModel::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Skin to use for the variation",
-		igdeEnvironment::efpltSkin, pEditVVSkin, new cPathVVSkin(*this));
+		igdeEnvironment::efpltSkin, pEditVVSkin, cPathVVSkin::Ref::New(*this));
 	helper.EditFloat(groupBox, "Rotation/Force:", "Rotation per Force.",
-		pEditVVRotPerForce, new cTextVVRotPerForce(*this));
+		pEditVVRotPerForce, cTextVVRotPerForce::Ref::New(*this));
 	helper.EditFloat(groupBox, "Restition:", "Restition.",
-		pEditVVRestitution, new cTextVVRestitution(*this));
+		pEditVVRestitution, cTextVVRestitution::Ref::New(*this));
 	
 	
 	// height paint
 	helper.GroupBox(content, groupBox, "Height Painting:");
 	
 	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
-	helper.ToggleButton(formLine, pBtnHPModeRaise, new cActionHPMode(*this,
-		meWorldGuiParameters::ehpdmRaise, "Raise", NULL, "Raise"), true);
-	helper.ToggleButton(formLine, pBtnHPModeLower, new cActionHPMode(*this,
-		meWorldGuiParameters::ehpdmLower, "Lower", NULL, "Lower"), true);
-	helper.ToggleButton(formLine, pBtnHPModeLevel, new cActionHPMode(*this,
-		meWorldGuiParameters::ehpdmLevel, "Level", NULL, "Level"), true);
-	helper.ToggleButton(formLine, pBtnHPModeSmooth, new cActionHPMode(*this,
-		meWorldGuiParameters::ehpdmSmooth, "Smooth", NULL, "Smooth"), true);
+	helper.ToggleButton(formLine, pBtnHPModeRaise, cActionHPMode::Ref::New(*this,
+		meWorldGuiParameters::ehpdmRaise, "Raise", nullptr, "Raise"));
+	helper.ToggleButton(formLine, pBtnHPModeLower, cActionHPMode::Ref::New(*this,
+		meWorldGuiParameters::ehpdmLower, "Lower", nullptr, "Lower"));
+	helper.ToggleButton(formLine, pBtnHPModeLevel, cActionHPMode::Ref::New(*this,
+		meWorldGuiParameters::ehpdmLevel, "Level", nullptr, "Level"));
+	helper.ToggleButton(formLine, pBtnHPModeSmooth, cActionHPMode::Ref::New(*this,
+		meWorldGuiParameters::ehpdmSmooth, "Smooth", nullptr, "Smooth"));
 	
 	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
-		0.0f, 10.0f, 6, 3, 1.0f, pSldHPRadius, new cSliderHPRadius(*this));
+		0.0f, 10.0f, 6, 3, 1.0f, pSldHPRadius, cSliderHPRadius::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Strength:", "Strength of the influence.",
-		0.0f, 1.0f, 6, 3, 0.1f, pSldHPStrength, new cSliderHPStrength(*this));
+		0.0f, 1.0f, 6, 3, 0.1f, pSldHPStrength, cSliderHPStrength::Ref::New(*this));
 	
 	
 	// mask paint
 	helper.GroupBox(content, groupBox, "Mask Painting:", true);
 	
 	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
-	helper.ToggleButton(formLine, pBtnMPModeDraw, new cActionMPMode(*this,
-		meWorldGuiParameters::empdmDraw, "Draw", NULL, "Draw"), true);
-	helper.ToggleButton(formLine, pBtnMPModeErase, new cActionMPMode(*this,
-		meWorldGuiParameters::empdmErase, "Erase", NULL, "Erase"), true);
+	helper.ToggleButton(formLine, pBtnMPModeDraw, cActionMPMode::Ref::New(*this,
+		meWorldGuiParameters::empdmDraw, "Draw", nullptr, "Draw"));
+	helper.ToggleButton(formLine, pBtnMPModeErase, cActionMPMode::Ref::New(*this,
+		meWorldGuiParameters::empdmErase, "Erase", nullptr, "Erase"));
 	
 	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
-		0.0f, 10.0f, 6, 3, 1.0f, pSldMPRadius, new cSliderMPRadius(*this));
+		0.0f, 10.0f, 6, 3, 1.0f, pSldMPRadius, cSliderMPRadius::Ref::New(*this));
 	
 	
 	// visibility paint
 	helper.GroupBox(content, groupBox, "Visibility Painting:", true);
 	
 	helper.FormLine(groupBox, "Mode:", "Paint mode", formLine);
-	helper.ToggleButton(formLine, pBtnVPModeVisible, new cActionVPMode(*this,
-		meWorldGuiParameters::evpdmVisible, "Visible", NULL, "Visible"), true);
-	helper.ToggleButton(formLine, pBtnVPModeInvisible, new cActionVPMode(*this,
-		meWorldGuiParameters::evpdmInvisible, "Invisible", NULL, "Invisible"), true);
+	helper.ToggleButton(formLine, pBtnVPModeVisible, cActionVPMode::Ref::New(*this,
+		meWorldGuiParameters::evpdmVisible, "Visible", nullptr, "Visible"));
+	helper.ToggleButton(formLine, pBtnVPModeInvisible, cActionVPMode::Ref::New(*this,
+		meWorldGuiParameters::evpdmInvisible, "Invisible", nullptr, "Invisible"));
 	
 	helper.EditSliderText(groupBox, "Radius:", "Sets the radius of influence.",
-		0.0f, 10.0f, 6, 3, 1.0f, pSldVPRadius, new cSliderVPRadius(*this));
+		0.0f, 10.0f, 6, 3, 1.0f, pSldVPRadius, cSliderVPRadius::Ref::New(*this));
 }
 
 meWPHeightTerrain::~meWPHeightTerrain(){
-	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -1569,19 +1597,17 @@ void meWPHeightTerrain::SetWorld(meWorld *world){
 		return;
 	}
 	
-	SetVLayer(NULL);
-	SetTexture(NULL);
+	SetVLayer(nullptr);
+	SetTexture(nullptr);
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateHeightTerrain();
@@ -1633,7 +1659,7 @@ meHeightTerrainSector *meWPHeightTerrain::GetSector() const{
 			// decPoint( pWorld->GetActiveSector().x, pWorld->GetActiveSector().z ) );
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -1645,29 +1671,19 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 	if(texture == pTexture){
 		return;
 	}
-	
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	
 	pTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
-	
 	pCBTexture->SetSelectionWithData(texture);
 	
 	UpdateTexture();
 }
 
 meHeightTerrainNavSpace *meWPHeightTerrain::GetActiveNavSpace() const{
-	return GetSector() ? GetSector()->GetActiveNavSpace() : NULL;
+	return GetSector() ? GetSector()->GetActiveNavSpace() : nullptr;
 }
 
 meHeightTerrainNavSpaceType *meWPHeightTerrain::GetActiveNavSpaceType() const{
 	const meHeightTerrainNavSpace * const navspace = GetActiveNavSpace();
-	return navspace ? navspace->GetActiveType() : NULL;
+	return navspace ? navspace->GetActiveType() : nullptr;
 }
 
 void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
@@ -1679,20 +1695,10 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 		return;
 	}
 	
-	SetVVariation(NULL);
-	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
-	
+	SetVVariation(nullptr);
 	pVLayer = vlayer;
 	
 	UpdateVVariationList();
-	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	pCBVLayer->SetSelectionWithData(vlayer);
 	UpdateVLayer();
 }
@@ -1705,17 +1711,7 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 	if(variation == pVVariation){
 		return;
 	}
-	
-	if(pVVariation){
-		pVVariation->FreeReference();
-	}
-	
 	pVVariation = variation;
-	
-	if(variation){
-		variation->AddReference();
-	}
-	
 	pCBVVariation->SetSelectionWithData(variation);
 	UpdateVVariation();
 }
@@ -1762,19 +1758,15 @@ void meWPHeightTerrain::UpdateTextureList(){
 	pCBTexture->RemoveAllItems();
 	
 	if(sector){
-		const int count = sector->GetTextureCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			meHeightTerrainTexture * const texture = sector->GetTextureAt(i);
-			pCBTexture->AddItem(texture->GetName(), NULL, texture);
-		}
+		sector->GetTextures().Visit([&](meHeightTerrainTexture *texture){
+			pCBTexture->AddItem(texture->GetName(), nullptr, texture);
+		});
 	}
 	
 	pCBTexture->SortItems();
 	
-	if(!selection && sector && sector->GetTextureCount() > 0){
-		selection = sector->GetTextureAt(0);
+	if(!selection && sector && sector->GetTextures().GetCount() > 0){
+		selection = sector->GetTextures().GetAt(0);
 	}
 	pCBTexture->SetSelectionWithData(selection);
 }
@@ -1804,12 +1796,9 @@ void meWPHeightTerrain::UpdateNavSpaceList(){
 	
 	meHeightTerrainSector * const sector = GetSector();
 	if(sector){
-		const int count = sector->GetNavSpaceCount();
-		int i;
-		for(i=0; i<count; i++){
-			meHeightTerrainNavSpace * const navspace = sector->GetNavSpaceAt(i);
-			pCBNavSpace->AddItem(navspace->GetName(), NULL, navspace);
-		}
+		sector->GetNavSpaces().Visit([&](meHeightTerrainNavSpace *navspace){
+			pCBNavSpace->AddItem(navspace->GetName(), nullptr, navspace);
+		});
 	}
 	
 	pCBNavSpace->SortItems();
@@ -1844,13 +1833,9 @@ void meWPHeightTerrain::UpdateNavSpaceTypeList(){
 	pCBNavSpaceType->RemoveAllItems();
 	
 	if(navspace){
-		const int count = navspace->GetTypeCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			meHeightTerrainNavSpaceType * const type = navspace->GetTypeAt(i);
-			pCBNavSpaceType->AddItem(type->GetName(), NULL, type);
-		}
+		navspace->GetTypes().Visit([&](meHeightTerrainNavSpaceType *type){
+			pCBNavSpaceType->AddItem(type->GetName(), nullptr, type);
+		});
 	}
 	
 	pCBNavSpaceType->SortItems();
@@ -1881,21 +1866,17 @@ void meWPHeightTerrain::UpdateVLayerList(){
 	pCBVLayer->RemoveAllItems();
 	
 	if(pWorld){
-		const int count = pWorld->GetHeightTerrain()->GetVLayerCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			meHTVegetationLayer * const vlayer = pWorld->GetHeightTerrain()->GetVLayerAt(i);
+		pWorld->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int i, meHTVegetationLayer *vlayer){
+			decString text;
 			text.Format("%d: %s", i + 1, vlayer->GetName().GetString());
-			pCBVLayer->AddItem(text, NULL, vlayer);
-		}
+			pCBVLayer->AddItem(text, nullptr, vlayer);
+		});
 	}
 	
 	pCBVLayer->SortItems();
 	
-	if(!selection && pWorld && pWorld->GetHeightTerrain()->GetVLayerCount() > 0){
-		selection = pWorld->GetHeightTerrain()->GetVLayerAt(0);
+	if(!selection && pWorld && pWorld->GetHeightTerrain()->GetVLayers().IsNotEmpty()){
+		selection = pWorld->GetHeightTerrain()->GetVLayers().First();
 	}
 	pCBVLayer->SetSelectionWithData(selection);
 }
@@ -1909,21 +1890,17 @@ void meWPHeightTerrain::UpdateVVariationList(){
 	pCBVVariation->RemoveAllItems();
 	
 	if(pVLayer){
-		const int count = pVLayer->GetVariationCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			meHTVVariation * const variation = pVLayer->GetVariationAt(i);
+		pVLayer->GetVariations().VisitIndexed([&](int i, meHTVVariation *variation){
+			decString text;
 			text.Format("Variation %d", i);
-			pCBVVariation->AddItem(text, NULL, variation);
-		}
+			pCBVVariation->AddItem(text, nullptr, variation);
+		});
 	}
 	
 	pCBVVariation->SortItems();
 	
-	if(!selection && pVLayer && pVLayer->GetVariationCount() > 0){
-		selection = pVLayer->GetVariationAt(0);
+	if(!selection && pVLayer && pVLayer->GetVariations().IsNotEmpty()){
+		selection = pVLayer->GetVariations().First();
 	}
 	pCBVVariation->SetSelectionWithData(selection);
 }

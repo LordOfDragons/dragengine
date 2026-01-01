@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "meIDGroup.h"
-#include "meIDGroupID.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class meIDGroup
@@ -42,7 +38,6 @@ pName(name){
 }
 
 meIDGroup::~meIDGroup(){
-	RemoveAll();
 }
 
 
@@ -50,70 +45,35 @@ meIDGroup::~meIDGroup(){
 // Management
 ///////////////
 
-int meIDGroup::GetCount() const{
-	return pIDs.GetCount();
-}
-
 decStringList meIDGroup::GetIDList() const{
 	return pIDs.GetKeys();
 }
 
 int meIDGroup::GetUsageCountFor(const char *id) const{
-	deObject *object;
-	
-	if(pIDs.GetAt(id, &object)){
-		return ((meIDGroupID*)object)->GetUsageCount();
-		
-	}else{
-		return 0;
-	}
-}
-
-bool meIDGroup::Has(const char *id) const{
-	return pIDs.Has(id);
+	const meIDGroupID::Ref *f;
+	return pIDs.GetAt(id, f) ? (*f)->GetUsageCount() : 0;
 }
 
 void meIDGroup::Add(const char *id){
-	if(!id){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(id)
 	
-	deObject *object;
-	
-	if(pIDs.GetAt(id, &object)){
-		((meIDGroupID*)object)->Increment();
-		return;
-	}
-	
-	meIDGroupID *groupID = NULL;
-	
-	try{
-		groupID = new meIDGroupID(id);
-		pIDs.SetAt(id, groupID);
-		groupID->FreeReference();
+	const meIDGroupID::Ref *f;
+	if(pIDs.GetAt(id, f)){
+		(*f)->Increment();
 		
-	}catch(const deException &){
-		if(groupID){
-			groupID->FreeReference();
-		}
-		throw;
+	}else{
+		pIDs.SetAt(id, meIDGroupID::Ref::New(id));
 	}
 }
 
 void meIDGroup::Remove(const char *id){
-	if(!id){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(id)
 	
-	deObject *object;
+	const meIDGroupID::Ref *f;
+	DEASSERT_TRUE(pIDs.GetAt(id, f))
 	
-	if(!pIDs.GetAt(id, &object)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	meIDGroupID &groupID = *((meIDGroupID*)object);
-	groupID.Decrement();
-	if(groupID.GetUsageCount() == 0){
+	(*f)->Decrement();
+	if((*f)->GetUsageCount() == 0){
 		pIDs.Remove(id);
 	}
 }

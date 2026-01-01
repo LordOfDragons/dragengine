@@ -99,8 +99,7 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 		return;
 	}
 	
-	meHeightTerrainPropField &htpf = *pPropField;
-	htpf.UpdateVInstances();
+	pPropField->UpdateVInstances();
 	int i;
 	
 	if(pPropField->GetKeepClean()){
@@ -113,29 +112,20 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 	}
 	
 	// clear and add instances from the vegetation instances inside this prop field
-	const int layerCount = htsector->GetHeightTerrain()->GetVLayerCount();
-	const int instanceCount = htpf.GetVInstanceCount();
 	decVector relIPos;
 	int typeIndex = 0;
-	int j, k;
 	
-	for(i=0; i<layerCount; i++){
-		const meHTVegetationLayer &vlayer = *htsector->GetHeightTerrain()->GetVLayerAt(i);
-		const int variationCount = vlayer.GetVariationCount();
-		
-		for(j=0; j<variationCount; j++){
+	htsector->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int l, const meHTVegetationLayer &vlayer){
+		vlayer.GetVariations().VisitIndexed([&](int v, const meHTVVariation &){
 			dePropFieldType * const engPFType = engPF->GetTypeAt(typeIndex++);
 			
 			// determine how many instances match this layer and variation
 			int pficount = 0;
-			
-			for(k=0; k<instanceCount; k++){
-				const meHTVInstance &vinstance = htpf.GetVInstanceAt(k);
-				
-				if(vinstance.GetVLayer() == i && vinstance.GetVariation() == j){
+			pPropField->GetVInstances().Visit([&](const meHTVInstance &vinstance){
+				if(vinstance.GetVLayer() == l && vinstance.GetVariation() == v){
 					pficount++;
 				}
-			}
+			});
 			
 			// pick only density times many instances from the pool. currently the instances
 			// are random so we can simply take only density times instances but in upcoming
@@ -146,7 +136,7 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 			
 			// only add instances if there are any
 			if(upficount == 0){
-				continue;
+				return;
 			}
 			
 			engPFType->SetInstanceCount(upficount);
@@ -154,27 +144,19 @@ void meUpdateHeightTerrainPropField::CreateInstances(float density){
 			
 			// add vegetation instances matching this layer
 			int pfi = 0;
-			for(k=0; k<instanceCount; k++){
-				const meHTVInstance &vinstance = htpf.GetVInstanceAt(k);
-				if(vinstance.GetVLayer() != i || vinstance.GetVariation() != j){
-					continue;
-				}
-				
-				if(pfi == upficount){
-					break;
+			pPropField->GetVInstances().Visit([&](const meHTVInstance &vinstance){
+				if(vinstance.GetVLayer() != l || vinstance.GetVariation() != v || pfi == upficount){
+					return;
 				}
 				
 				dePropFieldInstance &pfinstance = pfinstances[pfi++];
 				pfinstance.SetPosition(vinstance.GetPosition());
 				pfinstance.SetRotation(vinstance.GetRotation());
 				pfinstance.SetScaling(vinstance.GetScaling());
-			}
-			
-			if(pfi < upficount){
-				DETHROW(deeInvalidAction);
-			}
-		}
-	}
+			});
+			DEASSERT_TRUE(pfi == upficount)
+		});
+	});
 	
 	const int engTypeCount = engPF->GetTypeCount();
 	for(i=0; i<engTypeCount; i++){
@@ -200,7 +182,7 @@ void meUpdateHeightTerrainPropField::pProjectToGround(){
 			
 			if(hterrain){
 				ground.SetHeightTerrain(hterrain->GetEngineHeightTerrain());
-				hasGround = ground.GetHeightTerrain() != NULL;
+				hasGround = ground.GetHeightTerrain() != nullptr;
 				/*
 				meWorld *world = hterrain->GetWorld();
 				if(world){
@@ -214,7 +196,7 @@ void meUpdateHeightTerrainPropField::pProjectToGround(){
 					for(s.z=0; s.z<worldSize.z; s.z++){
 						for(s.y=0; s.y<worldSize.y; s.y++){
 							for(s.x=0; s.x<worldSize.x; s.x++){
-								sector = world->GetSectorAt(s);
+								sector = world->GetSectors().GetAt(s);
 								
 								terrainCount = sector->GetTerrainCount();
 								for(t=0; t<terrainCount; t++){

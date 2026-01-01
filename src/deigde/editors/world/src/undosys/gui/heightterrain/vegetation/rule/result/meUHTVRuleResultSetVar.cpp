@@ -43,8 +43,8 @@
 meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Result Set Variation");
 	SetMemoryConsumption(sizeof(meUHTVRuleResultSetVar));
@@ -53,14 +53,10 @@ meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHT
 	pNewVar = nvar;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetVar::~meUHTVRuleResultSetVar(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

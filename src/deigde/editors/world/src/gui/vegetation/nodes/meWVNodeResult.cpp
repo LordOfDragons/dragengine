@@ -58,6 +58,7 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
+	typedef deTObjectReference<cTextProbability> Ref;
 	cTextProbability(meWVNodeResult &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -67,7 +68,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleResultSetProb::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleResultSetProb::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleResult(), value));
 	}
 };
@@ -77,6 +78,7 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
+	typedef deTObjectReference<cTextVariation> Ref;
 	cTextVariation(meWVNodeResult &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -86,7 +88,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleResultSetVar::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleResultSetVar::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleResult(), value));
 	}
 };
@@ -112,21 +114,21 @@ pRuleResult(rule)
 	SetTitle("Result");
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"Probability", "Probability in the range from 0 to 1",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
 	helper.EditFloat(slot, "Probability if slot is not connected.",
-		pEditProbability, new cTextProbability(*this));
+		pEditProbability, cTextProbability::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot.TakeOverWith(env, "Variation", "Variation to use",
+	slot = meWVNodeSlot::Ref::New(env, "Variation", "Variation to use",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
 	helper.EditInteger(slot, "Variation if slot is not connected.",
-		pEditVariation, new cTextVariation(*this));
+		pEditVariation, cTextVariation::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 }
 

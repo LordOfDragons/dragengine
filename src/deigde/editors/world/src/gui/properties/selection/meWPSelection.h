@@ -25,12 +25,17 @@
 #ifndef _MEWPSELECTION_H_
 #define _MEWPSELECTION_H_
 
+#include "meWPSelectionListener.h"
+#include "object/meWPSObject.h"
+#include "objectshape/meWPSObjectShape.h"
+#include "decal/meWPSDecal.h"
+#include "navspace/meWPSNavSpace.h"
+#include "../../../world/meWorld.h"
+
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeWidget.h>
 
-class meWPSelectionListener;
 class meWindowProperties;
-class meWorld;
 
 
 
@@ -38,16 +43,19 @@ class meWorld;
  * \brief Selection panel.
  */
 class meWPSelection : public igdeSwitcher{
+public:
+	typedef deTObjectReference<meWPSelection> Ref;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPSelectionListener *pListener;
+	meWPSelectionListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeWidget::Ref pPanelObject;
-	igdeWidget::Ref pPanelObjectShape;
-	igdeWidget::Ref pPanelDecal;
-	igdeWidget::Ref pPanelNavSpace;
+	meWPSObject::Ref pPanelObject;
+	meWPSObjectShape::Ref pPanelObjectShape;
+	meWPSDecal::Ref pPanelDecal;
+	meWPSNavSpace::Ref pPanelNavSpace;
 	
 	
 	
@@ -71,7 +79,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

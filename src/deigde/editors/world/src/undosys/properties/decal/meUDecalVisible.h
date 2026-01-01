@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,13 +37,14 @@ class meDecal;
  * \brief Undo Action Set Decal Visible.
  */
 class meUDecalVisible : public igdeUndo{
-private:
-	meDecal *pDecal;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUDecalVisible> Ref;
 	
+	
+private:
+	meDecal::Ref pDecal;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

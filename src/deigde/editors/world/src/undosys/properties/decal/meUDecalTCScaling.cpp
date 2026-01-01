@@ -53,19 +53,15 @@ meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScalin
 	
 	SetShortInfo("Decal Texture Scaling");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldScaling = decal->GetTexCoordScaling();
 	pNewScaling = newScaling;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCScaling::~meUDecalTCScaling(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

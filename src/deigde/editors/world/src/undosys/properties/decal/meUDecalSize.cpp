@@ -49,7 +49,7 @@ meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	SetShortInfo("Set decal size");
 	
@@ -57,13 +57,9 @@ meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
 	pNewSize = newSize;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSize::~meUDecalSize(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

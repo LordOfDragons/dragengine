@@ -72,7 +72,6 @@
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../target/deoglRenderTarget.h"
@@ -158,7 +157,6 @@ pLLPrepareForRenderWorld(this)
 	pDynamicOcclusionMesh = NULL;
 	pDynOccMeshRequiresPrepareForRender = true;
 	
-	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
 	pDirtyRenderSkinStateRenderables = true;
 	
@@ -190,7 +188,7 @@ pLLPrepareForRenderWorld(this)
 	
 	try{
 		pUniqueKey = renderThread.GetUniqueKey().Get();
-		pSkinState = new deoglSkinState(renderThread, *this);
+		pSkinState = deoglSkinState::Ref::New(renderThread, *this);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -467,7 +465,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	int i;
 	for(i=0; i<textureCount; i++){
 		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
-		texture.SetSkinState(NULL); // required since UpdateSkinState can not figure out dynamic skin changed
+		texture.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		texture.UpdateSkinState(component);
 	}
 	
@@ -476,7 +474,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	const int decalCount = pDecals.GetCount();
 	for(i=0; i<decalCount; i++){
 		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
-		decal.SetSkinState(NULL); // required since UpdateSkinState can not figure out dynamic skin changed
+		decal.DropSkinState(); // required since UpdateSkinState can not figure out dynamic skin changed
 		decal.UpdateSkinState();
 	}
 	
@@ -1753,7 +1751,7 @@ void deoglRComponent::pCleanUp(){
 	
 	pOccMeshSharedSPBElement = nullptr; // has to be done before pOcclusionMesh mesh is released
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 	if(pVertexPositionSetWeights){
 		delete [] pVertexPositionSetWeights;

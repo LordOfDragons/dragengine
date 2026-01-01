@@ -47,16 +47,12 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	int i;
-	
 	SetShortInfo("Copy Object Rotation");
 	SetLongInfo("Copy Object Rotation");
 	
-	for(i=0; i<count; i++){
-		pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
-	}
+	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
 	
 	pNewRotation = world->GetSelectionObject().GetActive()->GetRotation();
 }
@@ -70,27 +66,19 @@ meUObjectCopyRotation::~meUObjectCopyRotation(){
 ///////////////
 
 void meUObjectCopyRotation::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		object->SetRotation(data.GetOldOrientation());
+		object->SetRotation(data.GetOldRotation());
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }
 
 void meUObjectCopyRotation::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		decVector rotation(data.GetOldOrientation());
+		decVector rotation(data.GetOldRotation());
 		
 		if(pCopyX){
 			rotation.x = pNewRotation.x;
@@ -104,5 +92,5 @@ void meUObjectCopyRotation::Redo(){
 		
 		object->SetRotation(rotation);
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }

@@ -36,7 +36,7 @@ class igdeWObject;
 class meCLInvalidateDecals : public meCLCollect{
 public:
 	/**
-	 * \brief Helper class for potential NULL world.
+	 * \brief Helper class for potential nullptr world.
 	 */
 	class Helper{
 	private:

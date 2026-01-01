@@ -40,8 +40,6 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/loadsave/igdeLoadSaveHTNavSpace.h>
 
 #include <dragengine/deEngine.h>
@@ -99,28 +97,22 @@ void meSaveSupport::SaveWorldWithDependencies(meWorld *world, bool forceAskForFi
 	
 	meHeightTerrain &heightTerrain = *world->GetHeightTerrain();
 	const bool depChanged = heightTerrain.GetDepChanged();
-	int i, j;
 	
-	const int sectorCount = heightTerrain.GetSectorCount();
-	for(i=0; i<sectorCount; i++){
-		meHeightTerrainSector &sector = *heightTerrain.GetSectorAt(i);
-		
+	heightTerrain.GetSectors().Visit([&](meHeightTerrainSector &sector){
 		if(depChanged){
 			SaveHTHeightImage(world, &sector, false);
 			SaveHTVisibilityImage(world, &sector, false);
 			SaveHTPFCache(world, &sector, false);
 			
-			const int textureCount = sector.GetTextureCount();
-			for(j=0; j<textureCount; j++){
-				SaveHTTextureMaskImage(world, &sector, sector.GetTextureAt(j), false);
-			}
+			sector.GetTextures().Visit([&](meHeightTerrainTexture *texture){
+				SaveHTTextureMaskImage(world, &sector, texture, false);
+			});
 			
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for(j=0; j<navSpaceCount; j++){
-				SaveHTNavSpace(*world, *sector.GetNavSpaceAt(j), false);
-			}
+			sector.GetNavSpaces().Visit([&](meHeightTerrainNavSpace &navspace){
+				SaveHTNavSpace(*world, navspace, false);
+			});
 		}
-	}
+	});
 	
 	heightTerrain.SetDepChanged(false);
 	
@@ -145,8 +137,7 @@ void meSaveSupport::SaveWorld(meWorld *world, bool forceAskForFilename){
 	decString filename(world->GetFilePath());
 	
 	if(!world->GetSaved() || forceAskForFilename){
-		igdeFilePatternList filePatternList;
-		
+		igdeFilePattern::List filePatternList;
 		GetWorldPatterns(filePatternList);
 		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save World",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
@@ -188,8 +179,7 @@ void meSaveSupport::SaveHeightTerrain(meWorld &world, bool forceAskForFilename){
 		world.GetDirectoryPath()).GetPathUnix());
 	
 	if(!heightTerrain.GetSaved() || forceAskForFilename){
-		igdeFilePatternList filePatternList;
-		
+		igdeFilePattern::List filePatternList;
 		GetHeightTerrainSectorPatterns(filePatternList);
 		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Sector",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), filePatternList, filename ) ){
@@ -229,7 +219,6 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 	int imageDim = sector->GetHeightTerrain()->GetSectorResolution();
 	sGrayscale32 *srcData = sector->GetHeightImage()->GetDataGrayscale32();
 	int p, pixelCount = imageDim * imageDim;
-	deImage *saveImage = NULL;
 	int bitCount;
 	
 	if(sector->GetDataType() == meHeightTerrainSector::edtInt8){
@@ -253,7 +242,7 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 	
 	pWindowMain->GetLogger()->LogInfoFormat(LOGSOURCE, "Saving height terrain height image to %s", filename.GetString());
 	try{
-		saveImage = imgmgr->CreateImage(imageDim, imageDim, 1, 1, bitCount);
+		const deImage::Ref saveImage(imgmgr->CreateImage(imageDim, imageDim, 1, 1, bitCount));
 		
 		if(bitCount == 8){
 			sGrayscale8 *destData = saveImage->GetDataGrayscale8();
@@ -274,10 +263,7 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 		}
 		
 		imgmgr->SaveImage(saveImage, filename);
-		saveImage->FreeReference();
-		
 	}catch(const deException &e){
-		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}
@@ -303,8 +289,6 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 	deImageManager *imgmgr = world->GetEngine()->GetImageManager();
 	meBitArray *visbits = sector->GetVisibilityFaces();
 	int x, y, cols, rows, p;
-	deImage *saveImage = NULL;
-	sGrayscale8 *pixels;
 	
 	if(!sector->GetVisibilitySaved() || forceAskForFilename){
 		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save Height Terrain Visibility Image",
@@ -319,9 +303,9 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 	rows = visbits->GetRows();
 	pWindowMain->GetLogger()->LogInfoFormat(LOGSOURCE, "Saving height terrain visibility image to %s", filename.GetString());
 	try{
-		saveImage = imgmgr->CreateImage(cols, rows, 1, 1, 8);
+		const deImage::Ref saveImage(imgmgr->CreateImage(cols, rows, 1, 1, 8));
 		
-		pixels = saveImage->GetDataGrayscale8();
+		sGrayscale8 * const pixels = saveImage->GetDataGrayscale8();
 		for(p=0, y=0; y<rows; y++){
 			for(x=0; x<cols; x++){
 				if(visbits->GetValueAt(x, y)){
@@ -334,10 +318,7 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 		}
 		
 		imgmgr->SaveImage(saveImage, filename);
-		saveImage->FreeReference();
-		
 	}catch(const deException &e){
-		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}
@@ -406,10 +387,9 @@ void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navs
 	igdeLoadSaveHTNavSpace saveNavSpace(pWindowMain->GetEnvironment(), LOGSOURCE);
 	
 	if(!navspace.GetNavSpaceSaved() || forceAskForFilename){
-		igdeFilePatternList fpl;
-		igdeFilePattern *fp = new igdeFilePattern(saveNavSpace.GetName(),
-			saveNavSpace.GetPattern(), saveNavSpace.GetDefaultExtension());
-		fpl.AddFilePattern(fp);
+		igdeFilePattern::List fpl;
+		fpl.Add(igdeFilePattern::Ref::New(saveNavSpace.GetName(),
+			saveNavSpace.GetPattern(), saveNavSpace.GetDefaultExtension()));
 		
 		if(!igdeCommonDialogs::GetFileSave(pWindowMain, "Save height terrain navigation space",
 		*pWindowMain->GetEnvironment().GetFileSystemGame(), fpl, filename ) ){
@@ -418,9 +398,8 @@ void meSaveSupport::SaveHTNavSpace(meWorld &world, meHeightTerrainNavSpace &navs
 	}
 	
 	pWindowMain->GetLogger()->LogInfoFormat(LOGSOURCE, "Saving height terrain navigation space to %s", filename.GetString());
-	saveNavSpace.Save(*navspace.GetEngineNavSpace(), decBaseFileWriter::Ref::New(
-		navspace.GetEngine().GetVirtualFileSystem()->OpenFileForWriting(
-			decPath::CreatePathUnix(filename))));
+	saveNavSpace.Save(*navspace.GetEngineNavSpace(), navspace.GetEngine().GetVirtualFileSystem()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 	
 	navspace.SetPathNavSpace(decPath::RelativePathUnix(filename,
 		world.GetDirectoryPath(), true).GetPathUnix(), false);
@@ -500,34 +479,12 @@ void meSaveSupport::SaveNavigationSpace(meWorld *world, meNavigationSpace *navsp
 
 
 
-void meSaveSupport::GetWorldPatterns(igdeFilePatternList &patternList) const{
-	igdeFilePattern *pattern = NULL;
-	
-	patternList.RemoveAllFilePatterns();
-	
-	try{
-		pattern = new igdeFilePattern("Drag[en]gine XML World", "*.deworld", ".deworld");
-		patternList.AddFilePattern(pattern);
-		pattern = NULL;
-		
-	}catch(const deException &e){
-		pWindowMain->DisplayException(e);
-		throw;
-	}
+void meSaveSupport::GetWorldPatterns(igdeFilePattern::List &patternList) const{
+	patternList.RemoveAll();
+	patternList.Add(igdeFilePattern::Ref::New("Drag[en]gine XML World", "*.deworld", ".deworld"));
 }
 
-void meSaveSupport::GetHeightTerrainSectorPatterns(igdeFilePatternList &patternList) const{
-	igdeFilePattern *pattern = NULL;
-	
-	patternList.RemoveAllFilePatterns();
-	
-	try{
-		pattern = new igdeFilePattern("Drag[en]gine XML Height Terrain Sector", "*.dehterrain", ".dehterrain");
-		patternList.AddFilePattern(pattern);
-		pattern = NULL;
-		
-	}catch(const deException &e){
-		pWindowMain->DisplayException(e);
-		throw;
-	}
+void meSaveSupport::GetHeightTerrainSectorPatterns(igdeFilePattern::List &patternList) const{
+	patternList.RemoveAll();
+	patternList.Add(igdeFilePattern::Ref::New("Drag[en]gine XML Height Terrain Sector", "*.dehterrain", ".dehterrain"));
 }

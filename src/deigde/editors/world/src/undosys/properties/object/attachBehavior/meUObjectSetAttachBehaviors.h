@@ -35,15 +35,16 @@
  * \brief Undo action object set attach behaviors.
  */
 class meUObjectSetAttachBehaviors : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectSetAttachBehaviors> Ref;
+	
+	
 private:
 	const meObject::Ref pObject;
 	decStringList pOldValues, pNewValues;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectSetAttachBehaviors> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

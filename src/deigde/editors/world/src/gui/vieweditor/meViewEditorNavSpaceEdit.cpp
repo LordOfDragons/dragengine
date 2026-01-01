@@ -54,10 +54,10 @@
 
 meViewEditorNavSpaceEdit::meViewEditorNavSpaceEdit(meView3D &view) :
 meViewEditorNavigation(view),
-pCLSelect(NULL),
+pCLSelect(nullptr),
 pSelectDistance(500.0f)
 {
-	pColVol.TakeOver(view.GetEngine()->GetColliderManager()->CreateColliderVolume());
+	pColVol = view.GetEngine()->GetColliderManager()->CreateColliderVolume();
 	
 	try{
 		pCLSelect = new meCLSelect(*view.GetWorld());
@@ -127,7 +127,7 @@ void meViewEditorNavSpaceEdit::OnLeftMouseButtonRelease(int x, int y, bool shift
 	/*
 	const meHeightTerrainSector * const sector = GetWorld().GetHeightTerrain()->GetActiveSector();
 	if(sector){
-		const decIntList &selNavPoints = sector->GetSelectedNavPoints();
+		const decTList<int> &selNavPoints = sector->GetSelectedNavPoints();
 		const int count = selNavPoints.GetCount();
 		decString text;
 		int i;

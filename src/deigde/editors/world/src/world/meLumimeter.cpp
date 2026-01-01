@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "meWorld.h"
 #include "meLumimeter.h"
 #include "object/meObject.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/resources/sensor/deLumimeter.h"
-#include "dragengine/resources/sensor/deLumimeterManager.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/sensor/deLumimeter.h>
+#include <dragengine/resources/sensor/deLumimeterManager.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -46,9 +43,7 @@ meLumimeter::meLumimeter(deEngine *engine){
 	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
-	pWorld = NULL;
-	pLumimeter = NULL;
-	pDDVolume = NULL;
+	pWorld = nullptr;
 	
 	pDirection.Set(0.0f, 0.0f, 1.0f);
 	pConeInnerAngle = 180.0f;
@@ -57,7 +52,7 @@ meLumimeter::meLumimeter(deEngine *engine){
 	
 	pTrackCamera = false;
 	
-	pHostObject = NULL;
+	pHostObject = nullptr;
 	
 	try{
 		pLumimeter = engine->GetLumimeterManager()->CreateLumimeter();
@@ -89,10 +84,6 @@ void meLumimeter::SetWorld(meWorld *world){
 	if(world == pWorld) return;
 	
 	if(pWorld){
-		if(pDDVolume){
-			//pWorld->GetDDLumimeters()->RemoveVolume( pDDVolume );
-			pDDVolume = NULL;
-		}
 		pWorld->GetEngineWorld()->RemoveLumimeter(pLumimeter);
 	}
 	
@@ -189,24 +180,14 @@ void meLumimeter::SetTrackCamera(bool trackCamera){
 
 
 bool meLumimeter::HasHostObject() const{
-	return pHostObject != NULL;
+	return pHostObject.IsNotNull();
 }
 
 void meLumimeter::SetHostObject(meObject *object){
 	if(object == pHostObject){
 		return;
 	}
-	
-	if(pHostObject){
-		pHostObject->FreeReference();
-	}
-	
 	pHostObject = object;
-	
-	if(object){
-		object->AddReference();
-	}
-	
 	pWorld->NotifyLumimeterChanged();
 }
 
@@ -229,10 +210,8 @@ decColor meLumimeter::MeasureColor(){
 //////////////////////
 
 void meLumimeter::pCleanUp(){
-	SetHostObject(NULL);
-	SetWorld(NULL);
-	
-	if(pLumimeter) pLumimeter->FreeReference();
+	SetHostObject(nullptr);
+	SetWorld(nullptr);
 }
 
 void meLumimeter::pUpdateDDVolume(){
@@ -241,14 +220,12 @@ void meLumimeter::pUpdateDDVolume(){
 	if(pWorld && pVisible && (pCurrent || pSelected)){
 		if(!pDDVolume){
 			try{
-				pDDVolume = new deDebugDrawerVolume;
-				if(!pDDVolume) DETHROW(deeOutOfMemory);
-				pWorld->GetDDObjects()->AddVolume(pDDVolume);
+				pDDVolume = new deDebugDrawerVolume;				pWorld->GetDDObjects()->AddVolume(pDDVolume);
 				
 			}catch(const deException &){
 				if(pDDVolume){
 					delete pDDVolume;
-					pDDVolume = NULL;
+					pDDVolume = nullptr;
 				}
 				throw;
 			}
@@ -257,7 +234,7 @@ void meLumimeter::pUpdateDDVolume(){
 		
 	}else if(pDDVolume){
 		pWorld->GetDDObjects()->RemoveVolume(pDDVolume);
-		pDDVolume = NULL;
+		pDDVolume = nullptr;
 	}
 	
 	// update color if volume exists
@@ -277,7 +254,7 @@ void meLumimeter::pUpdateDDVolume(){
 void meLumimeter::pUpdateDDVGeometry(){
 	/*
 	if(pDDVolume){
-		decCollisionBox *colBox = NULL;
+		decCollisionBox *colBox = nullptr;
 		
 		try{
 			colBox = new decCollisionBox(pPosition,

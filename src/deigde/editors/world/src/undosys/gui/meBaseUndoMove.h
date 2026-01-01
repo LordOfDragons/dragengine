@@ -27,6 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -35,6 +36,11 @@
  * \brief Base class for undo action moving things around.
  */
 class meBaseUndoMove : public igdeUndo{
+public:
+	typedef deTObjectReference<meBaseUndoMove> Ref;
+	typedef decTObjectOrderedSet<meBaseUndoMove> List;
+	
+	
 private:
 	decDVector pDistance;
 	
@@ -44,16 +50,17 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meBaseUndoMove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
 	meBaseUndoMove();
 	
 	/** \brief Clean up undo action. */
+
+protected:
 	virtual ~meBaseUndoMove();
+
+public:
 	/*@}*/
 	
 	

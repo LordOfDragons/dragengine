@@ -107,6 +107,26 @@ class igdeWidget;
  */
 class DE_DLL_EXPORT igdeUIHelper{
 public:
+	/**
+	 * \brief Exception-safe RAII guard to enable a boolean flag.
+	 * 
+	 * Sets the referenced boolean to true in constructor and false in destructor.
+	 * Useful for preventing recursive updates or undo action creation during
+	 * programmatic UI updates.
+	 */
+	class DE_DLL_EXPORT EnableBoolGuard{
+	private:
+		bool &pFlag;
+		
+	public:
+		/** \brief Create guard and set flag to true. */
+		EnableBoolGuard(bool &flag);
+		
+		/** \brief Destroy guard and set flag to false. */
+		~EnableBoolGuard();
+	};
+	
+	
 	/** \brief Column header configuration. */
 	struct DE_DLL_EXPORT sColumnHeader{
 		/** \brief Title. */

@@ -29,6 +29,7 @@
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/deObject.h>
@@ -40,7 +41,6 @@ class deoglShaderProgram;
 class deoglSharedSPBRTIGroup;
 class deoglSharedVideoPlayerList;
 class deoglSkinShader;
-class deoglSkinState;
 class deoglSkinTexture;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
@@ -60,13 +60,13 @@ private:
 	
 	deoglRSkin::Ref pSkin;
 	deoglRDynamicSkin::Ref pDynamicSkin;
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglSkinState *pUseSkinState;
-	deoglRDynamicSkin *pUseDynamicSkin;
+	deoglSkinState::Ref pUseSkinState;
+	deoglRDynamicSkin::Ref pUseDynamicSkin;
 	bool pUseDoubleSided;
 	bool pUseDecal;
 	bool pIsRendered;
@@ -143,13 +143,13 @@ public:
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * Set skin state or NULL if there is none.
+	 * Set Drop state.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState(deoglSkinState *skinState);
+	void DropSkinState();
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -158,7 +158,7 @@ public:
 	void UpdateSkinState(deoglComponent &component);
 	
 	/** Skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	
 	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
@@ -167,10 +167,10 @@ public:
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	/** Skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	inline const deoglSkinState::Ref &GetUseSkinState() const{ return pUseSkinState; }
 	
 	/** Dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	
 	/** Texture to use is double sided. */
 	inline bool GetUseDoubleSided() const{ return pUseDoubleSided; }
@@ -354,6 +354,7 @@ private:
 	void pUpdateIsRendered();
 	void pUpdateRenderTaskFilters();
 	int pShadowCombineCount(int lodLevel) const;
+	void pSetSkinState(deoglSkinState *skinState);
 };
 
 #endif

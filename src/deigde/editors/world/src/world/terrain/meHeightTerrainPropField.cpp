@@ -32,7 +32,6 @@
 #include "meHeightTerrainPFType.h"
 #include "meUpdateHeightTerrainPropField.h"
 #include "../meWorld.h"
-#include "../heightterrain/meHTVInstance.h"
 #include "../heightterrain/meUpdateHTVInstances.h"
 #include "../heightterrain/meHTVegetationLayer.h"
 #include "../heightterrain/meHTVVariation.h"
@@ -61,20 +60,14 @@
 ////////////////////////////
 
 meHeightTerrainPropField::meHeightTerrainPropField(deEngine *engine) :
-pHTSector(NULL),
+pHTSector(nullptr),
 pEngine(engine),
-pEngPF(NULL),
-pVInstances(NULL),
-pVInstanceCount(0),
-pVInstanceSize(0),
 pDirtyVInstances(false),
 pDirty(false),
 pKeepClean(true),
-pListener(NULL)
+pListener(nullptr)
 {
-	if(!engine){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	try{
 		pListener = new meUpdateHeightTerrainPropField(this);
@@ -177,18 +170,11 @@ void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
 	
 	const decCollisionFilter collisionFilter(cfCategory, cfFilter);
 	
-	const int layerCount = pHTSector->GetHeightTerrain()->GetVLayerCount();
-	dePropFieldType *engPFType = NULL;
-	int i, j;
+	dePropFieldType *engPFType = nullptr;
 	
 	try{
-		for(i=0; i<layerCount; i++){
-			meHTVegetationLayer &vlayer = *pHTSector->GetHeightTerrain()->GetVLayerAt(i);
-			const int variationCount = vlayer.GetVariationCount();
-			
-			for(j=0; j<variationCount; j++){
-				meHTVVariation &variation = *vlayer.GetVariationAt(j);
-				
+		pHTSector->GetHeightTerrain()->GetVLayers().Visit([&](const meHTVegetationLayer &vlayer){
+			vlayer.GetVariations().Visit([&](meHTVVariation &variation){
 				engPFType = new dePropFieldType;
 				engPFType->SetModel(variation.GetModel());
 				engPFType->SetSkin(variation.GetSkin());
@@ -197,9 +183,9 @@ void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
 				engPFType->SetCollisionFilter(collisionFilter);
 				
 				pEngPF->AddType(engPFType);
-				engPFType = NULL;
-			}
-		}
+				engPFType = nullptr;
+			});
+		});
 		
 	}catch(const deException &){
 		if(engPFType){
@@ -211,31 +197,13 @@ void meHeightTerrainPropField::RebuildVegetationPropFieldTypes(){
 
 
 
-meHTVInstance &meHeightTerrainPropField::GetVInstanceAt(int index) const{
-	if(index < 0 || index >= pVInstanceCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pVInstances[index];
-}
-
-meHTVInstance &meHeightTerrainPropField::AddVInstance(){
-	if(pVInstanceCount == pVInstanceSize){
-		const int newSize = pVInstanceSize + 500;
-		meHTVInstance * const newArray = new meHTVInstance[newSize];
-		if(pVInstances){
-			memcpy(newArray, pVInstances, sizeof(meHTVInstance) * pVInstanceSize);
-			delete [] pVInstances;
-		}
-		pVInstances = newArray;
-		pVInstanceSize = newSize;
-	}
-	
-	pVInstanceCount++;
-	return pVInstances[pVInstanceCount - 1];
+const meHTVInstance::Ref &meHeightTerrainPropField::AddVInstance(){
+	pVInstances.Add(meHTVInstance::Ref::New());
+	return pVInstances.Last();
 }
 
 void meHeightTerrainPropField::RemoveAllVInstances(){
-	pVInstanceCount = 0;
+	pVInstances.RemoveAll();
 }
 
 void meHeightTerrainPropField::UpdateVInstances(){
@@ -269,16 +237,7 @@ void meHeightTerrainPropField::MarkVInstancesValid(){
 //////////////////////
 
 void meHeightTerrainPropField::pCleanUp(){
-	SetHTSector(NULL);
-	
-	if(pVInstances){
-		delete [] pVInstances;
-	}
-	
-	if(pEngPF){
-		pEngPF->FreeReference();
-	}
-	
+	SetHTSector(nullptr);
 	if(pListener){
 		delete pListener;
 	}

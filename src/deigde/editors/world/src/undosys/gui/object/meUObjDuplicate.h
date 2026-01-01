@@ -25,12 +25,11 @@
 #ifndef _MEUOBJDUPLICATE_H_
 #define _MEUOBJDUPLICATE_H_
 
-#include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/math/decMath.h>
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
 
-class meWorld;
-class meObject;
+#include <deigde/undo/igdeUndo.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -40,22 +39,30 @@ class meObject;
  * Undo action to duplicate an object.
  */
 class meUObjDuplicate : public igdeUndo{
-private:
-	meWorld *pWorld;
-	decObjectOrderedSet pObjects;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjDuplicate> Ref;
 	
+	
+private:
+	meWorld::Ref pWorld;
+	meUndoDataObject::List pObjects;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
 	meUObjDuplicate(meWorld *world, const decVector &offset);
+	
+protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjDuplicate();
+
+public:
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
@@ -63,10 +70,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

@@ -51,7 +51,7 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNavSpace = NULL;
+	pNavSpace = nullptr;
 	
 	SetShortInfo("NavSpace Set Orientation");
 	
@@ -59,13 +59,9 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace
 	pNewOrientation = newOrientation;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetOrientation::~meUNavSpaceSetOrientation(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

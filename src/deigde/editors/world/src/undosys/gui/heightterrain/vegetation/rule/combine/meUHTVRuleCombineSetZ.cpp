@@ -43,8 +43,8 @@
 meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float nz){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Combine Set Z");
 	SetMemoryConsumption(sizeof(meUHTVRuleCombineSetZ));
@@ -53,14 +53,10 @@ meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVR
 	pNewZ = nz;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCombineSetZ::~meUHTVRuleCombineSetZ(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

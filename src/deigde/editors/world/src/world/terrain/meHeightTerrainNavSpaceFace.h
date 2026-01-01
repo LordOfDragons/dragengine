@@ -26,7 +26,8 @@
 #define _MEHEIGHTTERRAINNAVSPACEFACE_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class meHeightTerrainNavSpaceType;
 
@@ -37,11 +38,12 @@ class meHeightTerrainNavSpaceType;
 class meHeightTerrainNavSpaceFace : public deObject{
 public:
 	typedef deTObjectReference<meHeightTerrainNavSpaceFace> Ref;
+	typedef decTObjectOrderedSet<meHeightTerrainNavSpaceFace> List;
 	
 	
 private:
 	meHeightTerrainNavSpaceType *pType;
-	decIntList pNavPoints;
+	decTList<int> pNavPoints;
 	
 	
 	
@@ -51,31 +53,34 @@ public:
 	/** \brief Creates height terrain navigation space face. */
 	meHeightTerrainNavSpaceFace();
 	
+protected:
 	/** \brief Clean up height terrain navigation space face. */
 	virtual ~meHeightTerrainNavSpaceFace();
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent type or \em NULL. */
+	/** \brief Parent type or \em nullptr. */
 	inline meHeightTerrainNavSpaceType *GetType() const{ return pType; }
 	
-	/** \brief Set parent type or \em NULL. */
+	/** \brief Set parent type or \em nullptr. */
 	void SetType(meHeightTerrainNavSpaceType *type);
 	
 	
 	
 	/** \brief Navigation points. */
-	decIntList &GetNavPoints(){return pNavPoints;}
-	const decIntList &GetNavPoints() const{ return pNavPoints; }
+	decTList<int> &GetNavPoints(){return pNavPoints;}
+	const decTList<int> &GetNavPoints() const{ return pNavPoints; }
 	
 	/** \brief Order navigation points clock-wise. */
 	void OrderClockwise(int pointsPerRow);
 	
 	/** \brief Navigation points are matching order independent. */
-	bool NavPointsMatch(const decIntList &navpoints) const;
+	bool NavPointsMatch(const decTList<int> &navpoints) const;
 	
 	/** \brief Face has navigation point. */
 	bool HasNavPoint(int navpoint) const;
@@ -84,7 +89,7 @@ public:
 	bool HasNavEdge(int navpoint1, int navpoint2) const;
 	
 	/** \brief All face navigation points are contained in a list in any order. */
-	bool HasAllNavPointsIn(const decIntList &navpoints) const;
+	bool HasAllNavPointsIn(const decTList<int> &navpoints) const;
 	/*@}*/
 };
 

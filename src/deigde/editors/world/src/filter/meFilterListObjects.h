@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEFILTERLISTOBJECTS_H_
 #define _MEFILTERLISTOBJECTS_H_
 
-// includes
 #include "meFilterObjects.h"
 
-// predefinitions
 class meObject;
 
 
@@ -44,29 +41,36 @@ class meObject;
  * all filters accept it. By default acceptAny is true.
  */
 class meFilterListObjects : public meFilterObjects{
-	meFilterObjects **pFilters;
-	int pFilterCount;
+private:
+	List pFilters;
 	
 	bool pAcceptAny;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new filter list. */
 	meFilterListObjects();
+	
+protected:
 	/** Cleans up the filter list. */
 	~meFilterListObjects() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if any filter can accept the object or only all together. */
 	inline bool GetAcceptAny() const{ return pAcceptAny; }
+	
 	/** Sets if any filter can accept the object or only all together. */
 	void SetAcceptAny(bool acceptAny);
 	
 	/** Adds a filter. */
 	void AddFilter(meFilterObjects *filter);
+	
 	/** Removes all filters. */
 	void RemoveAllFilters();
 	
@@ -77,5 +81,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

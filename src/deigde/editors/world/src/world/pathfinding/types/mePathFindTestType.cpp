@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "mePathFindTestType.h"
 
 #include <dragengine/common/exceptions.h>
@@ -57,10 +53,6 @@ void mePathFindTestType::SetTypeNumber(int typeNumber){
 }
 
 void mePathFindTestType::SetName(const char *name){
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
 	pName = name;
 }
 

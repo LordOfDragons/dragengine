@@ -38,6 +38,9 @@ class meHTVRuleMultiMath;
  * \brief Vegetation Editing Window Node Multi Math.
  */
 class meWVNodeMultiMath : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeMultiMath> Ref;
+	
 private:
 	meHTVRuleMultiMath *pRuleMultiMath;
 	

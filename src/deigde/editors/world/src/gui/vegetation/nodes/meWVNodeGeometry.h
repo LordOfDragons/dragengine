@@ -37,6 +37,9 @@ class meHTVRuleGeometry;
  * \brief Vegetation Editing Window Node Geometry.
  */
 class meWVNodeGeometry : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeGeometry> Ref;
+	
 private:
 	meHTVRuleGeometry *pRuleGeometry;
 	

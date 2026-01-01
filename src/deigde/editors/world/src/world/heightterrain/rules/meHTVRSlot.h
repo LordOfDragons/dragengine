@@ -25,31 +25,40 @@
 #ifndef _MEHTVRSLOT_H_
 #define _MEHTVRSLOT_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "meHTVRLink.h"
 
-class meHTVRLink;
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class meHTVRule;
 
 
 
 /**
- * \brief Height Terrain Vegetation Rule Slot.
+ * Height Terrain Vegetation Rule Slot.
  */
-class meHTVRSlot{
+class meHTVRSlot : public deObject{
+public:
+	typedef deTObjectReference<meHTVRSlot> Ref;
+	typedef decTObjectOrderedSet<meHTVRSlot> List;
+	
+	
 private:
 	bool pIsInput;
-	decObjectOrderedSet pLinks;
-	
+	meHTVRLink::List pLinks;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create input slot. */
+	/** Create input slot. */
 	meHTVRSlot();
 	
-	/** \brief Clean up input slot. */
+protected:
+	/** Clean up input slot. */
 	~meHTVRSlot();
+	
+public:
 	/*@}*/
 	
 	
@@ -57,44 +66,35 @@ public:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Is input slot. */
+	/** Is input slot. */
 	inline bool GetIsInput() const{ return pIsInput; }
 	
-	/** \brief Set is input slot. */
+	/** Set is input slot. */
 	void SetIsInput(bool isInput);
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
+	/** Links. */
+	inline const meHTVRLink::List &GetLinks() const{ return pLinks; }
 	
-	/** \brief Link at the given index. */
-	meHTVRLink *GetLinkAt(int index) const;
-	
-	/** \brief Index of the link or -1 if not found. */
-	int IndexOfLink(meHTVRLink *link) const;
-	
-	/** \brief Link exists. */
-	bool HasLink(meHTVRLink *link) const;
-	
-	/** \brief Add link. */
+	/** Add link. */
 	void AddLink(meHTVRLink *link);
 	
-	/** \brief Remove link. */
+	/** Remove link. */
 	void RemoveLink(meHTVRLink *link);
 	
-	/** \brief Remove all links. */
+	/** Remove all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Link with the given source node and slot. */
-	bool HasLinkWithSource(meHTVRule *rule, int slot) const;
+	/** Link with the given source node and slot. */
+	bool HasLinkWithSource(const meHTVRule *rule, int slot) const;
 	
-	/** \brief Link with the given source node and slot or NULL if not found. */
-	meHTVRLink *GetLinkWithSource(meHTVRule *rule, int slot) const;
+	/** Link with the given source node and slot or nullptr if not found. */
+	meHTVRLink *GetLinkWithSource(const meHTVRule *rule, int slot) const;
 	
-	/** \brief Link with the given destination node and slot. */
-	bool HasLinkWithDestination(meHTVRule *rule, int slot) const;
+	/** Link with the given destination node and slot. */
+	bool HasLinkWithDestination(const meHTVRule *rule, int slot) const;
 	
-	/** \brief Link with the given destination node and slot or NULL if not found. */
-	meHTVRLink *GetLinkWithDestination(meHTVRule *rule, int slot) const;
+	/** Link with the given destination node and slot or nullptr if not found. */
+	meHTVRLink *GetLinkWithDestination(const meHTVRule *rule, int slot) const;
 	/*@}*/
 };
 

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUDecalRemoveProperty::meUDecalRemoveProperty(meDecal *decal, const char *key, const char *value) :
-pDecal(NULL)
+pDecal(nullptr)
 {
 	if(!decal || !key || !value){
 		DETHROW(deeInvalidParam);
@@ -50,7 +50,7 @@ pDecal(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	SetShortInfo("Remove decal property");
 	
@@ -58,7 +58,6 @@ pDecal(NULL)
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRemoveProperty::~meUDecalRemoveProperty(){
@@ -84,7 +83,4 @@ void meUDecalRemoveProperty::Redo(){
 //////////////////////
 
 void meUDecalRemoveProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

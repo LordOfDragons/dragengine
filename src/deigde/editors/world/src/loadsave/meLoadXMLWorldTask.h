@@ -25,19 +25,20 @@
 #ifndef _MELOADXMLWORLDTASK_H_
 #define _MELOADXMLWORLDTASK_H_
 
+#include "../world/meWorld.h"
+
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/utils/igdeBaseXML.h>
 
 #include <dragengine/common/xmlparser/decXmlDocument.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
 class meDecal;
 class meLoadSaveSystem;
 class meNavigationSpace;
 class meObject;
 class meObjectTexture;
-class meWorld;
 
-class decBaseFileReader;
 class decXmlElementTag;
 
 
@@ -48,10 +49,13 @@ class decXmlElementTag;
  * Load world from file in the Drag[en]gine World World XML format using stepable task.
  */
 class meLoadXMLWorldTask : public igdeStepableTask, igdeBaseXML{
+public:
+	typedef deTObjectReference<meLoadXMLWorldTask> Ref;
+	
 private:
 	meLoadSaveSystem *pLSSys;
-	meWorld *pWorld;
-	decBaseFileReader *pReader;
+	meWorld::Ref pWorld;
+	decBaseFileReader::Ref pReader;
 	decXmlDocument::Ref pXMLDocument;
 	decXmlElementTag *pXMLRoot;
 	int pNextTag;
@@ -65,8 +69,11 @@ public:
 	/** \brief Create task. */
 	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file);
 	
+protected:
 	/** \brief Clean up task. */
 	virtual ~meLoadXMLWorldTask();
+	
+public:
 	/*@}*/
 	
 	

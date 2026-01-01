@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUDELETEDECAL_H_
 #define _MEUDELETEDECAL_H_
 
-// includes
+#include "meUndoDataDecal.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-// predefinitions
 class meWorld;
-class meUndoDataDecal;
 
 
 
@@ -39,20 +37,23 @@ class meUndoDataDecal;
  * Removes a decal.
  */
 class meUDeleteDecal : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDeleteDecal> Ref;
+	
+	
 private:
 	meWorld *pWorld;
 	
-	meUndoDataDecal **pDecals;
-	int pDecalCount;
+	meUndoDataDecal::List pDecals;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDeleteDecal> Ref;
-	
 	// constructor, destructor
 	meUDeleteDecal(meWorld *world);
+	
+protected:
 	~meUDeleteDecal();
 	
+public:
 	// Management
 	// undo and redo operations
 	virtual void Undo();
@@ -60,10 +61,6 @@ public:
 	
 	// internal
 	void UpdateInfos();
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

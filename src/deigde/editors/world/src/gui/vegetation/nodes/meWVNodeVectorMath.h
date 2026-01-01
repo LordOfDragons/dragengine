@@ -40,6 +40,9 @@ class meHTVRuleVectorMath;
  * \brief Vegetation Editing Window Node Vector Math.
  */
 class meWVNodeVectorMath : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeVectorMath> Ref;
+	
 private:
 	meHTVRuleVectorMath *pRuleVectorMath;
 	

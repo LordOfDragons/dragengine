@@ -81,8 +81,11 @@ public:
 	/** \brief Create copy of rule. */
 	meHTVRuleMultiMath(const meHTVRuleMultiMath &rule);
 	
+protected:
 	/** Cleans up the rule. */
 	~meHTVRuleMultiMath() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -98,7 +101,7 @@ public:
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

@@ -29,6 +29,7 @@
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglWorldComputeElement.h"
@@ -47,7 +48,6 @@ class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglShaderParameterBlock;
 class deoglSkinShader;
-class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
 class deoglRenderTaskSharedInstance;
@@ -88,13 +88,13 @@ private:
 	
 	deoglRSkin::Ref pSkin;
 	deoglRDynamicSkin::Ref pDynamicSkin;
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglRDynamicSkin *pUseDynamicSkin;
-	deoglSkinState *pUseSkinState;
+	deoglRDynamicSkin::Ref pUseDynamicSkin;
+	deoglSkinState::Ref pUseSkinState;
 	
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
@@ -202,24 +202,24 @@ public:
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * Set skin state or \em NULL if there is none.
+	 * Drop skin state.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState(deoglSkinState *skinState);
+	void DropSkinState();
 	
 	/** Retrieves the actual skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	/** Retrieves the actual skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	/** Retrieves the actual skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	/** Retrieves the actual dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	inline const deoglSkinState::Ref &GetUseSkinState() const{ return pUseSkinState; }
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -391,6 +391,7 @@ private:
 		int element, deoglSkinShader &skinShader);
 	
 	void pRequiresPrepareForRender();
+	void pSetSkinState(deoglSkinState *skinState);
 };
 
 #endif

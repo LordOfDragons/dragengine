@@ -474,7 +474,7 @@ void deoglRPropFieldType::MarkTUCsDirty(){
 
 void deoglRPropFieldType::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
 	deoglRDynamicSkin *useDynamicSkin = NULL;
-	deoglSkinState *useSkinState = NULL;
+	deoglSkinState *useSkinState = nullptr;
 	
 	if(!pUseSkinTexture){
 		return;

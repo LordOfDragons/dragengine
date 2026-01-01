@@ -68,8 +68,8 @@ const decPoint &size, float *oldHeights){
 	
 	pWorld = world;
 	pSize = size;
-	pOldHeights = NULL;
-	pNewHeights = NULL;
+	pOldHeights = nullptr;
+	pNewHeights = nullptr;
 	
 	pSector.x1 = sector.x;
 	pSector.y1 = sector.y;
@@ -91,10 +91,7 @@ const decPoint &size, float *oldHeights){
 	
 	try{
 		pOldHeights = new float[pixelCount];
-		if(!pOldHeights) DETHROW(deeOutOfMemory);
-		
 		pNewHeights = new float[pixelCount];
-		if(!pNewHeights) DETHROW(deeOutOfMemory);
 		
 		pSaveHeights();
 		
@@ -169,9 +166,7 @@ void meUHTPaintHeight::pSaveHeights(){
 
 void meUHTPaintHeight::pRestoreHeights(float *heights){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-	int s, sectorCount = hterrain->GetSectorCount();
 	int imageDim = hterrain->GetSectorResolution();
-	meHeightTerrainSector *htsector;
 	sGrayscale32 *pixels;
 	decPoint scoord;
 	int sgx, sgy;
@@ -190,7 +185,7 @@ void meUHTPaintHeight::pRestoreHeights(float *heights){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith(scoord);
+			meHeightTerrainSector * const htsector = hterrain->GetSectorWith(scoord);
 			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
 				pixels[sgy * imageDim + sgx].value = heights[y * pSize.x + x];
@@ -200,13 +195,12 @@ void meUHTPaintHeight::pRestoreHeights(float *heights){
 	
 	hterrain->NotifyHeightsChanged(pSector, pGrid);
 	
-	for(s=0; s<sectorCount; s++){
-		htsector = hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector *htsector){
 		const decPoint &scoord2 = htsector->GetCoordinates();
 		
 		if(scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2){
 			htsector->SetHeightImageChanged(true);
 			pWorld->NotifyHTSHeightChanged(htsector);
 		}
-	}
+	});
 }

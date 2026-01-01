@@ -25,9 +25,10 @@
 #ifndef _MEUOBJECTCOPYROTATION_H_
 #define _MEUOBJECTCOPYROTATION_H_
 
+#include "meUndoDataObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class meWorld;
@@ -37,19 +38,18 @@ class meWorld;
  * Undo action for setting copy object rotation.
  */
 class meUObjectCopyRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectCopyRotation> Ref;
+	
+	
 private:
-	decObjectOrderedSet pObjects;
+	meUndoDataObject::List pObjects;
 	decVector pNewRotation;
-	bool pCopyX;
-	bool pCopyY;
-	bool pCopyZ;
+	bool pCopyX, pCopyY, pCopyZ;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectCopyRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -57,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectCopyRotation();
+
+public:
 	/*@}*/
 	
 	

@@ -46,8 +46,8 @@
 meHTVRuleClosestProp::meHTVRuleClosestProp() : meHTVRule(ertClosestProp, 2){
 	pSearchRadius = 1.0f;
 	
-	GetSlotAt(eosDirection).SetIsInput(false);
-	GetSlotAt(eosDistance).SetIsInput(false);
+	GetSlots().GetAt(eosDirection)->SetIsInput(false);
+	GetSlots().GetAt(eosDistance)->SetIsInput(false);
 	
 	Reset();
 }
@@ -86,14 +86,11 @@ void meHTVRuleClosestProp::SetSearchRadius(float searchRadius){
 void meHTVRuleClosestProp::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
 	if(pDirty){
 		const decDVector &ipos = evalEnv.GetPosition();
-		int o, objectCount = evalEnv.GetObjectCount();
-		meObject *object, *bestObject = NULL;
+		meObject *bestObject = nullptr;
 		decVector direction, bestDireciton;
 		float distance, bestDistance = 0;
 		
-		for(o=0; o<objectCount; o++){
-			object = evalEnv.GetObjectAt(o);
-			
+		evalEnv.GetObjects().Visit([&](meObject *object){
 			if(pPropClass.Equals(object->GetClassName())){
 				direction = (object->GetPosition() - ipos).ToVector();
 				distance = direction.Length();
@@ -105,7 +102,7 @@ void meHTVRuleClosestProp::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
 					}
 				}
 			}
-		}
+		});
 		
 		if(bestObject){
 			pDistance = bestDistance;
@@ -167,6 +164,6 @@ decVector meHTVRuleClosestProp::GetOutputSlotVectorAt(int slot, meHTVEvaluationE
 	}
 }
 
-meHTVRule *meHTVRuleClosestProp::Copy() const{
-	return new meHTVRuleClosestProp(*this);
+meHTVRule::Ref meHTVRuleClosestProp::Copy() const{
+	return meHTVRuleClosestProp::Ref::New(*this);
 }

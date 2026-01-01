@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,56 +22,52 @@
  * SOFTWARE.
  */
 
-// include only once
-#ifndef _MELSPFCACHETYPELIST_H_
-#define _MELSPFCACHETYPELIST_H_
+#ifndef _MEUOBJECTSHAPESCALE_H_
+#define _MEUOBJECTSHAPESCALE_H_
 
-// includes
+#include "../meBaseUndoScale.h"
+#include "../../../world/object/meObject.h"
+#include "../../../world/objectshape/meObjectShape.h"
 
-// predefinitions
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
- * @brief Load/Save Prop Field Type List
- *
- * Helper class for the prop field cache load/save to store a list of types.
+ * \brief Scale object shapes undo action.
  */
-class meLSPFCacheTypeList{
+class meUObjectShapeScale : public meBaseUndoScale{
 public:
-	struct sType{
-		int vlayer;
-		int variation;
-	};
+	typedef deTObjectReference<meUObjectShapeScale> Ref;
 	
 private:
-	sType *pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	meObject::Ref pObject;
+	decString pProperty;
+	
+	bool pPropertyExists;
+	decString pOldValue;
+	decTList<int> pList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a type list. */
-	meLSPFCacheTypeList();
-	/** Cleans up the type list. */
-	~meLSPFCacheTypeList();
+	/** \brief Create new undo object. */
+	meUObjectShapeScale(meObject *object, const char *property, const meObjectShape::List &list);
+	
+protected:
+	/** \brief Clean up undo object. */
+	~meUObjectShapeScale() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves the type at the given index. */
-	sType &GetTypeAt(int index) const;
-	/** Retrieves the index of the type with the given vlayer and variation or -1 if not found. */
-	int IndexOfTypeWith(int vlayer, int variation) const;
-	/** Adds the type if not existing already. */
-	void AddType(int vlayer, int variation);
-	/** Removes all types. */
-	void RemoveAllTypes();
+	/** \brief Undo. */
+	void Undo() override;
+	/** \brief Redo. */
+	void Redo() override;
+	/** \brief Progressive redo the action. */
+	void ProgressiveRedo() override;
 	/*@}*/
 };
 
-// end of include only once
 #endif

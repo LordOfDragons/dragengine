@@ -72,6 +72,10 @@ meViewEditorVisibilityPaint::~meViewEditorVisibilityPaint(){
 void meViewEditorVisibilityPaint::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
+	if(pVisPainter->IsInSession()){
+		return;
+	}
+	
 	meCamera &camera = GetActiveCamera();
 	decLayerMask layerMask;
 	
@@ -96,7 +100,7 @@ void meViewEditorVisibilityPaint::OnLeftMouseButtonPress(int x, int y, bool shif
 void meViewEditorVisibilityPaint::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if(GetDragLeftMouseButton()){
+	if(pVisPainter->IsInSession()){
 		pVisPainter->EndSession();
 	}
 }
@@ -104,7 +108,7 @@ void meViewEditorVisibilityPaint::OnLeftMouseButtonRelease(int x, int y, bool sh
 void meViewEditorVisibilityPaint::OnMouseMove(int x, int y, bool shift, bool control){
 	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if(GetDragLeftMouseButton()){
+	if(pVisPainter->IsInSession()){
 		meCamera &camera = GetActiveCamera();
 		
 		const decDVector rayPosition = GetMatrixView().GetPosition();

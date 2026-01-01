@@ -40,6 +40,9 @@ class meHTVRuleClosestProp;
  * \brief Vegetation Editing Window Node Closest Prop.
  */
 class meWVNodeClosestProp : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeClosestProp> Ref;
+	
 private:
 	meHTVRuleClosestProp *pRuleCP;
 	
@@ -78,6 +81,10 @@ public:
 	
 	/** \brief Update class lists. */
 	void UpdateClassLists() override;
+	
+	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged() override;
 	/*@}*/
 };
 

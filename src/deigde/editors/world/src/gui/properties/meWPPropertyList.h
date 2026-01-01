@@ -38,6 +38,7 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class igdeUndo;
@@ -55,6 +56,9 @@ class igdeTriggerTargetList;
  * Subclass to implement creating undo actions.
  */
 class meWPPropertyList : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<meWPPropertyList> Ref;
+	
 private:
 	igdeUndoSystem *pUndoSystem;
 	igdeClipboard *pClipboard;
@@ -101,16 +105,16 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
+	/** \brief Set undo system or nullptr. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
-	/** \brief Clipboard or NULL. */
+	/** \brief Clipboard or nullptr. */
 	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
 	
-	/** \brief Set clipboard or NULL. */
+	/** \brief Set clipboard or nullptr. */
 	void SetClipboard(igdeClipboard *clipboard);
 	
 	/** \brief Property list to edit. */
@@ -131,20 +135,20 @@ public:
 	const decString &GetKey() const;
 	
 	/** \brief Selected property in list or empty string. */
-	const decString &GetProperty() const;
+	decString GetProperty() const;
 	
 	/** \brief Value of GetProperty() or empty string. */
-	const decString &GetPropertyValue() const;
+	decString GetPropertyValue() const;
 	
 	/** \brief Edit property value. */
-	const decString &GetEditPropertyValue() const;
+	decString GetEditPropertyValue() const;
 	
 	/** \brief Set edit property value. */
 	void SetEditPropertyValue(const char *value) const;
 	
 	
 	
-	/** \brief Game definition property for key or NULL. */
+	/** \brief Game definition property for key or nullptr. */
 	virtual const igdeGDProperty *GetGDProperty(const char *key) const = 0;
 	
 	/** \brief Game definition default value for key. */
@@ -194,27 +198,27 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
-	inline igdeAction *GetActionPropertyClear() const{ return pActionPropertyClear; }
-	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
-	inline igdeAction *GetActionPropertyCopyAll() const{ return pActionPropertyCopyAll; }
-	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
-	inline igdeAction *GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
-	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
-	inline igdeAction *GetActionPropertyRename() const{ return pActionPropertyRename; }
-	inline igdeAction *GetActionPropertyExport() const{ return pActionPropertyExport; }
-	inline igdeAction *GetActionPropertyImport() const{ return pActionPropertyImport; }
+	inline const igdeAction::Ref &GetActionPropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionPropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionPropertyClear() const{ return pActionPropertyClear; }
+	inline const igdeAction::Ref &GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline const igdeAction::Ref &GetActionPropertyCopyAll() const{ return pActionPropertyCopyAll; }
+	inline const igdeAction::Ref &GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline const igdeAction::Ref &GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
+	inline const igdeAction::Ref &GetActionPropertyPaste() const{ return pActionPropertyPaste; }
+	inline const igdeAction::Ref &GetActionPropertyRename() const{ return pActionPropertyRename; }
+	inline const igdeAction::Ref &GetActionPropertyExport() const{ return pActionPropertyExport; }
+	inline const igdeAction::Ref &GetActionPropertyImport() const{ return pActionPropertyImport; }
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoAddProperty(const decString &key, const decString &value) = 0;
-	virtual igdeUndo *UndoRemoveProperty(const decString &key) = 0;
-	virtual igdeUndo *UndoSetProperty(const decString &key, const decString &oldValue, const decString &newValue) = 0;
-	virtual igdeUndo *UndoSetProperties(const decStringDictionary &properties) = 0;
+	virtual igdeUndo::Ref UndoAddProperty(const decString &key, const decString &value) = 0;
+	virtual igdeUndo::Ref UndoRemoveProperty(const decString &key) = 0;
+	virtual igdeUndo::Ref UndoSetProperty(const decString &key, const decString &oldValue, const decString &newValue) = 0;
+	virtual igdeUndo::Ref UndoSetProperties(const decStringDictionary &properties) = 0;
 	/*@}*/
 	
 	

@@ -53,25 +53,20 @@
 mePropFieldType::mePropFieldType(deEngine *engine){
 	if(!engine) DETHROW(deeInvalidParam);
 	
-	pPropField = NULL;
+	pPropField = nullptr;
 	
 	pEngine = engine;
-	pEngPFType = NULL;
+	pEngPFType = nullptr;
 	
-	pModel = NULL;
-	pSkin = NULL;
 	pRotPerForceX = 5.0f;
 	pRotPerForceZ = 5.0f;
 	
-	pInstances = NULL;
+	pInstances = nullptr;
 	pInstanceCount = 0;
 }
 
 mePropFieldType::~mePropFieldType(){
 	if(pInstances) delete [] pInstances;
-	
-	if(pSkin) pSkin->FreeReference();
-	if(pModel) pModel->FreeReference();
 }
 
 
@@ -81,7 +76,7 @@ mePropFieldType::~mePropFieldType(){
 
 void mePropFieldType::SetPropField(mePropField *propField){
 	pPropField = propField;
-	pEngPFType = NULL;
+	pEngPFType = nullptr;
 }
 
 void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
@@ -95,8 +90,8 @@ void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
 dePropFieldType *mePropFieldType::CreateEnginePFType(){
 	if(!pPropField) DETHROW(deeInvalidParam);
 	
-	dePropFieldInstance *engPFTInstances = NULL;
-	dePropFieldType *engPFType = NULL;
+	dePropFieldInstance *engPFTInstances = nullptr;
+	dePropFieldType *engPFType = nullptr;
 	int i;
 	
 	if(pInstanceCount > 0){
@@ -137,7 +132,7 @@ dePropFieldType *mePropFieldType::CreateEnginePFType(){
 }
 
 void mePropFieldType::UpdateEnginePFType(){
-	dePropField *engPropField = NULL;
+	dePropField *engPropField = nullptr;
 	int engPFTInstanceCount = 0;
 	
 	if(pPropField){
@@ -162,14 +157,14 @@ void mePropFieldType::UpdateEnginePFType(){
 		}
 		
 	}else{
-		dePropFieldType *engPFType = NULL;
+		dePropFieldType *engPFType = nullptr;
 		
 		try{
 			engPFType = CreateEnginePFType();
 			
 			if(pEngPFType && engPropField){
 				engPropField->RemoveType(pEngPFType);
-				pEngPFType = NULL;
+				pEngPFType = nullptr;
 			}
 			
 			if(engPFType){
@@ -201,10 +196,7 @@ void mePropFieldType::SetPathModel(const char *path){
 	
 	pPathModel = path;
 	
-	if(pModel){
-		pModel->FreeReference();
-		pModel = NULL;
-	}
+	pModel = nullptr;
 	
 	if(!pPathModel.IsEmpty()){
 		pModel = pEngine->GetModelManager()->LoadModel(pPathModel.GetString(), "/");
@@ -223,10 +215,7 @@ void mePropFieldType::SetPathSkin(const char *path){
 	
 	pPathSkin = path;
 	
-	if(pSkin){
-		pSkin->FreeReference();
-		pSkin = NULL;
-	}
+	pSkin = nullptr;
 	
 	if(!pPathSkin.IsEmpty()){
 		try{
@@ -235,7 +224,6 @@ void mePropFieldType::SetPathSkin(const char *path){
 		}catch(const deException &){
 			if(pPropField && pPropField->GetWorld()){
 				pSkin = pPropField->GetWorld()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pSkin->AddReference();
 			}
 		}
 	}

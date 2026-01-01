@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUDecalAddProperty::meUDecalAddProperty(meDecal *decal, const char *key, const char *value) :
-pDecal(NULL)
+pDecal(nullptr)
 {
 	if(!decal || !key || strlen(key) == 0 || !value){
 		DETHROW(deeInvalidParam);
@@ -54,13 +54,12 @@ pDecal(NULL)
 	
 	SetShortInfo("Add decal property");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pKey = key;
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalAddProperty::~meUDecalAddProperty(){
@@ -96,7 +95,4 @@ void meUDecalAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalAddProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

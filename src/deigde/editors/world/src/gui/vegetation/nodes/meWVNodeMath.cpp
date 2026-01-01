@@ -62,6 +62,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(meWVNodeMath &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -76,7 +77,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMathSetOp::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMathSetOp::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMath(), op));
 	}
 };
@@ -86,6 +87,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
+	typedef deTObjectReference<cTextValueA> Ref;
 	cTextValueA(meWVNodeMath &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -95,7 +97,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMathSetValueA::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMathSetValueA::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMath(), value));
 	}
 };
@@ -105,6 +107,7 @@ protected:
 	meWVNodeMath &pNode;
 	
 public:
+	typedef deTObjectReference<cTextValueB> Ref;
 	cTextValueB(meWVNodeMath &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -114,7 +117,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMathSetValueB::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMathSetValueB::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMath(), value));
 	}
 };
@@ -131,7 +134,7 @@ public:
 
 meWVNodeMath::meWVNodeMath(meWindowVegetation &windowVegetation, meHTVRuleMath *rule) :
 meWVNode(windowVegetation, rule),
-pRuleMath(NULL)
+pRuleMath(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -140,49 +143,49 @@ pRuleMath(NULL)
 	SetTitle("Math");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Result", "Result of the operation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult));
 	
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"Value A", "First operand",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueA));
 	helper.EditFloat(slot, "First operant if slot is not connected.",
-		pEditValueA, new cTextValueA(*this));
+		pEditValueA, cTextValueA::Ref::New(*this));
 	AddSlot(slot);
 	
-	slot.TakeOverWith(env, "Value B", "Second operand if required",
+	slot = meWVNodeSlot::Ref::New(env, "Value B", "Second operand if required",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueB);
 	helper.EditFloat(slot, "Second operant if slot is not connected.",
-		pEditValueB, new cTextValueB(*this));
+		pEditValueB, cTextValueB::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("Add", NULL, (void*)(intptr_t)meHTVRuleMath::eopAdd);
-	pCBOperator->AddItem("Subtract", NULL, (void*)(intptr_t)meHTVRuleMath::eopSubtract);
-	pCBOperator->AddItem("Multiply", NULL, (void*)(intptr_t)meHTVRuleMath::eopMultiply);
-	pCBOperator->AddItem("Divide", NULL, (void*)(intptr_t)meHTVRuleMath::eopDivide);
-	pCBOperator->AddItem("Sine", NULL, (void*)(intptr_t)meHTVRuleMath::eopSine);
-	pCBOperator->AddItem("Cosine", NULL, (void*)(intptr_t)meHTVRuleMath::eopCosine);
-	pCBOperator->AddItem("Tangent", NULL, (void*)(intptr_t)meHTVRuleMath::eopTangent);
-	pCBOperator->AddItem("ArcSine", NULL, (void*)(intptr_t)meHTVRuleMath::eopArcSine);
-	pCBOperator->AddItem("ArcCosine", NULL, (void*)(intptr_t)meHTVRuleMath::eopArcCosine);
-	pCBOperator->AddItem("ArcTangent", NULL, (void*)(intptr_t)meHTVRuleMath::eopArcTangent);
-	pCBOperator->AddItem("Power", NULL, (void*)(intptr_t)meHTVRuleMath::eopPower);
-	pCBOperator->AddItem("Exponential", NULL, (void*)(intptr_t)meHTVRuleMath::eopExponential);
-	pCBOperator->AddItem("Logarithm", NULL, (void*)(intptr_t)meHTVRuleMath::eopLogarithm);
-	pCBOperator->AddItem("Minimum", NULL, (void*)(intptr_t)meHTVRuleMath::eopMinimum);
-	pCBOperator->AddItem("Maximum", NULL, (void*)(intptr_t)meHTVRuleMath::eopMaximum);
-	pCBOperator->AddItem("Round", NULL, (void*)(intptr_t)meHTVRuleMath::eopRound);
-	pCBOperator->AddItem("LessThan", NULL, (void*)(intptr_t)meHTVRuleMath::eopLessThan);
-	pCBOperator->AddItem("GreaterThan", NULL, (void*)(intptr_t)meHTVRuleMath::eopGreaterThan);
-	pCBOperator->AddItem("Equal", NULL, (void*)(intptr_t)meHTVRuleMath::eopEqual);
-	pCBOperator->AddItem("NotEqual", NULL, (void*)(intptr_t)meHTVRuleMath::eopNotEqual);
-	pCBOperator->AddItem("Average", NULL, (void*)(intptr_t)meHTVRuleMath::eopAverage);
+	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("Add", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAdd);
+	pCBOperator->AddItem("Subtract", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSubtract);
+	pCBOperator->AddItem("Multiply", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMultiply);
+	pCBOperator->AddItem("Divide", nullptr, (void*)(intptr_t)meHTVRuleMath::eopDivide);
+	pCBOperator->AddItem("Sine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopSine);
+	pCBOperator->AddItem("Cosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopCosine);
+	pCBOperator->AddItem("Tangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopTangent);
+	pCBOperator->AddItem("ArcSine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcSine);
+	pCBOperator->AddItem("ArcCosine", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcCosine);
+	pCBOperator->AddItem("ArcTangent", nullptr, (void*)(intptr_t)meHTVRuleMath::eopArcTangent);
+	pCBOperator->AddItem("Power", nullptr, (void*)(intptr_t)meHTVRuleMath::eopPower);
+	pCBOperator->AddItem("Exponential", nullptr, (void*)(intptr_t)meHTVRuleMath::eopExponential);
+	pCBOperator->AddItem("Logarithm", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLogarithm);
+	pCBOperator->AddItem("Minimum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMinimum);
+	pCBOperator->AddItem("Maximum", nullptr, (void*)(intptr_t)meHTVRuleMath::eopMaximum);
+	pCBOperator->AddItem("Round", nullptr, (void*)(intptr_t)meHTVRuleMath::eopRound);
+	pCBOperator->AddItem("LessThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopLessThan);
+	pCBOperator->AddItem("GreaterThan", nullptr, (void*)(intptr_t)meHTVRuleMath::eopGreaterThan);
+	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)meHTVRuleMath::eopEqual);
+	pCBOperator->AddItem("NotEqual", nullptr, (void*)(intptr_t)meHTVRuleMath::eopNotEqual);
+	pCBOperator->AddItem("Average", nullptr, (void*)(intptr_t)meHTVRuleMath::eopAverage);
 	
 	pRuleMath = rule; // required for combo box listener to not fire while list is build
 }

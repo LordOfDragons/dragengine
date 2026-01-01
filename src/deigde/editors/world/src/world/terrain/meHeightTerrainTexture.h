@@ -26,6 +26,7 @@
 #define _MEHEIGHTTERRAINTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
@@ -44,8 +45,8 @@ class deHeightTerrainTexture;
  */
 class meHeightTerrainTexture : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHeightTerrainTexture> Ref;
+	typedef decTObjectOrderedSet<meHeightTerrainTexture> List;
 	
 	
 private:
@@ -76,24 +77,28 @@ public:
 	/*@{*/
 	/** Creates a object. */
 	meHeightTerrainTexture(deEngine *engine, const char *name);
+	
+protected:
 	/** Cleans up the object. */
 	virtual ~meHeightTerrainTexture();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
-	/** Retrieves the texture or NULL. */
+	/** Retrieves the texture or nullptr. */
 	inline deHeightTerrainTexture *GetEngineTexture() const{ return pEngTexture; }
 	/** Creates an engine texture based on the settings in this texture. */
 	deHeightTerrainTexture *CreateEngineTexture() const;
-	/** Sets the texture or NULL. */
+	/** Sets the texture or nullptr. */
 	void SetEngineTexture(deHeightTerrainTexture *engTexture);
 	
-	/** Retrieves the parent height terrain sector or NULL. */
+	/** Retrieves the parent height terrain sector or nullptr. */
 	inline meHeightTerrainSector *GetSector() const{ return pSector; }
-	/** Sets the parent height terrain sector or NULL. */
+	/** Sets the parent height terrain sector or nullptr. */
 	void SetSector(meHeightTerrainSector *sector);
 	
 	/** Retrieves the name of the texture. */
@@ -136,9 +141,9 @@ public:
 	/** Sets the mask path. */
 	void SetPathMask(const char *path, bool load);
 	/** Retrieves the mask image. */
-	inline deImage *GetMaskImage() const{ return pMaskImage; }
+	inline const deImage::Ref &GetMaskImage() const{ return pMaskImage; }
 	
-	/** \brief Get mask image creating it if NULL. */
+	/** \brief Get mask image creating it if nullptr. */
 	deImage *GetOrAddMaskImage();
 	
 	/** Sets the mask image. */

@@ -1384,7 +1384,7 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	// create null cursor
 	cursorMask = XCreatePixmap(display, pWindow, 1, 1, 1);
 	gcv.function = GXclear;
-	gc =  XCreateGC(display, cursorMask, GCFunction, &gcv);
+	gc = XCreateGC(display, cursorMask, GCFunction, &gcv);
 	XFillRectangle(display, cursorMask, gc, 0, 0, 1, 1);
 	color.pixel = 0;
 	color.red = 0;

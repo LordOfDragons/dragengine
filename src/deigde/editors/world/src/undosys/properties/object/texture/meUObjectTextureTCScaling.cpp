@@ -58,19 +58,15 @@ meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, c
 	
 	SetShortInfo("Objext Texture Scaling");
 	
-	pTexture = NULL;
+	pTexture = nullptr;
 	
 	pOldScaling = texture->GetTexCoordScaling();
 	pNewScaling = newScaling;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureTCScaling::~meUObjectTextureTCScaling(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

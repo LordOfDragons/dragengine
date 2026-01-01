@@ -67,9 +67,9 @@ public:
 	/** Sets the parent world. */
 	void SetWorld(meWorld *world);
 	
-	/** Retrieves the host object or NULL if not attached to any object. */
+	/** Retrieves the host object or nullptr if not attached to any object. */
 	inline meObject *GetHostObject() const{ return pHostObject; }
-	/** Sets the host object or NULL if not attached to any object. */
+	/** Sets the host object or nullptr if not attached to any object. */
 	void SetHostObject(meObject *object);
 	/** Determines if this camera has a host object. */
 	bool HasHostObject() const;

@@ -34,6 +34,7 @@
 #include "../skin/deoglRSkin.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
@@ -60,7 +61,6 @@ class deoglRenderPlan;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderParameterBlock;
-class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
@@ -147,7 +147,7 @@ private:
 	eRenderModes pRenderMode;
 	float pSortDistance;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
@@ -373,7 +373,7 @@ public:
 	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }

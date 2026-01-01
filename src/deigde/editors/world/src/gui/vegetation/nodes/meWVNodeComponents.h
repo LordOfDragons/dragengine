@@ -38,6 +38,9 @@ class meHTVRuleComponents;
  * \brief Vegetation Editing Window Node Components.
  */
 class meWVNodeComponents : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeComponents> Ref;
+	
 private:
 	meHTVRuleComponents *pRuleComponents;
 	

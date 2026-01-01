@@ -26,13 +26,14 @@
 #ifndef _MESAVESUPPORT_H_
 #define _MESAVESUPPORT_H_
 
+#include <deigde/gui/filedialog/igdeFilePattern.h>
+
 class meWindowMain;
 class meWorld;
 class meHeightTerrainSector;
 class meHeightTerrainTexture;
 class meHeightTerrainNavSpace;
 class meNavigationSpace;
-class igdeFilePatternList;
 
 
 
@@ -72,9 +73,9 @@ public:
 	void SaveNavigationSpace(meWorld *world, meNavigationSpace *navspace, bool forceAskForFilename);
 	
 	/** Fills the given file pattern list with file patterns for world files. */
-	void GetWorldPatterns(igdeFilePatternList &patternList) const;
+	void GetWorldPatterns(igdeFilePattern::List &patternList) const;
 	/** Fills the given file pattern list with file patterns for height terrain sector files. */
-	void GetHeightTerrainSectorPatterns(igdeFilePatternList &patternList) const;
+	void GetHeightTerrainSectorPatterns(igdeFilePattern::List &patternList) const;
 };
 
 // end of include only once

@@ -169,7 +169,7 @@ const char *basePath){
 			font = deFont::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			font->SetAsynchron(false);
 			
-			module->LoadFont(OpenFileForReading(*vfs, path.GetPathUnix()), *font);
+			module->LoadFont(OpenFileForReading(*vfs, path.GetPathUnix()), font);
 			
 			// check and init
 			pLoadFontSources(font);

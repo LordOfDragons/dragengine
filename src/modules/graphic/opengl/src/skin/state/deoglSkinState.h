@@ -25,7 +25,9 @@
 #ifndef _DEOGLSKINSTATE_H_
 #define _DEOGLSKINSTATE_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decObjectList.h>
 
 class deoglRenderPlan;
@@ -53,7 +55,11 @@ class deComponent;
  * number of renderable links matches the number of renderables in the skin
  * object. The links point to the host object renderables.
  */
-class deoglSkinState{
+class deoglSkinState : public deObject{
+public:
+	typedef deTObjectReference<deoglSkinState> Ref;
+	typedef decTObjectOrderedSet<deoglSkinState> List;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	float pTime;
@@ -88,18 +94,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state. */
-	deoglSkinState(deoglRenderThread &renderThread);
+	explicit deoglSkinState(deoglRenderThread &renderThread);
 	deoglSkinState(deoglRenderThread &renderThread, deoglRComponent &component, int texture = -1);
 	deoglSkinState(deoglRenderThread &renderThread, deoglRBillboard &billboard);
 	deoglSkinState(deoglRenderThread &renderThread, deoglRDecal &decal);
 	deoglSkinState(deoglRenderThread &renderThread, deoglRLight &light);
 	
+protected:
 	/** Clean up skin state. */
 	~deoglSkinState();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -122,6 +129,9 @@ public:
 	
 	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
+	
+	/** Drop owner. */
+	void DropOwner();
 	
 	/** Owner dynamic skin or NULL. */
 	deoglRDynamicSkin *GetOwnerDynamicSkin() const;

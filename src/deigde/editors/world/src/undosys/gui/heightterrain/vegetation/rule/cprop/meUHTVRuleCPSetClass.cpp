@@ -43,8 +43,8 @@
 meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass){
 	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
 	SetMemoryConsumption(sizeof(meUHTVRuleCPSetClass));
@@ -53,14 +53,10 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pNewPropClass = nclass;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

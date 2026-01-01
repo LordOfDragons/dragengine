@@ -25,27 +25,28 @@
 #ifndef _MEDECAL_H_
 #define _MEDECAL_H_
 
+#include "meAttachedDecal.h"
 #include "../meColliderOwner.h"
 
 #include <deigde/gui/igdeTimer.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class meObject;
 class meWorld;
-class meAttachedDecal;
-
-class igdeWDebugDrawerShape;
 
 class igdeEnvironment;
-class deDebugDrawer;
 class deDecal;
-class deDynamicSkin;
-class deColliderVolume;
-class deSkin;
 
 
 
@@ -54,26 +55,25 @@ class deSkin;
  */
 class meDecal : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meDecal> Ref;
+	typedef decTObjectOrderedSet<meDecal> List;
 	
 	
 private:
 	igdeEnvironment *pEnvironment;
 	
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
-	meAttachedDecal **pAttachedDecals;
-	int pAttachedDecalCount;
+	meAttachedDecal::List pAttachedDecals;
 	igdeTimer::Ref pTimerReattachDecals;
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSDecal;
-	deColliderVolume *pCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSDecal;
+	deColliderVolume::Ref pCollider;
 	
-	meObject *pParentObject;
+	deTWeakObjectReference<meObject> pParentObject;
 	
 	decString pSkinPath;
 	decString pTextureName;
@@ -89,7 +89,7 @@ private:
 	
 	decColor pColorTint;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	int pID;
 	bool pVisible;
@@ -108,8 +108,12 @@ public:
 	meDecal(igdeEnvironment *environment);
 	/** \brief Creates a new decal from the given decal. */
 	meDecal(const meDecal &decal);
+	
+protected:
 	/** \brief Cleans up the decal. */
 	virtual ~meDecal();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -117,16 +121,16 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
-	/** \brief Retrieves the world or NULL. */
+	/** \brief Retrieves the world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** \brief Sets the world or NULL. */
+	/** \brief Sets the world or nullptr. */
 	void SetWorld(meWorld *world);
 	
-	/** \brief Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
-	/** \brief Sets the parent object or NULL. */
+	/** \brief Retrieves the parent object or nullptr. */
+	inline const deTWeakObjectReference<meObject> &GetParentObject() const{ return pParentObject; }
+	/** \brief Sets the parent object or nullptr. */
 	void SetParentObject(meObject *object);
 	
 	/** \brief Retrieves the skin file path. */
@@ -144,8 +148,8 @@ public:
 	inline const decString &GetTextureName() const{ return pTextureName; }
 	/** \brief Sets the skin texture name. */
 	void SetTextureName(const char *textureName);
-	/** \brief Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Retrieves the engine skin or nullptr if not found. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/** \brief Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
@@ -176,8 +180,8 @@ public:
 	/** \brief Sets the color tint. */
 	void SetColorTint(const decColor &color);
 	
-	/** \brief Retrieves the dynamic skin or NULL if there is none. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	/** \brief Retrieves the dynamic skin or nullptr if there is none. */
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Updates the dynamic skin. */
 	void UpdateDynamicSkin();

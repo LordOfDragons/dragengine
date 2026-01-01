@@ -52,12 +52,9 @@ meUHTSetPathHT::meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, c
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathHT::~meUHTSetPathHT(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

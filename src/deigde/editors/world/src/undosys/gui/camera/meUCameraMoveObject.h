@@ -29,24 +29,31 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 /**
  * Undo action for camera moving an object.
  */
 class meUCameraMoveObject : public igdeUndo{
+public:
+	typedef deTObjectReference<meUCameraMoveObject> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decDVector pOldPosition, pNewPosition;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUCameraMoveObject> Ref;
-	
 	// constructor, destructor
 	meUCameraMoveObject(meObject *object);
+	
+protected:
+	/** \brief Clean up undo object. */
 	~meUCameraMoveObject() override;
+	
+public:
+	/*@}*/
 	
 	void SetNewPosition(const decDVector &position);
 	bool HasChanged() const;

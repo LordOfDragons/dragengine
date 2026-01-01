@@ -338,7 +338,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipeli
 	
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglSkinState *skinState = nullptr;
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
@@ -446,7 +446,7 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 	
 	if(skinTexture){
 		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
+		deoglSkinState *skinState = nullptr;
 		deoglTexUnitConfig unit[8];
 		
 		if(skinTexture->GetVariationU() || skinTexture->GetVariationV()){

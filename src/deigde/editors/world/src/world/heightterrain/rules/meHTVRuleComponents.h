@@ -68,8 +68,11 @@ public:
 	/** \brief Create copy of rule. */
 	meHTVRuleComponents(const meHTVRuleComponents &rule);
 	
+protected:
 	/** Cleans up the rule. */
 	~meHTVRuleComponents() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -85,7 +88,7 @@ public:
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

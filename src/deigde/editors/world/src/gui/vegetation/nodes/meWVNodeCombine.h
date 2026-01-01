@@ -38,6 +38,9 @@ class meHTVRuleCombine;
  * \brief Vegetation Editing Window Node Combine.
  */
 class meWVNodeCombine : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeCombine> Ref;
+	
 private:
 	meHTVRuleCombine *pRuleCombine;
 	

@@ -25,45 +25,44 @@
 #ifndef _MEUOBJECTPROPERTYCOPYTOSELECTED_H_
 #define _MEUOBJECTPROPERTYCOPYTOSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataObjectProperty.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class meObject;
-class meObjectList;
-class meUndoDataObjectProperty;
-
 
 
 /**
  * \brief Undo Action Copy Object Property to all selected objects.
  */
 class meUObjectPropertyCopyToSelected : public igdeUndo{
-private:
-	decObjectList pList;
-	decString pKey;
-	decString pValue;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjectPropertyCopyToSelected> Ref;
 	
+	
+private:
+	meUndoDataObjectProperty::List pList;
+	decString pKey, pValue;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectPropertyCopyToSelected(const meObjectList &list, const char *key, const char *value);
+	meUObjectPropertyCopyToSelected(const meObject::List &list, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectPropertyCopyToSelected();
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataObjectProperty::List &GetList(){ return pList; }
+	inline const meUndoDataObjectProperty::List &GetList() const{ return pList; }
 	/** Sets the value. */
 	void SetValue(const char *value);
 	
@@ -72,9 +71,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -25,6 +25,9 @@
 #ifndef _MEWPVIEW_H_
 #define _MEWPVIEW_H_
 
+#include "meWPViewListener.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -39,8 +42,6 @@
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
 
 class meWindowProperties;
-class meWPViewListener;
-class meWorld;
 class meCamera;
 
 
@@ -49,11 +50,14 @@ class meCamera;
  * \brief View property window.
  */
 class meWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPView> Ref;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPViewListener *pListener;
+	meWPViewListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeTextField::Ref pEditMoveStep;
 	igdeCheckBox::Ref pChkMoveSnap;
@@ -110,7 +114,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

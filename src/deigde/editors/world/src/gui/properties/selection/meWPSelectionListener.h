@@ -35,6 +35,9 @@ class meWPSelection;
  * \brief Selection Panel Listener.
  */
 class meWPSelectionListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPSelectionListener> Ref;
+	
 private:
 	meWPSelection &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPSelectionListener(meWPSelection &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPSelectionListener() override;
+	
+public:
 	/*@}*/
 	
 	

@@ -29,8 +29,11 @@
 #include "../object/meObject.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 class meObject;
@@ -39,8 +42,6 @@ class meWorld;
 class igdeWDebugDrawerShape;
 class igdeEnvironment;
 
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 class decShape;
 
@@ -48,7 +49,7 @@ class decShape;
 
 /**
  * \brief Object Shape.
- * \details A single shape in an object shape. Whereas the meObjectShapeList corresponds to a decShapeList the
+ * \details A single shape in an object shape. Whereas the meObjectShape::List corresponds to a decShapeList the
  *          meObjectShape corresponds to an actual decShape inside the list. The shape is located in the coordinate
  *          system of the world. The user is responsible to transform the shape from and to the world coordinate
  *          system and whatever target element holds the object shape list.
@@ -58,6 +59,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meObjectShape> Ref;
 	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<meObjectShape> List;
+	
 	
 private:
 	igdeEnvironment *pEnvironment;
@@ -65,9 +69,9 @@ private:
 	meWorld *pWorld;
 	meObject *pParentObject;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pEngCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSShape;
+	deColliderVolume::Ref pEngCollider;
 	
 	decShape *pShape;
 	
@@ -83,8 +87,12 @@ public:
 	/*@{*/
 	/** \brief Creates a new object shape. */
 	meObjectShape(igdeEnvironment *environment, const decShape &shape);
+	
+protected:
 	/** \brief Cleans up the object shape. */
 	virtual ~meObjectShape();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -93,15 +101,15 @@ public:
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Retrieves the engine collider. */
-	inline deColliderVolume *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetEngineCollider() const{ return pEngCollider; }
 	
-	/** \brief Retrieves the world or NULL. */
+	/** \brief Retrieves the world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** \brief Sets the world or NULL. */
+	/** \brief Sets the world or nullptr. */
 	void SetWorld(meWorld *world);
-	/** \brief Retrieves the parent object or NULL. */
+	/** \brief Retrieves the parent object or nullptr. */
 	inline meObject *GetParentObject() const{ return pParentObject; }
-	/** \brief Sets the parent object or NULL. */
+	/** \brief Sets the parent object or nullptr. */
 	void SetParentObject(meObject *parentObject);
 	
 	/** \brief Retrieves the shape. */
@@ -125,6 +133,13 @@ public:
 	
 	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
+	
+	
+	/** Creates a shape list from this list. */
+	static void CreateShapeList(const List &list, decShapeList &result);
+	
+	/** Create property string from shape list. */
+	static void CreatePropertyString(const List &list, decString &result);
 	/*@}*/
 	
 private:

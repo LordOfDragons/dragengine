@@ -55,7 +55,6 @@
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -132,7 +131,6 @@ pSpherical(false),
 pSizeFixedToScreen(false),
 pVisible(true),
 
-pSkinState(NULL),
 pSkinRendered(renderThread, *this),
 pSkyShadowSplitMask(0),
 pSortDistance(0.0f),
@@ -168,7 +166,7 @@ pLLWorldNext(NULL),
 pLLPrepareForRenderWorld(this)
 {
 	try{
-		pSkinState = new deoglSkinState(renderThread, *this);
+		pSkinState = deoglSkinState::Ref::New(renderThread, *this);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -451,11 +449,10 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin::Ref dynamicSkin;
-	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, nullptr, dynamicSkin);
 		skinShader.SetTUCPerObjectEnvMap(&units[0], pParentWorld->GetSkyEnvironmentMap(),
 			pRenderEnvMap, pRenderEnvMapFade);
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
@@ -916,7 +913,7 @@ void deoglRBillboard::pCleanUp(){
 		pTUCEnvMap->RemoveUsage();
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 }
 

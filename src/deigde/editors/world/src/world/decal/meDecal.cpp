@@ -72,6 +72,9 @@
 //////////////////////////
 
 class meDecalTimerReattachDecals : public igdeTimer {
+public:
+	typedef deTObjectReference<meDecalTimerReattachDecals> Ref;
+	
 private:
 	meDecal &pDecal;
 	
@@ -95,26 +98,15 @@ public:
 meDecal::meDecal(igdeEnvironment *environment) :
 pEnvironment(environment),
 
-pEngSkin(NULL),
+pWorld(nullptr),
 
-pAttachedDecals(NULL),
-pAttachedDecalCount(0),
-
-pWorld(NULL),
-
-pDebugDrawer(NULL),
-pDDSDecal(NULL),
-pCollider(NULL),
-
-pParentObject(NULL),
+pParentObject(nullptr),
 
 pSize(0.5f, 0.5f, 1.0f),
 pTexCoordScaling(1.0f, 1.0f),
 pTexCoordRotation(0.0f),
 
 pColorTint(1.0f, 1.0f, 1.0f),
-
-pDynamicSkin(NULL),
 
 pID(0),
 pVisible(true),
@@ -134,18 +126,9 @@ pColliderOwner(this)
 meDecal::meDecal(const meDecal &decal) :
 pEnvironment(decal.pEnvironment),
 
-pEngSkin(NULL),
+pWorld(nullptr),
 
-pAttachedDecals(NULL),
-pAttachedDecalCount(0),
-
-pWorld(NULL),
-
-pDebugDrawer(NULL),
-pDDSDecal(NULL),
-pCollider(NULL),
-
-pParentObject(NULL),
+pParentObject(nullptr),
 
 pSkinPath(decal.pSkinPath),
 pTextureName(decal.pTextureName),
@@ -161,8 +144,6 @@ pActiveProperty(decal.pActiveProperty),
 
 pColorTint(decal.pColorTint),
 
-pDynamicSkin(NULL),
-
 pID(0),
 pVisible(decal.pVisible),
 
@@ -175,9 +156,6 @@ pColliderOwner(this)
 	
 	try{
 		pEngSkin = decal.pEngSkin;
-		if(pEngSkin){
-			pEngSkin->AddReference();
-		}
 		// pUpdateSkin(); // not needed as there are no decals yet
 		
 		pRepositionShapes();
@@ -442,8 +420,7 @@ void meDecal::UpdateDynamicSkin(){
 		
 	}else{
 		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
-			pDynamicSkin = NULL;
+			pDynamicSkin = nullptr;
 		}
 	}
 	
@@ -554,7 +531,7 @@ void meDecal::SetProperty(const char *key, const char *value){
 void meDecal::SetProperties(const decStringDictionary &properties){
 	pProperties = properties;
 	
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		pActiveProperty = "";
 		
 	}else{
@@ -577,7 +554,7 @@ void meDecal::RemoveProperty(const char *key){
 	pProperties.Remove(key);
 	
 	if(pActiveProperty == key){
-		if(pProperties.GetCount() == 0){
+		if(pProperties.IsEmpty()){
 			pActiveProperty = "";
 			
 		}else{
@@ -595,7 +572,7 @@ void meDecal::RemoveProperty(const char *key){
 }
 
 void meDecal::RemoveAllProperties(){
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		return;
 	}
 	
@@ -655,7 +632,7 @@ void meDecal::pInitShared(){
 	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 	
 	try{
-		pTimerReattachDecals.TakeOver(new meDecalTimerReattachDecals(*this));
+		pTimerReattachDecals = meDecalTimerReattachDecals::Ref::New(*this);
 		
 		pCollider = engine.GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
@@ -676,7 +653,7 @@ void meDecal::pInitShared(){
 		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSDecal = new igdeWDebugDrawerShape;
+		pDDSDecal = igdeWDebugDrawerShape::Ref::New();
 		pDDSDecal->SetVisible(true);
 		pDDSDecal->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 		pDDSDecal->SetParentDebugDrawer(pDebugDrawer);
@@ -690,51 +667,26 @@ void meDecal::pInitShared(){
 }
 
 void meDecal::pCleanUp(){
-	SetWorld(NULL);
-	SetParentObject(NULL);
+	SetWorld(nullptr);
+	SetParentObject(nullptr);
 	
 	if(pCollider){
-		pEnvironment->SetColliderUserPointer(pCollider, NULL);
-		pCollider->FreeReference();
+		pEnvironment->SetColliderUserPointer(pCollider, nullptr);
 	}
 	
 	DetachDecals();
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
-	
-	if(pDDSDecal){
-		delete pDDSDecal;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 
 
 void meDecal::DetachDecals(){
-	if(!pAttachedDecals){
-		return;
-	}
-	
-	while(pAttachedDecalCount > 0){
-		pAttachedDecalCount--;
-		delete pAttachedDecals[pAttachedDecalCount];
-	}
-	
-	delete [] pAttachedDecals;
-	pAttachedDecals = NULL;
+	pAttachedDecals.RemoveAll();
 }
 
 void meDecal::AttachDecals(){
 	DetachDecals();
 	
-	meWorld *world = NULL;
+	meWorld *world = nullptr;
 	if(pWorld){
 		world = pWorld;
 	}
@@ -757,26 +709,18 @@ void meDecal::AttachDecals(){
 		world->CollisionTestBox(matrix * decDVector(0.0, 0.0, -halfSize.z), matrix.ToQuaternion(),
 			halfSize, &collect, decCollisionFilter(collisionCategory, collisionFilter));
 		
-		const meCLHitList &hitlist = collect.GetCollectedElements();
-		int e, entryCount = hitlist.GetEntryCount();
-		
-		if(entryCount > 0){
-			pAttachedDecals = new meAttachedDecal*[entryCount];
-			pAttachedDecalCount = 0;
-			
-			for(e=0; e<entryCount; e++){
-				meObject * const object = hitlist.GetEntryAt(e)->GetObject();
-				if(!object){
-					continue;
-				}
-				
-				pAttachedDecals[pAttachedDecalCount] = new meAttachedDecal(
-					pEnvironment->GetEngineController()->GetEngine(), this);
-				meAttachedDecal &attachedDecal = *pAttachedDecals[pAttachedDecalCount++];
-				attachedDecal.SetParentObject(object);
-				attachedDecal.AttachToParent();
+		collect.GetCollectedElements().Visit([&](const meCLHitListEntry &entry){
+			meObject * const object = entry.GetObject();
+			if(!object){
+				return;
 			}
-		}
+			
+			const meAttachedDecal::Ref ad(meAttachedDecal::Ref::New(
+				pEnvironment->GetEngineController()->GetEngine(), this));
+			ad->SetParentObject(object);
+			ad->AttachToParent();
+			pAttachedDecals.Add(ad);
+		});
 	}
 	
 	pUpdateSkin();
@@ -822,7 +766,7 @@ void meDecal::pUpdateDDSColors(){
 }
 
 void meDecal::pUpdateShapes(){
-	decShapeBox *box = NULL;
+	decShapeBox *box = nullptr;
 	
 	// size has to be kept above a minimum to avoid problems and to keep the decal selectable by the user
 	const decVector size(decVector(0.01f, 0.01f, 0.01f).Largest(decVector(pSize * 0.5f)));
@@ -839,7 +783,7 @@ void meDecal::pUpdateShapes(){
 		try{
 			box = new decShapeBox(size, position);
 			shapeList.Add(box);
-			box = NULL;
+			box = nullptr;
 			
 		}catch(const deException &){
 			if(box) delete box;
@@ -854,7 +798,6 @@ void meDecal::pUpdateTransform(){
 	decVector2 transformScale(pTexCoordScaling);
 	decVector2 transformOffset(pTexCoordOffset);
 	float transformRotation = pTexCoordRotation;
-	int a;
 	
 	if(transformScale.x == 0.0f){
 		transformScale.x = 1.0f;
@@ -868,16 +811,16 @@ void meDecal::pUpdateTransform(){
 		decTexMatrix2::CreateRotation(transformRotation * DEG2RAD) *
 		decTexMatrix2::CreateTranslation(transformOffset.x, transformOffset.y));
 	
-	for(a=0; a<pAttachedDecalCount; a++){
-		pAttachedDecals[a]->GetEngineDecal()->SetTransform(transformMatrix);
-	}
+	pAttachedDecals.Visit([&](const meAttachedDecal &ad){
+		ad.GetEngineDecal()->SetTransform(transformMatrix);
+	});
 }
 
 /*
 void meDecal::pUpdateShapes(){
 	if(pDDVolume){
 		decVector view, up, right, size, pos;
-		decShapeBox *shapeBox = NULL;
+		decShapeBox *shapeBox = nullptr;
 		decMatrix matrix;
 		
 		matrix.SetSRT(decVector(pSize.x * 0.5f, pSize.y * 0.5f, 0.01f),
@@ -918,7 +861,7 @@ void meDecal::pUpdateShapes(){
 void meDecal::pLoadSkin(){
 	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 	deSkinManager *skinMgr = engine.GetSkinManager();
-	deSkin *skin = NULL;
+	deSkin::Ref skin;
 	
 	if(!pSkinPath.IsEmpty()){
 		try{
@@ -926,23 +869,19 @@ void meDecal::pLoadSkin(){
 			
 		}catch(const deException &){
 			skin = pEnvironment->GetStockSkin(igdeEnvironment::essError);
-			skin->AddReference();
 		}
 	}
 	
 	if(pEngSkin){
-		pEngSkin->FreeReference();
-		pEngSkin = NULL;
+		pEngSkin = nullptr;
 	}
 	
 	pEngSkin = skin;
 }
 
 void meDecal::pUpdateSkin(){
-	int i;
-	
-	for(i=0; i<pAttachedDecalCount; i++){
-		deDecal &engDecal = *pAttachedDecals[i]->GetEngineDecal();
+	pAttachedDecals.Visit([&](const meAttachedDecal &ad){
+		deDecal &engDecal = ad.GetEngineDecal();
 		
 		engDecal.SetSkin(pEngSkin);
 		
@@ -961,5 +900,5 @@ void meDecal::pUpdateSkin(){
 		}
 		
 		engDecal.SetDynamicSkin(pDynamicSkin);
-	}
+	});
 }

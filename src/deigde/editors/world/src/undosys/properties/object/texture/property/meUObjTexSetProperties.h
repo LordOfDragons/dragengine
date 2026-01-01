@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,17 +37,18 @@ class meObjectTexture;
  * \brief Undo action object texture set properties.
  */
 class meUObjTexSetProperties : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjTexSetProperties> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjTexSetProperties> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -55,7 +56,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjTexSetProperties();
+
+public:
 	/*@}*/
 	
 	

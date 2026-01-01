@@ -47,10 +47,7 @@ meUAddObject::meUAddObject(meWorld *world, meObject *object){
 	SetShortInfo("Add Object");
 	
 	pWorld = world;
-	world->AddReference();
-	
 	pObject = object;
-	object->AddReference();
 }
 
 meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const char *classname){
@@ -64,14 +61,12 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 	text.Format("position(%g,%g,%g) class(%s)", position.x, position.y, position.z, classname);
 	SetLongInfo(text.GetString());
 	
-	pWorld = NULL;
-	pObject = NULL;
+	pWorld = nullptr;
+	pObject = nullptr;
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
-		pObject = new meObject(world->GetEnvironment());
+		pObject = meObject::Ref::New(world->GetEnvironment());
 		pObject->SetPosition(position);
 		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
 		pObject->SetClassName(classname);
@@ -125,10 +120,4 @@ void meUAddObject::Redo(){
 //////////////////////
 
 void meUAddObject::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

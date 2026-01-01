@@ -42,10 +42,10 @@
 ////////////////////////////
 
 meHTVRuleConstant::meHTVRuleConstant() : meHTVRule(ertConstant, 4){
-	GetSlotAt(eosVector).SetIsInput(false);
-	GetSlotAt(eosX).SetIsInput(false);
-	GetSlotAt(eosY).SetIsInput(false);
-	GetSlotAt(eosZ).SetIsInput(false);
+	GetSlots().GetAt(eosVector)->SetIsInput(false);
+	GetSlots().GetAt(eosX)->SetIsInput(false);
+	GetSlots().GetAt(eosY)->SetIsInput(false);
+	GetSlots().GetAt(eosZ)->SetIsInput(false);
 }
 
 meHTVRuleConstant::meHTVRuleConstant(const meHTVRuleConstant &rule) :
@@ -101,6 +101,6 @@ decVector meHTVRuleConstant::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvi
 	}
 }
 
-meHTVRule *meHTVRuleConstant::Copy() const{
-	return new meHTVRuleConstant(*this);
+meHTVRule::Ref meHTVRuleConstant::Copy() const{
+	return meHTVRuleConstant::Ref::New(*this);
 }

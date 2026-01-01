@@ -58,19 +58,15 @@ meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture *texture,
 	
 	SetShortInfo("Objext Texture Rotation");
 	
-	pTexture = NULL;
+	pTexture = nullptr;
 	
 	pOldRotation = texture->GetTexCoordRotation();
 	pNewRotation = newRotation;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureTCRotation::~meUObjectTextureTCRotation(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

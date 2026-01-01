@@ -42,7 +42,7 @@
 ////////////////////////////
 
 meUObjTexRemoveProperty::meUObjTexRemoveProperty(meObjectTexture *texture, const char *key, const char *value) :
-pTexture(NULL),
+
 pKey(key),
 pValue(value)
 {
@@ -62,11 +62,9 @@ pValue(value)
 	SetShortInfo("Object texture remove property");
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexRemoveProperty::~meUObjTexRemoveProperty(){
-	pCleanUp();
 }
 
 
@@ -80,15 +78,4 @@ void meUObjTexRemoveProperty::Undo(){
 
 void meUObjTexRemoveProperty::Redo(){
 	pTexture->RemoveProperty(pKey);
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjTexRemoveProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

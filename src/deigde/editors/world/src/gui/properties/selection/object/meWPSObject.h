@@ -25,6 +25,10 @@
 #ifndef _MEWPSOBJECT_H_
 #define _MEWPSOBJECT_H_
 
+#include "meWPSObjectListener.h"
+#include "../../meWPPropertyList.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -49,9 +53,7 @@
 class meObject;
 class meObjectTexture;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectListener;
 
 
 
@@ -59,10 +61,13 @@ class meWPSObjectListener;
  * Object Selection Panel.
  */
 class meWPSObject : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPSObject> Ref;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectListener *pListener;
-	meWorld *pWorld;
+	meWPSObjectListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	
 	igdeActionContextMenu::Ref pActionMenuClass;
@@ -114,7 +119,7 @@ private:
 	igdeTextField::Ref pEditTexTCRotation;
 	igdeColorBox::Ref pClrTexTint;
 	igdeCheckBox::Ref pChkShowMissingTextures;
-	igdeWidget::Ref pEditTexProperties;
+	meWPPropertyList::Ref pEditTexProperties;
 	
 	igdeEditSliderText::Ref pSldLigInt;
 	igdeColorBox::Ref pClrLight;
@@ -123,7 +128,7 @@ private:
 	igdeEditSliderText::Ref pSldLigDist;
 	igdeTextField::Ref pEditLigDistInt;
 	
-	igdeWidget::Ref pEditProperties;
+	meWPPropertyList::Ref pEditProperties;
 	
 	igdeListBox::Ref pListAttachBehaviors;
 	
@@ -137,7 +142,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPSObject(meWPSelection &wpselection);
+	explicit meWPSObject(meWPSelection &wpselection);
 	
 protected:
 	/** Clean up . */
@@ -153,7 +158,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);
@@ -245,22 +250,22 @@ public:
 	void SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing);
 	
 	
-	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
-	inline igdeAction *GetActionClassEdit() const{ return pActionClassEdit; }
+	inline const igdeAction::Ref &GetActionClassBrowse() const{ return pActionClassBrowse; }
+	inline const igdeAction::Ref &GetActionClassEdit() const{ return pActionClassEdit; }
 	
-	inline igdeAction *GetActionIdFind() const{ return pActionIdFind; }
+	inline const igdeAction::Ref &GetActionIdFind() const{ return pActionIdFind; }
 	
-	inline igdeAction *GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
-	inline igdeAction *GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
-	inline igdeAction *GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
-	inline igdeAction *GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
-	inline igdeAction *GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
+	inline const igdeAction::Ref &GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
+	inline const igdeAction::Ref &GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
+	inline const igdeAction::Ref &GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
+	inline const igdeAction::Ref &GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
+	inline const igdeAction::Ref &GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline const igdeAction::Ref &GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline const igdeAction::Ref &GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline const igdeAction::Ref &GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 	
 	

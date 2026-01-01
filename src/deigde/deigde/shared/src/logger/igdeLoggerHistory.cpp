@@ -195,8 +195,8 @@ void igdeLoggerHistory::LogInfo(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtInfo, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtInfo);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);
@@ -221,8 +221,8 @@ void igdeLoggerHistory::LogWarn(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtWarn, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtWarn);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);
@@ -247,8 +247,8 @@ void igdeLoggerHistory::LogError(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtError, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtError);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);

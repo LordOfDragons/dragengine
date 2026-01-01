@@ -22,23 +22,10 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meHeightTerrainSector.h"
 #include "meHeightTerrainNavSpaceFace.h"
 
 #include <dragengine/common/exceptions.h>
-
-
-
-// struct sort entry
-struct sSortEntry{
-	int navpoint;
-	float angle;
-};
 
 
 
@@ -48,8 +35,7 @@ struct sSortEntry{
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainNavSpaceFace::meHeightTerrainNavSpaceFace() :
-pType(NULL){
+meHeightTerrainNavSpaceFace::meHeightTerrainNavSpaceFace(){
 }
 
 meHeightTerrainNavSpaceFace::~meHeightTerrainNavSpaceFace(){
@@ -78,60 +64,25 @@ void meHeightTerrainNavSpaceFace::OrderClockwise(int pointsPerRow){
 	// the grid y axis which is pointing down if looked down from above. atan2 angles
 	// then rotate counter-clockwise. thus to get clockwise ordering the angles have
 	// to be sorted descending.
-	sSortEntry * const entries = new sSortEntry[count];
-	decVector2 center;
-	int i;
+	const decVector2 center(pNavPoints.Inject(decVector2(), [&](const decVector2 &c, int p){
+		return c + decVector2((float)(p % pointsPerRow), (float)(p / pointsPerRow));
+	}) / (float)count);
 	
-	for(i=0; i<count; i++){
-		sSortEntry &entry = entries[i];
-		entry.navpoint = pNavPoints.GetAt(i);
-		center.x += (float)(entry.navpoint % pointsPerRow);
-		center.y += (float)(entry.navpoint / pointsPerRow);
-	}
-	center /= (float)count;
-	
-	for(i=0; i<count; i++){
-		sSortEntry &entry = entries[i];
-		entry.angle = atan2f(
-			(float)(entry.navpoint % pointsPerRow) - center.x,
-			(float)(entry.navpoint / pointsPerRow) - center.y);
-	}
-	
-	for(i=1; i<count; i++){
-		if(entries[i - 1].angle >= entries[i].angle){
-			continue;
-		}
-		
-		const sSortEntry exchange(entries[i - 1]);
-		entries[i - 1] = entries[i];
-		entries[i] = exchange;
-		if(i > 1){
-			i -= 2;
-		}
-	}
-	
-	for(i=0; i<count; i++){
-		pNavPoints.SetAt(i, entries[i].navpoint);
-	}
-	
-	delete [] entries;
+	pNavPoints.Sort([&](int a, int b){
+		const float angleA = atan2f((float)(a % pointsPerRow) - center.x, (float)(a / pointsPerRow) - center.y);
+		const float angleB = atan2f((float)(b % pointsPerRow) - center.x, (float)(b / pointsPerRow) - center.y);
+		return angleA >= angleB ? -1 : 1;
+	});
 }
 
-bool meHeightTerrainNavSpaceFace::NavPointsMatch(const decIntList &navpoints) const{
+bool meHeightTerrainNavSpaceFace::NavPointsMatch(const decTList<int> &navpoints) const{
 	if(navpoints.GetCount() != pNavPoints.GetCount()){
 		return false;
 	}
 	
-	const int count = navpoints.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(!pNavPoints.Has(navpoints.GetAt(i))){
-			return false;
-		}
-	}
-	
-	return true;
+	return navpoints.AllMatching([&](int navpoint){
+		return pNavPoints.Has(navpoint);
+	});
 }
 
 bool meHeightTerrainNavSpaceFace::HasNavPoint(int navpoint) const{
@@ -153,19 +104,12 @@ bool meHeightTerrainNavSpaceFace::HasNavEdge(int navpoint1, int navpoint2) const
 		|| pNavPoints.GetAt((index - 1 + count) % count) == navpoint2;
 }
 
-bool meHeightTerrainNavSpaceFace::HasAllNavPointsIn(const decIntList &navpoints) const{
+bool meHeightTerrainNavSpaceFace::HasAllNavPointsIn(const decTList<int> &navpoints) const{
 	if(pNavPoints.GetCount() > navpoints.GetCount()){
 		return false;
 	}
 	
-	const int count = pNavPoints.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(!navpoints.Has(pNavPoints.GetAt(i))){
-			return false;
-		}
-	}
-	
-	return true;
+	return navpoints.AllMatching([&](int navpoint){
+		return pNavPoints.Has(navpoint);
+	});
 }

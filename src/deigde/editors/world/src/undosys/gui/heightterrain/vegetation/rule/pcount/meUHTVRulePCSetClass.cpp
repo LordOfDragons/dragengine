@@ -43,8 +43,8 @@
 meUHTVRulePCSetClass::meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass){
 	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Prop Count Set Class");
 	SetMemoryConsumption(sizeof(meUHTVRulePCSetClass));
@@ -53,14 +53,10 @@ meUHTVRulePCSetClass::meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pNewPropClass = nclass;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRulePCSetClass::~meUHTVRulePCSetClass(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

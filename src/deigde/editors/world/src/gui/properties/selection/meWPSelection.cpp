@@ -52,35 +52,29 @@
 
 meWPSelection::meWPSelection(meWindowProperties &windowProperties) :
 igdeSwitcher(windowProperties.GetEnvironment()),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
-	pListener = new meWPSelectionListener(*this);
+	pListener = meWPSelectionListener::Ref::New(*this);
 	
 	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
 	
-	pPanelObject.TakeOver(new meWPSObject(*this));
+	pPanelObject = meWPSObject::Ref::New(*this);
 	AddChild(pPanelObject);
 	
-	pPanelObjectShape.TakeOver(new meWPSObjectShape(*this));
+	pPanelObjectShape = meWPSObjectShape::Ref::New(*this);
 	AddChild(pPanelObjectShape);
 	
-	pPanelDecal.TakeOver(new meWPSDecal(*this));
+	pPanelDecal = meWPSDecal::Ref::New(*this);
 	AddChild(pPanelDecal);
 	
-	pPanelNavSpace.TakeOver(new meWPSNavSpace(*this));
+	pPanelNavSpace = meWPSNavSpace::Ref::New(*this);
 	AddChild(pPanelNavSpace);
 	
 	SetCurrent(0);  // empty
 }
 
 meWPSelection::~meWPSelection(){
-	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -93,27 +87,25 @@ void meWPSelection::SetWorld(meWorld *world){
 		return;
 	}
 	
-	((meWPSObject&)(igdeWidget&)pPanelObject).SetWorld(NULL);
-	((meWPSObjectShape&)(igdeWidget&)pPanelObjectShape).SetWorld(NULL);
-	((meWPSDecal&)(igdeWidget&)pPanelDecal).SetWorld(NULL);
-	((meWPSNavSpace&)(igdeWidget&)pPanelNavSpace).SetWorld(NULL);
+	pPanelObject->SetWorld(nullptr);
+	pPanelObjectShape->SetWorld(nullptr);
+	pPanelDecal->SetWorld(nullptr);
+	pPanelNavSpace->SetWorld(nullptr);
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
-	((meWPSObject&)(igdeWidget&)pPanelObject).SetWorld(world);
-	((meWPSObjectShape&)(igdeWidget&)pPanelObjectShape).SetWorld(world);
-	((meWPSDecal&)(igdeWidget&)pPanelDecal).SetWorld(world);
-	((meWPSNavSpace&)(igdeWidget&)pPanelNavSpace).SetWorld(world);
+	pPanelObject->SetWorld(world);
+	pPanelObjectShape->SetWorld(world);
+	pPanelDecal->SetWorld(world);
+	pPanelNavSpace->SetWorld(world);
 	
 	ElementModeChanged();
 }
@@ -149,7 +141,7 @@ void meWPSelection::ElementModeChanged(){
 }
 
 void meWPSelection::OnGameDefinitionChanged(){
-	((meWPSObject&)(igdeWidget&)pPanelObject).OnGameDefinitionChanged();
-	((meWPSObjectShape&)(igdeWidget&)pPanelObjectShape).OnGameDefinitionChanged();
-	((meWPSDecal&)(igdeWidget&)pPanelDecal).OnGameDefinitionChanged();
+	pPanelObject->OnGameDefinitionChanged();
+	pPanelObjectShape->OnGameDefinitionChanged();
+	pPanelDecal->OnGameDefinitionChanged();
 }

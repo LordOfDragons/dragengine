@@ -40,8 +40,8 @@
 ////////////////////////////
 
 meUAddNavSpace::meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace) :
-pWorld(NULL),
-pNavSpace(NULL)
+
+pNavSpace(nullptr)
 {
 	if(!world || !navspace){
 		DETHROW(deeInvalidParam);
@@ -50,10 +50,7 @@ pNavSpace(NULL)
 	SetShortInfo("Add Navigation Space");
 	
 	pWorld = world;
-	world->AddReference();
-	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUAddNavSpace::~meUAddNavSpace(){
@@ -98,10 +95,4 @@ void meUAddNavSpace::Redo(){
 //////////////////////
 
 void meUAddNavSpace::pCleanUp(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

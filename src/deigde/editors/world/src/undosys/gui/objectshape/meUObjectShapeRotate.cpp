@@ -43,8 +43,8 @@
 ////////////////////////////
 
 meUObjectShapeRotate::meUObjectShapeRotate(meObject *object, const char *property,
-const meObjectShapeList &list){
-	if(list.GetCount() == 0){
+const meObjectShape::List &list){
+	if(list.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	if(!object || !property){
@@ -54,11 +54,11 @@ const meObjectShapeList &list){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectShapeList &shapeList = object->GetWorld()->GetObjectShapes();
+	const meObjectShape::List &shapeList = object->GetWorld()->GetObjectShapes();
 	const int count = list.GetCount();
 	int i;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Rotate object shapes");
 	SetLongInfo("Rotate object shapes");
@@ -74,13 +74,9 @@ const meObjectShapeList &list){
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeRotate::~meUObjectShapeRotate(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

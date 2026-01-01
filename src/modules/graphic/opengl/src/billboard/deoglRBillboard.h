@@ -31,6 +31,10 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
 #include "../skin/deoglRSkin.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -40,13 +44,9 @@
 class deoglWorldOctree;
 class deoglRWorld;
 class deoglRenderThread;
-class deoglSkinState;
-#include "../skin/dynamic/deoglRDynamicSkin.h"
-#include "../envmap/deoglEnvironmentMap.h"
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglShaderParameterBlock;
-#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 class deoglRenderPlan;
 class deoglOcclusionTest;
 class deoglRenderPlanMasked;
@@ -96,7 +96,7 @@ private:
 	bool pSizeFixedToScreen;
 	bool pVisible;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinRendered pSkinRendered;
 	int pSkyShadowSplitMask;
 	float pSortDistance;
@@ -203,7 +203,7 @@ public:
 	void UpdateSkin(float elapsed);
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Init skin state states. */
 	void InitSkinStateStates();

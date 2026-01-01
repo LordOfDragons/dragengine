@@ -33,9 +33,8 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class meCDOObject
-///////////////////////////
+//////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -49,24 +48,9 @@ pProperties(object.GetProperties()),
 pAttachBehaviors(object.GetAttachBehaviors()),
 pAttachToIndex(-1)
 {
-	const int count = object.GetTextureCount();
-	meObjectTexture *texture = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			texture = new meObjectTexture(*object.GetTextureAt(i));
-			pTextures.AddTexture(texture);
-			texture->FreeReference();
-			texture = NULL;
-		}
-		
-	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-			throw;
-		}
-	}
+	object.GetTextures().Visit([&](const meObjectTexture &t){
+		pTextures.Add(meObjectTexture::Ref::New(t));
+	});
 }
 
 meCDOObject::~meCDOObject(){
@@ -92,25 +76,8 @@ void meCDOObject::UpdateObject(meObject &object) const{
 	object.SetRotation(pRotation);
 	object.SetProperties(pProperties);
 	object.SetAttachBehaviors(pAttachBehaviors);
-	
-	const int count = pTextures.GetTextureCount();
-	meObjectTexture *texture = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			texture = new meObjectTexture(*pTextures.GetTextureAt(i));
-			object.AddTexture(texture);
-			texture->FreeReference();
-			texture = NULL;
-		}
-		
-	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-			throw;
-		}
-	}
-	
+	pTextures.Visit([&](const meObjectTexture &t){
+		object.AddTexture(meObjectTexture::Ref::New(t));
+	});
 	object.SetAttachedToID(pAttachToID); // attach to non-pasted object
 }

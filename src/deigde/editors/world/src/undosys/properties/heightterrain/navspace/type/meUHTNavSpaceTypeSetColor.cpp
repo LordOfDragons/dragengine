@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType *type, const decColor &newColor) :
-pType(NULL),
+
 pNewColor(newColor)
 {
 	if(!type){
@@ -52,13 +52,9 @@ pNewColor(newColor)
 	SetShortInfo("Height terrain nav-space type set color");
 	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeSetColor::~meUHTNavSpaceTypeSetColor(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

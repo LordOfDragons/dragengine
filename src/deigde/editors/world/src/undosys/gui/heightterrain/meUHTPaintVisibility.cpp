@@ -63,8 +63,8 @@ const decPoint &size, meBitArray *oldVis){
 	
 	pWorld = world;
 	pSize = size;
-	pOldVis = NULL;
-	pNewVis = NULL;
+	pOldVis = nullptr;
+	pNewVis = nullptr;
 	
 	pSector.x1 = sector.x;
 	pSector.y1 = sector.y;
@@ -86,10 +86,7 @@ const decPoint &size, meBitArray *oldVis){
 	
 	try{
 		pOldVis = new meBitArray(size.x, size.y);
-		if(!pOldVis) DETHROW(deeOutOfMemory);
-		
 		pNewVis = new meBitArray(size.x, size.y);
-		if(!pNewVis) DETHROW(deeOutOfMemory);
 		
 		pSaveVisibility();
 		
@@ -162,9 +159,7 @@ void meUHTPaintVisibility::pSaveVisibility(){
 
 void meUHTPaintVisibility::pRestoreVisibility(meBitArray *vis){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-	int s, sectorCount = hterrain->GetSectorCount();
 	int imageDim = hterrain->GetSectorResolution();
-	meHeightTerrainSector *htsector;
 	decPoint scoord;
 	int sgx, sgy;
 	int adjust;
@@ -182,15 +177,14 @@ void meUHTPaintVisibility::pRestoreVisibility(meBitArray *vis){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith(scoord);
+			meHeightTerrainSector * const htsector = hterrain->GetSectorWith(scoord);
 			if(htsector){
 				htsector->GetVisibilityFaces()->SetValueAt(sgx, sgy, vis->GetValueAt(x, y));
 			}
 		}
 	}
 	
-	for(s=0; s<sectorCount; s++){
-		htsector = hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector *htsector){
 		const decPoint &scoord2 = htsector->GetCoordinates();
 		
 		if(scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2){
@@ -203,5 +197,5 @@ void meUHTPaintVisibility::pRestoreVisibility(meBitArray *vis){
 			
 			pWorld->NotifyHTSVisibilityChanged(htsector);
 		}
-	}
+	});
 }

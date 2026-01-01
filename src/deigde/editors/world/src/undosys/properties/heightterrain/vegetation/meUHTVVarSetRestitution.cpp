@@ -48,12 +48,9 @@ meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, floa
 	pNewRestitution = newRestitution;
 	
 	SetShortInfo("Vegetation Layer Variation Set Restitution");
-	
-	variation->AddReference();
 }
 
 meUHTVVarSetRestitution::~meUHTVVarSetRestitution(){
-	if(pVariation) pVariation->FreeReference();
 }
 
 

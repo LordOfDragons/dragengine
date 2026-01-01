@@ -25,10 +25,10 @@
 #ifndef _MEUDELETEOBJECT_H_
 #define _MEUDELETEOBJECT_H_
 
-#include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
 
-class meWorld;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -36,28 +36,29 @@ class meWorld;
  * \brief Delete objects.
  */
 class meUDeleteObject : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDeleteObject> Ref;
+	
+	
 private:
-	meWorld *pWorld;
-	decObjectOrderedSet pObjects;
-	decObjectOrderedSet pAttached;
+	meWorld::Ref pWorld;
+	meUndoDataObject::List pObjects, pAttached;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDeleteObject> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
 	meUDeleteObject(meWorld *world);
 	
+protected:
 	/** \brief Clean up undo action. */
-	virtual ~meUDeleteObject();
+	~meUDeleteObject() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
@@ -66,11 +67,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

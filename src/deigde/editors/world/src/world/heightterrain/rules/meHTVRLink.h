@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVRLINK_H_
 #define _MEHTVRLINK_H_
 
-// includes
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-// predefinitions
 class meHTVRule;
 
 
@@ -47,16 +45,20 @@ private:
 	int pDestSlot;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHTVRLink> Ref;
-
-
+	typedef decTObjectOrderedSet<meHTVRLink> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a link. */
 	meHTVRLink(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot);
+	
+protected:
 	/** Cleans up the link. */
 	virtual ~meHTVRLink();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

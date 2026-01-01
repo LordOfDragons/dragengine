@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleMapping;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleMapping.h"
 
 
 
@@ -42,13 +42,14 @@ class meHTVRuleMapping;
  */
 class meUHTVRuleMapToggleInversed : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleMapToggleInversed> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -56,7 +57,11 @@ public:
 	/** \brief Create object. */
 	meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleMapToggleInversed();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

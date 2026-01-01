@@ -45,13 +45,9 @@ meUCameraRotateObject::meUCameraRotateObject(meObject *object){
 	SetShortInfo("Rotate Camera Object");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUCameraRotateObject::~meUCameraRotateObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

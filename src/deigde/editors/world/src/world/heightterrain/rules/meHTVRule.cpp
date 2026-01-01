@@ -48,20 +48,8 @@ meHTVRule::meHTVRule(int type, int slotCount){
 	pType = type;
 	pShowParameters = true;
 	
-	pSlotCount = 0;
-	pSlots = NULL;
-	
-	try{
-		if(slotCount > 0){
-			pSlots = new meHTVRSlot[slotCount];
-			pSlotCount = slotCount;
-		}
-		
-	}catch(const deException &){
-		if(pSlots){
-			delete [] pSlots;
-		}
-		throw;
+	for(int i=0; i<slotCount; i++){
+		pSlots.Add(meHTVRSlot::Ref::New());
 	}
 }
 
@@ -69,32 +57,16 @@ meHTVRule::meHTVRule(const meHTVRule &rule) :
 pName(rule.pName),
 pType(rule.pType),
 pPosition(rule.pPosition),
-pShowParameters(rule.pShowParameters),
-pSlotCount(0),
-pSlots(NULL)
+pShowParameters(rule.pShowParameters)
 {
-	if(rule.pSlotCount == 0){
-		return;
-	}
-	
-	try{
-		pSlots = new meHTVRSlot[rule.pSlotCount];
-		for(pSlotCount=0; pSlotCount<rule.pSlotCount; pSlotCount++){
-			pSlots[pSlotCount].SetIsInput(rule.pSlots[pSlotCount].GetIsInput());
-		}
-		
-	}catch(const deException &){
-		if(pSlots){
-			delete [] pSlots;
-		}
-		throw;
-	}
+	rule.pSlots.Visit([&](const meHTVRSlot &s){
+		const meHTVRSlot::Ref newSlot = meHTVRSlot::Ref::New();
+		newSlot->SetIsInput(s.GetIsInput());
+		pSlots.Add(newSlot);
+	});
 }
 
 meHTVRule::~meHTVRule(){
-	if(pSlots){
-		delete [] pSlots;
-	}
 }
 
 
@@ -103,8 +75,6 @@ meHTVRule::~meHTVRule(){
 ///////////////
 
 void meHTVRule::SetName(const char *name){
-	if(!name) DETHROW(deeInvalidParam);
-	
 	pName = name;
 }
 
@@ -116,43 +86,20 @@ void meHTVRule::SetShowParameters(bool showParameters){
 	pShowParameters = showParameters;
 }
 
-meHTVRSlot &meHTVRule::GetSlotAt(int slot) const{
-	if(slot < 0 || slot >= pSlotCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pSlots[slot];
-}
-
 bool meHTVRule::DependsOn(meHTVRule *rule) const{
-	if(!rule) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rule)
 	
 	// by definition we depend on ourself
-	if(rule == this) return true;
-	
-	// otherwise test all input slot nodes for dependance
-	meHTVRule *linkRule;
-	int s, l, linkCount;
-	
-	for(s=0; s<pSlotCount; s++){
-		const meHTVRSlot &slot = pSlots[s];
-		if(!slot.GetIsInput()){
-			continue;
-		}
-		
-		linkCount = slot.GetLinkCount();
-		
-		for(l=0; l<linkCount; l++){
-			const meHTVRLink &link = *slot.GetLinkAt(l);
-			linkRule = link.GetSourceRule();
-			
-			if(linkRule->DependsOn(rule)){
-				return true;
-			}
-		}
+	if(rule == this){
+		return true;
 	}
 	
-	// not dependent on the given rule
-	return false;
+	// otherwise test all input slot nodes for dependance
+	return pSlots.HasMatching([&](const meHTVRSlot &slot){
+		return slot.GetIsInput() && slot.GetLinks().HasMatching([&](const meHTVRLink &link){
+			return link.GetSourceRule()->DependsOn(rule);
+		});
+	});
 }
 
 
@@ -160,13 +107,13 @@ bool meHTVRule::DependsOn(meHTVRule *rule) const{
 void meHTVRule::Reset(){
 }
 
-void meHTVRule::Evaluate(meHTVEvaluationEnvironment &evalEnv){
+void meHTVRule::Evaluate(meHTVEvaluationEnvironment&){
 }
 
-float meHTVRule::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+float meHTVRule::GetOutputSlotValueAt(int, meHTVEvaluationEnvironment&){
 	DETHROW(deeInvalidParam);
 }
 
-decVector meHTVRule::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+decVector meHTVRule::GetOutputSlotVectorAt(int, meHTVEvaluationEnvironment&){
 	DETHROW(deeInvalidParam);
 }

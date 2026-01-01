@@ -35,15 +35,16 @@
  * Undo action view set limit box extends.
  */
 class meUViewSetLimitBoxExtends : public igdeUndo{
+public:
+	typedef deTObjectReference<meUViewSetLimitBoxExtends> Ref;
+	
+	
 private:
 	meWorld::Ref pWorld;
 	decVector pOldMin, pNewMin, pOldMax, pNewMax;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUViewSetLimitBoxExtends> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

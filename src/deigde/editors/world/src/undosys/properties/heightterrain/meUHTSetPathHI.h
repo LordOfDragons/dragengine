@@ -32,7 +32,7 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
+#include "../../../world/meWorld.h"
 class meHeightTerrainSector;
 
 
@@ -43,17 +43,18 @@ class meHeightTerrainSector;
  * Undo action to set the height image path.
  */
 class meUHTSetPathHI : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTSetPathHI> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	decString pOldPath;
 	decString pNewPath;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTSetPathHI> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -61,7 +62,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTSetPathHI();
+
+public:
 	/*@}*/
 	
 public:

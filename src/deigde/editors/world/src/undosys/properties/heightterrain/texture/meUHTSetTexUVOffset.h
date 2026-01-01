@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -44,26 +44,32 @@ class meHeightTerrainTexture;
  * Undo action to set the uv offset of a height image texture.
  */
 class meUHTSetTexUVOffset : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTSetTexUVOffset> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTSetTexUVOffset> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset);
+	meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector,
+		meHeightTerrainTexture *texture, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTSetTexUVOffset();
+
+public:
 	/*@}*/
 	
 public:

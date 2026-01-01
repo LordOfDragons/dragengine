@@ -41,11 +41,9 @@
 ////////////////////////////
 
 meNavigationSpaceSelection::meNavigationSpaceSelection(){
-	pActive = NULL;
 }
 
 meNavigationSpaceSelection::~meNavigationSpaceSelection(){
-	Reset();
 }
 
 
@@ -54,30 +52,23 @@ meNavigationSpaceSelection::~meNavigationSpaceSelection(){
 ///////////////
 
 void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
-	if(!navspaces){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(navspaces)
 	
 	navspaces->SetSelected(true);
-	pSelection.AddIfAbsent(navspaces);
+	pSelection.Add(navspaces);
 }
 
 void meNavigationSpaceSelection::Remove(meNavigationSpace *navspaces){
-	if(!navspaces){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(navspaces)
 	
 	navspaces->SetSelected(false);
-	pSelection.RemoveIfPresent(navspaces);
+	pSelection.Remove(navspaces);
 }
 
 void meNavigationSpaceSelection::RemoveAll(){
-	const int count = pSelection.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pSelection.GetAt(i)->SetSelected(false);
-	}
+	pSelection.Visit([](meNavigationSpace &navspaces){
+		navspaces.SetSelected(false);
+	});
 	
 	pSelection.RemoveAll();
 }
@@ -85,32 +76,29 @@ void meNavigationSpaceSelection::RemoveAll(){
 
 
 bool meNavigationSpaceSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive.IsNotNull();
 }
 
 void meNavigationSpaceSelection::SetActive(meNavigationSpace *navspaces){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = navspaces;
 	
 	if(navspaces){
-		navspaces->AddReference();
 		navspaces->SetActive(true);
 	}
 }
 
 void meNavigationSpaceSelection::ActivateNext(){
-	const int count = pSelection.GetCount();
-	meNavigationSpace *next = NULL;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pActive != pSelection.GetAt(i)){
-			next = pSelection.GetAt(i);
-			break;
+	meNavigationSpace *next = nullptr;
+	if(pSelection.IsNotEmpty()){
+		if(pSelection.First() != pActive){
+			next = pSelection.First();
+			
+		}else if(pSelection.GetCount() > 1){
+			next = pSelection.GetAt(1);
 		}
 	}
 	
@@ -119,5 +107,5 @@ void meNavigationSpaceSelection::ActivateNext(){
 
 void meNavigationSpaceSelection::Reset(){
 	RemoveAll();
-	SetActive(NULL);
+	SetActive(nullptr);
 }

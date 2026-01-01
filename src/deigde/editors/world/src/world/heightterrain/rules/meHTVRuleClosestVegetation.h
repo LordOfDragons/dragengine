@@ -75,8 +75,11 @@ public:
 	/** \brief Create copy of rule. */
 	meHTVRuleClosestVegetation(const meHTVRuleClosestVegetation &rule);
 	
+protected:
 	/** Cleans up the rule. */
 	~meHTVRuleClosestVegetation() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -101,7 +104,7 @@ public:
 	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

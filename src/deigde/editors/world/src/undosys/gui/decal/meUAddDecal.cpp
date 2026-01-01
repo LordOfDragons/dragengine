@@ -44,22 +44,17 @@
 meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
-	pWorld = NULL;
-	pDecal = NULL;
+	pWorld = nullptr;
+	pDecal = nullptr;
 	
 	SetShortInfo("Add Decal");
 	SetLongInfo("");
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUAddDecal::~meUAddDecal(){
-	if(pDecal) pDecal->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

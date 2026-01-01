@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meUDecalPropertyRemoveFromSelected.h"
 #include "meUndoDataDecalProperty.h"
 #include "../../../../world/meWorld.h"
@@ -40,50 +37,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meDecalList &list, const char *key){
-	meUndoDataDecalProperty *undoData = NULL;
-	const int count = list.GetCount();
-	meDecal *decal;
-	int i;
+meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meDecal::List &list, const char *key){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(!key || count < 1){
-		DETHROW(deeInvalidParam);
-	}
+	SetShortInfo("Remove decal property from selected");
+	pKey = key;
 	
-	try{
-		SetShortInfo("Remove decal property from selected");
-		pKey = key;
+	list.Visit([&](meDecal *decal){
+		DEASSERT_NOTNULL(decal->GetWorld())
 		
-		for(i=0; i<count; i++){
-			decal = list.GetAt(i);
-			if(!decal->GetWorld()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			const decStringDictionary &properties = decal->GetProperties();
-			
-			undoData = new meUndoDataDecalProperty(decal);
-			undoData->SetPropertyExists(properties.Has(key));
-			if(undoData->GetPropertyExists()){
-				undoData->SetOldValue(properties.GetAt(key));
-			}
-			
-			pList.Add(undoData);
-			undoData->FreeReference();
-			undoData = NULL;
+		const decStringDictionary &properties = decal->GetProperties();
+		
+		const meUndoDataDecalProperty::Ref udata(meUndoDataDecalProperty::Ref::New(decal));
+		udata->SetPropertyExists(properties.Has(key));
+		if(udata->GetPropertyExists()){
+			udata->SetOldValue(properties.GetAt(key));
 		}
 		
-	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+		pList.Add(udata);
+	});
 }
 
 meUDecalPropertyRemoveFromSelected::~meUDecalPropertyRemoveFromSelected(){
-	pCleanUp();
 }
 
 
@@ -92,36 +67,17 @@ meUDecalPropertyRemoveFromSelected::~meUDecalPropertyRemoveFromSelected(){
 ///////////////
 
 void meUDecalPropertyRemoveFromSelected::Undo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
-		
-		if(undoData.GetPropertyExists()){
-			undoData.GetDecal()->SetProperty(pKey, undoData.GetOldValue());
+	pList.Visit([&](const meUndoDataDecalProperty &data){
+		if(data.GetPropertyExists()){
+			data.GetDecal()->SetProperty(pKey, data.GetOldValue());
 		}
-	}
+	});
 }
 
 void meUDecalPropertyRemoveFromSelected::Redo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
-		
-		if(undoData.GetPropertyExists()){
-			undoData.GetDecal()->RemoveProperty(pKey);
+	pList.Visit([&](const meUndoDataDecalProperty &data){
+		if(data.GetPropertyExists()){
+			data.GetDecal()->RemoveProperty(pKey);
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDecalPropertyRemoveFromSelected::pCleanUp(){
-	pList.RemoveAll();
+	});
 }

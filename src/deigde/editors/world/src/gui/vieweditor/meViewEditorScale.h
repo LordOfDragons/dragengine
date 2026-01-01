@@ -26,6 +26,7 @@
 #define _MEVIEWEDITORSCALE_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../undosys/gui/meBaseUndoScale.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -36,16 +37,23 @@
  * View editor for scaling scene elements.
  */
 class meViewEditorScale : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorScale> Ref;
+	
 private:
-	igdeUndo::Ref pUndoScale;
+	meBaseUndoScale::Ref pUndoScale;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorScale(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
 	~meViewEditorScale() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -22,41 +22,41 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUOBJECTTEXTURESETSKIN_H_
 #define _MEUOBJECTTEXTURESETSKIN_H_
 
-// includes
+#include "../../../../world/object/texture/meObjectTexture.h"
+
 #include <deigde/undo/igdeUndo.h>
-
-// predefinitions
-class meObjectTexture;
-class meObjectTextureList;
-
 
 
 /**
  * Undo action for setting object layer projection axis.
  */
 class meUObjectTextureSetSkin : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectTextureSetSkin> Ref;
+	
+	
 private:
-	struct sTexture{
-		meObjectTexture *texture;
-		decString oldskin;
-		decString newskin;
+	class cTexture : public deObject{
+	public:
+		typedef deTObjectReference<cTexture> Ref;
+		typedef decTObjectOrderedSet<cTexture> List;
+		
+		meObjectTexture::Ref texture;
+		decString oldskin, newskin;
+		
+		cTexture() = default;
 	};
 	
 private:
-	sTexture *pTextures;
-	int pTextureCount;
+	cTexture::List pTextures;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectTextureSetSkin> Ref;
-	
 	// constructor, destructor
 	meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin);
-	meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin);
+	meUObjectTextureSetSkin(meObjectTexture::List &textures, const char *newskin);
 	
 protected:
 	~meUObjectTextureSetSkin();
@@ -65,10 +65,5 @@ public:
 	// management
 	void Undo();
 	void Redo();
-	
-private:
-	void pCleanUp();
 };
-
-// end of include only once
 #endif

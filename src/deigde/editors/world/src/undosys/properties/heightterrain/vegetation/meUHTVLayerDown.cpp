@@ -47,20 +47,14 @@ meUHTVLayerDown::meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain,
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	pIndex = heightTerrain->IndexOfVLayer(vlayer);
-	if(pIndex == -1 || pIndex >= heightTerrain->GetVLayerCount() - 1) DETHROW(deeInvalidParam);
+	pIndex = heightTerrain->GetVLayers().IndexOf(vlayer);
+	if(pIndex == -1 || pIndex >= heightTerrain->GetVLayers().GetCount() - 1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Height Terrain Vegetation Layer Down");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerDown::~meUHTVLayerDown(){
-	if(pVLayer) pVLayer->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 
