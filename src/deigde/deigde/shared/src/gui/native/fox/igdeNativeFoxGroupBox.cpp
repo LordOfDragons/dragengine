@@ -120,7 +120,7 @@ void igdeNativeFoxGroupBox::DestroyNativeWidget(){
 
 FXint igdeNativeFoxGroupBox::getDefaultHeight(){
 	if(pOwner->GetCollapsed()){
-		return getFont()->getSize() / 10 + igdeApplication::app().DisplayScaled(11);
+		return GetCollapsedHeight();
 		
 	}else{
 		return FXGroupBox::getDefaultHeight();
@@ -235,7 +235,7 @@ long igdeNativeFoxGroupBox::onLeftMouseDown(FXObject*, FXSelector, void *pdata){
 	// change collapsed state only if clicked in the area of the caption
 	// TODO figure out the correct height. check out FXPacker source to see where it places
 	//      the first child item using LAYOUT_SIDE_TOP. this should give a hint
-	if(y >= 0 && y < /*15*/ (int)getFont()->getSize() / 10 + igdeApplication::app().DisplayScaled(11)){
+	if(y >= 0 && y < GetCollapsedHeight()){
 		pOwner->SetCollapsed(!pOwner->GetCollapsed());
 	}
 	
@@ -256,6 +256,14 @@ long igdeNativeFoxGroupBox::onChildLayoutFlags(FXObject*, FXSelector, void *pdat
 	}
 	
 	return 1;
+}
+
+int igdeNativeFoxGroupBox::GetCollapsedHeight() const{
+#ifdef OS_W32
+	return getFont()->getSize() / 10 + igdeApplication::app().DisplayScaled(11);
+#else
+	return getFont()->getSize() / 10 + 11;
+#endif
 }
 
 #endif

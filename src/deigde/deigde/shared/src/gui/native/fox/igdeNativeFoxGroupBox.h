@@ -100,6 +100,9 @@ public:
 	long onLeftMouseDown(FXObject*, FXSelector, void*);
 	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
+	
+private:
+	int GetCollapsedHeight() const;
 };
 
 typedef igdeNativeFoxGroupBox igdeNativeGroupBox;
