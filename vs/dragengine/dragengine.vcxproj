@@ -1062,6 +1062,7 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
+    <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h" />
@@ -1677,5 +1678,6 @@
     <ClInclude Include="..\..\src\dragengine\src\threading\deThread.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObject.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h" />
+    <ClInclude Include="..\..\src\dragengine\base64\base64.h" />
   </ItemGroup>
 </Project>

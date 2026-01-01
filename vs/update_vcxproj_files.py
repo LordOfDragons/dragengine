@@ -58,7 +58,7 @@ def make_relative_path(file_path: str, project_dir: str) -> str:
         return rel_path.replace('/', '\\')
 
 
-def get_source_dir_from_vcxproj(vcxproj_path: Path) -> Path:
+def get_source_dir_from_vcxproj(vcxproj_path: Path) -> Path | List[Path] | None:
     """Determine the source directory from .vcxproj file location."""
     # Map vcxproj path to source directory
     vcxproj_str = str(vcxproj_path)
@@ -67,7 +67,8 @@ def get_source_dir_from_vcxproj(vcxproj_path: Path) -> Path:
     
     # Dragengine
     if 'vs/dragengine/dragengine.vcxproj' in vcxproj_str:
-        return root_dir / 'src' / 'dragengine' / 'src'
+        return [root_dir / 'src' / 'dragengine' / 'src',
+            root_dir / 'src' / 'dragengine' / 'base64']
     
     # Modules
     if '/modules/ai/deai/' in vcxproj_str:
@@ -219,19 +220,28 @@ def update_vcxproj_file(vcxproj_path: Path, dry_run: bool = False) -> bool:
     print(f"Processing: {vcxproj_path}")
     
     src_dir = get_source_dir_from_vcxproj(vcxproj_path)
+    
+    if src_dir is not None:
+        if not isinstance(src_dir, (list, tuple)):
+            src_dir = [src_dir]
+    
     if src_dir is None:
         print(f"  WARNING: Could not determine source directory for {vcxproj_path}")
         return False
     
-    if not src_dir.exists():
-        print(f"  WARNING: Source directory does not exist: {src_dir}")
-        return False
+    cpp_files = []
+    header_files = []
     
-    print(f"  Source directory: {src_dir}")
-    
-    # Find all source and header files
-    cpp_files = find_source_files(src_dir, {'.cpp', '.c'})
-    header_files = find_source_files(src_dir, {'.h', '.hpp'})
+    for sd in src_dir:
+        if not sd.exists():
+            print(f"  WARNING: Source directory does not exist: {sd}")
+            return False
+        
+        print(f"  Source directory: {sd}")
+        
+        # Find all source and header files
+        cpp_files.extend(find_source_files(sd, {'.cpp', '.c'}))
+        header_files.extend(find_source_files(sd, {'.h', '.hpp'}))
     
     cpp_files = [f for f in cpp_files if Path(f).name not in exclude_files]
     header_files = [f for f in header_files if Path(f).name not in exclude_files]
