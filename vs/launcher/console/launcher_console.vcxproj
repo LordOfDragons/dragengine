@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -37,33 +37,6 @@
   <ItemGroup>
     <None Include="..\..\..\src\launcher\console\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionDelga.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionDelgaHelper.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionGames.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionHelp.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionPatches.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declListProfiles.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\action\declRunGame.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\config\declConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\config\declConfigXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\consolelauncher.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\declLauncher.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\console\src\logger\declLoggerFiltered.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionDelga.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionDelgaHelper.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionGames.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionHelp.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionPatches.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declListProfiles.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\action\declRunGame.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\config\declConfiguration.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\config\declConfigXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\declLauncher.h" />
-    <ClInclude Include="..\..\..\src\launcher\console\src\logger\declLoggerFiltered.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -262,4 +235,31 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionDelga.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionDelgaHelper.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionGames.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionHelp.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declActionPatches.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declListProfiles.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\action\declRunGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\config\declConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\config\declConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\consolelauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\declLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\console\src\logger\declLoggerFiltered.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionDelga.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionDelgaHelper.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionGames.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionHelp.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declActionPatches.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declListProfiles.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\action\declRunGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\config\declConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\config\declConfiguration.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\declLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\console\src\logger\declLoggerFiltered.h" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -37,68 +37,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\deigde\editors\langpack\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfiguration.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfigurationXML.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPack.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPackListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMain.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPackListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistory.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpackditor.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntryList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPack.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackBuilder.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveLangPack.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveSystem.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\lpeIGDEModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryAdd.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryRemove.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetText.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetDescription.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetIdentifier.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetMissingText.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetName.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfiguration.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfigurationXML.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPack.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPackListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMain.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPackListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistory.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpackditor.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntryList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPack.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackBuilder.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveLangPack.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveSystem.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\lpeIGDEModule.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryAdd.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryRemove.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetText.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetDescription.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetIdentifier.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetMissingText.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetName.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -330,4 +268,64 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPackListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPackListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\langpackditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveLangPack.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\lpeIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetDescription.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetIdentifier.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetMissingText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetName.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\configuration\lpeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeViewLangPackListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\lpeWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPLangPackListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\gui\properties\lpeWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntry.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\entry\lpeLangPackEntrySelection.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpack\lpeLangPackListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\langpackditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveLangPack.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\loadsave\lpeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\lpeIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntryRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\entry\lpeULangPackEntrySetText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetDescription.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetIdentifier.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetMissingText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\langpack\src\undosys\langpack\lpeULangPackSetName.h" />
+  </ItemGroup>
 </Project>

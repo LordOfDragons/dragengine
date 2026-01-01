@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -40,20 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\steamsdk\src\module.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -267,4 +253,18 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h" />
+  </ItemGroup>
 </Project>

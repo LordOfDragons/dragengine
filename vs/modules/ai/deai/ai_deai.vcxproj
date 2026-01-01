@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -46,74 +46,6 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\dedaiCommandExecuter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\deDEAIModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\devmode\dedaiDeveloperMode.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\blocker\dedaiNavBlocker.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderEdge.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderFace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\costs\dedaiCostTable.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavigator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavSpace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiPathCollisionListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrain.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainNavSpace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainSector.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\layer\dedaiLayer.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridVertex.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshCorner.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshEdge.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshFace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshLink.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFaceList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiShapeToConvexVolume.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\world\dedaiWorld.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\dedaiCommandExecuter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\deDEAIModule.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\devmode\dedaiDeveloperMode.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\blocker\dedaiNavBlocker.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderEdge.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderFace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\costs\dedaiCostTable.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavigator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavSpace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiPathCollisionListener.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrain.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainNavSpace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainSector.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\layer\dedaiLayer.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridVertex.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMesh.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshCorner.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshEdge.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshFace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshLink.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFaceList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiShapeToConvexVolume.h" />
-    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\world\dedaiWorld.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\ai\deai\SConscript" />
@@ -506,4 +438,72 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\deDEAIModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\dedaiCommandExecuter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\devmode\dedaiDeveloperMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\blocker\dedaiNavBlocker.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderEdge.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\costs\dedaiCostTable.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavSpace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavigator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiPathCollisionListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrain.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainNavSpace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainSector.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\layer\dedaiLayer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridVertex.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshCorner.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshEdge.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFaceList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiShapeToConvexVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\ai\deai\src\world\dedaiWorld.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\deDEAIModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\dedaiCommandExecuter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\devmode\dedaiDeveloperMode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\blocker\dedaiNavBlocker.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderEdge.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\builder\dedaiNavMeshBuilderFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\costs\dedaiCostTable.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavSpace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiNavigator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\dedaiPathCollisionListener.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainNavSpace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\heightterrain\dedaiHeightTerrainSector.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\layer\dedaiLayer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderFunnel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavGrid.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderNavMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\pathfinding\dedaiPathFinderPointList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\dedaiSpace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGrid.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridEdge.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\grid\dedaiSpaceGridVertex.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMesh.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshCorner.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshEdge.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\navigation\spaces\mesh\dedaiSpaceMeshLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiConvexFaceList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\utils\dedaiShapeToConvexVolume.h" />
+    <ClInclude Include="..\..\..\..\src\modules\ai\deai\src\world\dedaiWorld.h" />
+  </ItemGroup>
 </Project>

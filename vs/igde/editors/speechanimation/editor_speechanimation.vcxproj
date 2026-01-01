@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -37,84 +37,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\deigde\editors\speechAnimation\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -346,4 +268,82 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.h" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -56,16 +56,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\png3d\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DImageInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DModule.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DTarball.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DImageInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DTarball.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\png3d\src\module.xml" />
@@ -428,4 +418,14 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DImageInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\png3d\src\dePng3DTarball.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DImageInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\png3d\src\dePng3DTarball.h" />
+  </ItemGroup>
 </Project>

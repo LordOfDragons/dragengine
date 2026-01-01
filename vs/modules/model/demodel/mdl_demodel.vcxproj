@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -50,18 +50,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\model\demodel\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\model\demodel\src\module.xml" />
@@ -420,4 +408,16 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\deModelModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlTexCoordSorter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\model\demodel\src\demdlWeightSetList.h" />
+  </ItemGroup>
 </Project>

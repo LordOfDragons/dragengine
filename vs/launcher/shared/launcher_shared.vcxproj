@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -29,97 +29,6 @@
   <ItemGroup>
     <None Include="..\..\..\src\launcher\shared\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\launcher\shared\src\delLauncher.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngine.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.cpp" />
-    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\launcher\shared\src\delLauncher.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngine.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\deglGameProfile.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.h" />
-    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
@@ -355,4 +264,94 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\launcher\shared\src\delLauncher.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngine.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGame.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\delGameXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.cpp" />
+    <ClCompile Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\launcher\shared\src\delLauncher.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngine.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstance.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceDirect.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceReadLog.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineInstanceThreaded.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcess.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessMain.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\delEngineProcessRunGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\delEngineModuleXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\engine\modules\parameter\delEMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGame.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameConfigXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameRunParams.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\delGameXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormat.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\fileformat\delFileFormatList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIcon.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\icon\delGameIconList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatch.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchManager.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\patch\delPatchXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersion.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPDisableModuleVersionList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameter.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPMParameterList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModule.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGPModuleList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfile.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\game\profile\delGameProfileList.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistory.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryEntry.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerHistoryListener.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\logger\delLoggerWritePipe.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delBaseXML.h" />
+    <ClInclude Include="..\..\..\src\launcher\shared\src\utils\delSharedConfigXML.h" />
+  </ItemGroup>
 </Project>

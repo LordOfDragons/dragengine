@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -50,16 +50,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.h" />
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.h" />
-    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\module.xml" />
@@ -418,4 +408,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deOccMeshModule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSet.h" />
+    <ClInclude Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\deoccmWeightSetList.h" />
+  </ItemGroup>
 </Project>
