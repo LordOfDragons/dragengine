@@ -31,6 +31,8 @@
 #include "delEngineProcess.h"
 #include "delEngineProcessMain.h"
 
+#include <dragengine/common/exceptions.h>
+
 #if defined OS_BEOS
 #	include <dragengine/app/deOSBeOS.h>
 #	include <dragengine/app/deOSConsole.h>

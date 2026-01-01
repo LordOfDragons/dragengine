@@ -24,11 +24,8 @@ $CmakeSourceDir = "$ExpandedDir\openal-soft-$OpenALVersion"
 $CmakeInstallDir = "$ExpandedDir\install"
 
 cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
-	-DALSOFT_CONFIG=OFF `
-	-DALSOFT_HRTF_DEFS=OFF `
 	-DALSOFT_NO_CONFIG_UTIL=ON `
 	-DALSOFT_EXAMPLES=OFF `
-	-DALSOFT_STATIC_LIBGCC=OFF `
 	-DALSOFT_TESTS=OFF `
 	-DALSOFT_UTILS=OFF `
 	-DALSOFT_INSTALL=ON `
@@ -38,7 +35,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DALSOFT_REQUIRE_WINMM=ON `
 	-DALSOFT_REQUIRE_WASAPI=ON `
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON `
-	-DLIBTYPE=STATIC
+	-DLIBTYPE=STATIC `
+	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir"
 
 cmake --build "$CmakeBuildDir" -- /p:Configuration=Release
 cmake --install "$CmakeBuildDir"
@@ -51,13 +49,11 @@ if (!(Test-Path "$CmakeInstallDir\include")) {
 }
 if (!(Test-Path "$CmakeInstallDir\include\AL")) {
     New-Item -Path "$CmakeInstallDir\include\AL" -ItemType "directory"
+	Move-Item -Path "$CmakeSourceDir\include\AL\*.h" `
+		-Destination "$CmakeInstallDir\include\AL"
 }
 if (!(Test-Path "$CmakeInstallDir\lib")) {
     New-Item -Path "$CmakeInstallDir\lib" -ItemType "directory"
+	Move-Item -Path "$CmakeBuildDir\Release\OpenAL32.lib" `
+		-Destination "$CmakeInstallDir\lib"
 }
-
-Move-Item -Path "$CmakeSourceDir\include\AL\*.h" `
-	-Destination "$CmakeInstallDir\include\AL"
-
-Move-Item -Path "$CmakeBuildDir\Release\OpenAL32.lib" `
-	-Destination "$CmakeInstallDir\lib"

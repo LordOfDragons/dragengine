@@ -29,6 +29,11 @@
 
 #include "../common/exceptions_reduced.h"
 
+// Helper functions to solve compile problems with MSVC
+extern "C" DE_DLL_EXPORT void deTThreadSafeObjectReference_AddRef(void *p);
+extern "C" DE_DLL_EXPORT void deTThreadSafeObjectReference_FreeRef(void *p);
+
+
 /**
  * \brief Template deThreadSafeObject reference.
  * \version 1.5
@@ -62,7 +67,8 @@ public:
 	 */
 	explicit deTThreadSafeObjectReference(T *object) : pObject(object){
 		if(pObject){
-			pObject->AddReference();
+			/* call helper to avoid requiring T definition here */
+			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -73,7 +79,7 @@ public:
 	 */
 	deTThreadSafeObjectReference(const deTThreadSafeObjectReference &reference) : pObject(reference.pObject){
 		if(pObject){
-			pObject->AddReference();
+			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -85,7 +91,7 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTThreadSafeObjectReference(const deTThreadSafeObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
-			pObject->AddReference();
+			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -98,7 +104,7 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTThreadSafeObjectReference(deTThreadSafeObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
-			pObject->AddReference();
+			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 		reference = nullptr;
 	}
@@ -119,7 +125,8 @@ public:
 	 */
 	~deTThreadSafeObjectReference(){
 		if(pObject){
-			pObject->FreeReference();
+			/* call helper to avoid requiring T definition here */
+			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
 		}
 	}
 	/*@}*/
@@ -198,13 +205,13 @@ public:
 		}
 		
 		if(pObject){
-			pObject->FreeReference();
+			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
 		}
 		
 		pObject = object;
 		
 		if(object){
-			object->AddReference();
+			deTThreadSafeObjectReference_AddRef(static_cast<void*>(object));
 		}
 		
 		return *this;

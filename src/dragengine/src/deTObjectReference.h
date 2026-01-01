@@ -29,6 +29,11 @@
 
 #include "common/exceptions_reduced.h"
 
+// Helper functions to solve compile problems with MSVC
+extern "C" DE_DLL_EXPORT void deTObjectReference_AddRef(void *p);
+extern "C" DE_DLL_EXPORT void deTObjectReference_FreeRef(void *p);
+
+
 /**
  * \brief Object reference template.
  * \version 1.5
@@ -62,7 +67,8 @@ public:
 	 */
 	explicit deTObjectReference(T *object) : pObject(object){
 		if(pObject){
-			pObject->AddReference();
+			/* call helper to avoid requiring T definition here */
+			deTObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -73,7 +79,7 @@ public:
 	 */
 	deTObjectReference(const deTObjectReference &reference) : pObject(reference.pObject){
 		if(pObject){
-			pObject->AddReference();
+			deTObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -85,7 +91,7 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTObjectReference(const deTObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
-			pObject->AddReference();
+			deTObjectReference_AddRef(static_cast<void*>(pObject));
 		}
 	}
 	
@@ -98,7 +104,7 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTObjectReference(deTObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
-			pObject->AddReference();
+			deTObjectReference_AddRef(static_cast<void*>(pObject));
 			reference = nullptr;
 		}
 	}
@@ -110,7 +116,7 @@ public:
 	 */
 	~deTObjectReference(){
 		if(pObject){
-			pObject->FreeReference();
+			deTObjectReference_FreeRef(static_cast<void*>(pObject));
 		}
 	}
 	/*@}*/
@@ -211,13 +217,13 @@ public:
 		}
 		
 		if(pObject){
-			pObject->FreeReference();
+			deTObjectReference_FreeRef(static_cast<void*>(pObject));
 		}
 		
 		pObject = object;
 		
 		if(object){
-			object->AddReference();
+			deTObjectReference_AddRef(static_cast<void*>(object));
 		}
 		
 		return *this;

@@ -29,6 +29,9 @@
 
 #include "deObject.h"
 
+// Helper functions to solve compile problems with MSVC
+extern "C" DE_DLL_EXPORT deObject::cWeakRefData *deTObjectReference_AddWeakRef(void *p);
+
 
 /**
  * \brief Weak object reference.
@@ -48,7 +51,8 @@ public:
 	/** \brief Create weak object reference or nullptr. */
 	explicit deTWeakObjectReference(T *object) : pReference(nullptr){
 		if(object){
-			pReference = object->AddWeakReference();
+			/* call helper to avoid requiring T definition here */
+			pReference = deTObjectReference_AddWeakRef(static_cast<void*>(object));
 		}
 	}
 	
@@ -163,7 +167,7 @@ public:
 		pReference = nullptr;
 		
 		if(object){
-			pReference = object->AddWeakReference();
+			pReference = deTObjectReference_AddWeakRef(static_cast<void*>(object));
 		}
 		
 		return *this;
@@ -171,7 +175,7 @@ public:
 	
 	/** \brief Assign weak reference. */
 	inline deTWeakObjectReference &operator=(const deTWeakObjectReference &reference){
-		return operator=(reference.pReference);
+		return operator=(reference.Pointer());
 	}
 	
 	/** \brief Store object. */

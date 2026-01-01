@@ -15,31 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\src\dragengine\SConscript"/>
-    <None Include="..\..\SConstruct"/>
-    <None Include="post_build.ps1"/>
-    <None Include="pre_build.ps1"/>
+    <None Include="..\..\src\dragengine\SConscript" />
+    <None Include="..\..\SConstruct" />
+    <None Include="post_build.ps1" />
+    <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSAndroid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSBeOS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSConsole.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSUnix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\app\deOSWebWasm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp">
@@ -1818,30 +1803,24 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\base64\base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\deTObjectReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\app\deOS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSAndroid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSBeOS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSConsole.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSMacOS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSUnix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\app\deOSWebWasm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\app\deOSWindows.h">
@@ -3672,6 +3651,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions_safe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\base64\base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

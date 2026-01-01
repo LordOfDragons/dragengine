@@ -94,11 +94,9 @@ void igdeEditorWindow::OnDeactivate(){
 
 #ifdef OS_W32
 void igdeEditorWindow::SaveResourceHandlers(){
-	const int count = GetChildCount();
-	int i;
-	for(i=0; i<count; i++){
-		GetChildAt(i)->DestroyNativeWidget();
-	}
+	GetChildren().Visit([](igdeWidget &child){
+		child.DestroyNativeWidget();
+	});
 }
 #endif
 

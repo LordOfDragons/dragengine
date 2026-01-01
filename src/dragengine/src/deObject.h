@@ -47,7 +47,7 @@ public:
 	
 	
 	/** \brief Weak reference data. */
-	class cWeakRefData{
+	class DE_DLL_EXPORT cWeakRefData{
 	private:
 		deObject *pObject;
 		int pRefCount;
