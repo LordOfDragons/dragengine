@@ -28,6 +28,7 @@
 #include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -45,12 +46,16 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeListItem> Ref;
 	
+	/** \brief List item list. */
+	typedef decTObjectOrderedSet<igdeListItem> List;
+	
 	
 private:
 	decString pText;
 	decString pDescription;
 	igdeIcon::Ref pIcon;
 	void *pData;
+	deObject::Ref pRefData;
 	decStringList pDetails;
 	bool pSelected;
 	
@@ -105,10 +110,10 @@ public:
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
@@ -116,6 +121,12 @@ public:
 	
 	/** \brief Set user data pointer. */
 	void SetData(void *data);
+	
+	/** \brief User reference data. */
+	inline const deObject::Ref &GetRefData() const{ return pRefData; }
+	
+	/** \brief Set user reference data. */
+	void SetRefData(const deObject::Ref &refData);
 	
 	/**
 	 * \brief Details used for igdeListBox only in detail mode.

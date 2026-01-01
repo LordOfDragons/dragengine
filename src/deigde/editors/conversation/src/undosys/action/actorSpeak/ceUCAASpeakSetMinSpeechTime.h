@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action actor speak conversation action set minimum speech time.
  */
 class ceUCAASpeakSetMinSpeechTime : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakSetMinSpeechTime> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	float pOldTime;
 	float pNewTime;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakSetMinSpeechTime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakSetMinSpeechTime();
+public:
 	/*@}*/
 	
 public:

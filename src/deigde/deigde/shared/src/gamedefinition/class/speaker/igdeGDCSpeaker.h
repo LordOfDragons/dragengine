@@ -27,6 +27,7 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -35,11 +36,14 @@
  * \brief Game definition class speaker.
  */
 class DE_DLL_EXPORT igdeGDCSpeaker : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCSpeaker> Ref;
-
-
-public:
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCSpeaker> List;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epSound,

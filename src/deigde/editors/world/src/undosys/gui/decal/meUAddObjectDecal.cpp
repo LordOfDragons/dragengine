@@ -31,7 +31,7 @@
 #include "../../../world/decal/meDecalSelection.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -45,13 +45,11 @@ meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
 	if(!world || !parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pParentObject = parentObject;
-	parentObject->AddReference();
-	
 	try{
-		pDecal = new meDecal(world->GetEnvironment());
+		pDecal = meDecal::Ref::New(world->GetEnvironment());
 		SetShortInfo("Add Object Decal");
 		UpdateInfos();
 		
@@ -104,6 +102,4 @@ void meUAddObjectDecal::Redo(){
 //////////////////////
 
 void meUAddObjectDecal::pCleanUp(){
-	if(pDecal) pDecal->FreeReference();
-	if(pParentObject) pParentObject->FreeReference();
 }

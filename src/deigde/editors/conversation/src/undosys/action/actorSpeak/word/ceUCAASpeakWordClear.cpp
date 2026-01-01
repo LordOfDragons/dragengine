@@ -43,8 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakWordClear::ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+pTopic(nullptr)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -52,22 +51,13 @@ pActorSpeak(NULL)
 	
 	SetShortInfo("Actor speak clear words");
 	
-	pOldWords = actorSpeak->GetWordList();
+	pOldWords = actorSpeak->GetWords();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
 ///////////////
 
 void ceUCAASpeakWordClear::Undo(){
-	pActorSpeak->GetWordList() = pOldWords;
+	pActorSpeak->GetWords() = pOldWords;
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordClear::Redo(){
-	pActorSpeak->GetWordList().RemoveAll();
+	pActorSpeak->GetWords().RemoveAll();
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

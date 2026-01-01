@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 
@@ -37,8 +37,12 @@ class meWorld;
  * \brief Undo action world set properties.
  */
 class meUWorldSetProperties : public igdeUndo{
+public:
+	typedef deTObjectReference<meUWorldSetProperties> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUWorldSetProperties> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -56,7 +57,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUWorldSetProperties();
+
+public:
 	/*@}*/
 	
 	

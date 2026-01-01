@@ -46,6 +46,10 @@ class gdeObjectClassList;
  * \brief Undo action object class add component.
  */
 class gdeUOCInheritSubObjects : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCInheritSubObjects> Ref;
+	
+	
 private:
 	gdeObjectClass::Ref pObjectClass;
 	

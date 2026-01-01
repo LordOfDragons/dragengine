@@ -25,13 +25,13 @@
 #ifndef _DECUNICODESTRING_H_
 #define _DECUNICODESTRING_H_
 
+#include "../../collection/decTList.h"
 #include "../../../dragengine_export.h"
 
 #ifdef OS_ANDROID
 #include <stdarg.h>
 #endif
 
-class decUnicodeStringList;
 class decString;
 
 
@@ -59,7 +59,10 @@ public:
 	decUnicodeString(const decUnicodeString &string1, const decUnicodeString &string2);
 	
 	/** \brief Create new unicode string from the given unicode character. */
-	decUnicodeString(int character);
+	explicit decUnicodeString(int character);
+	
+	/** \brief Move unicode string. */
+	decUnicodeString(decUnicodeString &&string);
 	
 	/** \brief Create new unicode string from the given utf8 encoded string. */
 	static decUnicodeString NewFromUTF8(const char *string);
@@ -246,10 +249,10 @@ public:
 	decUnicodeString GetReversed() const;
 	
 	/** \brief Split string. */
-	decUnicodeStringList Split(int character) const;
+	decTList<decUnicodeString> Split(int character) const;
 	
 	/** \brief Split string on multiple characters. */
-	decUnicodeStringList Split(const decUnicodeString &characters) const;
+	decTList<decUnicodeString> Split(const decUnicodeString &characters) const;
 	
 	/** \brief Replace all occurances of a character. */
 	void Replace(int replaceCharacter, int withCharacter);
@@ -363,6 +366,9 @@ public:
 	
 	/** \brief Set string to another string. */
 	decUnicodeString &operator=(const decUnicodeString &string);
+	
+	/** \brief Move string. */
+	decUnicodeString &operator=(decUnicodeString &&string);
 	
 	/** \brief Appends a string to this string. */
 	decUnicodeString &operator+=(const decUnicodeString &string);

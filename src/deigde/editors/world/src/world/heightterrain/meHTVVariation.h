@@ -22,22 +22,19 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVVARIATION_H_
 #define _MEHTVVARIATION_H_
 
-// includes
-#include <dragengine/common/string/decString.h>
-
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 
-// predefinitions
 class meHTVegetationLayer;
 
 class deEngine;
-class deSkin;
-class deModel;
 
 
 
@@ -55,9 +52,9 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	
@@ -67,37 +64,41 @@ private:
 	float pRandomRotationMax;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHTVVariation> Ref;
-
-
+	typedef decTObjectOrderedSet<meHTVVariation> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
 	meHTVVariation(deEngine *engine);
+	
+protected:
 	/** Cleans up the object. */
 	virtual ~meHTVVariation();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent height terrain vegetation layer or NULL. */
+	/** Retrieves the parent height terrain vegetation layer or nullptr. */
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
-	/** Sets the parent height terrain vegetation layer or NULL. */
+	/** Sets the parent height terrain vegetation layer or nullptr. */
 	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** Retrieves the model path. */
 	inline const decString &GetPathModel() const{ return pPathModel; }
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
-	/** Retrieves the engine model or NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	/** Retrieves the engine model or nullptr if not valid. */
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/** Retrieves the skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
-	/** Retrieves the engine skin or NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	/** Retrieves the engine skin or nullptr if not valid. */
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/** Retrieves the rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	/** Sets the rotation per force. */

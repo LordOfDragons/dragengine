@@ -48,38 +48,24 @@ ceStrip *gesture, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pGesture = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pGesture = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetGestureList().IndexOf(gesture);
+	pOldIndex = actorSpeak->GetGestures().IndexOf(gesture);
 	
 	if(pOldIndex == -1) DETHROW(deeInvalidParam);
-	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetGestureList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetGestures().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Gesture");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
 ///////////////
 
 void ceUCAASpeakGestureMove::Undo(){
-	pActorSpeak->GetGestureList().MoveTo(pGesture, pOldIndex);
+	pActorSpeak->GetGestures().Move(pGesture, pOldIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureMove::Redo(){
-	pActorSpeak->GetGestureList().MoveTo(pGesture, pNewIndex);
+	pActorSpeak->GetGestures().Move(pGesture, pNewIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

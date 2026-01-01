@@ -65,7 +65,7 @@ public:
 	/** Load prop field cache from file. */
 	void LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader &file);
 	/** Save prop field cache from file. */
-	void SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &file);
+	void SaveToFile(const meHeightTerrainSector &sector, decBaseFileWriter &file);
 	/*@}*/
 };
 

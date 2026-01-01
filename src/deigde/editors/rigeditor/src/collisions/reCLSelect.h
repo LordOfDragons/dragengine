@@ -25,10 +25,10 @@
 #ifndef _RECLSELECT_H_
 #define _RECLSELECT_H_
 
-#include "reCLHitList.h"
+#include "reCLHitListEntry.h"
 
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class reRig;
 class reRigBone;
@@ -48,19 +48,19 @@ class deColliderVolume;
  */
 class reCLSelect : public deBaseScriptingCollider{
 private:
-	reRig *pRig;
+	reRig &pRig;
 	bool pToggleSelection;
 	bool pCanSelectBones;
 	bool pCanSelectShapes;
 	bool pCanSelectConstraints;
 	bool pCanSelectPushes;
-	reCLHitList pHitList;
+	reCLHitListEntry::List pHitList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new collision listener. */
-	reCLSelect(reRig *rig);
+	reCLSelect(reRig &rig);
 	/** \brief Cleans up the collision listener. */
 	virtual ~reCLSelect();
 	/*@}*/
@@ -97,9 +97,9 @@ public:
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
 	 *          determine if the two collider can hit each other. If this peer is
-	 *          used in a ray test owner is NULL and the script is asked to
+	 *          used in a ray test owner is nullptr and the script is asked to
 	 *          determine if the ray can hit the collider.
-	 * \param owner Collider this peer belongs to or NULL if a ray test is done.
+	 * \param owner Collider this peer belongs to or nullptr if a ray test is done.
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */

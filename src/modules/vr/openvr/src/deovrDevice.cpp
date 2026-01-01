@@ -116,14 +116,14 @@ void deovrDevice::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		pDisplayIcons.Add(deImage::Ref::New(imageManager.LoadImage(vfs, filename, "/")));
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
@@ -786,7 +786,7 @@ void deovrDevice::pUpdateParametersTracker(){
 
 deovrDeviceComponent *deovrDevice::pAddComponent(deInputDeviceComponent::eComponentTypes type,
 const char *name, const char *id, const char *displayText){
-	const deovrDeviceComponent::Ref component(deovrDeviceComponent::Ref::NewWith(*this));
+	const deovrDeviceComponent::Ref component(deovrDeviceComponent::Ref::New(*this));
 	component->SetID(id);
 	component->SetName(name);
 	component->SetType(type);
@@ -809,7 +809,7 @@ const char *name, const char *id, const char *displayText){
 		return -1;
 	}
 	
-	const deovrDeviceButton::Ref button(deovrDeviceButton::Ref::NewWith(*this));
+	const deovrDeviceButton::Ref button(deovrDeviceButton::Ref::New(*this));
 	button->SetID(id);
 	button->SetActionPressHandle(actionHandle);
 	
@@ -842,7 +842,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 		return -1;
 	}
 	
-	const deovrDeviceAxis::Ref axis(deovrDeviceAxis::Ref::NewWith(*this));
+	const deovrDeviceAxis::Ref axis(deovrDeviceAxis::Ref::New(*this));
 	axis->SetActionAnalogHandle(actionHandle);
 	axis->SetType(type);
 	axis->SetRange(0.0f, 1.0f);
@@ -858,7 +858,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 
 void deovrDevice::pAddAxisFinger(deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
 int finger, const char *name, const char *id, const char *displayText){
-	const deovrDeviceAxis::Ref axis(deovrDeviceAxis::Ref::NewWith(*this));
+	const deovrDeviceAxis::Ref axis(deovrDeviceAxis::Ref::New(*this));
 	axis->SetType(type);
 	axis->SetRange(0.0f, 1.0f);
 	axis->SetCenter(-1.0f);
@@ -891,7 +891,7 @@ const char *name, const char *id, const char *displayText){
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deovrDeviceAxis::Ref::NewWith(*this));
+		axis = deovrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalogHandle(actionHandle);
 		axis->SetType(deInputDeviceAxis::eatStick);
 		axis->SetComponent(i);
@@ -927,7 +927,7 @@ const char *name, const char *id, const char *displayText){
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deovrDeviceAxis::Ref::NewWith(*this));
+		axis = deovrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalogHandle(actionHandle);
 		axis->SetType(deInputDeviceAxis::eatTouchPad);
 		axis->SetComponent(i);

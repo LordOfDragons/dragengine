@@ -35,6 +35,10 @@ class projWindowMain;
  * \brief Main window listener.
  */
 class projWindowMainListener : public projProjectListener{
+public:
+	typedef deTObjectReference<projWindowMainListener> Ref;
+	
+	
 private:
 	projWindowMain &pWindow;
 	
@@ -47,7 +51,9 @@ public:
 	projWindowMainListener(projWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	virtual ~projWindowMainListener();
+public:
 	/*@}*/
 	
 	

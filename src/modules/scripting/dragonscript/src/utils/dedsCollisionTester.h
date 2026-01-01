@@ -29,15 +29,15 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/sensor/deTouchSensor.h>
+#include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class deScriptingDragonScript;
 
-class deCollider;
 class deColliderVolume;
 class decShapeList;
-class deTouchSensor;
-class deWorld;
 
 class dsValue;
 class dsRealObject;
@@ -48,13 +48,16 @@ class dsRealObject;
  * \brief Collision tester.
  */
 class dedsCollisionTester : public deBaseScriptingCollider, public deObject{
+public:
+	typedef deTObjectReference<dedsCollisionTester> Ref;
+	
 private:
 	deScriptingDragonScript &pDS;
 	
-	deWorld *pWorld;
-	deTouchSensor *pTouchSensor;
+	deWorld::Ref pWorld;
+	deTouchSensor::Ref pTouchSensor;
 	
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	
 	decCollisionFilter pCollisionFilter;
 	
@@ -66,7 +69,7 @@ private:
 	bool pHasCollision;
 	float pHitDistance;
 	decVector pHitNormal;
-	deCollider *pHitCollider;
+	deCollider::Ref pHitCollider;
 	int pHitBone;
 	
 public:
@@ -85,13 +88,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World to use for collision testing or null if not set. */
-	inline deWorld *GetWorld() const{ return pWorld; }
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world to use for collision testing or null if not set. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Touch sensor to use for testing collisions or null if not set. */
-	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
+	inline const deTouchSensor::Ref &GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing collisions or null if not set. */
 	void SetTouchSensor(deTouchSensor *touchSensor);
@@ -105,7 +108,7 @@ public:
 	void SetCollisionShape(const decShapeList &shapeList);
 	
 	/** \brief Collider or null if not set. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
@@ -135,7 +138,7 @@ public:
 	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	
 	/** \brief Hit collider or null if none. Valid if hasCollision() returns true. */
-	inline deCollider *GetHitCollider() const{ return pHitCollider; }
+	inline const deCollider::Ref &GetHitCollider() const{ return pHitCollider; }
 	
 	/** \brief Hit collider bone or -1 if none. Valid if hasCollision() returns true. */
 	inline int GetHitBone() const{ return pHitBone; }

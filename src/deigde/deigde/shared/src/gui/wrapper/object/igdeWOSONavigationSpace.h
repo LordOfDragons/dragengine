@@ -60,8 +60,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSONavigationSpace(igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationSpace();
+	
+public:
 	/*@}*/
 	
 	
@@ -69,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationSpace resource. */
-	inline deNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
+	inline const deNavigationSpace::Ref &GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

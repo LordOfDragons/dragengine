@@ -110,7 +110,7 @@ deSkinModule::~deSkinModule(){
 ///////////////////////
 
 void deSkinModule::LoadSkin(decBaseFileReader &file, deSkin &skin){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetGameEngine()->GetLogger()).ParseXml(&file, xmlDoc);
 	
@@ -279,7 +279,7 @@ void deSkinModule::pParseSkin(const decXmlElementTag &root, deSkin &skin){
 
 
 deSkinMapped::Ref deSkinModule::pParseMapped(const decXmlElementTag &root, const char *forceName){
-	const deSkinMapped::Ref mapped(deSkinMapped::Ref::NewWith(forceName ? forceName : pGetAttributeString(root, "name")));
+	const deSkinMapped::Ref mapped(deSkinMapped::Ref::New(forceName ? forceName : pGetAttributeString(root, "name")));
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -1662,6 +1662,8 @@ void deSkinModule::pWriteProperty(decXmlWriter &writer, const deSkin &skin, deSk
 
 class desmModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<desmModuleInternal> Ref;
+	
 	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESkin");
 		SetDescription("Handles skins in the XML Drag[en]gine skin format.");
@@ -1683,7 +1685,7 @@ public:
 	}
 };
 
-deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
-	return new desmModuleInternal(system);
+deTObjectReference<deInternalModule> desmRegisterInternalModule(deModuleSystem *system){
+	return desmModuleInternal::Ref::New(system);
 }
 #endif

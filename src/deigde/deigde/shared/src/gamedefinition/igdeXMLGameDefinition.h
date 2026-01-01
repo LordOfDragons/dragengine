@@ -25,12 +25,12 @@
 #ifndef _IGDEXMLLOADGAMEDEFINITION_H_
 #define _IGDEXMLLOADGAMEDEFINITION_H_
 
+#include "../gui/filedialog/igdeFilePattern.h"
 #include "../utils/igdeBaseXML.h"
 
 class decBaseFileWriter;
 class decXmlWriter;
 class igdeAutoTagPatternList;
-class igdeFilePatternList;
 class igdeGameDefinition;
 class igdeGDCamera;
 class igdeGDCategory;
@@ -54,7 +54,6 @@ class igdeGDCWorld;
 class igdeEnvironment;
 
 class deLogger;
-class decStringSet;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -108,7 +107,7 @@ private:
 	void pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass);
 	void pParseClassTexture(const decXmlElementTag &root, igdeGDClass &gdclass);
 	void pParseProperty(const decXmlElementTag &root, igdeGDProperty &property);
-	void pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePatternList &list);
+	void pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePattern::List &list);
 	void pParseCamera(const decXmlElementTag &root, igdeGDCamera *camera);
 	void pParseParticleEmitter(const decXmlElementTag &root, igdeGameDefinition &gamedef);
 	void pParseSkin(const decXmlElementTag &root, igdeGameDefinition &gamedef);

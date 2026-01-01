@@ -60,12 +60,12 @@ pEnableDebug(false)
 	
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
-	pCanvas.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
+	pCanvas = engine.GetCanvasManager()->CreateCanvasView();
 	pCanvas->SetSize(size);
 	
-	pImage.TakeOver(engine.GetImageManager()->CreateImage(size.x, size.y, 1, 3, 8));
+	pImage = engine.GetImageManager()->CreateImage(size.x, size.y, 1, 3, 8);
 	
-	pCaptureCanvas.TakeOver(engine.GetCaptureCanvasManager()->CreateCaptureCanvas());
+	pCaptureCanvas = engine.GetCaptureCanvasManager()->CreateCaptureCanvas();
 	pCaptureCanvas->SetCanvasView(pCanvas);
 	pCaptureCanvas->SetImage(pImage);
 }
@@ -84,9 +84,7 @@ void igdeGDPreviewCreator::SetImage(deImage *image){
 }
 
 void igdeGDPreviewCreator::AddListener(igdeGDPreviewListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
@@ -129,17 +127,15 @@ void igdeGDPreviewCreator::AbortCreation(){
 	DebugLog("abort creation");
 	pState = esCaptureFinished;
 	pCaptureCanvas->SetCapture(false);
-	NotifyImageCreated(NULL);
+	NotifyImageCreated(nullptr);
 }
 
 
 
 void igdeGDPreviewCreator::NotifyImageCreated(deImage *image){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((igdeGDPreviewListener*)pListeners.GetAt(i))->ImageCreated(image);
-	}
+	pListeners.Visit([&](igdeGDPreviewListener &listener){
+		listener.ImageCreated(image);
+	});
 }
 
 void igdeGDPreviewCreator::DebugLog(const char *message){

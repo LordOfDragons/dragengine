@@ -232,7 +232,7 @@ void igdeNativeFoxRenderView::OnFrameUpdate(){
 
 void igdeNativeFoxRenderView::DropNativeWindow(){
 	DetachRenderWindow();
-	pOwner = NULL;
+	pOwner = nullptr;
 }
 
 
@@ -300,7 +300,7 @@ void igdeNativeFoxRenderView::AttachRenderWindow(){
 	
 	// according to MSDN if you change certain parameters using SetWindowLong this line is
 	// required exactly like this below (what goes for the flags)
-	SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+	SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 	
 #else
 	Display * const display = (Display*)(getApp()->getDisplay());
@@ -411,7 +411,7 @@ void igdeNativeFoxRenderView::DetachRenderWindow(){
 	}
 	pOrgWindowProc = 0;
 	
-	SetParent(window, NULL);
+	SetParent(window, nullptr);
 	ShowWindow(window, SW_HIDE);
 	#endif
 	
@@ -767,7 +767,7 @@ void igdeNativeFoxRenderView::pProcessMap(){
 		// FOX bug. FXFrame calls CreateWindowEx which in turn sends WM_SHOWWINDOW which
 		// in turn triggers a SEL_MAP which then has id()==0 because FOX assigns the FXID
 		// after CreateWindowEx returns. work around use is to try again
-		getApp()->addTimeout(this, ID_TIMEOUT_RETRY_MAP, 0, NULL);
+		getApp()->addTimeout(this, ID_TIMEOUT_RETRY_MAP, 0, nullptr);
 		return;
 	}
 	

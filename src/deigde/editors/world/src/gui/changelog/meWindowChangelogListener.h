@@ -35,6 +35,10 @@ class meWindowChangelog;
  * \brief Changelog Window Listener
  */
 class meWindowChangelogListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWindowChangelogListener> Ref;
+	
+	
 private:
 	meWindowChangelog &pWindow;
 	
@@ -46,8 +50,11 @@ public:
 	/** \brief Create listener. */
 	meWindowChangelogListener(meWindowChangelog &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWindowChangelogListener() override;
+	
+public:
 	/*@}*/
 	
 	

@@ -42,12 +42,10 @@
 aeUSetRuleFStaEnableRot::aeUSetRuleFStaEnableRot(aeRuleForeignState *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set bone rotator rule enable rotation");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeUSetRuleFStaEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableRot::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

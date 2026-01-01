@@ -35,6 +35,10 @@
  * Undo action rule bone transformator set axis.
  */
 class aeURuleBTransSetAxis : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetAxis> Ref;
+	
+	
 private:
 	aeRuleBoneTransformator::Ref pRule;
 	decVector pOldValue;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleBTransSetAxis> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

@@ -71,6 +71,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCAParam &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCAParam &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -82,7 +83,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAParamSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
+			ceUCCAParamSetActor::Ref::New(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -90,6 +91,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCAParam &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPCAParam &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -107,7 +109,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAParamSetOperator::Ref::NewWith(topic, action, condition, newOperator));
+			ceUCCAParamSetOperator::Ref::New(topic, action, condition, newOperator));
 	}
 };
 
@@ -115,6 +117,7 @@ class cTextParameter : public igdeTextFieldListener {
 	ceWPCAParam &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextParameter> Ref;
 	cTextParameter(ceWPCAParam &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -126,7 +129,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAParamSetParameter::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCAParamSetParameter::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -134,6 +137,7 @@ class cTextTestValue : public igdeTextFieldListener {
 	ceWPCAParam &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextTestValue> Ref;
 	cTextTestValue(ceWPCAParam &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -150,7 +154,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAParamSetTestValue::Ref::NewWith(topic, action, condition, value));
+			ceUCCAParamSetTestValue::Ref::New(topic, action, condition, value));
 	}
 };
 
@@ -158,6 +162,7 @@ class cTextTestVariable : public igdeTextFieldListener {
 	ceWPCAParam &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextTestVariable> Ref;
 	cTextTestVariable(ceWPCAParam &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -169,7 +174,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAParamSetTestVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCAParamSetTestVariable::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -187,25 +192,25 @@ ceWPCAParam::ceWPCAParam(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, new cComboActor(*this));
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
 	helper.ComboBox(*this, "Operator:", "Operator to compare parameter value with test value",
-		pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("Equal", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopEqual);
-	pCBOperator->AddItem("Not Equal", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopNotEqual);
-	pCBOperator->AddItem("Less", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopLess);
-	pCBOperator->AddItem("Less or Equal", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopLessEqual);
-	pCBOperator->AddItem("Greater", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopGreater);
-	pCBOperator->AddItem("Greater or Equal", NULL, (void*)(intptr_t)ceCConditionActorParameter::eopGreaterEqual);
+		pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopEqual);
+	pCBOperator->AddItem("Not Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopNotEqual);
+	pCBOperator->AddItem("Less", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLess);
+	pCBOperator->AddItem("Less or Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopLessEqual);
+	pCBOperator->AddItem("Greater", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreater);
+	pCBOperator->AddItem("Greater or Equal", nullptr, (void*)(intptr_t)ceCConditionActorParameter::eopGreaterEqual);
 	
 	helper.EditString(*this, "Parameter:", "Parameter to compare",
-		pEditParameter, new cTextParameter(*this));
+		pEditParameter, cTextParameter::Ref::New(*this));
 	helper.EditInteger(*this, "Test Value:", "Value to compare against",
-		pEditTestValue, new cTextTestValue(*this));
+		pEditTestValue, cTextTestValue::Ref::New(*this));
 	helper.EditString(*this, "Test Variable:",
 		"Variable to compare against or empty string to use 'Test Value'",
-		pEditTestVariable, new cTextTestVariable(*this));
+		pEditTestVariable, cTextTestVariable::Ref::New(*this));
 }
 
 ceWPCAParam::~ceWPCAParam(){
@@ -223,7 +228,7 @@ ceCConditionActorParameter *ceWPCAParam::GetCondition() const{
 		return (ceCConditionActorParameter*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

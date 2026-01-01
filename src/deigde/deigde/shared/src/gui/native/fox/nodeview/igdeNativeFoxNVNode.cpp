@@ -74,9 +74,9 @@ igdeNativeFoxNVNode::igdeNativeFoxNVNode(igdeNVNode &powner, FXComposite *pparen
 FXVerticalFrame(pparent, NVNodeFlags(powner), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
 pFont(NVNodeFont(powner, guitheme)),
-pLabTitle(NULL),
-pFrameTitle(NULL),
-pFrameSlots(NULL),
+pLabTitle(nullptr),
+pFrameTitle(nullptr),
+pFrameSlots(nullptr),
 
 pTitleIsDraging(false),
 
@@ -224,19 +224,19 @@ igdeFont *igdeNativeFoxNVNode::NVNodeFont(const igdeNVNode &powner, const igdeGu
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::nodeViewNodeFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::nodeViewNodeFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::nodeViewNodeFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

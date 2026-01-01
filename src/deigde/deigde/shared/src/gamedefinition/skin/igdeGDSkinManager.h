@@ -27,7 +27,7 @@
 
 #include "../igdeGDCategory.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -45,8 +45,12 @@ class decPath;
  * information useful searching for the right skin to use.
  */
 class DE_DLL_EXPORT igdeGDSkinManager{
+public:
+	typedef decTObjectOrderedSet<igdeGDSkin> SkinsList;
+	
+	
 private:
-	decObjectOrderedSet pSkins;
+	SkinsList pSkins;
 	igdeGDCategory::Ref pCategories;
 	decString pDefaultSkinPath;
 	decStringList pAutoFindPath;
@@ -68,13 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
-	/** \brief Number of game skins. */
-	int GetSkinCount() const;
-	
-	/** \brief Skin is present. */
-	bool HasSkin(igdeGDSkin *skin) const;
+	/** \brief Skins. */
+	inline const SkinsList &GetSkins() const{ return pSkins; }
 	
 	/** \brief Skin with path is present. */
 	bool HasSkinWithPath(const char *path) const;
@@ -85,11 +86,7 @@ public:
 	/** \brief Skin with name or path is present. */
 	bool HasSkinWithPathOrName(const char *path, const char *name) const;
 	
-	/** \brief Index of skin or -1 if absent. */
-	int IndexOfSkin(igdeGDSkin *skin) const;
-	
 	/** \brief Index of skin with path or -1 if absent. */
-	
 	int IndexOfSkinWithPath(const char *path) const;
 	
 	/** \brief Index of skin with name or -1 if absent. */
@@ -98,13 +95,10 @@ public:
 	/** \brief Index of skin with name or -1 if absent. */
 	int IndexOfSkinWithPathOrName(const char *path, const char *name) const;
 	
-	/** \brief Game skin at the given index. */
-	igdeGDSkin *GetSkinAt(int index) const;
-	
-	/** \brief Game skin with path or NULL if absent. */
+	/** \brief Game skin with path or nullptr if absent. */
 	igdeGDSkin *GetSkinWithPath(const char *path) const;
 	
-	/** \brief Game skin with name or NULL if absent. */
+	/** \brief Game skin with name or nullptr if absent. */
 	igdeGDSkin *GetSkinWithName(const char *name) const;
 	
 	/** \brief Add game skin. */

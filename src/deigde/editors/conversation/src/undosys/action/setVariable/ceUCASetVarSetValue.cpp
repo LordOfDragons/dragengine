@@ -44,27 +44,18 @@
 ceUCASetVarSetValue::ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVariable *action, int newValue){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldValue = action->GetValue();
 	pNewValue = newValue;
 	
 	SetShortInfo("SetVariable Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetValue::~ceUCASetVarSetValue(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

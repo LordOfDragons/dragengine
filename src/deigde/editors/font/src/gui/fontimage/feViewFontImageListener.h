@@ -35,6 +35,10 @@ class feViewFontImage;
  * \brief View font image listener.
  */
 class feViewFontImageListener : public feFontNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feViewFontImageListener> Ref;
+	
 private:
 	feViewFontImage &pPanel;
 	
@@ -45,7 +49,9 @@ public:
 	feViewFontImageListener(feViewFontImage &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feViewFontImageListener() override;
+public:
 	/*@}*/
 	
 	

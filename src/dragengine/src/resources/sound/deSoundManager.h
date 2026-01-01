@@ -25,12 +25,11 @@
 #ifndef _DESOUNDMANAGER_H_
 #define _DESOUNDMANAGER_H_
 
+#include "deSound.h"
+#include "deSoundDecoder.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 #include "../../threading/deMutex.h"
-
-class deSound;
-class deSoundDecoder;
 
 
 /**
@@ -74,10 +73,10 @@ public:
 	deSound *GetSoundWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Load sound from the given file relative to the given base path. */
-	deSound *LoadSound(const char *filename, const char *basePath, bool asynchron);
+	deSound::Ref LoadSound(const char *filename, const char *basePath, bool asynchron);
 	
 	/** \brief Load sound from the given file relative to the given base path. */
-	deSound *LoadSound(deVirtualFileSystem *vfs, const char *filename,
+	deSound::Ref LoadSound(deVirtualFileSystem *vfs, const char *filename,
 		const char *basePath, bool asynchron);
 	
 	/** \brief Save sound to the given file. */
@@ -95,7 +94,7 @@ public:
 	
 	
 	/** \brief Create sound decoder. */
-	deSoundDecoder *CreateDecoder(deSound *sound);
+	deSoundDecoder::Ref CreateDecoder(deSound *sound);
 	
 	
 	

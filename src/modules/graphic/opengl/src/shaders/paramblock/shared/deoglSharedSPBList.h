@@ -27,11 +27,11 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 
+#include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 
 class deoglRenderThread;
 class deoglSharedSPB;
-class deoglSharedSPBElement;
 
 
 
@@ -83,7 +83,7 @@ public:
 	 * Caller obtains reference to the element. Release reference if not used anymore.
 	 * Element is removed from the shared parameter block once all references are released.
 	 */
-	deoglSharedSPBElement *AddElement();
+	deoglSharedSPBElement::Ref AddElement();
 	/*@}*/
 	
 	

@@ -63,5 +63,5 @@ void feWPGlyphListener::GlyphChanged(feFont *font, feFontGlyph *glyph){
 }
 
 void feWPGlyphListener::ActiveGlyphChanged(feFont *font){
-	pPanel.SetGlyph(font->GetGlyphSelection().GetActiveGlyph());
+	pPanel.SetGlyph(font->GetGlyphSelection().GetActive());
 }

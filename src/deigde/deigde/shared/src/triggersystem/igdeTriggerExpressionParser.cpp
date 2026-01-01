@@ -78,7 +78,7 @@ void igdeTriggerExpressionParser::SetExceptionOnErrors(bool exceptionsOnErrors){
 
 
 igdeTriggerExpression::Ref igdeTriggerExpressionParser::StringToExpression(const char *string) const{
-	const igdeTriggerExpression::Ref expression(igdeTriggerExpression::Ref::NewWith());
+	const igdeTriggerExpression::Ref expression(igdeTriggerExpression::Ref::New());
 	
 	igdeTriggerExpressionParserState state(string);
 	expression->SetRootComponent(ParseExpressionComponent(state, false, false, false));
@@ -101,13 +101,13 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	int mode = 0;
 	
 	igdeTriggerExpressionComponent::Ref child, component(
-		igdeTriggerExpressionComponent::Ref::NewWith());
+		igdeTriggerExpressionComponent::Ref::New());
 	
 	while(mode != 4 && mode != 5 && state.HasMoreCharacters()){
 		const int character = state.GetNextCharacter();
 		
 		if(mode == 2 && !component->GetTargetName().IsEmpty()){
-			child.TakeOverWith();
+			child = igdeTriggerExpressionComponent::Ref::New();
 			child->SetTargetName(component->GetTargetName());
 			child->SetNegate(component->GetNegate());
 			child->SetCurState(component->GetCurState());
@@ -268,7 +268,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName(name, state, true);
-				child.TakeOverWith();
+				child = igdeTriggerExpressionComponent::Ref::New();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
 				child->SetCurState(curState);
@@ -304,7 +304,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName(name, state, false);
-				child.TakeOverWith();
+				child = igdeTriggerExpressionComponent::Ref::New();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
 				child->SetCurState(curState);
@@ -335,20 +335,20 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	}
 	
 	if(mode == 0){
-		return nullptr;
+		return {};
 	}
 	
 	if(mode != 5){
 		if(mode == 2){
 			// missing target after and/or. add an empty one to allow editors to work properly
-			child.TakeOverWith();
+			child = igdeTriggerExpressionComponent::Ref::New();
 			child->SetNegate(negate);
 			child->SetCurState(curState);
 			component->AddChild(child);
 		}
 		
-		if(component->GetChildCount() == 1){
-			child = component->GetChildAt(0);
+		if(component->GetChildren().GetCount() == 1){
+			child = component->GetChildren().First();
 			if(child->GetTargetName().IsEmpty()){
 				component = child;
 				
@@ -368,13 +368,12 @@ void igdeTriggerExpressionParser::ParseTargetName(decString &name, igdeTriggerEx
 	// modes
 	// 0 => parse first character
 	// 1 => parse other characters
-	char character;
 	int mode = 0;
 	
 	name = "";
 	
 	while(state.HasMoreCharacters()){
-		character = state.GetNextCharacter();
+		const char character = state.GetNextCharacter();
 		
 		if(quoted){
 			if(character == '\\'){
@@ -449,19 +448,16 @@ const igdeTriggerExpressionComponent &component, bool grouping) const{
 		break;
 		
 	case igdeTriggerExpressionComponent::ectAnd:{
-		const int count = component.GetChildCount();
-		int i;
-		
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for(i=0; i<count; i++){
+		component.GetChildren().VisitIndexed([&](int i, const igdeTriggerExpressionComponent &child){
 			if(i > 0){
 				string.AppendCharacter(pSymbolAnd);
 			}
-			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
+			ExpressionComponentToString(subString, child, true);
 			string += subString;
-		}
+		});
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupEnd);
 		}
@@ -469,19 +465,16 @@ const igdeTriggerExpressionComponent &component, bool grouping) const{
 		}break;
 		
 	case igdeTriggerExpressionComponent::ectOr:{
-		const int count = component.GetChildCount();
-		int i;
-		
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupStart);
 		}
-		for(i=0; i<count; i++){
+		component.GetChildren().VisitIndexed([&](int i, const igdeTriggerExpressionComponent &child){
 			if(i > 0){
 				string.AppendCharacter(pSymbolOr);
 			}
-			ExpressionComponentToString(subString, *component.GetChildAt(i), true);
+			ExpressionComponentToString(subString, child, true);
 			string += subString;
-		}
+		});
 		if(grouping){
 			string.AppendCharacter(pSymbolGroupEnd);
 		}

@@ -26,6 +26,7 @@
 #define _GDEFILEPATTERN_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -45,6 +46,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeFilePattern> Ref;
 
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeFilePattern> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -58,7 +62,9 @@ public:
 	gdeFilePattern(const gdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
+protected:
 	virtual ~gdeFilePattern();
+public:
 	/*@}*/
 	
 	

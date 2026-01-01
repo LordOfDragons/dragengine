@@ -68,26 +68,27 @@ protected:
 	aeWPAPanelRuleGroup &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPAPanelRuleGroup &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleGroup * const rule = (aeRuleGroup*)pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleGroup *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleGroup *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleGroup * const rule = (aeRuleGroup*)pPanel.GetRule();
 		if(animator && rule){
@@ -110,6 +111,7 @@ class cComboApplicationType : public igdeComboBoxListener{
 	aeWPAPanelRuleGroup &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboApplicationType> Ref;
 	cComboApplicationType(aeWPAPanelRuleGroup &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -126,17 +128,20 @@ public:
 		}
 		
 		animator->GetUndoSystem()->Add(
-			aeURuleGroupSetApplicationType::Ref::NewWith(rule, value));
+			aeURuleGroupSetApplicationType::Ref::New(rule, value));
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnablePosition> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleGroup *rule){
-		return new aeURuleGroupToggleEnablePosition(rule);
+public:
+	cActionEnablePosition(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
+		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
+		return aeURuleGroupToggleEnablePosition::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleGroup &rule) override{
@@ -147,11 +152,14 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableRotation> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleGroup *rule){
-		return new aeURuleGroupToggleEnableRotation(rule);
+public:
+	cActionEnableRotation(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
+		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
+		return aeURuleGroupToggleEnableRotation::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleGroup &rule) override{
@@ -162,11 +170,14 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableSize> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleGroup *rule){
-		return new aeURuleGroupToggleEnableSize(rule);
+public:
+	cActionEnableSize(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
+		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
+		return aeURuleGroupToggleEnableSize::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleGroup &rule) override{
@@ -177,12 +188,15 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	
+public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
 		"Determines if the vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleGroup *rule){
-		return new aeURuleGroupToggleEnableVertexPositionSet(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
+		return aeURuleGroupToggleEnableVertexPositionSet::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleGroup &rule) override{
@@ -193,11 +207,14 @@ public:
 
 class cActionUseCurrentState : public cBaseAction{
 public:
-	cActionUseCurrentState(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
-		"Use current state", NULL, "Use current animation state instead of empty state"){}
+	typedef deTObjectReference<cActionUseCurrentState> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleGroup *rule){
-		return new aeURuleGroupToggleUseCurrentState(rule);
+public:
+	cActionUseCurrentState(aeWPAPanelRuleGroup &panel) : cBaseAction(panel,
+		"Use current state", nullptr, "Use current animation state instead of empty state"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleGroup *rule) override{
+		return aeURuleGroupToggleUseCurrentState::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleGroup &rule) override{
@@ -228,16 +245,16 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertGroup)
 	
 	helper.ComboBox(groupBox, "Application Type:", "Sets how child rules are process in the the group.\n"
 		"Apply all rules (all) or blend between two selected rules using the select target (select).",
-		pCBApplicationType, new cComboApplicationType(*this));
-	pCBApplicationType->AddItem("All", NULL, (void*)(intptr_t)deAnimatorRuleGroup::eatAll);
-	pCBApplicationType->AddItem("Select", NULL, (void*)(intptr_t)deAnimatorRuleGroup::eatSelect);
+		pCBApplicationType, cComboApplicationType::Ref::New(*this));
+	pCBApplicationType->AddItem("All", nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatAll);
+	pCBApplicationType->AddItem("Select", nullptr, (void*)(intptr_t)deAnimatorRuleGroup::eatSelect);
 	
-	helper.CheckBox(groupBox, pChkUseCurrentState, new cActionUseCurrentState(*this), true);
+	helper.CheckBox(groupBox, pChkUseCurrentState, cActionUseCurrentState::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
-	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
-	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
-	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 }
 
 aeWPAPanelRuleGroup::~aeWPAPanelRuleGroup(){
@@ -275,6 +292,6 @@ void aeWPAPanelRuleGroup::UpdateTargetList(){
 	
 	aeRuleGroup * const rule = (aeRuleGroup*)GetRule();
 	if(rule){
-		AddTarget("Select", &rule->GetTargetSelect());
+		AddTarget("Select", rule->GetTargetSelect());
 	}
 }

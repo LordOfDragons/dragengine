@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATATOPIC_H_
 #define _CECLIPBOARDDATATOPIC_H_
 
-#include "../conversation/topic/ceConversationTopicList.h"
+#include "../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	ceConversationTopicList pTopics;
+	ceConversationTopic::List pTopics;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	ceClipboardDataTopic(const ceConversationTopicList &topics);
+	ceClipboardDataTopic(const ceConversationTopic::List &topics);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
+	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	/*@}*/
 };
 

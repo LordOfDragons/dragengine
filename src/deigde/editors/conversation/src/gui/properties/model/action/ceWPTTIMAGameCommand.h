@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAGameCommand : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAGameCommand> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAGameCommand *GetActionGameCommand() const{ return (ceCAGameCommand*)GetAction(); }
+	inline ceCAGameCommand *GetActionGameCommand() const{ return GetAction().DynamicCast<ceCAGameCommand>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

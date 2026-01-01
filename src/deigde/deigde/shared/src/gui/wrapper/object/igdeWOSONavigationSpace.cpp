@@ -65,7 +65,7 @@ igdeWOSONavigationSpace::igdeWOSONavigationSpace(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDNavigationSpace(gdNavigationSpace),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);
 }
@@ -98,7 +98,7 @@ void igdeWOSONavigationSpace::Visit(igdeWOSOVisitor &visitor){
 
 void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	if(!pNavigationSpace){
-		pNavigationSpace.TakeOver(GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace());
+		pNavigationSpace = GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace();
 		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 	}
 	
@@ -122,9 +122,8 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 			
 			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
-					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						 engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath)));
-					loadNavSpace.Load(pNavigationSpace, reader);
+					loadNavSpace.Load(pNavigationSpace,
+						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					
 				}catch(const deException &e){
 					pNavigationSpace->SetRoomCount(0);
@@ -189,7 +188,7 @@ void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
 		GetWrapper().GetWorld()->RemoveNavigationSpace(pNavigationSpace);
 	}
 	
-	pNavigationSpace = NULL;
+	pNavigationSpace = nullptr;
 	pPathNavigationSpace.Empty();
 	pAddedToWorld = false;
 }
@@ -203,7 +202,7 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pNavigationSpace);
@@ -244,6 +243,6 @@ void igdeWOSONavigationSpace::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -56,41 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\modio\src\module.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\config\deModioModConfig.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\config\deModioUserConfig.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCCommon.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCDetail.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCFilterParams.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCModInfo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCTagOptions.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModio.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioService.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\config\deModioModConfig.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\config\deModioUserConfig.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCCommon.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCDetail.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCFilterParams.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCModInfo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCTagOptions.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModio.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioService.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\modio.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -461,4 +426,39 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\config\deModioModConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\config\deModioUserConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCCommon.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCDetail.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCFilterParams.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCModInfo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCTagOptions.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModio.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioService.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\config\deModioModConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\config\deModioUserConfig.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCDetail.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCFilterParams.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCModInfo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCTagOptions.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModio.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioService.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\modio.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deMPLogLevel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.h" />
+  </ItemGroup>
 </Project>

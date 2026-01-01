@@ -84,13 +84,11 @@ void meUpdateHTVInstances::UpdateInstances(){
 	decDVector srfpos = fieldPosition - sectorPosition;
 	meHTVEvaluationEnvironment evalEnv;
 	
-	int l, layerCount = htsector->GetHeightTerrain()->GetVLayerCount();
 	decVector inormal, sripos;
 	decDVector evalPos;
 	
 	float rfactor = 1.0f / (float)RAND_MAX;
 	decVector ipos, irot;
-	int i, instanceCount;
 	float iscale;
 	bool evaluateInstance;
 	
@@ -109,7 +107,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 		evalEnv.SetWorld(&htsector->GetHeightTerrain()->GetWorld());
 		
 	}else{
-		evalEnv.SetWorld(NULL);
+		evalEnv.SetWorld(nullptr);
 	}
 	evalEnv.SetHTSector(htsector);
 	evalEnv.SetPropField(&pPropField);
@@ -126,18 +124,17 @@ void meUpdateHTVInstances::UpdateInstances(){
 	
 //	int oldVInstCount = 0;
 //	decTimer timer;
-	for(l=0; l<layerCount; l++){
-		meHTVegetationLayer * const vlayer = htsector->GetHeightTerrain()->GetVLayerAt(l);
-		
-		const int variationCount = vlayer->GetVariationCount();
+	htsector->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int l, meHTVegetationLayer *vlayer){
+		const int variationCount = vlayer->GetVariations().GetCount();
 		if(variationCount == 0){
-			continue;
+			return;
 		}
 		
 		evalEnv.SetVLayer(vlayer);
 		evalEnv.Prepare();
 		
-		instanceCount = 50000; //10000; // 10k
+		const int instanceCount = 50000; //10000; // 10k
+		int i;
 		
 		for(i=0; i<instanceCount; i++){
 			evaluateInstance = false;
@@ -179,7 +176,7 @@ void meUpdateHTVInstances::UpdateInstances(){
 			
 			meHTVInstance &vinstance = pPropField.AddVInstance();
 			const int variationIndex = decMath::clamp(evalEnv.GetVariation(), 0, variationCount - 1);
-			meHTVVariation &variation = *vlayer->GetVariationAt(variationIndex);
+			meHTVVariation &variation = *vlayer->GetVariations().GetAt(variationIndex);
 			
 			const float minrot = variation.GetMinimumRandomRotation() * DEG2RAD;
 			const float maxrot = variation.GetMaximumRandomRotation() * DEG2RAD;
@@ -207,9 +204,9 @@ void meUpdateHTVInstances::UpdateInstances(){
 			occupation.SetValueAt(ox, oy, true);
 		}
 		
-//		printf( "PField (%g,%g): VLayer %i: Added %i VInstances.\n", fieldPosition.x, fieldPosition.z, l, pPropField.GetVInstanceCount() - oldVInstCount );
-//		oldVInstCount = pPropField.GetVInstanceCount();
-	}
+//		printf( "PField (%g,%g): VLayer %i: Added %i VInstances.\n", fieldPosition.x, fieldPosition.z, l, pPropField.GetVInstances().GetCount() - oldVInstCount );
+//		oldVInstCount = pPropField.GetVInstances().GetCount();
+	});
 	
 //	printf( "PField (%g,%g): %i VInstances ( in %gs ).\n", fieldPosition.x, fieldPosition.z, oldVInstCount, timer.GetElapsedTime() );
 }

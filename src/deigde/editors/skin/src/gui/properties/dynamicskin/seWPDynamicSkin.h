@@ -25,6 +25,9 @@
 #ifndef _SEWPDYNAMICSKIN_H_
 #define _SEWPDYNAMICSKIN_H_
 
+#include "seWPDynamicSkinListener.h"
+#include "../../../skin/seSkin.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -35,10 +38,8 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSkin;
 class seDynamicSkinRenderable;
 class seWindowProperties;
-class seWPDynamicSkinListener;
 
 
 
@@ -46,11 +47,14 @@ class seWPDynamicSkinListener;
  * \brief Dynamic skin panel.
  */
 class seWPDynamicSkin : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPDynamicSkin> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPDynamicSkinListener *pListener;
+	seWPDynamicSkinListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	
 	igdeListBox::Ref pListRenderable;
@@ -95,7 +99,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

@@ -25,11 +25,12 @@
 #ifndef _MEWVNODE_H_
 #define _MEWVNODE_H_
 
+#include "../../../world/heightterrain/rules/meHTVRule.h"
+
 #include <deigde/gui/nodeview/igdeNVNode.h>
 #include <deigde/undo/igdeUndo.h>
 
 class meWVNodeSlot;
-class meHTVRule;
 class meWindowVegetation;
 
 
@@ -38,9 +39,12 @@ class meWindowVegetation;
  * \brief Vegetation Editing Window Node.
  */
 class meWVNode : public igdeNVNode{
+public:
+	typedef deTObjectReference<meWVNode> Ref;
+	
 private:
 	meWindowVegetation &pWindowVegetation;
-	meHTVRule *pRule;
+	meHTVRule::Ref pRule;
 	
 	igdeUndo::Ref pUndoMove;
 	
@@ -66,7 +70,7 @@ public:
 	inline meWindowVegetation &GetWindowVegetation() const{ return pWindowVegetation; }
 	
 	/** \brief Rule. */
-	inline meHTVRule *GetRule() const{ return pRule; }
+	inline const meHTVRule::Ref &GetRule() const{ return pRule; }
 	
 	/** \brief Update node. */
 	virtual void Update();
@@ -82,6 +86,9 @@ public:
 	
 	/** \brief Set node position. */
 	void UpdatePositionFromRule();
+	
+	/** \brief Game project game definition changed. */
+	virtual void OnGameDefinitionChanged();
 	/*@}*/
 };
 

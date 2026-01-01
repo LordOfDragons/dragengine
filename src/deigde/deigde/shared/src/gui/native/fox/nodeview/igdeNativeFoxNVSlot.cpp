@@ -78,15 +78,15 @@ FXHorizontalFrame(pparent, layoutFlags.flags | NVSlotFlags(powner), 0, 0, 0, 0,
 	NVSlotPadTop(guitheme), NVSlotPadBottom(guitheme)),
 pOwner(&powner),
 pFont(NVSlotFont(powner, guitheme)),
-pSocket(NULL),
-pLabel(NULL),
+pSocket(nullptr),
+pLabel(nullptr),
 pDragTypeSocket(pparent->getApp()->registerDragType("application/deigde_nodesystem_socket")),
 pIsDnd(false)
 {
 	pSocket = new igdeNativeFoxNVSocket(this, this, ID_SOCKET, LAYOUT_FILL_Y | (powner.GetIsInput()
 		? LAYOUT_SIDE_LEFT | LAYOUT_LEFT : LAYOUT_SIDE_RIGHT | LAYOUT_RIGHT), guitheme);
 	
-	pLabel = new FXLabel(this, powner.GetText().GetString(), NULL, LAYOUT_FILL_Y | (powner.GetIsInput()
+	pLabel = new FXLabel(this, powner.GetText().GetString(), nullptr, LAYOUT_FILL_Y | (powner.GetIsInput()
 			? JUSTIFY_LEFT | JUSTIFY_CENTER_Y | ICON_BEFORE_TEXT | LAYOUT_SIDE_RIGHT | LAYOUT_LEFT
 			: JUSTIFY_RIGHT | JUSTIFY_CENTER_Y | ICON_AFTER_TEXT | LAYOUT_SIDE_LEFT | LAYOUT_RIGHT
 ), 0, 0, 0, 0, 0, 0, 0, 0);
@@ -168,7 +168,7 @@ void igdeNativeFoxNVSlot::UpdateColor(){
 }
 
 void igdeNativeFoxNVSlot::UpdateLinkedState(){
-	pSocket->SetChecked(pOwner->GetLinkCount() > 0);
+	pSocket->SetChecked(pOwner->GetLinks().IsNotEmpty());
 }
 
 
@@ -253,19 +253,19 @@ igdeFont *igdeNativeFoxNVSlot::NVSlotFont(const igdeNVSlot &powner, const igdeGu
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::nodeViewSlotFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::nodeViewSlotFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::nodeViewSlotFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::nodeViewSlotFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::nodeViewSlotFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::nodeViewSlotFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -407,7 +407,7 @@ long igdeNativeFoxNVSlot::onSocketDndLeave(FXObject*, FXSelector, void*){
 	
 	igdeNativeFoxNVBoard &nativeBoard = *((igdeNativeFoxNVBoard*)
 		pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget());
-	nativeBoard.SetCreateLinkTarget(NULL);
+	nativeBoard.SetCreateLinkTarget(nullptr);
 	pSocket->acceptDrop(DRAG_REJECT);
 	return 1;
 }
@@ -455,7 +455,7 @@ long igdeNativeFoxNVSlot::onSocketDndMotion(FXObject*, FXSelector, void *pdata){
 		}
 		
 	}else{
-		nativeBoard.SetCreateLinkTarget(NULL);
+		nativeBoard.SetCreateLinkTarget(nullptr);
 		pSocket->acceptDrop(DRAG_REJECT);
 	}
 	

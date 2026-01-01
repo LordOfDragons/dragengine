@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,16 +36,17 @@ class ceConversationTopic;
  * \brief Undo Action Conversation Action Set Wait For Actor ID.
  */
 class ceUCActionSetWaitForActorID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCActionSetWaitForActorID> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	decString pOldID;
 	decString pNewID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCActionSetWaitForActorID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

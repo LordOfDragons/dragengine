@@ -84,26 +84,27 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPAPanelRuleForeignState &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleForeignState * const rule = (aeRuleForeignState*)pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleForeignState *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleForeignState *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleForeignState * const rule = (aeRuleForeignState*)pPanel.GetRule();
 		if(animator && rule){
@@ -126,6 +127,7 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleForeignState &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -135,13 +137,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleForeignState *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleForeignState *rule) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -149,6 +151,7 @@ protected:
 	aeWPAPanelRuleForeignState &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRuleForeignState &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -158,117 +161,128 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleForeignState *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleForeignState *rule) = 0;
 };
 
 
 class cComboBone : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboBone> Ref;
 	cComboBone(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
 		return rule->GetForeignBone() != comboBox->GetText()
-			? new aeUSetRuleFStaBone(rule, comboBox->GetText()) : NULL;
+			? aeUSetRuleFStaBone::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cComboVertexPositionSet : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboVertexPositionSet> Ref;
 	cComboVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
 		return rule->GetForeignVertexPositionSet() != comboBox->GetText()
-			? new aeUSetRuleFStaVertexPositionSet(rule, comboBox->GetText()) : NULL;
+			? aeUSetRuleFStaVertexPositionSet::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cComboCoordFrameSource : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCoordFrameSource> Ref;
 	cComboCoordFrameSource(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
 		if(!comboBox->GetSelectedItem()){
-			return NULL;
+			return igdeUndo::Ref();
 		}
 		
 		deAnimatorRuleForeignState::eCoordinateFrames value =
 			(deAnimatorRuleForeignState::eCoordinateFrames)(intptr_t)comboBox->GetSelectedItem()->GetData();
-		return rule->GetSourceCoordinateFrame() != value ? new aeUSetRuleFStaSrcCFrame(rule, value) : NULL;
+		return rule->GetSourceCoordinateFrame() != value ? aeUSetRuleFStaSrcCFrame::Ref::New(rule, value) : aeUSetRuleFStaSrcCFrame::Ref();
 	}
 };
 
 class cComboCoordFrameDestination : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCoordFrameDestination> Ref;
 	cComboCoordFrameDestination(aeWPAPanelRuleForeignState &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleForeignState *rule) override{
 		if(!comboBox->GetSelectedItem()){
-			return NULL;
+			return igdeUndo::Ref();
 		}
 		
 		deAnimatorRuleForeignState::eCoordinateFrames value =
 			(deAnimatorRuleForeignState::eCoordinateFrames)(intptr_t)comboBox->GetSelectedItem()->GetData();
-		return rule->GetDestCoordinateFrame() != value ? new aeUSetRuleFStaDestCFrame(rule, value) : NULL;
+		return rule->GetDestCoordinateFrame() != value ? aeUSetRuleFStaDestCFrame::Ref::New(rule, value) : aeUSetRuleFStaDestCFrame::Ref();
 	}
 };
 
 class cTextScalePosition : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScalePosition> Ref;
 	cTextScalePosition(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(rule->GetScalePosition() - value) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleFStaPosition(rule, value) : NULL;
+			? aeUSetRuleFStaPosition::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextScaleRotation : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScaleRotation> Ref;
 	cTextScaleRotation(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(rule->GetScaleOrientation() - value) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleFStaRotation(rule, value) : NULL;
+			? aeUSetRuleFStaRotation::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextScaleSize : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScaleSize> Ref;
 	cTextScaleSize(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(rule->GetScaleSize() - value) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleFStaSize(rule, value) : NULL;
+			? aeUSetRuleFStaSize::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextScaleVertexPositionSet : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScaleVertexPositionSet> Ref;
 	cTextScaleVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleForeignState *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(rule->GetScaleVertexPositionSet() - value) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleFStaScaleVertexPositionSet(rule, value) : NULL;
+			? aeUSetRuleFStaScaleVertexPositionSet::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnablePosition> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleForeignState *rule){
-		return new aeUSetRuleFStaEnablePos(rule);
+public:
+	cActionEnablePosition(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
+		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
+		return aeUSetRuleFStaEnablePos::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
@@ -279,11 +293,14 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableRotation> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleForeignState *rule){
-		return new aeUSetRuleFStaEnableRot(rule);
+public:
+	cActionEnableRotation(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
+		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
+		return aeUSetRuleFStaEnableRot::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
@@ -294,11 +311,14 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableSize> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleForeignState *rule){
-		return new aeUSetRuleFStaEnableSize(rule);
+public:
+	cActionEnableSize(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
+		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
+		return aeUSetRuleFStaEnableSize::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
@@ -309,12 +329,15 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	
+public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleForeignState &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
 		"Determines if the vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleForeignState *rule){
-		return new aeUSetRuleFStaEnableVertexPositionSet(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleForeignState *rule) override{
+		return aeUSetRuleFStaEnableVertexPositionSet::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleForeignState &rule) override{
@@ -344,38 +367,38 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertForeignState)
 	helper.GroupBox(*this, groupBox, "Foreign State:");
 	
 	helper.ComboBoxFilter(groupBox, "Bone:", true, "Sets the bone to retrieve the state from",
-		pCBBone, new cComboBone(*this));
+		pCBBone, cComboBone::Ref::New(*this));
 	pCBBone->SetDefaultSorter();
 	
 	helper.ComboBoxFilter(groupBox, "Vertex Position Set:", true,
 		"Sets the vertex position set to retrieve the state from",
-		pCBVertexPositionSet, new cComboVertexPositionSet(*this));
+		pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
 	helper.EditFloat(groupBox, "Scale Position:", "Scaling applied to the foreign position",
-		pEditPosition, new cTextScalePosition(*this));
+		pEditPosition, cTextScalePosition::Ref::New(*this));
 	helper.EditFloat(groupBox, "Scale Rotation:", "Scaling applied to the foreign orientation",
-		pEditRotation, new cTextScaleRotation(*this));
+		pEditRotation, cTextScaleRotation::Ref::New(*this));
 	helper.EditFloat(groupBox, "Scale Size:", "Scaling applied to the foreign size",
-		pEditSize, new cTextScaleSize(*this));
+		pEditSize, cTextScaleSize::Ref::New(*this));
 	helper.EditFloat(groupBox, "Scale Vertex Position Set:",
 		"Scaling applied to the foreign vertex position set",
-		pEditVertexPositionSet, new cTextScaleVertexPositionSet(*this));
+		pEditVertexPositionSet, cTextScaleVertexPositionSet::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Src. Coord-Frame:", "Sets the source coordinate frame to use",
-		pCBSrcCFrame, new cComboCoordFrameSource(*this));
-	pCBSrcCFrame->AddItem("Bone Local", NULL, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
-	pCBSrcCFrame->AddItem("Component", NULL, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
+		pCBSrcCFrame, cComboCoordFrameSource::Ref::New(*this));
+	pCBSrcCFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
+	pCBSrcCFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
 	
 	helper.ComboBox(groupBox, "Dest. Coord-Frame:", "Sets the destination coordinate frame to use",
-		pCBDestCFrame, new cComboCoordFrameDestination(*this));
-	pCBDestCFrame->AddItem("Bone Local", NULL, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
-	pCBDestCFrame->AddItem("Component", NULL, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
+		pCBDestCFrame, cComboCoordFrameDestination::Ref::New(*this));
+	pCBDestCFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfBoneLocal);
+	pCBDestCFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleForeignState::ecfComponent);
 	
-	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
-	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
-	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
-	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 }
 
 aeWPAPanelRuleForeignState::~aeWPAPanelRuleForeignState(){
@@ -480,9 +503,9 @@ void aeWPAPanelRuleForeignState::UpdateTargetList(){
 	
 	aeRuleForeignState * const rule = (aeRuleForeignState*)GetRule();
 	if(rule){
-		AddTarget("Position", &rule->GetTargetPosition());
-		AddTarget("Orientation", &rule->GetTargetOrientation());
-		AddTarget("Size", &rule->GetTargetSize());
-		AddTarget("Vertex Position Set", &rule->GetTargetVertexPositionSet());
+		AddTarget("Position", rule->GetTargetPosition());
+		AddTarget("Orientation", rule->GetTargetOrientation());
+		AddTarget("Size", rule->GetTargetSize());
+		AddTarget("Vertex Position Set", rule->GetTargetVertexPositionSet());
 	}
 }

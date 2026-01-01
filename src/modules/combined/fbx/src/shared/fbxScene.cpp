@@ -115,7 +115,7 @@ pConnectionMap(NULL)
 			break;
 		}
 		
-		pNode->AddNode(fbxNode::Ref::NewWith(*this, reader, checkEndOffset));
+		pNode->AddNode(fbxNode::Ref::New(*this, reader, checkEndOffset));
 	}
 	
 	// footer
@@ -463,14 +463,14 @@ void fbxScene::Prepare(deBaseModule &module){
 		
 		const decString &type = nodeConnection.GetPropertyAt(0)->CastString().GetValue();
 		if(type == "OO"){
-			connection.TakeOverWith(
+			connection = fbxConnection::Ref::New(
 				nodeConnection.GetPropertyAt(1)->GetValueAsLong(),
 				nodeConnection.GetPropertyAt(2)->GetValueAsLong());
 			pConnections.Add(connection);
 			pConnectionMap->Add(connection);
 			
 		}else if(type == "OP"){
-			connection.TakeOverWith(
+			connection = fbxConnection::Ref::New(
 				nodeConnection.GetPropertyAt(1)->GetValueAsLong(),
 				nodeConnection.GetPropertyAt(2)->GetValueAsLong(),
 				nodeConnection.GetPropertyAt(3)->CastString().GetValue());

@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,7 +47,14 @@
 /////////////////////
 
 struct sSmFltNatDat{
-	decSmoothFloat *smoothFloat;
+	decSmoothFloat *smoothFloat = nullptr;
+	
+	~sSmFltNatDat(){
+		if(smoothFloat){
+			delete smoothFloat;
+			smoothFloat = nullptr;
+		}
+	}
 };
 
 
@@ -61,11 +70,9 @@ deClassSmoothFloat::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSmF
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothFloat::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSmFltNatDat &nd = *((sSmFltNatDat*)p_GetNativeData(myself));
+	sSmFltNatDat * const nd = new (p_GetNativeData(myself)) sSmFltNatDat;
 	
-	nd.smoothFloat = NULL;
-	
-	nd.smoothFloat = new decSmoothFloat;
+	nd->smoothFloat = new decSmoothFloat;
 }
 
 // public func new( SmoothFloat smoothFloat )
@@ -74,13 +81,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSmFloat); // smoothFloat
 }
 void deClassSmoothFloat::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSmFltNatDat &nd = *((sSmFltNatDat*)p_GetNativeData(myself));
-	deClassSmoothFloat &clsSmoothFloat = *((deClassSmoothFloat*)GetOwnerClass());
-	
-	nd.smoothFloat = NULL;
+	sSmFltNatDat * const nd = new (p_GetNativeData(myself)) sSmFltNatDat;
+	const deClassSmoothFloat &clsSmoothFloat = *(static_cast<deClassSmoothFloat*>(GetOwnerClass()));
 	
 	const decSmoothFloat &copy = clsSmoothFloat.GetSmoothFloat(rt->GetValue(0)->GetRealObject());
-	nd.smoothFloat = new decSmoothFloat(copy);
+	nd->smoothFloat = new decSmoothFloat(copy);
 }
 
 
@@ -93,12 +98,7 @@ void deClassSmoothFloat::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSmFltNatDat &nd = *((sSmFltNatDat*)p_GetNativeData(myself));
-	
-	if(nd.smoothFloat){
-		delete nd.smoothFloat;
-		nd.smoothFloat = NULL;
-	}
+	static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->~sSmFltNatDat();
 }
 
 
@@ -111,7 +111,7 @@ deClassSmoothFloat::nfGetValue::nfGetValue(const sInitData &init) : dsFunction(i
 "getValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSmoothFloat::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	rt->PushFloat(smoothFloat.GetValue());
 }
@@ -122,7 +122,7 @@ deClassSmoothFloat::nfSetValue::nfSetValue(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassSmoothFloat::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.SetValue(rt->GetValue(0)->GetFloat());
 }
@@ -132,7 +132,7 @@ deClassSmoothFloat::nfGetGoal::nfGetGoal(const sInitData &init) : dsFunction(ini
 "getGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSmoothFloat::nfGetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	rt->PushFloat(smoothFloat.GetGoal());
 }
@@ -143,7 +143,7 @@ deClassSmoothFloat::nfSetGoal::nfSetGoal(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassSmoothFloat::nfSetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.SetGoal(rt->GetValue(0)->GetFloat());
 }
@@ -153,7 +153,7 @@ deClassSmoothFloat::nfGetAdjustTime::nfGetAdjustTime(const sInitData &init) : ds
 "getAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSmoothFloat::nfGetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	rt->PushFloat(smoothFloat.GetAdjustTime());
 }
@@ -164,7 +164,7 @@ deClassSmoothFloat::nfSetAdjustTime::nfSetAdjustTime(const sInitData &init) : ds
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassSmoothFloat::nfSetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -174,7 +174,7 @@ deClassSmoothFloat::nfGetAdjustRange::nfGetAdjustRange(const sInitData &init) : 
 "getAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSmoothFloat::nfGetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	rt->PushFloat(smoothFloat.GetAdjustRange());
 }
@@ -185,7 +185,7 @@ deClassSmoothFloat::nfSetAdjustRange::nfSetAdjustRange(const sInitData &init) : 
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassSmoothFloat::nfSetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -195,7 +195,7 @@ deClassSmoothFloat::nfGetChangeSpeed::nfGetChangeSpeed(const sInitData &init) : 
 "getChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSmoothFloat::nfGetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	rt->PushFloat(smoothFloat.GetChangeSpeed());
 }
@@ -206,7 +206,7 @@ deClassSmoothFloat::nfSetChangeSpeed::nfSetChangeSpeed(const sInitData &init) : 
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassSmoothFloat::nfSetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.SetChangeSpeed(rt->GetValue(0)->GetFloat());
 }
@@ -218,7 +218,7 @@ deClassSmoothFloat::nfReset::nfReset(const sInitData &init) : dsFunction(init.cl
 "reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothFloat::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.Reset();
 }
@@ -229,7 +229,7 @@ deClassSmoothFloat::nfUpdate::nfUpdate(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsFlt); // elapsed
 }
 void deClassSmoothFloat::nfUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
-	decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	
 	smoothFloat.Update(rt->GetValue(0)->GetFloat());
 }
@@ -245,7 +245,7 @@ deClassSmoothFloat::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFu
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassSmoothFloat::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSmoothFloat &clsSmoothFloat = *((deClassSmoothFloat*)GetOwnerClass());
+	deClassSmoothFloat &clsSmoothFloat = *(static_cast<deClassSmoothFloat*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsSmoothFloat.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
@@ -278,8 +278,8 @@ deClassSmoothFloat::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassSmoothFloat::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
-	const deClassSmoothFloat &clsSmoothFloat = *((deClassSmoothFloat*)GetOwnerClass());
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
+	const deClassSmoothFloat &clsSmoothFloat = *(static_cast<deClassSmoothFloat*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsSmoothFloat.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -306,8 +306,8 @@ deClassSmoothFloat::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // other
 }
 void deClassSmoothFloat::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
-	deClassSmoothFloat * const clsSmoothFloat = (deClassSmoothFloat*)GetOwnerClass();
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
+	deClassSmoothFloat * const clsSmoothFloat = static_cast<deClassSmoothFloat*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSmoothFloat)){
@@ -324,7 +324,7 @@ deClassSmoothFloat::nfToString::nfToString(const sInitData &init) : dsFunction(i
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassSmoothFloat::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decSmoothFloat &smoothFloat = *((sSmFltNatDat*)p_GetNativeData(myself))->smoothFloat;
+	const decSmoothFloat &smoothFloat = *static_cast<sSmFltNatDat*>(p_GetNativeData(myself))->smoothFloat;
 	decString str;
 	
 	str.Format("%g", smoothFloat.GetValue());
@@ -402,7 +402,7 @@ const decSmoothFloat &deClassSmoothFloat::GetSmoothFloat(dsRealObject *myself) c
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *((sSmFltNatDat*)p_GetNativeData(myself->GetBuffer()))->smoothFloat;
+	return *static_cast<sSmFltNatDat*>(p_GetNativeData(myself->GetBuffer()))->smoothFloat;
 }
 
 void deClassSmoothFloat::PushSmoothFloat(dsRunTime *rt, const decSmoothFloat &smoothFloat){
@@ -411,11 +411,10 @@ void deClassSmoothFloat::PushSmoothFloat(dsRunTime *rt, const decSmoothFloat &sm
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmFltNatDat &nd = *((sSmFltNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothFloat = NULL;
+	sSmFltNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSmFltNatDat;
 	
 	try{
-		nd.smoothFloat = new decSmoothFloat(smoothFloat);
+		nd->smoothFloat = new decSmoothFloat(smoothFloat);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

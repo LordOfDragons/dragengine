@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class aeRule;
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -37,15 +37,16 @@ class aeRuleGroup;
  * Undo action rule group remove rule.
  */
 class aeURuleGroupRemoveRule : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleGroupRemoveRule> Ref;
+	
+	
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleGroupRemoveRule> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -56,14 +56,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\font\freetype\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftModule.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftFont.h" />
-    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftModule.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -419,4 +411,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\font\freetype\src\deftModule.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftFont.h" />
+    <ClInclude Include="..\..\..\..\src\modules\font\freetype\src\deftModule.h" />
+  </ItemGroup>
 </Project>

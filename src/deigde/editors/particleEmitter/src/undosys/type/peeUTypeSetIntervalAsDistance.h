@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,15 +35,16 @@ class peeType;
  * \brief Undo Action Set Type Interval As Distance.
  */
 class peeUTypeSetIntervalAsDistance : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUTypeSetIntervalAsDistance> Ref;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUTypeSetIntervalAsDistance> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

@@ -76,6 +76,7 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -84,14 +85,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
@@ -100,6 +101,7 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -108,14 +110,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*comboBox, pPanel.GetObjectClass(), particleEmitter)));
+		igdeUndo::Ref undo(
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), particleEmitter));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
@@ -124,6 +126,7 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPSOCParticleEmitter &panel, const char *text, const char *description) :
 		igdeAction(text, description), pPanel(panel){}
 	
@@ -133,14 +136,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnActionParticleEmitter(pPanel.GetObjectClass(), particleEmitter)));
+		igdeUndo::Ref undo(
+			 OnActionParticleEmitter(pPanel.GetObjectClass(), particleEmitter));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
+	virtual igdeUndo::Ref OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 	
 	virtual void Update(){
 		gdeOCParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
@@ -162,6 +165,7 @@ protected:
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -170,14 +174,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), particleEmitter)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), particleEmitter));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) = 0;
 };
 
@@ -186,6 +190,7 @@ class cEditPath : public igdeEditPathListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -194,57 +199,63 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCParticleEmitterSetPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCParticleEmitterSetPath::Ref::New(
 			pPanel.GetObjectClass(), particleEmitter, editPath->GetPath()));
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCParticleEmitter &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCParticleEmitter *particleEmitter){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCParticleEmitter *particleEmitter) override{
 		if(particleEmitter->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCParticleEmitterSetPosition(objectClass, particleEmitter, vector);
+		return gdeUOCParticleEmitterSetPosition::Ref::New(objectClass, particleEmitter, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCParticleEmitter &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCParticleEmitter *particleEmitter){
 		if(particleEmitter->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCParticleEmitterSetRotation(objectClass, particleEmitter, vector);
+		return gdeUOCParticleEmitterSetRotation::Ref::New(objectClass, particleEmitter, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCParticleEmitter &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCParticleEmitter *particleEmitter){
 		if(particleEmitter->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCParticleEmitterSetBoneName(objectClass, particleEmitter, textField.GetText());
+		return gdeUOCParticleEmitterSetBoneName::Ref::New(objectClass, particleEmitter, textField.GetText());
 	}
 };
 
 class cActionCasting : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCasting> Ref;
+	
+public:
 	cActionCasting(gdeWPSOCParticleEmitter &panel) :
 	cBaseAction(panel, "Casting Particles", "Particle emitter is casting particles"){}
 	
-	virtual igdeUndo *OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter){
-		return new gdeUOCParticleEmitterToggleCasting(objectClass, particleEmitter);
+	virtual igdeUndo::Ref OnActionParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter){
+		return gdeUOCParticleEmitterToggleCasting::Ref::New(objectClass, particleEmitter);
 	}
 	
 	void Update(const gdeObjectClass &, const gdeOCParticleEmitter &particleEmitter) override{
@@ -258,6 +269,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -271,6 +283,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -285,7 +298,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCParticleEmitterSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCParticleEmitterSetPropertyName::Ref::New(pPanel.GetObjectClass(),
 				particleEmitter, propertyName, comboBox->GetText()));
 	}
 };
@@ -294,6 +307,7 @@ class cComboTriggerNames : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNames> Ref;
 	cComboTriggerNames(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -307,6 +321,7 @@ class cComboTriggerNameTarget : public igdeComboBoxListener{
 	gdeWPSOCParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNameTarget> Ref;
 	cComboTriggerNameTarget(gdeWPSOCParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -320,7 +335,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCParticleEmitterSetTriggerName::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCParticleEmitterSetTriggerName::Ref::New(pPanel.GetObjectClass(),
 				pPanel.GetParticleEmitter(), triggerName, comboBox->GetText()));
 	}
 };
@@ -337,42 +352,40 @@ public:
 
 gdeWPSOCParticleEmitter::gdeWPSOCParticleEmitter(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCParticleEmitterListener(*this);
+	pListener = gdeWPSOCParticleEmitterListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
 	
 	helper.EditPath(groupBox, "Path:", "Path to particle emitter",
-		igdeEnvironment::efpltParticleEmitter, pEditPath, new cEditPath(*this));
+		igdeEnvironment::efpltParticleEmitter, pEditPath, cEditPath::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
-	helper.CheckBox(groupBox, pChkCasting, new cActionCasting(*this), true);
+		pEditRotation, cEditRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkCasting, cActionCasting::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Path", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
-	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
-	pCBPropertyNames->AddItem("Casting", NULL, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epPath);
+	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epAttachRotation);
+	pCBPropertyNames->AddItem("Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::epCasting);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
@@ -380,22 +393,18 @@ pGameDefinition(NULL)
 	// trigger targets
 	helper.GroupBox(content, groupBox, "Triggers:");
 	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
-		pCBTriggerNames, new cComboTriggerNames(*this));
-	pCBTriggerNames->AddItem("Casting", NULL, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
+		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
+	pCBTriggerNames->AddItem("Casting", nullptr, (void*)(intptr_t)gdeOCParticleEmitter::etCasting);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBTriggerNameTarget, new cComboTriggerNameTarget(*this));
+		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();
 	pCBTriggerNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -410,14 +419,12 @@ void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinitio
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();
@@ -427,12 +434,12 @@ void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinitio
 
 
 gdeObjectClass *gdeWPSOCParticleEmitter::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCParticleEmitter *gdeWPSOCParticleEmitter::GetParticleEmitter() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCParticleEmitter() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCParticleEmitter() : nullptr;
 }
 
 const gdeOCParticleEmitter::eProperties gdeWPSOCParticleEmitter::GetPropertyName() const{
@@ -493,7 +500,7 @@ void gdeWPSOCParticleEmitter::UpdateParticleEmitter(){
 	
 	const bool enabled = particleEmitter;
 	pEditPath->SetEnabled(enabled);
-	pEditPosition->SetEnabled(enabled);	
+	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);
 	pEditBoneName->SetEnabled(enabled);
 	

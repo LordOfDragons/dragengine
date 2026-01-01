@@ -41,10 +41,10 @@
 
 meColliderOwner::meColliderOwner(meObject *object) :
 pObject(object),
-pShape(NULL),
-pSnapPoint(NULL),
-pDecal(NULL),
-pNavigationSpace(NULL)
+pShape(nullptr),
+pSnapPoint(nullptr),
+pDecal(nullptr),
+pNavigationSpace(nullptr)
 {
 	if(!object){
 		DETHROW(deeInvalidParam);
@@ -52,11 +52,11 @@ pNavigationSpace(NULL)
 }
 
 meColliderOwner::meColliderOwner(meObjectShape *shape) :
-pObject(NULL),
+pObject(nullptr),
 pShape(shape),
-pSnapPoint(NULL),
-pDecal(NULL),
-pNavigationSpace(NULL)
+pSnapPoint(nullptr),
+pDecal(nullptr),
+pNavigationSpace(nullptr)
 {
 	if(!shape){
 		DETHROW(deeInvalidParam);
@@ -64,11 +64,11 @@ pNavigationSpace(NULL)
 }
 
 meColliderOwner::meColliderOwner(meObjectSnapPoint *snapPoint) :
-pObject(NULL),
-pShape(NULL),
+pObject(nullptr),
+pShape(nullptr),
 pSnapPoint(snapPoint),
-pDecal(NULL),
-pNavigationSpace(NULL)
+pDecal(nullptr),
+pNavigationSpace(nullptr)
 {
 	if(!snapPoint){
 		DETHROW(deeInvalidParam);
@@ -76,11 +76,11 @@ pNavigationSpace(NULL)
 }
 
 meColliderOwner::meColliderOwner(meDecal *decal) :
-pObject(NULL),
-pShape(NULL),
-pSnapPoint(NULL),
+pObject(nullptr),
+pShape(nullptr),
+pSnapPoint(nullptr),
 pDecal(decal),
-pNavigationSpace(NULL)
+pNavigationSpace(nullptr)
 {
 	if(!decal){
 		DETHROW(deeInvalidParam);
@@ -88,10 +88,10 @@ pNavigationSpace(NULL)
 }
 
 meColliderOwner::meColliderOwner(meNavigationSpace *navspace) :
-pObject(NULL),
-pShape(NULL),
-pSnapPoint(NULL),
-pDecal(NULL),
+pObject(nullptr),
+pShape(nullptr),
+pSnapPoint(nullptr),
+pDecal(nullptr),
 pNavigationSpace(navspace)
 {
 	if(!navspace){
@@ -107,7 +107,7 @@ pNavigationSpace(navspace)
 const meColliderOwner *meColliderOwner::GetColliderOwner(
 igdeEnvironment &environment, deCollider *collider){
 	if(!collider){
-		return NULL;
+		return nullptr;
 	}
 	
 	return (const meColliderOwner*)environment.GetColliderUserPointer(collider);

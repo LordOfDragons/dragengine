@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetRotation();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

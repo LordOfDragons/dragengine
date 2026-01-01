@@ -25,7 +25,7 @@
 #ifndef _DEPARALLELTASK_H_
 #define _DEPARALLELTASK_H_
 
-#include "../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/string/decString.h"
 #include "../threading/deThreadSafeObject.h"
 
@@ -66,6 +66,12 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTThreadSafeObjectReference<deParallelTask> Ref;
 	
+	/** \brief List of tasks. */
+	typedef decTThreadSafeObjectOrderedSet<deParallelTask> TaskList;
+	
+	/** \brief List of task pointers. */
+	typedef decTOrderedSet<deParallelTask*> TaskPointerList;
+	
 	
 private:
 	deBaseModule *pOwner;
@@ -76,8 +82,8 @@ private:
 	bool pEmptyRun;
 	bool pLowPriority;
 	
-	decThreadSafeObjectOrderedSet pDependsOn;
-	decThreadSafeObjectOrderedSet pDependedOnBy;
+	TaskList pDependsOn;
+	TaskPointerList pDependedOnBy;
 	
 	
 	
@@ -158,14 +164,12 @@ public:
 	 */
 	void SetFinished();
 	
-	/** \brief Number of tasks this task depends on. */
-	int GetDependsOnCount() const;
-	
-	/** \brief Depend on task at index. */
-	deParallelTask *GetDependsOnAt(int index) const;
-	
-	/** \brief Task depends on another task. */
-	bool DoesDependOn(deParallelTask *task) const;
+	/**
+	 * \brief List of tasks this task is depending on.
+	 * 
+	 * Used by deParallelProcessing only.
+	 */
+	inline const TaskList &GetDependsOn() const{ return pDependsOn; }
 	
 	/**
 	 * \brief Add task this task depends on.
@@ -191,8 +195,8 @@ public:
 	 * 
 	 * Used by deParallelProcessing only.
 	 */
-	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){ return pDependedOnBy; }
-	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{ return pDependedOnBy; }
+	inline TaskPointerList &GetDependedOnBy(){ return pDependedOnBy; }
+	inline const TaskPointerList &GetDependedOnBy() const{ return pDependedOnBy; }
 	
 	/**
 	 * \brief Remove from all tasks depending on this task.

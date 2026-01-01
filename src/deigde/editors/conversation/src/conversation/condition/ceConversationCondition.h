@@ -25,8 +25,9 @@
 #ifndef _CECONVERSATIONCONDITION_H_
 #define _CECONVERSATIONCONDITION_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decIntSet.h>
 
 
 
@@ -35,8 +36,9 @@
  */
 class ceConversationCondition : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceConversationCondition> Ref;
+	typedef decTObjectOrderedSet<ceConversationCondition> List;
+	typedef decTSet<int> IndexSet;
 	
 	
 	/** \brief Condition types. */
@@ -70,7 +72,7 @@ public:
 	
 private:
 	eConditionTypes pType;
-	decIntSet pTreeExpandedLists;
+	IndexSet pTreeExpandedLists;
 	
 	
 	
@@ -84,7 +86,9 @@ public:
 	ceConversationCondition(const ceConversationCondition &condition);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	virtual ~ceConversationCondition();
+public:
 	/*@}*/
 	
 	
@@ -95,11 +99,11 @@ public:
 	inline eConditionTypes GetType() const{ return pType; }
 	
 	/** \brief List of expanded lists in a tree view. */
-	inline decIntSet &GetTreeExpandedLists(){ return pTreeExpandedLists; }
-	inline const decIntSet &GetTreeExpandedLists() const{ return pTreeExpandedLists; }
+	inline IndexSet &GetTreeExpandedLists(){ return pTreeExpandedLists; }
+	inline const IndexSet &GetTreeExpandedLists() const{ return pTreeExpandedLists; }
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const = 0;
+	virtual Ref CreateCopy() const = 0;
 	/*@}*/
 };
 

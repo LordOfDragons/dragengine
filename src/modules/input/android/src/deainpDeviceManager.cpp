@@ -52,9 +52,7 @@
 ////////////////////////////
 
 deainpDeviceManager::deainpDeviceManager(deAndroidInput &module) :
-pModule(module),
-pMouse(NULL),
-pKeyboard(NULL)
+pModule(module)
 {
 	try{
 		pCreateDevices();
@@ -159,20 +157,14 @@ void deainpDeviceManager::LogDevices(){
 
 void deainpDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 void deainpDeviceManager::pCreateDevices(){
-	pMouse = new deainpDeviceMouse(pModule);
+	pMouse = deainpDeviceMouse::Ref::New(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard = new deainpDeviceKeyboard(pModule);
+	pKeyboard = deainpDeviceKeyboard::Ref::New(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 }

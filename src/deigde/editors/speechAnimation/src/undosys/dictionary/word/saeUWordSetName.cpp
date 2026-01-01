@@ -42,7 +42,7 @@
 saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	if(!word || !newName) DETHROW(deeInvalidParam);
 	
-	pWord = NULL;
+	pWord = nullptr;
 	
 	SetShortInfo("Word Set Name");
 	
@@ -50,13 +50,9 @@ saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	pNewName = newName;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

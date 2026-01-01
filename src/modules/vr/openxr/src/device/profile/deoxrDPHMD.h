@@ -39,6 +39,8 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<deoxrDPHMD> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

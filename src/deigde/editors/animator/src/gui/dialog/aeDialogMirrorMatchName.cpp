@@ -48,17 +48,17 @@ igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, nullptr);
+	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, {});
 	pCBType->AddItem("Begin of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
 	pCBType->AddItem("End of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	pCBType->AddItem("Middle of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
 	pCBType->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	
-	helper.EditString(content, "First:", "First name string component to match.", 30, pEditFirst, nullptr);
-	helper.EditString(content, "Second:", "Second name string component to match.", 30, pEditSecond, nullptr);
+	helper.EditString(content, "First:", "First name string component to match.", 30, pEditFirst, {});
+	helper.EditString(content, "Second:", "Second name string component to match.", 30, pEditSecond, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Cancel");
@@ -74,14 +74,14 @@ aeDialogMirrorMatchName::~aeDialogMirrorMatchName(){
 // Management
 ///////////////
 
-void aeDialogMirrorMatchName::Set(const aeRuleMirror::cMatchName &matchName){
-	pCBType->SetSelectionWithData((void*)(intptr_t)matchName.GetType());
-	pEditFirst->SetText(matchName.GetFirst());
-	pEditSecond->SetText(matchName.GetSecond());
+void aeDialogMirrorMatchName::Set(const aeRuleMirror::MatchName &matchName){
+	pCBType->SetSelectionWithData((void*)(intptr_t)matchName.type);
+	pEditFirst->SetText(matchName.first);
+	pEditSecond->SetText(matchName.second);
 }
 
-aeRuleMirror::cMatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
-	return aeRuleMirror::cMatchName::Ref::NewWith(pEditFirst->GetText(), pEditSecond->GetText(),
+aeRuleMirror::MatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
+	return aeRuleMirror::MatchName::Ref::New(pEditFirst->GetText(), pEditSecond->GetText(),
 		(deAnimatorRuleMirror::eMatchNameType)(intptr_t)pCBType->GetSelectedItem()->GetData());
 }
 

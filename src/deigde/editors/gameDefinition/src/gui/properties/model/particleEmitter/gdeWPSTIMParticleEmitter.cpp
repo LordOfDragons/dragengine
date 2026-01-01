@@ -46,8 +46,7 @@
 ////////////////////////////
 
 gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter) :
-gdeWPSTreeItemModel(tree, etParticleEmitter),
-pParticleEmitter(NULL)
+gdeWPSTreeItemModel(tree, etParticleEmitter)
 {
 	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
@@ -57,13 +56,9 @@ pParticleEmitter(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeWPSTIMParticleEmitter::~gdeWPSTIMParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

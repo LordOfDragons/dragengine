@@ -29,7 +29,6 @@
 #include <ctype.h>
 
 #include "decString.h"
-#include "decStringList.h"
 #include "../exceptions.h"
 #include "../../dragengine_configuration.h"
 
@@ -54,8 +53,7 @@ enum {
 ////////////////////////////
 
 decString::decString(){
-	pString = new char[1];
-	pString[0] = '\0';
+	pString = new char[1]{0};
 }
 
 decString::decString(const char *string){
@@ -115,6 +113,12 @@ decString::decString(const decString &string1, const char *string2){
 	#endif
 }
 
+decString::decString(decString &&string) :
+pString(string.pString)
+{
+	string.pString = new char[1]{0};
+}
+
 decString::~decString(){
 	if(pString){
 		delete [] pString;
@@ -133,7 +137,6 @@ bool decString::IsEmpty() const{
 void decString::Empty(){
 	if(pString[0] != '\0'){
 		char *newString = new char[1];
-		if(!newString) DETHROW(deeOutOfMemory);
 		newString[0] = '\0';
 		
 		delete [] pString;
@@ -233,7 +236,6 @@ void decString::SetValue(char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hi", value);
 #else
@@ -254,7 +256,6 @@ void decString::SetValue(unsigned char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hu", value);
 #else
@@ -271,7 +272,6 @@ void decString::SetValue(short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hi", value);
 	newString[length] = '\0';
 	
@@ -284,7 +284,6 @@ void decString::SetValue(unsigned short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hu", value);
 	newString[length] = '\0';
 	
@@ -297,7 +296,6 @@ void decString::SetValue(int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%i", value);
 	newString[length] = '\0';
 	
@@ -310,7 +308,6 @@ void decString::SetValue(unsigned int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%u", value);
 	newString[length] = '\0';
 	
@@ -323,7 +320,6 @@ void decString::SetValue(float value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	
@@ -336,7 +332,6 @@ void decString::SetValue(double value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	
@@ -1072,9 +1067,9 @@ decString decString::GetReversed() const{
 	return string;
 }
 
-decStringList decString::Split(int character) const{
+decTList<decString> decString::Split(int character) const{
 	const int len = GetLength();
-	decStringList list;
+	decTList<decString> list;
 	int i, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1098,14 +1093,14 @@ decStringList decString::Split(int character) const{
 	return list;
 }
 
-decStringList decString::Split(const char *characters) const{
+decTList<decString> decString::Split(const char *characters) const{
 	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int clen = (int)strlen(characters);
 	const int len = GetLength();
-	decStringList list;
+	decTList<decString> list;
 	int i, j, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1137,7 +1132,7 @@ decStringList decString::Split(const char *characters) const{
 	return list;
 }
 
-decStringList decString::Split(const decString &characters) const{
+decTList<decString> decString::Split(const decString &characters) const{
 	return Split(characters.GetString());
 }
 
@@ -1529,6 +1524,9 @@ const char *decString::GetString() const{
 	return (const char *)pString;
 }
 
+char *decString::GetMutableString() const{
+	return pString;
+}
 
 
 bool decString::Equals(const decString &string) const{
@@ -1788,6 +1786,13 @@ decString &decString::operator=(const decString &string){
 
 decString &decString::operator=(const char *string){
 	Set(string);
+	return *this;
+}
+
+decString & decString::operator=(decString &&string){
+	delete [] pString;
+	pString = string.pString;
+	string.pString = new char[1]{0};
 	return *this;
 }
 

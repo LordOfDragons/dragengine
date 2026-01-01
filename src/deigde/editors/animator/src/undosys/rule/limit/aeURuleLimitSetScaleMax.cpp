@@ -44,12 +44,10 @@ aeURuleLimitSetScaleMax::aeURuleLimitSetScaleMax(aeRuleLimit *rule, const decVec
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumScaling();
 		pNewMax = newMax;
 		
@@ -84,7 +82,4 @@ void aeURuleLimitSetScaleMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetScaleMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

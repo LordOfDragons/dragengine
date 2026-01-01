@@ -175,19 +175,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Model used for casting or NULL. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model used for casting or NULL. */
 	void SetModel(deModel *model);
 	
 	/** \brief Skin for the model used for casting or NULL. */
-	inline deSkin *GetModelSkin() const{ return pModelSkin; }
+	inline const deSkin::Ref &GetModelSkin() const{ return pModelSkin; }
 	
 	/** \brief Set skin for the model used for casting or NULL. */
 	void SetModelSkin(deSkin *skin);
@@ -213,7 +213,7 @@ public:
 	
 	
 	/** \brief Particle emitter for trails behind particles or NULL. */
-	inline deParticleEmitter *GetTrailEmitter() const{ return pTrailEmitter; }
+	inline const deParticleEmitter::Ref &GetTrailEmitter() const{ return pTrailEmitter; }
 	
 	/** \brief Set particle emitter for trails behind particles or NULL. */
 	void SetTrailEmitter(deParticleEmitter *emitter);
@@ -241,7 +241,7 @@ public:
 	void SetCollisionResponse(eCollisionResponses response);
 	
 	/** \brief Particle emitter for colliding particles or NULL. */
-	inline deParticleEmitter *GetCollisionEmitter() const{ return pCollisionEmitter; }
+	inline const deParticleEmitter::Ref &GetCollisionEmitter() const{ return pCollisionEmitter; }
 	
 	/** \brief Set particle emitter for colliding particles or NULL. */
 	void SetCollisionEmitter(deParticleEmitter *emitter);

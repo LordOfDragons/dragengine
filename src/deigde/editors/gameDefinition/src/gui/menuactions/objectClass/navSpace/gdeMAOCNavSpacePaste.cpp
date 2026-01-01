@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
 	if(!clip){
-		return NULL;
+		return {};
 	}
 	
 	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
 		(const gdeClipboardDataOCNavSpace &)(igdeClipboardData&)clip;
 	
-	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::NewWith(*clipOCNavigationSpace.GetNavSpace()));
+	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::New(*clipOCNavigationSpace.GetNavSpace()));
 	
-	igdeUndo * const undo = new gdeUOCAddNavSpace(&objectClass,
+	const igdeUndo::Ref undo = gdeUOCAddNavSpace::Ref::New(&objectClass,
 		navSpace);
 	undo->SetShortInfo("Paste object class navigation space");
 	return undo;
 }
 
 void gdeMAOCNavSpacePaste::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL
+	SetEnabled(GetActiveObjectClass() != nullptr
 		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
 }

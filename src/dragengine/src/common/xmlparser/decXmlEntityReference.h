@@ -33,6 +33,11 @@
  * \brief XML Entity Reference.
  */
 class DE_DLL_EXPORT decXmlEntityReference : public decXmlElement{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlEntityReference> Ref;
+	
+	
 private:
 	decString pName;
 	

@@ -58,7 +58,7 @@ FXTreeListBox(p,tgt,sel,opts,x,y,w,h, pl,pr,pt,pb)
 	pIconFolder = new FXGIFIcon(getApp(), FoxIcons::minifolder);
 	
 	// update
-	setCurrentItem(appendItem(NULL, "/", pIconFolder, pIconFolder));
+	setCurrentItem(appendItem(nullptr, "/", pIconFolder, pIconFolder));
 }
 
 igdeNativeFoxVFSDirectoryBox::~igdeNativeFoxVFSDirectoryBox(){
@@ -120,13 +120,13 @@ void igdeNativeFoxVFSDirectoryBox::destroy(){
 
 FXTreeItem *igdeNativeFoxVFSDirectoryBox::pBuildListFrom(const decPath &path){
 	int c, componentCount = path.GetComponentCount();
-	FXTreeItem *item = NULL;
+	FXTreeItem *item = nullptr;
 	
 	// clear list
 	clearItems();
 	
 	// add root
-	item = appendItem(NULL, "/", pIconFolder, pIconFolder);
+	item = appendItem(nullptr, "/", pIconFolder, pIconFolder);
 	
 	// add the path
 	for(c=0; c<componentCount; c++){

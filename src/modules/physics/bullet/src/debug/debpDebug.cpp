@@ -43,80 +43,40 @@
 
 debpDebug::debpDebug(dePhysicsBullet &bullet) :
 pBullet(bullet),
-pEnabled(false),
-pDIColliderPrepareDetection(NULL),
-pDIColliderDetectCustomCollision(NULL),
-pDIColliderUpdateFromBody(NULL),
-pDIColliderFinishDetection(NULL),
-pDIColliderCollisionTests(NULL),
-pDIColliderUpdateOctree(NULL),
-pDITouchSensorApplyChanges(NULL),
-pDIWorldStepSimulation(NULL),
-pDIWorldUpdateOctrees(NULL),
-pDIWorldCheckDynamicCollisions(NULL)
+pEnabled(false)
 {
-	pDIColliderPrepareDetection = new debpDebugInformation("Collider PrepareDetection:");
+	pDIColliderPrepareDetection = debpDebugInformation::Ref::New("Collider PrepareDetection:");
 	pDebugInfoList.Add(pDIColliderPrepareDetection);
 	
-	pDIColliderDetectCustomCollision = new debpDebugInformation("Collider DetectCustomCollision:");
+	pDIColliderDetectCustomCollision = debpDebugInformation::Ref::New("Collider DetectCustomCollision:");
 	pDebugInfoList.Add(pDIColliderDetectCustomCollision);
 	
-	pDIColliderUpdateFromBody = new debpDebugInformation("Collider UpdateFromBody:");
+	pDIColliderUpdateFromBody = debpDebugInformation::Ref::New("Collider UpdateFromBody:");
 	pDebugInfoList.Add(pDIColliderUpdateFromBody);
 	
-	pDIColliderFinishDetection = new debpDebugInformation("Collider FinishDetection:");
+	pDIColliderFinishDetection = debpDebugInformation::Ref::New("Collider FinishDetection:");
 	pDebugInfoList.Add(pDIColliderFinishDetection);
 	
-	pDIColliderCollisionTests = new debpDebugInformation("Collider CollisionTests:");
+	pDIColliderCollisionTests = debpDebugInformation::Ref::New("Collider CollisionTests:");
 	pDebugInfoList.Add(pDIColliderCollisionTests);
 	
-	pDIColliderUpdateOctree = new debpDebugInformation("Collider UpdateOctreePosition:");
+	pDIColliderUpdateOctree = debpDebugInformation::Ref::New("Collider UpdateOctreePosition:");
 	pDebugInfoList.Add(pDIColliderUpdateOctree);
 	
-	pDITouchSensorApplyChanges = new debpDebugInformation("TouchSensor ApplyChanges:");
+	pDITouchSensorApplyChanges = debpDebugInformation::Ref::New("TouchSensor ApplyChanges:");
 	pDebugInfoList.Add(pDITouchSensorApplyChanges);
 	
-	pDIWorldStepSimulation = new debpDebugInformation("World StepSimulation:");
+	pDIWorldStepSimulation = debpDebugInformation::Ref::New("World StepSimulation:");
 	pDebugInfoList.Add(pDIWorldStepSimulation);
 	
-	pDIWorldUpdateOctrees = new debpDebugInformation("World UpdateOctrees:");
+	pDIWorldUpdateOctrees = debpDebugInformation::Ref::New("World UpdateOctrees:");
 	pDebugInfoList.Add(pDIWorldUpdateOctrees);
 	
-	pDIWorldCheckDynamicCollisions = new debpDebugInformation("World CheckDynamicCollisions:");
+	pDIWorldCheckDynamicCollisions = debpDebugInformation::Ref::New("World CheckDynamicCollisions:");
 	pDebugInfoList.Add(pDIWorldCheckDynamicCollisions);
 }
 
 debpDebug::~debpDebug(){
-	if(pDIWorldCheckDynamicCollisions){
-		pDIWorldCheckDynamicCollisions->FreeReference();
-	}
-	if(pDIWorldUpdateOctrees){
-		pDIWorldUpdateOctrees->FreeReference();
-	}
-	if(pDIWorldStepSimulation){
-		pDIWorldStepSimulation->FreeReference();
-	}
-	if(pDITouchSensorApplyChanges){
-		pDITouchSensorApplyChanges->FreeReference();
-	}
-	if(pDIColliderPrepareDetection){
-		pDIColliderPrepareDetection->FreeReference();
-	}
-	if(pDIColliderDetectCustomCollision){
-		pDIColliderDetectCustomCollision->FreeReference();
-	}
-	if(pDIColliderUpdateOctree){
-		pDIColliderUpdateOctree->FreeReference();
-	}
-	if(pDIColliderUpdateFromBody){
-		pDIColliderUpdateFromBody->FreeReference();
-	}
-	if(pDIColliderFinishDetection){
-		pDIColliderFinishDetection->FreeReference();
-	}
-	if(pDIColliderCollisionTests){
-		pDIColliderCollisionTests->FreeReference();
-	}
 }
 
 

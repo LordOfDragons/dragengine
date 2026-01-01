@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEDSSTYLEDTEXT_H_
 #define _DEDSSTYLEDTEXT_H_
 
-// includes
-#include <dragengine/deObject.h>
+#include "nodes/dedsStyledTextNode.h"
 
-// predefinitions
-class dedsStyledTextNode;
+#include <dragengine/deObject.h>
 
 
 
@@ -48,32 +45,32 @@ class dedsStyledTextNode;
  */
 class dedsStyledText : public deObject{
 private:
-	dedsStyledTextNode *pRootNode;
+	dedsStyledTextNode::Ref pRootNode;
 	
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<dedsStyledText> Ref;
-
-
+	
+	
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new styled text. */
 	dedsStyledText();
+	
+protected:
 	/** Cleans up the styled text. */
-	virtual ~dedsStyledText();
+	~dedsStyledText() override = default;
 	/*@}*/
 	
+	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the root node. */
-	inline dedsStyledTextNode *GetRootNode() const{ return pRootNode; }
+	inline const dedsStyledTextNode::Ref &GetRootNode() const{ return pRootNode; }
 	/** Sets the root node. */
 	void SetRootNode(dedsStyledTextNode *node);
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

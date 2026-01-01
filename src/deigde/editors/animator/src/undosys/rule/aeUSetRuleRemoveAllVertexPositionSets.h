@@ -34,6 +34,8 @@
  */
 class aeUSetRuleRemoveAllVertexPositionSets : public aeUSetRuleVertexPositionSets{
 public:
+	typedef deTObjectReference<aeUSetRuleRemoveAllVertexPositionSets> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

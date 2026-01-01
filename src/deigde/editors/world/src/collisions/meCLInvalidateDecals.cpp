@@ -33,7 +33,7 @@
 
 #include <deigde/gui/wrapper/igdeWObject.h>
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
 
@@ -92,16 +92,14 @@ meCLInvalidateDecals::~meCLInvalidateDecals(){
 ///////////////
 
 void meCLInvalidateDecals::InvalidateDecals(){
-	decPointerSet set;
-	int i, count = GetCollectedElements().GetEntryCount();
-	for(i=0; i<count; i++){
-		set.AddIfAbsent(GetCollectedElements().GetEntryAt(i)->GetDecal());
-	}
+	decTSet<meDecal*> set;
+	GetCollectedElements().Visit([&](const meCLHitListEntry &entry){
+		set.Add(entry.GetDecal());
+	});
 	
-	count = set.GetCount();
-	for(i=0; i<count; i++){
-		((meDecal*)set.GetAt(i))->InvalidateDecals();
-	}
+	set.Visit([](meDecal *decal){
+		decal->InvalidateDecals();
+	});
 }
 
 void meCLInvalidateDecals::Collect(const decDVector &position, const decVector &minExtend,

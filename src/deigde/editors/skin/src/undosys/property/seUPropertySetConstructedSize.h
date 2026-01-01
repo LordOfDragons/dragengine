@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -37,8 +37,12 @@ class seProperty;
  * \brief Undo action property constructed set size.
  */
 class seUPropertySetConstructedSize : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetConstructedSize> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetConstructedSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

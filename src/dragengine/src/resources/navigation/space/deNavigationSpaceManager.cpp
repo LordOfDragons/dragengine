@@ -65,26 +65,10 @@ deNavigationSpace *deNavigationSpaceManager::GetRootNavigationSpace() const{
 	return (deNavigationSpace*)pNavSpaces.GetRoot();
 }
 
-deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
-	deNavigationSpace *navspace = NULL;
-	
-	try{
-		navspace = new deNavigationSpace(this);
-		if(!navspace){
-			DETHROW(deeOutOfMemory);
-		}
-		
-		GetAISystem()->LoadNavigationSpace(navspace);
-		
-		pNavSpaces.Add(navspace);
-		
-	}catch(const deException &){
-		if(navspace){
-			navspace->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigationSpace::Ref deNavigationSpaceManager::CreateNavigationSpace(){
+	const deNavigationSpace::Ref navspace(deNavigationSpace::Ref::New(this));
+	GetAISystem()->LoadNavigationSpace(navspace);
+	pNavSpaces.Add(navspace);
 	return navspace;
 }
 

@@ -43,18 +43,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a builder using the given navigation space. */
-	meModelBuilderNavSpace(deNavigationSpace *navspace);
+	explicit meModelBuilderNavSpace(deNavigationSpace *navspace);
+	
 	/** Cleans up the builder. */
-	virtual ~meModelBuilderNavSpace();
+	~meModelBuilderNavSpace() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Build model into the provided model object. */
-	virtual void BuildModel(deModel *model);
+	void BuildModel(deModel *model) override;
 	
 	/** Build nav grid model. */
 	void BuildNavGrid(deModel *model);
+	
 	/** Build nav mesh model. */
 	void BuildNavMesh(deModel *model);
 	/*@}*/

@@ -25,6 +25,9 @@
 #ifndef _CEWPVIEW_H_
 #define _CEWPVIEW_H_
 
+#include "ceWPViewListener.h"
+#include "../../conversation/ceConversation.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -52,8 +55,6 @@ class ceConversationFile;
 class ceConversationTopic;
 
 class saeGameDefinition;
-class ceWPViewListener;
-class ceConversation;
 
 
 
@@ -61,10 +62,13 @@ class ceConversation;
  * View property window.
  */
 class ceWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<ceWPView> Ref;
+	
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPViewListener *pListener;
-	ceConversation *pConversation;
+	ceWPViewListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPWObject::Ref pWPEnvObject;
@@ -156,7 +160,7 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);

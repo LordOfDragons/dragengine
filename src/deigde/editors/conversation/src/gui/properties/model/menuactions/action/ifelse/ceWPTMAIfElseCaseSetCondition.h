@@ -36,6 +36,9 @@ class ceCAIfElseCase;
  * \brief Menu action set condition to wait.
  */
 class ceWPTMAIfElseCaseSetCondition : public ceWPTMACreateCondition{
+public:
+	typedef deTObjectReference<ceWPTMAIfElseCaseSetCondition> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -70,7 +73,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo(ceConversationCondition *condition) override;
+	igdeUndo::Ref CreateUndo(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

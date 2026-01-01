@@ -45,9 +45,9 @@
 meHTVRuleMultiMath::meHTVRuleMultiMath() : meHTVRule(ertMultiMath, 2){
 	pOperator = eopAdd;
 	
-	GetSlotAt(eisValues).SetIsInput(true);
+	GetSlots().GetAt(eisValues)->SetIsInput(true);
 	
-	GetSlotAt(eosResult).SetIsInput(false);
+	GetSlots().GetAt(eosResult)->SetIsInput(false);
 }
 
 meHTVRuleMultiMath::meHTVRuleMultiMath(const meHTVRuleMultiMath &rule) :
@@ -72,15 +72,15 @@ void meHTVRuleMultiMath::SetOperator(eOperators oper){
 float meHTVRuleMultiMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
 	if(slot != eosResult) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputValues = GetSlotAt(eisValues);
+	meHTVRSlot &inputValues = GetSlots().GetAt(eisValues);
 	
-	int l, linkCount = inputValues.GetLinkCount();
+	int l, linkCount = inputValues.GetLinks().GetCount();
 	float value, result = 0.0f;
 	
 	switch(pOperator){
 	case eopAdd:
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *inputValues.GetLinkAt(l);
+			meHTVRLink &link = *inputValues.GetLinks().GetAt(l);
 			
 			if(l == 0){
 				result = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -92,7 +92,7 @@ float meHTVRuleMultiMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironm
 		
 	case eopMultiply:
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *inputValues.GetLinkAt(l);
+			meHTVRLink &link = *inputValues.GetLinks().GetAt(l);
 			
 			if(l == 0){
 				result = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -104,7 +104,7 @@ float meHTVRuleMultiMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironm
 		
 	case eopMinimum:
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *inputValues.GetLinkAt(l);
+			meHTVRLink &link = *inputValues.GetLinks().GetAt(l);
 			
 			if(l == 0){
 				result = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -118,7 +118,7 @@ float meHTVRuleMultiMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironm
 		
 	case eopMaximum:
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *inputValues.GetLinkAt(l);
+			meHTVRLink &link = *inputValues.GetLinks().GetAt(l);
 			
 			if(l == 0){
 				result = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -132,7 +132,7 @@ float meHTVRuleMultiMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironm
 		
 	case eopAverage:
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *inputValues.GetLinkAt(l);
+			meHTVRLink &link = *inputValues.GetLinks().GetAt(l);
 			
 			if(l == 0){
 				result = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -156,6 +156,6 @@ decVector meHTVRuleMultiMath::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnv
 	return decVector(value, value, value);
 }
 
-meHTVRule *meHTVRuleMultiMath::Copy() const{
-	return new meHTVRuleMultiMath(*this);
+meHTVRule::Ref meHTVRuleMultiMath::Copy() const{
+	return meHTVRuleMultiMath::Ref::New(*this);
 }

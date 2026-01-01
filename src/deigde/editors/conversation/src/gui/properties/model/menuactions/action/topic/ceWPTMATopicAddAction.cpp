@@ -44,7 +44,7 @@ ceWPTMACreateAction(windowMain, conversation, actionType),
 pTopic(&topic),
 pIndex(index)
 {
-	if(index < 0 || index > topic.GetActionList().GetCount()){
+	if(index < 0 || index > topic.GetActions().GetCount()){
 		DETHROW(deeInvalidAction);
 	}
 }
@@ -54,6 +54,6 @@ pIndex(index)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMATopicAddAction::CreateUndo(ceConversationAction *action){
-	return new ceUCActionAdd(pTopic, action, pIndex);
+igdeUndo::Ref ceWPTMATopicAddAction::CreateUndo(ceConversationAction *action){
+	return ceUCActionAdd::Ref::New(pTopic, action, pIndex);
 }

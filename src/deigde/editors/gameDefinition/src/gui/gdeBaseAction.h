@@ -26,9 +26,9 @@
 #define _GDEBASEACTION_H_
 
 #include <deigde/gui/event/igdeAction.h>
+#include <deigde/undo/igdeUndo.h>
 
 class gdeWindowMain;
-class igdeUndo;
 class gdeGameDefinition;
 
 
@@ -37,6 +37,10 @@ class gdeGameDefinition;
  * \brief Base action with undo support.
  */
 class gdeBaseAction : public igdeAction{
+public:
+	typedef deTObjectReference<gdeBaseAction> Ref;
+	
+private:
 protected:
 	gdeWindowMain &pWindowMain;
 	
@@ -62,7 +66,7 @@ public:
 	/**
 	 * \brief Run action.
 	 * 
-	 * If game definition is not NULL calls OnAction(gdeGameDefinition&). If a non-NULL undo
+	 * If game definition is not nullptr calls OnAction(gdeGameDefinition&). If a non-nullptr undo
 	 * object is returned the undo is added to the game definition and redone.
 	 */
 	virtual void OnAction();
@@ -72,8 +76,8 @@ public:
 	
 	
 	
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition) = 0;
+	/** \brief Run action if game definition is not nullptr. */
+	virtual igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) = 0;
 	/*@}*/
 };
 

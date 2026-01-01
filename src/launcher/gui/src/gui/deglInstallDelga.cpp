@@ -86,16 +86,14 @@ public:
 		
 		try{
 			const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-				new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
+				decPath::CreatePathNative(pLauncher.GetPathGames())));
 			
-			const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(
-				new decDiskFileReader(pFilename)));
+			const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pFilename));
 			
 			decPath target(decPath::CreatePathUnix("/"));
 			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
 			
-			decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(
-				container->OpenFileForWriting(target)));
+			decBaseFileWriter::Ref writer(container->OpenFileForWriting(target));
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / (double)totalSize;
@@ -158,7 +156,7 @@ private:
 	void pDeleteTarget(){
 		try{
 			deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-				new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
+				decPath::CreatePathNative(pLauncher.GetPathGames())));
 			
 			decPath target(decPath::CreatePathUnix("/"));
 			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
@@ -197,9 +195,8 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	delGameList games;
 	
 	try{
-		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-			launcher.GetEngineInstanceFactory().CreateEngineInstance(
-				launcher, launcher.GetEngine().GetLogFile())));
+		const delEngineInstance::Ref instance(launcher.GetEngineInstanceFactory().
+			CreateEngineInstance(launcher, launcher.GetEngine().GetLogFile()));
 		instance->StartEngine();
 		instance->LoadModules();
 		

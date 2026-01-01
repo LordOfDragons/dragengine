@@ -22,26 +22,22 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DESCRIPTSOURCE_H_
 #define _DESCRIPTSOURCE_H_
 
-// includes
-#include "dragengine/common/file/decPath.h"
 #include <libdscript/dsScriptSource.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
-// predefinitions
 class deVirtualFileSystem;
-class decBaseFileReader;
 class decPath;
-
 
 
 // script source class
 class deScriptSource : public dsScriptSource{
 private:
 	const deVirtualFileSystem &pVFS;
-	decBaseFileReader *pFileReader;
+	decBaseFileReader::Ref pFileReader;
 	const decPath pPath;
 	decString pPathString;
 	int pPosition;
@@ -59,5 +55,4 @@ public:
 	virtual void Close();
 };
 
-// end of include only once
 #endif

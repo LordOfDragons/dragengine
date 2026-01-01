@@ -51,8 +51,8 @@
 meHTVRuleClosestVegetation::meHTVRuleClosestVegetation() : meHTVRule(ertClosestVegetation, 2){
 	pSearchRadius = 1.0f;
 	
-	GetSlotAt(eosDirection).SetIsInput(false);
-	GetSlotAt(eosDistance).SetIsInput(false);
+	GetSlots().GetAt(eosDirection)->SetIsInput(false);
+	GetSlots().GetAt(eosDistance)->SetIsInput(false);
 	
 	Reset();
 }
@@ -112,18 +112,18 @@ void meHTVRuleClosestVegetation::UpdateResult(meHTVEvaluationEnvironment &evalEn
 		float pfDropDist;
 		
 		pfDropDist = htsector->GetHeightTerrain()->GetSectorSize() / (float)htsector->GetPropFieldCellCount();
-		pfCount = htsector->GetPropFieldCount();
+		pfCount = htsector->GetPropFields().GetCount();
 		
 		for(p=0; p<pfCount; p++){
-			htpf = htsector->GetPropFieldAt(p);
+			htpf = htsector->GetPropFields().GetAt(p);
 			if(htpf->GetEnginePropField()){
 				testIPos = (ipos - htpf->GetEnginePropField()->GetPosition()).ToVector();
 				
 				if(testIPos.x >= -pfDropDist && testIPos.x <= pfDropDist && testIPos.z >= -pfDropDist && testIPos.z <= pfDropDist){
-					pfiCount = htpf->GetVInstanceCount();
+					pfiCount = htpf->GetVInstances().GetCount();
 					
 					for(i=0; i<pfiCount; i++){
-						posDiff = htpf->GetVInstanceAt(i).GetPosition() - testIPos;
+						posDiff = htpf->GetVInstances().GetAt(i).GetPosition() - testIPos;
 						distSquared = posDiff * posDiff;
 						
 						if(distSquared < bestDistSquared){
@@ -183,6 +183,6 @@ decVector meHTVRuleClosestVegetation::GetOutputSlotVectorAt(int slot, meHTVEvalu
 	}
 }
 
-meHTVRule *meHTVRuleClosestVegetation::Copy() const{
-	return new meHTVRuleClosestVegetation(*this);
+meHTVRule::Ref meHTVRuleClosestVegetation::Copy() const{
+	return meHTVRuleClosestVegetation::Ref::New(*this);
 }

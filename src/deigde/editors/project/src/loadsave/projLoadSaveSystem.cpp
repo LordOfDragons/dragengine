@@ -30,8 +30,6 @@
 #include "../gui/projWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -75,16 +73,5 @@ projLoadSaveSystem::~projLoadSaveSystem(){
 //////////////////////
 
 void projLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
-	
-	try{
-		filePattern = new igdeFilePattern("DELGA", "*.delga", ".delga");
-		pFPDelga.AddFilePattern(filePattern);
-		
-	}catch(const deException &){
-		if(filePattern){
-			delete filePattern;
-		}
-		throw;
-	}
+	pFPDelga.Add(igdeFilePattern::Ref::New("DELGA", "*.delga", ".delga"));
 }

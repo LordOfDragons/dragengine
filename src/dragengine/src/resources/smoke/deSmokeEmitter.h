@@ -26,12 +26,12 @@
 #define _DESMOKEEMITTER_H_
 
 #include "../deResource.h"
+#include "../component/deComponent.h"
+#include "../skin/deSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 
 class deSmokeEmitterManager;
-class deComponent;
-class deSkin;
 class deWorld;
 
 class deBaseGraphicSmokeEmitter;
@@ -84,9 +84,9 @@ private:
 	float pCastDensityMax;
 	bool pEnableCasting;
 	
-	deComponent *pComponent;
+	deComponent::Ref pComponent;
 	int pCastTexture;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	
 	decCollisionFilter pCollisionFilter;
 	
@@ -187,7 +187,7 @@ public:
 	void SetEnableCasting(bool enable);
 	
 	/** \brief Component used for casting or NULL. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
 	void SetComponent(deComponent *component);
@@ -199,7 +199,7 @@ public:
 	void SetCastTexture(int texture);
 	
 	/** \brief Skin of the particle instances or NULL. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set mode of the particle instances or NULL. */
 	void SetSkin(deSkin *skin);

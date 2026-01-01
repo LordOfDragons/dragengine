@@ -2,6 +2,7 @@
 #ifndef _DETCASE_H_
 #define _DETCASE_H_
 
+#include <dragengine/common/exceptions.h>
 
 
 // equality threshold

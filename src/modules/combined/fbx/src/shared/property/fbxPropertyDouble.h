@@ -33,6 +33,10 @@
  * \brief FBX property double.
  */
 class fbxPropertyDouble : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyDouble> Ref;
+	
+	
 private:
 	double pValue;
 	
@@ -45,7 +49,7 @@ public:
 	fbxPropertyDouble();
 	
 	/** \brief Load property. */
-	fbxPropertyDouble(decBaseFileReader &reader);
+	explicit fbxPropertyDouble(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

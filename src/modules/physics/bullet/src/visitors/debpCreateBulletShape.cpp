@@ -61,8 +61,8 @@
 ////////////////////////////
 
 debpCreateBulletShape::debpCreateBulletShape() :
-pBulletShape(NULL),
-pBulletCompoundShape(NULL),
+
+
 pCcdThreshold(0.001f),
 pCcdRadius(0.001f),
 pScale(1.0f, 1.0f, 1.0f),
@@ -94,14 +94,8 @@ void debpCreateBulletShape::SetNoMargin(bool noMargin){
 }
 
 void debpCreateBulletShape::Reset(){
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
-		pBulletCompoundShape = NULL;
-	}
-	if(pBulletShape){
-		pBulletShape->FreeReference();
-		pBulletShape = NULL;
-	}
+	pBulletCompoundShape = nullptr;
+	pBulletShape = nullptr;
 	
 	pOffset.SetZero();
 	pCcdThreshold = 0.001f;
@@ -120,7 +114,7 @@ void debpCreateBulletShape::SetShapeIndex(int index){
 	pShapeIndex = index;
 }
 
-debpBulletShape *debpCreateBulletShape::GetBulletShape() const{
+debpBulletShape::Ref debpCreateBulletShape::GetBulletShape() const{
 	if(pBulletCompoundShape){
 		return pBulletCompoundShape;
 		
@@ -130,7 +124,7 @@ debpBulletShape *debpCreateBulletShape::GetBulletShape() const{
 }
 
 void debpCreateBulletShape::DebugPrintShape(dePhysicsBullet &bullet, const char *prefix) const{
-	debpBulletShape * const shape = GetBulletShape();
+	const debpBulletShape::Ref shape(GetBulletShape());
 	if(shape){
 		pDebugPrintShape(bullet, *shape->GetShape(), prefix);
 		
@@ -151,9 +145,9 @@ void debpCreateBulletShape::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector position = sphere.GetPosition() + pOffset;
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
 	const float radius = sphere.GetRadius();
-	const bool hasNoShape = (pBulletShape == NULL);
-	debpBulletShape *bulletShapeSphere = NULL;
-	debpBulletCompoundShape *bulletShapeCompound = NULL;
+	const bool hasNoShape = pBulletShape.IsNull();
+	debpBulletShape::Ref bulletShapeSphere;
+	debpBulletCompoundShape::Ref bulletShapeCompound;
 	btCompoundShape *compoundShape = NULL;
 	debpBulletShape *shapeToAdd = NULL;
 	btSphereShape *sphereShape = NULL;
@@ -175,69 +169,58 @@ printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n
 	transform.setIdentity();
 	
 	// create the shape
-	try{
-		if(!position.IsZero()){
-			transform.setOrigin(btVector3(position.x, position.y, position.z));
-			needsTransform = true;
+	if(!position.IsZero()){
+		transform.setOrigin(btVector3(position.x, position.y, position.z));
+		needsTransform = true;
+	}
+	
+	ccdRadius = radius * 0.5f;
+	
+	sphereShape = new btSphereShape(radius);
+	if(pNoMargin){
+		sphereShape->setMargin(BT_ZERO);
+	}
+	sphereShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+	
+	bulletShapeSphere = debpBulletShape::Ref::New(sphereShape);
+	shapeToAdd = bulletShapeSphere;
+	
+	if(isEllipsoid){
+		// to create an ellipsoid it is required to create a compound shape around the sphere shape.
+		// this is required since in bullet a sphere shape is not allowed to have local scaling set
+		// and reacts badly to it. using a compound shape though setting local scaling is allowed
+		axisCcdRadius = radius * axisScaling.x * 0.5f;
+		if(axisCcdRadius < ccdRadius){
+			ccdRadius = axisCcdRadius;
 		}
 		
-		ccdRadius = radius * 0.5f;
+		axisCcdRadius = radius * axisScaling.y * 0.5f;
+		if(axisCcdRadius < ccdRadius){
+			ccdRadius = axisCcdRadius;
+		}
 		
-		sphereShape = new btSphereShape(radius);
+		compoundShape = new btCompoundShape(true);
+		compoundShape->addChildShape(transform, sphereShape); // setLocalScaling has to come before addChildShape
 		if(pNoMargin){
-			sphereShape->setMargin(BT_ZERO);
+			compoundShape->setMargin(BT_ZERO);
 		}
-		sphereShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+		compoundShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 		
-		bulletShapeSphere = new debpBulletShape(sphereShape);
-		shapeToAdd = bulletShapeSphere;
+		compoundShape->setLocalScaling(btVector3((btScalar)axisScaling.x, BT_ONE, (btScalar)axisScaling.y));
+			// setLocalScaling has to come last or scaling does not propagate
 		
-		if(isEllipsoid){
-			// to create an ellipsoid it is required to create a compound shape around the sphere shape.
-			// this is required since in bullet a sphere shape is not allowed to have local scaling set
-			// and reacts badly to it. using a compound shape though setting local scaling is allowed
-			axisCcdRadius = radius * axisScaling.x * 0.5f;
-			if(axisCcdRadius < ccdRadius){
-				ccdRadius = axisCcdRadius;
-			}
-			
-			axisCcdRadius = radius * axisScaling.y * 0.5f;
-			if(axisCcdRadius < ccdRadius){
-				ccdRadius = axisCcdRadius;
-			}
-			
-			compoundShape = new btCompoundShape(true);
-			compoundShape->addChildShape(transform, sphereShape); // setLocalScaling has to come before addChildShape
-			if(pNoMargin){
-				compoundShape->setMargin(BT_ZERO);
-			}
-			compoundShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-			
-			compoundShape->setLocalScaling(btVector3((btScalar)axisScaling.x, BT_ONE, (btScalar)axisScaling.y));
-				// setLocalScaling has to come last or scaling does not propagate
-			
-			bulletShapeCompound = new debpBulletCompoundShape(compoundShape);
-			bulletShapeCompound->AddChildShape(bulletShapeSphere);
-			shapeToAdd = bulletShapeCompound;
-			
-			needsTransform = false;
-		}
+		bulletShapeCompound = debpBulletCompoundShape::Ref::New(compoundShape);
+		bulletShapeCompound->AddChildShape(bulletShapeSphere);
+		shapeToAdd = bulletShapeCompound;
 		
-		if(needsTransform){
-			pAddTransformedCollisionShape(shapeToAdd, transform);
-			
-		}else{
-			pAddCollisionShape(shapeToAdd);
-		}
+		needsTransform = false;
+	}
+	
+	if(needsTransform){
+		pAddTransformedCollisionShape(shapeToAdd, transform);
 		
-	}catch(const deException &){
-		if(bulletShapeSphere){
-			bulletShapeSphere->FreeReference();
-		}
-		if(bulletShapeCompound){
-			bulletShapeCompound->FreeReference();
-		}
-		throw;
+	}else{
+		pAddCollisionShape(shapeToAdd);
 	}
 	
 	if(hasNoShape || ccdRadius < pCcdRadius){
@@ -254,11 +237,11 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	const decVector &halfExtends = box.GetHalfExtends();
 	const decVector2 &tapering = box.GetTapering();
 	float smallestHalfExtends, ccdRadius = 0.0f;
-	bool hasNoShape = (pBulletShape == NULL);
+	bool hasNoShape = pBulletShape.IsNull();
 	bool needsTransform = false;
 	btConvexHullShape *hullShape = NULL;
-	debpBulletShape *bulletShapeHull = NULL;
-	debpBulletShape *bulletShapeBox = NULL;
+	debpBulletShape::Ref bulletShapeHull;
+	debpBulletShape::Ref bulletShapeBox;
 	debpBulletShape *shapeToAdd = NULL;
 	btBoxShape *boxShape = NULL;
 	btTransform transform;
@@ -303,67 +286,56 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	}
 	
 	// create the shape
-	try{
-		if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
-			transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
-			transform.setOrigin(btVector3(position.x, position.y, position.z));
-			needsTransform = true;
-		}
-		
-		if(isTapered){
+	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
+		transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+		transform.setOrigin(btVector3(position.x, position.y, position.z));
+		needsTransform = true;
+	}
+	
+	if(isTapered){
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeBox: hull\n");
 #endif
-			hullShape = new btConvexHullShape;
-			
-			hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
-			hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
-			hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
-			hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
-			
-			hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
-			hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
-			hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
-			hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
-			
-			hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-			
-			bulletShapeHull = new debpBulletShape(hullShape);
-			shapeToAdd = bulletShapeHull;
-			margin = BT_ZERO;
-			
-		}else{
-			boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
-			boxShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-			
-			bulletShapeBox = new debpBulletShape(boxShape);
-			shapeToAdd = bulletShapeBox;
+		hullShape = new btConvexHullShape;
+		
+		hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
+		hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
+		hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
+		hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
+		
+		hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
+		hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
+		hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
+		hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
+		
+		hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+		
+		bulletShapeHull = debpBulletShape::Ref::New(hullShape);
+		shapeToAdd = bulletShapeHull;
+		margin = BT_ZERO;
+		
+	}else{
+		boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
+		boxShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+		
+		bulletShapeBox = debpBulletShape::Ref::New(boxShape);
+		shapeToAdd = bulletShapeBox;
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeBox: he=(%g,%g,%g)\n", boxShape->getHalfExtentsWithoutMargin().getX(),
 boxShape->getHalfExtentsWithoutMargin().getY(), boxShape->getHalfExtentsWithoutMargin().getZ());
 #endif
-		}
+	}
+	
+	if(pNoMargin){
+		margin = BT_ZERO;
+	}
+	shapeToAdd->GetShape()->setMargin(margin);
+	
+	if(needsTransform){
+		pAddTransformedCollisionShape(shapeToAdd, transform);
 		
-		if(pNoMargin){
-			margin = BT_ZERO;
-		}
-		shapeToAdd->GetShape()->setMargin(margin);
-		
-		if(needsTransform){
-			pAddTransformedCollisionShape(shapeToAdd, transform);
-			
-		}else{
-			pAddCollisionShape(shapeToAdd);
-		}
-		
-	}catch(const deException &){
-		if(bulletShapeHull){
-			bulletShapeHull->FreeReference();
-		}
-		if(bulletShapeBox){
-			bulletShapeBox->FreeReference();
-		}
-		throw;
+	}else{
+		pAddCollisionShape(shapeToAdd);
 	}
 	
 	//smallestHalfExtends *= 0.25f; // 0.25 is a little ratio to improve detection ( does it really improve anymore? )
@@ -383,46 +355,38 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const float halfHeight = cylinder.GetHalfHeight();
 	const float topRadius = cylinder.GetTopRadius();
 	//float bottomRadius = cylinder->GetBottomRadius();
-	debpBulletShape *bulletShapeCylinder = NULL;
-	bool hasNoShape = (pBulletShape == NULL);
-	btCylinderShape *cylinderShape = NULL;
+	debpBulletShape::Ref bulletShapeCylinder;
+	bool hasNoShape = pBulletShape.IsNull();
+	btCylinderShape *cylinderShape = nullptr;
 	bool needsTransform = false;
 	
 	float smallestHalfExtends, ccdRadius = halfHeight + topRadius;
 	
 	btVector3 bthe(topRadius, halfHeight, topRadius);
 	
-	try{
-		cylinderShape = new btCylinderShape(bthe);
-		if(pNoMargin){
-			cylinderShape->setMargin(BT_ZERO);
-		}
-		cylinderShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-		
-		bulletShapeCylinder = new debpBulletShape(cylinderShape);
-		
-		if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
-		if(!position.IsZero()) needsTransform = true;
-		
+	cylinderShape = new btCylinderShape(bthe);
+	if(pNoMargin){
+		cylinderShape->setMargin(BT_ZERO);
+	}
+	cylinderShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+	
+	bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
+	
+	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
+	if(!position.IsZero()) needsTransform = true;
+	
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeCylinder: he=(%g,%g,%g)\n", cylinderShape->getHalfExtentsWithMargin().getX(),
 cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsWithMargin().getZ());
 #endif
-		if(needsTransform){
-			const btTransform transform(
-				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
-				btVector3(position.x, position.y, position.z));
-			pAddTransformedCollisionShape(bulletShapeCylinder, transform);
-			
-		}else{
-			pAddCollisionShape(bulletShapeCylinder);
-		}
+	if(needsTransform){
+		const btTransform transform(
+			btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
+			btVector3(position.x, position.y, position.z));
+		pAddTransformedCollisionShape(bulletShapeCylinder, transform);
 		
-	}catch(const deException &){
-		if(bulletShapeCylinder){
-			bulletShapeCylinder->FreeReference();
-		}
-		throw;
+	}else{
+		pAddCollisionShape(bulletShapeCylinder);
 	}
 	
 	smallestHalfExtends = halfHeight;
@@ -443,9 +407,9 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	const float bottomRadius = capsule.GetBottomRadius();
 	//const decVector2 &topAxisScaling = capsule->GetTopAxisScaling();
 	//const decVector2 &bottomAxisScaling = capsule->GetBottomAxisScaling();
-	const bool hasNoShape = (pBulletShape == NULL);
-	debpBulletShape *bulletShapeCapsule = NULL;
-	btMultiSphereShape *capsuleShape = NULL;
+	const bool hasNoShape = pBulletShape.IsNull();
+	debpBulletShape::Ref bulletShapeCapsule;
+	btMultiSphereShape *capsuleShape = nullptr;
 	bool needsTransform = false;
 	btVector3 positions[2];
 	btScalar radi[2];
@@ -459,39 +423,31 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	
 	// NOTE if both radi are the same btCapsuleShape can be used instead
 	
-	try{
-		capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
-		if(pNoMargin){
-			capsuleShape->setMargin(BT_ZERO);
-		}
-		capsuleShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-		
-		bulletShapeCapsule = new debpBulletShape(capsuleShape);
-		
-		if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
-		if(!position.IsZero()) needsTransform = true;
-		
+	capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
+	if(pNoMargin){
+		capsuleShape->setMargin(BT_ZERO);
+	}
+	capsuleShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+	
+	bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
+	
+	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
+	if(!position.IsZero()) needsTransform = true;
+	
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeCapsule: n=%i s1=(%g,%g,%g) s1=(%g,%g,%g) r1=%g r2=%g\n", capsuleShape->getSphereCount(),
 capsuleShape->getSpherePosition(0).getX(), capsuleShape->getSpherePosition(0).getY(), capsuleShape->getSpherePosition(0).getZ(),
 capsuleShape->getSpherePosition(1).getX(), capsuleShape->getSpherePosition(1).getY(), capsuleShape->getSpherePosition(1).getZ(),
 capsuleShape->getSphereRadius(0), capsuleShape->getSphereRadius(0));
 #endif
-		if(needsTransform){
-			const btTransform transform(
-				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
-				btVector3(position.x, position.y, position.z));
-			pAddTransformedCollisionShape(bulletShapeCapsule, transform);
-			
-		}else{
-			pAddCollisionShape(bulletShapeCapsule);
-		}
+	if(needsTransform){
+		const btTransform transform(
+			btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
+			btVector3(position.x, position.y, position.z));
+		pAddTransformedCollisionShape(bulletShapeCapsule, transform);
 		
-	}catch(const deException &){
-		if(bulletShapeCapsule){
-			bulletShapeCapsule->FreeReference();
-		}
-		throw;
+	}else{
+		pAddCollisionShape(bulletShapeCapsule);
 	}
 	
 	smallestHalfExtends = halfHeight;
@@ -509,54 +465,46 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	const decVector position(hull.GetPosition() + pOffset);
 	const decQuaternion &orientation = hull.GetOrientation();
 	const int pointCount = hull.GetPointCount();
-	const bool hasNoShape = pBulletShape == NULL;
+	const bool hasNoShape = pBulletShape.IsNull();
 	decVector center, minExtends, maxExtends;
-	debpBulletShape *bulletShapeHull = NULL;
-	btConvexHullShape *hullShape = NULL;
+	debpBulletShape::Ref bulletShapeHull;
+	btConvexHullShape *hullShape = nullptr;
 	bool needsTransform = false;
 	int i;
 	
-	try{
-		hullShape = new btConvexHullShape;
+	hullShape = new btConvexHullShape;
+	
+	for(i=0; i<pointCount; i++){
+		const decVector &p = hull.GetPointAt(i);
+		center += p;
+		minExtends.SetSmallest(p);
+		maxExtends.SetLargest(p);
+		hullShape->addPoint(btVector3((btScalar)p.x, (btScalar)p.y, (btScalar)p.z), false);
+	}
+	hullShape->recalcLocalAabb();
+	
+	if(pNoMargin){
+		hullShape->setMargin(BT_ZERO);
+	}
+	hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+	
+	bulletShapeHull = debpBulletShape::Ref::New(hullShape);
+	
+	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
+		needsTransform = true;
+	}
+	
+	#ifdef DEBUGGING
+	printf("debpCreateBulletShape.VisitShapeHull: points=%d\n", pointCount);
+	#endif
+	if(needsTransform){
+		pAddTransformedCollisionShape(bulletShapeHull, btTransform(
+			btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
+				(btScalar)orientation.z, (btScalar)orientation.w),
+			btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z)));
 		
-		for(i=0; i<pointCount; i++){
-			const decVector &p = hull.GetPointAt(i);
-			center += p;
-			minExtends.SetSmallest(p);
-			maxExtends.SetLargest(p);
-			hullShape->addPoint(btVector3((btScalar)p.x, (btScalar)p.y, (btScalar)p.z), false);
-		}
-		hullShape->recalcLocalAabb();
-		
-		if(pNoMargin){
-			hullShape->setMargin(BT_ZERO);
-		}
-		hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-		
-		bulletShapeHull = new debpBulletShape(hullShape);
-		
-		if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
-			needsTransform = true;
-		}
-		
-		#ifdef DEBUGGING
-		printf("debpCreateBulletShape.VisitShapeHull: points=%d\n", pointCount);
-		#endif
-		if(needsTransform){
-			pAddTransformedCollisionShape(bulletShapeHull, btTransform(
-				btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
-					(btScalar)orientation.z, (btScalar)orientation.w),
-				btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z)));
-			
-		}else{
-			pAddCollisionShape(bulletShapeHull);
-		}
-		
-	}catch(const deException &){
-		if(bulletShapeHull){
-			bulletShapeHull->FreeReference();
-		}
-		throw;
+	}else{
+		pAddCollisionShape(bulletShapeHull);
 	}
 	
 	const decVector halfExtends((maxExtends - minExtends) * 0.5f);
@@ -591,42 +539,29 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 	printf("debpCreateBulletShape.pCreateCompoundShape\n");
 	#endif
 	
-	debpBulletCompoundShape *bulletShape = NULL;
-	btCompoundShape *compoundShape = NULL;
+	debpBulletCompoundShape::Ref bulletShape;
+	btCompoundShape *compoundShape = nullptr;
 	
-	try{
-		compoundShape = new btCompoundShape(true);
-		if(pNoMargin){
-			compoundShape->setMargin(BT_ZERO);
-		}
-		compoundShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
-			// setLocalScaling has to come last or scaling does not propagate.
-			// for this reason it is applied during Finish() not here
-		
-		bulletShape = new debpBulletCompoundShape(compoundShape);
-		
-		if(pBulletShape){
-			// place bullet shape in compound clearing the reference
-			#ifdef DEBUGGING
-			printf("debpCreateBulletShape.pCreateCompoundShape: add present shape as child shape\n");
-			#endif
-			btTransform transform;
-			transform.setIdentity(); // required, constructor does not initialize anything
-			compoundShape->addChildShape(transform, pBulletShape->GetShape());
-			bulletShape->AddChildShape(pBulletShape);
-			pBulletShape->FreeReference();
-			pBulletShape = NULL;
-		}
-		
-	}catch(const deException &){
-		if(bulletShape){
-			bulletShape->FreeReference();
-		}
-		throw;
+	compoundShape = new btCompoundShape(true);
+	if(pNoMargin){
+		compoundShape->setMargin(BT_ZERO);
 	}
+	compoundShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
+		// setLocalScaling has to come last or scaling does not propagate.
+		// for this reason it is applied during Finish() not here
 	
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
+	bulletShape = debpBulletCompoundShape::Ref::New(compoundShape);
+	
+	if(pBulletShape){
+		// place bullet shape in compound clearing the reference
+		#ifdef DEBUGGING
+		printf("debpCreateBulletShape.pCreateCompoundShape: add present shape as child shape\n");
+		#endif
+		btTransform transform;
+		transform.setIdentity(); // required, constructor does not initialize anything
+		compoundShape->addChildShape(transform, pBulletShape->GetShape());
+		bulletShape->AddChildShape(pBulletShape);
+		pBulletShape = nullptr;
 	}
 	pBulletCompoundShape = bulletShape;
 }
@@ -648,16 +583,11 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 		transform.setIdentity(); // required, constructor does not initialize anything
 		pBulletCompoundShape->GetCompoundShape()->addChildShape(transform, collisionShape->GetShape());
 		pBulletCompoundShape->AddChildShape(collisionShape);
-		collisionShape->FreeReference(); // since we steal the reference
 		
 	}else{
 		#ifdef DEBUGGING
 		printf("debpCreateBulletShape.pAddCollisionShape: set collision shape\n");
 		#endif
-		
-		if(pBulletShape){
-			pBulletShape->FreeReference();
-		}
 		pBulletShape = collisionShape;
 	}
 }
@@ -678,7 +608,6 @@ void debpCreateBulletShape::pAddTransformedCollisionShape(debpBulletShape *colli
 	#endif
 	pBulletCompoundShape->GetCompoundShape()->addChildShape(transform, collisionShape->GetShape());
 	pBulletCompoundShape->AddChildShape(collisionShape);
-	collisionShape->FreeReference(); // since we steal the reference
 }
 
 void debpCreateBulletShape::pDebugPrintShape(dePhysicsBullet &bullet,

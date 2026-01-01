@@ -207,21 +207,9 @@ void deSynthesizerInstance::pUpdateControllers(){
 	}
 	
 	const int controllerCount = pSynthesizer->GetControllerCount();
-	deSynthesizerController *controller = NULL;
 	int i;
 	
-	try{
-		for(i=0; i<controllerCount; i++){
-			controller = new deSynthesizerController(*pSynthesizer->GetControllerAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			controller = NULL;
-		}
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
+	for(i=0; i<controllerCount; i++){
+		pControllers.Add(deSynthesizerController::Ref::New(*pSynthesizer->GetControllerAt(i)));
 	}
 }

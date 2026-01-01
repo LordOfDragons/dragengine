@@ -25,19 +25,19 @@
 #ifndef _MEOBJECTLINK_H_
 #define _MEOBJECTLINK_H_
 
-#include <dragengine/common/string/decString.h>
-
-#include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
-class meObject;
 class meWorld;
+class meObject;
 
 class igdeEnvironment;
 class igdeWConnection;
 
 class deEngine;
-class deDebugDrawer;
 class deDebugDrawerShape;
 
 
@@ -47,39 +47,43 @@ class deDebugDrawerShape;
  */
 class meObjectLink : public deObject{
 public:
-	/** Reference. */
 	typedef deTObjectReference<meObjectLink> Ref;
+	typedef decTObjectOrderedSet<meObjectLink> List;
 	
 	
 private:
 	igdeEnvironment *pEnvironment;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWConnection *pDDSConnection;
 	
-	meObject *pAnchor;
-	meObject *pTarget;
-	decString pAnchorProperty;
-	decString pTargetProperty;
+	deTObjectReference<meObject> pAnchor, pTarget;
+	decString pAnchorProperty, pTargetProperty;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new object link. */
 	meObjectLink(igdeEnvironment *environment, meObject *anchor, meObject *target);
+	
+protected:
 	/** \brief Cleans up an object link. */
 	virtual ~meObjectLink();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
+	
 	/** \brief Retrieves the anchor object. */
-	inline meObject *GetAnchor() const{ return pAnchor; }
+	inline const deTObjectReference<meObject> &GetAnchor() const{ return pAnchor; }
+	
 	/** \brief Retrieves the target object. */
-	inline meObject *GetTarget() const{ return pTarget; }
+	inline const deTObjectReference<meObject> &GetTarget() const{ return pTarget; }
 	
 	/** \brief Retrieves the anchor property name. */
 	inline const decString &GetAnchorProperty() const{ return pAnchorProperty; }
@@ -97,6 +101,9 @@ public:
 	
 	/** \brief Notifies that the anchor or target moved. */
 	void ObjectsMoved();
+	
+	/** \brief Update link color based on anchor active state. */
+	void UpdateColor();
 	/*@}*/
 	
 private:

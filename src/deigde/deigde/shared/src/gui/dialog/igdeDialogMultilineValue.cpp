@@ -45,11 +45,11 @@ igdeDialog(environment, title)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
 	helper.Label(content, message);
-	helper.EditString(content, "", pEditValue, columns, rows, NULL);
+	helper.EditString(content, "", pEditValue, columns, rows, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Discard");

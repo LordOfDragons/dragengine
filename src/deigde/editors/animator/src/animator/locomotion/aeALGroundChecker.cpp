@@ -44,14 +44,11 @@
 ////////////////////////////
 
 aeALGroundChecker::aeALGroundChecker(){
-	pColInfo = new deCollisionInfo;
-	if(!pColInfo) DETHROW(deeOutOfMemory);
-	
+	pColInfo = deCollisionInfo::Ref::New();
 	pHasCollision = false;
 }
 
 aeALGroundChecker::~aeALGroundChecker(){
-	if(pColInfo) pColInfo->FreeReference();
 }
 
 

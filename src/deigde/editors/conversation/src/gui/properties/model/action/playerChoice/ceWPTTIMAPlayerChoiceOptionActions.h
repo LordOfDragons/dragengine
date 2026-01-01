@@ -37,11 +37,13 @@ class ceWPTTIMAPlayerChoiceOption;
  */
 class ceWPTTIMAPlayerChoiceOptionActions : public ceWPTTIMActions{
 public:
+	typedef deTObjectReference<ceWPTTIMAPlayerChoiceOptionActions> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAPlayerChoiceOptionActions(ceWindowMain &windowMain,
-		ceConversation &conversation, const ceConversationActionList &actions);
+		ceConversation &conversation, const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */

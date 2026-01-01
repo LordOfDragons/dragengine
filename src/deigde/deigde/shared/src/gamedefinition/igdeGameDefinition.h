@@ -25,20 +25,21 @@
 #ifndef _IGDEGAMEDEFINITION_H_
 #define _IGDEGAMEDEFINITION_H_
 
+#include "particleemitter/igdeGDParticleEmitterManager.h"
+#include "property/igdeGDProperty.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-
-#include "particleemitter/igdeGDParticleEmitterManager.h"
-#include "property/igdeGDPropertyList.h"
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class igdeGDSkinManager;
 class igdeGDClassManager;
 class igdeGDSkyManager;
 class igdeEnvironment;
 
-class deModel;
-class deSkin;
 class deVirtualFileSystem;
 
 
@@ -53,6 +54,9 @@ class DE_DLL_EXPORT igdeGameDefinition : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGameDefinition> Ref;
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGameDefinition> List;
 	
 	
 private:
@@ -71,11 +75,11 @@ private:
 	igdeGDSkyManager *pSkyManager;
 	igdeGDParticleEmitterManager pParticleEmitterManager;
 	
-	igdeGDPropertyList pListWorldProperties;
-	igdeGDPropertyList pListDecalProperties;
+	igdeGDProperty::List pListWorldProperties;
+	igdeGDProperty::List pListDecalProperties;
 	
-	deModel *pDefaultModel;
-	deSkin *pDefaultSkin;
+	deModel::Ref pDefaultModel;
+	deSkin::Ref pDefaultSkin;
 	
 	
 	
@@ -160,12 +164,12 @@ public:
 		return pParticleEmitterManager;}
 	
 	/** \brief World properties. */
-	inline igdeGDPropertyList &GetListWorldProperties(){ return pListWorldProperties; }
-	inline const igdeGDPropertyList &GetListWorldProperties() const{ return pListWorldProperties; }
+	inline igdeGDProperty::List &GetListWorldProperties(){ return pListWorldProperties; }
+	inline const igdeGDProperty::List &GetListWorldProperties() const{ return pListWorldProperties; }
 	
 	/** \brief Decal properties. */
-	inline igdeGDPropertyList &GetListDecalProperties(){ return pListDecalProperties; }
-	inline const igdeGDPropertyList &GetListDecalProperties() const{ return pListDecalProperties; }
+	inline igdeGDProperty::List &GetListDecalProperties(){ return pListDecalProperties; }
+	inline const igdeGDProperty::List &GetListDecalProperties() const{ return pListDecalProperties; }
 	
 	
 	
@@ -229,13 +233,13 @@ public:
 	 */
 	/*@{*/
 	/** \brief Default model. */
-	inline deModel *GetDefaultModel() const{ return pDefaultModel; }
+	inline const deModel::Ref &GetDefaultModel() const{ return pDefaultModel; }
 	
 	/** \brief Set default model. */
 	void SetDefaultModel(deModel *model);
 	
 	/** \brief Default skin. */
-	inline deSkin *GetDefaultSkin() const{ return pDefaultSkin; }
+	inline const deSkin::Ref &GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** \brief Set default skin. */
 	void SetDefaultSkin(deSkin *skin);

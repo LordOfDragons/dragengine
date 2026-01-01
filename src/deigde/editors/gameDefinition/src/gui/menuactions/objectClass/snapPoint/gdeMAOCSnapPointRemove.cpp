@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCSnapPointRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
 	if(!snapPoint){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveSnapPoint(&objectClass, snapPoint);
+	return gdeUOCRemoveSnapPoint::Ref::New(&objectClass, snapPoint);
 }
 
 void gdeMAOCSnapPointRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-		&& gameDefinition->GetActiveOCSnapPoint() != NULL);
+		&& gameDefinition->GetActiveOCSnapPoint() != nullptr);
 }

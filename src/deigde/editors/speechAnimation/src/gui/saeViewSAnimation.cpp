@@ -53,9 +53,9 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	saeViewSAnimation &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
 	cCameraInteraction(saeViewSAnimation &view) : pView(view){}
 	
-public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
 		if(!pView.GetSAnimation()){
 			return eiNone;
@@ -82,19 +82,17 @@ public:
 
 saeViewSAnimation::saeViewSAnimation(saeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSAnimation(NULL)
+pWindowMain(windowMain)
 {
-	pFontStats.TakeOver(windowMain.GetEngine()->GetFontManager()->
-		LoadFont("/igde/fonts/sans_10.defont", "/"));
+	pFontStats = windowMain.GetEngine()->GetFontManager()->LoadFont("/igde/fonts/sans_10.defont", "/");
 	
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 }
 
 saeViewSAnimation::~saeViewSAnimation(){
-	SetSAnimation(NULL);
+	SetSAnimation(nullptr);
 }
 
 
@@ -110,18 +108,12 @@ void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera(NULL);
+	pCameraInteraction->SetCamera(nullptr);
 	
-	SetRenderWorld(NULL);
-	
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
-	
+	SetRenderWorld(nullptr);
 	pSAnimation = sanimation;
 	
 	if(sanimation){
-		sanimation->AddReference();
 		SetRenderWorld(sanimation->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(sanimation->GetCamera());
 	}

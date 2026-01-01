@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCAddParticleEmitter::gdeUOCAddParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
-pObjectClass(NULL),
-pParticleEmitter(NULL)
+
+pParticleEmitter(nullptr)
 {
 	if(!objectClass || !particleEmitter){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Add particleEmitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddParticleEmitter::~gdeUOCAddParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ void gdeUOCAddParticleEmitter::Undo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCParticleEmitter(NULL);
+		gameDefinition->SetActiveOCParticleEmitter(nullptr);
 	}
 	
 	pObjectClass->GetParticleEmitters().Remove(pParticleEmitter);

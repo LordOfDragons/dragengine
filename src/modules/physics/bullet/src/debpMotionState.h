@@ -28,7 +28,7 @@
 
 // includes
 #include "LinearMath/btMotionState.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefintions
 

@@ -23,8 +23,6 @@
  */
 
 #include "reBaseClip.h"
-#include "dragengine/common/exceptions.h"
-
 
 
 // Class reBaseClip
@@ -33,10 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseClip::reBaseClip(int type){
-	if(type < ectObject || type > ectObject) DETHROW(deeInvalidParam);
-	
-	pType = type;
+reBaseClip::reBaseClip(eClipTypes type) :
+pType(type){
 }
 
 reBaseClip::~reBaseClip(){

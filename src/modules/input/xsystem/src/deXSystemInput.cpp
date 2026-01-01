@@ -164,7 +164,7 @@ bool deXSystemInput::Init(){
 			pKeyStates[i] = false;
 		}
 		
-		pDevices.TakeOver(new dexsiDeviceManager(*this));
+		pDevices = dexsiDeviceManager::Ref::New(*this);
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		
@@ -197,20 +197,9 @@ int deXSystemInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deXSystemInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deXSystemInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -874,7 +863,7 @@ bool deXSystemInput::pLookUpKey(XKeyEvent &event, deXSystemInput::sKey &key){
 	key.character = 0;
 	
 	char utf8[4];
-	const int count = XLookupString(&event, (char*)&utf8, 4, &key.keySym, nullptr);
+	const int count = XLookupString(&event, reinterpret_cast<char*>(&utf8), 4, &key.keySym, nullptr);
 // 	LogInfoFormat("lookUpKey: %d %d %d %d %d\n", count, utf8[0], utf8[1], utf8[2], utf8[3]);
 	
 	switch(count){
@@ -996,9 +985,9 @@ void deXSystemInput::pUpdateRawMouseInput(){
 }
 
 void deXSystemInput::pCreateParameters(){
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInput(*this)));
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInputSensivity(*this)));
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPLogLevel(*this)));
+	pParameters.AddParameter(dexsiPRawMouseInput::Ref::New(*this));
+	pParameters.AddParameter(dexsiPRawMouseInputSensivity::Ref::New(*this));
+	pParameters.AddParameter(dexsiPLogLevel::Ref::New(*this));
 }
 
 
@@ -1007,6 +996,8 @@ void deXSystemInput::pCreateParameters(){
 
 class dexsiModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dexsiModuleInternal> Ref;
+	
 	dexsiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("XSystemInput");
 		SetDescription(
@@ -1028,7 +1019,7 @@ public:
 	}
 };
 
-deInternalModule *dexsiRegisterInternalModule(deModuleSystem *system){
-	return new dexsiModuleInternal(system);
+deTObjectReference<deInternalModule> dexsiRegisterInternalModule(deModuleSystem *system){
+	return dexsiModuleInternal::Ref::New(system);
 }
 #endif

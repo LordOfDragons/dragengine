@@ -33,6 +33,8 @@
  */
 class deoxrDPHPMixedRealityController : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPHPMixedRealityController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

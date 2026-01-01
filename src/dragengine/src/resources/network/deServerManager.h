@@ -25,11 +25,11 @@
 #ifndef _DESERVERMANAGER_H_
 #define _DESERVERMANAGER_H_ 
 
+#include "deServer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deServer;
 
 
 /**
@@ -63,7 +63,7 @@ public:
 	deServer *GetRootServer() const;
 	
 	/** \brief Create server. */
-	deServer *CreateServer();
+	deServer::Ref CreateServer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

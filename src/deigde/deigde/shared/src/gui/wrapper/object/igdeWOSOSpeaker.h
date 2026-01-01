@@ -63,8 +63,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOSpeaker(igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOSpeaker();
+	
+public:
 	/*@}*/
 	
 	
@@ -72,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker resource. */
-	inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
+	inline const deSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

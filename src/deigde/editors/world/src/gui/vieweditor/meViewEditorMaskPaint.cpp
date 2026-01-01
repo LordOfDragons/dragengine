@@ -98,7 +98,7 @@ void meViewEditorMaskPaint::OnLeftMouseButtonPress(int x, int y, bool shift, boo
 		pMaskPainter->Paint();
 		
 	}else{
-		pMaskPainter->SetTexture(NULL, NULL);
+		pMaskPainter->SetTexture(nullptr, nullptr);
 	}
 }
 

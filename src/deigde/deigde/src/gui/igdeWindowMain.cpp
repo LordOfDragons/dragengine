@@ -35,12 +35,9 @@
 #include "../module/igdeEditorModuleManager.h"
 #include "../module/igdeEditorModuleDefinition.h"
 #include "../template/igdeTemplate.h"
-#include "../template/igdeTemplateList.h"
 
 #include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
-#include <deigde/engine/textureProperties/igdeTextureProperty.h>
-#include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/engine/textureProperties/igdeXMLLoadTexturePropertyList.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeApplication.h>
@@ -63,7 +60,6 @@
 #include <deigde/gui/enginestatus/igdeDialogEngine.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/logger/igdeWindowLogger.h>
@@ -79,7 +75,6 @@
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gamedefinition/igdeGDCategory.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gamedefinition/igdeGameDefinitionList.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
 #include <deigde/gamedefinition/class/component/igdeGDCComponent.h>
@@ -95,6 +90,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -141,6 +137,7 @@ protected:
 	igdeWindowMain &pWindow;
 	
 public:
+	typedef deTObjectReference<cActionBase> Ref;
 	cActionBase(igdeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
 		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
@@ -156,13 +153,15 @@ public:
 
 class cActionGameNew : public cActionBase{
 public:
-	cActionGameNew(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionGameNew> Ref;
+	
+	explicit cActionGameNew(igdeWindowMain &window) : cActionBase(window,
 		"New...", window.GetIconGameNew(), "Creates a new game", deInputEvent::ekcN){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating a new project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("New Game Project", NULL)){
+		if(pWindow.RequestSaveDocuments("New Game Project", nullptr)){
 			pWindow.CreateNewGameProject();
 		}
 	}
@@ -171,13 +170,15 @@ public:
 
 class cActionGameOpen : public cActionBase{
 public:
-	cActionGameOpen(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionGameOpen> Ref;
+	
+	explicit cActionGameOpen(igdeWindowMain &window) : cActionBase(window,
 		"Open...", window.GetIconGameOpen(), "Opens a game", deInputEvent::ekcO){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(!pWindow.RequestSaveDocuments("Open Game Project", NULL)){
+		if(!pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
 			return;
 		}
 		
@@ -207,14 +208,16 @@ private:
 	}
 	
 public:
+	typedef deTObjectReference<cActionGameOpenRecent> Ref;
+	
 	cActionGameOpenRecent(igdeWindowMain &window, const char *filename) :
-	cActionBase(window, BuildText(filename), NULL, "Open game project"),
+	cActionBase(window, BuildText(filename), nullptr, "Open game project"),
 	pFilename(filename){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("Open Game Project", NULL)){
+		if(pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
 			// WARNING loading a game does change the recent games menu. to avoid troubles
 			//         the filename is safe-guarded locally to not cause trashed memory
 			const decString filename(pFilename);
@@ -226,11 +229,13 @@ public:
 
 class cActionGameSaveAs : public cActionBase{
 public:
-	cActionGameSaveAs(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionGameSaveAs> Ref;
+	
+	explicit cActionGameSaveAs(igdeWindowMain &window) : cActionBase(window,
 		"Save As...", window.GetIconGameSaveAs(), "Saves game under a differen file",
 		deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetGameProject()){
 			return;
 		}
@@ -242,15 +247,17 @@ public:
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetGameProject() != NULL);
+	void Update() override{
+		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
 
 
 class cActionGameSave : public cActionGameSaveAs{
 public:
-	cActionGameSave(igdeWindowMain &window) : cActionGameSaveAs(window){
+	typedef deTObjectReference<cActionGameSave> Ref;
+	
+	explicit cActionGameSave(igdeWindowMain &window) : cActionGameSaveAs(window){
 		SetText("Save");
 		SetDescription("Saves game");
 		//SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
@@ -273,36 +280,40 @@ public:
 
 class cActionGameSettings : public cActionBase{
 public:
-	cActionGameSettings(igdeWindowMain &window) : cActionBase(window,
-		"Settings...", NULL, "Game project settings", deInputEvent::ekcT){}
+	typedef deTObjectReference<cActionGameSettings> Ref;
 	
-	virtual void OnAction(){
-		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::NewWith(pWindow));
+	explicit cActionGameSettings(igdeWindowMain &window) : cActionBase(window,
+		"Settings...", nullptr, "Game project settings", deInputEvent::ekcT){}
+	
+	void OnAction() override{
+		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::New(pWindow));
 		if(dialog->Run(&pWindow)
 		&& ((igdeDialogProjectSettings&)(igdeDialog&)dialog).GetBaseGameDefsChanged()){
 			pWindow.OnProjectGameDefinitionChanged();
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetGameProject() != NULL);
+	void Update() override{
+		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
 
 
 class cActionGameReloadXMLElementClasses : public cActionBase{
 public:
-	cActionGameReloadXMLElementClasses(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionGameReloadXMLElementClasses> Ref;
+	
+	explicit cActionGameReloadXMLElementClasses(igdeWindowMain &window) : cActionBase(window,
 		"Reload XML Element Classes", window.GetIconGameReloadXMLElementClasses(),
 		"Reload XML Element Classes"){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.IsSyncGameDefTaskRunning()){
 			pWindow.ReloadXMLElementClasses();
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pWindow.IsSyncGameDefTaskRunning());
 	}
 };
@@ -310,10 +321,12 @@ public:
 
 class cActionGameQuit : public cActionBase{
 public:
-	cActionGameQuit(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionGameQuit> Ref;
+	
+	explicit cActionGameQuit(igdeWindowMain &window) : cActionBase(window,
 		"Quit", window.GetIconGameExit(), "Quit IGDE", deInputEvent::ekcQ){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pWindow.QuitRequest()){
 			pWindow.Close();
 		}
@@ -323,23 +336,27 @@ public:
 
 class cActionSettingsEngine : public cActionBase{
 public:
-	cActionSettingsEngine(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionSettingsEngine> Ref;
+	
+	explicit cActionSettingsEngine(igdeWindowMain &window) : cActionBase(window,
 		"Engine Control Center...", window.GetIconSettingsEngine(),
 		"Shows the engine control system window", deInputEvent::ekcE){}
 	
-	virtual void OnAction(){
-		igdeDialogEngine::Ref::NewWith(pWindow)->Run(&pWindow);
+	void OnAction() override{
+		igdeDialogEngine::Ref::New(pWindow)->Run(&pWindow);
 	}
 };
 
 
 class cActionSettingsIgde: public cActionBase{
 public:
-	cActionSettingsIgde(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionSettingsIgde> Ref;
+	
+	explicit cActionSettingsIgde(igdeWindowMain &window) : cActionBase(window,
 		"IGDE Settings...", window.GetIconSettingsTexPropList(),
 		"Change IGDE Settings", deInputEvent::ekcI){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// TODO
 	}
 };
@@ -347,23 +364,27 @@ public:
 
 class cActionSettingsTexPropList : public cActionBase{
 public:
-	cActionSettingsTexPropList(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionSettingsTexPropList> Ref;
+	
+	explicit cActionSettingsTexPropList(igdeWindowMain &window) : cActionBase(window,
 		"Texture Property List...", window.GetIconSettingsTexPropList(),
 		"Shows the list of texture properties", deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
-		igdeDialogTexturePropertyList::Ref::NewWith(pWindow.GetEnvironment())->Run(&pWindow);
+	void OnAction() override{
+		igdeDialogTexturePropertyList::Ref::New(pWindow.GetEnvironment())->Run(&pWindow);
 	}
 };
 
 
 class cActionSettingsLogging : public cActionBase{
 public:
-	cActionSettingsLogging(igdeWindowMain &window) : cActionBase(window,
+	typedef deTObjectReference<cActionSettingsLogging> Ref;
+	
+	explicit cActionSettingsLogging(igdeWindowMain &window) : cActionBase(window,
 		"Logging Window...", window.GetIconSettingsEngine(),
 		"Displays the logging window", deInputEvent::ekcL){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWindow.ShowWindowLogger();
 	}
 };
@@ -380,16 +401,18 @@ private:
 	}
 	
 public:
+	typedef deTObjectReference<cActionWindowEditor> Ref;
+	
 	cActionWindowEditor(igdeWindowMain &window, igdeEditorModuleDefinition &module, bool smallIcon = true) :
-	cActionBase(window, module.GetName(), NULL, BuildDescription(module)),
+	cActionBase(window, module.GetName(), nullptr, BuildDescription(module)),
 	pModule(module){
 		igdeIcon::Ref icon;
 		const decString &path = smallIcon || module.GetIconLarge().IsEmpty() ? module.GetIconSmall() : module.GetIconLarge();
 		if(!path.IsEmpty()){
 			try{
-				icon.TakeOver(igdeIcon::LoadPNG(*module.GetModule(), path));
+				icon = igdeIcon::LoadPNG(*module.GetModule(), path);
 			}catch(const deException &e){
-				icon = NULL;
+				icon = nullptr;
 				window.GetEnvironment().GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
@@ -399,11 +422,11 @@ public:
 		SetIcon(icon);
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWindow.GetModuleManager().SetActiveModule(&pModule);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(&pModule == pWindow.GetModuleManager().GetActiveModule());
 	}
 };
@@ -413,7 +436,10 @@ class cTimerFrameUpdate : public igdeTimer{
 	igdeWindowMain &pWindow;
 	
 public:
-	cTimerFrameUpdate(igdeWindowMain &window) : igdeTimer(window.GetEnvironment()), pWindow(window){}
+	typedef deTObjectReference<cTimerFrameUpdate> Ref;
+	
+	explicit cTimerFrameUpdate(igdeWindowMain &window) :
+	igdeTimer(window.GetEnvironment()), pWindow(window){}
 	
 	virtual void OnTimeout(){
 		pWindow.OnFrameUpdate();
@@ -424,7 +450,10 @@ class cTimerSyncProject : public igdeTimer{
 	igdeWindowMain &pWindow;
 	
 public:
-	cTimerSyncProject(igdeWindowMain &window) : igdeTimer(window.GetEnvironment()), pWindow(window){}
+	typedef deTObjectReference<cTimerSyncProject> Ref;
+	
+	explicit cTimerSyncProject(igdeWindowMain &window) :
+	igdeTimer(window.GetEnvironment()), pWindow(window){}
 	
 	virtual void OnTimeout(){
 		pWindow.UpdateSyncProject();
@@ -446,25 +475,20 @@ pEnvironmentIGDE(environment),
 
 pConfiguration(*this),
 pConfigurationLocal(*this),
-pModuleManager(NULL),
-pLoadSaveSystem(NULL),
-pGDPreviewManager(NULL),
-pTexturePropertyList(NULL),
-pTemplates(NULL),
-pSharedGameDefinitions(NULL),
-pIGDEGameDefinition(NULL),
-pGameProject(NULL),
-pSharedFontList(NULL),
-pResourceLoader(NULL),
-pUIHelper(NULL),
-pUIHelperProperties(NULL),
+pModuleManager(nullptr),
+pLoadSaveSystem(nullptr),
+pGDPreviewManager(nullptr),
+pSharedFontList(nullptr),
+pResourceLoader(nullptr),
+pUIHelper(nullptr),
+pUIHelperProperties(nullptr),
 
-pStatusBar(NULL),
-pSBProgress(NULL),
+pStatusBar(nullptr),
+pSBProgress(nullptr),
 
 pElapsedTime(0.0f),
 pMinUpdateTime(0.01f), //0.0f;//0.00001f;
-pTimer(NULL),
+pTimer(nullptr),
 
 pDisplayFPSInfo(false),
 pFPSAccum(0),
@@ -474,7 +498,7 @@ pFPSRate(1),
 pPauseUpdating(false),
 pFirstEngineRun(true),
 
-pTaskSyncGameDefinition(NULL)
+pTaskSyncGameDefinition(nullptr)
 {
 	pEnvironmentIGDE.SetWindowMain(this);
 	
@@ -483,7 +507,7 @@ pTaskSyncGameDefinition(NULL)
 	try{
 		pConfiguration.LocatePath();
 		
-		pVFS.TakeOver(new deVirtualFileSystem);
+		pVFS = deVirtualFileSystem::Ref::New();
 		pConfiguration.InitVirtualFileSystem();
 		
 		pInitLogger(); // log file depends on VFS to be ready
@@ -494,7 +518,6 @@ pTaskSyncGameDefinition(NULL)
 		pUIHelperProperties = new igdeUIHelper(*pUIHelper);
 		
 		pSharedFontList = new igdeSharedFontList(pEnvironmentIGDE);
-		pTexturePropertyList = new igdeTexturePropertyList;
 		pTimer = new decTimer;
 		
 		pResourceLoader = new igdeResourceLoader(pEnvironmentIGDE);
@@ -524,9 +547,9 @@ pTaskSyncGameDefinition(NULL)
 		pConfiguration.LoadConfiguration();
 		/*
 		if(pConfiguration.GetGameDefinitionManager()->GetDefinitionCount() == 0){
-			igdeGameDefinition *gamedef = CreateNewGameDefinition();
+			igdeGameDefinition::Ref gamedef = CreateNewGameDefinition();
 			pConfiguration.GetGameDefinitionManager()->AddDefinition(gamedef);
-			gamedef = NULL;
+			gamedef = nullptr;
 			
 // 			igdeCommonDialogs::Error( this, "Error", "No Game Definitions found!" );
 // 			DETHROW( deeInvalidParam );
@@ -538,24 +561,22 @@ pTaskSyncGameDefinition(NULL)
 		
 		pLoadIGDEGameDefinition();
 		
-		pSharedGameDefinitions = new igdeGameDefinitionList;
 		pLoadSharedGameDefinitions();
 		
-		pTemplates = new igdeTemplateList;
 		pLoadTemplates();
 		
-		pIconApplication.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/application.png"));
+		pIconApplication = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/application.png");
 		SetIcon(pIconApplication);
 		
-		pIconGameNew.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_new.png"));
-		pIconGameOpen.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_open.png"));
-		pIconGameSave.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_save.png"));
-		pIconGameSaveAs.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_saveas.png"));
-		pIconGameExit.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_exit.png"));
-		pIconGameReloadXMLElementClasses.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png"));
-		pIconSettingsIGDE.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_igde.png"));
-		pIconSettingsEngine.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png"));
-		pIconSettingsTexPropList.TakeOver(igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png"));
+		pIconGameNew = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_new.png");
+		pIconGameOpen = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_open.png");
+		pIconGameSave = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_save.png");
+		pIconGameSaveAs = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_saveas.png");
+		pIconGameExit = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/game_exit.png");
+		pIconGameReloadXMLElementClasses = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png");
+		pIconSettingsIGDE = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_igde.png");
+		pIconSettingsEngine = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png");
+		pIconSettingsTexPropList = igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/settings_engine.png");
 		
 		pLoadStockIcons();
 		pCreateGuiThemes();
@@ -567,30 +588,30 @@ pTaskSyncGameDefinition(NULL)
 		
 		
 		// create window content
-		igdeContainerBorder::Ref content(igdeContainerBorder::Ref::NewWith(pEnvironmentIGDE));
+		igdeContainerBorder::Ref content(igdeContainerBorder::Ref::New(pEnvironmentIGDE));
 		AddChild(content);
 		
 		
 		// top side
-		igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
+		igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
 			pEnvironmentIGDE, igdeContainerFlow::eaY));
 		content->AddChild(panel, igdeContainerBorder::eaTop);
 		
-		pMenuBar.TakeOver(new igdeMenuBar(pEnvironmentIGDE));
+		pMenuBar = igdeMenuBar::Ref::New(pEnvironmentIGDE);
 		panel->AddChild(pMenuBar);
 		
-		pToolBarDockTop.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esTop));
+		pToolBarDockTop = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esTop);
 		panel->AddChild(pToolBarDockTop);
 		
 		
 		// bottom side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaY);
 		content->AddChild(panel, igdeContainerBorder::eaBottom);
 		
-		pToolBarDockBottom.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esBottom));
+		pToolBarDockBottom = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esBottom);
 		panel->AddChild(pToolBarDockBottom);
 		
-		pStatusBar.TakeOver(new igdeStatusBar(environment));
+		pStatusBar = igdeStatusBar::Ref::New(environment);
 		pStatusBar->SetText("Ready");
 		panel->AddChild(pStatusBar);
 		
@@ -599,28 +620,28 @@ pTaskSyncGameDefinition(NULL)
 		
 		
 		// left side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaLeft);
 		
-		pToolBarDockLeft.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esLeft));
+		pToolBarDockLeft = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esLeft);
 		panel->AddChild(pToolBarDockLeft);
 		
 		
 		// right side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaRight);
 		
-		pFraEditors.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
+		pFraEditors = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaY);
 		panel->AddChild(pFraEditors);
 		
-		pToolBarDockRight.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esRight));
+		pToolBarDockRight = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esRight);
 		panel->AddChild(pToolBarDockRight);
 		
 		
 		// center
-		pSwiContent.TakeOver(new igdeSwitcher(pEnvironmentIGDE));
+		pSwiContent = igdeSwitcher::Ref::New(pEnvironmentIGDE);
 		
-		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::NewWith(pEnvironmentIGDE));
+		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::New(pEnvironmentIGDE));
 		pSwiContent->AddChild(emptyContainer);
 		
 		content->AddChild(pSwiContent, igdeContainerBorder::eaCenter);
@@ -628,7 +649,7 @@ pTaskSyncGameDefinition(NULL)
 		
 		// fill it
 		pCreateToolBarGame();
-// 		pTBEditors.TakeOver( new igdeToolBar( pEnvironmentIGDE ) );
+// 		pTBEditors = igdeToolBar::Ref::New(pEnvironmentIGDE);
 		
 		CreatePlaceholderGameProject();
 		
@@ -646,14 +667,10 @@ igdeWindowMain::~igdeWindowMain(){
 // Management
 ///////////////
 
-igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed(const char *name){
-	return (igdeGuiTheme*)pGuiThemes.GetAt(name);
-}
-
 void igdeWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
-		pWindowLogger.TakeOver(new igdeWindowLogger(pEnvironmentIGDE));
-		pWindowLogger->SetLogger(GetLoggerHistory());
+		pWindowLogger = igdeWindowLogger::Ref::New(pEnvironmentIGDE);
+		pWindowLogger->SetHistoryLogger(GetLoggerHistory());
 	}
 	
 	pWindowLogger->SetVisible(true);
@@ -690,7 +707,7 @@ bool igdeWindowMain::ProcessCommandLine(const decUnicodeStringList &arguments){
 		DETHROW_INFO(deeInvalidParam, "Missing arguments");
 		#endif
 		
-		return igdeDialogStartUp::Ref::NewWith(*this)->Run(this);
+		return igdeDialogStartUp::Ref::New(*this)->Run(this);
 	}
 	
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Loading game project %s", loadFile.GetString());
@@ -717,14 +734,9 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		return;
 	}
 	
-	igdeGameProject * const oldProject = pGameProject;
+	const igdeGameProject::Ref oldProject(pGameProject);
 	
 	pGameProject = project;
-	
-	if(project){
-		project->AddReference();
-	}
-	
 	GetEngineController().UpdateEngine(project, pConfiguration.GetPathIGDEData(),
 		pConfiguration.GetPathIGDEEditorData());
 	
@@ -732,20 +744,11 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		project->GetGameDefinition()->UpdateEngineObjects();
 	}
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &moduleDefinition = *pModuleManager->GetModuleAt(i);
-		
-		if(moduleDefinition.IsModuleRunning()){
-			moduleDefinition.GetModule()->OnGameProjectChanged();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnGameProjectChanged();
 		}
-	}
-	
-	if(oldProject){
-		oldProject->FreeReference();
-	}
+	});
 	
 	// update window title
 	const decPath path(decPath::CreatePathNative(project->GetFilePath()));
@@ -762,13 +765,13 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 	
 	// load configuration
 	pConfigurationLocal.LoadConfiguration();
-	pModuleManager->SetActiveModule(pModuleManager->GetRecentModuleAt(0));
+	pModuleManager->ActivateMostRecentModule();
 }
 
 bool igdeWindowMain::CreateNewGameProject(){
-	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::NewWith(*this));
+	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::New(*this));
 	if(dialog->Run(this)){
-		SetGameProject(((igdeDialogNewGameProject&)(igdeDialog&)dialog).GetNewProject());
+		SetGameProject(dialog->GetNewProject());
 		pModuleManager->ActivateProjectManager();
 		return true;
 	}
@@ -776,8 +779,8 @@ bool igdeWindowMain::CreateNewGameProject(){
 }
 
 void igdeWindowMain::CreatePlaceholderGameProject(){
-	const igdeGameProject::Ref project(igdeGameProject::Ref::NewWith(pEnvironmentIGDE));
-	project->SetProjectGameDefinition(igdeGameDefinition::Ref::New(CreateNewGameDefinition()));
+	const igdeGameProject::Ref project(igdeGameProject::Ref::New(pEnvironmentIGDE));
+	project->SetProjectGameDefinition(CreateNewGameDefinition());
 	project->MergeGameDefinitions();
 	SetGameProject(project);
 	
@@ -788,8 +791,7 @@ bool igdeWindowMain::LoadGameProject(const char *filename){
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Open game project %s", filename);
 	
 	try{
-		const igdeGameProject::Ref project(igdeGameProject::Ref::New(
-			pLoadSaveSystem->LoadGameProject(filename)));
+		const igdeGameProject::Ref project(pLoadSaveSystem->LoadGameProject(filename));
 		
 		pLoadXMLElementClasses(project);
 		pFindAndAddSkins(project);
@@ -836,7 +838,7 @@ void igdeWindowMain::AddRecentGameProject(const char *filename){
 	const int recentProjectIndex = recentProjectList.IndexOf(filename);
 	
 	if(recentProjectIndex == -1){
-		recentProjectList.InsertAt(filename, 0);
+		recentProjectList.Insert(filename, 0);
 		
 		while(recentProjectList.GetCount() > pConfiguration.GetMaxRecentProjectEntries()){
 			recentProjectList.RemoveFrom(recentProjectList.GetCount() - 1);
@@ -853,33 +855,19 @@ void igdeWindowMain::AddRecentGameProject(const char *filename){
 
 
 
-igdeGameDefinition *igdeWindowMain::CreateNewGameDefinition(){
-	igdeGameDefinition *gamedef = NULL;
-	decPath path;
+igdeGameDefinition::Ref igdeWindowMain::CreateNewGameDefinition(){
+	decPath pathGameDef(decPath::CreatePathNative(pConfiguration.GetPathShares()));
+	pathGameDef.AddComponent("newproject.degd");
 	
-	path.SetFromNative(pConfiguration.GetPathShares());
-	path.AddComponent("newproject.degd");
+	const igdeGameDefinition::Ref gamedef(igdeGameDefinition::Ref::New(pEnvironmentIGDE));
+	gamedef->SetFilename(pathGameDef.GetPathNative());
 	
-	decBaseFileReader::Ref reader;
+	decPath pathProjectDir(decPath::CreatePathNative(pConfiguration.GetPathProjects()));
+	pathProjectDir.AddComponent("newproject");
+	gamedef->SetBasePath(pathProjectDir.GetPathNative());
 	
-	try{
-		reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
-		
-		gamedef = new igdeGameDefinition(pEnvironmentIGDE);
-		gamedef->SetFilename(path.GetPathNative());
-		
-		path.SetFromNative(pConfiguration.GetPathProjects());
-		path.AddComponent("newproject");
-		gamedef->SetBasePath(path.GetPathNative());
-		
-		igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(reader, *gamedef);
-		
-	}catch(const deException &){
-		if(gamedef){
-			gamedef->FreeReference();
-		}
-		throw;
-	}
+	igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(
+		decDiskFileReader::Ref::New(pathGameDef.GetPathNative()), gamedef);
 	
 	return gamedef;
 }
@@ -902,13 +890,11 @@ void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 void igdeWindowMain::ActivateEditor(igdeEditorModule *editor){
 	DEASSERT_NOTNULL(editor)
 	
-	const int count = pModuleManager->GetModuleCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(pModuleManager->GetModuleAt(i)->GetModule() == editor){
-			pModuleManager->SetActiveModule(pModuleManager->GetModuleAt(i));
-			break;
-		}
+	igdeEditorModuleDefinition * const md = pModuleManager->GetModules().FindOrDefault([&](const igdeEditorModuleDefinition &m){
+		return m.GetModule() == editor;
+	});
+	if(md){
+		pModuleManager->SetActiveModule(md);
 	}
 }
 
@@ -921,7 +907,7 @@ void igdeWindowMain::RebuildMenu(){
 	// add menus
 	pMenuBar->AddChild(pMenuGame);
 	
-	igdeEditorWindow * editorWindow = NULL;
+	igdeEditorWindow * editorWindow = nullptr;
 	igdeEditorModuleDefinition * const editorModuleDef = pModuleManager->GetActiveModule();
 	if(editorModuleDef){
 		igdeEditorModule * const editorModule = editorModuleDef->GetModule();
@@ -931,11 +917,9 @@ void igdeWindowMain::RebuildMenu(){
 	}
 	
 	if(editorWindow){
-		const int count = editorWindow->GetSharedMenuCount();
-		int i;
-		for(i=0; i<count; i++){
-			pMenuBar->AddChild(editorWindow->GetSharedMenuAt(i));
-		}
+		editorWindow->GetSharedMenus().Visit([&](igdeMenuCascade *m){
+			pMenuBar->AddChild(m);
+		});
 	}
 	
 	pMenuBar->AddChild(pMenuSettings);
@@ -958,7 +942,7 @@ void igdeWindowMain::RebuildToolBars(){
 // 	pToolBarDockRight->AddChild( pTBEditors );
 	
 	// add active editor module toolbars
-	igdeEditorWindow * editorWindow = NULL;
+	igdeEditorWindow * editorWindow = nullptr;
 	igdeEditorModuleDefinition * const editorModuleDef = pModuleManager->GetActiveModule();
 	if(editorModuleDef){
 		igdeEditorModule * const editorModule = editorModuleDef->GetModule();
@@ -968,13 +952,10 @@ void igdeWindowMain::RebuildToolBars(){
 	}
 	
 	if(editorWindow){
-		const int count = editorWindow->GetSharedToolBarCount();
-		int i;
-		for(i=0; i<count; i++){
-			igdeToolBar * const toolbar = editorWindow->GetSharedToolBarAt(i);
+		editorWindow->GetSharedToolBars().Visit([&](igdeToolBar *tb){
 			// TODO add it to the desired dock
-			pToolBarDockTop->AddChild(toolbar);
-		}
+			pToolBarDockTop->AddChild(tb);
+		});
 	}
 }
 
@@ -986,7 +967,8 @@ void igdeWindowMain::SwitchToModuleWindow(){
 		return;
 	}
 	
-	const int index = pSwiContent->IndexOfChild(pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow());
+	const int index = pSwiContent->GetChildren().IndexOf(
+		pModuleManager->GetActiveModule()->GetModule()->GetEditorWindow());
 	if(index != -1){
 		pSwiContent->SetCurrent(index);
 	}
@@ -1005,7 +987,7 @@ void igdeWindowMain::UpdateRecentProjectMenu(){
 }
 
 bool igdeWindowMain::IsSyncGameDefTaskRunning() const{
-	return pTaskSyncGameDefinition != NULL;
+	return pTaskSyncGameDefinition != nullptr;
 }
 
 
@@ -1025,14 +1007,14 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 	
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	pTaskSyncGameDefinition->SetReloadXMLElementClasses(true);
 	
 	if(!pTimerSyncProject){
-		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
+		pTimerSyncProject = cTimerSyncProject::Ref::New(*this);
 		pTimerSyncProject->Start(10, true);
 	}
 	
@@ -1092,30 +1074,22 @@ void igdeWindowMain::SetMinUpdateTime(float seconds){
 
 
 void igdeWindowMain::OnBeforeEngineStart(){
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnBeforeEngineStart();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnBeforeEngineStart();
 		}
-	}
+	});
 }
 
 void igdeWindowMain::OnAfterEngineStart(){
 	pLoadSaveSystem->UpdatePatternLists();
 	pGDPreviewManager->OnAfterEngineStart();
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnAfterEngineStart();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnAfterEngineStart();
 		}
-	}
+	});
 	
 	// first time init. we have to move this here since this is the only safe time to
 	// start anything potentially requiring the game engine object to be present.
@@ -1142,27 +1116,19 @@ void igdeWindowMain::OnAfterEngineStart(){
 void igdeWindowMain::OnBeforeEngineStop(){
 	pGDPreviewManager->OnBeforeEngineStop();
 	
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnBeforeEngineStop();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnBeforeEngineStop();
 		}
-	}
+	});
 }
 
 void igdeWindowMain::OnAfterEngineStop(){
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			module.GetModule()->OnAfterEngineStop();
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			md.GetModule()->OnAfterEngineStop();
 		}
-	}
+	});
 }
 
 
@@ -1170,7 +1136,7 @@ void igdeWindowMain::OnAfterEngineStop(){
 bool igdeWindowMain::QuitRequest(){
 	// RequestSaveDocuments returns true if user wants to continue closing the application.
 	// this can mean to save the documents first or to not save them first.
-	return RequestSaveDocuments("Quit", NULL);
+	return RequestSaveDocuments("Quit", nullptr);
 }
 
 
@@ -1253,26 +1219,26 @@ void igdeWindowMain::OnFrameUpdate(){
 	
 	// check for errors. if something went wrong shut down the engine
 	if(engine.GetScriptFailed() || engine.GetSystemFailed()){
-		engine.GetErrorTrace()->AddPoint(NULL, "igdeWindowMain::OnFrameUpdate", __LINE__);
+		engine.GetErrorTrace()->AddPoint(nullptr, "igdeWindowMain::OnFrameUpdate", __LINE__);
 		StopEngine();
 	}
 	
 	// process after start command line if present
-	if(pModuleManager->GetModuleCount() > 0 && pAfterLoadArguments.GetCount() > 0){
+	if(pModuleManager->GetModules().IsNotEmpty() && pAfterLoadArguments.IsNotEmpty()){
 		try{
-			const int moduleCount = pModuleManager->GetModuleCount();
-			int i;
-			
-			while(pAfterLoadArguments.GetCount() > 0){
+			while(pAfterLoadArguments.IsNotEmpty()){
 				const int argCount = pAfterLoadArguments.GetCount();
 				
-				for(i=0; i<moduleCount; i++){
-					igdeEditorModule * const module = pModuleManager->GetModuleAt(i)->GetModule();
+				if(pModuleManager->GetModules().HasMatching([&](const igdeEditorModuleDefinition &md){
+					igdeEditorModule * const module = md.GetModule();
 					if(module && !module->ProcessCommandLine(pAfterLoadArguments)){
 						pAfterLoadArguments.RemoveAll();
 						pEnvironmentIGDE.CloseApplication();
-						return;
+						return true;
 					}
+					return false;
+				})){
+					return;
 				}
 				
 				if(pAfterLoadArguments.GetCount() == argCount){
@@ -1309,13 +1275,13 @@ void igdeWindowMain::OnFrameUpdate(){
 void igdeWindowMain::OnProjectGameDefinitionChanged(){
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	
 	if(!pTimerSyncProject){
-		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
+		pTimerSyncProject = cTimerSyncProject::Ref::New(*this);
 		pTimerSyncProject->Start(10, true);
 	}
 	
@@ -1324,7 +1290,7 @@ void igdeWindowMain::OnProjectGameDefinitionChanged(){
 
 void igdeWindowMain::ArmUpdateTimer(){
 	if(!pTimerFrameUpdate){
-		pTimerFrameUpdate.TakeOver(new cTimerFrameUpdate(*this));
+		pTimerFrameUpdate = cTimerFrameUpdate::Ref::New(*this);
 		pTimerFrameUpdate->Start(1, true); // 5
 	}
 }
@@ -1336,22 +1302,18 @@ void igdeWindowMain::UpdateFrame(){
 	pGDPreviewManager->Update();
 	
 	// update modules
-	const int moduleCount = pModuleManager->GetModuleCount();
-	int i;
-	
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleAt(i);
-		if(!moduleDef.IsModuleRunning()){
-			continue;
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(!md.IsModuleRunning()){
+			return;
 		}
 		
-		igdeEditorModule * const module = moduleDef.GetModule();
+		igdeEditorModule * const module = md.GetModule();
 		if(!module){
-			continue;
+			return;
 		}
 		
 		module->OnFrameUpdate(elapsed);
-	}
+	});
 	
 	// update logging window
 	if(pWindowLogger){
@@ -1363,7 +1325,7 @@ void igdeWindowMain::UpdateSyncProject(){
 	if(!pTaskSyncGameDefinition){
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		return;
 	}
@@ -1375,21 +1337,21 @@ void igdeWindowMain::UpdateSyncProject(){
 		
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 		pActionGameReloadXMLElementClasses->Update();
 		
 	}catch(const deException &e){
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		if(pTaskSyncGameDefinition){
 			delete pTaskSyncGameDefinition;
-			pTaskSyncGameDefinition = NULL;
+			pTaskSyncGameDefinition = nullptr;
 		}
 		
 		DisplayException(e);
@@ -1400,26 +1362,20 @@ void igdeWindowMain::UpdateSyncProject(){
 
 
 bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message){
-	const int moduleCount = pModuleManager->GetModuleCount();
 	decStringList changedDocuments;
-	int i;
 	
-	// determine the list of changed documents across all modules
-	for(i=0; i<moduleCount; i++){
-		igdeEditorModuleDefinition &moduleDefinition = *pModuleManager->GetModuleAt(i);
-		
-		if(moduleDefinition.IsModuleRunning()){
-			decStringList mcdList;
-			moduleDefinition.GetModule()->GetChangedDocuments(mcdList);
-			
-			const int mcdCount = mcdList.GetCount();
-			int j;
-			
-			for(j=0; j<mcdCount; j++){
-				changedDocuments.Add(moduleDefinition.GetID() + ": " + mcdList.GetAt(j));
-			}
+	pModuleManager->GetModules().Visit([&](igdeEditorModuleDefinition &md){
+		if(!md.IsModuleRunning()){
+			return;
 		}
-	}
+		
+		decStringList mcdList;
+		md.GetModule()->GetChangedDocuments(mcdList);
+		
+		mcdList.Visit([&](const decString &filename){
+			changedDocuments.Add(md.GetID() + ": " + filename);
+		});
+	});
 	
 	// ask the user which documents to save:
 	// 
@@ -1428,18 +1384,13 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 	//      with module pointer and filename assigned as data pointer. this avoids this
 	//      stupid split-string hack used below which can only break sooner or later
 	
-	if(changedDocuments.GetCount() > 0){
-		decStringList choices;
-		for(i=0; i<changedDocuments.GetCount(); i++){
-			choices += changedDocuments.GetAt(i);
-		}
-		
+	if(changedDocuments.IsNotEmpty()){
 		/*
 		igdeCommonDialogs needs a ChoiceString in addition to SelectString allowing to select
-		more then one string from a list of strings returning decIntList as result.
+		more then one string from a list of strings returning decTList<int> as result.
 		
 		const int selection = FXChoiceBox::ask(this, MBOX_OK_CANCEL,
-			title, "Changed Documents", NULL, choices);
+			title, "Changed Documents", nullptr, choices);
 		
 		if(selection == -1){
 			return false;
@@ -1456,7 +1407,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		}
 		text += "\n\n";
 		
-		text += choices.Join(", ");
+		text += DEJoin(changedDocuments, ", ");
 		
 		//MBOX_QUIT_SAVE_CANCEL
 		switch(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNoCancel, title, text)){
@@ -1475,10 +1426,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 	}
 	
 	// save documents
-	const int saveCount = changedDocuments.GetCount();
-	
-	for(i=0; i<saveCount; i++){
-		const decString &document = changedDocuments.GetAt(i);
+	for(const auto &document : changedDocuments){
 		const decStringList parts(document.Split(':'));
 		
 		if(parts.GetCount() != 2){
@@ -1577,16 +1525,16 @@ void igdeWindowMain::DestroyNativeWidget(){
 void igdeWindowMain::pCleanUp(){
 	if(pTimerSyncProject){
 		pTimerSyncProject->Stop();
-		pTimerSyncProject = NULL;
+		pTimerSyncProject = nullptr;
 	}
 	if(pTimerFrameUpdate){
 		pTimerFrameUpdate->Stop();
-		pTimerFrameUpdate = NULL;
+		pTimerFrameUpdate = nullptr;
 	}
 	
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	// save configuration. we do this first in case something goes wrong
@@ -1640,203 +1588,180 @@ void igdeWindowMain::pCleanUp(){
 	// continue cleaning up. now everything can be simply cleaned up
 	if(pModuleManager){
 		delete pModuleManager;
-		pModuleManager = NULL;
+		pModuleManager = nullptr;
 	}
 	
-	if(pGameProject){
-		pGameProject->FreeReference();
-		pGameProject = NULL;
-	}
-	if(pIGDEGameDefinition){
-		pIGDEGameDefinition->FreeReference();
-		pIGDEGameDefinition = NULL;
-	}
-	if(pSharedGameDefinitions){
-		delete pSharedGameDefinitions;
-		pSharedGameDefinitions = NULL;
-	}
-	if(pTemplates){
-		delete pTemplates;
-		pTemplates = NULL;
-	}
+	pGameProject = nullptr;
+	pIGDEGameDefinition = nullptr;
+	
+	pSharedGameDefinitions.RemoveAll();
+	pTemplates.RemoveAll();
 	
 	if(pSharedFontList){
 		delete pSharedFontList;
-		pSharedFontList = NULL;
+		pSharedFontList = nullptr;
 	}
 	if(pUIHelperProperties){
 		delete pUIHelperProperties;
-		pUIHelperProperties = NULL;
+		pUIHelperProperties = nullptr;
 	}
 	if(pUIHelper){
 		delete pUIHelper;
-		pUIHelper = NULL;
+		pUIHelper = nullptr;
 	}
 	
-	if(pTexturePropertyList){
-		delete pTexturePropertyList;
-		pTexturePropertyList = NULL;
-	}
 	if(pGDPreviewManager){
 		delete pGDPreviewManager;
-		pGDPreviewManager = NULL;
+		pGDPreviewManager = nullptr;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-		pLoadSaveSystem = NULL;
+		pLoadSaveSystem = nullptr;
 	}
 	if(pResourceLoader){
 		delete pResourceLoader;
-		pResourceLoader = NULL;
+		pResourceLoader = nullptr;
 	}
 	
 	if(pTimer){
 		delete pTimer;
-		pTimer = NULL;
+		pTimer = nullptr;
 	}
 	
-	pWindowLogger = NULL;
-	pVFS = NULL;
+	pWindowLogger = nullptr;
+	pVFS = nullptr;
 }
 
 void igdeWindowMain::pInitLogger(){
 	if(!pLoggerHistory){
-		pLoggerHistory.TakeOver(new igdeLoggerHistory);
+		pLoggerHistory = igdeLoggerHistory::Ref::New();
 		pLoggerHistory->SetHistorySize(250);
 	}
 	
-	const deLoggerChain::Ref loggerChain(deLoggerChain::Ref::NewWith());
+	const deLoggerChain::Ref loggerChain(deLoggerChain::Ref::New());
 	
 	loggerChain->AddLogger(pLoggerHistory);
 	
 	//no console logging to support console use in scripts
-// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::NewWith() );
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New() );
 	
-	loggerChain->AddLogger(deLoggerFile::Ref::New(new deLoggerFile(
-		decBaseFileWriter::Ref::New(pVFS->OpenFileForWriting(
-			decPath::CreatePathUnix("/logs/deigde.log"))))));
+	loggerChain->AddLogger(deLoggerFile::Ref::New(
+		pVFS->OpenFileForWriting(decPath::CreatePathUnix("/logs/deigde.log"))));
 	
 	pEnvironmentIGDE.SetLogger(loggerChain);
 }
 
 void igdeWindowMain::pLoadStockIcons(){
-	pStockIcons[igdeEnvironment::esiNew].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_new.png"));
-	pStockIcons[igdeEnvironment::esiOpen].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_open.png"));
-	pStockIcons[igdeEnvironment::esiSave].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_save.png"));
-	pStockIcons[igdeEnvironment::esiSaveAs].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_save_as.png"));
-	pStockIcons[igdeEnvironment::esiDelete].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_delete.png"));
-	pStockIcons[igdeEnvironment::esiCopy].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_copy.png"));
-	pStockIcons[igdeEnvironment::esiCut].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_cut.png"));
-	pStockIcons[igdeEnvironment::esiUndo].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_undo.png"));
-	pStockIcons[igdeEnvironment::esiRedo].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_redo.png"));
-	pStockIcons[igdeEnvironment::esiQuit].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_quit.png"));
-	pStockIcons[igdeEnvironment::esiPaste].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_paste.png"));
-	pStockIcons[igdeEnvironment::esiPlus].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_plus.png"));
-	pStockIcons[igdeEnvironment::esiMinus].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_minus.png"));
-	pStockIcons[igdeEnvironment::esiUp].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_up.png"));
-	pStockIcons[igdeEnvironment::esiDown].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_down.png"));
-	pStockIcons[igdeEnvironment::esiLeft].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_left.png"));
-	pStockIcons[igdeEnvironment::esiRight].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_right.png"));
-	pStockIcons[igdeEnvironment::esiStrongUp].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_strong_up.png"));
-	pStockIcons[igdeEnvironment::esiStrongDown].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_strong_down.png"));
-	pStockIcons[igdeEnvironment::esiStrongLeft].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_strong_left.png"));
-	pStockIcons[igdeEnvironment::esiStrongRight].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_strong_right.png"));
-	pStockIcons[igdeEnvironment::esiDuplicate].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_duplicate.png"));
-	pStockIcons[igdeEnvironment::esiSearch].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_search.png"));
+	static const struct {
+		igdeEnvironment::eStockIcons id;
+		const char *path;
+	} icons[] = {
+		{igdeEnvironment::esiNew, "data/icons/stock_new.png"},
+		{igdeEnvironment::esiOpen, "data/icons/stock_open.png"},
+		{igdeEnvironment::esiSave, "data/icons/stock_save.png"},
+		{igdeEnvironment::esiSaveAs, "data/icons/stock_save_as.png"},
+		{igdeEnvironment::esiDelete, "data/icons/stock_delete.png"},
+		{igdeEnvironment::esiCopy, "data/icons/stock_copy.png"},
+		{igdeEnvironment::esiCut, "data/icons/stock_cut.png"},
+		{igdeEnvironment::esiUndo, "data/icons/stock_undo.png"},
+		{igdeEnvironment::esiRedo, "data/icons/stock_redo.png"},
+		{igdeEnvironment::esiQuit, "data/icons/stock_quit.png"},
+		{igdeEnvironment::esiPaste, "data/icons/stock_paste.png"},
+		{igdeEnvironment::esiPlus, "data/icons/stock_plus.png"},
+		{igdeEnvironment::esiMinus, "data/icons/stock_minus.png"},
+		{igdeEnvironment::esiUp, "data/icons/stock_up.png"},
+		{igdeEnvironment::esiDown, "data/icons/stock_down.png"},
+		{igdeEnvironment::esiLeft, "data/icons/stock_left.png"},
+		{igdeEnvironment::esiRight, "data/icons/stock_right.png"},
+		{igdeEnvironment::esiStrongUp, "data/icons/stock_strong_up.png"},
+		{igdeEnvironment::esiStrongDown, "data/icons/stock_strong_down.png"},
+		{igdeEnvironment::esiStrongLeft, "data/icons/stock_strong_left.png"},
+		{igdeEnvironment::esiStrongRight, "data/icons/stock_strong_right.png"},
+		{igdeEnvironment::esiDuplicate, "data/icons/stock_duplicate.png"},
+		{igdeEnvironment::esiSearch, "data/icons/stock_search.png"},
+		{igdeEnvironment::esiWarning, "data/icons/stock_warning.png"},
+		{igdeEnvironment::esiSmallPlus, "data/icons/stock_small_plus.png"},
+		{igdeEnvironment::esiSmallMinus, "data/icons/stock_small_minus.png"},
+		{igdeEnvironment::esiSmallUp, "data/icons/stock_small_up.png"},
+		{igdeEnvironment::esiSmallDown, "data/icons/stock_small_down.png"},
+		{igdeEnvironment::esiSmallLeft, "data/icons/stock_small_left.png"},
+		{igdeEnvironment::esiSmallRight, "data/icons/stock_small_right.png"},
+		{igdeEnvironment::esiSmallStrongUp, "data/icons/stock_small_strong_up.png"},
+		{igdeEnvironment::esiSmallStrongDown, "data/icons/stock_small_strong_down.png"},
+		{igdeEnvironment::esiSmallStrongLeft, "data/icons/stock_small_strong_left.png"},
+		{igdeEnvironment::esiSmallStrongRight, "data/icons/stock_small_strong_right.png"},
+		{igdeEnvironment::esiSmallWarning, "data/icons/stock_small_warning.png"},
+		{igdeEnvironment::esiEdit, "data/icons/stock_edit.png"},
+		{igdeEnvironment::esiConfig, "data/icons/stock_config.png"}
+	};
 	
-	pStockIcons[igdeEnvironment::esiWarning].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_warning.png"));
-	
-	pStockIcons[igdeEnvironment::esiSmallPlus].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_plus.png"));
-	pStockIcons[igdeEnvironment::esiSmallMinus].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_minus.png"));
-	pStockIcons[igdeEnvironment::esiSmallUp].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_up.png"));
-	pStockIcons[igdeEnvironment::esiSmallDown].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_down.png"));
-	pStockIcons[igdeEnvironment::esiSmallLeft].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_left.png"));
-	pStockIcons[igdeEnvironment::esiSmallRight].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_right.png"));
-	pStockIcons[igdeEnvironment::esiSmallStrongUp].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_strong_up.png"));
-	pStockIcons[igdeEnvironment::esiSmallStrongDown].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_strong_down.png"));
-	pStockIcons[igdeEnvironment::esiSmallStrongLeft].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_strong_left.png"));
-	pStockIcons[igdeEnvironment::esiSmallStrongRight].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_strong_right.png"));
-	pStockIcons[igdeEnvironment::esiSmallWarning].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_small_warning.png"));
-	
-	pStockIcons[igdeEnvironment::esiEdit].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_edit.png"));
-	pStockIcons[igdeEnvironment::esiConfig].TakeOver(
-		igdeIcon::LoadPNG(pEnvironmentIGDE, "data/icons/stock_config.png"));
+	const int stockCount = sizeof(icons) / sizeof(icons[0]);
+	int i;
+	for(i=0; i<stockCount; i++){
+		pStockIcons[icons[i].id] = igdeIcon::LoadPNG(pEnvironmentIGDE, icons[i].path);
+	}
 }
 
 void igdeWindowMain::pLoadStockSkins(){
 	deSkinManager &manager = *GetEngine()->GetSkinManager();
 	
-	pStockSkins[igdeEnvironment::essMissing].TakeOver(
-		manager.LoadSkin("/igde/materials/missing/material.deskin", "/"));
-	pStockSkins[igdeEnvironment::essError].TakeOver(
-		manager.LoadSkin("/igde/materials/error/material.deskin", "/"));
-	pStockSkins[igdeEnvironment::essTestMap].TakeOver(
-		manager.LoadSkin("/igde/materials/testmap/material.deskin", "/"));
-	pStockSkins[igdeEnvironment::essEditOutline].TakeOver(
-		manager.LoadSkin("/igde/materials/editing/outlined.deskin", "/"));
-	pStockSkins[igdeEnvironment::essEditRim].TakeOver(
-		manager.LoadSkin("/igde/materials/editing/rim.deskin", "/"));
-	pStockSkins[igdeEnvironment::essEditRimOutline].TakeOver(
-		manager.LoadSkin("/igde/materials/editing/rimOutlined.deskin", "/"));
+	static const struct {
+		igdeEnvironment::eStockSkins id;
+		const char *path;
+	} skins[] = {
+		{igdeEnvironment::essMissing, "/igde/materials/missing/material.deskin"},
+		{igdeEnvironment::essError, "/igde/materials/error/material.deskin"},
+		{igdeEnvironment::essTestMap, "/igde/materials/testmap/material.deskin"},
+		{igdeEnvironment::essEditOutline, "/igde/materials/editing/outlined.deskin"},
+		{igdeEnvironment::essEditRim, "/igde/materials/editing/rim.deskin"},
+		{igdeEnvironment::essEditRimOutline, "/igde/materials/editing/rimOutlined.deskin"}
+	};
+
+	const int skinCount = sizeof(skins) / sizeof(skins[0]);
+	int i;
+	for(i=0; i<skinCount; i++){
+		pStockSkins[skins[i].id] = manager.LoadSkin(skins[i].path, "/");
+	}
 }
 
 void igdeWindowMain::pLoadStockRigs(){
 	deRigManager &manager = *GetEngine()->GetRigManager();
 	
-	pStockRigs[igdeEnvironment::esrModelCollision].TakeOver(
-		manager.LoadRig("/igde/models/modelCollision.derig", "/"));
-	pStockRigs[igdeEnvironment::esrGhostCollision].TakeOver(
-		manager.LoadRig("/igde/models/ghostCollision.derig", "/"));
-	pStockRigs[igdeEnvironment::esrGizmoMove].TakeOver(
-		manager.LoadRig("/igde/models/gizmo/move.derig", "/"));
+	static const struct {
+		igdeEnvironment::eStockRigs id;
+		const char *path;
+	} rigs[] = {
+		{igdeEnvironment::esrModelCollision, "/igde/models/modelCollision.derig"},
+		{igdeEnvironment::esrGhostCollision, "/igde/models/ghostCollision.derig"},
+		{igdeEnvironment::esrGizmoMove, "/igde/models/gizmo/move.derig"}
+	};
+	const int rigCount = sizeof(rigs) / sizeof(rigs[0]);
+	int i;
+	for(i=0; i<rigCount; i++){
+		pStockRigs[rigs[i].id] = manager.LoadRig(rigs[i].path, "/");
+	}
 }
 
 void igdeWindowMain::pLoadStockModels(){
 	deModelManager &manager = *GetEngine()->GetModelManager();
 	
-	pStockModels[igdeEnvironment::esmGizmoMove].TakeOver(
-		manager.LoadModel("/igde/models/gizmo/move.demodel", "/"));
+	static const struct {
+		igdeEnvironment::eStockModels id;
+		const char *path;
+	} models[] = {
+		{igdeEnvironment::esmGizmoMove, "/igde/models/gizmo/move.demodel"}
+	};
+	
+	const int modelCount = sizeof(models) / sizeof(models[0]);
+	int i;
+	for(i=0; i<modelCount; i++){
+		pStockModels[models[i].id] = manager.LoadModel(models[i].path, "/");
+	}
 }
 
 void igdeWindowMain::pCreateGuiThemes(){
 	// default theme
-	pDefaultGuiTheme.TakeOver(new igdeGuiTheme(igdeGuiThemeNames::defaultTheme));
+	pDefaultGuiTheme = igdeGuiTheme::Ref::New(igdeGuiThemeNames::defaultTheme);
 	
 	pDefaultGuiTheme->SetFloatProperty(igdeGuiThemePropertyNames::fontSize, 1.0f);
 	
@@ -1847,10 +1772,10 @@ void igdeWindowMain::pCreateGuiThemes(){
 	pDefaultGuiTheme->SetIntProperty(igdeGuiThemePropertyNames::dialogPaddingContent, 10);
 	pDefaultGuiTheme->SetIntProperty(igdeGuiThemePropertyNames::dialogPaddingButtons, 5);
 	
-	pGuiThemes.SetAt(pDefaultGuiTheme->GetName(), pDefaultGuiTheme.operator->());
+	pGuiThemes.SetAt(pDefaultGuiTheme->GetName(), pDefaultGuiTheme);
 	
 	// properties theme
-	igdeGuiTheme::Ref guitheme(igdeGuiTheme::Ref::NewWith(
+	igdeGuiTheme::Ref guitheme(igdeGuiTheme::Ref::New(
 		igdeGuiThemeNames::properties, pDefaultGuiTheme));
 	
 	// guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
@@ -1890,7 +1815,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	guitheme->SetIntProperty(igdeGuiThemePropertyNames::tabBookPaddingTop, 2);
 	guitheme->SetIntProperty(igdeGuiThemePropertyNames::tabBookPaddingBottom, 2);
 	
-	pGuiThemes.SetAt(guitheme->GetName(), guitheme.operator->());
+	pGuiThemes.SetAt(guitheme->GetName(), guitheme);
 }
 
 void igdeWindowMain::pLoadIGDEGameDefinition(){
@@ -1898,9 +1823,9 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	path.SetFromNative(pConfiguration.GetPathShares());
 	path.AddComponent("igde.degd");
 	
-	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
+	decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 	
-	pIGDEGameDefinition = new igdeGameDefinition(pEnvironmentIGDE);
+	pIGDEGameDefinition = igdeGameDefinition::Ref::New(pEnvironmentIGDE);
 	pIGDEGameDefinition->SetFilename(path.GetPathNative());
 	pIGDEGameDefinition->SetBasePath(pConfiguration.GetPathShares());
 	
@@ -1909,9 +1834,9 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	GetLogger()->LogInfoFormat("IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString());
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
-	deVFSDiskDirectory::Ref diskContainer(deVFSDiskDirectory::Ref::NewWith(
+	deVFSDiskDirectory::Ref diskContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix("/igde"), decPath::CreatePathNative(pConfiguration.GetPathIGDEData())));
 	vfs->AddContainer(diskContainer);
 	
@@ -1931,7 +1856,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 void igdeWindowMain::pAddIGDEEngineModules(){
 	igdeEngineController &engineController = GetEngineController();
 	deModuleSystem *modsys = engineController.GetEngine()->GetModuleSystem();
-	engineController.AddInternalModule(igdeScriptModule::cModule::Ref::NewWith(modsys, *this));
+	engineController.AddInternalModule(igdeScriptModule::cModule::Ref::New(modsys, *this));
 }
 
 void igdeWindowMain::pLoadTexturePropertyList(){
@@ -1946,7 +1871,6 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	igdeXMLLoadTexturePropertyList readXML(&logger);
-	decBaseFileReader::Ref reader;
 	
 	if(pVFS->GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 		logger.LogError(LOGSOURCE, "Texture property list file is not a regular file");
@@ -1954,18 +1878,17 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	logger.LogInfo(LOGSOURCE, "Reading texture property list file");
-	reader.TakeOver(pVFS->OpenFileForReading(pathFile));
-	readXML.ReadFromFile(*pTexturePropertyList, reader);
+	readXML.ReadFromFile(pTexturePropertyList, pVFS->OpenFileForReading(pathFile));
 }
 
 void igdeWindowMain::pLoadTemplates(){
 	deLogger &logger = *GetLogger();
 	logger.LogInfo(LOGSOURCE, "Loading project templates");
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
 	const decPath basePath(decPath::CreatePathNative(pConfiguration.GetPathIGDETemplates()));
-	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(basePath));
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(basePath));
 	vfs->AddContainer(container);
 	
 	// find all templates located in top level directories inside the templates directories
@@ -1988,43 +1911,34 @@ void igdeWindowMain::pLoadTemplates(){
 	// load found templates
 	igdeLoadTemplate loadTemplate(&logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	
 	for(i=0; i<count; i++){
-		igdeTemplate *atemplate = NULL;
-		
 		decPath path(basePath);
 		path.Add(pathList.GetAt(i));
 		const decString pathXml(path.GetPathNative());
+		
 		path.RemoveLastComponent();
 		const decString pathTemplate(path.GetPathNative());
 		
 		logger.LogInfoFormat(LOGSOURCE, "Loading project template '%s'",
 			path.GetLastComponent().GetString());
 		
+		const igdeTemplate::Ref atemplate(igdeTemplate::Ref::New());
 		try{
-			reader.TakeOver(new decDiskFileReader(pathXml));
-			
-			atemplate = new igdeTemplate;
 			atemplate->SetBasePath(pathTemplate);
-			loadTemplate.Load(reader, *atemplate);
+			loadTemplate.Load(decDiskFileReader::Ref::New(pathXml), atemplate);
 			
 		}catch(const deException &e){
-			if(atemplate){
-				atemplate->FreeReference();
-			}
 			logger.LogException(LOGSOURCE, e);
 			continue;
 		}
 		
 		if(atemplate->GetName().IsEmpty()){
 			logger.LogWarn(LOGSOURCE, "Project template has empty name, skipped");
-			atemplate->FreeReference();
 			continue;
 		}
 		
-		pTemplates->Add(atemplate);
-		atemplate->FreeReference();
+		pTemplates.Add(atemplate);
 	}
 }
 
@@ -2034,9 +1948,9 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	
 	const decPath gameDefPath(decPath::CreatePathNative(pConfiguration.GetPathIGDEGameDefs()));
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
-	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(gameDefPath));
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(gameDefPath));
 	vfs->AddContainer(container);
 	
 	deCollectFileSearchVisitor collectFiles("*.degd");
@@ -2049,57 +1963,49 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	const dePathList &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef(pEnvironmentIGDE, &logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeGameDefinition *gameDefinition = NULL;
-		
 		decPath path(gameDefPath);
 		path.Add(pathList.GetAt(i));
 		logger.LogInfoFormat(LOGSOURCE, "Loading shared game definition '%s'",
 			pathList.GetAt(i).GetLastComponent().GetString());
 			
+		const igdeGameDefinition::Ref gameDefinition(igdeGameDefinition::Ref::New(pEnvironmentIGDE));
 		try{
-			reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
-			
-			gameDefinition = new igdeGameDefinition(pEnvironmentIGDE);
 			gameDefinition->SetFilename(path.GetPathNative());
-			loadGameDef.Load(reader, *gameDefinition);
+			loadGameDef.Load(decDiskFileReader::Ref::New(path.GetPathNative()), gameDefinition);
 			
 		}catch(const deException &e){
-			if(gameDefinition){
-				gameDefinition->FreeReference();
-			}
 			logger.LogException(LOGSOURCE, e);
 			continue;
 		}
 		
 		if(gameDefinition->GetID().IsEmpty()){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has empty identifier, skipped");
-			gameDefinition->FreeReference();
 			continue;
 		}
 		
-		if(pSharedGameDefinitions->HasWithID(gameDefinition->GetID())){
+		if(pSharedGameDefinitions.HasMatching([&](const igdeGameDefinition &gd){
+			return gd.GetID() == gameDefinition->GetID();
+		})){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has has duplicate identifier, skipped");
-			gameDefinition->FreeReference();
 			continue;
 		}
 		
 		logger.LogInfoFormat("IGDE", "Shared game definition find content in %s",
 			gameDefinition->GetBasePath().GetString());
 		
-		vfs.TakeOver(new deVirtualFileSystem);
+		vfs = deVirtualFileSystem::Ref::New();
 		
 		const decPath diskPath(decPath::CreatePathNative(gameDefinition->GetBasePath()));
 		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
-		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 		
 		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
 			decPath relPath(diskPath.RelativePath(sharePath, true));
 			relPath.SetPrefix("/");
-			vfs->AddContainer(deVFSRedirect::Ref::NewWith(rootPath, relPath, vfsAssetLibraries, true));
+			vfs->AddContainer(deVFSRedirect::Ref::New(rootPath, relPath, vfsAssetLibraries, true));
 		}
 		
 		igdeGDClassManager foundClasses;
@@ -2114,24 +2020,23 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		gameDefinition->FindSkies(vfs, foundSkies);
 		gameDefinition->GetSkyManager()->UpdateWith(foundSkies);
 		
-		pSharedGameDefinitions->Add(gameDefinition);
-		gameDefinition->FreeReference();
+		pSharedGameDefinitions.Add(gameDefinition);
 	}
 }
 
 void igdeWindowMain::pCreateActions(){
-	pActionGameNew.TakeOver(new cActionGameNew(*this));
-	pActionGameOpen.TakeOver(new cActionGameOpen(*this));
-	pActionGameSave.TakeOver(new cActionGameSave(*this));
-	pActionGameSaveAs.TakeOver(new cActionGameSaveAs(*this));
-	pActionGameSettings.TakeOver(new cActionGameSettings(*this));
-	pActionGameQuit.TakeOver(new cActionGameQuit(*this));
-	pActionGameReloadXMLElementClasses.TakeOver(new cActionGameReloadXMLElementClasses(*this));
+	pActionGameNew = cActionGameNew::Ref::New(*this);
+	pActionGameOpen = cActionGameOpen::Ref::New(*this);
+	pActionGameSave = cActionGameSave::Ref::New(*this);
+	pActionGameSaveAs = cActionGameSaveAs::Ref::New(*this);
+	pActionGameSettings = cActionGameSettings::Ref::New(*this);
+	pActionGameQuit = cActionGameQuit::Ref::New(*this);
+	pActionGameReloadXMLElementClasses = cActionGameReloadXMLElementClasses::Ref::New(*this);
 	
-	pActionSettingsEngine.TakeOver(new cActionSettingsEngine(*this));
-	pActionSettingsIgde.TakeOver(new cActionSettingsIgde(*this));
-	pActionSettingsTexPropList.TakeOver(new cActionSettingsTexPropList(*this));
-	pActionSettingsLogging.TakeOver(new cActionSettingsLogging(*this));
+	pActionSettingsEngine = cActionSettingsEngine::Ref::New(*this);
+	pActionSettingsIgde = cActionSettingsIgde::Ref::New(*this);
+	pActionSettingsTexPropList = cActionSettingsTexPropList::Ref::New(*this);
+	pActionSettingsLogging = cActionSettingsLogging::Ref::New(*this);
 }
 
 void igdeWindowMain::pCreateSharedModelCollisionRig(){
@@ -2141,14 +2046,14 @@ void igdeWindowMain::pCreateSharedModelCollisionRig(){
 			rig->SetModelCollision(true);
 		}
 	} builder;
-	pSharedModelCollisionRig.TakeOver(GetEngineController().GetEngine()->GetRigManager()
-		->CreateRig("_#IGDE_SharedModelCollisionRig", builder));
+	pSharedModelCollisionRig = GetEngineController().GetEngine()->GetRigManager()->
+		CreateRig("_#IGDE_SharedModelCollisionRig", builder);
 }
 
 
 
 void igdeWindowMain::pCreateToolBarGame(){
-	pTBGame.TakeOver(new igdeToolBar(pEnvironmentIGDE));
+	pTBGame = igdeToolBar::Ref::New(pEnvironmentIGDE);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameNew);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameOpen);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameSave);
@@ -2159,30 +2064,26 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 	pFraEditors->RemoveAllChildren();
 	
 	decStringList moduleIDs;
-	int i;
-	
-	for(i=0; i<pModuleManager->GetModuleCount(); i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			moduleIDs.Add(module.GetID());
+	pModuleManager->GetModules().Visit([&](const igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			moduleIDs.Add(md.GetID());
 		}
-	}
+	});
 	moduleIDs.SortAscending();
 	
-	const int count = moduleIDs.GetCount();
 	igdeToggleButton::Ref button;
 	igdeAction::Ref action;
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID(moduleIDs.GetAt(i));
+	moduleIDs.Visit([&](const decString &name){
+		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID(name);
 		if(!moduleDef.IsModuleRunning() || !moduleDef.GetModule()){
-			continue;
+			return;
 		}
 		
 		igdeIcon::Ref icon;
 		if(!moduleDef.GetIconSmall().IsEmpty()){
 			try{
-				icon.TakeOver(igdeIcon::LoadPNG(*moduleDef.GetModule(), moduleDef.GetIconSmall()));
+				icon = igdeIcon::LoadPNG(*moduleDef.GetModule(), moduleDef.GetIconSmall());
 				
 			}catch(const deException &e){
 				GetLogger()->LogException(LOGSOURCE, e);
@@ -2195,68 +2096,68 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 		
 		//pUIHelper->ToolBarToggleButton( pTBEditors, new cActionWindowEditor( *this, moduleDef, true/*false*/ ), true );
 		
-		action.TakeOver(new cActionWindowEditor(*this, moduleDef, true/*false*/));
+		action = cActionWindowEditor::Ref::New(*this, moduleDef, true/*false*/);
 		action->SetText("");
 		
 		pUIHelper->ToggleButton(button, action);
 		button->SetStyle(igdeButton::ebsToolBar);
 		pFraEditors->AddChild(button);
-	}
+	});
 }
 
 
 
 void igdeWindowMain::pCreateMenu(){
-	pMenuGame.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Game", deInputEvent::ekcG));
+	pMenuGame = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Game", deInputEvent::ekcG);
 	pCreateMenuGame(pMenuGame);
 	
-	pMenuSettings.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Settings", deInputEvent::ekcS));
+	pMenuSettings = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Settings", deInputEvent::ekcS);
 	pCreateMenuSettings(pMenuSettings);
 	
-	pMenuWindow.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Window", deInputEvent::ekcW));
+	pMenuWindow = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Window", deInputEvent::ekcW);
 }
 
 void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){
 	igdeWidget::Ref entry;
 	
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameNew));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameNew);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameOpen));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameOpen);
 	menu.AddChild(entry);
-	pMenuRecentProjects.TakeOver(new igdeMenuCascade(pEnvironmentIGDE,
-		"Open recent project", pIconGameOpen));
+	pMenuRecentProjects = igdeMenuCascade::Ref::New(pEnvironmentIGDE,
+		"Open recent project", pIconGameOpen);
 	menu.AddChild(pMenuRecentProjects);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSave));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSave);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSaveAs));
-	menu.AddChild(entry);
-	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
-	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSettings));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSaveAs);
 	menu.AddChild(entry);
 	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameReloadXMLElementClasses));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSettings);
 	menu.AddChild(entry);
 	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameQuit));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameReloadXMLElementClasses);
+	menu.AddChild(entry);
+	
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
+	menu.AddChild(entry);
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameQuit);
 	menu.AddChild(entry);
 }
 
 void igdeWindowMain::pCreateMenuSettings(igdeMenuCascade &menu){
 	igdeWidget::Ref entry;
 	
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsEngine));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsEngine);
 	menu.AddChild(entry);
-// 	entry.TakeOver( new igdeMenuCommand( pEnvironmentIGDE, pActionSettingsIgde ) );
+// 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsIgde);
 // 	menu.AddChild( entry );
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsTexPropList));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsTexPropList);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsLogging));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsLogging);
 	menu.AddChild(entry);
 }
 
@@ -2270,8 +2171,8 @@ void igdeWindowMain::pUpdateMenuRecentProjects(igdeMenuCascade &menu){
 	menu.RemoveAllChildren();
 	
 	for(i=0; i<count; i++){
-		action.TakeOver(new cActionGameOpenRecent(*this, list.GetAt(i)));
-		entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, action));
+		action = cActionGameOpenRecent::Ref::New(*this, list.GetAt(i));
+		entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, action);
 		menu.AddChild(entry);
 	}
 }
@@ -2281,29 +2182,20 @@ void igdeWindowMain::pUpdateMenuWindow(igdeMenuCascade &menu){
 	menu.RemoveAllChildren();
 	
 	// find all running modules and sort them by name
-	const int moduleCount = pModuleManager->GetModuleCount();
 	decStringList addModules;
-	int i;
 	
-	for(i=0; i<moduleCount; i++){
-		const igdeEditorModuleDefinition &module = *pModuleManager->GetModuleAt(i);
-		if(module.IsModuleRunning()){
-			addModules.Add(module.GetID());
+	pModuleManager->GetModules().Visit([&](const igdeEditorModuleDefinition &md){
+		if(md.IsModuleRunning()){
+			addModules.Add(md.GetID());
 		}
-	}
+	});
 	addModules.SortAscending();
 	
 	// add a menu entry for each module
-	const int addModuleCount = addModules.GetCount();
-	igdeAction::Ref action;
-	igdeWidget::Ref entry;
-	
-	for(i=0; i<addModuleCount; i++){
-		action.TakeOver(new cActionWindowEditor(*this,
-			*pModuleManager->GetModuleWithID( addModules.GetAt( i ) ), true ) );
-		entry.TakeOver(new igdeMenuOption(pEnvironmentIGDE, action));
-		menu.AddChild(entry);
-	}
+	addModules.Visit([&](const decString &name){
+		menu.AddChild(igdeMenuOption::Ref::New(pEnvironmentIGDE, cActionWindowEditor::Ref::New(
+			*this, *pModuleManager->GetModuleWithID(name), true)));
+	});
 }
 
 
@@ -2317,12 +2209,12 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 	igdeXMLElementClass loader(GetLogger());
 	gameProject.GetXMLEClassGameDefinition()->GetClassManager()->RemoveAll();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
@@ -2335,7 +2227,7 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 			vfs, decPath::CreatePathUnix(path));
 	}
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Load XML Element Classes done: %.1fs (%d found)",
-		timer.GetElapsedTime(), gameProject.GetXMLEClassGameDefinition()->GetClassManager()->GetCount());
+		timer.GetElapsedTime(), gameProject.GetXMLEClassGameDefinition()->GetClassManager()->GetClasses().GetCount());
 	
 	// DEBUG
 	/*
@@ -2353,72 +2245,56 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 
 void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 	decTimer timer;
-	const igdeFilePatternList &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
+	const igdeFilePattern::List &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
 	igdeGameDefinition &gameDefinition = *gameProject.GetFoundGameDefinition();
 	
 	igdeGDSkinManager &gdskins = *gameDefinition.GetSkinManager();
 	gdskins.RemoveAllSkins();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
-	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
-	const int pathCount = pathList.GetCount();
-	int i, j;
-	
-	for(i=0; i<pathCount; i++){
-		const decString &path = pathList.GetAt(i);
+	gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath().Visit([&](const decString &path){
 		GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skins: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
-		
-		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+		patterns.Visit([&](const igdeFilePattern &pattern){
 			gdskins.FindAndAddSkins(vfs, searchPath, pattern.GetPattern());
-		}
-	}
+		});
+	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skins done: %.1fs (%d found)",
-		timer.GetElapsedTime(), gdskins.GetSkinCount());
+		timer.GetElapsedTime(), gdskins.GetSkins().GetCount());
 }
 
 void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 	decTimer timer;
-	const igdeFilePatternList &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
+	const igdeFilePattern::List &patterns = pLoadSaveSystem->GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 	igdeGameDefinition &gameDefinition = *gameProject.GetFoundGameDefinition();
 	
 	igdeGDSkyManager &gdskies = *gameDefinition.GetSkyManager();
 	gdskies.RemoveAllSkies();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
-	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
-	const int pathCount = pathList.GetCount();
-	int i, j;
-	
-	for(i=0; i<pathCount; i++){
-		const decString &path = pathList.GetAt(i);
+	gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath().Visit([&](const decString &path){
 		GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skies: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
-		
-		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+		patterns.Visit([&](const igdeFilePattern &pattern){
 			gdskies.FindAndAddSkies(vfs, searchPath, pattern.GetPattern());
-		}
-	}
+		});
+	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skies done: %.1fs (%d found)",
 		timer.GetElapsedTime(), gdskies.GetSkyList().GetCount());
 }

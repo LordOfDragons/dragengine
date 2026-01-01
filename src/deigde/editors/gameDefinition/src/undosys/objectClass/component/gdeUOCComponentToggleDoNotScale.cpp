@@ -42,8 +42,8 @@
 
 gdeUOCComponentToggleDoNotScale::gdeUOCComponentToggleDoNotScale(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle do not scale");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleDoNotScale::~gdeUOCComponentToggleDoNotScale(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

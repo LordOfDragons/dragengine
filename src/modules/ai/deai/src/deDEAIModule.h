@@ -25,7 +25,7 @@
 #ifndef _DEDEAI_H_
 #define _DEDEAI_H_
 
-#include "dragengine/systems/modules/ai/deBaseAIModule.h"
+#include <dragengine/systems/modules/ai/deBaseAIModule.h>
 
 
 class dedaiDeveloperMode;

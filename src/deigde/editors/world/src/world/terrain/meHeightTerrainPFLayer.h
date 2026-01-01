@@ -25,12 +25,14 @@
 #ifndef _MEHEIGHTTERRAINPFLAYER_H_
 #define _MEHEIGHTTERRAINPFLAYER_H_
 
-#include <dragengine/common/string/decString.h>
-#include <dragengine/common/math/decMath.h>
+#include "meHeightTerrainPFType.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class meHeightTerrainSector;
-class meHeightTerrainPFType;
 class meByteArray;
 
 class deEngine;
@@ -42,7 +44,7 @@ class igdeEnvironment;
 
 
 /**
- * \brief Prop field type.
+ * Prop field type.
  */
 class meHeightTerrainPFLayer : public deObject{
 private:
@@ -55,39 +57,38 @@ private:
 	bool pMaskChanged;
 	bool pMaskSaved;
 	
-	meHeightTerrainPFType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	meHeightTerrainPFType::List pTypes;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meHeightTerrainPFLayer> Ref;
-
-
+	typedef decTObjectOrderedSet<meHeightTerrainPFLayer> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create object. */
-	meHeightTerrainPFLayer(deEngine *engine);
+	/** Create object. */
+	explicit meHeightTerrainPFLayer(deEngine *engine);
 	
-	/** \brief Clean up object. */
-	virtual ~meHeightTerrainPFLayer();
+protected:
+	/** Clean up object. */
+	~meHeightTerrainPFLayer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent height terrain sector or \em NULL. */
+	/** Parent height terrain sector or \em nullptr. */
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
-	/** \brief Set parent height terrain sector or \em NULL. */
+	/** Set parent height terrain sector or \em nullptr. */
 	void SetHTSector(meHeightTerrainSector *htsector);
 	
 	
 	
-	/** \brief Rebuild instances. */
+	/** Rebuild instances. */
 	void RebuildInstances();
 	/*@}*/
 	
@@ -95,36 +96,36 @@ public:
 	
 	/** \name Mask */
 	/*@{*/
-	/** \brief Mask image path. */
+	/** Mask image path. */
 	inline const decString &GetPathMask() const{ return pPathMask; }
 	
-	/** \brief Set mask image path. */
+	/** Set mask image path. */
 	void SetPathMask(const char *path);
 	
-	/** \brief Mask image has changed. */
+	/** Mask image has changed. */
 	inline bool GetMaskChanged() const{ return pMaskChanged; }
 	
-	/** \brief Set if mask image has changed. */
+	/** Set if mask image has changed. */
 	void SetMaskChanged(bool changed);
 	
-	/** \brief Mask image has been saved. */
+	/** Mask image has been saved. */
 	inline bool GetMaskSaved() const{ return pMaskSaved; }
 	
-	/** \brief Set if mask image has been saved. */
+	/** Set if mask image has been saved. */
 	void SetMaskSaved(bool saved);
 	
 	
 	
-	/** \brief Mask bytes. */
+	/** Mask bytes. */
 	inline meByteArray *GetMask() const{ return pMask; }
 	
-	/** \brief Notify mask changed. */
+	/** Notify mask changed. */
 	void NotifyMaskChanged();
 	
-	/** \brief Load mask from stored path. */
+	/** Load mask from stored path. */
 	void LoadMaskFromImage();
 	
-	/** \brief Height terrain sector size or resolution changed. */
+	/** Height terrain sector size or resolution changed. */
 	void SectorSizeOrResChanged();
 	/*@}*/
 	
@@ -132,25 +133,16 @@ public:
 	
 	/** \name Types */
 	/*@{*/
-	/** \brief Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	/** Types. */
+	inline const meHeightTerrainPFType::List &GetTypes() const{ return pTypes; }
 	
-	/** \brief Type at index. */
-	meHeightTerrainPFType *GetTypeAt(int index) const;
-	
-	/** \brief Index of type or -1 if absent. */
-	int IndexOfType(meHeightTerrainPFType *type) const;
-	
-	/** \brief Type exists. */
-	bool HasType(meHeightTerrainPFType *type) const;
-	
-	/** \brief Add type. */
+	/** Add type. */
 	void AddType(meHeightTerrainPFType *type);
 	
-	/** \brief Remove type. */
+	/** Remove type. */
 	void RemoveType(meHeightTerrainPFType *type);
 	
-	/** \brief Remove all types. */
+	/** Remove all types. */
 	void RemoveAllTypes();
 	/*@}*/
 	

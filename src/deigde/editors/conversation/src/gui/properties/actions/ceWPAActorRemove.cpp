@@ -67,6 +67,7 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorRemove &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActorID> Ref;
 	cComboActorID(ceWPAActorRemove &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -77,7 +78,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAActorRemoveSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCAActorRemoveSetActor::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -97,7 +98,7 @@ ceWPAActorRemove::ceWPAActorRemove(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	CreateGUICommon(*this);
 	
 	helper.ComboBox(*this, "Actor ID:", true, "ID of the actor to remove from conversation",
-		pCBActorID, new cComboActorID(*this));
+		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 }
 
@@ -116,7 +117,7 @@ ceCAActorRemove *ceWPAActorRemove::GetAction() const{
 		return (ceCAActorRemove*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

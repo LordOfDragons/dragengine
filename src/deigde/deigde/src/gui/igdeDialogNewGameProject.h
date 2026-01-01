@@ -25,6 +25,7 @@
 #ifndef _IGDEDIALOGNEWGAMEPROJECT_H_
 #define _IGDEDIALOGNEWGAMEPROJECT_H_
 
+#include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeListBox.h>
@@ -36,7 +37,6 @@
 #include <dragengine/common/file/decPath.h>
 
 
-class igdeGameProject;
 class igdeWindowMain;
 class igdeTemplate;
 
@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	igdeGameProject *pNewProject;
+	igdeGameProject::Ref pNewProject;
 	
 	igdeTextField::Ref pEditName;
 	igdeTextArea::Ref pEditDescription;
@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogNewGameProject(igdeWindowMain &windowMain);
+	explicit igdeDialogNewGameProject(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -94,8 +94,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Created game project or NULL if cancelled. */
-	inline igdeGameProject *GetNewProject() const{ return pNewProject; }
+	/** \brief Created game project or nullptr if cancelled. */
+	inline const igdeGameProject::Ref &GetNewProject() const{ return pNewProject; }
 	
 	void OnProjectDirChanged();
 	void OnProjectGameDefPathChanged();

@@ -72,10 +72,11 @@
 
 namespace{
 
-class cEditPath : public igdeEditPathListener {
+class cEditPath : public igdeEditPathListener{
 	gdeWPSSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSSkin &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -84,7 +85,9 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
+		if(pPanel.GetGameDefinition()->GetSkins().HasMatching([&](const gdeSkin &s){
+			return s.GetPath() == editPath->GetPath();
+		})){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change skin emitter path",
 				"A skin emitter with this path exists already.");
 			editPath->SetPath(skin->GetPath());
@@ -92,14 +95,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkinSetPath::Ref::NewWith(skin, editPath->GetPath()));
+			gdeUSkinSetPath::Ref::New(skin, editPath->GetPath()));
 	}
 };
 
-class cTextName : public igdeTextFieldListener {
+class cTextName : public igdeTextFieldListener{
 	gdeWPSSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(gdeWPSSkin &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -109,14 +113,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkinSetName::Ref::NewWith(skin, textField->GetText()));
+			gdeUSkinSetName::Ref::New(skin, textField->GetText()));
 	}
 };
 
-class cTextDescription : public igdeTextAreaListener {
+class cTextDescription : public igdeTextAreaListener{
 	gdeWPSSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(gdeWPSSkin &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -126,14 +131,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkinSetDescription::Ref::NewWith(skin, textArea->GetText()));
+			gdeUSkinSetDescription::Ref::New(skin, textArea->GetText()));
 	}
 };
 
-class cComboCategory : public igdeComboBoxListener {
+class cComboCategory : public igdeComboBoxListener{
 	gdeWPSSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboCategory> Ref;
 	cComboCategory(gdeWPSSkin &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -143,20 +149,21 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkinSetCategory::Ref::NewWith(skin, comboBox->GetText()));
+			gdeUSkinSetCategory::Ref::New(skin, comboBox->GetText()));
 	}
 };
 
-class cActionJumpToCategory : public igdeAction {
+class cActionJumpToCategory : public igdeAction{
 	gdeWPSSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSSkin &panel) : 
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
 		"Jump to Category"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeSkin * const skin = pPanel.GetSkin();
 		if(!skin){
 			return;
@@ -173,7 +180,7 @@ public:
 		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySkin);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSkin());
 	}
 };
@@ -190,41 +197,35 @@ public:
 
 gdeWPSSkin::gdeWPSSkin(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSSkinListener(*this);
+	pListener = gdeWPSSkinListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// skin
 	helper.GroupBox(content, groupBox, "Skin:");
 	helper.EditPath(groupBox, "Path:", "Path to skin emitter",
-		igdeEnvironment::efpltSkin, pEditPath, new cEditPath(*this));
-	helper.EditString(groupBox, "Name:", "Skin name", pEditName, new cTextName(*this));
+		igdeEnvironment::efpltSkin, pEditPath, cEditPath::Ref::New(*this));
+	helper.EditString(groupBox, "Name:", "Skin name", pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Skin description",
-		pEditDescription, 15, 5, new cTextDescription(*this));
+		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, new cComboCategory(*this));
+	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetEditable(true);
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
-	helper.Button(frameLine, pBtnJumpToCategory, new cActionJumpToCategory(*this), true);
+	helper.Button(frameLine, pBtnJumpToCategory, cActionJumpToCategory::Ref::New(*this));
 }
 
 gdeWPSSkin::~gdeWPSSkin(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -239,14 +240,12 @@ void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateSkin();
@@ -257,7 +256,7 @@ void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeSkin *gdeWPSSkin::GetSkin() const{
-	return pGameDefinition ? pGameDefinition->GetActiveSkin() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveSkin() : nullptr;
 }
 
 
@@ -318,7 +317,7 @@ void gdeWPSSkin::UpdateSkin(){
 		pCBCategory->SetInvalidValue(false);
 	}
 	
-	const bool enabled = skin != NULL;
+	const bool enabled = skin != nullptr;
 	pEditPath->SetEnabled(enabled);
 	pEditName->SetEnabled(enabled);
 	pEditDescription->SetEnabled(enabled);

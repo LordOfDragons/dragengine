@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Speaker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCSpeakerCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
 	if(!speaker){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::NewWith(*speaker));
+	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::New(*speaker));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSpeaker::Ref::NewWith(clipOCSpeaker));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSpeaker::Ref::New(clipOCSpeaker));
+	return {};
 }
 
 void gdeMAOCSpeakerCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-		&& gameDefinition->GetActiveOCSpeaker() != NULL);
+		&& gameDefinition->GetActiveOCSpeaker() != nullptr);
 }

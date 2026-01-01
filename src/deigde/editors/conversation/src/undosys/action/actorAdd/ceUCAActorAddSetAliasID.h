@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorAdd;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorAdd.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action actor add conversation action set alias id.
  */
 class ceUCAActorAddSetAliasID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAActorAddSetAliasID> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorAdd::Ref pAction;
 	decString pOldAliasID;
 	decString pNewAliasID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAActorAddSetAliasID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAActorAddSetAliasID();
+public:
 	/*@}*/
 	
 public:

@@ -48,14 +48,16 @@ private:
 		deoglHTView &pHTView;
 		
 	public:
-		HTListener(deoglHTView &htview);
+		typedef deTObjectReference<HTListener> Ref;
+		
+		explicit HTListener(deoglHTView &htview);
 		void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;
 	};
 	
 	
 	
 	const deoglRHeightTerrain::Ref pHeightTerrain;
-	deoglHeightTerrainListener::Ref pHTListener;
+	HTListener::Ref pHTListener;
 	
 	deoglHTViewSector **pSectors;
 	int pSectorCount;

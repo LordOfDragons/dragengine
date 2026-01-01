@@ -70,6 +70,7 @@ class cTextName : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(ceWPASetVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -80,7 +81,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCASetVarSetName::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCASetVarSetName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -88,6 +89,7 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPASetVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(ceWPASetVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -104,7 +106,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCASetVarSetOp::Ref::NewWith(topic, action, newOperator));
+			ceUCASetVarSetOp::Ref::New(topic, action, newOperator));
 	}
 };
 
@@ -112,6 +114,7 @@ class cTextValue : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextValue> Ref;
 	cTextValue(ceWPASetVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -123,7 +126,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCASetVarSetValue::Ref::NewWith(topic, action, value));
+			ceUCASetVarSetValue::Ref::New(topic, action, value));
 	}
 };
 
@@ -131,6 +134,7 @@ class cTextValueVariable : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextValueVariable> Ref;
 	cTextValueVariable(ceWPASetVariable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -141,7 +145,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCASetVarSetValueVariable::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCASetVarSetValueVariable::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -161,19 +165,19 @@ ceWPASetVariable::ceWPASetVariable(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	CreateGUICommon(*this);
 	
 	helper.EditString(*this, "Name:", "Name of the variable to set or empty to have no effect",
-		pEditName, new cTextName(*this));
+		pEditName, cTextName::Ref::New(*this));
 	
 	helper.ComboBox(*this, "Operator:", "How to apply the value to the variable",
-		pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("Set", NULL, (void*)(intptr_t)ceCASetVariable::eopSet);
-	pCBOperator->AddItem("Increment", NULL, (void*)(intptr_t)ceCASetVariable::eopIncrement);
-	pCBOperator->AddItem("Decrement", NULL, (void*)(intptr_t)ceCASetVariable::eopDecrement);
-	pCBOperator->AddItem("Random", NULL, (void*)(intptr_t)ceCASetVariable::eopRandom);
+		pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("Set", nullptr, (void*)(intptr_t)ceCASetVariable::eopSet);
+	pCBOperator->AddItem("Increment", nullptr, (void*)(intptr_t)ceCASetVariable::eopIncrement);
+	pCBOperator->AddItem("Decrement", nullptr, (void*)(intptr_t)ceCASetVariable::eopDecrement);
+	pCBOperator->AddItem("Random", nullptr, (void*)(intptr_t)ceCASetVariable::eopRandom);
 	
 	helper.EditInteger(*this, "Value:", "Value to use for operation (integer value)",
-		pEditValue, new cTextValue(*this));
+		pEditValue, cTextValue::Ref::New(*this));
 	helper.EditString(*this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
-		pEditValueVariable, new cTextValueVariable(*this));
+		pEditValueVariable, cTextValueVariable::Ref::New(*this));
 }
 
 ceWPASetVariable::~ceWPASetVariable(){
@@ -191,7 +195,7 @@ ceCASetVariable *ceWPASetVariable::GetAction() const{
 		return (ceCASetVariable*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

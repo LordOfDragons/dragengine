@@ -25,11 +25,11 @@
 #ifndef _DEPROPFIELDMANAGER_H_
 #define _DEPROPFIELDMANAGER_H_
 
+#include "dePropField.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class dePropField;
 
 
 /**
@@ -64,7 +64,7 @@ public:
 	dePropField *GetRootPropField() const;
 	
 	/** \brief Create new prop field. */
-	dePropField *CreatePropField();
+	dePropField::Ref CreatePropField();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

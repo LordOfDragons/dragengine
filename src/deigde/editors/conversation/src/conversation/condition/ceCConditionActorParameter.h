@@ -36,6 +36,9 @@
  */
 class ceCConditionActorParameter : public ceConversationCondition{
 public:
+	typedef deTObjectReference<ceCConditionActorParameter> Ref;
+
+public:
 	/** \brief Compare operators. */
 	enum eOperators{
 		/** \brief True if the parameter value is equal to the test value. */
@@ -76,7 +79,9 @@ public:
 	ceCConditionActorParameter(const ceCConditionActorParameter &condition);
 	
 	/** \brief Clean up conversation condition. */
+protected:
 	~ceCConditionActorParameter() override;
+public:
 	/*@}*/
 	
 	
@@ -116,7 +121,7 @@ public:
 	
 	
 	/** \brief Create copy of condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

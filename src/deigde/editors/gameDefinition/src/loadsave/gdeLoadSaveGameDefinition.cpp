@@ -29,9 +29,7 @@
 #include "gdeLoadSaveGameDefinition.h"
 #include "../gamedef/gdeGameDefinition.h"
 #include "../gamedef/category/gdeCategory.h"
-#include "../gamedef/category/gdeCategoryList.h"
 #include "../gamedef/filepattern/gdeFilePattern.h"
-#include "../gamedef/filepattern/gdeFilePatternList.h"
 #include "../gamedef/objectClass/gdeObjectClass.h"
 #include "../gamedef/objectClass/billboard/gdeOCBillboard.h"
 #include "../gamedef/objectClass/camera/gdeOCCamera.h"
@@ -100,7 +98,7 @@ pPattern(".degd"){
 
 void gdeLoadSaveGameDefinition::LoadGameDefinition(gdeGameDefinition &gameDefinition,
 decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -233,8 +231,8 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition(const decXmlElementTag &root
 	gameDefinition.UpdateDefinedUsedIDs();
 }
 
-void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdePropertyList &propertyList){
-	const gdeProperty::Ref objRef(gdeProperty::Ref::NewWith(GetAttributeString(root, "name")));
+void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdeProperty::List &propertyList){
+	const gdeProperty::Ref objRef(gdeProperty::Ref::New(GetAttributeString(root, "name")));
 	gdeProperty &property = (gdeProperty&)(deObject&)objRef;
 	
 	pReadProperty(root, property);
@@ -412,7 +410,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClass(const decXmlElementTag &root, g
 	decStringSet hideTags;
 	int i;
 	
-	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith());
+	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::New());
 	objectClass->SetName(GetAttributeString(root, "name"));
 	
 	for(i=0; i<elementCount; i++){
@@ -572,7 +570,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClass(const decXmlElementTag &root, g
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassInherit(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::NewWith(GetAttributeString(root, "name")));
+	const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::New(GetAttributeString(root, "name")));
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -595,7 +593,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassInherit(const decXmlElementTag &
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassBillboard(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCBillboard::Ref billboard(gdeOCBillboard::Ref::NewWith());
+	const gdeOCBillboard::Ref billboard(gdeOCBillboard::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -695,7 +693,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassBillboard(const decXmlElementTag
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCComponent::Ref component(gdeOCComponent::Ref::NewWith());
+	const gdeOCComponent::Ref component(gdeOCComponent::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -848,11 +846,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag
 void gdeLoadSaveGameDefinition::pReadObjectClassComponentTexture(
 const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component){
 	const char * const name = GetAttributeString(root, "name");
-	if(component.GetTextures().HasNamed(name)){
+	if(component.GetTextures().HasMatching([&](const gdeOCComponentTexture &tex){
+		return tex.GetName() == name;
+	})){
 		LogErrorGenericProblemValue(root, name, "A texture with this name exists already.");
 	}
 	
-	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith(name));
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::New(name));
 	const int elementCount = root.GetElementCount();
 	int i;
 	gdeOCComponentTexture &texture = (gdeOCComponentTexture&)(deObject&)objRef;
@@ -899,7 +899,7 @@ const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component){
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassLight(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCLight::Ref light(gdeOCLight::Ref::NewWith());
+	const gdeOCLight::Ref light(gdeOCLight::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1104,7 +1104,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight(const decXmlElementTag &ro
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassSnapPoint(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith());
+	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1144,7 +1144,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSnapPoint(const decXmlElementTag
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCParticleEmitter::Ref emitter(gdeOCParticleEmitter::Ref::NewWith());
+	const gdeOCParticleEmitter::Ref emitter(gdeOCParticleEmitter::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1216,7 +1216,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter(const decXmlElem
 
 void gdeLoadSaveGameDefinition::pReadObjectClassForceField(
 const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCForceField::Ref field(gdeOCForceField::Ref::NewWith());
+	const gdeOCForceField::Ref field(gdeOCForceField::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	int i;
@@ -1377,7 +1377,7 @@ const decXmlElementTag &root, gdeObjectClass &objectClass){
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::NewWith());
+	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	int i;
@@ -1414,7 +1414,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe(const decXmlElementT
 			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
 			
 			if(shapeList.GetCount() == 0){
-				envMapProbe->SetShapeReflection(NULL);
+				envMapProbe->SetShapeReflection(nullptr);
 				
 			}else{
 				envMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
@@ -1468,7 +1468,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe(const decXmlElementT
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::NewWith());
+	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1578,7 +1578,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker(const decXmlElementTag &
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCNavigationSpace::Ref navspace(gdeOCNavigationSpace::Ref::NewWith());
+	const gdeOCNavigationSpace::Ref navspace(gdeOCNavigationSpace::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	int i;
@@ -1680,7 +1680,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace(const decXmlElem
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCNavigationBlocker::Ref navblocker(gdeOCNavigationBlocker::Ref::NewWith());
+	const gdeOCNavigationBlocker::Ref navblocker(gdeOCNavigationBlocker::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	int i;
@@ -1770,7 +1770,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker(const decXmlEl
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCWorld::Ref world(gdeOCWorld::Ref::NewWith());
+	const gdeOCWorld::Ref world(gdeOCWorld::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1822,11 +1822,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClassWorld(const decXmlElementTag &ro
 
 void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &root, gdeObjectClass &objectClass){
 	const char * const name = GetAttributeString(root, "name");
-	if(objectClass.GetTextures().HasNamed(name)){
+	if(objectClass.GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
+		return t.GetName() == name;
+	})){
 		LogErrorGenericProblemValue(root, name, "A texture with this name exists already.");
 	}
 	
-	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith(name));
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::New(name));
 	const int elementCount = root.GetElementCount();
 	int i;
 	gdeOCComponentTexture &texture = (gdeOCComponentTexture&)(deObject&)objRef;
@@ -1869,7 +1871,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &
 }
 
 void gdeLoadSaveGameDefinition::pReadCustomFilePatternList(
-const decXmlElementTag &root, gdeFilePatternList &list){
+const decXmlElementTag &root, gdeFilePattern::List &list){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1882,21 +1884,16 @@ const decXmlElementTag &root, gdeFilePatternList &list){
 		const decString tagName(tag->GetName());
 		
 		if(tagName == "add"){
-			gdeFilePattern *pattern = NULL;
+			gdeFilePattern::Ref pattern;
 			
 			try{
-				pattern = new gdeFilePattern;
+				pattern = gdeFilePattern::Ref::New();
 				pattern->SetName(GetAttributeString(*tag, "name"));
 				pattern->SetPattern(GetAttributeString(*tag, "pattern"));
 				pattern->SetDefaultExtension(GetAttributeString(*tag, "default"));
 				
 				list.Add(pattern);
-				pattern->FreeReference();
-				
 			}catch(const deException &){
-				if(pattern){
-					pattern->FreeReference();
-				}
 				throw;
 			}
 			
@@ -1907,7 +1904,7 @@ const decXmlElementTag &root, gdeFilePatternList &list){
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassCamera(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::NewWith());
+	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1959,7 +1956,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassCamera(const decXmlElementTag &r
 }
 
 void gdeLoadSaveGameDefinition::pReadParticleEmitter(const decXmlElementTag &root, gdeGameDefinition &gameDefinition){
-	const gdeParticleEmitter::Ref emitter(gdeParticleEmitter::Ref::NewWith());
+	const gdeParticleEmitter::Ref emitter(gdeParticleEmitter::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1999,7 +1996,7 @@ void gdeLoadSaveGameDefinition::pReadParticleEmitter(const decXmlElementTag &roo
 }
 
 void gdeLoadSaveGameDefinition::pReadSkin(const decXmlElementTag &root, gdeGameDefinition &gameDefinition){
-	const gdeSkin::Ref skin(gdeSkin::Ref::NewWith());
+	const gdeSkin::Ref skin(gdeSkin::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -2039,7 +2036,7 @@ void gdeLoadSaveGameDefinition::pReadSkin(const decXmlElementTag &root, gdeGameD
 }
 
 void gdeLoadSaveGameDefinition::pReadSky(const decXmlElementTag &root, gdeGameDefinition &gameDefinition){
-	const gdeSky::Ref sky(gdeSky::Ref::NewWith());
+	const gdeSky::Ref sky(gdeSky::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -2064,17 +2061,12 @@ void gdeLoadSaveGameDefinition::pReadSky(const decXmlElementTag &root, gdeGameDe
 			sky->SetCategory(GetCDataString(*tag));
 			
 		}else if(tagName == "controller"){
-			gdeSkyController *controller = NULL;
+			gdeSkyController::Ref controller;
 			try{
-				controller = new gdeSkyController(
+				controller = gdeSkyController::Ref::New(
 					GetAttributeString(*tag, "name"), GetCDataFloat(*tag));
 				sky->AddController(controller);
-				controller->FreeReference();
-				
 			}catch(const deException &){
-				if(controller){
-					controller->FreeReference();
-				}
 				throw;
 			}
 			
@@ -2106,16 +2098,16 @@ void gdeLoadSaveGameDefinition::pReadCategories(const decXmlElementTag &root, gd
 		const decString tagName(tag->GetName());
 		
 		if(tagName == "classes"){
-			pReadCategories(*tag, &gameDefinition.GetCategoriesObjectClass(), NULL);
+			pReadCategories(*tag, &gameDefinition.GetCategoriesObjectClass(), nullptr);
 			
 		}else if(tagName == "skins"){
-			pReadCategories(*tag, &gameDefinition.GetCategoriesSkin(), NULL);
+			pReadCategories(*tag, &gameDefinition.GetCategoriesSkin(), nullptr);
 			
 		}else if(tagName == "skies"){
-			pReadCategories(*tag, &gameDefinition.GetCategoriesSky(), NULL);
+			pReadCategories(*tag, &gameDefinition.GetCategoriesSky(), nullptr);
 			
 		}else if(tagName == "particleEmitters"){
-			pReadCategories(*tag, &gameDefinition.GetCategoriesParticleEmitter(), NULL);
+			pReadCategories(*tag, &gameDefinition.GetCategoriesParticleEmitter(), nullptr);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
@@ -2160,12 +2152,16 @@ gdeCategoryList *list, gdeCategory *parent){
 			categoryName = GetCDataString(*tag);
 			
 			if(list){
-				if(list->HasNamed(categoryName)){
+				if(list->HasMatching([&categoryName](const gdeCategory &c){
+					return c.GetName() == categoryName;
+				})){
 					LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 				}
 				
 			}else{
-				if(parent->GetCategories().HasNamed(categoryName)){
+				if(parent->GetCategories().HasMatching([&categoryName](const gdeCategory &c){
+					return c.GetName() == categoryName;
+				})){
 					LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 				}
 			}
@@ -2176,7 +2172,7 @@ gdeCategoryList *list, gdeCategory *parent){
 		LogErrorMissingTag(root, "name");
 	}
 	
-	const gdeCategory::Ref objRef(gdeCategory::Ref::NewWith(categoryName));
+	const gdeCategory::Ref objRef(gdeCategory::Ref::New(categoryName));
 	gdeCategory &category = (gdeCategory&)(deObject&)objRef;
 	
 	if(list){
@@ -2211,7 +2207,7 @@ gdeCategoryList *list, gdeCategory *parent){
 			category.SetHidden(GetCDataBool(*tag));
 			
 		}else if(tagName == "category"){
-			pReadCategory(*tag, NULL, &category);
+			pReadCategory(*tag, nullptr, &category);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
@@ -2285,28 +2281,28 @@ const gdeGameDefinition &gameDefinition){
 	}
 	
 	// skies
-	const gdeSkyList &skies = gameDefinition.GetSkies();
+	const gdeSky::List &skies = gameDefinition.GetSkies();
 	const int skyCount = skies.GetCount();
 	for(i=0; i<skyCount; i++){
 		pWriteSky(writer, gameDefinition, *skies.GetAt(i));
 	}
 	
 	// skins
-	const gdeSkinList &skins = gameDefinition.GetSkins();
+	const gdeSkin::List &skins = gameDefinition.GetSkins();
 	const int skinCount = skins.GetCount();
 	for(i=0; i<skinCount; i++){
 		pWriteSkin(writer, gameDefinition, *skins.GetAt(i));
 	}
 	
 	// particle emitters
-	const gdeParticleEmitterList &particleEmitters = gameDefinition.GetParticleEmitters();
+	const gdeParticleEmitter::List &particleEmitters = gameDefinition.GetParticleEmitters();
 	const int particleEmitterCount = particleEmitters.GetCount();
 	for(i=0; i<particleEmitterCount; i++){
 		pWriteParticleEmitter(writer, gameDefinition, *particleEmitters.GetAt(i));
 	}
 	
 	// object classes
-	const gdeObjectClassList &objectClasses = gameDefinition.GetObjectClasses();
+	const gdeObjectClass::List &objectClasses = gameDefinition.GetObjectClasses();
 	const int objectClassCount = objectClasses.GetCount();
 	for(i=0; i<objectClassCount; i++){
 		pWriteObjectClass(writer, gameDefinition, *objectClasses.GetAt(i));
@@ -2392,7 +2388,7 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass){
 	}
 	
 	// inherit
-	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const gdeOCInherit::List &inherits = objectClass.GetInherits();
 	const int inheritCount = inherits.GetCount();
 	int i;
 	for(i=0; i<inheritCount; i++){
@@ -2400,91 +2396,91 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass){
 	}
 	
 	// components
-	const gdeOCComponentList &components = objectClass.GetComponents();
+	const gdeOCComponent::List &components = objectClass.GetComponents();
 	const int componentCount = components.GetCount();
 	for(i=0; i<componentCount; i++){
 		pWriteObjectClassComponent(writer, *components.GetAt(i));
 	}
 	
 	// billboards
-	const gdeOCBillboardList &billboards = objectClass.GetBillboards();
+	const gdeOCBillboard::List &billboards = objectClass.GetBillboards();
 	const int billboardCount = billboards.GetCount();
 	for(i=0; i<billboardCount; i++){
 		pWriteObjectClassBillboard(writer, *billboards.GetAt(i));
 	}
 	
 	// cameras
-	const gdeOCCameraList &cameras = objectClass.GetCameras();
+	const gdeOCCamera::List &cameras = objectClass.GetCameras();
 	const int cameraCount = cameras.GetCount();
 	for(i=0; i<cameraCount; i++){
 		pWriteObjectClassCamera(writer, *cameras.GetAt(i));
 	}
 	
 	// lights
-	const gdeOCLightList &lights = objectClass.GetLights();
+	const gdeOCLight::List &lights = objectClass.GetLights();
 	const int lightCount = lights.GetCount();
 	for(i=0; i<lightCount; i++){
 		pWriteObjectClassLight(writer, *lights.GetAt(i));
 	}
 	
 	// snap point
-	const gdeOCSnapPointList &snapPoints = objectClass.GetSnapPoints();
+	const gdeOCSnapPoint::List &snapPoints = objectClass.GetSnapPoints();
 	const int snapPointCount = snapPoints.GetCount();
 	for(i=0; i<snapPointCount; i++){
 		pWriteObjectClassSnapPoint(writer, *snapPoints.GetAt(i));
 	}
 	
 	// particle emitter
-	const gdeOCParticleEmitterList &particleEmitters = objectClass.GetParticleEmitters();
+	const gdeOCParticleEmitter::List &particleEmitters = objectClass.GetParticleEmitters();
 	const int particleEmitterCount = particleEmitters.GetCount();
 	for(i=0; i<particleEmitterCount; i++){
 		pWriteObjectClassParticleEmitter(writer, *particleEmitters.GetAt(i));
 	}
 	
 	// force fields
-	const gdeOCForceFieldList &forceFields = objectClass.GetForceFields();
+	const gdeOCForceField::List &forceFields = objectClass.GetForceFields();
 	const int forceFieldCount = forceFields.GetCount();
 	for(i=0; i<forceFieldCount; i++){
 		pWriteObjectClassForceField(writer, *forceFields.GetAt(i));
 	}
 	
 	// environment map probes
-	const gdeOCEnvMapProbeList &envMapProbes = objectClass.GetEnvMapProbes();
+	const gdeOCEnvMapProbe::List &envMapProbes = objectClass.GetEnvMapProbes();
 	const int envMapProbeCount = envMapProbes.GetCount();
 	for(i=0; i<envMapProbeCount; i++){
 		pWriteObjectClassEnvMapProbe(writer, *envMapProbes.GetAt(i));
 	}
 	
 	// speakers
-	const gdeOCSpeakerList &speakers = objectClass.GetSpeakers();
+	const gdeOCSpeaker::List &speakers = objectClass.GetSpeakers();
 	const int speakerCount = speakers.GetCount();
 	for(i=0; i<speakerCount; i++){
 		pWriteObjectClassSpeaker(writer, *speakers.GetAt(i));
 	}
 	
 	// navigation spaces
-	const gdeOCNavigationSpaceList &navSpaces = objectClass.GetNavigationSpaces();
+	const gdeOCNavigationSpace::List &navSpaces = objectClass.GetNavigationSpaces();
 	const int navSpaceCOunt = navSpaces.GetCount();
 	for(i=0; i<navSpaceCOunt; i++){
 		pWriteObjectClassNavSpace(writer, *navSpaces.GetAt(i));
 	}
 	
 	// navigation blockers
-	const gdeOCNavigationBlockerList &navBlockers = objectClass.GetNavigationBlockers();
+	const gdeOCNavigationBlocker::List &navBlockers = objectClass.GetNavigationBlockers();
 	const int navBlockerCount = navBlockers.GetCount();
 	for(i=0; i<navBlockerCount; i++){
 		pWriteObjectClassNavBlocker(writer, *navBlockers.GetAt(i));
 	}
 	
 	// worlds
-	const gdeOCWorldList &worlds = objectClass.GetWorlds();
+	const gdeOCWorld::List &worlds = objectClass.GetWorlds();
 	const int worldCount = worlds.GetCount();
 	for(i=0; i<worldCount; i++){
 		pWriteObjectClassWorld(writer, *worlds.GetAt(i));
 	}
 	
 	// textures
-	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+	const gdeOCComponentTexture::List &textures = objectClass.GetTextures();
 	const int textureCount = textures.GetCount();
 	for(i=0; i<textureCount; i++){
 		pWriteObjectClassTexture(writer, *textures.GetAt(i));
@@ -2603,7 +2599,7 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	}
 	
 	// textures
-	const gdeOCComponentTextureList &textures = component.GetTextures();
+	const gdeOCComponentTexture::List &textures = component.GetTextures();
 	const int textureCount = textures.GetCount();
 	int i;
 	for(i=0; i<textureCount; i++){
@@ -3517,7 +3513,7 @@ const gdeGameDefinition&, const gdeSky &sky){
 		WriteMultilineString(writer, "description", sky.GetDescription());
 	}
 	
-	const gdeSkyControllerList &controllers = sky.GetControllers();
+	const gdeSkyController::List &controllers = sky.GetControllers();
 	const int controllerCount = controllers.GetCount();
 	int i;
 	for(i=0; i<controllerCount; i++){
@@ -3617,21 +3613,17 @@ void gdeLoadSaveGameDefinition::pWriteCategory(decXmlWriter &writer, const gdeCa
 
 void gdeLoadSaveGameDefinition::pWriteProperties(decXmlWriter &writer,
 const decStringDictionary &properties, const char *tagName){
-	const decStringList keys(properties.GetKeys());
-	const int count = keys.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
+	properties.Visit([&](const decString &key, const decString &value){
 		writer.WriteOpeningTagStart(tagName);
-		writer.WriteAttributeString("name", keys.GetAt(i));
+		writer.WriteAttributeString("name", key);
 		writer.WriteOpeningTagEnd(false, false);
-		WriteTextMultilineString(writer, properties.GetAt(keys.GetAt(i)));
+		WriteTextMultilineString(writer, value);
 		writer.WriteClosingTag(tagName, false);
-	}
+	});
 }
 
 void gdeLoadSaveGameDefinition::pWriteProperties(decXmlWriter &writer,
-const gdePropertyList &properties, const char *tagName){
+const gdeProperty::List &properties, const char *tagName){
 	const int count = properties.GetCount();
 	int i;
 	
@@ -3783,7 +3775,7 @@ const gdeProperty &property, const char *tagName){
 			break;
 			
 		case gdeProperty::epptCustom:{
-			const gdeFilePatternList &filePatterns = property.GetCustomPathPattern();
+			const gdeFilePattern::List &filePatterns = property.GetCustomPathPattern();
 			const int filePatternCount = filePatterns.GetCount();
 			int i;
 			

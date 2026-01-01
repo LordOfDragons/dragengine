@@ -98,14 +98,12 @@ gdeWPSTreeModel::gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMa
 	gdeGameDefinition *gameDefinition) :
 pTreeList(treeList),
 pWindowMain(windowMain),
-pGameDefinition(NULL),
-pListener(NULL),
 
-pCategories(NULL),
-pObjectClasses(NULL),
-pParticleEmitters(NULL),
-pSkins(NULL),
-pSkies(NULL),
+pCategories(nullptr),
+pObjectClasses(nullptr),
+pParticleEmitters(nullptr),
+pSkins(nullptr),
+pSkies(nullptr),
 
 pIgnoreSelectionChange(false)
 {
@@ -118,41 +116,39 @@ pIgnoreSelectionChange(false)
 	try{
 		// game definition
 		pGameDefinition = gameDefinition;
-		gameDefinition->AddReference();
-		
 		// set sorter
-		treeList.SetSorter(cSorter::Ref::NewWith());
+		treeList.SetSorter(cSorter::Ref::New());
 		
 		// add items
 		igdeTreeItem::Ref item;
 		
-		item.TakeOver(new gdeWPSTIMCategories(*this));
-		treeList.AppendItem(NULL, item);
+		item = gdeWPSTIMCategories::Ref::New(*this);
+		treeList.AppendItem(nullptr, item);
 		pCategories = (gdeWPSTIMCategories*)(igdeTreeItem*)item;
 		pCategories->OnAddedToTree();
 		
-		item.TakeOver(new gdeWPSTIMObjectClasses(*this));
-		treeList.AppendItem(NULL, item);
+		item = gdeWPSTIMObjectClasses::Ref::New(*this);
+		treeList.AppendItem(nullptr, item);
 		pObjectClasses = (gdeWPSTIMObjectClasses*)(igdeTreeItem*)item;
 		pObjectClasses->OnAddedToTree();
 		
-		item.TakeOver(new gdeWPSTIMParticleEmitters(*this));
-		treeList.AppendItem(NULL, item);
+		item = gdeWPSTIMParticleEmitters::Ref::New(*this);
+		treeList.AppendItem(nullptr, item);
 		pParticleEmitters = (gdeWPSTIMParticleEmitters*)(igdeTreeItem*)item;
 		pParticleEmitters->OnAddedToTree();
 		
-		item.TakeOver(new gdeWPSTIMSkins(*this));
-		treeList.AppendItem(NULL, item);
+		item = gdeWPSTIMSkins::Ref::New(*this);
+		treeList.AppendItem(nullptr, item);
 		pSkins = (gdeWPSTIMSkins*)(igdeTreeItem*)item;
 		pSkins->OnAddedToTree();
 		
-		item.TakeOver(new gdeWPSTIMSkies(*this));
-		treeList.AppendItem(NULL, item);
+		item = gdeWPSTIMSkies::Ref::New(*this);
+		treeList.AppendItem(nullptr, item);
 		pSkies = (gdeWPSTIMSkies*)(igdeTreeItem*)item;
 		pSkies->OnAddedToTree();
 		
 		// add listener
-		pListener = new gdeWPSTreeModelListener(*this);
+		pListener = gdeWPSTreeModelListener::Ref::New(*this);
 		gameDefinition->AddListener(pListener);
 		
 	}catch(const deException &){
@@ -171,11 +167,11 @@ gdeWPSTreeModel::~gdeWPSTreeModel(){
 ///////////////
 
 void gdeWPSTreeModel::ClearCurrentItem(){
-	pTreeList.SetSelection(NULL);
+	pTreeList.SetSelection(nullptr);
 }
 
 void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
-	gdeWPSTIMObjectClass *modelObjectClass = NULL;
+	gdeWPSTIMObjectClass *modelObjectClass = nullptr;
 	
 	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotObjectClass:
@@ -201,7 +197,7 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 		break;
 	}
 	
-	gdeWPSTreeItemModel *model = NULL;
+	gdeWPSTreeItemModel *model = nullptr;
 	
 	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
@@ -377,16 +373,9 @@ gdeWPSTreeModel::HelperIgnoreSelection::~HelperIgnoreSelection(){
 //////////////////////
 
 void gdeWPSTreeModel::pCleanUp(){
-	if(pListener){
-		if(pGameDefinition){
-			pGameDefinition->RemoveListener(pListener);
-		}
-		delete pListener;
+	if(pListener && pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pTreeList.RemoveAllItems();
-	
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }

@@ -26,9 +26,9 @@
 #define _DECSTRING_H_
 
 #include <stdarg.h>
-#include "../../dragengine_export.h"
 
-class decStringList;
+#include "../collection/decTList.h"
+#include "../../dragengine_export.h"
 
 
 /**
@@ -64,6 +64,9 @@ public:
 	
 	/** \brief Create new string being the concatenation of two other strings. */
 	decString(const decString &string1, const char *string2);
+	
+	/** \brief Move string. */
+	decString(decString &&string);
 	
 	/** \brief Clean up string. */
 	~decString();
@@ -265,11 +268,11 @@ public:
 	decString GetReversed() const;
 	
 	/** \brief Split string. */
-	decStringList Split(int character) const;
+	decTList<decString> Split(int character) const;
 	
 	/** \brief Split string on multiple characters. */
-	decStringList Split(const char *characters) const;
-	decStringList Split(const decString &characters) const;
+	decTList<decString> Split(const char *characters) const;
+	decTList<decString> Split(const decString &characters) const;
 	
 	/** \brief Replace all occurances of a character. */
 	void Replace(int replaceCharacter, int withCharacter);
@@ -347,8 +350,11 @@ public:
 	/** \brief Double value throwing exception if not valid. */
 	double ToDoubleValid() const;
 	
-	/** \brief Pointer to the text. */
+	/** \brief Const pointer to string. */
 	const char *GetString() const;
+	
+	/** \brief Mutable pointer to string. */
+	char *GetMutableString() const;
 	
 	/** \brief String equals another string case sensitive. */
 	bool Equals(const decString &string) const;
@@ -470,6 +476,9 @@ public:
 	/** \brief Set string to another string. */
 	decString &operator=(const char *string);
 	
+	/** \brief Move string. */
+	decString &operator=(decString &&string);
+	
 	/** \brief Appends a string to this string. */
 	decString &operator+=(const decString &string);
 	
@@ -497,5 +506,19 @@ private:
 	static bool domatch(const char *pattern,const char *string, int flags);
 	static bool fxfilematch(const char *pattern,const char *string, int flags);
 };
+
+
+/** \brief Global hash functions used for example with decTDictionary. */
+
+inline unsigned int DEHash(const char *key){
+	return decString::Hash(key);
+}
+
+/** \brief Global compare functions used with ordered lists. */
+
+#include <string.h>
+inline int DECompare(const char *a, const char *b){
+	return strcmp(a, b);
+}
 
 #endif

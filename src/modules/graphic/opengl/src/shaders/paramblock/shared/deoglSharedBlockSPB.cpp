@@ -33,6 +33,7 @@
 #include "../../../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 
@@ -51,7 +52,7 @@ pFreeElementCount(pSize)
 	DEASSERT_TRUE(parameterBlock->GetElementCount() >= 1)
 	
 	// add empty block for the element space
-	pElements.Add(deObject::Ref::New(new deoglSharedBlockSPBElement(*this, 0, pFreeElementCount)));
+	pElements.Add(deoglSharedBlockSPBElement::ObjRef::New(*this, 0, pFreeElementCount));
 }
 
 deoglSharedBlockSPB::~deoglSharedBlockSPB(){
@@ -74,13 +75,15 @@ deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement(int count){
 		return nullptr;
 	}
 	
-	deoglSharedBlockSPBElement * const element = (deoglSharedBlockSPBElement*)pElements.GetAt(index);
+	deoglSharedBlockSPBElement * const element =
+		static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(index));
 	
 	// if empty block is larger than requested size add empty block with
 	// remaining empty space right after this block
 	if(element->GetCount() > count){
-		const deObject::Ref emptyElement(deObject::Ref::New(new deoglSharedBlockSPBElement(
-			*this, element->GetIndex() + count, element->GetCount() - count ) ) );
+		const deoglSharedBlockSPBElement::ObjRef emptyElement(
+			deoglSharedBlockSPBElement::ObjRef::New(*this,
+				element->GetIndex() + count, element->GetCount() - count));
 		
 		if(index + 1 < pElements.GetCount()){
 			// not the last element filling up to the available space
@@ -118,7 +121,7 @@ void deoglSharedBlockSPB::ReturnElement(deoglSharedBlockSPBElement *element){
 	// if the previous block is empty merge this block with the previous block
 	if(index > 0){
 		deoglSharedBlockSPBElement * const mergeElement =
-			(deoglSharedBlockSPBElement*)pElements.GetAt(index - 1);
+			static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(index - 1));
 		if(mergeElement->GetEmpty()){
 			mergeElement->SetCount(mergeElement->GetCount() + count);
 			
@@ -140,7 +143,7 @@ void deoglSharedBlockSPB::ReturnElement(deoglSharedBlockSPBElement *element){
 	// if the next block is empty merge the next block with this block
 	if(index < pElements.GetCount() - 1){
 		deoglSharedBlockSPBElement * const mergeElement =
-			(deoglSharedBlockSPBElement*)pElements.GetAt(index + 1);
+			static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(index + 1));
 		if(mergeElement->GetEmpty()){
 			element->SetCount(count + mergeElement->GetCount());
 			
@@ -179,7 +182,7 @@ void deoglSharedBlockSPB::ReturnElement(deoglSharedBlockSPBElement *element){
 
 int deoglSharedBlockSPB::GetFreeElementCountAtEnd() const{
 	const deoglSharedBlockSPBElement &element =
-		*( ( deoglSharedBlockSPBElement* )pElements.GetAt( pElements.GetCount() - 1 ) );
+		*static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(pElements.GetCount() - 1));
 	return element.GetEmpty() ? element.GetCount() : 0;
 }
 
@@ -192,11 +195,12 @@ void deoglSharedBlockSPB::DebugPrint(deoglRTLogger &logger) const{
 	logger.LogInfoFormat("SPB: size=%d used=%d free=%d freeAtEnd=%d",
 		pSize, pUsedElementCount, pFreeElementCount, GetFreeElementCountAtEnd());
 	for(i=0; i<count; i++){
-		const deoglSharedBlockSPBElement * const element = (deoglSharedBlockSPBElement*)pElements.GetAt(i);
+		const deoglSharedBlockSPBElement * const element =
+			static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(i));
 		string.Format("[%c:%d,%d]", element->GetEmpty() ? 'E' : 'U', element->GetIndex(), element->GetCount());
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount(int count){
@@ -208,7 +212,7 @@ int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount(int count){
 	
 	for(i=0; i<emptyCount; i++){
 		deoglSharedBlockSPBElement * const element =
-			(deoglSharedBlockSPBElement*)pEmptyElements.GetAt(i);
+			static_cast<deoglSharedBlockSPBElement*>(pEmptyElements.GetAt(i));
 		if(element->GetCount() >= count){
 			pEmptyElements.RemoveFrom(i);
 			return pElements.IndexOf(element);
@@ -217,7 +221,7 @@ int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount(int count){
 	
 	// check if the last empty block filling up space up to the available space is usable
 	deoglSharedBlockSPBElement * const element =
-		(deoglSharedBlockSPBElement*)pElements.GetAt(pElements.GetCount() - 1);
+		static_cast<deoglSharedBlockSPBElement*>(pElements.GetAt(pElements.GetCount() - 1));
 	if(element->GetEmpty() && element->GetCount() >= count){
 		return pElements.GetCount() - 1;
 	}
@@ -240,7 +244,7 @@ void deoglSharedBlockSPB::pCheckSize(){
 		element->SetCount(element->GetCount() + change);
 		
 	}else{
-		pElements.Add(deObject::Ref::New(new deoglSharedBlockSPBElement(*this, pSize, change)));
+		pElements.Add(deoglSharedBlockSPBElement::ObjRef::New(*this, pSize, change));
 	}
 	
 	pFreeElementCount += change;

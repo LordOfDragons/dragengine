@@ -64,11 +64,9 @@ pNewValue(newValue)
 	SetShortInfo("Object texture set property");
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexSetProperty::~meUObjTexSetProperty(){
-	pCleanUp();
 }
 
 
@@ -92,15 +90,4 @@ void meUObjTexSetProperty::Redo(){
 
 void meUObjTexSetProperty::ProgressiveRedo(){
 	Redo();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjTexSetProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

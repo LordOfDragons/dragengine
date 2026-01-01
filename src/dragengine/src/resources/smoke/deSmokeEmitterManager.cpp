@@ -67,25 +67,11 @@ deSmokeEmitter *deSmokeEmitterManager::GetRootSmokeEmitter() const{
 	return (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 }
 
-deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
-	deSmokeEmitter *smokeEmitter = NULL;
-	
-	try{
-		smokeEmitter = new deSmokeEmitter(this);
-		if(!smokeEmitter) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
-		GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
-		
-		pSmokeEmitters.Add(smokeEmitter);
-		
-	}catch(const deException &){
-		if(smokeEmitter){
-			smokeEmitter->FreeReference();
-		}
-		throw;
-	}
-	
+deSmokeEmitter::Ref deSmokeEmitterManager::CreateSmokeEmitter(){
+	const deSmokeEmitter::Ref smokeEmitter(deSmokeEmitter::Ref::New(this));
+	GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
+	GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
+	pSmokeEmitters.Add(smokeEmitter);
 	return smokeEmitter;
 }
 

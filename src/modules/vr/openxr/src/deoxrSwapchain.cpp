@@ -269,8 +269,8 @@ void deoxrSwapchain::pGetImages(){
 			
 			for(i=0; i<count; i++){
 				pImages[i].openglImage = images[i].image;
-// 				pImages[ i ].openglFbo.TakeOver( new deoxrGraphicApiOpenGL::Framebuffer(
-// 					oxr.GetGraphicApiOpenGL(), images[ i ].image ) );
+// 				pImages[ i ].openglFbo = new deoxrGraphicApiOpenGL::Framebuffer(
+// 					oxr.GetGraphicApiOpenGL(), images[ i ].image );
 			}
 			pImageCount = (int)count;
 			delete [] images;

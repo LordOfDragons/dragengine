@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * Undo action object class texture set scale.
  */
 class gdeUOCTextureSetScale : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCTextureSetScale> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCTextureSetScale> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

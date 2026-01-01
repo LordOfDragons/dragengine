@@ -25,11 +25,13 @@
 #ifndef _LPELOADSAVESYSTEM_H_
 #define _LPELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include "../langpack/lpeLangPack.h"
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class lpeLoadSaveLangPack;
 class lpeWindowMain;
-class lpeLangPack;
 
 
 
@@ -37,20 +39,22 @@ class lpeLangPack;
  * @brief Load/Save System.
  */
 class lpeLoadSaveSystem{
+public:
+	typedef decTObjectOrderedSet<lpeLoadSaveLangPack> LSLangPackList;
+	
+	
 private:
 	lpeWindowMain *pWindowMain;
 	
-	lpeLoadSaveLangPack **pLSLangPacks;
-	int pLSLangPackCount;
-	int pLSLangPackSize;
+	LSLangPackList pLSLangPacks;
 	
-	igdeFilePatternList pFPListLangPack;
+	igdeFilePattern::List pFPListLangPack;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save system object. */
-	lpeLoadSaveSystem(lpeWindowMain *windowMain);
+	explicit lpeLoadSaveSystem(lpeWindowMain *windowMain);
 	/** Cleans up the load/save system object. */
 	~lpeLoadSaveSystem();
 	/*@}*/
@@ -60,32 +64,21 @@ public:
 	/** Retrieves the main window. */
 	inline lpeWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the number of load save langpacks. */
-	inline int GetLSLangPackCount() const{ return pLSLangPackCount; }
-	/** Retrieves the load save langpack at the given index. */
-	lpeLoadSaveLangPack *GetLSLangPackAt(int index) const;
-	/** Retrieves the index of the load save langpack. */
-	int IndexOfLSLangPack(lpeLoadSaveLangPack *lsLangPack) const;
-	/** Determines if the save langpack exists. */
-	bool HasLSLangPack(lpeLoadSaveLangPack *lsLangPack) const;
-	/** Retrieves the index of the load save langpack matching the given filename. */
-	int IndexOfLSLangPackMatching(const char *filename);
-	/** Adds a load save langpack. */
-	void AddLSLangPack(lpeLoadSaveLangPack *lsLangPack);
-	/** Removes a load save langpack. */
-	void RemoveLSLangPack(lpeLoadSaveLangPack *lsLangPack);
-	/** Removes all load save langpacks. */
-	void RemoveAllLSLangPacks();
+	/** Load save langpacks. */
+	LSLangPackList &GetLSLangPacks(){ return pLSLangPacks; }
+	const LSLangPackList &GetLSLangPacks() const{ return pLSLangPacks; }
+	
 	/** Updates the load save langpack list from the engine. */
 	void UpdateLSLangPacks();
 	
 	/** Loads the langpack from file if possible. */
-	lpeLangPack *LoadLangPack(const char *filename);
+	lpeLangPack::Ref LoadLangPack(const char *filename);
+	
 	/** Saves the langpack to file if possible. */
 	void SaveLangPack(lpeLangPack *langpack, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetLangPackFPList() const{ return pFPListLangPack; }
+	inline const igdeFilePattern::List &GetLangPackFPList() const{ return pFPListLangPack; }
 	/*@}*/
 	
 private:

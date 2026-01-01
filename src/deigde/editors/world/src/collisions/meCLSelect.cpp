@@ -161,7 +161,7 @@ void meCLSelect::SetCanSelectAll(bool canSelect){
 void meCLSelect::Reset(){
 	pRectSelOldObjectList.RemoveAll();
 	pRectSelOldObjectShapeList.RemoveAll();
-	pHitList.RemoveAllEntries();
+	pHitList.RemoveAll();
 }
 
 void meCLSelect::StoreRectSelect(){
@@ -174,13 +174,13 @@ void meCLSelect::StoreRectSelect(){
 }
 
 void meCLSelect::Prepare(){
-	pHitList.RemoveAllEntries();
+	pHitList.RemoveAll();
 }
 
 void meCLSelect::RunAction(int selectIndex){
-	const int entryCount = pHitList.GetEntryCount();
-	meObjectShapeList rselListObjectShapes;
-	meObjectList rselListObjects;
+	const int entryCount = pHitList.GetCount();
+	meObjectShape::List rselListObjectShapes;
+	meObject::List rselListObjects;
 	int i;
 	
 	if(pRectSelect){
@@ -188,11 +188,11 @@ void meCLSelect::RunAction(int selectIndex){
 		rselListObjectShapes = pRectSelOldObjectShapeList;
 		
 	}else{
-		pHitList.SortByDistance();
+		pHitList.SortAscending();
 	}
 	
 	for(i=selectIndex; i<entryCount; i++){
-		const meCLHitListEntry &entry = *pHitList.GetEntryAt(i);
+		const meCLHitListEntry &entry = *pHitList.GetAt(i);
 		meObject * const object = entry.GetObject();
 		meObjectShape * const objectShape = entry.GetObjectShape();
 		meDecal * const decal = entry.GetDecal();
@@ -203,7 +203,7 @@ void meCLSelect::RunAction(int selectIndex){
 			meObjectSelection &selection = pWorld.GetSelectionObject();
 			
 			if(pRectSelect){
-				rselListObjects.AddIfAbsent(object);
+				rselListObjects.Add(object);
 				
 				if(!object->GetSelected()){
 					selection.Add(object);
@@ -238,7 +238,7 @@ void meCLSelect::RunAction(int selectIndex){
 			meObjectShapeSelection &selection = pWorld.GetSelectionObjectShape();
 			
 			if(pRectSelect){
-				rselListObjectShapes.AddIfAbsent(objectShape);
+				rselListObjectShapes.Add(objectShape);
 				
 				if(!objectShape->GetSelected()){
 					selection.Add(objectShape);
@@ -280,7 +280,7 @@ void meCLSelect::RunAction(int selectIndex){
 			}else{
 				if(decal->GetSelected()){
 					if(selection.GetActive() == decal){
-						selection.SetActive(NULL);
+						selection.SetActive(nullptr);
 					}
 					selection.Remove(decal);
 					
@@ -304,7 +304,7 @@ void meCLSelect::RunAction(int selectIndex){
 			}else{
 				if(navspace->GetSelected()){
 					if(selection.GetActive() == navspace){
-						selection.SetActive(NULL);
+						selection.SetActive(nullptr);
 					}
 					selection.Remove(navspace);
 					
@@ -328,7 +328,7 @@ void meCLSelect::RunAction(int selectIndex){
 				break;
 			}
 			
-			decIntList selection(sector->GetSelectedNavPoints());
+			decTList<int> selection(sector->GetSelectedNavPoints());
 			
 			if(pSingleSelect){
 				selection.RemoveAll();
@@ -354,21 +354,11 @@ void meCLSelect::RunAction(int selectIndex){
 	if(pRectSelect){
 		if(pCanSelectObjects){
 			meObjectSelection &selection = pWorld.GetSelectionObject();
-			const meObjectList &listSelected = selection.GetSelected();
-			meObjectList listDeselect;
-			int count;
-			
-			count = listSelected.GetCount();
-			for(i=0; i<count; i++){
-				if(!rselListObjects.Has(listSelected.GetAt(i))){
-					listDeselect.Add(listSelected.GetAt(i));
-				}
-			}
-			
-			count = listDeselect.GetCount();
-			for(i=0; i<count; i++){
-				selection.Remove(listDeselect.GetAt(i));
-			}
+			selection.GetSelected().Collect([&](meObject *o){
+				return !rselListObjects.Has(o);
+			}).Visit([&](meObject *o){
+				selection.Remove(o);
+			});
 			
 			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
 				selection.ActivateNext();
@@ -378,21 +368,11 @@ void meCLSelect::RunAction(int selectIndex){
 			
 		}else if(pCanSelectObjectShapes){
 			meObjectShapeSelection &selection = pWorld.GetSelectionObjectShape();
-			const meObjectShapeList &listSelected = selection.GetSelected();
-			meObjectShapeList listDeselect;
-			int count;
-			
-			count = listSelected.GetCount();
-			for(i=0; i<count; i++){
-				if(!rselListObjectShapes.Has(listSelected.GetAt(i))){
-					listDeselect.Add(listSelected.GetAt(i));
-				}
-			}
-			
-			count = listDeselect.GetCount();
-			for(i=0; i<count; i++){
-				selection.Remove(listDeselect.GetAt(i));
-			}
+			selection.GetSelected().Collect([&](meObjectShape *s){
+				return !rselListObjectShapes.Has(s);
+			}).Visit([&](meObjectShape *s){
+				selection.Remove(s);
+			});
 			
 			if(!selection.HasActive() || !selection.GetActive()->GetSelected()){
 				selection.ActivateNext();
@@ -402,7 +382,7 @@ void meCLSelect::RunAction(int selectIndex){
 		}
 	}
 	
-	pHitList.RemoveAllEntries();
+	pHitList.RemoveAll();
 }
 
 
@@ -423,45 +403,45 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetObject(colliderOwner->GetObject());
 			entry->SetDistance(info->GetDistance());
-			pHitList.AddEntry(entry);
+			pHitList.Add(entry);
 			
 		}else if(colliderOwner->GetDecal()){
 			if(!pCanHitDecals){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetDecal(colliderOwner->GetDecal());
 			entry->SetDistance(info->GetDistance());
-			pHitList.AddEntry(entry);
+			pHitList.Add(entry);
 			
 		}else if(colliderOwner->GetNavigationSpace()){
 			if(!pCanHitNavSpaces){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetNavigationSpace(colliderOwner->GetNavigationSpace());
 			entry->SetDistance(info->GetDistance());
-			pHitList.AddEntry(entry);
+			pHitList.Add(entry);
 			
 		}else if(colliderOwner->GetShape()){
 			if(!pCanHitObjectShapes){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetObjectShape(colliderOwner->GetShape());
 			entry->SetDistance(info->GetDistance());
-			pHitList.AddEntry(entry);
+			pHitList.Add(entry);
 		}
 		
 	}else if(info->IsHTSector()){
 		deHeightTerrainSector * const engSector = info->GetHTSector();
-		meHeightTerrainSector *sector = NULL;
+		meHeightTerrainSector *sector = nullptr;
 		if(engSector){
 			sector = pWorld.GetHeightTerrain()->GetSectorWith(engSector->GetSector());
 		}
@@ -474,10 +454,10 @@ void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 				const decVector2 coordinates(sector->GetGridPointAt(hitPoint));
 				const decPoint closest(decPoint(coordinates + decVector2(0.5f, 0.5f)).Clamped(decPoint(), comax));
 				
-				const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+				const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 				entry->SetHTNavSpacePoint(resolution * closest.y + closest.x);
 				entry->SetDistance(info->GetDistance());
-				pHitList.AddEntry(entry);
+				pHitList.Add(entry);
 			}
 			
 			return;

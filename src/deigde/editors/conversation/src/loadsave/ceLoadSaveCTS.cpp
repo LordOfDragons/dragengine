@@ -33,7 +33,6 @@
 #include "../conversation/ceConversation.h"
 #include "../conversation/actor/ceConversationActor.h"
 #include "../conversation/actor/controller/ceActorController.h"
-#include "../conversation/actor/parameters/ceActorParameter.h"
 #include "../conversation/coordsystem/ceCoordSystem.h"
 #include "../conversation/playback/command/cePlaybackCommand.h"
 #include "../conversation/prop/ceProp.h"
@@ -74,7 +73,7 @@ igdeBaseXML(logger, loggerSource){
 ///////////////////////
 
 void ceLoadSaveCTS::LoadCTS(ceConversation &conversation, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -122,11 +121,7 @@ void ceLoadSaveCTS::pWriteCTS(decXmlWriter &writer, const ceConversation &conver
 		pWriteCoordSystem(writer, *coordSystemList.GetAt(i));
 	}
 	
-	const cePropList &propList = conversation.GetPropList();
-	const int propCount = propList.GetCount();
-	for(i=0; i<propCount; i++){
-		pWriteProp(writer, *propList.GetAt(i));
-	}
+	conversation.GetProps().Visit([&](ceProp *prop){ pWriteProp(writer, *prop); });
 	
 	pLSSys->GetLSCTGS()->WriteGameState(writer, *conversation.GetPlayback(), "gameState");
 	
@@ -195,20 +190,9 @@ void ceLoadSaveCTS::pReadCTS(const decXmlElementTag &root, ceConversation &conve
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "actor") == 0){
-				ceConversationActor * const actor = new ceConversationActor(
-					*conversation.GetEnvironment() );
-				
-				try{
-					pLSSys->GetLSCTA()->ReadActor(*tag, *actor);
-					conversation.AddActor(actor);
-					actor->FreeReference();
-					
-				}catch(const deException &){
-					if(actor){
-						actor->FreeReference();
-					}
-					throw;
-				}
+				const ceConversationActor::Ref actor(ceConversationActor::Ref::New(*conversation.GetEnvironment()));
+				pLSSys->GetLSCTA()->ReadActor(*tag, actor);
+				conversation.AddActor(actor);
 				
 			}else if(strcmp(tag->GetName(), "coordinateSystem") == 0){
 				pReadCoordSystem(*tag, conversation);
@@ -228,11 +212,11 @@ void ceLoadSaveCTS::pReadCTS(const decXmlElementTag &root, ceConversation &conve
 
 void ceLoadSaveCTS::pReadCoordSystem(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceCoordSystem *coordSystem = NULL;
+	ceCoordSystem::Ref coordSystem;
 	int i;
 	
 	try{
-		coordSystem = new ceCoordSystem;
+		coordSystem = ceCoordSystem::Ref::New();
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -262,23 +246,18 @@ void ceLoadSaveCTS::pReadCoordSystem(const decXmlElementTag &root, ceConversatio
 		}
 		
 		conversation.AddCoordSystem(coordSystem);
-		coordSystem->FreeReference();
-		
 	}catch(const deException &){
-		if(coordSystem){
-			coordSystem->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveCTS::pReadProp(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceProp *prop = NULL;
+	ceProp::Ref prop;
 	int i;
 	
 	try{
-		prop = new ceProp;
+		prop = ceProp::Ref::New();
 		
 		for(i =0; i <elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -311,12 +290,7 @@ void ceLoadSaveCTS::pReadProp(const decXmlElementTag &root, ceConversation &conv
 		}
 		
 		conversation.AddProp(prop);
-		prop->FreeReference();
-		
 	}catch(const deException &){
-		if(prop){
-			prop->FreeReference();
-		}
 		throw;
 	}
 }

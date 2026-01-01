@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeText;
+#include "../../../../skin/property/node/sePropertyNodeText.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNodeText;
  * \brief Undo action property node text set color.
  */
 class seUPropertyNodeTextSetColor : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeTextSetColor> Ref;
+	
+	
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeTextSetColor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

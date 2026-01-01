@@ -37,11 +37,12 @@
 seUPropertyNodeSetMapped::seUPropertyNodeSetMapped(sePropertyNode *node, int type, seMapped *newValue) :
 pNode(node),
 pType(type),
-pOldValue(node ? node->GetMappedFor(type) : nullptr),
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(node)
 	DEASSERT_NOTNULL(node->GetProperty())
+	
+	pOldValue = node->GetMappedFor(type);
 	
 	SetShortInfo("Node set mapped");
 }

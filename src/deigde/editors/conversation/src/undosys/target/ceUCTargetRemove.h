@@ -36,14 +36,15 @@ class ceTarget;
  * \brief Undo Action Remove Target.
  */
 class ceUCTargetRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCTargetRemove> Ref;
+	
+	
 private:
 	ceConversation *pConversation;
 	ceTarget *pTarget;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCTargetRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

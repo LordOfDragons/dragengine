@@ -71,6 +71,7 @@ protected:
 	gdeWPSOCSnapPoint &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCSnapPoint &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -79,14 +80,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), snapPoint)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), snapPoint));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCSnapPoint *snapPoint) = 0;
 };
 
@@ -95,6 +96,7 @@ protected:
 	gdeWPSOCSnapPoint &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCSnapPoint &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -103,86 +105,94 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), snapPoint)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), snapPoint));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 		gdeOCSnapPoint *snapPoint) = 0;
 };
 
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(gdeWPSOCSnapPoint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCSnapPoint *snapPoint){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCSnapPoint *snapPoint) override{
 		if(snapPoint->GetName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSnapPointSetName(objectClass, snapPoint, textField.GetText());
+		return gdeUOCSnapPointSetName::Ref::New(objectClass, snapPoint, textField.GetText());
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCSnapPoint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCSnapPoint *snapPoint){
 		if(snapPoint->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSnapPointSetPosition(objectClass, snapPoint, vector);
+		return gdeUOCSnapPointSetPosition::Ref::New(objectClass, snapPoint, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCSnapPoint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCSnapPoint *snapPoint){
 		if(snapPoint->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSnapPointSetRotation(objectClass, snapPoint, vector);
+		return gdeUOCSnapPointSetRotation::Ref::New(objectClass, snapPoint, vector);
 	}
 };
 
 class cTextSnapDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSnapDistance> Ref;
 	cTextSnapDistance(gdeWPSOCSnapPoint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCSnapPoint *snapPoint){
 		const float value = textField.GetFloat();
 		if(fabsf(snapPoint->GetSnapDistance() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCSnapPointSetSnapDistance(objectClass, snapPoint, value);
+		return gdeUOCSnapPointSetSnapDistance::Ref::New(objectClass, snapPoint, value);
 	}
 };
 
 class cActionSnapToRotation : public igdeAction{
+public:
+	typedef deTObjectReference<cActionSnapToRotation> Ref;
+	
+private:
 	gdeWPSOCSnapPoint &pPanel;
 	
 public:
 	cActionSnapToRotation(gdeWPSOCSnapPoint &panel) : igdeAction("Snap to rotation",
 		"Object rotation is snapped to snap point rotation"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeOCSnapPoint * const snapPoint = pPanel.GetSnapPoint();
 		if(!snapPoint){
 			return;
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCSnapPointToggleSnapToRotation::Ref::NewWith(pPanel.GetObjectClass(), snapPoint));
+			gdeUOCSnapPointToggleSnapToRotation::Ref::New(pPanel.GetObjectClass(), snapPoint));
 	}
 };
 
@@ -198,38 +208,32 @@ public:
 
 gdeWPSOCSnapPoint::gdeWPSOCSnapPoint(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCSnapPointListener(*this);
+	pListener = gdeWPSOCSnapPointListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
 	
 	helper.EditString(groupBox, "Name:", "Name to show next to snap points",
-		pEditName, new cTextName(*this));
+		pEditName, cTextName::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditFloat(groupBox, "Snap Distance:", "Snap distance in meters",
-		pEditSnapDistance, new cTextSnapDistance(*this));
-	helper.CheckBox(groupBox, pChkSnapToRotation, new cActionSnapToRotation(*this), true);
+		pEditSnapDistance, cTextSnapDistance::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkSnapToRotation, cActionSnapToRotation::Ref::New(*this));
 }
 
 gdeWPSOCSnapPoint::~gdeWPSOCSnapPoint(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -244,14 +248,12 @@ void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateSnapPoint();
@@ -260,12 +262,12 @@ void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCSnapPoint::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCSnapPoint *gdeWPSOCSnapPoint::GetSnapPoint() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCSnapPoint() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCSnapPoint() : nullptr;
 }
 
 

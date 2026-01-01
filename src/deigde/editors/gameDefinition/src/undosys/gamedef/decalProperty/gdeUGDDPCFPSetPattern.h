@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
-class gdeProperty;
-class gdeFilePattern;
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/filepattern/gdeFilePattern.h"
 
 
 
@@ -40,10 +40,14 @@ class gdeFilePattern;
  * \brief Undo action object class property custom file pattern set pattern.
  */
 class gdeUGDDPCFPSetPattern : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDDPCFPSetPattern> Ref;
+	
+	
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,9 +55,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUGDDPCFPSetPattern> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

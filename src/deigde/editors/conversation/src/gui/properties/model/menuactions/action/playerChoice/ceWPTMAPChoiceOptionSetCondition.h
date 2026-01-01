@@ -36,6 +36,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action set condition to wait.
  */
 class ceWPTMAPChoiceOptionSetCondition : public ceWPTMACreateCondition{
+public:
+	typedef deTObjectReference<ceWPTMAPChoiceOptionSetCondition> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -71,7 +74,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
 	
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo(ceConversationCondition *condition) override;
+	igdeUndo::Ref CreateUndo(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

@@ -55,6 +55,10 @@ class decBaseFileReader;
  */
 class DE_DLL_EXPORT deLibraryModule : public deLoadableModule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLibraryModule> Ref;
+	
+	
 	/** \brief Error Codes. */
 	enum eErrorCodes{
 		/** \brief Module library file could not be found. */

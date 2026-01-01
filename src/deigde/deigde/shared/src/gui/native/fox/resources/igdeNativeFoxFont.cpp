@@ -84,7 +84,7 @@ public:
 	pBorderSize(0),
 	pEnlargeGlyph(1),
 	pLineHeight(0),
-	pGlyphs(NULL),
+	pGlyphs(nullptr),
 	pGlyphCount(0),
 	pImageWidth(0),
 	pImageHeight(0){
@@ -98,7 +98,7 @@ public:
 	
 	
 	
-	deFont *GenerateFont(){
+	deFont::Ref GenerateFont(){
 		const FXFont &nativeFont = *((FXFont*)pFont.GetNativeFont());
 		igdeEnvironment &environment = pFont.GetEnvironment();
 		deLogger &logger = *environment.GetLogger();
@@ -159,9 +159,9 @@ private:
 		const FXColor colorFg = FXRGB(255, 255, 255);
 		const int ascent = nativeFont->getFontAscent();
 		decUnicodeString character;
-		FXColor *foxImageData = NULL;
-		FXImage *foxImage = NULL;
-		FXDCWindow *dc = NULL;
+		FXColor *foxImageData = nullptr;
+		FXImage *foxImage = nullptr;
+		FXDCWindow *dc = nullptr;
 		int leftBearing;
 		int rightBearing;
 		int c, y;
@@ -251,10 +251,10 @@ private:
 			
 			// clean up
 			delete dc;
-			dc = NULL;
+			dc = nullptr;
 			
 			delete foxImage;
-			foxImage = NULL;
+			foxImage = nullptr;
 			
 			delete [] foxImageData;
 			
@@ -329,10 +329,10 @@ private:
 	
 	void pRenderImage(){
 		FXFont * const nativeFont = (FXFont*)pFont.GetNativeFont();
-		FXColor *foxImageData = NULL;
+		FXColor *foxImageData = nullptr;
 		decUnicodeString character;
-		FXImage *foxImage = NULL;
-		FXDCWindow *dc = NULL;
+		FXImage *foxImage = nullptr;
+		FXDCWindow *dc = nullptr;
 		FXColor foxColor;
 		int p, g, x, y;
 		
@@ -340,8 +340,8 @@ private:
 		const int ascent = nativeFont->getFontAscent();
 		
 		try{
-			pImage.TakeOver(pFont.GetEnvironment().GetEngineController()->GetEngine()
-				->GetImageManager()->CreateImage(pImageWidth, pImageHeight, 1, 4, 8));
+			pImage = pFont.GetEnvironment().GetEngineController()->GetEngine()
+				->GetImageManager()->CreateImage(pImageWidth, pImageHeight, 1, 4, 8);
 			
 			// create image data in memory cleared to black. we can not clear
 			// to transparent since fox does not properly support images with
@@ -424,10 +424,10 @@ private:
 			
 			// clean up
 			delete dc;
-			dc = NULL;
+			dc = nullptr;
 			
 			delete foxImage;
-			foxImage = NULL;
+			foxImage = nullptr;
 			
 			delete [] foxImageData;
 			
@@ -482,7 +482,7 @@ void igdeNativeFoxFont::DestroyNativeFont(){
 // Management
 ///////////////
 
-deFont *igdeNativeFoxFont::CreateEngineFont(){
+deFont::Ref igdeNativeFoxFont::CreateEngineFont(){
 	return igdeFont_FontBuilder(*pOwner).GenerateFont();
 }
 

@@ -34,6 +34,10 @@
  * \brief Undo Action Property Set Bone Name.
  */
 class seUPropertySetBoneName : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetBoneName> Ref;
+	
+	
 private:
 	const seProperty::Ref pProperty;
 	const decString pOldName;
@@ -42,9 +46,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetBoneName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

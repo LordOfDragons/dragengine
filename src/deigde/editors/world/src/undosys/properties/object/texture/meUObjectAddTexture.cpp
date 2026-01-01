@@ -42,8 +42,7 @@
 ////////////////////////////
 
 meUObjectAddTexture::meUObjectAddTexture(meObject *object, meObjectTexture *texture) :
-pObject(NULL),
-pTexture(NULL)
+pObject(nullptr)
 {
 	if(!object || !texture) DETHROW(deeInvalidParam);
 	
@@ -53,15 +52,10 @@ pTexture(NULL)
 	SetShortInfo("Add Object Texture");
 	
 	pObject = object;
-	object->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectAddTexture::~meUObjectAddTexture(){
-	if(pTexture) pTexture->FreeReference();
-	if(pObject) pObject->FreeReference();
 }
 
 

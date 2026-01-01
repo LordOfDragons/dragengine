@@ -66,7 +66,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pSound.TakeOver(new deSound(engine.GetSoundManager(), vfs, path, 0));
+	pSound = deSound::Ref::New(engine.GetSoundManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -89,8 +89,7 @@ void deRLTaskReadSound::Run(){
 	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
 	deBaseSoundInfo soundInfo;
-	module->InitLoadSound(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), soundInfo);
+	module->InitLoadSound(GetVFS()->OpenFileForReading(vfsPath), soundInfo);
 	
 	pSound->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pSound->SetAsynchron(true);

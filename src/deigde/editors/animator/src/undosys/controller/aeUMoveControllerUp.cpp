@@ -43,17 +43,14 @@
 aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator *animator, aeController *controller){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pController = NULL;
+	pAnimator = nullptr;
+	pController = nullptr;
 	
 	pIndex = animator->GetControllers().IndexOf(controller);
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUMoveControllerUp::~aeUMoveControllerUp(){
@@ -79,6 +76,4 @@ void aeUMoveControllerUp::Redo(){
 //////////////////////
 
 void aeUMoveControllerUp::pCleanUp(){
-	if(pController) pController->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
 }

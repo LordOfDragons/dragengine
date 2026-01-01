@@ -36,6 +36,7 @@
  */
 class ceCASetVariable : public ceConversationAction{
 public:
+	typedef deTObjectReference<ceCASetVariable> Ref;
 	/** \brief Operator. */
 	enum eOperators{
 		/** \brief Set variable. */
@@ -70,7 +71,9 @@ public:
 	ceCASetVariable(const ceCASetVariable &action);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	~ceCASetVariable() override;
+public:
 	/*@}*/
 	
 	
@@ -104,7 +107,7 @@ public:
 	
 	
 	/** \brief Create copy of action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

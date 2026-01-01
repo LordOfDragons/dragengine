@@ -59,7 +59,7 @@ Window igdeNativeNullWidget::NativeWidgetID(const igdeWidget &){
 #endif
 #ifdef OS_W32
 HWND igdeNativeNullWidget::NativeWidgetID(const igdeWidget &){
-	return NULL;
+	return nullptr;
 }
 #endif
 
@@ -70,7 +70,7 @@ Window igdeNativeNullWidget::NativeWidgetParentID(const igdeWidget &){
 #endif
 #ifdef OS_W32
 HWND igdeNativeNullWidget::NativeWidgetParentID(const igdeWidget &){
-	return NULL;
+	return nullptr;
 }
 #endif
 

@@ -25,17 +25,16 @@
 #ifndef _DECANVASMANAGER_H_
 #define _DECANVASMANAGER_H_
 
+#include "deCanvasImage.h"
+#include "deCanvasPaint.h"
+#include "deCanvasCanvasView.h"
+#include "deCanvasRenderWorld.h"
+#include "deCanvasText.h"
+#include "deCanvasVideoPlayer.h"
+#include "deCanvasView.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
-class deCanvas;
-class deCanvasImage;
-class deCanvasPaint;
-class deCanvasCanvasView;
-class deCanvasRenderWorld;
-class deCanvasText;
-class deCanvasVideoPlayer;
-class deCanvasView;
 class deEngine;
 
 
@@ -69,25 +68,25 @@ public:
 	deCanvas *GetRootCanvas() const;
 	
 	/** \brief Create image canvas. */
-	deCanvasImage *CreateCanvasImage();
+	deCanvasImage::Ref CreateCanvasImage();
 	
 	/** \brief Create paint canvas. */
-	deCanvasPaint *CreateCanvasPaint();
+	deCanvasPaint::Ref CreateCanvasPaint();
 	
 	/** \brief Create canvas view canvas. */
-	deCanvasCanvasView *CreateCanvasCanvasView();
+	deCanvasCanvasView::Ref CreateCanvasCanvasView();
 	
 	/** \brief Create render world canvas. */
-	deCanvasRenderWorld *CreateCanvasRenderWorld();
+	deCanvasRenderWorld::Ref CreateCanvasRenderWorld();
 	
 	/** \brief Create text canvas. */
-	deCanvasText *CreateCanvasText();
+	deCanvasText::Ref CreateCanvasText();
 	
 	/** \brief Create video player canvas. */
-	deCanvasVideoPlayer *CreateCanvasVideoPlayer();
+	deCanvasVideoPlayer::Ref CreateCanvasVideoPlayer();
 	
 	/** \brief Create view canvas. */
-	deCanvasView *CreateCanvasView();
+	deCanvasView::Ref CreateCanvasView();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

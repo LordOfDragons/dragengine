@@ -27,8 +27,7 @@
 
 #include "../../../audiothread/deoalATRayTracing.h"
 
-#include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -98,31 +97,31 @@ private:
 	deBarrier pBarrier;
 	deMutex pMutex;
 	
-	decThreadSafeObjectOrderedSet pTasksTraceSoundRays;
-	decPointerList pTasksReadyTraceSoundRays;
-	decPointerList pTasksRunningTraceSoundRays;
-	decPointerList pTasksWaitTraceSoundRays;
-	decThreadSafeObjectOrderedSet pTasksTraceSoundRaysFinish;
-	decPointerList pTasksReadyTraceSoundRaysFinish;
-	decPointerList pTasksRunningTraceSoundRaysFinish;
+	decTThreadSafeObjectOrderedSet<deoalRTPTTraceSoundRays> pTasksTraceSoundRays;
+	decTOrderedSet<deoalRTPTTraceSoundRays*> pTasksReadyTraceSoundRays;
+	decTOrderedSet<deoalRTPTTraceSoundRays*> pTasksRunningTraceSoundRays;
+	decTOrderedSet<deoalRTPTTraceSoundRays*> pTasksWaitTraceSoundRays;
+	decTThreadSafeObjectOrderedSet<deoalRTPTTraceSoundRaysFinish> pTasksTraceSoundRaysFinish;
+	decTOrderedSet<deoalRTPTTraceSoundRaysFinish*> pTasksReadyTraceSoundRaysFinish;
+	decTOrderedSet<deoalRTPTTraceSoundRaysFinish*> pTasksRunningTraceSoundRaysFinish;
 	
-	decThreadSafeObjectOrderedSet pTasksListen;
-	decPointerList pTasksReadyListen;
-	decPointerList pTasksRunningListen;
-	decPointerList pTasksWaitListen;
-	decThreadSafeObjectOrderedSet pTasksListenFinish;
-	decPointerList pTasksReadyListenFinish;
-	decPointerList pTasksRunningListenFinish;
+	decTThreadSafeObjectOrderedSet<deoalRTPTListen> pTasksListen;
+	decTOrderedSet<deoalRTPTListen*> pTasksReadyListen;
+	decTOrderedSet<deoalRTPTListen*> pTasksRunningListen;
+	decTOrderedSet<deoalRTPTListen*> pTasksWaitListen;
+	decTThreadSafeObjectOrderedSet<deoalRTPTListenFinish> pTasksListenFinish;
+	decTOrderedSet<deoalRTPTListenFinish*> pTasksReadyListenFinish;
+	decTOrderedSet<deoalRTPTListenFinish*> pTasksRunningListenFinish;
 	
 // 	decThreadSafeObjectOrderedSet pTasksFull;
 	
-	decThreadSafeObjectOrderedSet pTasksRoomEstimate;
-	decPointerList pTasksReadyRoomEstimate;
-	decPointerList pTasksRunningRoomEstimate;
-	decPointerList pTasksWaitRoomEstimate;
-	decThreadSafeObjectOrderedSet pTasksRoomEstimateFinish;
-	decPointerList pTasksReadyRoomEstimateFinish;
-	decPointerList pTasksRunningRoomEstimateFinish;
+	decTThreadSafeObjectOrderedSet<deoalRTPTRoomEstimate> pTasksRoomEstimate;
+	decTOrderedSet<deoalRTPTRoomEstimate*> pTasksReadyRoomEstimate;
+	decTOrderedSet<deoalRTPTRoomEstimate*> pTasksRunningRoomEstimate;
+	decTOrderedSet<deoalRTPTRoomEstimate*> pTasksWaitRoomEstimate;
+	decTThreadSafeObjectOrderedSet<deoalRTPTRoomEstimateFinish> pTasksRoomEstimateFinish;
+	decTOrderedSet<deoalRTPTRoomEstimateFinish*> pTasksReadyRoomEstimateFinish;
+	decTOrderedSet<deoalRTPTRoomEstimateFinish*> pTasksRunningRoomEstimateFinish;
 	
 	decTimer pTimer;
 	decTimeHistory pTimeHistoryTraceSoundRays;
@@ -262,8 +261,9 @@ private:
 	
 	void pAddTask(deParallelProcessing &parallel, deParallelTask *task);
 	void pWaitForFinishTask(deParallelProcessing &parallel, deParallelTask *task);
-	void pAddTasks(deParallelProcessing &parallel, decPointerList &tasks,
-		int count, decPointerList &running);
+	
+	template<typename T> void pAddTasks(deParallelProcessing &parallel,
+		decTOrderedSet<T*> &tasks, int count, decTOrderedSet<T*> &running);
 };
 
 #endif

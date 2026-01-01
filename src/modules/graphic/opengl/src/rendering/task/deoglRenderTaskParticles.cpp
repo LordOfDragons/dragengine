@@ -98,7 +98,6 @@ deoglRenderTaskParticlesStep *deoglRenderTaskParticles::AddStep(){
 	if(pStepCount == pStepSize){
 		int newSize = pStepSize + 10;
 		deoglRenderTaskParticlesStep **newArray = new deoglRenderTaskParticlesStep*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pSteps){
 			memcpy(newArray, pSteps, sizeof(deoglRenderTaskParticlesStep*) * pStepSize);
 			delete [] pSteps;
@@ -110,7 +109,6 @@ deoglRenderTaskParticlesStep *deoglRenderTaskParticles::AddStep(){
 	
 	if(!pSteps[pStepCount]){
 		pSteps[pStepCount] = new deoglRenderTaskParticlesStep;
-		if(!pSteps[pStepCount]) DETHROW(deeOutOfMemory);
 		
 	}else{
 		pSteps[pStepCount]->Reset();

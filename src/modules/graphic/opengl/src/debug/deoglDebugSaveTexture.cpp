@@ -120,14 +120,14 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, in
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, 1)));
+			deoglPixelBuffer::epfFloat4, width, height, 1));
 		
 		texture.GetPixelsLevel(level, pixbuf);
 		
 		imgdata = new sRGBA8[width * height];
 		pConvertDataRGBA(pixbuf->GetPointerFloat4(), imgdata, width, height, false, conversion);
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -185,11 +185,11 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, 1)));
+			deoglPixelBuffer::epfFloat1, width, height, 1));
 		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthTextureLevel(&texture, level);
 			const GLenum buffers[1] = {GL_NONE};
@@ -243,7 +243,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -293,7 +293,7 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthTextureLevel(&texture, 0);
 			fbo->AttachStencilTextureLevel(&texture, 0);
@@ -326,7 +326,7 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 3, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, 1, 3, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -383,7 +383,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthArrayTextureLevel(&texture, 0);
 			fbo->AttachStencilArrayTextureLevel(&texture, 0);
@@ -418,7 +418,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layers, 3, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layers, 3, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -478,7 +478,7 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, in
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, size, size, 6)));
+			deoglPixelBuffer::epfFloat4, size, size, 6));
 		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int faceStride = size * size;
 		
@@ -490,7 +490,7 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, in
 			pConvertDataRGBA(pbdata + faceStride * i, imgdata + faceStride * i, size, size, upsideDown, conversion);
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -533,7 +533,7 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int lev
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, size, size, 6)));
+			deoglPixelBuffer::epfFloat1, size, size, 6));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		const int faceStride = size * size;
 		
@@ -564,7 +564,7 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int lev
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, size, size, 6, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -618,7 +618,7 @@ int level, const char *name, eConvertions conversion){
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, layerCount)));
+			deoglPixelBuffer::epfFloat4, width, height, layerCount));
 		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int stride = width * height;
 		
@@ -630,7 +630,7 @@ int level, const char *name, eConvertions conversion){
 			pConvertDataRGBA(pbdata + stride * i, imgdata, width, height, true, conversion);
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);
@@ -675,7 +675,7 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayT
 	
 	try{
 		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, layerCount)));
+			deoglPixelBuffer::epfFloat1, width, height, layerCount));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		arrayTexture.GetPixelsLevel(level, pixbuf);
@@ -703,7 +703,7 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayT
 			}
 		}
 		
-		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, (char*)imgdata);
+		saveImage = new deoglDelayedSaveImage(pathFile, width, height, layerCount, 4, 8, reinterpret_cast<char*>(imgdata));
 		imgdata = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddSaveImage(saveImage);

@@ -119,9 +119,7 @@ void igdeWindow::RaiseAndActivate(){
 
 
 void igdeWindow::AddChild(igdeWidget *child){
-	if(GetChildCount() > 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(GetChildren().IsEmpty())
 	igdeContainer::AddChild(child);
 }
 

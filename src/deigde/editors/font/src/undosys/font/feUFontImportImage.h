@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class feFontImage;
+#include "../../font/image/feFontImage.h"
 class deImage;
 
 
@@ -38,8 +38,12 @@ class deImage;
  * \brief Font Import Image Undo Action.
  */
 class feUFontImportImage : public igdeUndo{
+public:
+	typedef deTObjectReference<feUFontImportImage> Ref;
+	
+	
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	
 	int pOldWidth;
 	int pOldHeight;
@@ -54,9 +58,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUFontImportImage> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

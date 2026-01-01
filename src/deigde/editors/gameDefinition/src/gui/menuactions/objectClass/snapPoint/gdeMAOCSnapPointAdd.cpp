@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Snap Point...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddSnapPoint(&objectClass, gdeOCSnapPoint::Ref::NewWith());
+igdeUndo::Ref gdeMAOCSnapPointAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddSnapPoint::Ref::New(&objectClass, gdeOCSnapPoint::Ref::New());
 }
 
 void gdeMAOCSnapPointAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

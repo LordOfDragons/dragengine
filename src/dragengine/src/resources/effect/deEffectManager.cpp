@@ -64,82 +64,32 @@ deEffect *deEffectManager::GetRootEffect() const{
 	return (deEffect*)pEffects.GetRoot();
 }
 
-deEffectFilterKernel *deEffectManager::CreateEffectFilterKernel(){
-	deEffectFilterKernel *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectFilterKernel(this);
-		if(!effect) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadEffect(effect);
-		//GetPhysicsSystem()->LoadEffect( effect );
-		pEffects.Add(effect);
-		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectFilterKernel::Ref deEffectManager::CreateEffectFilterKernel(){
+	const deEffectFilterKernel::Ref effect(deEffectFilterKernel::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	//GetPhysicsSystem()->LoadEffect( effect );
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectOverlayImage *deEffectManager::CreateEffectOverlayImage(){
-	deEffectOverlayImage *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectOverlayImage(this);
-		if(!effect) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadEffect(effect);
-		pEffects.Add(effect);
-		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectOverlayImage::Ref deEffectManager::CreateEffectOverlayImage(){
+	const deEffectOverlayImage::Ref effect(deEffectOverlayImage::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectColorMatrix *deEffectManager::CreateEffectColorMatrix(){
-	deEffectColorMatrix *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectColorMatrix(this);
-		if(!effect) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadEffect(effect);
-		pEffects.Add(effect);
-		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectColorMatrix::Ref deEffectManager::CreateEffectColorMatrix(){
+	const deEffectColorMatrix::Ref effect(deEffectColorMatrix::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectDistortImage *deEffectManager::CreateEffectDistortImage(){
-	deEffectDistortImage *effect = NULL;
-	
-	// create and add effect
-	try{
-		effect = new deEffectDistortImage(this);
-		if(!effect) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadEffect(effect);
-		pEffects.Add(effect);
-		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	
-	// finished
+deEffectDistortImage::Ref deEffectManager::CreateEffectDistortImage(){
+	const deEffectDistortImage::Ref effect(deEffectDistortImage::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 

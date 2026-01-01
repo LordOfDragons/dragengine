@@ -25,13 +25,13 @@
 #ifndef _SEUPNUNGROUPNODES_H_
 #define _SEUPNUNGROUPNODES_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -39,27 +39,33 @@ class sePropertyNodeGroup;
  * \brief Undo action undgroup property nodes.
  */
 class seUPNUngroupNodes : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPNUngroupNodes> Ref;
+	
+	
 private:
-	struct sNode {
-		sePropertyNode *node;
+	class cNode : public deObject{
+	public:
+		typedef deTObjectReference<cNode> Ref;
+		typedef decTObjectOrderedSet<cNode> List;
+		
+		sePropertyNode::Ref node;
 		decPoint3 position;
 		decPoint3 size;
-		float rotation;
-		float shearing;
+		float rotation = 0.0f;
+		float shearing = 0.0f;
+		
+		cNode() = default;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pIndex;
-	int pNodeCount;
-	sNode *pNodes;
+	cNode::List pNodes;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPNUngroupNodes> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

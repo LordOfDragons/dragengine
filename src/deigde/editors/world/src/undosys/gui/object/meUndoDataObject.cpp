@@ -22,11 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,13 +39,12 @@
 meUndoDataObject::meUndoDataObject(meObject *object) :
 pObject(object)
 {
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(object)
 	
-	pOldPosition = object->GetPosition();
-	pOldOrientation = object->GetRotation();
-	pOldSize = object->GetSize();
+	pNewPosition = pOldPosition = object->GetPosition();
+	pNewRotation = pOldRotation = object->GetRotation();
+	pNewSize = pOldSize = object->GetSize();
+	pNewScaling = pOldScaling = object->GetScaling();
 	pAttachedTo = object->GetAttachedTo();
 }
 
@@ -60,6 +56,103 @@ meUndoDataObject::~meUndoDataObject(){
 // Management
 ///////////////
 
+void meUndoDataObject::SetNewPosition(const decDVector &position){
+	pNewPosition = position;
+}
+
+void meUndoDataObject::SetNewRotation(const decVector &rotation){
+	pNewRotation = rotation;
+}
+
+void meUndoDataObject::SetNewSize(const decVector &size){
+	pNewSize = size;
+}
+
+void meUndoDataObject::SetNewScaling(const decVector &scaling){
+	pNewScaling = scaling;
+}
+
+void meUndoDataObject::TransformNew(const decDMatrix &matrix){
+	const decDMatrix m(GetNewMatrix() * matrix);
+	
+	pNewPosition = m.GetPosition();
+	pNewRotation = m.Normalized().GetEulerAngles().ToVector() * RAD2DEG;
+	pNewScaling = m.GetScale();
+	
+	const decVector scale(m.GetScale());
+	pNewSize.x = pOldSize.x * (scale.x / pOldScaling.x);
+	pNewSize.y = pOldSize.y * (scale.y / pOldScaling.y);
+	pNewSize.z = pOldSize.z * (scale.z / pOldScaling.z);
+}
+
+decDMatrix meUndoDataObject::GetOldMatrix() const{
+	return decDMatrix::CreateSRT(pOldScaling, pOldRotation * DEG2RAD, pOldPosition);
+}
+
+decDMatrix meUndoDataObject::GetOldMatrixInverse() const{
+	return GetOldMatrix().Invert();
+}
+
+decDMatrix meUndoDataObject::GetNewMatrix() const{
+	return decDMatrix::CreateSRT(pNewScaling, pNewRotation * DEG2RAD, pNewPosition);
+}
+
+decDMatrix meUndoDataObject::GetNewMatrixInverse() const{
+	return GetNewMatrix().Invert();
+}
+
 void meUndoDataObject::SetAttachedTo(meObject *object){
 	pAttachedTo = object;
+}
+
+
+
+void meUndoDataObject::AddObjectsWithAttachments(const meObject::List &objects, List &list){
+	objects.Visit([&](meObject *o){
+		const meUndoDataObject::Ref &data(meUndoDataObject::Ref::New(o));
+		
+		o->GetAllAttachedObjects().Visit([&](meObject *attached){
+			if(!objects.Has(attached)){
+				data->pAttachedObjects.Add(meUndoDataObject::Ref::New(attached));
+			}
+		});
+		
+		list.Add(data);
+	});
+}
+
+void meUndoDataObject::RestoreOldGeometry(const meUndoDataObject::List &list, meWorld &world){
+	list.Visit([&](const meUndoDataObject &data){
+		data.pObject->SetPosition(data.pOldPosition);
+		data.pObject->SetRotation(data.pOldRotation);
+		data.pObject->SetSize(data.pOldSize);
+		world.NotifyObjectGeometryChanged(data.pObject);
+		
+		data.pAttachedObjects.Visit([&](const meUndoDataObject &attachedData){
+			attachedData.pObject->SetPosition(attachedData.pOldPosition);
+			attachedData.pObject->SetRotation(attachedData.pOldRotation);
+			attachedData.pObject->SetSize(attachedData.pOldSize);
+			world.NotifyObjectGeometryChanged(attachedData.pObject);
+		});
+	});
+}
+
+void meUndoDataObject::ApplyNewGeometry(const meUndoDataObject::List &list, meWorld &world){
+	list.Visit([&](const meUndoDataObject &data){
+		data.pObject->SetPosition(data.pNewPosition);
+		data.pObject->SetRotation(data.pNewRotation);
+		data.pObject->SetSize(data.pNewSize);
+		world.NotifyObjectGeometryChanged(data.pObject);
+		
+		if(data.pAttachedObjects.IsNotEmpty()){
+			const decDMatrix m(data.GetOldMatrixInverse() * data.pObject->GetObjectMatrix());
+			
+			data.pAttachedObjects.Visit([&](const meUndoDataObject &attachedData){
+				const decDMatrix m2(attachedData.GetOldMatrix() * m);
+				attachedData.pObject->SetPosition(m2.GetPosition());
+				attachedData.pObject->SetRotation(m2.Normalized().GetEulerAngles().ToVector() * RAD2DEG);
+				world.NotifyObjectGeometryChanged(attachedData.pObject);
+			});
+		}
+	});
 }

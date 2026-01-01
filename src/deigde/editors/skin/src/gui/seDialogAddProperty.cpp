@@ -33,7 +33,6 @@
 #include "../skin/property/node/sePropertyNodeGroup.h"
 
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
-#include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
@@ -61,14 +60,18 @@
 namespace {
 
 class cActionDetails : public igdeAction{
+public:
+	typedef deTObjectReference<cActionDetails> Ref;
+	
+private:
 	seDialogAddProperty &pDialog;
 	
 public:
 	cActionDetails(seDialogAddProperty &dialog) : igdeAction("Texture Property Details"),
 	pDialog(dialog){}
 	
-	virtual void OnAction(){
-		igdeDialogTexturePropertyList::Ref::NewWith(pDialog.GetEnvironment())->Run(&pDialog);
+	void OnAction() override{
+		igdeDialogTexturePropertyList::Ref::New(pDialog.GetEnvironment())->Run(&pDialog);
 	}
 };
 
@@ -91,21 +94,21 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::NewWith(
+	igdeLabel::Ref header(igdeLabel::Ref::New(
 		env, "Multi-Select properties or enter custom name."));
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5);
 	
-	helper.ListBox(content, 15, "Property names", pListProperties, NULL);
+	helper.ListBox(content, 15, "Property names", pListProperties, {});
 	pListProperties->SetSelectionMode(igdeListBox::esmMultiple);
 	pListProperties->SetDefaultSorter();
 	
-	helper.Button(content, new cActionDetails(*this), true);
+	helper.Button(content, cActionDetails::Ref::New(*this));
 	
-	formLine.TakeOver(new igdeContainerForm(env));
+	formLine = igdeContainerForm::Ref::New(env);
 	helper.EditString(formLine, "Custom Name:", "Custom name (for special uses only)",
-		15, pEditCustomPropertyName, NULL);
+		15, pEditCustomPropertyName, {});
 	content->AddChild(formLine);
 	
 	
@@ -130,36 +133,30 @@ seDialogAddProperty::~seDialogAddProperty(){
 ///////////////
 
 decStringSet seDialogAddProperty::GetSelectedPropertyNames() const{
-	const int count = pListProperties->GetItemCount();
 	decStringSet properties;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeListItem &item = *pListProperties->GetItemAt(i);
+	pListProperties->GetItems().Visit([&](const igdeListItem &item){
 		if(item.GetSelected()){
 			properties.Add(item.GetText());
 		}
-	}
+	});
 	
 	return properties;
 }
 
 void seDialogAddProperty::SetSelectedPropertyNames(const decStringSet &list){
-	const int count = list.GetCount();
-	int i;
-	
 	pListProperties->DeselectAllItems();
 	
-	if(list.GetCount() > 0){
-		pListProperties->SetSelection(pListProperties->IndexOfItem(list.GetAt(0)));
+	if(list.IsNotEmpty()){
+		pListProperties->SetSelection(pListProperties->IndexOfItem(list.First()));
 		
 	}else{
 		pListProperties->SetSelection(-1);
 	}
 	
-	for(i=0; i<count; i++){
-		pListProperties->SelectItem(pListProperties->IndexOfItem(list.GetAt(i)));
-	}
+	list.Visit([&](const decString &name){
+		pListProperties->SelectItem(pListProperties->IndexOfItem(name));
+	});
 }
 
 const decString &seDialogAddProperty::GetCustomPropertyName() const{
@@ -177,24 +174,23 @@ void seDialogAddProperty::SetCustomPropertyName(const char *name){
 
 void seDialogAddProperty::pInitPropertyList(){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
-	const igdeTexturePropertyList &envPropList = *environment.GetTexturePropertyList();
 	seTexture &texture = *pWindowMain.GetSkin()->GetActiveTexture();
-	const sePropertyList &propList = texture.GetPropertyList();
-	const int propertyCount = envPropList.GetCount();
+	const seProperty::List &propList = texture.GetProperties();
 	igdeIcon::Ref iconUsed(environment.GetStockIcon(igdeEnvironment::esiSmallPlus));
 	igdeIcon::Ref iconAvailable(environment.GetStockIcon(igdeEnvironment::esiSmallMinus));
-	int i;
 	
-	for(i=0; i<propertyCount; i++){
-		const decString &propertyName = envPropList.GetAt(i)->GetName();
+	environment.GetTexturePropertyList().Visit([&](const igdeTextureProperty &property){
+		const decString &propertyName = property.GetName();
 		
-		if(propList.HasNamed(propertyName)){
+		if(propList.HasMatching([&](const seProperty &p){
+			return p.GetName() == propertyName;
+		})){
 			pListProperties->AddItem(propertyName, iconUsed);
 			
 		}else{
 			pListProperties->AddItem(propertyName, iconAvailable);
 		}
-	}
+	});
 	
 	pListProperties->SortItems();
 }

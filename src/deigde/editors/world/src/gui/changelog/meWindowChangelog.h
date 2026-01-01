@@ -25,13 +25,14 @@
 #ifndef _MEWINDOWCHANGELOG_H_
 #define _MEWINDOWCHANGELOG_H_
 
+#include "meWindowChangelogListener.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/igdeIconListBox.h>
 
 class meWindowMain;
-class meWindowChangelogListener;
 class meWCEntry;
-class meWorld;
 
 
 
@@ -39,11 +40,14 @@ class meWorld;
  * \brief Changelog Window.
  */
 class meWindowChangelog : public igdeContainerBorder{
+public:
+	typedef deTObjectReference<meWindowChangelog> Ref;
+	
 private:
 	meWindowMain &pWindowMain;
-	meWindowChangelogListener *pListener;
+	meWindowChangelogListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeIconListBox::Ref pListChanges;
 	

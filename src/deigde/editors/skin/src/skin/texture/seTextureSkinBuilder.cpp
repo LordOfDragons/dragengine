@@ -83,16 +83,14 @@ void seTextureSkinBuilder::BuildSkin(deSkin *engSkin){
 
 void seTextureSkinBuilder::CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup,
 const sePropertyNodeGroup &nodeGroup){
-	const int count = nodeGroup.GetNodeCount();
 	deSkinPropertyNode *engNode = nullptr;
-	int i;
 	
 	try{
-		for(i=0; i<count; i++){
-			engNode = CreateNode(*nodeGroup.GetNodeAt(i));
+		nodeGroup.GetNodes().Visit([&](const sePropertyNode &node){
+			engNode = CreateNode(node);
 			engNodeGroup.AddNode(engNode);
 			engNode = nullptr;
-		}
+		});
 		
 	}catch(const deException &){
 		if(engNode){
@@ -104,7 +102,6 @@ const sePropertyNodeGroup &nodeGroup){
 
 deSkinPropertyNode *seTextureSkinBuilder::CreateNode(const sePropertyNode &node){
 	deSkinPropertyNode *engNode = nullptr;
-	int i;
 	
 	try{
 		switch(node.GetNodeType()){
@@ -141,10 +138,11 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode(const sePropertyNode &node)
 				{sePropertyNodeShape::esmThickness, deSkinPropertyNodeShape::esmThickness}
 			};
 			
+			int i;
 			for(i=0; i<9; i++){
 				seMapped * const mapped = nodeShape.GetMappedFor(mappingsShape[i].from);
 				if(mapped){
-					engNodeShape->SetShapeMappedFor(mappingsShape[i].to, pSkin.GetMappedList().IndexOf(mapped));
+					engNodeShape->SetShapeMappedFor(mappingsShape[i].to, pSkin.GetMapped().IndexOf(mapped));
 				}
 			}
 			}break;
@@ -169,10 +167,11 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode(const sePropertyNode &node)
 				{sePropertyNodeText::etmColorBlue, deSkinPropertyNodeText::etmColorBlue}
 			};
 			
+			int i;
 			for(i=0; i<4; i++){
 				seMapped * const mapped = nodeText.GetMappedFor(mappingsText[i].from);
 				if(mapped){
-					engNodeText->SetTextMappedFor(mappingsText[i].to, pSkin.GetMappedList().IndexOf(mapped));
+					engNodeText->SetTextMappedFor(mappingsText[i].to, pSkin.GetMapped().IndexOf(mapped));
 				}
 			}
 			
@@ -236,10 +235,11 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode(const sePropertyNode &node)
 			{sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency}
 		};
 		
+		int i;
 		for(i=0; i<15; i++){
 			seMapped * const mapped = node.GetMappedFor(mappings[i].from);
 			if(mapped){
-				engNode->SetMappedFor(mappings[i].to, pSkin.GetMappedList().IndexOf(mapped));
+				engNode->SetMappedFor(mappings[i].to, pSkin.GetMapped().IndexOf(mapped));
 			}
 		}
 		
@@ -259,15 +259,9 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode(const sePropertyNode &node)
 //////////////////////
 
 void seTextureSkinBuilder::pAddMapped(deSkin &engSkin){
-	const seMappedList &list = pSkin.GetMappedList();
-	const int count = list.GetCount();
-	deSkinMapped::Ref engMapped;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const seMapped &mapped = *list.GetAt(i);
-		
-		engMapped.TakeOver(new deSkinMapped(mapped.GetName()));
+	pSkin.GetMapped().Visit([&](const seMapped &mapped){
+		const deSkinMapped::Ref engMapped(deSkinMapped::Ref::New(mapped.GetName()));
 		
 		engMapped->GetCurve() = mapped.GetCurve();
 		engMapped->SetInputType(mapped.GetInputType());
@@ -281,11 +275,11 @@ void seTextureSkinBuilder::pAddMapped(deSkin &engSkin){
 		engMapped->SetRenderableComponent(mapped.GetRenderableComponent());
 		
 		engSkin.AddMapped(engMapped);
-	}
+	});
 }
 
 void seTextureSkinBuilder::pAddTexture(deSkin &engSkin) {
-	const seMappedList &mappedList = pSkin.GetMappedList();
+	const seMapped::List &mappedList = pSkin.GetMapped();
 	deSkinPropertyConstructed *engPropertyConstructed = nullptr;
 	deSkinPropertyValue *engPropertyValue = nullptr;
 	deSkinPropertyColor *engPropertyColor = nullptr;
@@ -293,17 +287,11 @@ void seTextureSkinBuilder::pAddTexture(deSkin &engSkin) {
 	deSkinPropertyVideo *engPropertyVideo = nullptr;
 	deSkinPropertyMapped *engPropertyMapped = nullptr;
 	deSkinTexture *engTexture = nullptr;
-	int i;
 	
 	try{
-		const sePropertyList &propertyList = pTexture.GetPropertyList();
-		const int propertyCount = propertyList.GetCount();
-		
 		engTexture = new deSkinTexture("texture");
 		
-		for(i=0; i<propertyCount; i++){
-			const seProperty &property = *propertyList.GetAt(i);
-			
+		pTexture.GetProperties().Visit([&](const seProperty &property){
 			switch(property.GetValueType()){
 			case seProperty::evtValue:
 				engPropertyValue = new deSkinPropertyValue(property.GetName());
@@ -388,7 +376,7 @@ void seTextureSkinBuilder::pAddTexture(deSkin &engSkin) {
 				engPropertyConstructed = nullptr;
 				break;
 			}
-		}
+		});
 		
 		engSkin.AddTexture(engTexture);
 		engTexture = nullptr;

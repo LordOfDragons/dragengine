@@ -26,12 +26,13 @@
 #define _GDEVAOLIGHT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/light/gdeOCLight.h"
+
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/light/deLight.h>
 
-class gdeOCLight;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 class deComponent;
@@ -50,12 +51,12 @@ public:
 	
 	
 private:
-	gdeOCLight *pOCLight;
+	gdeOCLight::Ref pOCLight;
 	
 	deLight::Ref pLight;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -83,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class light. */
-	inline gdeOCLight *GetOCLight() const{ return pOCLight; }
+	inline const gdeOCLight::Ref &GetOCLight() const{ return pOCLight; }
 	
 	/** \brief Update. */
 	void Update(float elapsed);

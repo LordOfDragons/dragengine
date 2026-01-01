@@ -25,14 +25,15 @@
 #ifndef _FEVIEWFONTIMAGE_H_
 #define _FEVIEWFONTIMAGE_H_
 
+#include "feViewFIImage.h"
+#include "feViewFontImageListener.h"
+#include "../../font/feFont.h"
+
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class feWindowMain;
-class feViewFIImage;
-class feViewFontImageListener;
-class feFont;
 
 
 
@@ -43,10 +44,14 @@ class feFont;
  * widget as well as scrollbars for altering the viewport.
  */
 class feViewFontImage : public igdeContainerBorder{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feViewFontImage> Ref;
+	
 private:
 	feWindowMain &pWindowMain;
-	feViewFontImageListener *pListener;
-	feFont *pFont;
+	feViewFontImageListener::Ref pListener;
+	feFont::Ref pFont;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
@@ -54,7 +59,7 @@ private:
 	igdeScrollBar::Ref pSBHorizontal;
 	igdeScrollBar::Ref pSBVertical;
 	igdeComboBox::Ref pCBZoom;
-	feViewFIImage *pViewImage;
+	feViewFIImage::Ref pViewImage;
 	
 	
 	
@@ -65,7 +70,9 @@ public:
 	feViewFontImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up font image view. */
+protected:
 	virtual ~feViewFontImage();
+public:
 	/*@}*/
 	
 	
@@ -73,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
@@ -98,7 +105,7 @@ public:
 	void ResetView();
 	
 	/** \brief View image. */
-	inline feViewFIImage &GetViewImage() const{ return *pViewImage; }
+	inline const feViewFIImage::Ref &GetViewImage() const{ return pViewImage; }
 	
 	
 	/** \brief Game like frame update. */

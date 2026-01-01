@@ -47,19 +47,14 @@
 
 deoglGIBVHLocal::deoglGIBVHLocal(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pTBONodeBox(NULL),
-pTBOIndex(NULL),
-pTBOFace(NULL),
-pTBOVertex(NULL),
-pTBOTexCoord(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
-		pTBOFace = new deoglDynamicTBOUInt16(renderThread, 4);
-		pTBOVertex = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOTexCoord = new deoglDynamicTBOFloat16(renderThread, 2);
+		pTBONodeBox = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBOIndex = deoglDynamicTBOUInt16::Ref::New(renderThread, 2);
+		pTBOFace = deoglDynamicTBOUInt16::Ref::New(renderThread, 4);
+		pTBOVertex = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBOTexCoord = deoglDynamicTBOFloat16::Ref::New(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -173,24 +168,21 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockNode(){
 	if(!pBlockNode){
-		pBlockNode.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()
-			->AddBlock(pTBOIndex, pTBONodeBox));
+		pBlockNode = pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()->AddBlock(pTBOIndex, pTBONodeBox);
 	}
 	return pBlockNode;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockFace(){
 	if(!pBlockFace){
-		pBlockFace.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()
-			->AddBlock(pTBOFace, pTBOTexCoord));
+		pBlockFace = pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()->AddBlock(pTBOFace, pTBOTexCoord);
 	}
 	return pBlockFace;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockVertex(){
 	if(!pBlockVertex){
-		pBlockVertex.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()
-			->AddBlock(pTBOVertex));
+		pBlockVertex = pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()->AddBlock(pTBOVertex);
 	}
 	return pBlockVertex;
 }
@@ -232,22 +224,6 @@ void deoglGIBVHLocal::RemoveBlockUsage(){
 
 void deoglGIBVHLocal::pCleanUp(){
 	DropBlocks();
-	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOIndex){
-		pTBOIndex->FreeReference();
-	}
-	if(pTBOFace){
-		pTBOFace->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
-	if(pTBOTexCoord){
-		pTBOTexCoord->FreeReference();
-	}
 }
 
 void deoglGIBVHLocal::pUpdateBVHExtends(deoglBVHNode &node){

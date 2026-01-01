@@ -61,20 +61,20 @@ gdeWPSTIMSkies::~gdeWPSTIMSkies(){
 ///////////////
 
 gdeWPSTIMSky *gdeWPSTIMSkies::GetChildWith(gdeSky *sky) const{
-	gdeWPSTIMSky *child = (gdeWPSTIMSky*)GetFirstChild();
+	gdeWPSTIMSky *child = GetFirstChild().DynamicCast<gdeWPSTIMSky>();
 	
 	while(child){
 		if(child->GetSky() == sky){
 			return child;
 		}
-		child = (gdeWPSTIMSky*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMSky>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMSkies::StructureChanged(){
-	const gdeSkyList &list = GetGameDefinition().GetSkies();
+	const gdeSky::List &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -85,7 +85,7 @@ void gdeWPSTIMSkies::StructureChanged(){
 		gdeWPSTIMSky * const modelSky = GetChildWith(sky);
 		
 		if(!modelSky){
-			item.TakeOver(new gdeWPSTIMSky(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMSky::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -108,13 +108,13 @@ void gdeWPSTIMSkies::StructureChanged(){
 
 
 void gdeWPSTIMSkies::OnAddedToTree(){
-	const gdeSkyList &list = GetGameDefinition().GetSkies();
+	const gdeSky::List &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMSky(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMSky::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

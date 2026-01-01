@@ -27,10 +27,10 @@
 #include <string.h>
 #include "debpDMBConvexVolumeFace.h"
 #include "debpDMBConvexVolumeList.h"
-#include "dragengine/common/math/decConvexVolume.h"
-#include "dragengine/common/math/decConvexVolumeFace.h"
-#include "dragengine/common/math/decConvexVolumeList.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/math/decConvexVolume.h>
+#include <dragengine/common/math/decConvexVolumeFace.h>
+#include <dragengine/common/math/decConvexVolumeList.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -55,7 +55,6 @@ decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFa
 	debpDMBConvexVolumeFace *newFace = NULL;
 	
 	newFace = new debpDMBConvexVolumeFace;
-	if(!newFace) DETHROW(deeOutOfMemory);
 	
 	if(face){
 		debpDMBConvexVolumeFace *dmbFace = (debpDMBConvexVolumeFace*)face;

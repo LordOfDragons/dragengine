@@ -73,29 +73,29 @@ deRig *deRigManager::GetRigWith(deVirtualFileSystem *vfs, const char *filename) 
 	return rig && !rig->GetOutdated() ? rig : NULL;
 }
 
-deRig *deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
+deRig::Ref deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
 	return CreateRig(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder){
+deRig::Ref deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deRig *rig = NULL, *findRig;
+	deRig::Ref rig;
 	
 	try{
 		// check if the rigation with this filename already exists. this check
 		// is only done if the filename is not empty in which case an unnamed
 		// rig is created
 		if(filename[0] != '\0'){
-			findRig = (deRig*)pRigs.GetWithFilename(vfs, filename);
+			deRig * const findRig = (deRig*)pRigs.GetWithFilename(vfs, filename);
 			if(findRig && !findRig->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create rigation using the builder
-		rig = new deRig(this, vfs, filename, decDateTime::GetSystemTime());
+		rig = deRig::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildRig(rig);
 		
 		// check rig
@@ -113,9 +113,6 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		pRigs.Add(rig);
 		
 	}catch(const deException &e){
-		if(rig){
-			rig->FreeReference();
-		}
 		LogErrorFormat("Creating rig '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -124,18 +121,17 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 	return rig;
 }
 
-deRig *deRigManager::LoadRig(const char *filename, const char *basePath){
+deRig::Ref deRigManager::LoadRig(const char *filename, const char *basePath){
 	return LoadRig(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deRig::Ref deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename || filename[0] == '\0' || !basePath){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader=NULL;
 	deBaseRigModule *module;
-	deRig *rig=NULL, *findRig;
+	deRig::Ref rig;
 	decPath path;
 	
 	try{
@@ -146,7 +142,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the rig with this filename already exists
-		findRig = (deRig*)pRigs.GetWithFilename(vfs, path.GetPathUnix());
+		deRig *findRig = (deRig*)pRigs.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findRig && findRig->GetModificationTime() != modificationTime){
 			LogInfoFormat("Rig '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -156,7 +152,6 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		}
 		
 		if(findRig){
-			findRig->AddReference();
 			rig = findRig;
 			
 		}else{
@@ -164,11 +159,9 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 			module = (deBaseRigModule*)GetModuleSystem()->GetModuleAbleToLoad(
 				deModuleSystem::emtRig, path.GetPathUnix());
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			rig = new deRig(this, vfs, path.GetPathUnix(), modificationTime);
+			rig = deRig::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			rig->SetAsynchron(false);
-			module->LoadRig(*fileReader, *rig);
-			fileReader->FreeReference(); fileReader = NULL;
+			module->LoadRig(OpenFileForReading(*vfs, path.GetPathUnix()), *rig);
 			// check rig
 			if(!rig->Verify()) DETHROW(deeInvalidParam);
 			// prepare rig
@@ -182,12 +175,6 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading rig '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		throw;
 	}
 	
@@ -196,10 +183,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 }
 
 void deRigManager::AddLoadedRig(deRig *rig){
-	if(!rig){
-		DETHROW(deeInvalidParam);
-	}
-	
+	DEASSERT_NOTNULL(rig)
 	pRigs.Add(rig);
 }
 

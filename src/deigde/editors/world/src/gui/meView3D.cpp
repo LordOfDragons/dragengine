@@ -45,6 +45,7 @@
 #include "../world/meWorldGuiParameters.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/deEngine.h>
@@ -71,6 +72,7 @@ class cEditorInteraction : public igdeMouseKeyListener {
 	meView3D &pView;
 	
 public:
+	typedef deTObjectReference<cEditorInteraction> Ref;
 	cEditorInteraction(meView3D &view) : pView(view){}
 	
 public:
@@ -184,9 +186,7 @@ public:
 meView3D::meView3D(meWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-pWorld(NULL),
-pEditor(NULL)
+pEditor(nullptr)
 {
 	int i;
 	for(i=0; i<30; i++){
@@ -194,22 +194,19 @@ pEditor(NULL)
 	}
 	pFPSRedrawCanvasDelay = 1.0f;
 	
-	deFontManager &fontmgr = *GetEngine()->GetFontManager();
-	pFontStats.TakeOver(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/"));
-	pFontSizeStats = pFontStats->PrepareSize(pFontStats->GetLineHeight());
+	igdeFont::sConfiguration configuration;
+	GetEnvironment().GetApplicationFont(configuration);
 	
-	pListener = new meView3DListener(*this);
+	pFontStats = GetEnvironment().GetSharedFont(configuration);
 	
-	pListenerEditor.TakeOver(new cEditorInteraction(*this));
+	pListener = meView3DListener::Ref::New(*this);
+	
+	pListenerEditor = cEditorInteraction::Ref::New(*this);
 	AddListener(pListenerEditor);
 }
 
 meView3D::~meView3D(){
-	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -228,22 +225,17 @@ void meView3D::SetWorld(meWorld *world){
 		return;
 	}
 	
-	if(pEditor){
-		delete pEditor;
-		pEditor = NULL;
-	}
+	pEditor = nullptr;
 	
-	SetRenderWorld(NULL);
+	SetRenderWorld(nullptr);
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
-		world->AddReference();
 		world->AddNotifier(pListener);
 		ModeChanged();
 		ActiveCameraChanged();
@@ -287,19 +279,19 @@ void meView3D::OnFrameUpdate(float elapsed){
 
 
 void meView3D::CreateCanvas(){
-	const int lineHeight = pFontSizeStats ? pFontSizeStats->GetLineHeight() : pFontStats->GetLineHeight();
+	deFont * const font = pFontStats->GetEngineFont();
+	const int lineHeight = font->GetLineHeight();
 	
 	igdeViewRenderWindow::CreateCanvas();
 	
 	if(!pCanvasFPS){
-		pCanvasFPS.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasView());
+		pCanvasFPS = GetEngine()->GetCanvasManager()->CreateCanvasView();
 		pCanvasFPS->SetOrder(10.0f);
 		pCanvasFPS->SetPosition(decPoint(5, 5));
 		pCanvasFPS->SetSize(decPoint(lineHeight * 4, lineHeight));
 		AddCanvas(pCanvasFPS);
 		
-		deCanvasPaint::Ref canvasBackground(deCanvasPaint::Ref::New(
-			 GetEngine()->GetCanvasManager()->CreateCanvasPaint()));
+		deCanvasPaint::Ref canvasBackground(GetEngine()->GetCanvasManager()->CreateCanvasPaint());
 		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
 		canvasBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.5f));
 		canvasBackground->SetLineColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
@@ -310,9 +302,9 @@ void meView3D::CreateCanvas(){
 	}
 	
 	if(!pCanvasFPSText){
-		pCanvasFPSText.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasText());
+		pCanvasFPSText = GetEngine()->GetCanvasManager()->CreateCanvasText();
 		pCanvasFPSText->SetColor(decColor(1.0f, 1.0f, 1.0f, 1.0f));
-		pCanvasFPSText->SetFont(pFontStats);
+		pCanvasFPSText->SetFont(font);
 		pCanvasFPSText->SetFontSize((float)lineHeight);
 		pCanvasFPSText->SetOrder(1.0f);
 		pCanvasFPSText->SetPosition(decPoint(1, 0));
@@ -335,10 +327,7 @@ void meView3D::OnResize(){
 
 
 void meView3D::ModeChanged(){
-	if(pEditor){
-		delete pEditor;
-		pEditor = NULL;
-	}
+	pEditor = nullptr;
 	
 	if(!pWorld){
 		return;
@@ -352,44 +341,44 @@ void meView3D::ModeChanged(){
 	
 	switch(pWorld->GetGuiParameters().GetWorkMode()){
 	case meWorldGuiParameters::ewmSelect:
-		pEditor = new meViewEditorSelect(*this);
+		pEditor = meViewEditorSelect::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmMove:
-		pEditor = new meViewEditorMove(*this);
+		pEditor = meViewEditorMove::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmRotate:
-		pEditor = new meViewEditorRotate(*this);
+		pEditor = meViewEditorRotate::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmScale:
-		pEditor = new meViewEditorScale(*this);
+		pEditor = meViewEditorScale::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmAddNew:
-		pEditor = new meViewEditorAddNew(*this);
+		pEditor = meViewEditorAddNew::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmHeightPaint:
-		pEditor = new meViewEditorHeightPaint(*this);
+		pEditor = meViewEditorHeightPaint::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmMaskPaint:
-		pEditor = new meViewEditorMaskPaint(*this);
+		pEditor = meViewEditorMaskPaint::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmVisibilityPaint:
-		pEditor = new meViewEditorVisibilityPaint(*this);
+		pEditor = meViewEditorVisibilityPaint::Ref::New(*this);
 		break;
 		
 	case meWorldGuiParameters::ewmNavSpaceEdit:
-		pEditor = new meViewEditorNavSpaceEdit(*this);
+		pEditor = meViewEditorNavSpaceEdit::Ref::New(*this);
 		break;
 		
 	default:
 		// if we don't know what to do stick to navigation. this can never be wrong
-		pEditor = new meViewEditorNavigation(*this);
+		pEditor = meViewEditorNavigation::Ref::New(*this);
 	}
 }
 
@@ -398,6 +387,6 @@ void meView3D::ActiveCameraChanged(){
 		SetRenderWorld(pWorld->GetActiveCamera()->GetEngineCamera());
 		
 	}else{
-		SetRenderWorld(NULL);
+		SetRenderWorld(nullptr);
 	}
 }

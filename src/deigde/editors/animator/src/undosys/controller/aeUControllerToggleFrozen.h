@@ -33,15 +33,16 @@
  * Undo action controller toggle frozen.
  */
 class aeUControllerToggleFrozen : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerToggleFrozen> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUControllerToggleFrozen> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

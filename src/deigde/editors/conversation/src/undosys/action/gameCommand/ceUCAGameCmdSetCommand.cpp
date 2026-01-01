@@ -46,27 +46,18 @@ ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAG
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldCommand = action->GetCommand();
 	pNewCommand = newCommand;
 	
 	SetShortInfo("Action game command set command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAGameCmdSetCommand::~ceUCAGameCmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

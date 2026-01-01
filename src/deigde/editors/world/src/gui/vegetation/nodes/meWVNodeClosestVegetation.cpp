@@ -50,6 +50,7 @@ protected:
 	meWVNodeClosestVegetation &pNode;
 	
 public:
+	typedef deTObjectReference<cTextVegetationType> Ref;
 	cTextVegetationType(meWVNodeClosestVegetation &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -58,8 +59,8 @@ public:
 		}
 		
 // 		igdeUndo::Ref undo;
-// 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
-// 			pNode.GetRuleClosestProp(), value ) );
+// 		undo = meUHTVRuleCPSetRadius::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+// 			pNode.GetRuleClosestProp(), value);
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -69,6 +70,7 @@ protected:
 	meWVNodeClosestVegetation &pNode;
 	
 public:
+	typedef deTObjectReference<cTextSearchRadius> Ref;
 	cTextSearchRadius(meWVNodeClosestVegetation &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -78,8 +80,8 @@ public:
 		}
 		
 // 		igdeUndo::Ref undo;
-// 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
-// 			pNode.GetRuleClosestProp(), value ) );
+// 		undo = meUHTVRuleCPSetRadius::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+// 			pNode.GetRuleClosestProp(), value);
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -106,22 +108,22 @@ pRuleCV(rule)
 	SetTitle("Closest Vegetation");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Distance", "Distance in meters from closest vegetation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Direction", "Direction (normalized vector) towards closest vegetation",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestVegetation::eosDirection));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
 	helper.EditFloat(pFraParameters, "Type:", "Set type of vegetation to search for.",
-		pEditVegetationType, new cTextVegetationType(*this));
+		pEditVegetationType, cTextVegetationType::Ref::New(*this));
 	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
-		pEditSearchRadius, new cTextSearchRadius(*this));
+		pEditSearchRadius, cTextSearchRadius::Ref::New(*this));
 }
 
 meWVNodeClosestVegetation::~meWVNodeClosestVegetation(){

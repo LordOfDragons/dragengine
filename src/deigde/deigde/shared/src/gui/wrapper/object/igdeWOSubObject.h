@@ -66,8 +66,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSubObject(igdeWObject &wrapper, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSubObject();
+	
+public:
 	/*@}*/
 	
 	

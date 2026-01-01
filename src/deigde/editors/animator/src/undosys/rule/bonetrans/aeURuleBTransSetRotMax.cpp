@@ -44,12 +44,10 @@ aeURuleBTransSetRotMax::aeURuleBTransSetRotMax(aeRuleBoneTransformator *rule, co
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
@@ -84,7 +82,4 @@ void aeURuleBTransSetRotMax::Redo(){
 //////////////////////
 
 void aeURuleBTransSetRotMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

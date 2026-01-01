@@ -25,7 +25,9 @@
 #ifndef _DETOBJECTREFERENCE_H_
 #define _DETOBJECTREFERENCE_H_
 
-#include "common/exceptions.h"
+#include <type_traits>
+
+#include "common/exceptions_reduced.h"
 
 /**
  * \brief Object reference template.
@@ -58,7 +60,7 @@ public:
 	 * 
 	 * Reference is added if object is not nullptr.
 	 */
-	deTObjectReference(T *object) : pObject(object){
+	explicit deTObjectReference(T *object) : pObject(object){
 		if(pObject){
 			pObject->AddReference();
 		}
@@ -72,6 +74,32 @@ public:
 	deTObjectReference(const deTObjectReference &reference) : pObject(reference.pObject){
 		if(pObject){
 			pObject->AddReference();
+		}
+	}
+	
+	/**
+	 * \brief Create object reference holder with object from another holder.
+	 * 
+	 * Reference is added if object in holder is not nullptr.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTObjectReference(const deTObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+		}
+	}
+	
+	/** \brief Move constructor. */
+	deTObjectReference(deTObjectReference &&reference) : pObject(reference.pObject){
+		reference.pObject = nullptr;
+	}
+	
+	/** \brief Move constructor. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTObjectReference(deTObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+			reference = nullptr;
 		}
 	}
 	
@@ -90,57 +118,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Set object without adding reference.
-	 * 
-	 * Use this method if the object to hold has been added a reference already. This is
-	 * the case with created objects as well as certain methods returning newly created
-	 * objects. In all these cases the object has to be held without adding a reference.
-	 * For all other situations use the constructor or assignment operator.
-	 * 
-	 * It is allowed for object to be a nullptr object.
-	 */
-	void TakeOver(T *object){
-		if(object == pObject){
-			if(object){
-				// this is required since we are asked to take over the reference. since we
-				// have the same reference already we refuse to take over the reference and
-				// thus without releasing it this reference would be dangling
-				object->FreeReference();
-			}
-			return;
-		}
-		
-		if(pObject){
-			pObject->FreeReference();
-		}
-		pObject = object;
-	}
-	
-	/** \brief Move reference. */
-	void TakeOver(deTObjectReference &reference){
-		if(pObject){
-			pObject->FreeReference();
-		}
-		
-		pObject = reference.pObject;
-		reference.pObject = nullptr;
-	}
-	
-	/** \brief Take over reference. */
-	void TakeOver(const deTObjectReference &reference){
-		*this = reference;
-	}
-	
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> void TakeOverWith(A&&... args){
-		TakeOver(new T(static_cast<A>(args)...));
-	}
-	
 	/** \brief Pointer to object. */
 	inline T* Pointer() const{
 		return pObject;
@@ -162,38 +139,31 @@ public:
 		return pObject != nullptr;
 	}
 	
+#if 0
 	/**
 	 * \brief Create instance taking over reference.
 	 * 
 	 * Same as calling TakeOver() on a new instance but allows for inline use.
 	 */
-	static deTObjectReference New(T *object){
+	static deTObjectReference NewDeprecated(T *object){
 		deTObjectReference reference;
-		reference.TakeOver(object);
+		reference = object;
 		return reference;
 	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTObjectReference New(const deTObjectReference &reference){
-		return reference;
-	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTObjectReference New(deTObjectReference &reference){
-		return reference;
-	}
+#endif
 	
 	/**
 	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling New() but using provided arguments with a 'new' call.
 	 */
-	template<typename... A> static deTObjectReference NewWith(A&&... args){
-		return New(new T(static_cast<A>(args)...));
+	template<typename... A> static deTObjectReference New(A&&... args){
+		deTObjectReference reference;
+		reference.pObject = new T(static_cast<A>(args)...);
+		return reference;
+	}
+	
+	/** Hash. */
+	inline unsigned int Hash() const{
+		return pObject ? DEHash(pObject) : 0;
 	}
 	
 	/** \brief Object is nullptr. */
@@ -263,14 +233,36 @@ public:
 		return operator=(reference.pObject);
 	}
 	
+	/**
+	 * \brief Store object.
+	 * 
+	 * If an object is already held its reference is release and the new object
+	 * stored. If the new object is not nullptr a reference is added.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline deTObjectReference &operator=(const deTObjectReference<U> &reference){
+		return operator=(static_cast<T*>(reference.Pointer()));
+	}
+	
 	/** \brief Test if object is held by this holder. */
 	inline bool operator==(T *object) const{
 		return pObject == object;
 	}
 	
 	/** \brief Test if object is held by this holder. */
+	inline bool operator==(const T *object) const{
+		return pObject == object;
+	}
+	
+	/** \brief Test if object is held by this holder. */
 	inline bool operator==(const deTObjectReference &reference) const{
 		return pObject == reference.pObject;
+	}
+	
+	/** \brief Test if object is held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator==(const deTObjectReference<U> &reference) const{
+		return pObject == static_cast<T*>(reference.Pointer());
 	}
 	
 	/** \brief Test if object is not held by this holder. */
@@ -281,6 +273,44 @@ public:
 	/** \brief Test if object is not held by this holder. */
 	inline bool operator!=(const deTObjectReference &reference) const{
 		return pObject != reference.pObject;
+	}
+	
+	/** \brief Test if object is not held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator!=(const deTObjectReference<U> &reference) const{
+		return pObject != static_cast<T*>(reference.Pointer());
+	}
+	
+	/** \brief Auto-cast to super class (static cast). */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<U, T>::value>::type>
+	operator deTObjectReference<U>() const{
+		return deTObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/** \brief Static cast to super class. */
+	template<typename U> deTObjectReference<U> StaticCast() const{
+		return deTObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/**
+	 * \brief Dynamic cast to sub class.
+	 * 
+	 * Can be nullptr if target class is not a sub class.
+	 */
+	template<typename U> deTObjectReference<U> DynamicCast() const{
+		return deTObjectReference<U>(dynamic_cast<U*>(pObject));
+	}
+	
+	/**
+	 * \brief Compare with another object reference.
+	 * \throws deeNullPointer if either object is nullptr.
+	 * 
+	 * Uses DECompare on the referenced object.
+	 */
+	int Compare(const deTObjectReference<T> &other) const{
+		DEASSERT_NOTNULL(pObject)
+		DEASSERT_NOTNULL(other.pObject)
+		return DECompare(*pObject, *other.pObject);
 	}
 	/*@}*/
 };

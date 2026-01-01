@@ -81,8 +81,6 @@ const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimation &rule
 dearRule(instance, animator, firstLink, rule),
 pAnimation(rule),
 
-pMove(NULL),
-
 pTargetMoveTime(rule.GetTargetMoveTime(), firstLink),
 
 pEnablePosition(rule.GetEnablePosition()),
@@ -94,9 +92,6 @@ pEnableVPS(rule.GetEnableVertexPositionSet())
 }
 
 dearRuleAnimation::~dearRuleAnimation(){
-	if(pMove){
-		pMove->FreeReference();
-	}
 }
 
 
@@ -219,16 +214,10 @@ void dearRuleAnimation::RuleChanged(){
 //////////////////////
 
 void dearRuleAnimation::pUpdateMove(){
-	if(pMove){
-		pMove->FreeReference();
-		pMove = NULL;
-	}
+	pMove = nullptr;
 	
 	const dearAnimation * const animation = GetUseAnimation();
 	if(animation){
 		pMove = animation->GetMoveNamed(pAnimation.GetMoveName());
-		if(pMove){
-			pMove->AddReference();
-		}
 	}
 }

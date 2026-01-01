@@ -92,8 +92,8 @@ pFont(TextAreaFont(powner, guitheme)),
 pTextArea(new FXText(this, this, ID_SELF, TextAreaFlags(powner), 0, 0, 0, 0,
 	TextAreaPadLeft(guitheme), TextAreaPadRight(guitheme),
 	TextAreaPadTop(guitheme), TextAreaPadBottom(guitheme))),
-pStyles(NULL),
-pResizer(NULL)
+pStyles(nullptr),
+pResizer(nullptr)
 {
 	if(!pOwner->GetVisible()){
 		hide();
@@ -121,7 +121,7 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 		// is potentially destroyed in the super-class destructor we need to make sure
 		// FXText does not access anymore the styles array we are going to delete
 		pTextArea->clearText();
-		pTextArea->setHiliteStyles(NULL);
+		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
 	}
 	
@@ -162,11 +162,11 @@ void igdeNativeFoxTextArea::DestroyNativeWidget(){
 
 void igdeNativeFoxTextArea::UpdateStyles(){
 	if(pStyles){
-		pTextArea->setHiliteStyles(NULL);
+		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
 		
 		delete [] pStyles;
-		pStyles = NULL;
+		pStyles = nullptr;
 	}
 	
 	pBuildStylesArray();
@@ -184,24 +184,19 @@ void igdeNativeFoxTextArea::ApplyStyles(){
 		return;
 	}
 	
-	const int count = pOwner->GetSegmentCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const igdeTextSegment &segment = pOwner->GetSegmentAt(i);
-		
+	pOwner->GetSegments().Visit([&](const igdeTextSegment &segment){
 		const decString &styleName = segment.GetStyle();
 		if(styleName.IsEmpty()){
-			continue;
+			return;
 		}
 		
 		const int style = pOwner->IndexOfStyleNamed(styleName);
 		if(style == -1){
-			continue;
+			return;
 		}
 		
 		pTextArea->changeStyle(segment.GetBegin(), segment.GetLength(), style + 1);
-	}
+	});
 }
 
 void igdeNativeFoxTextArea::UpdateText(){
@@ -316,19 +311,19 @@ igdeFont *igdeNativeFoxTextArea::TextAreaFont(const igdeTextArea &powner, const 
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::textFieldFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::textFieldFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::textFieldFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::textFieldFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -447,7 +442,7 @@ long igdeNativeFoxTextArea::onResizerDrag(FXObject*, FXSelector, void *pdata){
 //////////////////////
 
 void igdeNativeFoxTextArea::pBuildStylesArray(){
-	const int count = decMath::min(pOwner->GetStyleCount(), 254);
+	const int count = decMath::min(pOwner->GetStyles().GetCount(), 254);
 	if(count == 0){
 		return;
 	}
@@ -481,10 +476,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 	defaultStyle.activeBackColor = aapp.getBackColor();
 	defaultStyle.style = 0;
 	
-	int i;
-	for(i=0; i<count; i++){
-		const igdeTextStyle &style = *pOwner->GetStyleAt(i);
-		
+	pOwner->GetStyles().VisitIndexed([&](int i, const igdeTextStyle &style){
 		FXHiliteStyle &foxStyle = pStyles[i];
 		foxStyle = defaultStyle;
 		
@@ -511,7 +503,7 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 		if(style.GetStrikeThrough()){
 			foxStyle.style |= FXText::STYLE_STRIKEOUT;
 		}
-	}
+	}, 0, count);
 }
 
 #endif

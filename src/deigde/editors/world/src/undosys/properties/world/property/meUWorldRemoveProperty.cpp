@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUWorldRemoveProperty::meUWorldRemoveProperty(meWorld *world, const char *key, const char *value) :
-pWorld(NULL),
+
 pKey(key),
 pValue(value)
 {
@@ -51,13 +51,9 @@ pValue(value)
 	SetShortInfo("Remove world property");
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldRemoveProperty::~meUWorldRemoveProperty(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

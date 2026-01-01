@@ -34,6 +34,10 @@
  * Undo action set mapped renderable component.
  */
 class seUMappedSetRenderableComponent : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMappedSetRenderableComponent> Ref;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMappedSetRenderableComponent> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

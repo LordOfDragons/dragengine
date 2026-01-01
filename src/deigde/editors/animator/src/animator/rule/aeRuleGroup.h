@@ -26,7 +26,6 @@
 #define _AERULEGROUP_H_
 
 #include "aeRule.h"
-#include "aeRuleList.h"
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
@@ -41,7 +40,7 @@ public:
 	
 	
 private:
-	aeRuleList pRules;
+	aeRule::List pRules;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -51,7 +50,7 @@ private:
 	bool pUseCurrentState;
 	deAnimatorRuleGroup::eApplicationTypes pApplicationType;
 	
-	aeControllerTarget pTargetSelect;
+	aeControllerTarget::Ref pTargetSelect;
 	
 	bool pTreeListExpanded;
 	
@@ -63,13 +62,15 @@ public:
 	/** Create a copy of a group rule. */
 	aeRuleGroup(const aeRuleGroup &copy);
 	/** Clean up the group rule. */
+protected:
 	~aeRuleGroup() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return pRules; }
 	/** Add a new rule. */
 	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
@@ -114,11 +115,10 @@ public:
 	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
 	
 	/** Retrieve the select target. */
-	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline const aeControllerTarget::Ref &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
@@ -135,10 +135,10 @@ public:
 	void SetTreeListExpanded(bool expanded);
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	
 	/** Parent animator changed. */
 	void OnParentAnimatorChanged() override;

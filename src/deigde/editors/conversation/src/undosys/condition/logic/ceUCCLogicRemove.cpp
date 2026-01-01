@@ -47,10 +47,10 @@ ceUCCLogicRemove::ceUCCLogicRemove(ceConversationTopic *topic, ceConversationAct
 ceCConditionLogic *logic, ceConversationCondition *condition){
 	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pLogic = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pLogic = nullptr;
+	pCondition = nullptr;
 	pIndex = logic->GetConditions().IndexOf(condition);
 	if(pIndex == -1){
 		DETHROW(deeInvalidParam);
@@ -59,31 +59,12 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 	SetShortInfo("Logic Remove Condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCLogicRemove::~ceUCCLogicRemove(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -92,7 +73,7 @@ ceUCCLogicRemove::~ceUCCLogicRemove(){
 ///////////////
 
 void ceUCCLogicRemove::Undo(){
-	pLogic->GetConditions().InsertAt(pCondition, pIndex);
+	pLogic->GetConditions().Insert(pCondition, pIndex);
 	pTopic->NotifyConditionStructureChanged(pAction);
 	
 	pTopic->SetActive(pAction, pCondition);

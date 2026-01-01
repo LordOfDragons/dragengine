@@ -36,6 +36,11 @@ class deoglCollideList;
  * Parallel task building render tasks.
  */
 class deoglRPTSkyLightBuildRT : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoglRPTSkyLightBuildRT> Ref;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	deoglCollideList &pTempCollideList;

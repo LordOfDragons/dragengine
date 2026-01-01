@@ -42,12 +42,10 @@
 aeUSetRuleAnimMoveTime::aeUSetRuleAnimMoveTime(aeRuleAnimation *rule, float newTime){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetMoveTime();
 		pNewTime = newTime;
 		
@@ -82,5 +80,4 @@ void aeUSetRuleAnimMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAnimMoveTime::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

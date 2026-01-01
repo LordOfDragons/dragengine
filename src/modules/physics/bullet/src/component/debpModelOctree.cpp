@@ -91,7 +91,6 @@ debpDOctree *debpModelOctree::CreateOctree(int octant) const{
 	
 	// create child node
 	node = new debpModelOctree(nc, halfSize);
-	if(!node) DETHROW(deeOutOfMemory);
 	
 	return node;
 }
@@ -144,7 +143,6 @@ void debpModelOctree::AddFace(int face){
 	if(pFaceCount == pFaceSize){
 		int newSize = pFaceSize * 3 / 2 + 1;
 		int *newArray = new int[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFaces){
 			memcpy(newArray, pFaces, sizeof(int) * pFaceSize);
 			delete [] pFaces;

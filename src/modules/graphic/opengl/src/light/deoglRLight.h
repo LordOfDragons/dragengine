@@ -26,8 +26,12 @@
 #define _DEOGLRLIGHT_H_
 
 #include "pipeline/deoglLightPipelines.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../component/deoglComponentSet.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../skin/deoglRSkin.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
@@ -42,16 +46,12 @@ class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionTest;
 class deoglOptimizerLight;
-class deoglRCanvasView;
 class deoglRComponent;
-class deoglRDynamicSkin;
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglRWorld;
 class deoglShadowCaster;
-class deoglSkinState;
 class deoglSkinTexture;
 class deoglWorldOctree;
 
@@ -65,16 +65,18 @@ class decShapeBox;
  * Render light.
  */
 class deoglRLight : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRLight> Ref;
+	
+	
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRLight> Ref;
-
-
-		WorldComputeElement(deoglRLight &light);
+		typedef deTObjectReference<WorldComputeElement> Ref;
+		explicit WorldComputeElement(deoglRLight &light);
 		void UpdateData(sDataElement &data) const override;
 	};
 	
@@ -84,7 +86,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	bool pActive;
 	deLight::eLightTypes pLightType;
@@ -102,12 +104,12 @@ private:
 	decLayerMask pLayerMaskShadow;
 	decObjectSet pShadowIgnoreComponents;
 	
-	deoglRSkin *pLightSkin;
-	deoglRCanvasView *pLightCanvas;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pLightSkin;
+	deoglRCanvasView::Ref pLightCanvas;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinTexture *pUseSkinTexture;
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
@@ -282,7 +284,7 @@ public:
 	void SetAmbientRatio(float ratio);
 	
 	/** Light canvas or \em NULL if not used. */
-	inline deoglRCanvasView *GetLightCanvas() const{ return pLightCanvas; }
+	inline const deoglRCanvasView::Ref &GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** Set light canvas or \em NULL if not used. */
 	void SetLightCanvas(deoglRCanvasView *canvas);
@@ -324,13 +326,13 @@ public:
 	
 	
 	/** Light skin or \em NULL if not used. */
-	inline deoglRSkin *GetLightSkin() const{ return pLightSkin; }
+	inline const deoglRSkin::Ref &GetLightSkin() const{ return pLightSkin; }
 	
 	/** Set light skin or \em NULL if not used. */
 	void SetLightSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not used. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not used. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -342,7 +344,7 @@ public:
 	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Skin state or \em NULL if not used. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Skin texture to use or \em NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }

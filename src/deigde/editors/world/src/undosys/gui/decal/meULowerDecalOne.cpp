@@ -27,7 +27,7 @@
 #include "../../../world/decal/meDecal.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -45,14 +45,11 @@ meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	SetShortInfo("Lower decal one level.");
 	SetLongInfo("");
 }
 
 meULowerDecalOne::~meULowerDecalOne(){
-	if(pDecal) pDecal->FreeReference();
 }
 
 
@@ -65,8 +62,8 @@ void meULowerDecalOne::Undo(){
 	int index;
 	
 	if(object){
-		index = object->IndexOfDecal(pDecal);
-		if(index < object->GetDecalCount() - 1){
+		index = object->GetDecals().IndexOf(pDecal);
+		if(index < object->GetDecals().GetCount() - 1){
 			object->MoveDecalTo(pDecal, index + 1);
 		}
 		
@@ -80,7 +77,7 @@ void meULowerDecalOne::Redo(){
 	int index;
 	
 	if(object){
-		index = object->IndexOfDecal(pDecal);
+		index = object->GetDecals().IndexOf(pDecal);
 		if(index > 0){
 			object->MoveDecalTo(pDecal, index - 1);
 		}

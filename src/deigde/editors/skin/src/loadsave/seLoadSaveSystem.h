@@ -25,9 +25,10 @@
 #ifndef _SELOADSAVESYSTEM_H_
 #define _SELOADSAVESYSTEM_H_
 
-class seLoadSaveSkin;
+#include "seLoadSaveSkin.h"
+#include "../skin/seSkin.h"
+
 class seWindowMain;
-class seSkin;
 class igdeGameDefinition;
 
 
@@ -39,9 +40,7 @@ class seLoadSaveSystem{
 private:
 	seWindowMain &pWindowMain;
 	
-	seLoadSaveSkin **pLSSkins;
-	int pLSSkinCount;
-	int pLSSkinSize;
+	seLoadSaveSkin::List pLSSkins;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -57,27 +56,27 @@ public:
 	/** Retrieves the main window. */
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the number of load save skins. */
-	inline int GetLSSkinCount() const{ return pLSSkinCount; }
-	/** Retrieves the load save skin at the given index. */
-	seLoadSaveSkin *GetLSSkinAt(int index) const;
-	/** Retrieves the index of the load save skin. */
-	int IndexOfLSSkin(seLoadSaveSkin *lsSkin) const;
-	/** Determines if the save skin exists. */
-	bool HasLSSkin(seLoadSaveSkin *lsSkin) const;
-	/** Retrieves the index of the load save skin matching the given filename. */
-	int IndexOfLSSkinMatching(const char *filename);
+	/** Load save skins. */
+	inline const seLoadSaveSkin::List &GetLSSkins() const{ return pLSSkins; }
+	
+	/** Load save skin matching the given filename. */
+	seLoadSaveSkin *GetLSSkinMatching(const char *filename);
+	
 	/** Adds a load save skin. */
 	void AddLSSkin(seLoadSaveSkin *lsSkin);
+	
 	/** Removes a load save skin. */
 	void RemoveLSSkin(seLoadSaveSkin *lsSkin);
+	
 	/** Removes all load save skins. */
 	void RemoveAllLSSkins();
+	
 	/** Updates the load save skin list from the engine. */
 	void UpdateLSSkins();
 	
 	/** Loads the skin from file if possible. */
-	seSkin *LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
+	seSkin::Ref LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
+	
 	/** Saves the skin to file if possible. */
 	void SaveSkin(seSkin *skin, const char *filename);
 	/*@}*/

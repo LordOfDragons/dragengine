@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -39,16 +39,17 @@ class meObject;
  * Undo action for setting object size.
  */
 class meUSetObjectSize : public igdeUndo{
+public:
+	typedef deTObjectReference<meUSetObjectSize> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldSize;
 	decVector pNewSize;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUSetObjectSize> Ref;
-	
 	// constructor, destructor
 	meUSetObjectSize(meObject *object, const decVector &newSize);
 	

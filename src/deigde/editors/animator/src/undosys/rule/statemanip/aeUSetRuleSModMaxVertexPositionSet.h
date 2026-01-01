@@ -28,23 +28,24 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 /**
  * Undo set rule state modifier maximum vertex position set.
  */
 class aeUSetRuleSModMaxVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleSModMaxVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	float pOldMax;
 	float pNewMax;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleSModMaxVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

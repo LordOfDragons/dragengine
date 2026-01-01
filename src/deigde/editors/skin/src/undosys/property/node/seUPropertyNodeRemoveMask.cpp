@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seUPropertyNodeRemoveMask::seUPropertyNodeRemoveMask(sePropertyNode *node) :
-pNode(NULL),
-pMask(NULL)
+
+pMask(nullptr)
 {
 	if(!node || !node->GetProperty() || !node->GetMask()){
 		DETHROW(deeInvalidParam);
@@ -51,24 +51,15 @@ pMask(NULL)
 	SetShortInfo("Node remove mask");
 	
 	pMask = node->GetMask();
-	pMask->AddReference();
-	
 	pOldPosition = pMask->GetPosition();
 	pOldSize = pMask->GetSize();
 	pOldRotation = pMask->GetRotation();
 	pOldShearing = pMask->GetShearing();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeRemoveMask::~seUPropertyNodeRemoveMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 
@@ -89,7 +80,7 @@ void seUPropertyNodeRemoveMask::Undo(){
 
 void seUPropertyNodeRemoveMask::Redo(){
 	const decTexMatrix2 matrix(pMask->CreateParentTransformMatrix() * pNode->CreateParentTransformMatrix());
-	pNode->SetMask(NULL);
+	pNode->SetMask(nullptr);
 	pMask->SetFromMatrix(matrix, pOldSize, pOldRotation);
 	pNode->GetParent()->AddNode(pMask);
 }

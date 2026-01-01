@@ -34,10 +34,13 @@
  */
 class ceUCTopicActionPaste : public ceUCActionPaste{
 public:
+	typedef deTObjectReference<ceUCTopicActionPaste> Ref;
+
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTopicActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index);
+	ceUCTopicActionPaste(ceConversationTopic *topic, const ceConversationAction::List &actions, int index);
 	/*@}*/
 	
 public:

@@ -62,8 +62,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOLight(igdeWObject &wrapper, const igdeGDCLight &gdLight, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOLight();
+	
+public:
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Light resource. */
-	inline deLight *GetLight() const{ return pLight; }
+	inline const deLight::Ref &GetLight() const{ return pLight; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

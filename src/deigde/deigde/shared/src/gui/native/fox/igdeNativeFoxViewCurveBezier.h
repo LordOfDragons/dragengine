@@ -246,7 +246,7 @@ public:
 	/** \brief View curve bezier. */
 	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	/*@}*/
 	

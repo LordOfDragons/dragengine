@@ -35,6 +35,9 @@ class seWPView;
  * \brief View panel listener.
  */
 class seWPViewListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPViewListener> Ref;
+	
 private:
 	seWPView &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPViewListener() override;
+public:
 	/*@}*/
 	
 	

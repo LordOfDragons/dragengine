@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCBillboardRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
 	if(!billboard){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveBillboard(&objectClass, billboard);
+	return gdeUOCRemoveBillboard::Ref::New(&objectClass, billboard);
 }
 
 void gdeMAOCBillboardRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL);
+		&& gameDefinition->GetActiveOCBillboard() != nullptr);
 }

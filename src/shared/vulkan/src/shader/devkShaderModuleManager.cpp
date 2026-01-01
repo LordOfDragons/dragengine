@@ -130,8 +130,8 @@ void devkShaderModuleManager::Load(const char *directory){
 		const decString filename(path.GetPathUnix().GetMiddle(basePathLen));
 		
 		try{
-			reader.TakeOver(vfs.OpenFileForReading(path));
-			module.TakeOver(new devkShaderModule(pDevice, filename, reader));
+			reader = vfs.OpenFileForReading(path);
+			module = devkShaderModule::Ref::New(pDevice, filename, reader);
 			Add(module);
 			
 		}catch(const deException &){

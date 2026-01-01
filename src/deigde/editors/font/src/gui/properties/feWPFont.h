@@ -25,15 +25,16 @@
 #ifndef _FEWPFONT_H_
 #define _FEWPFONT_H_
 
+#include "../../font/feFont.h"
+#include "feWPFontListener.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 
-class feFont;
 class feWindowProperties;
-class feWPFontListener;
 
 
 
@@ -41,10 +42,13 @@ class feWPFontListener;
  * \brief Font Panel.
  */
 class feWPFont : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<feWPFont> Ref;
+	
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feWPFontListener *pListener;
+	feFont::Ref pFont;
+	feWPFontListener::Ref pListener;
 	
 	igdeTextField::Ref pEditImagePath;
 	igdeButton::Ref pBtnImagePath;
@@ -60,7 +64,9 @@ public:
 	feWPFont(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~feWPFont();
+public:
 	/*@}*/
 	
 	
@@ -71,7 +77,7 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

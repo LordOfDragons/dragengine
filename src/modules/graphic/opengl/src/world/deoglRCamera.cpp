@@ -54,8 +54,6 @@
 deoglRCamera::deoglRCamera(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-
 pTextureToneMapParams(nullptr),
 pElapsedToneMapAdaption(0.0f),
 pForceToneMapAdaption(true),
@@ -120,17 +118,7 @@ void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 	}
 	
 	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
-	
-	if(pParentWorld){
-		pParentWorld->FreeReference();
-	}
-	
 	pParentWorld = parentWorld;
-	
-	if(parentWorld){
-		parentWorld->AddReference();
-	}
-	
 	pPlan->SetWorld(parentWorld);
 }
 
@@ -270,7 +258,7 @@ float deoglRCamera::GetLastAverageLuminance(){
 			
 		}else{
 			const deoglPixelBuffer::Ref pbToneMapParams(deoglPixelBuffer::Ref::New(
-				new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
+				deoglPixelBuffer::epfFloat4, 1, 1, 1));
 			pTextureToneMapParams->GetPixels(pbToneMapParams);
 			pLastAverageLuminance = pbToneMapParams->GetPointerFloat4()->r;
 		}
@@ -307,7 +295,7 @@ void deoglRCamera::Update(float elapsed){
 void deoglRCamera::PrepareForRender(){
 	if(pInitTexture){
 		const deoglPixelBuffer::Ref pbToneMapParams(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
+			deoglPixelBuffer::epfFloat4, 1, 1, 1));
 		deoglPixelBuffer::sFloat4 &dataToneMapParams = *pbToneMapParams->GetPointerFloat4();
 		dataToneMapParams.r = pRenderThread.GetConfiguration().GetHDRRSceneKey(); // averageLuminance
 		dataToneMapParams.g = 0.0f; // scaleLum
@@ -364,7 +352,7 @@ void deoglRCamera::pPrepareToneMapCurveTexture(){
 	}
 	
 	const deoglPixelBuffer::Ref pbuf(deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, pToneMapCurveResolution, 1, 1)));
+		deoglPixelBuffer::epfFloat1, pToneMapCurveResolution, 1, 1));
 	deoglPixelBuffer::sFloat1 * const pixels = pbuf->GetPointerFloat1();
 	
 	int i;

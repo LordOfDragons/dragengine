@@ -67,25 +67,25 @@ bool igdeNativeNullCommonDialogs::GetString(igdeWidget*, const char *, const cha
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::SelectString(igdeWidget*, const char *, const char *, const decStringList &, int&){
+bool igdeNativeNullCommonDialogs::SelectString(igdeWidget*, const char *, const char *, const decTList<decString> &, int&){
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, const igdeFilePatternList &, decString &){
+bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, const igdeFilePattern::List &, decString &){
 	return false;
 }
 
 bool igdeNativeNullCommonDialogs::GetFileOpen(igdeWidget*, const char *, deVirtualFileSystem &,
-const igdeFilePatternList &, decString &){
+const igdeFilePattern::List &, decString &){
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, const igdeFilePatternList &, decString &){
+bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, const igdeFilePattern::List &, decString &){
 	return false;
 }
 
 bool igdeNativeNullCommonDialogs::GetFileSave(igdeWidget*, const char *, deVirtualFileSystem &,
-const igdeFilePatternList &, decString &){
+const igdeFilePattern::List &, decString &){
 	return false;
 }
 

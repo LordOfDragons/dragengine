@@ -63,14 +63,12 @@ gdeVAONavSpace::gdeVAONavSpace(gdeViewActiveObject &view, const gdeObjectClass &
 	const decString &propertyPrefix, gdeOCNavigationSpace *ocnavspace) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavSpace(ocnavspace),
-pDDSSpace(NULL),
-pDDSBlocker(NULL)
+pDDSSpace(nullptr),
+pDDSBlocker(nullptr)
 {
 	if(!ocnavspace){
 		DETHROW(deeInvalidParam);
 	}
-	ocnavspace->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSSpace();
@@ -119,25 +117,13 @@ void gdeVAONavSpace::UpdateDDVisibility(){
 //////////////////////
 
 void gdeVAONavSpace::pCleanUp(){
-	if(pDDSSpace){
-		pDDSSpace->SetParentDebugDrawer(NULL);
-		delete pDDSSpace;
-	}
-	if(pDDSBlocker){
-		pDDSBlocker->SetParentDebugDrawer(NULL);
-		delete pDDSBlocker;
-	}
 	if(pDDSpace){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDDSpace);
-		pDDSpace = NULL;
+		pDDSpace = nullptr;
 	}
 	if(pDDBlocker){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDDBlocker);
-		pDDBlocker = NULL;
-	}
-	
-	if(pOCNavSpace){
-		pOCNavSpace->FreeReference();
+		pDDBlocker = nullptr;
 	}
 }
 
@@ -147,20 +133,20 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDDSpace.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDDSpace = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDDSpace->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDDSpace);
 	
-	pDDBlocker.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDDBlocker = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDDBlocker->SetXRay(false);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDDBlocker);
 	
 	// space
-	pDDSSpace = new igdeWDebugDrawerShape;
+	pDDSSpace = igdeWDebugDrawerShape::Ref::New();
 	pDDSSpace->SetParentDebugDrawer(pDDSpace);
 	
 	// blocker
-	pDDSBlocker = new igdeWDebugDrawerShape;
+	pDDSBlocker = igdeWDebugDrawerShape::Ref::New();
 	pDDSBlocker->SetParentDebugDrawer(pDDBlocker);
 }
 
@@ -177,20 +163,18 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	igdeLoadSaveNavSpace loader(&environment, "gdeVAONavSpace");
-	deNavigationSpace *navspace = NULL;
-	decBaseFileReader *reader = NULL;
+	deNavigationSpace::Ref navspace;
+	decBaseFileReader::Ref reader;
 	
 	try{
 		navspace = engine.GetNavigationSpaceManager()->CreateNavigationSpace();
 		reader = vfs->OpenFileForReading(decPath::CreatePathUnix(path));
 		loader.Load(*navspace, *reader);
-		reader->FreeReference();
-		reader = NULL;
+		reader = nullptr;
 		
 	}catch(const deException &e){
 		if(navspace){
-			navspace->FreeReference();
-			navspace = NULL;
+			navspace = nullptr;
 		}
 		environment.GetLogger()->LogException(LOGSOURCE, e);
 		return;
@@ -206,14 +190,11 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 		
 	}catch(const deException &){
 		if(navspace){
-			navspace->FreeReference();
-			navspace = NULL;
+			navspace = nullptr;
 		}
 		throw;
 	}
-	
-	navspace->FreeReference();
-	navspace = NULL;
+	navspace = nullptr;
 }
 
 void gdeVAONavSpace::pBuildDDSBlocker(){

@@ -54,10 +54,7 @@ ceWPTTIMAPlayerChoiceOption::ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMai
 ceConversation &conversation, ceCAPlayerChoice &playerChoice,
 ceCAPlayerChoiceOption *option, int index) :
 ceWPTTreeItemModel(windowMain, conversation, etActionPlayerChoiceOption),
-pOption(NULL),
-pIndex(index),
-pCondition(NULL),
-pActions(NULL)
+pIndex(index)
 {
 	if(!option){
 		DETHROW(deeInvalidParam);
@@ -65,38 +62,19 @@ pActions(NULL)
 	
 	SetIcon(windowMain.GetIconActionOption());
 	
-	try{
-		pCondition = new ceWPTTIMAPlayerChoiceOptionCondition(
-			windowMain, conversation, playerChoice, option);
-		AddChild(pCondition);
-		
-		pActions = new ceWPTTIMAPlayerChoiceOptionActions(
-			windowMain, conversation, option->GetActions());
-		AddChild(pActions);
-		
-	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
-		throw;
-	}
+	pCondition = ceWPTTIMAPlayerChoiceOptionCondition::Ref::New(
+		windowMain, conversation, playerChoice, option);
+	AddChild(pCondition);
 	
-	pCondition->FreeReference(); // held by super-class child list
-	pActions->FreeReference(); // held by super-class child list
+	pActions = ceWPTTIMAPlayerChoiceOptionActions::Ref::New(
+		windowMain, conversation, option->GetActions());
+	AddChild(pActions);
 	
 	pOption = option;
-	option->AddReference();
-	
 	pUpdateText();
 }
 
 ceWPTTIMAPlayerChoiceOption::~ceWPTTIMAPlayerChoiceOption(){
-	if(pOption){
-		pOption->FreeReference();
-	}
 }
 
 
@@ -107,14 +85,14 @@ ceWPTTIMAPlayerChoiceOption::~ceWPTTIMAPlayerChoiceOption(){
 ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceOption::GetModelPlayerChoice() const{
 	ceWPTTreeItemModel * const parent = GetParent();
 	if(!parent){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(parent->GetType() == etActionPlayerChoice){
 		return (ceWPTTIMAPlayerChoice*)parent;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -156,23 +134,23 @@ void ceWPTTIMAPlayerChoiceOption::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceCAPlayerChoice &playerChoice = *modelPlayerChoice->GetActionPlayerChoice();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
 	
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceOptionMove(windowMain, conversation,
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionMove::Ref::New(windowMain, conversation,
 		*topic, playerChoice, pOption, pIndex - 1, "Move Option Up",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceOptionMove(windowMain, conversation,
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionMove::Ref::New(windowMain, conversation,
 		*topic, playerChoice, pOption, pIndex + 1, "Move Option Down",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)), true);
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceOptionRemove(
-		windowMain, conversation, *topic, playerChoice, pOption), true);
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionRemove::Ref::New(
+		windowMain, conversation, *topic, playerChoice, pOption));
 }
 
 

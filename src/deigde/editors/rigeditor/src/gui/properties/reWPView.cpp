@@ -89,6 +89,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -106,11 +107,12 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(reWPView &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		if(rig){
 			OnAction(*rig);
@@ -125,6 +127,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -142,6 +145,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseSliderListener> Ref;
 	cBaseSliderListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
@@ -167,6 +171,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -184,6 +189,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditDVectorListener> Ref;
 	cBaseEditDVectorListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
@@ -201,6 +207,7 @@ protected:
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
 	cBaseEditPathListener(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -217,6 +224,7 @@ public:
 
 class cEditModelPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditModelPath> Ref;
 	cEditModelPath(reWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, reRig &rig){
@@ -226,6 +234,7 @@ public:
 
 class cEditSkinPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditSkinPath> Ref;
 	cEditSkinPath(reWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, reRig &rig){
@@ -235,6 +244,7 @@ public:
 
 class cEditAnimationPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditAnimationPath> Ref;
 	cEditAnimationPath(reWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, reRig &rig){
@@ -247,6 +257,7 @@ class cComboTexture : public igdeComboBoxListener{
 	reWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTexture> Ref;
 	cComboTexture(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -256,6 +267,7 @@ public:
 
 class cEditTextureSkinPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditTextureSkinPath> Ref;
 	cEditTextureSkinPath(reWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, reRig &rig){
@@ -270,6 +282,7 @@ public:
 
 class cComboAnimationMove : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboAnimationMove> Ref;
 	cComboAnimationMove(reWPView &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox, reRig &rig){
@@ -279,6 +292,7 @@ public:
 
 class cSliderMoveTime : public cBaseSliderListener{
 public:
+	typedef deTObjectReference<cSliderMoveTime> Ref;
 	cSliderMoveTime(reWPView &panel) : cBaseSliderListener(panel){}
 	
 	void OnChanging(float value, reRig &rig) override{
@@ -292,6 +306,7 @@ public:
 
 class cCheckUseRestPose : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckUseRestPose> Ref;
 	cCheckUseRestPose(reWPView &panel) : cBaseAction(panel,
 		"Use rest pose", "Displays the rest pose instead of the animation frame"){}
 	
@@ -302,6 +317,7 @@ public:
 
 class cCheckPlaybackMove : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckPlaybackMove> Ref;
 	cCheckPlaybackMove(reWPView &panel) : cBaseAction(panel,
 		"Playback", "Determines if the animation move is played back"){ }
 	
@@ -313,6 +329,7 @@ public:
 
 class cEditGravity : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditGravity> Ref;
 	cEditGravity(reWPView &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig &rig){
@@ -322,6 +339,7 @@ public:
 
 class cEditLocalGravity : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditLocalGravity> Ref;
 	cEditLocalGravity(reWPView &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig &rig){
@@ -331,6 +349,7 @@ public:
 
 class cSliderSlowMotion : public cBaseSliderListener{
 public:
+	typedef deTObjectReference<cSliderSlowMotion> Ref;
 	cSliderSlowMotion(reWPView &panel) : cBaseSliderListener(panel){}
 	
 	void OnChanging(float value, reRig &rig) override{
@@ -346,6 +365,7 @@ public:
 class cTextGridSize : public igdeTextFieldListener{
 	reWPView &pPanel;
 public:
+	typedef deTObjectReference<cTextGridSize> Ref;
 	cTextGridSize(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField){
@@ -359,6 +379,7 @@ public:
 
 class cCheckSnapToGrid : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckSnapToGrid> Ref;
 	cCheckSnapToGrid(reWPView &panel) : cBaseAction(panel, "Snap", "Snap to grid"){}
 	
 	void OnAction(reRig &rig) override{
@@ -371,6 +392,7 @@ public:
 class cTextSensitivity : public igdeTextFieldListener{
 	reWPView &pPanel;
 public:
+	typedef deTObjectReference<cTextSensitivity> Ref;
 	cTextSensitivity(reWPView &panel) : pPanel(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField){
@@ -385,6 +407,7 @@ public:
 
 class cEditCameraPosition : public cBaseEditDVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraPosition> Ref;
 	cEditCameraPosition(reWPView &panel) : cBaseEditDVectorListener(panel){}
 	
 	virtual void OnChanged(const decDVector &vector, reRig &rig){
@@ -394,6 +417,7 @@ public:
 
 class cEditCameraRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraRotation> Ref;
 	cEditCameraRotation(reWPView &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig &rig){
@@ -403,6 +427,7 @@ public:
 
 class cTextCameraFov : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraFov> Ref;
 	cTextCameraFov(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -412,6 +437,7 @@ public:
 
 class cTextCameraFovRatio : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraFovRatio> Ref;
 	cTextCameraFovRatio(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -421,6 +447,7 @@ public:
 
 class cTextCameraImageDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraImageDistance> Ref;
 	cTextCameraImageDistance(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -430,6 +457,7 @@ public:
 
 class cTextCameraViewDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraViewDistance> Ref;
 	cTextCameraViewDistance(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -439,6 +467,7 @@ public:
 
 class cTextCameraExposure : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraExposure> Ref;
 	cTextCameraExposure(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -448,6 +477,7 @@ public:
 
 class cTextCameraAdaptionTime : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraAdaptionTime> Ref;
 	cTextCameraAdaptionTime(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -457,6 +487,7 @@ public:
 
 class cTextCameraLowIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraLowIntensity> Ref;
 	cTextCameraLowIntensity(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -466,6 +497,7 @@ public:
 
 class cTextCameraHighIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCameraHighIntensity> Ref;
 	cTextCameraHighIntensity(reWPView &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, reRig &rig){
@@ -476,6 +508,7 @@ public:
 
 class cCheckCameraAttach : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckCameraAttach> Ref;
 	cCheckCameraAttach(reWPView &panel) : cBaseAction(panel, "Attach camera to a bone",
 		"Attaches the camera to a bone instead of roaming around freely"){}
 	
@@ -487,11 +520,12 @@ public:
 
 class cComboCameraBone : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCameraBone> Ref;
 	cComboCameraBone(reWPView &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox, reRig &rig){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		reRigBone *bone = NULL;
+		reRigBone *bone = nullptr;
 		if(selection){
 			bone = (reRigBone*)selection->GetData();
 		}
@@ -501,6 +535,7 @@ public:
 
 class cEditCameraRelativePosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraRelativePosition> Ref;
 	cEditCameraRelativePosition(reWPView &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig &rig){
@@ -510,6 +545,7 @@ public:
 
 class cEditCameraRelativeRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraRelativeRotation> Ref;
 	cEditCameraRelativeRotation(reWPView &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(const decVector &vector, reRig &rig){
@@ -520,6 +556,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionSkyChanged> Ref;
 	cActionSkyChanged(reWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(reRig &rig) override{
@@ -529,6 +566,7 @@ public:
 
 class cActionEnvObjChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnvObjChanged> Ref;
 	cActionEnvObjChanged(reWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(reRig &rig) override{
@@ -548,145 +586,131 @@ public:
 
 reWPView::reWPView(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pRig(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, groupBox2, frameLine, form;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
-	pListener = new reWPViewListener(*this);
+	pListener = reWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// resources
 	helper.GroupBoxFlow(content, groupBox, "Resources:");
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
 	helper.EditPath(form, "Model:", "Path to the model resource to use.",
-		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath(*this));
+		igdeEnvironment::efpltModel, pEditModelPath, cEditModelPath::Ref::New(*this));
 	helper.EditPath(form, "Skin:", "Path to the skin resource to use.",
-		igdeEnvironment::efpltSkin, pEditSkinPath, new cEditSkinPath(*this));
+		igdeEnvironment::efpltSkin, pEditSkinPath, cEditSkinPath::Ref::New(*this));
 	helper.EditPath(form, "Animation:", "Path to the animation resource to use.",
-		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath(*this));
+		igdeEnvironment::efpltAnimation, pEditAnimPath, cEditAnimationPath::Ref::New(*this));
 	
 		// textures
 		helper.GroupBox(groupBox, groupBox2, "Textures:");
 		
 		helper.ComboBox(groupBox2, "Texture:", "Model texture to edit.",
-			pCBTexture, new cComboTexture(*this));
+			pCBTexture, cComboTexture::Ref::New(*this));
 		pCBTexture->SetDefaultSorter();
 		
 		helper.EditPath(groupBox2, "Skin:", "Skin to use for the texture.",
-			igdeEnvironment::efpltSkin, pEditTexSkin, new cEditTextureSkinPath(*this));
+			igdeEnvironment::efpltSkin, pEditTexSkin, cEditTextureSkinPath::Ref::New(*this));
 	
 	// animation move
 	helper.GroupBox(content, groupBox, "Animation Move:");
 	
 	helper.ComboBox(groupBox, "Move:", true, "Name of the animation move to use.",
-		pCBAnimMoves, new cComboAnimationMove(*this));
+		pCBAnimMoves, cComboAnimationMove::Ref::New(*this));
 	pCBAnimMoves->SetDefaultSorter();
 	
 	helper.EditSliderText(groupBox, "Time:", "Move time to display.",
-		0.0f, 0.0f, 5, 2, 0.5f, pSldMoveTime, new cSliderMoveTime(*this));
+		0.0f, 0.0f, 5, 2, 0.5f, pSldMoveTime, cSliderMoveTime::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkUseRestPose, new cCheckUseRestPose(*this), true);
-	helper.CheckBox(groupBox, pChkPlaybackMove, new cCheckPlaybackMove(*this), true);
+	helper.CheckBox(groupBox, pChkUseRestPose, cCheckUseRestPose::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkPlaybackMove, cCheckPlaybackMove::Ref::New(*this));
 	
 	// physics
 	helper.GroupBox(content, groupBox, "Physics:");
 	
 	helper.EditVector(groupBox, "Gravity:", "Gravity magnitude and direction of the world.",
-		pEditGravity, new cEditGravity(*this));
+		pEditGravity, cEditGravity::Ref::New(*this));
 	helper.EditVector(groupBox, "Local Gravity:", "Magnitude and direction of the object local gravity.",
-		pEditLocalGravity, new cEditLocalGravity(*this));
+		pEditLocalGravity, cEditLocalGravity::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Slowmotion:", "Sets the slowmotion factor.",
-		0.0f, 1.0f, 5, 2, 0.1f, pSldSlowmotion, new cSliderSlowMotion(*this));
+		0.0f, 1.0f, 5, 2, 0.1f, pSldSlowmotion, cSliderSlowMotion::Ref::New(*this));
 	pSldSlowmotion->SetValue(1.0f);
 	
 	// editing
 	helper.GroupBox(content, groupBox, "Editing:");
 	
 	helper.FormLineStretchFirst(groupBox, "Grid:", "Snap to grid", frameLine);
-	helper.EditFloat(frameLine, "Grid spacing in meters", pEditGridSize, new cTextGridSize(*this));
-	helper.CheckBox(frameLine, pChkSnapToGrid, new cCheckSnapToGrid(*this), true);
+	helper.EditFloat(frameLine, "Grid spacing in meters", pEditGridSize, cTextGridSize::Ref::New(*this));
+	helper.CheckBox(frameLine, pChkSnapToGrid, cCheckSnapToGrid::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Sensitivity:",
 		"Sets the sensivity of the mouse while moving but not rotation.",
-		pEditSensitivity, new cTextSensitivity(*this));
+		pEditSensitivity, cTextSensitivity::Ref::New(*this));
 	
 	// property panels
-	action.TakeOver(new cActionSkyChanged(*this));
+	action = cActionSkyChanged::Ref::New(*this);
 	helper.WPSky(content, pWPSky, action, "Sky:", false, true);
 	
-	action.TakeOver(new cActionEnvObjChanged(*this));
+	action = cActionEnvObjChanged::Ref::New(*this);
 	helper.WPWObject(content, pWPEnvObject, action, "Environment Object:", false, true);
 	
 	// camera
 	helper.GroupBox(content, groupBox, "Camera:", true);
 	
 	helper.EditDVector(groupBox, "Position:", "Position of the camera.",
-		pEditCamPosition, new cEditCameraPosition(*this));
+		pEditCamPosition, cEditCameraPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the camera.",
-		pEditCamRotation, new cEditCameraRotation(*this));
+		pEditCamRotation, cEditCameraRotation::Ref::New(*this));
 	
-	helper.EditVector(groupBox, "View:", "View direction of the camera.", pEditCamViewDir, NULL);
+	helper.EditVector(groupBox, "View:", "View direction of the camera.", pEditCamViewDir, {});
 	pEditCamViewDir->SetEditable(false);
 	
 	helper.FormLine(groupBox, "FoV:", "Field of view", frameLine);
-	helper.EditFloat(frameLine, "Field of view in degrees", pEditCamFov,
-		new cTextCameraFov(*this));
-	helper.EditFloat(frameLine, "Field of view ratio (height / width)", pEditCamFovRatio,
-		new cTextCameraFovRatio(*this));
+	helper.EditFloat(frameLine, "Field of view in degrees", pEditCamFov, cTextCameraFov::Ref::New(*this));
+	helper.EditFloat(frameLine, "Field of view ratio (height / width)", pEditCamFovRatio, cTextCameraFovRatio::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Distance:", "Distances", frameLine);
-	helper.EditFloat(frameLine, "Image distance (near clipping plane)", pEditCamImageDist,
-		new cTextCameraImageDistance(*this));
-	helper.EditFloat(frameLine, "View distance (far clipping plane", pEditCamViewDist,
-		new cTextCameraViewDistance(*this));
+	helper.EditFloat(frameLine, "Image distance (near clipping plane)", pEditCamImageDist, cTextCameraImageDistance::Ref::New(*this));
+	helper.EditFloat(frameLine, "View distance (far clipping plane", pEditCamViewDist, cTextCameraViewDistance::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Exposure:",
 		"Exposure multiplier and adaption time", frameLine);
-	helper.EditFloat(frameLine, "Exposure multiplier", pEditCamExposure,
-		new cTextCameraExposure(*this));
-	helper.EditFloat(frameLine, "Adaption time in seconds", pEditCamAdaptTime,
-		new cTextCameraAdaptionTime(*this));
+	helper.EditFloat(frameLine, "Exposure multiplier", pEditCamExposure, cTextCameraExposure::Ref::New(*this));
+	helper.EditFloat(frameLine, "Adaption time in seconds", pEditCamAdaptTime, cTextCameraAdaptionTime::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Adaption:",
 		"Exposure multiplier and adaption time", frameLine);
-	helper.EditFloat(frameLine, "Lower intensity to adapt to.", pEditCamLowInt,
-		new cTextCameraLowIntensity(*this));
-	helper.EditFloat(frameLine, "Higher intensity to adapt to", pEditCamHiInt,
-		new cTextCameraHighIntensity(*this));
+	helper.EditFloat(frameLine, "Lower intensity to adapt to.", pEditCamLowInt, cTextCameraLowIntensity::Ref::New(*this));
+	helper.EditFloat(frameLine, "Higher intensity to adapt to", pEditCamHiInt, cTextCameraHighIntensity::Ref::New(*this));
 	
 	// camera attaching
 	helper.GroupBox(content, groupBox, "Camera Attaching:", true);
 	
-	helper.CheckBox(groupBox, pChkCamAttach, new cCheckCameraAttach(*this), true);
+	helper.CheckBox(groupBox, pChkCamAttach, cCheckCameraAttach::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Bone:", true, "Bone the camera is attached to.",
-		pCBCamBone, new cComboCameraBone(*this));
+		pCBCamBone, cComboCameraBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
 	helper.EditVector(groupBox, "Position:",
 		"Camera position relative to the attachment bone coordinate system.",
-		pEditCamRelPosition, new cEditCameraRelativePosition(*this));
+		pEditCamRelPosition, cEditCameraRelativePosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:",
 		"Camera rotation relative to the attachment bone coordinate system.",
-		pEditCamRelRotation, new cEditCameraRelativeRotation(*this));
+		pEditCamRelRotation, cEditCameraRelativeRotation::Ref::New(*this));
 }
 
 reWPView::~reWPView(){
-	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -699,13 +723,12 @@ void reWPView::SetRig(reRig *rig){
 		return;
 	}
 	
-	pWPEnvObject->SetObject(NULL);
-	pWPSky->SetSky(NULL);
+	pWPEnvObject->SetObject(nullptr);
+	pWPSky->SetSky(nullptr);
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
-		pRig = NULL;
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
@@ -714,8 +737,6 @@ void reWPView::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		pWPSky->SetSky(rig->GetSky());
 		pWPEnvObject->SetObject(rig->GetEnvObject());
 		
@@ -751,7 +772,7 @@ void reWPView::UpdateResources(){
 		pEditAnimPath->ClearPath();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig.IsNotNull();
 	pEditModelPath->SetEnabled(enabled);
 	pEditSkinPath->SetEnabled(enabled);
 	pEditAnimPath->SetEnabled(enabled);
@@ -761,7 +782,7 @@ void reWPView::UpdateResources(){
 }
 
 void reWPView::UpdateCamera(){
-	reCamera * const camera = pRig ? pRig->GetCamera() : NULL;
+	reCamera * const camera = pRig ? pRig->GetCamera() : nullptr;
 	const bool enableAttach = camera ? camera->GetAttachToBone() : false;
 	
 	if(camera){
@@ -799,7 +820,7 @@ void reWPView::UpdateCamera(){
 		pEditCamRelRotation->SetVector(decVector());
 	}
 	
-	const bool enabled = camera != NULL;
+	const bool enabled = camera != nullptr;
 	
 	pEditCamPosition->SetEnabled(!enableAttach);
 	pEditCamRotation->SetEnabled(!enableAttach);
@@ -819,7 +840,7 @@ void reWPView::UpdateCamera(){
 }
 
 void reWPView::UpdateCameraView(){
-	reCamera * const camera = pRig ? pRig->GetCamera() : NULL;
+	reCamera * const camera = pRig ? pRig->GetCamera() : nullptr;
 	
 	if(camera){
 		pEditCamViewDir->SetVector(camera->GetViewMatrix().TransformView());
@@ -828,7 +849,7 @@ void reWPView::UpdateCameraView(){
 		pEditCamViewDir->SetVector(decVector());
 	}
 	
-	pEditCamViewDir->SetEnabled(camera != NULL);
+	pEditCamViewDir->SetEnabled(camera != nullptr);
 }
 
 void reWPView::UpdateSky(){
@@ -868,7 +889,7 @@ void reWPView::UpdateView(){
 		pEditLocalGravity->SetVector(decVector());
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig.IsNotNull();
 	
 	pCBAnimMoves->SetEnabled(enabled);
 	pSldMoveTime->SetEnabled(enabled);
@@ -885,8 +906,8 @@ void reWPView::UpdateView(){
 }
 
 void reWPView::UpdateMoveList(){
-	const deAnimator * const engAnimator = pRig ? pRig->GetEngineAnimator() : NULL;
-	const deAnimation * const animation = engAnimator ? engAnimator->GetAnimation() : NULL;
+	const deAnimator * const engAnimator = pRig ? pRig->GetEngineAnimator() : nullptr;
+	const deAnimation * const animation = engAnimator ? engAnimator->GetAnimation() : nullptr;
 	
 	pCBAnimMoves->RemoveAllItems();
 	
@@ -906,13 +927,9 @@ void reWPView::UpdateBoneList(){
 	pCBCamBone->RemoveAllItems();
 	
 	if(pRig){
-		const int count = pRig->GetBoneCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			reRigBone * const bone = pRig->GetBoneAt(i);
-			pCBCamBone->AddItem(bone->GetName(), NULL, bone);
-		}
+		pRig->GetBones().Visit([&](reRigBone *bone){
+			pCBCamBone->AddItem(bone->GetName(), nullptr, bone);
+		});
 	}
 	
 	pCBCamBone->SortItems();
@@ -924,13 +941,9 @@ void reWPView::UpdateTextureList(){
 	pCBTexture->RemoveAllItems();
 	
 	if(pRig){
-		const int count = pRig->GetComponentTextureCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			reRigTexture * const texture = pRig->GetComponentTextureAt(i);
-			pCBTexture->AddItem(texture->GetName(), NULL, texture);
-		}
+		pRig->GetComponentTextures().Visit([&](reRigTexture *texture){
+			pCBTexture->AddItem(texture->GetName(), nullptr, texture);
+		});
 	}
 	
 	pCBTexture->SortItems();
@@ -954,12 +967,12 @@ void reWPView::UpdateTexture(){
 
 reRigTexture* reWPView::GetSelectedTexture() const{
 	if(!pRig){
-		return NULL;
+		return nullptr;
 	}
 	
 	const igdeListItem * const selection = pCBTexture->GetSelectedItem();
 	if(!selection){
-		return NULL;
+		return nullptr;
 	}
 	
 	return (reRigTexture*)selection->GetData();

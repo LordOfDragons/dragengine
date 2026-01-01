@@ -64,14 +64,12 @@ pDirtyPosition(true),
 pDirtySize(true),
 pDirtyWindowTitle(true),
 pDirtyFullScreen(true),
-pDirtyIcon(true),
-
-pRRenderWindow(NULL)
+pDirtyIcon(true)
 {
 	try{
 		pCanvasView = (deoglCanvasView*)renderWindow.GetCanvasView()->GetPeerGraphic();
 		
-		pRRenderWindow = new deoglRRenderWindow(ogl.GetRenderThread());
+		pRRenderWindow = deoglRRenderWindow::Ref::New(ogl.GetRenderThread());
 		
 		pRRenderWindow->SetHostWindow(renderWindow.GetHostWindow());
 		pRRenderWindow->SetPosition(renderWindow.GetX(), renderWindow.GetY());
@@ -176,7 +174,7 @@ void deoglRenderWindow::SyncToRender(){
 			image.CreatePixelBuffer();
 			
 			try{
-				pRRenderWindow->SetIcon(deoglPixelBuffer::Ref::NewWith(image.GetPixelBuffer()));
+				pRRenderWindow->SetIcon(image.GetPixelBuffer());
 				
 			}catch(const deException &){
 				image.ReleasePixelBuffer();
@@ -221,7 +219,6 @@ void deoglRenderWindow::SyncToRender(){
 void deoglRenderWindow::pCleanUp(){
 	if(pRRenderWindow){
 		pRRenderWindow->SetFullScreen(false); // make sure full screen is disabled if enabled
-		pRRenderWindow->FreeReference();
 	}
 	
 	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS

@@ -127,7 +127,7 @@ int projTestRunCommandThread::ReadCommandFromPipe(){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(!ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, NULL)){
+	if(!ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if(bytesRead < sizeof(command)){

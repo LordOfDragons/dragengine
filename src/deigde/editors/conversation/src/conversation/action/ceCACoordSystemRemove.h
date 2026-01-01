@@ -40,6 +40,7 @@ private:
 	decString pCoordSystemID;
 	
 public:
+	typedef deTObjectReference<ceCACoordSystemRemove> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
@@ -47,7 +48,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemRemove(const ceCACoordSystemRemove &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCACoordSystemRemove() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -58,7 +61,7 @@ public:
 	void SetCoordSystemID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

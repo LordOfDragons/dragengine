@@ -27,8 +27,7 @@
 
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
-
-class deImage;
+#include "../../image/deImage.h"
 
 // definitions
 /** 8-bit image value corresponding to 0 level. */
@@ -67,7 +66,7 @@ private:
 	float pScaling;
 	
 	decString pPathHeightImage;
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	
 	decString pPathVisImage;
 	unsigned char *pVisibleFaces;
@@ -114,7 +113,7 @@ public:
 	void SetPathHeightImage(const  char *path);
 	
 	/** \brief Height image or NULL if not set. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
 	void SetHeightImage(deImage *heightImage);

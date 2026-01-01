@@ -47,10 +47,10 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pWord = NULL;
-	pIndex = actorSpeak->GetWordList().IndexOf(word);
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pWord = nullptr;
+	pIndex = actorSpeak->GetWords().IndexOf(word);
 	
 	if(pIndex == -1){
 		DETHROW(deeInvalidParam);
@@ -59,25 +59,11 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Remove Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -86,11 +72,11 @@ ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
 ///////////////
 
 void ceUCAASpeakWordRemove::Undo(){
-	pActorSpeak->GetWordList().InsertAt(pWord, pIndex);
+	pActorSpeak->GetWords().Insert(pWord, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordRemove::Redo(){
-	pActorSpeak->GetWordList().Remove(pWord);
+	pActorSpeak->GetWords().Remove(pWord);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

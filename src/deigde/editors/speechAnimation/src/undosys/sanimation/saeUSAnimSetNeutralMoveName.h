@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -35,8 +35,12 @@ class saeSAnimation;
  * Undo Action Set Neutral Move Name.
  */
 class saeUSAnimSetNeutralMoveName : public igdeUndo{
+public:
+	typedef deTObjectReference<saeUSAnimSetNeutralMoveName> Ref;
+	
+	
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldName;
 	decString pNewName;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeUSAnimSetNeutralMoveName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

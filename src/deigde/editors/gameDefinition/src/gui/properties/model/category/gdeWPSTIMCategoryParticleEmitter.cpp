@@ -59,7 +59,7 @@ gdeWPSTIMCategoryParticleEmitter::~gdeWPSTIMCategoryParticleEmitter(){
 
 gdeWPSTIMCategoryParticleEmitter *gdeWPSTIMCategoryParticleEmitter::GetChildWith(
 gdeCategory* category, bool deep) const{
-	gdeWPSTIMCategoryParticleEmitter *child = (gdeWPSTIMCategoryParticleEmitter*)GetFirstChild();
+	gdeWPSTIMCategoryParticleEmitter *child = GetFirstChild().DynamicCast<gdeWPSTIMCategoryParticleEmitter>();
 	
 	while(child){
 		if(child->GetCategory() == category){
@@ -73,10 +73,10 @@ gdeCategory* category, bool deep) const{
 			}
 		}
 		
-		child = (gdeWPSTIMCategoryParticleEmitter*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMCategoryParticleEmitter>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -96,7 +96,7 @@ void gdeWPSTIMCategoryParticleEmitter::CategoriesChanged(){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMCategoryParticleEmitter::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -125,7 +125,7 @@ void gdeWPSTIMCategoryParticleEmitter::OnAddedToTree(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMCategoryParticleEmitter(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMCategoryParticleEmitter::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

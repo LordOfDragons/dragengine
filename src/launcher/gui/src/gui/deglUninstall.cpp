@@ -191,7 +191,6 @@ void deglUninstall::pUninstallDelga(const decString &filename){
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(filename).GetLastComponent());
 	
-	deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-		decPath::CreatePathNative(pWindow.GetLauncher()->GetPathGames())))
-			->DeleteFile(target);
+	deVFSDiskDirectory::Ref::New(decPath::CreatePathNative(
+		pWindow.GetLauncher()->GetPathGames()))->DeleteFile(target);
 }

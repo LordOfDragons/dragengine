@@ -44,7 +44,7 @@ peeUTypeSetSkinPath::peeUTypeSetSkinPath(peeType *type, const char *newPath){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Skin Path");
 	
@@ -52,13 +52,9 @@ peeUTypeSetSkinPath::peeUTypeSetSkinPath(peeType *type, const char *newPath){
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetSkinPath::~peeUTypeSetSkinPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

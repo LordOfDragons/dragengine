@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -38,16 +38,17 @@ class aeRuleLimit;
  * Undo action rule limitor set minimum rotation.
  */
 class aeURuleLimitSetRotMin : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetRotMin> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleLimitSetRotMin> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

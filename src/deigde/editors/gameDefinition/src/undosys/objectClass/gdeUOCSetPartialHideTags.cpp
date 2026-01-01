@@ -42,7 +42,7 @@
 
 gdeUOCSetPartialHideTags::gdeUOCSetPartialHideTags(
 gdeObjectClass *objectClass, const decStringSet &newValue) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -54,13 +54,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetPartialHideTags::~gdeUOCSetPartialHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -56,18 +56,18 @@ gdeBaseAction(windowMain, "Remove Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAParticleEmitterRemove::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMAParticleEmitterRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeParticleEmitter * const category = gameDefinition.GetActiveParticleEmitter();
 	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotParticleEmitter){
-		return NULL;
+		return {};
 	}
 	
 	gdeParticleEmitter * const particleEmitter = gameDefinition.GetActiveParticleEmitter();
 	if(!particleEmitter){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeURemoveParticleEmitter(&gameDefinition, particleEmitter);
+	return gdeURemoveParticleEmitter::Ref::New(&gameDefinition, particleEmitter);
 }
 
 void gdeMAParticleEmitterRemove::Update(){
@@ -78,5 +78,5 @@ void gdeMAParticleEmitterRemove::Update(){
 	}
 	
 	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotParticleEmitter 
-		&& gameDefinition->GetActiveParticleEmitter() != NULL);
+		&& gameDefinition->GetActiveParticleEmitter() != nullptr);
 }

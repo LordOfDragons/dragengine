@@ -44,6 +44,7 @@ class cComboIdentifier : public igdeComboBoxListener{
 	ceDialogEditStrip &pDialog;
 	
 public:
+	typedef deTObjectReference<cComboIdentifier> Ref;
 	cComboIdentifier(ceDialogEditStrip &dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -54,6 +55,10 @@ public:
 };
 
 class cActionResetDuration : public igdeAction{
+public:
+	typedef deTObjectReference<cActionResetDuration> Ref;
+	
+private:
 	ceDialogEditStrip &pDialog;
 	
 public:
@@ -61,7 +66,7 @@ public:
 		dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"Reset duration"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.ResetDuration();
 	}
 };
@@ -98,18 +103,18 @@ pAutoResetDuration(true)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(environment));
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
-	helper.ComboBoxFilter(content, textLabel, 25, true, "", pCBID, new cComboIdentifier(*this));
+	helper.ComboBoxFilter(content, textLabel, 25, true, "", pCBID, cComboIdentifier::Ref::New(*this));
 	pCBID->SetDefaultSorter();
 	
-	helper.EditFloat(content, "Pause:", "Time in seconds to wait before strip is activated", pEditPause, NULL);
+	helper.EditFloat(content, "Pause:", "Time in seconds to wait before strip is activated", pEditPause, {});
 	
 	igdeContainer::Ref line;
 	const char *tooltip = "Duration in seconds of strip";
 	helper.FormLineStretchFirst(content, "Duration:", tooltip, line);
-	helper.EditFloat(line, tooltip, pEditDuration, nullptr);
-	helper.Button(line, pBtnResetDuration, new cActionResetDuration(*this), true);
+	helper.EditFloat(line, tooltip, pEditDuration, {});
+	helper.Button(line, pBtnResetDuration, cActionResetDuration::Ref::New(*this));
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Cancel");
@@ -183,8 +188,8 @@ void ceDialogEditStrip::UpdateStrip(ceStrip &strip) const{
 	strip.SetDuration(pEditDuration->GetFloat());
 }
 
-ceStrip *ceDialogEditStrip::CreateStrip() const{
-	ceStrip * const strip = new ceStrip;
+ceStrip::Ref ceDialogEditStrip::CreateStrip() const{
+	const ceStrip::Ref strip(ceStrip::Ref::New());
 	UpdateStrip(*strip);
 	return strip;
 }

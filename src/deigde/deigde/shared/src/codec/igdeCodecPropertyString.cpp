@@ -255,12 +255,12 @@ const decColor &defaultColor) const{
 
 void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &list) const{
 	const decStringList tokenShapeList = decString(string).Split(vSeparators);
-	decShapeCylinder *cylinder = NULL;
-	decShapeCapsule *capsule = NULL;
-	decShapeSphere *sphere = NULL;
-	decShapeHull *hull = NULL;
+	decShapeCylinder *cylinder = nullptr;
+	decShapeCapsule *capsule = nullptr;
+	decShapeSphere *sphere = nullptr;
+	decShapeHull *hull = nullptr;
 	decQuaternion orientation;
-	decShapeBox *box = NULL;
+	decShapeBox *box = nullptr;
 	decVector vector;
 	int i, j;
 	
@@ -305,7 +305,7 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &
 				}
 				
 				list.Add(sphere);
-				sphere = NULL;
+				sphere = nullptr;
 				
 			}else if(tokenShapeType == "box"){
 				box = new decShapeBox(decVector());
@@ -351,7 +351,7 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &
 				}
 				
 				list.Add(box);
-				box = NULL;
+				box = nullptr;
 				
 			}else if(tokenShapeType == "cylinder"){
 				cylinder = new decShapeCylinder(1.0f, 1.0f);
@@ -420,7 +420,7 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &
 				}
 				
 				list.Add(cylinder);
-				cylinder = NULL;
+				cylinder = nullptr;
 				
 			}else if(tokenShapeType == "capsule"){
 				capsule = new decShapeCapsule(1.0f, 1.0f);
@@ -489,7 +489,7 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &
 				}
 				
 				list.Add(capsule);
-				capsule = NULL;
+				capsule = nullptr;
 				
 			}else if(tokenShapeType == "hull"){
 				hull = new decShapeHull;
@@ -541,7 +541,7 @@ void igdeCodecPropertyString::DecodeShapeList(const char *string, decShapeList &
 				}
 				
 				list.Add(box);
-				box = NULL;
+				box = nullptr;
 				
 			}else{
 				DETHROW(deeInvalidParam);

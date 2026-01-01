@@ -45,24 +45,16 @@ aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newContro
 	if(!link) DETHROW(deeInvalidParam);
 	if(link->GetController() == newController) DETHROW(deeInvalidParam);
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	SetShortInfo("Set Link Controller");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldController = link->GetController();
-	if(pOldController) pOldController->AddReference();
-	
 	pNewController = newController;
-	if(pNewController) pNewController->AddReference();
 }
 
 aeULinkSetController::~aeULinkSetController(){
-	if(pNewController) pNewController->FreeReference();
-	if(pOldController) pOldController->FreeReference();
-	if(pLink) pLink->FreeReference();
 }
 
 

@@ -31,7 +31,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -43,15 +43,16 @@ public:
 	
 	
 private:
-	class sDependency : public deObject{
+	class cDependency : public deObject{
 	public:
-		typedef deTObjectReference<sDependency> Ref;
-	
-	
+		typedef deTObjectReference<cDependency> Ref;
+		typedef decTObjectOrderedSet<cDependency> List;
+		
+		
 		const seProperty::Ref property;
 		const int mappedComponent;
 		
-		sDependency(seProperty *aproperty, int amappedComponent) :
+		cDependency(seProperty *aproperty, int amappedComponent) :
 		property(aproperty),
 		mappedComponent(amappedComponent){};
 	};
@@ -60,7 +61,7 @@ private:
 	const seMapped::Ref pMapped;
 	const seSkin::Ref pSkin;
 	
-	decObjectList pDependencies;
+	cDependency::List pDependencies;
 	
 	
 	

@@ -26,15 +26,15 @@
 #define _MEOBJECTTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class meObject;
 
 class igdeEnvironment;
-
-class deDynamicSkin;
-class deSkin;
 
 
 
@@ -43,8 +43,8 @@ class deSkin;
  */
 class meObjectTexture : public deObject{
 public:
-	/** Reference. */
 	typedef deTObjectReference<meObjectTexture> Ref;
+	typedef decTObjectOrderedSet<meObjectTexture> List;
 	
 	
 private:
@@ -54,7 +54,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
 	float pTexCoordRotation;
@@ -64,7 +64,7 @@ private:
 	decStringDictionary pProperties;
 	decString pActiveProperty;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	
@@ -77,8 +77,11 @@ public:
 	/** \brief Create copy of object texture. */
 	meObjectTexture(const meObjectTexture &texture);
 	
+protected:
 	/** \brief Clean up object texture. */
 	virtual ~meObjectTexture();
+	
+public:
 	/*@}*/
 	
 	
@@ -88,10 +91,10 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Parent object or \em NULL if not set. */
+	/** \brief Parent object or \em nullptr if not set. */
 	inline meObject *GetObject() const{ return pObject; }
 	
-	/** \brief Set parent object or \em NULL if not set. */
+	/** \brief Set parent object or \em nullptr if not set. */
 	void SetObject(meObject *object);
 	
 	
@@ -108,8 +111,8 @@ public:
 	/** \brief Load skin. */
 	void LoadSkin();
 	
-	/** \brief Engine skin or \em NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Engine skin or \em nullptr if not found. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	
@@ -141,8 +144,8 @@ public:
 	
 	
 	
-	/** \brief Dynamic skin or \em NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	/** \brief Dynamic skin or \em nullptr if not used. */
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Update dynamic skin. */
 	void UpdateDynamicSkin();

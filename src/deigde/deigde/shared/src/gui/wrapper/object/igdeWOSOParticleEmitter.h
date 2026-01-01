@@ -64,8 +64,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOParticleEmitter(igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOParticleEmitter();
+	
+public:
 	/*@}*/
 	
 	
@@ -73,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter resource. */
-	inline deParticleEmitterInstance *GetParticleEmitter() const{ return pParticleEmitter; }
+	inline const deParticleEmitterInstance::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

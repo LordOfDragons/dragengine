@@ -71,14 +71,14 @@ FXComboBox(pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | ComboBoxFl
 	ComboBoxPadTop(guitheme), ComboBoxPadBottom(guitheme)),
 pOwner(&powner),
 pFont(ComboBoxFont(powner, guitheme)),
-pLabelFilter(NULL),
-pEditFilter(NULL),
+pLabelFilter(nullptr),
+pEditFilter(nullptr),
 pOrgBackColor(field->getBackColor()),
 pInvalidBackColor(igdeUIFoxHelper::BlendColor(pOrgBackColor, FXRGB(255, 0, 0), 0.25f))
 {
 	FXHorizontalFrame * const lineFilter = new FXHorizontalFrame(
 		pane, LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0);
-	pLabelFilter = new FXLabel(lineFilter, "Filter:", NULL, LABEL_NORMAL, 0, 0, 0, 0, 0, 2);
+	pLabelFilter = new FXLabel(lineFilter, "Filter:", nullptr, LABEL_NORMAL, 0, 0, 0, 0, 0, 2);
 	pLabelFilter->setJustify(JUSTIFY_LEFT | JUSTIFY_CENTER_Y);
 	pEditFilter = new FXTextField(lineFilter, 5, this, ID_EDIT_FILTER, FRAME_SUNKEN | LAYOUT_FILL_X);
 	
@@ -133,13 +133,13 @@ void igdeNativeFoxComboBoxFilter::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxComboBoxFilter::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner->GetItems().GetCount();
 	int i;
 	
 	clearItems();
 	
 	for(i=0; i<count; i++){
-		const igdeListItem &item = *pOwner->GetItemAt(i);
+		const igdeListItem &item = pOwner->GetItems().GetAt(i);
 		
 		appendItem(item.GetText().GetString());
 		
@@ -150,7 +150,7 @@ void igdeNativeFoxComboBoxFilter::BuildList(){
 }
 
 void igdeNativeFoxComboBoxFilter::UpdateItem(int index){
-	const igdeListItem &item = *pOwner->GetItemAt(index);
+	const igdeListItem &item = pOwner->GetItems().GetAt(index);
 	
 	list->setItemText(index, item.GetText().GetString());
 	
@@ -158,7 +158,7 @@ void igdeNativeFoxComboBoxFilter::UpdateItem(int index){
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon(index, NULL);
+		list->setItemIcon(index, nullptr);
 	}
 }
 
@@ -196,7 +196,7 @@ void igdeNativeFoxComboBoxFilter::InsertItem(int index, const igdeListItem &item
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon(index, NULL);
+		list->setItemIcon(index, nullptr);
 	}
 }
 
@@ -218,7 +218,7 @@ void igdeNativeFoxComboBoxFilter::Focus(){
 
 void igdeNativeFoxComboBoxFilter::UpdateRowCount(){
 	const int count = decMath::max(decMath::min(pOwner->GetRows(),
-		decMath::max(pOwner->GetItemCount(), pOwner->GetFilterItemCount())), 1);
+		decMath::max(pOwner->GetItems().GetCount(), pOwner->GetFilterItems().GetCount())), 1);
 	if(count == getNumVisible()){
 		return;
 	}
@@ -262,19 +262,19 @@ igdeFont *igdeNativeFoxComboBoxFilter::ComboBoxFont(const igdeComboBoxFilter &po
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::comboBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::comboBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::comboBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

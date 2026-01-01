@@ -107,11 +107,11 @@ void igdeNativeFoxContainerForm::ChildRemoved(){
 		return;
 	}
 	
-	const int count = pOwner->GetChildCount();
+	const int count = pOwner->GetChildren().GetCount();
 	const int index = count - (count % 2);
-	igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(index));
+	igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildren().GetAt(index));
 	if(index + 1 < count){
-		igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(index + 1));
+		igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildren().GetAt(index + 1));
 	}
 	
 	recalc();
@@ -131,7 +131,7 @@ long igdeNativeFoxContainerForm::onChildLayoutFlags(FXObject*, FXSelector, void 
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
@@ -157,7 +157,7 @@ long igdeNativeFoxContainerForm::onChildLayoutFlags(FXObject*, FXSelector, void 
 		break;
 		
 	case igdeContainerForm::esLast:
-		if(index / 2 == pOwner->GetChildCount() / 2 - 1){
+		if(index / 2 == pOwner->GetChildren().GetCount() / 2 - 1){
 			clflags.flags |= LAYOUT_FILL_ROW;
 			clflags.canResizeVertical = false;
 		}

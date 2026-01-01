@@ -58,6 +58,7 @@ class cTextFilter : public igdeTextFieldListener{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextFilter> Ref;
 	cTextFilter(igdeWPTriggerTable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanging(igdeTextField*){
@@ -73,6 +74,7 @@ class cListTable : public igdeListBoxListener{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cListTable> Ref;
 	cListTable(igdeWPTriggerTable &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox*, int){
@@ -100,11 +102,13 @@ class cActionToggle : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionToggle> Ref;
+	
 	cActionToggle(igdeWPTriggerTable &panel) :
-	igdeAction("Toggle State", NULL, "Toggle selected target between fired and reset state"),
+	igdeAction("Toggle State", nullptr, "Toggle selected target between fired and reset state"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -120,7 +124,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget());
 	}
 };
@@ -129,11 +133,13 @@ class cActionClear : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionClear> Ref;
+	
 	cActionClear(igdeWPTriggerTable &panel) :
-	igdeAction("Clear Table", NULL, "Remove all targets from the table"),
+	igdeAction("Clear Table", nullptr, "Remove all targets from the table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		if(!list){
 			return;
@@ -143,8 +149,9 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetTriggerTargetList() && pPanel.GetTriggerTargetList()->GetCount() > 0);
+	void Update() override{
+		SetEnabled(pPanel.GetTriggerTargetList()
+			&& pPanel.GetTriggerTargetList()->GetTargets().IsNotEmpty());
 	}
 };
 
@@ -152,12 +159,14 @@ class cActionAdd : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionAdd> Ref;
+	
 	cActionAdd(igdeWPTriggerTable &panel) :
 	igdeAction("Add Target...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add target to table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		if(!list){
 			return;
@@ -170,7 +179,7 @@ public:
 				continue;
 			}
 			
-			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::New(name));
 			list->Add(target);
 			
 			pPanel.SelectTarget(target);
@@ -179,7 +188,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTriggerTargetList());
 	}
 };
@@ -188,12 +197,14 @@ class cActionRemove : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionRemove> Ref;
+	
 	cActionRemove(igdeWPTriggerTable &panel) :
 	igdeAction("Remove Target", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected target from table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!list || !target){
@@ -204,7 +215,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget());
 	}
 };
@@ -213,11 +224,13 @@ class cActionFire : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionFire> Ref;
+	
 	cActionFire(igdeWPTriggerTable &panel) :
-	igdeAction("Fire Target", NULL, "Fire selected target"),
+	igdeAction("Fire Target", nullptr, "Fire selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -227,7 +240,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && !pPanel.GetSelectedTarget()->GetFired());
 	}
 };
@@ -236,11 +249,13 @@ class cActionReset : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionReset> Ref;
+	
 	cActionReset(igdeWPTriggerTable &panel) :
-	igdeAction("Reset Target", NULL, "Reset selected target"),
+	igdeAction("Reset Target", nullptr, "Reset selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -250,7 +265,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && pPanel.GetSelectedTarget()->GetFired());
 	}
 };
@@ -259,11 +274,13 @@ class cActionFullReset : public igdeAction{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionFullReset> Ref;
+	
 	cActionFullReset(igdeWPTriggerTable &panel) :
-	igdeAction("Full Reset Target", NULL, "Full reset selected target"),
+	igdeAction("Full Reset Target", nullptr, "Full reset selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -273,7 +290,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && (pPanel.GetSelectedTarget()->GetFired()
 			|| pPanel.GetSelectedTarget()->GetHasFired()));
 	}
@@ -291,14 +308,14 @@ public:
 
 igdeWPTriggerTable::igdeWPTriggerTable(igdeEnvironment &environment) :
 igdeContainerFlow(environment, eaY),
-pTriggerTargetList(NULL)
+pTriggerTargetList(nullptr)
 {
 	pCreateContent();
 }
 
 igdeWPTriggerTable::igdeWPTriggerTable(igdeEnvironment &environment, igdeAction *action) :
 igdeContainerFlow(environment, eaY),
-pTriggerTargetList(NULL)
+pTriggerTargetList(nullptr)
 {
 	pCreateContent();
 	SetAction(action);
@@ -306,7 +323,7 @@ pTriggerTargetList(NULL)
 
 igdeWPTriggerTable::~igdeWPTriggerTable(){
 	DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -325,7 +342,7 @@ void igdeWPTriggerTable::SetTriggerTargetList(igdeTriggerTargetList *triggerTarg
 
 igdeTriggerTarget *igdeWPTriggerTable::GetSelectedTarget() const{
 	const igdeListItem * const selection = pListTriggerTable->GetSelectedItem();
-	return selection ? (igdeTriggerTarget*)selection->GetData() : NULL;
+	return selection ? (igdeTriggerTarget*)selection->GetData() : nullptr;
 }
 
 void igdeWPTriggerTable::SelectTarget(igdeTriggerTarget *target){
@@ -340,27 +357,22 @@ void igdeWPTriggerTable::UpdateTable(){
 	pListTriggerTable->RemoveAllItems();
 	
 	if(pTriggerTargetList){
-		const int count = pTriggerTargetList->GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			igdeTriggerTarget * const target = pTriggerTargetList->GetAt(i);
-			
-			if(hasFilter && target->GetName().GetLower().FindString(filter) == -1){
-				continue;
+		pTriggerTargetList->GetTargets().Visit([&](igdeTriggerTarget *t){
+			if(hasFilter && t->GetName().GetLower().FindString(filter) == -1){
+				return;
 			}
 			
-			text.Format("%s (%s)", target->GetName().GetString(),
-				target->GetHasFired() ? "has fired" : "never fired");
-			pListTriggerTable->AddItem(text, target->GetFired() ? pIconFired : pIconNotFired, target);
-		}
+			decString text;
+			text.Format("%s (%s)", t->GetName().GetString(),
+				t->GetHasFired() ? "has fired" : "never fired");
+			pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
+		});
 	}
 	
 	pListTriggerTable->SortItems();
 	
 	pListTriggerTable->SetSelectionWithData(selectedTarget);
-	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItemCount() > 0){
+	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItems().IsNotEmpty()){
 		pListTriggerTable->SetSelection(0);
 	}
 }
@@ -397,7 +409,7 @@ void igdeWPTriggerTable::OnParameterChanged(igdeAction *action){
 void igdeWPTriggerTable::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeWPTriggerTable::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -412,20 +424,20 @@ void igdeWPTriggerTable::pCreateContent(){
 	pIconFired = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	pIconNotFired = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	
-	pActionToggle.TakeOver(new cActionToggle(*this));
-	pActionClear.TakeOver(new cActionClear(*this));
-	pActionAdd.TakeOver(new cActionAdd(*this));
-	pActionRemove.TakeOver(new cActionRemove(*this));
-	pActionFire.TakeOver(new cActionFire(*this));
-	pActionReset.TakeOver(new cActionReset(*this));
-	pActionFullReset.TakeOver(new cActionFullReset(*this));
+	pActionToggle = cActionToggle::Ref::New(*this);
+	pActionClear = cActionClear::Ref::New(*this);
+	pActionAdd = cActionAdd::Ref::New(*this);
+	pActionRemove = cActionRemove::Ref::New(*this);
+	pActionFire = cActionFire::Ref::New(*this);
+	pActionReset = cActionReset::Ref::New(*this);
+	pActionFullReset = cActionFullReset::Ref::New(*this);
 	
-	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, new cListTable(*this));
+	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, cListTable::Ref::New(*this));
 	pListTriggerTable->SetDefaultSorter();
 	
-	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::NewWith(env, eaX, esLast));
+	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::New(env, eaX, esLast));
 	helper.Label(frameLine, "Filter:");
 	helper.EditString(frameLine, "Filter targets in the list case insensitive",
-		pEditTriggerTableFilter, new cTextFilter(*this));
+		pEditTriggerTableFilter, cTextFilter::Ref::New(*this));
 	AddChild(frameLine);
 }

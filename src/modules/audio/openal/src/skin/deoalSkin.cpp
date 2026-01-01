@@ -43,11 +43,8 @@
 deoalSkin::deoalSkin(deAudioOpenAL &oal, const deSkin &skin) :
 pOal(oal),
 pSkin(skin),
-pASkin(new deoalASkin(oal.GetAudioThread(), skin)){
+pASkin(deoalASkin::Ref::New(oal.GetAudioThread(), skin)){
 }
 
 deoalSkin::~deoalSkin(){
-	if(pASkin){
-		pASkin->FreeReference();
-	}
 }

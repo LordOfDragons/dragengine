@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -36,13 +36,14 @@ class aeRuleGroup;
  * Undo rule group set use current state.
  */
 class aeURuleGroupToggleUseCurrentState : public igdeUndo{
-private:
-	aeRuleGroup *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleGroupToggleUseCurrentState> Ref;
 	
+	
+private:
+	aeRuleGroup::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

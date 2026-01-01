@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -37,17 +37,24 @@ class meObject;
  * Undo action for camera rotating an object.
  */
 class meUCameraRotateObject : public igdeUndo{
+public:
+	typedef deTObjectReference<meUCameraRotateObject> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decVector pOldRotation, pNewRotation;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUCameraRotateObject> Ref;
-	
 	// constructor, destructor
 	meUCameraRotateObject(meObject *object);
+	
+protected:
+	/** \brief Clean up undo. */
 	~meUCameraRotateObject() override;
+	
+public:
+	/*@}*/
 	
 	void SetNewRotation(const decVector &rotation);
 	bool HasChanged() const;

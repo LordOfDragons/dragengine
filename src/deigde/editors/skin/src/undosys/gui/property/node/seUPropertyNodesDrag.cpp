@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodesDrag::seUPropertyNodesDrag(const sePropertyNodeList &nodes) :
+seUPropertyNodesDrag::seUPropertyNodesDrag(const sePropertyNode::List &nodes) :
 pNodes(nodes)
 {
 	SetShortInfo("Drag nodes");
@@ -58,22 +58,14 @@ void seUPropertyNodesDrag::SetDistance(const decPoint &distance){
 
 void seUPropertyNodesDrag::Undo(){
 	const decPoint3 distance(pDistance.x, pDistance.y, 0);
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		sePropertyNode &node = *pNodes.GetAt(i);
+	pNodes.Visit([&](sePropertyNode &node){
 		node.SetPosition(node.GetPosition() - distance);
-	}
+	});
 }
 
 void seUPropertyNodesDrag::Redo(){
 	const decPoint3 distance(pDistance.x, pDistance.y, 0);
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		sePropertyNode &node = *pNodes.GetAt(i);
+	pNodes.Visit([&](sePropertyNode &node){
 		node.SetPosition(node.GetPosition() + distance);
-	}
+	});
 }

@@ -61,24 +61,10 @@ deBillboard *deBillboardManager::GetRootBillboard() const{
 	return (deBillboard*)pBillboards.GetRoot();
 }
 
-deBillboard *deBillboardManager::CreateBillboard(){
-	deBillboard *billboard = NULL;
-	
-	try{
-		billboard = new deBillboard(this);
-		if(!billboard) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadBillboard(billboard);
-		
-		pBillboards.Add(billboard);
-		
-	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
-		throw;
-	}
-	
+deBillboard::Ref deBillboardManager::CreateBillboard(){
+	const deBillboard::Ref billboard(deBillboard::Ref::New(this));
+	GetGraphicSystem()->LoadBillboard(billboard);
+	pBillboards.Add(billboard);
 	return billboard;
 }
 

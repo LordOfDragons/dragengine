@@ -25,6 +25,9 @@
 #ifndef _CEWPCONVERSATION_H_
 #define _CEWPCONVERSATION_H_
 
+#include "ceWPConversationListener.h"
+#include "../../conversation/ceConversation.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -36,8 +39,6 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class ceWindowProperties;
-class ceWPConversationListener;
-class ceConversation;
 class ceGesture;
 class ceFacePose;
 class ceCameraShot;
@@ -50,10 +51,13 @@ class ceControllerValue;
  * \brief Conversation property window.
  */
 class ceWPConversation : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<ceWPConversation> Ref;
+	
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPConversationListener *pListener;
-	ceConversation *pConversation;
+	ceWPConversationListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeEditPath::Ref pPathImportConvo;
 	igdeButton::Ref pBtnImportConvoAdd;
@@ -128,7 +132,7 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
 	void SetConversation(ceConversation *conversation);

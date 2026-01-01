@@ -49,40 +49,32 @@
 
 meWindowProperties::meWindowProperties(meWindowMain &windowMain) :
 igdeTabBook(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-
-pPropSelection(NULL),
-pPropView(NULL),
-pPropWorld(NULL),
-pPropSensors(NULL),
-pPropHT(NULL),
-pPropBrowser(NULL),
-pPropAdd(NULL)
+pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPropWorld = new meWPWorld(*this);
+	pPropWorld = meWPWorld::Ref::New(*this);
 	AddChild(pPropWorld, "World");
 	
-	pPropSelection = new meWPSelection(*this);
+	pPropSelection = meWPSelection::Ref::New(*this);
 	AddChild(pPropSelection, "Selection");
 	
-	pPropBrowser = new meWPBrowser(*this);
+	pPropBrowser = meWPBrowser::Ref::New(*this);
 	AddChild(pPropBrowser, "Browser");
 	
-// 	pPropAdd = new meWPAdd( *this );
-// 	AddChild( pPropAdd, "Add" );
+// 	pPropAdd = meWPAdd::Ref::New(*this);
+// 	AddChild(pPropAdd, "Add");
 	
-	pPropHT = new meWPHeightTerrain(*this);
+	pPropHT = meWPHeightTerrain::Ref::New(*this);
 	AddChild(pPropHT, "Height Terrain");
 	
-	pPropView = new meWPView(*this);
+	pPropView = meWPView::Ref::New(*this);
 	AddChild(pPropView, "View");
 	
-	pPropSensors = new meWPSensors(*this);
+	pPropSensors = meWPSensors::Ref::New(*this);
 	AddChild(pPropSensors, "Sensors");
 	
-	pPanelUndoHistory.TakeOver(new meWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = meWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "History");
 	
 	SetActivePanel(1); // selection
@@ -103,7 +95,7 @@ void meWindowProperties::SetWorld(meWorld *world){
 	pPropSelection->SetWorld(world);
 	pPropBrowser->SetWorld(world);
 // 	pPropAdd->SetWorld( world );
-	((meWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetWorld(world);
+	pPanelUndoHistory->SetWorld(world);
 }
 
 void meWindowProperties::OnWorldPathChanged(){

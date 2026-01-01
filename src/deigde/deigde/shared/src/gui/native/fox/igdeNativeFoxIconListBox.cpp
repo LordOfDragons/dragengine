@@ -42,6 +42,7 @@
 #include "../../theme/propertyNames.h"
 #include "../../../environment/igdeEnvironment.h"
 
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -100,9 +101,9 @@ void igdeNativeFoxIconListBoxItem::UpdateFromItem(){
 	text.Add(pListItem->GetText());
 	text += pListItem->GetDetails();
 	
-	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : NULL;
+	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : nullptr;
 	
-	setText(text.Join("\t").GetString());
+	setText(DEJoin(text, "\t").GetString());
 	setBigIcon(iicon);
 	setMiniIcon(iicon);
 	setData(pListItem->GetData());
@@ -161,7 +162,7 @@ FXVerticalFrame(pparent, layoutFlags.flags | IconListBoxFlagsBorder(powner), 0, 
 pOwner(&powner),
 pFont(IconListBoxFont(powner, guitheme)),
 pListBox(new FXIconList(this, this, ID_LISTBOX, IconListBoxFlags(powner))),
-pResizer(NULL)
+pResizer(nullptr)
 {
 	#ifndef OS_W32_VS
 	(void)IconListBoxPadLeft;
@@ -240,13 +241,13 @@ void igdeNativeFoxIconListBox::BuildHeader(){
 }
 
 void igdeNativeFoxIconListBox::BuildList(){
-	const int count = pOwner->GetItemCount();
+	const int count = pOwner->GetItems().GetCount();
 	int i;
 	
 	pListBox->clearItems();
 	
 	for(i=0; i<count; i++){
-		pListBox->appendItem(new igdeNativeFoxIconListBoxItem(*pOwner, *pOwner->GetItemAt(i)));
+		pListBox->appendItem(new igdeNativeFoxIconListBoxItem(*pOwner, pOwner->GetItems().GetAt(i)));
 	}
 	
 	UpdateSelection();
@@ -308,18 +309,13 @@ void igdeNativeFoxIconListBox::UpdateSelection(){
 
 void igdeNativeFoxIconListBox::UpdateHeader(){
 	FXHeader &nativeHeader = *pListBox->getHeader();
-	const int count = pOwner->GetHeaderCount();
-	int i;
 	
 	nativeHeader.clearItems();
 	
-	for(i=0; i<count; i++){
-		const igdeListHeader &header = *pOwner->GetHeaderAt(i);
-		
-		nativeHeader.appendItem(header.GetTitle().GetString(),
-			header.GetIcon() ? (FXIcon*)header.GetIcon()->GetNativeIcon() : NULL,
-			header.GetSize());
-	}
+	pOwner->GetHeaders().Visit([&](const igdeListHeader &h){
+		nativeHeader.appendItem(h.GetTitle().GetString(),
+			h.GetIcon() ? (FXIcon*)h.GetIcon()->GetNativeIcon() : nullptr, h.GetSize());
+	});
 }
 
 void igdeNativeFoxIconListBox::UpdateStyles(){
@@ -404,19 +400,19 @@ igdeFont *igdeNativeFoxIconListBox::IconListBoxFont(const igdeIconListBox &powne
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::listBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::listBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::listBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::listBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -478,8 +474,8 @@ long igdeNativeFoxIconListBox::onListChanged(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxIconListBox::onListSelected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetItemCount()){
-		pOwner->GetItemAt(index)->SetSelected(true);
+	if(index >= 0 and index < pOwner->GetItems().GetCount()){
+		pOwner->GetItems().GetAt(index)->SetSelected(true);
 		pOwner->NotifyItemSelected(index);
 	}
 	return 1;
@@ -487,8 +483,8 @@ long igdeNativeFoxIconListBox::onListSelected(FXObject*, FXSelector, void *pdata
 
 long igdeNativeFoxIconListBox::onListDeselected(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetItemCount()){
-		pOwner->GetItemAt(index)->SetSelected(false);
+	if(index >= 0 and index < pOwner->GetItems().GetCount()){
+		pOwner->GetItems().GetAt(index)->SetSelected(false);
 		pOwner->NotifyItemDeselected(index);
 	}
 	return 1;
@@ -496,15 +492,15 @@ long igdeNativeFoxIconListBox::onListDeselected(FXObject*, FXSelector, void *pda
 
 long igdeNativeFoxIconListBox::onListHeaderChanged(FXObject *sender, FXSelector selector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetHeaderCount()){
-		pOwner->GetHeaderAt(index)->SetSize(pListBox->getHeader()->getItemSize(index));
+	if(index >= 0 and index < pOwner->GetHeaders().GetCount()){
+		pOwner->GetHeaders().GetAt(index)->SetSize(pListBox->getHeader()->getItemSize(index));
 	}
 	return pListBox->onChgHeader(sender, selector, pdata);
 }
 
 long igdeNativeFoxIconListBox::onListHeaderClicked(FXObject *sender, FXSelector selector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index >= 0 and index < pOwner->GetHeaderCount()){
+	if(index >= 0 and index < pOwner->GetHeaders().GetCount()){
 		pOwner->NotifyHeaderClicked(index);
 	}
 	return pListBox->onClkHeader(sender, selector, pdata);
@@ -533,7 +529,7 @@ long igdeNativeFoxIconListBox::onListRightMouseUp(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxIconListBox::onListDoubleClicked(FXObject*, FXSelector, void *pdata){
 	const int index = (int)(intptr_t)pdata;
-	if(index < 0 || index >= pOwner->GetItemCount()){
+	if(index < 0 || index >= pOwner->GetItems().GetCount()){
 		return 1;
 	}
 	

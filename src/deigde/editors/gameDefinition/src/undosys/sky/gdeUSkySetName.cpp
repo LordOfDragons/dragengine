@@ -41,7 +41,7 @@
 
 gdeUSkySetName::gdeUSkySetName(
 gdeSky *sky, const char *newValue) :
-pSky(NULL)
+pSky(nullptr)
 {
 	if(!sky){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pSky(NULL)
 	pNewValue = newValue;
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 gdeUSkySetName::~gdeUSkySetName(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

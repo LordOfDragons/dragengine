@@ -26,6 +26,8 @@
 #define _PROJREMOTESERVERLOGGER_H_
 
 #include <denetwork/denLogger.h>
+
+#include <dragengine/common/string/decString.h>
 #include <dragengine/logger/deLogger.h>
 
 

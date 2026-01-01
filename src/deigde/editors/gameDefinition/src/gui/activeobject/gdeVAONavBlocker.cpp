@@ -55,14 +55,11 @@
 gdeVAONavBlocker::gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
 	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
-pOCNavBlocker(ocnavblocker),
-pDDSBlocker(NULL)
+pOCNavBlocker(ocnavblocker)
 {
 	if(!ocnavblocker){
 		DETHROW(deeInvalidParam);
 	}
-	ocnavblocker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSBlocker();
@@ -110,16 +107,11 @@ void gdeVAONavBlocker::UpdateDDVisibility(){
 
 void gdeVAONavBlocker::pCleanUp(){
 	if(pDDSBlocker){
-		pDDSBlocker->SetParentDebugDrawer(NULL);
-		delete pDDSBlocker;
+		pDDSBlocker->SetParentDebugDrawer(nullptr);
 	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCNavBlocker){
-		pOCNavBlocker->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -129,12 +121,12 @@ void gdeVAONavBlocker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(false);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// blocker
-	pDDSBlocker = new igdeWDebugDrawerShape;
+	pDDSBlocker = igdeWDebugDrawerShape::Ref::New();
 	pDDSBlocker->SetParentDebugDrawer(pDebugDrawer);
 }
 

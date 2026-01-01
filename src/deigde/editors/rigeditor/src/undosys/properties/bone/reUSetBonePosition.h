@@ -26,9 +26,9 @@
 #define _REUSETBONEPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigBone;
  * \brief Undo Set Bone Position.
  */
 class reUSetBonePosition : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetBonePosition> Ref;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetBonePosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

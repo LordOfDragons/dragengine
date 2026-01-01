@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/light/deLight.h>
 
-class gdeOCLight;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class light set hint parameter.
  */
 class gdeUOCLightSetHintParameter : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCLightSetHintParameter> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eParameterHints pOldValue;
 	deLight::eParameterHints pNewValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCLightSetHintParameter> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

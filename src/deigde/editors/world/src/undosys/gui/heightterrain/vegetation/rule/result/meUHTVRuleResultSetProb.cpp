@@ -43,8 +43,8 @@
 meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, float nprob){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Result Set Probability");
 	SetMemoryConsumption(sizeof(meUHTVRuleResultSetProb));
@@ -53,14 +53,10 @@ meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, me
 	pNewProb = nprob;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetProb::~meUHTVRuleResultSetProb(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

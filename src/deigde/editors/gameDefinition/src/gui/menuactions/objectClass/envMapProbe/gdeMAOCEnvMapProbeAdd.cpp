@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Environment Map Probe...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddEnvMapProbe(&objectClass, gdeOCEnvMapProbe::Ref::NewWith());
+igdeUndo::Ref gdeMAOCEnvMapProbeAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddEnvMapProbe::Ref::New(&objectClass, gdeOCEnvMapProbe::Ref::New());
 }
 
 void gdeMAOCEnvMapProbeAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

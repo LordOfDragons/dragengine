@@ -22,16 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dedsStyledText.h"
 #include "nodes/dedsStyledTextNode.h"
 #include "nodes/dedsSTNParagraph.h"
 
 #include <libdscript/exceptions.h>
-
 
 
 // Class dedsStyledText
@@ -40,40 +35,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsStyledText::dedsStyledText(){
-	pRootNode = NULL;
-	
-	pRootNode = new dedsSTNParagraph;
-	if(!pRootNode) DSTHROW(dueInvalidParam);
+dedsStyledText::dedsStyledText() :
+pRootNode(dedsSTNParagraph::Ref::New()){
 }
-
-
-dedsStyledText::~dedsStyledText(){
-	pCleanUp();
-}
-
 
 
 // Management
 ///////////////
 
-
-void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
-	if(!node) DSTHROW(dueInvalidParam);
-	
-	if(node != pRootNode){
-		pRootNode->FreeReference();
-		pRootNode = node;
-		node->AddReference();
-	}
-}
-
-
-
-// Private functions
-//////////////////////
-
-
-void dedsStyledText::pCleanUp(){
-	if(pRootNode) pRootNode->FreeReference();
+void dedsStyledText::SetRootNode(dedsStyledTextNode *node){
+	DEASSERT_NOTNULL(node)
+	pRootNode = node;
 }

@@ -140,33 +140,6 @@ void meViewEditor::LogException(const deException &exception) const{
 }
 
 
-
-void meViewEditor::GetSelectedObjectsWithAttached(meObjectList &list){
-	const meObjectList &listSelected = GetWorld().GetSelectionObject().GetSelected();
-	const int selectedCount = listSelected.GetCount();
-	meObject *object;
-	int i, j;
-	
-	list.RemoveAll();
-	
-	for(i=0; i<selectedCount; i++){
-		list.Add(listSelected.GetAt(i));
-	}
-	
-	for(i=0; i<list.GetCount(); i++){
-		object = list.GetAt(i);
-		
-		const meObjectList &listChildren = object->GetAttachedObjectsList();
-		const int childrenCount = listChildren.GetCount();
-		
-		for(j=0; j<childrenCount; j++){
-			list.AddIfAbsent(listChildren.GetAt(j));
-		}
-	}
-}
-
-
-
 void meViewEditor::RayTestCollision(deBaseScriptingCollider *listener, const decDVector &rayPosition,
 const decVector &rayDirection, const decCollisionFilter &collisionFilter){
 	deBasePhysicsWorld * const peer = GetWorld().GetEngineWorld()->GetPeerPhysics();

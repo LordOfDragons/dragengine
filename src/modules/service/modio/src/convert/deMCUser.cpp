@@ -43,7 +43,7 @@ std::vector<Modio::UserID> deMCUser::UserIDList(const deServiceObject &so){
 }
 
 deServiceObject::Ref deMCUser::User(const Modio::User &user){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	so->SetChildAt("userId", deMCCommon::ID(user.UserId));
 	

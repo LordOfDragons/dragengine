@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -40,12 +40,11 @@ class meObject;
  */
 class meUSetObjectRotation : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUSetObjectRotation> Ref;
 	
 	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldRotation;
 	decVector pNewRotation;

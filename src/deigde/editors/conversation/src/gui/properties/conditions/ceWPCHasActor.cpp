@@ -63,6 +63,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCHasActor &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCHasActor &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -74,7 +75,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCHasActorSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
+			ceUCCHasActorSetActor::Ref::New(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -82,10 +83,11 @@ class cActionNegate : public igdeAction {
 	ceWPCHasActor &pPanel;
 	
 public:
-	cActionNegate(ceWPCHasActor &panel) : igdeAction("Negate", NULL,
+	typedef deTObjectReference<cActionNegate> Ref;
+	cActionNegate(ceWPCHasActor &panel) : igdeAction("Negate", nullptr,
 		"True if the information is missing instead of existing"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionHasActor * const condition = pPanel.GetCondition();
@@ -94,7 +96,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCHasActorToggleNegate::Ref::NewWith(topic, action, condition));
+			ceUCCHasActorToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -111,10 +113,10 @@ public:
 ceWPCHasActor::ceWPCHasActor(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, new cComboActor(*this));
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, cComboActor::Ref::New(*this));
 	pCBActor->SetDefaultSorter();
 		
-	helper.CheckBox(*this, pChkNegate, new cActionNegate(*this), true);
+	helper.CheckBox(*this, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCHasActor::~ceWPCHasActor(){
@@ -132,7 +134,7 @@ ceCConditionHasActor *ceWPCHasActor::GetCondition() const{
 		return (ceCConditionHasActor*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

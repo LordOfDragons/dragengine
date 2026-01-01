@@ -180,7 +180,7 @@ void spScriptFile::pCreateModule(){
 void spScriptFile::pLoadFile(){
 	deVirtualFileSystem &vfsGame = *pSP.GetGameEngine()->GetVirtualFileSystem();
 	deVirtualFileSystem &vfsShared = pSP.GetVFS();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader;
 	decPath lookupPath;
 	decPath vfsPath;
 	decString content;
@@ -189,36 +189,26 @@ void spScriptFile::pLoadFile(){
 	// determine the look up path. this one is tested against the possible virtual file systems
 	pSP.GetTypeModuleLoader()->ParseImportPath(NULL, pFullModuleName.GetString(), lookupPath);
 	
-	try{
-		// try to load the script file from the matching virtual file system
-		vfsPath.SetFromUnix(pSP.GetScriptPath());
+	// try to load the script file from the matching virtual file system
+	vfsPath.SetFromUnix(pSP.GetScriptPath());
+	vfsPath.Add(lookupPath);
+	
+	if(vfsGame.ExistsFile(vfsPath)){
+		pSP.LogInfoFormat("Loading '%s' in game scripts", vfsPath.GetPathUnix().GetString());
+		reader = vfsGame.OpenFileForReading(vfsPath);
+		
+	}else{
+		vfsPath.SetFromUnix("/shared");
 		vfsPath.Add(lookupPath);
-		
-		if(vfsGame.ExistsFile(vfsPath)){
-			pSP.LogInfoFormat("Loading '%s' in game scripts", vfsPath.GetPathUnix().GetString());
-			reader = vfsGame.OpenFileForReading(vfsPath);
-			
-		}else{
-			vfsPath.SetFromUnix("/shared");
-			vfsPath.Add(lookupPath);
-			pSP.LogInfoFormat("Looking up '%s' in engine scripts", vfsPath.GetPathUnix().GetString());
-			reader = vfsShared.OpenFileForReading(vfsPath);
-		}
-		
-		size = reader->GetLength();
-		reader->SetPosition(0);
-		
-		content.Set(' ', size);
-		reader->Read((char*)content.GetString(), size);
-		
-		reader->FreeReference();
-		
-	}catch(const deException &e){
-		if(reader){
-			reader->FreeReference();
-		}
-		throw;
+		pSP.LogInfoFormat("Looking up '%s' in engine scripts", vfsPath.GetPathUnix().GetString());
+		reader = vfsShared.OpenFileForReading(vfsPath);
 	}
+	
+	size = reader->GetLength();
+	reader->SetPosition(0);
+	
+	content.Set(' ', size);
+	reader->Read((char*)content.GetString(), size);
 	
 	// compiling the code is a bit tricky. python is particular in how namespaces are set up and
 	// how modules are loaded. in particular it is necessary to add the builtins to the module

@@ -101,9 +101,9 @@ igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainer
 pAutoValidateDirectory(true),
 pUseGameVFS(useGameVFS)
 {
-	helper.EditString(*this, description, pText, new cListenerTextField(*this));
+	helper.EditString(*this, description, pText, cListenerTextField::Ref::New(*this));
 	
-	pActionButton.TakeOver(new cActionButton(*this, pText, description));
+	pActionButton = cActionButton::Ref::New(*this, pText, description);
 	helper.Button(*this, pButton, pActionButton);
 }
 
@@ -204,11 +204,8 @@ void igdeEditDirectory::RemoveListener(igdeEditDirectoryListener *listener){
 }
 
 void igdeEditDirectory::NotifyEditDirectoryChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditDirectoryListener*)listeners.GetAt(i))->OnEditDirectoryChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditDirectoryListener &l){
+		l.OnEditDirectoryChanged(this);
+	});
 }

@@ -192,7 +192,6 @@ pCalcSizePending(true)
 	pEditGameDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditGameDir->setEditable(false);
 	pLabProblemGameDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(!pLabProblemGameDir) DETHROW(deeOutOfMemory);
 	pLabProblemGameDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemGameDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemGameDir->setTextColor(configuration.GetTextColorProblem());
@@ -207,7 +206,6 @@ pCalcSizePending(true)
 	pEditDataDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditDataDir->setEditable(false);
 	pLabProblemDataDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(!pLabProblemDataDir) DETHROW(deeOutOfMemory);
 	pLabProblemDataDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemDataDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemDataDir->setTextColor(configuration.GetTextColorProblem());
@@ -222,7 +220,6 @@ pCalcSizePending(true)
 	pEditScriptDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditScriptDir->setEditable(false);
 	pLabProblemScriptDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(!pLabProblemScriptDir) DETHROW(deeOutOfMemory);
 	pLabProblemScriptDir->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemScriptDir->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemScriptDir->setTextColor(configuration.GetTextColorProblem());
@@ -242,7 +239,6 @@ pCalcSizePending(true)
 	pBtnScriptModuleInfo = guiBuilder.CreateButton(frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information");
 	pBtnScriptModuleInfo->setLayoutHints(pBtnScriptModuleInfo->getLayoutHints() | LAYOUT_FILL_Y);
 	pLabProblemScriptModule = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
-	if(!pLabProblemScriptModule) DETHROW(deeOutOfMemory);
 	pLabProblemScriptModule->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
 	pLabProblemScriptModule->setBackColor(configuration.GetBackColorProblem());
 	pLabProblemScriptModule->setTextColor(configuration.GetTextColorProblem());
@@ -384,7 +380,6 @@ pCalcSizePending(true)
 	new FXSeparator(frameGroup);
 	
 	frameLine = new FXHorizontalFrame(frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0);
-	if(!frameLine) DETHROW(deeOutOfMemory);
 	new FXButton(frameLine, "Accept", nullptr, this, ID_ACCEPT, LAYOUT_CENTER_X
 		| FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30);
 	new FXButton(frameLine, "Cancel", nullptr, this, ID_CANCEL, LAYOUT_CENTER_X

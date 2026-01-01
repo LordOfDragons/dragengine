@@ -73,8 +73,12 @@
  * to translate these settings into a useful simulation configuration and can vary.
  * By default a degree of freedom does not break.
  */
-class DE_DLL_EXPORT deColliderConstraint{
+class DE_DLL_EXPORT deColliderConstraint : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderConstraint> Ref;
+	
+	
 	/** \brief Degrees of freedom. */
 	enum eDegreesOfFreedom{
 		/** \brief Linear along the X-Axis. */
@@ -130,16 +134,17 @@ public:
 	/** \brief Create new collider constraint as a copy of another constraint. */
 	deColliderConstraint(const deColliderConstraint &constraint);
 	
+protected:
 	/** \brief Clean up collider constraint. */
-	virtual ~deColliderConstraint();
+	~deColliderConstraint() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Target collider or NULL to constraint to the world. */
-	inline deCollider *GetTargetCollider() const{ return pTargetCollider; }
+	inline const deCollider::Ref &GetTargetCollider() const{ return pTargetCollider; }
 	
 	/** \brief Set target collider or NULL to constraint to the world. */
 	void SetTargetCollider(deCollider *collider);

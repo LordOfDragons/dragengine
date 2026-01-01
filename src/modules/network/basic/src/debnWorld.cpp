@@ -30,9 +30,9 @@
 #include "deNetworkBasic.h"
 #include "states/debnState.h"
 
-#include "dragengine/resources/network/deNetworkState.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/deNetworkState.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -60,9 +60,6 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 	
 	try{
 		pStateSlots = new debnState*[1000];
-		if(!pStateSlots){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		pStateSlotCount = 1000;
 		

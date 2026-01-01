@@ -2343,9 +2343,6 @@ void debpColliderComponent::pCleanUp(){
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
 	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-	}
 }
 
 void debpColliderComponent::pUpdateBones(){
@@ -2491,33 +2488,23 @@ void debpColliderComponent::pUpdateBones(){
 			}else{
 				// btScaledBvhTriangleMeshShape would contain working scaling but compound scaling is not working
 				
-				debpBulletCompoundShape *bulletShape = NULL;
 				btCompoundShape *compoundShape = NULL;
 				btTransform transform;
 				transform.setIdentity(); // required, constructor does not initialize anything
 				
-				try{
-					compoundShape = new btCompoundShape(true);
-					compoundShape->setUserPointer((void*)(intptr_t)0);
-					compoundShape->addChildShape(transform, model->GetShape()->GetShape()); // not released on destructor
-					
-					compoundShape->setLocalScaling(btVector3((btScalar)scale.x, (btScalar)scale.y, (btScalar)scale.z));
-						// setLocalScaling has to come last or scaling does not propagate
-					
-					bulletShape = new debpBulletCompoundShape(compoundShape);
-					bulletShape->AddChildShape(model->GetShape());
-					
-					pSimplePhyBody->SetShape(bulletShape);
-					bulletShape->FreeReference();
-					
-					pSimplePhyBody->SetShapeSurface(0.0f);
-					
-				}catch(const deException &){
-					if(bulletShape){
-						bulletShape->FreeReference();
-					}
-					throw;
-				}
+				compoundShape = new btCompoundShape(true);
+				compoundShape->setUserPointer((void*)(intptr_t)0);
+				compoundShape->addChildShape(transform, model->GetShape()->GetShape()); // not released on destructor
+				
+				compoundShape->setLocalScaling(btVector3((btScalar)scale.x, (btScalar)scale.y, (btScalar)scale.z));
+					// setLocalScaling has to come last or scaling does not propagate
+				
+				const debpBulletCompoundShape::Ref bulletShape(
+					debpBulletCompoundShape::Ref::New(compoundShape));
+				bulletShape->AddChildShape(model->GetShape());
+				
+				pSimplePhyBody->SetShape(bulletShape);
+				pSimplePhyBody->SetShapeSurface(0.0f);
 			}
 			
 		// otherwise use rig shapes if present
@@ -2658,7 +2645,8 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				
 				if(isAttComponent || visitor.IsComponent()){
 					deComponent * const attachedComponent = isAttCollider
-						? visitor.CastToComponent().GetComponent() : (deComponent*)&attachedResource;
+						? visitor.CastToComponent().GetComponent().Pointer()
+						: (deComponent*)&attachedResource;
 					const deModel * const attachedModel = attachedComponent
 						? attachedComponent->GetModel() : nullptr;
 					
@@ -2947,16 +2935,12 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		return;
 	}
 	
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-		pStaticCollisionTestShape = NULL;
-	}
+	pStaticCollisionTestShape = nullptr;
 	
 	try{
 		pStaticCollisionTestShape = pCreateBPShape();
 		
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->AddReference();
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
@@ -2964,10 +2948,7 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		}
 		
 	}catch(const deException &){
-		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
-			pStaticCollisionTestShape = NULL;
-		}
+		pStaticCollisionTestShape = nullptr;
 		throw;
 	}
 	
@@ -3005,8 +2986,8 @@ void debpColliderComponent::pCheckDebugChecks(){
 	pDirtyDebugChecks = false;
 }
 
-debpBulletShape *debpColliderComponent::pCreateBPShape(){
-	deRig *rig = NULL;
+debpBulletShape::Ref debpColliderComponent::pCreateBPShape(){
+	const deRig *rig = nullptr;
 	int count = 0;
 	
 	if(pColliderComponent.GetComponent()){
@@ -3017,7 +2998,7 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 	}
 	
 	if(count == 0){
-		return NULL;
+		return {};
 	}
 	
 	debpCreateBulletShape createBulletShape;
@@ -3031,11 +3012,7 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 	}
 	createBulletShape.Finish();
 	
-	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
-	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
-	}
-	return bulletShape;
+	return createBulletShape.GetBulletShape();
 }
 
 

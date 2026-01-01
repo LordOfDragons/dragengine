@@ -31,7 +31,7 @@
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditSliderTextListener;
@@ -45,10 +45,12 @@ class igdeUIHelper;
  * widget. The text field is synchronized to the slider.
  */
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditSliderText> Ref;
+	
+	/** \brief Type holding weak reference. */
+	typedef deTWeakObjectReference<igdeEditSliderText> WeakRef;
 	
 	
 protected:
@@ -58,8 +60,13 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
+		typedef deTObjectReference<cListenerSlider> Ref;
 		cListenerSlider(igdeEditSliderText &sliderText);
+		
+	protected:
 		virtual ~cListenerSlider();
+		
+	public:
 		virtual void OnValueChanged(igdeSlider *slider);
 		virtual void OnValueChanging(igdeSlider *slider);
 	};
@@ -70,8 +77,13 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
+		typedef deTObjectReference<cListenerTextField> Ref;
 		cListenerTextField(igdeEditSliderText &sliderText);
+		
+	protected:
 		virtual ~cListenerTextField();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 		virtual void OnTextChanging(igdeTextField *textField);
 	};
@@ -85,7 +97,7 @@ private:
 	float pValue;
 	bool pPreventNotify;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditSliderTextListener> pListeners;
 	
 	
 	

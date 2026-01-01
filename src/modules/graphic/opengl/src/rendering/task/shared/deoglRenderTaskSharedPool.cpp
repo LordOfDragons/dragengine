@@ -61,12 +61,14 @@ deoglRenderTaskSharedTexture *deoglRenderTaskSharedPool::GetTexture(){
 	
 	const int index = pFreeTextures.GetCount() - 1;
 	if(index > -1){
-		texture = (deoglRenderTaskSharedTexture*)pFreeTextures.GetAt(index);
+		texture = static_cast<deoglRenderTaskSharedTexture*>(pFreeTextures.GetAt(index));
 		pFreeTextures.RemoveFrom(index);
 		
 	}else{
-		texture = new deoglRenderTaskSharedTexture(*this, pTextures.GetCount());
-		pTextures.Add(deoglRenderTaskSharedTexture::Ref::New(texture));
+		const deoglRenderTaskSharedTexture::Ref newTexture(
+			deoglRenderTaskSharedTexture::Ref::New(*this, pTextures.GetCount()));
+		pTextures.Add(newTexture);
+		texture = newTexture;
 		
 		if(pTextures.GetCount() % 200 == 0){
 			pRenderThread.GetLogger().LogInfoFormat(
@@ -82,12 +84,14 @@ deoglRenderTaskSharedVAO *deoglRenderTaskSharedPool::GetVAO(){
 	
 	const int index = pFreeVAOs.GetCount() - 1;
 	if(index > -1){
-		vao = (deoglRenderTaskSharedVAO*)pFreeVAOs.GetAt(index);
+		vao = static_cast<deoglRenderTaskSharedVAO*>(pFreeVAOs.GetAt(index));
 		pFreeVAOs.RemoveFrom(index);
 		
 	}else{
-		vao = new deoglRenderTaskSharedVAO(*this, pVAOs.GetCount());
-		pVAOs.Add(deoglRenderTaskSharedVAO::Ref::New(vao));
+		const deoglRenderTaskSharedVAO::Ref newVao(
+			deoglRenderTaskSharedVAO::Ref::New(*this, pVAOs.GetCount()));
+		pVAOs.Add(newVao);
+		vao = newVao;
 		
 		if(pVAOs.GetCount() % 100 == 0){
 			pRenderThread.GetLogger().LogInfoFormat(
@@ -103,12 +107,14 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 	
 	const int index = pFreeInstances.GetCount() - 1;
 	if(index > -1){
-		instance = (deoglRenderTaskSharedInstance*)pFreeInstances.GetAt(index);
+		instance = static_cast<deoglRenderTaskSharedInstance*>(pFreeInstances.GetAt(index));
 		pFreeInstances.RemoveFrom(index);
 		
 	}else{
-		instance = new deoglRenderTaskSharedInstance(*this, pInstances.GetCount());
-		pInstances.Add(deoglRenderTaskSharedInstance::Ref::New(instance));
+		const deoglRenderTaskSharedInstance::Ref newInstance(
+			deoglRenderTaskSharedInstance::Ref::New(*this, pInstances.GetCount()));
+		pInstances.Add(newInstance);
+		instance = newInstance;
 		
 		if(pInstances.GetCount() % 500 == 0){
 			pRenderThread.GetLogger().LogInfoFormat(
@@ -145,15 +151,15 @@ int deoglRenderTaskSharedPool::AssignSkinTexture(deoglSkinTexture *skinTexture){
 
 
 deoglRenderTaskSharedTexture &deoglRenderTaskSharedPool::GetTextureAt(int index) const{
-	return *(deoglRenderTaskSharedTexture*)pTextures.GetAt(index);
+	return *static_cast<deoglRenderTaskSharedTexture*>(pTextures.GetAt(index));
 }
 
 deoglRenderTaskSharedVAO &deoglRenderTaskSharedPool::GetVAOAt(int index) const{
-	return *(deoglRenderTaskSharedVAO*)pVAOs.GetAt(index);
+	return *static_cast<deoglRenderTaskSharedVAO*>(pVAOs.GetAt(index));
 }
 
 deoglRenderTaskSharedInstance &deoglRenderTaskSharedPool::GetInstanceAt(int index) const{
-	return *(deoglRenderTaskSharedInstance*)pInstances.GetAt(index);
+	return *static_cast<deoglRenderTaskSharedInstance*>(pInstances.GetAt(index));
 }
 
 deoglSkinTexture *deoglRenderTaskSharedPool::GetSkinTextureAt(int index) const{

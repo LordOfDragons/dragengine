@@ -97,12 +97,7 @@ pGIShadowUpdateStatic(true),
 pGIRenderTaskStatic(plan.GetRenderThread()),
 pGIRenderTaskDynamic(plan.GetRenderThread()),
 pGIRenderTaskAddStatic(plan.GetRenderThread(), pGIRenderTaskStatic),
-pGIRenderTaskAddDynamic(plan.GetRenderThread(), pGIRenderTaskDynamic),
-pTaskFindContent(NULL),
-pTaskBuildRT1(NULL),
-pTaskBuildRT2(NULL),
-pTaskGIFindContent(NULL),
-pTaskGIUpdateRT(NULL)
+pGIRenderTaskAddDynamic(plan.GetRenderThread(), pGIRenderTaskDynamic)
 {
 	deoglRenderThread &renderThread = plan.GetRenderThread();
 	
@@ -112,29 +107,29 @@ pTaskGIUpdateRT(NULL)
 	for(i=0; i<4; i++){
 		pShadowLayers[i].renderTask = new deoglRenderTask(renderThread);
 		pShadowLayers[i].addToRenderTask = new deoglAddToRenderTask(renderThread, *pShadowLayers[i].renderTask);
-		pShadowLayers[i].computeRenderTask.TakeOver(new deoglComputeRenderTask(renderThread));
+		pShadowLayers[i].computeRenderTask = deoglComputeRenderTask::Ref::New(renderThread);
 	}
 	
 	const deoglRenderPlanCompute &compute = plan.GetCompute();
 	
-	pUBOFindConfig.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCounters.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu));
-	pSSBOVisibleElements.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu));
+	pUBOFindConfig = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCounters = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu);
+	pSSBOVisibleElements = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu);
 	pSSBOVisibleElements->EnsureBuffer();
-	pSSBOVisibleElements2.TakeOver(new deoglSPBlockSSBO(pSSBOVisibleElements, deoglSPBlockSSBO::etGpu));
+	pSSBOVisibleElements2 = deoglSPBlockSSBO::Ref::New(pSSBOVisibleElements, deoglSPBlockSSBO::etGpu);
 	pSSBOVisibleElements2->EnsureBuffer();
 	
-	pUBOFindConfigGIStatic.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCountersGIStatic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters()));
-	pSSBOVisibleElementsGIStatic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements()));
+	pUBOFindConfigGIStatic = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCountersGIStatic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters());
+	pSSBOVisibleElementsGIStatic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements());
 	pSSBOVisibleElementsGIStatic->EnsureBuffer();
-	pCRTShadowGIStatic.TakeOver(new deoglComputeRenderTask(renderThread));
+	pCRTShadowGIStatic = deoglComputeRenderTask::Ref::New(renderThread);
 	
-	pUBOFindConfigGIDynamic.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCountersGIDynamic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters()));
-	pSSBOVisibleElementsGIDynamic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements()));
+	pUBOFindConfigGIDynamic = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCountersGIDynamic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters());
+	pSSBOVisibleElementsGIDynamic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements());
 	pSSBOVisibleElementsGIDynamic->EnsureBuffer();
-	pCRTShadowGIDynamic.TakeOver(new deoglComputeRenderTask(renderThread));
+	pCRTShadowGIDynamic = deoglComputeRenderTask::Ref::New(renderThread);
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
@@ -271,11 +266,11 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 	}else{
 		deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 		
-		pTaskFindContent = new deoglRPTSkyLightFindContent(*this);
+		pTaskFindContent = deoglRPTSkyLightFindContent::Ref::New(*this);
 		pp.AddTaskAsync(pTaskFindContent);
 		
 		if(pPlan.GetUpdateGIState()){
-			pTaskGIFindContent = new deoglRPTSkyLightGIFindContent(*this);
+			pTaskGIFindContent = deoglRPTSkyLightGIFindContent::Ref::New(*this);
 			pp.AddTaskAsync(pTaskGIFindContent);
 		}
 	}
@@ -298,7 +293,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	pWaitFinishedGIFindContent();
 	
 	if(pPlan.GetUpdateGIState()){
-		pTaskGIUpdateRT = new deoglRPTSkyLightGIUpdateRT(*this);
+		pTaskGIUpdateRT = deoglRPTSkyLightGIUpdateRT::Ref::New(*this);
 		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskGIUpdateRT);
 	}
 	
@@ -331,10 +326,10 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 	// small amount of content so they can be process sequentially. the 4th cascade on the
 	// other hand usually has large amount of content. for this reason the 4th cascade
 	// render task is build in a separate task
-	pTaskBuildRT1 = new deoglRPTSkyLightBuildRT(*this, pSLCollideList1, 0, 2);
+	pTaskBuildRT1 = deoglRPTSkyLightBuildRT::Ref::New(*this, pSLCollideList1, 0, 2);
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT1);
 	
-	pTaskBuildRT2 = new deoglRPTSkyLightBuildRT(*this, pSLCollideList2, 3, 3);
+	pTaskBuildRT2 = deoglRPTSkyLightBuildRT::Ref::New(*this, pSLCollideList2, 3, 3);
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT2);
 }
 
@@ -349,8 +344,6 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask(pPlan, pTaskGIUpdateRT->GetElapsedTime());
 	
 // 	const float timePrepare = pTaskGIUpdateRT->GetElapsedTime();
-	
-	pTaskGIUpdateRT->FreeReference();
 	pTaskGIUpdateRT = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -376,8 +369,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT1->GetElapsedTime());
-	
-	pTaskBuildRT1->FreeReference();
 	pTaskBuildRT1 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -395,8 +386,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT2->GetElapsedTime());
-	
-	pTaskBuildRT2->FreeReference();
 	pTaskBuildRT2 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -1150,8 +1139,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	
 	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
 		pPlan, pTaskFindContent->GetElapsedTime());
-	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 
@@ -1164,8 +1151,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent(pPlan, pTaskGIFindContent->GetElapsedTime());
-	
-	pTaskGIFindContent->FreeReference();
 	pTaskGIFindContent = NULL;
 }
 

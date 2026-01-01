@@ -57,7 +57,6 @@
 deoalWorld::deoalWorld(deAudioOpenAL &oal, deWorld &world) :
 pOal(oal),
 pWorld(world),
-pAWorld(NULL),
 
 pDirtyComponents(false),
 pDirtySpeakers(false),
@@ -67,7 +66,7 @@ pDirtyAllMicLayerMask(true),
 pDirtyAudioParameters(true)
 {
 	try{
-		pAWorld = new deoalAWorld(oal.GetAudioThread(), world.GetSize() * 0.5);
+		pAWorld = deoalAWorld::Ref::New(oal.GetAudioThread(), world.GetSize() * 0.5);
 		
 		deComponent *component = world.GetRootComponent();
 		while(component){
@@ -376,10 +375,7 @@ void deoalWorld::AllSoundLevelMetersRemoved(){
 //////////////////////
 
 void deoalWorld::pCleanUp(){
-	if(pAWorld){
-		pAWorld->FreeReference();
-		pAWorld = NULL;
-	}
+	pAWorld = nullptr;
 	
 	AllSoundLevelMetersRemoved();
 	AllComponentsRemoved();

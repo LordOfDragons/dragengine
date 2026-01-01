@@ -30,8 +30,8 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 
-class meHTVegetationLayer;
-class meHTVRuleCurve;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleCurve.h"
 
 
 
@@ -39,18 +39,19 @@ class meHTVRuleCurve;
  * \brief Undo Height Terrain Vegetation Rule Curve Set Curve.
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTVRuleCurveSetCurve> Ref;
+	
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCurve *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCurve::Ref pRule;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTVRuleCurveSetCurve> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -58,7 +59,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleCurveSetCurve();
+
+public:
 	/*@}*/
 	
 	

@@ -68,6 +68,7 @@ namespace{
 class cActionDisconnect : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionDisconnect> Ref;
 	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("Disconnect",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "Disconnect remote client"),
 	pPanel(panel){}
@@ -80,6 +81,7 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cComboLaunchProfile> Ref;
 	cComboLaunchProfile(projPanelRemoteClient &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -100,6 +102,7 @@ public:
 class cActionSynchronize : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionSynchronize> Ref;
 	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("Synchronize",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"Synchronize profile specific project data to client"),
@@ -118,6 +121,8 @@ public:
 class cActionStart : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionStart> Ref;
+	
 	cActionStart(projPanelRemoteClient &panel) : igdeAction("Start",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStart(), "Test-Run project using selected profile"),
 	pPanel(panel){}
@@ -134,6 +139,8 @@ public:
 class cActionStop : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionStop> Ref;
+	
 	cActionStop(projPanelRemoteClient &panel) : igdeAction("Stop",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStop(), "Stop Test-Run project"),
 	pPanel(panel){}
@@ -150,6 +157,8 @@ public:
 class cActionKill : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionKill> Ref;
+	
 	cActionKill(projPanelRemoteClient &panel) : igdeAction("Kill",
 		panel.GetPanelTestRun().GetWindowMain().GetIconKill(), "Kill Test-Run project"),
 	pPanel(panel){}
@@ -183,7 +192,6 @@ igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espL
 preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),
-pListener(nullptr),
 pMaxLines(500)
 {
 	igdeEnvironment &env = panelTestRun.GetEnvironment();
@@ -203,24 +211,24 @@ pMaxLines(500)
 	helper.GroupBoxFlow(sidePanel, groupBox, "Client:");
 	
 	helper.Label(groupBox, "Name:");
-	helper.EditString(groupBox, "Client name", 15, pEditName, nullptr);
+	helper.EditString(groupBox, "Client name", 15, pEditName, {});
 	pEditName->SetText(client->GetName().c_str());
 	pEditName->SetEditable(false);
 	
 	helper.Label(groupBox, "Address:");
-	helper.EditString(groupBox, "IP address of connected client", 15, pEditAddress, nullptr);
+	helper.EditString(groupBox, "IP address of connected client", 15, pEditAddress, {});
 	pEditAddress->SetText(client->GetAddress().c_str());
 	pEditAddress->SetEditable(false);
 	
-	helper.Button(groupBox, pBtnDisconnect, new cActionDisconnect(*this), true);
+	helper.Button(groupBox, pBtnDisconnect, cActionDisconnect::Ref::New(*this));
 	
 	
 	// synchronize
 	helper.GroupBoxFlow(sidePanel, groupBox, "Synchronize:");
 	
-	helper.Button(groupBox, pBtnSynchronize, new cActionSynchronize(*this), true);
+	helper.Button(groupBox, pBtnSynchronize, cActionSynchronize::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Synchronize state", 15, pEditSyncState, nullptr);
+	helper.EditString(groupBox, "Synchronize state", 15, pEditSyncState, {});
 	pEditSyncState->SetText(client->GetSynchronizeDetails().c_str());
 	pEditSyncState->SetEditable(false);
 	
@@ -230,27 +238,27 @@ pMaxLines(500)
 	
 	helper.Label(groupBox, "Launch Profile:");
 	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
-		pCBLaunchProfile, new cComboLaunchProfile(*this));
+		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	
-	helper.Button(groupBox, pBtnStart, new cActionStart(*this));
-	helper.Button(groupBox, pBtnStop, new cActionStop(*this));
-	helper.Button(groupBox, pBtnKill, new cActionKill(*this));
+	helper.Button(groupBox, pBtnStart, cActionStart::Ref::New(*this));
+	helper.Button(groupBox, pBtnStop, cActionStop::Ref::New(*this));
+	helper.Button(groupBox, pBtnKill, cActionKill::Ref::New(*this));
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent = igdeTabBook::Ref::New(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs = igdeTextArea::Ref::New(env, 60, 10, false);
 	
-	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style = igdeTextStyle::Ref::New(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold(true);
@@ -260,7 +268,7 @@ pMaxLines(500)
 	
 	
 	// finish
-	pListener = new projPanelRemoteClientListener(*this);
+	pListener = projPanelRemoteClientListener::Ref::New(*this);
 	client->AddListener(pListener);
 	
 	preventUpdate = false;
@@ -272,7 +280,6 @@ pMaxLines(500)
 projPanelRemoteClient::~projPanelRemoteClient(){
 	if(pListener){
 		pClient->RemoveListener(pListener);
-		pListener->FreeReference();
 	}
 }
 

@@ -42,7 +42,7 @@
 ////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionResetView::cActionResetView(igdeViewCurveBezier &view) :
-igdeAction("Reset View", NULL, "Reset view to default values"),
+igdeAction("Reset View", nullptr, "Reset view to default values"),
 pView(view){
 }
 
@@ -56,7 +56,7 @@ void igdeViewCurveBezier::cActionResetView::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionFitToCurve::cActionFitToCurve(igdeViewCurveBezier &view) :
-igdeAction("Fit View to Curve", NULL, "Reset view parameters to fit curve into view area"),
+igdeAction("Fit View to Curve", nullptr, "Reset view parameters to fit curve into view area"),
 pView(view){
 }
 
@@ -72,7 +72,7 @@ void igdeViewCurveBezier::cActionFitToCurve::OnAction(){
 #define CE_MIN_DIST		0.001f
 
 igdeViewCurveBezier::cActionEditSelectedPoint::cActionEditSelectedPoint(igdeViewCurveBezier &view) :
-igdeAction("Edit Selected Point...", NULL, "Show dialog to edit coordinates of selected point"),
+igdeAction("Edit Selected Point...", nullptr, "Show dialog to edit coordinates of selected point"),
 pView(view){
 }
 
@@ -82,7 +82,7 @@ void igdeViewCurveBezier::cActionEditSelectedPoint::OnAction(){
 		return;
 	}
 	
-	igdeDialogCurveBezierCoord::Ref dialog(igdeDialogCurveBezierCoord::Ref::NewWith(
+	igdeDialogCurveBezierCoord::Ref dialog(igdeDialogCurveBezierCoord::Ref::New(
 		pView.GetEnvironment(), pView.GetCurve().GetPointAt(selectedPoint)));
 	if(!dialog->Run(&pView)){
 		return;
@@ -191,7 +191,7 @@ void igdeViewCurveBezier::cActionPasteCurve::OnAction(){
 /////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionClearCurve::cActionClearCurve(igdeViewCurveBezier &view) :
-igdeAction("Clear Curve", NULL, "Remove all points from the curve"),
+igdeAction("Clear Curve", nullptr, "Remove all points from the curve"),
 pView(view){
 }
 
@@ -221,7 +221,7 @@ void igdeViewCurveBezier::cActionSetDefaultConstant::OnAction(){
 ///////////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionSetDefaultLinear::cActionSetDefaultLinear(igdeViewCurveBezier &view) :
-igdeAction("Set to Default Linear", NULL, "Set curve to linear interpolation from (0,0) to (1,1)"),
+igdeAction("Set to Default Linear", nullptr, "Set curve to linear interpolation from (0,0) to (1,1)"),
 pView(view){
 }
 
@@ -235,7 +235,7 @@ void igdeViewCurveBezier::cActionSetDefaultLinear::OnAction(){
 ///////////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionSetDefaultBezier::cActionSetDefaultBezier(igdeViewCurveBezier &view) :
-igdeAction("Set to Default Bezier", NULL, "Set curve to bezier interpolation from (0,0) to (1,1)"),
+igdeAction("Set to Default Bezier", nullptr, "Set curve to bezier interpolation from (0,0) to (1,1)"),
 pView(view){
 }
 
@@ -249,7 +249,7 @@ void igdeViewCurveBezier::cActionSetDefaultBezier::OnAction(){
 ///////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionInvertCurveX::cActionInvertCurveX(igdeViewCurveBezier &view) :
-igdeAction("Invert curve along X axis", NULL, "Invert curve along X axis"),
+igdeAction("Invert curve along X axis", nullptr, "Invert curve along X axis"),
 pView(view){
 }
 
@@ -263,7 +263,7 @@ void igdeViewCurveBezier::cActionInvertCurveX::OnAction(){
 ///////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionInvertCurveY::cActionInvertCurveY(igdeViewCurveBezier &view) :
-igdeAction("Invert curve along Y axis", NULL, "Invert curve along Y axis"),
+igdeAction("Invert curve along Y axis", nullptr, "Invert curve along Y axis"),
 pView(view){
 }
 
@@ -277,12 +277,12 @@ void igdeViewCurveBezier::cActionInvertCurveY::OnAction(){
 ////////////////////////////////////////////////
 
 igdeViewCurveBezier::cActionEditClamp::cActionEditClamp(igdeViewCurveBezier &view) :
-igdeAction("Edit Clamp Parameters...", NULL, "Show dialog to edit clamp parameters for the view"),
+igdeAction("Edit Clamp Parameters...", nullptr, "Show dialog to edit clamp parameters for the view"),
 pView(view){
 }
 
 void igdeViewCurveBezier::cActionEditClamp::OnAction(){
-	igdeDialogCurveBezierClamp::Ref dialog(igdeDialogCurveBezierClamp::Ref::NewWith(
+	igdeDialogCurveBezierClamp::Ref dialog(igdeDialogCurveBezierClamp::Ref::New(
 		pView.GetEnvironment(), pView.GetClamp(), pView.GetClampMin(), pView.GetClampMax()));
 	if(!dialog->Run(&pView)){
 		return;
@@ -575,42 +575,42 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
 	// view supported menu entries
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand(menu, new cActionResetView(*this), true);
-	helper.MenuCommand(menu, new cActionFitToCurve(*this), true);
+	helper.MenuCommand(menu, cActionResetView::Ref::New(*this));
+	helper.MenuCommand(menu, cActionFitToCurve::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimConstant,
-		"Constant Interpolation", NULL, "Set curve to constant interpolation"), true);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimLinear,
-		"Linear Interpolation", NULL, "Set curve to linear interpolation"), true);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimBezier,
-		"Bezier Interpolation", NULL, "Set curve to bezier interpolation"), true);
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimConstant,
+		"Constant Interpolation", nullptr, "Set curve to constant interpolation"));
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimLinear,
+		"Linear Interpolation", nullptr, "Set curve to linear interpolation"));
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimBezier,
+		"Bezier Interpolation", nullptr, "Set curve to bezier interpolation"));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionCopyCurve(*this), true);
-	helper.MenuCommand(menu, new cActionPasteCurve(*this), true);
+	helper.MenuCommand(menu, cActionCopyCurve::Ref::New(*this));
+	helper.MenuCommand(menu, cActionPasteCurve::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionClearCurve(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultConstant(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultLinear(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultBezier(*this), true);
+	helper.MenuCommand(menu, cActionClearCurve::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultConstant::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultLinear::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultBezier::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionInvertCurveX(*this), true);
-	helper.MenuCommand(menu, new cActionInvertCurveY(*this), true);
-	helper.MenuCommand(menu, new cActionAutoHandles(*this), true);
+	helper.MenuCommand(menu, cActionInvertCurveX::Ref::New(*this));
+	helper.MenuCommand(menu, cActionInvertCurveY::Ref::New(*this));
+	helper.MenuCommand(menu, cActionAutoHandles::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionEditClamp(*this), true);
+	helper.MenuCommand(menu, cActionEditClamp::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionEditSelectedPoint(*this), true);
+	helper.MenuCommand(menu, cActionEditSelectedPoint::Ref::New(*this));
 	
 	// listener supported menu entries
 	const int count = pListeners.GetCount();
@@ -619,7 +619,7 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 		((igdeViewCurveBezierListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu);
 	}
 	
-	if(menu->GetChildCount() > 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(*this, position);
 	}
 }
@@ -636,35 +636,25 @@ void igdeViewCurveBezier::AddListener(igdeViewCurveBezierListener *listener){
 void igdeViewCurveBezier::RemoveListener(igdeViewCurveBezierListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeViewCurveBezier::NotifyCurveChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnCurveChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnCurveChanged(this);
+	});
 }
 
 void igdeViewCurveBezier::NotifyCurveChanging(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnCurveChanging(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnCurveChanging(this);
+	});
 }
 
 void igdeViewCurveBezier::NotifyCurveSelectPoint(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeViewCurveBezierListener*)listeners.GetAt(i))->OnSelectedPointChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeViewCurveBezierListener &l){
+		l.OnSelectedPointChanged(this);
+	});
 }
 
 

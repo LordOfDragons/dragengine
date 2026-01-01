@@ -42,7 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset){
+meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture, const decVector2 &newOffset)
+{
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -53,16 +55,10 @@ meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *
 	pNewOffset = newOffset;
 	
 	SetShortInfo("Set Height Terrain Texture UV Offset");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

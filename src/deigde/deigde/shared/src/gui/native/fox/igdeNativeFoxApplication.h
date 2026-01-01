@@ -28,10 +28,10 @@
 #include "foxtoolkit.h"
 #include "../../../environment/igdeEnvironment.h"
 
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 class deException;
 class igdeApplication;
-class decUnicodeStringList;
 #ifdef OS_W32
 class decUnicodeArgumentList;
 #endif
@@ -115,7 +115,7 @@ public:
 private:
 	igdeApplication *pOwner;
 	FXToolTip *pToolTip;
-	bool pDisableModalUpdating;
+	bool pDisableModalUpdating, pDeleteNormalFont;
 	char **pFoxArgs;
 	int pFoxArgCount;
 	int pDisplayScaleFactor;

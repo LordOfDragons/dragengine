@@ -70,7 +70,6 @@ pBVH(NULL)
 	}
 	
 	pOcclusionMesh = occlusionmesh;
-	occlusionmesh->AddReference();
 	pComponent = component;
 	
 	pWeights = NULL;
@@ -215,10 +214,6 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 //////////////////////
 
 void deoglDynamicOcclusionMesh::pCleanUp(){
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
-	
 	if(pVBOData){
 		delete [] pVBOData;
 	}
@@ -439,9 +434,6 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	if(!pVBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		if(!pVBO){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));

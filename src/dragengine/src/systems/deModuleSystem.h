@@ -347,7 +347,7 @@ public:
 	 * 
 	 * For internal use only!
 	 */
-	typedef deInternalModule* (*FPRegisterInternalModule)(deModuleSystem*);
+	typedef deTObjectReference<deInternalModule> (*FPRegisterInternalModule)(deModuleSystem*);
 	/*@}*/
 	
 	

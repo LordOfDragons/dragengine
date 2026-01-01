@@ -45,21 +45,16 @@ aeULinkSetBoneParameter::aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::e
 		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	SetShortInfo("Link set bone parameter");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetBoneParameter();
 	pNewValue = newBoneParameter;
 }
 
 aeULinkSetBoneParameter::~aeULinkSetBoneParameter(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

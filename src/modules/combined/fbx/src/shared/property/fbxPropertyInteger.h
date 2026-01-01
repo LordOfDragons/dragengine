@@ -33,6 +33,10 @@
  * \brief FBX property integer.
  */
 class fbxPropertyInteger : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyInteger> Ref;
+	
+	
 private:
 	int pValue;
 	
@@ -45,7 +49,7 @@ public:
 	fbxPropertyInteger();
 	
 	/** \brief Load property. */
-	fbxPropertyInteger(decBaseFileReader &reader);
+	explicit fbxPropertyInteger(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

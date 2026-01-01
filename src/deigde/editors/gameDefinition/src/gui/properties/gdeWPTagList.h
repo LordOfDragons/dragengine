@@ -29,12 +29,12 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/string/decStringSet.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
-class igdeUndo;
-
-class decStringSet;
 
 
 /**
@@ -43,6 +43,10 @@ class decStringSet;
  * Subclass to implement creating undo actions.
  */
 class gdeWPTagList : public igdeContainerFlow{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<gdeWPTagList> Ref;
+	
 private:
 	igdeComboBoxFilter::Ref pComboBox;
 	igdeListBox::Ref pListBox;
@@ -78,10 +82,10 @@ public:
 	/** \brief Set tag list to edit. */
 	void SetTagList(const decStringSet *tagList);
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
+	/** \brief Set undo system or nullptr. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
@@ -101,26 +105,26 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet(const decStringSet &tags) = 0;
+	virtual igdeUndo::Ref UndoSet(const decStringSet &tags) = 0;
 	/*@}*/
 	
 	
 	
 protected:
 	/** \brief Combo box. */
-	inline igdeComboBoxFilter *GetComboBox() const{ return pComboBox; }
+	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

@@ -305,8 +305,8 @@ deBaseAudioSynthesizerInstance *deAudioOpenAL::CreateSynthesizerInstance(deSynth
 	return new deoalSynthesizerInstance(*this, *instance);
 }
 
-deBaseAudioHeightTerrain * deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
-	return NULL;
+deBaseAudioHeightTerrain *deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
+	return nullptr;
 }
 
 
@@ -360,6 +360,8 @@ void deAudioOpenAL::SendCommand(const decUnicodeArgumentList &command, decUnicod
 
 class deoalModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deoalModuleInternal> Ref;
+	
 	deoalModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenAL");
 		SetDescription("Ouputs audio using the OpenAL library.");
@@ -379,7 +381,7 @@ public:
 	}
 };
 
-deInternalModule *deoalRegisterInternalModule(deModuleSystem *system){
-	return new deoalModuleInternal(system);
+deTObjectReference<deInternalModule> deoalRegisterInternalModule(deModuleSystem *system){
+	return deoalModuleInternal::Ref::New(system);
 }
 #endif

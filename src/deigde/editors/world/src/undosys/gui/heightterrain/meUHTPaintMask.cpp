@@ -64,8 +64,8 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	pTexture = texture;
 	
 	pSize = size;
-	pOldValues = NULL;
-	pNewValues = NULL;
+	pOldValues = nullptr;
+	pNewValues = nullptr;
 	
 	pGrid.x1 = grid.x;
 	pGrid.y1 = grid.y;
@@ -77,10 +77,7 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	
 	try{
 		pOldValues = new unsigned char[pixelCount];
-		if(!pOldValues) DETHROW(deeOutOfMemory);
-		
 		pNewValues = new unsigned char[pixelCount];
-		if(!pNewValues) DETHROW(deeOutOfMemory);
 		
 		pSaveValues();
 		

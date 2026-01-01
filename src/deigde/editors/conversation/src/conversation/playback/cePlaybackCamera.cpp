@@ -48,8 +48,6 @@
 cePlaybackCamera::cePlaybackCamera(cePlayback &playback) :
 pPlayback(playback)
 {
-	pCameraTarget = NULL;
-	pLookAtTarget = NULL;
 	pCameraDistanceFrom = 0.0f;
 	pCameraDistanceTo = 0.0f;
 	pTiltFrom = 0.0f;
@@ -68,8 +66,6 @@ pPlayback(playback)
 }
 
 cePlaybackCamera::~cePlaybackCamera(){
-	SetCameraTarget(NULL);
-	SetLookAtTarget(NULL);
 }
 
 
@@ -84,31 +80,11 @@ void cePlaybackCamera::SetCoordinateSystem(const decMatrix &matrix){
 
 
 void cePlaybackCamera::SetCameraTarget(ceTarget *target){
-	if(target != pCameraTarget){
-		if(pCameraTarget){
-			pCameraTarget->FreeReference();
-		}
-		
-		pCameraTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
-	}
+	pCameraTarget = target;
 }
 
 void cePlaybackCamera::SetLookAtTarget(ceTarget *target){
-	if(target != pLookAtTarget){
-		if(pLookAtTarget){
-			pLookAtTarget->FreeReference();
-		}
-		
-		pLookAtTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
-	}
+	pLookAtTarget = target;
 }
 
 void cePlaybackCamera::SetOffsetCameraFrom(const decVector &position){
@@ -255,7 +231,7 @@ void cePlaybackCamera::Rewind(){
 void cePlaybackCamera::Reset(){
 	pCoordSys.SetIdentity();
 	
-	SetCameraTarget(NULL);
+	pCameraTarget = nullptr;
 	pOffsetCameraFrom.SetZero();
 	pOffsetCameraTo = pOffsetCameraFrom;
 	pCameraOrbitFrom.SetZero();
@@ -263,7 +239,7 @@ void cePlaybackCamera::Reset(){
 	pCameraDistanceFrom = 0.5f;
 	pCameraDistanceTo = pCameraDistanceFrom;
 	
-	SetLookAtTarget(NULL);
+	pLookAtTarget = nullptr;
 	pOffsetLookAtFrom.SetZero();
 	pOffsetLookAtTo = pOffsetLookAtFrom;
 	

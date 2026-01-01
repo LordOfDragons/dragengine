@@ -147,7 +147,7 @@ public:
 	
 	
 	/** \brief Read from file. */
-	static fbxProperty *Read(decBaseFileReader &reader);
+	static fbxProperty::Ref Read(decBaseFileReader &reader);
 	
 	/** \brief Save to file. */
 	virtual void Save(decBaseFileWriter &writer) = 0;

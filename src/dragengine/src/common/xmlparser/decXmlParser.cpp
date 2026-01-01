@@ -261,8 +261,8 @@ void decXmlParser::ParsePublicLiteral(decXmlDocument *doc){
 }
 
 bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requiredName){
-	decXmlElementTag *tag = NULL;
-	decXmlCharacterData *charData = NULL;
+	decXmlElementTag::Ref tag;
+	decXmlCharacterData::Ref charData;
 	int nextChar, count = 0;
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
@@ -277,7 +277,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 	if(requiredName && requiredName[0] && strcmp(requiredName, pCleanString) != 0){
 		RaiseFatalError();
 	}
-	tag = new decXmlElementTag(pCleanString);
+	tag = decXmlElementTag::Ref::New(pCleanString);
 	tag->SetLineNumber(lineNumber);
 	tag->SetPositionNumber(posNumber);
 	
@@ -303,12 +303,11 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 					if(count > 0){
 						SetCleanString(count);
 						pAddCharacterData(tag, pCleanString, lineNumber, posNumber);
-						//charData = new decXmlCharacterData( pCleanString );
-						//if( ! charData ) DETHROW( deeOutOfMemory );
+						//charData = decXmlCharacterData::Ref::New( pCleanString );
 						//charData->SetLineNumber( lineNumber );
 						//charData->SetPositionNumber( posNumber );
 						//tag->AddElement( charData );
-						//charData = NULL;
+						//charData = nullptr;
 						RemoveFromToken(count);
 					}
 					
@@ -342,21 +341,15 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 		}
 		
 		container->AddElement(tag);
-		tag->FreeReference();
-		
 	}catch(const deException &){
-		if(charData){
-			charData->FreeReference();
-		}
-		tag->FreeReference();
 		throw;
 	}
 	return true;
 }
 
 bool decXmlParser::ParseReference(decXmlContainer *container){
-	decXmlEntityReference *entRef = NULL;
-	decXmlCharReference *charRef = NULL;
+	decXmlEntityReference::Ref entRef;
+	decXmlCharReference::Ref charRef;
 	int nextChar, count = 0;
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
@@ -366,120 +359,105 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 	// Reference ::= EntityRef | CharRef
 	// EntityRef ::= '&' Name ';'
 	// CharRef ::= '&#' [0-9]+ ';' | '&#x' [0-9a-fA-F]+ ';'
-	try{
-		nextChar = GetTokenAt(0);
-		if(nextChar == '&'){
-			nextChar = GetTokenAt(1);
-			if(nextChar == '#'){
-				nextChar = GetTokenAt(2);
-				if(nextChar == 'x'){
-					character = 0;
-					count = 3;
-					tchar = GetTokenAt(count++);
-					if(!IsHex(tchar)) RaiseFatalError();
-					
-					while(true){
-						if(tchar >= 'A' && tchar <= 'F'){
-							character = (character << 4) + 10 + (tchar - 'A');
-							
-						}else if(tchar >= 'a' && tchar <= 'f'){
-							character = (character << 4) + 10 + (tchar - 'a');
-							
-						}else{
-							character = (character << 4) + (tchar - '0');
-						}
-						
-						tchar = GetTokenAt(count);
-						if(!IsHex(tchar)) break;
-						count++;
-					}
-					if(GetTokenAt(count) != ';') RaiseFatalError();
-					SetCleanString(count);
-					if(character){
-						pAddCharacterData(container, (char)character, lineNumber, posNumber);
-					}else{
-//						charRef = new decXmlCharReference( pCleanString + 3, decXmlCharReference::erHexadecimal );
-//						if( ! charRef ) DETHROW( deeOutOfMemory );
-					}
-				}else{
-					character = 0;
-					count = 2;
-					tchar = GetTokenAt(count++);
-					if(!IsLatinDigit(tchar)) RaiseFatalError();
-					
-					while(true){
-						character = character * 10 + (tchar - '0');
-						
-						tchar = GetTokenAt(count);
-						if(!IsLatinDigit(tchar)) break;
-						count++;
-					}
-					if(GetTokenAt(count) != ';') RaiseFatalError();
-					SetCleanString(count);
-					if(character){
-						pAddCharacterData(container, (char)character, lineNumber, posNumber);
-					}else{
-//						charRef = new decXmlCharReference( pCleanString + 2, decXmlCharReference::erDecimal );
-//						if( ! charRef ) DETHROW( deeOutOfMemory );
-					}
-				}
-				if(charRef){
-					charRef->SetLineNumber(lineNumber);
-					charRef->SetPositionNumber(posNumber);
-					container->AddElement(charRef);
-					charRef->FreeReference();
-					charRef = NULL;
-				}
+	nextChar = GetTokenAt(0);
+	if(nextChar == '&'){
+		nextChar = GetTokenAt(1);
+		if(nextChar == '#'){
+			nextChar = GetTokenAt(2);
+			if(nextChar == 'x'){
+				character = 0;
+				count = 3;
+				tchar = GetTokenAt(count++);
+				if(!IsHex(tchar)) RaiseFatalError();
 				
-			}else{
-				count = ParseName(count + 1, false);
+				while(true){
+					if(tchar >= 'A' && tchar <= 'F'){
+						character = (character << 4) + 10 + (tchar - 'A');
+						
+					}else if(tchar >= 'a' && tchar <= 'f'){
+						character = (character << 4) + 10 + (tchar - 'a');
+						
+					}else{
+						character = (character << 4) + (tchar - '0');
+					}
+					
+					tchar = GetTokenAt(count);
+					if(!IsHex(tchar)) break;
+					count++;
+				}
 				if(GetTokenAt(count) != ';') RaiseFatalError();
 				SetCleanString(count);
+				if(character){
+					pAddCharacterData(container, (char)character, lineNumber, posNumber);
+				}else{
+//						charRef = decXmlCharReference::Ref::New( pCleanString + 3, decXmlCharReference::erHexadecimal );
+				}
+			}else{
+				character = 0;
+				count = 2;
+				tchar = GetTokenAt(count++);
+				if(!IsLatinDigit(tchar)) RaiseFatalError();
 				
-				const char * const name = pCleanString + 1;
-				if(strcmp(name, "lt") == 0){
-					pAddCharacterData(container, '<', lineNumber, posNumber);
+				while(true){
+					character = character * 10 + (tchar - '0');
 					
-				}else if(strcmp(name, "gt") == 0){
-					pAddCharacterData(container, '>', lineNumber, posNumber);
-					
-				}else if(strcmp(name, "amp") == 0){
-					pAddCharacterData(container, '&', lineNumber, posNumber);
-					
-				}else if(strcmp(name, "quot") == 0){
-					pAddCharacterData(container, '"', lineNumber, posNumber);
-					
-				}else if(strcmp(name, "apos") == 0){
-					pAddCharacterData(container, '\'', lineNumber, posNumber);
-					
-				} else {
-					entRef = new decXmlEntityReference(name);
-					entRef->SetLineNumber(lineNumber);
-					entRef->SetPositionNumber(posNumber);
-					container->AddElement(entRef);
-					entRef->FreeReference();
-					entRef = nullptr;
+					tchar = GetTokenAt(count);
+					if(!IsLatinDigit(tchar)) break;
+					count++;
+				}
+				if(GetTokenAt(count) != ';') RaiseFatalError();
+				SetCleanString(count);
+				if(character){
+					pAddCharacterData(container, (char)character, lineNumber, posNumber);
+				}else{
+//						charRef = decXmlCharReference::Ref::New( pCleanString + 2, decXmlCharReference::erDecimal );
 				}
 			}
+			if(charRef){
+				charRef->SetLineNumber(lineNumber);
+				charRef->SetPositionNumber(posNumber);
+				container->AddElement(charRef);
+				charRef = nullptr;
+			}
 			
-			RemoveFromToken(count + 1);
 		}else{
-			return false;
+			count = ParseName(count + 1, false);
+			if(GetTokenAt(count) != ';') RaiseFatalError();
+			SetCleanString(count);
+			
+			const char * const name = pCleanString + 1;
+			if(strcmp(name, "lt") == 0){
+				pAddCharacterData(container, '<', lineNumber, posNumber);
+				
+			}else if(strcmp(name, "gt") == 0){
+				pAddCharacterData(container, '>', lineNumber, posNumber);
+				
+			}else if(strcmp(name, "amp") == 0){
+				pAddCharacterData(container, '&', lineNumber, posNumber);
+				
+			}else if(strcmp(name, "quot") == 0){
+				pAddCharacterData(container, '"', lineNumber, posNumber);
+				
+			}else if(strcmp(name, "apos") == 0){
+				pAddCharacterData(container, '\'', lineNumber, posNumber);
+				
+			} else {
+				entRef = decXmlEntityReference::Ref::New(name);
+				entRef->SetLineNumber(lineNumber);
+				entRef->SetPositionNumber(posNumber);
+				container->AddElement(entRef);
+			}
 		}
-	}catch(const deException &){
-		if(charRef){
-			charRef->FreeReference();
-		}
-		if(entRef){
-			entRef->FreeReference();
-		}
-		throw;
+		
+		RemoveFromToken(count + 1);
+	}else{
+		return false;
 	}
 	return true;
 }
 
 bool decXmlParser::ParseCDSect(decXmlContainer *container){
-	decXmlCDSect *cdsect = NULL;
+	decXmlCDSect::Ref cdsect;
 	int nextChar, count = 0;
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
@@ -488,69 +466,43 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 	// CData ::= (Char* - (Char* ']]>' Char*))
 	// CDEnd ::= ']]>'
 	if(!ParseToken("<![CDATA[")) return false;
-	try{
-		while(true){
-			nextChar = GetTokenAt(count);
-			if(nextChar == DEXP_EOF) RaiseFatalError();
-			if(TestToken(count, "]]>")) break;
-			count++;
-		}
-		SetCleanString(count);
-		cdsect = new decXmlCDSect(pCleanString);
-		if(!cdsect) DETHROW(deeOutOfMemory);
-		cdsect->SetLineNumber(lineNumber);
-		cdsect->SetPositionNumber(posNumber);
-		RemoveFromToken(count);
-		container->AddElement(cdsect);
-		cdsect->FreeReference();
-		cdsect = NULL;
-		if(!ParseToken("]]>")) RaiseFatalError();
-	}catch(const deException &){
-		if(cdsect){
-			cdsect->FreeReference();
-		}
-		throw;
+	while(true){
+		nextChar = GetTokenAt(count);
+		if(nextChar == DEXP_EOF) RaiseFatalError();
+		if(TestToken(count, "]]>")) break;
+		count++;
 	}
+	SetCleanString(count);
+	cdsect = decXmlCDSect::Ref::New(pCleanString);
+	cdsect->SetLineNumber(lineNumber);
+	cdsect->SetPositionNumber(posNumber);
+	RemoveFromToken(count);
+	container->AddElement(cdsect);
+	if(!ParseToken("]]>")) RaiseFatalError();
 	return true;
 }
 
 void decXmlParser::ParseAttribute(decXmlContainer *container){
-	decXmlAttValue *attValue = NULL;
-	decXmlNamespace *ns = NULL;
+	decXmlAttValue::Ref attValue;
+	decXmlNamespace::Ref ns;
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
 	// Attribute ::= Name Eq AttValue
 	// (ADDITION): if Name begins with 'xmlns:' make a namespace out of it
 	ParseName(0, true);
-	attValue = new decXmlAttValue(pCleanString);
-	if(!attValue) DETHROW(deeOutOfMemory);
+	attValue = decXmlAttValue::Ref::New(pCleanString);
 	attValue->SetLineNumber(lineNumber);
 	attValue->SetPositionNumber(posNumber);
-	try{
-		ParseEquals();
-		ParseAttValue(attValue);
-		// check if this is a namespace
-		if(strncmp(attValue->GetName(), "xmlns:", 6) == 0){
-			ns = new decXmlNamespace(attValue->GetName() + 6, attValue->GetValue());
-			if(!ns) DETHROW(deeOutOfMemory);
-			ns->SetLineNumber(lineNumber);
-			ns->SetPositionNumber(posNumber);
-			attValue->FreeReference();
-			attValue = NULL;
-			container->AddElement(ns);
-			ns->FreeReference();
-		}else{
-			container->AddElement(attValue);
-			attValue->FreeReference();
-		}
-	}catch(const deException &){
-		if(ns){
-			ns->FreeReference();
-		}
-		if(attValue){
-			attValue->FreeReference();
-		}
-		throw;
+	ParseEquals();
+	ParseAttValue(attValue);
+	// check if this is a namespace
+	if(strncmp(attValue->GetName(), "xmlns:", 6) == 0){
+		ns = decXmlNamespace::Ref::New(attValue->GetName() + 6, attValue->GetValue());
+		ns->SetLineNumber(lineNumber);
+		ns->SetPositionNumber(posNumber);
+		container->AddElement(ns);
+	}else{
+		container->AddElement(attValue);
 	}
 }
 
@@ -722,7 +674,7 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
 	int nextChar, count = 0;
-	decXmlComment *comment = NULL;
+	decXmlComment::Ref comment;
 	if(!ParseToken("<!--")) return false;
 	while(true){
 		nextChar = GetTokenAt(count);
@@ -744,17 +696,10 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	}
 	// add comment
 	SetCleanString(count);
-	comment = new decXmlComment(pCleanString);
-	if(!comment) DETHROW(deeOutOfMemory);
+	comment = decXmlComment::Ref::New(pCleanString);
 	comment->SetLineNumber(lineNumber);
 	comment->SetPositionNumber(posNumber);
-	try{
-		container->AddElement(comment);
-		comment->FreeReference();
-	}catch(const deException &){
-		comment->FreeReference();
-		throw;
-	}
+	container->AddElement(comment);
 	RemoveFromToken(count + 3);
 	return true;
 }
@@ -765,7 +710,7 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 	int lineNumber = pTokenLine;
 	int posNumber = pTokenPos;
 	int nextChar, count = 0;
-	decXmlPI *pi = NULL;
+	decXmlPI::Ref pi;
 	if(!ParseToken("<?")) return false;
 	ParseName(0, true);
 	if(strlen(pCleanString) >= 3){
@@ -775,36 +720,29 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 			RaiseFatalError();
 		}
 	}
-	pi = new decXmlPI(pCleanString);
-	if(!pi) DETHROW(deeOutOfMemory);
+	pi = decXmlPI::Ref::New(pCleanString);
 	pi->SetLineNumber(lineNumber);
 	pi->SetPositionNumber(posNumber);
-	try{
-		if(ParseSpaces() > 0){
-			while(true){
-				nextChar = GetTokenAt(count);
+	if(ParseSpaces() > 0){
+		while(true){
+			nextChar = GetTokenAt(count);
+			if(nextChar == DEXP_EOF) RaiseFatalError();
+			if(nextChar == '?'){
+				nextChar = GetTokenAt(count + 1);
 				if(nextChar == DEXP_EOF) RaiseFatalError();
-				if(nextChar == '?'){
-					nextChar = GetTokenAt(count + 1);
-					if(nextChar == DEXP_EOF) RaiseFatalError();
-					if(nextChar == '>') break;
+				if(nextChar == '>') break;
 // 					if( ! IsChar( nextChar ) ) RaiseFatalError();
-					count++;
-				}else{
-// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
-				}
 				count++;
+			}else{
+// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
 			}
-			SetCleanString(count);
-			pi->SetCommand(pCleanString);
-			RemoveFromToken(count + 2);
+			count++;
 		}
-		container->AddElement(pi);
-		pi->FreeReference();
-	}catch(const deException &){
-		pi->FreeReference();
-		throw;
+		SetCleanString(count);
+		pi->SetCommand(pCleanString);
+		RemoveFromToken(count + 2);
 	}
+	container->AddElement(pi);
 	return true;
 }
 
@@ -1038,7 +976,6 @@ void decXmlParser::SetCleanString(int length){
 	if(length > pTokenLen) DETHROW(deeInvalidParam);
 	if(length > pCleanStringSize){
 		char *newStr = new char[length + 1];
-		if(!newStr) DETHROW(deeOutOfMemory);
 		if(pCleanString) delete [] pCleanString;
 		pCleanString = newStr;
 		pCleanStringSize = length;
@@ -1088,7 +1025,6 @@ void decXmlParser::pGetNextCharAndAdd(){
 void decXmlParser::pGrowToken(){
 	int newSize = pTokenSize * 3 / 2 + 1;
 	char *newToken = new char[newSize + 1];
-	if(!newToken) DETHROW(deeOutOfMemory);
 	if(pToken){
 		if(pTokenLen > 0){
 			#ifdef OS_W32_VS
@@ -1106,32 +1042,26 @@ void decXmlParser::pGrowToken(){
 
 void decXmlParser::pAddCharacterData(decXmlContainer *container, const char *text, int line, int pos){
 	int count = container->GetElementCount();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElement *element = NULL;
 	
 	if(count > 0){
-		element = container->GetElementAt(count - 1);
+		decXmlElement * const element = container->GetElementAt(count - 1);
 		if(element->CanCastToCharacterData()){
 			element->CastToCharacterData()->AppendData(text);
 			return;
 		}
 	}
 	
-	cdata = new decXmlCharacterData(text);
-	if(!cdata) DETHROW(deeOutOfMemory);
+	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::New(text));
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);
-	cdata->FreeReference();
 }
 
 void decXmlParser::pAddCharacterData(decXmlContainer *container, char character, int line, int pos){
 	int count = container->GetElementCount();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElement *element = NULL;
 	
 	if(count > 0){
-		element = container->GetElementAt(count - 1);
+		decXmlElement * const element = container->GetElementAt(count - 1);
 		if(element->CanCastToCharacterData()){
 			element->CastToCharacterData()->AppendCharacter(character);
 			return;
@@ -1139,10 +1069,8 @@ void decXmlParser::pAddCharacterData(decXmlContainer *container, char character,
 	}
 	
 	char buffer[2] = {character, '\0'};
-	cdata = new decXmlCharacterData((const char *)&buffer);
-	if(!cdata) DETHROW(deeOutOfMemory);
+	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::New((const char *)&buffer));
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);
-	cdata->FreeReference();
 }

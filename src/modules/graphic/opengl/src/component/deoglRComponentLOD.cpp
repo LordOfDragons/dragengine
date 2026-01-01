@@ -287,7 +287,7 @@ void deoglRComponentLOD::WriteWeightMatricesSSBO(){
 	PrepareWeights();
 	
 	if(!pSSBOWeightMatrices){
-		pSSBOWeightMatrices.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+		pSSBOWeightMatrices = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 		deoglSPBlockSSBO &ssbo = pSSBOWeightMatrices;
 		ssbo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 		ssbo.SetParameterCount(1);
@@ -770,7 +770,7 @@ void deoglRComponentLOD::pEnsureVBO(){
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	const int pointCount = pComponent.GetModel()->GetLODAt(pLODIndex).GetVertexCount();
 	
-	pVBO.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+	pVBO = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	
 	deoglSPBlockSSBO &vbo = pVBO;
 	vbo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
@@ -951,9 +951,6 @@ void deoglRComponentLOD::pCalculateWeights(const deoglModelLOD &modelLOD){
 		
 		if(!pVBOWeightMatrices){
 			OGL_CHECK(ogl, pglGenBuffers(1, &pVBOWeightMatrices));
-			if(!pVBOWeightMatrices){
-				DETHROW(deeOutOfMemory);
-			}
 			OGL_CHECK(ogl, pglBindBuffer(GL_ARRAY_BUFFER, pVBOWeightMatrices));
 			OGL_CHECK(ogl, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglMatrix3x4) * weightsCount, pWeights, GL_STATIC_DRAW));
 		}

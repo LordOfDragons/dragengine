@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 
-#include "seIGDEModule.h"
+#include "skyeIGDEModule.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,9 +46,9 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *en
 
 igdeEditorModule *SkyEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new seIGDEModule(*environment);
+		return new skyeIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }

@@ -36,6 +36,7 @@
  */
 class ceCATrigger : public ceConversationAction{
 public:
+	typedef deTObjectReference<ceCATrigger> Ref;
 	/** \brief Action. */
 	enum eActions{
 		/** \brief Fire trigger. */
@@ -62,7 +63,9 @@ public:
 	/** \brief Creates a new trigger conversation action. */
 	ceCATrigger(const ceCATrigger &action);
 	/** \brief Cleans up the trigger conversation action. */
+protected:
 	~ceCATrigger() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -77,7 +80,7 @@ public:
 	void SetAction(eActions action);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

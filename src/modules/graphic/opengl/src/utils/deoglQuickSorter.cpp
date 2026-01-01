@@ -130,7 +130,7 @@ void deoglQuickSorter::TestImplementation(){
 	sorter.SortAscending();
 	
 	for(i=0; i<10; i++){
-		if((int)((char*)sorter.GetElementAt(i) - (char*)0x1) != i){
+		if((int)(reinterpret_cast<char*>(sorter.GetElementAt(i)) - reinterpret_cast<char*>(0x1)) != i){
 			printf("result [");
 			for(i=0; i<10; i++){
 				printf(" %p", sorter.GetElementAt(i));
@@ -148,7 +148,7 @@ void deoglQuickSorter::TestImplementation(){
 	sorter.SortDescending();
 	
 	for(i=0; i<10; i++){
-		if((int)((char*)sorter.GetElementAt(i) - (char*)0x1) != (9 - i)){
+		if((int)(reinterpret_cast<char*>(sorter.GetElementAt(i)) - reinterpret_cast<char*>(0x1)) != (9 - i)){
 			printf("result [");
 			for(i=0; i<10; i++){
 				printf(" %p", sorter.GetElementAt(i));

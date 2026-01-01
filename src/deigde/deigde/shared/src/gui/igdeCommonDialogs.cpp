@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "igdeApplication.h"
 #include "igdeCommonDialogs.h"
 #include "igdeWidget.h"
 #include "igdeContainer.h"
@@ -33,12 +34,11 @@
 #include "igdeUIHelper.h"
 #include "dialog/igdeDialog.h"
 #include "dialog/igdeDialogMultilineValue.h"
-#include "filedialog/igdeFilePattern.h"
-#include "filedialog/igdeFilePatternList.h"
 #include "layout/igdeContainerFlow.h"
 #include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -210,7 +210,7 @@ const char *text, decString &value){
 	
 	igdeDialogMultilineValue::Ref dialog;
 	
-	dialog.TakeOver(new igdeDialogMultilineValue(owner->GetEnvironment(), title, text));
+	dialog = igdeDialogMultilineValue::Ref::New(owner->GetEnvironment(), title, text);
 	dialog->SetValue(value);
 	if(dialog->Run(owner)){
 		value = dialog->GetValue();
@@ -222,26 +222,21 @@ const char *text, decString &value){
 }
 
 bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
-const char *text, decString &value, const decStringList &proposals){
-	if(!owner){
-		DETHROW(deeInvalidParam);
-	}
+const char *text, decString &value, const decTList<decString> &proposals){
+	DEASSERT_NOTNULL(owner)
 	
 	igdeEnvironment &environment = owner->GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
-	igdeDialog::Ref dialog(igdeDialog::Ref::NewWith(environment, title));
+	igdeDialog::Ref dialog(igdeDialog::Ref::New(environment, title));
+	dialog->SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 100)));
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
-		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
+		environment, igdeContainerFlow::eaY, igdeContainerFlow::esNone, 10));
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);
-	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, NULL);
-	const int count = proposals.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		comboBox->AddItem(proposals.GetAt(i));
-	}
+	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, {});
+	proposals.Visit([&](const decString &item){ comboBox->AddItem(item); });
 	comboBox->StoreFilterItems();
 	comboBox->SetText(value);
 	
@@ -260,29 +255,29 @@ const char *text, decString &value, const decStringList &proposals){
 }
 
 bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decStringList &list, int &selection){
+const char *text, const decTList<decString> &list, int &selection){
 	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
 }
 
 
 
 bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, filePatterns, filename);
 }
 
 bool igdeCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileOpen(owner, title, vfs, filePatterns, filename);
 }
 
 bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, filePatterns, filename);
 }
 
-bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+bool igdeCommonDialogs::GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+const igdeFilePattern::List &filePatterns, decString &filename){
 	return igdeNativeCommonDialogs::GetFileSave(owner, title, vfs, filePatterns, filename);
 }
 

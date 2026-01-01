@@ -152,12 +152,12 @@ void delGPModuleList::Update(const delGPModuleList &list){
 					parameter->SetValue(paramChanges.GetValue());
 					
 				}else{
-					parameters.Add (delGPMParameter::Ref::NewWith(paramChanges));
+					parameters.Add (delGPMParameter::Ref::New(paramChanges));
 				}
 			}
 			
 		}else{
-			Add(delGPModule::Ref::NewWith(moduleChanges));
+			Add(delGPModule::Ref::New(moduleChanges));
 		}
 	}
 }

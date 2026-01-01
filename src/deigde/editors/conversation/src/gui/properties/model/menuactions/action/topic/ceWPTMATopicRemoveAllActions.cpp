@@ -42,7 +42,7 @@ ceConversation &conversation, ceConversationTopic &topic) :
 ceWPTMARemoveAllActions(windowMain, conversation),
 pTopic(&topic)
 {
-	SetEnabled(topic.GetActionList().GetCount() > 0);
+	SetEnabled(topic.GetActions().GetCount() > 0);
 }
 
 
@@ -50,6 +50,6 @@ pTopic(&topic)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMATopicRemoveAllActions::CreateUndo(){
-	return new ceUCActionRemoveAll(pTopic);
+igdeUndo::Ref ceWPTMATopicRemoveAllActions::CreateUndo(){
+	return ceUCActionRemoveAll::Ref::New(pTopic);
 }

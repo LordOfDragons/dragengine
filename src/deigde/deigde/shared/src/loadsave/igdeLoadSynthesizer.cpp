@@ -108,7 +108,7 @@ deSynthesizer &synthesizer, decBaseFileReader &reader){
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -158,31 +158,18 @@ const char *basePath, deSynthesizer &synthesizer){
 			synthesizer.SetSampleCount(GetCDataInt(*tag));
 			
 		}else{
-			deSynthesizerSource * const source = pReadSource(*tag, basePath, synthesizer);
+			const deSynthesizerSource::Ref source(pReadSource(*tag, basePath, synthesizer));
 			if(source){
 				synthesizer.AddSource(source);
-				source->FreeReference();
 			}
 		}
 	}
 }
 
 void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerController *controller = NULL;
+	deSynthesizerController::Ref controller(deSynthesizerController::Ref::New());
+	
 	int i;
-	
-	try{
-		controller = new deSynthesizerController;
-		synthesizer.AddController(controller);
-		controller->FreeReference();
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
-	}
-	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
 		if(!tag){
@@ -201,46 +188,37 @@ void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthe
 			controller->SetValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
 		}
 	}
+	
+	synthesizer.AddController(controller);
 }
 
 void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerLink *link = NULL;
+	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::New());
 	int i;
 	
-	try{
-		link = new deSynthesizerLink;
-		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "controller"){
-				link->SetController(GetCDataInt(*tag));
-				
-			}else if(tagName == "repeat"){
-				link->SetRepeat(GetCDataInt(*tag));
-				
-			}else if(tagName == "curve"){
-				ReadCurveBezier(*tag, link->GetCurve());
-			}
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-		synthesizer.AddLink(link);
-		link->FreeReference();
+		const decString tagName(tag->GetName());
 		
-	}catch(const deException &){
-		if(link){
-			link->FreeReference();
+		if(tagName == "controller"){
+			link->SetController(GetCDataInt(*tag));
+			
+		}else if(tagName == "repeat"){
+			link->SetRepeat(GetCDataInt(*tag));
+			
+		}else if(tagName == "curve"){
+			ReadCurveBezier(*tag, link->GetCurve());
 		}
-		throw;
 	}
+	
+	synthesizer.AddLink(link);
 }
 
-deSynthesizerSource *igdeLoadSynthesizer::pReadSource(const decXmlElementTag &root,
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSource(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
 	const decString tagName(root.GetName());
 	
@@ -260,404 +238,327 @@ const char *basePath, deSynthesizer &synthesizer){
 		return pReadSourceSynthesizer(root, basePath, synthesizer);
 	}
 	
-	return NULL;
+	return {};
 }
 
-deSynthesizerSource *igdeLoadSynthesizer::pReadSourceSound(const decXmlElementTag &root,
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceSound(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	deSynthesizerSourceSound *source = NULL;
+	const deSynthesizerSourceSound::Ref source(deSynthesizerSourceSound::Ref::New());
 	int i;
 	
-	try{
-		source = new deSynthesizerSourceSound;
-		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(pReadSourceCommon(*tag, synthesizer, *source)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "sound"){
-				const decString path(GetCDataString(*tag));
-				
-				if(!path.IsEmpty()){
-					deSound *sound = NULL;
-					
-					try{
-						sound = synthesizer.GetEngine()->GetSoundManager()->LoadSound(
-							path, basePath, false);
-						source->SetSound(sound);
-						sound->FreeReference();
-						
-					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
-						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
-					}
-				}
-				
-			}else if(tagName == "minSpeed"){
-				source->SetMinSpeed(GetCDataFloat(*tag));
-				
-			}else if(tagName == "maxSpeed"){
-				source->SetMaxSpeed(GetCDataFloat(*tag));
-				
-			}else if(tagName == "looping"){
-				source->SetLooping(GetCDataBool(*tag));
-				
-			}else if(tagName == "target"){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "blendFactor"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetBlendFactor());
-					
-				}else if(name == "volume"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetVolume());
-					
-				}else if(name == "panning"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPanning());
-					
-				}else if(name == "speed"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetSpeed());
-					
-				}else if(name == "play"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPlay());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-			}
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
-		throw;
-	}
-	
-	return source;
-}
-
-deSynthesizerSource *igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerSourceWave *source = NULL;
-	int i;
-	
-	try{
-		source = new deSynthesizerSourceWave;
-		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(pReadSourceCommon(*tag, synthesizer, *source)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "type"){
-				const decString type(GetCDataString(*tag));
-				
-				if(type == "sine"){
-					source->SetType(deSynthesizerSourceWave::ewtSine);
-					
-				}else if(type == "square"){
-					source->SetType(deSynthesizerSourceWave::ewtSquare);
-					
-				}else if(type == "sawtooth"){
-					source->SetType(deSynthesizerSourceWave::ewtSawTooth);
-					
-				}else if(type == "triangle"){
-					source->SetType(deSynthesizerSourceWave::ewtTriangle);
-					
-				}else{
-					LogErrorUnknownValue(*tag, type);
-				}
-				
-			}else if(tagName == "minFrequency"){
-				source->SetMinFrequency(GetCDataFloat(*tag));
-				
-			}else if(tagName == "maxFrequency"){
-				source->SetMaxFrequency(GetCDataFloat(*tag));
-				
-			}else if(tagName == "target"){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "blendFactor"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetBlendFactor());
-					
-				}else if(name == "volume"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetVolume());
-					
-				}else if(name == "panning"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPanning());
-					
-				}else if(name == "frequency"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetFrequency());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-			}
+		if(pReadSourceCommon(*tag, synthesizer, *source)){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
-		throw;
-	}
-	
-	return source;
-}
-
-deSynthesizerSource *igdeLoadSynthesizer::pReadSourceChain(const decXmlElementTag &root,
-const char *basePath, deSynthesizer &synthesizer){
-	deSynthesizerSourceChain *source = NULL;
-	int i;
-	
-	try{
-		source = new deSynthesizerSourceChain;
+		const decString tagName(tag->GetName());
 		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		if(tagName == "sound"){
+			const decString path(GetCDataString(*tag));
 			
-			if(pReadSourceCommon(*tag, synthesizer, *source)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "sound"){
-				const decString path(GetCDataString(*tag));
-				
-				if(!path.IsEmpty()){
-					deSound *sound = NULL;
-					
-					try{
-						sound = synthesizer.GetEngine()->GetSoundManager()->LoadSound(path, basePath, false);
-						source->AddSound(sound);
-						sound->FreeReference();
-						
-					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
-						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
-					}
-				}
-				
-			}else if(tagName == "minSpeed"){
-				source->SetMinSpeed(GetCDataFloat(*tag));
-				
-			}else if(tagName == "maxSpeed"){
-				source->SetMaxSpeed(GetCDataFloat(*tag));
-				
-			}else if(tagName == "target"){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "blendFactor"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetBlendFactor());
-					
-				}else if(name == "volume"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetVolume());
-					
-				}else if(name == "panning"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPanning());
-					
-				}else if(name == "speed"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetSpeed());
-					
-				}else if(name == "selection"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetSelect());
-					
-				}else if(name == "play"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPlay());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-			}
-		}
-		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
-		throw;
-	}
-	
-	return source;
-}
-
-deSynthesizerSource *igdeLoadSynthesizer::pReadSourceGroup(const decXmlElementTag &root,
-const char *basePath, deSynthesizer &synthesizer){
-	const int elementCount = root.GetElementCount();
-	deSynthesizerSourceGroup *source = NULL;
-	int i;
-	
-	try{
-		source = new deSynthesizerSourceGroup;
-		
-		for(i=0; i<elementCount; i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(pReadSourceCommon(*tag, synthesizer, *source)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "type"){
-				const decString name(GetCDataString(*tag));
-				
-				if(name == "all"){
-					source->SetApplicationType(deSynthesizerSourceGroup::eatAll);
-					
-				}else if(name == "selection"){
-					source->SetApplicationType(deSynthesizerSourceGroup::eatSelect);
-					
-				}else if(name == "solo"){
-					source->SetApplicationType(deSynthesizerSourceGroup::eatSolo);
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-				
-			}else if(tagName == "target"){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "blendFactor"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetBlendFactor());
-					
-				}else if(name == "volume"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetVolume());
-					
-				}else if(name == "panning"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPanning());
-					
-				}else if(name == "selection"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetSelect());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-				
-			}else{
-				deSynthesizerSource * const childSource = pReadSource(*tag, basePath, synthesizer);
-				if(childSource){
-					source->AddSource(childSource);
-					childSource->FreeReference();
-				}
-			}
-		}
-		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
-		throw;
-	}
-	
-	return source;
-}
-
-deSynthesizerSource *igdeLoadSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &root,
-const char *basePath, deSynthesizer &synthesizer){
-	deEngine &engine = *synthesizer.GetEngine();
-	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
-	deSynthesizerSourceSynthesizer *source = NULL;
-	int i;
-	
-	try{
-		source = new deSynthesizerSourceSynthesizer;
-		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(pReadSourceCommon(*tag, synthesizer, *source)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "synthesizer"){
-				const decString path(GetCDataString(*tag));
-				if(path.IsEmpty()){
-					continue;
-				}
-				
-				deSynthesizer *childSynthesizer = NULL;
-				decBaseFileReader *reader = NULL;
-				decPath pathFile;
-				
+			if(!path.IsEmpty()){
 				try{
-					pathFile.SetFromUnix(path);
-					
-					reader = vfs.OpenFileForReading(pathFile);
-					childSynthesizer = engine.GetSynthesizerManager()->CreateSynthesizer();
-					Load(path, *childSynthesizer, *reader);
-					source->SetSynthesizer(childSynthesizer);
-					childSynthesizer->FreeReference();
-					reader->FreeReference();
+					source->SetSound(synthesizer.GetEngine()->GetSoundManager()->
+						LoadSound(path, basePath, false));
 					
 				}catch(const deException &){
-					if(childSynthesizer){
-						childSynthesizer->FreeReference();
-					}
-					if(reader){
-						reader->FreeReference();
-					}
-					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading synthesizer");
-				}
-				
-			}else if(tagName == "connection"){
-				const int target = GetAttributeInt(*tag, "target");
-				const int controller = GetAttributeInt(*tag, "controller");
-				source->SetConnectionAt(target, controller);
-				
-			}else if(strcmp(tag->GetName(), "target") == 0){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "blendFactor"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetBlendFactor());
-					
-				}else if(name == "volume"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetVolume());
-					
-				}else if(name == "panning"){
-					pReadControllerTarget(*tag, synthesizer, source->GetTargetPanning());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
+					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 				}
 			}
+			
+		}else if(tagName == "minSpeed"){
+			source->SetMinSpeed(GetCDataFloat(*tag));
+			
+		}else if(tagName == "maxSpeed"){
+			source->SetMaxSpeed(GetCDataFloat(*tag));
+			
+		}else if(tagName == "looping"){
+			source->SetLooping(GetCDataBool(*tag));
+			
+		}else if(tagName == "target"){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "blendFactor"){
+				pReadControllerTarget(*tag, source->GetTargetBlendFactor());
+				
+			}else if(name == "volume"){
+				pReadControllerTarget(*tag, source->GetTargetVolume());
+				
+			}else if(name == "panning"){
+				pReadControllerTarget(*tag, source->GetTargetPanning());
+				
+			}else if(name == "speed"){
+				pReadControllerTarget(*tag, source->GetTargetSpeed());
+				
+			}else if(name == "play"){
+				pReadControllerTarget(*tag, source->GetTargetPlay());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+		}
+	}
+	
+	return source;
+}
+
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag &root,
+deSynthesizer &synthesizer){
+	const deSynthesizerSourceWave::Ref source(deSynthesizerSourceWave::Ref::New());
+	int i;
+	
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(source){
-			source->FreeReference();
+		if(pReadSourceCommon(*tag, synthesizer, *source)){
+			continue;
 		}
-		throw;
+		
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "type"){
+			const decString type(GetCDataString(*tag));
+			
+			if(type == "sine"){
+				source->SetType(deSynthesizerSourceWave::ewtSine);
+				
+			}else if(type == "square"){
+				source->SetType(deSynthesizerSourceWave::ewtSquare);
+				
+			}else if(type == "sawtooth"){
+				source->SetType(deSynthesizerSourceWave::ewtSawTooth);
+				
+			}else if(type == "triangle"){
+				source->SetType(deSynthesizerSourceWave::ewtTriangle);
+				
+			}else{
+				LogErrorUnknownValue(*tag, type);
+			}
+			
+		}else if(tagName == "minFrequency"){
+			source->SetMinFrequency(GetCDataFloat(*tag));
+			
+		}else if(tagName == "maxFrequency"){
+			source->SetMaxFrequency(GetCDataFloat(*tag));
+			
+		}else if(tagName == "target"){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "blendFactor"){
+				pReadControllerTarget(*tag, source->GetTargetBlendFactor());
+				
+			}else if(name == "volume"){
+				pReadControllerTarget(*tag, source->GetTargetVolume());
+				
+			}else if(name == "panning"){
+				pReadControllerTarget(*tag, source->GetTargetPanning());
+				
+			}else if(name == "frequency"){
+				pReadControllerTarget(*tag, source->GetTargetFrequency());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+		}
+	}
+	
+	return source;
+}
+
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceChain(const decXmlElementTag &root,
+const char *basePath, deSynthesizer &synthesizer){
+	const deSynthesizerSourceChain::Ref source(deSynthesizerSourceChain::Ref::New());
+	int i;
+	
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		if(pReadSourceCommon(*tag, synthesizer, *source)){
+			continue;
+		}
+		
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "sound"){
+			const decString path(GetCDataString(*tag));
+			
+			if(!path.IsEmpty()){
+				try{
+					source->AddSound(synthesizer.GetEngine()->GetSoundManager()->
+						LoadSound(path, basePath, false));
+					
+				}catch(const deException &){
+					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
+				}
+			}
+			
+		}else if(tagName == "minSpeed"){
+			source->SetMinSpeed(GetCDataFloat(*tag));
+			
+		}else if(tagName == "maxSpeed"){
+			source->SetMaxSpeed(GetCDataFloat(*tag));
+			
+		}else if(tagName == "target"){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "blendFactor"){
+				pReadControllerTarget(*tag, source->GetTargetBlendFactor());
+				
+			}else if(name == "volume"){
+				pReadControllerTarget(*tag, source->GetTargetVolume());
+				
+			}else if(name == "panning"){
+				pReadControllerTarget(*tag, source->GetTargetPanning());
+				
+			}else if(name == "speed"){
+				pReadControllerTarget(*tag, source->GetTargetSpeed());
+				
+			}else if(name == "selection"){
+				pReadControllerTarget(*tag, source->GetTargetSelect());
+				
+			}else if(name == "play"){
+				pReadControllerTarget(*tag, source->GetTargetPlay());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+		}
+	}
+	
+	return source;
+}
+
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceGroup(const decXmlElementTag &root,
+const char *basePath, deSynthesizer &synthesizer){
+	const deSynthesizerSourceGroup::Ref source(deSynthesizerSourceGroup::Ref::New());
+	const int elementCount = root.GetElementCount();
+	int i;
+	
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		if(pReadSourceCommon(*tag, synthesizer, *source)){
+			continue;
+		}
+		
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "type"){
+			const decString name(GetCDataString(*tag));
+			
+			if(name == "all"){
+				source->SetApplicationType(deSynthesizerSourceGroup::eatAll);
+				
+			}else if(name == "selection"){
+				source->SetApplicationType(deSynthesizerSourceGroup::eatSelect);
+				
+			}else if(name == "solo"){
+				source->SetApplicationType(deSynthesizerSourceGroup::eatSolo);
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+			
+		}else if(tagName == "target"){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "blendFactor"){
+				pReadControllerTarget(*tag, source->GetTargetBlendFactor());
+				
+			}else if(name == "volume"){
+				pReadControllerTarget(*tag, source->GetTargetVolume());
+				
+			}else if(name == "panning"){
+				pReadControllerTarget(*tag, source->GetTargetPanning());
+				
+			}else if(name == "selection"){
+				pReadControllerTarget(*tag, source->GetTargetSelect());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+			
+		}else{
+			const deSynthesizerSource::Ref childSource(pReadSource(*tag, basePath, synthesizer));
+			if(childSource){
+				source->AddSource(childSource);
+			}
+		}
+	}
+	
+	return source;
+}
+
+deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &root,
+const char *basePath, deSynthesizer &synthesizer){
+	const deSynthesizerSourceSynthesizer::Ref source(deSynthesizerSourceSynthesizer::Ref::New());
+	const deEngine &engine = *synthesizer.GetEngine();
+	const deVirtualFileSystem &vfs = engine.GetVirtualFileSystem();
+	int i;
+	
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		if(pReadSourceCommon(*tag, synthesizer, *source)){
+			continue;
+		}
+		
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "synthesizer"){
+			const decString path(GetCDataString(*tag));
+			if(path.IsEmpty()){
+				continue;
+			}
+			
+			try{
+				const deSynthesizer::Ref childSynthesizer(
+					engine.GetSynthesizerManager()->CreateSynthesizer());
+				Load(path, childSynthesizer, vfs.OpenFileForReading(decPath::CreatePathUnix(path)));
+				source->SetSynthesizer(childSynthesizer);
+				
+			}catch(const deException &){
+				LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading synthesizer");
+			}
+			
+		}else if(tagName == "connection"){
+			const int target = GetAttributeInt(*tag, "target");
+			const int controller = GetAttributeInt(*tag, "controller");
+			source->SetConnectionAt(target, controller);
+			
+		}else if(strcmp(tag->GetName(), "target") == 0){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "blendFactor"){
+				pReadControllerTarget(*tag, source->GetTargetBlendFactor());
+				
+			}else if(name == "volume"){
+				pReadControllerTarget(*tag, source->GetTargetVolume());
+				
+			}else if(name == "panning"){
+				pReadControllerTarget(*tag, source->GetTargetPanning());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+		}
 	}
 	
 	return source;
@@ -710,10 +611,9 @@ deSynthesizer &synthesizer, deSynthesizerSource &source){
 		return true;
 		
 	}else{
-		deSynthesizerEffect * const effect = pReadEffect(root, synthesizer);
+		const deSynthesizerEffect::Ref effect(pReadEffect(root, synthesizer));
 		if(effect){
 			source.AddEffect(effect);
-			effect->FreeReference();
 			return true;
 		}
 	}
@@ -722,7 +622,7 @@ deSynthesizer &synthesizer, deSynthesizerSource &source){
 }
 
 void igdeLoadSynthesizer::pReadControllerTarget(const decXmlElementTag &root,
-deSynthesizer &synthesizer, deSynthesizerControllerTarget &target){
+deSynthesizerControllerTarget &target){
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -739,7 +639,7 @@ deSynthesizer &synthesizer, deSynthesizerControllerTarget &target){
 	}
 }
 
-deSynthesizerEffect *igdeLoadSynthesizer::pReadEffect(const decXmlElementTag &root,
+deSynthesizerEffect::Ref igdeLoadSynthesizer::pReadEffect(const decXmlElementTag &root,
 deSynthesizer &synthesizer){
 	const decString tagName(root.GetName());
 	
@@ -747,71 +647,60 @@ deSynthesizer &synthesizer){
 		return pReadEffectStretch(root, synthesizer);
 	}
 	
-	return NULL;
+	return {};
 }
 
-deSynthesizerEffect *igdeLoadSynthesizer::pReadEffectStretch(const decXmlElementTag &root,
+deSynthesizerEffect::Ref igdeLoadSynthesizer::pReadEffectStretch(const decXmlElementTag &root,
 deSynthesizer &synthesizer){
-	deSynthesizerEffectStretch *effect = NULL;
+	const deSynthesizerEffectStretch::Ref effect(deSynthesizerEffectStretch::Ref::New());
 	int i;
 	
-	try{
-		effect = new deSynthesizerEffectStretch;
-		
-		for(i=0; i<root.GetElementCount(); i++){
-			decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(pReadEffectCommon(*tag, synthesizer, *effect)){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "minTime"){
-				effect->SetMinTime(GetCDataFloat(*tag));
-				
-			}else if(tagName == "maxTime"){
-				effect->SetMaxTime(GetCDataFloat(*tag));
-				
-			}else if(tagName == "minPitch"){
-				effect->SetMinPitch(GetCDataFloat(*tag));
-				
-			}else if(tagName == "maxPitch"){
-				effect->SetMaxPitch(GetCDataFloat(*tag));
-				
-			}else if(tagName == "target"){
-				const decString name(GetAttributeString(*tag, "name"));
-				
-				if(name == "strength"){
-					pReadControllerTarget(*tag, synthesizer, effect->GetTargetStrength());
-					
-				}else if(name == "time"){
-					pReadControllerTarget(*tag, synthesizer, effect->GetTargetTime());
-					
-				}else if(name == "pitch"){
-					pReadControllerTarget(*tag, synthesizer, effect->GetTargetPitch());
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-			}
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
+		if(pReadEffectCommon(*tag, *effect)){
+			continue;
 		}
-		throw;
+		
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "minTime"){
+			effect->SetMinTime(GetCDataFloat(*tag));
+			
+		}else if(tagName == "maxTime"){
+			effect->SetMaxTime(GetCDataFloat(*tag));
+			
+		}else if(tagName == "minPitch"){
+			effect->SetMinPitch(GetCDataFloat(*tag));
+			
+		}else if(tagName == "maxPitch"){
+			effect->SetMaxPitch(GetCDataFloat(*tag));
+			
+		}else if(tagName == "target"){
+			const decString name(GetAttributeString(*tag, "name"));
+			
+			if(name == "strength"){
+				pReadControllerTarget(*tag, effect->GetTargetStrength());
+				
+			}else if(name == "time"){
+				pReadControllerTarget(*tag, effect->GetTargetTime());
+				
+			}else if(name == "pitch"){
+				pReadControllerTarget(*tag, effect->GetTargetPitch());
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
+			}
+		}
 	}
 	
 	return effect;
 }
 
-bool igdeLoadSynthesizer::pReadEffectCommon(const decXmlElementTag &root,
-deSynthesizer &synthesizer, deSynthesizerEffect &effect){
+bool igdeLoadSynthesizer::pReadEffectCommon(const decXmlElementTag &root, deSynthesizerEffect &effect){
 	const decString tagName(root.GetName());
 	
 	if(tagName == "enabled"){

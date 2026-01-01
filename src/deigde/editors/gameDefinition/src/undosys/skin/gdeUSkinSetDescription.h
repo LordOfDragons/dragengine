@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeSkin;
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 
@@ -37,8 +37,12 @@ class gdeSkin;
  * \brief Undo action skin set description.
  */
 class gdeUSkinSetDescription : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUSkinSetDescription> Ref;
+	
+	
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUSkinSetDescription> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

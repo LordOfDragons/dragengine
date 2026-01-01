@@ -26,8 +26,7 @@
 #define _DECMEMORYFILEREADER_H_
 
 #include "decBaseFileReader.h"
-
-class decMemoryFile;
+#include "decMemoryFile.h"
 
 
 /**
@@ -40,7 +39,7 @@ public:
 	
 	
 private:
-	decMemoryFile *pFile;
+	decMemoryFile::Ref pFile;
 	int pPosition;
 	
 	
@@ -54,7 +53,9 @@ public:
 	 */
 	decMemoryFileReader(decMemoryFile *memoryFile);
 	
-private:
+	/**
+	 * \brief Create memory file reader with same memory file and position.
+	 */
 	decMemoryFileReader(const decMemoryFileReader &reader);
 	
 protected:

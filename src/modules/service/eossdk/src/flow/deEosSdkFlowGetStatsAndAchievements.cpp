@@ -56,7 +56,7 @@ pStatNames(nullptr),
 pAchievementNames(nullptr),
 pStatsReceived(false),
 pAchievementsReceived(false),
-pResultData(deServiceObject::Ref::NewWith())
+pResultData(deServiceObject::Ref::New())
 {
 	deServiceObject::Ref so;
 	
@@ -110,7 +110,7 @@ deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
 void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	const int count = pStats.GetCount();
 	if(count == 0){
-		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
+		pResultData->SetChildAt("stats", deServiceObject::Ref::New());
 		pStatsReceived = true;
 		return;
 	}
@@ -137,7 +137,7 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	const int count = pAchievements.GetCount();
 	if(count == 0){
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New());
 		pAchievementsReceived = true;
 		return;
 	}
@@ -186,7 +186,7 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		
 		for(i=0; i<count; i++){
 			const char * const name = pStatNames[i];
@@ -203,7 +203,7 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data){
 			case EOS_EResult::EOS_NotFound:
 				// either the stat really does not exist or it has not been set yet.
 				// we assume the stat has not been set yet so we set it to nullptr.
-				so->SetChildAt(name, nullptr);
+				so->SetChildAt(name, {});
 				break;
 				
 			default:
@@ -252,7 +252,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		
 		for(i=0; i<count; i++){
 			const char * const name = pAchievementNames[i];

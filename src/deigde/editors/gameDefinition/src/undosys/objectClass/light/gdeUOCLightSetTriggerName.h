@@ -27,10 +27,10 @@
 #define _GDEUOCLIGHTSETTRIGGERNAME_H_
 
 #include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class light set trigger name.
  */
 class gdeUOCLightSetTriggerName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCLightSetTriggerName> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	gdeOCLight::eTriggers pTrigger;
 	decString pOldValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCLightSetTriggerName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

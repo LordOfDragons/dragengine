@@ -122,55 +122,31 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	project->SetFilePath(filename);
 	
 	// locate base game definitions
-	const igdeGameDefinitionList &sharedGameDefs = windowMain.GetSharedGameDefinitions();
-	const decStringList &baseGameDefs = project->GetBaseGameDefinitionIDList();
-	const int baseGameDefCount = baseGameDefs.GetCount();
-	int i;
-	
-	for(i=0; i<baseGameDefCount; i++){
-		const decString &id = baseGameDefs.GetAt(i);
-		igdeGameDefinition * const baseGameDef = sharedGameDefs.GetWithID(id);
-		if(baseGameDef){
-			project->GetBaseGameDefinitionList().Add(baseGameDef);
+	const igdeGameDefinition::List &sgdl = windowMain.GetSharedGameDefinitions();
+	project->GetBaseGameDefinitionIDList().Visit([&](const decString &id){
+		igdeGameDefinition * const bgd = sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
+			return gd.GetID() == id;
+		});
+		if(bgd){
+			project->GetBaseGameDefinitionList().Add(bgd);
 			
 		}else{
-			logger->LogWarnFormat(LOGSOURCE, "Can not find base game definition '%s', skipped",
-				id.GetString());
+			logger->LogWarnFormat(LOGSOURCE, "Can not find base game definition '%s', skipped", id.GetString());
 		}
-	}
+	});
 	
 	// load the project game definition specified
-	decDiskFileReader *gameDefReader = NULL;
-	igdeGameDefinition *gameDef = NULL;
 	decPath path;
+	path.SetFromNative(project->GetDirectoryPath());
+	path.AddUnixPath(project->GetPathProjectGameDefinition());
 	
-	try{
-		path.SetFromNative(project->GetDirectoryPath());
-		path.AddUnixPath(project->GetPathProjectGameDefinition());
-		gameDefReader = new decDiskFileReader(path.GetPathNative());
-		
-		gameDef = new igdeGameDefinition(environment);
-		gameDef->SetFilename(path.GetPathNative());
-		
-		igdeXMLGameDefinition(environment, logger).Load(*gameDefReader, *gameDef);
-		
-		project->SetProjectGameDefinition(gameDef);
-		
-		gameDefReader->FreeReference();
-		gameDefReader = NULL;
-		
-		gameDef->FreeReference();
-		gameDef = NULL;
-		
-	}catch(const deException &){
-		if(gameDefReader){
-			gameDefReader->FreeReference();
-		}
-		if(gameDef){
-			gameDef->FreeReference();
-		}
-		throw;
-	}
+	const igdeGameDefinition::Ref gameDef(igdeGameDefinition::Ref::New(environment));
+	gameDef->SetFilename(path.GetPathNative());
+	
+	igdeXMLGameDefinition(environment, logger).Load(
+		decDiskFileReader::Ref::New(path.GetPathNative()), gameDef);
+	
+	project->SetProjectGameDefinition(gameDef);
 }
 
 void igdeLSGameProject::Save(igdeGameProject *project, decBaseFileWriter *file){

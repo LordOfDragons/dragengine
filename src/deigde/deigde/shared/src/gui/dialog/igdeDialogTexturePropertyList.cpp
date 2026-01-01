@@ -36,9 +36,9 @@
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/textureProperties/igdeTextureProperty.h"
-#include "../../engine/textureProperties/igdeTexturePropertyList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 
@@ -48,6 +48,8 @@
 class igdeDialogTexturePropertyList_ListBox : public igdeListBoxListener {
 	igdeDialogTexturePropertyList &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogTexturePropertyList_ListBox> Ref;
+	
 	igdeDialogTexturePropertyList_ListBox(igdeDialogTexturePropertyList &dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -69,33 +71,33 @@ igdeDialog(environment, "Texture Property List"){
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 500)));
 	
-	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
 		environment, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	
-	helper.ListBox(15, "Textue Property", pListProperties, new igdeDialogTexturePropertyList_ListBox(*this));
+	helper.ListBox(15, "Textue Property", pListProperties, igdeDialogTexturePropertyList_ListBox::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	content->AddChild(pListProperties, igdeContainerSplitted::eaSide);
 	
-	igdeContainerForm::Ref form(igdeContainerForm::Ref::NewWith(
+	igdeContainerForm::Ref form(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	content->AddChild(form, igdeContainerSplitted::eaCenter);
 	
-	helper.EditString(form, "Name:", "Property name", pEditName, NULL);
+	helper.EditString(form, "Name:", "Property name", pEditName, {});
 	pEditName->SetEditable(false);
 	
-	helper.EditString(form, "Type:", "Property type", pEditType, NULL);
+	helper.EditString(form, "Type:", "Property type", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(form, "Components:", "Used color components", pEditComponentCount, NULL);
+	helper.EditString(form, "Components:", "Used color components", pEditComponentCount, {});
 	pEditComponentCount->SetEditable(false);
 	
-	helper.EditString(form, "Default Value:", "Default value", pEditDefault, NULL);
+	helper.EditString(form, "Default Value:", "Default value", pEditDefault, {});
 	pEditDefault->SetEditable(false);
 	
-	helper.EditString(form, "Affects:", "Modules affected by property", pEditAffectedModules, NULL);
+	helper.EditString(form, "Affects:", "Modules affected by property", pEditAffectedModules, {});
 	pEditAffectedModules->SetEditable(false);
 	
-	helper.EditString(form, "Description:", "Property description", pEditDescription, 40, 5, NULL);
+	helper.EditString(form, "Description:", "Property description", pEditDescription, 40, 5, {});
 	pEditDescription->SetEditable(false);
 	
 	
@@ -117,24 +119,20 @@ igdeDialogTexturePropertyList::~igdeDialogTexturePropertyList(){
 ///////////////
 
 void igdeDialogTexturePropertyList::UpdatePropertyList(){
-	const igdeTexturePropertyList &list = *GetEnvironment().GetTexturePropertyList();
-	const igdeTextureProperty *selection = NULL;
-	const int count = list.GetCount();
-	int i;
+	igdeTextureProperty *selection = nullptr;
 	
 	pListProperties->RemoveAllItems();
 	
-	for(i=0; i<count; i++){
-		const igdeTextureProperty * const property = list.GetAt(i);
-		pListProperties->AddItem(property->GetName(), NULL, (void*)property);
+	GetEnvironment().GetTexturePropertyList().Visit([&](igdeTextureProperty *property){
+		pListProperties->AddItem(property->GetName(), nullptr, property);
 		if(property->GetName() == "color"){
 			selection = property;
 		}
-	}
+	});
 	
 	pListProperties->SortItems();
 	if(selection){
-		pListProperties->SetSelectionWithData((void*)selection);
+		pListProperties->SetSelectionWithData(selection);
 	}
 	
 	UpdateProperty();
@@ -142,7 +140,7 @@ void igdeDialogTexturePropertyList::UpdatePropertyList(){
 
 void igdeDialogTexturePropertyList::UpdateProperty(){
 	const igdeTextureProperty * const property = pListProperties->GetSelectedItem()
-		? (const igdeTextureProperty *)pListProperties->GetSelectedItem()->GetData() : NULL;
+		? (const igdeTextureProperty *)pListProperties->GetSelectedItem()->GetData() : nullptr;
 	
 	if(property){
 		pEditName->SetText(property->GetName());
@@ -196,7 +194,7 @@ void igdeDialogTexturePropertyList::UpdateProperty(){
 		for(i=0; i<affectedCount; i++){
 			affects.Add(affectedList.GetAt(i));
 		}
-		pEditAffectedModules->SetText(affects.Join(", "));
+		pEditAffectedModules->SetText(DEJoin(affects, ", "));
 		
 	}else{
 		pEditName->ClearText();

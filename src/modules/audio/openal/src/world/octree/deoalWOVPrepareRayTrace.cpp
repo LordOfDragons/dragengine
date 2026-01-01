@@ -34,6 +34,7 @@
 #include "../../audiothread/deoalATLogger.h"
 #include "../../component/deoalAComponent.h"
 #include "../../model/deoalAModel.h"
+#include "../../audiothread/deoalATDebug.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -86,7 +87,6 @@ void deoalWOVPrepareRayTrace::SetRTWorldBVH(deoalRTWorldBVH *bvh){
 
 
 
-#include "../../audiothread/deoalATDebug.h"
 #if 0
 class DummyTest {
 	deoalAComponent *component;

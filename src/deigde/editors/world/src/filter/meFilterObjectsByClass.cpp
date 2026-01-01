@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meFilterObjectsByClass.h"
 #include "../world/object/meObject.h"
 
@@ -43,13 +39,10 @@
 
 meFilterObjectsByClass::meFilterObjectsByClass(){
 	pMatchInclusive = false;
-	pRejectObject = NULL;
 	pRejectGhosts = true;
 }
 
 meFilterObjectsByClass::~meFilterObjectsByClass(){
-	if(pRejectObject) pRejectObject->FreeReference();
-	RemoveAllClassNames();
 }
 
 
@@ -63,16 +56,6 @@ void meFilterObjectsByClass::SetMatchInclusive(bool matchInclusive){
 
 void meFilterObjectsByClass::SetRejectGhosts(bool rejectGhosts){
 	pRejectGhosts = rejectGhosts;
-}
-
-void meFilterObjectsByClass::SetRejectObject(meObject *object){
-	if(object != pRejectObject){
-		if(pRejectObject) pRejectObject->FreeReference();
-		
-		pRejectObject = object;
-		
-		if(object) object->AddReference();
-	}
 }
 
 
@@ -90,29 +73,28 @@ void meFilterObjectsByClass::SetClassNamesFrom(const decStringSet &set){
 }
 
 
-
 bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
-	if(!object) DETHROW(deeInvalidParam);
-	
-	const decString &objclass = object->GetClassName();
-	int c, count = pClassNames.GetCount();
+	DEASSERT_NOTNULL(object)
 	
 	// reject if matching the given object
-	if(object == pRejectObject) return false;
+	if(pRejectObjects.Has(object)){
+		return false;
+	}
 	
 	// reject if this is a ghost object
 	if(pRejectGhosts){
-		const igdeGDClass *gdclass = object->GetGDClass();
-		if(gdclass && (gdclass->GetIsGhost() || !gdclass->GetCanInstantiate())){
+		const igdeGDClass * const gdc = object->GetGDClass();
+		if(gdc && (gdc->GetIsGhost() || !gdc->GetCanInstantiate())){
 			return false;
 		}
 	}
 	
 	// accept or reject according to class
-	for(c=0; c<count; c++){
-		if(objclass.MatchesPattern(pClassNames.GetAt(c))){
-			return pMatchInclusive;
-		}
+	const decString &oc = object->GetClassName();
+	if(pClassNames.HasMatching([&](const decString &name){
+		return oc.MatchesPattern(name);
+	})){
+		return pMatchInclusive;
 	}
 	
 	return !pMatchInclusive;

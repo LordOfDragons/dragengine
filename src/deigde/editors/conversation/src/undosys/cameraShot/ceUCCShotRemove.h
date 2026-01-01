@@ -36,14 +36,15 @@ class ceCameraShot;
  * \brief Undo Action Remove Camera Shot.
  */
 class ceUCCShotRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCShotRemove> Ref;
+	
+	
 private:
 	ceConversation *pConversation;
 	ceCameraShot *pCameraShot;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCShotRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

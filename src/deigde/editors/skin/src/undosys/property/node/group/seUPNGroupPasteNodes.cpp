@@ -42,52 +42,33 @@
 
 seUPNGroupPasteNodes::seUPNGroupPasteNodes(sePropertyNodeGroup *group,
 int layer, const seClipboardDataPropertyNode &clipboardData) :
-pGroup(NULL),
+
 pLayer(layer)
 {
 	if(!group || !group->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = clipboardData.GetCount();
-	if(count == 0){
+	if(clipboardData.GetNodes().IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	SetShortInfo("Node group paste nodes");
 	
-	sePropertyNode *pasteNode = NULL;
-	int i;
+	clipboardData.GetNodes().Visit([&](const sePropertyNode &d){
+		const sePropertyNode::Ref pasteNode(d.Copy());
+		
+		decPoint3 position(pasteNode->GetPosition());
+		position.z = layer;
+		pasteNode->SetPosition(position);
+		
+		pNodes.Add(pasteNode);
+	});
 	
-	try{
-		for(i=0; i<count; i++){
-			pasteNode = clipboardData.GetAt(i).Copy();
-			
-			decPoint3 position(pasteNode->GetPosition());
-			position.z = layer;
-			pasteNode->SetPosition(position);
-			
-			pNodes.Add(pasteNode);
-			pasteNode->FreeReference();
-			pasteNode = NULL;
-		}
-		
-		pGroup = group;
-		group->AddReference();
-		
-	}catch(const deException &){
-		if(pasteNode){
-			pasteNode->FreeReference();
-		}
-		pNodes.RemoveAll();
-		throw;
-	}
+	pGroup = group;
 }
 
 seUPNGroupPasteNodes::~seUPNGroupPasteNodes(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 
@@ -96,31 +77,25 @@ seUPNGroupPasteNodes::~seUPNGroupPasteNodes(){
 ///////////////
 
 void seUPNGroupPasteNodes::Undo(){
-	const int count = pNodes.GetCount();
-	int i;
-	
 	seProperty * const property = pGroup->GetProperty();
 	if(property && property->GetActiveNodeGroup() == pGroup){
 		property->GetNodeSelection().RemoveAll();
 	}
 	
-	for(i=0; i<count; i++){
-		pGroup->RemoveNode((sePropertyNode*)pNodes.GetAt(i));
-	}
+	pNodes.Visit([&](sePropertyNode *node){
+		pGroup->RemoveNode(node);
+	});
 }
 
 void seUPNGroupPasteNodes::Redo(){
-	const int count = pNodes.GetCount();
-	int i;
-	
 	seProperty * const property = pGroup->GetProperty();
 	if(property && property->GetActiveNodeGroup() == pGroup){
 		property->GetNodeSelection().RemoveAll();
 	}
 	
-	for(i=0; i<count; i++){
-		pGroup->AddNode((sePropertyNode*)pNodes.GetAt(i));
-	}
+	pNodes.Visit([&](sePropertyNode *node){
+		pGroup->AddNode(node);
+	});
 	
 	if(property && property->GetActiveNodeGroup() == pGroup){
 		property->GetNodeSelection().SetSelected(pNodes);

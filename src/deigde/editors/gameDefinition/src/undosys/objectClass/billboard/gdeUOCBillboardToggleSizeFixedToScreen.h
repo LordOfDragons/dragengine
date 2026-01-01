@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCBillboard;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,16 +37,17 @@ class gdeObjectClass;
  * \brief Undo action object class billboard toggle size fixed to screen.
  */
 class gdeUOCBillboardToggleSizeFixedToScreen : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCBillboardToggleSizeFixedToScreen> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCBillboardToggleSizeFixedToScreen> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -29,6 +29,7 @@
 // includes
 #include <dragengine/deObject.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
@@ -47,23 +48,25 @@ private:
 	bool pSelected, pActive;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<feFontGlyph> Ref;
-
-
+	typedef decTObjectOrderedSet<feFontGlyph> List;
+	
+	
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font glyph. */
 	feFontGlyph();
 	/** Cleans up the font glyph. */
+protected:
 	virtual ~feFontGlyph();
+public:
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the parent font or NULL if not assigned. */
+	/** Retrieves the parent font or nullptr if not assigned. */
 	inline feFont *GetParentFont() const{ return pParentFont; }
-	/** Sets the parent font or NULL it not assigned. */
+	/** Sets the parent font or nullptr it not assigned. */
 	void SetParentFont(feFont *font);
 	
 	/** Retrieves the code. */
@@ -115,7 +118,7 @@ public:
 	void SetSelected(bool selected);
 	
 	/** Creates a copy of this glyph. */
-	feFontGlyph *Copy() const;
+	feFontGlyph::Ref Copy() const;
 	
 	/** Notifies the parent if assigned that the glyph changed. */
     void NotifyGlyphChanged();

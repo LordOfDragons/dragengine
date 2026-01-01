@@ -74,36 +74,12 @@ deoglDelayedSaveImage::~deoglDelayedSaveImage(){
 void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem &vfs){
 	// NOTE this call is used only for debug images created by deoglDebugSaveTexture.
 	//      for this reason no optimization with parallel tasks is used
-	deImageManager &imgmgr = *ogl.GetGameEngine()->GetImageManager();
-	const decString filename(pPath.GetPathUnix());
-	decBaseFileWriter *fileWriter = NULL;
-	decPath noConstPath(pPath);
-	deImage *image = NULL;
+	deBaseImageModule * const module = (deBaseImageModule*)ogl.GetGameEngine()->
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, pPath.GetPathUnix());
+	DEASSERT_NOTNULL(module)
 	
-	try{
-		deBaseImageModule * const module = (deBaseImageModule*)ogl.GetGameEngine()->
-			GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, filename);
-		if(!module){
-			DETHROW(deeInvalidParam);
-		}
-		
-		image = imgmgr.CreateImage(pWidth, pHeight, pDepth, pComponentCount, pBitCount);
-		memcpy(image->GetData(), pData, pWidth * pHeight * pDepth * pComponentCount * (pBitCount >> 3));
-		fileWriter = vfs.OpenFileForWriting(noConstPath);
-		module->SaveImage(*fileWriter, *image);
-		
-		fileWriter->FreeReference();
-		fileWriter = NULL;
-		
-		image->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		if(image){
-			image->FreeReference();
-		}
-		throw;
-	}
+	const deImage::Ref image(ogl.GetGameEngine()->GetImageManager()->CreateImage(
+		pWidth, pHeight, pDepth, pComponentCount, pBitCount));
+	memcpy(image->GetData(), pData, pWidth * pHeight * pDepth * pComponentCount * (pBitCount >> 3));
+	module->SaveImage(vfs.OpenFileForWriting(pPath), *image);
 }

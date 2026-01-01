@@ -80,7 +80,7 @@ void deIesImageInfo::pReadLines(decBaseFileReader &reader){
 	const int length = reader.GetLength();
 	decString content;
 	content.Set(' ', length);
-	reader.Read((char*)content.GetString(), length);
+	reader.Read(content.GetMutableString(), length);
 	
 	int position = 0;
 	while(position < length){

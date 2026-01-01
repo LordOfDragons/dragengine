@@ -27,12 +27,14 @@
 
 #include "../../world/meWorldGuiParameters.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputEvent.h>
 
 class meCamera;
 class meConfiguration;
-class meObjectList;
+class meObject;
 class meView3D;
 class meWorld;
 class meWorldGuiParameters;
@@ -51,7 +53,11 @@ class decCollisionFilter;
  * Provides support for handling mouse and keyboard input directed at the meView3D
  * widget for a specific editing task.
  */
-class meViewEditor{
+class meViewEditor : public deObject{
+public:
+	typedef deTObjectReference<meViewEditor> Ref;
+	typedef decTObjectOrderedSet<const meViewEditor> List;
+	
 private:
 	meView3D &pView;
 	
@@ -76,12 +82,13 @@ public:
 	/** \brief Create view editor. */
 	meViewEditor(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditor();
+	~meViewEditor() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent view. */
@@ -162,11 +169,6 @@ public:
 	
 	/** \brief Log exception. */
 	void LogException(const deException &exception) const;
-	
-	
-	
-	/** \brief List of selected objects including all objects attached to them. */
-	void GetSelectedObjectsWithAttached(meObjectList &list);
 	
 	
 	

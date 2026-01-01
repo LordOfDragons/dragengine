@@ -36,6 +36,7 @@
 #endif
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/string/decStringList.h>
 
 class deNetworkBasic;
 class deNetworkMessage;

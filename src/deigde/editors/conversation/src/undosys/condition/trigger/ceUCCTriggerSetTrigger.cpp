@@ -48,34 +48,20 @@ ceCConditionTrigger *condition, const char *newTrigger){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldTrigger = condition->GetTrigger();
 	pNewTrigger = newTrigger;
 	
 	SetShortInfo("Condition trigger set trigger");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

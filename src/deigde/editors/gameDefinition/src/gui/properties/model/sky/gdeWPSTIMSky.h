@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSky;
+#include "../../../../gamedef/sky/gdeSky.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeSky;
  */
 class gdeWPSTIMSky : public gdeWPSTreeItemModel{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMSky> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -55,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline gdeSky *GetSky() const{ return pSky; }
+	inline const gdeSky::Ref &GetSky() const{ return pSky; }
 	
 	
 	

@@ -39,6 +39,11 @@ class deBaseSystem;
  * the engine.
  */
 class DE_DLL_EXPORT igdeDEStatus : public igdeContainerFlow{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDEStatus> Ref;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	

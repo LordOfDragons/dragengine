@@ -33,7 +33,9 @@
  * \brief Undo action object class set property values from sub objects.
  */
 class gdeUOCPropertyValuesFromSubObjects : public gdeUOCSetPropertyValues{
-private:
+public:
+	typedef deTObjectReference<gdeUOCPropertyValuesFromSubObjects> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -52,9 +54,9 @@ public:
 	/**
 	 * \brief Create undo action.
 	 * 
-	 * Returns \em NULL if nothing changed.
+	 * Returns \em nullptr if nothing changed.
 	 */
-	static gdeUOCPropertyValuesFromSubObjects *Create(gdeObjectClass *objectClass);
+	static Ref Create(gdeObjectClass *objectClass);
 	/*@}*/
 };
 

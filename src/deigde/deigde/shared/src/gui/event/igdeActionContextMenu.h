@@ -49,7 +49,7 @@ public:
 	
 	
 private:
-	igdeWidget::Ref pWidget;
+	igdeWidget::WeakRef pWidget;
 	
 	
 	
@@ -78,7 +78,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionContextMenu();
+	~igdeActionContextMenu() override;
 	/*@}*/
 	
 	
@@ -86,10 +86,10 @@ protected:
 public:
 	/** \text Management */
 	/*@{*/
-	/** \brief Widget to show context menu below or NULL if not present. */
-	inline igdeWidget *GetWidget() const{ return pWidget; }
+	/** \brief Widget to show context menu below or nullptr if not present. */
+	inline const igdeWidget::WeakRef &GetWidget() const{ return pWidget; }
 	
-	/** \brief Set widget to show context menu below or NULL if not present. */
+	/** \brief Set widget to show context menu below or nullptr if not present. */
 	void SetWidget(igdeWidget *widget);
 	
 	
@@ -98,9 +98,9 @@ public:
 	 * \brief Run action.
 	 * 
 	 * Calls AddContextMenuEntries() to fill the context menu then shows it. If the widget
-	 * is NULL, the widget is invisible or the context menu is empty this action is a no-op.
+	 * is nullptr, the widget is invisible or the context menu is empty this action is a no-op.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Add context menu entries.

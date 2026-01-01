@@ -240,7 +240,7 @@ void dePng3DTarball::Get3DImageInfos(dePng3DImageInfo &infos, decBaseFileReader 
 }
 
 void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &file, deImage &image){
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	png_bytep *rows = NULL;
 	sTarballHeader header;
 	char *sliceImageData;
@@ -259,7 +259,6 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 	try{
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// read the archive with all files filling the images one by one
 		while(true){
@@ -334,8 +333,8 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 }
 
 void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
-	char *imageData = (char*)image.GetData();
-	decMemoryFile *memoryFile = NULL;
+	char *imageData = reinterpret_cast<char*>(image.GetData());
+	decMemoryFile::Ref memoryFile;
 	unsigned char *headerBytes;
 	char paddingBytes[512];
 	struct timeval curtime;
@@ -435,20 +434,19 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	memset(&paddingBytes[0], '\0', 512);
 	
 	// save the file
-	decMemoryFileWriter *memoryFileWriter = NULL;
+	decMemoryFileWriter::Ref memoryFileWriter;
 	
 	try{
-		memoryFile = new decMemoryFile("");
+		memoryFile = decMemoryFile::Ref::New("");
 		
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// write file by creating an archive with an image for each z coordinate
 		for(z=0; z<image.GetDepth(); z++){
 // 			pModule->LogInfoFormat( "%s: writing %i", file.GetFilename(), z );
 			// create memory file containing the file content
-			memoryFileWriter = new decMemoryFileWriter(memoryFile, false);
+			memoryFileWriter = decMemoryFileWriter::Ref::New(memoryFile, false);
 			
 			sliceImageData = imageData + (strideImage * z);
 			
@@ -457,9 +455,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 			}
 			
 			Save2DImage(image.GetWidth(), image.GetHeight(), *memoryFileWriter, rows, pngColorType, pngBitCount);
-			
-			memoryFileWriter->FreeReference();
-			memoryFileWriter = NULL;
+			memoryFileWriter = nullptr;
 			
 			// determine the file size and padding. tar requires files to be
 			// aligned in chunks so determine the amount of padding 0 bytes
@@ -519,13 +515,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		
 		// free rows array
 		delete [] rows;
-		
-		memoryFile->FreeReference();
-		
 	}catch(const deException &){
-		if(memoryFileWriter){
-			memoryFileWriter->FreeReference();
-		}
 		if(rows) delete [] rows;
 		throw;
 	}

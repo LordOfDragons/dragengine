@@ -66,6 +66,6 @@ void ceCConditionActorInConversation::SetNegate(bool negate){
 	pNegate = negate;
 }
 
-ceConversationCondition *ceCConditionActorInConversation::CreateCopy() const{
-	return new ceCConditionActorInConversation(*this);
+ceConversationCondition::Ref ceCConditionActorInConversation::CreateCopy() const{
+	return ceCConditionActorInConversation::Ref::New(*this);
 }

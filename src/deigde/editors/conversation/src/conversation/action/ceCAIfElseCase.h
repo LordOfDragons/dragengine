@@ -25,11 +25,11 @@
 #ifndef _CECAIFELSECASE_H_
 #define _CECAIFELSECASE_H_
 
+#include "ceConversationAction.h"
+#include "../condition/ceConversationCondition.h"
+
 #include <dragengine/deObject.h>
-
-#include "ceConversationActionList.h"
-
-class ceConversationCondition;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -37,15 +37,13 @@ class ceConversationCondition;
  */
 class ceCAIfElseCase : public deObject{
 private:
-	ceConversationCondition *pCondition;
-	ceConversationActionList pActions;
-	bool pTIMExpanded;
-	bool pTIMConditionExpanded;
-	bool pTIMActionsExpanded;
+	ceConversationCondition::Ref pCondition;
+	ceConversationAction::List pActions;
+	bool pTIMExpanded, pTIMConditionExpanded, pTIMActionsExpanded;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCAIfElseCase> Ref;
+	typedef decTObjectOrderedSet<ceCAIfElseCase> List;
 
 
 	/** \name Constructors and Destructors */
@@ -57,22 +55,24 @@ public:
 	ceCAIfElseCase(const ceCAIfElseCase &ifcase);
 	
 	/** \brief Clean up the if else case. */
+protected:
 	virtual ~ceCAIfElseCase();
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Condition or \em NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	/** \brief Condition or \em nullptr if there is none. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
-	/** \brief Set condition or \em NULL if there is none. */
+	/** \brief Set condition or \em nullptr if there is none. */
 	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief List of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/*@}*/
 	
 	

@@ -134,7 +134,7 @@ public:
 	deModioPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deModioPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
 	deModioPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr);
+		const decString &function, const deServiceObject::Ref &data = {});
 	
 	void ListAllMods(const decUniqueID &id, const deServiceObject &request);
 	void LoadModResource(const decUniqueID &id, const deServiceObject &request);

@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCNavigationSpaceListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCNavigationSpaceListener(gdeWPSOCNavigationSpace &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCNavigationSpaceListener() override;
+public:
 	/*@}*/
 	
 	

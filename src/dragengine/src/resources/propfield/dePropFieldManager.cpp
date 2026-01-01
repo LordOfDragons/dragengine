@@ -69,25 +69,12 @@ dePropField *dePropFieldManager::GetRootPropField() const{
 	return (dePropField*)pFields.GetRoot();
 }
 
-dePropField *dePropFieldManager::CreatePropField(){
-	dePropField *field = NULL;
-	
-	try{
-		field = new dePropField(this);
-		
-		GetGraphicSystem()->LoadPropField(field);
-		GetPhysicsSystem()->LoadPropField(field);
-		GetScriptingSystem()->LoadPropField(field);
-		
-		pFields.Add(field);
-		
-	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
-		throw;
-	}
-	
+dePropField::Ref dePropFieldManager::CreatePropField(){
+	const dePropField::Ref field(dePropField::Ref::New(this));
+	GetGraphicSystem()->LoadPropField(field);
+	GetPhysicsSystem()->LoadPropField(field);
+	GetScriptingSystem()->LoadPropField(field);
+	pFields.Add(field);
 	return field;
 }
 

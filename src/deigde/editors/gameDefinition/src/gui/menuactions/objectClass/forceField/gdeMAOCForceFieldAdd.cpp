@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Force Field...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddForceField(&objectClass, gdeOCForceField::Ref::NewWith());
+igdeUndo::Ref gdeMAOCForceFieldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddForceField::Ref::New(&objectClass, gdeOCForceField::Ref::New());
 }
 
 void gdeMAOCForceFieldAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

@@ -27,9 +27,7 @@
 
 #include <dragengine/deObject.h>
 
-class ceConversationAction;
-class ceConversationActionList;
-
+#include "../../conversation/action/ceConversationAction.h"
 
 /**
  * \brief Undo Conversation Action Helpers.
@@ -40,7 +38,7 @@ public:
 	/*@{*/
 	/** \brief Action to set active after action is removed. */
 	static ceConversationAction *ActivateActionAfterRemove(
-		const ceConversationActionList &list, ceConversationAction *removedAction);
+		const ceConversationAction::List &list, ceConversationAction *removedAction);
 	/*@}*/
 };
 

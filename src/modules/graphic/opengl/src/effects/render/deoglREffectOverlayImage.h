@@ -36,6 +36,10 @@
  * Render effect overlay image.
  */
 class deoglREffectOverlayImage : public deoglREffect{
+public:
+	typedef deTObjectReference<deoglREffectOverlayImage> Ref;
+	
+	
 private:
 	float pTransparency;
 	deoglRImage::Ref pImage;

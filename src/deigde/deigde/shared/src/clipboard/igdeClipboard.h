@@ -25,7 +25,7 @@
 #ifndef _IGDECLIPBOARD_H_
 #define _IGDECLIPBOARD_H_
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTList.h>
 
 class igdeClipboardData;
 
@@ -39,8 +39,12 @@ class igdeClipboardData;
  * application uses the clipboard type name to locate data it can paste.
  */
 class DE_DLL_EXPORT igdeClipboard {
+public:
+	typedef decTObjectList<igdeClipboardData> DataList;
+	
+	
 private:
-	decObjectSet pData;
+	DataList pData;
 	
 	
 	
@@ -58,16 +62,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of data objects in the clipboard. */
-	int GetCount() const;
+	/** \brief Data list. */
+	inline const DataList &GetData() const{ return pData; }
 	
 	/** \brief Data matching type name is present. */
 	bool HasWithTypeName(const char *typeName) const;
 	
-	/** \brief Data object at index. */
-	igdeClipboardData *GetAt(int index) const;
-	
-	/** \brief Data matching type name or NULL if absent. */
+	/** \brief Data matching type name or nullptr if absent. */
 	igdeClipboardData *GetWithTypeName(const char *typeName) const;
 	
 	/** \brief Set data replacing data with the same type name if present. */

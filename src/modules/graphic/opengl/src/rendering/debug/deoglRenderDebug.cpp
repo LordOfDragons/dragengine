@@ -103,13 +103,7 @@ enum eSPRectangle{
 deoglRenderDebug::deoglRenderDebug(deoglRenderThread &renderThread) :
 deoglRenderBase(renderThread),
 
-pDebugFont(nullptr),
-
-pTBORenderText1(nullptr),
-pTBORenderText2(nullptr),
-
-pTBORenderRectangle1(nullptr),
-pTBORenderRectangle2(nullptr)
+pDebugFont(nullptr)
 {
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
@@ -149,11 +143,11 @@ pTBORenderRectangle2(nullptr)
 		
 		
 		// TBOs
-		pTBORenderText1 = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBORenderText2 = new deoglDynamicTBOFloat8(renderThread, 4);
+		pTBORenderText1 = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBORenderText2 = deoglDynamicTBOFloat8::Ref::New(renderThread, 4);
 		
-		pTBORenderRectangle1 = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBORenderRectangle2 = new deoglDynamicTBOFloat8(renderThread, 4);
+		pTBORenderRectangle1 = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBORenderRectangle2 = deoglDynamicTBOFloat8::Ref::New(renderThread, 4);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -502,18 +496,6 @@ void deoglRenderDebug::EndRenderRectangle(){
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
-	if(pTBORenderRectangle2){
-		pTBORenderRectangle2->FreeReference();
-	}
-	if(pTBORenderRectangle1){
-		pTBORenderRectangle1->FreeReference();
-	}
-	if(pTBORenderText2){
-		pTBORenderText2->FreeReference();
-	}
-	if(pTBORenderText1){
-		pTBORenderText1->FreeReference();
-	}
 	if(pDebugFont){
 		delete pDebugFont;
 	}

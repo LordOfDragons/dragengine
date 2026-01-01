@@ -25,21 +25,16 @@
 #ifndef _GDECATEGORYLIST_H_
 #define _GDECATEGORYLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class gdeCategory;
-
 
 
 /**
  * \brief Category list.
  */
-class gdeCategoryList{
-private:
-	decObjectOrderedSet pCategories;
-	
-	
-	
+class gdeCategoryList : public decTOrderedSet<deTObjectReference<gdeCategory>, gdeCategory*>{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -57,38 +52,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of categoryes. */
-	int GetCount() const;
-	
-	/** \brief Property at position. */
-	gdeCategory *GetAt(int index) const;
-	
 	/** \brief Named category or \em NULL if absent. */
 	gdeCategory *GetNamed(const char *name) const;
 	
 	/** \brief Category with path or \em NULL if absent. */
 	gdeCategory *GetWithPath(const char *path) const;
 	
-	/** \brief Index of named category or -1 if absent. */
-	int IndexOf(gdeCategory *proeprty) const;
-	
-	/** \brief Index of named category or -1 if absent. */
-	int IndexOfNamed(const char *name) const;
-	
-	/** \brief Property is present. */
-	bool Has(gdeCategory *proeprty) const;
-	
-	/** \brief Named category is present. */
-	bool HasNamed(const char *name) const;
-	
 	/** \brief Add category. */
 	void Add(gdeCategory *proeprty);
-	
-	/** \brief Remove category. */
-	void Remove(gdeCategory *proeprty);
-	
-	/** \brief Remove all categoryes. */
-	void RemoveAll();
 	
 	/** \brief Set from another category list. */
 	gdeCategoryList &operator=(const gdeCategoryList &list);

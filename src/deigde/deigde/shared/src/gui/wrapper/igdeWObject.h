@@ -26,10 +26,12 @@
 #define _IGDEWOBJECT_H_
 
 #include "../../gamedefinition/class/igdeGDClass.h"
+#include "../../triggersystem/igdeTriggerTarget.h"
 #include "../../triggersystem/igdeTriggerListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
@@ -40,6 +42,7 @@
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class igdeTriggerTargetList;
 class igdeEnvironment;
@@ -47,7 +50,6 @@ class igdeWOSubObject;
 class igdeWOSOVisitor;
 
 class deComponent;
-class deCollider;
 class deColliderVolume;
 class deColliderComponent;
 class deBaseScriptingCollider;
@@ -101,13 +103,13 @@ private:
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
-	decObjectSet pCollidersInteraction;
+	decTObjectSet<deCollider> pCollidersInteraction;
 	void *pColliderUserPointer;
 	
 	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
 	
-	decObjectOrderedSet pSubObjects;
+	decTObjectOrderedSet<igdeWOSubObject> pSubObjects;
 	igdeTriggerListener::Ref pTriggerListener;
 	
 	decDVector pPosition;
@@ -134,7 +136,7 @@ private:
 	deBaseScriptingCollider *pListenerCollider;
 	
 	igdeTriggerTargetList *pTriggerTable;
-	decObjectList pListTriggerTarget;
+	decTObjectList<igdeTriggerTarget> pListTriggerTarget;
 	
 	decVector pBoxMinExtend;
 	decVector pBoxMaxExtend;
@@ -172,28 +174,28 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{ return pWorld; }
+	/** \brief World or nullptr. */
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world or NULL. */
+	/** \brief Set world or nullptr. */
 	void SetWorld(deWorld *world);
 	
-	/** \brief Camera to calculate screen related properties or NULL. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	/** \brief Camera to calculate screen related properties or nullptr. */
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera to calculate screen related properties or NULL. */
+	/** \brief Set camera to calculate screen related properties or nullptr. */
 	void SetCamera(deCamera *camera);
 	
-	/** \brief Trigger table or NULL if not used. */
+	/** \brief Trigger table or nullptr if not used. */
 	inline igdeTriggerTargetList *GetTriggerTable() const{ return pTriggerTable; }
 	
-	/** \brief Set trigger table or NULL if not used. */
+	/** \brief Set trigger table or nullptr if not used. */
 	void SetTriggerTable(igdeTriggerTargetList *triggerTable);
 	
-	/** \brief Game definition object class or NULL. */
-	inline igdeGDClass *GetGDClass() const{ return pGDClass; }
+	/** \brief Game definition object class or nullptr. */
+	inline const igdeGDClass::Ref &GetGDClass() const{ return pGDClass; }
 	
-	/** \brief Set game definition object class or NULL. */
+	/** \brief Set game definition object class or nullptr. */
 	void SetGDClass(igdeGDClass *gdClass);
 	
 	/** \brief Set game definition object class by name if found. */
@@ -302,8 +304,8 @@ public:
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);
 	
-	/** \brief Parent collider or NULL if there is none. */
-	inline deCollider *GetParentCollider() const{ return pParentCollider; }
+	/** \brief Parent collider or nullptr if there is none. */
+	inline const deCollider::Ref &GetParentCollider() const{ return pParentCollider; }
 	
 	/** \brief Determines if the object is attached to a parent collider. */
 	bool IsAttachedCollider() const;
@@ -382,10 +384,10 @@ public:
 	
 	
 	
-	/** \brief Outline skin or NULL. */
-	inline deSkin *GetOutlineSkin() const{ return pOutlineSkin; }
+	/** \brief Outline skin or nullptr. */
+	inline const deSkin::Ref &GetOutlineSkin() const{ return pOutlineSkin; }
 	
-	/** \brief Set outline skin or NULL. */
+	/** \brief Set outline skin or nullptr. */
 	void SetOutlineSkin(deSkin *skin);
 	
 	/** \brief Set outline skin to shared editing outline skin. */
@@ -399,18 +401,18 @@ public:
 	
 	
 	
-	/** \brief Asynchronous load finished listener or NULL. */
+	/** \brief Asynchronous load finished listener or nullptr. */
 	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
-	 * \brief Set asynchronous load finished listener or NULL.
+	 * \brief Set asynchronous load finished listener or nullptr.
 	 * 
 	 * Caller is responsible to keep the listener alive. Wrapper does not hold reference.
 	 */
 	void SetAsyncLoadFinished(cAsyncLoadFinished *listener);
 	
 	/** \brief Trigger listener for internal use only. */
-	inline igdeTriggerListener *GetTriggerListener() const{ return pTriggerListener; }
+	inline const igdeTriggerListener::Ref &GetTriggerListener() const{ return pTriggerListener; }
 	
 	/**
 	 * \brief Determine if all sub objects (direct or indirect) finished loading.
@@ -463,7 +465,7 @@ public:
 	void SubObjectFinishedLoading(igdeWOSubObject &subObject, bool success);
 	void SubObjectExtendsDirty();
 	void SetInteractCollider(deColliderComponent *collider);
-	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
 	void AddInteractionCollider(deCollider *collider);
 	void RemoveInteractionCollider(deCollider *collider);
 	void UpdateAnyContentVisibile();

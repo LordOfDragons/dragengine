@@ -266,7 +266,6 @@ void deglWindowMain::DisplayException(const deException &exception){
 void deglWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
 		pWindowLogger = new deglWindowLogger(getApp());
-		if(!pWindowLogger) DETHROW(deeOutOfMemory);
 		
 		pWindowLogger->SetLogger(pLauncher->GetLoggerHistory());
 	}
@@ -315,9 +314,8 @@ bool deglWindowMain::QuitRequest(){
 
 void deglWindowMain::ReloadGamesAndPatches(){
 	{
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		pLauncher->GetEngineInstanceFactory().CreateEngineInstance(
-			*pLauncher, pLauncher->GetEngine().GetLogFile() ) ) );
+	const delEngineInstance::Ref instance(pLauncher->GetEngineInstanceFactory().
+		CreateEngineInstance(*pLauncher, pLauncher->GetEngine().GetLogFile()));
 	instance->StartEngine();
 	instance->LoadModules();
 	

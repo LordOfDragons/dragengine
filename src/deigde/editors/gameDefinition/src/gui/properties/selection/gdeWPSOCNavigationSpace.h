@@ -26,6 +26,8 @@
 #define _GDEWPSOCNAVIGATIONSPACE_H_
 
 #include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCNavigationSpaceListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -34,11 +36,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationSpace;
 class gdeWindowProperties;
-class gdeWPSOCNavigationSpaceListener;
 
 
 
@@ -46,11 +46,14 @@ class gdeWPSOCNavigationSpaceListener;
  * \brief Object class navigation space property panel.
  */
 class gdeWPSOCNavigationSpace : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCNavigationSpace> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCNavigationSpaceListener *pListener;
+	gdeWPSOCNavigationSpaceListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeEditVector::Ref pEditPosition;
@@ -84,18 +87,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class navigation space or \em NULL if not set. */
+	/** \brief Active object class navigation space or \em nullptr if not set. */
 	gdeOCNavigationSpace *GetNavigationSpace() const;
 	
 	/** \brief Selected property name. */

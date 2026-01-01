@@ -45,15 +45,13 @@
 
 deoglGIBVHDynamic::deoglGIBVHDynamic(deoglGIBVHLocal &bvhLocal) :
 pGIBVHLocal(bvhLocal),
-pTBONodeBox(NULL),
-pTBOVertex(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBONodeBox = deoglDynamicTBOFloat32::Ref::New(bvhLocal.GetRenderThread(), 4);
 		pTBONodeBox->SetDataCount(bvhLocal.GetTBONodeBox()->GetDataCount());
 		
-		pTBOVertex = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBOVertex = deoglDynamicTBOFloat32::Ref::New(bvhLocal.GetRenderThread(), 4);
 		pTBOVertex->SetDataCount(bvhLocal.GetTBOVertex()->GetDataCount());
 		
 	}catch(const deException &){
@@ -129,16 +127,16 @@ void deoglGIBVHDynamic::UpdateVertices(const oglVector3 *positions, int count){
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockNode(){
 	if(!pBlockNode){
-		pBlockNode.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBONode()
-			->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox));
+		pBlockNode = pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().
+			GetSharedTBONode()->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox);
 	}
 	return pBlockNode;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockVertex(){
 	if(!pBlockVertex){
-		pBlockVertex.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBOVertex()
-			->AddBlock(pTBOVertex));
+		pBlockVertex = pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().
+			GetSharedTBOVertex()->AddBlock(pTBOVertex);
 	}
 	return pBlockVertex;
 }
@@ -176,13 +174,6 @@ void deoglGIBVHDynamic::RemoveBlockUsage(){
 
 void deoglGIBVHDynamic::pCleanUp(){
 	DropBlocks();
-	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
 }
 
 void deoglGIBVHDynamic::pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend){

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -35,8 +35,12 @@ class peeEmitter;
  * \brief Undo Action Set Burst Emitter Lifetime.
  */
 class peeUEmitterSetBurstLifetime : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUEmitterSetBurstLifetime> Ref;
+	
+	
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	float pOldLifetime;
 	float pNewLifetime;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUEmitterSetBurstLifetime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

@@ -278,12 +278,11 @@ const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[0];
 deEngine::deEngine(deOS *os, deVirtualFileSystem *fileSystem) :
 pArgs(nullptr),
 pOS(os),
-pOSFileSystem(deVirtualFileSystem::Ref::New(fileSystem)),
+pOSFileSystem(fileSystem),
 
 pErrorTrace(nullptr),
 pScriptFailed(false),
 pSystemFailed(false),
-pLogger(nullptr),
 
 pModSys(nullptr),
 pSystems(nullptr),
@@ -342,15 +341,8 @@ void deEngine::ResetFailureFlags(){
 }
 
 void deEngine::SetLogger(deLogger *logger){
-	if(!logger){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(logger != pLogger){
-		pLogger->FreeReference();
-		pLogger = logger;
-		logger->AddReference();
-	}
+	DEASSERT_NOTNULL(logger)
+	pLogger = logger;
 }
 
 
@@ -1139,12 +1131,12 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 //////////////////////
 
 void deEngine::pInit(){
-	pLogger = new deLoggerConsoleColor;
+	pLogger = deLoggerConsoleColor::Ref::New();
 	pErrorTrace = new deErrorTrace;
 	pArgs = new deCmdLineArgs;
 	
 	pPathData = pOS->GetPathEngine();
-	pVFS = new deVirtualFileSystem;
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// create systems and resource managers
 	pParallelProcessing = new deParallelProcessing(*this);
@@ -1376,10 +1368,6 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free logger
-	if(pLogger){
-		pLogger->FreeReference();
-	}
-	
 	// free os file system if present
 	pOSFileSystem = nullptr;
 }

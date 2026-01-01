@@ -36,6 +36,9 @@
  */
 class ceCConditionVariable : public ceConversationCondition{
 public:
+	typedef deTObjectReference<ceCConditionVariable> Ref;
+
+public:
 	/** \brief Compare operators. */
 	enum eOperators{
 		/** \brief True if the variable value is equal to the test value. */
@@ -77,7 +80,9 @@ public:
 	ceCConditionVariable(const ceCConditionVariable &condition);
 	
 	/** \brief Clean up conversation condition. */
+protected:
 	~ceCConditionVariable() override;
+public:
 	/*@}*/
 	
 	
@@ -111,7 +116,7 @@ public:
 	
 	
 	/** \brief Create copy of condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

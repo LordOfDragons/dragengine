@@ -25,27 +25,30 @@
 #ifndef _REWPPUSH_H_
 #define _REWPPUSH_H_
 
+#include "reWPPushListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/push/reRigPush.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
-class reRig;
-class reRigPush;
-class reWPPushListener;
-
 
 
 /**
  * \brief Push panel
  */
 class reWPPush : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPPush> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigPush *pPush;
-	reWPPushListener *pListener;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
+	reWPPushListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBType;
 	igdeEditVector::Ref pEditPosition;
@@ -73,13 +76,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Push. */
-	inline reRigPush *GetPush() const{ return pPush; }
+	inline const reRigPush::Ref &GetPush() const{ return pPush; }
 	
 	/** \brief Set push. */
 	void SetPush(reRigPush *push);

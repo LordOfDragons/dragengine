@@ -64,25 +64,9 @@ pIfElse(&ifElse){
 ///////////////
 
 void ceWPTMAIfElseCaseAdd::OnAction(){
-	ceCAIfElseCase *selectIfCase = NULL;
-	ceCAIfElseCase *ifCase = NULL;
-	igdeUndo::Ref undo;
-	
-	try{
-		ifCase = new ceCAIfElseCase;
-		undo.TakeOver(new ceUCAIfElseCaseAdd(pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount()));
-		selectIfCase = ifCase;
-		ifCase->FreeReference();
-		ifCase = NULL;
-		
-		pConversation->GetUndoSystem()->Add(undo);
-		
-	}catch(const deException &){
-		if(ifCase){
-			ifCase->FreeReference();
-		}
-		throw;
-	}
+	const ceCAIfElseCase::Ref ifCase(ceCAIfElseCase::Ref::New());
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseCaseAdd::Ref::New(
+		pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount()));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
 	if(!wptopic.GetActionTreeModel()){
@@ -90,12 +74,12 @@ void ceWPTMAIfElseCaseAdd::OnAction(){
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
+	ceWPTTIMAIfElse * const modelIfElse = static_cast<ceWPTTIMAIfElse*>(model.DeepFindAction(pIfElse));
 	if(!modelIfElse){
 		return;
 	}
 	
-	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild(selectIfCase);
+	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild(ifCase);
 	if(!modelIfCase){
 		return;
 	}

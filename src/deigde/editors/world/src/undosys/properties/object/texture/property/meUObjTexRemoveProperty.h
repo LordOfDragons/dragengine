@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -35,17 +35,18 @@ class meObjectTexture;
  * \brief Undo action object texture remove property.
  */
 class meUObjTexRemoveProperty : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjTexRemoveProperty> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pKey;
 	decString pValue;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjTexRemoveProperty> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjTexRemoveProperty();
+
+public:
 	/*@}*/
 	
 	
@@ -67,11 +72,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

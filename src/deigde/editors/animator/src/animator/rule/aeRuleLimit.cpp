@@ -463,67 +463,56 @@ void aeRuleLimit::SetTargetBone(const char *boneName){
 
 
 
-deAnimatorRule *aeRuleLimit::CreateEngineRule(){
-	deAnimatorRuleLimit *engRule = NULL;
+deAnimatorRule::Ref aeRuleLimit::CreateEngineRule(){
+	const deAnimatorRuleLimit::Ref engRule(deAnimatorRuleLimit::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleLimit;
-		
-		InitEngineRule(engRule);
-		
-		engRule->SetMinimumPosition(pMinPosition);
-		engRule->SetMaximumPosition(pMaxPosition);
-		engRule->SetMinimumRotation(pMinRotation * DEG2RAD);
-		engRule->SetMaximumRotation(pMaxRotation * DEG2RAD);
-		engRule->SetMinimumScaling(pMinScaling);
-		engRule->SetMaximumScaling(pMaxScaling);
-		engRule->SetMinimumVertexPositionSet(pMinVertexPositionSet);
-		engRule->SetMaximumVertexPositionSet(pMaxVertexPositionSet);
-		engRule->SetCoordinateFrame(pCoordinateFrame);
-		engRule->SetTargetBone(pTargetBone);
-		
-		engRule->SetEnablePositionXMin(pEnablePositionXMin);
-		engRule->SetEnablePositionXMax(pEnablePositionXMax);
-		engRule->SetEnablePositionYMin(pEnablePositionYMin);
-		engRule->SetEnablePositionYMax(pEnablePositionYMax);
-		engRule->SetEnablePositionZMin(pEnablePositionZMin);
-		engRule->SetEnablePositionZMax(pEnablePositionZMax);
-		
-		engRule->SetEnableRotationXMin(pEnableRotationXMin);
-		engRule->SetEnableRotationXMax(pEnableRotationXMax);
-		engRule->SetEnableRotationYMin(pEnableRotationYMin);
-		engRule->SetEnableRotationYMax(pEnableRotationYMax);
-		engRule->SetEnableRotationZMin(pEnableRotationZMin);
-		engRule->SetEnableRotationZMax(pEnableRotationZMax);
-		
-		engRule->SetEnableScalingXMin(pEnableScalingXMin);
-		engRule->SetEnableScalingXMax(pEnableScalingXMax);
-		engRule->SetEnableScalingYMin(pEnableScalingYMin);
-		engRule->SetEnableScalingYMax(pEnableScalingYMax);
-		engRule->SetEnableScalingZMin(pEnableScalingZMin);
-		engRule->SetEnableScalingZMax(pEnableScalingZMax);
-		
-		engRule->SetEnableVertexPositionSetMin(pEnableVertexPositionSetMin);
-		engRule->SetEnableVertexPositionSetMax(pEnableVertexPositionSetMax);
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
 	
-	// finished
+	engRule->SetMinimumPosition(pMinPosition);
+	engRule->SetMaximumPosition(pMaxPosition);
+	engRule->SetMinimumRotation(pMinRotation * DEG2RAD);
+	engRule->SetMaximumRotation(pMaxRotation * DEG2RAD);
+	engRule->SetMinimumScaling(pMinScaling);
+	engRule->SetMaximumScaling(pMaxScaling);
+	engRule->SetMinimumVertexPositionSet(pMinVertexPositionSet);
+	engRule->SetMaximumVertexPositionSet(pMaxVertexPositionSet);
+	engRule->SetCoordinateFrame(pCoordinateFrame);
+	engRule->SetTargetBone(pTargetBone);
+	
+	engRule->SetEnablePositionXMin(pEnablePositionXMin);
+	engRule->SetEnablePositionXMax(pEnablePositionXMax);
+	engRule->SetEnablePositionYMin(pEnablePositionYMin);
+	engRule->SetEnablePositionYMax(pEnablePositionYMax);
+	engRule->SetEnablePositionZMin(pEnablePositionZMin);
+	engRule->SetEnablePositionZMax(pEnablePositionZMax);
+	
+	engRule->SetEnableRotationXMin(pEnableRotationXMin);
+	engRule->SetEnableRotationXMax(pEnableRotationXMax);
+	engRule->SetEnableRotationYMin(pEnableRotationYMin);
+	engRule->SetEnableRotationYMax(pEnableRotationYMax);
+	engRule->SetEnableRotationZMin(pEnableRotationZMin);
+	engRule->SetEnableRotationZMax(pEnableRotationZMax);
+	
+	engRule->SetEnableScalingXMin(pEnableScalingXMin);
+	engRule->SetEnableScalingXMax(pEnableScalingXMax);
+	engRule->SetEnableScalingYMin(pEnableScalingYMin);
+	engRule->SetEnableScalingYMax(pEnableScalingYMax);
+	engRule->SetEnableScalingZMin(pEnableScalingZMin);
+	engRule->SetEnableScalingZMax(pEnableScalingZMax);
+	
+	engRule->SetEnableVertexPositionSetMin(pEnableVertexPositionSetMin);
+	engRule->SetEnableVertexPositionSetMax(pEnableVertexPositionSetMax);
+	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleLimit::CreateCopy() const{
-	return new aeRuleLimit(*this);
+aeRule::Ref aeRuleLimit::CreateCopy() const{
+	return Ref::New(*this);
 }
 
-void aeRuleLimit::ListLinks(aeLinkList &list){
+void aeRuleLimit::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 }
 

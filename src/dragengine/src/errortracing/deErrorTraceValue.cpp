@@ -87,7 +87,6 @@ void deErrorTraceValue::AddSubValue(deErrorTraceValue *value){
 	if(pSubValueCount == pSubValueSize){
 		int i, newSize = pSubValueSize * 3 / 2 + 1;
 		deErrorTraceValue **newArray = new deErrorTraceValue*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pSubValues){
 			for(i=0; i<pSubValueCount; i++) newArray[i] = pSubValues[i];
 			delete [] pSubValues;
@@ -116,7 +115,6 @@ deErrorTraceValue *deErrorTraceValue::AddSubValue(const char *name, const char *
 	deErrorTraceValue *newSubValue = NULL;
 	try{
 		newSubValue = new deErrorTraceValue(name, value);
-		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -129,13 +127,12 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%i", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
 	#else
-		sprintf((char*)&buffer, "%i", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%i", value);
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);
-		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -148,13 +145,12 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float v
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%g", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
 	#else
-		sprintf((char*)&buffer, "%g", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%g", value);
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);
-		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;
@@ -171,7 +167,6 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueBool(const char *name, bool val
 		}else{
 			newSubValue = new deErrorTraceValue(name, "False");
 		}		
-		if(!newSubValue) DETHROW(deeOutOfMemory);
 		AddSubValue(newSubValue);
 	}catch(const deException &){
 		if(newSubValue) delete newSubValue;

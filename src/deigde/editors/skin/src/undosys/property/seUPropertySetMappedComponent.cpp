@@ -40,7 +40,7 @@
 
 seUPropertySetMappedComponent::seUPropertySetMappedComponent(
 	seProperty *property, int index, seMapped *newValue) :
-pProperty(nullptr),
+
 pIndex(index),
 pOldValue(property ? property->GetMappedComponent(index) : nullptr),
 pNewValue(newValue)
@@ -50,13 +50,9 @@ pNewValue(newValue)
 	SetShortInfo("Property Set Mapped Component");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetMappedComponent::~seUPropertySetMappedComponent(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

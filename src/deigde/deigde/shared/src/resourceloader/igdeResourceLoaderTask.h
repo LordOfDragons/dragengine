@@ -25,12 +25,13 @@
 #ifndef _IGDERESOURCELOADERTASK_H_
 #define _IGDERESOURCELOADERTASK_H_
 
+#include "igdeResourceLoaderListener.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
-class igdeResourceLoaderListener;
 class deFileResource;
 class deLogger;
 
@@ -46,7 +47,7 @@ class DE_DLL_EXPORT igdeResourceLoaderTask : public deObject{
 private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeResourceLoaderListener> pListeners;
 	
 	
 	

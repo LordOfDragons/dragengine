@@ -40,11 +40,8 @@
 ////////////////////////////
 
 seUPNUngroupNodes::seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup) :
-pParentGroup(NULL),
-pNodeGroup(NULL),
-pIndex(0),
-pNodeCount(0),
-pNodes(0)
+
+pIndex(0)
 {
 	if(!nodeGroup){
 		DETHROW(deeInvalidParam);
@@ -57,41 +54,24 @@ pNodes(0)
 	
 	SetShortInfo("Ungroup nodes");
 	
-	pIndex = parentGroup->IndexOfNode(nodeGroup);
+	pIndex = parentGroup->GetNodes().IndexOf(nodeGroup);
 	
-	const int count = nodeGroup->GetNodeCount();
-	pNodes = new sNode[count];
-	for(pNodeCount=0; pNodeCount<count; pNodeCount++){
-		sePropertyNode * const node = nodeGroup->GetNodeAt(pNodeCount);
-		pNodes[pNodeCount].position = node->GetPosition();
-		pNodes[pNodeCount].size = node->GetSize();
-		pNodes[pNodeCount].rotation = node->GetRotation();
-		pNodes[pNodeCount].shearing = node->GetShearing();
-		pNodes[pNodeCount].node = node;
-		node->AddReference();
-	}
+	nodeGroup->GetNodes().Visit([&](sePropertyNode *node){
+		const cNode::Ref unode(cNode::Ref::New());
+		unode->position = node->GetPosition();
+		unode->size = node->GetSize();
+		unode->rotation = node->GetRotation();
+		unode->shearing = node->GetShearing();
+		unode->node = node;
+		pNodes.Add(unode);
+	});
 	
 	pParentGroup = parentGroup;
-	parentGroup->AddReference();
 	
 	pNodeGroup = nodeGroup;
-	nodeGroup->AddReference();
 }
 
 seUPNUngroupNodes::~seUPNUngroupNodes(){
-	if(pNodeGroup){
-		pNodeGroup->FreeReference();
-	}
-	if(pParentGroup){
-		pParentGroup->FreeReference();
-	}
-	if(pNodes){
-		int i;
-		for(i=0; i<pNodeCount; i++){
-			pNodes[i].node->FreeReference();
-		}
-		delete [] pNodes;
-	}
 }
 
 
@@ -103,15 +83,14 @@ void seUPNUngroupNodes::Undo(){
 	sePropertyNodeSelection &selection = pParentGroup->GetProperty()->GetNodeSelection();
 	selection.RemoveAll();
 	
-	int i;
-	for(i=0; i<pNodeCount; i++){
-		pParentGroup->RemoveNode(pNodes[i].node);
-		pNodes[i].node->SetPosition(pNodes[i].position);
-		pNodes[i].node->SetSize(pNodes[i].size);
-		pNodes[i].node->SetRotation(pNodes[i].rotation);
-		pNodes[i].node->SetShearing(pNodes[i].shearing);
-		pNodeGroup->AddNode(pNodes[i].node);
-	}
+	pNodes.Visit([&](const cNode &unode){
+		pParentGroup->RemoveNode(unode.node);
+		unode.node->SetPosition(unode.position);
+		unode.node->SetSize(unode.size);
+		unode.node->SetRotation(unode.rotation);
+		unode.node->SetShearing(unode.shearing);
+		pNodeGroup->AddNode(unode.node);
+	});
 	
 	pParentGroup->InsertNode(pIndex, pNodeGroup);
 	
@@ -127,11 +106,10 @@ void seUPNUngroupNodes::Redo(){
 	pParentGroup->RemoveNode(pNodeGroup);
 	pNodeGroup->RemoveAllNodes();
 	
-	int i;
-	for(i=0; i<pNodeCount; i++){
-		pNodes[i].node->SetFromMatrix(pNodes[i].node->CreateParentTransformMatrix() * matrix,
-			pNodes[i].size, pNodes[i].rotation);
-		pParentGroup->AddNode(pNodes[i].node);
-		selection.Add(pNodes[i].node);
-	}
+	pNodes.Visit([&](const cNode &unode){
+		unode.node->SetFromMatrix(unode.node->CreateParentTransformMatrix() * matrix,
+			unode.size, unode.rotation);
+		pParentGroup->AddNode(unode.node);
+		selection.Add(unode.node);
+	});
 }

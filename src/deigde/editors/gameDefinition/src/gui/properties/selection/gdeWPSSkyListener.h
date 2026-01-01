@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSSkyListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSSkyListener(gdeWPSSky &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSSkyListener() override;
+public:
 	/*@}*/
 	
 	

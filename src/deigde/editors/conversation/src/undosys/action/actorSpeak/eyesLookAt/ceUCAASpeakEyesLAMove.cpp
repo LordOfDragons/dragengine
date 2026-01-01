@@ -48,38 +48,24 @@ ceStrip *eyesLookAt, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pEyesLA = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pEyesLA = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetEyesLookAtList().IndexOf(eyesLookAt);
+	pOldIndex = actorSpeak->GetEyesLookAts().IndexOf(eyesLookAt);
 	
 	if(pOldIndex == -1) DETHROW(deeInvalidParam);
-	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetEyesLookAtList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetEyesLookAts().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move EyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
 ///////////////
 
 void ceUCAASpeakEyesLAMove::Undo(){
-	pActorSpeak->GetEyesLookAtList().MoveTo(pEyesLA, pOldIndex);
+	pActorSpeak->GetEyesLookAts().Move(pEyesLA, pOldIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakEyesLAMove::Redo(){
-	pActorSpeak->GetEyesLookAtList().MoveTo(pEyesLA, pNewIndex);
+	pActorSpeak->GetEyesLookAts().Move(pEyesLA, pNewIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

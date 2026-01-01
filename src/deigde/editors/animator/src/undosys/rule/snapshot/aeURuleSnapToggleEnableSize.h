@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 
@@ -36,13 +36,14 @@ class aeRuleStateSnapshot;
  * Undo rule state snapshot set enable size.
  */
 class aeURuleSnapToggleEnableSize : public igdeUndo{
-private:
-	aeRuleStateSnapshot *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleSnapToggleEnableSize> Ref;
 	
+	
+private:
+	aeRuleStateSnapshot::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

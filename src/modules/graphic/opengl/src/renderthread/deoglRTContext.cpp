@@ -280,9 +280,6 @@ void deoglRTContext::InitPhase3(deRenderWindow *renderWindow){
 	if(!renderWindow->GetPeerGraphic()){
 		// deoglRenderWindow is calling CreateWindow. this one is important to be in the main thread
 		renderWindow->SetPeerGraphic(new deoglRenderWindow(ogl, *renderWindow));
-		if(!renderWindow->GetPeerGraphic()){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	if(!renderWindow->GetHostWindow()){
@@ -1102,7 +1099,7 @@ void deoglRTContext::pCreateContext(){
 	
 #elif defined BACKEND_VULKAN
 	logger.LogInfo("Creating Vulkan device");
-	pVulkan.TakeOver(new deSharedVulkan(pRenderThread.GetOgl()));
+	pVulkan = deSharedVulkan::Ref::New(pRenderThread.GetOgl());
 	pDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
 	
 	pQueueGraphic = &pDevice->GetGraphicQueue();

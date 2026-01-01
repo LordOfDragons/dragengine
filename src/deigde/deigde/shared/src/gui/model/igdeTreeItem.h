@@ -29,6 +29,7 @@
 #include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -47,6 +48,9 @@ class DE_DLL_EXPORT igdeTreeItem : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTreeItem> Ref;
+	
+	/** \brief Tree item list. */
+	typedef decTObjectOrderedSet<igdeTreeItem> List;
 	
 	
 private:
@@ -113,10 +117,10 @@ public:
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
@@ -152,13 +156,13 @@ public:
 	void SetPrevious(igdeTreeItem *item);
 	
 	/** \brief Next item. */
-	inline igdeTreeItem *GetNext() const{ return pNext; }
+	inline const igdeTreeItem::Ref &GetNext() const{ return pNext; }
 	
 	/** \brief Set next item. */
 	void SetNext(igdeTreeItem *item);
 	
 	/** \brief First child item. */
-	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
+	inline const igdeTreeItem::Ref &GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Set first child item. */
 	void SetFirstChild(igdeTreeItem *item);

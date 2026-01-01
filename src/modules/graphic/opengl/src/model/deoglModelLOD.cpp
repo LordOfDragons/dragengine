@@ -400,9 +400,6 @@ GLuint deoglModelLOD::GetIBO(){
 	
 	try{
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pIBO));
-		if(!pIBO){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		const int bufferSize = (pFaceCount * 3) * sizeof(GLuint);
 		
@@ -940,27 +937,21 @@ void deoglModelLOD::pCleanUp(){
 	
 	if(pVBOBlockWithWeight){
 		pVBOBlockWithWeight->DelayedRemove();
-		pVBOBlockWithWeight->FreeReference();
 	}
 	if(pVBOBlockVertPosSet){
 		pVBOBlockVertPosSet->DelayedRemove();
-		pVBOBlockVertPosSet->FreeReference();
 	}
 	if(pVBOBlockWriteSkinnedVBO){
 		pVBOBlockWriteSkinnedVBO->DelayedRemove();
-		pVBOBlockWriteSkinnedVBO->FreeReference();
 	}
 	if(pVBOBlockCalcNormalTangent){
 		pVBOBlockCalcNormalTangent->DelayedRemove();
-		pVBOBlockCalcNormalTangent->FreeReference();
 	}
 	if(pVBOBlockPositionWeight){
 		pVBOBlockPositionWeight->DelayedRemove();
-		pVBOBlockPositionWeight->FreeReference();
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 	
 	pModel.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer(pIBO);
@@ -1671,7 +1662,7 @@ void deoglModelLOD::pWriteVBODataPositionWeight(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	char * const vboData = (char*)pVBOBlockPositionWeight->GetData();
+	char * const vboData = reinterpret_cast<char*>(pVBOBlockPositionWeight->GetData());
 	int i;
 	
 	for(i=0; i<pPositionCount; i++){
@@ -1693,7 +1684,7 @@ void deoglModelLOD::pWriteVBODataCalcNormalTangent(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	char * const vboData = (char*)pVBOBlockCalcNormalTangent->GetData();
+	char * const vboData = reinterpret_cast<char*>(pVBOBlockCalcNormalTangent->GetData());
 	int i;
 	
 	for(i=0; i<pFaceCount; i++){
@@ -1735,7 +1726,7 @@ void deoglModelLOD::pWriteVBODataWriteSkinnedVBO(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	char * const vboData = (char*)pVBOBlockWriteSkinnedVBO->GetData();
+	char * const vboData = reinterpret_cast<char*>(pVBOBlockWriteSkinnedVBO->GetData());
 	int i;
 	
 	for(i=0; i<pVertexCount; i++){

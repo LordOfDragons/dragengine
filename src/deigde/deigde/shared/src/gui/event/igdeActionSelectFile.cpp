@@ -43,7 +43,7 @@
 
 igdeActionSelectFile::igdeActionSelectFile(igdeEnvironment &environment,
 	igdeEnvironment::eFilePatternListTypes resourceType, igdeTextField &textField, bool useGameVFS) :
-igdeAction("...", NULL, "Select file"),
+igdeAction("...", nullptr, "Select file"),
 pEnvironment(environment),
 pFilePatterns(*pEnvironment.GetOpenFilePatternList(resourceType)),
 pUseGameVFS(useGameVFS),
@@ -51,8 +51,8 @@ pTextField(textField){
 }
 
 igdeActionSelectFile::igdeActionSelectFile(igdeEnvironment &environment,
-const igdeFilePatternList &filePatterns, igdeTextField &textField, bool useGameVFS) :
-igdeAction("...", NULL, "Select file"),
+const igdeFilePattern::List &filePatterns, igdeTextField &textField, bool useGameVFS) :
+igdeAction("...", nullptr, "Select file"),
 pEnvironment(environment),
 pFilePatterns(filePatterns),
 pUseGameVFS(useGameVFS),

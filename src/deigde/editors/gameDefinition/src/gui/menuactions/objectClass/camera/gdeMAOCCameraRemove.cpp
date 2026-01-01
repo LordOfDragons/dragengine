@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Camera",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCCameraRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
 	if(!camera){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveCamera(&objectClass, camera);
+	return gdeUOCRemoveCamera::Ref::New(&objectClass, camera);
 }
 
 void gdeMAOCCameraRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-		&& gameDefinition->GetActiveOCCamera() != NULL);
+		&& gameDefinition->GetActiveOCCamera() != nullptr);
 }

@@ -25,17 +25,18 @@
 #ifndef _PEETYPE_H_
 #define _PEETYPE_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
-#include <dragengine/resources/particle/deParticleEmitterType.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/particle/deParticleEmitterType.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class peeEmitter;
 class peeParameter;
 class deComponent;
-class deModel;
-class deSkin;
 class deEngine;
 
 
@@ -47,14 +48,17 @@ class peeType : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<peeType> Ref;
+	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<peeType> List;
 
 
 private:
 	peeEmitter *pEmitter;
 	deEngine *pEngine;
-	deSkin *pEngSkin;
-	deModel *pEngCastModel;
-	deSkin *pEngCastSkin;
+	deSkin::Ref pEngSkin;
+	deModel::Ref pEngCastModel;
+	deSkin::Ref pEngCastSkin;
 	
 	int pIndex;
 	decString pName;
@@ -70,14 +74,14 @@ private:
 	bool pIntervalAsDistance;
 	
 	decString pPathTrailEmitter;
-	deParticleEmitter *pEngTrailEmitter;
+	deParticleEmitter::Ref pEngTrailEmitter;
 	decString pTrailControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveTrailController;
 	
 	float pPhysicsSize;
 	deParticleEmitterType::eCollisionResponses pCollisionResponse;
 	decString pPathCollisionEmitter;
-	deParticleEmitter *pEngCollisionEmitter;
+	deParticleEmitter::Ref pEngCollisionEmitter;
 	float pEmitMinImpulse;
 	decString pEmitControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveEmitController;
@@ -94,7 +98,9 @@ public:
 	peeType(deEngine *engine, const char *name = "Type");
 	
 	/** \brief Clean up controller. */
+protected:
 	virtual ~peeType();
+public:
 	/*@}*/
 	
 	
@@ -119,7 +125,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine skin. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	

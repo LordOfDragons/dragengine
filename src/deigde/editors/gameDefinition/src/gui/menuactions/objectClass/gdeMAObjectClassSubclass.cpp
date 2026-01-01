@@ -59,27 +59,29 @@ gdeBaseAction(windowMain, "Subclass Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
 	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
-		return NULL;
+		return {};
 	}
 	
 	const gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
 	if(!objectClass){
-		return NULL;
+		return {};
 	}
 	
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(objectClass->GetName());
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Subclass Object Class", "Name:", name)){
-		if(list.HasNamed(name)){
+		if(list.HasMatching([&](const gdeObjectClass &oc){
+			return oc.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pWindowMain, "Subclass Object Class", "Object Class exists already.");
 			continue;
 		}
 		
-		const gdeObjectClass::Ref subclass(gdeObjectClass::Ref::NewWith(name));
+		const gdeObjectClass::Ref subclass(gdeObjectClass::Ref::New(name));
 		gdeObjectClass &soc = (gdeObjectClass&)(deObject&)subclass;
 		
 		soc.SetCategory(objectClass->GetCategory());
@@ -90,14 +92,14 @@ igdeUndo *gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefinition){
 		soc.SetPartialHideTags(objectClass->GetPartialHideTags());
 		soc.SetScaleMode(objectClass->GetScaleMode());
 		
-		const gdeOCInherit::Ref objRefInherit(gdeOCInherit::Ref::NewWith(objectClass->GetName()));
+		const gdeOCInherit::Ref objRefInherit(gdeOCInherit::Ref::New(objectClass->GetName()));
 		gdeOCInherit& inherit = (gdeOCInherit&)(deObject&)objRefInherit;
 		inherit.SetPropertyPrefix(objectClass->GetDefaultInheritPropertyPrefix());
 		soc.GetInherits().Add(&inherit);
 		
-		return new gdeUAddObjectClass(&gameDefinition, &soc);
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, &soc);
 	}
-	return NULL;
+	return {};
 }
 
 void gdeMAObjectClassSubclass::Update(){
@@ -108,5 +110,5 @@ void gdeMAObjectClassSubclass::Update(){
 	}
 	
 	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL);
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

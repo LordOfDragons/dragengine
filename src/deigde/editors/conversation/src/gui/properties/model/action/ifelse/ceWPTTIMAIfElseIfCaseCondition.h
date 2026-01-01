@@ -28,7 +28,7 @@
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
 class ceCAIfElse;
-class ceCAIfElseCase;
+#include "../../../../../conversation/action/ceCAIfElseCase.h"
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
 
@@ -37,8 +37,11 @@ class ceWPTTIMAIfElseIfCase;
  * \brief Condition if-else actions.
  */
 class ceWPTTIMAIfElseIfCaseCondition : public ceWPTTIMConditionContainer{
+public:
+	typedef deTObjectReference<ceWPTTIMAIfElseIfCaseCondition> Ref;
+	
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	
 	
 	
@@ -60,7 +63,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline const ceCAIfElseCase::Ref &GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Parent if-case model. */
 	ceWPTTIMAIfElseIfCase *GetModelIfCase() const;

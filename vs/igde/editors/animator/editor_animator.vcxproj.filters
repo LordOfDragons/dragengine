@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -15,8 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\deigde\editors\animator\SConscript" />
-    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\deigde\editors\animator\SConscript"/>
+    <None Include="post_build.ps1"/>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.cpp">
@@ -136,6 +136,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -157,7 +160,10 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.cpp">
@@ -202,6 +208,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPViewListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -244,22 +253,31 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleTrackTo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorBones.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorVertexPositionSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetAnimationPath.cpp">
@@ -271,10 +289,19 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetRigPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetVertexPositionSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUAddController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetFromMove.cpp">
@@ -284,12 +311,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.cpp">
@@ -346,6 +367,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetRepeat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMaximum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMinimum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkToggleWrapY.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -367,7 +397,13 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorBones.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorVertexPositionSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteBones.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteVertexPositionSets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetAddLink.cpp">
@@ -380,6 +416,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBlendFactor.cpp">
@@ -400,7 +439,16 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllBones.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllVertexPositionSets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleVertexPositionSets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUToggleRuleInvertBlendFactor.cpp">
@@ -413,6 +461,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveName.cpp">
@@ -428,6 +479,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDLeadMoveName.cpp">
@@ -454,6 +508,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetAxis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -467,6 +524,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnableSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetMaxAngle.cpp">
@@ -499,12 +562,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -520,19 +577,22 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaRotation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSrcCFrame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaVertexPositionSet.cpp">
@@ -563,6 +623,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleUseCurrentState.cpp">
@@ -655,6 +718,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleZMin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetPosMax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -674,6 +743,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetTargetBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorAddMatchName.cpp">
@@ -697,6 +772,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetMatchName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -715,6 +793,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeUSetRuleSnapUseLast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -727,6 +808,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -736,6 +820,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -743,6 +830,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSASetConController.cpp">
@@ -758,6 +848,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetLockedAxis.cpp">
@@ -778,964 +871,871 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeCLClosestHit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMaximum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMinimum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleVertexPositionSets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\aeIGDEModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeAnimatorNotifier.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeCamera.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\aeSubAnimator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\attachment\aeAttachment.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\controller\aeController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\controller\aeControllerList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\controller\aeControllerTarget.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\controller\aeControllerTargetList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\link\aeLink.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\link\aeLinkList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeALColliderListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeALGroundChecker.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeALOccupiedTest.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeALTouchSensorListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeAnimatorLocomotion.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\locomotion\aeAnimatorLocomotionLeg.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleAnimation.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleAnimationDifference.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleAnimationSelect.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleBoneTransformator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleForeignState.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleGroup.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleInverseKinematic.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleLimit.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleMirror.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleStateManipulator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleStateSnapshot.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleSubAnimator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\rule\aeRuleTrackTo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animator\wakeboard\aeWakeboard.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\animatoreditor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataBones.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataLink.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfigurationXML.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeView3D.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPControllerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPLinkListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPPlayground.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPPlaygroundListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPRuleListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPUndoHistory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPUndoHistoryListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPView.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPViewListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimationDifference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimationSelect.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleBoneTransformator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleForeignState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleGroup.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleInverseKinematic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleLimit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleMirror.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleStateManipulator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleStateSnapshot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleSubAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleTrackTo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetAnimationPath.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetRigPath.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUAddController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerPaste.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetFromMove.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMaximumValue.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleClamp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleFrozen.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUMoveControllerDown.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUMoveControllerUp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeURemoveController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkAdd.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkPaste.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkRemove.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkRemoveUnused.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneMaximum.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneMinimum.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneParameter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetCurve.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetRepeat.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkToggleWrapY.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUAddRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUMoveRuleDown.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUMoveRuleUp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUPasteRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURemoveRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetAddLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetRemoveAllLinks.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetRemoveLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBlendFactor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBlendMode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleEnabled.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllBones.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUToggleRuleInvertBlendFactor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDLeadMoveName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDLeadMoveTime.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDRefMoveName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDRefMoveTime.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectSetMoves.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetCFrame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnableOrien.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnablePos.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetMaxAngle.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetMinAngle.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetRotMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetRotMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetScaleMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetScaleMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTargetBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaDestCFrame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnablePos.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableRot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaPosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSrcCFrame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupAddRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleDown.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleUp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupPasteRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupRemoveRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupSetApplicationType.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleUseCurrentState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetAdjustOrientation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetGoalPosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetGoalRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetLocalPosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetLocalRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachCenter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachRange.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetSolverBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetUseSolverBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetCFrame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosXMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosXMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosYMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosYMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosZMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosZMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotXMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotXMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotYMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotYMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotZMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotZMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleXMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleXMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleYMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleYMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleZMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleZMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetPosMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetPosMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetRotMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetRotMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetScaleMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetScaleMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetTargetBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorAddMatchName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorRemoveAllMatchNames.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorRemoveMatchName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetMatchName.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetMirrorBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapSetID.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeUSetRuleSnapUseLast.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnablePos.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableRot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxPosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinPosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSASetConController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSASetPathAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnablePosition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableRotation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableSize.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetLockedAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetTrackAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetTrackBone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetUpAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetUpTarget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeCLClosestHit.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\clipboard\aeClipboardDataVertexPositionSets.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfiguration.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorVertexPositionSets.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\configuration\aeConfigurationXML.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveVertexPositionSet.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeTaskSyncGameDefinition.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetVertexPositionSets.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeView3D.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSet.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMain.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMaximum.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\aeWindowMainListener.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMinimum.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorVertexPositionSets.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteVertexPositionSets.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllVertexPositionSets.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleVertexPositionSets.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\dialog\aeDialogMirrorMatchName.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoControllerIKPosition.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\gizmo\aeGizmoManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPAnimatorListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPControllerListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPLinkListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPPlayground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPPlaygroundListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPRuleListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPUndoHistory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPUndoHistoryListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWPViewListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\aeWindowProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimationDifference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleAnimationSelect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleBoneTransformator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleForeignState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleInverseKinematic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleLimit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleMirror.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleStateManipulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleStateSnapshot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleSubAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\gui\properties\panels\aeWPAPanelRuleTrackTo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLSAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorRemoveVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetAnimationPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetRigPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorSetVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUAddController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerPaste.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetDefaultVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetFromMove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMaximumValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetMinimumValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerSetName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleClamp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUControllerToggleFrozen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUMoveControllerDown.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeUMoveControllerUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\controller\aeURemoveController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkAdd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkPaste.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkRemove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkRemoveUnused.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneMaximum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneMinimum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetBoneParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetRepeat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMaximum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkSetVertexPositionSetMinimum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\link\aeULinkToggleWrapY.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUAddRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUMoveRuleDown.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUMoveRuleUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUPasteRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURemoveRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleMirrorVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURulePasteVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetAddLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetRemoveAllLinks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeURuleTargetRemoveLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleAddVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBlendFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBlendMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleEnabled.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllBones.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveAllVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleRemoveVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUSetRuleVertexPositionSets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\aeUToggleRuleInvertBlendFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDLeadMoveName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDLeadMoveTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDRefMoveName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeUSetRuleAniDRefMoveTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectSetMoves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animselect\aeURuleAnimSelectToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetCFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnableOrien.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnablePos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetMaxAngle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetMinAngle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetRotMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetRotMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetScaleMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetScaleMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTargetBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaDestCFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnablePos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableRot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaScaleVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaSrcCFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupAddRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleDown.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupMoveRuleUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupPasteRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupRemoveRule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupSetApplicationType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\group\aeURuleGroupToggleUseCurrentState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetAdjustOrientation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetGoalPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetGoalRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetLocalPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetLocalRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachCenter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetReachRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetSolverBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\ik\aeURuleIKSetUseSolverBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetCFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosXMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosXMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosYMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosYMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosZMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnablePosZMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotXMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotXMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotYMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotYMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotZMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableRotZMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleXMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleXMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleYMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleYMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleZMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableScaleZMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetEnableVertexPositionSetMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetPosMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetPosMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetRotMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetRotMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetScaleMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetScaleMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetTargetBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\limit\aeURuleLimitSetVertexPositionSetMin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorAddMatchName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorRemoveAllMatchNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorRemoveMatchName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetMatchName.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\mirror\aeURuleMirrorSetMirrorBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapSetID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeURuleSnapToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\snapshot\aeUSetRuleSnapUseLast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnablePos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableRot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMaxVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\statemanip\aeUSetRuleSModMinVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSASetConController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSASetPathAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnablePosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableRotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableSize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\subanimator\aeURuleSubAnimToggleEnableVertexPositionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetLockedAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetTrackAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetTrackBone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetUpAxis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\trackto\aeURuleTrackToSetUpTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeCLClosestHit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\visitors\aeElementVisitor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTOVERLAYIMAGE_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectOverlayImage.h"
 
-class deoglREffectOverlayImage;
 class deEffectOverlayImage;
 
 
@@ -39,7 +39,7 @@ class deoglEffectOverlayImage : public deoglEffect{
 private:
 	const deEffectOverlayImage &pEffectOverlayImage;
 	
-	deoglREffectOverlayImage *pREffectOverlayImage;
+	deoglREffectOverlayImage::Ref pREffectOverlayImage;
 	
 	bool pDirtyTransparency;
 	bool pDirtyImage;

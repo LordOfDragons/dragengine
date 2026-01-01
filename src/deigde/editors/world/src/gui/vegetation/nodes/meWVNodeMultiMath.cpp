@@ -58,6 +58,7 @@ protected:
 	meWVNodeMultiMath &pNode;
 	
 public:
+	typedef deTObjectReference<cComboOperator> Ref;
 	cComboOperator(meWVNodeMultiMath &node) : pNode(node){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -72,7 +73,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleMultiMathSetOp::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleMultiMathSetOp::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleMultiMath(), op));
 	}
 };
@@ -89,7 +90,7 @@ public:
 
 meWVNodeMultiMath::meWVNodeMultiMath(meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule) :
 meWVNode(windowVegetation, rule),
-pRuleMultiMath(NULL)
+pRuleMultiMath(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -98,24 +99,24 @@ pRuleMultiMath(NULL)
 	SetTitle("Multi-Math");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Result", "Result of the operation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Values", "Input values",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eisValues));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator(*this));
-	pCBOperator->AddItem("Add", NULL, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
-	pCBOperator->AddItem("Multiply", NULL, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);
-	pCBOperator->AddItem("Minimum", NULL, (void*)(intptr_t)meHTVRuleMultiMath::eopMinimum);
-	pCBOperator->AddItem("Maximum", NULL, (void*)(intptr_t)meHTVRuleMultiMath::eopMaximum);
-	pCBOperator->AddItem("Average", NULL, (void*)(intptr_t)meHTVRuleMultiMath::eopAverage);
+	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->AddItem("Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
+	pCBOperator->AddItem("Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);
+	pCBOperator->AddItem("Minimum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMinimum);
+	pCBOperator->AddItem("Maximum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMaximum);
+	pCBOperator->AddItem("Average", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAverage);
 	
 	pRuleMultiMath = rule; // required for combo box listener to not fire while list is build
 }

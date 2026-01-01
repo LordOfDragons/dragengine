@@ -26,8 +26,8 @@
 #define _DEOGLCANVASVIDEOPLAYER_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasVideoPlayer.h"
 
-class deoglRCanvasVideoPlayer;
 class deoglVideoPlayer;
 
 class deCanvasVideoPlayer;
@@ -40,7 +40,7 @@ class deCanvasVideoPlayer;
 class deoglCanvasVideoPlayer : public deoglCanvas{
 private:
 	deCanvasVideoPlayer &pCanvasVideoPlayer;
-	deoglRCanvasVideoPlayer *pRCanvasVideoPlayer;
+	deoglRCanvasVideoPlayer::Ref pRCanvasVideoPlayer;
 	deoglVideoPlayer *pVideoPlayer;
 	bool pDirty;
 	

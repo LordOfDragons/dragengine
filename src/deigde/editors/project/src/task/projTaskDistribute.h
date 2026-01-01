@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeStepableTask.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -51,13 +51,14 @@ class decXmlWriter;
  * \brief Distribute game task.
  */
 class projTaskDistribute : public igdeStepableTask{
+public:
+	typedef deTObjectReference<projTaskDistribute> Ref;
+	
 private:
 	class cProcessDirectory : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cProcessDirectory> Ref;
-
-
 	public:
+		typedef deTObjectReference<cProcessDirectory> Ref;
+		
 		decString path;
 		dePathList directories;
 		dePathList files;
@@ -79,7 +80,7 @@ private:
 	const projProfile &pProfile;
 	
 	deVirtualFileSystem::Ref pVFS;
-	decObjectList pStackDirectories;
+	decTObjectOrderedSet<cProcessDirectory> pStackDirectories;
 	eStates pState;
 	decStringSet pUsedFileExtensions;
 	decStringSet pExcludePatterns;
@@ -107,7 +108,9 @@ public:
 		const projProject &project, const projProfile &profile);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~projTaskDistribute();
+public:
 	/*@}*/
 	
 	

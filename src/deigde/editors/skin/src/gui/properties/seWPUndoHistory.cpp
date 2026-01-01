@@ -43,16 +43,11 @@
 
 seWPUndoHistory::seWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new seWPUndoHistoryListener(*this)),
-pSkin(NULL){
+pListener(seWPUndoHistoryListener::Ref::New(*this)){
 }
 
 seWPUndoHistory::~seWPUndoHistory(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -65,19 +60,16 @@ void seWPUndoHistory::SetSkin(seSkin *skin){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
-		
 		SetUndoSystem(skin->GetUndoSystem());
 	}
 }

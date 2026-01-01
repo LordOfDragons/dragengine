@@ -28,6 +28,7 @@
 #include "../event/igdeAction.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -43,6 +44,9 @@ class DE_DLL_EXPORT igdeTextSegment : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTextSegment> Ref;
+	
+	/** \brief Text segment list. */
+	typedef decTObjectOrderedSet<igdeTextSegment> List;
 	
 	
 private:
@@ -92,8 +96,8 @@ public:
 	/** \brief Style. */
 	inline const decString &GetStyle() const{ return pStyle; }
 	
-	/** \brief Action or NULL if not used. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr if not used. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	/*@}*/
 };
 

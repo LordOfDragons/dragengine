@@ -26,9 +26,9 @@
 #ifndef _PROJUDISTRIBUTORSETPATHCAPTURE_H_
 #define _PROJUDISTRIBUTORSETPATHCAPTURE_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
 
-class projProject;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetPathCapture : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -54,7 +54,9 @@ public:
 	projUProjectSetPathCapture(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProjectSetPathCapture();
+public:
 	/*@}*/
 	
 	

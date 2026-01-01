@@ -44,7 +44,7 @@ peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::e
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Cast From");
 	
@@ -52,13 +52,9 @@ peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::e
 	pNewCastFrom = newCastFrom;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetCastFrom::~peeUTypeSetCastFrom(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

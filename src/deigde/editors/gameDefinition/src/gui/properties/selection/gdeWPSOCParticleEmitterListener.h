@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCParticleEmitterListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCParticleEmitterListener(gdeWPSOCParticleEmitter &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCParticleEmitterListener() override;
+public:
 	/*@}*/
 	
 	

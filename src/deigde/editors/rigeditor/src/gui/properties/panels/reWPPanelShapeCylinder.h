@@ -38,6 +38,9 @@ class reRigShapeCylinder;
  * \brief Rig shape cylinder panel.
  */
 class reWPPanelShapeCylinder : public reWPPanelShape{
+public:
+	typedef deTObjectReference<reWPPanelShapeCylinder> Ref;
+	
 private:
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;

@@ -175,13 +175,10 @@ void igdeEditVector::RemoveListener(igdeEditVectorListener *listener){
 }
 
 void igdeEditVector::NotifyVectorChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditVectorListener*)listeners.GetAt(i))->OnVectorChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditVectorListener &l){
+		l.OnVectorChanged(this);
+	});
 }
 
 
@@ -235,11 +232,11 @@ void igdeEditVector::OnPrecisionChanged(){
 void igdeEditVector::pCreateContent(igdeUIHelper &helper){
 	// create widgets
 	helper.Label(*this, "(");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, NULL);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, {});
 	helper.Label(*this, ",");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, NULL);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, {});
 	helper.Label(*this, ",");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextZ, NULL);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextZ, {});
 	helper.Label(*this, ")");
 	
 	// set values
@@ -248,7 +245,7 @@ void igdeEditVector::pCreateContent(igdeUIHelper &helper){
 	pTextZ->SetFloat(pVector.z);
 	
 	// add listener
-	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY, pTextZ));
+	cListener::Ref listener(cListener::Ref::New(*this, pTextX, pTextY, pTextZ));
 	pTextX->AddListener(listener);
 	pTextY->AddListener(listener);
 	pTextZ->AddListener(listener);

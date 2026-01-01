@@ -44,12 +44,10 @@ aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition(aeRuleAnimation
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule animation toggle enable position");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleAnimToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnablePosition::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

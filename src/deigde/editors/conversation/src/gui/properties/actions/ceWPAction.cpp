@@ -68,6 +68,7 @@ class cTextDelay : public igdeTextFieldListener {
 	ceWPAction &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextDelay> Ref;
 	cTextDelay(ceWPAction &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -83,11 +84,15 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCActionSetDelay::Ref::NewWith(topic, action, delay));
+			ceUCActionSetDelay::Ref::New(topic, action, delay));
 	}
 };
 
 class cActionWaitForActor : public igdeAction{
+public:
+	typedef deTObjectReference<cActionWaitForActor> Ref;
+	
+private:
 	ceWPAction &pPanel;
 	
 public:
@@ -95,7 +100,7 @@ public:
 		"Wait for actor(s) to finish speaking and return false if asked to wait"),
 		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if(!topic || !action){
@@ -103,10 +108,10 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCActionToggleWaitForActor::Ref::NewWith(topic, action));
+			ceUCActionToggleWaitForActor::Ref::New(topic, action));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		SetEnabled(action);
 		SetSelected(action && action->GetWaitForActor());
@@ -114,6 +119,10 @@ public:
 };
 
 class cActionWaitSpeakOnly : public igdeAction{
+public:
+	typedef deTObjectReference<cActionWaitSpeakOnly> Ref;
+	
+private:
 	ceWPAction &pPanel;
 	
 public:
@@ -121,7 +130,7 @@ public:
 		"Waiting considers only actor speaking not actor waiting"),
 		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		if(!topic || !action){
@@ -129,10 +138,10 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCActionToggleWaitSpeakOnly::Ref::NewWith(topic, action));
+			ceUCActionToggleWaitSpeakOnly::Ref::New(topic, action));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		SetEnabled(action);
 		SetSelected(action && action->GetWaitSpeakOnly());
@@ -143,6 +152,7 @@ class cComboWaitForActorID : public igdeComboBoxListener {
 	ceWPAction &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboWaitForActorID> Ref;
 	cComboWaitForActorID(ceWPAction &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -153,7 +163,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCActionSetWaitForActorID::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCActionSetWaitForActorID::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -185,13 +195,13 @@ void ceWPAction::CreateGUICommon(igdeContainerForm &container){
 	
 	helper.EditFloat(container, "Delay:",
 		"Delay the processing of the action after waiting conditions are fulfilled",
-		pEditDelay, new cTextDelay(*this));
+		pEditDelay, cTextDelay::Ref::New(*this));
 	
-	helper.CheckBoxOnly(container, pChkWaitForActor, new cActionWaitForActor(*this), true);
+	helper.CheckBoxOnly(container, pChkWaitForActor, cActionWaitForActor::Ref::New(*this));
 	helper.ComboBox(container, true, "ID of actor to wait for or empty string to wait for all actors",
-		pCBWaitForActorID, new cComboWaitForActorID(*this));
+		pCBWaitForActorID, cComboWaitForActorID::Ref::New(*this));
 	
-	helper.CheckBox(container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly(*this), true);
+	helper.CheckBox(container, pChkWaitSpeakOnly, cActionWaitSpeakOnly::Ref::New(*this));
 }
 
 void ceWPAction::UpdateCommonParams(){
@@ -279,7 +289,10 @@ void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList(igdeComboBox &combobox){
 }
 
 void ceWPAction::UpdateActorIDLists(){
-	// empty on purpose since we do not use the common properties of the base class
+	// check for nullptr since the widgets exists only if CreateGUICommon() has been called
+	if(pCBWaitForActorID){
+		UpdateComboBoxWithActorIDList(pCBWaitForActorID);
+	}
 }
 
 void ceWPAction::OnConversationPathChanged(){

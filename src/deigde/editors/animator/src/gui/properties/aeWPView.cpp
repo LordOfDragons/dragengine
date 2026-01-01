@@ -85,11 +85,12 @@ protected:
 	aeWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPView &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnAction(animator);
@@ -98,7 +99,7 @@ public:
 	
 	virtual void OnAction(aeAnimator *animator) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			Update(*animator);
@@ -120,6 +121,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextField> Ref;
 	cBaseTextField(aeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -137,6 +139,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBox> Ref;
 	cBaseComboBox(aeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -154,6 +157,7 @@ protected:
 	aeWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPath> Ref;
 	cBaseEditPath(aeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -170,6 +174,7 @@ public:
 
 class cPathDisplayModel : public cBaseEditPath{
 public:
+	typedef deTObjectReference<cPathDisplayModel> Ref;
 	cPathDisplayModel(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
@@ -179,6 +184,7 @@ public:
 
 class cPathDisplaySkin : public cBaseEditPath{
 public:
+	typedef deTObjectReference<cPathDisplaySkin> Ref;
 	cPathDisplaySkin(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
@@ -188,6 +194,7 @@ public:
 
 class cPathDisplayRig : public cBaseEditPath{
 public:
+	typedef deTObjectReference<cPathDisplayRig> Ref;
 	cPathDisplayRig(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
@@ -198,6 +205,7 @@ public:
 
 class cPathTestingAnimator : public cBaseEditPath{
 public:
+	typedef deTObjectReference<cPathTestingAnimator> Ref;
 	cPathTestingAnimator(aeWPView &panel) : cBaseEditPath(panel){}
 	
 	virtual void OnChanged(igdeEditPath *editPath, aeAnimator *animator){
@@ -214,7 +222,10 @@ public:
 
 class cActionResetState : public cBaseAction{
 public:
-	cActionResetState(aeWPView &panel) : cBaseAction(panel, "Reset Animation State", NULL,
+	typedef deTObjectReference<cActionResetState> Ref;
+	
+public:
+	cActionResetState(aeWPView &panel) : cBaseAction(panel, "Reset Animation State", nullptr,
 		"Animation state is reset before each frame update for testing relative animators"){ }
 	
 	void OnAction(aeAnimator *animator) override{
@@ -230,7 +241,10 @@ public:
 
 class cEditSky : public cBaseAction{
 public:
-	cEditSky(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cEditSky> Ref;
+	
+public:
+	cEditSky(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->NotifySkyChanged();
@@ -239,7 +253,10 @@ public:
 
 class cEditEnvObject : public cBaseAction{
 public:
-	cEditEnvObject(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cEditEnvObject> Ref;
+	
+public:
+	cEditEnvObject(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->NotifyEnvObjectChanged();
@@ -248,7 +265,10 @@ public:
 
 class cEditCamera : public cBaseAction{
 public:
-	cEditCamera(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cEditCamera> Ref;
+	
+public:
+	cEditCamera(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->NotifyCameraChanged();
@@ -258,7 +278,10 @@ public:
 
 class cActionCamAttach : public cBaseAction{
 public:
-	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "Attach camera to a bone", NULL,
+	typedef deTObjectReference<cActionCamAttach> Ref;
+	
+public:
+	cActionCamAttach(aeWPView &panel) : cBaseAction(panel, "Attach camera to a bone", nullptr,
 		"Attaches the camera to a bone instead of roaming around freely"){}
 	
 	void OnAction(aeAnimator *animator) override{
@@ -273,6 +296,7 @@ public:
 
 class cComboCamAttachBone : public cBaseComboBox{
 public:
+	typedef deTObjectReference<cComboCamAttachBone> Ref;
 	cComboCamAttachBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator *animator){
@@ -283,6 +307,7 @@ public:
 class cEditCamRelPos : public igdeEditVectorListener{
 	aeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditCamRelPos> Ref;
 	cEditCamRelPos(aeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -296,6 +321,7 @@ public:
 class cEditCamRelRot : public igdeEditVectorListener{
 	aeWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditCamRelRot> Ref;
 	cEditCamRelRot(aeWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -309,6 +335,7 @@ public:
 
 class cTextPlaySpeed : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextPlaySpeed> Ref;
 	cTextPlaySpeed(aeWPView &panel) : cBaseTextField(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
@@ -318,6 +345,7 @@ public:
 
 class cTextTimeStep : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextTimeStep> Ref;
 	cTextTimeStep(aeWPView &panel) : cBaseTextField(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
@@ -326,25 +354,26 @@ public:
 };
 
 class cActionFrameStep : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionFrameStep> Ref;
+	
+private:
 	const float pFactor;
 public:
 	cActionFrameStep(aeWPView &panel, igdeIcon *icon, const char *description, float factor) :
 		cBaseAction(panel, "", icon, description), pFactor(factor){}
 	
 	void OnAction(aeAnimator *animator) override{
-		const aeControllerList &list = animator->GetControllers();
 		const float timeStep = animator->GetTimeStep() * pFactor;
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			list.GetAt(i)->UpdateValue(timeStep);
-		}
+		animator->GetControllers().Visit([&](aeController &controller){
+			controller.UpdateValue(timeStep);
+		});
 	}
 };
 
 class cActionFramePrev : public cActionFrameStep{
 public:
+	typedef deTObjectReference<cActionFramePrev> Ref;
 	cActionFramePrev(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
 		"Step animation backward by the given time step", -1.0f){}
@@ -352,6 +381,7 @@ public:
 
 class cActionFrameNext : public cActionFrameStep{
 public:
+	typedef deTObjectReference<cActionFrameNext> Ref;
 	cActionFrameNext(aeWPView &panel) : cActionFrameStep(panel,
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
 		"Step animation forward by the given time step", 1.0f){}
@@ -359,7 +389,10 @@ public:
 
 class cActionPaused : public cBaseAction{
 public:
-	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", NULL, "Paus animation playback"){}
+	typedef deTObjectReference<cActionPaused> Ref;
+	
+public:
+	cActionPaused(aeWPView &panel) : cBaseAction(panel, "Pause", nullptr, "Paus animation playback"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->SetPaused(!animator->GetPaused());
@@ -373,31 +406,34 @@ public:
 
 class cActionReset : public cBaseAction{
 public:
-	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", NULL, "Reset animation"){}
+	typedef deTObjectReference<cActionReset> Ref;
+	
+public:
+	cActionReset(aeWPView &panel) : cBaseAction(panel, "Reset", nullptr, "Reset animation"){}
 	
 	void OnAction(aeAnimator *animator) override{
-		const aeControllerList &list = animator->GetControllers();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			list.GetAt(i)->ResetValue();
-		}
+		animator->GetControllers().Visit([](aeController &controller){
+			controller.ResetValue();
+		});
 	}
 };
 
 
 class cComboAttachment : public cBaseComboBox{
 public:
+	typedef deTObjectReference<cComboAttachment> Ref;
 	cComboAttachment(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator *animator){
 		animator->SetActiveAttachment(comboBox->GetSelectedItem()
-			? (aeAttachment*)comboBox->GetSelectedItem()->GetData() : NULL);
+			? (aeAttachment*)comboBox->GetSelectedItem()->GetData() : nullptr);
 	}
 };
 
 class cActionAttachmentAdd : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionAttachmentAdd> Ref;
+	
 public:
 	cActionAttachmentAdd(aeWPView &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add attachment"){}
@@ -406,17 +442,20 @@ public:
 		const decString baseName("Attachment");
 		decString name(baseName);
 		int number = 1;
-		while(animator->HasAttachmentNamed(name)){
+		while(animator->GetAttachmentNamed(name)){
 			name.Format("%s #%d", baseName.GetString(), number);
 		}
 		
-		const aeAttachment::Ref attachment(aeAttachment::Ref::NewWith(&pPanel.GetEnvironment(), name));
+		const aeAttachment::Ref attachment(aeAttachment::Ref::New(&pPanel.GetEnvironment(), name));
 		animator->AddAttachment(attachment);
 		animator->SetActiveAttachment(attachment);
 	}
 };
 
 class cActionAttachmentRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionAttachmentRemove> Ref;
+	
 public:
 	cActionAttachmentRemove(aeWPView &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove attachment"){}
@@ -428,8 +467,8 @@ public:
 		}
 		
 		animator->RemoveAttachment(attachment);
-		if(animator->GetAttachmentCount() > 0){
-			animator->SetActiveAttachment(animator->GetAttachmentAt(0));
+		if(animator->GetAttachments().IsNotEmpty()){
+			animator->SetActiveAttachment(animator->GetAttachments().First());
 		}
 	}
 	
@@ -440,21 +479,25 @@ public:
 
 class cActionAttachmentClear : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionAttachmentClear> Ref;
+	
+public:
 	cActionAttachmentClear(aeWPView &panel) : cBaseAction(panel, "Clear",
-		NULL, "Remove all attachment"){}
+		nullptr, "Remove all attachment"){}
 	
 	void OnAction(aeAnimator *animator) override{
-		if(animator->GetAttachmentCount() > 0){
-			animator->RemoveAllAttachments();
-		}
+		animator->RemoveAllAttachments();
 	}
 	
 	void Update(const aeAnimator &animator) override{
-		SetEnabled(animator.GetAttachmentCount() > 0);
+		SetEnabled(animator.GetAttachments().IsNotEmpty());
 	}
 };
 
 class cActionAttachmentLoadConfig : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionAttachmentLoadConfig> Ref;
+	
 public:
 	cActionAttachmentLoadConfig(aeWPView &panel) : cBaseAction(panel, "Load configuration...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Load configuration"){}
@@ -473,6 +516,9 @@ public:
 };
 
 class cActionAttachmentSaveConfig : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionAttachmentSaveConfig> Ref;
+	
 public:
 	cActionAttachmentSaveConfig(aeWPView &panel) : cBaseAction(panel, "Save configuration...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Save configuration"){}
@@ -502,18 +548,19 @@ public:
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand(contextMenu, new cActionAttachmentAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionAttachmentRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionAttachmentClear(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionAttachmentAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionAttachmentRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionAttachmentClear::Ref::New(pPanel));
 		
 		helper.MenuSeparator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionAttachmentLoadConfig(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionAttachmentSaveConfig(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionAttachmentLoadConfig::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionAttachmentSaveConfig::Ref::New(pPanel));
 	}
 };
 
 class cTextAttachmentName : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextAttachmentName> Ref;
 	cTextAttachmentName(aeWPView &panel) : cBaseTextField(panel){}
 	
 	virtual void OnChanged(igdeTextField *textField, aeAnimator *animator){
@@ -522,7 +569,7 @@ public:
 			return;
 		}
 		
-		if(animator->HasAttachmentNamed(textField->GetText())){
+		if(animator->GetAttachmentNamed(textField->GetText())){
 			textField->SetText(attachment->GetName());
 			
 		}else{
@@ -533,6 +580,7 @@ public:
 
 class cComboAttachmentBone : public cBaseComboBox{
 public:
+	typedef deTObjectReference<cComboAttachmentBone> Ref;
 	cComboAttachmentBone(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator*){
@@ -545,6 +593,7 @@ public:
 
 class cComboAttachmentType : public cBaseComboBox{
 public:
+	typedef deTObjectReference<cComboAttachmentType> Ref;
 	cComboAttachmentType(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	virtual void OnChanged(igdeComboBox *comboBox, aeAnimator*){
@@ -558,7 +607,10 @@ public:
 
 class cEditAttachmentObject : public cBaseAction{
 public:
-	cEditAttachmentObject(aeWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cEditAttachmentObject> Ref;
+	
+public:
+	cEditAttachmentObject(aeWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
 	void OnAction(aeAnimator *animator) override{
 		if(pPanel.GetAttachment()){
@@ -579,18 +631,16 @@ public:
 
 aeWPView::aeWPView(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPViewListener(*this);
+	pListener = aeWPViewListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -598,11 +648,11 @@ pAnimator(NULL)
 	helper.GroupBox(content, groupBox, "Display File Path:");
 	
 	helper.EditPath(groupBox, "Model:", "Sets the model to use", igdeEnvironment::efpltModel,
-		pEditDisplayModelPath, new cPathDisplayModel(*this));
+		pEditDisplayModelPath, cPathDisplayModel::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Sets the skin to use", igdeEnvironment::efpltSkin,
-		pEditDisplaySkinPath, new cPathDisplaySkin(*this));
+		pEditDisplaySkinPath, cPathDisplaySkin::Ref::New(*this));
 	helper.EditPath(groupBox, "Rig:", "Sets the rig to use", igdeEnvironment::efpltRig,
-		pEditDisplayRigPath, new cPathDisplayRig(*this));
+		pEditDisplayRigPath, cPathDisplayRig::Ref::New(*this));
 	
 	
 	// testing animator
@@ -610,85 +660,80 @@ pAnimator(NULL)
 	
 	helper.EditPath(groupBox, "Animator:",
 		"Path to a testing animator to use as the base state for the editing animator",
-		igdeEnvironment::efpltAnimator, pEditTestingAnimatorPath, new cPathTestingAnimator(*this));
+		igdeEnvironment::efpltAnimator, pEditTestingAnimatorPath, cPathTestingAnimator::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkResetState, new cActionResetState(*this), true);
+	helper.CheckBox(groupBox, pChkResetState, cActionResetState::Ref::New(*this));
 	
 	
 	// sky, environment object, camera
-	helper.WPSky(content, pWPSky, new cEditSky(*this), "Sky:", false, true, true);
-	helper.WPWObject(content, pWPEnvObject, new cEditEnvObject(*this), "Environment Object:", false, true, true);
-	helper.WPCamera(content, pWPCamera, new cEditCamera(*this), "Camera:", false, true, true);
+	helper.WPSky(content, pWPSky, cEditSky::Ref::New(*this), "Sky:", false, true);
+	helper.WPWObject(content, pWPEnvObject, cEditEnvObject::Ref::New(*this), "Environment Object:", false, true);
+	helper.WPCamera(content, pWPCamera, cEditCamera::Ref::New(*this), "Camera:", false, true);
 	
 	
 	// camera attaching
 	helper.GroupBox(content, groupBox, "Camera Attaching:");
 	
-	helper.CheckBox(groupBox, pChkCamAttach, new cActionCamAttach(*this), true);
+	helper.CheckBox(groupBox, pChkCamAttach, cActionCamAttach::Ref::New(*this));
 	helper.ComboBoxFilter(groupBox, "Bone:", true, "Bone the camera is attached to",
-		pCBCamBone, new cComboCamAttachBone(*this));
+		pCBCamBone, cComboCamAttachBone::Ref::New(*this));
 	pCBCamBone->SetDefaultSorter();
 	
 	helper.EditVector(groupBox, "Position:",
 		"Camera position relative to the attachment bone coordinate system",
-		pEditCamRelPos, new cEditCamRelPos(*this));
+		pEditCamRelPos, cEditCamRelPos::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:",
 		"Camera rotation relative to the attachment bone coordinate system",
-		pEditCamRelRot, new cEditCamRelRot(*this));
+		pEditCamRelRot, cEditCamRelRot::Ref::New(*this));
 	
 	
 	// playback
 	helper.GroupBox(content, groupBox, "Playback:");
 	
 	helper.EditFloat(groupBox, "Play Speed:", "Sets the playback speed",
-		pEditPlaySpeed, new cTextPlaySpeed(*this));
+		pEditPlaySpeed, cTextPlaySpeed::Ref::New(*this));
 	helper.EditFloat(groupBox, "Time Step:", "Provides fine grained animation stepping",
-		pEditTimeStep, new cTextTimeStep(*this));
+		pEditTimeStep, cTextTimeStep::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
-	helper.Button(formLine, pBtnFramePrev, new cActionFramePrev(*this), true);
-	helper.Button(formLine, pBtnPauseAnimation, new cActionPaused(*this), true);
-	helper.Button(formLine, pBtnFrameNext, new cActionFrameNext(*this), true);
-	helper.Button(formLine, pBtnResetAnimation, new cActionReset(*this), true);
+	helper.Button(formLine, pBtnFramePrev, cActionFramePrev::Ref::New(*this));
+	helper.Button(formLine, pBtnPauseAnimation, cActionPaused::Ref::New(*this));
+	helper.Button(formLine, pBtnFrameNext, cActionFrameNext::Ref::New(*this));
+	helper.Button(formLine, pBtnResetAnimation, cActionReset::Ref::New(*this));
 	
 	
 	// attachments
 	helper.GroupBox(content, groupBox, "Attachments:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Attachment:", "Attachment to edit", formLine);
-	helper.ComboBox(formLine, "Attachment to edit", pCBAttachments, new cComboAttachment(*this));
+	helper.ComboBox(formLine, "Attachment to edit", pCBAttachments, cComboAttachment::Ref::New(*this));
 	
-	cActionMenuAttach::Ref actionMenuAttachment(cActionMenuAttach::Ref::NewWith(*this));
+	cActionMenuAttach::Ref actionMenuAttachment(cActionMenuAttach::Ref::New(*this));
 	helper.Button(formLine, pBtnAttMenu, actionMenuAttachment);
 	actionMenuAttachment->SetWidget(pBtnAttMenu);
 	
 	helper.EditString(groupBox, "Name:", "Sets the name of the attachment",
-		pEditAttName, new cTextAttachmentName(*this));
+		pEditAttName, cTextAttachmentName::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "Attach Bone:", true, "Bone to attach to instead of the entire rig",
-		pCBAttBoneName, new cComboAttachmentBone(*this));
+		pCBAttBoneName, cComboAttachmentBone::Ref::New(*this));
 	pCBAttBoneName->SetDefaultSorter();
 	
-	helper.ComboBox(groupBox, "Attach:", "Attach type", pCBAttAttachType, new cComboAttachmentType(*this));
-	pCBAttAttachType->AddItem("None", NULL, (void*)(intptr_t)aeAttachment::eatNone);
-	pCBAttAttachType->AddItem("Bone", NULL, (void*)(intptr_t)aeAttachment::eatBone);
-	pCBAttAttachType->AddItem("Rig", NULL, (void*)(intptr_t)aeAttachment::eatRig);
+	helper.ComboBox(groupBox, "Attach:", "Attach type", pCBAttAttachType, cComboAttachmentType::Ref::New(*this));
+	pCBAttAttachType->AddItem("None", nullptr, (void*)(intptr_t)aeAttachment::eatNone);
+	pCBAttAttachType->AddItem("Bone", nullptr, (void*)(intptr_t)aeAttachment::eatBone);
+	pCBAttAttachType->AddItem("Rig", nullptr, (void*)(intptr_t)aeAttachment::eatRig);
 	
-	helper.WPWObject(content, pWPAttachment, new cEditAttachmentObject(*this),
-		"Attachment Object:", false, true, true);
+	helper.WPWObject(content, pWPAttachment, cEditAttachmentObject::Ref::New(*this),
+		"Attachment Object:", false, true);
 }
 
 aeWPView::~aeWPView(){
-	SetAnimator(NULL);
+	SetAnimator(nullptr);
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
-		pAnimator = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
+		pAnimator = nullptr;
 	}
 }
 
@@ -702,21 +747,18 @@ void aeWPView::SetAnimator(aeAnimator *animator){
 		return;
 	}
 	
-	pWPSky->SetSky(NULL);
+	pWPSky->SetSky(nullptr);
 	pWPEnvObject->SetObject(nullptr);
-	pWPCamera->SetCamera(NULL);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
-		
 		pWPSky->SetSky(animator->GetSky());
 		pWPEnvObject->SetObject(animator->GetEnvObject());
 		pWPCamera->SetCamera(animator->GetCamera());
@@ -735,7 +777,7 @@ void aeWPView::SetAnimator(aeAnimator *animator){
 }
 
 aeAttachment *aeWPView::GetAttachment() const{
-	return pAnimator ? pAnimator->GetActiveAttachment() : NULL;
+	return pAnimator ? pAnimator->GetActiveAttachment() : nullptr;
 }
 
 void aeWPView::SelectActiveAttachment(){
@@ -751,7 +793,7 @@ void aeWPView::UpdateBoneList(){
 	
 	if(pAnimator){
 		const deRig * const engRig = pAnimator->GetEngineComponent()
-			? pAnimator->GetEngineComponent()->GetRig() : NULL;
+			? pAnimator->GetEngineComponent()->GetRig() : nullptr;
 		if(engRig){
 			const int count = engRig->GetBoneCount();
 			int i;
@@ -801,7 +843,7 @@ void aeWPView::UpdateEnvObject(){
 }
 
 void aeWPView::UpdateCamera(){
-	const aeCamera * const camera = pAnimator ? pAnimator->GetCamera() : NULL;
+	const aeCamera * const camera = pAnimator ? pAnimator->GetCamera() : nullptr;
 	
 	pWPCamera->UpdateCamera();
 	
@@ -863,13 +905,9 @@ void aeWPView::UpdateAttachmentList(){
 	pCBAttachments->RemoveAllItems();
 	
 	if(pAnimator){
-		const int count = pAnimator->GetAttachmentCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			aeAttachment * const attachment = pAnimator->GetAttachmentAt(i);
-			pCBAttachments->AddItem(attachment->GetName(), NULL, attachment);
-		}
+		pAnimator->GetAttachments().Visit([&](aeAttachment *attachment){
+			pCBAttachments->AddItem(attachment->GetName(), nullptr, attachment);
+		});
 		
 		pCBAttachments->SortItems();
 	}

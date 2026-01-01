@@ -63,7 +63,7 @@ feConfigurationXML::~feConfigurationXML(){
 ///////////////
 
 void feConfigurationXML::ReadFromFile(decBaseFileReader &reader, feConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	

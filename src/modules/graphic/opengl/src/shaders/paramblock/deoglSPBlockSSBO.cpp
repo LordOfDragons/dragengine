@@ -67,7 +67,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(0)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(renderThread));
+		pFenceTransfer = deoglFence::Ref::New(renderThread);
 	}
 }
 
@@ -88,7 +88,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(paramBlock.GetRenderThread()));
+		pFenceTransfer = deoglFence::Ref::New(paramBlock.GetRenderThread());
 	}
 }
 
@@ -109,7 +109,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(paramBlock.GetRenderThread()));
+		pFenceTransfer = deoglFence::Ref::New(paramBlock.GetRenderThread());
 	}
 }
 
@@ -317,8 +317,8 @@ void deoglSPBlockSSBO::EnsureBuffer(){
 			
 			OGL_CHECK(renderThread, pglNamedBufferStorage(pSSBOLocal, size, nullptr,
 				GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT | GL_CLIENT_STORAGE_BIT));
-			OGL_CHECK(renderThread, pPersistentMapped = (char*)pglMapNamedBufferRange(
-				pSSBOLocal, 0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT));
+			OGL_CHECK(renderThread, pPersistentMapped = reinterpret_cast<char*>(pglMapNamedBufferRange(
+				pSSBOLocal, 0, size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT)));
 			// OGL_CHECK( renderThread, pglNamedBufferData( pSSBOLocal, size, nullptr, GL_DYNAMIC_READ ) );
 			break;
 			
@@ -575,8 +575,8 @@ void deoglSPBlockSSBO::MapBufferRead(int element, int count){
 		char *data;
 		
 		OGL_CHECK(renderThread, pglBindBuffer(GL_PIXEL_PACK_BUFFER, pSSBOLocal));
-		OGL_CHECK(renderThread, data = (char*)pglMapBufferRange(
-			GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT));
+		OGL_CHECK(renderThread, data = reinterpret_cast<char*>(pglMapBufferRange(
+			GL_PIXEL_PACK_BUFFER, stride * element, stride * count, GL_MAP_READ_BIT)));
 		OGL_CHECK(renderThread, pglBindBuffer(GL_PIXEL_PACK_BUFFER, 0));
 		DEASSERT_NOTNULL(data)
 		
@@ -602,8 +602,8 @@ int deoglSPBlockSSBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
-deoglShaderParameterBlock *deoglSPBlockSSBO::Copy() const{
-	return new deoglSPBlockSSBO(*this);
+deoglShaderParameterBlock::Ref deoglSPBlockSSBO::Copy() const{
+	return Ref::New(*this);
 }
 
 void deoglSPBlockSSBO::MapToStd430(){

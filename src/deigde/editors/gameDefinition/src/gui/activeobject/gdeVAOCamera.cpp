@@ -58,15 +58,12 @@ gdeVAOCamera::gdeVAOCamera(gdeViewActiveObject &view, const gdeObjectClass &obje
 	const decString &propertyPrefix, gdeOCCamera *occamera) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCCamera(occamera),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr)
 {
 	if(!occamera){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCCamera->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -109,16 +106,9 @@ void gdeVAOCamera::pCleanUp(){
 	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCCamera){
-		pOCCamera->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -128,12 +118,12 @@ void gdeVAOCamera::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-	pDDSCenter = new igdeWDebugDrawerShape;
+	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 	pDDSCenter->AddSphereShape(0.05f, decVector());
 	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	

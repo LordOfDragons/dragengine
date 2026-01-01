@@ -27,13 +27,12 @@
 
 #include "igdeWidget.h"
 #include "event/igdeAction.h"
+#include "event/igdeColorBoxListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
-
-class igdeColorBoxListener;
 
 
 /**
@@ -48,6 +47,7 @@ public:
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionCopy> Ref;
 		cActionCopy(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -55,6 +55,7 @@ public:
 	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionCopyHex> Ref;
 		cActionCopyHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -62,6 +63,7 @@ public:
 	class DE_DLL_EXPORT cActionPaste : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionPaste> Ref;
 		cActionPaste(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -69,6 +71,7 @@ public:
 	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionPasteHex> Ref;
 		cActionPasteHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -76,6 +79,7 @@ public:
 	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionEditValues> Ref;
 		cActionEditValues(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -83,6 +87,7 @@ public:
 	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
+		typedef deTObjectReference<cActionEditHex> Ref;
 		cActionEditHex(igdeColorBox &colorBox);
 		virtual void OnAction();
 	};
@@ -94,7 +99,7 @@ private:
 	bool pEnabled;
 	decColor pColor;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeColorBoxListener> pListeners;
 	
 	
 	

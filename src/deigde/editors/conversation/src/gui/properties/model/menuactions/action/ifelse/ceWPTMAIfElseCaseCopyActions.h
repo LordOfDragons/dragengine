@@ -35,6 +35,9 @@ class ceCAIfElseCase;
  * \brief Menu action copy all topic actions.
  */
 class ceWPTMAIfElseCaseCopyActions : public ceWPTMACopyActions{
+public:
+	typedef deTObjectReference<ceWPTMAIfElseCaseCopyActions> Ref;
+	
 protected:
 	/** \brief FOX constructor. */
 	ceWPTMAIfElseCaseCopyActions();

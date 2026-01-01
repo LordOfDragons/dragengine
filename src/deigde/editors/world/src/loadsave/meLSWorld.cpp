@@ -29,7 +29,7 @@
 #include <string.h>
 #include "meLSWorld.h"
 #include "../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 

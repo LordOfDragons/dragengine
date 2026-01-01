@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSSkinListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSSkinListener(gdeWPSSkin &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSSkinListener() override;
+public:
 	/*@}*/
 	
 	

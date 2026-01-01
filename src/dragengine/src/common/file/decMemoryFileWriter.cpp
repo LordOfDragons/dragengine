@@ -39,7 +39,7 @@
 ////////////////////////////
 
 decMemoryFileWriter::decMemoryFileWriter(decMemoryFile *memoryFile, bool append) :
-pFile(NULL),
+
 pPosition(0)
 {
 	if(!memoryFile){
@@ -56,7 +56,6 @@ pPosition(0)
 	}
 	
 	memoryFile->Touch();
-	memoryFile->AddReference();
 }
 
 decMemoryFileWriter::decMemoryFileWriter(const decMemoryFileWriter &writer) :
@@ -64,13 +63,11 @@ pFile(writer.pFile),
 pPosition(writer.pPosition)
 {
 	pFile->Touch();
-	pFile->AddReference();
 }
 
 decMemoryFileWriter::~decMemoryFileWriter(){
 	if(pFile){
 		pFile->Touch();
-		pFile->FreeReference();
 	}
 }
 
@@ -131,5 +128,5 @@ void decMemoryFileWriter::Write(const void *buffer, int size){
 }
 
 decBaseFileWriter::Ref decMemoryFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New(new decMemoryFileWriter(*this));
+	return decMemoryFileWriter::Ref::New(*this);
 }

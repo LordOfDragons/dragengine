@@ -40,19 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index){
-	if(!topic || actions.GetCount() == 0){
+ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic,
+const ceConversationAction::List &actions, int index)
+{
+	if(!topic || actions.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = actions.GetCount();
-	ceConversationAction *newAction = NULL;
-	int i;
-	
-	pTopic = NULL;
+	pTopic = nullptr;
 	pIndex = index;
 	
-	if(count == 1){
+	if(actions.GetCount() == 1){
 		SetShortInfo("Paste Action");
 		
 	}else{
@@ -60,29 +58,13 @@ ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversatio
 	}
 	
 	pTopic = topic;
-	topic->AddReference();
 	
-	try{
-		for(i=0; i<count; i++){
-			newAction = actions.GetAt(i)->CreateCopy();
-			pActions.Add(newAction);
-			newAction->FreeReference();
-			newAction = NULL;
-		}
-		
-	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
-		throw;
-	}
+	actions.Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceUCActionPaste::~ceUCActionPaste(){
-	pActions.RemoveAll();
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -91,19 +73,19 @@ ceUCActionPaste::~ceUCActionPaste(){
 ///////////////
 
 void ceUCActionPaste::Undo(){
-	ceConversationAction * const activateAction = ActivateActionAfterRemove(pTopic->GetActionList());
+	ceConversationAction * const activateAction = ActivateActionAfterRemove(pTopic->GetActions());
 	
-	pRemoveActions(pTopic->GetActionList());
-	pTopic->NotifyActionStructureChanged(NULL);
+	pRemoveActions(pTopic->GetActions());
+	pTopic->NotifyActionStructureChanged(nullptr);
 	
 	if(activateAction){
-		pTopic->SetActive(activateAction, NULL);
+		pTopic->SetActive(activateAction, nullptr);
 	}
 }
 
 void ceUCActionPaste::Redo(){
-	pInsertActions(pTopic->GetActionList());
-	pTopic->NotifyActionStructureChanged(NULL);
+	pInsertActions(pTopic->GetActions());
+	pTopic->NotifyActionStructureChanged(nullptr);
 	
 	pSelectInserted();
 }
@@ -113,53 +95,42 @@ void ceUCActionPaste::Redo(){
 // Protected Functions
 ////////////////////////
 
-void ceUCActionPaste::pInsertActions(ceConversationActionList &list){
+void ceUCActionPaste::pInsertActions(ceConversationAction::List &list){
 	const int count = pActions.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		list.InsertAt(pActions.GetAt(i), pIndex + i);
+		list.Insert(pActions.GetAt(i), pIndex + i);
 	}
 }
 
-void ceUCActionPaste::pRemoveActions(ceConversationActionList &list){
-	const int count = pActions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.Remove(pActions.GetAt(i));
-	}
+void ceUCActionPaste::pRemoveActions(ceConversationAction::List &list){
+	pActions.Visit([&](ceConversationAction *a){
+		list.Remove(a);
+	});
 }
 
 void ceUCActionPaste::pSelectInserted(){
-	if(pActions.GetCount() > 0){
-		pTopic->SetActive(pActions.GetAt(0), NULL);
+	if(pActions.IsNotEmpty()){
+		pTopic->SetActive(pActions.First(), nullptr);
 	}
 }
 
 ceConversationAction *ceUCActionPaste::ActivateActionAfterRemove(
-const ceConversationActionList &list) const{
-	if(pActions.GetCount() == 0){
-		return NULL;
+const ceConversationAction::List &list) const{
+	if(pActions.IsEmpty()){
+		return nullptr;
 	}
 	
-	int index = list.IndexOf(pActions.GetAt(pActions.GetCount() - 1));
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	int index = list.IndexOf(pActions.Last());
+	DEASSERT_TRUE(index != -1)
+	
 	if(index < list.GetCount() - 1){
 		return list.GetAt(index + 1);
 	}
 	
-	index = list.IndexOf(pActions.GetAt(0));
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	index = list.IndexOf(pActions.First());
+	DEASSERT_TRUE(index != -1)
 	
-	if(index > 0){
-		return list.GetAt(index - 1);
-		
-	}else{
-		return NULL;
-	}
+	return index > 0 ? list.GetAt(index - 1) : nullptr;
 }

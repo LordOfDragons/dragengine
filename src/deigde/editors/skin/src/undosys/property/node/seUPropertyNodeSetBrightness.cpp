@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetBrightness();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

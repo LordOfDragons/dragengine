@@ -63,7 +63,7 @@ meCLHeightPaint::meCLHeightPaint(meWorld *world){
 	
 	pWorld = world;
 	
-	pOldHeights = NULL;
+	pOldHeights = nullptr;
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
@@ -96,7 +96,7 @@ void meCLHeightPaint::SetRay(const decDVector &origin, const decVector &directio
 void meCLHeightPaint::BeginSession(){
 	if(pOldHeights){
 		delete [] pOldHeights;
-		pOldHeights = NULL;
+		pOldHeights = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
@@ -109,9 +109,9 @@ void meCLHeightPaint::BeginSession(){
 }
 
 void meCLHeightPaint::PreparePaint(){
-	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-	float sectorDim = hterrain->GetSectorSize();
-	int imageDim = hterrain->GetSectorResolution();
+	meHeightTerrain &hterrain = pWorld->GetHeightTerrain();
+	const float sectorDim = hterrain.GetSectorSize();
+	const int imageDim = hterrain.GetSectorResolution();
 	const meWorldGuiParameters &guiparams = pWorld->GetGuiParameters();
 	
 	pDrawMode = guiparams.GetHPDrawMode();
@@ -139,9 +139,9 @@ void meCLHeightPaint::PreparePaint(){
 
 void meCLHeightPaint::Paint(float elapsed){
 	if(pHasHit){
-		meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-		float sectorDim = hterrain->GetSectorSize();
-		int imageDim = hterrain->GetSectorResolution();
+		meHeightTerrain &hterrain = pWorld->GetHeightTerrain();
+		float sectorDim = hterrain.GetSectorSize();
+		int imageDim = hterrain.GetSectorResolution();
 		double divX, divZ;
 		
 		pPaintStrength = pStrength * elapsed;
@@ -191,14 +191,14 @@ void meCLHeightPaint::Paint(float elapsed){
 // pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLHeightPaint::Paint] modified: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)\n", pAreaModifySector.x1, pAreaModifySector.y1,
 // pAreaModifySector.x2, pAreaModifySector.y2, pAreaModifyGrid.x1, pAreaModifyGrid.y1, pAreaModifyGrid.x2, pAreaModifyGrid.y2 );
 		
-		hterrain->NotifyHeightsChanged(pAreaModifySector, pAreaModifyGrid);
+		hterrain.NotifyHeightsChanged(pAreaModifySector, pAreaModifyGrid);
 	}
 }
 
 void meCLHeightPaint::EndSession(){
 	// check if we have any changes at all
 	if(pOldHeights){
-		pWorld->GetUndoSystem()->Add(meUHTPaintHeight::Ref::NewWith(pDrawMode, pWorld,
+		pWorld->GetUndoSystem()->Add(meUHTPaintHeight::Ref::New(pDrawMode, pWorld,
 			decPoint(pAreaSector.x1, pAreaSector.y1), decPoint(pAreaGrid.x1, pAreaGrid.y1),
 			decPoint(pModifyWidth, pModifyHeight), pOldHeights), false);
 	}
@@ -206,7 +206,7 @@ void meCLHeightPaint::EndSession(){
 	// clean up
 	if(pOldHeights){
 		delete [] pOldHeights;
-		pOldHeights = NULL;
+		pOldHeights = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
@@ -261,15 +261,13 @@ float meCLHeightPaint::pGauss(float x, float y){
 void meCLHeightPaint::pPaintRaise(){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
-	int s, sectorCount = hterrain->GetSectorCount();
 	sGrayscale32 *pixels;
 	decBoundary region;
 	decVector2 center;
 	float heightScale;
 	int x, y, base;
 	
-	for(s=0; s<sectorCount; s++){
-		meHeightTerrainSector &htsector = *hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector &htsector){
 		const decPoint &scoord = htsector.GetCoordinates();
 		
 //		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
@@ -322,21 +320,19 @@ void meCLHeightPaint::pPaintRaise(){
 				pWorld->NotifyHTSHeightChanged(&htsector);
 			}
 //		}
-	}
+	});
 }
 
 void meCLHeightPaint::pPaintLower(){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
-	int s, sectorCount = hterrain->GetSectorCount();
 	sGrayscale32 *pixels;
 	decBoundary region;
 	decVector2 center;
 	float heightScale;
 	int x, y, base;
 	
-	for(s=0; s<sectorCount; s++){
-		meHeightTerrainSector &htsector = *hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector &htsector){
 		const decPoint &scoord = htsector.GetCoordinates();
 		
 //		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
@@ -389,13 +385,12 @@ void meCLHeightPaint::pPaintLower(){
 				pWorld->NotifyHTSHeightChanged(&htsector);
 			}
 //		}
-	}
+	});
 }
 
 void meCLHeightPaint::pPaintLevel(){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
-	int s, sectorCount = hterrain->GetSectorCount();
 	sGrayscale32 *pixels;
 	float level, weight;
 	decBoundary region;
@@ -404,6 +399,7 @@ void meCLHeightPaint::pPaintLevel(){
 	int x, y, base;
 	
 	// determine the center point
+	{
 	meHeightTerrainSector *htsector = hterrain->GetSectorWith(pPaintSector);
 	if(htsector){
 		pixels = htsector->GetHeightImage()->GetDataGrayscale32();
@@ -415,10 +411,10 @@ void meCLHeightPaint::pPaintLevel(){
 	}else{
 		return; // no useful level value here. solution would be to use the last one
 	}
+	}
 	
 	// paint
-	for(s=0; s<sectorCount; s++){
-		htsector = hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector *htsector){
 		const decPoint &scoord = htsector->GetCoordinates();
 		
 //		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
@@ -472,14 +468,12 @@ void meCLHeightPaint::pPaintLevel(){
 				pWorld->NotifyHTSHeightChanged(htsector);
 			}
 //		}
-	}
+	});
 }
 
 void meCLHeightPaint::pPaintSmooth(){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
-	int s, sectorCount = hterrain->GetSectorCount();
-	meHeightTerrainSector *htsector;
 	float valueMatrix[9];
 	sGrayscale32 *pixels;
 	decBoundary region;
@@ -489,8 +483,7 @@ void meCLHeightPaint::pPaintSmooth(){
 	float average;
 	float weight;
 	
-	for(s=0; s<sectorCount; s++){
-		htsector = hterrain->GetSectorAt(s);
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector *htsector){
 		const decPoint &scoord = htsector->GetCoordinates();
 		
 //		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
@@ -546,7 +539,7 @@ void meCLHeightPaint::pPaintSmooth(){
 				pWorld->NotifyHTSHeightChanged(htsector);
 			}
 //		}
-	}
+	});
 }
 
 
@@ -768,7 +761,7 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 		int x, newWidth = pModifyWidth + growBy.x;
 		meHeightTerrainSector *htsector;
 		sGrayscale32 *htsHeights;
-		float *oldHeights = NULL;
+		float *oldHeights = nullptr;
 		decBoundary retain;
 		decPoint scoord;
 		int sgx, sgy;
@@ -780,7 +773,6 @@ void meCLHeightPaint::pUpdateOldHeights(const decPoint &sector, const decVector2
 		
 		try{
 			oldHeights = new float[newWidth * newHeight];
-			if(!oldHeights) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringSet.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -36,16 +36,17 @@ class aeRule;
  * Undo action remove rule bones.
  */
 class aeUSetRuleRemoveVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleRemoveVertexPositionSet> Ref;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringSet pVertexPositionSets;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleRemoveVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

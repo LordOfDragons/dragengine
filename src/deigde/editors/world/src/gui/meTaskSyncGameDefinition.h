@@ -35,6 +35,9 @@ class meWindowMain;
  * \brief Synchronize game definition task.
  */
 class meTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<meTaskSyncGameDefinition> Ref;
+	
 private:
 	enum eStates{
 		esProcessWorld,
@@ -61,8 +64,11 @@ public:
 	/** \brief Create task. */
 	meTaskSyncGameDefinition(meWindowMain &windowMain);
 	
+protected:
 	/** \brief Clean up task. */
 	virtual ~meTaskSyncGameDefinition();
+	
+public:
 	/*@}*/
 	
 	

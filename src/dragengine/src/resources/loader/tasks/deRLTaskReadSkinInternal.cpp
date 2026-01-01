@@ -71,7 +71,6 @@ pTask(task)
 	if(!task || !propertyImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
@@ -84,7 +83,6 @@ pTask(task)
 	if(!task || !nodeImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
@@ -97,13 +95,9 @@ pTask(task)
 	if(!task || !nodeText){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
-	if(pTask){
-		pTask->FreeReference();
-	}
 }
 
 
@@ -210,7 +204,7 @@ void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
 	
 	switch(task->GetTask()->GetState()){
 	case esPending:
-		if(!DoesDependOn(task->GetTask())){
+		if(!GetDependsOn().Has(task->GetTask())){
 			AddDependsOn(task->GetTask());
 		}
 		break;
@@ -254,11 +248,11 @@ void deRLTaskReadSkinInternal::pPrepare(){
 	const decPath path(decPath::CreatePathUnix(GetPath()));
 	
 	try{
-		pSkin.TakeOver(new deSkin(GetEngine().GetSkinManager(), GetVFS(), GetPath(),
-			GetVFS()->GetFileModificationTime(path)));
+		pSkin = deSkin::Ref::New(GetEngine().GetSkinManager(), GetVFS(), GetPath(),
+			GetVFS()->GetFileModificationTime(path));
 		pSkin->SetAsynchron(true);
 		
-		module->LoadSkin(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(path)), pSkin);
+		module->LoadSkin(GetVFS()->OpenFileForReading(path), pSkin);
 		
 	}catch(const deException &){
 		SetState(esFailed);
@@ -297,8 +291,8 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cInternalTask &internalTask = *((cInternalTask*)pInternalTasks.GetAt(i));
-		const deResourceLoaderTask &task = *internalTask.GetTask();
+		const cInternalTask &internalTask = pInternalTasks.GetAt(i);
+		const deResourceLoaderTask &task = internalTask.GetTask();
 		
 		if(task.GetState() != esSucceeded){
 			return false;
@@ -308,20 +302,15 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyImage &property = *internalTask.GetPropertyImage();
 			
 			if(task.GetResource()){
-				property.SetImage((deImage*)task.GetResource());
+				property.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					property.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -330,20 +319,15 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyNodeImage &node = *internalTask.GetNodeImage();
 			
 			if(task.GetResource()){
-				node.SetImage((deImage*)task.GetResource());
+				node.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					node.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -352,7 +336,7 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyNodeText &node = *internalTask.GetNodeText();
 			
 			if(task.GetResource()){
-				node.SetFont((deFont*)task.GetResource());
+				node.SetFont((deFont*)task.GetResource().Pointer());
 				
 			}else{
 				return false;

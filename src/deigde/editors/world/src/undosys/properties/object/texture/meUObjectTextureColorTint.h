@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,15 +37,16 @@ class meObjectTexture;
  * \brief Undo Action Object Texture Color Tint.
  */
 class meUObjectTextureColorTint : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectTextureColorTint> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decColor pOldColor;
 	decColor pNewColor;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectTextureColorTint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectTextureColorTint();
+
+public:
 	/*@}*/
 	
 public:

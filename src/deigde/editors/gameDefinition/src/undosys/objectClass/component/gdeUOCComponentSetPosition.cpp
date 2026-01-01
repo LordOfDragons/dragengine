@@ -42,8 +42,8 @@
 
 gdeUOCComponentSetPosition::gdeUOCComponentSetPosition(gdeObjectClass *objectClass,
 gdeOCComponent *component, const decVector &newValue) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPosition::~gdeUOCComponentSetPosition(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

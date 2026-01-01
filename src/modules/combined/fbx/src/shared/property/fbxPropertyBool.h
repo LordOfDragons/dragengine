@@ -33,6 +33,10 @@
  * \brief FBX property bool.
  */
 class fbxPropertyBool : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyBool> Ref;
+	
+	
 private:
 	bool pValue;
 	
@@ -45,7 +49,7 @@ public:
 	fbxPropertyBool();
 	
 	/** \brief Load property. */
-	fbxPropertyBool(decBaseFileReader &reader);
+	explicit fbxPropertyBool(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

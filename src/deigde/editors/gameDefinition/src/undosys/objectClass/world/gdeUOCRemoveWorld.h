@@ -36,15 +36,16 @@
  * \brief Undo action object class remove world.
  */
 class gdeUOCRemoveWorld : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveWorld> Ref;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	const gdeOCWorld::Ref pWorld;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCRemoveWorld> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

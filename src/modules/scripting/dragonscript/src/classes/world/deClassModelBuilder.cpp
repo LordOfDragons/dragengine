@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -60,24 +62,24 @@ public:
 	pRT(rt), pMyself(myself), pModel(NULL){
 	}
 	
-	virtual void BuildModel(deModel *model){
+	void BuildModel(deModel *model) override{
 		pModel = model;
 		
 		try{
 			pRT->RunFunction(pMyself, "buildModel", 0);
 			
 		}catch(const duException &e){
-			pModel = NULL;
+			pModel = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pModel = NULL;
+			pModel = nullptr;
 			throw;
 		}
 		
-		pModel = NULL;
+		pModel = nullptr;
 	}
 	
 	inline deModel *GetModel() const{ return pModel; }
@@ -99,7 +101,7 @@ dsFunction(init.clsModelBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	((sMdlBldNatDat*)p_GetNativeData(myself))->builder = NULL;
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -119,12 +121,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsModel){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlBldNatDat &nd = *((sMdlBldNatDat*)p_GetNativeData(myself));
+	sMdlBldNatDat &nd = *static_cast<sMdlBldNatDat*>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassModelBuilder_Builder builder(rt, myself);
 	deModel::Ref model;
@@ -132,14 +134,14 @@ void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.builder = &builder;
 	
 	try{
-		model.TakeOver(ds.GetGameEngine()->GetModelManager()->CreateModel(filename, builder));
+		model = ds.GetGameEngine()->GetModelManager()->CreateModel(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassModel()->PushModel(rt, model);
 }
 
@@ -165,12 +167,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassModelBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const name = rt->GetValue(0)->GetString();
 	const int parent = rt->GetValue(1)->GetInt();
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
@@ -200,12 +203,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // decalOffset
 }
 void deClassModelBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const name = rt->GetValue(0)->GetString();
 	const decPoint &size = ds.GetClassPoint()->GetPoint(rt->GetValue(1)->GetRealObject());
 	const bool doubleSided = rt->GetValue(2)->GetBool();
@@ -232,7 +236,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // name
 }
 void deClassModelBuilder::nfAddTextureCoordinatesSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -246,7 +251,8 @@ dsFunction(init.clsModelBuilder, "addLOD", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfAddLOD::RunFunction(dsRunTime*, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -269,7 +275,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // error
 }
 void deClassModelBuilder::nfSetLodError::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -287,7 +294,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetWeightCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -306,7 +314,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // weight
 }
 void deClassModelBuilder::nfSetWeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -325,7 +334,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetWeightGroupCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -343,12 +353,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetWeightGroupAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
+	const deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	lod.SetWeightGroupAt(rt->GetValue(1)->GetInt(), rt->GetValue(2)->GetInt());
 }
 
@@ -360,7 +371,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -379,12 +391,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // weightSet
 }
 void deClassModelBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelVertex &vertex = lod.GetVertexAt(rt->GetValue(1)->GetInt());
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()));
@@ -399,7 +412,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetNormalCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -416,7 +430,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetTangentCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -433,7 +448,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -468,12 +484,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // faceTanget
 }
 void deClassModelBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelFace &face = lod.GetFaceAt(rt->GetValue(1)->GetInt());
 	face.SetTexture(rt->GetValue(2)->GetInt());
@@ -501,7 +518,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -519,7 +537,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetAtSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -539,12 +558,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector2); // tc
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetAtSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassModelBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassModelBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
 	tcs.SetTextureCoordinatesAt(rt->GetValue(2)->GetInt(),

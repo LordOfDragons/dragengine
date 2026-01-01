@@ -42,12 +42,10 @@
 aeUSetRuleSModEnablePos::aeUSetRuleSModEnablePos(aeRuleStateManipulator *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state manipulator rule enable position");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeUSetRuleSModEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnablePos::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

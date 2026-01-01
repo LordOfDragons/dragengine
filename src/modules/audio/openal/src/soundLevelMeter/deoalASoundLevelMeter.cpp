@@ -331,8 +331,7 @@ void deoalASoundLevelMeter::pCleanUp(){
 }
 
 void deoalASoundLevelMeter::pAddSpeaker(deoalASpeaker *speaker){
-	pSpeakers.Add(deoalASoundLevelMeterSpeaker::Ref::New(
-		new deoalASoundLevelMeterSpeaker(*this, speaker)));
+	pSpeakers.Add(deoalASoundLevelMeterSpeaker::Ref::New(*this, speaker));
 	
 	speaker->GetSoundLevelMeters().AddIfAbsent(this);
 }

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,16 +37,17 @@ class ceStrip;
  * \brief Undo Action Actor Speak Conversation Action Remove EyesLookAt.
  */
 class ceUCAASpeakEyesLARemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakEyesLARemove> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pEyesLA;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pEyesLA;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakEyesLARemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

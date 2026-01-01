@@ -26,6 +26,8 @@
 #define _GDEWPSOSPEAKER_H_
 
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCSpeakerListener.h"
 
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -35,11 +37,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCSpeaker;
 class gdeWindowProperties;
-class gdeWPSOCSpeakerListener;
 
 
 
@@ -47,11 +47,14 @@ class gdeWPSOCSpeakerListener;
  * \brief Object class speaker property panel.
  */
 class gdeWPSOCSpeaker : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCSpeaker> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSpeakerListener *pListener;
+	gdeWPSOCSpeakerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPathSound;
 	igdeEditVector::Ref pEditPosition;
@@ -80,25 +83,27 @@ public:
 	gdeWPSOCSpeaker(gdeWindowProperties &windowMain);
 	
 	/** \brief Clean up panel. */
+protected:
 	virtual ~gdeWPSOCSpeaker();
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class speaker or \em NULL if not set. */
+	/** \brief Active object class speaker or \em nullptr if not set. */
 	gdeOCSpeaker *GetSpeaker() const;
 	
 	/** \brief Selected property name. */

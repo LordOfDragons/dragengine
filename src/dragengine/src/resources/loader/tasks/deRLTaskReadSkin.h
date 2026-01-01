@@ -26,8 +26,8 @@
 #define _DERLTASKREADSKIN_H_
 
 #include "deResourceLoaderTask.h"
+#include "deRLTaskReadSkinInternal.h"
 
-class deRLTaskReadSkinInternal;
 class deSkin;
 
 
@@ -35,8 +35,13 @@ class deSkin;
  * \brief Read skin resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadSkin : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadSkin> Ref;
+	
+	
 private:
-	deRLTaskReadSkinInternal *pInternalTask;
+	deRLTaskReadSkinInternal::Ref pInternalTask;
 	bool pSucceeded;
 	
 	

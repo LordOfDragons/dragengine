@@ -57,6 +57,7 @@ protected:
 	meWVNodeConstant &pNode;
 	
 public:
+	typedef deTObjectReference<cEditVector> Ref;
 	cEditVector(meWVNodeConstant &node) : pNode(node){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -65,7 +66,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleConstSetVector::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleConstSetVector::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleConstant(), editVector->GetVector()));
 	}
 };
@@ -91,27 +92,27 @@ pRuleConstant(rule)
 	SetTitle("Constant");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Vector", "Vector value",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"X", "X value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Y", "Y value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Z", "Z value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 	
-	helper.EditVector(pFraParameters, "Vector:", "Vector value.", pEditVector, new cEditVector(*this));
+	helper.EditVector(pFraParameters, "Vector:", "Vector value.", pEditVector, cEditVector::Ref::New(*this));
 }
 
 meWVNodeConstant::~meWVNodeConstant(){

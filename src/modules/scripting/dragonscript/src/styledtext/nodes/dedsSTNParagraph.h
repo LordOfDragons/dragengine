@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEDSSTNPARAGRAPH_H_
 #define _DEDSSTNPARAGRAPH_H_
 
-// includes
 #include "dedsStyledTextNode.h"
 
-// predefinitions
-
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
 
 /**
@@ -38,10 +35,12 @@
  * Paragraph node in a styled text object storing a list of child nodes.
  */
 class dedsSTNParagraph : public dedsStyledTextNode{
+public:
+	typedef deTObjectReference<dedsSTNParagraph> Ref;
+	
+	
 private:
-	dedsStyledTextNode **pNodes;
-	int pNodeCount;
-	int pNodeSize;
+	decObjectOrderedSet pNodes;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -55,7 +54,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of child nodes. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	int GetNodeCount() const;
 	/** Retrieves the child node at the given index. */
 	dedsStyledTextNode *GetNodeAt(int index) const;
 	/** Retrieves the index of a child node or -1 if not found. */

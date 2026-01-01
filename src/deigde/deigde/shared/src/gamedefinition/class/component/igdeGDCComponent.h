@@ -27,9 +27,10 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
 
-#include "igdeGDCCTextureList.h"
+#include "igdeGDCCTexture.h"
 
 
 
@@ -40,11 +41,14 @@
  * inside the editor.
  */
 class DE_DLL_EXPORT igdeGDCComponent : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCComponent> Ref;
-
-
-public:
+	
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<igdeGDCComponent> List;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epModel,
@@ -89,21 +93,24 @@ private:
 	
 	decString pPropertyNames[epMove + 1];
 	
-	igdeGDCCTextureList pTextureList;
+	igdeGDCCTexture::List pTextureList;
 	
 	
-	
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition component. */
+		/** \brief Create component. */
 	igdeGDCComponent();
 	
-	/** \brief Create copy of a game definition component. */
+	/** \brief Create copy of component. */
 	igdeGDCComponent(const igdeGDCComponent &component);
 	
-	/** \brief Clean up game definition component. */
+protected:
+	/** \brief Clean up component. */
 	virtual ~igdeGDCComponent();
+	
+public:
 	/*@}*/
 	
 	
@@ -243,8 +250,8 @@ public:
 	bool HasPropertyWithName(const char *name) const;
 	
 	/** \brief List of textures. */
-	inline igdeGDCCTextureList &GetTextureList(){ return pTextureList; }
-	inline const igdeGDCCTextureList &GetTextureList() const{ return pTextureList; }
+	inline igdeGDCCTexture::List &GetTextureList(){ return pTextureList; }
+	inline const igdeGDCCTexture::List &GetTextureList() const{ return pTextureList; }
 	/*@}*/
 };
 

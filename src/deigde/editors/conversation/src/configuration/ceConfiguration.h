@@ -25,6 +25,8 @@
 #ifndef _CECONFIGURATION_H_
 #define _CECONFIGURATION_H_
 
+#include <dragengine/deObject.h>
+
 class ceWindowMain;
 
 
@@ -32,7 +34,10 @@ class ceWindowMain;
 /**
  * \brief Editor Configuration.
  */
-class ceConfiguration{
+class ceConfiguration : public deObject{
+public:
+	typedef deTObjectReference<ceConfiguration> Ref;
+	
 private:
 	ceWindowMain &pWindowMain;
 	
@@ -45,7 +50,9 @@ public:
 	ceConfiguration(ceWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
+protected:
 	~ceConfiguration();
+public:
 	/*@}*/
 	
 	

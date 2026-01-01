@@ -33,6 +33,10 @@
  * Undo action controller set minimum value.
  */
 class aeUControllerSetMinimumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerSetMinimumValue> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	float pOldValue;
@@ -41,9 +45,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUControllerSetMinimumValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

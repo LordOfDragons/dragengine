@@ -191,7 +191,6 @@ void deoglComponentSet::pAddComponent(deoglRComponent *component){
 	if(pComponentCount == pComponentSize){
 		int newSize = pComponentCount + 10; // * 3 / 2 + 1;
 		deoglRComponent **newArray = new deoglRComponent*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pComponents){
 			memcpy(newArray, pComponents, sizeof(deoglRComponent*) * pComponentSize);

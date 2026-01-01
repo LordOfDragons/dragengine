@@ -71,7 +71,7 @@ delGameConfigXML::~delGameConfigXML(){
 ///////////////
 
 void delGameConfigXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -143,8 +143,8 @@ void delGameConfigXML::pWriteConfig(decXmlWriter &writer, const delGame &game){
 			pathIcon.AddComponent(filenameIcon);
 			
 			try{
-				decBaseFileWriter::Ref::New(pLauncher.GetVFS()->OpenFileForWriting(pathIcon))
-					->Write(icon->GetContent()->GetPointer(), icon->GetContent()->GetLength());
+				pLauncher.GetVFS()->OpenFileForWriting(pathIcon)->Write(
+					icon->GetContent()->GetPointer(), icon->GetContent()->GetLength());
 				
 				writer.WriteOpeningTagStart("icon");
 				writer.WriteAttributeInt("size", icon->GetSize());
@@ -192,7 +192,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "customProfile"){
-			delGameProfile::Ref profile(delGameProfile::Ref::New(game.GetLauncher().CreateGameProfile()));
+			delGameProfile::Ref profile(game.GetLauncher().CreateGameProfile());
 			ReadProfile(*tag, profile);
 			profile->SetName("");
 			
@@ -245,10 +245,9 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 				const decString filenameIcon(GetCDataString(*tag));
 				const int size = GetAttributeInt(*tag, "size");
 				
-				const delGameIcon::Ref icon(delGameIcon::Ref::New(
-					pLauncher.CreateGameIcon(size, filenameIcon)));
+				const delGameIcon::Ref icon(pLauncher.CreateGameIcon(size, filenameIcon));
 				
-				const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filenameIcon));
+				const decMemoryFile::Ref content(decMemoryFile::Ref::New(filenameIcon));
 				
 				decPath pathIcon;
 				pathIcon.SetFromUnix("/config/user/games");
@@ -256,8 +255,8 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 				pathIcon.AddComponent(filenameIcon);
 				
 				try{
-					const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						pLauncher.GetVFS()->OpenFileForReading(pathIcon)));
+					const decBaseFileReader::Ref reader(
+						pLauncher.GetVFS()->OpenFileForReading(pathIcon));
 					const int length = reader->GetLength();
 					content->Resize(length);
 					reader->Read(content->GetPointer(), length);

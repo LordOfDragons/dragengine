@@ -25,6 +25,8 @@
 #ifndef _SAEVIEWSANIMATION_H_
 #define _SAEVIEWSANIMATION_H_
 
+#include "../sanimation/saeSAnimation.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
@@ -32,7 +34,6 @@
 #include <dragengine/resources/font/deFont.h>
 
 class saeWindowMain;
-class saeSAnimation;
 
 
 
@@ -40,11 +41,14 @@ class saeSAnimation;
  * Speech Animation View.
  */
 class saeViewSAnimation : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<saeViewSAnimation> Ref;
+	
 private:
 	saeWindowMain &pWindowMain;
 	deFont::Ref pFontStats;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -70,7 +74,7 @@ public:
 	void ResetView();
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

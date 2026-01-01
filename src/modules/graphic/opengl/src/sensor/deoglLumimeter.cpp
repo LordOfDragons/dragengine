@@ -45,7 +45,6 @@
 deoglLumimeter::deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter) :
 pOgl(ogl),
 pLumimeter(lumimeter),
-pRLumimeter(NULL),
 
 pLuminance(0.0f),
 
@@ -53,7 +52,7 @@ pDirtyLumimeter(true),
 pDirtyOctree(true)
 {
 	try{
-		pRLumimeter = new deoglRLumimeter(ogl.GetRenderThread());
+		pRLumimeter = deoglRLumimeter::Ref::New(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -123,7 +122,4 @@ decColor deoglLumimeter::MeasureColor(){
 //////////////////////
 
 void deoglLumimeter::pCleanUp(){
-	if(pRLumimeter){
-		pRLumimeter->FreeReference();
-	}
 }

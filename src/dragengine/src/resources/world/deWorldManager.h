@@ -25,11 +25,11 @@
 #ifndef _DEWORLDMANAGER_H_
 #define _DEWORLDMANAGER_H_ 
 
+#include "deWorld.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deWorld;
 
 
 /**
@@ -63,7 +63,7 @@ public:
 	deWorld *GetRootWorld() const;
 	
 	/** \brief Create new scene. */
-	deWorld *CreateWorld();
+	deWorld::Ref CreateWorld();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

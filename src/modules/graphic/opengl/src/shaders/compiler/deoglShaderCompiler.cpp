@@ -81,7 +81,7 @@ public:
 	int count;
 	
 	cSpecialPrintShader() : count(0){
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.h", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.h", false);
 		writer->WriteString("#pragma once\n");
 		writer->WriteString("#include <stddef.h>\n");
 		writer->WriteString("\n");
@@ -94,7 +94,7 @@ public:
 		writer->WriteString("extern const sShaderSource vShaderSources[];\n");
 		writer->WriteString("extern const unsigned int vShaderSourceCount;\n");
 		
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.cpp", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.cpp", false);
 		writer->WriteString("#include \"specialPrintShader.h\"\n");
 		writer->WriteString("\n");
 		writer->WriteString("const sShaderSource vShaderSources[] = {");
@@ -275,7 +275,7 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	decBaseFileWriter::Ref writer;
 	{
 	const deMutexGuard guard(caches.GetMutex());
-	writer.TakeOver(cacheShaders.Write(pCacheId));
+	writer = cacheShaders.Write(pCacheId);
 	}
 	
 	writer->WriteByte(SHADER_CACHE_REVISION);
@@ -805,7 +805,7 @@ void deoglShaderCompiler::pCacheLoadShader(deoglShaderProgram &program){
 		decBaseFileReader::Ref reader;
 		{
 		const deMutexGuard guard(caches.GetMutex());
-		reader.TakeOver(cacheShaders.Read(program.GetCacheId()));
+		reader = cacheShaders.Read(program.GetCacheId());
 		}
 		
 		// read parameters
@@ -892,7 +892,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 		
 		/*
 		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
-			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
+			renderThread, pContextIndex, program, compiled));
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
 		*/
 		

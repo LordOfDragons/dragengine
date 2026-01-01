@@ -44,20 +44,16 @@ aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis(aeRuleTrackTo *rule, deAnimator
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldAxis = rule->GetUpAxis();
 	pNewAxis = newAxis;
 	
 	SetShortInfo("TrackTo Set Up Axis");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpAxis::~aeURuleTrackToSetUpAxis(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

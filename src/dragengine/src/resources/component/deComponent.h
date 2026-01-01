@@ -172,7 +172,7 @@ public:
 	void SetScaling(const decVector &scale);
 	
 	/** \brief Model or NULL if not assigned. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/**
 	 * \brief Set model or NULL if not set.
@@ -192,13 +192,13 @@ public:
 	void SetModelKeepTextures(deModel *model);
 	
 	/** \brief Skin or NULL if not assigned. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not assigned. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Rig or NULL if not assigned. */
-	inline deRig *GetRig() const{ return pRig; }
+	inline const deRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL if not assigned. */
 	void SetRig(deRig *rig);
@@ -207,13 +207,13 @@ public:
 	void SetModelAndSkin(deModel *model, deSkin *skin);
 	
 	/** \brief Occlusion mesh or NULL if not assigned. */
-	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deOcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** \brief Set occlusion mesh or NULL if not assigned. */
 	void SetOcclusionMesh(deOcclusionMesh *occmesh);
 	
 	/** \brief Audio model or NULL if not used. */
-	inline deModel *GetAudioModel() const{ return pAudioModel; }
+	inline const deModel::Ref &GetAudioModel() const{ return pAudioModel; }
 	
 	/**
 	 * \brief Set audio model or NULL if not set.
@@ -310,13 +310,13 @@ public:
 	void CopyBonesToComponent(deComponent& component);
 	
 	/** \brief Dynamic skin or null if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or null if not used. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Render only animator or NULL to use none. */
-	inline deAnimator *GetAnimator() const{ return pAnimator; }
+	inline const deAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Set render only animator or NULL to use none. */
 	void SetAnimator(deAnimator *animator);
@@ -348,7 +348,7 @@ public:
 	 * is called (or a function using it) the animator task is waited on to finish
 	 * before continueing. Only Animator Modules use this function.
 	 */
-	inline deParallelTask *GetAnimatorTask() const{ return pAnimatorTask; }
+	inline const deParallelTask::Ref &GetAnimatorTask() const{ return pAnimatorTask; }
 	
 	/**
 	 * \brief Set animator task or NULL if none is pending affecting this component.

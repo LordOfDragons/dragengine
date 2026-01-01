@@ -134,9 +134,9 @@ void delEngineInstanceDirect::Factory::SetConfig(const deOSWebWasm::sConfig &con
 }
 #endif
 
-delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
+delEngineInstance::Ref delEngineInstanceDirect::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile){
-	delEngineInstanceDirect * const instance = new delEngineInstanceDirect(launcher, logfile);
+	const delEngineInstanceDirect::Ref instance(delEngineInstanceDirect::Ref::New(launcher, logfile));
 	instance->SetEngineLogger(pEngineLogger);
 	instance->SetUseConsole(pUseConsole);
 #if defined OS_ANDROID || defined OS_WEBWASM
@@ -222,11 +222,8 @@ bool delEngineInstanceDirect::StartEngine(){
 			
 			diskPath.RemoveLastComponent();
 			
-			const deVFSDiskDirectory::Ref diskDir(
-				deVFSDiskDirectory::Ref::NewWith(diskPath));
-			
-			engineLogger.TakeOver(new deLoggerFile(decBaseFileWriter::Ref::New(
-				diskDir->OpenFileForWriting(filePath))));
+			engineLogger = deLoggerFile::Ref::New(
+				deVFSDiskDirectory::Ref::New(diskPath)->OpenFileForWriting(filePath));
 		}
 		
 		// create os
@@ -349,7 +346,7 @@ void delEngineInstanceDirect::GetInternalModules(delEngineModuleList &list){
 	for(i=0; i<count; i++){
 		deLoadableModule &mod = *modsys.GetModuleAt(i);
 		if(mod.IsInternalModule()){
-			list.Add(delEngineModule::Ref::NewWith(*mod.CastToInternalModule()));
+			list.Add(delEngineModule::Ref::New(*mod.CastToInternalModule()));
 		}
 	}
 }
@@ -388,8 +385,8 @@ void delEngineInstanceDirect::GetModuleParams(delEngineModule &module){
 		deModuleParameter parameter;
 		baseModule->GetParameterInfo(i, parameter);
 		
-		parameters.Add(delEMParameter::Ref::New(new delEMParameter(i, parameter,
-			baseModule->GetParameterValue(parameter.GetName()))));
+		parameters.Add(delEMParameter::Ref::New(i, parameter,
+			baseModule->GetParameterValue(parameter.GetName())));
 	}
 }
 
@@ -567,7 +564,7 @@ bool readOnly, const decStringSet &hiddenPath){
 		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPath.GetCount());
 	DEASSERT_NOTNULL(pEngine)
 	
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix(vfsRoot),
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix(vfsRoot),
 			decPath::CreatePathNative(nativeDirectory), readOnly));
 	
 	const int count = hiddenPath.GetCount();
@@ -604,16 +601,16 @@ const char *archivePath, const decStringSet &hiddenPath){
 	const decString delgaFileTitle(pathDelgaDir.GetLastComponent());
 	pathDelgaDir.RemoveLastComponent();
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
-	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
+	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::New(pathDelgaDir));
 	
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	const deArchiveContainer::Ref container(deArchiveContainer::Ref::New(amgr.CreateContainer(
+	const deArchiveContainer::Ref container(amgr.CreateContainer(
 		decPath::CreatePathUnix("/"),
-		deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")),
-		decPath::CreatePathUnix(archivePath))));
+		amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"),
+		decPath::CreatePathUnix(archivePath)));
 	
 	const int count = hiddenPath.GetCount();
 	int i;
@@ -661,7 +658,7 @@ const char *windowTitle, const char *iconPath){
 	deImage::Ref icon;
 	if(strlen(iconPath) > 0){
 		try{
-			icon.TakeOver(pEngine->GetImageManager()->LoadImage(iconPath, "/"));
+			icon = pEngine->GetImageManager()->LoadImage(iconPath, "/");
 			
 		}catch(const deException &e){
 			pLogger->LogException(GetLauncher().GetLogSource(), e);
@@ -695,48 +692,48 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 	// store single type module parameters to compare after engine exits if user changed them
 	pModuleParamStates.RemoveAll();
 	if(pEngine->GetAISystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAISystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetAISystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetAnimatorSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAnimatorSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetAnimatorSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetAudioSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAudioSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetAudioSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetCrashRecoverySystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetCrashRecoverySystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetCrashRecoverySystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetGraphicSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetGraphicSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetGraphicSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetInputSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetInputSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetInputSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetNetworkSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetNetworkSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetNetworkSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetPhysicsSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetPhysicsSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetPhysicsSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetScriptingSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetScriptingSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetScriptingSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetSynthesizerSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetSynthesizerSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetSynthesizerSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetVRSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetVRSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::New(
+			&pEngine->GetVRSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	deModuleParameter moduleParameter;
 	int i, j;
@@ -803,11 +800,11 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 				
 				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
 				if(!gpmodule){
-					gpmodule.TakeOver(new delGPModule(moduleName));
+					gpmodule = delGPModule::Ref::New(moduleName);
 					collectChangedParams->Add(gpmodule);
 				}
 				
-				gpmodule->GetParameters().Add(delGPMParameter::Ref::NewWith(name, value));
+				gpmodule->GetParameters().Add(delGPMParameter::Ref::New(name, value));
 			}
 		}
 	}
@@ -880,30 +877,29 @@ void delEngineInstanceDirect::ReadDelgaGameDefs(const char *delgaFile, decString
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	
 	decPath pathDelgaDir(decPath::CreatePathNative(delgaFile));
 	const decString delgaFileTitle(pathDelgaDir.GetLastComponent());
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
+	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::New(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	deCollectFileSearchVisitor collect("*.degame", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 	const dePathList &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
-	decBaseFileReader::Ref reader;
 	decString gameDef;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decPath &path = files.GetAt(i);
 		
-		reader.TakeOver(vfs->OpenFileForReading(path));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(path));
 		const int size = reader->GetLength();
 		gameDef.Set(' ', size);
 		reader->Read((void*)gameDef.GetString(), size);
@@ -922,30 +918,29 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	
 	decPath pathDelgaDir(decPath::CreatePathNative(delgaFile));
 	const decString delgaFileTitle(pathDelgaDir.GetLastComponent());
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
+	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::New(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	deCollectFileSearchVisitor collect("*.depatch", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 	const dePathList &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
-	decBaseFileReader::Ref reader;
 	decString patchDef;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decPath &path = files.GetAt(i);
 		
-		reader.TakeOver(vfs->OpenFileForReading(path));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(path));
 		const int size = reader->GetLength();
 		patchDef.Set(' ', size);
 		reader->Read((void*)patchDef.GetString(), size);
@@ -972,28 +967,27 @@ const decStringList &filenames, decObjectOrderedSet &filesContent){
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	
 	decPath pathDelgaDir(decPath::CreatePathNative(delgaFile));
 	const decString delgaFileTitle(pathDelgaDir.GetLastComponent());
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
+	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::New(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	// read files
-	decBaseFileReader::Ref reader;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decString &filename = filenames.GetAt(i);
-		reader.TakeOver(vfs->OpenFileForReading(decPath::CreatePathUnix(filename)));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(decPath::CreatePathUnix(filename)));
 		const int size = reader->GetLength();
 		
-		const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filename));
+		const decMemoryFile::Ref content(decMemoryFile::Ref::New(filename));
 		content->Resize(size);
 		reader->Read(content->GetPointer(), size);
 		
@@ -1021,14 +1015,13 @@ const char *delgaFile, decStringList &list){
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	delgaVfs->AddContainer(container);
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFile, "/"));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(
-		amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	deCollectFileSearchVisitor collect("*.degame", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
@@ -1040,8 +1033,7 @@ const char *delgaFile, decStringList &list){
 	for(i=0; i<fileCount; i++){
 		const decPath &path = files.GetAt(i);
 		
-		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			vfs->OpenFileForReading(path)));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(path));
 		const int size = reader->GetLength();
 		gameDef.Set(' ', size);
 		reader->Read((void*)gameDef.GetString(), size);
@@ -1068,24 +1060,23 @@ const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &file
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	delgaVfs->AddContainer(container);
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	const deArchive::Ref delgaArchiveamgr.OpenArchive(delgaVfs, delgaFile, "/"));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	// read files
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decString &filename = filenames.GetAt(i);
-		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			vfs->OpenFileForReading(decPath::CreatePathUnix(filename))));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(decPath::CreatePathUnix(filename)));
 		const int size = reader->GetLength();
 		
-		const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filename));
+		const decMemoryFile::Ref content(decMemoryFile::Ref::New(filename));
 		content->Resize(size);
 		reader->Read(content->GetPointer(), size);
 		
@@ -1104,16 +1095,16 @@ const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
 		delgaFile, archivePath, hiddenPath.GetCount());
 	DEASSERT_NOTNULL(pEngine)
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	delgaVfs->AddContainer(container);
 	
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	const deArchiveContainer::Ref archiveContainer(deArchiveContainer::Ref::New(
+	const deArchiveContainer::Ref archiveContainer(
 		amgr.CreateContainer(decPath::CreatePathUnix("/"),
-			deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")),
-			decPath::CreatePathUnix(archivePath))));
+			amgr.OpenArchive(delgaVfs, delgaFile, "/"),
+			decPath::CreatePathUnix(archivePath)));
 	
 	const int count = hiddenPath.GetCount();
 	int i;
@@ -1167,11 +1158,11 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 					
 					delGPModule::Ref gpmodule(pGameCollectChangedParams->GetNamed(moduleName));
 					if(!gpmodule){
-						gpmodule.TakeOver(new delGPModule(moduleName));
+						gpmodule = delGPModule::Ref::New(moduleName);
 						pGameCollectChangedParams->Add(gpmodule);
 					}
 					
-					gpmodule->GetParameters().Add(delGPMParameter::Ref::NewWith(name, value));
+					gpmodule->GetParameters().Add(delGPMParameter::Ref::New(name, value));
 				}
 			}
 			

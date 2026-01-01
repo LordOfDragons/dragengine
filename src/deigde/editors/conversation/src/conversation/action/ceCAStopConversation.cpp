@@ -52,6 +52,6 @@ ceCAStopConversation::~ceCAStopConversation(){
 // Management
 ///////////////
 
-ceConversationAction *ceCAStopConversation::CreateCopy() const{
-	return new ceCAStopConversation(*this);
+ceConversationAction::Ref ceCAStopConversation::CreateCopy() const{
+	return ceCAStopConversation::Ref::New(*this);
 }

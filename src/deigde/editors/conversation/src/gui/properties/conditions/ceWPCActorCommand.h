@@ -40,6 +40,9 @@ class ceCConditionActorCommand;
  * \brief Actor command conversation condition property window.
  */
 class ceWPCActorCommand : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCActorCommand> Ref;
+
 private:
 	igdeComboBox::Ref pCBActorID;
 	igdeTextField::Ref pEditCommand;
@@ -64,7 +67,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Active condition or NULL if none is active. */
+	/** \brief Active condition or nullptr if none is active. */
 	ceCConditionActorCommand *GetCondition() const;
 	
 	/** \brief Update active condition. */

@@ -44,9 +44,9 @@
 
 ceUCCAInConvoToggleNegate::ceUCCAInConvoToggleNegate(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionActorInConversation *condition) :
-pTopic(NULL),
-pAction(NULL),
-pCondition(NULL)
+
+
+pCondition(nullptr)
 {
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
@@ -55,25 +55,11 @@ pCondition(NULL)
 	SetShortInfo("Actor in conversation negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAInConvoToggleNegate::~ceUCCAInConvoToggleNegate(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

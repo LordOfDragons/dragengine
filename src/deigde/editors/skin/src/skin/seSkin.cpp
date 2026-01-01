@@ -103,25 +103,25 @@ pPreviewMode(epmModel)
 {
 	deEngine * const engine = GetEngine();
 	
-	deAnimatorController *amController = NULL;
-	deAnimatorRuleAnimation *amRuleAnim = NULL;
-	deAnimatorLink *engLink = NULL;
+	deAnimatorController *amController = nullptr;
+	deAnimatorRuleAnimation::Ref amRuleAnim;
+	deAnimatorLink *engLink = nullptr;
 	
-	pEngWorld = NULL;
-	pCamera = NULL;
+	pEngWorld = nullptr;
+	pCamera = nullptr;
 	
-	pSky = NULL;
+	pSky = nullptr;
 	
-	pEngSkin = NULL;
-	pEngComponent = NULL;
-	pEngAnimator = NULL;
-	pEngAnimatorInstance = NULL;
-	pEngAnimatorAnim = NULL;
-	pEngParticleEmitter = NULL;
+	pEngSkin = nullptr;
+	pEngComponent = nullptr;
+	pEngAnimator = nullptr;
+	pEngAnimatorInstance = nullptr;
+	pEngAnimatorAnim = nullptr;
+	pEngParticleEmitter = nullptr;
 	pMoveTime = 0.0f;
 	pPlayback = true;
 	
-	pDynamicSkin = NULL;
+	pDynamicSkin = nullptr;
 	
 	pDirtySkin = true;
 	pDirtySkinAssignment = true;
@@ -140,22 +140,21 @@ pPreviewMode(epmModel)
 		amController = new deAnimatorController;
 		amController->SetClamp(false);
 		pEngAnimator->AddController(amController);
-		amController = NULL;
+		amController = nullptr;
 		
 		engLink = new deAnimatorLink;
 		engLink->SetController(0);
 		pEngAnimator->AddLink(engLink);
-		engLink = NULL;
+		engLink = nullptr;
 		
-		amRuleAnim = new deAnimatorRuleAnimation;
+		amRuleAnim = deAnimatorRuleAnimation::Ref::New();
 		amRuleAnim->SetEnabled(true);
 		
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
 		
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim->FreeReference();
-		amRuleAnim = NULL;
+		amRuleAnim = nullptr;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
@@ -183,7 +182,7 @@ pPreviewMode(epmModel)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject = igdeWObject::Ref::New(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, -2.0, 0.0));
 		
@@ -205,9 +204,6 @@ pPreviewMode(epmModel)
 		pDynamicSkin = new seDynamicSkin(this);
 		
 	}catch(const deException &){
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
 		if(engLink){
 			delete engLink;
 		}
@@ -363,12 +359,9 @@ void seSkin::Update(float elapsed){
 	//Rebuild();
 	
 	// update texture engine skins
-	const int textureCount = pTextureList.GetCount();
-	int i;
-	
-	for(i=0; i<textureCount; i++){
-		pTextureList.GetAt(i)->UpdateEngineSkin();
-	}
+	pTextures.Visit([](seTexture &t){
+		t.UpdateEngineSkin();
+	});
 	
 	if(pRewindTextures == 0){
 		// assign texture engine skins to the engine component if dirty
@@ -377,21 +370,22 @@ void seSkin::Update(float elapsed){
 	}else if(pRewindTextures == 1){
 		if(pEngComponent && pEngComponent->GetModel()){
 			const int textureCount2 = pEngComponent->GetTextureCount();
+			int i;
 			for(i=0; i<textureCount2; i++){
 				deComponentTexture &engComponentTexture = pEngComponent->GetTextureAt(i);
-				engComponentTexture.SetSkin(NULL);
+				engComponentTexture.SetSkin(nullptr);
 				engComponentTexture.SetTexture(0);
 				pEngComponent->NotifyTextureChanged(i);
 			}
-			pEngLight->SetLightSkin(NULL);
+			pEngLight->SetLightSkin(nullptr);
 		}
 		pRewindTextures = 2;
 		
 	}else if(pRewindTextures == 2){
 		if(pEngComponent && pEngComponent->GetModel()){
-			for(i=0; i<textureCount; i++){
-				pTextureList.GetAt(i)->AssignSkinToComponentTexture();
-			}
+			pTextures.Visit([](seTexture &t){
+				t.AssignSkinToComponentTexture();
+			});
 		}
 		pRewindTextures = 0;
 	}
@@ -431,7 +425,10 @@ void seSkin::AssignTextureSkins(){
 	int i;
 	
 	for(i=0; i<textureCount; i++){
-		seTexture * const texture = GetTextureList().GetNamed(engModel.GetTextureAt(i)->GetName());
+		const decString &name = engModel.GetTextureAt(i)->GetName();
+		seTexture * const texture = GetTextures().FindOrDefault([&](const seTexture &t){
+			return t.GetName() == name;
+		});
 		deComponentTexture &engComponentTexture = pEngComponent->GetTextureAt(i);
 		
 		if(texture){
@@ -439,15 +436,15 @@ void seSkin::AssignTextureSkins(){
 			engComponentTexture.SetTexture(0);
 			
 		}else{
-			engComponentTexture.SetSkin(NULL);
+			engComponentTexture.SetSkin(nullptr);
 			engComponentTexture.SetTexture(0);
 		}
 		
 		pEngComponent->NotifyTextureChanged(i);
 	}
 	
-	if(pTextureList.GetCount() > 0){
-		pEngLight->SetLightSkin(pTextureList.GetAt(0)->GetEngineSkin());
+	if(pTextures.IsNotEmpty()){
+		pEngLight->SetLightSkin(pTextures.First()->GetEngineSkin());
 	}
 	
 	pDirtySkinAssignment = false;
@@ -458,12 +455,9 @@ void seSkin::RewindTextures(){
 }
 
 void seSkin::UpdateResources(){
-	const int count = pTextureList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pTextureList.GetAt(i)->UpdateResources();
-	}
+	pTextures.Visit([](seTexture &t){
+		t.UpdateResources();
+	});
 }
 
 
@@ -472,7 +466,7 @@ void seSkin::UpdateResources(){
 ///////////
 
 void seSkin::AddMapped(seMapped *mapped){
-	pMappedList.Add(mapped);
+	pMapped.Add(mapped);
 	mapped->SetSkin(this);
 	NotifyMappedStructureChanged();
 	
@@ -486,11 +480,11 @@ void seSkin::RemoveMapped(seMapped *mapped){
 	DEASSERT_TRUE(mapped->GetSkin() == this)
 	
 	if(mapped->GetActive()){
-		if(pMappedList.GetCount() > 1){
-			seMapped *activeMapped = pMappedList.GetAt(0);
+		if(pMapped.GetCount() > 1){
+			seMapped *activeMapped = pMapped.GetAt(0);
 			
 			if(activeMapped == mapped){
-				activeMapped = pMappedList.GetAt(1);
+				activeMapped = pMapped.GetAt(1);
 			}
 			
 			SetActiveMapped(activeMapped);
@@ -501,20 +495,17 @@ void seSkin::RemoveMapped(seMapped *mapped){
 	}
 	
 	mapped->SetSkin(nullptr);
-	pMappedList.Remove(mapped);
+	pMapped.Remove(mapped);
 	NotifyMappedStructureChanged();
 }
 
 void seSkin::RemoveAllMapped(){
-	const int count = pMappedList.GetCount();
-	int i;
-	
 	SetActiveMapped(nullptr);
 	
-	for(i=0; i<count; i++){
-		pMappedList.GetAt(i)->SetSkin(nullptr);
-	}
-	pMappedList.RemoveAll();
+	pMapped.Visit([](seMapped &m){
+		m.SetSkin(nullptr);
+	});
+	pMapped.RemoveAll();
 	NotifyMappedStructureChanged();
 }
 
@@ -529,13 +520,11 @@ void seSkin::SetActiveMapped(seMapped *mapped){
 	
 	if(pActiveMapped){
 		pActiveMapped->SetActive(false);
-		pActiveMapped->FreeReference();
 	}
 	
 	pActiveMapped = mapped;
 	
 	if(mapped){
-		mapped->AddReference();
 		mapped->SetActive(true);
 	}
 	
@@ -548,7 +537,7 @@ void seSkin::SetActiveMapped(seMapped *mapped){
 /////////////
 
 void seSkin::AddTexture(seTexture *texture){
-	pTextureList.Add(texture);
+	pTextures.Add(texture);
 	texture->SetSkin(this);
 	NotifyTextureStructureChanged();
 	
@@ -561,53 +550,48 @@ void seSkin::RemoveTexture(seTexture *texture){
 	if(!texture || texture->GetSkin() != this) DETHROW(deeInvalidParam);
 	
 	if(texture->GetActive()){
-		if(pTextureList.GetCount() > 1){
-			seTexture *activeTexture = pTextureList.GetAt(0);
+		if(pTextures.GetCount() > 1){
+			seTexture *activeTexture = pTextures.First();
 			
 			if(activeTexture == texture){
-				activeTexture = pTextureList.GetAt(1);
+				activeTexture = pTextures.GetAt(1);
 			}
 			
 			SetActiveTexture(activeTexture);
 			
 		}else{
-			SetActiveTexture(NULL);
+			SetActiveTexture(nullptr);
 		}
 	}
 	
-	texture->SetSkin(NULL);
-	pTextureList.Remove(texture);
+	texture->SetSkin(nullptr);
+	pTextures.Remove(texture);
 	NotifyTextureStructureChanged();
 }
 
 void seSkin::RemoveAllTextures(){
-	const int count = pTextureList.GetCount();
-	int t;
+	SetActiveTexture(nullptr);
 	
-	SetActiveTexture(NULL);
-	
-	for(t=0; t<count; t++){
-		pTextureList.GetAt(t)->SetSkin(NULL);
-	}
-	pTextureList.RemoveAll();
+	pTextures.Visit([](seTexture &t){
+		t.SetSkin(nullptr);
+	});
+	pTextures.RemoveAll();
 	NotifyTextureStructureChanged();
 }
 
 bool seSkin::HasActiveTexture() const{
-	return pActiveTexture != NULL;
+	return pActiveTexture.IsNotNull();
 }
 
 void seSkin::SetActiveTexture(seTexture *texture){
 	if(texture != pActiveTexture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
-			pActiveTexture->FreeReference();
 		}
 		
 		pActiveTexture = texture;
 		
 		if(texture){
-			texture->AddReference();
 			texture->SetActive(true);
 		}
 		
@@ -621,144 +605,108 @@ void seSkin::SetActiveTexture(seTexture *texture){
 //////////////
 
 void seSkin::AddListener(seSkinListener *listener){
-	if(!listener) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(listener)
 	
 	pListeners.Add(listener);
 }
 
 void seSkin::RemoveListener(seSkinListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
-
 
 
 void seSkin::NotifyStateChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->StateChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.StateChanged(this);
+	});
 }
 
 void seSkin::NotifyUndoChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->UndoChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.UndoChanged(this);
+	});
 }
 
 void seSkin::NotifySkinChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->SkinChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.SkinChanged(this);
+	});
 	
 	SetChanged(true);
 	//RequestRebuild();
 }
 
 void seSkin::NotifySkyChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->SkyChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.SkyChanged(this);
+	});
 }
 
 void seSkin::NotifyEnvObjectChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->EnvObjectChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.EnvObjectChanged(this);
+	});
 }
 
 void seSkin::NotifyViewChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->ViewChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.ViewChanged(this);
+	});
 }
 
 void seSkin::NotifyCameraChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->CameraChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.CameraChanged(this);
+	});
 }
 
 
 
 void seSkin::NotifyMappedStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
+	pUpdateTextureDynamicSkins();
 	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->MappedStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.MappedStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyMappedChanged(seMapped *mapped){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->MappedChanged(this, mapped);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.MappedChanged(this, mapped);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 	
-	const int textureCount = pTextureList.GetCount();
-	for(i=0; i<textureCount; i++){
-		pTextureList.GetAt(i)->InvalidateEngineSkin();
-	}
+	pTextures.Visit([](seTexture &l){
+		l.InvalidateEngineSkin();
+	});
 }
 
 void seSkin::NotifyMappedNameChanged(seMapped *mapped){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->MappedNameChanged(this, mapped);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.MappedNameChanged(this, mapped);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyActiveMappedChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->ActiveMappedChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.ActiveMappedChanged(this);
+	});
 }
 
 
 
 void seSkin::NotifyTextureStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->TextureStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.TextureStructureChanged(this);
+	});
 	
 	SetChanged(true);
 	Invalidate();
@@ -766,24 +714,18 @@ void seSkin::NotifyTextureStructureChanged(){
 }
 
 void seSkin::NotifyTextureChanged(seTexture *texture){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->TextureChanged(this, texture);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.TextureChanged(this, texture);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyTextureNameChanged(seTexture *texture){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkinListener*)pListeners.GetAt(i))->TextureNameChanged(this, texture);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.TextureNameChanged(this, texture);
+	});
 	
 	SetChanged(true);
 	Invalidate();
@@ -791,147 +733,105 @@ void seSkin::NotifyTextureNameChanged(seTexture *texture){
 }
 
 void seSkin::NotifyActiveTextureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->ActiveTextureChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.ActiveTextureChanged(this);
+	});
 }
 
 
 
 void seSkin::NotifyPropertyStructureChanged(seTexture *texture){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->PropertyStructureChanged(this, texture);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyStructureChanged(this, texture);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyPropertyChanged(seTexture *texture, seProperty *property){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->PropertyChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyChanged(this, texture, property);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyActivePropertyChanged(seTexture *texture){
-	const int listenerCount = pListeners.GetCount();
-	int l;
-	
-	for(l=0; l<listenerCount; l++){
-		((seSkinListener*)pListeners.GetAt(l))->ActivePropertyChanged(this, texture);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.ActivePropertyChanged(this, texture);
+	});
 }
 
 void seSkin::NotifyPropertyNodeStructureChanged(seTexture *texture, seProperty *property){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyNodeStructureChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyNodeStructureChanged(this, texture, property);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyPropertyNodeChanged(seTexture *texture, seProperty *property, sePropertyNode *node){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyNodeChanged(this, texture, property, node);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyNodeChanged(this, texture, property, node);
+	});
 	
 	SetChanged(true);
 	Invalidate();
 }
 
 void seSkin::NotifyPropertyActiveNodeChanged(seTexture *texture, seProperty *property){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyActiveNodeChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyActiveNodeChanged(this, texture, property);
+	});
 }
 
 void seSkin::NotifyPropertyNodeSelectionChanged(seTexture *texture, seProperty *property){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyNodeSelectionChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyNodeSelectionChanged(this, texture, property);
+	});
 }
 
 void seSkin::NotifyPropertyActiveNodeGroupChanged(seTexture *texture, seProperty *property){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyActiveNodeGroupChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyActiveNodeGroupChanged(this, texture, property);
+	});
 }
 
 void seSkin::NotifyPropertyActiveNodeLayerChanged(seTexture *texture, seProperty *property){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((seSkinListener*)pListeners.GetAt(i))->PropertyActiveNodeLayerChanged(this, texture, property);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.PropertyActiveNodeLayerChanged(this, texture, property);
+	});
 }
 
 
 
 void seSkin::NotifyDynamicSkinRenderableStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
 	pUpdateTextureDynamicSkins();
 	
-	for(i=0; i<listenerCount; i++){
-		((seSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableStructureChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.DynamicSkinRenderableStructureChanged(this);
+	});
 }
 
 void seSkin::NotifyDynamicSkinRenderableChanged(seDynamicSkinRenderable *renderable){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableChanged(this, renderable);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.DynamicSkinRenderableChanged(this, renderable);
+	});
 }
 
 void seSkin::NotifyDynamicSkinRenderableNameChanged(seDynamicSkinRenderable *renderable){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableNameChanged(this, renderable);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.DynamicSkinRenderableNameChanged(this, renderable);
+	});
 }
 
 void seSkin::NotifyDynamicSkinActiveRenderableChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<listenerCount; i++){
-		((seSkinListener*)pListeners.GetAt(i))->DynamicSkinActiveRenderableChanged(this);
-	}
+	pListeners.Visit([&](seSkinListener &l){
+		l.DynamicSkinActiveRenderableChanged(this);
+	});
 }
 
 
@@ -954,19 +854,10 @@ void seSkin::pCleanUp(){
 	
 	SetActiveMapped(nullptr);
 	RemoveAllMapped();
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	if(pEngAnimatorInstance){
-		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
+		pEngAnimatorInstance->SetComponent(nullptr);
 	}
 	pEngAnimatorAnim = nullptr;
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
-	}
-	
 	if(pDynamicSkin){
 		delete pDynamicSkin;
 	}
@@ -977,16 +868,14 @@ void seSkin::pCleanUp(){
 		}
 		if(pEngComponent && pEngComponent->GetParentWorld()){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }
 
 
 
 void seSkin::pCreateLight(){
-	pEngLight.TakeOver(GetEngine()->GetLightManager()->CreateLight());
+	pEngLight = GetEngine()->GetLightManager()->CreateLight();
 	pEngLight->SetType(deLight::eltPoint);
 	pEngLight->SetActivated(false);
 	pEngLight->SetAmbientRatio(0.0f);
@@ -1038,8 +927,8 @@ void seSkin::pCreateParticleEmitter(){
 
 
 void seSkin::pUpdateComponent(){
-	deModel *model = NULL;
-	deRig *rig = NULL;
+	deModel::Ref model;
+	deRig::Ref rig;
 	
 	// load model and rig
 	try{
@@ -1056,48 +945,37 @@ void seSkin::pUpdateComponent(){
 	
 	// update component
 	if(pEngComponent){
-		pEngComponent->SetDynamicSkin(NULL);
+		pEngComponent->SetDynamicSkin(nullptr);
 	}
 	
-	try{
-		pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
-		
-		if(model && pEngSkin){
-			if(pEngComponent){
-				pEngComponent->SetModelAndSkin(model, pEngSkin);
-				
-			}else{
-				pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
-				pEngWorld->AddComponent(pEngComponent);
-			}
-			
-		}else if(pEngComponent){
-			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
-			pEngComponent = NULL;
-		}
-		
-		if(pEngComponent && rig){
-			pEngComponent->SetRig(rig);
-		}
-		
+	pEngAnimatorInstance->SetComponent(nullptr); // otherwise the animator is not reset
+	
+	if(model && pEngSkin){
 		if(pEngComponent){
-			pEngComponent->SetVisible(true);
-			pEngComponent->SetPosition(decDVector(0.0f, 0.0f, 0.0f));
-			pEngComponent->SetOrientation(decQuaternion());
+			pEngComponent->SetModelAndSkin(model, pEngSkin);
 			
-			decLayerMask layerMask;
-			layerMask.SetBit(0);
-			pEngComponent->SetLayerMask(layerMask);
+		}else{
+			pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
+			pEngWorld->AddComponent(pEngComponent);
 		}
 		
-		if(model) model->FreeReference();
-		if(rig) rig->FreeReference();
+	}else if(pEngComponent){
+		pEngWorld->RemoveComponent(pEngComponent);
+		pEngComponent = nullptr;
+	}
+	
+	if(pEngComponent && rig){
+		pEngComponent->SetRig(rig);
+	}
+	
+	if(pEngComponent){
+		pEngComponent->SetVisible(true);
+		pEngComponent->SetPosition(decDVector(0.0f, 0.0f, 0.0f));
+		pEngComponent->SetOrientation(decQuaternion());
 		
-	}catch(const deException &){
-		if(model) model->FreeReference();
-		if(rig) rig->FreeReference();
-		throw;
+		decLayerMask layerMask;
+		layerMask.SetBit(0);
+		pEngComponent->SetLayerMask(layerMask);
 	}
 	
 	// update dynamic skin
@@ -1110,7 +988,7 @@ void seSkin::pUpdateComponent(){
 		pEngAnimator->SetRig(pEngComponent->GetRig());
 		
 	}else{
-		pEngAnimator->SetRig(NULL);
+		pEngAnimator->SetRig(nullptr);
 	}
 	
 	pEngAnimatorInstance->SetComponent(pEngComponent);
@@ -1122,7 +1000,7 @@ void seSkin::pUpdateComponent(){
 }
 
 void seSkin::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation;
 	
 	try{
 		if(strlen(pAnimationPath) > 0){
@@ -1133,26 +1011,13 @@ void seSkin::pUpdateAnimator(){
 		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	try{
-		pEngAnimator->SetAnimation(animation);
-		
-	}catch(const deException &){
-		if(animation){
-			animation->FreeReference();
-		}
-		throw;
-	}
-	
-	if(animation){
-		animation->FreeReference();
-	}
-	
+	pEngAnimator->SetAnimation(animation);
 	pUpdateAnimatorMove();
 }
 
 void seSkin::pUpdateAnimatorMove(){
-	deAnimationMove *move = NULL;
-	deAnimation *animation;
+	deAnimationMove *move = nullptr;
+	deAnimation::Ref animation;
 	int index;
 	
 	pEngAnimatorAnim->SetMoveName(pMoveName);
@@ -1180,15 +1045,13 @@ void seSkin::pUpdateTextureDynamicSkins(){
 		const int engineTextureCount = pEngComponent->GetTextureCount();
 		
 		for(i=0; i<engineTextureCount; i++){
-			pEngComponent->GetTextureAt(i).SetDynamicSkin(NULL);
+			pEngComponent->GetTextureAt(i).SetDynamicSkin(nullptr);
 			pEngComponent->NotifyTextureChanged(i);
 		}
 	}
 	
 	// then assign them again
-	const int textureCount = pTextureList.GetCount();
-	
-	for(i=0; i<textureCount; i++){
-		pTextureList.GetAt(i)->AssignSkinToComponentTexture();
-	}
+	pTextures.Visit([](seTexture &t){
+		t.AssignSkinToComponentTexture();
+	});
 }

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -36,16 +36,17 @@ class aeRuleBoneTransformator;
  * Undo action rule bone transformator set coordinate frame.
  */
 class aeURuleBTransSetCFrame : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetCFrame> Ref;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pNewCoordFrame;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleBTransSetCFrame> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

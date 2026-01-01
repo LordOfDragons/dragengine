@@ -69,7 +69,7 @@ public:
 	inline deglPanelEngine *GetPanelEngine() const{ return pPanelEngine; }
 	
 	/** Module object. */
-	inline delEngineModule *GetModule() const{ return pModule; }
+	inline const delEngineModule::Ref &GetModule() const{ return pModule; }
 	
 	/** Type string. */
 	inline const decString &GetTypeString() const{ return pTypeString; }

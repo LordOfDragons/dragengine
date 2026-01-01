@@ -53,19 +53,15 @@ meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
 	
 	SetShortInfo("Decal Texture Color Tint");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldColor = decal->GetColorTint();
 	pNewColor = newColor;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalColorTint::~meUDecalColorTint(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

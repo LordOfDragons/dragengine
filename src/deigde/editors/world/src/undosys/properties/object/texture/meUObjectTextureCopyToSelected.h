@@ -25,12 +25,10 @@
 #ifndef _MEUOBJECTTEXTURECOPYTOSELECTED_H_
 #define _MEUOBJECTTEXTURECOPYTOSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataObjectTexture.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class meObjectList;
-class meObjectTexture;
 
 
 
@@ -38,39 +36,41 @@ class meObjectTexture;
  * \brief Undo Action Copy Object Texture to all selected objects.
  */
 class meUObjectTextureCopyToSelected : public igdeUndo{
-private:
-	decObjectList pList;
-	meObjectTexture *pTexture;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjectTextureCopyToSelected> Ref;
 	
+	
+private:
+	meUndoDataObjectTexture::List pList;
+	meObjectTexture::Ref pTexture;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture *texture);
+	meUObjectTextureCopyToSelected(const meObject::List &list, meObjectTexture *texture);
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectTextureCopyToSelected();
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataObjectTexture::List &GetList(){ return pList; }
+	inline const meUndoDataObjectTexture::List &GetList() const{ return pList; }
 	
 	/** \brief Undo. */
 	virtual void Undo();
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

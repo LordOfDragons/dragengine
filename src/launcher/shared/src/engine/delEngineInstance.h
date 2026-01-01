@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringSet.h>
 
 #ifdef OS_BEOS
@@ -42,7 +43,6 @@ struct android_input_buffer;
 class delEngineModule;
 class delEngineModuleList;
 class delLauncher;
-class decStringList;
 class delGPModuleList;
 class decObjectOrderedSet;
 
@@ -65,18 +65,18 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<Factory> Ref;
-	
-	
+		
+		
 		/** \brief Factory constructor. */
 		Factory();
 		
 	protected:
 		/** \brief Factory destructor. */
-		virtual ~Factory();
+		~Factory() override;
 		
 	public:
 		/** \brief Create engine instance. */
-		virtual delEngineInstance *CreateEngineInstance(delLauncher &launcher, const char *logfile) = 0;
+		virtual delEngineInstance::Ref CreateEngineInstance(delLauncher &launcher, const char *logfile) = 0;
 	};
 	
 	

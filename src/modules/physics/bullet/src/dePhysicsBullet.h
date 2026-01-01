@@ -29,12 +29,12 @@
 #include "debug/debpDebug.h"
 #include "devmode/debpDeveloperMode.h"
 
+#include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 
 class debpConfiguration;
 class debpCommandExecuter;
 class debpParameterList;
-class deCollisionInfo;
 class debpCollisionDetection;
 
 
@@ -47,7 +47,7 @@ private:
 	debpCommandExecuter *pCommandExecuter;
 	debpParameterList *pParameters;
 	
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpCollisionDetection *pCollisionDetection;
 	
 	debpDebug pDebug;
@@ -101,7 +101,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	
 	/** \brief Collision detection. */
 	inline debpCollisionDetection &GetCollisionDetection() const{ return *pCollisionDetection; }

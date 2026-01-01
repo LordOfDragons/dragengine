@@ -71,7 +71,7 @@ void debnLoadConfiguration::LoadConfig(debnConfiguration &configuration){
 	}
 	
 	pNetwork.LogInfo("Loading configuration file 'config.xml'");
-	pLoadConfiguration(configuration, decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+	pLoadConfiguration(configuration, vfs.OpenFileForReading(path));
 }
 
 
@@ -79,7 +79,7 @@ void debnLoadConfiguration::LoadConfig(debnConfiguration &configuration){
 //////////////////////
 
 void debnLoadConfiguration::pLoadConfiguration(debnConfiguration &configuration, decBaseFileReader &reader){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	decXmlParser(pNetwork.GetGameEngine()->GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();

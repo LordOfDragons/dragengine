@@ -103,7 +103,7 @@ long igdeNativeFoxContainerFlowY::onChildLayoutFlags(FXObject*, FXSelector, void
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
@@ -120,7 +120,7 @@ long igdeNativeFoxContainerFlowY::onChildLayoutFlags(FXObject*, FXSelector, void
 		break;
 		
 	case igdeContainerFlow::esLast:
-		if(index == pOwner->GetChildCount() - 1){
+		if(index == pOwner->GetChildren().GetCount() - 1){
 			clflags.flags |= LAYOUT_FILL_Y;
 			clflags.canResizeVertical = false;
 		}
@@ -207,7 +207,7 @@ long igdeNativeFoxContainerFlowX::onChildLayoutFlags(FXObject*, FXSelector, void
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_Y;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
@@ -224,7 +224,7 @@ long igdeNativeFoxContainerFlowX::onChildLayoutFlags(FXObject*, FXSelector, void
 		break;
 		
 	case igdeContainerFlow::esLast:
-		if(index == pOwner->GetChildCount() - 1){
+		if(index == pOwner->GetChildren().GetCount() - 1){
 			clflags.flags |= LAYOUT_FILL_X;
 			clflags.canResizeHorizontal = false;
 		}
@@ -287,8 +287,8 @@ void igdeNativeFoxContainerFlow::DestroyNativeWidget(igdeContainerFlow&, void *n
 void igdeNativeFoxContainerFlow::ChildRemoved(igdeContainerFlow &powner, void *native){
 	if(powner.GetNativeContainer()
 	&& powner.GetStretching() == igdeContainerFlow::esLast
-	&& powner.GetChildCount() > 0){
-		igdeUIFoxHelper::UpdateLayoutFlags(powner.GetChildAt(powner.GetChildCount() - 1));
+	&& powner.GetChildren().IsNotEmpty()){
+		igdeUIFoxHelper::UpdateLayoutFlags(powner.GetChildren().Last());
 		((FXPacker*)native)->recalc();
 	}
 }

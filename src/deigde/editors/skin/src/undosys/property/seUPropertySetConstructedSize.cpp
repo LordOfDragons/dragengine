@@ -42,7 +42,7 @@
 seUPropertySetConstructedSize::seUPropertySetConstructedSize(
 seProperty *property, const decPoint3 &newValue) :
 
-pProperty(NULL),
+
 pNewValue(newValue)
 {
 	if(!property){
@@ -54,13 +54,9 @@ pNewValue(newValue)
 	pOldValue = property->GetNodeGroup()->GetSize();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetConstructedSize::~seUPropertySetConstructedSize(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorRemove;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorRemove.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action actor remove conversation action set actor id.
  */
 class ceUCAActorRemoveSetActor : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAActorRemoveSetActor> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorRemove *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorRemove::Ref pAction;
 	decString pOldActorID;
 	decString pNewActorID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAActorRemoveSetActor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAActorRemoveSetActor(ceConversationTopic *topic, ceCAActorRemove *action, const char *newActorID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAActorRemoveSetActor();
+public:
 	/*@}*/
 	
 public:

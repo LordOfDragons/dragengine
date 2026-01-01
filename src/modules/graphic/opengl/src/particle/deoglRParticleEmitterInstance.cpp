@@ -88,10 +88,9 @@ void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries(sD
 
 deoglRParticleEmitterInstance::deoglRParticleEmitterInstance(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pEmitter(NULL),
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pBurstTime(0.0f),
 
@@ -107,8 +106,6 @@ pIndexCount(0),
 pIndexSize(0),
 pIndexUsedCount(0),
 pDirtyIBO(false),
-
-pRenderEnvMap(nullptr),
 pDirtyRenderEnvMap(true),
 
 pVBOShared(0),
@@ -134,9 +131,6 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	if(pIndices){
 		delete [] pIndices;
 	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
 	if(pVAO){
 		delete pVAO;
 	}
@@ -156,16 +150,7 @@ void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}
-	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
-	
 	pEmitter = emitter;
-	
-	if(emitter){
-		emitter->AddReference();
-	}
 }
 
 void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
@@ -175,7 +160,6 @@ void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
 	pWorldComputeElement->RemoveFromCompute();
@@ -282,13 +266,11 @@ void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap)
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetParticleEmitterInstanceList().Add(this);
 	}
 	
@@ -514,9 +496,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	
 	if(!pVBOShared){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOShared));
-		if(!pVBOShared){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShared));
@@ -530,9 +509,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	
 	if(!pVBOLocal){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOLocal));
-		if(!pVBOLocal){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOLocal));
@@ -551,9 +527,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	// ibo
 	if(!pIBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pIBO));
-		if(!pIBO){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	// vao

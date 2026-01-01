@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -36,8 +36,12 @@ class gdeObjectClass;
  * \brief Undo action object class set base.
  */
 class gdeUOCSetCategory : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetCategory> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCSetCategory> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

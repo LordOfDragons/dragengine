@@ -299,9 +299,9 @@ pIsGACOpenGL(false),
 		OXR_CHECK(instance.xrCreateSession(instance.GetInstance(), &createInfo, &pSession));
 		
 		// create spaces
-		pSpaceStageOrigin.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE));
-		pSpaceView.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_VIEW));
-		pSpaceLocalOrigin.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL));
+		pSpaceStageOrigin = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_STAGE);
+		pSpaceView = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_VIEW);
+		pSpaceLocalOrigin = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_LOCAL);
 		
 		pMainSpaceOrigin = pSpaceStageOrigin;
 		// pMainSpaceOrigin = pSpaceLocalOrigin;
@@ -312,16 +312,16 @@ pIsGACOpenGL(false),
 		pEnumSwapchainFormats();
 		
 		// create swap chains
-		pSwapchainLeftEye.TakeOver(new deoxrSwapchain(
-			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor ) );
-		pSwapchainRightEye.TakeOver(new deoxrSwapchain(
-			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor ) );
+		pSwapchainLeftEye = deoxrSwapchain::Ref::New(
+			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor);
+		pSwapchainRightEye = deoxrSwapchain::Ref::New(
+			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor);
 		
 		if(pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerDepth)){
-			// pSwapchainDepthLeftEye.TakeOver( new deoxrSwapchain(
-			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth ) );
-			// pSwapchainDepthRightEye.TakeOver( new deoxrSwapchain(
-			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth ) );
+			// pSwapchainDepthLeftEye = deoxrSwapchain::Ref::New(
+			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth);
+			// pSwapchainDepthRightEye = deoxrSwapchain::Ref::New(
+			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth);
 		}
 		
 		if(pIsGACOpenGL){
@@ -497,14 +497,14 @@ void deoxrSession::BeginFrame(){
 	// changes the mask could change too but this is nigh impossible to ever happen
 	if(instance.SupportsExtension(deoxrInstance::extKHRVisibilityMask)){
 		if(!pLeftEyeHiddenMesh){
-			pLeftEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0));
+			pLeftEyeHiddenMesh = deoxrHiddenMesh::Ref::New(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0);
 			UpdateLeftEyeHiddenMesh();
 		}
 		
 		if(!pRightEyeHiddenMesh){
-			pRightEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1));
+			pRightEyeHiddenMesh = deoxrHiddenMesh::Ref::New(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1);
 			UpdateRightEyeHiddenMesh();
 		}
 	}
@@ -880,9 +880,9 @@ void deoxrSession::pDebugPrintActiveProfilePath(const deoxrPath &path, const cha
 }
 
 void deoxrSession::pCreateSpaces(){
-	pSpaceStage.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE, pSpaceOriginPose));
-	pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL, pSpaceOriginPose));
-	// pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL_FLOOR));
+	pSpaceStage = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_STAGE, pSpaceOriginPose);
+	pSpaceLocal = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_LOCAL, pSpaceOriginPose);
+	// pSpaceLocal = deoxrSpace::Ref::New(*this, XR_REFERENCE_SPACE_TYPE_LOCAL_FLOOR);
 	
 	pMainSpace = pMainSpaceOrigin == pSpaceStageOrigin ? pSpaceStage : pSpaceLocal;
 }

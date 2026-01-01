@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRulePropCount;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRulePropCount.h"
 
 
 
@@ -44,13 +44,14 @@ class meHTVRulePropCount;
  */
 class meUHTVRulePCSetClass : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRulePCSetClass> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRulePropCount *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRulePropCount::Ref pRule;
 	
 	decString pOldPropClass;
 	decString pNewPropClass;
@@ -61,7 +62,11 @@ public:
 	/** \brief Create object. */
 	meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRulePCSetClass();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

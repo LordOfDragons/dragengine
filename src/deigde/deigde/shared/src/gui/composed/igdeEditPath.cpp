@@ -123,7 +123,7 @@ void igdeEditPath::cActionButtonMenu::Update(){
 igdeEditPath::cActionSelectFileDialog::cActionSelectFileDialog(
 	igdeEditPath &editPath, igdeTextField &textField) :
 igdeActionSelectFile(editPath.GetEnvironment(),
-	editPath.GetCustomPatternList().GetFilePatternCount() > 0 ? editPath.GetCustomPatternList()
+	editPath.GetCustomPatternList().IsNotEmpty() ? editPath.GetCustomPatternList()
 		: *editPath.GetEnvironment().GetOpenFilePatternList(editPath.GetResourceType()),
 	textField, editPath.GetUseGameVFS()),
 pEditPath(editPath),
@@ -310,10 +310,10 @@ pResourceType(resourceType),
 pAutoValidatePath(true),
 pUseGameVFS(useGameVFS)
 {
-	pActionButton.TakeOver(new cActionButton(*this, description));
-	pActionButtonMenu.TakeOver(new cActionButtonMenu(*this, description));
+	pActionButton = cActionButton::Ref::New(*this, description);
+	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
-	helper.EditString(*this, description, pText, new cListenerTextField(*this));
+	helper.EditString(*this, description, pText, cListenerTextField::Ref::New(*this));
 	helper.Button(*this, pButton, pActionButton);
 	helper.Button(*this, pButtonMenu, pActionButtonMenu);
 	
@@ -322,7 +322,7 @@ pUseGameVFS(useGameVFS)
 	SetSelectPathActions();
 }
 
-igdeEditPath::igdeEditPath(igdeUIHelper &helper, const igdeFilePatternList &customFilePatterns,
+igdeEditPath::igdeEditPath(igdeUIHelper &helper, const igdeFilePattern::List &customFilePatterns,
 	const char *description, bool useGameVFS) :
 igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 2),
 pResourceType(igdeEnvironment::efpltAll),
@@ -330,10 +330,10 @@ pCustomPatternList(customFilePatterns),
 pAutoValidatePath(true),
 pUseGameVFS(useGameVFS)
 {
-	pActionButton.TakeOver(new cActionButton(*this, description));
-	pActionButtonMenu.TakeOver(new cActionButtonMenu(*this, description));
+	pActionButton = cActionButton::Ref::New(*this, description);
+	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
-	helper.EditString(*this, description, pText, new cListenerTextField(*this));
+	helper.EditString(*this, description, pText, cListenerTextField::Ref::New(*this));
 	helper.Button(*this, pButton, pActionButton);
 	helper.Button(*this, pButtonMenu, pActionButtonMenu);
 	
@@ -519,7 +519,7 @@ void igdeEditPath::ValidatePath(){
 				path = decPath::AbsolutePathNative(pText->GetText(), pBasePath);
 			}
 			
-			decDiskFileReader::Ref::NewWith(path.GetPathNative());
+			decDiskFileReader::Ref::New(path.GetPathNative());
 			pText->SetInvalidValue(false);
 		}
 		
@@ -561,12 +561,12 @@ void igdeEditPath::AddSelectPathAction(igdeAction *action){
 	if(!action){
 		DETHROW(deeInvalidParam);
 	}
-	pSelectPathActions.AddIfAbsent(action);
+	pSelectPathActions.Add(action);
 	pActionButton->Update();
 }
 
 void igdeEditPath::RemoveSelectPathAction(igdeAction *action){
-	pSelectPathActions.RemoveIfPresent(action);
+	pSelectPathActions.Remove(action);
 	pActionButton->Update();
 }
 
@@ -576,12 +576,9 @@ void igdeEditPath::RemoveAllSelectPathActions(){
 }
 
 void igdeEditPath::UpdateSelectPathActions(){
-	const int count = pSelectPathActions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeAction*)pSelectPathActions.GetAt(i))->Update();
-	}
+	pSelectPathActions.Visit([](igdeAction &a){
+		a.Update();
+	});
 }
 
 void igdeEditPath::SetSelectPathActions(){
@@ -591,7 +588,7 @@ void igdeEditPath::SetSelectPathActions(){
 	
 	switch(pResourceType){
 	case igdeEnvironment::efpltSkin:
-		action.TakeOver(new cActionSkinSelectDialog(*this));
+		action = cActionSkinSelectDialog::Ref::New(*this);
 		AddSelectPathAction(action);
 		break;
 		
@@ -599,7 +596,7 @@ void igdeEditPath::SetSelectPathActions(){
 		break;
 	}
 	
-	action.TakeOver(new cActionSelectFileDialog(*this, pText));
+	action = cActionSelectFileDialog::Ref::New(*this, pText);
 	AddSelectPathAction(action);
 }
 
@@ -608,20 +605,18 @@ void igdeEditPath::SetSelectPathActions(){
 void igdeEditPath::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	const int count = pSelectPathActions.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		helper.MenuCommand(contextMenu, (igdeAction*)pSelectPathActions.GetAt(i));
-	}
+	pSelectPathActions.Visit([&](const igdeAction::Ref &a){
+		helper.MenuCommand(contextMenu, a);
+	});
 	
 	if(!pBasePath.IsEmpty()){
 		helper.MenuSeparator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionConvertAbsolute(*this), true);
-		helper.MenuCommand(contextMenu, new cActionConvertRelative(*this), true);
+		helper.MenuCommand(contextMenu, cActionConvertAbsolute::Ref::New(*this));
+		helper.MenuCommand(contextMenu, cActionConvertRelative::Ref::New(*this));
 	}
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new cActionBrowseFile(*this), true);
+	helper.MenuCommand(contextMenu, cActionBrowseFile::Ref::New(*this));
 }
 
 void igdeEditPath::ToAbsolutePath(){
@@ -672,7 +667,7 @@ void igdeEditPath::BrowsePath(){
 	
 	path.RemoveLastComponent();
 	
-	igdeActionExternOpen::Ref action(igdeActionExternOpen::Ref::NewWith(
+	igdeActionExternOpen::Ref action(igdeActionExternOpen::Ref::New(
 		GetEnvironment(), "", nullptr, "", path.GetPathNative()));
 	action->OnAction();
 }
@@ -691,11 +686,8 @@ void igdeEditPath::RemoveListener(igdeEditPathListener *listener){
 }
 
 void igdeEditPath::NotifyEditPathChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPathListener*)listeners.GetAt(i))->OnEditPathChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPathListener &l){
+		l.OnEditPathChanged(this);
+	});
 }

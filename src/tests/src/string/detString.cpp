@@ -7,6 +7,7 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -48,6 +49,8 @@ void detString::Run(){
 	TestReplace();
 	TestTrim();
 	TestLowerUpper();
+	TestDEHash();
+	TestDECompare();
 }
 
 void detString::CleanUp(){
@@ -1198,4 +1201,59 @@ void detString::TestLowerUpper(){
 	// decString GetUpper() const;
 	ASSERT_EQUAL(string1.GetUpper(), string3);
 	ASSERT_EQUAL(string3.GetUpper(), string3);
+}
+
+
+// Test DEHash
+//////////////
+
+void detString::TestDEHash(){
+	SetSubTestNum(14);
+	
+	// Test that same strings produce same hash
+	decString str1("hello");
+	decString str2("hello");
+	decString str3("world");
+	
+	unsigned int hash1 = DEHash(str1);
+	unsigned int hash2 = DEHash(str2);
+	unsigned int hash3 = DEHash(str3);
+	
+	ASSERT_EQUAL(hash1, hash2);  // Same content should have same hash
+	ASSERT_TRUE(hash1 != hash3);  // Different content should (likely) have different hash
+	
+	// Test empty string
+	decString emptyStr1("");
+	decString emptyStr2("");
+	ASSERT_EQUAL(DEHash(emptyStr1), DEHash(emptyStr2));
+	
+	// Test that DEHash uses the Hash() method
+	ASSERT_EQUAL(DEHash(str1), str1.Hash());
+	ASSERT_EQUAL(DEHash(str3), str3.Hash());
+}
+
+
+// Test DECompare
+/////////////////
+
+void detString::TestDECompare(){
+	SetSubTestNum(15);
+	
+	decString str1("apple");
+	decString str2("banana");
+	decString str3("apple");
+	
+	// Test less than
+	ASSERT_TRUE(DECompare(str1, str2) < 0);  // "apple" < "banana"
+	
+	// Test greater than
+	ASSERT_TRUE(DECompare(str2, str1) > 0);  // "banana" > "apple"
+	
+	// Test equal
+	ASSERT_EQUAL(DECompare(str1, str3), 0);  // "apple" == "apple"
+	
+	// Test that DECompare uses the Compare() method
+	ASSERT_EQUAL(DECompare(str1, str2), str1.Compare(str2));
+	ASSERT_EQUAL(DECompare(str2, str1), str2.Compare(str1));
+	ASSERT_EQUAL(DECompare(str1, str3), str1.Compare(str3));
 }

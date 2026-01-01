@@ -28,9 +28,11 @@
 
 #include "../environment/igdeEnvironment.h"
 #include "igdeWidget.h"
+#include "igdeMainWindow.h"
 
 #include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
@@ -41,15 +43,22 @@
 #endif
 
 
-class decUnicodeStringList;
-class igdeMainWindow;
 class igdeWindow;
 
 
 /**
  * \brief IGDE UI Application.
  */
-class DE_DLL_EXPORT igdeApplication{
+class DE_DLL_EXPORT igdeApplication{	
+private:
+	void pSharedRun(decUnicodeStringList &arguments);
+	
+	void *pNativeApplication;
+	igdeMainWindow::Ref pMainWindow;
+	static igdeApplication *pApp;
+	
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -66,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	igdeMainWindow *GetMainWindow() const;
+	inline const igdeMainWindow::Ref &GetMainWindow() const{ return pMainWindow; }
 	
 	/**
 	 * \brief Run application.
@@ -132,19 +141,10 @@ protected:
 	virtual bool Initialize(const decUnicodeStringList &arguments) = 0;
 	
 	/** \brief Set main window. */
-	void SetMainWindow(igdeMainWindow *mainWindow, bool takeOver);
+	void SetMainWindow(igdeMainWindow *mainWindow);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();
-	
-	
-	
-private:
-	void pSharedRun(decUnicodeStringList &arguments);
-	
-	void *pNativeApplication;
-	igdeWidget::Ref pMainWindow;
-	static igdeApplication *pApp;
 };
 
 #endif

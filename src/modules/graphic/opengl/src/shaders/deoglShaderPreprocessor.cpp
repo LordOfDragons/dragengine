@@ -72,13 +72,16 @@ pDebugLogParsing(false)
 pDebugLogParsing(false)
 #endif
 {
-	pSources = (char*)malloc(pSourcesSize);
+	pSources = reinterpret_cast<char*>(malloc(pSourcesSize));
+	DEASSERT_NOTNULL(pSources)
 	pSources[0] = '\0';
 	
-	pResolveBuffer = (char*)malloc(pResolveBufferSize);
+	pResolveBuffer = reinterpret_cast<char*>(malloc(pResolveBufferSize));
+	DEASSERT_NOTNULL(pResolveBuffer)
 	pResolveBuffer[0] = '\0';
 	
-	pResolveSymbolName = (char*)malloc(pResolveSymbolNameSize);
+	pResolveSymbolName = reinterpret_cast<char*>(malloc(pResolveSymbolNameSize));
+	DEASSERT_NOTNULL(pResolveSymbolName)
 	pResolveSymbolName[0] = '\0';
 }
 
@@ -178,10 +181,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 	}
 	if(pSourcesLen + length > pSourcesSize){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
-		char * const newSources = (char*)realloc(pSources, newSize + 1);
-		if(!newSources){
-			DETHROW(deeOutOfMemory);
-		}
+		char * const newSources = reinterpret_cast<char*>(realloc(pSources, newSize + 1));
 		pSources = newSources;
 		pSourcesSize = newSize;
 	}
@@ -190,19 +190,8 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 		pLastMappedOutputLine = pOutputLine;
 		
 		if(mapLines && pInputFile){
-			deoglShaderSourceLocation *location = NULL;
-			
-			try{
-				location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
-				pSourceLocations.Add(location);
-				location->FreeReference();
-				
-			}catch(const deException &){
-				if(location){
-					location->FreeReference();
-				}
-				throw;
-			}
+			pSourceLocations.Add(deoglShaderSourceLocation::Ref::New(
+				pInputFile, pInputLine, pOutputLine));
 		}
 	}
 	
@@ -213,19 +202,8 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 				pLastMappedOutputLine = pOutputLine;
 				
 				if(mapLines && pInputFile){
-					deoglShaderSourceLocation *location = NULL;
-					
-					try{
-						location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
-						pSourceLocations.Add(location);
-						location->FreeReference();
-						
-					}catch(const deException &){
-						if(location){
-							location->FreeReference();
-						}
-						throw;
-					}
+					pSourceLocations.Add(deoglShaderSourceLocation::Ref::New(
+						pInputFile, pInputLine, pOutputLine));
 				}
 			}
 			
@@ -308,21 +286,9 @@ void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
 }
 
 void deoglShaderPreprocessor::SetSymbol(const char *name, const char *value){
-	deoglShaderPreprocessorSymbol *symbol = NULL;
-	
 	pResolveString(value, (int)strlen(value));
 	
-	try{
-		symbol = new deoglShaderPreprocessorSymbol(name, pResolveBuffer);
-		pSymbolTable.SetAt(name, symbol);
-		symbol->FreeReference();
-		
-	}catch(const deException &){
-		if(symbol){
-			symbol->FreeReference();
-		}
-		throw;
-	}
+	pSymbolTable.SetAt(name, deoglShaderPreprocessorSymbol::Ref::New(name, pResolveBuffer));
 	
 	// HACK HACK HACK
 	SourcesAppend(decString("#define ") + name + " " + pResolveBuffer + "\n", false);
@@ -588,7 +554,7 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 	}
 	
 	const decString *sources = nullptr;
-	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, &sources)){
+	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, sources)){
 		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #include: File not found %s at %s:%d",
 			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine);
 		DETHROW(deeInvalidParam);
@@ -628,7 +594,7 @@ void deoglShaderPreprocessor::pProcessDirectiveDefine(const char *beginLine){
 		const int inputLine = pInputLine;
 		decString value;
 		value.Set(' ', (int)(pInputNext - beginLine));
-		memcpy((char*)value.GetString(), beginLine, (int)(pInputNext - beginLine));
+		memcpy(value.GetMutableString(), beginLine, (int)(pInputNext - beginLine));
 		
 		while(true){
 			if(pParseDirectiveAnything(token)){
@@ -1536,9 +1502,9 @@ decString deoglShaderPreprocessor::pDirectiveTokenString(const sToken &token) co
 	decString string;
 	string.Set(' ', token.length);
 	#ifdef OS_W32_VS
-		strncpy_s((char*)string.GetString(), token.length + 1, token.begin, token.length);
+		strncpy_s(string.GetMutableString(), token.length + 1, token.begin, token.length);
 	#else
-		strncpy((char*)string.GetString(), token.begin, token.length);
+		strncpy(string.GetMutableString(), token.begin, token.length);
 	#endif
 	return string;
 }
@@ -1633,10 +1599,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 	
 	if(pResolveBufferLen + length > pResolveBufferSize){
 		const int newSize = pResolveBufferLen + length + 1024;  // increment by steps of 1k
-		char * const newResolveBuffer = (char*)realloc(pResolveBuffer, newSize + 1);
-		if(!newResolveBuffer){
-			DETHROW(deeOutOfMemory);
-		}
+		char * const newResolveBuffer = reinterpret_cast<char*>(realloc(pResolveBuffer, newSize + 1));
 		pResolveBuffer = newResolveBuffer;
 		pResolveBufferSize = newSize;
 	}
@@ -1654,10 +1617,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 void deoglShaderPreprocessor::pSetResolveSymbolName(const char *name, int length){
 	if(pResolveSymbolNameLen + length > pResolveSymbolNameSize){
 		const int newSize = pResolveSymbolNameLen + length + 50;
-		char * const newName = (char*)realloc(pResolveSymbolName, newSize + 1);
-		if(!newName){
-			DETHROW(deeOutOfMemory);
-		}
+		char * const newName = reinterpret_cast<char*>(realloc(pResolveSymbolName, newSize + 1));
 		pResolveSymbolName = newName;
 		pResolveSymbolNameSize = newSize;
 	}

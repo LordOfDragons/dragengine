@@ -42,29 +42,13 @@ const char * const ceClipboardDataFile::TYPE_NAME = "file";
 // Constructor, destructor
 ////////////////////////////
 
-ceClipboardDataFile::ceClipboardDataFile(const ceConversationFileList &files) :
+ceClipboardDataFile::ceClipboardDataFile(const ceConversationFile::List &files) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = files.GetCount();
-	ceConversationFile *file = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			file = new ceConversationFile(*files.GetAt(i));
-			pFiles.Add(file);
-			file->FreeReference();
-			file = NULL;
-		}
-		
-	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
-		throw;
-	}
+	files.Visit([&](const ceConversationFile &f){
+		pFiles.Add(ceConversationFile::Ref::New(f));
+	});
 }
 
 ceClipboardDataFile::~ceClipboardDataFile(){
-	pFiles.RemoveAll();
 }

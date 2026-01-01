@@ -102,7 +102,7 @@ void debpDecal::SetParentComponent(debpComponent *component){
 
 
 bool debpDecal::TouchesVolume(debpDCollisionVolume *volume) const{
-	if(!volume) DETHROW(deeOutOfMemory);
+	DEASSERT_NOTNULL(volume)
 	debpDCollisionTriangle triangle;
 	int i;
 	
@@ -192,7 +192,6 @@ void debpDecal::pCreateMeshComponent(){
 	
 	// create points array
 	pPoints = new debpVBOPoint[6];
-	if(!pPoints) DETHROW(deeOutOfMemory);
 	pPointCount = 6;
 	
 	// calculate vertices

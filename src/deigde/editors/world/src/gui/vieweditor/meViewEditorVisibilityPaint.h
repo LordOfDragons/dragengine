@@ -36,6 +36,9 @@ class meCLVisibilityPaint;
  * View editor for visibility painting terrain.
  */
 class meViewEditorVisibilityPaint : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorVisibilityPaint> Ref;
+	
 private:
 	meCLVisibilityPaint *pVisPainter;
 	

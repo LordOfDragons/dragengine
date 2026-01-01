@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCNavSpaceCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
 	if(!navSpace){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCNavigationSpace::Ref clipOCNavigationSpace(gdeOCNavigationSpace::Ref::NewWith(*navSpace));
+	const gdeOCNavigationSpace::Ref clipOCNavigationSpace(gdeOCNavigationSpace::Ref::New(*navSpace));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavSpace::Ref::NewWith(clipOCNavigationSpace));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavSpace::Ref::New(clipOCNavigationSpace));
 	
-	return new gdeUOCRemoveNavSpace(&objectClass, navSpace);
+	return gdeUOCRemoveNavSpace::Ref::New(&objectClass, navSpace);
 }
 
 void gdeMAOCNavSpaceCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace
-		&& gameDefinition->GetActiveOCNavigationSpace() != NULL);
+		&& gameDefinition->GetActiveOCNavigationSpace() != nullptr);
 }

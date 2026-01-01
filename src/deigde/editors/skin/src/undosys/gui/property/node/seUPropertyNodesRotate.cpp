@@ -28,7 +28,6 @@
 #include "seUPropertyNodesRotate.h"
 #include "../../../../skin/property/node/sePropertyNode.h"
 #include "../../../../skin/property/node/sePropertyNodeGroup.h"
-#include "../../../../skin/property/node/sePropertyNodeList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -40,43 +39,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodesRotate::seUPropertyNodesRotate(const sePropertyNodeList &nodes,
+seUPropertyNodesRotate::seUPropertyNodesRotate(const sePropertyNode::List &nodes,
 const decVector2 &pivot, const decVector2 &origin) :
-pNodes(NULL),
-pCount(0),
 pPivot(pivot),
 pOrigin(origin)
 {
-	const int count = nodes.GetCount();
-	if(count == 0){
+	if(nodes.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
 	SetShortInfo("Rotate nodes");
 	
-	try{
-		pNodes = new sNode[count];
+	nodes.Visit([&](sePropertyNode *node){
+		DEASSERT_NOTNULL(node->GetParent())
 		
-		for(pCount=0; pCount<count; pCount++){
-			sePropertyNode * const node = nodes.GetAt(pCount);
-			if(!node->GetParent()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			pNodes[pCount].node = node;
-			node->AddReference();
-			pNodes[pCount].position = node->GetPosition();
-			pNodes[pCount].rotation = node->GetRotation();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+		const cNode::Ref unode(cNode::Ref::New());
+		unode->node = node;
+		unode->position = node->GetPosition();
+		unode->rotation = node->GetRotation();
+		pNodes.Add(unode);
+	});
 }
 
 seUPropertyNodesRotate::~seUPropertyNodesRotate(){
-	pCleanUp();
 }
 
 
@@ -120,13 +105,10 @@ void seUPropertyNodesRotate::SetTarget(const decVector2 &target){
 }
 
 void seUPropertyNodesRotate::Undo(){
-	int i;
-	
-	for(i=0; i<pCount; i++){
-		sePropertyNode &node = *pNodes[i].node;
-		node.SetPosition(pNodes[i].position);
-		node.SetRotation(pNodes[i].rotation);
-	}
+	pNodes.Visit([&](const cNode &unode){
+		unode.node->SetPosition(unode.position);
+		unode.node->SetRotation(unode.rotation);
+	});
 }
 
 void seUPropertyNodesRotate::Redo(){
@@ -134,37 +116,20 @@ void seUPropertyNodesRotate::Redo(){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pCount; i++){
-		sePropertyNode &node = *pNodes[i].node;
-		
-		const decTexMatrix2 matrix(node.CreateScreenTransformMatrix() * pTransform
-			* node.GetParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2() );
+	pNodes.Visit([&](const cNode &unode){
+		const decTexMatrix2 matrix(unode.node->CreateScreenTransformMatrix() * pTransform
+			* unode.node->GetParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2() );
 		
 		float rotation = matrix.GetRotation() * RAD2DEG;
-		if(node.GetSize().x < 0){
+		if(unode.node->GetSize().x < 0){
 			// node size x is negative. flip result to get correct result
 			rotation += 180.0f;
 		}
 		
-		node.SetRotation(rotation);
+		unode.node->SetRotation(rotation);
 		
-		const decPoint position((matrix.GetPosition() - node.CreateCanvasTransformMatrix().GetPosition()).Round());
-		node.SetPosition(decPoint3(position.x, position.y, pNodes[i].position.z));
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void seUPropertyNodesRotate::pCleanUp(){
-	if(pNodes){
-		int i;
-		for(i=0; i<pCount; i++){
-			pNodes[i].node->FreeReference();
-		}
-		delete [] pNodes;
-	}
+		const decPoint position((matrix.GetPosition()
+			- unode.node->CreateCanvasTransformMatrix().GetPosition()).Round());
+		unode.node->SetPosition(decPoint3(position.x, position.y, unode.position.z));
+	});
 }

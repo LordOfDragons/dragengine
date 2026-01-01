@@ -35,6 +35,10 @@
  * Undo action set mapped name.
  */
 class seUMappedSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMappedSetName> Ref;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMappedSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

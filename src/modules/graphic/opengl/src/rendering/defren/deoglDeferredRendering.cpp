@@ -370,9 +370,6 @@ pTexRenderDocDebug(nullptr)
 		
 		// full screen quad vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFullScreenQuad));
-		if(!pVBOFullScreenQuad){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFullScreenQuad));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad), (const GLvoid *)&fsquad, GL_STATIC_DRAW));
 		
@@ -386,9 +383,6 @@ pTexRenderDocDebug(nullptr)
 		
 		// billboard vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOBillboard));
-		if(!pVBOBillboard){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOBillboard));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(billboard), (const GLvoid *)&billboard, GL_STATIC_DRAW));
 		
@@ -1394,7 +1388,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		
 		for(i=0; i<fboMipMapCount; i++){
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachDepthArrayTextureLevel(pTextureDepth1, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1412,7 +1406,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachDepthArrayTextureLevel(pTextureDepth2, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1440,7 +1434,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		
 		for(i=0; i<fboMipMapCount; i++){
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary1, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1458,7 +1452,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary2, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1482,7 +1476,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	int i;
 	
 	for(i=0; i<8; i++){
-		pFBOCopyDepth[i].TakeOverWith(pRenderThread, false);
+		pFBOCopyDepth[i] = deoglFramebuffer::Ref::New(pRenderThread, false);
 		pRenderThread.GetFramebuffer().Activate(pFBOCopyDepth[i]);
 		pFBOCopyDepth[i]->AttachDepthArrayTextureLayer(copyDepthTex[i / 2], decMath::min(i % 2, pLayerCount - 1));
 		const GLenum buffersNone[1] = {GL_NONE};
@@ -1521,7 +1515,7 @@ deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *tex
 deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
 deoglArrayTexture *texture7, deoglArrayTexture *depth){
 	try{
-		pFBOs[index].TakeOverWith(pRenderThread, false);
+		pFBOs[index] = deoglFramebuffer::Ref::New(pRenderThread, false);
 		
 		pRenderThread.GetFramebuffer().Activate(pFBOs[index]);
 		

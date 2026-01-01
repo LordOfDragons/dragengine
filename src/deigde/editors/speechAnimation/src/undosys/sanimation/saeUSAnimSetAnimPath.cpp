@@ -42,7 +42,7 @@
 saeUSAnimSetAnimPath::saeUSAnimSetAnimPath(saeSAnimation *sanimation, const char *newName){
 	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
+	pSAnimation = nullptr;
 	
 	SetShortInfo("Set Animation Path");
 	
@@ -50,13 +50,9 @@ saeUSAnimSetAnimPath::saeUSAnimSetAnimPath(saeSAnimation *sanimation, const char
 	pNewPath = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetAnimPath::~saeUSAnimSetAnimPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

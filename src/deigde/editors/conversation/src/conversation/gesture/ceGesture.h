@@ -26,6 +26,7 @@
 #define _CEGESTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class ceConversation;
@@ -93,8 +94,8 @@ value during every frame update without having to worry about anything.
  */
 class ceGesture : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceGesture> Ref;
+	typedef decTObjectOrderedSet<ceGesture> List;
 	
 	
 private:
@@ -114,17 +115,19 @@ public:
 	ceGesture(const char *name = "Gesture");
 	
 	/** Clean up gesture. */
+protected:
 	virtual ~ceGesture();
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Conversation or \em NULL if not set. */
+	/** Conversation or \em nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** Set conversation or \em NULL if not set. */
+	/** Set conversation or \em nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** Name. */

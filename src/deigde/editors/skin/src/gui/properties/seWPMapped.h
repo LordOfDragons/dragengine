@@ -43,6 +43,9 @@ class seWindowProperties;
  * Mapped panel.
  */
 class seWPMapped : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPMapped> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
 	const seWPMappedListener::Ref pListener;

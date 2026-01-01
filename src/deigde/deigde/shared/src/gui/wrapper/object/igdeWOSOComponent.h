@@ -28,10 +28,11 @@
 #include "igdeWOSubObject.h"
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 class deColliderAttachment;
@@ -66,7 +67,7 @@ private:
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
 	bool pLightShadowIgnore;
-	decObjectDictionary pTextureSkins;
+	decTObjectDictionary<deSkin> pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
 	deComponent::Ref pOutlineComponent;
@@ -79,11 +80,12 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOComponent(igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	~igdeWOSOComponent() override;
-	/*@}*/
+	virtual ~igdeWOSOComponent();
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/
@@ -100,7 +102,7 @@ public:
 	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
-	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
+	inline const deAnimatorInstance::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Playback controller index. */
 	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }

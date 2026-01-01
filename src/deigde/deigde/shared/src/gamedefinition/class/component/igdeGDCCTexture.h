@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -50,6 +51,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCCTexture> Ref;
+	
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<igdeGDCCTexture> List;
 
 
 	/** \name Constructors and Destructors */
@@ -60,8 +64,11 @@ public:
 	/** \brief Create copy of texture definition. */
 	igdeGDCCTexture(const igdeGDCCTexture &texture);
 	
+protected:
 	/** \brief Clean up texture definition. */
 	virtual ~igdeGDCCTexture();
+	
+public:
 	/*@}*/
 	
 	

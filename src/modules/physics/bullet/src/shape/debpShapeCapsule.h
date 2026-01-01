@@ -45,6 +45,10 @@ class decShapeCapsule;
  * a visitor.
  */
 class debpShapeCapsule : public debpShape{
+public:
+	typedef deTObjectReference<debpShapeCapsule> Ref;
+	
+	
 private:
 	decShapeCapsule *pSCapsule;
 	debpDCollisionCapsule pCCapsule;

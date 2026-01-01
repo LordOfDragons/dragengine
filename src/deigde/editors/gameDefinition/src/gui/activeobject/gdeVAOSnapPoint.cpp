@@ -58,16 +58,13 @@ gdeVAOSnapPoint::gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass
 	const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCSnapPoint(ocsnapPoint),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL),
-pDDSSnapDistance(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr),
+pDDSSnapDistance(nullptr)
 {
 	if(!ocsnapPoint){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSnapPoint->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -107,22 +104,12 @@ void gdeVAOSnapPoint::SelectedObjectChanged(){
 void gdeVAOSnapPoint::pCleanUp(){
 	pReleaseResources();
 	
-	if(pDDSSnapDistance){
-		delete pDDSSnapDistance;
-	}
 	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCSnapPoint){
-		pOCSnapPoint->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -132,12 +119,12 @@ void gdeVAOSnapPoint::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-// 	pDDSCenter = new igdeWDebugDrawerShape;
+// 	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 // 	pDDSCenter->AddSphereShape( 0.05f, decVector() );
 // 	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
 	
@@ -148,7 +135,7 @@ void gdeVAOSnapPoint::pCreateDebugDrawer(){
 	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create snap distance
-	pDDSSnapDistance = new igdeWDebugDrawerShape;
+	pDDSSnapDistance = igdeWDebugDrawerShape::Ref::New();
 	pDDSSnapDistance->AddSphereShape(pOCSnapPoint->GetSnapDistance(), decVector());
 	pDDSSnapDistance->SetParentDebugDrawer(pDebugDrawer);
 }

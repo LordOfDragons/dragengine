@@ -26,6 +26,8 @@
 #define _GDEWPSOCFORCEFIELD_H_
 
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCForceFieldListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -35,10 +37,8 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCForceFieldListener;
 
 
 
@@ -46,11 +46,14 @@ class gdeWPSOCForceFieldListener;
  * \brief Object class particle emitter property panel.
  */
 class gdeWPSOCForceField : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCForceField> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCForceFieldListener *pListener;
+	gdeWPSOCForceFieldListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -91,18 +94,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class particle emitter or \em NULL if not set. */
+	/** \brief Active object class particle emitter or \em nullptr if not set. */
 	gdeOCForceField *GetForceField() const;
 	
 	/** \brief Selected property name. */

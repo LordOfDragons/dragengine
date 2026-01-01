@@ -50,10 +50,10 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 	
 	int count = 0;
 	
-	pTopic = NULL;
-	pPlayerChoice = NULL;
-	pOption = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pPlayerChoice = nullptr;
+	pOption = nullptr;
+	pAction = nullptr;
 	pNewIndex = newIndex;
 	pOldIndex = -1;
 	
@@ -79,33 +79,15 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 	SetShortInfo("Player Choice Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAPChoiceActionMove::~ceUCAPChoiceActionMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -115,10 +97,10 @@ ceUCAPChoiceActionMove::~ceUCAPChoiceActionMove(){
 
 void ceUCAPChoiceActionMove::Undo(){
 	if(pOption){
-		pOption->GetActions().MoveTo(pAction, pOldIndex);
+		pOption->GetActions().Move(pAction, pOldIndex);
 		
 	}else{
-		pPlayerChoice->GetActions().MoveTo(pAction, pOldIndex);
+		pPlayerChoice->GetActions().Move(pAction, pOldIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
@@ -126,10 +108,10 @@ void ceUCAPChoiceActionMove::Undo(){
 
 void ceUCAPChoiceActionMove::Redo(){
 	if(pOption){
-		pOption->GetActions().MoveTo(pAction, pNewIndex);
+		pOption->GetActions().Move(pAction, pNewIndex);
 		
 	}else{
-		pPlayerChoice->GetActions().MoveTo(pAction, pNewIndex);
+		pPlayerChoice->GetActions().Move(pAction, pNewIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);

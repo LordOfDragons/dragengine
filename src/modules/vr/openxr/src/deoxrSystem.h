@@ -29,6 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
 

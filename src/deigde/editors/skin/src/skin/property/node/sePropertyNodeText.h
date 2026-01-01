@@ -65,13 +65,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeText(deEngine &engine);
+	sePropertyNodeText(const deEngine &engine);
 	
 	/** \brief Create copy of node. */
 	sePropertyNodeText(const sePropertyNodeText &node);
 	
 	/** \brief Clean up node. */
+protected:
 	~sePropertyNodeText() override;
+public:
 	/*@}*/
 	
 	
@@ -120,7 +122,7 @@ public:
 	
 	
 	/** \brief Create copy of node. */
-	sePropertyNode *Copy() const override;
+	sePropertyNode::Ref Copy() const override;
 	
 	/** \brief Update resources. */
 	void UpdateResources() override;

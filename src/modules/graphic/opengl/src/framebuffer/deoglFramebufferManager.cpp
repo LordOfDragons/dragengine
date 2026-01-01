@@ -109,7 +109,7 @@ deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int
 	// if we have to hand out only one fbo use the first one
 	if(pRenderThread.GetConfiguration().GetUseOneFBO()){
 		if(pFBOs.GetCount() == 0){
-			pFBOs.Add(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+			pFBOs.Add(deoglFramebuffer::Ref::New(pRenderThread, false));
 		}
 		
 		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[0];
@@ -141,7 +141,7 @@ deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int
 		//}
 		
 		// otherwise create a new fbo with the given size and hand it out
-		pFBOs.Add(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+		pFBOs.Add(deoglFramebuffer::Ref::New(pRenderThread, false));
 		
 		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[pFBOs.GetCount() - 1];
 		fbo->SetUsageResolution(width, height);

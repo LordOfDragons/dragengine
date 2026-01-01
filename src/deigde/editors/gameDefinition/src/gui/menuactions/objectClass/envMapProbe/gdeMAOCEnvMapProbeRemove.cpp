@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCEnvMapProbeRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
 	if(!envMapProbe){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveEnvMapProbe(&objectClass, envMapProbe);
+	return gdeUOCRemoveEnvMapProbe::Ref::New(&objectClass, envMapProbe);
 }
 
 void gdeMAOCEnvMapProbeRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL);
+		&& gameDefinition->GetActiveOCEnvMapProbe() != nullptr);
 }

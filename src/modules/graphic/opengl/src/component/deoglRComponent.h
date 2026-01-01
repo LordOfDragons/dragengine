@@ -25,10 +25,17 @@
 #ifndef _DEOGLRCOMPONENT_H_
 #define _DEOGLRCOMPONENT_H_
 
+#include "deoglRComponentWCElement.h"
 #include "../deoglBasics.h"
+#include "../envmap/deoglEnvironmentMap.h"
 #include "../light/deoglLightList.h"
 #include "../model/deoglRModel.h"
+#include "../occlusiontest/mesh/deoglROcclusionMesh.h"
+#include "../skin/deoglRSkin.h"
 #include "../skin/rendered/deoglSkinRendered.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
 
@@ -45,21 +52,15 @@
 class deoglComponent;
 class deoglComponentListener;
 class deoglDynamicOcclusionMesh;
-class deoglEnvironmentMap;
 class deoglRCamera;
 class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRDecal;
-class deoglRDynamicSkin;
-class deoglROcclusionMesh;
-class deoglRSkin;
 class deoglRWorld;
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderParameterBlock;
-class deoglSharedSPBElement;
-class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
@@ -72,11 +73,11 @@ class deComponent;
  * Render component.
  */
 class deoglRComponent : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglRComponent> Ref;
-
-
-public:
+	
+	
 	/** Render modes. */
 	enum eRenderModes{
 		/** Render as static model. */
@@ -91,7 +92,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	deoglRComponentWCElement::Ref pWorldComputeElement;
 	bool pHasEnteredWorld;
 	
 	
@@ -103,16 +104,16 @@ private:
 	decIntList pModelSkinMappings;
 	decIntList pModelRigMappings;
 	deoglRModel::Ref pModel;
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	bool pStaticTextures;
 	bool pDirtyModelVBOs;
 	
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	bool pDirtyOccMeshVBO;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
 	bool pDynOccMeshRequiresPrepareForRender;
-	deoglSharedSPBElement *pOccMeshSharedSPBElement;
+	deoglSharedSPBElement::Ref pOccMeshSharedSPBElement;
 	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBDoubleSided;
@@ -146,7 +147,7 @@ private:
 	eRenderModes pRenderMode;
 	float pSortDistance;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinRendered pSkinRendered;
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
@@ -182,13 +183,13 @@ private:
 	decObjectOrderedSet pListeners;
 	int pListenerIndex;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
-	deoglEnvironmentMap *pRenderEnvMapFade;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMapFade;
 	float pRenderEnvMapFadePerTime;
 	float pRenderEnvMapFadeFactor;
 	bool pDirtyRenderEnvMap;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	uint32_t pCSOctreeIndex;
 	
@@ -325,7 +326,7 @@ public:
 	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
@@ -334,7 +335,7 @@ public:
 	void RigChanged();
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/**
 	 * Set dynamic skin or NULL if not set.
@@ -343,7 +344,7 @@ public:
 	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin);
 	
 	/** Occlusion mesh or NULL if not set. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL if not set. */
 	void SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh);
@@ -355,7 +356,7 @@ public:
 	void DynOccMeshRequiresPrepareForRender();
 	
 	/** Occlusion mesh shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup(bool doubleSided) const;
@@ -372,7 +373,7 @@ public:
 	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
@@ -496,13 +497,13 @@ public:
 	
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);

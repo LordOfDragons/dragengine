@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 
@@ -35,8 +35,12 @@ class feFontGlyph;
  * \brief Glyph Set V Texture Coordinate Undo Action.
  */
 class feUGlyphSetV : public igdeUndo{
+public:
+	typedef deTObjectReference<feUGlyphSetV> Ref;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldV;
 	int pNewV;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<feUGlyphSetV> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

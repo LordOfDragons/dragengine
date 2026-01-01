@@ -46,7 +46,6 @@
 deoglEnvMapProbe::deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe) :
 pOgl(ogl),
 pEnvMapProbe(envMapProbe),
-pREnvMapProbe(NULL),
 
 pDirtyOctreeNode(true),
 pDirtyEnvMapProbe(true),
@@ -55,7 +54,7 @@ pDirtyInfluenceShape(true),
 pDirtyReflectionShape(true)
 {
 	try{
-		pREnvMapProbe = new deoglREnvMapProbe(ogl.GetRenderThread());
+		pREnvMapProbe = deoglREnvMapProbe::Ref::New(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -163,7 +162,4 @@ void deoglEnvMapProbe::LayerMaskChanged(){
 //////////////////////
 
 void deoglEnvMapProbe::pCleanUp(){
-	if(pREnvMapProbe){
-		pREnvMapProbe->FreeReference();
-	}
 }

@@ -45,26 +45,20 @@ deVFSContainer *container) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
 pContainer(container),
-pVFS(NULL),
+pVFS(nullptr),
 pHoldVFSReference(false)
 {
-	if(!container){
-		DETHROW(deeInvalidParam);
-	}
-	container->AddReference();
+	DEASSERT_NOTNULL(container)
 }
 
 deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
 deVirtualFileSystem *vfs, bool holdVFSReference) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
-pContainer(NULL),
 pVFS(vfs),
 pHoldVFSReference(false)
 {
-	if(!vfs){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vfs)
 	
 	if(holdVFSReference){
 		pHoldVFSReference = true;
@@ -75,9 +69,6 @@ pHoldVFSReference(false)
 deVFSRedirect::~deVFSRedirect(){
 	if(pVFS && pHoldVFSReference){
 		pVFS->FreeReference();
-	}
-	if(pContainer){
-		pContainer->FreeReference();
 	}
 }
 
@@ -122,7 +113,7 @@ bool deVFSRedirect::CanDeleteFile(const decPath &path){
 	}
 }
 
-decBaseFileReader *deVFSRedirect::OpenFileForReading(const decPath &path){
+decBaseFileReader::Ref deVFSRedirect::OpenFileForReading(const decPath &path){
 	if(pContainer){
 		return pContainer->OpenFileForReading(pRedirectPath + path);
 		
@@ -131,7 +122,7 @@ decBaseFileReader *deVFSRedirect::OpenFileForReading(const decPath &path){
 	}
 }
 
-decBaseFileWriter *deVFSRedirect::OpenFileForWriting(const decPath &path){
+decBaseFileWriter::Ref deVFSRedirect::OpenFileForWriting(const decPath &path){
 	if(pContainer){
 		return pContainer->OpenFileForWriting(pRedirectPath + path);
 		

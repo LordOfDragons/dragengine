@@ -40,17 +40,12 @@
 ////////////////////////////
 
 igdeTriggerTarget::igdeTriggerTarget(const char *name){
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
 	pName = name;
 	pFired = false;
 	pHasFired = false;
 }
 
 igdeTriggerTarget::~igdeTriggerTarget(){
-	pListeners.RemoveAll();
 }
 
 
@@ -92,22 +87,16 @@ void igdeTriggerTarget::FullReset(){
 
 
 void igdeTriggerTarget::AddListener(igdeTriggerListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pListeners.AddIfAbsent(listener);
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
 }
 
 void igdeTriggerTarget::RemoveListener(igdeTriggerListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 void igdeTriggerTarget::NotifyListeners(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeTriggerListener*)pListeners.GetAt(i))->TriggerTargetChanged(this);
-	}
+	pListeners.Visit([&](igdeTriggerListener &l){
+		l.TriggerTargetChanged(this);
+	});
 }

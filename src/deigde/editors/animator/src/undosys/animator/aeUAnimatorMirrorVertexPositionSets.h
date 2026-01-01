@@ -44,6 +44,10 @@ class aeAnimator;
  * - ' left' with ' right'
  */
 class aeUAnimatorMirrorVertexPositionSets : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorMirrorVertexPositionSets> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringList pPatterns;
@@ -51,9 +55,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUAnimatorMirrorVertexPositionSets> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

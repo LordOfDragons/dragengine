@@ -64,6 +64,6 @@ void ceCAActorCommand::SetCommand(const char *command){
 
 
 
-ceConversationAction *ceCAActorCommand::CreateCopy() const{
-	return new ceCAActorCommand(*this);
+ceConversationAction::Ref ceCAActorCommand::CreateCopy() const{
+	return ceCAActorCommand::Ref::New(*this);
 }

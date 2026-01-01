@@ -29,6 +29,7 @@
 #include "channel/deoglSkinChannel.h"
 #include "pipeline/deoglSkinTexturePipelinesList.h"
 #include "shader/deoglSkinShader.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -36,7 +37,6 @@ class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglSkinShaderConfig;
-class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
 
 class deSkinTexture;
@@ -143,7 +143,7 @@ private:
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[deoglSkinChannel::CHANNEL_COUNT];
 	deoglSkinTexturePipelinesList pPipelines;
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	
 	decColor pAbsorption;
 	float pAbsorptionHalfIntensityDistance;
@@ -379,7 +379,7 @@ public:
 	inline const deoglSkinTexturePipelinesList &GetPipelines() const{ return pPipelines; }
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Prepare parameter block. */
 	void PrepareParamBlock();

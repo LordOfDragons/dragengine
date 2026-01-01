@@ -26,16 +26,13 @@
 #ifndef _FEFONTIMAGE_H_
 #define _FEFONTIMAGE_H_
 
-// includes
 #include <dragengine/deObject.h>
-
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/image/deImage.h>
 
-// predefinitions
 class feFont;
 
 class deEngine;
-class deImage;
 
 
 
@@ -48,7 +45,7 @@ private:
 	deEngine *pEngine;
 	feFont *pParentFont;
 	
-	deImage *pEngImage;
+	deImage::Ref pEngImage;
 	
 	decString pFilename;
 	int pWidth;
@@ -67,7 +64,9 @@ public:
 	/** Creates a new font image. */
 	feFontImage(deEngine *engine);
 	/** Cleans up the font image. */
+protected:
 	virtual ~feFontImage();
+public:
 	/*@}*/
 	
 	/** @name Management */
@@ -75,11 +74,11 @@ public:
 	/** Retrieves the linked engine object. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the engine image. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	
-	/** Retrieves the parent font or NULL if not assigned. */
+	/** Retrieves the parent font or nullptr if not assigned. */
 	inline feFont *GetParentFont() const{ return pParentFont; }
-	/** Sets the parent font or NULL it not assigned. */
+	/** Sets the parent font or nullptr it not assigned. */
 	void SetParentFont(feFont *font);
 	
 	/** Retrieves the width of the image. */
@@ -105,11 +104,8 @@ public:
 	void SetSaved(bool saved);
 	
 	/** Notifies the parent if assigned that the image changed. */
-    void NotifyImageChanged();
+	void NotifyImageChanged();
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 // end of include only once

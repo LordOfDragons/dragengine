@@ -36,6 +36,8 @@ class gdeParticleEmitter;
  */
 class gdeWPSTIMParticleEmitters : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMParticleEmitters> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +53,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with particle emitter or \em NULL. */
+	/** \brief Model with particle emitter or \em nullptr. */
 	gdeWPSTIMParticleEmitter *GetChildWith(gdeParticleEmitter *particleEmitter) const;
 	
 	/** \brief Structure changed. */

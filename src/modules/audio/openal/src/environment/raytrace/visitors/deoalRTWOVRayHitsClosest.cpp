@@ -34,6 +34,8 @@
 #include "../../../model/deoalModelFace.h"
 #include "../../../model/octree/deoalModelOctree.h"
 #include "../../../world/octree/deoalRTWorldBVH.h"
+#include "../../../audiothread/deoalAudioThread.h"
+#include "../../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -72,8 +74,6 @@ void deoalRTWOVRayHitsClosest::SetLimitDistance(float limitDistance){
 }
 
 #ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
-#include "../../../audiothread/deoalAudioThread.h"
-#include "../../../audiothread/deoalATLogger.h"
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModel.h>
 void deoalRTWOVRayHitsClosest::StartTiming(){

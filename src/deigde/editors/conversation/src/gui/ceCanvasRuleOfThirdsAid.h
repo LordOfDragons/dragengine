@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _CERULEOFTHIRDS_H_
-#define _CERULEOFTHIRDS_H_
+#ifndef _CECANVASRULEOFTHIRDS_H_
+#define _CECANVASRULEOFTHIRDS_H_
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
@@ -34,7 +34,10 @@ class igdeEnvironment;
 /**
  * \brief Rule of thirds aid canvas.
  */
-class ceCanvasRuleOfThirdsAid{
+class ceCanvasRuleOfThirdsAid : public deObject{
+public:
+	typedef deTObjectReference<ceCanvasRuleOfThirdsAid> Ref;
+	
 private:
 	igdeEnvironment &pEnvironment;
 	deCanvasView::Ref pCanvasView;
@@ -48,7 +51,9 @@ public:
 	ceCanvasRuleOfThirdsAid(igdeEnvironment &environment);
 	
 	/** \brief Clean up canvas. */
+protected:
 	~ceCanvasRuleOfThirdsAid();
+public:
 	/*@}*/
 	
 	
@@ -56,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas to add to render window. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	
 	

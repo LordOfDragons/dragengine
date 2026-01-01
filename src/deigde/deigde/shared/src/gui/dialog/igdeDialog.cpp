@@ -105,7 +105,7 @@ void igdeDialog::CancelDialog::OnAction(){
 
 igdeDialog::igdeDialog(igdeEnvironment &environment, const char *title, igdeIcon *icon, bool canResize) :
 igdeWindow(environment, title, icon, canResize),
-pOwner(NULL),
+pOwner(nullptr),
 pAccepted(false){
 }
 
@@ -122,9 +122,7 @@ void igdeDialog::DefaultActionChanged(){
 }
 
 void igdeDialog::AddChild(igdeWidget *child){
-	if(GetChildCount() > 0){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(GetChildren().IsEmpty())
 	igdeContainer::AddChild(child);
 }
 
@@ -132,14 +130,14 @@ void igdeDialog::AddContent(igdeWidget *content, igdeWidget *buttonBar){
 	if(!content || !buttonBar){
 		DETHROW(deeInvalidParam);
 	}
-	pAddContent(content, NULL, NULL, NULL, buttonBar);
+	pAddContent(content, nullptr, nullptr, nullptr, buttonBar);
 }
 
 void igdeDialog::AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar){
 	if(!content || !header || !buttonBar){
 		DETHROW(deeInvalidParam);
 	}
-	pAddContent(content, header, NULL, NULL, buttonBar);
+	pAddContent(content, header, nullptr, nullptr, buttonBar);
 }
 
 void igdeDialog::AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
@@ -183,25 +181,25 @@ igdeAction **actions, int actionCount){
 	igdeEnvironment &env = GetEnvironment();
 	const int spacing = igdeNativeDialog::DialogPadButtons(*GetGuiTheme());
 	
-	buttonBar.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX, spacing));
+	buttonBar = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX, spacing);
 	
 	igdeWidget::Ref button;
 	for(i=0; i<actionCount; i++){
-		button.TakeOver(new igdeButton(env, actions[i]));
+		button = igdeButton::Ref::New(env, actions[i]);
 		buttonBar->AddChild(button);
 	}
 }
 
 void igdeDialog::CreateButtonBar(igdeContainer::Ref &buttonBar, const char *text){
-	CancelDialog::Ref action(CancelDialog::Ref::NewWith(*this, text));
+	CancelDialog::Ref action(CancelDialog::Ref::New(*this, text));
 	CreateButtonBar(buttonBar, action);
 }
 
 void igdeDialog::CreateButtonBar(igdeContainer::Ref &buttonBar,
 const char *textAccept, const char *textCancel){
-	AcceptDialog::Ref actionAccept(AcceptDialog::Ref::NewWith(*this, textAccept));
+	AcceptDialog::Ref actionAccept(AcceptDialog::Ref::New(*this, textAccept));
 	
-	CancelDialog::Ref actionCancel(CancelDialog::Ref::NewWith(*this, textCancel));
+	CancelDialog::Ref actionCancel(CancelDialog::Ref::New(*this, textCancel));
 	
 	CreateButtonBar(buttonBar, actionAccept, actionCancel);
 }
@@ -304,7 +302,7 @@ igdeWidget *rightPanel, igdeWidget *buttonBar){
 	igdeEnvironment &env = GetEnvironment();
 	const int spacing = igdeNativeDialog::DialogPadContent(*GetGuiTheme());
 	
-	igdeContainerBorder::Ref border(igdeContainerBorder::Ref::NewWith(env, spacing));
+	igdeContainerBorder::Ref border(igdeContainerBorder::Ref::New(env, spacing));
 	AddChild(border);
 	
 	if(header){
@@ -319,11 +317,11 @@ igdeWidget *rightPanel, igdeWidget *buttonBar){
 	
 	border->AddChild(content, igdeContainerBorder::eaCenter);
 	
-	igdeContainerFlow::Ref bottom(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref bottom(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esNone, spacing));
 	border->AddChild(bottom, igdeContainerBorder::eaBottom);
 	
-	igdeSeparator::Ref separator(igdeSeparator::Ref::NewWith(env, igdeSeparator::eoHorizontal));
+	igdeSeparator::Ref separator(igdeSeparator::Ref::New(env, igdeSeparator::eoHorizontal));
 	bottom->AddChild(separator);
 	bottom->AddChild(buttonBar);
 }

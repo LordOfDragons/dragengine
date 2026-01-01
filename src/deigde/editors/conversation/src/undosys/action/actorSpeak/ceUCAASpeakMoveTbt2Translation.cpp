@@ -36,22 +36,22 @@
 ////////////////////////////
 
 ceUCAASpeakMoveTbt2Translation::ceUCAASpeakMoveTbt2Translation(ceConversationTopic *topic,
-	ceCAActorSpeak *actorSpeak, ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text) :
+	ceCAActorSpeak *actorSpeak, const decString &translationName,
+	const decUnicodeString *oldEntryText, const decUnicodeString &text) :
 pTopic(topic),
 pConversation(topic && topic->GetFile() ? topic->GetFile()->GetConversation() : nullptr),
 pActorSpeak(actorSpeak),
 pLangPack(pConversation ? pConversation->GetLanguagePack() : nullptr),
-pEntry(entry),
-pAddEntry(addEntry),
 pTextBoxText(actorSpeak ? actorSpeak->GetTextBoxText() : decUnicodeString()),
-pOldEntryText(entry ? entry->GetText() : decUnicodeString()),
-pOldTranslationName(actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : decString())
+pOldEntryText(oldEntryText ? *oldEntryText : decUnicodeString()),
+pTranslationName(translationName),
+pOldTranslationName(actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : decString()),
+pAddEntry(oldEntryText == nullptr)
 {
 	DEASSERT_NOTNULL(pConversation)
 	DEASSERT_NOTNULL(pTopic)
 	DEASSERT_NOTNULL(pLangPack)
 	DEASSERT_NOTNULL(pActorSpeak)
-	DEASSERT_NOTNULL(pEntry)
 	
 	SetShortInfo("Move actor speak text box text to translation");
 }
@@ -66,12 +66,11 @@ ceUCAASpeakMoveTbt2Translation::~ceUCAASpeakMoveTbt2Translation(){
 
 void ceUCAASpeakMoveTbt2Translation::Undo(){
 	if(pAddEntry){
-		pLangPack->RemoveEntry(pEntry);
+		pLangPack->GetEntries().Remove(pTranslationName);
 		
 	}else{
-		pEntry->SetText(pOldEntryText);
+		pLangPack->GetEntries().SetAt(pTranslationName, pOldEntryText);
 	}
-	
 	pLangPack->SetChanged(true);
 	
 	pActorSpeak->SetTextBoxText(pTextBoxText);
@@ -82,17 +81,11 @@ void ceUCAASpeakMoveTbt2Translation::Undo(){
 }
 
 void ceUCAASpeakMoveTbt2Translation::Redo(){
-	if(pAddEntry){
-		pLangPack->AddEntry(pEntry);
-		
-	}else{
-		pEntry->SetText(pTextBoxText);
-	}
-	
+	pLangPack->GetEntries().SetAt(pTranslationName, pTextBoxText);
 	pLangPack->SetChanged(true);
 	
 	pActorSpeak->SetTextBoxText(decUnicodeString());
-	pActorSpeak->SetTextBoxTextTranslate(pEntry->GetName());
+	pActorSpeak->SetTextBoxTextTranslate(pTranslationName);
 	
 	pTopic->NotifyActionChanged(pActorSpeak);
 	pConversation->NotifyLanguagePackChanged();

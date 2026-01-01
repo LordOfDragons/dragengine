@@ -26,9 +26,8 @@
 #define _IGDECODECPROPERTYSTRING_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 
-class decString;
-class decStringList;
 class decShapeList;
 class decShapeBox;
 

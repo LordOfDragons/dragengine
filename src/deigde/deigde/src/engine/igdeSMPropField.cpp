@@ -40,7 +40,7 @@
 ////////////////////////////
 
 igdeSMPropField::igdeSMPropField(){
-	pDelegee = NULL;
+	pDelegee = nullptr;
 }
 
 igdeSMPropField::~igdeSMPropField(){

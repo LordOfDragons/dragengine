@@ -66,25 +66,11 @@ deSynthesizerInstance *deSynthesizerInstanceManager::GetRootSynthesizerInstance(
 	return (deSynthesizerInstance*)pInstances.GetRoot();
 }
 
-deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance(){
-	deSynthesizerInstance *instance = NULL;
-	
-	try{
-		instance = new deSynthesizerInstance(this);
-		
-		GetSynthesizerSystem()->LoadSynthesizerInstance(instance);
-		GetAudioSystem()->LoadSynthesizerInstance(instance);
-		
-		pInstances.Add(instance);
-		
-	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
-		throw;
-	}
-	
+deSynthesizerInstance::Ref deSynthesizerInstanceManager::CreateSynthesizerInstance(){
+	const deSynthesizerInstance::Ref instance(deSynthesizerInstance::Ref::New(this));
+	GetSynthesizerSystem()->LoadSynthesizerInstance(instance);
+	GetAudioSystem()->LoadSynthesizerInstance(instance);
+	pInstances.Add(instance);
 	return instance;
 }
 

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -62,30 +62,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\video\webm\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoDecoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVorbisStream.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmWebmCallbackInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmWebmReader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoDecoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVorbisStream.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmWebmCallbackInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmWebmReader.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\webm\src\module.xml" />
@@ -444,4 +420,28 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVorbisStream.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmWebmCallbackInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmWebmReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVorbisStream.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmWebmCallbackInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmWebmReader.h" />
+  </ItemGroup>
 </Project>

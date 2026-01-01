@@ -42,18 +42,14 @@
 peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
 	SetShortInfo("Toggle Controller Frozen");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleFrozen::~peeUControllerToggleFrozen(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

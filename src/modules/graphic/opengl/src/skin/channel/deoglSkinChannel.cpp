@@ -95,11 +95,8 @@ pTextureType(ett2d),
 
 pIsCached(false),
 pCanBeCached(false),
-pCacheVerify(NULL),
-pCacheConstrDefSource1(NULL),
-pCacheConstrDefSource2(NULL),
-pCacheConstrVerifySource1(NULL),
-pCacheConstrVerifySource2(NULL),
+
+pUniformColorMask{true, true, true, true},
 
 pDelayedCombineImage1(NULL),
 pDelayedCombineImage2(NULL),
@@ -131,23 +128,6 @@ deoglSkinChannel::~deoglSkinChannel(){
 	}
 	if(pTexture){
 		delete pTexture;
-	}
-	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
-	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
-	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
-	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
-	}
-	
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
 	}
 }
 
@@ -362,27 +342,11 @@ void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 }
 
 void deoglSkinChannel::ClearCacheData(){
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
-		pCacheVerify = NULL;
-	}
-	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
-		pCacheConstrDefSource1 = NULL;
-	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
-		pCacheConstrDefSource2 = NULL;
-	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
-		pCacheConstrVerifySource1 = NULL;
-	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
-		pCacheConstrVerifySource2 = NULL;
-	}
+	pCacheVerify = nullptr;
+	pCacheConstrDefSource1 = nullptr;
+	pCacheConstrDefSource2 = nullptr;
+	pCacheConstrVerifySource1 = nullptr;
+	pCacheConstrVerifySource2 = nullptr;
 	
 	pCacheIDSource1.Empty();
 	pCacheIDSource2.Empty();
@@ -898,12 +862,12 @@ const deoglVSDetermineChannelFormat &channelFormat){
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
 		if(mipMapped){
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100));
+			pPixelBufferMipMap = deoglPixelBufferMipMap::Ref::New(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100);
 			
 		}else{
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0));
+			pPixelBufferMipMap = deoglPixelBufferMipMap::Ref::New(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0);
 		}
 	//}
 }
@@ -1356,10 +1320,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource2 = new decMemoryFile("");
+		pCacheConstrDefSource2 = decMemoryFile::Ref::New("");
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2 = new decMemoryFile("");
+		pCacheConstrVerifySource2 = decMemoryFile::Ref::New("");
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
@@ -1368,17 +1332,17 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource1 = new decMemoryFile("");
+		pCacheConstrDefSource1 = decMemoryFile::Ref::New("");
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1 = new decMemoryFile("");
+		pCacheConstrVerifySource1 = decMemoryFile::Ref::New("");
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
 	// dynamic constructed
 	if(deoglSCConstructedDynamic::IsDynamic(property.GetContent())){
-		pDynamicConstructed = skin.AddConstructedProperty(deoglSkinConstructedProperty::Ref::New(
-			new deoglSkinConstructedProperty(property)));
+		pDynamicConstructed = skin.AddConstructedProperty(
+			deoglSkinConstructedProperty::Ref::New(property));
 		texture.SetConstructedProperties(true);
 		pCanBeCached = false;
 		return;
@@ -1810,61 +1774,49 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	}
 	
 	if(!pCacheVerify){
-		pCacheVerify = new decMemoryFile("");
+		pCacheVerify = decMemoryFile::Ref::New("");
 	}
 	
-	decMemoryFileWriter *writer = NULL;
+	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::New(pCacheVerify, false));
 	
-	try{
-		writer = new decMemoryFileWriter(pCacheVerify, false);
-		
-		// source 1 verify
-		if(pDelayedCombineImage1){
-			const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
-			if(filename.IsEmpty()){
-				DETHROW(deeInvalidAction); // this one is problematic. dont do it
-			}
-			
-			const decPath path(decPath::CreatePathUnix(filename));
-			writer->WriteUInt((uint32_t)pDelayedCombineImage1->GetImage().
-				GetVirtualFileSystem()->GetFileModificationTime(path));
-			
-		}else if(pCacheConstrVerifySource1){
-			if(pCacheConstrDefSource1->GetLength() > 0){
-				writer->Write(pCacheConstrDefSource1->GetPointer(), pCacheConstrDefSource1->GetLength());
-			}
-			if(pCacheConstrVerifySource1->GetLength() > 0){
-				writer->Write(pCacheConstrVerifySource1->GetPointer(), pCacheConstrVerifySource1->GetLength());
-			}
+	// source 1 verify
+	if(pDelayedCombineImage1){
+		const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
+		if(filename.IsEmpty()){
+			DETHROW(deeInvalidAction); // this one is problematic. dont do it
 		}
 		
-		// source 2 verify
-		if(pDelayedCombineImage2){
-			const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
-			if(filename.IsEmpty()){
-				DETHROW(deeInvalidParam); // this one is problematic. dont do it
-			}
-			
-			const decPath path(decPath::CreatePathUnix(filename));
-			writer->WriteUInt((uint32_t)pDelayedCombineImage2->GetImage().
-				GetVirtualFileSystem()->GetFileModificationTime(path));
-			
-		}else if(pCacheConstrVerifySource2){
-			if(pCacheConstrDefSource2->GetLength() > 0){
-				writer->Write(pCacheConstrDefSource2->GetPointer(), pCacheConstrDefSource2->GetLength());
-			}
-			if(pCacheConstrVerifySource2->GetLength() > 0){
-				writer->Write(pCacheConstrVerifySource2->GetPointer(), pCacheConstrVerifySource2->GetLength());
-			}
+		const decPath path(decPath::CreatePathUnix(filename));
+		writer->WriteUInt((uint32_t)pDelayedCombineImage1->GetImage().
+			GetVirtualFileSystem()->GetFileModificationTime(path));
+		
+	}else if(pCacheConstrVerifySource1){
+		if(pCacheConstrDefSource1->GetLength() > 0){
+			writer->Write(pCacheConstrDefSource1->GetPointer(), pCacheConstrDefSource1->GetLength());
+		}
+		if(pCacheConstrVerifySource1->GetLength() > 0){
+			writer->Write(pCacheConstrVerifySource1->GetPointer(), pCacheConstrVerifySource1->GetLength());
+		}
+	}
+	
+	// source 2 verify
+	if(pDelayedCombineImage2){
+		const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
+		if(filename.IsEmpty()){
+			DETHROW(deeInvalidParam); // this one is problematic. dont do it
 		}
 		
-		writer->FreeReference();
+		const decPath path(decPath::CreatePathUnix(filename));
+		writer->WriteUInt((uint32_t)pDelayedCombineImage2->GetImage().
+			GetVirtualFileSystem()->GetFileModificationTime(path));
 		
-	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
+	}else if(pCacheConstrVerifySource2){
+		if(pCacheConstrDefSource2->GetLength() > 0){
+			writer->Write(pCacheConstrDefSource2->GetPointer(), pCacheConstrDefSource2->GetLength());
 		}
-		throw;
+		if(pCacheConstrVerifySource2->GetLength() > 0){
+			writer->Write(pCacheConstrVerifySource2->GetPointer(), pCacheConstrVerifySource2->GetLength());
+		}
 	}
 	
 	/*

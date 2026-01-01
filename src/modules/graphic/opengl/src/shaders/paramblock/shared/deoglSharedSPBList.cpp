@@ -71,18 +71,18 @@ deoglSharedSPB *deoglSharedSPBList::GetAt(int index) const{
 	return (deoglSharedSPB*)pSPBs.GetAt(index);
 }
 
-deoglSharedSPBElement *deoglSharedSPBList::AddElement(){
+deoglSharedSPBElement::Ref deoglSharedSPBList::AddElement(){
 	const int count = pSPBs.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		deoglSharedSPBElement * const element = ((deoglSharedSPB*)pSPBs.GetAt(i))->AddElement();
+		const deoglSharedSPBElement::Ref element(((deoglSharedSPB*)pSPBs.GetAt(i))->AddElement());
 		if(element){
 			return element;
 		}
 	}
 	
-	const deoglSharedSPB::Ref spb(deoglSharedSPB::Ref::NewWith(pCreateBlock()));
+	const deoglSharedSPB::Ref spb(deoglSharedSPB::Ref::New(pCreateBlock()));
 	pSPBs.Add(spb);
 	
 	return spb->AddElement();

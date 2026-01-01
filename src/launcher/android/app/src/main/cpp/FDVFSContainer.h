@@ -51,8 +51,8 @@ public:
     bool CanReadFile(const decPath &path) override;
     bool CanWriteFile(const decPath &path) override;
     bool CanDeleteFile(const decPath &path) override;
-    decBaseFileReader *OpenFileForReading(const decPath &path) override;
-    decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
+    decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
+    decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
     void DeleteFile(const decPath &path) override;
     void TouchFile(const decPath &path) override;
     void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) override;

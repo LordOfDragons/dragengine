@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorInConversation;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorInConversation.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,19 +37,20 @@ class ceConversationTopic;
  * \brief Undo action actor in conversation set actor id.
  */
 class ceUCCAInConvoSetActor : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCAInConvoSetActor> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorInConversation *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorInConversation::Ref pCondition;
 	decString pOldID;
 	decString pNewID;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCAInConvoSetActor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -57,7 +58,9 @@ public:
 		ceCConditionActorInConversation *condition, const char *newID);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCCAInConvoSetActor();
+public:
 	/*@}*/
 	
 	

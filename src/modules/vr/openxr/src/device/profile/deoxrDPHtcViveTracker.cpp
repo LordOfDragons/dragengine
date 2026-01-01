@@ -65,7 +65,7 @@ deoxrDPHtcViveTracker::Tracker::~Tracker(){
 // Class deoxrDPHtcViveTracker::RoleAction
 ////////////////////////////////////////////
 
-deoxrDPHtcViveTracker::RoleAction::RoleAction(const deoxrPath &ppath, const deoxrAction::Ref &paction) :
+deoxrDPHtcViveTracker::RoleAction::RoleAction(const deoxrPath &ppath, deoxrAction *paction) :
 path(ppath),
 action(paction){
 }
@@ -236,7 +236,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 					// tracker has not been seen before the session started and has
 					// been activated. we have to store the role and restart the
 					// session to properly use it
-					const Tracker::Ref newTracker(Tracker::Ref::NewWith(deoxrPath(instance, trackerPaths[i].persistentPath),
+					const Tracker::Ref newTracker(Tracker::Ref::New(deoxrPath(instance, trackerPaths[i].persistentPath),
 						pTrackers.GetCount() + 1));
 					
 					newTracker->pathRole = deoxrPath(instance, trackerPaths[i].rolePath);
@@ -479,7 +479,7 @@ const char *roleType, const char *localizedNameSuffix){
 	const deoxrPath rolePath(GetInstance(), path);
 	const XrPath subactionPath[1] = {rolePath};
 	
-	pRoleActions.Add(RoleAction::Ref::NewWith(rolePath,
+	pRoleActions.Add(RoleAction::Ref::New(rolePath,
 		actionSet.AddAction(deoxrAction::etInputPose, actionName,
 			actionLocalizedName, subactionPath, 1)));
 }
@@ -657,7 +657,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 		}
 		
 		const decBaseFileReader::Ref fileReader(vfs.OpenFileForReading(filePath));
-		const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+		const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 		decXmlParser(oxr.GetGameEngine()->GetLogger()).ParseXml(fileReader, xmlDoc);
 		xmlDoc->StripComments();
 		xmlDoc->CleanCharData();
@@ -708,7 +708,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 					continue;
 				}
 				
-				pTrackers.Add(Tracker::Ref::NewWith(path, number));
+				pTrackers.Add(Tracker::Ref::New(path, number));
 			}
 		}
 		
@@ -756,7 +756,7 @@ void deoxrDPHtcViveTracker::pAddDevice(Tracker &tracker){
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	tracker.device.TakeOver(new deoxrDevice(oxr, *this));
+	tracker.device = deoxrDevice::Ref::New(oxr, *this);
 	
 	decString id;
 	id.Format("%str_%s", OXR_DEVID_PREFIX, pSerialFromPath(tracker.path).GetString());
@@ -766,8 +766,8 @@ void deoxrDPHtcViveTracker::pAddDevice(Tracker &tracker){
 	tracker.device->SetActionPose(tracker.action);
 	tracker.device->SetSubactionPath(tracker.pathRole);
 	tracker.device->SetID(id);
-	tracker.device->SetSpacePose(deoxrSpace::Ref::NewWith(*pGetSession(), tracker.action, tracker.pathRole, decVector()));
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::NewWith(// 		*pGetSession(), tracker.action, tracker.path, decVector()) );
+	tracker.device->SetSpacePose(deoxrSpace::Ref::New(*pGetSession(), tracker.action, tracker.pathRole, decVector()));
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New(// 		*pGetSession(), tracker.action, tracker.path, decVector()) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(tracker.device);
 	pAddAxisTrigger(tracker.device, trigger);

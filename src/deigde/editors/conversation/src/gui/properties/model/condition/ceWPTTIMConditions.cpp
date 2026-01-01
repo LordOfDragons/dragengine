@@ -39,8 +39,6 @@
 #include "../ceWPTTreeItem.h"
 #include "../../../ceWindowMain.h"
 #include "../../../../conversation/ceConversation.h"
-#include "../../../../conversation/condition/ceConversationCondition.h"
-#include "../../../../conversation/condition/ceConversationConditionList.h"
 #include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -54,7 +52,7 @@
 
 ceWPTTIMConditions::ceWPTTIMConditions(ceWindowMain &windowMain, eTypes type,
 ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition,
-const ceConversationConditionList &conditions) :
+const ceConversationCondition::List &conditions) :
 ceWPTTIMCondition(windowMain, type, conversation, action, condition),
 pConditions(conditions){
 }
@@ -68,17 +66,13 @@ ceWPTTIMConditions::~ceWPTTIMConditions(){
 ///////////////
 
 ceWPTTIMCondition *ceWPTTIMConditions::GetChildWith(ceConversationCondition *condition) const{
-	const int count = GetChildCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTIMCondition * const child = (ceWPTTIMCondition*)GetChildAt(i);
+	for(const auto &c : GetChildren()){
+		const ceWPTTIMCondition::Ref child(c.DynamicCast<ceWPTTIMCondition>());
 		if(child->GetCondition() == condition){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTIMConditions::StructureChanged(){
@@ -99,10 +93,10 @@ void ceWPTTIMConditions::UpdateConditions(){
 		ceConversationCondition * const condition = pConditions.GetAt(i);
 		
 		// find item matching condition if present
-		ceWPTTIMCondition *model = NULL;
-		const int childCount = GetChildCount();
+		ceWPTTIMCondition::Ref model;
+		const int childCount = GetChildren().GetCount();
 		for(j=i; j<childCount; j++){
-			ceWPTTIMCondition * const child = (ceWPTTIMCondition*)GetChildAt(j);
+			const ceWPTTIMCondition::Ref child(GetChildren().GetAt(j).DynamicCast<ceWPTTIMCondition>());
 			if(child->GetCondition() == condition){
 				model = child;
 				break;
@@ -126,17 +120,14 @@ void ceWPTTIMConditions::UpdateConditions(){
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 	
 	// remove non-matching nodes
-	while(GetChildCount() > count){
-		RemoveChild(GetChildAt(GetChildCount() - 1));
+	while(GetChildren().GetCount() > count){
+		RemoveChild(GetChildren().Last());
 	}
 }
 
@@ -146,7 +137,7 @@ void ceWPTTIMConditions::OnContextMenu(igdeMenuCascade &contextMenu){
 
 
 
-ceWPTTIMCondition *ceWPTTIMConditions::CreateConditionModel(ceWindowMain &windowMain,
+ceWPTTIMCondition::Ref ceWPTTIMConditions::CreateConditionModel(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition){
 	if(!condition){
 		DETHROW(deeInvalidParam);
@@ -154,35 +145,35 @@ ceConversation &conversation, ceConversationAction &action, ceConversationCondit
 	
 	switch(condition->GetType()){
 	case ceConversationCondition::ectLogic:
-		return new ceWPTTIMCLogic(windowMain, conversation, action,
+		return ceWPTTIMCLogic::Ref::New(windowMain, conversation, action,
 			(ceCConditionLogic*)condition);
 		
 	case ceConversationCondition::ectHasActor:
-		return new ceWPTTIMCHasActor(windowMain, conversation, action,
+		return ceWPTTIMCHasActor::Ref::New(windowMain, conversation, action,
 			(ceCConditionHasActor*)condition);
 		
 	case ceConversationCondition::ectActorInConversation:
-		return new ceWPTTIMCActorInConversation(windowMain, conversation, action,
+		return ceWPTTIMCActorInConversation::Ref::New(windowMain, conversation, action,
 			(ceCConditionActorInConversation*)condition);
 		
 	case ceConversationCondition::ectVariable:
-		return new ceWPTTIMCVariable(windowMain, conversation, action,
+		return ceWPTTIMCVariable::Ref::New(windowMain, conversation, action,
 			(ceCConditionVariable*)condition);
 		
 	case ceConversationCondition::ectActorParameter:
-		return new ceWPTTIMCActorParameter(windowMain, conversation, action,
+		return ceWPTTIMCActorParameter::Ref::New(windowMain, conversation, action,
 			(ceCConditionActorParameter*)condition);
 		
 	case ceConversationCondition::ectActorCommand:
-		return new ceWPTTIMCActorCommand(windowMain, conversation, action,
+		return ceWPTTIMCActorCommand::Ref::New(windowMain, conversation, action,
 			(ceCConditionActorCommand*)condition);
 		
 	case ceConversationCondition::ectGameCommand:
-		return new ceWPTTIMCGameCommand(windowMain, conversation, action,
+		return ceWPTTIMCGameCommand::Ref::New(windowMain, conversation, action,
 			(ceCConditionGameCommand*)condition);
 		
 	case ceConversationCondition::ectTrigger:
-		return new ceWPTTIMCTrigger(windowMain, conversation, action,
+		return ceWPTTIMCTrigger::Ref::New(windowMain, conversation, action,
 			(ceCConditionTrigger*)condition);
 		
 	default:

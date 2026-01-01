@@ -45,8 +45,8 @@ private:
 	deAnimatorRuleTrackTo::eUpTarget pUpTarget;
 	deAnimatorRuleTrackTo::eLockedAxis pLockedAxis;
 	
-	aeControllerTarget pTargetPosition;
-	aeControllerTarget pTargetUp;
+	aeControllerTarget::Ref pTargetPosition;
+	aeControllerTarget::Ref pTargetUp;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -56,7 +56,9 @@ public:
 	/** Create a copy of a track to rule. */
 	aeRuleTrackTo(const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleTrackTo() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -83,15 +85,13 @@ public:
 	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
 	
 	/** Retrieve the position target. */
-	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
+	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }
 	
 	/** Retrieve the up target. */
-	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
-	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
+	inline const aeControllerTarget::Ref &GetTargetUp() const{ return pTargetUp; }
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
@@ -102,10 +102,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */

@@ -45,8 +45,8 @@
 
 igdeWidget::igdeWidget(igdeEnvironment &environment) :
 pEnvironment(environment),
-pNativeWidget(NULL),
-pParent(NULL),
+pNativeWidget(nullptr),
+pParent(nullptr),
 pVisible(true){
 }
 
@@ -142,7 +142,7 @@ igdeWindow *igdeWidget::GetParentWindow(){
 		return pParent->GetParentWindow();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -160,5 +160,5 @@ void igdeWidget::SetNativeWidget(void *nativeWidget){
 }
 
 void igdeWidget::DropNativeWidget(){
-	pNativeWidget = NULL;
+	pNativeWidget = nullptr;
 }

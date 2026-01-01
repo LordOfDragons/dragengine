@@ -25,10 +25,11 @@
 #ifndef _IGDEEDITORWINDOW_H_
 #define _IGDEEDITORWINDOW_H_
 
+#include "igdeStepableTask.h"
 #include "layout/igdeContainerBox.h"
 #include "../utils/igdeRecentFiles.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -36,7 +37,6 @@ class igdeAction;
 class igdeEditorModule;
 class igdeMenuCascade;
 class igdeToolBar;
-class igdeStepableTask;
 
 class deException;
 
@@ -45,12 +45,21 @@ class deException;
  * \brief Editor window.
  */
 class DE_DLL_EXPORT igdeEditorWindow : public igdeContainerBox{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditorWindow> Ref;
+	
+	typedef decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*> SharedMenusList;
+	typedef decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*> SharedToolBarsList;
+	typedef decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*> UpdateActionsList;
+	
+	
 private:
 	igdeEditorModule &pEditorModule;
 	bool pActiveModule;
-	decObjectOrderedSet pSharedMenus;
-	decObjectOrderedSet pSharedToolBars;
-	decObjectOrderedSet pUpdateActions;
+	SharedMenusList pSharedMenus;
+	SharedToolBarsList pSharedToolBars;
+	UpdateActionsList pUpdateActions;
 	igdeRecentFiles pRecentFiles;
 	
 	
@@ -162,12 +171,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update NULL can be returned. The caller delets the task once
+	 * does not need any update nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns NULL.
+	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/** \brief Display exception error in a message dialog. */
 	void DisplayException(const deException &exception);
@@ -181,11 +190,8 @@ public:
 	 * Shared menus are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared menus. */
-	int GetSharedMenuCount() const;
-	
-	/** \brief Shared menu at index. */
-	igdeMenuCascade *GetSharedMenuAt(int index) const;
+	/** \brief Shared menus. */
+	const SharedMenusList &GetSharedMenus() const{ return pSharedMenus; }
 	
 	/** \brief Add shared menu. */
 	void AddSharedMenu(igdeMenuCascade *menu);
@@ -205,11 +211,8 @@ public:
 	 * Shared toolbars are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared toolbars. */
-	int GetSharedToolBarCount() const;
-	
-	/** \brief Shared toolbar at index. */
-	igdeToolBar *GetSharedToolBarAt(int index) const;
+	/** \brief Shared toolbars. */
+	const SharedToolBarsList &GetSharedToolBars() const{ return pSharedToolBars; }
 	
 	/** \brief Add shared tool bar. */
 	void AddSharedToolBar(igdeToolBar *toolbar);

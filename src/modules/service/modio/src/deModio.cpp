@@ -116,7 +116,7 @@ deModioUserConfig &deModio::GetUserConfig(const decString &id){
 		return *user;
 	}
 	
-	const deModioUserConfig::Ref newUser(deModioUserConfig::Ref::NewWith(*this, id));
+	const deModioUserConfig::Ref newUser(deModioUserConfig::Ref::New(*this, id));
 	pUserConfigs.SetAt(id, newUser);
 	
 	pSaveConfig();
@@ -132,7 +132,7 @@ void deModio::SetCurUserId(const decString &id){
 	pCurUserId = id;
 	
 	if(!pUserConfigs.Has(id)){
-		pUserConfigs.SetAt(id, deModioUserConfig::Ref::NewWith(*this, id));
+		pUserConfigs.SetAt(id, deModioUserConfig::Ref::New(*this, id));
 	}
 	
 	pSaveConfig();
@@ -152,7 +152,7 @@ void deModio::ActivateMods(const decString &userId){
 	pSaveConfig();
 }
 
-deBaseServiceService* deModio::CreateService(deService *service,
+deBaseServiceService *deModio::CreateService(deService *service,
 const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(service)
 	
@@ -183,11 +183,11 @@ void deModio::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
 		LogInfo("Add VFS containers for stage 'VFSStageMods'");
 		
 		if(!pVFSMods){
-			pVFSMods.TakeOver(new deVirtualFileSystem);
+			pVFSMods = deVirtualFileSystem::Ref::New();
 		}
 		
 		const decPath rootDir(decPath::CreatePathUnix("/"));
-		vfs.AddContainer(deVFSRedirect::Ref::NewWith(rootDir, rootDir, pVFSMods, true));
+		vfs.AddContainer(deVFSRedirect::Ref::New(rootDir, rootDir, pVFSMods, true));
 		
 		pUpdateVFS();
 	}
@@ -214,8 +214,7 @@ void deModio::StoreFailureStateIfFailed(){
 	
 	LogInfo("Store failure state: Failed");
 	try{
-		decBaseFileWriter::Ref::New(GetVFS().OpenFileForWriting(
-			pPathFailureState))->WriteByte('1');
+		GetVFS().OpenFileForWriting(pPathFailureState)->WriteByte('1');
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -225,8 +224,7 @@ void deModio::StoreFailureStateIfFailed(){
 void deModio::ClearFailureState(){
 	LogInfo("Clear failure state");
 	try{
-		decBaseFileWriter::Ref::New(GetVFS().OpenFileForWriting(
-			pPathFailureState))->WriteByte('0');
+		GetVFS().OpenFileForWriting(pPathFailureState)->WriteByte('0');
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -318,13 +316,13 @@ void deModio::pLoadConfigV0(decBaseFileReader &reader){
 	
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		pModConfigs.Add(deModioModConfig::Ref::NewWith(reader));
+		pModConfigs.Add(deModioModConfig::Ref::New(reader));
 	}
 	
 	deModioUserConfig::Ref userConfig;
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		userConfig.TakeOver(new deModioUserConfig(*this, reader));
+		userConfig = deModioUserConfig::Ref::New(*this, reader);
 		pUserConfigs.SetAt(userConfig->GetId(), userConfig);
 	}
 	
@@ -388,7 +386,6 @@ void deModio::pCheckFailureState(){
 		return;
 	}
 	
-	decStringSet &disabledMods = userConfig->GetDisabledMods();
 	const int count = pModConfigs.GetCount();
 	bool requiresSaving = false;
 	int i;
@@ -400,7 +397,7 @@ void deModio::pCheckFailureState(){
 		}
 		
 		LogWarnFormat("-> Disable modification: %s", modConfig.id.GetString());
-		disabledMods.Add(modConfig.id);
+		userConfig->GetDisabledMods().Add(modConfig.id);
 		requiresSaving = true;
 	}
 	
@@ -417,8 +414,7 @@ bool deModio::pReadFailureState(){
 	}
 	
 	try{
-		return decBaseFileReader::Ref::New(vfs.OpenFileForReading(
-			pPathFailureState))->ReadByte() == '1';
+		return vfs.OpenFileForReading(pPathFailureState)->ReadByte() == '1';
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -453,8 +449,8 @@ void deModio::pUpdateVFS(){
 		try{
 			LogInfoFormat("- %s: Add mod using path '%s' version '%s'", config.id.GetString(),
 				config.path.GetString(), config.releaseVersion.GetString());
-			vfsContainer.TakeOver(new deVFSDiskDirectory(rootPath,
-				decPath::CreatePathNative(config.path), true));
+			vfsContainer = deVFSDiskDirectory::Ref::New(rootPath,
+				decPath::CreatePathNative(config.path), true);
 			pVFSMods->AddContainer(vfsContainer);
 			
 			pActivateConfigs.Add(pModConfigs.GetAt(i));
@@ -481,6 +477,8 @@ void deModio::pUpdateVFS(){
 
 class deModioModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deModioModuleInternal> Ref;
+	
 	deModioModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Modio");
 		SetDescription("Provides access to services provided by Mod.io.");
@@ -500,7 +498,7 @@ public:
 	}
 };
 
-deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
-	return new deModioModuleInternal(system);
+deTObjectReference<deInternalModule> deModioRegisterInternalModule(deModuleSystem *system){
+	return deModioModuleInternal::Ref::New(system);
 }
 #endif

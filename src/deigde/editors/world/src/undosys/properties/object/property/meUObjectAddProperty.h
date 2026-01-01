@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -37,16 +37,17 @@ class meObject;
  * \brief Undo Action Add Object Property.
  */
 class meUObjectAddProperty : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectAddProperty> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectAddProperty> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -54,7 +55,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectAddProperty();
+
+public:
 	/*@}*/
 	
 public:

@@ -44,10 +44,10 @@ meHTVRLink::meHTVRLink(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destina
 	if(!sourceRule || !destinationRule){
 		DETHROW(deeInvalidParam);
 	}
-	if(sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){
+	if(sourceSlot < 0 || sourceSlot >= sourceRule->GetSlots().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
-	if(destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount()){
+	if(destinationSlot < 0 || destinationSlot >= destinationRule->GetSlots().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

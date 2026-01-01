@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "decBaseFileWriter.h"
+#include "../exceptions.h"
 
 
 

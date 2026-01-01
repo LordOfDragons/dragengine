@@ -47,9 +47,9 @@ pWindowMain(windowMain),
 pConversation(conversation),
 pType(type),
 pExpanded(false),
-pTree(NULL),
-pParent(NULL),
-pTreeItem(NULL){
+pTree(nullptr),
+pParent(nullptr),
+pTreeItem(nullptr){
 }
 
 ceWPTTreeItemModel::~ceWPTTreeItemModel(){
@@ -111,14 +111,6 @@ void ceWPTTreeItemModel::SetExpanded(bool expanded){
 
 
 
-int ceWPTTreeItemModel::GetChildCount() const{
-	return pChildren.GetCount();
-}
-
-ceWPTTreeItemModel *ceWPTTreeItemModel::GetChildAt(int index) const{
-	return (ceWPTTreeItemModel*)pChildren.GetAt(index);
-}
-
 void ceWPTTreeItemModel::AddChild(ceWPTTreeItemModel *child){
 	if(!child || child->GetParent()){
 		DETHROW(deeInvalidParam);
@@ -154,10 +146,10 @@ void ceWPTTreeItemModel::RemoveChild(ceWPTTreeItemModel *child){
 	
 	if(pTreeItem && child->GetTreeItem()){
 		pTreeItem->RemoveItem(child);
-		child->SetTree(NULL);
+		child->SetTree(nullptr);
 	}
 	
-	child->SetParent(NULL);
+	child->SetParent(nullptr);
 	pChildren.Remove(child);
 }
 
@@ -166,14 +158,10 @@ void ceWPTTreeItemModel::RemoveAllChildren(){
 		pTreeItem->RemoveAllItems();
 	}
 	
-	const int count = pChildren.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		ceWPTTreeItemModel &child = *((ceWPTTreeItemModel*)pChildren.GetAt(i));
-		child.SetTree(NULL);
-		child.SetParent(NULL);
-	}
-	
+	pChildren.Visit([](ceWPTTreeItemModel &c){
+		c.SetTree(nullptr);
+		c.SetParent(nullptr);
+	});
 	pChildren.RemoveAll();
 }
 
@@ -195,17 +183,17 @@ void ceWPTTreeItemModel::MoveChild(int from, int to){
 		return;
 	}
 	
-	ceWPTTreeItemModel * const child = (ceWPTTreeItemModel*)pChildren.GetAt(from);
+	ceWPTTreeItemModel * const child = pChildren.GetAt(from);
 	
-	ceWPTTreeItemModel *otherChild = NULL;
+	ceWPTTreeItemModel *otherChild = nullptr;
 	if(to < count){
-		otherChild = (ceWPTTreeItemModel*)pChildren.GetAt(to);
+		otherChild = pChildren.GetAt(to);
 	}
 	
 	pChildren.Move(child, to);
 	
 	if(pTreeItem && child->GetTreeItem() && (!otherChild || otherChild->GetTreeItem())){
-		igdeTreeItem *otherItem = NULL;
+		igdeTreeItem *otherItem = nullptr;
 		if(otherChild){
 			otherItem = otherChild->GetTreeItem();
 		}
@@ -230,7 +218,7 @@ ceWPTTreeModel *ceWPTTreeItemModel::GetFirstTree() const{
 		model = model->pParent;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTreeItemModel::SetParent(ceWPTTreeItemModel *parent){
@@ -258,13 +246,10 @@ void ceWPTTreeItemModel::SetTreeItem(ceWPTTreeItem *treeItem){
 			pTree->GetTreeList()->ItemChanged(treeItem);
 		}
 		
-		const int count = pChildren.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			ceWPTTreeItemModel * const childModel = (ceWPTTreeItemModel*)pChildren.GetAt(i);
-			childModel->SetTree(pTree);
-			treeItem->AddItem(childModel);
-		}
+		pChildren.Visit([&](ceWPTTreeItemModel *c){
+			c->SetTree(pTree);
+			treeItem->AddItem(c);
+		});
 		
 		treeItem->SortItems();
 	}
@@ -303,33 +288,23 @@ void ceWPTTreeItemModel::ContextMenuCondition(igdeMenuCascade&, ceConversationCo
 }
 
 ceWPTTIMAction *ceWPTTreeItemModel::DeepFindAction(ceConversationAction *action){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTIMAction * const child = ((ceWPTTreeItemModel*)
-			pChildren.GetAt(i))->DeepFindAction(action);
+	for(const auto &c : pChildren){
+		ceWPTTIMAction * const child = c->DeepFindAction(action);
 		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 ceWPTTIMCondition *ceWPTTreeItemModel::DeepFindCondition(ceConversationCondition *condition){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		ceWPTTIMCondition * const child = ((ceWPTTreeItemModel*)
-			pChildren.GetAt(i))->DeepFindCondition(condition);
+	for(const auto &c : pChildren){
+		ceWPTTIMCondition * const child = c->DeepFindCondition(condition);
 		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTreeItemModel::OnExpandedChanged(){
@@ -343,7 +318,7 @@ ceConversationAction *ceWPTTreeItemModel::GetOwnerAction() const{
 		return pParent->GetOwnerAction();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -352,7 +327,7 @@ ceConversationCondition *ceWPTTreeItemModel::GetOwnerCondition() const{
 		return pParent->GetOwnerCondition();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -52,7 +54,7 @@
 
 // native structure
 struct sColRigNatDat{
-	deColliderRig *collider;
+	deColliderRig::Ref collider;
 };
 
 
@@ -65,20 +67,17 @@ deClassColliderRig::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCol
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderRig::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sColRigNatDat &nd = *((sColRigNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	sColRigNatDat * const nd = new (p_GetNativeData(myself)) sColRigNatDat;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	deColliderManager &colMgr = *ds.GetGameEngine()->GetColliderManager();
 	
-	// clear ( important )
-	nd.collider = NULL;
-	
 	// super call
-	deClassCollider * const baseClass = (deClassCollider*)GetOwnerClass()->GetBaseClass();
+	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create collider
-	nd.collider = colMgr.CreateColliderRig();
-	baseClass->AssignCollider(myself->GetRealObject(), nd.collider);
+	nd->collider = colMgr.CreateColliderRig();
+	baseClass->AssignCollider(myself->GetRealObject(), nd->collider);
 }
 
 // public func destructor()
@@ -90,12 +89,7 @@ void deClassColliderRig::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sColRigNatDat &nd = *((sColRigNatDat*)p_GetNativeData(myself));
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-		nd.collider = NULL;
-	}
+	static_cast<sColRigNatDat*>(p_GetNativeData(myself))->~sColRigNatDat();
 }
 
 
@@ -109,8 +103,8 @@ deClassColliderRig::nfAttachRig::nfAttachRig(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsObj); // resource
 }
 void deClassColliderRig::nfAttachRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	if(!resource){
@@ -127,8 +121,8 @@ deClassColliderRig::nfAttachBone::nfAttachBone(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsStr); // targetBone
 }
 void deClassColliderRig::nfAttachBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	const char * const targetBone = rt->GetValue(1)->GetString();
@@ -148,8 +142,8 @@ deClassColliderRig::nfAttachBone2::nfAttachBone2(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassColliderRig::nfAttachBone2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	const char * const targetBone = rt->GetValue(1)->GetString();
@@ -170,8 +164,8 @@ deClassColliderRig::nfAttachWeight::nfAttachWeight(const sInitData &init) : dsFu
 	p_AddParameter(init.clsCI); // colInfo
 }
 void deClassColliderRig::nfAttachWeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	deResource * const resource = ds.GetClassCollider()->GetResource(*rt->GetValue(0));
 	deCollisionInfo * collisionInfo = ds.GetClassCollisionInfo()->GetInfo(rt->GetValue(1)->GetRealObject());
@@ -191,8 +185,8 @@ deClassColliderRig::nfBoneApplyImpuls::nfBoneApplyImpuls(const sInitData &init) 
 	p_AddParameter(init.clsVec); // impuls
 }
 void deClassColliderRig::nfBoneApplyImpuls::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &impuls = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -208,8 +202,8 @@ deClassColliderRig::nfBoneApplyImpulsAt::nfBoneApplyImpulsAt(const sInitData &in
 	p_AddParameter(init.clsVec); // position
 }
 void deClassColliderRig::nfBoneApplyImpulsAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &impuls = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -225,8 +219,8 @@ deClassColliderRig::nfBoneApplyTorqueImpuls::nfBoneApplyTorqueImpuls(const sInit
 	p_AddParameter(init.clsVec); // torqueImpuls
 }
 void deClassColliderRig::nfBoneApplyTorqueImpuls::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &torqueImpuls = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -241,8 +235,8 @@ deClassColliderRig::nfBoneApplyForce::nfBoneApplyForce(const sInitData &init) : 
 	p_AddParameter(init.clsVec); // force
 }
 void deClassColliderRig::nfBoneApplyForce::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &force = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -258,8 +252,8 @@ deClassColliderRig::nfBoneApplyForceAt::nfBoneApplyForceAt(const sInitData &init
 	p_AddParameter(init.clsVec); // position
 }
 void deClassColliderRig::nfBoneApplyForceAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &force = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -275,8 +269,8 @@ deClassColliderRig::nfBoneApplyTorque::nfBoneApplyTorque(const sInitData &init) 
 	p_AddParameter(init.clsVec); // torque
 }
 void deClassColliderRig::nfBoneApplyTorque::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	const int bone = rt->GetValue(0)->GetInt();
 	const decVector &torque = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -291,8 +285,8 @@ deClassColliderRig::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassColliderRig::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassRig()->PushRig(rt, collider.GetRig());
 }
@@ -303,8 +297,8 @@ deClassColliderRig::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsRig); // rig
 }
 void deClassColliderRig::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	
 	deRig * const rig = ds.GetClassRig()->GetRig(rt->GetValue(0)->GetRealObject());
 	collider.SetRig(rig);
@@ -316,8 +310,8 @@ deClassColliderRig::nfCopyStatesFromCollider::nfCopyStatesFromCollider(const sIn
 	p_AddParameter(init.clsColRig); // collider
 }
 void deClassColliderRig::nfCopyStatesFromCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deClassColliderRig &clsColRig = *((deClassColliderRig*)GetOwnerClass());
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deClassColliderRig &clsColRig = *(static_cast<deClassColliderRig*>(GetOwnerClass()));
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(0)->GetRealObject());
 	
 	if(!collider2){
@@ -334,8 +328,8 @@ deClassColliderRig::nfCopyStateFromCollider::nfCopyStateFromCollider(const sInit
 	p_AddParameter(init.clsColRig); // collider
 }
 void deClassColliderRig::nfCopyStateFromCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deClassColliderRig &clsColRig = *((deClassColliderRig*)GetOwnerClass());
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deClassColliderRig &clsColRig = *(static_cast<deClassColliderRig*>(GetOwnerClass()));
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -354,8 +348,8 @@ deClassColliderRig::nfCopyStateFromCollider2::nfCopyStateFromCollider2(const sIn
 	p_AddParameter(init.clsColRig); // collider
 }
 void deClassColliderRig::nfCopyStateFromCollider2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deClassColliderRig &clsColRig = *((deClassColliderRig*)GetOwnerClass());
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deClassColliderRig &clsColRig = *(static_cast<deClassColliderRig*>(GetOwnerClass()));
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(2)->GetRealObject());
 	const int boneFrom = rt->GetValue(0)->GetInt();
 	const int boneTo = rt->GetValue(1)->GetInt();
@@ -375,8 +369,8 @@ deClassColliderRig::nfBoneGetPosition::nfBoneGetPosition(const sInitData &init) 
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassDVector()->PushDVector(rt, collider.GetBoneAt(bone).GetPosition());
@@ -389,8 +383,8 @@ deClassColliderRig::nfBoneSetPosition::nfBoneSetPosition(const sInitData &init) 
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassColliderRig::nfBoneSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -405,8 +399,8 @@ deClassColliderRig::nfBoneGetOrientation::nfBoneGetOrientation(const sInitData &
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, collider.GetBoneAt(bone).GetOrientation());
@@ -419,8 +413,8 @@ deClassColliderRig::nfBoneSetOrientation::nfBoneSetOrientation(const sInitData &
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassColliderRig::nfBoneSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -435,8 +429,8 @@ deClassColliderRig::nfBoneGetLinearVelocity::nfBoneGetLinearVelocity(const sInit
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone).GetLinearVelocity());
@@ -449,8 +443,8 @@ deClassColliderRig::nfBoneSetLinearVelocity::nfBoneSetLinearVelocity(const sInit
 	p_AddParameter(init.clsVec); // velocity
 }
 void deClassColliderRig::nfBoneSetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -463,8 +457,8 @@ deClassColliderRig::nfBoneGetAngularVelocity::nfBoneGetAngularVelocity(const sIn
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, collider.GetBoneAt(bone).GetAngularVelocity());
@@ -477,8 +471,8 @@ deClassColliderRig::nfBoneSetAngularVelocity::nfBoneSetAngularVelocity(const sIn
 	p_AddParameter(init.clsVec); // velocity
 }
 void deClassColliderRig::nfBoneSetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -491,8 +485,8 @@ deClassColliderRig::nfBoneGetMatrix::nfBoneGetMatrix(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone).GetMatrix());
@@ -504,8 +498,8 @@ deClassColliderRig::nfBoneGetInverseMatrix::nfBoneGetInverseMatrix(const sInitDa
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderRig::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderRig*)GetOwnerClass())->GetDS();
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderRig*>(GetOwnerClass()))->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, collider.GetBoneAt(bone).GetInverseMatrix());
@@ -520,7 +514,7 @@ deClassColliderRig::nfEnableRigBoneConstraints::nfEnableRigBoneConstraints(const
 	p_AddParameter(init.clsBool); // enable
 }
 void deClassColliderRig::nfEnableRigBoneConstraints::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig &collider = *(((sColRigNatDat*)p_GetNativeData(myself))->collider);
+	deColliderRig &collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
 	const int bone = rt->GetValue(0)->GetInt();
 	const bool enable = rt->GetValue(1)->GetBool();
 	
@@ -545,7 +539,7 @@ dsFunction(init.clsColRig, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 }
 
 void deClassColliderRig::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig *collider = ((sColRigNatDat*)p_GetNativeData(myself))->collider;
+	deColliderRig *collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)collider);
 }
@@ -556,15 +550,15 @@ dsFunction(init.clsColRig, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassColliderRig::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderRig * const collider = ((sColRigNatDat*)p_GetNativeData(myself))->collider;
-	deClassColliderRig * const clsColRig = (deClassColliderRig*)GetOwnerClass();
+	deColliderRig * const collider = static_cast<sColRigNatDat*>(p_GetNativeData(myself))->collider;
+	deClassColliderRig * const clsColRig = static_cast<deClassColliderRig*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsColRig)){
 		rt->PushBool(false);
 		
 	}else{
-		deColliderRig * const otherCol = ((sColRigNatDat*)p_GetNativeData(obj))->collider;
+		deColliderRig * const otherCol = static_cast<sColRigNatDat*>(p_GetNativeData(obj))->collider;
 		rt->PushBool(collider == otherCol);
 	}
 }
@@ -576,7 +570,7 @@ dsFunction(init.clsColRig, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | 
 	p_AddParameter(init.clsColRig); // collider2
 }
 void deClassColliderRig::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassColliderRig &clsColRig = *((deClassColliderRig*)GetOwnerClass());
+	const deClassColliderRig &clsColRig = *(static_cast<deClassColliderRig*>(GetOwnerClass()));
 	deColliderRig * const collider1 = clsColRig.GetCollider(rt->GetValue(0)->GetRealObject());
 	deColliderRig * const collider2 = clsColRig.GetCollider(rt->GetValue(1)->GetRealObject());
 	
@@ -673,10 +667,10 @@ void deClassColliderRig::CreateClassMembers(dsEngine *engine){
 
 deColliderRig *deClassColliderRig::GetCollider(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sColRigNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
+	return static_cast<sColRigNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
 void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
@@ -689,16 +683,13 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 		return;
 	}
 	
-	deClassCollider * const baseClass = (deClassCollider*)GetBaseClass();
+	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sColRigNatDat &nd = *((sColRigNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.collider = NULL;
+	sColRigNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sColRigNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.collider = collider;
-		collider->AddReference();
+		nd->collider = collider;
 		
 		baseClass->AssignCollider(rt->GetValue(0)->GetRealObject(), collider);
 		
@@ -713,21 +704,6 @@ void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig *col
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sColRigNatDat &nd = *((sColRigNatDat*)p_GetNativeData(myself->GetBuffer()));
-	
-	if(collider == nd.collider){
-		return;
-	}
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-	}
-	
-	nd.collider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
-	
-	((deClassCollider*)GetBaseClass())->AssignCollider(myself, collider);
+	static_cast<sColRigNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider = collider;
+	(static_cast<deClassCollider*>(GetBaseClass()))->AssignCollider(myself, collider);
 }

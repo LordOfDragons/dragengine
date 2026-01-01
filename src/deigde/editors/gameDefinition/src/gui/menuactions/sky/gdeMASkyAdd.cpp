@@ -59,7 +59,7 @@ gdeBaseAction(windowMain, "Add Sky...",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last sky? what directory? );
@@ -67,12 +67,14 @@ igdeUndo *gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select sky", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if(gameDefinition.GetSkies().HasWithPath(filename)){
+	if(gameDefinition.GetSkies().HasMatching([&](const gdeSky &sky){
+		return sky.GetPath() == filename;
+	})){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Sky", "Sky with path exists already.");
-		return NULL;
+		return {};
 	}
 	
 	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
@@ -81,6 +83,6 @@ igdeUndo *gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	const gdeSky::Ref sky(gdeSky::Ref::NewWith(filename, filetitle));
-	return new gdeUAddSky(&gameDefinition, sky);
+	const gdeSky::Ref sky(gdeSky::Ref::New(filename, filetitle));
+	return gdeUAddSky::Ref::New(&gameDefinition, sky);
 }

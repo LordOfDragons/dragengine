@@ -79,7 +79,7 @@ void deRLTaskWriteModel::Run(){
 	decPath path;
 	path.SetFromUnix(GetPath());
 	
-	module->SaveModel(decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(path)), pModel);
+	module->SaveModel(GetVFS()->OpenFileForWriting(path), pModel);
 	
 	pSucceeded = true;
 	LogRunExit();

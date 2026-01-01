@@ -53,16 +53,14 @@
 ////////////////////////////
 
 reRigPush::reRigPush(deEngine *engine){
-	if(!engine){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	pEngine = engine;
-	pRig = NULL;
+	pRig = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSPush = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSPush = nullptr;
+	pCollider = nullptr;
 	
 	pType = reRigPush::eptSimple;
 	pImpuls = 1.0f;
@@ -87,7 +85,7 @@ reRigPush::reRigPush(deEngine *engine){
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
 		pDDSPush->SetVisible(true);
 		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
@@ -100,11 +98,11 @@ reRigPush::reRigPush(deEngine *engine){
 
 reRigPush::reRigPush(const reRigPush &push){
 	pEngine = push.pEngine;
-	pRig = NULL;
+	pRig = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSPush = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSPush = nullptr;
+	pCollider = nullptr;
 	
 	pType = push.pType;
 	pPosition = push.pPosition;
@@ -131,7 +129,7 @@ reRigPush::reRigPush(const reRigPush &push){
 		pDebugDrawer = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSPush = new igdeWDebugDrawerShape;
+		pDDSPush = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDPushGeometry();
 		pDDSPush->SetVisible(true);
 		pDDSPush->SetParentDebugDrawer(pDebugDrawer);
@@ -297,18 +295,7 @@ bool reRigPush::IsVisible() const{
 //////////////////////
 
 void reRigPush::pCleanUp(){
-	SetRig(NULL);
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
-	if(pDDSPush){
-		delete pDDSPush;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 void reRigPush::pUpdateDDPush(){
@@ -337,7 +324,7 @@ void reRigPush::pUpdateDDPushGeometry(){
 void reRigPush::pUpdateColliderShape(){
 	if(pCollider && pRig){
 		decMatrix matrix = decMatrix::CreateRotation(pOrientation * DEG2RAD);
-		decShapeBox *box = NULL;
+		decShapeBox *box = nullptr;
 		decVector arrowStart;
 		decShapeList shapeList;
 		

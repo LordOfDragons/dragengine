@@ -25,13 +25,12 @@
 #ifndef _DEVIDEOMANAGER_H_
 #define _DEVIDEOMANAGER_H_
 
+#include "deVideo.h"
+#include "deVideoDecoder.h"
+#include "deVideoAudioDecoder.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 #include "../../threading/deMutex.h"
-
-class deVideo;
-class deVideoDecoder;
-class deVideoAudioDecoder;
 
 
 /**
@@ -80,10 +79,10 @@ public:
 	deVideo *GetVideoWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo(const char *filename, const char *basePath, bool asynchron);
+	deVideo::Ref LoadVideo(const char *filename, const char *basePath, bool asynchron);
 	
 	/** \brief Load video from file relative to base path. */
-	deVideo *LoadVideo(deVirtualFileSystem *vfs, const char *filename,
+	deVideo::Ref LoadVideo(deVirtualFileSystem *vfs, const char *filename,
 		const char *basePath, bool asynchron);
 	
 	/** \brief Save video to file. */
@@ -101,10 +100,10 @@ public:
 	
 	
 	/** \brief Create video decoder. */
-	deVideoDecoder *CreateDecoder(deVideo *video);
+	deVideoDecoder::Ref CreateDecoder(deVideo *video);
 	
 	/** \brief Create audio decoder or NULL if video has no audio. */
-	deVideoAudioDecoder *CreateAudioDecoder(deVideo *video);
+	deVideoAudioDecoder::Ref CreateAudioDecoder(deVideo *video);
 	
 	
 	

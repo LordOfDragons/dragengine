@@ -54,11 +54,11 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	
 	int p, pixelCount = resolution * resolution;
 	
-	pWorld = NULL;
+	pWorld = nullptr;
 	pSector = sector;
 	
-	pOldHeights = NULL;
-	pNewHeights = NULL;
+	pOldHeights = nullptr;
+	pNewHeights = nullptr;
 	
 	SetShortInfo("Import Height Image");
 	SetMemoryConsumption(sizeof(meUHTImportHeightImage) + 2 * sizeof(float) * pixelCount);
@@ -96,7 +96,6 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUHTImportHeightImage::~meUHTImportHeightImage(){
@@ -124,8 +123,6 @@ void meUHTImportHeightImage::Redo(){
 void meUHTImportHeightImage::pCleanUp(){
 	if(pNewHeights) delete [] pNewHeights;
 	if(pOldHeights) delete [] pOldHeights;
-	
-	if(pWorld) pWorld->FreeReference();
 }
 
 void meUHTImportHeightImage::pDoIt(float *heights){

@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class particleEmitter set rotation.
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCParticleEmitterSetRotation> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCParticleEmitterSetRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

@@ -26,8 +26,8 @@
 #define _DEOGLDSRENDERABLECAMERA_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableCamera.h"
 
-class deoglRDSRenderableCamera;
 class deoglCamera;
 
 class deDSRenderableCamera;
@@ -39,7 +39,7 @@ class deDSRenderableCamera;
 class deoglDSRenderableCamera : public deoglDSRenderable{
 public:
 	const deDSRenderableCamera &pRenderableCamera;
-	deoglRDSRenderableCamera *pRRenderableCamera;
+	deoglRDSRenderableCamera::Ref pRRenderableCamera;
 	deoglCamera *pCamera;
 	bool pDirty;
 	

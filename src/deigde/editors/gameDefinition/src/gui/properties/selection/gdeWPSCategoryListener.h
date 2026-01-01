@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSCategoryListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSCategoryListener(gdeWPSCategory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSCategoryListener() override;
+public:
 	/*@}*/
 	
 	

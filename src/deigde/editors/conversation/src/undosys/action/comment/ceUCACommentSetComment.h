@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAComment;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAComment.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action comment conversation action set comment.
  */
 class ceUCACommentSetComment : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCACommentSetComment> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAComment *pComment;
+	ceConversationTopic::Ref pTopic;
+	ceCAComment::Ref pComment;
 	decString pOldComment;
 	decString pNewComment;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCACommentSetComment> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCACommentSetComment();
+public:
 	/*@}*/
 	
 public:

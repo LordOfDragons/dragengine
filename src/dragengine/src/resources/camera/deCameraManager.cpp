@@ -60,24 +60,10 @@ deCamera *deCameraManager::GetRootCamera() const{
 	return (deCamera*)pCameras.GetRoot();
 }
 
-deCamera *deCameraManager::CreateCamera(){
-	deCamera *camera = NULL;
-	
-	// create and add camera
-	try{
-		camera = new deCamera(this);
-		if(!camera) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadCamera(camera);
-		pCameras.Add(camera);
-		
-	}catch(const deException &){
-		if(camera){
-			camera->FreeReference();
-		}
-		throw;
-	}
-	
-	// finished
+deCamera::Ref deCameraManager::CreateCamera(){
+	const deCamera::Ref camera(deCamera::Ref::New(this));
+	GetGraphicSystem()->LoadCamera(camera);
+	pCameras.Add(camera);
 	return camera;
 }
 

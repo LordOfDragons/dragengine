@@ -37,7 +37,7 @@ class igdeEnvironment;
 /**
  * \brief IGDE UI Action Redo.
  * 
- * Redo action. Set Undo System to use or NULL if not available.
+ * Redo action. Set Undo System to use or nullptr if not available.
  */
 class DE_DLL_EXPORT igdeActionRedo : public igdeAction{
 
@@ -56,7 +56,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionRedo(igdeEnvironment &environment, igdeUndoSystem *undoSystem = NULL);
+	igdeActionRedo(igdeEnvironment &environment, igdeUndoSystem *undoSystem = nullptr);
 	
 	
 	
@@ -78,10 +78,10 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
+	/** \brief Set undo system or nullptr. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	

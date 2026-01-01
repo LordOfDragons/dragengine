@@ -26,6 +26,7 @@
 #define _MEVIEWEDITORMOVE_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../undosys/gui/meBaseUndoMove.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -39,8 +40,11 @@ class meCLSnapPoint;
  * \brief View editor for moving scene elements.
  */
 class meViewEditorMove : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorMove> Ref;
+	
 private:
-	igdeUndo::Ref pUndoMove;
+	meBaseUndoMove::Ref pUndoMove;
 	meCLSnapPoint *pCLSnapPoint;
 	deCollider::Ref pCLCollider;
 	
@@ -52,8 +56,11 @@ public:
 	/** \brief Create view editor. */
 	meViewEditorMove(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
 	~meViewEditorMove() override;
+	
+public:
 	/*@}*/
 	
 	

@@ -40,16 +40,14 @@
 ////////////////////////////
 
 reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
-	if(!rig) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(rig)
 	
 	SetShortInfo("Toggle Rig Dynamic");
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigToggleDynamic::~reURigToggleDynamic(){
-	if(pRig) pRig->FreeReference();
 }
 
 

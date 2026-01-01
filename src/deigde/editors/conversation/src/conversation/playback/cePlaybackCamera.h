@@ -25,11 +25,12 @@
 #ifndef _CEPLAYBACKCAMERA_H_
 #define _CEPLAYBACKCAMERA_H_
 
+#include "../target/ceTarget.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
 class cePlayback;
-class ceTarget;
 class ceConversationActor;
 class igdeCamera;
 
@@ -49,8 +50,10 @@ class igdeCamera;
  * except the coordinate system and the look-at actor can vary in a linear way from a
  * start to an end value.
  */
-class cePlaybackCamera{
+class cePlaybackCamera : public deObject{
 public:
+	typedef deTObjectReference<cePlaybackCamera> Ref;
+	
 	/** Camera shot parameters. */
 	enum eParameters{
 		epPositionX,
@@ -69,7 +72,7 @@ private:
 	
 	decMatrix pCoordSys;
 	
-	ceTarget *pCameraTarget;
+	ceTarget::Ref pCameraTarget;
 	decVector pOffsetCameraFrom;
 	decVector pOffsetCameraTo;
 	decVector pCameraOrbitFrom;
@@ -77,7 +80,7 @@ private:
 	float pCameraDistanceFrom;
 	float pCameraDistanceTo;
 	
-	ceTarget *pLookAtTarget;
+	ceTarget::Ref pLookAtTarget;
 	decVector pOffsetLookAtFrom;
 	decVector pOffsetLookAtTo;
 	
@@ -112,7 +115,9 @@ public:
 	/** Creates a new playback camera. */
 	cePlaybackCamera(cePlayback &playback);
 	/** Cleans up the playback camera. */
+protected:
 	~cePlaybackCamera();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -122,9 +127,9 @@ public:
 	/** Sets the coordinate system matrix. */
 	void SetCoordinateSystem(const decMatrix &matrix);
 	
-	/** Retrieves the camera target or NULL if not set. */
-	inline ceTarget *GetCameraTarget() const{ return pCameraTarget; }
-	/** Sets the camera target or NULL if not set. */
+	/** Retrieves the camera target or nullptr if not set. */
+	inline const ceTarget::Ref &GetCameraTarget() const{ return pCameraTarget; }
+	/** Sets the camera target or nullptr if not set. */
 	void SetCameraTarget(ceTarget *target);
 	/** Retrieves the start camera position. */
 	inline const decVector &GetOffsetCameraFrom() const{ return pOffsetCameraFrom; }
@@ -151,9 +156,9 @@ public:
 	/** Sets the end camera orbit distance. */
 	void SetCameraDistanceTo(float distance);
 	
-	/** Retrieves the look-at target or NULL if not set. */
-	inline ceTarget *GetLookAtTarget() const{ return pLookAtTarget; }
-	/** Sets the look-at target or NULL if not set. */
+	/** Retrieves the look-at target or nullptr if not set. */
+	inline const ceTarget::Ref &GetLookAtTarget() const{ return pLookAtTarget; }
+	/** Sets the look-at target or nullptr if not set. */
 	void SetLookAtTarget(ceTarget *target);
 	/** Retrieves the start look-at position. */
 	inline const decVector &GetLookAtFrom() const{ return pOffsetLookAtFrom; }

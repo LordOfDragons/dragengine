@@ -24,7 +24,7 @@
 
 #include "reUSetShapeCapsuleHalfHeight.h"
 #include "../../../rig/shape/reRigShapeCapsule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *shape, float halfHeight){
-	if(!shape) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
@@ -43,12 +43,9 @@ reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *sh
 	pNewHalfHeight = halfHeight;
 	
 	SetShortInfo("Set Capsule Shape Half Height");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){
-	pShape->FreeReference();
 }
 
 

@@ -37,7 +37,6 @@
 
 #include "../deBaseModule.h"
 
-class deInputDevice;
 class deInputDevicePose;
 class deInputEvent;
 
@@ -57,6 +56,7 @@ class NSEvent;
 #endif
 #endif
 
+#include "../../../input/deInputDevice.h"
 #include "../../../input/deInputEvent.h"
 
 
@@ -106,7 +106,7 @@ public:
 	virtual int GetDeviceCount() = 0;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt(int index) = 0;
+	virtual deInputDevice::Ref GetDeviceAt(int index) = 0;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
 	virtual int IndexOfDeviceWithID(const char *id) = 0;

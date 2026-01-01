@@ -272,7 +272,7 @@ bool declRunGame::ParseArguments(){
 	// if console mode is requested modify the engine instance factory
 	if(pUseConsole){
 		const delEngineInstanceDirect::Factory::Ref factory(
-			delEngineInstanceDirect::Factory::Ref::NewWith());
+			delEngineInstanceDirect::Factory::Ref::New());
 		factory->SetUseConsole(true);
 		pLauncher.SetEngineInstanceFactory(factory);
 	}
@@ -371,9 +371,8 @@ bool declRunGame::LocateGame(){
 		delGameList list;
 		
 		{
-		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-			pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
-				pLauncher, pLauncher.GetEngine().GetLogFile())));
+		const delEngineInstance::Ref instance(pLauncher.GetEngineInstanceFactory().
+			CreateEngineInstance(pLauncher, pLauncher.GetEngine().GetLogFile()));
 		
 		instance->StartEngine();
 		instance->LoadModules();
@@ -502,7 +501,7 @@ void declRunGame::ApplyCustomModuleParameters(){
 	delGameProfile::Ref profile = pGame->GetCustomProfile();
 	
 	if(!profile){
-		profile.TakeOver(pLauncher.CreateGameProfile());
+		profile = pLauncher.CreateGameProfile();
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
 		pGame->SetCustomProfile(profile);
 	}
@@ -651,7 +650,7 @@ void declRunGame::Run(){
 	}
 	
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::NewWith(engineLogger));
+		delEngineInstanceDirect::Factory::Ref::New(engineLogger));
 	factory->SetUseConsole(pUseConsole);
 	
 	// run game. blocks until finished since we use a direct engine instance. this method

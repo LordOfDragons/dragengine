@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAComment : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAComment> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAComment *GetActionComment() const{ return (ceCAComment*)GetAction(); }
+	inline ceCAComment *GetActionComment() const{ return GetAction().DynamicCast<ceCAComment>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

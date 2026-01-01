@@ -42,11 +42,11 @@
 ////////////////////////////
 
 meHTVRuleComponents::meHTVRuleComponents() : meHTVRule(ertComponents, 4){
-	GetSlotAt(eisVector).SetIsInput(true);
+	GetSlots().GetAt(eisVector)->SetIsInput(true);
 	
-	GetSlotAt(eosX).SetIsInput(false);
-	GetSlotAt(eosY).SetIsInput(false);
-	GetSlotAt(eosZ).SetIsInput(false);
+	GetSlots().GetAt(eosX)->SetIsInput(false);
+	GetSlots().GetAt(eosY)->SetIsInput(false);
+	GetSlots().GetAt(eosZ)->SetIsInput(false);
 }
 
 meHTVRuleComponents::meHTVRuleComponents(const meHTVRuleComponents &rule) :
@@ -71,10 +71,10 @@ void meHTVRuleComponents::SetVector(const decVector &vector){
 float meHTVRuleComponents::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
 	if(slot < 0 || slot > 2) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &slotResult = GetSlotAt(eisVector);
+	meHTVRSlot &slotResult = GetSlots().GetAt(eisVector);
 	
-	if(slotResult.GetLinkCount() > 0){
-		meHTVRLink &link = *slotResult.GetLinkAt(0);
+	if(slotResult.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *slotResult.GetLinks().GetAt(0);
 		
 		decVector vector = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 		
@@ -107,6 +107,6 @@ decVector meHTVRuleComponents::GetOutputSlotVectorAt(int slot, meHTVEvaluationEn
 	return decVector(value, value, value);
 }
 
-meHTVRule *meHTVRuleComponents::Copy() const{
-	return new meHTVRuleComponents(*this);
+meHTVRule::Ref meHTVRuleComponents::Copy() const{
+	return meHTVRuleComponents::Ref::New(*this);
 }

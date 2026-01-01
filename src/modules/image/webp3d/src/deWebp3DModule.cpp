@@ -118,6 +118,8 @@ void deWebp3DModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deWebp3DModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deWebp3DModuleInternal> Ref;
+	
 	deWebp3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebP-3D");
 		SetDescription("Handles images saved in the WebP-3D format (lossless and lossy compression). \
@@ -142,7 +144,7 @@ Files inside the tarball are named zX.webp where X is the z coordinate without l
 	}
 };
 
-deInternalModule *deWebp3DRegisterInternalModule(deModuleSystem *system){
-	return new deWebp3DModuleInternal(system);
+deTObjectReference<deInternalModule> deWebp3DRegisterInternalModule(deModuleSystem *system){
+	return deWebp3DModuleInternal::Ref::New(system);
 }
 #endif

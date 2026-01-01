@@ -26,6 +26,7 @@
 #define _GDEOCCAMERA_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -46,6 +47,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCCamera> Ref;
 
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCCamera> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -56,7 +60,9 @@ public:
 	gdeOCCamera(const gdeOCCamera &camera);
 	
 	/** \brief Clean up camera. */
+protected:
 	virtual ~gdeOCCamera();
+public:
 	/*@}*/
 	
 	

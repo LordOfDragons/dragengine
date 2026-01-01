@@ -418,42 +418,42 @@ void aeController::UpdateValue(float elapsed){
 		
 	case aeAnimatorLocomotion::eaLegGroundPosition:
 		if(enabled || wakeboarding){
-			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-				SetVector(locomotion.GetLegAt(pLocoLeg)->GetGroundPosition());
+			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+				SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetGroundPosition());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundNormal:
 		if(enabled || wakeboarding){
-			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-				SetVector(locomotion.GetLegAt(pLocoLeg)->GetGroundNormal());
+			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+				SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetGroundNormal());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegInfluence:
 		if(enabled || wakeboarding){
-			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-				SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
+			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegPosition:
 		if(enabled || wakeboarding){
-			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-				SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
-				SetVector(locomotion.GetLegAt(pLocoLeg)->GetIKPosition());
+			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
+				SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKPosition());
 			}
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegOrientation:
 		if(enabled || wakeboarding){
-			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-				SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
-				SetVector(locomotion.GetLegAt(pLocoLeg)->GetIKOrientation());
+			if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+				SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
+				SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKOrientation());
 			}
 		}
 		break;
@@ -515,34 +515,34 @@ void aeController::ResetValue(){
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundPosition:
-		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-			SetVector(locomotion.GetLegAt(pLocoLeg)->GetGroundPosition());
+		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+			SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetGroundPosition());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegGroundNormal:
-		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-			SetVector(locomotion.GetLegAt(pLocoLeg)->GetGroundNormal());
+		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+			SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetGroundNormal());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegInfluence:
-		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-			SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
+		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegPosition:
-		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-			SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
-			SetVector(locomotion.GetLegAt(pLocoLeg)->GetIKPosition());
+		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
+			SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKPosition());
 		}
 		break;
 		
 	case aeAnimatorLocomotion::eaLegOrientation:
-		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegCount()){
-			SetCurrentValue(locomotion.GetLegAt(pLocoLeg)->GetIKInfluence());
-			SetVector(locomotion.GetLegAt(pLocoLeg)->GetIKOrientation());
+		if(pLocoLeg >= 0 && pLocoLeg < locomotion.GetLegs().GetCount()){
+			SetCurrentValue(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKInfluence());
+			SetVector(locomotion.GetLegs().GetAt(pLocoLeg)->GetIKOrientation());
 		}
 		break;
 		
@@ -562,7 +562,7 @@ void aeController::InverseValue(){
 //////////////////////
 
 void aeController::pCleanUp(){
-	SetAnimator(NULL);
+	SetAnimator(nullptr);
 }
 
 float aeController::pCheckValue(float value){
@@ -613,7 +613,7 @@ void aeController::pCreateGizmos(){
 	
 	switch(pVectorSimulation){
 	case evsPosition:
-		pGizmoIKPosition.TakeOver(new aeGizmoControllerIKPosition(*pAnimator->GetEnvironment(), *this));
+		pGizmoIKPosition = aeGizmoControllerIKPosition::Ref::New(*pAnimator->GetEnvironment(), *this);
 		pGizmoIKPosition->SetWorld(pAnimator->GetEngineWorld());
 		break;
 		

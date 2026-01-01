@@ -66,11 +66,11 @@ meHeightTerrainTexture::meHeightTerrainTexture(deEngine *engine, const char *nam
 	if(!engine || !name) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
-	pEngTexture = NULL;
+	pEngTexture = nullptr;
 	
 	pTypeNumber = 0;
 	
-	pSector = NULL;
+	pSector = nullptr;
 	
 	pProjScaling.Set(1.0f, 1.0f);
 	pProjRotation = 0.0f;
@@ -101,7 +101,7 @@ void meHeightTerrainTexture::SetSector(meHeightTerrainSector *sector){
 		return;
 	}
 	
-	SetEngineTexture(NULL);
+	SetEngineTexture(nullptr);
 	
 	pSector = sector;
 	
@@ -110,7 +110,7 @@ void meHeightTerrainTexture::SetSector(meHeightTerrainSector *sector){
 }
 
 deHeightTerrainTexture *meHeightTerrainTexture::CreateEngineTexture() const{
-	deHeightTerrainTexture *engTexture = NULL;
+	deHeightTerrainTexture *engTexture = nullptr;
 	
 	try{
 		engTexture = new deHeightTerrainTexture;
@@ -250,8 +250,7 @@ deImage *meHeightTerrainTexture::GetOrAddMaskImage(){
 	}
 	
 	const int imageDim =  pSector->GetHeightTerrain()->GetSectorResolution();
-	deImage::Ref image(deImage::Ref::New(
-		 pEngine->GetImageManager()->CreateImage(imageDim, imageDim, 1, 1, 8)));
+	deImage::Ref image(pEngine->GetImageManager()->CreateImage(imageDim, imageDim, 1, 1, 8));
 	sGrayscale8 * const pixels = image->GetDataGrayscale8();
 	const int pixelCount = imageDim * imageDim;
 	int i;
@@ -286,20 +285,20 @@ void meHeightTerrainTexture::LoadMaskImage(){
 	if(pMaskImage){
 		pMaskImage->ReleaseImageData();
 	}
-	pMaskImage = NULL;
+	pMaskImage = nullptr;
 	
 	if(pSector && pSector->GetHeightTerrain() && !pPathMask.IsEmpty()){
 		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathMask, baseDir))){
 			try{
-				pMaskImage.TakeOver(pEngine->GetImageManager()->LoadImage(pPathMask, baseDir));
+				pMaskImage = pEngine->GetImageManager()->LoadImage(pPathMask, baseDir);
 				
 			}catch(const deException &e){
 				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 			}
 			
 			if(pMaskImage->GetComponentCount() != 1 || pMaskImage->GetDepth() != 1){
-				pMaskImage = NULL;
+				pMaskImage = nullptr;
 			}
 		}
 	}
@@ -309,9 +308,9 @@ void meHeightTerrainTexture::LoadMaskImage(){
 		const deImage::Ref loadedImage(pMaskImage);
 		loadedImage->RetainImageData();
 		
-		pMaskImage.TakeOver(pEngine->GetImageManager()->CreateImage(loadedImage->GetWidth(),
+		pMaskImage = pEngine->GetImageManager()->CreateImage(loadedImage->GetWidth(),
 			loadedImage->GetHeight(), loadedImage->GetDepth(), loadedImage->GetComponentCount(),
-			loadedImage->GetBitCount()));
+			loadedImage->GetBitCount());
 		memcpy(pMaskImage->GetData(), loadedImage->GetData(), loadedImage->GetWidth()
 			* loadedImage->GetHeight() * ( loadedImage->GetBitCount() / 8 ) );
 		
@@ -378,13 +377,13 @@ void meHeightTerrainTexture::pCleanUp(){
 }
 
 void meHeightTerrainTexture::pLoadSkin(){
-	pSkin = NULL;
+	pSkin = nullptr;
 	
 	if(pSector && pSector->GetHeightTerrain() && !pPathSkin.IsEmpty()){
 		const decString baseDir(pSector->GetHeightTerrain()->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathSkin, baseDir))){
 			try{
-				pSkin.TakeOver(pEngine->GetSkinManager()->LoadSkin(pPathSkin, baseDir));
+				pSkin = pEngine->GetSkinManager()->LoadSkin(pPathSkin, baseDir);
 				
 			}catch(const deException &e){
 				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);

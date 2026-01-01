@@ -46,8 +46,8 @@
 ////////////////////////////
 
 igdeMainWindow::igdeMainWindow(igdeEnvironment &environment, const char *title) :
-igdeWindow(environment, title, NULL, true),
-pEngineController(NULL),
+igdeWindow(environment, title, nullptr, true),
+pEngineController(nullptr),
 pWindowState(ewsNormal),
 pNormalPosition(GetPosition()),
 pNormalSize(GetSize()),
@@ -149,13 +149,13 @@ void igdeMainWindow::CreateEngineController(){
 }
 
 void igdeMainWindow::AddNullModules(){
-	pEngineController->AddInternalModule(igdeNullScriptModule::cModule::Ref::NewWith(
+	pEngineController->AddInternalModule(igdeNullScriptModule::cModule::Ref::New(
 		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	pEngineController->AddInternalModule(igdeNullInputModule::cModule::Ref::NewWith(
+	pEngineController->AddInternalModule(igdeNullInputModule::cModule::Ref::New(
 		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	pEngineController->AddInternalModule(igdeNullCrashRecoveryModule::cModule::Ref::NewWith(
+	pEngineController->AddInternalModule(igdeNullCrashRecoveryModule::cModule::Ref::New(
 		pEngineController->GetEngine()->GetModuleSystem()));
 }
 

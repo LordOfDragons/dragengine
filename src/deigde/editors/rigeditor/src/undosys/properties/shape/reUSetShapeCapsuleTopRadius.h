@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigShapeCapsule;
+#include "../../../rig/shape/reRigShapeCapsule.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeCapsule;
  * \brief Undo Set Shape TopRadius.
  */
 class reUSetShapeCapsuleTopRadius : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetShapeCapsuleTopRadius> Ref;
+	
+	
 private:
-	reRigShapeCapsule *pShape;
+	reRigShapeCapsule::Ref pShape;
 	
 	float pOldTopRadius;
 	float pNewTopRadius;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetShapeCapsuleTopRadius> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

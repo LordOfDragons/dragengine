@@ -46,25 +46,16 @@ ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue
 		DETHROW(deeInvalidParam);
 	}
 	
-	pFacePose = NULL;
-	pController = NULL;
+	pFacePose = nullptr;
+	pController = nullptr;
 	
 	SetShortInfo("Add Face Pose Controller");
 	
 	pFacePose = facePose;
-	facePose->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 ceUCFPControllerAdd::~ceUCFPControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCFPControllerAdd::~ceUCFPControllerAdd(){
 ///////////////
 
 void ceUCFPControllerAdd::Undo(){
-	pFacePose->GetControllerList().Remove(pController);
+	pFacePose->GetControllers().Remove(pController);
 	pFacePose->NotifyControllersChanged();
 }
 
 void ceUCFPControllerAdd::Redo(){
-	pFacePose->GetControllerList().Add(pController);
+	pFacePose->GetControllers().Add(pController);
 	pFacePose->NotifyControllersChanged();
 }

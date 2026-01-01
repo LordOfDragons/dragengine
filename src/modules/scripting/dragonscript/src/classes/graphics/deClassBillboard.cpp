@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -51,7 +53,7 @@
 /////////////////////
 
 struct sBillboardNatDat{
-	deBillboard *billboard;
+	deBillboard::Ref billboard;
 };
 
 
@@ -62,14 +64,11 @@ dsFunction(init.clsBillboard, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassBillboard::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sBillboardNatDat &nd = *((sBillboardNatDat*)p_GetNativeData(myself));
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
-	
-	// clear ( important )
-	nd.billboard = NULL;
+	sBillboardNatDat * const nd = new (p_GetNativeData(myself)) sBillboardNatDat;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	
 	// create billboard
-	nd.billboard = clsBillboard.GetDS().GetGameEngine()->GetBillboardManager()->CreateBillboard();
+	nd->billboard = clsBillboard.GetDS().GetGameEngine()->GetBillboardManager()->CreateBillboard();
 }
 
 // public func destructor()
@@ -82,11 +81,7 @@ void deClassBillboard::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sBillboardNatDat &nd = *((sBillboardNatDat*)p_GetNativeData(myself));
-	if(nd.billboard){
-		nd.billboard->FreeReference();
-		nd.billboard = NULL;
-	}
+	static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->~sBillboardNatDat();
 }
 
 
@@ -100,8 +95,8 @@ dsFunction(init.clsBillboard, "getPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
 void deClassBillboard::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, billboard.GetPosition());
@@ -114,8 +109,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassBillboard::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetPosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
@@ -127,8 +122,8 @@ dsFunction(init.clsBillboard, "getAxis", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassBillboard::nfGetAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, billboard.GetAxis());
@@ -141,8 +136,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // axis
 }
 void deClassBillboard::nfSetAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetAxis(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
@@ -154,8 +149,8 @@ dsFunction(init.clsBillboard, "getSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector2){
 }
 void deClassBillboard::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassVector2()->PushVector2(rt, billboard.GetSize());
@@ -168,8 +163,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector2); // size
 }
 void deClassBillboard::nfSetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetSize(ds.GetClassVector2()->GetVector2(rt->GetValue(0)->GetRealObject()));
@@ -181,8 +176,8 @@ dsFunction(init.clsBillboard, "getOffset", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector2){
 }
 void deClassBillboard::nfGetOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassVector2()->PushVector2(rt, billboard.GetOffset());
@@ -195,8 +190,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector2); // offset
 }
 void deClassBillboard::nfSetOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetOffset(ds.GetClassVector2()->GetVector2(rt->GetValue(0)->GetRealObject()));
@@ -208,8 +203,8 @@ dsFunction(init.clsBillboard, "getSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassBillboard::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, billboard.GetSkin());
@@ -222,8 +217,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkin); // skin
 }
 void deClassBillboard::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetSkin(ds.GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
@@ -235,8 +230,8 @@ dsFunction(init.clsBillboard, "getDynamicSkinSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDynamicSkin){
 }
 void deClassBillboard::nfGetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, billboard.GetDynamicSkin());
@@ -249,8 +244,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDynamicSkin); // dynamicSkin
 }
 void deClassBillboard::nfSetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetDynamicSkin(ds.GetClassDynamicSkin()->GetDynamicSkin(rt->GetValue(0)->GetRealObject()));
@@ -262,7 +257,7 @@ dsFunction(init.clsBillboard, "getLocked", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassBillboard::nfGetLocked::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	rt->PushBool(billboard.GetLocked());
 }
@@ -274,7 +269,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // locked
 }
 void deClassBillboard::nfSetLocked::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	billboard.SetLocked(rt->GetValue(0)->GetBool());
 }
@@ -285,7 +280,7 @@ dsFunction(init.clsBillboard, "getSpherical", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassBillboard::nfGetSpherical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	rt->PushBool(billboard.GetSpherical());
 }
@@ -297,7 +292,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // spherical
 }
 void deClassBillboard::nfSetSpherical::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	billboard.SetSpherical(rt->GetValue(0)->GetBool());
 }
@@ -308,7 +303,7 @@ dsFunction(init.clsBillboard, "getSizeFixedToScreen", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassBillboard::nfGetSizeFixedToScreen::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	rt->PushBool(billboard.GetSizeFixedToScreen());
 }
@@ -320,7 +315,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // sizeFixedToScreen
 }
 void deClassBillboard::nfSetSizeFixedToScreen::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	billboard.SetSizeFixedToScreen(rt->GetValue(0)->GetBool());
 }
@@ -331,7 +326,7 @@ dsFunction(init.clsBillboard, "getVisible", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassBillboard::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	rt->PushBool(billboard.GetVisible());
 }
@@ -343,7 +338,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // visible
 }
 void deClassBillboard::nfSetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	
 	billboard.SetVisible(rt->GetValue(0)->GetBool());
 }
@@ -354,8 +349,8 @@ dsFunction(init.clsBillboard, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassBillboard::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, billboard.GetLayerMask());
@@ -368,8 +363,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassBillboard::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	billboard.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
@@ -381,8 +376,8 @@ dsFunction(init.clsBillboard, "getParentWorld", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 }
 void deClassBillboard::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
-	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deBillboard &billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deClassBillboard &clsBillboard = *(static_cast<deClassBillboard*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsBillboard.GetDS();
 	
 	ds.GetClassWorld()->PushWorld(rt, billboard.GetParentWorld());
@@ -399,7 +394,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
 void deClassBillboard::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	rt->PushInt((int)(intptr_t)(((sBillboardNatDat*)p_GetNativeData(myself))->billboard));
+	rt->PushInt((int)(intptr_t)(static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard));
 }
 
 // public func bool equals( Object obj )
@@ -409,15 +404,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassBillboard::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard * const billboard = ((sBillboardNatDat*)p_GetNativeData(myself))->billboard;
-	deClassBillboard * const clsBillboard = (deClassBillboard*)GetOwnerClass();
+	const deBillboard * const billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	deClassBillboard * const clsBillboard = static_cast<deClassBillboard*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsBillboard)){
 		rt->PushBool(false);
 		
 	}else{
-		deBillboard * const otherBillboard = ((sBillboardNatDat*)p_GetNativeData(obj))->billboard;
+		const deBillboard * const otherBillboard = static_cast<sBillboardNatDat*>(p_GetNativeData(obj))->billboard;
 		rt->PushBool(billboard == otherBillboard);
 	}
 }
@@ -505,10 +500,10 @@ void deClassBillboard::CreateClassMembers(dsEngine *engine){
 
 deBillboard *deClassBillboard::GetBillboard(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sBillboardNatDat*)p_GetNativeData(myself->GetBuffer()))->billboard;
+	return static_cast<sBillboardNatDat*>(p_GetNativeData(myself->GetBuffer()))->billboard;
 }
 
 void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
@@ -522,6 +517,5 @@ void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sBillboardNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->billboard = billboard;
-	billboard->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sBillboardNatDat)->billboard = billboard;
 }

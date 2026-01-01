@@ -37,6 +37,9 @@ class reRigShapeBox;
  * \brief Rig shape box panel.
  */
 class reWPPanelShapeBox : public reWPPanelShape{
+public:
+	typedef deTObjectReference<reWPPanelShapeBox> Ref;
+	
 private:
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;

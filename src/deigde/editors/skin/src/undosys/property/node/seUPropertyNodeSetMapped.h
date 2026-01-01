@@ -33,19 +33,19 @@
 
 /** Undo action property node set mapped. */
 class seUPropertyNodeSetMapped : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeSetMapped> Ref;
+	
+	
 private:
 	const sePropertyNode::Ref pNode;
 	const int pType;
 	
-	const seMapped::Ref pOldValue;
-	const seMapped::Ref pNewValue;
+	seMapped::Ref pOldValue, pNewValue;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeSetMapped> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

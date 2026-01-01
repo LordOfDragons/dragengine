@@ -24,7 +24,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
 }
 
 Launcher::Launcher(const sConfig &config) : delLauncher(config),
-pFDContainer(FDVFSContainer::Ref::NewWith(decPath::CreatePathUnix("/fds"))){
+pFDContainer(FDVFSContainer::Ref::New(decPath::CreatePathUnix("/fds"))){
 }
 
 Launcher::~Launcher(){
@@ -32,9 +32,8 @@ Launcher::~Launcher(){
 
 delGameList Launcher::ReadDelgaGames(const decString &path){
     delGameList games;
-    const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-            GetEngineInstanceFactory().CreateEngineInstance(
-                    *this, GetEngine().GetLogFile())));
+    const delEngineInstance::Ref instance(GetEngineInstanceFactory().
+        CreateEngineInstance(*this, GetEngine().GetLogFile()));
     instance->StartEngine();
     instance->LoadModules();
 

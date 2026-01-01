@@ -25,10 +25,9 @@
 #ifndef _DENAVIGATORMANAGER_H_
 #define _DENAVIGATORMANAGER_H_
 
+#include "deNavigator.h"
 #include "../../deResourceManager.h"
 #include "../../deResourceList.h"
-
-class deNavigator;
 
 
 /**
@@ -61,7 +60,7 @@ public:
 	deNavigator *GetRootNavigator() const;
 	
 	/** \brief Create new navigator. */
-	deNavigator *CreateNavigator();
+	deNavigator::Ref CreateNavigator();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

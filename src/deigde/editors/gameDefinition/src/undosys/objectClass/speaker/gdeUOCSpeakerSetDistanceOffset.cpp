@@ -42,8 +42,8 @@
 
 gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL)
+
+pSpeaker(nullptr)
 {
 	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetDistanceOffset::~gdeUOCSpeakerSetDistanceOffset(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

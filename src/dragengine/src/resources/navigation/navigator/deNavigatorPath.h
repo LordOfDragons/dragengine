@@ -25,6 +25,7 @@
 #ifndef _DENAVIGATORPATH_H_
 #define _DENAVIGATORPATH_H_
 
+#include "../../../deObject.h"
 #include "../../../common/math/decMath.h"
 
 
@@ -35,7 +36,12 @@
  * towards and including the goal. The path can be used for
  * collision checking or branching path.
  */
-class DE_DLL_EXPORT deNavigatorPath{
+class DE_DLL_EXPORT deNavigatorPath : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNavigatorPath> Ref;
+	
+	
 private:
 	decDVector *pPoints;
 	int pCount;
@@ -52,12 +58,14 @@ public:
 	/** \brief Create copy of navigator path. */
 	deNavigatorPath(const deNavigatorPath &path);
 	
+	
+protected:
 	/** \brief Clean up navigator path. */
-	~deNavigatorPath();
+	~deNavigatorPath() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */

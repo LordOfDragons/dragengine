@@ -43,7 +43,7 @@
 ////////////////////////////
 
 peeController::peeController(){
-	pEmitter = NULL;
+	pEmitter = nullptr;
 	pEngControllerIndex = -1;
 	
 	pName = "Controller";
@@ -56,7 +56,7 @@ peeController::peeController(){
 }
 
 peeController::~peeController(){
-	SetEmitter(NULL);
+	SetEmitter(nullptr);
 }
 
 

@@ -56,7 +56,7 @@
 ////////////////////////////
 
 ceWPTTIMAPlayerChoiceActions::ceWPTTIMAPlayerChoiceActions(ceWindowMain &windowMain,
-ceConversation &conversation, const ceConversationActionList &actions) :
+ceConversation &conversation, const ceConversationAction::List &actions) :
 ceWPTTIMActions(windowMain, conversation, etActionPlayerChoiceActions, actions)
 {
 	SetText("Waiting Actions");
@@ -73,14 +73,14 @@ ceWPTTIMAPlayerChoiceActions::~ceWPTTIMAPlayerChoiceActions(){
 ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceActions::GetModelPlayerChoice() const{
 	ceWPTTreeItemModel * const parent = GetParent();
 	if(!parent){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(parent->GetType() == etActionPlayerChoice){
 		return (ceWPTTIMAPlayerChoice*)parent;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -99,7 +99,7 @@ void ceWPTTIMAPlayerChoiceActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -112,25 +112,25 @@ void ceWPTTIMAPlayerChoiceActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	const int indexAppend = playerChoice.GetActions().GetCount();
 	int i;
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Add Action", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAPChoiceActionsAddAction(windowMain, conversation, *topic,
-			playerChoice, ceWPTTIMAction::ListAddMenuActions[i], indexAppend), true);
+		helper.MenuCommand(subMenu, ceWPTMAPChoiceActionsAddAction::Ref::New(windowMain, conversation, *topic,
+			playerChoice, ceWPTTIMAction::ListAddMenuActions[i], indexAppend));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsCopyActions(
-		windowMain, playerChoice), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsPasteActions(
-		windowMain, conversation, *topic, playerChoice, indexAppend), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsPasteSnippet(
-		windowMain, conversation, *topic, playerChoice, indexAppend), true);
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsCopyActions::Ref::New(
+		windowMain, playerChoice));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsPasteActions::Ref::New(
+		windowMain, conversation, *topic, playerChoice, indexAppend));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsPasteSnippet::Ref::New(
+		windowMain, conversation, *topic, playerChoice, indexAppend));
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsRemoveAllActions(
-		windowMain, conversation, *topic, playerChoice), true);
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsRemoveAllActions::Ref::New(
+		windowMain, conversation, *topic, playerChoice));
 }
 
 void ceWPTTIMAPlayerChoiceActions::ContextMenuAction(
@@ -147,7 +147,7 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -155,46 +155,47 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	igdeEnvironment &environment = windowMain.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
 	ceCAPlayerChoice &playerChoice = *modelPlayerChoice->GetActionPlayerChoice();
-	const ceConversationActionList &actions = playerChoice.GetActions();
-	const int indexAction = action ? actions.IndexOf(action) : -1;
+	const int indexAction = action ? playerChoice.GetActions().IndexOf(action) : -1;
 	int i;
 	
 	// child action specific
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsMoveAction(windowMain, conversation,
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsMoveAction::Ref::New(windowMain, conversation,
 		*topic, playerChoice, action, indexAction - 1, "Move Action Up",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsMoveAction(windowMain, conversation,
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsMoveAction::Ref::New(windowMain, conversation,
 		*topic, playerChoice, action, indexAction + 1, "Move Action Down",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)), true);
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand(contextMenu, new ceWPTMACopyAction(windowMain, action), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsCutAction(
-		windowMain, conversation, *topic, playerChoice, action), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsPasteActions(windowMain, conversation,
-		*topic, playerChoice, indexAction, "Paste Actions Before" ), true );
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsPasteActions(windowMain, conversation,
-		*topic, playerChoice, indexAction + 1, "Paste Actions After" ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACopyAction::Ref::New(windowMain, action));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsCutAction::Ref::New(
+		windowMain, conversation, *topic, playerChoice, action));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsPasteActions::Ref::New(
+		windowMain, conversation, *topic, playerChoice, indexAction, "Paste Actions Before"));
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsPasteActions::Ref::New(
+		windowMain, conversation, *topic, playerChoice, indexAction + 1, "Paste Actions After"));
 	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAPChoiceActionsRemoveAction(
-		windowMain, conversation, *topic, playerChoice, action), true);
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceActionsRemoveAction::Ref::New(
+		windowMain, conversation, *topic, playerChoice, action));
 	helper.MenuSeparator(contextMenu);
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Insert Action Before", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAPChoiceActionsAddAction(windowMain, conversation, *topic,
-			playerChoice, ceWPTTIMAction::ListAddMenuActions[i], indexAction), true);
+		helper.MenuCommand(subMenu, ceWPTMAPChoiceActionsAddAction::Ref::New(
+			windowMain, conversation, *topic, playerChoice,
+			ceWPTTIMAction::ListAddMenuActions[i], indexAction));
 	}
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action After",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu = igdeMenuCascade::Ref::New(environment, "Insert Action After",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAPChoiceActionsAddAction(windowMain, conversation, *topic,
-			playerChoice, ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1), true);
+		helper.MenuCommand(subMenu, ceWPTMAPChoiceActionsAddAction::Ref::New(
+			windowMain, conversation, *topic, playerChoice,
+			ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1));
 	}
 }
 

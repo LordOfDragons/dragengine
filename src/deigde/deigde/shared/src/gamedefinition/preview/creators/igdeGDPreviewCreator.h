@@ -25,15 +25,16 @@
 #ifndef _IGDEGDPREVIEWCREATOR_H_
 #define _IGDEGDPREVIEWCREATOR_H_
 
+#include "../igdeGDPreviewListener.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
 #include <dragengine/resources/image/deImage.h>
 
-class igdeGDPreviewListener;
 class igdeEnvironment;
 
 
@@ -59,7 +60,7 @@ private:
 	
 	eStates pState;
 	deImage::Ref pImage;
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeGDPreviewListener> pListeners;
 	bool pEnableDebug;
 	
 	
@@ -94,14 +95,14 @@ public:
 	inline const igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Canvas to create image from. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	
 	
-	/** \brief Image or NULL if not created. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or nullptr if not created. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL if not created. */
+	/** \brief Set image or nullptr if not created. */
 	void SetImage(deImage *image);
 	
 	

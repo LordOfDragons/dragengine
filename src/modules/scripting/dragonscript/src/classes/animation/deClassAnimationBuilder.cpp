@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -56,7 +58,7 @@ public:
 	pRT(rt), pMyself(myself), pAnimation(NULL){
 	}
 	
-	virtual void BuildAnimation(deAnimation *animation){
+	void BuildAnimation(deAnimation *animation) override{
 		pAnimation = animation;
 		
 		try{
@@ -95,7 +97,7 @@ dsFunction(init.clsAnimationBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimationBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	((sAnimBldNatDat*)p_GetNativeData(myself))->builder = NULL;
+	static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -115,12 +117,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimation){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassAnimationBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sAnimBldNatDat &nd = *((sAnimBldNatDat*)p_GetNativeData(myself));
+	sAnimBldNatDat &nd = *static_cast<sAnimBldNatDat*>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassAnimationBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimationBuilder*>(GetOwnerClass())->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassAnimationBuilder_Builder builder(rt, myself);
 	deAnimation::Ref animation;
@@ -128,7 +130,7 @@ void deClassAnimationBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *mysel
 	nd.builder = &builder;
 	
 	try{
-		animation.TakeOver(ds.GetGameEngine()->GetAnimationManager()->CreateAnimation(filename, builder));
+		animation = ds.GetGameEngine()->GetAnimationManager()->CreateAnimation(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;
@@ -158,7 +160,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // name
 }
 void deClassAnimationBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassAnimationBuilder_Builder * const builder = 
+		static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -183,7 +186,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // name
 }
 void deClassAnimationBuilder::nfAddVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassAnimationBuilder_Builder * const builder =
+		static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -204,7 +208,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // playTime
 }
 void deClassAnimationBuilder::nfAddMove::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassAnimationBuilder_Builder * const builder =
+		static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -233,7 +238,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // fps
 }
 void deClassAnimationBuilder::nfAddMove2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassAnimationBuilder_Builder * const builder =
+		static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -263,7 +269,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassAnimationBuilder::nfSetKeyframeListCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassAnimationBuilder_Builder * const builder =
+		static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -297,17 +304,17 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // scale
 }
 void deClassAnimationBuilder::nfAddKeyframe::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassAnimationBuilder_Builder * const builder = static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassAnimationBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimationBuilder*>(GetOwnerClass())->GetDS();
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
-	deAnimationKeyframeList &kflist = *move.GetKeyframeList(rt->GetValue(1)->GetInt());
 	
 	deAnimationKeyframe * const keyframe = new deAnimationKeyframe;
 	try{
+		deAnimationKeyframeList &kflist = *move.GetKeyframeList(rt->GetValue(1)->GetInt());
 		keyframe->SetTime(rt->GetValue(2)->GetFloat());
 		keyframe->SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(3)->GetRealObject()));
 		keyframe->SetRotation(ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject()) * DEG2RAD);
@@ -328,16 +335,16 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassAnimationBuilder_Builder * const builder = static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 	const int count = rt->GetValue(1)->GetInt();
 	
 	deAnimationKeyframeVertexPositionSetList *kflist = nullptr;
 	try{
+		deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
 		while(move.GetVertexPositionSetKeyframeListCount() < count){
 			kflist = new deAnimationKeyframeVertexPositionSetList;
 			move.AddVertexPositionSetKeyframeList(kflist);
@@ -360,17 +367,18 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // weight
 }
 void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimationBuilder_Builder * const builder = ((sAnimBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassAnimationBuilder_Builder * const builder = static_cast<sAnimBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetAnimation()){
 		DSTHROW(dueInvalidAction);
 	}
 	
 	deAnimationMove &move = *builder->GetAnimation()->GetMove(rt->GetValue(0)->GetInt());
-	deAnimationKeyframeVertexPositionSetList &kflist =
-		*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
 	
 	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
 	try{
+		deAnimationKeyframeVertexPositionSetList &kflist =
+			*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
+		
 		keyframe->SetTime(rt->GetValue(2)->GetFloat());
 		keyframe->SetWeight(rt->GetValue(3)->GetFloat());
 		kflist.AddKeyframe(keyframe);

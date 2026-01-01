@@ -68,6 +68,8 @@ private:
 	deoglRSkin &pSkin;
 	
 public:
+	typedef deTThreadSafeObjectReference<cTaskPrepareTexturePipelines> Ref;
+	
 	cTaskPrepareTexturePipelines(deoglRSkin &skin) : pSkin(skin){}
 	
 	void Run() override{
@@ -120,7 +122,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 		// created mapped
 		for(i=0; i<mappedCount; i++){
 			const deSkinMapped &mapped = *skin.GetMappedAt(i);
-			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::NewWith(mapped));
+			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::New(mapped));
 			
 			if(mapped.GetInputType() == deSkinMapped::eitRenderable && !mapped.GetRenderable().IsEmpty()){
 				oglMapped->SetRenderable(AddRenderable(mapped.GetRenderable()));
@@ -274,8 +276,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			// prepare texture pipelines using the loader thread and wait for the task to
 			// finish. if the loader thread is disabled do nothing. in this case delayed
 			// operations will prepare the texture pipelines which is less optimal
-			pRenderThread.GetLoaderThread().AwaitTask(deoglLoaderThreadTask::Ref::New(
-				new cTaskPrepareTexturePipelines(*this)));
+			pRenderThread.GetLoaderThread().AwaitTask(cTaskPrepareTexturePipelines::Ref::New(*this));
 			
 			// register for delayed async res initialize. we do not call AddInitSkin here since
 			// it is possible (albeit highly unlikely) for the render thread to run before the
@@ -379,10 +380,7 @@ int deoglRSkin::AddRenderable(const char *name){
 	
 	if(index == -1){
 		index = pRenderables.GetCount();
-		
-		deoglSkinRenderable * const renderable = new deoglSkinRenderable(name);
-		pRenderables.Add(renderable);
-		renderable->FreeReference();
+		pRenderables.Add(deoglSkinRenderable::Ref::New(name));
 	}
 	
 	return index;
@@ -485,7 +483,7 @@ deoglSkinBone *deoglRSkin::GetBoneAt(int index) const{
 int deoglRSkin::AddBone(const char *name){
 	DEASSERT_NOTNULL(name)
 	
-	pBones.Add(deoglSkinBone::Ref::NewWith(name));
+	pBones.Add(deoglSkinBone::Ref::New(name));
 	return pBones.GetCount() - 1;
 }
 

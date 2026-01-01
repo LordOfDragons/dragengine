@@ -33,6 +33,8 @@
  */
 class deoxrDPMetaTouchControllerPlus : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPMetaTouchControllerPlus> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

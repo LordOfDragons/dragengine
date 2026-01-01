@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCNavSpaceRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
 	if(!navSpace){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveNavSpace(&objectClass, navSpace);
+	return gdeUOCRemoveNavSpace::Ref::New(&objectClass, navSpace);
 }
 
 void gdeMAOCNavSpaceRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace
-		&& gameDefinition->GetActiveOCNavigationSpace() != NULL);
+		&& gameDefinition->GetActiveOCNavigationSpace() != nullptr);
 }

@@ -33,6 +33,10 @@
  * Undo action controller set maximum value.
  */
 class aeUControllerSetMaximumValue : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerSetMaximumValue> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	float pOldValue;
@@ -41,9 +45,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUControllerSetMaximumValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

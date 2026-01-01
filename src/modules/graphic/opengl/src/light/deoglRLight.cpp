@@ -61,19 +61,18 @@
 #include "../skin/deoglSkinRenderable.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../triangles/deoglTriangleSorter.h"
 #include "../visitors/deoglTransformVolume.h"
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
-
-#include <dragengine/common/exceptions.h>
-#include "../utils/collision/deoglDCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionTriangle.h"
 #include "../utils/collision/deoglDCollisionVolume.h"
+#include "../utils/collision/deoglDCollisionDetection.h"
+
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decConvexVolume.h>
 #include <dragengine/common/math/decConvexVolumeFace.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
@@ -119,7 +118,7 @@ pRenderThread(renderThread),
 
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pActive(false),
 pLightType(deLight::eltPoint),
@@ -133,10 +132,6 @@ pHintShadowImportance(100),
 pIntensity(0.0f),
 pAmbientRatio(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
-pLightSkin(NULL),
-pLightCanvas(NULL),
-pDynamicSkin(NULL),
-pSkinState(NULL),
 pUseSkinTexture(NULL),
 pDirtyPrepareSkinStateRenderables(true),
 pDirtyRenderSkinStateRenderables(true),
@@ -313,25 +308,17 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	}
 	
 	pUseSkinTexture = NULL;
-	
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	
 	pLightSkin = skin;
 	
 	if(!skin){
 		return;
 	}
-	
-	skin->AddReference();
-	
 	if(skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
 	
 	if(!pSkinState){
-		pSkinState = new deoglSkinState(pRenderThread, *this);
+		pSkinState = deoglSkinState::Ref::New(pRenderThread, *this);
 	}
 }
 
@@ -339,17 +326,7 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 	if(canvas == pLightCanvas){
 		return;
 	}
-	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	
 	pLightCanvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
-	
 	   pRequiresPrepareForRender();
 }
 
@@ -357,16 +334,7 @@ void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }
 
 void deoglRLight::SetTransform(const decTexMatrix2 &matrix){
@@ -734,10 +702,10 @@ deoglLightPipelines &deoglRLight::GetPipelines(){
 	}
 	
 	if(pLightType == deLight::eltPoint){
-		pPipelines.TakeOver(new deoglLightPipelinesPoint(*this));
+		pPipelines = deoglLightPipelinesPoint::Ref::New(*this);
 		
 	}else{
-		pPipelines.TakeOver(new deoglLightPipelinesSpot(*this));
+		pPipelines = deoglLightPipelinesSpot::Ref::New(*this);
 	}
 	
 	deoglBatchedShaderLoading batched(pRenderThread, 1000.0f, true);
@@ -1101,17 +1069,6 @@ void deoglRLight::pCleanUp(){
 	if(pColVol){
 		delete pColVol;
 	}
-	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	if(pLightVolume){
 		delete pLightVolume;
 	}
@@ -1119,7 +1076,7 @@ void deoglRLight::pCleanUp(){
 		delete pShadowCaster;
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 }
 
@@ -1436,7 +1393,6 @@ void deoglRLight::pUpdateLightVolume(){
 	if(!pOptimizer){
 		try{
 			pOptimizer = new deoglOptimizerLight(this, oglWorld);
-			if(!pOptimizer) DETHROW(deeOutOfMemory);
 			
 			if(lightType == deLight::eltPoint){
 				pOptimizer->SetOptimizeShadowCaster(false);

@@ -69,7 +69,6 @@ int deAnimatorControllerTarget::IndexOfLink(int link) const{
 
 void deAnimatorControllerTarget::AddLink(int link){
 	int l, *newArray = new int[pLinkCount + 1];
-	if(!newArray) DETHROW(deeOutOfMemory);
 	
 	if(pLinks){
 		for(l=0; l<pLinkCount; l++) newArray[l] = pLinks[l];
@@ -88,8 +87,7 @@ void deAnimatorControllerTarget::RemoveLink(int link){
 	
 	int *newArray = NULL;
 	if(pLinkCount > 0){
-		new int[pLinkCount - 1];
-		if(!newArray) DETHROW(deeOutOfMemory);
+		newArray = new int[pLinkCount - 1];
 	}
 	
 	if(pLinks){

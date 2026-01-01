@@ -49,18 +49,14 @@ meUDecalVisible::meUDecalVisible(meDecal *decal){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	SetShortInfo("Set decal visible");
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalVisible::~meUDecalVisible(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

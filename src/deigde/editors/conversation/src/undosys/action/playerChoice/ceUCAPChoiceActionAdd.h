@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 
@@ -38,17 +38,18 @@ class ceCAPlayerChoiceOption;
  * \brief Undo Action Player Choice Add Action.
  */
 class ceUCAPChoiceActionAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAPChoiceActionAdd> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAPChoiceActionAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

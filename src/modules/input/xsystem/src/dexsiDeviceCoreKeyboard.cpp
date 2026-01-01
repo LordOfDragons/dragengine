@@ -70,7 +70,7 @@ dexsiDevice(module, esX11)
 	
 	XDisplayKeycodes(display, &minKeyCode, &maxKeyCode);
 	
-	const dexsiDeviceButton::Ref sharedButton(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref sharedButton(dexsiDeviceButton::Ref::New(module));
 	sharedButton->SetDisplayImages("key");
 	
 	XKeyEvent fakeKeyEvent;
@@ -122,7 +122,7 @@ dexsiDevice(module, esX11)
 				continue;
 			}
 			
-			const dexsiDeviceButton::Ref button(dexsiDeviceButton::Ref::NewWith(module));
+			const dexsiDeviceButton::Ref button(dexsiDeviceButton::Ref::New(module));
 			AddButton(button);
 			
 			string.Format("k%d", minKeyCode + i);

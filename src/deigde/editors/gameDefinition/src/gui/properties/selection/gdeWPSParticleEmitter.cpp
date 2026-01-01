@@ -72,10 +72,11 @@
 
 namespace{
 
-class cEditPath : public igdeEditPathListener {
+class cEditPath : public igdeEditPathListener{
 	gdeWPSParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -84,22 +85,25 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasWithPath(editPath->GetPath())){
+		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasMatching([&](const gdeParticleEmitter &pe){
+			return pe.GetPath() == editPath->GetPath();
+		})){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change particle emitter path",
 				"A particle emitter with this path exists already.");
 			editPath->SetPath(particleEmitter->GetPath());
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetPath::Ref::New(
 			particleEmitter, editPath->GetPath()));
 	}
 };
 
-class cTextName : public igdeTextFieldListener {
+class cTextName : public igdeTextFieldListener{
 	gdeWPSParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(gdeWPSParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -108,15 +112,16 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetName::Ref::New(
 			particleEmitter, textField->GetText()));
 	}
 };
 
-class cTextDescription : public igdeTextAreaListener {
+class cTextDescription : public igdeTextAreaListener{
 	gdeWPSParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(gdeWPSParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -126,14 +131,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUParticleEmitterSetDescription::Ref::NewWith(particleEmitter, textArea->GetText()));
+			gdeUParticleEmitterSetDescription::Ref::New(particleEmitter, textArea->GetText()));
 	}
 };
 
-class cComboCategory : public igdeComboBoxListener {
+class cComboCategory : public igdeComboBoxListener{
 	gdeWPSParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboCategory> Ref;
 	cComboCategory(gdeWPSParticleEmitter &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -143,20 +149,21 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUParticleEmitterSetCategory::Ref::NewWith(particleEmitter, comboBox->GetText()));
+			gdeUParticleEmitterSetCategory::Ref::New(particleEmitter, comboBox->GetText()));
 	}
 };
 
-class cActionJumpToCategory : public igdeAction {
+class cActionJumpToCategory : public igdeAction{
 	gdeWPSParticleEmitter &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSParticleEmitter &panel) : 
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
 		"Jump to Category"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeParticleEmitter * const particleEmitter = pPanel.GetParticleEmitter();
 		if(!particleEmitter){
 			return;
@@ -173,7 +180,7 @@ public:
 		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryParticleEmitter);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetParticleEmitter());
 	}
 };
@@ -190,40 +197,34 @@ public:
 
 gdeWPSParticleEmitter::gdeWPSParticleEmitter(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSParticleEmitterListener(*this);
+	pListener = gdeWPSParticleEmitterListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// particle emitter
 	helper.GroupBox(content, groupBox, "Particle Emitter:");
 	helper.EditPath(groupBox, "Path:", "Path to particle emitter",
-		igdeEnvironment::efpltParticleEmitter, pEditPath, new cEditPath(*this));
-	helper.EditString(groupBox, "Name:", "Particle emitter name", pEditName, new cTextName(*this));
+		igdeEnvironment::efpltParticleEmitter, pEditPath, cEditPath::Ref::New(*this));
+	helper.EditString(groupBox, "Name:", "Particle emitter name", pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Particle emitter description",
-		pEditDescription, 15, 5, new cTextDescription(*this));
+		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, new cComboCategory(*this));
+	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
-	helper.Button(frameLine, pBtnJumpToCategory, new cActionJumpToCategory(*this), true);
+	helper.Button(frameLine, pBtnJumpToCategory, cActionJumpToCategory::Ref::New(*this));
 }
 
 gdeWPSParticleEmitter::~gdeWPSParticleEmitter(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -238,14 +239,12 @@ void gdeWPSParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition)
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateParticleEmitter();
@@ -256,7 +255,7 @@ void gdeWPSParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition)
 
 
 gdeParticleEmitter *gdeWPSParticleEmitter::GetParticleEmitter() const{
-	return pGameDefinition ? pGameDefinition->GetActiveParticleEmitter() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveParticleEmitter() : nullptr;
 }
 
 
@@ -317,7 +316,7 @@ void gdeWPSParticleEmitter::UpdateParticleEmitter(){
 		pCBCategory->SetInvalidValue(false);
 	}
 	
-	const bool enabled = particleEmitter != NULL;
+	const bool enabled = particleEmitter != nullptr;
 	pEditPath->SetEnabled(enabled);
 	pEditName->SetEnabled(enabled);
 	pEditDescription->SetEnabled(enabled);

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 
@@ -35,8 +35,12 @@ class meWorld;
  * \brief Undo action world set property.
  */
 class meUWorldSetProperty : public igdeUndo{
+public:
+	typedef deTObjectReference<meUWorldSetProperty> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decString pKey;
 	decString pOldValue;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUWorldSetProperty> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -55,7 +56,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUWorldSetProperty();
+
+public:
 	/*@}*/
 	
 	

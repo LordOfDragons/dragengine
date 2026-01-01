@@ -35,6 +35,9 @@ class meWPUndoHistory;
  * \brief History Panel Listener
  */
 class meWPUndoHistoryListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPUndoHistoryListener> Ref;
+	
 private:
 	meWPUndoHistory &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPUndoHistoryListener(meWPUndoHistory &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPUndoHistoryListener() override;
+	
+public:
 	/*@}*/
 	
 	

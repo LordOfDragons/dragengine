@@ -100,6 +100,9 @@ public:
 	
 	/** Set to empty. */
 	void Clear();
+	
+	/** Hash. */
+	unsigned int Hash() const;
 	/*@}*/
 	
 	

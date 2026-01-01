@@ -41,6 +41,7 @@ private:
 	decString pAliasID;
 	
 public:
+	typedef deTObjectReference<ceCACoordSystemAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
@@ -48,7 +49,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCACoordSystemAdd(const ceCACoordSystemAdd &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCACoordSystemAdd() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -63,7 +66,7 @@ public:
 	void SetAliasID(const char *id);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

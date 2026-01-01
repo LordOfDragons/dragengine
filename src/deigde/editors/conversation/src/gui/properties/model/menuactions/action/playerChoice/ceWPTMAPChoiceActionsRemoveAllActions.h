@@ -36,6 +36,9 @@ class ceCAPlayerChoice;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAPChoiceActionsRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	typedef deTObjectReference<ceWPTMAPChoiceActionsRemoveAllActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -65,7 +68,7 @@ public:
 	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
 
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo() override;
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

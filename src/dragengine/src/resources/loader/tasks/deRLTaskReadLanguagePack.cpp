@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pLanguagePack.TakeOver(new deLanguagePack(engine.GetLanguagePackManager(), vfs, path, 0));
+	pLanguagePack = deLanguagePack::Ref::New(engine.GetLanguagePackManager(), vfs, path, 0);
 	
 	LogCreateExit();
 }
@@ -91,8 +91,7 @@ void deRLTaskReadLanguagePack::Run(){
 	
 	pLanguagePack->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pLanguagePack->SetAsynchron(true);
-	module->LoadLanguagePack(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), pLanguagePack);
+	module->LoadLanguagePack(GetVFS()->OpenFileForReading(vfsPath), pLanguagePack);
 	
 	if(!pLanguagePack->Verify()){
 		DETHROW(deeInvalidParam);

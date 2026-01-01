@@ -61,8 +61,6 @@
 
 
 
-static const decString vEmptyString;
-
 // Actions
 ////////////
 
@@ -72,6 +70,7 @@ class cComboKey : public igdeComboBoxListener {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboKey> Ref;
 	cComboKey(meWPPropertyList &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -86,6 +85,7 @@ class cListProperties : public igdeIconListBoxListener {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cListProperties> Ref;
 	cListProperties(meWPPropertyList &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeIconListBox *listBox){
@@ -97,7 +97,7 @@ public:
 			pPanel.SelectKey(selection->GetText());
 			
 		}else{
-			pPanel.OnPropertySelected(vEmptyString, vEmptyString);
+			pPanel.OnPropertySelected({}, {});
 		}
 	}
 	
@@ -131,26 +131,27 @@ class cActionPropertyAdd : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyAdd> Ref;
 	cActionPropertyAdd(meWPPropertyList &panel) :
 	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add property"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const decString key(pPanel.GetKey());
 		if(!pPanel.GetUndoSystem() || key.IsEmpty() || pPanel.GetProperties().Has(key)){
 			return;
 		}
 		
 		const decString value(pPanel.GetGDDefaultValue(key));
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoAddProperty(key, value)));
+		igdeUndo::Ref undo(pPanel.UndoAddProperty(key, value));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 			pPanel.SelectProperty(key);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetUndoSystem() && !pPanel.GetKey().IsEmpty()
 			&& !pPanel.GetProperties().Has(pPanel.GetKey()));
 	}
@@ -160,24 +161,25 @@ class cActionPropertyRemove : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyRemove> Ref;
 	cActionPropertyRemove(meWPPropertyList &panel) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected property"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoRemoveProperty(property)));
+		igdeUndo::Ref undo(pPanel.UndoRemoveProperty(property));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
 	}
 };
@@ -186,24 +188,25 @@ class cActionPropertyClear : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyClear> Ref;
 	cActionPropertyClear(meWPPropertyList &panel) :
 	igdeAction("Clear", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove all properties"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetUndoSystem()){
+	void OnAction() override{
+		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoSetProperties(decStringDictionary())));
+		igdeUndo::Ref undo(pPanel.UndoSetProperties(decStringDictionary()));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetProperties().GetCount() > 0  && pPanel.GetUndoSystem());
+	void Update() override{
+		SetEnabled(pPanel.GetProperties().IsNotEmpty()  && pPanel.GetUndoSystem());
 	}
 };
 
@@ -211,11 +214,12 @@ class cActionPropertyRename : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyRename> Ref;
 	cActionPropertyRename(meWPPropertyList &panel) :
-	igdeAction("Rename...", NULL, "Rename property"),
+	igdeAction("Rename...", nullptr, "Rename property"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
@@ -235,14 +239,14 @@ public:
 		properties.SetAt(name, properties.GetAt(property));
 		properties.Remove(property);
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoSetProperties(properties)));
+		igdeUndo::Ref undo(pPanel.UndoSetProperties(properties));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 			pPanel.SelectProperty(name);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
 	}
 };
@@ -252,12 +256,13 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyCopy> Ref;
 	cActionPropertyCopy(meWPPropertyList &panel) :
 	igdeAction("Copy", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy selected property"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const decString property(pPanel.GetProperty());
 		if(property.IsEmpty() || !pPanel.GetClipboard()){
 			return;
@@ -265,10 +270,10 @@ public:
 		
 		decStringDictionary properties;
 		properties.SetAt(property, pPanel.GetPropertyValue());
-		pPanel.GetClipboard()->Set(meCDProperties::Ref::NewWith(properties));
+		pPanel.GetClipboard()->Set(meCDProperties::Ref::New(properties));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard());
 	}
 };
@@ -278,26 +283,28 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyCopyAll> Ref;
 	cActionPropertyCopyAll(meWPPropertyList &panel) :
 	igdeAction("Copy All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy all properties"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetClipboard()){
+	void OnAction() override{
+		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetClipboard()){
 			return;
 		}
 		
-		pPanel.GetClipboard()->Set(meCDProperties::Ref::NewWith(pPanel.GetProperties()));
+		pPanel.GetClipboard()->Set(meCDProperties::Ref::New(pPanel.GetProperties()));
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetProperties().GetCount() > 0 && pPanel.GetClipboard());
+	void Update() override{
+		SetEnabled(pPanel.GetProperties().IsNotEmpty() && pPanel.GetClipboard());
 	}
 };
 
 class cActionPropertyCut : public cActionPropertyCopy {
 public:
+	typedef deTObjectReference<cActionPropertyCut> Ref;
 	cActionPropertyCut(meWPPropertyList &panel) : cActionPropertyCopy(panel){
 		SetText("Cut");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
@@ -312,7 +319,7 @@ public:
 		
 		cActionPropertyCopy::OnAction();
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoRemoveProperty(property)));
+		igdeUndo::Ref undo(pPanel.UndoRemoveProperty(property));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
@@ -325,6 +332,7 @@ public:
 
 class cActionPropertyCutAll : public cActionPropertyCopyAll {
 public:
+	typedef deTObjectReference<cActionPropertyCutAll> Ref;
 	cActionPropertyCutAll(meWPPropertyList &panel) : cActionPropertyCopyAll(panel){
 		SetText("Cut All");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
@@ -332,20 +340,20 @@ public:
 	}
 	
 	void OnAction() override{
-		if(pPanel.GetProperties().GetCount() == 0 || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
+		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
 			return;
 		}
 		
 		cActionPropertyCopyAll::OnAction();
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoSetProperties(decStringDictionary())));
+		igdeUndo::Ref undo(pPanel.UndoSetProperties(decStringDictionary()));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetProperties().GetCount() > 0 && pPanel.GetUndoSystem() && pPanel.GetClipboard());
+		SetEnabled(pPanel.GetProperties().IsNotEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
 	}
 };
 
@@ -353,19 +361,20 @@ class cActionPropertyPaste : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyPaste> Ref;
 	cActionPropertyPaste(meWPPropertyList &panel) :
 	igdeAction("Paste", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste property"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetClipboard() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		const meCDProperties * const clip = (const meCDProperties *)
 			pPanel.GetClipboard()->GetWithTypeName(meCDProperties::TYPE_NAME);
-		if(!clip || clip->GetProperties().GetCount() == 0){
+		if(!clip || clip->GetProperties().IsEmpty()){
 			return;
 		}
 		
@@ -375,13 +384,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoSetProperties(properties)));
+		igdeUndo::Ref undo(pPanel.UndoSetProperties(properties));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetClipboard() && pPanel.GetUndoSystem()
 			&& pPanel.GetClipboard()->HasWithTypeName(meCDProperties::TYPE_NAME));
 	}
@@ -392,36 +401,33 @@ protected:
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyExport> Ref;
 	cActionPropertyExport(meWPPropertyList &panel) :
 	igdeAction("Export All To Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Show dialog with all properties in text form"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
-		if(pPanel.GetProperties().GetCount() == 0){
+	void OnAction() override{
+		if(pPanel.GetProperties().IsEmpty()){
 			return;
 		}
 		
 		decString text;
-		const decStringDictionary &properties = pPanel.GetProperties();
-		const decStringList keys(properties.GetKeys());
-		const int count = keys.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			if(i > 0){
+		pPanel.GetProperties().Visit([&text](const decString &key, const decString &value){
+			if(!text.IsEmpty()){
 				text.AppendCharacter('\n');
 			}
-			const decString &key = keys.GetAt(i);
-			decString value(properties.GetAt(key).GetReplacedString("\n", "<br/>"));
-			text.AppendFormat("%s=%s", key.GetString(), value.GetString());
-		}
+			decString v(value);
+			v.ReplaceString("\n", "<br/>");
+			text.AppendFormat("%s=%s", key.GetString(), v.GetString());
+		});
 		
 		igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
 			"Export To Text", "Properties", text);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetProperties().GetCount() > 0);
+	void Update() override{
+		SetEnabled(pPanel.GetProperties().IsNotEmpty());
 	}
 };
 
@@ -429,12 +435,13 @@ class cActionPropertyImport : public igdeAction {
 	meWPPropertyList &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionPropertyImport> Ref;
 	cActionPropertyImport(meWPPropertyList &panel) :
 	igdeAction("Import From Text...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Show dialog to enter properties to import in text form."),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetUndoSystem()){
 			return;
 		}
@@ -448,30 +455,28 @@ public:
 				return;
 			}
 			
-			const decStringList lines(text.Split('\n'));
-			const int lineCount = lines.GetCount();
-			int i;
-			
 			imported.RemoveAll();
 			
-			for(i=0; i<lineCount; i++){
-				const decString &line = lines.GetAt(i);
+			int lineNumber = 0;
+			if(text.Split('\n').AllMatching([&](const decString &line){
+				lineNumber++;
 				const int delimiter = line.Find('=');
 				if(delimiter < 1){
 					igdeCommonDialogs::ErrorFormat(pPanel.GetParentWindow(), "Import From Text",
-						"Invalid property on line %d: '%s'", i + 1, line.GetString());
-					break;
+						"Invalid property on line %d: '%s'", lineNumber, line.GetString());
+					return false;
 				}
 				
-				imported.SetAt(line.GetLeft(delimiter), line.GetMiddle(delimiter + 1)
-					.GetReplacedString("<br/>", "\n"));
-			}
-			if(i == lineCount){
+				decString l(line.GetMiddle(delimiter + 1));
+				l.ReplaceString("<br/>", "\n");
+				imported.SetAt(line.GetLeft(delimiter), l);
+				return true;
+			})){
 				break;
 			}
 		}
 		
-		if(imported.GetCount() == 0){
+		if(imported.IsEmpty()){
 			return;
 		}
 		
@@ -481,13 +486,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(pPanel.UndoSetProperties(properties)));
+		igdeUndo::Ref undo(pPanel.UndoSetProperties(properties));
 		if(undo){
 			pPanel.GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetUndoSystem());
 	}
 };
@@ -500,6 +505,7 @@ protected:
 	decString pOldValue;
 	
 public:
+	typedef deTObjectReference<cEditPropertyValue> Ref;
 	cEditPropertyValue(meWPPropertyList &panel) : pPanel(panel){}
 	
 	virtual void OnPropertyValueChanged(igdeEditPropertyValue*){
@@ -515,10 +521,10 @@ public:
 				return;
 			}
 		}
-		pUndo.TakeOver(pPanel.UndoSetProperty(property, pOldValue, newValue));
+		pUndo = pPanel.UndoSetProperty(property, pOldValue, newValue);
 		if(pUndo){
 			pPanel.GetUndoSystem()->Add(pUndo);
-			pUndo = NULL;
+			pUndo = nullptr;
 		}
 	}
 	
@@ -535,7 +541,7 @@ public:
 				return;
 			}
 		}
-		pUndo.TakeOver(pPanel.UndoSetProperty(property, pOldValue, newValue));
+		pUndo = pPanel.UndoSetProperty(property, pOldValue, newValue);
 		if(pUndo){
 			pUndo->Redo();
 		}
@@ -554,8 +560,8 @@ public:
 
 meWPPropertyList::meWPPropertyList(igdeEnvironment &environment) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pUndoSystem(NULL),
-pClipboard(NULL),
+pUndoSystem(nullptr),
+pClipboard(nullptr),
 pEnabled(true)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -567,21 +573,21 @@ pEnabled(true)
 	pIconInvalidValue = env.GetStockIcon(igdeEnvironment::esiSmallWarning);
 	
 	
-	pActionPropertyAdd.TakeOver(new cActionPropertyAdd(*this));
-	pActionPropertyRemove.TakeOver(new cActionPropertyRemove(*this));
-	pActionPropertyClear.TakeOver(new cActionPropertyClear(*this));
-	pActionPropertyCopy.TakeOver(new cActionPropertyCopy(*this));
-	pActionPropertyCopyAll.TakeOver(new cActionPropertyCopyAll(*this));
-	pActionPropertyCut.TakeOver(new cActionPropertyCut(*this));
-	pActionPropertyCutAll.TakeOver(new cActionPropertyCutAll(*this));
-	pActionPropertyPaste.TakeOver(new cActionPropertyPaste(*this));
-	pActionPropertyRename.TakeOver(new cActionPropertyRename(*this));
-	pActionPropertyExport.TakeOver(new cActionPropertyExport(*this));
-	pActionPropertyImport.TakeOver(new cActionPropertyImport(*this));
+	pActionPropertyAdd = cActionPropertyAdd::Ref::New(*this);
+	pActionPropertyRemove = cActionPropertyRemove::Ref::New(*this);
+	pActionPropertyClear = cActionPropertyClear::Ref::New(*this);
+	pActionPropertyCopy = cActionPropertyCopy::Ref::New(*this);
+	pActionPropertyCopyAll = cActionPropertyCopyAll::Ref::New(*this);
+	pActionPropertyCut = cActionPropertyCut::Ref::New(*this);
+	pActionPropertyCutAll = cActionPropertyCutAll::Ref::New(*this);
+	pActionPropertyPaste = cActionPropertyPaste::Ref::New(*this);
+	pActionPropertyRename = cActionPropertyRename::Ref::New(*this);
+	pActionPropertyExport = cActionPropertyExport::Ref::New(*this);
+	pActionPropertyImport = cActionPropertyImport::Ref::New(*this);
 	
 	
 	helper.FormLineStretchFirst(*this, "Property:", "Property to add", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Property to add", pCBKeys, new cComboKey(*this));
+	helper.ComboBoxFilter(frameLine, true, "Property to add", pCBKeys, cComboKey::Ref::New(*this));
 	pCBKeys->SetDefaultSorter();
 	helper.Button(frameLine, pBtnKeyAdd, pActionPropertyAdd);
 	
@@ -591,12 +597,12 @@ pEnabled(true)
 	};
 	helper.IconListBox(*this, pListProperties,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 2, "Properties", new cListProperties(*this));
+		headers, 2, "Properties", cListProperties::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	
-	helper.EditPropertyValue(*this, pEditPropertyValue, new cEditPropertyValue(*this));
+	helper.EditPropertyValue(*this, pEditPropertyValue, cEditPropertyValue::Ref::New(*this));
 	
-	helper.EditString(*this, "Information", pDisplayInfo, 5, NULL);
+	helper.EditString(*this, "Information", pDisplayInfo, 5, {});
 	pDisplayInfo->SetEditable(false);
 }
 
@@ -641,18 +647,18 @@ const decString &meWPPropertyList::GetKey() const{
 	return pCBKeys->GetText();
 }
 
-const decString &meWPPropertyList::GetProperty() const{
+decString meWPPropertyList::GetProperty() const{
 	const igdeListItem * const selection = pListProperties->GetSelectedItem();
-	return selection ? selection->GetText() : vEmptyString;
+	return selection ? selection->GetText() : decString();
 }
 
-const decString &meWPPropertyList::GetPropertyValue() const{
+decString meWPPropertyList::GetPropertyValue() const{
 	const igdeListItem * const selection = pListProperties->GetSelectedItem();
-	return selection ? pProperties.GetAt(selection->GetText(), vEmptyString) : vEmptyString;
+	return selection ? pProperties.GetAtOrDefault(selection->GetText(), {}) : decString();
 }
 
-const decString &meWPPropertyList::GetEditPropertyValue() const{
-	return pListProperties->GetSelectedItem() ? pEditPropertyValue->GetValue() : vEmptyString;
+decString meWPPropertyList::GetEditPropertyValue() const{
+	return pListProperties->GetSelectedItem() ? pEditPropertyValue->GetValue() : decString();
 }
 
 void meWPPropertyList::SetEditPropertyValue(const char *value) const{
@@ -665,16 +671,13 @@ void meWPPropertyList::SetEditPropertyValue(const char *value) const{
 
 
 void meWPPropertyList::UpdateKeys(){
-	const decStringSet keys(GetGDPropertyKeys());
 	const decString selection(pCBKeys->GetText());
 	
 	pCBKeys->RemoveAllItems();
 	
-	const int count = keys.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pCBKeys->AddItem(keys.GetAt(i));
-	}
+	GetGDPropertyKeys().Visit([&](const decString &key){
+		pCBKeys->AddItem(key);
+	});
 	
 	pCBKeys->SortItems();
 	pCBKeys->StoreFilterItems();
@@ -686,37 +689,34 @@ void meWPPropertyList::UpdateKeys(){
 void meWPPropertyList::UpdateList(){
 	const decString selection(GetProperty());
 	
+	// remove no more existing items
 	const decStringList keys(pProperties.GetKeys());
-	const int count = keys.GetCount();
-	decStringList details;
 	int i;
 	
-	// remove no more existing items
-	for(i=pListProperties->GetItemCount() - 1; i>=0; i--){
-		if(!keys.Has(pListProperties->GetItemAt(i)->GetText())){
+	for(i=pListProperties->GetItems().GetCount() - 1; i>=0; i--){
+		if(!keys.Has(pListProperties->GetItems().GetAt(i)->GetText())){
 			pListProperties->RemoveItem(i);
 		}
 	}
 	
 	// add not existing properties and update existing ones
-	for(i=0; i<count; i++){
-		const decString &key = keys.GetAt(i);
+	keys.Visit([&](const decString &key){
 		const int index = pListProperties->IndexOfItem(key);
 		
-		details.RemoveAll();
+		decStringList details;
 		details.Add(pProperties.GetAt(key));
 		
 		if(index == -1){
 			pListProperties->AddItem(key, details);
 			
 		}else{
-			igdeListItem &item = *pListProperties->GetItemAt(index);
+			igdeListItem &item = pListProperties->GetItems().GetAt(index);
 			if(item.GetDetails() != details){
 				item.GetDetails() = details;
 				pListProperties->ItemChangedAt(index);
 			}
 		}
-	}
+	});
 	
 	pListProperties->SortItems();
 	VerifyProperties();
@@ -726,7 +726,7 @@ void meWPPropertyList::UpdateList(){
 	if(pListProperties->GetSelectedItem()){
 		UpdateProperty(); // required if selection is the same but value changed
 		
-	}else if(pListProperties->GetItemCount() > 0){
+	}else if(pListProperties->GetItems().IsNotEmpty()){
 		pListProperties->SetSelection(0);
 	}
 }
@@ -779,23 +779,18 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New(
-		 UndoSetProperty(selection->GetText(), oldValue, newValue)));
+	igdeUndo::Ref undo(UndoSetProperty(selection->GetText(), oldValue, newValue));
 	if(undo){
 		pUndoSystem->Add(undo);
 	}
 }
 
 void meWPPropertyList::VerifyProperties(){
-	const int count = pListProperties->GetItemCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeListItem &item = *pListProperties->GetItemAt(i);
-		const igdeGDProperty * const gdProperty = GetGDProperty(item.GetText());
-		igdeIcon *icon = NULL;
+	pListProperties->GetItems().VisitIndexed([&](int i, igdeListItem &item){
+		const igdeGDProperty * const p = GetGDProperty(item.GetText());
+		igdeIcon *icon = nullptr;
 		
-		if(gdProperty){
+		if(p){
 			// TODO verify if the value is correct according to property definition
 			/*if( correct ){
 				
@@ -811,7 +806,7 @@ void meWPPropertyList::VerifyProperties(){
 			item.SetIcon(icon);
 			pListProperties->ItemChangedAt(i);
 		}
-	}
+	});
 }
 
 void meWPPropertyList::UpdateInformation(const char *key){

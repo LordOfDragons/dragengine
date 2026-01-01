@@ -122,6 +122,12 @@ public:
 	
 	/** \brief Id is 0. */
 	bool IsZero() const;
+	
+	/** \brief Hash. */
+	unsigned int Hash() const;
+	
+	/** \brief Compare unique ID. */
+	int Compare(const decUniqueID &id) const;
 	/*@}*/
 	
 	

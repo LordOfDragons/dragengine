@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pImage.TakeOver(new deImage(engine.GetImageManager(), vfs, path, 0));
+	pImage = deImage::Ref::New(engine.GetImageManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -89,8 +89,7 @@ void deRLTaskReadImage::Run(){
 	deBaseImageInfo *infos = NULL;
 	
 	try{
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			 GetVFS()->OpenFileForReading(vfsPath)));
+		decBaseFileReader::Ref reader(GetVFS()->OpenFileForReading(vfsPath));
 		
 		infos = module->InitLoadImage(reader);
 		if(!infos){

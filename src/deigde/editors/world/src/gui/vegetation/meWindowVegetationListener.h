@@ -35,6 +35,9 @@ class meWindowVegetation;
  * \brief Vegetation Editing Window Listener.
  */
 class meWindowVegetationListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWindowVegetationListener> Ref;
+	
 private:
 	meWindowVegetation &pWindow;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create object. */
 	meWindowVegetationListener(meWindowVegetation &window);
 	
+protected:
 	/** \brief Clean up object. */
 	~meWindowVegetationListener() override;
+	
+public:
 	/*@}*/
 	
 	

@@ -48,11 +48,11 @@ pLayerCount(layerCount)
 	if(layerCount > 1 && /*renderThread.GetChoices().GetFBOArrayUseLayered()*/false){
 		int i;
 		for(i=0; i<layerCount; i++){
-			pLayerFBOs.Add(deoglFramebuffer::Ref::NewWith(renderThread, false));
+			pLayerFBOs.Add(deoglFramebuffer::Ref::New(renderThread, false));
 		}
 		
 	}else{
-		pFBO.TakeOverWith(renderThread, false);
+		pFBO = deoglFramebuffer::Ref::New(renderThread, false);
 	}
 }
 

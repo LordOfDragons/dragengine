@@ -39,7 +39,7 @@
 ////////////////////////////
 
 reURigToggleModelCollision::reURigToggleModelCollision(reRig *rig) :
-pRig(NULL)
+pRig(nullptr)
 {
 	if(!rig){
 		DETHROW(deeInvalidParam);
@@ -48,13 +48,9 @@ pRig(NULL)
 	SetShortInfo("Rig toggle model collision");
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigToggleModelCollision::~reURigToggleModelCollision(){
-	if(pRig){
-		pRig->FreeReference();
-	}
 }
 
 

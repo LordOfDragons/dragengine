@@ -25,7 +25,9 @@
 #ifndef _DETTHREADSAFEOBJECTREFERENCE_H_
 #define _DETTHREADSAFEOBJECTREFERENCE_H_
 
-#include "../common/exceptions.h"
+#include <type_traits>
+
+#include "../common/exceptions_reduced.h"
 
 /**
  * \brief Template deThreadSafeObject reference.
@@ -58,7 +60,7 @@ public:
 	 * 
 	 * Reference is added if object is not nullptr.
 	 */
-	deTThreadSafeObjectReference(T *object) : pObject(object){
+	explicit deTThreadSafeObjectReference(T *object) : pObject(object){
 		if(pObject){
 			pObject->AddReference();
 		}
@@ -76,6 +78,41 @@ public:
 	}
 	
 	/**
+	 * \brief Create object reference holder with object from another holder.
+	 * 
+	 * Reference is added if object in holder is not nullptr.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTThreadSafeObjectReference(const deTThreadSafeObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+		}
+	}
+	
+	/** \brief Move constructor. */
+	deTThreadSafeObjectReference(deTThreadSafeObjectReference &&reference) : pObject(reference.pObject){
+		reference.pObject = nullptr;
+	}
+	
+	/** \brief Move constructor. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTThreadSafeObjectReference(deTThreadSafeObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+		}
+		reference = nullptr;
+	}
+	
+	/**
+	 * \brief Create instance taking over reference.
+	 */
+	template<typename... A> static deTThreadSafeObjectReference New(A&&... args){
+		deTThreadSafeObjectReference reference;
+		reference.pObject = new T(static_cast<A>(args)...);
+		return reference;
+	}
+	
+	/**
 	 * \brief Clean up object reference holder.
 	 * 
 	 * Releases reference if object is not nullptr.
@@ -90,57 +127,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Set object without adding reference.
-	 * 
-	 * Use this method if the object to hold has been added a reference already. This is
-	 * the case with created objects as well as certain methods returning newly created
-	 * objects. In all these cases the object has to be held without adding a reference.
-	 * For all other situations use the constructor or assignment operator.
-	 * 
-	 * It is allowed for object to be a nullptr object.
-	 */
-	void TakeOver(T *object){
-		if(object == pObject){
-			if(object){
-				// this is required since we are asked to take over the reference. since we
-				// have the same reference already we refuse to take over the reference and
-				// thus without releasing it this reference would be dangling
-				object->FreeReference();
-			}
-			return;
-		}
-		
-		if(pObject){
-			pObject->FreeReference();
-		}
-		pObject = object;
-	}
-	
-	/** \brief Move reference. */
-	void TakeOver(deTThreadSafeObjectReference &reference){
-		if(pObject){
-			pObject->FreeReference();
-		}
-		
-		pObject = reference.pObject;
-		reference.pObject = nullptr;
-	}
-	
-	/** \brief Take over reference. */
-	void TakeOver(const deTThreadSafeObjectReference &reference){
-		*this = reference;
-	}
-	
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> void TakeOverWith(A&&... args){
-		TakeOver(new T(static_cast<A>(args)...));
-	}
-	
 	/** \brief Pointer to object. */
 	inline T* Pointer() const{
 		return pObject;
@@ -162,38 +148,9 @@ public:
 		return pObject != nullptr;
 	}
 	
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() on a new instance but allows for inline use.
-	 */
-	static deTThreadSafeObjectReference New(T *object){
-		deTThreadSafeObjectReference reference;
-		reference.TakeOver(object);
-		return reference;
-	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTThreadSafeObjectReference New(const deTThreadSafeObjectReference &reference){
-		return reference;
-	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTThreadSafeObjectReference New(deTThreadSafeObjectReference &reference){
-		return reference;
-	}
-	
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling New() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> static deTThreadSafeObjectReference NewWith(A&&... args){
-		return New(new T(static_cast<A>(args)...));
+	/** Hash. */
+	inline unsigned int Hash() const{
+		return pObject ? DEHash(pObject) : 0;
 	}
 	
 	/** \brief Object is nullptr. */
@@ -263,14 +220,36 @@ public:
 		return operator=(reference.pObject);
 	}
 	
+	/**
+	 * \brief Store object.
+	 * 
+	 * If an object is already held its reference is release and the new object
+	 * stored. If the new object is not nullptr a reference is added.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline deTThreadSafeObjectReference &operator=(const deTThreadSafeObjectReference<U> &reference){
+		return operator=(static_cast<T*>(reference.Pointer()));
+	}
+	
 	/** \brief Test if object is held by this holder. */
 	inline bool operator==(T *object) const{
 		return pObject == object;
 	}
 	
 	/** \brief Test if object is held by this holder. */
+	inline bool operator==(const T *object) const{
+		return pObject == object;
+	}
+	
+	/** \brief Test if object is held by this holder. */
 	inline bool operator==(const deTThreadSafeObjectReference &reference) const{
 		return pObject == reference.pObject;
+	}
+	
+	/** \brief Test if object is held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator==(const deTThreadSafeObjectReference<U> &reference) const{
+		return pObject == static_cast<T*>(reference.Pointer());
 	}
 	
 	/** \brief Test if object is not held by this holder. */
@@ -281,6 +260,44 @@ public:
 	/** \brief Test if object is not held by this holder. */
 	inline bool operator!=(const deTThreadSafeObjectReference &reference) const{
 		return pObject != reference.pObject;
+	}
+	
+	/** \brief Test if object is not held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator!=(const deTThreadSafeObjectReference<U> &reference) const{
+		return pObject != static_cast<T*>(reference.Pointer());
+	}
+	
+	/** \brief Auto-cast to super class (static cast). */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<U, T>::value>::type>
+	operator deTThreadSafeObjectReference<U>() const{
+		return deTThreadSafeObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/** \brief Static cast to super class. */
+	template<typename U> deTThreadSafeObjectReference<U> StaticCast() const{
+		return deTThreadSafeObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/**
+	 * \brief Dynamic cast to sub class.
+	 * 
+	 * Can be nullptr if target class is not a sub class.
+	 */
+	template<typename U> deTThreadSafeObjectReference<U> DynamicCast() const{
+		return deTThreadSafeObjectReference<U>(dynamic_cast<U*>(pObject));
+	}
+	
+	/**
+	 * \brief Compare with another object reference.
+	 * \throws deeNullPointer if either object is nullptr.
+	 * 
+	 * Uses DECompare on the referenced object.
+	 */
+	int Compare(const deTThreadSafeObjectReference<T> &other) const{
+		DEASSERT_NOTNULL(pObject)
+		DEASSERT_NOTNULL(other.pObject)
+		return DECompare(*pObject, *other.pObject);
 	}
 	/*@}*/
 };

@@ -81,31 +81,30 @@ deVirtualFileSystem *vfs, const char *filename) const{
 	return occmesh && !occmesh->GetOutdated() ? occmesh : NULL;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh(
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(
 const char *filename, deOcclusionMeshBuilder &builder){
 	return CreateOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh(deVirtualFileSystem *vfs,
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(deVirtualFileSystem *vfs,
 const char *filename, deOcclusionMeshBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	deOcclusionMesh::Ref occmesh;
 	
 	try{
 		// check if an occlusion mesh with this filename already exists. this check is only done if
 		// the filename is not empty in which case an unnamed occlusion mesh is created
 		if(filename[0] != '\0'){
-			findOccMesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, filename);
+			deOcclusionMesh * const findOccMesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, filename);
 			if(findOccMesh && !findOccMesh->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create occlusion mesh using the builder
-		occmesh = new deOcclusionMesh(this, vfs, filename, decDateTime::GetSystemTime());
+		occmesh = deOcclusionMesh::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildOcclusionMesh(occmesh);
 		
 		// prepare and check occlusion mesh
@@ -121,9 +120,6 @@ const char *filename, deOcclusionMeshBuilder &builder){
 		pMeshes.Add(occmesh);
 		
 	}catch(const deException &e){
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Creating occlusion mesh '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -132,18 +128,16 @@ const char *filename, deOcclusionMeshBuilder &builder){
 	return occmesh;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh(const char *filename, const char *basePath){
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(const char *filename, const char *basePath){
 	return LoadOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh(deVirtualFileSystem *vfs,
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	deOcclusionMesh::Ref occmesh;
 	deBaseOcclusionMeshModule *module;
 	decPath path;
 	
@@ -155,7 +149,8 @@ const char *filename, const char *basePath){
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the model with this filename already exists
-		findOccMesh = (deOcclusionMesh*)pMeshes.GetWithFilename(vfs, path.GetPathUnix());
+		deOcclusionMesh *findOccMesh = (deOcclusionMesh*)
+			pMeshes.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findOccMesh && findOccMesh->GetModificationTime() != modificationTime){
 			LogInfoFormat("Occlusion Mesh '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -165,7 +160,6 @@ const char *filename, const char *basePath){
 		}
 		
 		if(findOccMesh){
-			findOccMesh->AddReference();
 			occmesh = findOccMesh;
 			
 		}else{
@@ -174,17 +168,10 @@ const char *filename, const char *basePath){
 				deModuleSystem::emtOcclusionMesh, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			occmesh = new deOcclusionMesh(this, vfs, path.GetPathUnix(), modificationTime);
-			if(!occmesh){
-				DETHROW(deeOutOfMemory);
-			}
+			occmesh = deOcclusionMesh::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			
 			occmesh->SetAsynchron(false);
-			module->LoadOcclusionMesh(*fileReader, *occmesh);
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
+			module->LoadOcclusionMesh(OpenFileForReading(*vfs, path.GetPathUnix()), *occmesh);
 			
 			// prepare and check model
 			if(!occmesh->Verify()){
@@ -200,12 +187,6 @@ const char *filename, const char *basePath){
 		}
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Loading occlusion mesh '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;

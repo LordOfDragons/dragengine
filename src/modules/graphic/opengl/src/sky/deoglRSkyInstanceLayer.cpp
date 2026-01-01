@@ -132,7 +132,7 @@ deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
 		return pPipelines;
 	}
 	
-	pPipelines.TakeOver(new deoglLightPipelinesSky(*this));
+	pPipelines = deoglLightPipelinesSky::Ref::New(*this);
 	
 	deoglBatchedShaderLoading batched(pInstance.GetRenderThread(), 1000.0f, true);
 	try{

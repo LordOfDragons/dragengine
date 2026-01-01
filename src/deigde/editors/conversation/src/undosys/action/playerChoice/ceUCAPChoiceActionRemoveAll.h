@@ -26,11 +26,11 @@
 #define _CEUCAPCHOICEACTIONREMOVEALL_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../conversation/action/ceConversationActionList.h"
+#include "../../../conversation/action/ceConversationAction.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 
@@ -38,16 +38,17 @@ class ceCAPlayerChoiceOption;
  * \brief Undo Action Player Choice Remove All Conversation Actions.
  */
 class ceUCAPChoiceActionRemoveAll : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationActionList pActionList;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAPChoiceActionRemoveAll> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationAction::List pActions;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

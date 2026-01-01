@@ -27,7 +27,7 @@
 #define _DEDSXMLPARSER_H_
 
 // includes
-#include "dragengine/common/xmlparser/decXmlParser.h"
+#include <dragengine/common/xmlparser/decXmlParser.h>
 
 // predefintions
 class deLogger;

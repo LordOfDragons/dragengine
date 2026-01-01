@@ -31,8 +31,6 @@
 #include "foxtoolkit.h"
 #include "../../igdeWidget.h"
 #include "../../igdeContainer.h"
-#include "../../filedialog/igdeFilePattern.h"
-#include "../../filedialog/igdeFilePatternList.h"
 #include "../../resources/igdeHotKey.h"
 
 #include <dragengine/common/exceptions.h>
@@ -321,20 +319,16 @@ int igdeUIFoxHelper::ModifiersFromEvent(const FXEvent &event){
 	return modifiers;
 }
 
-FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePatternList &filePatterns){
-	const int count = filePatterns.GetFilePatternCount();
+FXString igdeUIFoxHelper::FilePatternListToFOX(const igdeFilePattern::List &filePatterns){
 	decString foxString;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(i);
-		
-		if(i > 0){
+	filePatterns.Visit([&](const igdeFilePattern &fp){
+		if(!foxString.IsEmpty()){
 			foxString.AppendCharacter('\n');
 		}
 		
-		foxString.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
-	}
+		foxString.AppendFormat("%s (%s)", fp.GetName().GetString(), fp.GetPattern().GetString());
+	});
 	
 	//foxString.Append( "\nAll Files (*)" );
 	return FXString(foxString.GetString());
@@ -409,13 +403,11 @@ void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = container->GetChildCount();
 	sChildLayoutFlags clflags;
-	int i;
 	
-	for(i=0; i<count; i++){
-		clflags.widget = container->GetChildAt(i);
-		FXWindow * const foxWidget = (FXWindow*)clflags.widget->GetNativeWidget();
+	container->GetChildren().Visit([&](igdeWidget *child){
+		clflags.widget = child;
+		FXWindow * const foxWidget = static_cast<FXWindow*>(clflags.widget->GetNativeWidget());
 		if(!foxWidget){
 			DETHROW(deeInvalidParam);
 		}
@@ -423,7 +415,7 @@ void igdeUIFoxHelper::UpdateLayoutFlagsChildren(igdeContainer *container){
 		foxContainer->handle(foxContainer, FXSEL(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0), &clflags);
 		
 		foxWidget->setLayoutHints(clflags.flags & 0xfff);
-	}
+	});
 }
 
 FXColor igdeUIFoxHelper::BlendColor(FXColor color1, FXColor color2, float factor){

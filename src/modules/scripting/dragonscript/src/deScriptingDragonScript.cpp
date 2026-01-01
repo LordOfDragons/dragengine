@@ -536,7 +536,6 @@ pScriptEngine(nullptr),
 pClsGameObj(nullptr),
 pResourceLoader(nullptr),
 //pLockManager( nullptr ),
-pColInfo(nullptr),
 pColliderListenerClosest(nullptr),
 pColliderListenerAdaptor(nullptr),
 pGameObj(nullptr),
@@ -641,10 +640,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		pScriptEngine->SetEngineManager(dsmanager);
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		pLoadingScreen = dedsLoadingScreen::Ref::New(*this);
 		
 #ifdef OS_ANDROID_QUEST
-		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+		pVRPlaceholder = dedsVRPlaceholder::Ref::New(*this;
 #endif
 		
 		pState = esSkipOneFrame;
@@ -744,11 +743,6 @@ void deScriptingDragonScript::ShutDown(){
 	DeleteValuesDeleteLater();
 	
 	pRemoveVFSContainerHideScriptDirectory();
-	
-	if(pColInfo){
-		pColInfo->FreeReference();
-		pColInfo = nullptr;
-	}
 	
 	// free the lock manager
 //	delete pLockManager;
@@ -987,7 +981,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 			pAddVFSContainerHideScriptDirectory();
 			
 			pResourceLoader = new dedsResourceLoader(this);
-			pColInfo = new deCollisionInfo;
+			pColInfo = deCollisionInfo::Ref::New();
 			pColliderListenerClosest = new dedsColliderListenerClosest(*this);
 			pColliderListenerAdaptor = new dedsColliderListenerAdaptor(*this);
 			
@@ -1296,8 +1290,8 @@ void deScriptingDragonScript::LogExceptionDS(const duException &exception){
 
 // private functions
 void deScriptingDragonScript::pCreateParameters(){
-	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPForceDpiAware(*this)));
-	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPLogLevel(*this)));
+	pParameters.AddParameter(dedsPForceDpiAware::Ref::New(*this));
+	pParameters.AddParameter(dedsPLogLevel::Ref::New(*this));
 }
 
 void deScriptingDragonScript::pLoadBasicPackage(){
@@ -1367,7 +1361,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass(pClsGame = new deClassGame(*this));
 		package->AddHostClass(pClsEngine = new deClassEngine(*this));
 		package->AddHostClass(pClsMath = new deClassMath(this));
-		package->AddHostClass(pClsModPar = new deClassModuleParameter(engine, this));
+		package->AddHostClass(pClsModPar = new deClassModuleParameter(engine, *this));
 		package->AddHostClass(pClsScrSys = new deClassScriptSystem(*this));
 		package->AddHostClass(pClsCRSys = new deClassCrashRecoverySystem(*this));
 		package->AddHostClass(pClsAISys = new deClassAISystem(*this));
@@ -1925,7 +1919,7 @@ decString deScriptingDragonScript::BuildFullName(const dsClass *theClass) const{
 void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	const deVFSNull::Ref container(deVFSNull::Ref::NewWith(decPath::CreatePathUnix(pInitScriptDirectory)));
+	const deVFSNull::Ref container(deVFSNull::Ref::New(decPath::CreatePathUnix(pInitScriptDirectory)));
 	container->SetHidden(true);
 	container->AddHiddenPath(decPath::CreatePathUnix("/"));
 	pVFSContainerHideScriptDirectory = container;
@@ -1987,6 +1981,8 @@ void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
 
 class dedsModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dedsModuleInternal> Ref;
+	
 	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DragonScript");
 		SetDescription("Provides access to the Drag[en]gine using the DragonScript \
@@ -2010,7 +2006,7 @@ if you need time critical calculations using another language might be better.")
 	}
 };
 
-deInternalModule *dedsRegisterInternalModule(deModuleSystem *system){
-	return new dedsModuleInternal(system);
+deTObjectReference<deInternalModule> dedsRegisterInternalModule(deModuleSystem *system){
+	return dedsModuleInternal::Ref::New(system);
 }
 #endif

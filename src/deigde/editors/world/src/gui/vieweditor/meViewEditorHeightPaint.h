@@ -36,6 +36,9 @@ class meCLHeightPaint;
  * View editor for height painting terrain.
  */
 class meViewEditorHeightPaint : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorHeightPaint> Ref;
+	
 private:
 	float pPainterElapsedTime;
 	bool pPainting;

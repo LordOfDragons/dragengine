@@ -61,7 +61,7 @@ igdeConfigurationLocalXML::~igdeConfigurationLocalXML(){
 ///////////////
 
 void igdeConfigurationLocalXML::ReadFromFile(decBaseFileReader &reader, igdeConfigurationLocal &config){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser parser(GetLogger());
 	parser.ParseXml(&reader, xmlDoc);
@@ -139,15 +139,11 @@ void igdeConfigurationLocalXML::pWriteConfig(decXmlWriter &writer, const igdeCon
 }
 
 void igdeConfigurationLocalXML::pWriteRecentEditors(decXmlWriter &writer, const igdeConfigurationLocal &config){
-	igdeEditorModuleManager &moduleManger = config.GetWindowMain().GetModuleManager();
-	const int count = moduleManger.GetModuleCount();
-	int i;
-	
 	writer.WriteOpeningTag("recentEditors");
 	
-	for(i=0; i<count; i++){
-		writer.WriteDataTagString("editor", moduleManger.GetRecentModuleAt(i)->GetID());
-	}
+	config.GetWindowMain().GetModuleManager().GetRecentModules().Visit([&](const igdeEditorModuleDefinition *module){
+		writer.WriteDataTagString("editor", module->GetID());
+	});
 	
 	writer.WriteClosingTag("recentEditors");
 }

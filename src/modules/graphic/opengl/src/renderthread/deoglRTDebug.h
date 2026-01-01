@@ -78,7 +78,7 @@ public:
 	 * \details Creates a temporary file writer with the content written to the actual file
 	 *          once the render thread synchronizes with the main thread.
 	 */
-	decBaseFileWriter *OpenFileForWriting(const decPath &path);
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path);
 	
 	/** Debug information list. */
 	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }

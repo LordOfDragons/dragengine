@@ -120,8 +120,8 @@ void aeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
-			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).
+			ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
 	}catch(const deException &e){
@@ -142,10 +142,9 @@ void aeConfiguration::SaveConfiguration(){
 		return;
 	}
 	
-	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
-		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
+		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
+			vfs.OpenFileForWriting(pathFile), *this);
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);

@@ -49,11 +49,11 @@ protected:
 	
 public:
 	igdeWindowLogger_ActionTest(igdeWindowLogger &window) :
-	igdeAction("Test", NULL, "Test"),
+	igdeAction("Test", nullptr, "Test"),
 	pWindow(window){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeCommonDialogs::Information(&pWindow, "Clicked", "Clicked.");
 	}
 };
@@ -71,24 +71,22 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(NULL),
-pLogger(NULL),
+pListener(igdeWindowLoggerListener::Ref::New(*this)),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener = new igdeWindowLoggerListener(*this);
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pEditLogs.TakeOver(new igdeTextArea(environment, 60, 10, false));
+	pEditLogs = igdeTextArea::Ref::New(environment, 60, 10, false);
 	
-	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style = igdeTextStyle::Ref::New(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );
@@ -98,10 +96,7 @@ pPendingClearLogs(false)
 }
 
 igdeWindowLogger::~igdeWindowLogger(){
-	SetLogger(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetHistoryLogger(nullptr);
 }
 
 
@@ -109,20 +104,18 @@ igdeWindowLogger::~igdeWindowLogger(){
 // Management
 ///////////////
 
-void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
-	if(logger == pLogger){
+void igdeWindowLogger::SetHistoryLogger(igdeLoggerHistory *logger){
+	if(logger == pHistoryLogger){
 		return;
 	}
 	
-	if(pLogger){
-		pLogger->RemoveListener(pListener);
-		pLogger->FreeReference();
+	if(pHistoryLogger){
+		pHistoryLogger->RemoveListener(pListener);
 	}
 	
-	pLogger = logger;
+	pHistoryLogger = logger;
 	
 	if(logger){
-		logger->AddReference();
 		logger->AddListener(pListener);
 	}
 	
@@ -134,14 +127,14 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 
 
 void igdeWindowLogger::OnFrameUpdate(){
-	if(!pLogger){
+	if(!pHistoryLogger){
 		return;
 	}
 	
-	pLogger->GetMutex().Lock();
+	pHistoryLogger->GetMutex().Lock();
 	
 	try{
-		if(pPendingAddedLogs >= pLogger->GetHistorySize()){
+		if(pPendingAddedLogs >= pHistoryLogger->GetHistorySize()){
 			pPendingAddedLogs = 0;
 			pPendingClearLogs = true;
 		}
@@ -149,20 +142,20 @@ void igdeWindowLogger::OnFrameUpdate(){
 		if(pPendingClearLogs){
 			pPendingClearLogs = false;
 			pClearLogs();
-			pPendingAddedLogs = pLogger->GetEntryCount();
+			pPendingAddedLogs = pHistoryLogger->GetEntryCount();
 		}
 		
 		while(pPendingAddedLogs > 0){
-			const igdeLoggerHistoryEntry &entry = pLogger->GetEntryAt(
-				pLogger->GetEntryCount() - pPendingAddedLogs);
+			const igdeLoggerHistoryEntry &entry = pHistoryLogger->GetEntryAt(
+				pHistoryLogger->GetEntryCount() - pPendingAddedLogs);
 			pPendingAddedLogs--;
 			pAddLog(entry);
 		}
 		
-		pLogger->GetMutex().Unlock();
+		pHistoryLogger->GetMutex().Unlock();
 		
 	}catch(const deException &e){
-		pLogger->GetMutex().Unlock();
+		pHistoryLogger->GetMutex().Unlock();
 		e.PrintError();
 	}
 }
@@ -207,7 +200,7 @@ void igdeWindowLogger::OnLogsCleared(){
 void igdeWindowLogger::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
 	const int length = (int)strlen(logs);
-	int count = pLogger->GetHistorySize();
+	int count = pHistoryLogger->GetHistorySize();
 	int i;
 	
 	for(i=length-1; i>=0; i--){
@@ -240,7 +233,7 @@ void igdeWindowLogger::pAddLog(const igdeLoggerHistoryEntry &entry){
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
 	
 	const char *typeMarker = "";
-	const char *style = NULL;
+	const char *style = nullptr;
 	
 	switch(entry.GetType()){
 	case igdeLoggerHistoryEntry::emtWarn:
@@ -255,7 +248,7 @@ void igdeWindowLogger::pAddLog(const igdeLoggerHistoryEntry &entry){
 		
 	case igdeLoggerHistoryEntry::emtInfo:
 	default:
-		style = NULL;
+		style = nullptr;
 		typeMarker = "II ";
 		break;
 	}
@@ -265,7 +258,7 @@ void igdeWindowLogger::pAddLog(const igdeLoggerHistoryEntry &entry){
 	
 	if(style){
 		igdeAction::Ref action;
-// 		action.TakeOver( new igdeWindowLogger_ActionTest( *this ) );
+// 		action = new igdeWindowLogger_ActionTest( *this );
 		pEditLogs->AppendText(text, style, action);
 		
 	}else{

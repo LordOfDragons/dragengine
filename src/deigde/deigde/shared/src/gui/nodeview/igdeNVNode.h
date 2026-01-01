@@ -25,27 +25,28 @@
 #ifndef _IGDENVNODE_H_
 #define _IGDENVNODE_H_
 
+#include "igdeNVNodeListener.h"
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
 class igdeNVBoard;
 class igdeNVSlot;
-class igdeNVNodeListener;
 
 
 /**
  * \brief IGDE UI NodeView Node.
  */
 class DE_DLL_EXPORT igdeNVNode : public igdeContainer{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeNVNode> Ref;
+	
+	typedef decTObjectOrderedSet<igdeNVSlot> SlotsList;
 	
 	
 private:
@@ -62,9 +63,9 @@ private:
 	igdeNVBoard *pOwnerBoard;
 	decPoint pPosition;
 	
-	decObjectOrderedSet pSlots;
+	SlotsList pSlots;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeNVNodeListener> pListeners;
 	
 	
 	
@@ -152,11 +153,11 @@ public:
 	/** \brief Size. */
 	decPoint GetSize() const;
 	
-	/** \brief Owner board or NULL. */
+	/** \brief Owner board or nullptr. */
 	inline igdeNVBoard *GetOwnerBoard() const{ return pOwnerBoard; }
 	
 	/**
-	 * \brief Set owner board or NULL.
+	 * \brief Set owner board or nullptr.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
 	void SetOwnerBoard(igdeNVBoard *board);
@@ -166,17 +167,8 @@ public:
 	
 	
 	
-	/** \brief Number of slots. */
-	int GetSlotCount() const;
-	
-	/** \brief Slot at index. */
-	igdeNVSlot *GetSlotAt(int index) const;
-	
-	/** \brief Index of slot. */
-	int IndexOfSlot(igdeNVSlot *slot) const;
-	
-	/** \brief Has slot. */
-	bool HasSlot(igdeNVSlot *slot) const;
+	/** \brief Slots. */
+	const SlotsList &GetSlots() const{ return pSlots; }
 	
 	/** \brief Add slot. */
 	void AddSlot(igdeNVSlot *slot);

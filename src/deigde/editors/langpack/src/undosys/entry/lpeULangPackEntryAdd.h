@@ -36,6 +36,10 @@
  * Undo action add language pack entry.
  */
 class lpeULangPackEntryAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<lpeULangPackEntryAdd> Ref;
+	
+	
 private:
 	const lpeLangPack::Ref pLangPack;
 	const lpeLangPackEntry::Ref pEntry;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeULangPackEntryAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

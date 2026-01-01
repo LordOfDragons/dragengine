@@ -31,7 +31,7 @@
 #include "deClassServerListener.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 

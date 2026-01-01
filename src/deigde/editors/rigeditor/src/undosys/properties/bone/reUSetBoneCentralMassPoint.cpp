@@ -36,11 +36,9 @@
 ////////////////////////////
 
 reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint(reRigBone *bone, const decVector &centralMassPoint){
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldCentralMassPoint = bone->GetCentralMassPoint();
 	pNewCentralMassPoint = centralMassPoint;
 	
@@ -76,5 +74,4 @@ void reUSetBoneCentralMassPoint::Redo(){
 //////////////////////
 
 void reUSetBoneCentralMassPoint::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

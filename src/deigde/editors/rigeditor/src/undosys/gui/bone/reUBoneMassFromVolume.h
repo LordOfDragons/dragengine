@@ -25,12 +25,14 @@
 #ifndef _REUBONEMASSFROMVOLUME_H_
 #define _REUBONEMASSFROMVOLUME_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-class decObjectOrderedSet;
-class reRig;
 class reRigBone;
 
 
@@ -40,26 +42,31 @@ class reRigBone;
  */
 class reUBoneMassFromVolume : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reUBoneMassFromVolume> Ref;
 	
+	
+public:
 
 private:
-	struct sBone{
-		reRigBone *bone;
-		float oldMass;
-		float newMass;
+	class cBone : public deObject{
+	public:
+		typedef deTObjectReference<cBone> Ref;
+		
+		reRigBone::Ref bone;
+		float oldMass = 0.0f;
+		float newMass = 0.0f;
+		
+		cBone() = default;
 	};
 	
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pDensity;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTObjectList<cBone> pBones;
 	
 	
 	
@@ -67,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density);
+	reUBoneMassFromVolume(reRig *rig, const reRigBone::List &bones, float density);
 	
 protected:
 	/** \brief Clean up the undo. */
@@ -89,7 +96,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	float pCalcVolume(const reRigBone &bone) const;
 };
 

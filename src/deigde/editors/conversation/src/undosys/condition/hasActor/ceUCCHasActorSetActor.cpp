@@ -46,34 +46,20 @@ ceUCCHasActorSetActor::ceUCCHasActorSetActor(ceConversationTopic *topic, ceConve
 ceCConditionHasActor *hasActor, const char *newID){
 	if(!topic || !action || !hasActor || !newID) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pHasActor = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pHasActor = nullptr;
 	pOldID = hasActor->GetActor();
 	pNewID = newID;
 	
 	SetShortInfo("Has Actor Set Actor ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pHasActor = hasActor;
-	hasActor->AddReference();
 }
 
 ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

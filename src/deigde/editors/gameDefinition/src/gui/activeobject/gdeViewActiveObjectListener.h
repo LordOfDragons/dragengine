@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeViewActiveObjectListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeViewActiveObjectListener(gdeViewActiveObject &view);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeViewActiveObjectListener() override;
+public:
 	/*@}*/
 	
 	
@@ -271,7 +274,7 @@ public:
 	
 	
 private:
-	/** \brief Get object class of selected sub object or \em NULL. */
+	/** \brief Get object class of selected sub object or \em nullptr. */
 	gdeObjectClass *pGetSSOObjectClass(const gdeGameDefinition &gameDefinition) const;
 	
 	/** \brief Active sub object changed. */

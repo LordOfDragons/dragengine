@@ -40,7 +40,7 @@
 ////////////////////////////
 
 igdeSMTouchSensor::igdeSMTouchSensor(){
-	pDelegee = NULL;
+	pDelegee = nullptr;
 }
 
 igdeSMTouchSensor::~igdeSMTouchSensor(){

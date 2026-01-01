@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "reSelectionShapes.h"
 #include "reRigShape.h"
-#include "reRigShapeList.h"
 #include "../reRig.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -40,19 +37,12 @@
 ////////////////////////////
 
 reSelectionShapes::reSelectionShapes(reRig *rig){
-	if(!rig) DETHROW(deeInvalidParam);
-	
+	DEASSERT_NOTNULL(rig)
 	pRig = rig;
-	
-	pShapes = NULL;
-	pShapeCount = 0;
-	pShapeSize = 0;
-	pActiveShape = NULL;
 }
 
 reSelectionShapes::~reSelectionShapes(){
 	Reset();
-	if(pShapes) delete [] pShapes;
 }
 
 
@@ -60,128 +50,66 @@ reSelectionShapes::~reSelectionShapes(){
 // Management
 ///////////////
 
-reRigShape *reSelectionShapes::GetShapeAt(int index) const{
-	if(index < 0 || index >= pShapeCount) DETHROW(deeOutOfBoundary);
-	
-	return pShapes[index];
-}
-
-bool reSelectionShapes::HasShape(reRigShape *shape) const{
-	if(!shape) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pShapeCount; i++){
-		if(shape == pShapes[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-	
-int reSelectionShapes::IndexOfShape(reRigShape *shape) const{
-	if(!shape) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pShapeCount; i++){
-		if(shape == pShapes[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 int reSelectionShapes::IndexOfShapeWith(deColliderVolume *collider) const{
-	if(!collider) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pShapeCount; i++){
-		if(collider == pShapes[i]->GetCollider()){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pShapes.IndexOfMatching([&](const reRigShape &s){
+		return s.GetCollider() == collider;
+	});
 }
 
 void reSelectionShapes::AddShape(reRigShape *shape){
-	if(HasShape(shape)) DETHROW(deeInvalidParam);
+	if(pShapes.Has(shape)) DETHROW(deeInvalidParam);
 	
-	if(pShapeCount == pShapeSize){
-		int newSize = pShapeSize * 3 / 2 + 1;
-		reRigShape **newArray = new reRigShape*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pShapes){
-			memcpy(newArray, pShapes, sizeof(reRigShape*) * pShapeSize);
-			delete [] pShapes;
-		}
-		pShapes = newArray;
-		pShapeSize = newSize;
-	}
-	
-	pShapes[pShapeCount] = shape;
-	pShapeCount++;
-	
-	shape->AddReference();
-	
+	pShapes.Add(shape);
 	shape->SetSelected(true);
 	
 	pRig->NotifyShapeSelectedChanged(shape);
 	
-	if(pActiveShape == NULL){
+	if(!pActiveShape){
 		SetActiveShape(shape);
 	}
 }
 
 void reSelectionShapes::RemoveShape(reRigShape *shape){
-	int i, index = IndexOfShape(shape);
+	const int index = pShapes.IndexOf(shape);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for(i=index+1; i<pShapeCount; i++){
-		pShapes[i - 1] = pShapes[i];
-	}
-	pShapes[pShapeCount - 1] = NULL;
-	pShapeCount--;
-	
+	pShapes.RemoveFrom(index);
 	shape->SetSelected(false);
 	
 	if(shape == pActiveShape){
-		if(pShapeCount > 0){
-			SetActiveShape(pShapes[0]);
+		if(pShapes.IsNotEmpty()){
+			SetActiveShape(pShapes.First());
 			
 		}else{
-			SetActiveShape(NULL);
+			SetActiveShape(nullptr);
 		}
 	}
 	
 	pRig->NotifyShapeSelectedChanged(shape);
-	
-	shape->FreeReference();
 }
 
 void reSelectionShapes::RemoveAllShapes(){
-	SetActiveShape(NULL);
+	SetActiveShape(nullptr);
 	
 	pRig->NotifyAllShapesDeselected();
 	
-	while(pShapeCount > 0){
-		pShapeCount--;
-		
-		pShapes[pShapeCount]->SetSelected(false);
-		pShapes[pShapeCount]->FreeReference();
-	}
+	pShapes.Visit([](reRigShape *shape){
+		shape->SetSelected(false);
+	});
+	pShapes.RemoveAll();
 }
 
 
 
 bool reSelectionShapes::HasActiveShape() const{
-	return pActiveShape != NULL;
+	return pActiveShape.IsNotNull();
 }
 
 void reSelectionShapes::SetActiveShape(reRigShape *shape){
 	if(shape != pActiveShape){
-		if(shape && !HasShape(shape)) DETHROW(deeInvalidParam);
+		if(shape){
+			DEASSERT_TRUE(pShapes.Has(shape))
+		}
 		
 		if(pActiveShape){
 			pActiveShape->SetActive(false);
@@ -200,13 +128,10 @@ void reSelectionShapes::SetActiveShape(reRigShape *shape){
 void reSelectionShapes::Reset(){
 	RemoveAllShapes();
 }
-
-void reSelectionShapes::AddVisibleShapesTo(reRigShapeList &list) const{
-	int s;
-	
-	for(s=0; s<pShapeCount; s++){
-		if(pShapes[s]->IsVisible()){
-			list.AddShape(pShapes[s]);
+void reSelectionShapes::AddVisibleShapesTo(reRigShape::List &list) const{
+	pShapes.Visit([&list](reRigShape *shape){
+		if(shape->IsVisible()){
+			list.Add(shape);
 		}
-	}
+	});
 }

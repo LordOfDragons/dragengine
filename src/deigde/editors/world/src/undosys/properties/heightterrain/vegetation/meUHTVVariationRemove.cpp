@@ -46,18 +46,13 @@ meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVV
 	pVLayer = vlayer;
 	pVariation = variation;
 	
-	pIndex = vlayer->IndexOfVariation(variation);
+	pIndex = vlayer->GetVariations().IndexOf(variation);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Vegetation Layer Variation");
-	
-	vlayer->AddReference();
-	variation->AddReference();
 }
 
 meUHTVVariationRemove::~meUHTVVariationRemove(){
-	if(pVariation) pVariation->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

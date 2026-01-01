@@ -46,16 +46,13 @@ ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
 	ceConversation *conversation = target->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pTarget = NULL;
+	pConversation = nullptr;
+	pTarget = nullptr;
 	
 	SetShortInfo("Remove Target");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetRemove::~ceUCTargetRemove(){

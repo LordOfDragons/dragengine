@@ -25,6 +25,9 @@
 #ifndef _MEWNDPROPWORLD_H_
 #define _MEWNDPROPWORLD_H_
 
+#include "meWPWorldListener.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -39,8 +42,6 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
-class meWPWorldListener;
-class meWorld;
 class mePathFindTestType;
 
 
@@ -49,10 +50,13 @@ class mePathFindTestType;
  * Property window displaying the properties of the world.
  */
 class meWPWorld : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<meWPWorld> Ref;
+	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPWorldListener *pListener;
-	meWorld *pWorld;
+	meWPWorldListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeActionContextMenu::Ref pActionPFTTypes;
 	igdeAction::Ref pActionPFTTypeAdd;
@@ -110,7 +114,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);
@@ -124,7 +128,7 @@ public:
 	/** Update path find test. */
 	void UpdatePathFindTest();
 	
-	/** Active path find test type or NULL if there is none. */
+	/** Active path find test type or nullptr if there is none. */
 	mePathFindTestType *GetActivePathFindTestType() const;
 	
 	/** Update path find test type list. */
@@ -165,9 +169,9 @@ public:
 	
 	
 	
-	inline igdeAction* GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
-	inline igdeAction* GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
-	inline igdeAction* GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
+	inline const igdeAction::Ref &GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
+	inline const igdeAction::Ref &GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
+	inline const igdeAction::Ref &GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
 };
 
 #endif

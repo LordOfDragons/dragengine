@@ -139,34 +139,33 @@ void deoglShaderCompilingInfo::pCreateCanvas(){
 	
 	const decColor textColor(0.85f, 0.85f, 0.85f);
 	
-	pFontText.TakeOver(engine.GetFontManager()->LoadFont(
-		&vfs, "loading.defont", "/share/fonts"));
+	pFontText = engine.GetFontManager()->LoadFont(&vfs, "loading.defont", "/share/fonts");
 	
-	pVideoCompile.TakeOver(engine.GetVideoManager()->LoadVideo(
-		&vfs, "compileShaders.webm", "/share/videos", false));
+	pVideoCompile = engine.GetVideoManager()->LoadVideo(&vfs,
+		"compileShaders.webm", "/share/videos", false);
 	
-	pVideoPlayerCompile.TakeOver(engine.GetVideoPlayerManager()->CreateVideoPlayer());
+	pVideoPlayerCompile = engine.GetVideoPlayerManager()->CreateVideoPlayer();
 	pVideoPlayerCompile->SetVideo(pVideoCompile);
 	pVideoPlayerCompile->SetLooping(true);
 	
-	pCanvasView.TakeOver(canvasManager.CreateCanvasView());
+	pCanvasView = canvasManager.CreateCanvasView();
 	pCanvasView->SetOrder((float)pOgl.GetOverlay()->GetCanvasCount());
 	pOgl.GetOverlay()->AddCanvas(pCanvasView);
 	
-	pCanvasVideo.TakeOver(canvasManager.CreateCanvasVideoPlayer());
+	pCanvasVideo = canvasManager.CreateCanvasVideoPlayer();
 	pCanvasVideo->SetVideoPlayer(pVideoPlayerCompile);
 	pCanvasVideo->SetSize(decPoint(pVideoCompile->GetWidth(), pVideoCompile->GetHeight()));
 	pCanvasVideo->SetOrder((float)pCanvasView->GetCanvasCount());
 	pCanvasView->AddCanvas(pCanvasVideo);
 	
-	pCanvasText1.TakeOver(canvasManager.CreateCanvasText());
+	pCanvasText1 = canvasManager.CreateCanvasText();
 	pCanvasText1->SetFont(pFontText);
 	pCanvasText1->SetFontSize((float)pFontText->GetLineHeight());
 	pCanvasText1->SetColor(textColor);
 	pCanvasText1->SetOrder((float)pCanvasView->GetCanvasCount());
 	pCanvasView->AddCanvas(pCanvasText1);
 	
-	pCanvasText2.TakeOver(canvasManager.CreateCanvasText());
+	pCanvasText2 = canvasManager.CreateCanvasText();
 	pCanvasText2->SetFont(pFontText);
 	pCanvasText2->SetFontSize((float)pFontText->GetLineHeight());
 	pCanvasText2->SetColor(textColor);

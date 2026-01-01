@@ -26,9 +26,13 @@
 #define _SEPROPERTY_H_
 
 #include "node/sePropertyNodeSelection.h"
+#include "node/sePropertyNodeGroup.h"
 #include "../mapped/seMapped.h"
 
+#include <deigde/engine/textureProperties/igdeTextureProperty.h>
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/image/deImage.h>
@@ -38,10 +42,7 @@
 class seTexture;
 
 class deEngine;
-class sePropertyNodeGroup;
 class deSkinPropertyNodeGroup;
-
-class igdeTexturePropertyList;
 
 
 
@@ -51,6 +52,9 @@ class igdeTexturePropertyList;
 class seProperty : public deObject{
 public:
 	typedef deTObjectReference<seProperty> Ref;
+	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<seProperty> List;
 	
 	
 	/** \brief Value types. */
@@ -99,9 +103,9 @@ private:
 	
 	seMapped::Ref pMappedComponents[4];
 	
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	deSkinPropertyNodeGroup *pEngNodeGroup;
-	sePropertyNodeGroup *pActiveNodeGroup;
+	sePropertyNodeGroup::Ref pActiveNodeGroup;
 	sePropertyNodeSelection pNodeSelection;
 	int pActiveNodeLayer;
 	decColor pNodeColor;
@@ -124,7 +128,9 @@ public:
 	seProperty(const seProperty &property);
 	
 	/** \brief Clean up property. */
+protected:
 	virtual ~seProperty();
+public:
 	/*@}*/
 	
 	
@@ -136,10 +142,10 @@ public:
 	
 	
 	
-	/** \brief Parent texture or \em NULL if not set. */
+	/** \brief Parent texture or \em nullptr if not set. */
 	inline seTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Set parent texture or \em NULL if not set. */
+	/** \brief Set parent texture or \em nullptr if not set. */
 	void SetTexture(seTexture *texture);
 	
 	
@@ -192,8 +198,8 @@ public:
 	/** \brief Set image path. */
 	void SetImagePath(const char *imagePath);
 	
-	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	/** \brief Image or \em nullptr if not set. */
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();
@@ -206,8 +212,8 @@ public:
 	/** \brief Set video path. */
 	void SetVideoPath(const char *videoPath);
 	
-	/** \brief Video or \em NULL if not set. */
-	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
+	/** \brief Video or \em nullptr if not set. */
+	inline const deVideo::Ref &GetEngineVideo() const{ return pEngVideo; }
 	
 	/** \brief Update video. */
 	void UpdateVideo();
@@ -229,12 +235,12 @@ public:
 	
 	
 	/** \brief Node group. */
-	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
+	inline const sePropertyNodeGroup::Ref &GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
 	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
 	
-	/** \brief Engine node group or \em NULL if not set. */
+	/** \brief Engine node group or \em nullptr if not set. */
 	inline deSkinPropertyNodeGroup *GetEngineNodeGroup() const{ return pEngNodeGroup; }
 	
 	/** \brief Update engine node group. */
@@ -244,16 +250,16 @@ public:
 	sePropertyNodeSelection &GetNodeSelection(){return pNodeSelection;}
 	const sePropertyNodeSelection &GetNodeSelection() const{ return pNodeSelection; }
 	
-	/** \brief Active node group or \em NULL. */
-	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
+	/** \brief Active node group or \em nullptr. */
+	inline const sePropertyNodeGroup::Ref &GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
-	/** \brief Set active node group or \em NULL. */
+	/** \brief Set active node group or \em nullptr. */
 	void SetActiveNodeGroup(sePropertyNodeGroup *node);
 	
-	/** \brief Active node layer or \em NULL. */
+	/** \brief Active node layer or \em nullptr. */
 	inline int GetActiveNodeLayer() const{ return pActiveNodeLayer; }
 	
-	/** \brief Set active node layer or \em NULL. */
+	/** \brief Set active node layer or \em nullptr. */
 	void SetActiveNodeLayer(int layer);
 	
 	/** \brief Node color. */
@@ -301,7 +307,7 @@ public:
 	void UpdateResources();
 	
 	/** \brief Init from default property parameters if property name is known. */
-	void InitDefaults(const igdeTexturePropertyList &knownPropertyList);
+	void InitDefaults(const igdeTextureProperty::List &knownPropertyList);
 	/*@}*/
 };
 

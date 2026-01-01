@@ -56,12 +56,11 @@ deoglParticleEmitterInstanceType::deoglParticleEmitterInstanceType(
 deoglParticleEmitterInstance &instance, int index) :
 pEmitterInstance(instance),
 pIndex(index),
-pRType(NULL),
 pDirtyType(true),
 pDirtyParamBlocks(true)
 {
 	try{
-		pRType = new deoglRParticleEmitterInstanceType(*instance.GetRInstance(), index);
+		pRType = deoglRParticleEmitterInstanceType::Ref::New(*instance.GetRInstance(), index);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -130,7 +129,4 @@ void deoglParticleEmitterInstanceType::TypeChanged(){
 //////////////////////
 
 void deoglParticleEmitterInstanceType::pCleanUp(){
-	if(pRType){
-		pRType->FreeReference();
-	}
 }

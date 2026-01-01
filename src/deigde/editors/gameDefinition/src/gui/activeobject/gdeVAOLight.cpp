@@ -64,15 +64,12 @@ gdeVAOLight::gdeVAOLight(gdeViewActiveObject &view, const gdeObjectClass &object
 	const decString &propertyPrefix, gdeOCLight *oclight) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCLight(oclight),
-pDDSCenter(NULL),
-pDDSCoordSystem(NULL)
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr)
 {
 	if(!oclight){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCLight->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateLight();
@@ -124,7 +121,7 @@ void gdeVAOLight::AttachResources(){
 	const decQuaternion orientation(PropertyQuaternion(pOCLight->GetPropertyName(gdeOCLight::epAttachRotation), pOCLight->GetRotation()));
 	const decString &bone = pOCLight->GetBoneName();
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	try{
 		// attach light
 		attachment = new deColliderAttachment(pLight);
@@ -140,7 +137,7 @@ void gdeVAOLight::AttachResources(){
 		}
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 		// attach debug drawer
 		attachment = new deColliderAttachment(pDebugDrawer);
@@ -156,7 +153,7 @@ void gdeVAOLight::AttachResources(){
 		}
 		
 		attachCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 	}catch(const deException &){
 		if(attachment){
@@ -176,7 +173,7 @@ void gdeVAOLight::DetachResources(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	attachment = attachCollider->GetAttachmentWith(pLight);
 	if(attachment){
 		attachCollider->RemoveAttachment(attachment);
@@ -210,16 +207,9 @@ void gdeVAOLight::pCleanUp(){
 	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if(pDDSCenter){
-		delete pDDSCenter;
-	}
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
-		pDebugDrawer = NULL;
-	}
-	
-	if(pOCLight){
-		pOCLight->FreeReference();
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -229,12 +219,12 @@ void gdeVAOLight::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
 	pDebugDrawer->SetXRay(true);
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-	pDDSCenter = new igdeWDebugDrawerShape;
+	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 	pDDSCenter->AddSphereShape(0.05f, decVector());
 	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
@@ -250,7 +240,7 @@ void gdeVAOLight::pCreateLight(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	pLight.TakeOver(engine.GetLightManager()->CreateLight());
+	pLight = engine.GetLightManager()->CreateLight();
 	
 	decString typeName;
 	switch(pOCLight->GetType()){
@@ -300,7 +290,7 @@ void gdeVAOLight::pCreateLight(){
 	deSkin::Ref skin;
 	if(!path.IsEmpty()){
 		try{
-			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
+			skin = engine.GetSkinManager()->LoadSkin(vfs, path, "/");
 			
 		}catch(const deException &){
 			skin = environment.GetStockSkin(igdeEnvironment::essError);
@@ -339,6 +329,6 @@ void gdeVAOLight::pUpdateDDShapeColor(){
 void gdeVAOLight::pReleaseResources(){
 	if(pLight){
 		pView.GetGameDefinition()->GetWorld()->RemoveLight(pLight);
-		pLight = NULL;
+		pLight = nullptr;
 	}
 }

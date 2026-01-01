@@ -25,6 +25,9 @@
 #ifndef _PEEWPVIEW_H_
 #define _PEEWPVIEW_H_
 
+#include "peeWPViewListener.h"
+#include "../../emitter/peeEmitter.h"
+
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -33,9 +36,7 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 
-class peeEmitter;
 class peeWindowProperties;
-class peeWPViewListener;
 
 
 
@@ -43,10 +44,14 @@ class peeWPViewListener;
  * \brief View Panel.
  */
 class peeWPView : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPView> Ref;
+	
 private:
 	peeWindowProperties &pWindowProperties;
-	peeEmitter *pEmitter;
-	peeWPViewListener *pListener;
+	peeEmitter::Ref pEmitter;
+	peeWPViewListener::Ref pListener;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPWObject::Ref pWPEnvObject;
@@ -77,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

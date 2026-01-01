@@ -46,7 +46,7 @@
 
 deglCalculateDirectorySize::deglCalculateDirectorySize(const char *directory) :
 pDirectory(directory),
-pVFS(deVirtualFileSystem::Ref::NewWith()),
+pVFS(deVirtualFileSystem::Ref::New()),
 pSize(0),
 pAbort(false),
 pFailed(false)
@@ -55,7 +55,7 @@ pFailed(false)
 		return;
 	}
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix("/"), decPath::CreatePathNative(directory), true));
 }
 

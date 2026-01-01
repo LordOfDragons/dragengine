@@ -31,8 +31,6 @@
 #include "../foxIcons.h"
 #include "../../../igdeCommonDialogs.h"
 #include "../../../igdeWidget.h"
-#include "../../../filedialog/igdeFilePattern.h"
-#include "../../../filedialog/igdeFilePatternList.h"
 #include "../../../../engine/igdeEngineController.h"
 #include "../../../../environment/igdeEnvironment.h"
 
@@ -92,7 +90,7 @@ FXDialogBox(pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DE
 x, y, w, h, 0, 0, 0, 0, 4, 4),
 pOwner(&powner),
 pVFS(powner.GetEnvironment().GetFileSystemGame()),
-pFilePatternList(NULL)
+pFilePatternList(nullptr)
 {
 	pCreateDialog();
 }
@@ -103,7 +101,7 @@ FXDialogBox(pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DE
 x, y, w, h, 0, 0, 0, 0, 4, 4),
 pOwner(&powner),
 pVFS(vfs),
-pFilePatternList(NULL)
+pFilePatternList(nullptr)
 {
 	if(!vfs){
 		DETHROW(deeInvalidParam);
@@ -186,33 +184,28 @@ void igdeNativeFoxFileDialog::SetFilename(const char *filename, const char *base
 	SetFilename(absolutePath.GetPathUnix());
 }
 
-void igdeNativeFoxFileDialog::SetFilePatternList(const igdeFilePatternList *filePatternList){
+void igdeNativeFoxFileDialog::SetFilePatternList(const igdeFilePattern::List *filePatternList){
 	pFilePatternList = filePatternList;
 	
 	UpdateFileTypeBox();
 }
 
 void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
-	int  filePatternCount = 0;
-	
 	pCBFilter->clearItems();
 	
 	if(pFilePatternList){
 		decString text;
-		int i;
 		
-		filePatternCount = pFilePatternList->GetFilePatternCount();
-		for(i=0; i<filePatternCount; i++){
-			const igdeFilePattern &fp = *pFilePatternList->GetFilePatternAt(i);
+		pFilePatternList->Visit([&](const igdeFilePattern &fp){
 			text.Format("%s (%s)", fp.GetName().GetString(), fp.GetPattern().GetString());
 			pCBFilter->appendItem(text.GetString());
-		}
+		});
 	}
 	
 	pCBFilter->appendItem("All Files (*)");
 	
-	if(filePatternCount > 0){
-		pList->SetPattern(pFilePatternList->GetFilePatternAt(0)->GetPattern());
+	if(pFilePatternList->IsNotEmpty()){
+		pList->SetPattern(pFilePatternList->First()->GetPattern());
 		
 	}else{
 		pList->SetPattern("*");
@@ -304,7 +297,7 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 	FXString dirname("Directory");
 	
 	while(true){
-		if(!FXInputDialog::getString(dirname, this, "Create directory", "Name:", NULL)){
+		if(!FXInputDialog::getString(dirname, this, "Create directory", "Name:", nullptr)){
 			return 0;
 		}
 		
@@ -368,32 +361,32 @@ long igdeNativeFoxFileDialog::onBtnDetailMode(FXObject*, FXSelector, void*){
 
 long igdeNativeFoxFileDialog::updateBtnUpDir(FXObject *sender, FXSelector, void*){
 	const bool enable = pList->GetPath().GetComponentCount() > 0;
-	sender->handle(this, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, enable ? ID_ENABLE : ID_DISABLE), nullptr);
 	return 1;
 }
 
 long igdeNativeFoxFileDialog::updateBtnGoRoot(FXObject *sender, FXSelector, void*){
-	sender->handle(this, FXSEL(SEL_COMMAND, ID_ENABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, ID_ENABLE), nullptr);
 	return 1;
 }
 
 long igdeNativeFoxFileDialog::updateBtnMkDir(FXObject *sender, FXSelector, void*){
-	sender->handle(this, FXSEL(SEL_COMMAND, ID_ENABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, ID_ENABLE), nullptr);
 	return 1;
 }
 
 long igdeNativeFoxFileDialog::updateBtnListMode(FXObject *sender, FXSelector, void*){
-	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), nullptr);
 	return 1;
 }
 
 long igdeNativeFoxFileDialog::updateBtnIconMode(FXObject *sender, FXSelector, void*){
-	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), nullptr);
 	return 1;
 }
 
 long igdeNativeFoxFileDialog::updateBtnDetailMode(FXObject *sender, FXSelector, void*){
-	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), NULL);
+	sender->handle(this, FXSEL(SEL_COMMAND, ID_DISABLE), nullptr);
 	return 1;
 }
 
@@ -417,11 +410,11 @@ long igdeNativeFoxFileDialog::onCBFilterChanged(FXObject*, FXSelector, void*){
 	int filePatternCount = 0;
 	
 	if(pFilePatternList){
-		filePatternCount = pFilePatternList->GetFilePatternCount();
+		filePatternCount = pFilePatternList->GetCount();
 	}
 	
 	if(index < filePatternCount){
-		pList->SetPattern(pFilePatternList->GetFilePatternAt(index)->GetPattern());
+		pList->SetPattern(pFilePatternList->GetAt(index)->GetPattern());
 		
 	}else{
 		pList->SetPattern("*");
@@ -445,7 +438,7 @@ long igdeNativeFoxFileDialog::onFLItemDoubleClicked(FXObject*, FXSelector, void*
 		
 	}else{
 		// otherwise it's a file
-		handle(this, FXSEL(SEL_COMMAND, ID_ACCEPT), NULL);
+		handle(this, FXSEL(SEL_COMMAND, ID_ACCEPT), nullptr);
 	}
 	
 	return 1;
@@ -505,7 +498,7 @@ void igdeNativeFoxFileDialog::pCreateDialog(){
 	FXHorizontalFrame *frameNav = new FXHorizontalFrame(content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
 		0, 0, 0, 0, DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING, 0, 0);
 	
-	new FXLabel(frameNav, "Directory:", NULL, LAYOUT_CENTER_Y);
+	new FXLabel(frameNav, "Directory:", nullptr, LAYOUT_CENTER_Y);
 	pCBDirectory = new igdeNativeFoxVFSDirectoryBox(pVFS, frameNav, this, ID_CBDIRECTORY, DIRBOX_NO_OWN_ASSOC
 		| FRAME_SUNKEN | FRAME_THICK | LAYOUT_FILL_X | LAYOUT_CENTER_Y, 0, 0, 0, 0, 1, 1, 1, 1);
 	pCBDirectory->setNumVisible(5);
@@ -539,20 +532,20 @@ void igdeNativeFoxFileDialog::pCreateDialog(){
 	new FXLabel(entryBlock, "&File Name:");
 	pEditFilename = new FXTextField(entryBlock, 25, this, ID_ACCEPT, TEXTFIELD_ENTER_ONLY
 		| LAYOUT_FILL_COLUMN | LAYOUT_FILL_X | FRAME_SUNKEN | FRAME_THICK);
-	new FXButton(entryBlock, "&OK", NULL, this, ID_ACCEPT, BUTTON_INITIAL | BUTTON_DEFAULT
+	new FXButton(entryBlock, "&OK", nullptr, this, ID_ACCEPT, BUTTON_INITIAL | BUTTON_DEFAULT
 		| FRAME_RAISED | FRAME_THICK | LAYOUT_FILL_X, 0, 0, 0, 0, 20, 20);
 	
-	new FXLabel(entryBlock, "File F&ilter:", NULL, JUSTIFY_LEFT | LAYOUT_CENTER_Y);
+	new FXLabel(entryBlock, "File F&ilter:", nullptr, JUSTIFY_LEFT | LAYOUT_CENTER_Y);
 	pCBFilter = new FXComboBox(entryBlock, 10, this, ID_CBFILTER, COMBOBOX_STATIC
 		| LAYOUT_FILL_COLUMN | LAYOUT_FILL_X | FRAME_SUNKEN | FRAME_THICK);
 	pCBFilter->setNumVisible(4);
 	pCBFilter->appendItem("All Files (*)");
-	new FXButton(entryBlock, "&Cancel", NULL, this, ID_CANCEL, BUTTON_DEFAULT | FRAME_RAISED
+	new FXButton(entryBlock, "&Cancel", nullptr, this, ID_CANCEL, BUTTON_DEFAULT | FRAME_RAISED
 		| FRAME_THICK | LAYOUT_FILL_X, 0, 0, 0, 0, 20, 20);
 	
 	
 	
-	//filebox=new FXFileSelector(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+	//filebox=new FXFileSelector(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 	//filebox->acceptButton()->setTarget(this);
 	//filebox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
 	//filebox->cancelButton()->setTarget(this);
@@ -592,11 +585,11 @@ void igdeNativeFoxFileDialog::pFindExistingDirectory(decPath &path, decPath &dir
 
 void igdeNativeFoxFileDialog::pSetFilenameAndAppendExtension(const char *filename){
 	FXString finalFilename(filename);
-	igdeFilePattern *pattern = NULL;
+	igdeFilePattern *pattern = nullptr;
 	
 	const int selection = pCBFilter->getCurrentItem();
-	if(selection >= 0 && selection < pFilePatternList->GetFilePatternCount()){
-		pattern = pFilePatternList->GetFilePatternAt(selection);
+	if(selection >= 0 && selection < pFilePatternList->GetCount()){
+		pattern = pFilePatternList->GetAt(selection);
 	}
 	
 	if(pattern){

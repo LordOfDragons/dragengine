@@ -25,10 +25,11 @@
 #ifndef _DEOGLRENDERWINDOW_H_
 #define _DEOGLRENDERWINDOW_H_
 
+#include "deoglRRenderWindow.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicRenderWindow.h>
 
 class deoglCanvasView;
-class deoglRRenderWindow;
 
 class deRenderWindow;
 class deGraphicOpenGl;
@@ -51,7 +52,7 @@ private:
 	bool pDirtyFullScreen;
 	bool pDirtyIcon;
 	
-	deoglRRenderWindow *pRRenderWindow;
+	deoglRRenderWindow::Ref pRRenderWindow;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -77,7 +78,7 @@ public:
 	inline deoglCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Render render window. */
-	inline deoglRRenderWindow *GetRRenderWindow() const{ return pRRenderWindow; }
+	inline const deoglRRenderWindow::Ref &GetRRenderWindow() const{ return pRRenderWindow; }
 	
 	
 	

@@ -36,7 +36,6 @@
  */
 class ceCAComment : public ceConversationAction{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCAComment> Ref;
 	
 	
@@ -51,7 +50,9 @@ public:
 	/** \brief Creates a copy of a conversation action. */
 	ceCAComment(const ceCAComment &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	~ceCAComment() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -62,7 +63,7 @@ public:
 	void SetComment(const char *comment);
 	
 	/** \brief Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

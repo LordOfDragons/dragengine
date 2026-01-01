@@ -46,8 +46,8 @@ igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(environment));
-	helper.ComboBoxFilter(content, textLabel, true, "", pCBString, NULL);
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
+	helper.ComboBoxFilter(content, textLabel, true, "", pCBString, {});
 	pCBString->SetDefaultSorter();
 	
 	igdeContainer::Ref buttonBar;

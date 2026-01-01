@@ -59,6 +59,6 @@ pIndex(index)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceOptionAddAction::CreateUndo(ceConversationAction *action){
-	return new ceUCAPChoiceActionAdd(pTopic, pPlayerChoice, pOption, action, pIndex);
+igdeUndo::Ref ceWPTMAPChoiceOptionAddAction::CreateUndo(ceConversationAction *action){
+	return ceUCAPChoiceActionAdd::Ref::New(pTopic, pPlayerChoice, pOption, action, pIndex);
 }

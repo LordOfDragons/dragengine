@@ -27,6 +27,7 @@
 
 #include "../../deoglBasics.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
+#include "../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -34,7 +35,6 @@
 
 class deOcclusionMesh;
 class deoglRenderThread;
-class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
 class deoglBVH;
 class deoglRayTraceField;
@@ -45,11 +45,11 @@ class deoglRayTraceField;
  * Occlusion Mesh Peer.
  */
 class deoglROcclusionMesh : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglROcclusionMesh> Ref;
-
-
-public:
+	
+	
 	/** Mesh weight. */
 	struct sWeight{
 		int bone;
@@ -66,7 +66,7 @@ public:
 	deoglRenderThread &pRenderThread;
 	decString pFilename;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	
 	sWeight *pWeightsEntries;
 	int pWeightsEntryCount;
@@ -111,7 +111,7 @@ public:
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	/** Prepare VBO block. */
 	void PrepareVBOBlock();

@@ -26,9 +26,9 @@
 #ifndef _PROJUPROFILESETNAME_H_
 #define _PROJUPROFILESETNAME_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetName : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -54,7 +54,9 @@ public:
 	projUProfileSetName(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetName();
+public:
 	/*@}*/
 	
 	

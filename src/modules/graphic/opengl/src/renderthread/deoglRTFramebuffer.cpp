@@ -41,9 +41,9 @@
 deoglRTFramebuffer::deoglRTFramebuffer(deoglRenderThread &renderThread) :
 pManager(renderThread),
 pActive(nullptr),
-pPrimary(deoglFramebuffer::Ref::NewWith(renderThread, true)),
-pEnvMap(deoglFramebuffer::Ref::NewWith(renderThread, false)),
-pEnvMapMaterial(deoglFramebuffer::Ref::NewWith(renderThread, false))
+pPrimary(deoglFramebuffer::Ref::New(renderThread, true)),
+pEnvMap(deoglFramebuffer::Ref::New(renderThread, false)),
+pEnvMapMaterial(deoglFramebuffer::Ref::New(renderThread, false))
 {
 	try{
 		// primary framebuffer is the active one by default

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 lpeULangPackEntryRemove::lpeULangPackEntryRemove(lpeLangPack *langpack,
-	const lpeLangPackEntryList &list, lpeLangPack *refLangpack) :
+	const lpeLangPackEntry::List &list, lpeLangPack *refLangpack) :
 pLangPack(langpack),
 pList(list)
 {
@@ -50,15 +50,15 @@ pList(list)
 	DEASSERT_TRUE(count > 0)
 	
 	if(refLangpack){
-		const lpeLangPackEntryList &refEntries = refLangpack->GetEntryList();
-		int i;
-		
-		for(i=0; i<count; i++){
-			lpeLangPackEntry * const refEntry = refEntries.GetNamed(list.GetAt(i)->GetName());
-			if(refEntry){
-				pListRef.Add(refEntry);
+		const lpeLangPackEntry::List &refEntries = refLangpack->GetEntries();
+		list.Visit([&](const lpeLangPackEntry &e){
+			const lpeLangPackEntry::Ref *refEntry = nullptr;
+			if(refEntries.Find([&](const lpeLangPackEntry &e2){
+				return e2.GetName() == e.GetName();
+			}, refEntry)){
+				pListRef.Add(*refEntry);
 			}
-		}
+		});
 	}
 	
 	SetShortInfo(count == 1 ? "Remove entry" : "Remove entries");
@@ -74,16 +74,13 @@ lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
 
 void lpeULangPackEntryRemove::Undo(){
 	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
-	const int count = pList.GetCount();
-	int i;
 	
 	lpes.Reset();
 	
-	for(i=0; i<count; i++){
-		lpeLangPackEntry * const entry = pList.GetAt(i);
-		pLangPack->AddEntry(entry);
-		lpes.Add(entry);
-	}
+	pList.Visit([&](lpeLangPackEntry *e){
+		pLangPack->AddEntry(e);
+		lpes.Add(e);
+	});
 	
 	lpes.ActivateNext();
 	
@@ -93,22 +90,17 @@ void lpeULangPackEntryRemove::Undo(){
 
 void lpeULangPackEntryRemove::Redo(){
 	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
-	const int count = pList.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		lpeLangPackEntry * const entry = pList.GetAt(i);
-		
-		lpes.Remove(entry);
-		pLangPack->RemoveEntry(entry);
-	}
+	pList.Visit([&](lpeLangPackEntry *e){
+		lpes.Remove(e);
+		pLangPack->RemoveEntry(e);
+	});
 	
-	const int refCount = pListRef.GetCount();
-	if(refCount > 0){
-		for(i=0; i<refCount; i++){
-			lpes.Add(pListRef.GetAt(i));
-		}
-		lpes.SetActive(pListRef.GetAt(0));
+	if(pListRef.IsNotEmpty()){
+		pListRef.Visit([&](lpeLangPackEntry *e){
+			lpes.Add(e);
+		});
+		lpes.SetActive(pListRef.First());
 	}
 	
 	pLangPack->NotifyEntrySelectionChanged();

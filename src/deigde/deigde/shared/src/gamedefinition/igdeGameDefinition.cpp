@@ -36,7 +36,8 @@
 #include "../environment/igdeEnvironment.h"
 #include "../engine/igdeEngineController.h"
 #include "../gui/filedialog/igdeFilePattern.h"
-#include "../gui/filedialog/igdeFilePatternList.h"
+#include "../gui/igdeTreeList.h"
+#include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -63,12 +64,9 @@ pEnvironment(environment),
 
 pVFSPath("/"),
 
-pSkinManager(NULL),
-pClassManager(NULL),
-pSkyManager(NULL),
-
-pDefaultModel(NULL),
-pDefaultSkin(NULL)
+pSkinManager(nullptr),
+pClassManager(nullptr),
+pSkyManager(nullptr)
 {
 	try{
 		pSkinManager = new igdeGDSkinManager;
@@ -138,8 +136,13 @@ void igdeGameDefinition::UpdateWith(const igdeGameDefinition &gameDefinition){
 	pSkyManager->UpdateWith(*gameDefinition.pSkyManager);
 	pParticleEmitterManager.UpdateWith(gameDefinition.pParticleEmitterManager);
 	
-	pListWorldProperties.SetToDeepCopyFrom(gameDefinition.pListWorldProperties);
-	pListDecalProperties.SetToDeepCopyFrom(gameDefinition.pListDecalProperties);
+	gameDefinition.pListWorldProperties.Visit([&](const igdeGDProperty &p){
+		pListWorldProperties.Add(igdeGDProperty::Ref::New(p));
+	});
+	
+	gameDefinition.pListDecalProperties.Visit([&](const igdeGDProperty &p){
+		pListDecalProperties.Add(igdeGDProperty::Ref::New(p));
+	});
 }
 
 void igdeGameDefinition::UpdateWithElementClasses(const igdeGameDefinition &gameDefinition){
@@ -157,46 +160,25 @@ void igdeGameDefinition::UpdateWithFound(const igdeGameDefinition &gameDefinitio
 ///////////////////
 
 void igdeGameDefinition::SetDefaultModel(deModel *model){
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-		pDefaultModel = NULL;
-	}
-	
 	pDefaultModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
 }
 
 void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-		pDefaultSkin = NULL;
-	}
-	
 	pDefaultSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void igdeGameDefinition::UpdateEngineObjects(){
-	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	
 	// free old engine objects
 	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-		pDefaultModel = NULL;
+		pDefaultModel = nullptr;
 	}
 	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-		pDefaultSkin = NULL;
+		pDefaultSkin = nullptr;
 	}
 	
 	// load default engine objects
 	try{
+		deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 		pDefaultModel = engine.GetModelManager()->LoadModel("/igde/models/box/box.demodel", "/");
 		pDefaultSkin = engine.GetSkinManager()->LoadSkin("/igde/models/box/materials/problem.deskin", "/");
 		
@@ -224,7 +206,7 @@ void igdeGameDefinition::FindClasses(deVirtualFileSystem &vfs, igdeGDClassManage
 		loader.LoadElementClasses(found, vfs, decPath::CreatePathUnix(path));
 	}
 	logger.LogInfoFormat("IGDE", "Load XML Element Classes done: %.1fs (%d found)",
-		timer.GetElapsedTime(), found.GetCount());
+		timer.GetElapsedTime(), found.GetClasses().GetCount());
 	
 	// DEBUG
 	/*
@@ -242,7 +224,7 @@ void igdeGameDefinition::FindClasses(deVirtualFileSystem &vfs, igdeGDClassManage
 }
 
 void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &found){
-	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSkin);
+	const igdeFilePattern::List &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSkin);
 	const decStringList &pathList = pSkinManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
@@ -253,19 +235,20 @@ void igdeGameDefinition::FindSkins(deVirtualFileSystem &vfs, igdeGDSkinManager &
 		const decString &path = pathList.GetAt(i);
 		logger.LogInfoFormat("IGDE", "Find Skins: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
+		const int patternCount = patterns.GetCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
 		
 		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+			const igdeFilePattern &pattern = *patterns.GetAt(j);
 			found.FindAndAddSkins(vfs, searchPath, pattern.GetPattern());
 		}
 	}
-	logger.LogInfoFormat("IGDE", "Find Skins done: %.1fs (%d found)", timer.GetElapsedTime(), found.GetSkinCount());
+	logger.LogInfoFormat("IGDE", "Find Skins done: %.1fs (%d found)", timer.GetElapsedTime(),
+		found.GetSkins().GetCount());
 }
 
 void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &found){
-	const igdeFilePatternList &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSky);
+	const igdeFilePattern::List &patterns = *pEnvironment.GetOpenFilePatternList(igdeEnvironment::efpltSky);
 	const decStringList &pathList = pSkyManager->GetAutoFindPath();
 	deLogger &logger = *pEnvironment.GetLogger();
 	const int pathCount = pathList.GetCount();
@@ -276,11 +259,11 @@ void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &f
 		const decString &path = pathList.GetAt(i);
 		logger.LogInfoFormat("IGDE", "Find Skies: %s", path.GetString());
 		
-		const int patternCount = patterns.GetFilePatternCount();
+		const int patternCount = patterns.GetCount();
 		const decPath searchPath(decPath::CreatePathUnix(path));
 		
 		for(j=0; j<patternCount; j++){
-			const igdeFilePattern &pattern = *patterns.GetFilePatternAt(j);
+			const igdeFilePattern &pattern = *patterns.GetAt(j);
 			found.FindAndAddSkies(vfs, searchPath, pattern.GetPattern());
 		}
 	}
@@ -305,11 +288,4 @@ void igdeGameDefinition::pCleanUp(){
 		delete pSkinManager;
 	}
 	pParticleEmitterManager.RemoveAllEmitters();
-	
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-	}
 }

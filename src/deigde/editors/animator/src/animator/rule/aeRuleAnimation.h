@@ -46,7 +46,7 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeControllerTarget pTargetMoveTime;
+	aeControllerTarget::Ref pTargetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -56,7 +56,9 @@ public:
 	/** Create a copy of a animator rule. */
 	aeRuleAnimation(const aeRuleAnimation &copy);
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleAnimation() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -90,11 +92,10 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Retrieve the move time target. */
-	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
-	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
+	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
@@ -105,10 +106,10 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */

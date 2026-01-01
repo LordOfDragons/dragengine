@@ -594,7 +594,7 @@ bool ScriptingSmalltalk::pLoadGameScripts(const char *directory, const char *gam
 }
 
 void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path){
-	decBaseFileReader *filereader = NULL;
+	decBaseFileReader::Ref filereader;
 	decString content;
 	int p, filetype;
 	int filelen;
@@ -615,9 +615,6 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 					//LogInfoFormat( "parsing script file %s.", path.GetPathUnix() );
 					
 					filereader = vfs.OpenFileForReading(path);
-					if(!filereader){
-						DETHROW(deeOutOfMemory);
-					}
 					
 					filelen = filereader->GetLength();
 					filereader->SetPosition(0);
@@ -628,9 +625,7 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 					//LogInfoFormat( "filereader %s.", filereader->GetFilename() );
 					//if( ! gst_process_file( filereader->GetFilename(), GST_DIR_ABS ) ) DETHROW( deeReadFile );
 					gst_eval_code(content.GetString());
-					
-					filereader->FreeReference();
-					filereader = NULL;
+					filereader = nullptr;
 				}
 				
 			}else if(filetype == deVFSContainer::eftDirectory){
@@ -639,9 +634,6 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 		}
 		
 	}catch(const deException &e){
-		if(filereader){
-			filereader->FreeReference();
-		}
 		/*
 		SetErrorTrace(e);
 		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);

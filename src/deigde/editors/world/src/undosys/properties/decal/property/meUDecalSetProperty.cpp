@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUDecalSetProperty::meUDecalSetProperty(meDecal *decal, const char *key, const char *oldValue, const char *newValue) :
-pDecal(NULL)
+pDecal(nullptr)
 {
 	if(!decal || !key || !oldValue || !newValue){
 		DETHROW(deeInvalidParam);
@@ -53,14 +53,13 @@ pDecal(NULL)
 	
 	SetShortInfo("Change decal property");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pKey = key;
 	pOldValue = oldValue;
 	pNewValue = newValue;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSetProperty::~meUDecalSetProperty(){
@@ -96,7 +95,4 @@ void meUDecalSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalSetProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

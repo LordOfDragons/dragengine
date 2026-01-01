@@ -26,19 +26,20 @@
 #define _CEWPTTIMACTIONS_H_
 
 #include "../ceWPTTreeItemModel.h"
+#include "../../../../conversation/action/ceConversationAction.h"
 
 class ceWPTTIMAction;
-class ceConversationAction;
-class ceConversationActionList;
 
 
 /**
  * \brief Actions tree model.
  */
 class ceWPTTIMActions : public ceWPTTreeItemModel{
-private:
-	const ceConversationActionList &pActions;
+public:
+	typedef deTObjectReference<ceWPTTIMActions> Ref;
 	
+private:
+	const ceConversationAction::List &pActions;
 	
 	
 public:
@@ -46,7 +47,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMActions(ceWindowMain &windowMain, ceConversation &conversation,
-		eTypes type, const ceConversationActionList &actions);
+		eTypes type, const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -58,7 +59,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with action or \em NULL. */
+	/** \brief Model with action or \em nullptr. */
 	ceWPTTIMAction *GetChildWith(ceConversationAction *action) const;
 	
 	/** \brief Structure changed. */
@@ -78,7 +79,7 @@ public:
 	
 	
 	/** \brief Create action model. */
-	static ceWPTTIMAction *CreateActionModel(ceWindowMain &windowMain,
+	static ceWPTTIMAction::Ref CreateActionModel(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationAction *action);
 	/*@}*/
 };

@@ -32,7 +32,6 @@
  * \brief IGDE UI CheckBox with text and icon.
  */
 class DE_DLL_EXPORT igdeCheckBox : public igdeButton{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeCheckBox> Ref;

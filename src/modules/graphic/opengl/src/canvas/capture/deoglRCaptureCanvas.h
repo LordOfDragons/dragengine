@@ -25,12 +25,12 @@
 #ifndef _DEOGLRCAPTURECANVAS_H_
 #define _DEOGLRCAPTURECANVAS_H_
 
+#include "../render/deoglRCanvasView.h"
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRRenderWindow;
-class deoglRCanvasView;
 class deoglRenderThread;
 
 
@@ -41,7 +41,7 @@ class deoglRenderThread;
 class deoglRCaptureCanvas : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglRCanvasView *pCanvasView;
+	deoglRCanvasView::Ref pCanvasView;
 	deoglPixelBuffer::Ref pPixelBuffer;
 	bool pCapturePending;
 	int pComponentCount;
@@ -71,7 +71,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Canvas view. */
-	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deoglRCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view. */
 	void SetCanvasView(deoglRCanvasView *canvasView);

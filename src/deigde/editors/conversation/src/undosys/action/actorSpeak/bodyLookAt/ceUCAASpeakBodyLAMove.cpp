@@ -48,38 +48,24 @@ ceStrip *bodyLookAt, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pBodyLA = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pBodyLA = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetBodyLookAtList().IndexOf(bodyLookAt);
+	pOldIndex = actorSpeak->GetBodyLookAts().IndexOf(bodyLookAt);
 	
 	if(pOldIndex == -1) DETHROW(deeInvalidParam);
-	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetBodyLookAtList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetBodyLookAts().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move BodyLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pBodyLA = bodyLookAt;
-	bodyLookAt->AddReference();
 }
 
 ceUCAASpeakBodyLAMove::~ceUCAASpeakBodyLAMove(){
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakBodyLAMove::~ceUCAASpeakBodyLAMove(){
 ///////////////
 
 void ceUCAASpeakBodyLAMove::Undo(){
-	pActorSpeak->GetBodyLookAtList().MoveTo(pBodyLA, pOldIndex);
+	pActorSpeak->GetBodyLookAts().Move(pBodyLA, pOldIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakBodyLAMove::Redo(){
-	pActorSpeak->GetBodyLookAtList().MoveTo(pBodyLA, pNewIndex);
+	pActorSpeak->GetBodyLookAts().Move(pBodyLA, pNewIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

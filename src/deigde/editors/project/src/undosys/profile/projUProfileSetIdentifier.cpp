@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetIdentifier();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetIdentifier::~projUProfileSetIdentifier(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

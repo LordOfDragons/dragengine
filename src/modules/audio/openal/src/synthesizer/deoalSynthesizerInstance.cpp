@@ -47,17 +47,15 @@
 deoalSynthesizerInstance::deoalSynthesizerInstance(deAudioOpenAL &oal, deSynthesizerInstance &instance) :
 pOal(oal),
 pInstance(instance),
-pAInstance(NULL),
 pUpdateTracker(1),
 pDirtyParameters(false)
 {
-	pAInstance = new deoalASynthesizerInstance(oal.GetAudioThread(), instance);
+	pAInstance = deoalASynthesizerInstance::Ref::New(oal.GetAudioThread(), instance);
 }
 
 deoalSynthesizerInstance::~deoalSynthesizerInstance(){
 	if(pAInstance){
 		pAInstance->DropInstance();
-		pAInstance->FreeReference();
 	}
 }
 

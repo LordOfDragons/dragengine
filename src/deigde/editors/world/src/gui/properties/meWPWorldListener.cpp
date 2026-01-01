@@ -29,8 +29,6 @@
 #include "meWPWorldListener.h"
 #include "../../world/meWorld.h"
 
-#include "dragengine/common/exceptions.h"
-
 
 
 // Class meWPWorldListener

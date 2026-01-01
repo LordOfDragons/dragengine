@@ -25,13 +25,13 @@
 // Includes
 #include "decrbPanelModuleStatus.h"
 #include "decrbWindowMain.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
-#include "dragengine/systems/modules/deInternalModule.h"
-#include "dragengine/systems/modules/deLibraryModule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/systems/modules/deInternalModule.h>
+#include <dragengine/systems/modules/deLibraryModule.h>
+#include <dragengine/common/exceptions.h>
 
 
 

@@ -43,39 +43,21 @@
 ////////////////////////////
 
 ceUCCLogicRemoveAll::ceUCCLogicRemoveAll(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionLogic *logic) :
-pTopic(NULL),
-pAction(NULL),
-pLogic(NULL)
-{
-	if(!topic || !action || !logic){
-		DETHROW(deeInvalidParam);
-	}
+ceConversationAction *action, ceCConditionLogic *logic){
+	DEASSERT_NOTNULL(topic)
+	DEASSERT_NOTNULL(action)
+	DEASSERT_NOTNULL(logic)
 	
 	SetShortInfo("Logic remove all conditions");
 	
 	pConditions = logic->GetConditions();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
 }
 
 ceUCCLogicRemoveAll::~ceUCCLogicRemoveAll(){
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -87,7 +69,7 @@ void ceUCCLogicRemoveAll::Undo(){
 	pLogic->GetConditions() = pConditions;
 	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive(pAction, pConditions.GetCount() > 0 ? pConditions.GetAt(0) : NULL);
+	pTopic->SetActive(pAction, pConditions.IsNotEmpty() ? pConditions.First() : nullptr);
 }
 
 void ceUCCLogicRemoveAll::Redo(){

@@ -41,7 +41,7 @@
 seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &newColor){
 	if(!property) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Color");
 	
@@ -49,13 +49,9 @@ seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &n
 	pNewColor = newColor;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetColor::~seUPropertySetColor(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

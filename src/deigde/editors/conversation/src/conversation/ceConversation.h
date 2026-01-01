@@ -25,21 +25,26 @@
 #ifndef _CECONVERSATION_H_
 #define _CECONVERSATION_H_
 
-#include "ceConversationList.h"
+#include "actor/ceConversationActor.h"
 #include "actor/ceConversationActorList.h"
-#include "camerashot/ceCameraShotList.h"
-#include "file/ceConversationFileList.h"
-#include "facepose/ceFacePoseList.h"
-#include "gesture/ceGestureList.h"
-#include "target/ceTargetList.h"
+#include "camerashot/ceCameraShot.h"
+#include "file/ceConversationFile.h"
+#include "facepose/ceFacePose.h"
+#include "gesture/ceGesture.h"
+#include "target/ceTarget.h"
+#include "textbox/ceTextBox.h"
+#include "coordsystem/ceCoordSystem.h"
 #include "coordsystem/ceCoordSystemList.h"
-#include "prop/cePropList.h"
+#include "infobox/ceConversationInfoBox.h"
+#include "prop/ceProp.h"
+#include "playerChoiceBox/cePlayerChoiceBox.h"
+#include "playback/cePlayback.h"
 #include "../langpack/ceLangPack.h"
 
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -47,16 +52,10 @@
 #include <dragengine/resources/sound/deSpeaker.h>
 
 
-class ceConversationTopic;
-class ceConversationTopicList;
 class ceConversationAction;
 class ceConversationCondition;
-class ceConversationInfoBox;
 class ceConversationListener;
 class ceActorPose;
-class ceTextBox;
-class cePlayerChoiceBox;
-class cePlayback;
 class ceLoadSaveSystem;
 
 class igdeWSky;
@@ -73,6 +72,8 @@ class deAnimatorInstance;
 class ceConversation : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<ceConversation> Ref;
+	typedef decTObjectOrderedSet<ceConversation> List;
+	typedef decTObjectOrderedSet<ceCameraShot> CameraShotList;
 	
 	
 	/** Paste snippet dialog parameters. */
@@ -109,41 +110,41 @@ private:
 	
 	igdeCamera *pCamera;
 	igdeCamera *pCameraFree;
-	ceTextBox *pTextBox;
-	cePlayerChoiceBox *pPlayerChoiceBox;
-	ceConversationInfoBox *pInfoBox;
-	cePlayback *pPlayback;
+	ceTextBox::Ref pTextBox;
+	cePlayerChoiceBox::Ref pPlayerChoiceBox;
+	ceConversationInfoBox::Ref pInfoBox;
+	cePlayback::Ref pPlayback;
 	
 	float pScreenRatio;
 	bool pShowRuleOfThirdsAid;
 	
 	decStringList pImportConversationPath;
-	ceConversationList pImportedConversations;
+	List pImportedConversations;
 	
-	ceTargetList pTargetList;
-	ceTarget *pActiveTarget;
+	ceTarget::List pTargets;
+	ceTarget::Ref pActiveTarget;
 	
-	ceCameraShotList pCameraShotList;
-	ceCameraShot *pActiveCameraShot;
+	CameraShotList pCameraShots;
+	ceCameraShot::Ref pActiveCameraShot;
 	
-	ceGestureList pGestureList;
-	ceGesture *pActiveGesture;
+	ceGesture::List pGestures;
+	ceGesture::Ref pActiveGesture;
 	
 	decStringList pFacePoseControllerNames;
-	ceFacePoseList pFacePoseList;
-	ceFacePose *pActiveFacePose;
+	ceFacePose::List pFacePoses;
+	ceFacePose::Ref pActiveFacePose;
 	
-	ceConversationFileList pFileList;
-	ceConversationFile *pActiveFile;
+	ceConversationFile::List pFiles;
+	ceConversationFile::Ref pActiveFile;
 	
 	ceConversationActorList pActorList;
-	ceConversationActor *pActiveActor;
+	ceConversationActor::Ref pActiveActor;
 	
 	ceCoordSystemList pCoordSystemList;
-	ceCoordSystem *pActiveCoordSystem;
+	ceCoordSystem::Ref pActiveCoordSystem;
 	
-	cePropList pPropList;
-	ceProp *pActiveProp;
+	ceProp::List pProps;
+	ceProp::Ref pActiveProp;
 	
 	decString pCTSPath;
 	decString pCTAPath;
@@ -154,15 +155,20 @@ private:
 	
 	ceLangPack::Ref pLangPack;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<ceConversationListener> pListeners;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new conversation. */
 	ceConversation(igdeEnvironment *environment);
+	
+	ceConversation(const ceConversation &) = delete;
+	
 	/** Cleans up the conversation. */
+protected:
 	virtual ~ceConversation();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -188,13 +194,13 @@ public:
 	inline igdeCamera *GetCameraFree() const{ return pCameraFree; }
 	
 	/** Retrieves the text box. */
-	inline ceTextBox *GetTextBox() const{ return pTextBox; }
+	inline const ceTextBox::Ref &GetTextBox() const{ return pTextBox; }
 	/** Retrieves the player choice box. */
-	inline cePlayerChoiceBox &GetPlayerChoiceBox() const{ return *pPlayerChoiceBox; }
+	inline const cePlayerChoiceBox::Ref &GetPlayerChoiceBox() const{ return pPlayerChoiceBox; }
 	/** Retrieves the info box. */
-	inline ceConversationInfoBox &GetInfoBox() const{ return *pInfoBox; }
+	inline const ceConversationInfoBox::Ref &GetInfoBox() const{ return pInfoBox; }
 	/** Retrieves the playback object. */
-	inline cePlayback *GetPlayback() const{ return pPlayback; }
+	inline const cePlayback::Ref &GetPlayback() const{ return pPlayback; }
 	
 	/** Retrieves the ration of the screen. */
 	inline float GetScreenRatio() const{ return pScreenRatio; }
@@ -259,7 +265,7 @@ public:
 	void UpdateImportedConversations(ceLoadSaveSystem &lssystem);
 	
 	/** Imported conversations. */
-	inline const ceConversationList &GetImportedConversations() const{ return pImportedConversations; }
+	inline const List &GetImportedConversations() const{ return pImportedConversations; }
 	/*@}*/
 	
 	
@@ -267,47 +273,57 @@ public:
 	/** \name Targets */
 	/*@{*/
 	/** Retrieves the target list read-only. */
-	inline const ceTargetList &GetTargetList() const{ return pTargetList; }
+	inline const ceTarget::List &GetTargets() const{ return pTargets; }
+	
 	/** Adds a target. */
 	void AddTarget(ceTarget *target);
+	
 	/** Removes a target. */
 	void RemoveTarget(ceTarget *target);
+	
 	/** Remove all targets. */
 	void RemoveAllTargets();
-	/** Retrieves the active target or NULL if none is active. */
-	inline ceTarget *GetActiveTarget() const{ return pActiveTarget; }
-	/** Sets the active target or NULL if none is active. */
+	
+	/** Retrieves the active target or nullptr if none is active. */
+	inline const ceTarget::Ref &GetActiveTarget() const{ return pActiveTarget; }
+	
+	/** Sets the active target or nullptr if none is active. */
 	void SetActiveTarget(ceTarget *target);
 	
 	/** Named target including imported conversations. */
 	ceTarget *GetTargetNamed(const char *name) const;
 	
 	/** All targets including imported conversations. */
-	ceTargetList AllTargets() const;
-	void AllTargets(ceTargetList &list) const;
+	ceTarget::List AllTargets() const;
+	void AllTargets(ceTarget::List &list) const;
 	/*@}*/
 	
 	/** \name Camera Shots */
 	/*@{*/
 	/** Retrieves the camera shot list read-only. */
-	inline const ceCameraShotList &GetCameraShotList() const{ return pCameraShotList; }
+	inline const CameraShotList &GetCameraShotList() const{ return pCameraShots; }
+	
 	/** Adds a camera shot. */
 	void AddCameraShot(ceCameraShot *cameraShot);
+	
 	/** Removes a camera shot. */
 	void RemoveCameraShot(ceCameraShot *cameraShot);
+	
 	/** Remove all camera shots. */
 	void RemoveAllCameraShots();
-	/** Retrieves the active camera shot or NULL if none is active. */
-	inline ceCameraShot *GetActiveCameraShot() const{ return pActiveCameraShot; }
-	/** Sets the active camera shot or NULL if none is active. */
+	
+	/** Retrieves the active camera shot or nullptr if none is active. */
+	inline const ceCameraShot::Ref &GetActiveCameraShot() const{ return pActiveCameraShot; }
+	
+	/** Sets the active camera shot or nullptr if none is active. */
 	void SetActiveCameraShot(ceCameraShot *cameraShot);
 	
 	/** Named camera shot including imported conversations. */
 	ceCameraShot *GetCameraShotNamed(const char *name) const;
 	
 	/** All camera shots including imported conversations. */
-	ceCameraShotList AllCameraShots() const;
-	void AllCameraShots(ceCameraShotList &list) const;
+	CameraShotList GetAllCameraShots() const;
+	void GetAllCameraShots(CameraShotList &list) const;
 	/*@}*/
 	
 	
@@ -315,24 +331,29 @@ public:
 	/** \name Gestures */
 	/*@{*/
 	/** Retrieves the gesture list read-only. */
-	inline const ceGestureList &GetGestureList() const{ return pGestureList; }
+	inline const ceGesture::List &GetGestures() const{ return pGestures; }
+	
 	/** Adds a gesture. */
 	void AddGesture(ceGesture *gesture);
+	
 	/** Removes a gesture. */
 	void RemoveGesture(ceGesture *gesture);
+	
 	/** Remove all gestures. */
 	void RemoveAllGestures();
-	/** Retrieves the active gesture or NULL if none is active. */
-	inline ceGesture *GetActiveGesture() const{ return pActiveGesture; }
-	/** Sets the active gesture or NULL if none is active. */
+	
+	/** Retrieves the active gesture or nullptr if none is active. */
+	inline const ceGesture::Ref &GetActiveGesture() const{ return pActiveGesture; }
+	
+	/** Sets the active gesture or nullptr if none is active. */
 	void SetActiveGesture(ceGesture *gesture);
 	
 	/** Named gesture including imported conversations. */
 	ceGesture *GetGestureNamed(const char *name) const;
 	
 	/** All gestures including imported conversations. */
-	ceGestureList AllGestures() const;
-	void AllGestures(ceGestureList &list) const;
+	ceGesture::List AllGestures() const;
+	void AllGestures(ceGesture::List &list) const;
 	/*@}*/
 	
 	
@@ -342,25 +363,31 @@ public:
 	/** Retrieves the list of face pose controller names. */
 	inline decStringList &GetFacePoseControllerNameList(){ return pFacePoseControllerNames; }
 	inline const decStringList &GetFacePoseControllerNameList() const{ return pFacePoseControllerNames; }
+	
 	/** Retrieves the face pose list read-only. */
-	inline const ceFacePoseList &GetFacePoseList() const{ return pFacePoseList; }
+	inline const ceFacePose::List &GetFacePoseList() const{ return pFacePoses; }
+	
 	/** Adds a face pose. */
 	void AddFacePose(ceFacePose *facePose);
+	
 	/** Removes a face pose. */
 	void RemoveFacePose(ceFacePose *facePose);
+	
 	/** Remove all face poses. */
 	void RemoveAllFacePoses();
-	/** Retrieves the active face pose or NULL if none is active. */
-	inline ceFacePose *GetActiveFacePose() const{ return pActiveFacePose; }
-	/** Sets the active face pose or NULL if none is active. */
+	
+	/** Retrieves the active face pose or nullptr if none is active. */
+	inline const ceFacePose::Ref &GetActiveFacePose() const{ return pActiveFacePose; }
+	
+	/** Sets the active face pose or nullptr if none is active. */
 	void SetActiveFacePose(ceFacePose *facePose);
 	
 	/** Named face pose including imported conversations. */
 	ceFacePose *GetFacePoseNamed(const char *name) const;
 	
 	/** All face poses including imported conversations. */
-	ceFacePoseList AllFacePoses() const;
-	void AllFacePoses(ceFacePoseList &list) const;
+	ceFacePose::List AllFacePoses() const;
+	void AllFacePoses(ceFacePose::List &list) const;
 	/*@}*/
 	
 	
@@ -368,31 +395,36 @@ public:
 	/** \name Files */
 	/*@{*/
 	/** Retrieves the file list read-only. */
-	inline const ceConversationFileList &GetFileList() const{ return pFileList; }
+	inline const ceConversationFile::List &GetFiles() const{ return pFiles; }
+	
 	/** Adds an file. */
 	void AddFile(ceConversationFile *file);
+	
 	/** Removes an file. */
 	void RemoveFile(ceConversationFile *file);
+	
 	/** Remove all files. */
 	void RemoveAllFiles();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationFile *GetActiveFile() const{ return pActiveFile; }
-	/** Sets the active file or NULL if none is active. */
+	
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const ceConversationFile::Ref &GetActiveFile() const{ return pActiveFile; }
+	
+	/** Sets the active file or nullptr if none is active. */
 	void SetActiveFile(ceConversationFile *file);
 	
 	/** Named file including imported conversations. */
 	ceConversationFile *GetFileWithID(const char *name) const;
 	
 	/** All files including imported conversations. */
-	ceConversationFileList AllFiles() const;
-	void AllFiles(ceConversationFileList &list) const;
+	ceConversationFile::List AllFiles() const;
+	void AllFiles(ceConversationFile::List &list) const;
 	
 	/** Named topic including imported conversations. */
 	ceConversationTopic *GetTopicWithID(const char *fileName, const char *topicName) const;
 	
 	/** All files including imported conversations. */
-	ceConversationTopicList AllTopics(const char *fileName) const;
-	void AllTopics(const char *fileName, ceConversationTopicList &list) const;
+	ceConversationTopic::List AllTopics(const char *fileName) const;
+	void AllTopics(const char *fileName, ceConversationTopic::List &list) const;
 	/*@}*/
 	
 	
@@ -407,11 +439,11 @@ public:
 	void RemoveActor(ceConversationActor *actor);
 	/** Removes all actors. */
 	void RemoveAllActors();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationActor *GetActiveActor() const{ return pActiveActor; }
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const ceConversationActor::Ref &GetActiveActor() const{ return pActiveActor; }
 	/** Determines if there is an active actor or not. */
 	bool HasActiveActor() const;
-	/** Sets the active actor or NULL if none is active. */
+	/** Sets the active actor or nullptr if none is active. */
 	void SetActiveActor(ceConversationActor *actor);
 	/*@}*/
 	
@@ -427,11 +459,11 @@ public:
 	void RemoveCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes all coordinate system. */
 	void RemoveAllCoordSystems();
-	/** Retrieves the active coordinate system or NULL if none is active. */
-	inline ceCoordSystem *GetActiveCoordSystem() const{ return pActiveCoordSystem; }
+	/** Retrieves the active coordinate system or nullptr if none is active. */
+	inline const ceCoordSystem::Ref &GetActiveCoordSystem() const{ return pActiveCoordSystem; }
 	/** Determines if there is an active coordinate system or not. */
 	bool HasActiveCoordSystem() const;
-	/** Sets the active coordinate system or NULL if none is active. */
+	/** Sets the active coordinate system or nullptr if none is active. */
 	void SetActiveCoordSystem(ceCoordSystem *coordSystem);
 	/*@}*/
 	
@@ -440,18 +472,24 @@ public:
 	/** \name Props */
 	/*@{*/
 	/** Retrieves the prop list read-only. */
-	inline const cePropList &GetPropList() const{ return pPropList; }
+	inline const ceProp::List &GetProps() const{ return pProps; }
+	
 	/** Adds a prop. */
 	void AddProp(ceProp *prop);
+	
 	/** Removes a prop. */
 	void RemoveProp(ceProp *prop);
+	
 	/** Removes all props. */
 	void RemoveAllProps();
-	/** Retrieves the active prop or NULL if none is active. */
-	inline ceProp *GetActiveProp() const{ return pActiveProp; }
+	
+	/** Retrieves the active prop or nullptr if none is active. */
+	inline const ceProp::Ref &GetActiveProp() const{ return pActiveProp; }
+	
 	/** Determines if there is an active prop or not. */
 	bool HasActiveProp() const;
-	/** Sets the active prop or NULL if none is active. */
+	
+	/** Sets the active prop or nullptr if none is active. */
 	void SetActiveProp(ceProp *prop);
 	/*@}*/
 	

@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleClosestProp.h"
 
 
 
@@ -42,13 +42,14 @@ class meHTVRuleClosestProp;
  */
 class meUHTVRuleCPSetRadius : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleCPSetRadius> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	float pOldRadius;
 	float pNewRadius;
@@ -59,7 +60,11 @@ public:
 	/** \brief Create object. */
 	meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleCPSetRadius();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -25,6 +25,8 @@
 #ifndef _REVIEW3D_H_
 #define _REVIEW3D_H_
 
+#include "../rig/reRig.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
@@ -33,12 +35,10 @@
 #include <dragengine/common/math/decMath.h>
 
 class reWindowMain;
-class reRig;
 class reCamera;
 class deColliderVolume;
 class deBaseScriptingCollider;
 class decLayerMask;
-class reTemporaryConstraint;
 
 
 
@@ -46,10 +46,13 @@ class reTemporaryConstraint;
  * \brief 3D view.
  */
 class reView3D : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<reView3D> Ref;
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseDragListener::Ref pSimulationInteraction;
@@ -83,7 +86,7 @@ public:
 	void ResetView();
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

@@ -35,6 +35,9 @@
  * Render canvas text.
  */
 class deoglRCanvasText : public deoglRCanvas{
+public:
+	typedef deTObjectReference<deoglRCanvasText> Ref;
+	
 private:
 	deoglRFont::Ref pFont;
 	deoglRFontSize::Ref pFontSize;

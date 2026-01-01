@@ -73,7 +73,7 @@ void meWPHeightTerrainListener::VisibilityPaintChanged(meWorld*){
 
 
 void meWPHeightTerrainListener::ActiveSectorChanged(meWorld*){
-	pPanel.SetTexture(NULL);
+	pPanel.SetTexture(nullptr);
 	
 	pPanel.UpdateSector();
 	

@@ -25,11 +25,11 @@
 #ifndef _DEOGLRRDSRENDERABLECANVAS_H_
 #define _DEOGLRRDSRENDERABLECANVAS_H_
 
+#include "deoglRDSRenderable.h"
+#include "../../../../canvas/render/deoglRCanvasView.h"
+
 #include <dragengine/deObject.h>
 
-#include "deoglRDSRenderable.h"
-
-class deoglRCanvasView;
 class deDSRenderableCanvas;
 
 
@@ -38,8 +38,13 @@ class deDSRenderableCanvas;
  * Render dynamic skin canvas renderable.
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableCanvas> Ref;
+	
+	
 private:
-	deoglRCanvasView *pCanvas;
+	deoglRCanvasView::Ref pCanvas;
 	int pComponentCount;
 	int pBitCount;
 	

@@ -25,14 +25,15 @@
 #ifndef _CEACTORPOSE_H_
 #define _CEACTORPOSE_H_
 
-#include "../controller/ceActorControllerList.h"
-#include "../gesture/ceActorGestureList.h"
+#include "../controller/ceActorController.h"
+#include "../gesture/ceActorGesture.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
 class igdeEnvironment;
-class deAnimator;
 
 
 
@@ -40,25 +41,27 @@ class deAnimator;
  * Conversation Actor Gesture.
  */
 class ceActorPose : public deObject{
+public:
+	typedef deTObjectReference<ceActorPose> Ref;
+	typedef decTObjectOrderedSet<ceActorGesture> GestureList;
+	typedef decTObjectOrderedSet<ceActorController> ControllerList;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
-	deAnimator *pEngAnimator;
+	deAnimator::Ref pEngAnimator;
 	
 	decString pName;
 	decString pPathAnimator;
 	
-	ceActorControllerList pControllers;
-	ceActorGestureList pGestures;
+	ControllerList pControllers;
+	GestureList pGestures;
 	
 	decStringList pControllerNames;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceActorPose> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create actor pose. */
@@ -80,8 +83,8 @@ public:
 	/** Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	/** Engine animator or \em nullptr. */
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	
@@ -98,12 +101,12 @@ public:
 	void SetPathAnimator(const char *path);
 	
 	/** Controllers. */
-	inline ceActorControllerList &GetControllers(){ return pControllers; }
-	inline const ceActorControllerList &GetControllers() const{ return pControllers; }
+	inline ControllerList &GetControllers(){ return pControllers; }
+	inline const ControllerList &GetControllers() const{ return pControllers; }
 	
 	/** Gestures. */
-	inline ceActorGestureList &GetGestures(){ return pGestures; }
-	inline const ceActorGestureList &GetGestures() const{ return pGestures; }
+	inline GestureList &GetGestures(){ return pGestures; }
+	inline const GestureList &GetGestures() const{ return pGestures; }
 	
 	/** Controller names. */
 	inline const decStringList &GetControllerNames() const{ return pControllerNames; }

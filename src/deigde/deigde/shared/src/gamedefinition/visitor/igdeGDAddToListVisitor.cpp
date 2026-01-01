@@ -77,7 +77,7 @@ const char *caption, deImage &image, void *userPointer){
 	
 	/*
 	const int maxCharPerLine = pSize / 4;
-	const char *lastBlank = NULL;
+	const char *lastBlank = nullptr;
 	const char *line = caption;
 	decString text;
 	
@@ -127,13 +127,13 @@ const char *caption, deImage &image, void *userPointer){
 	
 	igdeIcon::Ref icon;
 	if(image.GetWidth() > image.GetHeight()){
-		icon.TakeOver(new igdeIcon(image, pSize, pSize * image.GetHeight() / image.GetWidth()));
+		icon = igdeIcon::Ref::New(image, pSize, pSize * image.GetHeight() / image.GetWidth());
 		
 	}else{
-		icon.TakeOver(new igdeIcon(image, pSize * image.GetWidth() / image.GetHeight(), pSize));
+		icon = igdeIcon::Ref::New(image, pSize * image.GetWidth() / image.GetHeight(), pSize);
 	}
 	
-	item.TakeOver(new igdeListItem(text, icon, userPointer));
+	item = igdeListItem::Ref::New(text, icon, userPointer);
 	pIconListBox->AddItem(item);
 }
 
@@ -147,7 +147,7 @@ void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
 		return;
 	}
 	
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;
@@ -162,13 +162,13 @@ void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
 	
 	AddItemToList(item,  gdclass->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdclass);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewObjectClass(
 		gdclass, listener);
 }
 
 void igdeGDAddToListVisitor::VisitSkin(igdeGDSkin *gdskin){
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;
@@ -183,13 +183,13 @@ void igdeGDAddToListVisitor::VisitSkin(igdeGDSkin *gdskin){
 	
 	AddItemToList(item,  gdskin->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdskin);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSkin(
 		gdskin, listener);
 }
 
 void igdeGDAddToListVisitor::VisitSky(igdeGDSky *gdsky){
-	if(pIconListBox->GetItemCount() >= 100){
+	if(pIconListBox->GetItems().GetCount() >= 100){
 		// too many items. FOX has problems with this. will be changed once we have a better system
 		printf("Too Many List Items (%s:%d)\n", __FILE__, __LINE__);
 		return;
@@ -204,7 +204,7 @@ void igdeGDAddToListVisitor::VisitSky(igdeGDSky *gdsky){
 	
 	AddItemToList(item,  gdsky->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdsky);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSky(
 		gdsky, listener);
 }

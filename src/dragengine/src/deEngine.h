@@ -27,6 +27,7 @@
 
 #include "common/string/decString.h"
 #include "common/utils/decPRNG.h"
+#include "logger/deLogger.h"
 #include "filesystem/deVirtualFileSystem.h"
 
 class deAISystem;
@@ -60,7 +61,6 @@ class deImageManager;
 class deInputSystem;
 class deLanguagePackManager;
 class deLightManager;
-class deLogger;
 class deLumimeterManager;
 class deMicrophoneManager;
 class deModelManager;
@@ -133,7 +133,7 @@ private:
 	deErrorTrace *pErrorTrace;
 	bool pScriptFailed;
 	bool pSystemFailed;
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	
 	// systems
 	deModuleSystem *pModSys;
@@ -187,7 +187,7 @@ public:
 	 * \param[in] os OS object to use. Deleted during destructor.
 	 * \param[in] fileSystem OS file system or NULL if not used.
 	 */
-	deEngine(deOS *os, deVirtualFileSystem *fileSystem = nullptr);
+	explicit deEngine(deOS *os, deVirtualFileSystem *fileSystem = nullptr);
 	
 	~deEngine();
 	/*@}*/
@@ -253,7 +253,7 @@ public:
 	void ResetFailureFlags();
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger. */
 	void SetLogger(deLogger *logger);

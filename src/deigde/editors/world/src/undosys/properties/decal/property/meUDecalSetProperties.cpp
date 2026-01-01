@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUDecalSetProperties::meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues) :
-pDecal(NULL),
+
 pNewValues(newValues)
 {
 	if(!decal || !decal->GetWorld()){
@@ -49,18 +49,14 @@ pNewValues(newValues)
 	
 	SetShortInfo("Change decal properties");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldValues = decal->GetProperties();
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSetProperties::~meUDecalSetProperties(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

@@ -26,12 +26,13 @@
 #define _AELINK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeController;
+#include "../controller/aeController.h"
 class aeAnimator;
 class deAnimatorLink;
 
@@ -43,6 +44,7 @@ class deAnimatorLink;
 class aeLink : public deObject{
 public:
 	typedef deTObjectReference<aeLink> Ref;
+	typedef decTObjectOrderedSet<aeLink> List;
 	
 	
 private:
@@ -52,7 +54,7 @@ private:
 	
 	decString pName;
 	
-	aeController *pController;
+	aeController::Ref pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
@@ -77,7 +79,9 @@ public:
 	aeLink(const aeLink &copy);
 	
 	/** Clean up link. */
+protected:
 	virtual ~aeLink();
+public:
 	/*@}*/
 	
 	
@@ -92,7 +96,7 @@ public:
 	
 	
 	
-	/** Engine controller link or \em NULL if not managed. */
+	/** Engine controller link or \em nullptr if not managed. */
 	inline deAnimatorLink *GetEngineLink() const{ return pEngLink; }
 	
 	
@@ -105,10 +109,10 @@ public:
 	
 	
 	
-	/** Controller or \em NULL. */
-	inline aeController *GetController() const{ return pController; }
+	/** Controller or \em nullptr. */
+	inline const aeController::Ref &GetController() const{ return pController; }
 	
-	/** Set controller or \em NULL. */
+	/** Set controller or \em nullptr. */
 	void SetController(aeController *controller, bool notify = true);
 	
 	/** Repeat count of input value. */

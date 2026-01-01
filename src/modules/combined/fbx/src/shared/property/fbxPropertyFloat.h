@@ -33,6 +33,10 @@
  * \brief FBX property float.
  */
 class fbxPropertyFloat : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyFloat> Ref;
+	
+	
 private:
 	float pValue;
 	
@@ -45,7 +49,7 @@ public:
 	fbxPropertyFloat();
 	
 	/** \brief Load property. */
-	fbxPropertyFloat(decBaseFileReader &reader);
+	explicit fbxPropertyFloat(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

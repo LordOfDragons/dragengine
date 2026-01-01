@@ -123,7 +123,6 @@ void deSkinTexture::AddProperty(deSkinProperty *property){
 	if(pPropertyCount == pPropertySize){
 		int newSize = pPropertySize * 3 / 2 + 1;
 		deSkinProperty **newArray = new deSkinProperty*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pProperties){
 			memcpy(newArray, pProperties, sizeof(deSkinProperty*) * pPropertySize);

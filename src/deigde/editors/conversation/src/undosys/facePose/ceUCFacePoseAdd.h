@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceFacePose;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/facepose/ceFacePose.h"
 
 
 
@@ -36,14 +36,15 @@ class ceFacePose;
  * \brief Undo Action Add Face Pose.
  */
 class ceUCFacePoseAdd : public igdeUndo{
-private:
-	ceConversation *pConversation;
-	ceFacePose *pFacePose;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCFacePoseAdd> Ref;
 	
+	
+private:
+	ceConversation::Ref pConversation;
+	ceFacePose::Ref pFacePose;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

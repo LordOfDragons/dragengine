@@ -27,7 +27,6 @@
 
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
@@ -42,7 +41,10 @@ class deSpeaker;
 /**
  * \brief Dope sheet voice audio preview.
  */
-class ceWDSVAPreview{
+class ceWDSVAPreview : public deObject{
+public:
+	typedef deTObjectReference<ceWDSVAPreview> Ref;
+	
 private:
 	ceWindowDopeSheet &pWindow;
 	
@@ -67,7 +69,9 @@ public:
 	ceWDSVAPreview(ceWindowDopeSheet &dopeSheet);
 	
 	/** \brief Clean up dope sheet lane. */
+protected:
 	~ceWDSVAPreview();
+public:
 	/*@}*/
 	
 	
@@ -78,10 +82,10 @@ public:
 	inline ceWindowDopeSheet &GetWindow() const{ return pWindow; }
 	
 	/** \brief Canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Mouse listener. */
-	inline igdeMouseKeyListener *GetMouseKeyListener() const{ return pMouseKeyListener; }
+	inline const igdeMouseKeyListener::Ref &GetMouseKeyListener() const{ return pMouseKeyListener; }
 	
 	
 	

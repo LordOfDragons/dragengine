@@ -30,8 +30,8 @@
 
 #include <dragengine/common/shape/decShapeList.h>
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class environment map probe set shape reflection mask.
  */
 class gdeUOCEnvMapProbeSetShapeReflectionMask : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeReflectionMask> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	decShapeList pOldValue;
 	decShapeList pNewValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCEnvMapProbeSetShapeReflectionMask> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

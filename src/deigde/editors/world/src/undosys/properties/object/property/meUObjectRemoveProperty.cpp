@@ -48,7 +48,7 @@ meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *k
 		DETHROW(deeInvalidParam);
 	}
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Remove object property");
 	
@@ -56,11 +56,9 @@ meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *k
 	pValue = value;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveProperty::~meUObjectRemoveProperty(){
-	pCleanUp();
 }
 
 
@@ -74,15 +72,4 @@ void meUObjectRemoveProperty::Undo(){
 
 void meUObjectRemoveProperty::Redo(){
 	pObject->RemoveProperty(pKey.GetString());
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectRemoveProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

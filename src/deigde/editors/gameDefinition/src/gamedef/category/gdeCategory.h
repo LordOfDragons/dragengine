@@ -31,11 +31,13 @@
 #include <dragengine/common/string/decStringSet.h>
 
 
-
 /**
  * \brief Category.
  */
 class gdeCategory : public deObject{
+public:
+	typedef deTObjectReference<gdeCategory> Ref;
+	
 private:
 	decString pName;
 	decString pDescription;
@@ -45,25 +47,22 @@ private:
 	bool pHidden;
 	
 	
-	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeCategory> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create category. */
 	gdeCategory();
 	
 	/** \brief Create category. */
-	gdeCategory(const char *name);
+	explicit gdeCategory(const char *name);
 	
 	/** \brief Create copy of category. */
 	gdeCategory(const gdeCategory &category);
 	
 	/** \brief Clean up category. */
+protected:
 	virtual ~gdeCategory();
+public:
 	/*@}*/
 	
 	
@@ -82,10 +81,10 @@ public:
 	/** \brief Set description. */
 	void SetDescription(const char *description);
 	
-	/** \brief Parent category or \em NULL if top level. */
+	/** \brief Parent category or \em nullptr if top level. */
 	inline gdeCategory *GetParent() const{ return pParent; }
 	
-	/** \brief Set parent category or \em NULL if top level. */
+	/** \brief Set parent category or \em nullptr if top level. */
 	void SetParent(gdeCategory *parent);
 	
 	/** \brief Get path. */

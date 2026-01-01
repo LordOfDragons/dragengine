@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class Particle Emitter...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddParticleEmitter(&objectClass, gdeOCParticleEmitter::Ref::NewWith());
+igdeUndo::Ref gdeMAOCParticleEmitterAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddParticleEmitter::Ref::New(&objectClass, gdeOCParticleEmitter::Ref::New());
 }
 
 void gdeMAOCParticleEmitterAdd::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

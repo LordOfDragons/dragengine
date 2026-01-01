@@ -25,6 +25,10 @@
 #ifndef _REWPBONE_H_
 #define _REWPBONE_H_
 
+#include "reWPBoneListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/bone/reRigBone.h"
+
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -32,10 +36,7 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
-class reRigBone;
 class reWindowProperties;
-class reWPBoneListener;
 
 
 
@@ -43,11 +44,14 @@ class reWPBoneListener;
  * \brief Rig Panel
  */
 class reWPBone : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPBone> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigBone *pBone;
-	reWPBoneListener *pListener;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reWPBoneListener::Ref pListener;
 	
 	igdeTextField::Ref pEditName;
 	igdeComboBox::Ref pCBParent;
@@ -82,13 +86,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Bone. */
-	inline reRigBone *GetBone() const{ return pBone; }
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
 	void SetBone(reRigBone *bone);

@@ -27,11 +27,8 @@
 #include <string.h>
 
 #include "meUHTNavSpaceFaceRemove.h"
-#include "../../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
-#include "../../../../../../world/terrain/meHeightTerrainNavSpaceFace.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class meUHTNavSpaceFaceRemove
@@ -40,47 +37,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceFaceRemove::meUHTNavSpaceFaceRemove(const decObjectOrderedSet &faces) :
-pFaces(NULL),
-pFaceCount(0)
-{
-	if(faces.GetCount() == 0){
-		DETHROW(deeInvalidParam);
-	}
+meUHTNavSpaceFaceRemove::meUHTNavSpaceFaceRemove(const meHeightTerrainNavSpaceFace::List &faces){
+	DEASSERT_TRUE(faces.IsNotEmpty())
 	
-	const int count = faces.GetCount();
-	
-	if(count == 1){
+	if(faces.GetCount() == 1){
 		SetShortInfo("Height terrain nav-space remove face");
 		
 	}else{
 		SetShortInfo("Height terrain nav-space remove faces");
 	}
 	
-	try{
-		pFaces = new sFace[count];
-		
-		for(pFaceCount=0; pFaceCount<count; pFaceCount++){
-			sFace &face = pFaces[pFaceCount];
-			
-			face.face = (meHeightTerrainNavSpaceFace*)faces.GetAt(pFaceCount);
-			face.face->AddReference();
-			
-			face.type = face.face->GetType();
-			if(!face.type){
-				DETHROW(deeInvalidParam);
-			}
-			face.type->AddReference();
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	faces.Visit([&](meHeightTerrainNavSpaceFace *face){
+		const cFace::Ref uface(cFace::Ref::New());
+		uface->face = face;
+		uface->type = face->GetType();
+		DEASSERT_NOTNULL(uface->type)
+		pFaces.Add(uface);
+	});
 }
 
 meUHTNavSpaceFaceRemove::~meUHTNavSpaceFaceRemove(){
-	pCleanUp();
 }
 
 
@@ -89,39 +65,13 @@ meUHTNavSpaceFaceRemove::~meUHTNavSpaceFaceRemove(){
 ///////////////
 
 void meUHTNavSpaceFaceRemove::Undo(){
-	int i;
-	
-	for(i=0; i<pFaceCount; i++){
-		pFaces[i].type->AddFace(pFaces[i].face);
-	}
+	pFaces.Visit([&](const cFace &face){
+		face.type->AddFace(face.face);
+	});
 }
 
 void meUHTNavSpaceFaceRemove::Redo(){
-	int i;
-	
-	for(i=0; i<pFaceCount; i++){
-		pFaces[i].type->RemoveFace(pFaces[i].face);
-	}
-}
-
-
-
-// Private functions
-//////////////////////
-
-void meUHTNavSpaceFaceRemove::pCleanUp(){
-	if(!pFaces){
-		return;
-	}
-	
-	int i;
-	
-	for(i=0; i<pFaceCount; i++){
-		if(pFaces[i].face){
-			pFaces[i].face->FreeReference();
-		}
-		if(pFaces[i].type){
-			pFaces[i].type->FreeReference();
-		}
-	}
+	pFaces.Visit([&](const cFace &face){
+		face.type->RemoveFace(face.face);
+	});
 }

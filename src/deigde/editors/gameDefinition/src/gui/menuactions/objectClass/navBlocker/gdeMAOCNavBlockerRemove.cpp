@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Blocker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCNavBlockerRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
 	if(!navBlocker){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveNavBlocker(&objectClass, navBlocker);
+	return gdeUOCRemoveNavBlocker::Ref::New(&objectClass, navBlocker);
 }
 
 void gdeMAOCNavBlockerRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL);
+		&& gameDefinition->GetActiveOCNavigationBlocker() != nullptr);
 }

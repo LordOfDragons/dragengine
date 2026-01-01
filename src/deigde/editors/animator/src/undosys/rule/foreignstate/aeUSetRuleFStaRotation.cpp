@@ -42,12 +42,10 @@
 aeUSetRuleFStaRotation::aeUSetRuleFStaRotation(aeRuleForeignState *rule, float newScale){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScaleOrientation();
 		pNewScale = newScale;
 		
@@ -82,5 +80,4 @@ void aeUSetRuleFStaRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

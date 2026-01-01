@@ -40,10 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile) :
-pProject(NULL),
-pProfile(NULL)
-{
+projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile){
 	if(!project || !profile){
 		DETHROW(deeInvalidParam);
 	}
@@ -51,19 +48,10 @@ pProfile(NULL)
 	SetShortInfo("Add profile");
 	
 	pProfile = profile;
-	profile->AddReference();
-	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProfileAdd::~projUProfileAdd(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

@@ -44,7 +44,7 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, 
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Path Collision Emitter");
 	
@@ -52,13 +52,9 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, 
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathCollisionEmitter::~peeUTypeSetPathCollisionEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -36,6 +36,10 @@
  */
 class deainpDeviceKeyboard : public deainpDevice{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deainpDeviceKeyboard> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */

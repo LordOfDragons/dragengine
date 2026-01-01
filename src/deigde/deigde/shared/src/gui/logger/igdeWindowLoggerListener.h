@@ -35,6 +35,11 @@ class igdeWindowLogger;
  * \brief Logger window listener.
  */
 class DE_DLL_EXPORT igdeWindowLoggerListener : public igdeLoggerHistoryListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWindowLoggerListener> Ref;
+	
+	
 private:
 	igdeWindowLogger &pWindow;
 	
@@ -46,8 +51,11 @@ public:
 	/** \brief Create listener. */
 	igdeWindowLoggerListener(igdeWindowLogger &window);
 	
+protected:
 	/** \brief Clean up listener. */
 	virtual ~igdeWindowLoggerListener();
+	
+public:
 	/*@}*/
 	
 	

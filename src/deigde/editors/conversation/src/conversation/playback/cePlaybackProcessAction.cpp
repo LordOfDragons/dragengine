@@ -34,8 +34,6 @@
 #include "cePlaybackActionStackEntry.h"
 #include "cePlaybackProcessAction.h"
 #include "cePlaybackEvaluateCondition.h"
-#include "variable/cePlaybackVariable.h"
-#include "variable/cePlaybackVariableList.h"
 #include "../ceConversation.h"
 #include "../action/ceCACameraShot.h"
 #include "../action/ceCAActorSpeak.h"
@@ -57,7 +55,6 @@
 #include "../action/ceCACoordSystemRemove.h"
 #include "../action/ceCAIfElseCase.h"
 #include "../actor/ceConversationActor.h"
-#include "../actor/parameters/ceActorParameter.h"
 #include "../actor/speechAnimation/ceSpeechAnimation.h"
 #include "../actor/speechAnimation/ceSAWord.h"
 #include "../actor/speechAnimation/ceSAPhoneme.h"
@@ -170,8 +167,8 @@ void cePlaybackProcessAction::ProcessCameraShot(ceConversation &conversation, co
 	if(cameraShot){
 		const int actorCount = playback.GetActorCount();
 		cePlaybackCamera &camera = *playback.GetCamera();
-		ceTarget *cameraTarget = NULL;
-		ceTarget *lookAtTarget = NULL;
+		ceTarget *cameraTarget = nullptr;
+		ceTarget *lookAtTarget = nullptr;
 		int cameraActor = -1;
 		int lookAtActor = -1;
 		
@@ -267,11 +264,11 @@ void cePlaybackProcessAction::ProcessCameraShot(ceConversation &conversation, co
 
 void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ceCAActorSpeak &action){
 	const bool useSpeechAnimation = action.GetUseSpeechAnimation();
-	const ceStripList &words = action.GetWordList();
+	const ceStrip::List &words = action.GetWords();
 	cePlayback &playback = *conversation.GetPlayback();
 	const decString &actorID = action.GetActor();
 	const int wordCount = words.GetCount();
-	deSound *engSound = NULL;
+	deSound *engSound = nullptr;
 	
 	float speechLength = action.GetMinSpeechTime();
 	
@@ -300,9 +297,7 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 	if(wordCount > 0){
 		if(conversationActor.GetSpeechAnimation()){
 			ceSpeechAnimation &speechAnimation = *conversationActor.GetSpeechAnimation();
-			const ceSAPhonemeList &saPhonemeList = speechAnimation.GetPhonemeList();
-			const ceSAWordList &saWordList = speechAnimation.GetWordList();
-			int saPhonemeIndex;
+			const ceSAPhoneme::Map &saPhonemeList = speechAnimation.GetPhonemes();
 			int i, j, length2;
 			ceSAWord *saWord;
 			float scaling;
@@ -352,10 +347,12 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 				}
 				
 				if(word.GetID().IsEmpty()){
-					saWord = NULL;
+					saWord = nullptr;
 					
 				}else{
-					saWord = saWordList.GetNamed(word.GetID());
+					saWord = speechAnimation.GetWordList().FindOrDefault([&](const ceSAWord::Ref &w){
+						return w->GetName() == word.GetID();
+					});
 				}
 				
 				if(saWord){
@@ -365,13 +362,12 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 					
 					scaling = 0.0f;
 					for(j=0; j<length2; j++){
-						saPhonemeIndex = saPhonemeList.IndexOfIPA(phonetics.GetAt(j));
-						
-						if(saPhonemeIndex == -1){
-							scaling += pMissingPhonemeLength;
+						const ceSAPhoneme::Ref *foundPhoneme = nullptr;
+						if(saPhonemeList.GetAt(phonetics.GetAt(j), foundPhoneme)){
+							scaling += (*foundPhoneme)->GetLength();
 							
 						}else{
-							scaling += saPhonemeList.GetAt(saPhonemeIndex)->GetLength();
+							scaling += pMissingPhonemeLength;
 						}
 					}
 					if(scaling > 1e-5f){
@@ -379,15 +375,13 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 					}
 					
 					for(j=0; j<length2; j++){
-						saPhonemeIndex = saPhonemeList.IndexOfIPA(phonetics.GetAt(j));
-						
-						if(saPhonemeIndex == -1){
-							speechAnimation.AddSpeakPhoneme(-1, pMissingPhonemeLength * scaling);
+						const ceSAPhoneme::Ref *foundPhoneme = nullptr;
+						if(saPhonemeList.GetAt(phonetics.GetAt(j), foundPhoneme)){
+							speechAnimation.AddSpeakPhoneme((*foundPhoneme)->GetIPA(),
+								(*foundPhoneme)->GetLength() * scaling);
 							
 						}else{
-							const ceSAPhoneme &phoneme = *saPhonemeList.GetAt(saPhonemeIndex);
-							
-							speechAnimation.AddSpeakPhoneme(saPhonemeIndex, phoneme.GetLength() * scaling);
+							speechAnimation.AddSpeakPhoneme(-1, pMissingPhonemeLength * scaling);
 						}
 					}
 					
@@ -429,87 +423,50 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 	// update the sub title
 	const decUnicodeString &textBoxText = action.ResolveTextBoxText(conversation);
 	if(textBoxText.GetLength() > 0){
-		ceTextBoxText *text = NULL;
+		ceTextBoxText::Ref text;
 		
 		try{
-			text = new ceTextBoxText;
+			text = ceTextBoxText::Ref::New();
 			text->SetName(conversationActor.GetTextBoxName());
 			text->SetText(textBoxText);
 			// TODO text style 
 			playbackActor.SetTextBoxText(text);
-			text->FreeReference();
-			
 		}catch(const deException &){
-			if(text){
-				text->FreeReference();
-			}
 			throw;
 		}
 	}
 	
 	// update the gesture to play
-	if(action.GetGestureList().GetCount() > 0){
-		const ceStripList &caGestureList = action.GetGestureList();
-		const int count = caGestureList.GetCount();
-		int i;
-		
+	if(action.GetGestures().IsNotEmpty()){
 		conversationActor.RemoveAllPlayGestures();
-		
-		for(i=0; i<count; i++){
-			const ceStrip &caGesture = *caGestureList.GetAt(i);
-			
-			conversationActor.AddPlayGesture(conversation.GetGestureNamed(caGesture.GetID()),
-				caGesture.GetPause(), caGesture.GetDuration());
-		}
+		action.GetGestures().Visit([&](const ceStrip &s){
+			conversationActor.AddPlayGesture(conversation.GetGestureNamed(s.GetID()), s.GetPause(), s.GetDuration());
+		});
 	}
 	
 	// update the face pose to play
-	if(action.GetFacePoseList().GetCount() > 0){
-		const ceStripList &caFacePoseList = action.GetFacePoseList();
-		const int count = caFacePoseList.GetCount();
-		int i;
-		
+	if(action.GetFacePoses().IsNotEmpty()){
 		conversationActor.RemoveAllPlayFacePoses();
-		
-		for(i=0; i<count; i++){
-			const ceStrip &caFacePose = *caFacePoseList.GetAt(i);
-			
-			conversationActor.AddPlayFacePose(conversation.GetFacePoseNamed(caFacePose.GetID()),
-				caFacePose.GetPause(), caFacePose.GetDuration());
-		}
+		action.GetFacePoses().Visit([&](const ceStrip &s){
+			conversationActor.AddPlayFacePose(conversation.GetFacePoseNamed(s.GetID()), s.GetPause(), s.GetDuration());
+		});
 	}
 	
 	// update the head look-at to play
-	if(action.GetHeadLookAtList().GetCount() > 0){
-		const ceStripList &caHeadLAList = action.GetHeadLookAtList();
-		const int count = caHeadLAList.GetCount();
-		int i;
-		
+	if(action.GetHeadLookAts().IsNotEmpty()){
 		conversationActor.RemoveAllPlayHeadLookAts();
-		
-		for(i=0; i<count; i++){
-			const ceStrip &caHeadLA = *caHeadLAList.GetAt(i);
-			
-			conversationActor.AddPlayHeadLookAt(conversation.GetTargetNamed(caHeadLA.GetID()),
-				caHeadLA.GetPause(), caHeadLA.GetDuration());
-		}
+		action.GetHeadLookAts().Visit([&](const ceStrip &s){
+			conversationActor.AddPlayHeadLookAt(conversation.GetTargetNamed(s.GetID()), s.GetPause(), s.GetDuration());
+		});
 	}
 	
 	// update the eyes look-at to play. uses head look-ats if empty
-	const ceStripList &caEyesLAList = action.GetEyesLookAtList().GetCount() > 0
-		? action.GetEyesLookAtList() : action.GetHeadLookAtList();
+	const ceStrip::List &caEyesLAList = action.GetEyesLookAts().IsNotEmpty() ? action.GetEyesLookAts() : action.GetHeadLookAts();
 	if(caEyesLAList.GetCount() > 0){
-		const int count = caEyesLAList.GetCount();
-		int i;
-		
 		conversationActor.RemoveAllPlayEyesLookAts();
-		
-		for(i=0; i<count; i++){
-			const ceStrip &caEyesLA = *caEyesLAList.GetAt(i);
-			
-			conversationActor.AddPlayEyesLookAt(conversation.GetTargetNamed(caEyesLA.GetID()),
-				caEyesLA.GetPause(), caEyesLA.GetDuration());
-		}
+		caEyesLAList.Visit([&](const ceStrip &s){
+			conversationActor.AddPlayEyesLookAt(conversation.GetTargetNamed(s.GetID()), s.GetPause(), s.GetDuration());
+		});
 	}
 	
 	// set the speech length if used
@@ -528,13 +485,13 @@ void cePlaybackProcessAction::ProcessSnippet(ceConversation &conversation, ceCAS
 	
 	if(topic){
 		if(action->GetCreateSideLane()){
-			const cePlaybackActionStack::Ref stack(cePlaybackActionStack::Ref::NewWith());
-			stack->Push(topic, action, &topic->GetActionList(), 0);
+			const cePlaybackActionStack::Ref stack(cePlaybackActionStack::Ref::New());
+			stack->Push(topic, action, &topic->GetActions(), 0);
 			playback.AddSideActionStack(stack);
 			playback.AdvanceToNextAction();
 			
 		}else{
-			playback.GetMainActionStack()->Push(topic, action, &topic->GetActionList(), 0);
+			playback.GetMainActionStack()->Push(topic, action, &topic->GetActions(), 0);
 		}
 		
 	}else{
@@ -581,17 +538,12 @@ void cePlaybackProcessAction::ProcessIfElse(ceConversation &conversation, ceCAIf
 	cePlaybackEvaluateCondition evalCondition;
 	
 	// if cases
-	ceCAIfElseCaseList &cases = action->GetCases();
-	const int caseCount = cases.GetCount();
-	int i;
-	
-	for(i=0; i<caseCount; i++){
-		ceCAIfElseCase &ifcase = *cases.GetAt(i);
-		const ceConversationCondition * const condition = ifcase.GetCondition();
+	for(const auto &ifcase : action->GetCases()){
+		const ceConversationCondition * const condition = ifcase->GetCondition();
 		
 		if(condition && evalCondition.EvaluateCondition(conversation, *condition)){
-			if(ifcase.GetActions().GetCount() > 0){
-				actionStack.Push(NULL, action, &ifcase.GetActions(), 0);
+			if(ifcase->GetActions().IsNotEmpty()){
+				actionStack.Push(nullptr, action, &ifcase->GetActions(), 0);
 				
 			}else{
 				playback.AdvanceToNextAction();
@@ -602,8 +554,8 @@ void cePlaybackProcessAction::ProcessIfElse(ceConversation &conversation, ceCAIf
 	}
 	
 	// else case
-	if(action->GetElseActions().GetCount() > 0){
-		actionStack.Push(NULL, action, &action->GetElseActions(), 0);
+	if(action->GetElseActions().IsNotEmpty()){
+		actionStack.Push(nullptr, action, &action->GetElseActions(), 0);
 		
 	}else{
 		playback.AdvanceToNextAction();
@@ -611,48 +563,29 @@ void cePlaybackProcessAction::ProcessIfElse(ceConversation &conversation, ceCAIf
 }
 
 void cePlaybackProcessAction::ProcessPlayerChoice(ceConversation &conversation, ceCAPlayerChoice *action){
-	const ceCAPlayerChoiceOptionList &optionList = action->GetOptions();
 	cePlayerChoiceBox &pcbox = conversation.GetPlayerChoiceBox();
-	cePCBOptionList &pcbOptionList = pcbox.GetOptionList();
-	const int optionCount = optionList.GetCount();
+	cePCBOption::List &pcbOptionList = pcbox.GetOptionList();
 	cePlaybackEvaluateCondition evalCondition;
-	ceCAPlayerChoiceOption *option;
-	cePCBOption *pcbOption = NULL;
-	int i;
 	
 	cePlayback &playback = *conversation.GetPlayback();
 	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
-	actionStack.Push(NULL, action, &action->GetActions(), 0);
+	actionStack.Push(nullptr, action, &action->GetActions(), 0);
 	actionStack.GetTop().SetLooping(true);
 	
 	pcbox.SetPlaybackStackDepth(actionStack.GetCount());
 	
 	pcbOptionList.RemoveAll();
 	
-	try{
-		for(i=0; i<optionCount; i++){
-			option = optionList.GetAt(i);
-			
-			if(option->GetCondition()
-			&& !evalCondition.EvaluateCondition(conversation, *option->GetCondition())){
-				continue;
-			}
-			
-			pcbOption = new cePCBOption;
-			pcbOption->SetText(option->GetText());
-			pcbOption->SetActionOption(action, option);
-			
-			pcbOptionList.Add(pcbOption);
-			pcbOption->FreeReference();
-			pcbOption = NULL;
+	action->GetOptions().Visit([&](ceCAPlayerChoiceOption *o){
+		if(o->GetCondition() && !evalCondition.EvaluateCondition(conversation, *o->GetCondition())){
+			return;
 		}
 		
-	}catch(const deException &){
-		if(pcbOption){
-			pcbOption->FreeReference();
-		}
-		throw;
-	}
+		cePCBOption::Ref pcbOption(cePCBOption::Ref::New());
+		pcbOption->SetText(o->GetText());
+		pcbOption->SetActionOption(action, o);
+		pcbOptionList.Add(pcbOption);
+	});
 	
 	pcbox.UpdateCanvas();
 	
@@ -669,44 +602,37 @@ void cePlaybackProcessAction::ProcessSetVariable(ceConversation &conversation, c
 		return;
 	}
 	
-	cePlaybackVariableList &variableList = conversation.GetPlayback()->GetVariables();
+	cePlayback::VariableMap &variables = conversation.GetPlayback()->GetVariables();
 	const ceCASetVariable::eOperators op = action.GetOperator();
 	
 	int value = action.GetValue();
 	if(!action.GetValueVariable().IsEmpty()){
-		cePlaybackVariable * const variable = variableList.GetNamed(action.GetValueVariable());
-		if(variable){
-			value = variable->GetValue();
-		}
+		value = variables.GetAtOrDefault(action.GetValueVariable(), value);
 	}
 	
 	switch(op){
 	case ceCASetVariable::eopSet:
-		variableList.Set(name, value);
+		variables.SetAt(name, value);
 		break;
 		
 	case ceCASetVariable::eopRandom:
-		variableList.Set(name, decMath::random(0, value));
+		variables.SetAt(name, decMath::random(0, value));
 		break;
 		
 	case ceCASetVariable::eopIncrement:
 	case ceCASetVariable::eopDecrement:{
-		cePlaybackVariable * const variable = variableList.GetNamed(name);
-		int currentValue = 0;
-		if(variable){
-			currentValue = variable->GetValue();
-		}
+		int currentValue = variables.GetAtOrDefault(name, 0);
 		
 		if(op == ceCASetVariable::eopIncrement){
-			variableList.Set(name, currentValue + value);
+			variables.SetAt(name, currentValue + value);
 			
 		}else{
-			variableList.Set(name, currentValue - value);
+			variables.SetAt(name, currentValue - value);
 		}
 		}break;
 		
 	default:
-		variableList.Set(name, value);
+		variables.SetAt(name, value);
 	}
 	
 	conversation.NotifyPlaybackVarListChanged();
@@ -725,45 +651,38 @@ const ceCASetActorParameter &action){
 		return;
 	}
 	
-	ceActorParameterList &parameterList = conversationActor->GetParameters();
+	ceConversationActor::ParameterMap &parameters = conversationActor->GetParameters();
 	const ceCASetActorParameter::eOperators op = action.GetOperator();
 	
 	int value = action.GetValue();
 	if(!action.GetValueVariable().IsEmpty()){
-		cePlaybackVariable * const variable = playback.GetVariables().GetNamed(action.GetValueVariable());
-		if(variable){
-			value = variable->GetValue();
-		}
+		value = playback.GetVariables().GetAtOrDefault(action.GetValueVariable(), value);
 	}
 	
 	switch(op){
 	case ceCASetActorParameter::eopSet:
-		parameterList.Set(name, value);
+		parameters.SetAt(name, value);
 		break;
 		
 	case ceCASetActorParameter::eopRandom:
-		parameterList.Set(name, decMath::random(0, value));
+		parameters.SetAt(name, decMath::random(0, value));
 		break;
 		
 	case ceCASetActorParameter::eopIncrement:
 	case ceCASetActorParameter::eopDecrement:{
-		ceActorParameter * const parameter = parameterList.GetNamed(name);
-		int currentValue = 0;
-		if(parameter){
-			currentValue = parameter->GetValue();
-		}
+		int currentValue = parameters.GetAtOrDefault(name, 0);
 		
 		if(op == ceCASetActorParameter::eopIncrement){
-			parameterList.Set(name, currentValue + value);
+			parameters.SetAt(name, currentValue + value);
 			
 		}else if(op == ceCASetActorParameter::eopDecrement){
-			parameterList.Set(name, currentValue - value);
+			parameters.SetAt(name, currentValue - value);
 			
 		}
 		}break;
 		
 	default:
-		parameterList.Set(name, value);
+		parameters.SetAt(name, value);
 	}
 	
 	conversation.NotifyActorParametersChanged(conversationActor);
@@ -808,7 +727,7 @@ void cePlaybackProcessAction::ProcessWait(ceConversation &conversation, ceCAWait
 	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	
 	if(action->GetCondition()){
-		actionStack.Push(NULL, action, &action->GetActions(), 0);
+		actionStack.Push(nullptr, action, &action->GetActions(), 0);
 		actionStack.GetTop().SetLoopCondition(action->GetCondition());
 		actionStack.GetTop().SetLooping(true);
 		

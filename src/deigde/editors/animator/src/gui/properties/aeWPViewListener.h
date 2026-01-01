@@ -35,6 +35,10 @@ class aeWPView;
  * View panel listener.
  */
 class aeWPViewListener : public aeAnimatorNotifier{
+public:
+	typedef deTObjectReference<aeWPViewListener> Ref;
+	
+	
 private:
 	aeWPView &pPanel;
 	
@@ -47,7 +51,9 @@ public:
 	aeWPViewListener(aeWPView &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

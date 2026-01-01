@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -50,88 +50,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\network\basic\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\configuration\debnConfiguration.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\configuration\debnLoadConfiguration.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnAddress.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnConnection.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnServer.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnSocket.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnWorld.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\deNetworkBasic.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\half\half.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableResendInterval.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueFloat.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueInteger.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint2.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint3.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueQuaternion.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueString.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector2.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector3.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueCreate.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueDebug.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueType.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\configuration\debnConfiguration.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\configuration\debnLoadConfiguration.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnAddress.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnConnection.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnServer.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnSocket.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnWorld.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\deNetworkBasic.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\half\half.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableResendInterval.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueFloat.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueInteger.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint2.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint3.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueQuaternion.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueString.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector2.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector3.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueCreate.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueDebug.h" />
-    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueType.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\network\basic\src\module.xml" />
@@ -501,4 +419,86 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\configuration\debnConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\configuration\debnLoadConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\deNetworkBasic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnAddress.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnConnection.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnSocket.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\debnWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\half\half.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableResendInterval.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueInteger.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueQuaternion.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueString.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector2.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector3.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueCreate.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueType.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\configuration\debnConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\configuration\debnLoadConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\deNetworkBasic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnAddress.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnConnection.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnServer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnSocket.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\debnWorld.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\half\half.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessage.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageAckList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\messages\debnMessageManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debnParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\debug\debnPLogLevel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectResendInterval.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPConnectTimeout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableResendInterval.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\parameters\reliability\debnPReliableTimeout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\states\debnStateLinkManager.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValue.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueData.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueInteger.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValuePoint3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueQuaternion.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueString.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector2.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\values\debnValueVector3.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueCreate.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\network\basic\src\visitors\debnVisitorValueType.h" />
+  </ItemGroup>
 </Project>

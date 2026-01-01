@@ -28,12 +28,10 @@
 #include <stdlib.h>
 
 #include "igdeWidget.h"
+#include "event/igdeSpinTextFieldListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
-
-class igdeSpinTextFieldListener;
 
 
 /**
@@ -54,7 +52,7 @@ private:
 	int pValue;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeSpinTextFieldListener> pListeners;
 	
 	
 	

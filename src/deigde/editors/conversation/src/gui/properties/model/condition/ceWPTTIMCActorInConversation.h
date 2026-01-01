@@ -34,6 +34,9 @@
  */
 class ceWPTTIMCActorInConversation : public ceWPTTIMCondition{
 public:
+	typedef deTObjectReference<ceWPTTIMCActorInConversation> Ref;
+
+public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -52,7 +55,7 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionActorInConversation *GetConditionActorInConversation() const{
-		return (ceCConditionActorInConversation*)GetCondition();
+		return (ceCConditionActorInConversation*)GetCondition().Pointer();
 	}
 	
 	/** \brief Update condition. */

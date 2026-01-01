@@ -27,6 +27,7 @@
 
 #include <deigde/utils/igdeBaseXML.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class meHeightTerrain;
@@ -40,7 +41,12 @@ class deLogger;
 /**
  * \brief Load Height Terrain Interface.
  */
-class meLSHeightTerrain : public igdeBaseXML{
+class meLSHeightTerrain : public deObject, public igdeBaseXML{
+public:
+	typedef deTObjectReference<meLSHeightTerrain> Ref;
+	typedef decTObjectOrderedSet<meLSHeightTerrain> List;
+	
+	
 private:
 	decString pName;
 	decString pPattern;
@@ -50,18 +56,22 @@ public:
 	/*@{*/
 	/** Creates a new loader. */
 	meLSHeightTerrain(deLogger *logger, const char *loggerSource);
+	
+protected:
 	/** Cleans up the loader. */
 	virtual ~meLSHeightTerrain();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const char *GetName() const{ return pName.GetString(); }
+	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	/** Retrieves the pattern. */
-	inline const char *GetPattern() const{ return pPattern.GetString(); }
+	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
 	void SetPattern(const char *pattern);
 	

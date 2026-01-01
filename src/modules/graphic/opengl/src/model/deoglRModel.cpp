@@ -480,7 +480,7 @@ void deoglRModel::pLoadCached(int lodCount, int boneCount){
 		decBaseFileReader::Ref reader;
 		{
 		const deMutexGuard guard(caches.GetMutex());
-		reader.TakeOver(cacheModels.Read(pFilename));
+		reader = cacheModels.Read(pFilename);
 		}
 		
 		if(reader){
@@ -585,7 +585,7 @@ void deoglRModel::pSaveCached(){
 	decBaseFileWriter::Ref writer;
 	{
 	const deMutexGuard guard(caches.GetMutex());
-	writer.TakeOver(cacheModels.Write(pFilename));
+	writer = cacheModels.Write(pFilename);
 	}
 	
 	// write cache version

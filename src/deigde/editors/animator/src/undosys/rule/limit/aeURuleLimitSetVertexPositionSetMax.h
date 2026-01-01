@@ -30,23 +30,24 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 /**
  * Undo action rule limitor set minimum vertex position set.
  */
 class aeURuleLimitSetVertexPositionSetMax : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetVertexPositionSetMax> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	float pOldMax;
 	float pNewMax;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleLimitSetVertexPositionSetMax> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

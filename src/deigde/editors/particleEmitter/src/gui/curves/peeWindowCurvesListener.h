@@ -35,6 +35,10 @@ class peeWindowCurves;
  * \brief Curves Window Listener.
  */
 class peeWindowCurvesListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWindowCurvesListener> Ref;
+	
 private:
 	peeWindowCurves &pWindow;
 	
@@ -47,7 +51,9 @@ public:
 	peeWindowCurvesListener(peeWindowCurves &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWindowCurvesListener() override;
+public:
 	/*@}*/
 	
 	

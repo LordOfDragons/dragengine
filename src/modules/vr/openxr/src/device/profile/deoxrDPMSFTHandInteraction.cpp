@@ -112,7 +112,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice(bool left){
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
 	pAddAxisTrigger(device, trigger);
 	
-	button.TakeOver(new deoxrDeviceButton(device));
+	button = deoxrDeviceButton::Ref::New(device);
 	button->SetID("trig");
 	button->SetName("Trigger");
 	button->SetType(deInputDeviceButton::ebtTrigger);
@@ -125,7 +125,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice(bool left){
 	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
 	pAddAxisGripGrab(device, grip);
 	
-	button.TakeOver(new deoxrDeviceButton(device));
+	button = deoxrDeviceButton::Ref::New(device);
 	button->SetID("grip");
 	button->SetName("Grip");
 	button->SetType(deInputDeviceButton::ebtTrigger);
@@ -139,7 +139,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice(bool left){
 	deoxrDeviceComponent * const gesture = device->AddComponent(
 		deInputDeviceComponent::ectGesture, "Hand Gesture", "handGesture", "Hand Gesture");
 	
-	axis.TakeOver(new deoxrDeviceAxis(device));
+	axis = deoxrDeviceAxis::Ref::New(device);
 	axis->SetActionAnalog(oxr.GetAction(deVROpenXR::eiaGesturePinch));
 	axis->SetType(deInputDeviceAxis::eatGesture);
 	axis->SetRange(0.0f, 1.0f);
@@ -152,7 +152,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice(bool left){
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
-	axis.TakeOver(new deoxrDeviceAxis(device));
+	axis = deoxrDeviceAxis::Ref::New(device);
 	axis->SetActionAnalog(oxr.GetAction(deVROpenXR::eiaGestureGrasp));
 	axis->SetType(deInputDeviceAxis::eatGesture);
 	axis->SetRange(0.0f, 1.0f);

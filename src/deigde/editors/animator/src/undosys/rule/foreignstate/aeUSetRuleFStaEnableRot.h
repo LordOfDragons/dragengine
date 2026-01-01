@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,13 +41,14 @@ class aeRuleForeignState;
  * Undo to set enable rotation of a foreign state rule.
  */
 class aeUSetRuleFStaEnableRot : public igdeUndo{
-private:
-	aeRuleForeignState *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeUSetRuleFStaEnableRot> Ref;
 	
+	
+private:
+	aeRuleForeignState::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

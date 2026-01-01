@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATACONTROLLER_H_
 #define _AECLIPBOARDDATACONTROLLER_H_
 
-#include "../animator/controller/aeControllerList.h"
+#include "../animator/controller/aeController.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	aeControllerList pControllers;
+	aeController::List pControllers;
 	
 	
 	
@@ -56,7 +56,7 @@ public:
 	aeClipboardDataController(aeController *controller);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataController(const aeControllerList &controllers);
+	aeClipboardDataController(const aeController::List &controllers);
 	
 protected:
 	/**
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controllers. */
-	inline const aeControllerList &GetControllers() const{ return pControllers; }
+	inline const aeController::List &GetControllers() const{ return pControllers; }
 	/*@}*/
 };
 

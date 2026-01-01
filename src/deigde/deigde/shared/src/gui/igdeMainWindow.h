@@ -41,6 +41,10 @@ class igdeApplication;
  */
 class DE_DLL_EXPORT igdeMainWindow : public igdeWindow{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMainWindow> Ref;
+	
+	
 	/** \brief Window state. */
 	enum eWindowStates{
 		ewsNormal,
@@ -104,7 +108,7 @@ public:
 	inline bool GetNormalSizeSet() const{ return pNormalSizeSet; }
 	
 	
-	/** \brief Get engine controller or NULL if not present. */
+	/** \brief Get engine controller or nullptr if not present. */
 	inline igdeEngineController *GetMainWindowEngineController() const{ return pEngineController; }
 	
 	/** \brief Start engine. */

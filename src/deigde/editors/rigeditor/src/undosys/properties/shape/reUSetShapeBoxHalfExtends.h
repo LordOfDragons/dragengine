@@ -26,9 +26,9 @@
 #define _REUSETSHAPEBOXHALFEXTENDS_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeBox;
+#include "../../../rig/shape/reRigShapeBox.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeBox;
  * \brief Undo Set Shape HalfExtends.
  */
 class reUSetShapeBoxHalfExtends : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetShapeBoxHalfExtends> Ref;
+	
+	
 private:
-	reRigShapeBox *pShape;
+	reRigShapeBox::Ref pShape;
 	
 	decVector pOldHalfExtends;
 	decVector pNewHalfExtends;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetShapeBoxHalfExtends> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

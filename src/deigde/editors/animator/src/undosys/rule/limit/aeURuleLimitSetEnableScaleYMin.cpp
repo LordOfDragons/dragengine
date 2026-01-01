@@ -44,18 +44,14 @@ aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin(aeRuleLimit *rule
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable minimum y scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleYMin::~aeURuleLimitSetEnableScaleYMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

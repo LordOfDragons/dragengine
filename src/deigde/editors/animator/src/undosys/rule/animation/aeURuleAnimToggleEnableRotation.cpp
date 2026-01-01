@@ -44,12 +44,10 @@ aeURuleAnimToggleEnableRotation::aeURuleAnimToggleEnableRotation(aeRuleAnimation
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule animation toggle enable rotation");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleAnimToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

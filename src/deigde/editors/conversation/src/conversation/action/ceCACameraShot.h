@@ -38,7 +38,6 @@
  */
 class ceCACameraShot : public ceConversationAction{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCACameraShot> Ref;
 	
 	
@@ -56,7 +55,9 @@ public:
 	/** Creates a new camera shot conversation action. */
 	ceCACameraShot(const ceCACameraShot &action);
 	/** Cleans up the camera shot conversation action. */
+protected:
 	~ceCACameraShot() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -79,7 +80,7 @@ public:
 	void SetLookAtTarget(const char *target);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

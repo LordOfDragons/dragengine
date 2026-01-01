@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATALINK_H_
 #define _AECLIPBOARDDATALINK_H_
 
-#include "../animator/link/aeLinkList.h"
+#include "../animator/link/aeLink.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	aeLinkList pLinks;
+	aeLink::List pLinks;
 	
 	
 	
@@ -56,7 +56,7 @@ public:
 	aeClipboardDataLink(aeLink *link);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataLink(const aeLinkList &links);
+	aeClipboardDataLink(const aeLink::List &links);
 	
 protected:
 	/**
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Links. */
-	inline const aeLinkList &GetLinks() const{ return pLinks; }
+	inline const aeLink::List &GetLinks() const{ return pLinks; }
 	/*@}*/
 };
 

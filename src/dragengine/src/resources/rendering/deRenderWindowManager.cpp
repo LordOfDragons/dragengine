@@ -61,62 +61,40 @@ deRenderWindow *deRenderWindowManager::GetRootRenderWindow() const{
 	return (deRenderWindow*)pRenderWindows.GetRoot();
 }
 
-deRenderWindow *deRenderWindowManager::CreateRenderWindow(){
-	deRenderWindow *renderWindow = NULL;
-	
-	try{
-		renderWindow = new deRenderWindow(this);
-		GetGraphicSystem()->LoadRenderWindow(renderWindow);
-		pRenderWindows.Add(renderWindow);
-		
-	}catch(const deException &){
-		if(renderWindow){
-			renderWindow->FreeReference();
-		}
-		throw;
-	}
-	
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindow(){
+	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(this));
+	GetGraphicSystem()->LoadRenderWindow(renderWindow);
+	pRenderWindows.Add(renderWindow);
 	return renderWindow;
 }
 
 #ifdef OS_ANDROID
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(void *window)
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(void *window)
 #define IMPLEMENT_CREATERENDERWINDOWINSIDE
 
 #elif defined OS_WEBWASM
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(void *window)
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(void *window)
 #define IMPLEMENT_CREATERENDERWINDOWINSIDE
 
 #elif defined OS_BEOS
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(BWindow *window)
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(BWindow *window)
 #define IMPLEMENT_CREATERENDERWINDOWINSIDE
 
 #elif defined OS_UNIX_X11
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(Window window)
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(Window window)
 #define IMPLEMENT_CREATERENDERWINDOWINSIDE
 
 #elif defined OS_W32
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(HWND window)
+deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(HWND window)
 #define IMPLEMENT_CREATERENDERWINDOWINSIDE
 #endif
 
 #ifdef IMPLEMENT_CREATERENDERWINDOWINSIDE
 {
-	deRenderWindow *renderWindow = nullptr;
-	
-	try{
-		renderWindow = new deRenderWindow(this);
-		renderWindow->SetHostWindow(window); // tells graphic module to created hosted window
-		GetGraphicSystem()->LoadRenderWindow(renderWindow);
-		pRenderWindows.Add(renderWindow);
-		
-	}catch(const deException &){
-		if(renderWindow){
-			renderWindow->FreeReference();
-		}
-		throw;
-	}
-	
+	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(this));
+	renderWindow->SetHostWindow(window); // tells graphic module to created hosted window
+	GetGraphicSystem()->LoadRenderWindow(renderWindow);
+	pRenderWindows.Add(renderWindow);
 	return renderWindow;
 }
 #endif

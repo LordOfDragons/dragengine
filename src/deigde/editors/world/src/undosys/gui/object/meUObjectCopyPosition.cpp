@@ -47,16 +47,12 @@ pCopyZ(copyZ)
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	int i;
-	
 	SetShortInfo("Copy Object Position");
 	SetLongInfo("Copy Object Position");
 	
-	for(i=0; i<count; i++){
-		pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
-	}
+	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
 	
 	pNewPosition = world->GetSelectionObject().GetActive()->GetPosition();
 }
@@ -70,24 +66,16 @@ meUObjectCopyPosition::~meUObjectCopyPosition(){
 ///////////////
 
 void meUObjectCopyPosition::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
 		object->SetPosition(data.GetOldPosition());
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }
 
 void meUObjectCopyPosition::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
 		decDVector position(data.GetOldPosition());
@@ -104,5 +92,5 @@ void meUObjectCopyPosition::Redo(){
 		
 		object->SetPosition(position);
 		object->GetWorld()->NotifyObjectGeometryChanged(object);
-	}
+	});
 }

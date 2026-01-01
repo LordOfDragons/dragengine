@@ -171,7 +171,7 @@ bool igdeWOSubObject::GetPropertyValue(const decString &name, decString &value) 
 	const decString propertyName(pPrefix + name);
 	
 	const decString *propertyValue;
-	if(pWrapper.GetProperties().GetAt(propertyName, &propertyValue)){
+	if(pWrapper.GetProperties().GetAt(propertyName, propertyValue)){
 		value = *propertyValue;
 		return true;
 	}
@@ -302,7 +302,7 @@ int igdeWOSubObject::GetIntProperty(const decString &name, int defaultValue) con
 void igdeWOSubObject::pInitTrigger(igdeTriggerExpression::Ref &trigger, const decString &propertyName){
 	if(trigger){
 		trigger->UnlinkTriggerTargets();
-		trigger = NULL;
+		trigger = nullptr;
 	}
 	
 	decString value;
@@ -325,7 +325,7 @@ void igdeWOSubObject::pInitTrigger(igdeTriggerExpression::Ref &trigger, const de
 void igdeWOSubObject::pClearTrigger(igdeTriggerExpression::Ref &trigger){
 	if(trigger){
 		trigger->UnlinkTriggerTargets();
-		trigger = NULL;
+		trigger = nullptr;
 	}
 }
 

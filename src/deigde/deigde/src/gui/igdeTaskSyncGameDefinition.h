@@ -26,12 +26,12 @@
 #define _IGDETASKSYNCGAMEDEFINITION_H_
 
 #include <deigde/gui/igdeStepableTask.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 
@@ -58,10 +58,10 @@ protected:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	decPointerList pEditorTasks;
+	decTObjectOrderedSet<igdeStepableTask> pEditorTasks;
 	
-	igdeGameDefinition *pOldProjectGameDef;
-	igdeGameDefinition *pOldGameDef;
+	igdeGameDefinition::Ref pOldProjectGameDef;
+	igdeGameDefinition::Ref pOldGameDef;
 	eStates pState;
 	int pTaskIndex;
 	
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	igdeTaskSyncGameDefinition(igdeWindowMain &windowMain);
+	explicit igdeTaskSyncGameDefinition(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~igdeTaskSyncGameDefinition();

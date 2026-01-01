@@ -43,14 +43,11 @@
 aeUAddController::aeUAddController(aeAnimator *animator, aeController *controller){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pController = NULL;
+	pAnimator = nullptr;
+	pController = nullptr;
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUAddController::~aeUAddController(){
@@ -77,6 +74,4 @@ void aeUAddController::Redo(){
 //////////////////////
 
 void aeUAddController::pCleanUp(){
-	if(pController) pController->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
 }

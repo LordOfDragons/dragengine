@@ -45,30 +45,21 @@ ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *a
 	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
-	if(index < 0 || index > topic->GetActionList().GetCount()){
+	if(index < 0 || index > topic->GetActions().GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionAdd::~ceUCActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -78,19 +69,19 @@ ceUCActionAdd::~ceUCActionAdd(){
 
 void ceUCActionAdd::Undo(){
 	ceConversationAction * const activateAction =
-		ceUActionHelpers::ActivateActionAfterRemove(pTopic->GetActionList(), pAction);
+		ceUActionHelpers::ActivateActionAfterRemove(pTopic->GetActions(), pAction);
 	
-	pTopic->GetActionList().Remove(pAction);
-	pTopic->NotifyActionStructureChanged(NULL);
+	pTopic->GetActions().Remove(pAction);
+	pTopic->NotifyActionStructureChanged(nullptr);
 	
 	if(activateAction){
-		pTopic->SetActive(activateAction, NULL);
+		pTopic->SetActive(activateAction, nullptr);
 	}
 }
 
 void ceUCActionAdd::Redo(){
-	pTopic->GetActionList().InsertAt(pAction, pIndex);
-	pTopic->NotifyActionStructureChanged(NULL);
+	pTopic->GetActions().Insert(pAction, pIndex);
+	pTopic->NotifyActionStructureChanged(nullptr);
 	
-	pTopic->SetActive(pAction, NULL);
+	pTopic->SetActive(pAction, nullptr);
 }

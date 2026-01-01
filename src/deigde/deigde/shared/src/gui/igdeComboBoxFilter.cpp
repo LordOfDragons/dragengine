@@ -82,15 +82,7 @@ igdeComboBoxFilter::~igdeComboBoxFilter(){
 ///////////////
 
 void igdeComboBoxFilter::StoreFilterItems(){
-	const int count = GetItemCount();
-	int i;
-	
-	pFilterItems.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		pFilterItems.Add(GetItemAt(i));
-	}
-	
+	pFilterItems = GetItems();
 	FilterItems();
 }
 
@@ -100,31 +92,25 @@ void igdeComboBoxFilter::ReleaseFilterItems(){
 
 void igdeComboBoxFilter::FilterItems(){
 	const bool noFilter = pFilterString.IsEmpty();
-	const int count = pFilterItems.GetCount();
 	const decString text(GetText());
-	int i;
 	
 	RemoveAllItems();
 	
 	if(pFilterCaseInsensitive){
 		const decString filter(pFilterString.GetLower());
 		
-		for(i=0; i<count; i++){
-			igdeListItem * const item = (igdeListItem*)pFilterItems.GetAt(i);
-			
+		pFilterItems.Visit([&](igdeListItem *item){
 			if(noFilter || item->GetText().GetLower().FindString(filter) != -1){
 				AddItem(item);
 			}
-		}
+		});
 		
 	}else{
-		for(i=0; i<count; i++){
-			igdeListItem * const item = (igdeListItem*)pFilterItems.GetAt(i);
-			
+		pFilterItems.Visit([&](igdeListItem *item){
 			if(noFilter || item->GetText().FindString(pFilterString) != -1){
 				AddItem(item);
 			}
-		}
+		});
 	}
 	
 	SetText(text);
@@ -150,17 +136,9 @@ void igdeComboBoxFilter::SetFilterString(const char *filterString){
 	FilterItems();
 	
 	// if the current selection is filtered out use the first one if available
-	if(GetSelection() == -1 && GetItemCount() > 0 && !GetEditable()){
+	if(GetSelection() == -1 && GetItems().IsNotEmpty() && !GetEditable()){
 		SetSelection(0);
 	}
-}
-
-int igdeComboBoxFilter::GetFilterItemCount() const{
-	return pFilterItems.GetCount();
-}
-
-igdeListItem *igdeComboBoxFilter::GetFilterItemAt(int index) const{
-	return (igdeListItem*)pFilterItems.GetAt(index);
 }
 
 
@@ -192,7 +170,7 @@ void igdeComboBoxFilter::OnItemAdded(int index){
 	}
 	
 	igdeNativeComboBoxFilter &native = *((igdeNativeComboBoxFilter*)GetNativeWidget());
-	native.InsertItem(index, *GetItemAt(index));
+	native.InsertItem(index, GetItems().GetAt(index));
 	//native.SyncSelection( false );
 	native.UpdateText();
 	native.UpdateRowCount();

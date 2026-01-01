@@ -41,6 +41,10 @@ class meWorld;
  * Undo action to undo and redo height painting on a height terrain.
  */
 class meUHTPaintHeight : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTPaintHeight> Ref;
+	
+	
 private:
 	meWorld *pWorld;
 	
@@ -52,15 +56,16 @@ private:
 	float *pNewHeights;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTPaintHeight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, float *oldHeights);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTPaintHeight();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

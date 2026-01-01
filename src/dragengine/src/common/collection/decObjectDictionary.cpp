@@ -40,7 +40,6 @@
 
 decObjectDictionary::sDictEntry::sDictEntry() :
 hash(0),
-value(NULL),
 next(NULL){
 }
 
@@ -50,9 +49,6 @@ key(entry.key),
 value(entry.value),
 next(NULL)
 {
-	if(value){
-		value->AddReference();
-	}
 }
 
 decObjectDictionary::sDictEntry::sDictEntry(unsigned int nhash, const char *nkey,
@@ -62,9 +58,6 @@ key(nkey),
 value(nvalue),
 next(NULL)
 {
-	if(value){
-		value->AddReference();
-	}
 }
 
 decObjectDictionary::sDictEntry::~sDictEntry(){
@@ -74,15 +67,7 @@ decObjectDictionary::sDictEntry::~sDictEntry(){
 
 void decObjectDictionary::sDictEntry::SetValue(deObject *nvalue){
 	if(nvalue != value){
-		if(value){
-			value->FreeReference();
-		}
-		
 		value = nvalue;
-		
-		if(nvalue){
-			nvalue->AddReference();
-		}
 	}
 }
 

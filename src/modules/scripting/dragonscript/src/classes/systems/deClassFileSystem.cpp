@@ -90,7 +90,7 @@ deClassFileSystem::nfGetGamePath::nfGetGamePath(const sInitData &init) : dsFunct
 "getGamePath", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStr){
 }
 void deClassFileSystem::nfGetGamePath::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	
 	rt->PushString(clsFileSys.GetDS()->GetGameEngine()->GetDataDir());
 }
@@ -104,7 +104,7 @@ deClassFileSystem::nfExistsFile::nfExistsFile(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassFileSystem::nfExistsFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char *filename = rt->GetValue(0)->GetString();
 	decPath path;
@@ -120,7 +120,7 @@ deClassFileSystem::nfCanReadFile::nfCanReadFile(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfCanReadFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	decPath path;
 	
@@ -135,7 +135,7 @@ deClassFileSystem::nfCanWriteFile::nfCanWriteFile(const sInitData &init) : dsFun
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfCanWriteFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	decPath path;
 	
@@ -150,7 +150,7 @@ deClassFileSystem::nfCanDeleteFile::nfCanDeleteFile(const sInitData &init) : dsF
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfCanDeleteFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	decPath path;
 	
@@ -165,8 +165,8 @@ deClassFileSystem::nfDeleteFile::nfDeleteFile(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfDeleteFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
-	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
+	const deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	decPath path;
 	
 	path.SetFromUnix(rt->GetValue(0)->GetString());
@@ -186,17 +186,17 @@ private:
 public:
 	deClassFileSystemSearch(deClassFileSystem &classFileSystem, dsRunTime &rt, bool recursive, dsValue *block) :
 	pClassFileSystem(classFileSystem), pRT(rt), pRecursive(recursive), pBlock(block),
-	pFuncIndexRun(((dsClassBlock*)rt.GetEngine()->GetClassBlock())->GetFuncIndexRun2()),
+	pFuncIndexRun(static_cast<dsClassBlock*>(rt.GetEngine()->GetClassBlock())->GetFuncIndexRun2()),
 	pClassBool(rt.GetEngine()->GetClassBool())
 	{
 		classFileSystem.PrepareTypes();
 	}
 	
-	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
 		return Run(path, pClassFileSystem.GetTypeFile());
 	}
 	
-	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
 		if(!Run(path, pClassFileSystem.GetTypeDirectory())){
 			return false;
 		}
@@ -206,7 +206,7 @@ public:
 		return true;
 	}
 	
-	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
+	bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path) override{
 		return Run(path, pClassFileSystem.GetTypeSpecial());
 	}
 	
@@ -231,7 +231,7 @@ deClassFileSystem::nfSearchFiles::nfSearchFiles(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsBlock); // ablock
 }
 void deClassFileSystem::nfSearchFiles::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char * const directory = rt->GetValue(0)->GetString();
 	const bool recursive = rt->GetValue(1)->GetBool();
@@ -251,13 +251,13 @@ deClassFileSystem::nfGetFileType::nfGetFileType(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfGetFileType::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	decPath path;
 	
 	path.SetFromUnix(rt->GetValue(0)->GetString());
 	
-	rt->PushValue(((deClassFileSystem*)GetOwnerClass())->GetClassFileType()
+	rt->PushValue(static_cast<deClassFileSystem*>(GetOwnerClass())->GetClassFileType()
 		->GetVariable(vfs.GetFileType(path))->GetStaticValue());
 }
 
@@ -281,7 +281,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfBrowseOverlay::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char * const path = rt->GetValue(0)->GetString();
 	
@@ -291,7 +291,7 @@ void deClassFileSystem::nfBrowseOverlay::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.AddComponent("__ds_overlay_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	
@@ -309,8 +309,8 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfBrowseCapture::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
-	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
+	const deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char * const path = rt->GetValue(0)->GetString();
 	
 	decPath tempPath;
@@ -329,7 +329,7 @@ void deClassFileSystem::nfBrowseCapture::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.AddComponent("__ds_capture_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	
@@ -347,7 +347,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // path
 }
 void deClassFileSystem::nfBrowseConfig::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char * const path = rt->GetValue(0)->GetString();
 	
@@ -367,7 +367,7 @@ void deClassFileSystem::nfBrowseConfig::RunFunction(dsRunTime *rt, dsValue *myse
 	ensurePath.AddComponent("__ds_config_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	
@@ -385,11 +385,11 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsArray){
 	p_AddParameter(init.clsResourceLoaderType); // type
 }
 void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	
 	// determine module type to enumerate
 	const deResourceLoader::eResourceType type = (deResourceLoader::eResourceType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	deModuleSystem::eModuleTypes moduleType = deModuleSystem::emtUnknown;
@@ -456,17 +456,17 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 		const decString &name = module->GetName();
 		const int foundCount = modules.GetCount();
 		for(j=0; j<foundCount; j++){
-			const deLoadableModule * const module2 = (const deLoadableModule *)modules.GetAt(j);
+			const deLoadableModule * const module2 = static_cast<const deLoadableModule*>(modules.GetAt(j));
 			if(module2->GetName() == name){
 				if(modsys.CompareVersion(module->GetVersion(), module2->GetVersion()) > 0){
-					modules.SetAt(j, (void*)module);
+					modules.SetAt(j, const_cast<void*>(static_cast<const void*>(module)));
 				}
 				break;
 			}
 		}
 		
 		if(j == foundCount){
-			modules.Add((void*)module);
+			modules.Add(const_cast<void*>(static_cast<const void*>(module)));
 		}
 	}
 	
@@ -483,7 +483,7 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 		// iterate
 		const int foundCount = modules.GetCount();
 		for(i=0; i<foundCount; i++){
-			const deLoadableModule &module = *(const deLoadableModule *)modules.GetAt(i);
+			const deLoadableModule &module = *static_cast<const deLoadableModule*>(modules.GetAt(i));
 			
 			// create pattern array
 			rt->CreateObject(valuePatterns, sengine.GetClassArray(), 0);
@@ -539,7 +539,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // url
 }
 void deClassFileSystem::nfOpenUrl::RunFunction(dsRunTime *rt, dsValue*){
-	const deClassFileSystem &clsFileSys = *((deClassFileSystem*)GetOwnerClass());
+	const deClassFileSystem &clsFileSys = *static_cast<deClassFileSystem*>(GetOwnerClass());
 	clsFileSys.OpenUrl(rt->GetValue(0)->GetString());
 }
 
@@ -554,6 +554,9 @@ void deClassFileSystem::nfOpenUrl::RunFunction(dsRunTime *rt, dsValue*){
 deClassFileSystem::deClassFileSystem(deScriptingDragonScript *ds) :
 dsClass("FileSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS(ds),
+pClsFileType(NULL),
+pClsFileExtension(NULL),
+pClsResourceLoaderType(NULL),
 pTypeFile(NULL),
 pTypeDirectory(NULL),
 pTypeSpecial(NULL),

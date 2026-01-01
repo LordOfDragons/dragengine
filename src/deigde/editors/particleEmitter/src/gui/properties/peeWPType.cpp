@@ -109,13 +109,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, emitter, type)));
+		igdeUndo::Ref undo(OnChanged(textField, emitter, type));
 		if(undo){
 			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter *emitter, peeType *type) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -134,13 +134,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(emitter, type)));
+		igdeUndo::Ref undo(OnAction(emitter, type));
 		if(undo){
 			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type) = 0;
 };
 
 class cBasePathListener : public igdeEditPathListener{
@@ -157,13 +157,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editPath->GetPath(), emitter, type)));
+		igdeUndo::Ref undo(OnChanged(editPath->GetPath(), emitter, type));
 		if(undo){
 			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo::Ref OnChanged(const decString &path, peeEmitter *emitter, peeType *type) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -180,13 +180,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, emitter, type)));
+		igdeUndo::Ref undo(OnChanged(comboBox, emitter, type));
 		if(undo){
 			emitter->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter *emitter, peeType *type) = 0;
 };
 
 
@@ -194,7 +194,8 @@ public:
 class cActionEmitBurst : public igdeAction{
 	peeWPType &pPanel;
 public:
-	cActionEmitBurst(peeWPType &panel) : igdeAction("Emit Burst", NULL,
+	typedef deTObjectReference<cActionEmitBurst> Ref;
+	cActionEmitBurst(peeWPType &panel) : igdeAction("Emit Burst", nullptr,
 		"Determines if particles are emit as burst or continuous"),
 	pPanel(panel){}
 	
@@ -204,13 +205,14 @@ public:
 			return;
 		}
 		
-		emitter->GetUndoSystem()->Add(peeUEmitterToggleEmitBurst::Ref::NewWith(emitter));
+		emitter->GetUndoSystem()->Add(peeUEmitterToggleEmitBurst::Ref::New(emitter));
 	}
 };
 
 class cTextBurstLifetime : public igdeTextFieldListener{
 	peeWPType &pPanel;
 public:
+	typedef deTObjectReference<cTextBurstLifetime> Ref;
 	cTextBurstLifetime(peeWPType &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -224,7 +226,7 @@ public:
 			return;
 		}
 		
-		emitter->GetUndoSystem()->Add(peeUEmitterSetBurstLifetime::Ref::NewWith(emitter, value));
+		emitter->GetUndoSystem()->Add(peeUEmitterSetBurstLifetime::Ref::New(emitter, value));
 	}
 };
 
@@ -233,6 +235,7 @@ public:
 class cComboType : public igdeComboBoxListener{
 	peeWPType &pPanel;
 public:
+	typedef deTObjectReference<cComboType> Ref;
 	cComboType(peeWPType &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox * comboBox){
@@ -242,7 +245,7 @@ public:
 		}
 		
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		emitter->SetActiveType(selection ? (peeType*)selection->GetData() : NULL);
+		emitter->SetActiveType(selection ? (peeType*)selection->GetData() : nullptr);
 	}
 };
 
@@ -250,6 +253,7 @@ class cActionType : public igdeAction{
 	peeWPType &pPanel;
 	igdeButton::Ref &pButton;
 public:
+	typedef deTObjectReference<cActionType> Ref;
 	cActionType(peeWPType &panel, igdeButton::Ref &button) :
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit type menu"),
@@ -262,7 +266,7 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(pPanel.GetEnvironment()));
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(pPanel.GetEnvironment()));
 		helper.MenuCommand(menu, pPanel.GetActionTypeAdd());
 		helper.MenuCommand(menu, pPanel.GetActionTypeRemove());
 		helper.MenuCommand(menu, pPanel.GetActionTypeRename());
@@ -273,6 +277,7 @@ public:
 class cActionTypeAdd : public igdeAction{
 	peeWPType &pPanel;
 public:
+	typedef deTObjectReference<cActionTypeAdd> Ref;
 	cActionTypeAdd(peeWPType &panel) :
 	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add type"),
@@ -287,107 +292,117 @@ public:
 		decString name("Type");
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Type", "Name:", name)){
-			if(emitter->GetTypeList().HasNamed(name)){
+			if(emitter->GetTypes().HasMatching([&name](const peeType &t){
+				return t.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pPanel, "Add Type", "A type with this name exists already.");
 				continue;
 			}
 			
-			const peeType::Ref type(peeType::Ref::NewWith(emitter->GetEngine(), name));
+			const peeType::Ref type(peeType::Ref::New(emitter->GetEngine(), name));
 			
-			emitter->GetUndoSystem()->Add(peeUTypeAdd::Ref::NewWith(emitter, type));
+			emitter->GetUndoSystem()->Add(peeUTypeAdd::Ref::New(emitter, type));
 			return;
 		}
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetEmitter() != NULL);
+		SetEnabled(pPanel.GetEmitter().IsNotNull());
 	}
 };
 
 class cActionTypeRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTypeRemove> Ref;
 	cActionTypeRemove(peeWPType &panel) :
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected type"){}
 	
-	virtual igdeUndo *OnAction(peeEmitter*, peeType *type){
-		return new peeUTypeRemove(type);
+	virtual igdeUndo::Ref OnAction(peeEmitter*, peeType *type){
+		return peeUTypeRemove::Ref::New(type);
 	}
 	
 	virtual void Update(){
-		SetEnabled(pPanel.GetType() != NULL);
+		SetEnabled(pPanel.GetType() != nullptr);
 	}
 };
 
 class cActionTypeRename : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionTypeRename> Ref;
 	cActionTypeRename(peeWPType &panel) :
-	cBaseAction(panel, "Rename...", NULL, "Rename selected type"){}
+	cBaseAction(panel, "Rename...", nullptr, "Rename selected type"){}
 	
-	virtual igdeUndo *OnAction(peeEmitter *emitter, peeType *type){
+	virtual igdeUndo::Ref OnAction(peeEmitter *emitter, peeType *type){
 		decString name(type->GetName());
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Rename Type", "Name:", name)){
 			if(name == type->GetName()){
 				break;
 				
-			}else if(emitter->GetTypeList().HasNamed(name)){
+			}else if(emitter->GetTypes().HasMatching([name](const peeType &t){
+				return t.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pPanel, "Rename Type", "A type with this name exists already.");
 				
 			}else{
-				return new peeUTypeSetName(type, name);
+				return peeUTypeSetName::Ref::New(type, name);
 			}
 		}
 		
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetType() != NULL);
+	void Update() override{
+		SetEnabled(pPanel.GetType() != nullptr);
 	}
 };
 
 class cPathSkin : public cBasePathListener{
 public:
+	typedef deTObjectReference<cPathSkin> Ref;
 	cPathSkin(peeWPType &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
 		if(type->GetSkinPath() == path){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetSkinPath(type, path);
+		return peeUTypeSetSkinPath::Ref::New(type, path);
 	}
 };
 
 class cPathModel : public cBasePathListener{
 public:
+	typedef deTObjectReference<cPathModel> Ref;
 	cPathModel(peeWPType &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
 		if(type->GetModelPath() == path){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetModelPath(type, path);
+		return peeUTypeSetModelPath::Ref::New(type, path);
 	}
 };
 
 class cPathModelSkin : public cBasePathListener{
 public:
+	typedef deTObjectReference<cPathModelSkin> Ref;
 	cPathModelSkin(peeWPType &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
 		if(type->GetModelSkinPath() == path){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetModelSkinPath(type, path);
+		return peeUTypeSetModelSkinPath::Ref::New(type, path);
 	}
 };
 
 class cComboCastFrom : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCastFrom> Ref;
 	cComboCastFrom(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -396,17 +411,18 @@ public:
 		const deParticleEmitterType::eCastFrom castFrom =
 			(deParticleEmitterType::eCastFrom)(intptr_t)selection->GetData();
 		if(type->GetCastFrom() == castFrom){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetCastFrom(type, castFrom);
+		return peeUTypeSetCastFrom::Ref::New(type, castFrom);
 	}
 };
 
 class cComboSimType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboSimType> Ref;
 	cComboSimType(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -415,54 +431,58 @@ public:
 		const deParticleEmitterType::eSimulationTypes simulationType =
 			(deParticleEmitterType::eSimulationTypes)(intptr_t)selection->GetData();
 		if(type->GetSimulationType() == simulationType){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetSimulationType(type, simulationType);
+		return peeUTypeSetSimulationType::Ref::New(type, simulationType);
 	}
 };
 
 class cActionIntervalAsDistance : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionIntervalAsDistance> Ref;
 	cActionIntervalAsDistance(peeWPType &panel) :
-	cBaseAction(panel, "Interval As Distance", NULL,
+	cBaseAction(panel, "Interval As Distance", nullptr,
 		"Determines if the interval is used with distance instead of time"){ }
 	
-	virtual igdeUndo *OnAction(peeEmitter*, peeType *type){
-		return new peeUTypeSetIntervalAsDistance(type);
+	igdeUndo::Ref OnAction(peeEmitter*, peeType *type) override{
+		return peeUTypeSetIntervalAsDistance::Ref::New(type);
 	}
 };
 
 class cTextPhysicsSize : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPhysicsSize> Ref;
 	cTextPhysicsSize(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - type->GetPhysicsSize()) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetPhysicsSize(type, value);
+		return peeUTypeSetPhysicsSize::Ref::New(type, value);
 	}
 };
 
 
 class cPathTrailEmitter : public cBasePathListener{
 public:
+	typedef deTObjectReference<cPathTrailEmitter> Ref;
 	cPathTrailEmitter(peeWPType &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
 		if(type->GetPathTrailEmitter() == path){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetPathTrailEmitter(type, path);
+		return peeUTypeSetPathTrailEmitter::Ref::New(type, path);
 	}
 };
 
 class cComboTrailController : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTrailController> Ref;
 	cComboTrailController(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -470,18 +490,19 @@ public:
 		
 		type->SetActiveTrailController(
 			(deParticleEmitterType::eEmitControllers)(intptr_t)selection->GetData());
-		return NULL;
+		return {};
 	}
 };
 
 class cTextTrailTargetController : public cBaseTextFieldListener{
 	igdeComboBox &pComboBox;
 public:
+	typedef deTObjectReference<cTextTrailTargetController> Ref;
 	cTextTrailTargetController(peeWPType &panel, igdeComboBox &comboBox) :
 	cBaseTextFieldListener(panel),
 	pComboBox(comboBox){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = pComboBox.GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -490,16 +511,17 @@ public:
 		const deParticleEmitterType::eEmitControllers controller =
 			(deParticleEmitterType::eEmitControllers)(intptr_t)selection->GetData();
 		return type->GetTrailController(controller) != textField->GetText()
-			? new peeUTypeSetTrailController(type, controller, textField->GetText()) : NULL;
+			? peeUTypeSetTrailController::Ref::New(type, controller, textField->GetText()) : igdeUndo::Ref();
 	}
 };
 
 
 class cComboCollisionResponse : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCollisionResponse> Ref;
 	cComboCollisionResponse(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -508,43 +530,46 @@ public:
 		const deParticleEmitterType::eCollisionResponses response =
 			(deParticleEmitterType::eCollisionResponses)(intptr_t)selection->GetData();
 		if(response == type->GetCollisionResponse()){
-			return NULL;
+			return {};
 		}
 		
-		return new peeUTypeSetCollisionResponse(type, response);
+		return peeUTypeSetCollisionResponse::Ref::New(type, response);
 	}
 };
 
 class cPathCollisionEmitter : public cBasePathListener{
 public:
+	typedef deTObjectReference<cPathCollisionEmitter> Ref;
 	cPathCollisionEmitter(peeWPType &panel) : cBasePathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(const decString &path, peeEmitter*, peeType *type) override{
 		if(type->GetPathCollisionEmitter() == path){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetPathCollisionEmitter(type, path);
+		return peeUTypeSetPathCollisionEmitter::Ref::New(type, path);
 	}
 };
 
 class cTextEmitMinImpulse : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextEmitMinImpulse> Ref;
 	cTextEmitMinImpulse(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		const float value = textField->GetFloat();
 		if(fabsf(value - type->GetEmitMinImpulse()) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new peeUTypeSetEmitMinImpulse(type, value);
+		return peeUTypeSetEmitMinImpulse::Ref::New(type, value);
 	}
 };
 
 class cComboEmitController : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboEmitController> Ref;
 	cComboEmitController(peeWPType &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -552,18 +577,19 @@ public:
 		
 		type->SetActiveEmitController(
 			(deParticleEmitterType::eEmitControllers)(intptr_t)selection->GetData());
-		return NULL;
+		return {};
 	}
 };
 
 class cTextEmitTargetController : public cBaseTextFieldListener{
 	igdeComboBox &pComboBox;
 public:
+	typedef deTObjectReference<cTextEmitTargetController> Ref;
 	cTextEmitTargetController(peeWPType &panel, igdeComboBox &comboBox) :
 	cBaseTextFieldListener(panel),
 	pComboBox(comboBox){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = pComboBox.GetSelectedItem();
 		if(!selection){
 			DETHROW(deeInvalidParam);
@@ -572,7 +598,7 @@ public:
 		const deParticleEmitterType::eEmitControllers controller =
 			(deParticleEmitterType::eEmitControllers)(intptr_t)selection->GetData();
 		return type->GetEmitController(controller) != textField->GetText()
-			? new peeUTypeSetEmitController(type, controller, textField->GetText()) : NULL;
+			? peeUTypeSetEmitController::Ref::New(type, controller, textField->GetText()) : igdeUndo::Ref();
 	}
 };
 
@@ -580,6 +606,7 @@ public:
 class cListTypes : public igdeListBoxListener{
 	peeWPType &pPanel;
 public:
+	typedef deTObjectReference<cListTypes> Ref;
 	cListTypes(peeWPType &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -601,73 +628,77 @@ public:
 
 class cTextParamValue : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextParamValue> Ref;
 	cTextParamValue(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		peeParameter * const parameter = type->GetActiveParameter();
 		const float value = textField->GetFloat();
 		if(fabsf(value - parameter->GetValue()) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new peeUParameterSetValue(type, parameter, value);
+		return peeUParameterSetValue::Ref::New(type, parameter, value);
 	}
 };
 
 class cTextParamSpread : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextParamSpread> Ref;
 	cTextParamSpread(peeWPType &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, peeEmitter*, peeType *type) override{
 		peeParameter * const parameter = type->GetActiveParameter();
 		const float value = textField->GetFloat();
 		if(fabsf(value - parameter->GetSpread()) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new peeUParameterSetSpread(type, parameter, value);
+		return peeUParameterSetSpread::Ref::New(type, parameter, value);
 	}
 };
 
 class cComboControllerValue : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
+	typedef deTObjectReference<cComboControllerValue> Ref;
 	cComboControllerValue(peeWPType &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection || pPreventUpdate){
-			return NULL;
+			return {};
 		}
 		
 		peeController * const controller = (peeController*)selection->GetData();
 		peeParameter * const parameter = type->GetActiveParameter();
 		if(controller == parameter->GetControllerValue()){
-			return NULL;
+			return {};
 		}
 		
-		return new peeUParameterSetControllerValue(type, parameter, controller);
+		return peeUParameterSetControllerValue::Ref::New(type, parameter, controller);
 	}
 };
 
 class cComboControllerSpread : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
+	typedef deTObjectReference<cComboControllerSpread> Ref;
 	cComboControllerSpread(peeWPType &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, peeEmitter*, peeType *type) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(!selection || pPreventUpdate){
-			return NULL;
+			return {};
 		}
 		
 		peeController * const controller = (peeController*)selection->GetData();
 		peeParameter * const parameter = type->GetActiveParameter();
 		if(controller == parameter->GetControllerSpread()){
-			return NULL;
+			return {};
 		}
 		
-		return new peeUParameterSetControllerSpread(type, parameter, controller);
+		return peeUParameterSetControllerSpread::Ref::New(type, parameter, controller);
 	}
 };
 
@@ -679,13 +710,13 @@ public:
 ///////////////////
 
 static void AddControllersToComboBox(igdeComboBox &comboBox){
-	comboBox.AddItem("Lifetime", NULL,
+	comboBox.AddItem("Lifetime", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecLifetime);
-	comboBox.AddItem("Mass", NULL,
+	comboBox.AddItem("Mass", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecMass);
-	comboBox.AddItem("Linear Velocity", NULL,
+	comboBox.AddItem("Linear Velocity", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecLinearVelocity);
-	comboBox.AddItem("Angular Velocity", NULL,
+	comboBox.AddItem("Angular Velocity", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::eecAngularVelocity);
 }
 
@@ -761,138 +792,130 @@ static void AddParametersToListBox(igdeListBox &listBox, igdeIcon *icon){
 peeWPType::peeWPType(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pEmitter(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPTypeListener(*this);
+	pListener = peeWPTypeListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	pIconUnused = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pActionTypeAdd.TakeOver(new cActionTypeAdd(*this));
-	pActionTypeRemove.TakeOver(new cActionTypeRemove(*this));
-	pActionTypeRename.TakeOver(new cActionTypeRename(*this));
+	pActionTypeAdd = cActionTypeAdd::Ref::New(*this);
+	pActionTypeRemove = cActionTypeRemove::Ref::New(*this);
+	pActionTypeRename = cActionTypeRename::Ref::New(*this);
 	
 	
 	// emitter settings
 	helper.GroupBox(content, groupBox, "Emitter:");
 	
-	helper.CheckBox(groupBox, pChkEmitBurst, new cActionEmitBurst(*this), true);
+	helper.CheckBox(groupBox, pChkEmitBurst, cActionEmitBurst::Ref::New(*this));
 	helper.EditFloat(groupBox, "Lifetime:", "Lifetime of burst",
-		pEditBurstLifetime, new cTextBurstLifetime(*this));
+		pEditBurstLifetime, cTextBurstLifetime::Ref::New(*this));
 	
 	
 	// type settings
 	helper.GroupBox(content, groupBox, "Types:");
 	
 	helper.FormLineStretchFirst(groupBox, "Type:", "Type to edit", frameLine);
-	helper.ComboBox(frameLine, "Types", pCBType, new cComboType(*this));
+	helper.ComboBox(frameLine, "Types", pCBType, cComboType::Ref::New(*this));
 	pCBType->SetDefaultSorter();
-	helper.Button(frameLine, pBtnType, new cActionType(*this, pBtnType), true);
+	helper.Button(frameLine, pBtnType, cActionType::Ref::New(*this, pBtnType));
 	
 	helper.EditPath(groupBox, "Skin:", "Path to the skin for the particles",
-		igdeEnvironment::efpltSkin, pEditSkin, new cPathSkin(*this));
+		igdeEnvironment::efpltSkin, pEditSkin, cPathSkin::Ref::New(*this));
 	helper.EditPath(groupBox, "Model:", "Path to the model to emit particles from",
-		igdeEnvironment::efpltModel, pEditModel, new cPathModel(*this));
+		igdeEnvironment::efpltModel, pEditModel, cPathModel::Ref::New(*this));
 	helper.EditPath(groupBox, "Model Skin:", "Path to the skin for the model to emit particles from",
-		igdeEnvironment::efpltSkin, pEditModelSkin, new cPathModelSkin(*this));
+		igdeEnvironment::efpltSkin, pEditModelSkin, cPathModelSkin::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Cast From:", "Type of element to cast particles from if a model is set",
-		pCBCastFrom, new cComboCastFrom(*this));
-	pCBCastFrom->AddItem("Vertex", NULL, (void*)(intptr_t)deParticleEmitterType::ecfVertex);
-	pCBCastFrom->AddItem("Face", NULL, (void*)(intptr_t)deParticleEmitterType::ecfFace);
-	pCBCastFrom->AddItem("Volume", NULL, (void*)(intptr_t)deParticleEmitterType::ecfVolume);
+		pCBCastFrom, cComboCastFrom::Ref::New(*this));
+	pCBCastFrom->AddItem("Vertex", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVertex);
+	pCBCastFrom->AddItem("Face", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfFace);
+	pCBCastFrom->AddItem("Volume", nullptr, (void*)(intptr_t)deParticleEmitterType::ecfVolume);
 	
 	helper.ComboBox(groupBox, "Simulation Type:", "Type of simulation to use",
-		pCBSimType, new cComboSimType(*this));
-	pCBSimType->AddItem("Particle", NULL, (void*)(intptr_t)deParticleEmitterType::estParticle);
-	pCBSimType->AddItem("Ribbon", NULL, (void*)(intptr_t)deParticleEmitterType::estRibbon);
-	pCBSimType->AddItem("Beam", NULL, (void*)(intptr_t)deParticleEmitterType::estBeam);
+		pCBSimType, cComboSimType::Ref::New(*this));
+	pCBSimType->AddItem("Particle", nullptr, (void*)(intptr_t)deParticleEmitterType::estParticle);
+	pCBSimType->AddItem("Ribbon", nullptr, (void*)(intptr_t)deParticleEmitterType::estRibbon);
+	pCBSimType->AddItem("Beam", nullptr, (void*)(intptr_t)deParticleEmitterType::estBeam);
 	
-	helper.CheckBox(groupBox, pChkIntervalAsDistance, new cActionIntervalAsDistance(*this), true);
+	helper.CheckBox(groupBox, pChkIntervalAsDistance, cActionIntervalAsDistance::Ref::New(*this));
 	helper.EditFloat(groupBox, "Physics Size:", "Size of particles for physics simulation",
-		pEditPhysicsSize, new cTextPhysicsSize(*this));
+		pEditPhysicsSize, cTextPhysicsSize::Ref::New(*this));
 	
 	
 	// type trail
 	helper.GroupBox(content, groupBox, "Trail:");
 	
 	helper.EditPath(groupBox, "Emitter:", "Path to the particle emitter to use as trail",
-		igdeEnvironment::efpltParticleEmitter, pEditPathTrailEmitter, new cPathTrailEmitter(*this));
+		igdeEnvironment::efpltParticleEmitter, pEditPathTrailEmitter, cPathTrailEmitter::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Controller:", "Type of controller to set", frameLine);
 	helper.ComboBox(frameLine, "Type of controller to set",
-		pCBTrailController, new cComboTrailController(*this));
+		pCBTrailController, cComboTrailController::Ref::New(*this));
 	AddControllersToComboBox(pCBTrailController);
 	helper.EditString(frameLine, "Controller in the trail emitter set to this type",
-		pEditTrailTargetController, new cTextTrailTargetController(*this, pCBTrailController));
+		pEditTrailTargetController, cTextTrailTargetController::Ref::New(*this, pCBTrailController));
 	
 	
 	// type collision
 	helper.GroupBox(content, groupBox, "Collision:");
 	
 	helper.ComboBox(groupBox, "Response:", "Collision response to use",
-		pCBCollisionResponse, new cComboCollisionResponse(*this));
-	pCBCollisionResponse->AddItem("Destroy", NULL,
+		pCBCollisionResponse, cComboCollisionResponse::Ref::New(*this));
+	pCBCollisionResponse->AddItem("Destroy", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrDestroy);
-	pCBCollisionResponse->AddItem("Physical Response", NULL,
+	pCBCollisionResponse->AddItem("Physical Response", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrPhysical);
-	pCBCollisionResponse->AddItem("Custom Response", NULL,
+	pCBCollisionResponse->AddItem("Custom Response", nullptr,
 		(void*)(intptr_t)deParticleEmitterType::ecrCustom);
 	
 	helper.EditPath(groupBox, "Emitter:", "Path to the particle emitter to create for impacts",
-		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter,
-		new cPathCollisionEmitter(*this));
+		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter, cPathCollisionEmitter::Ref::New(*this));
 	helper.EditFloat(groupBox, "Min Impulse:",
 		"Minimal impact impulse required to create a new collision emitter instance",
-		pEditEmitMinImpulse, new cTextEmitMinImpulse(*this));
+		pEditEmitMinImpulse, cTextEmitMinImpulse::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Controller:", "Type of controller to set", frameLine);
 	helper.ComboBox(frameLine, "Type of controller to set",
-		pCBEmitController, new cComboEmitController(*this));
+		pCBEmitController, cComboEmitController::Ref::New(*this));
 	AddControllersToComboBox(pCBEmitController);
 	helper.EditString(frameLine, "Controller in the collision emitter set to this type",
-		pEditEmitTargetController, new cTextEmitTargetController(*this, pCBEmitController));
+		pEditEmitTargetController, cTextEmitTargetController::Ref::New(*this, pCBEmitController));
 	
 	
 	// parameter list
 	helper.GroupBoxFlow(content, groupBox, "Parameters:");
 	
-	helper.ListBox(groupBox, 10, "Parameters", pListParams, new cListTypes(*this));
+	helper.ListBox(groupBox, 10, "Parameters", pListParams, cListTypes::Ref::New(*this));
 	AddParametersToListBox(pListParams, pIconUnused);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
 	helper.EditFloat(form, "Cast Range:",
 		"Pick cast value randomly between range given by a value and a spread",
-		pEditParamValue, new cTextParamValue(*this));
+		pEditParamValue, cTextParamValue::Ref::New(*this));
 	helper.EditFloat(form, "Cast Spread:",
-		"Maximum spread around the cast value", pEditParamSpread, new cTextParamSpread(*this));
+		"Maximum spread around the cast value", pEditParamSpread, cTextParamSpread::Ref::New(*this));
 	
 	helper.ComboBox(form, "Controller Value:", "Controller used to sample value from value curve",
-		pCBParamCtrlValue, new cComboControllerValue(*this, pPreventUpdate));
+		pCBParamCtrlValue, cComboControllerValue::Ref::New(*this, pPreventUpdate));
 	helper.ComboBox(form, "Controller Spread:", "Controller used to sample value from spread curve",
-		pCBParamCtrlSpread, new cComboControllerSpread(*this, pPreventUpdate));
+		pCBParamCtrlSpread, cComboControllerSpread::Ref::New(*this, pPreventUpdate));
 }
 
 peeWPType::~peeWPType(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
-		pEmitter = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
+		pEmitter = nullptr;
 	}
 }
 
@@ -908,14 +931,12 @@ void peeWPType::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateEmitter();
@@ -943,12 +964,12 @@ void peeWPType::OnEmitterPathChanged(){
 }
 
 peeType *peeWPType::GetType() const{
-	return pEmitter ? pEmitter->GetActiveType() : NULL;
+	return pEmitter ? pEmitter->GetActiveType() : nullptr;
 }
 
 peeParameter *peeWPType::GetParameter() const{
 	const peeType * const activeType = GetType();
-	return activeType ? activeType->GetActiveParameter() : NULL;
+	return activeType ? activeType->GetActiveParameter() : nullptr;
 }
 
 
@@ -963,7 +984,7 @@ void peeWPType::UpdateEmitter(){
 		pChkEmitBurst->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditBurstLifetime->SetEnabled(enabled);
 	pChkEmitBurst->SetEnabled(enabled);
 }
@@ -974,14 +995,9 @@ void peeWPType::UpdateTypeList(){
 	pCBType->RemoveAllItems();
 	
 	if(pEmitter){
-		const peeTypeList &typeList = pEmitter->GetTypeList();
-		const int typeCount = typeList.GetCount();
-		int i;
-		
-		for(i=0; i<typeCount; i++){
-			peeType * const type = typeList.GetAt(i);
-			pCBType->AddItem(type->GetName(), NULL, type);
-		}
+		pEmitter->GetTypes().Visit([&](peeType *t){
+			pCBType->AddItem(t->GetName(), nullptr, t);
+		});
 	}
 	
 	pCBType->SortItems();
@@ -989,8 +1005,8 @@ void peeWPType::UpdateTypeList(){
 	if(activeType){
 		pCBType->SetSelectionWithData(activeType);
 		
-	}else if(pCBType->GetItemCount() > 0){
-		pEmitter->SetActiveType((peeType*)pCBType->GetItemAt(0)->GetData());
+	}else if(pCBType->GetItems().IsNotEmpty()){
+		pEmitter->SetActiveType((peeType*)pCBType->GetItems().First()->GetData());
 	}
 	
 	UpdateType();  // can be duplicate but required to not skip it in certain situations
@@ -1026,9 +1042,9 @@ void peeWPType::UpdateType(){
 				pCBEmitController->GetSelectedItem()->GetData()));
 		
 		// update usage icons
-		for(i=0; i<pListParams->GetItemCount(); i++){
+		for(i=0; i<pListParams->GetItems().GetCount(); i++){
 			UpdateParameterUsage(*type->GetParameterAt(
-				(deParticleEmitterType::eParameters)(intptr_t)pListParams->GetItemAt(i)->GetData()));
+				(deParticleEmitterType::eParameters)(intptr_t)pListParams->GetItems().GetAt(i)->GetData()));
 		}
 		
 	}else{
@@ -1048,12 +1064,12 @@ void peeWPType::UpdateType(){
 		pEditEmitTargetController->ClearText();
 		
 		// update usage icons
-		for(i=0; i<pListParams->GetItemCount(); i++){
-			pListParams->GetItemAt(i)->SetIcon(pIconUnused);
+		for(i=0; i<pListParams->GetItems().GetCount(); i++){
+			pListParams->GetItems().GetAt(i)->SetIcon(pIconUnused);
 		}
 	}
 	
-	const bool enabled = type != NULL;
+	const bool enabled = type != nullptr;
 	
 	pEditSkin->SetEnabled(enabled);
 	pEditModel->SetEnabled(enabled);
@@ -1084,27 +1100,27 @@ void peeWPType::UpdateControllerList(){
 		pCBParamCtrlValue->RemoveAllItems();
 		pCBParamCtrlSpread->RemoveAllItems();
 		
-		pCBParamCtrlValue->AddItem("< None >", NULL, NULL);
-		pCBParamCtrlSpread->AddItem("< None >", NULL, NULL);
+		pCBParamCtrlValue->AddItem("< None >", nullptr, nullptr);
+		pCBParamCtrlSpread->AddItem("< None >", nullptr, nullptr);
 		
-		pCBParamCtrlValue->SetEnabled(pEmitter != NULL);
-		pCBParamCtrlSpread->SetEnabled(pEmitter != NULL);
+		pCBParamCtrlValue->SetEnabled(pEmitter.IsNotNull());
+		pCBParamCtrlSpread->SetEnabled(pEmitter.IsNotNull());
 		
 		if(!pEmitter){
 			return;
 		}
 		
-		const peeControllerList &controllerList = pEmitter->GetControllers();
-		const int controllerCount = controllerList.GetCount();
+		const peeController::List &controllers = pEmitter->GetControllers();
+		const int controllerCount = controllers.GetCount();
 		decString text;
 		int i;
 		
 		for(i=0; i<controllerCount; i++){
-			peeController * const controller = controllerList.GetAt(i);
+			peeController * const controller = controllers.GetAt(i);
 			text.Format("%d: %s", i, controller->GetName().GetString());
 			
-			pCBParamCtrlValue->AddItem(text, NULL, controller);
-			pCBParamCtrlSpread->AddItem(text, NULL, controller);
+			pCBParamCtrlValue->AddItem(text, nullptr, controller);
+			pCBParamCtrlSpread->AddItem(text, nullptr, controller);
 		}
 		
 		pPreventUpdate = false;
@@ -1163,11 +1179,11 @@ void peeWPType::UpdateParameter(){
 	}else{
 		pEditParamValue->ClearText();
 		pEditParamSpread->ClearText();
-		pCBParamCtrlValue->SetSelectionWithData(NULL);
-		pCBParamCtrlSpread->SetSelectionWithData(NULL);
+		pCBParamCtrlValue->SetSelectionWithData(nullptr);
+		pCBParamCtrlSpread->SetSelectionWithData(nullptr);
 	}
 	
-	const bool enabled = parameter != NULL;
+	const bool enabled = parameter != nullptr;
 	pEditParamValue->SetEnabled(enabled);
 	pEditParamSpread->SetEnabled(enabled);
 	pCBParamCtrlValue->SetEnabled(enabled);
@@ -1180,7 +1196,7 @@ void peeWPType::UpdateParameterUsage(const peeParameter &parameter){
 		return;
 	}
 	
-	pListParams->GetItemAt(index)->SetIcon(
+	pListParams->GetItems().GetAt(index)->SetIcon(
 		(parameter.GetCurveValue().GetPointCount() > 0
 		|| parameter.GetCurveSpread().GetPointCount() > 0
 		|| parameter.GetCurveProgress().GetPointCount() > 0

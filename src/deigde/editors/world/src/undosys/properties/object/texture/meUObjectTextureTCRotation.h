@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -35,15 +35,16 @@ class meObjectTexture;
  * \brief Undo Action Object Texture TexCoord Rotation.
  */
 class meUObjectTextureTCRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectTextureTCRotation> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	float pOldRotation;
 	float pNewRotation;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectTextureTCRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -51,7 +52,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectTextureTCRotation();
+
+public:
 	/*@}*/
 	
 public:

@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -37,16 +37,17 @@ class aeRuleForeignState;
  * Undo set rule foreign state destination coordinate frame.
  */
 class aeUSetRuleFStaDestCFrame : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleFStaDestCFrame> Ref;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	deAnimatorRuleForeignState::eCoordinateFrames pOldCFrame;
 	deAnimatorRuleForeignState::eCoordinateFrames pNewCFrame;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleFStaDestCFrame> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

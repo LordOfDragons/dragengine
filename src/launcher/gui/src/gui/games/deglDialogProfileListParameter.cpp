@@ -241,7 +241,7 @@ void deglDialogProfileListParameter::SetParameterValue(const char *value){
 		if(pParameter.GetValue() == value){
 			return;
 		}
-		profileModule.TakeOver(new delGPModule(pModuleName));
+		profileModule = delGPModule::Ref::New(pModuleName);
 		pProfile.GetModules().Add(profileModule);
 	}
 	
@@ -253,7 +253,7 @@ void deglDialogProfileListParameter::SetParameterValue(const char *value){
 		if(pParameter.GetValue() == value){
 			return;
 		}
-		profileParameter.TakeOver(new delGPMParameter(parameterName));
+		profileParameter = delGPMParameter::Ref::New(parameterName);
 		mpParamList.Add(profileParameter);
 	}
 	

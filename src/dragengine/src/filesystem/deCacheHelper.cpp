@@ -55,7 +55,7 @@ number of files per directory limited improving searching for free slots.
 ////////////////////////////
 
 deCacheHelper::deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath) :
-pVFS(NULL),
+
 pCachePath(cachePath),
 pCompressionMethod(ecmZCompression)
 {
@@ -64,15 +64,10 @@ pCompressionMethod(ecmZCompression)
 	}
 	
 	pVFS = vfs;
-	vfs->AddReference();
-	
 	BuildMapping();
 }
 
 deCacheHelper::~deCacheHelper(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 
@@ -87,10 +82,10 @@ void deCacheHelper::SetCompressionMethod(eCompressionMethods compressionMethod){
 
 
 
-decBaseFileReader *deCacheHelper::Read(const char *id){
+decBaseFileReader::Ref deCacheHelper::Read(const char *id){
 	const int slot = pMapping.IndexOf(id);
 	if(slot == -1){
-		return NULL;
+		return {};
 	}
 	
 	decPath path(pCachePath);
@@ -100,40 +95,24 @@ decBaseFileReader *deCacheHelper::Read(const char *id){
 	
 	path.AddComponent(fileTitle);
 	
-	decBaseFileReader *reader = NULL;
-	decZFileReader *zreader = NULL;
+	decBaseFileReader::Ref reader;
 	
 	if(pVFS->CanReadFile(path)){
 		decString testID;
 		
 		pVFS->TouchFile(path);
 		
-		try{
-			reader = pVFS->OpenFileForReading(path);
-			
-			reader->ReadString16Into(testID);
-			if(testID != id){
-				pMapping.SetAt(slot, "");
-				reader->FreeReference();
-				return NULL;
-			}
-			
-			const int compression = reader->ReadByte();
-			if(compression == 'z'){
-				zreader = new decZFileReader(reader);
-				reader->FreeReference();
-				reader = zreader;
-				zreader = NULL;
-			}
-			
-		}catch(const deException &){
-			if(zreader){
-				zreader->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
-			throw;
+		reader = pVFS->OpenFileForReading(path);
+		
+		reader->ReadString16Into(testID);
+		if(testID != id){
+			pMapping.SetAt(slot, "");
+			return {};
+		}
+		
+		const int compression = reader->ReadByte();
+		if(compression == 'z'){
+			reader = decZFileReader::Ref::New(reader);
 		}
 		
 	}else{
@@ -143,7 +122,7 @@ decBaseFileReader *deCacheHelper::Read(const char *id){
 	return reader;
 }
 
-decBaseFileWriter *deCacheHelper::Write(const char *id){
+decBaseFileWriter::Ref deCacheHelper::Write(const char *id){
 	int slot = pMapping.IndexOf(id);
 	
 	if(slot == -1){
@@ -168,32 +147,15 @@ decBaseFileWriter *deCacheHelper::Write(const char *id){
 	
 	path.AddComponent(fileTitle);
 	
-	decBaseFileWriter *writer = NULL;
-	decZFileWriter *zwriter = NULL;
+	decBaseFileWriter::Ref writer(pVFS->OpenFileForWriting(path));
+	writer->WriteString16(id);
 	
-	try{
-		writer = pVFS->OpenFileForWriting(path);
-		writer->WriteString16(id);
+	if(pCompressionMethod == ecmZCompression){
+		writer->WriteByte('z'); // z-compressed
+		writer = decZFileWriter::Ref::New(writer);
 		
-		if(pCompressionMethod == ecmZCompression){
-			writer->WriteByte('z'); // z-compressed
-			zwriter = new decZFileWriter(writer);
-			writer->FreeReference();
-			writer = zwriter;
-			zwriter = NULL;
-			
-		}else{ // no compression
-			writer->WriteByte('-'); // no compression
-		}
-		
-	}catch(const deException &){
-		if(zwriter){
-			zwriter->FreeReference();
-		}
-		if(writer){
-			writer->FreeReference();
-		}
-		throw;
+	}else{ // no compression
+		writer->WriteByte('-'); // no compression
 	}
 	
 	return writer;
@@ -265,27 +227,15 @@ void deCacheHelper::BuildMapping(){
 	}
 	
 	// read the IDs from all cache files entering them into the proper slot of the mapping table
-	decBaseFileReader *reader = NULL;
 	decString id;
 	
-	try{
-		for(i=0; i<count; i++){
-			const decPath &file = files.GetAt(i);
-			const int slot = decString(file.GetLastComponent()).GetMiddle(1).ToInt();
-			
-			reader = pVFS->OpenFileForReading(file);
-			reader->ReadString16Into(id);
-			reader->FreeReference();
-			reader = NULL;
-			
-			pMapping.SetAt(slot, id);
-		}
+	for(i=0; i<count; i++){
+		const decPath &file = files.GetAt(i);
+		const int slot = decString(file.GetLastComponent()).GetMiddle(1).ToInt();
 		
-	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
-		throw;
+		pVFS->OpenFileForReading(file)->ReadString16Into(id);
+		
+		pMapping.SetAt(slot, id);
 	}
 }
 

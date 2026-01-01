@@ -30,51 +30,25 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
 
 /**
  * Undo action applying random rotating to objects.
  */
 class meUObjectRandomRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectRandomRotation> Ref;
+	
+	
 private:
-	class ObjectData : public meUndoDataObject{
-	public:
-		typedef deTObjectReference<ObjectData> Ref;
-	
-	
-	private:
-		decVector pNewRotation;
-		
-	public:
-		ObjectData(meObject *object, bool randomizeX, bool randomizeY, bool randomizeZ) :
-		meUndoDataObject(object)
-		{
-			pNewRotation = GetOldOrientation();
-			if(randomizeX){
-				pNewRotation.x = decMath::random(-180.0f, 180.0f);
-			}
-			if(randomizeY){
-				pNewRotation.y = decMath::random(-180.0f, 180.0f);
-			}
-			if(randomizeZ){
-				pNewRotation.z = decMath::random(-180.0f, 180.0f);
-			}
-		}
-		
-		inline const decVector &GetNewOrientation() const{ return pNewRotation; }
-	};
-	
-	
 	const meWorld::Ref pWorld;
-	decObjectOrderedSet pObjects;
+	meUndoDataObject::List pObjects;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	meUObjectRandomRotation(meWorld *world, const meObjectList &objects,
+	meUObjectRandomRotation(meWorld *world, const meObject::List &objects,
 		bool randomizeX, bool randomizeY, bool randomizeZ);
 	/*@}*/
 	

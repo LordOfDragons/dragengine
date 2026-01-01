@@ -37,6 +37,10 @@ class ceStrip;
  * \brief Undo Action Actor Speak Conversation Action Set Word Duration.
  */
 class ceUCAASpeakWordSetDuration : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakWordSetDuration> Ref;
+	
+	
 private:
 	ceConversationTopic *pTopic;
 	ceCAActorSpeak *pActorSpeak;
@@ -45,9 +49,6 @@ private:
 	float pNewDuration;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakWordSetDuration> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -26,8 +26,8 @@
 #define _DEOGLCANVASIMAGE_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasImage.h"
 
-class deoglRCanvasImage;
 class deoglImage;
 class deCanvasImage;
 
@@ -38,7 +38,7 @@ class deCanvasImage;
 class deoglCanvasImage : public deoglCanvas{
 private:
 	deCanvasImage &pCanvasImage;
-	deoglRCanvasImage *pRCanvasImage;
+	deoglRCanvasImage::Ref pRCanvasImage;
 	deoglImage *pImage;
 	bool pDirty;
 	

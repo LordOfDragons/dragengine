@@ -55,7 +55,6 @@
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -125,31 +124,22 @@ pRenderThread(renderThread),
 
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
-
-pSkin(NULL),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 pUseSkinTexture(NULL),
-pDynamicSkin(NULL),
 pLocked(true),
 pSpherical(false),
 pSizeFixedToScreen(false),
 pVisible(true),
 
-pSkinState(NULL),
 pSkinRendered(renderThread, *this),
 pSkyShadowSplitMask(0),
 pSortDistance(0.0f),
 pOccluded(false),
 pDirtyPrepareSkinStateRenderables(true),
 pDirtyRenderSkinStateRenderables(true),
-
-pRenderEnvMap(nullptr),
-pRenderEnvMapFade(nullptr),
 pRenderEnvMapFadePerTime(1.0f),
 pRenderEnvMapFadeFactor(1.0f),
 pDirtyRenderEnvMap(true),
-
-pSharedSPBElement(NULL),
 
 pTUCDepth(NULL),
 pTUCGeometry(NULL),
@@ -176,7 +166,7 @@ pLLWorldNext(NULL),
 pLLPrepareForRenderWorld(this)
 {
 	try{
-		pSkinState = new deoglSkinState(renderThread, *this);
+		pSkinState = deoglSkinState::Ref::New(renderThread, *this);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -250,18 +240,8 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
 	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 	
@@ -275,17 +255,7 @@ void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	pSkinRendered.SetDirty();
 }
 
@@ -478,12 +448,11 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglRDynamicSkin::Ref dynamicSkin;
 	deoglTexUnitsConfig *tuc = NULL;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, nullptr, dynamicSkin);
 		skinShader.SetTUCPerObjectEnvMap(&units[0], pParentWorld->GetSkyEnvironmentMap(),
 			pRenderEnvMap, pRenderEnvMapFade);
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
@@ -754,13 +723,11 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetBillboardList().Add(this);
 	}
 	
@@ -780,13 +747,11 @@ void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetBillboardList().Add(this);
 	}
 	
@@ -935,23 +900,6 @@ void deoglRBillboard::PrepareQuickDispose(){
 
 void deoglRBillboard::pCleanUp(){
 	SetParentWorld(NULL);
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
-	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
@@ -965,7 +913,7 @@ void deoglRBillboard::pCleanUp(){
 		pTUCEnvMap->RemoveUsage();
 	}
 	if(pSkinState){
-		delete pSkinState;
+		pSkinState->DropOwner();
 	}
 }
 
@@ -1081,10 +1029,10 @@ void deoglRBillboard::pPrepareParamBlocks(){
 	if(!pSharedSPBRTIGroup && pSharedSPBElement){
 		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
 		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
-		pSharedSPBRTIGroup.TakeOver(list.GetWith(spb));
+		pSharedSPBRTIGroup = list.GetWith(spb);
 		
 		if(!pSharedSPBRTIGroup){
-			pSharedSPBRTIGroup.TakeOver(list.AddWith(spb));
+			pSharedSPBRTIGroup = list.AddWith(spb);
 			
 			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
 			rtsi.SetSubInstanceSPB(&spb);

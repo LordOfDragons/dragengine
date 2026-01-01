@@ -72,12 +72,12 @@ void gdeBaseAction::OnAction(){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(*gameDefinition)));
+	igdeUndo::Ref undo(OnAction(*gameDefinition));
 	if(undo){
 		gameDefinition->GetUndoSystem()->Add(undo);
 	}
 }
 
 void gdeBaseAction::Update(){
-	SetEnabled(pWindowMain.GetActiveGameDefinition() != NULL);
+	SetEnabled(pWindowMain.GetActiveGameDefinition() != nullptr);
 }

@@ -36,9 +36,9 @@
 #include "../../../undosys/category/gdeUCategoryBase.h"
 
 class gdeWindowProperties;
-class gdeWPSCategoryListener;
+#include "gdeWPSCategoryListener.h"
 class gdeCategory;
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -46,11 +46,14 @@ class gdeGameDefinition;
  * \brief Category property panel.
  */
 class gdeWPSCategory : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSCategory> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSCategoryListener *pListener;
+	gdeWPSCategoryListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditName;
 	igdeTextArea::Ref pEditDescription;
@@ -78,15 +81,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Category or \em NULL if not set. */
+	/** \brief Category or \em nullptr if not set. */
 	gdeCategory *GetCategory() const;
 	
 	/** \brief Category type if category is set. */

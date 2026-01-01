@@ -41,7 +41,7 @@
 
 aeURuleAnimSelectToggleEnableRotation::aeURuleAnimSelectToggleEnableRotation(
 aeRuleAnimationSelect *rule) :
-pRule(NULL)
+pRule(nullptr)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
@@ -50,13 +50,9 @@ pRule(NULL)
 	SetShortInfo("Rule animation select toggle enable rotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnableRotation::~aeURuleAnimSelectToggleEnableRotation(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

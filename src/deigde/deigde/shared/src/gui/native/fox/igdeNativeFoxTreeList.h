@@ -84,7 +84,7 @@ public:
 	/** \brief List box. */
 	inline FXTreeList *GetTreeList() const{ return pTreeList; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	

@@ -73,6 +73,8 @@ class cMouseListener : public igdeMouseDragListener {
 	eDragModes pDragMode;
 	
 public:
+	typedef deTObjectReference<cMouseListener> Ref;
+	
 	cMouseListener(ceWDSVAPreview &lane) : pVAPreview(lane), pDragMode(edmNone){}
 	
 	virtual bool OnDragBegin(){
@@ -132,7 +134,7 @@ public:
 		}
 		
 		/*
-		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::NewWith(
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New(
 			pVAPreview.GetWindow().GetEnvironment()));
 		
 		// TODO
@@ -156,9 +158,9 @@ ceWDSVAPreview::ceWDSVAPreview(ceWindowDopeSheet &dopeSheet) :
 pWindow(dopeSheet),
 pCurTime(0.0f),
 pDirtyPreview(true),
-pPreviewSamples(NULL)
+pPreviewSamples(nullptr)
 {
-	pMouseKeyListener.TakeOver(new cMouseListener(*this));
+	pMouseKeyListener = cMouseListener::Ref::New(*this);
 }
 
 ceWDSVAPreview::~ceWDSVAPreview(){
@@ -219,7 +221,7 @@ void ceWDSVAPreview::OnResize(){
 void ceWDSVAPreview::OnActionChanged(){
 	if(pSpeaker){
 		ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-		pSpeaker->SetSound(action ? action->GetEngineSound() : NULL);
+		pSpeaker->SetSound(action ? action->GetEngineSound() : nullptr);
 	}
 	
 	InvalidatePreview();
@@ -229,7 +231,7 @@ void ceWDSVAPreview::OnActionChanged(){
 void ceWDSVAPreview::InvalidatePreview(){
 	if(pPreviewSamples){
 		delete [] pPreviewSamples;
-		pPreviewSamples = NULL;
+		pPreviewSamples = nullptr;
 	}
 	pDirtyPreview = true;
 }
@@ -238,9 +240,9 @@ void ceWDSVAPreview::InvalidatePreview(){
 
 void ceWDSVAPreview::CreateCanvas(){
 	deCanvasManager &canvasManager = *pWindow.GetEngine()->GetCanvasManager();
-	pCanvas.TakeOver(canvasManager.CreateCanvasView());
+	pCanvas = canvasManager.CreateCanvasView();
 	
-	pCanvasPreview.TakeOver(canvasManager.CreateCanvasImage());
+	pCanvasPreview = canvasManager.CreateCanvasImage();
 	pCanvasPreview->SetOrder((float)pCanvas->GetCanvasCount());
 	pCanvas->AddCanvas(pCanvasPreview);
 }
@@ -265,8 +267,8 @@ void ceWDSVAPreview::RebuildCanvas(){
 	pCanvas->SetSize(decPoint(width, previewHeight));
 	
 	// preview image
-	pCanvasPreview->SetImage(NULL);
-	pImagePreview.TakeOver(pWindow.GetEngine()->GetImageManager()->CreateImage(width, previewHeight, 1, 3, 8));
+	pCanvasPreview->SetImage(nullptr);
+	pImagePreview = pWindow.GetEngine()->GetImageManager()->CreateImage(width, previewHeight, 1, 3, 8);
 	UpdateVAPreviewImage();
 	pCanvasPreview->SetImage(pImagePreview);
 }
@@ -312,7 +314,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 			deSoundDecoder::Ref decoder;
 			
 			try{
-				decoder.TakeOver(pWindow.GetEngine()->GetSoundManager()->CreateDecoder(sound));
+				decoder = pWindow.GetEngine()->GetSoundManager()->CreateDecoder(sound);
 				decoder->ReadSamples(pPreviewSamples, bufferSize);
 				
 			}catch(const deException &){

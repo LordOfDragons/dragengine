@@ -153,8 +153,7 @@ deoglSkinShader *deoglSkinShaderManager::GetShaderWith(deoglSkinShaderConfig &co
 		return foundShader;
 	}
 	
-	const deoglSkinShader::Ref shader(deoglSkinShader::Ref::New(
-		new deoglSkinShader(pRenderThread, configuration)));
+	const deoglSkinShader::Ref shader(deoglSkinShader::Ref::New(pRenderThread, configuration));
 	shader->PrepareShader(nullptr);
 	pShaderList.Add(shader);
 	return shader;
@@ -189,8 +188,8 @@ cGetShaderListener *listener){
 	}
 	
 	try{
-		preparing = new cPrepareShader(*this, deoglSkinShader::Ref::New(
-			new deoglSkinShader(pRenderThread, configuration)));
+		preparing = new cPrepareShader(*this,
+			deoglSkinShader::Ref::New(pRenderThread, configuration));
 		preparing->AddListener(listener);
 		
 	}catch(const deException &e){

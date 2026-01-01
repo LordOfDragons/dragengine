@@ -51,5 +51,5 @@ pLayoutSSBO(*layout){
 ///////////////
 
 deoglShaderParameterBlock::Ref deoglSharedSPBListSSBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::New(new deoglSPBlockSSBO(pLayoutSSBO));
+	 return deoglSPBlockSSBO::Ref::New(pLayoutSSBO);
 }

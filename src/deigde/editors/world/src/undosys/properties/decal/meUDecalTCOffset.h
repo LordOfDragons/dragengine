@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,15 +37,16 @@ class meDecal;
  * \brief Undo Action Decal TexCoord Offset.
  */
 class meUDecalTCOffset : public igdeUndo{
+public:
+	typedef deTObjectReference<meUDecalTCOffset> Ref;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUDecalTCOffset> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUDecalTCOffset();
+
+public:
 	/*@}*/
 	
 public:

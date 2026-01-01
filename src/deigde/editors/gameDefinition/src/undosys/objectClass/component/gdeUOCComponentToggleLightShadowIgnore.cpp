@@ -42,8 +42,8 @@
 
 gdeUOCComponentToggleLightShadowIgnore::gdeUOCComponentToggleLightShadowIgnore(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle light shadow ignore");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleLightShadowIgnore::~gdeUOCComponentToggleLightShadowIgnore(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

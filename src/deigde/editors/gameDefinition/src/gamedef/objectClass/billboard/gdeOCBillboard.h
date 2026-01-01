@@ -26,6 +26,7 @@
 #define _GDEOCBILLBOARD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -38,6 +39,9 @@ class gdeOCBillboard : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCBillboard> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCBillboard> List;
 	
 	
 	/** \brief Properties. */
@@ -95,7 +99,9 @@ public:
 	gdeOCBillboard(const gdeOCBillboard &billboard);
 	
 	/** \brief Clean up billboard. */
+protected:
 	virtual ~gdeOCBillboard();
+public:
 	/*@}*/
 	
 	

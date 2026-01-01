@@ -359,7 +359,7 @@ void deoglRenderBase::DevModeDebugInfoChanged(){
 void deoglRenderBase::ClearRenderDocDebugTexture(){
 	if(pRenderThread.GetChoices().GetRenderDocDebugFlags() != 0){
 		deoglTexture &texture = *pRenderThread.GetDeferredRendering().GetTexRenderDocDebug();
-		const deoglPixelBuffer::Ref pbuf(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat4, texture.GetWidth(), texture.GetHeight(), 1));
+		const deoglPixelBuffer::Ref pbuf(deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, texture.GetWidth(), texture.GetHeight(), 1));
 		pbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
 		texture.SetPixels(pbuf);
 		//OGL_CHECK(pRenderThread, pglMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT));

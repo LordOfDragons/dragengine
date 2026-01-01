@@ -52,14 +52,17 @@ pArrowRadius(0.15f),
 pVisible(true)
 {
 	try{
-		pDDSConnection.SetEdgeColor(pColor);
-		pDDSConnection.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
+		pDDSConnection = igdeWDebugDrawerShape::Ref::New();
+		pDDSConnection->SetEdgeColor(pColor);
+		pDDSConnection->SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
-		pDDSArrowAnchor.SetEdgeColor(pColor);
-		pDDSArrowAnchor.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
+		pDDSArrowAnchor = igdeWDebugDrawerShape::Ref::New();
+		pDDSArrowAnchor->SetEdgeColor(pColor);
+		pDDSArrowAnchor->SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
-		pDDSArrowTarget.SetEdgeColor(pColor);
-		pDDSArrowTarget.SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
+		pDDSArrowTarget = igdeWDebugDrawerShape::Ref::New();
+		pDDSArrowTarget->SetEdgeColor(pColor);
+		pDDSArrowTarget->SetFillColor(decColor(pColor.r, pColor.g, pColor.b, pColor.a * 0.2f));
 		
 		pRebuildArrow();
 		pUpdateGeometries();
@@ -80,9 +83,9 @@ igdeWConnection::~igdeWConnection(){
 ///////////////
 
 void igdeWConnection::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
-	pDDSConnection.SetParentDebugDrawer(debugDrawer);
-	pDDSArrowAnchor.SetParentDebugDrawer(debugDrawer);
-	pDDSArrowTarget.SetParentDebugDrawer(debugDrawer);
+	pDDSConnection->SetParentDebugDrawer(debugDrawer);
+	pDDSArrowAnchor->SetParentDebugDrawer(debugDrawer);
+	pDDSArrowTarget->SetParentDebugDrawer(debugDrawer);
 }
 
 
@@ -124,14 +127,14 @@ void igdeWConnection::SetColor(const decColor &color){
 	
 	pColor = color;
 	
-	pDDSConnection.SetEdgeColor(color);
-	pDDSConnection.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
+	pDDSConnection->SetEdgeColor(color);
+	pDDSConnection->SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 	
-	pDDSArrowAnchor.SetEdgeColor(color);
-	pDDSArrowAnchor.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
+	pDDSArrowAnchor->SetEdgeColor(color);
+	pDDSArrowAnchor->SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 	
-	pDDSArrowTarget.SetEdgeColor(color);
-	pDDSArrowTarget.SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
+	pDDSArrowTarget->SetEdgeColor(color);
+	pDDSArrowTarget->SetFillColor(decColor(color.r, color.g, color.b, color.a * 0.2f));
 }
 
 void igdeWConnection::SetArrowOnAnchor(bool arrowOnAnchor){
@@ -178,7 +181,7 @@ void igdeWConnection::SetVisible(bool visible){
 //////////////////////
 
 void igdeWConnection::pCleanUp(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 }
 
 void igdeWConnection::pRebuildArrow(){
@@ -217,15 +220,15 @@ void igdeWConnection::pUpdateGeometries(){
 	const float arrowLength = pArrowSize * pArrowLength * 0.5f;
 	const float arrowSize = pArrowSize * pArrowRadius;
 	
-	pDDSArrowTarget.SetPosition(matrix.Transform(0.0f, 0.0f, len));
-	pDDSArrowTarget.SetOrientation(orientation);
-	pDDSArrowTarget.SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
-	pDDSArrowTarget.SetVisible(pVisible && pArrowOnTarget);
+	pDDSArrowTarget->SetPosition(matrix.Transform(0.0f, 0.0f, len));
+	pDDSArrowTarget->SetOrientation(orientation);
+	pDDSArrowTarget->SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
+	pDDSArrowTarget->SetVisible(pVisible && pArrowOnTarget);
 	
-	pDDSArrowAnchor.SetPosition(matrix.GetPosition());
-	pDDSArrowAnchor.SetOrientation(orientation);
-	pDDSArrowAnchor.SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
-	pDDSArrowAnchor.SetVisible(pVisible && pArrowOnAnchor);
+	pDDSArrowAnchor->SetPosition(matrix.GetPosition());
+	pDDSArrowAnchor->SetOrientation(orientation);
+	pDDSArrowAnchor->SetScale(decVector(pArrowSize, pArrowSize, arrowLength));
+	pDDSArrowAnchor->SetVisible(pVisible && pArrowOnAnchor);
 	
 	float center = len * 0.5f;
 	if(pArrowOnTarget){
@@ -240,8 +243,8 @@ void igdeWConnection::pUpdateGeometries(){
 		len = 1e-5f;
 	}
 	
-	pDDSConnection.SetPosition(matrix.Transform(0.0f, 0.0f, center));
-	pDDSConnection.SetOrientation(orientation);
-	pDDSConnection.SetScale(decVector(arrowSize, arrowSize, len));
-	pDDSConnection.SetVisible(pVisible);
+	pDDSConnection->SetPosition(matrix.Transform(0.0f, 0.0f, center));
+	pDDSConnection->SetOrientation(orientation);
+	pDDSConnection->SetScale(decVector(arrowSize, arrowSize, len));
+	pDDSConnection->SetVisible(pVisible);
 }

@@ -47,45 +47,23 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pWord = NULL;
-	pOldStrip = NULL;
-	pNewStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pWord = nullptr;
+	pOldStrip = nullptr;
+	pNewStrip = nullptr;
 	
 	SetShortInfo("Set Word");
 	
-	pOldStrip = new ceStrip(*word);
+	pOldStrip = ceStrip::Ref::New(*word);
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordSet::~ceUCAASpeakWordSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

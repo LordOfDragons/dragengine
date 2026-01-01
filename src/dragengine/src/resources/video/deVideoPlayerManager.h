@@ -25,11 +25,11 @@
 #ifndef _DEVIDEOPLAYERMANAGER_H_
 #define _DEVIDEOPLAYERMANAGER_H_
 
+#include "deVideoPlayer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deVideoPlayer;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deVideoPlayer *GetRootVideoPlayer() const;
 	
 	/** \brief Create new video player. */
-	deVideoPlayer *CreateVideoPlayer();
+	deVideoPlayer::Ref CreateVideoPlayer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

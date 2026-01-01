@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,14 +36,15 @@ class ceConversationTopic;
  * \brief Undo action conversation action toggle wait speak only.
  */
 class ceUCActionToggleWaitSpeakOnly : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCActionToggleWaitSpeakOnly> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -53,10 +53,14 @@ pLineColor(node.GetLineColor()),
 pThickness(node.GetThickness()),
 
 pIsThick(pThickness >= 1.5f),
-
-pVBOBlock(nullptr),
 pDirtyVBOBlock(true),
-pVBOBlockPointCount(0)
+pVBOBlockPointCount(0),
+pDrawModeFill(GL_TRIANGLES),
+pDrawOffsetFill(0),
+pDrawCountFill(0),
+pDrawModeLine(GL_LINE_LOOP),
+pDrawOffsetLine(0),
+pDrawCountLine(0)
 {
 	int i;
 	for(i=0; i<deSkinPropertyNodeShape::ShapeMappedCount; i++){
@@ -72,10 +76,14 @@ pLineColor(node.pLineColor),
 pThickness(node.pThickness),
 
 pIsThick(node.pIsThick),
-
-pVBOBlock(nullptr),
 pDirtyVBOBlock(true),
-pVBOBlockPointCount(0)
+pVBOBlockPointCount(0),
+pDrawModeFill(GL_TRIANGLES),
+pDrawOffsetFill(0),
+pDrawCountFill(0),
+pDrawModeLine(GL_LINE_LOOP),
+pDrawOffsetLine(0),
+pDrawCountLine(0)
 {
 	int i;
 	for(i=0; i<deSkinPropertyNodeShape::ShapeMappedCount; i++){
@@ -86,7 +94,6 @@ pVBOBlockPointCount(0)
 deoglSkinStateCNShape::~deoglSkinStateCNShape(){
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 
@@ -156,7 +163,7 @@ void deoglSkinStateCNShape::Render(deoglSkinState &state, const deoglRenderCanva
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNShape::Copy() const{
-	return deoglSkinStateConstructedNode::Ref::New(new deoglSkinStateCNShape(*this));
+	return deoglSkinStateCNShape::Ref::New(*this);
 }
 
 

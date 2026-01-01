@@ -41,6 +41,8 @@
 #include "../../undosys/glyph/feUGlyphSetBearing.h"
 #include "../../undosys/glyph/feUGlyphSetBearingY.h"
 #include "../../undosys/glyph/feUGlyphSetAdvance.h"
+#include "../../undosys/glyph/feUGlyphAdd.h"
+#include "../../undosys/glyph/feUGlyphRemove.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -78,6 +80,7 @@ protected:
 	feWPGlyph &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(feWPGlyph &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -87,13 +90,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, font, glyph)));
+		igdeUndo::Ref undo(OnChanged(textField, font, glyph));
 		if(undo){
 			font->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) = 0;
 };
 
 
@@ -103,6 +106,7 @@ protected:
 	feWPGlyph &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboGlyph> Ref;
 	cComboGlyph(feWPGlyph &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -112,38 +116,77 @@ public:
 		}
 		
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		font->GetGlyphSelection().SetActiveGlyph(
-			selection ? (feFontGlyph*)selection->GetData() : NULL);
+		font->GetGlyphSelection().SetActive(
+			selection ? (feFontGlyph*)selection->GetData() : nullptr);
 	}
 };
 
 class cActionAdd : public igdeAction{
-protected:
 	feWPGlyph &pPanel;
-	
+
 public:
+	typedef deTObjectReference<cActionAdd> Ref;
+	
 	cActionAdd(feWPGlyph &panel) :
-	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
-		"Add glyph"),
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "Add glyph"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
-		// TODO
+	void OnAction() override{
+		const feFont::Ref &font = pPanel.GetFont();
+		if(!font){
+			return;
+		}
+		
+		// find next available glyph code
+		int code = pPanel.GetGlyph() ? pPanel.GetGlyph()->GetCode() : 32;
+		while(font->GetGlyphs().FindOrDefault([&](const feFontGlyph &g){
+			return g.GetCode() == code;
+		})){
+			code++;
+		}
+		
+		feFontGlyph::Ref glyph;
+		
+		if(pPanel.GetGlyph()){
+			glyph = pPanel.GetGlyph()->Copy();
+			
+		}else{
+			glyph = feFontGlyph::Ref::New();
+			glyph->SetHeight(font->GetLineHeight());
+			glyph->SetWidth(font->GetLineHeight() / 2);
+			glyph->SetAdvance(font->GetLineHeight() / 2);
+		}
+		
+		glyph->SetCode(code);
+		
+		font->GetUndoSystem()->Add(feUGlyphAdd::Ref::New(font, glyph));
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetFont());
 	}
 };
 
 class cActionRemove : public igdeAction{
-protected:
 	feWPGlyph &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionRemove> Ref;
+	
 	cActionRemove(feWPGlyph &panel) :
-	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
-		"Remove glyph"),
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Remove glyph"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
-		// TODO
+	void OnAction() override{
+		const feFont::Ref font = pPanel.GetFont();
+		const feFontGlyph::Ref glyph = pPanel.GetGlyph();
+		if(font && glyph){
+			font->GetUndoSystem()->Add(feUGlyphRemove::Ref::New(font, glyph));
+		}
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetFont() && pPanel.GetGlyph());
 	}
 };
 
@@ -151,86 +194,93 @@ public:
 
 class cTextU : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextU> Ref;
 	cTextU(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int u = textField->GetInteger();
 		if(u == glyph->GetU()){
-			return NULL;
+			return {};
 		}
-		return new feUGlyphSetU(glyph, u);
+		return feUGlyphSetU::Ref::New(glyph, u);
 	}
 };
 
 class cTextV : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextV> Ref;
 	cTextV(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int v = textField->GetInteger();
 		if(v == glyph->GetV()){
-			return NULL;
+			return {};
 		}
-		return new feUGlyphSetV(glyph, v);
+		return feUGlyphSetV::Ref::New(glyph, v);
 	}
 };
 
 class cTextWidth : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextWidth> Ref;
 	cTextWidth(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int width = textField->GetInteger();
 		if(width == glyph->GetWidth()){
-			return NULL;
+			return {};
 		}
-		return new feUGlyphSetWidth(glyph, width);
+		return feUGlyphSetWidth::Ref::New(glyph, width);
 	}
 };
 
 class cTextHeight : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextHeight> Ref;
 	cTextHeight(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int height = textField->GetInteger();
-		return height != glyph->GetHeight() ? new feUGlyphSetHeight(glyph, height) : nullptr;
+		return height != glyph->GetHeight() ? feUGlyphSetHeight::Ref::New(glyph, height) : feUGlyphSetHeight::Ref();
 	}
 };
 
 class cTextBearing : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBearing> Ref;
 	cTextBearing(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int width = textField->GetInteger();
 		if(width == glyph->GetBearing()){
-			return NULL;
+			return {};
 		}
-		return new feUGlyphSetBearing(glyph, width);
+		return feUGlyphSetBearing::Ref::New(glyph, width);
 	}
 };
 
 class cTextBearingY : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBearingY> Ref;
 	cTextBearingY(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int bearing = textField->GetInteger();
-		return bearing != glyph->GetBearingY() ? new feUGlyphSetBearingY(glyph, bearing) : nullptr;
+		return bearing != glyph->GetBearingY() ? feUGlyphSetBearingY::Ref::New(glyph, bearing) : feUGlyphSetBearingY::Ref();
 	}
 };
 
 class cTextAdvance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextAdvance> Ref;
 	cTextAdvance(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int width = textField->GetInteger();
 		if(width == glyph->GetAdvance()){
-			return NULL;
+			return {};
 		}
-		return new feUGlyphSetAdvance(glyph, width);
+		return feUGlyphSetAdvance::Ref::New(glyph, width);
 	}
 };
 
@@ -245,51 +295,44 @@ public:
 
 feWPGlyph::feWPGlyph(feWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pFont(NULL),
-pGlyph(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPGlyphListener(*this);
+	pListener = feWPGlyphListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// glyph
 	helper.GroupBox(content, groupBox, "Glyph:");
 	
 	helper.FormLineStretchFirst(groupBox, "Glyph:", "Glyph to edit.", frameLine);
-	helper.ComboBox(frameLine, "Glyph to edit.", pCBGlyph, new cComboGlyph(*this));
-	helper.Button(frameLine, pBtnGlyphAdd, new cActionAdd(*this), true);
-	helper.Button(frameLine, pBtnGlyphDel, new cActionRemove(*this), true);
+	helper.ComboBox(frameLine, "Glyph to edit.", pCBGlyph, cComboGlyph::Ref::New(*this));
+	helper.Button(frameLine, pBtnGlyphAdd, cActionAdd::Ref::New(*this));
+	helper.Button(frameLine, pBtnGlyphDel, cActionRemove::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Tex-Coords:", "Texture coordinate in pixels.", frameLine);
-	helper.EditInteger(frameLine, "U texture coordinate in pixels", pEditU, new cTextU(*this));
-	helper.EditInteger(frameLine, "V texture coordinate in pixels", pEditV, new cTextV(*this));
+	helper.EditInteger(frameLine, "U texture coordinate in pixels", pEditU, cTextU::Ref::New(*this));
+	helper.EditInteger(frameLine, "V texture coordinate in pixels", pEditV, cTextV::Ref::New(*this));
 	
 	helper.EditInteger(groupBox, "Width:", "Width of the glyph in pixels.",
-		pEditWidth, new cTextWidth(*this));
+		pEditWidth, cTextWidth::Ref::New(*this));
 	helper.EditInteger(groupBox, "Height:", "Height of the glyph in pixels.",
-		pEditHeight, new cTextHeight(*this));
+		pEditHeight, cTextHeight::Ref::New(*this));
 	helper.EditInteger(groupBox, "Bearing:", "Horizontal bearing in pixels.",
-		pEditBearing, new cTextBearing(*this));
+		pEditBearing, cTextBearing::Ref::New(*this));
 	helper.EditInteger(groupBox, "Bearing Y:", "Vertical bearing in pixels.",
-		pEditBearingY, new cTextBearingY(*this));
+		pEditBearingY, cTextBearingY::Ref::New(*this));
 	helper.EditInteger(groupBox, "Advance:", "Advance in pixels.",
-		pEditAdvance, new cTextAdvance(*this));
+		pEditAdvance, cTextAdvance::Ref::New(*this));
 }
 
 feWPGlyph::~feWPGlyph(){
-	SetGlyph(NULL);
-	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGlyph(nullptr);
+	SetFont(nullptr);
 }
 
 
@@ -302,19 +345,17 @@ void feWPGlyph::SetFont(feFont *font){
 		return;
 	}
 	
-	SetGlyph(NULL);
+	SetGlyph(nullptr);
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
-		pFont = NULL;
+		pFont = nullptr;
 	}
 	
 	pFont = font;
 	
 	if(font){
 		font->AddNotifier(pListener);
-		font->AddReference();
 	}
 	
 	UpdateGlyphList();
@@ -330,17 +371,11 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 	}
 	
 	if(pGlyph){
-		pGlyph->FreeReference();
-		pGlyph = NULL;
+		pGlyph = nullptr;
 	}
 	
 	pGlyph = glyph;
-	
-	if(glyph){
-		glyph->AddReference();
-	}
-	
-	pCBGlyph->SetSelection(pFont->IndexOfGlyph(glyph));
+	pCBGlyph->SetSelectionWithData(glyph);
 	
 	UpdateGlyph();
 }
@@ -348,30 +383,29 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 
 
 void feWPGlyph::UpdateGlyphList(){
-	feFontGlyph *glyph = NULL;
-	int g, count = 0;
-	decString text;
+	int count = 0;
 	
 	pCBGlyph->RemoveAllItems();
 	
 	if(pFont){
-		count = pFont->GetGlyphCount();
+		count = pFont->GetGlyphs().GetCount();
 		
-		for(g=0; g<count; g++){
-			glyph = pFont->GetGlyphAt(g);
-			text.Format("Code %i", glyph->GetCode());
-			pCBGlyph->AddItem(text, NULL, glyph);
-		}
+		pFont->GetGlyphs().Visit([&](feFontGlyph *g){
+			decString text;
+			text.Format("Code %d", g->GetCode());
+			pCBGlyph->AddItem(text, nullptr, g);
+		});
 	}
 	
-	g = -1;
+	feFontGlyph *glyph = nullptr;
+	int g = -1;
 	if(pGlyph){
-		g = pFont->IndexOfGlyph(pGlyph);
+		g = pFont->GetGlyphs().IndexOf(pGlyph);
 		glyph = pGlyph;
 	}
 	if(g == -1 && pFont && count > 0){
 		g = 0;
-		glyph = pFont->GetGlyphAt(0);
+		glyph = pFont->GetGlyphs().First();
 	}
 	pCBGlyph->SetSelection(g);
 	

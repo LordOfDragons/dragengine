@@ -85,6 +85,7 @@ protected:
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -93,14 +94,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*textField, pPanel.GetObjectClass(), navspace)));
+		igdeUndo::Ref undo(
+			 OnChanged(*textField, pPanel.GetObjectClass(), navspace));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) = 0;
 };
 
@@ -109,6 +110,7 @@ protected:
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -117,14 +119,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), navspace)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), navspace));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCNavigationSpace *navspace) = 0;
 };
 
@@ -133,6 +135,7 @@ protected:
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -141,14 +144,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(*comboBox, pPanel.GetObjectClass(), navspace)));
+		igdeUndo::Ref undo(
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), navspace));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) = 0;
 };
 
@@ -157,6 +160,7 @@ class cEditPath : public igdeEditPathListener{
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -165,134 +169,143 @@ public:
 			return;
 		}
 		
-		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::NewWith(
+		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::New(
 			pPanel.GetObjectClass(), navspace, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCNavigationSpace &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCNavigationSpace *navspace){
+	igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCNavigationSpace *navspace) override{
 		if(navspace->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetPosition(objectClass, navspace, vector);
+		return gdeUOCNavSpaceSetPosition::Ref::New(objectClass, navspace, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCNavigationSpace &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		if(navspace->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetRotation(objectClass, navspace, vector);
+		return gdeUOCNavSpaceSetRotation::Ref::New(objectClass, navspace, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navSpace){
 		if(navSpace->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetBoneName(objectClass, navSpace, textField.GetText());
+		return gdeUOCNavSpaceSetBoneName::Ref::New(objectClass, navSpace, textField.GetText());
 	}
 };
 
 class cTextLayer : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLayer> Ref;
 	cTextLayer(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		const int value = textField.GetInteger();
 		if(navspace->GetLayer() == value){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetLayer(objectClass, navspace, value);
+		return gdeUOCNavSpaceSetLayer::Ref::New(objectClass, navspace, value);
 	}
 };
 
 class cTextSnapDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSnapDistance> Ref;
 	cTextSnapDistance(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		const float value = textField.GetFloat();
 		if(fabsf(navspace->GetSnapDistance() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetSnapDistance(objectClass, navspace, value);
+		return gdeUOCNavSpaceSetSnapDistance::Ref::New(objectClass, navspace, value);
 	}
 };
 
 class cTextSnapAngle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSnapAngle> Ref;
 	cTextSnapAngle(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		const float value = textField.GetFloat();
 		if(fabsf(navspace->GetSnapAngle() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetSnapAngle(objectClass, navspace, value);
+		return gdeUOCNavSpaceSetSnapAngle::Ref::New(objectClass, navspace, value);
 	}
 };
 
 class cComboType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboType> Ref;
 	cComboType(gdeWPSOCNavigationSpace &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		const deNavigationSpace::eSpaceTypes value =
 			(deNavigationSpace::eSpaceTypes)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		if(value == navspace->GetType()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetType(objectClass, navspace, value);
+		return gdeUOCNavSpaceSetType::Ref::New(objectClass, navspace, value);
 	}
 };
 
 class cTextBlockingPriority : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBlockingPriority> Ref;
 	cTextBlockingPriority(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		const int value = textField.GetInteger();
 		if(navspace->GetBlockingPriority() == value){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCNavSpaceSetBlockingPriority(objectClass, navspace, value);
+		return gdeUOCNavSpaceSetBlockingPriority::Ref::New(objectClass, navspace, value);
 	}
 };
 
 class cTextBlockingShape : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBlockingShape> Ref;
 	cTextBlockingShape(gdeWPSOCNavigationSpace &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navspace){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
 		codec.EncodeShapeList(navspace->GetBlockerShapeList(), oldEncoded);
 		const decString encoded(textField.GetText());
 		if(encoded == oldEncoded){
-			return NULL;
+			return {};
 		}
 		
 		decShapeList shapeList;
@@ -303,10 +316,10 @@ public:
 			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Invalid Input",
 				"Input value does not decode to a proper shape list");
 			textField.Focus();
-			return NULL;
+			return {};
 		}
 		
-		return new gdeUOCNavSpaceSetBlockerShapeList(objectClass, navspace, shapeList);
+		return gdeUOCNavSpaceSetBlockerShapeList::Ref::New(objectClass, navspace, shapeList);
 	}
 };
 
@@ -315,6 +328,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -328,6 +342,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCNavigationSpace &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCNavigationSpace &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -341,7 +356,7 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUOCNavSpaceSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+			gdeUOCNavSpaceSetPropertyName::Ref::New(pPanel.GetObjectClass(),
 				pPanel.GetNavigationSpace(), propertyName, comboBox->GetText()));
 	}
 };
@@ -358,73 +373,67 @@ public:
 
 gdeWPSOCNavigationSpace::gdeWPSOCNavigationSpace(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCNavigationSpaceListener(*this);
+	pListener = gdeWPSOCNavigationSpaceListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Space:");
 	
 	helper.EditPath(groupBox, "Path:", "Path to navigation space",
-		igdeEnvironment::efpltNavigationSpace, pEditPath, new cEditPath(*this));
+		igdeEnvironment::efpltNavigationSpace, pEditPath, cEditPath::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	helper.EditInteger(groupBox, "Layer:", "Navigation layer the blocker affects",
-		pEditLayer, new cTextLayer(*this));
+		pEditLayer, cTextLayer::Ref::New(*this));
 	helper.EditFloat(groupBox, "Snap distance:", "Snap distance",
-		pEditSnapDistance, new cTextSnapDistance(*this));
+		pEditSnapDistance, cTextSnapDistance::Ref::New(*this));
 	helper.EditFloat(groupBox, "Snap angle:", "Snap angle", 4, 1,
-		pEditSnapAngle, new cTextSnapAngle(*this));
+		pEditSnapAngle, cTextSnapAngle::Ref::New(*this));
 	
-	helper.ComboBox(groupBox, "Type:", "Navigation space ", pCBType, new cComboType(*this));
-	pCBType->AddItem("Grid", NULL, (void*)(intptr_t)deNavigationSpace::estGrid);
-	pCBType->AddItem("Mesh", NULL, (void*)(intptr_t)deNavigationSpace::estMesh);
-	pCBType->AddItem("Volume", NULL, (void*)(intptr_t)deNavigationSpace::estVolume);
+	helper.ComboBox(groupBox, "Type:", "Navigation space ", pCBType, cComboType::Ref::New(*this));
+	pCBType->AddItem("Grid", nullptr, (void*)(intptr_t)deNavigationSpace::estGrid);
+	pCBType->AddItem("Mesh", nullptr, (void*)(intptr_t)deNavigationSpace::estMesh);
+	pCBType->AddItem("Volume", nullptr, (void*)(intptr_t)deNavigationSpace::estVolume);
 	
 	helper.EditInteger(groupBox, "Blocking priority:",
 		"Blocks navigation spaces with the same or lower priority",
-		pEditBlockingPriority, new cTextBlockingPriority(*this));
+		pEditBlockingPriority, cTextBlockingPriority::Ref::New(*this));
 	helper.EditString(groupBox, "Blocking shape:", "Space shape of navigation space if present",
-		pEditBlockerShape, new cTextBlockingShape(*this));
+		pEditBlockerShape, cTextBlockingShape::Ref::New(*this));
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Path", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epPath);
-	pCBPropertyNames->AddItem("Layer", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epLayer);
-	pCBPropertyNames->AddItem("Snap distance", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epSnapDistance);
-	pCBPropertyNames->AddItem("Snap angle", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epSnapAngle);
-	pCBPropertyNames->AddItem("Space shape", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epBlockerShape);
-	pCBPropertyNames->AddItem("Blocking priority", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epBlockingPriority);
-	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCNavigationSpace::epAttachRotation);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Path", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epPath);
+	pCBPropertyNames->AddItem("Layer", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epLayer);
+	pCBPropertyNames->AddItem("Snap distance", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapDistance);
+	pCBPropertyNames->AddItem("Snap angle", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epSnapAngle);
+	pCBPropertyNames->AddItem("Space shape", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockerShape);
+	pCBPropertyNames->AddItem("Blocking priority", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epBlockingPriority);
+	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCNavigationSpace::epAttachRotation);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCNavigationSpace::~gdeWPSOCNavigationSpace(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -439,14 +448,12 @@ void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinitio
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();
@@ -456,12 +463,12 @@ void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinitio
 
 
 gdeObjectClass *gdeWPSOCNavigationSpace::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCNavigationSpace *gdeWPSOCNavigationSpace::GetNavigationSpace() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCNavigationSpace() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCNavigationSpace() : nullptr;
 }
 
 const gdeOCNavigationSpace::eProperties gdeWPSOCNavigationSpace::GetPropertyName() const{

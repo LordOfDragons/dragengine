@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATAACTION_H_
 #define _CECLIPBOARDDATAACTION_H_
 
-#include "../conversation/action/ceConversationActionList.h"
+#include "../conversation/action/ceConversationAction.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	ceConversationActionList pActions;
+	ceConversationAction::List pActions;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataAction(const ceConversationActionList &actions);
+	ceClipboardDataAction(const ceConversationAction::List &actions);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the action. */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/*@}*/
 };
 

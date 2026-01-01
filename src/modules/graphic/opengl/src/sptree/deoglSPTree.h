@@ -27,7 +27,7 @@
 #define _DEOGLSPTREE_H_
 
 // includes
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefintions
 class deoglSPTreeNode;

@@ -29,14 +29,14 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include "dearBoneStateList.h"
 #include "dearVPSStateList.h"
 #include "dearControllerStates.h"
+#include "task/dearTaskApplyRules.h"
 
 class dearComponent;
-class dearTaskApplyRules;
 class deRig;
 class deAnimatorControllerTarget;
 class deAnimatorInstance;
@@ -92,7 +92,7 @@ private:
 	
 	bool pUseParallelTask;
 	dearTaskApplyRules *pActiveTaskApplyRule;
-	decThreadSafeObjectOrderedSet pTaskApplyRules;
+	decTThreadSafeObjectOrderedSet<dearTaskApplyRules> pTaskApplyRules;
 	
 public:
 	/** \name Constructors and Destructors */

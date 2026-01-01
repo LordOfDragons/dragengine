@@ -25,11 +25,9 @@
 #ifndef _MEUMOVEOBJECT_H_
 #define _MEUMOVEOBJECT_H_
 
+#include "meUndoDataObject.h"
 #include "../meBaseUndoMove.h"
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class meObjectList;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -37,9 +35,12 @@ class meWorld;
  * \brief Undo action for moving around set of objects.
  */
 class meUMoveObject : public meBaseUndoMove{
+public:
+	typedef deTObjectReference<meUMoveObject> Ref;
+	
 private:
-	meWorld *pWorld;
-	decObjectOrderedSet pObjects;
+	meWorld::Ref pWorld;
+	meUndoDataObject::List pObjects;
 	
 	
 	
@@ -47,10 +48,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUMoveObject(meWorld *world, const meObjectList &objects);
+	meUMoveObject(meWorld *world, const meObject::List &objects);
 	
+protected:
 	/** \brief Clean up undo action. */
 	~meUMoveObject() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -61,11 +65,6 @@ public:
 	virtual void Redo();
 	void ProgressiveRedo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

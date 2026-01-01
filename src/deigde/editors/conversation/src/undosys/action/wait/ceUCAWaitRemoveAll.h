@@ -26,10 +26,10 @@
 #define _CEUCAWAITREMOVEALL_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../conversation/action/ceConversationActionList.h"
+#include "../../../conversation/action/ceConversationAction.h"
 
-class ceConversationTopic;
-class ceCAWait;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAWait.h"
 
 
 
@@ -37,15 +37,16 @@ class ceCAWait;
  * \brief Undo Action Wait Remove All Conversation Actions.
  */
 class ceUCAWaitRemoveAll : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationActionList pActionList;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAWaitRemoveAll> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationAction::List pActions;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -44,27 +44,18 @@ ceUCASetVarSetOp::ceUCASetVarSetOp(ceConversationTopic *topic,
 ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldOperator = action->GetOperator();
 	pNewOperator = newOperator;
 	
 	SetShortInfo("Action SetVariable Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetOp::~ceUCASetVarSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

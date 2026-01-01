@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pOcclusionMesh.TakeOver(new deOcclusionMesh(engine.GetOcclusionMeshManager(), vfs, path, 0));
+	pOcclusionMesh = deOcclusionMesh::Ref::New(engine.GetOcclusionMeshManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -89,8 +89,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 	
 	pOcclusionMesh->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pOcclusionMesh->SetAsynchron(true);
-	module->LoadOcclusionMesh(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), pOcclusionMesh);
+	module->LoadOcclusionMesh(GetVFS()->OpenFileForReading(vfsPath), pOcclusionMesh);
 	
 	if(!pOcclusionMesh->Verify()){
 		DETHROW(deeInvalidParam);

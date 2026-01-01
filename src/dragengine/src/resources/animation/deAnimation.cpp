@@ -118,7 +118,6 @@ void deAnimation::AddBone(deAnimationBone *bone){
 	if(pBoneCount == pBoneSize){
 		int i, newSize = pBoneCount * 3 / 2 + 1;
 		deAnimationBone **newArray = new deAnimationBone*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBones){
 			for(i=0; i<pBoneCount; i++) newArray[i] = pBones[i];
 			delete [] pBones;
@@ -166,7 +165,6 @@ void deAnimation::AddMove(deAnimationMove *move){
 	if(pMoveCount == pMoveSize){
 		int i, newSize = pMoveCount * 3 / 2 + 1;
 		deAnimationMove **newArray = new deAnimationMove*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pMoves){
 			for(i=0; i<pMoveCount; i++) newArray[i] = pMoves[i];
 			delete [] pMoves;

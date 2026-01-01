@@ -30,7 +30,7 @@
 #include "deoglBasics.h"
 #include "deoglShadowVolume.h"
 #include "component/deoglMeshData.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -173,7 +173,6 @@ void deoglShadowVolume::pAddFace(int vertex1, int vertex2, int vertex3, int vert
 	if(pFaceCount == pFaceSize){
 		int newSize = pFaceCount * 3 / 2 + 1;
 		sFace *newArray = new sFace[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFaces){
 			for(int i=0; i<pFaceCount; i++) newArray[i] = pFaces[i];
 			delete [] pFaces;
@@ -198,7 +197,6 @@ void deoglShadowVolume::pAddEdge(int face, int vertex1, int vertex2){
 		if(pEdgeCount == pEdgeSize){
 			int newSize = pEdgeCount * 3 / 2 + 1;
 			sEdge *newArray = new sEdge[newSize];
-			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pEdges){
 				for(int i=0; i<pEdgeCount; i++) newArray[i] = pEdges[i];
 				delete [] pEdges;

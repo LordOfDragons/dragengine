@@ -35,6 +35,9 @@ class reWPConstraint;
  * \brief Constraint panel listener.
  */
 class reWPConstraintListener : public reRigNotifier{
+public:
+	typedef deTObjectReference<reWPConstraintListener> Ref;
+	
 private:
 	reWPConstraint &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	reWPConstraintListener(reWPConstraint &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPConstraintListener() override;
+public:
 	/*@}*/
 	
 	

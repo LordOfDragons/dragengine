@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAActorCommand : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAActorCommand> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -52,7 +53,7 @@ public:
 	/*@{*/
 	/** \brief Action. */
 	inline ceCAActorCommand *GetActionActorCommand() const{
-		return (ceCAActorCommand*)GetAction();
+		return (ceCAActorCommand*)GetAction().Pointer();
 	}
 	
 	/** \brief Update action. */

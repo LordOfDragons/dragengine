@@ -28,16 +28,15 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeComboBoxListener.h"
+#include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeComboBoxListener;
 class igdeIcon;
-class igdeListItem;
 
 
 /**
@@ -54,7 +53,7 @@ public:
 	
 private:
 	bool pEnabled;
-	decObjectList pItems;
+	igdeListItem::List pItems;
 	int pSelection;
 	decString pText;
 	igdeListItemSorter::Ref pSorter;
@@ -64,7 +63,7 @@ private:
 	decString pDescription;
 	bool pInvalidValue;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeComboBoxListener> pListeners;
 	
 	
 	
@@ -138,14 +137,8 @@ public:
 	
 	
 	
-	/** \brief Number of items. */
-	int GetItemCount() const;
-	
-	/** \brief Item at index. */
-	igdeListItem *GetItemAt(int index) const;
-	
-	/** \brief Item is present. */
-	bool HasItem(igdeListItem *item) const;
+	/** \brief Items. */
+	inline const igdeListItem::List &GetItems() const{ return pItems; }
 	
 	/** \brief Item with text is present. */
 	bool HasItem(const char *item) const;
@@ -153,8 +146,8 @@ public:
 	/** \brief Item with data is present. */
 	bool HasItemWithData(void *data) const;
 	
-	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem(igdeListItem *item) const;
+	/** \brief Item with reference data is present. */
+	bool HasItemWithRefData(const deObject::Ref &data) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
 	int IndexOfItem(const char *item) const;
@@ -162,17 +155,22 @@ public:
 	/** \brief Index of item with data or -1 if absent. */
 	int IndexOfItemWithData(void *data) const;
 	
+	/** \brief Index of item with reference data or -1 if absent. */
+	int IndexOfItemWithRefData(const deObject::Ref &refData) const;
+	
 	/** \brief Add item. */
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	igdeListItem *AddItem(const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	igdeListItem::Ref AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem::Ref AddItemRef(const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	igdeListItem *InsertItem(int index, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	igdeListItem::Ref InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem::Ref InsertItemRef(int index, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);
@@ -188,10 +186,10 @@ public:
 	
 	
 	
-	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
+	/** \brief Sorter or nullptr. */
+	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
+	/** \brief Set sorter or nullptr. */
 	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
@@ -211,6 +209,9 @@ public:
 	/** \brief Selected item date or nullptr. */
 	void *GetSelectedItemData() const;
 	
+	/** \brief Selected item reference date or nullptr. */
+	deObject::Ref GetSelectedItemRefData() const;
+	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection(int selection);
 	
@@ -220,6 +221,13 @@ public:
 	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
 	 */
 	void SetSelectionWithData(void *data);
+	
+	/**
+	 * \brief Set selected item matching reference data.
+	 * 
+	 * Short-cut for calling SetSelection(IndexOfItemWithRefData(refData)).
+	 */
+	void SetSelectionWithRefData(const deObject::Ref &refData);
 	
 	
 	

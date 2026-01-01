@@ -58,16 +58,12 @@ deTerrainHeightMap::deTerrainHeightMap(){
 	pSize.Set(1.0f, 1.0f);
 	pScaling = 1.0f;
 	
-	pHeightImage = NULL;
-	
 	pVisibleFaces = NULL;
 	pVFByteCount = 0;
 }
 
 deTerrainHeightMap::~deTerrainHeightMap(){
 	if(pVisibleFaces) delete [] pVisibleFaces;
-	
-	if(pHeightImage) pHeightImage->FreeReference();
 }
 
 
@@ -130,13 +126,11 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 	//       deprecated anyways and should be done by physics module
 	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
-		pHeightImage->FreeReference();
 	}
 	
 	pHeightImage = heightImage;
 	
 	if(heightImage){
-		heightImage->AddReference();
 		heightImage->RetainImageData();
 	}
 }
@@ -268,7 +262,6 @@ void deTerrainHeightMap::pCreateVisibleFaces(){
 		int byteCount = (((pPointCount.x - 1) * (pPointCount.y - 1) - 1) >> 3) + 1;
 		
 		pVisibleFaces = new unsigned char[byteCount];
-		if(!pVisibleFaces) DETHROW(deeOutOfMemory);
 		
 		memset(pVisibleFaces, 255, byteCount);
 		

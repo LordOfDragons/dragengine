@@ -50,7 +50,7 @@ public:
 	/** \brief Create network message reader. */
 	deNetworkMessageReader(deNetworkMessage *message);
 	
-private:
+	/** \brief Create network message reader with same message and position. */
 	deNetworkMessageReader(const deNetworkMessageReader &reader);
 	
 protected:

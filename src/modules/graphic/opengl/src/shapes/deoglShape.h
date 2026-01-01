@@ -26,9 +26,9 @@
 #define _DEOGLSHAPE_H_
 
 #include "../deoglBasics.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 
 class deoglRenderThread;
-class deoglSharedVBOBlock;
 class deoglVAO;
 class deoglRenderPlan;
 
@@ -56,7 +56,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	int pPointOffsetFaces;
 	int pPointCountFaces;
 	int pPointOffsetLines;

@@ -26,16 +26,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "deAnimModule.h"
-#include "dragengine/resources/animation/deAnimation.h"
-#include "dragengine/resources/animation/deAnimationBone.h"
-#include "dragengine/resources/animation/deAnimationKeyframe.h"
-#include "dragengine/resources/animation/deAnimationKeyframeList.h"
-#include "dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h"
-#include "dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h"
-#include "dragengine/resources/animation/deAnimationMove.h"
-#include "dragengine/common/math/decMath.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include "dragengine/common/file/decBaseFileWriter.h"
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationBone.h>
+#include <dragengine/resources/animation/deAnimationKeyframe.h>
+#include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -886,7 +886,9 @@ void deAnimModule::pWriteKeyframeWeight(decBaseFileWriter &writer, const sConfig
 
 class deanimModuleInternal : public deInternalModule{
 public:
-deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	typedef deTObjectReference<deanimModuleInternal> Ref;
+	
+	deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnim");
 		SetDescription("Handles animations in the binary Drag[en]gine animation format.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
@@ -907,7 +909,7 @@ deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
-	return new deanimModuleInternal(system);
+deTObjectReference<deInternalModule> deanimRegisterInternalModule(deModuleSystem *system){
+	return deanimModuleInternal::Ref::New(system);
 }
 #endif

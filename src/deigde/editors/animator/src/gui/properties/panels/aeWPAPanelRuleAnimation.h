@@ -32,6 +32,10 @@
  * Animation Rule Panel.
  */
 class aeWPAPanelRuleAnimation : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleAnimation> Ref;
+	
+	
 private:
 	igdeComboBoxFilter::Ref pCBMoveName;
 	igdeTextField::Ref pEditMoveTime;

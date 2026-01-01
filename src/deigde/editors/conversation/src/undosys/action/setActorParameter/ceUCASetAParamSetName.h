@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASetActorParameter;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASetActorParameter.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,16 +36,17 @@ class ceConversationTopic;
  * \brief Undo Action Set Actor Parameter Conversation Action Set Name.
  */
 class ceUCASetAParamSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCASetAParamSetName> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	decString pOldName;
 	decString pNewName;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCASetAParamSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

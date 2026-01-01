@@ -54,23 +54,23 @@ gdeBaseAction(windowMain, text, icon, description){
 // Management
 ///////////////
 
-igdeUndo *gdeBaseMAOCSubObject::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeBaseMAOCSubObject::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
 	if(!objectClass){
-		return NULL;
+		return {};
 	}
 	
 	return OnActionSubObject(gameDefinition, *objectClass);
 }
 
 void gdeBaseMAOCSubObject::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL);
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }
 
 gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	if(!gameDefinition){
-		return NULL;
+		return {};
 	}
 	
 	switch(gameDefinition->GetSelectedObjectType()){
@@ -90,6 +90,6 @@ gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 		return gameDefinition->GetActiveObjectClass();
 		
 	default:
-		return NULL;
+		return {};
 	}
 }

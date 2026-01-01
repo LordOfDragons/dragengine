@@ -26,6 +26,7 @@
 #define _DEXSIDEVICEMANAGER_H_
 
 #include "dexsiXInclude.h"
+#include "dexsiDevice.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
 
@@ -35,7 +36,6 @@
 #include <dragengine/common/utils/decTimer.h>
 
 class deXSystemInput;
-class dexsiDevice;
 
 
 

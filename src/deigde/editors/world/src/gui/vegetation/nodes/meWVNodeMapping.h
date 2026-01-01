@@ -39,6 +39,9 @@ class meHTVRuleMapping;
  * \brief Vegetation Editing Window Node Closest Prop.
  */
 class meWVNodeMapping : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeMapping> Ref;
+	
 private:
 	meHTVRuleMapping *pRuleMapping;
 	

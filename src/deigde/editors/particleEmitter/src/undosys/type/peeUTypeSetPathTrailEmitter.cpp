@@ -44,7 +44,7 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const ch
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Path Trail Emitter");
 	
@@ -52,13 +52,9 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const ch
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathTrailEmitter::~peeUTypeSetPathTrailEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

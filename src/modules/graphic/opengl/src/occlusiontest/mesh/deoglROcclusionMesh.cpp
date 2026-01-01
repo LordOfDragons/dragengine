@@ -60,8 +60,8 @@ const deOcclusionMesh &occlusionmesh) :
 pRenderThread(renderThread),
 pFilename(occlusionmesh.GetFilename()),
 pSharedSPBListUBO(NULL),
-pRTIGroupsSingle(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)),
-pRTIGroupsDouble(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)),
+pRTIGroupsSingle(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
+pRTIGroupsDouble(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
 pBVH(NULL),
 pRayTraceField(NULL)
 {
@@ -256,7 +256,6 @@ void deoglROcclusionMesh::pCleanUp(){
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

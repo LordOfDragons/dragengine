@@ -30,6 +30,7 @@
 #include "convert/deSCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/image/deImage.h>
@@ -102,7 +103,7 @@ void deSsdkServiceSteam::CancelRequest(const decUniqueID &id){
 	
 	pPendingRequests.RemoveFrom(pPendingRequests.IndexOf(pr));
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("error", "Cancelled");
 	so->SetStringChildAt("message", "Request cancelled");
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
@@ -153,7 +154,7 @@ const decUniqueID &id){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::RemoveFirstPendingRequestWithFunction(
@@ -170,12 +171,12 @@ const char *function){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::NewPendingRequest(
 const decUniqueID &id, const decString &function, const deServiceObject::Ref &data){
-	const deSsdkPendingRequest::Ref pr(deSsdkPendingRequest::Ref::NewWith(data));
+	const deSsdkPendingRequest::Ref pr(deSsdkPendingRequest::Ref::New(data));
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt("function", function);
@@ -197,14 +198,14 @@ void deSsdkServiceSteam::RequestCurrentStats(const decUniqueID &id){
 }
 
 void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& request){
-	const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref response(deServiceObject::Ref::New());
 	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	
 	response->SetStringChildAt("function", "getStats");
 	
 	// stats
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("stats", soResp);
 	
 	soIn = request.GetChildAt("stats");
@@ -224,7 +225,7 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 	}
 	
 	// achievements
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("achievements", soResp);
 	
 	soIn = request.GetChildAt("achievements");
@@ -249,7 +250,7 @@ void deSsdkServiceSteam::ResetAllStats(const decUniqueID &id, const deServiceObj
 	
 	DEASSERT_TRUE(SteamUserStats()->ResetAllStats(resetAchievements))
 	
-	const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref response(deServiceObject::Ref::New());
 	response->SetStringChildAt("function", "resetAllStats");
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
@@ -262,7 +263,7 @@ void deSsdkServiceSteam::RequestEncryptedAppTicket(const decUniqueID &id, const 
 		pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket(nullptr, 0));
 		
 	}else{
-		const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
+		const deServiceObject::Ref response(deServiceObject::Ref::New());
 		response->SetStringChildAt("function", "requestEncryptedAppTicket");
 		response->SetBoolChildAt("success", true);
 		response->SetStringChildAt("ticket", pEncAppTicket);
@@ -278,7 +279,7 @@ void deSsdkServiceSteam::LoadUserResource(const decUniqueID &id, const deService
 	pModule.LogInfoFormat("deSsdkServiceSteam.LoadUserResource: url=%s handle=%d",
 		url.url.GetString(), handle);
 	
-	const deServiceObject::Ref data(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref data(deServiceObject::Ref::New());
 	data->SetStringChildAt("url", url.url);
 	NewPendingRequest(id, "loadUserResource", data);
 	
@@ -294,20 +295,20 @@ void deSsdkServiceSteam::LoadUserResource(const decUniqueID &id, const deService
 
 deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 	if(!pAuthProviderIcon){
-		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
+		pAuthProviderIcon = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/");
 	}
 	if(!pAuthProviderImage){
-		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
+		pAuthProviderImage = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetBoolChildAt("canManualLogin", false);
 	so->SetBoolChildAt("canAutomaticLogin", true);
 	so->SetBoolChildAt("canLogout", false);
 	
-	const deServiceObject::Ref soAtp(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soAtp(deServiceObject::Ref::New());
 	soAtp->SetStringChildAt("id", "steam");
 	soAtp->SetResourceChildAt("icon", pAuthProviderIcon);
 	soAtp->SetResourceChildAt("image", pAuthProviderImage);
@@ -318,7 +319,7 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 }
 
 deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	const decString id(deSCCommon::SteamIDToString(SteamUser()->GetSteamID()));
 	
 	so->SetStringChildAt("id", id);
@@ -332,12 +333,12 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
 }
 
 void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &request){
-	const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref response(deServiceObject::Ref::New());
 	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	
 	// stats
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("stats", soResp);
 	
 	soIn = request.GetChildAt("stats");
@@ -365,7 +366,7 @@ void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &
 	}
 	
 	// achievements
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("achievements", soResp);
 	
 	soIn = request.GetChildAt("achievements");
@@ -574,8 +575,8 @@ void deSsdkServiceSteam::pCreateImage(int handle, deServiceObject &so, const cha
 	uint32 width, height;
 	DEASSERT_TRUE(SteamUtils()->GetImageSize(handle, &width, &height))
 	
-	const deImage::Ref image(deImage::Ref::New(pModule.GetGameEngine()->
-		GetImageManager()->CreateImage(width, height, 1, 4, 8)));
+	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
+		CreateImage(width, height, 1, 4, 8));
 	DEASSERT_TRUE(SteamUtils()->GetImageRGBA(handle,
 		(uint8*)image->GetData(), width * height * 4))
 	

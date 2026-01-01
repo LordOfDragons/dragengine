@@ -33,6 +33,10 @@
  * \brief FBX property array integer.
  */
 class fbxPropertyArrayDouble : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyArrayDouble> Ref;
+	
+	
 private:
 	double *pValues;
 	int pCount;
@@ -46,7 +50,7 @@ public:
 	fbxPropertyArrayDouble();
 	
 	/** \brief Load property. */
-	fbxPropertyArrayDouble(decBaseFileReader &reader);
+	explicit fbxPropertyArrayDouble(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

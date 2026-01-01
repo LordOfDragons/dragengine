@@ -82,8 +82,7 @@ deoglRFontSize *deoglRFont::GetFontSizeFor(deFont &font, int lineHeight){
 		}
 	}
 	
-	const deoglRFontSize::Ref rsize(deoglRFontSize::Ref::New(
-		new deoglRFontSize(pGlyphs.GetRenderThread(), *this, *size)));
+	const deoglRFontSize::Ref rsize(deoglRFontSize::Ref::New(pGlyphs.GetRenderThread(), *this, *size));
 	pSizes.Add(rsize);
 	return rsize;
 }

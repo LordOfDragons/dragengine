@@ -25,12 +25,13 @@
 #ifndef _DEOALVIDEOPLAYER_H_
 #define _DEOALVIDEOPLAYER_H_
 
+#include "deoalAVideoPlayer.h"
+
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 #include <dragengine/systems/modules/audio/deBaseAudioVideoPlayer.h>
 
 class deAudioOpenAL;
-class deoalAVideoPlayer;
 class deoalSpeaker;
 
 class deVideoPlayer;
@@ -44,7 +45,7 @@ class deoalVideoPlayer : public deBaseAudioVideoPlayer{
 private:
 	deAudioOpenAL &pOal;
 	deVideoPlayer &pVideoPlayer;
-	deoalAVideoPlayer *pAVideoPlayer;
+	deoalAVideoPlayer::Ref pAVideoPlayer;
 	
 	bool pDirtyVideo;
 	bool pDirtyParameters;
@@ -76,7 +77,7 @@ public:
 	inline deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Audio peer. */
-	inline deoalAVideoPlayer *GetAVideoPlayer() const{ return pAVideoPlayer; }
+	inline const deoalAVideoPlayer::Ref &GetAVideoPlayer() const{ return pAVideoPlayer; }
 	
 	
 	

@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
@@ -13,6 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\deigde\deigde\SConscript"/>
+    <None Include="post_build.ps1"/>
+    <None Include="pre_build.ps1"/>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboard.cpp">
@@ -60,16 +65,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboardList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTextureList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbe.cpp">
@@ -138,13 +143,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.cpp">
@@ -237,16 +242,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowserSky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPath.cpp">
@@ -403,6 +408,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMouseKeyListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeApplication.cpp">
@@ -771,6 +788,165 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\resources\igdeNativeFoxIcon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\dialog\igdeNativeNullDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullCheckBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullColorBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullComboBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullComboBoxFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullCommonDialogs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullContainerForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullGroupBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullIconListBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullProgressBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullRenderView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullScrollBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSeparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSlider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSpacer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSpinTextField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullStatusBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSwitcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTabBook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTextArea.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTextField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToggleButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBarDock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBarSeparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTreeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullViewCurveBezier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBorder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBoxAlternate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerFixed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerFlow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerScroll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerSplitted.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCascade.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuOption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuSeparator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVSlot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNuullNVBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -885,10 +1061,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.cpp">
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.cpp">
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSubObject.cpp">
@@ -897,10 +1073,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadAnimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.cpp">
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.cpp">
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveHTNavSpace.cpp">
@@ -972,1003 +1148,1150 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeRecentFiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMouseKeyListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboard.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboardData.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\codec\igdeCodecPropertyString.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\codec\igdePropertyStringEncodeShapeList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\deigde_configuration.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\editableentity\igdeEditableEntity.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\igdeEngineController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\igdeNullCrashRecoveryModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\igdeNullInputModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\igdeNullScriptModule.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTextureProperty.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeTexturePropertyList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\engine\textureProperties\igdeXMLLoadTexturePropertyList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\environment\igdeEnvironment.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboard.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\billboard\igdeGDCBillboardList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTexture.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCCTextureList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\component\igdeGDCComponentList.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbe.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\envmapprobe\igdeGDCEnvMapProbeList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceField.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\forcefield\igdeGDCForceFieldList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDCamera.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClass.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassInherit.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLight.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLightList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlocker.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navblocker\igdeGDCNavigationBlockerList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpace.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\navspace\igdeGDCNavigationSpaceList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\particleemitter\igdeGDCParticleEmitterList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPoint.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\snappoint\igdeGDCSnapPointList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeaker.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeakerList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorld.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinitionList.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLElementClass.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeXMLGameDefinition.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\particleemitter\igdeGDParticleEmitterManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\creators\igdeGDPCObjectClass.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\creators\igdeGDPCSkin.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\creators\igdeGDPCSky.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\creators\igdeGDPreviewCreator.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\igdeGDPreviewListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\preview\igdeGDPreviewManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDProperty.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkin.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkinManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSky.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyController.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\visitor\igdeGDAddToListVisitor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\visitor\igdeGDVisitor.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gameproject\igdeGameProject.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gameproject\igdeXMLGameProject.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeBrowseItemGDPreviewListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowser.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowserObjectClass.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowserParticleEmitter.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowserSkin.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\browse\igdeDialogBrowserSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVector.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPath.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3Listener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValue.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderText.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditTags.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2Listener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTags.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierClamp.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierCoord.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezier.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEConsole.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEModuleStatus.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEParameters.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEStatus.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDialogEngine.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeAction.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionClearUndo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionContextMenu.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionExternOpen.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionRedo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectDirectory.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectFile.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionUndo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeColorBoxListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeComboBoxListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeIconListBoxListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeListBoxListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseCameraListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseDragListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseKeyListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeScrollBarListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSliderListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSpinTextFieldListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextAreaListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextFieldListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePatternList.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeApplication.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCamera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCommonDialogs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeShapeBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSlider.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStepableTask.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcher.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBook.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextArea.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDock.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeUIHelper.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBoxAlternate.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerFixed.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerFlow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerForm.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScroll.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplitted.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLogger.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascade.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCheck.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCommand.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuOption.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxDialog.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxFileDialog.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSDirectoryBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSListItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxIcons.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxincludenative.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxtoolkit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxApplication.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxAutoScroller.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxCheckBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxColorBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxComboBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxComboBoxFilter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxCommonDialogs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxContainerForm.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxGroupBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxIconListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxLabel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxProgressBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxRenderView.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxResizer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxScrollBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSlider.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSpacer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSpinTextField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxStatusBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSwitcher.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTabBook.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTextArea.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTextField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTimer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToggleButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBarDock.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBarSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTreeItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTreeList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxViewCurveBezier.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxWidget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBorder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBoxAlternate.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerFixed.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerFlow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerScroll.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerSplitted.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCascade.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCheck.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCommand.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuOption.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuSeparator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVBoard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVNode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVSlot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVSocket.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\resources\igdeNativeFoxFont.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\resources\igdeNativeFoxIcon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nullincludenative.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCamera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTable.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObject.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFont.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeHotKey.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIcon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegment.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyle.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiTheme.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeProperty.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\propertyNames.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\themeNames.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\trigexpredit\igdeTriggerExpressionDialog.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\trigexpredit\igdeTriggerExpressionEditor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWAngleRange.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWConnection.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWCoordSysArrows.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShape.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShapeList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWObject.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOBillboard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOEnvMapProbe.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOForceField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOLight.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSONavigationBlocker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSONavigationSpace.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOParticleEmitter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOSpeaker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSubObject.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveHTNavSpace.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryEntry.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpression.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTarget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTargetList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeBaseXML.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeRecentFiles.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\toolkit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="deigde_configuration.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmo.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMouseKeyListener.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\src\deigde\deigde\SConscript" />
-    <None Include="post_build.ps1" />
-    <None Include="pre_build.ps1" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\gizmo\igdeGizmoMove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCommonDialogs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeShapeBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSlider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStepableTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeUIHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBoxAlternate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerFixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerFlow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScroll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplitted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuOption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxFileDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSDirectoryBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxVFSListItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxIcons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxincludenative.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\foxtoolkit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxAutoScroller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxCheckBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxColorBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxComboBoxFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxCommonDialogs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxContainerForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxGroupBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxIconListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxLabel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxRenderView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxResizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxScrollBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSlider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSpacer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSpinTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxStatusBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxSwitcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTabBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTextArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToggleButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBarDock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxToolBarSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTreeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxTreeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxViewCurveBezier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerBoxAlternate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerFixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerFlow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerScroll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\layout\igdeNativeFoxContainerSplitted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCascade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuOption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\menu\igdeNativeFoxMenuSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVSlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\nodeview\igdeNativeFoxNVSocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\resources\igdeNativeFoxFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\resources\igdeNativeFoxIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\dialog\igdeNativeNullDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullCheckBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullColorBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullComboBoxFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullCommonDialogs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullContainerForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullContainerScroll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullGroupBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullIconListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullLabel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullRenderView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullScrollBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSlider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSpacer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSpinTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullStatusBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullSwitcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTabBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTextArea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToggleButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBarDock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullToolBarSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullTreeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullViewCurveBezier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerBoxAlternate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerFixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerFlow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerScroll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\layout\igdeNativeNullContainerSplitted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCascade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuOption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\menu\igdeNativeNullMenuSeparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nodeview\igdeNativeNullNVSlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\nullincludenative.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\resources\igdeNativeNullIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\toolkit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeHotKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiTheme.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\propertyNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\themeNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\trigexpredit\igdeTriggerExpressionDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\trigexpredit\igdeTriggerExpressionEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWAngleRange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWConnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWCoordSysArrows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\debugdrawer\igdeWDebugDrawerShapeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\igdeWSky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOBillboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOEnvMapProbe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOForceField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSONavigationBlocker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSONavigationSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOParticleEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOSpeaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSubObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadParticleEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveHTNavSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSaveNavSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\loadsave\igdeLoadSynthesizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\logger\igdeLoggerHistoryListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpression.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTargetList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeBaseXML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeRecentFiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -41,7 +41,7 @@
 
 igdeLoggerHistory::igdeLoggerHistory(){
 	pHistorySize = 0;
-	pEntries = NULL;
+	pEntries = nullptr;
 	pEntryPointer = 0;
 	pEntryCount = 0;
 	
@@ -54,7 +54,6 @@ igdeLoggerHistory::~igdeLoggerHistory(){
 	if(pEntries){
 		delete [] pEntries;
 	}
-	pListeners.RemoveAll();
 }
 
 
@@ -69,7 +68,7 @@ void igdeLoggerHistory::SetHistorySize(int size){
 	
 	pMutex.Lock();
 	
-	igdeLoggerHistoryEntry *newArray = NULL;
+	igdeLoggerHistoryEntry *newArray = nullptr;
 	
 	try{
 		if(size > 0){
@@ -130,16 +129,13 @@ igdeLoggerHistoryEntry &igdeLoggerHistory::AddEntry(){
 void igdeLoggerHistory::Clear(){
 	pMutex.Lock();
 	
-	const int count = pListeners.GetCount();
-	int i;
-	
 	pEntryPointer = 0;
 	pEntryCount = 0;
 	
 	try{
-		for(i=0; i<count; i++){
-			((igdeLoggerHistoryListener*)pListeners.GetAt(i))->HistoryCleared(this);
-		}
+		pListeners.Visit([&](igdeLoggerHistoryListener &l){
+			l.HistoryCleared(this);
+		});
 		
 	}catch(const deException &){
 		pMutex.Unlock();
@@ -172,28 +168,18 @@ bool igdeLoggerHistory::CanAddMessage(int type, const char *source){
 
 
 void igdeLoggerHistory::AddListener(igdeLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void igdeLoggerHistory::RemoveListener(igdeLoggerHistoryListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 void igdeLoggerHistory::NotifyMessageAdded(igdeLoggerHistoryEntry &entry){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeLoggerHistoryListener*)pListeners.GetAt(i))->MessageAdded(this, entry);
-	}
+	pListeners.Visit([&](igdeLoggerHistoryListener &l){
+		l.MessageAdded(this, entry);
+	});
 }
 
 
@@ -209,8 +195,8 @@ void igdeLoggerHistory::LogInfo(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtInfo, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtInfo);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);
@@ -235,8 +221,8 @@ void igdeLoggerHistory::LogWarn(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtWarn, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtWarn);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);
@@ -261,8 +247,8 @@ void igdeLoggerHistory::LogError(const char *source, const char *message){
 		if(CanAddMessage(igdeLoggerHistoryEntry::emtError, source)){
 			igdeLoggerHistoryEntry &entry = AddEntry();
 			entry.SetType(igdeLoggerHistoryEntry::emtError);
-			entry.GetSource().Set(source);
-			entry.GetMessage().Set(message);
+			entry.SetSource(source);
+			entry.SetMessage(message);
 			entry.CleanUpMessage();
 			
 			NotifyMessageAdded(entry);

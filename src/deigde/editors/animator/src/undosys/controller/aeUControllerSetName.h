@@ -33,6 +33,10 @@
  * Undo action controller set name.
  */
 class aeUControllerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerSetName> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	decString pOldValue;
@@ -41,9 +45,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUControllerSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

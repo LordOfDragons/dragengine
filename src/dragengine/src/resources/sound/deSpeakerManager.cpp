@@ -68,25 +68,11 @@ deSpeaker *deSpeakerManager::GetRootSpeaker() const{
 	return (deSpeaker*)pSpeakers.GetRoot();
 }
 
-deSpeaker *deSpeakerManager::CreateSpeaker(){
-	deSpeaker *speaker = NULL;
-	
-	try{
-		speaker = new deSpeaker(this);
-		if(!speaker) DETHROW(deeOutOfMemory);
-		
-		GetAudioSystem()->LoadSpeaker(speaker);
-		GetScriptingSystem()->LoadSpeaker(speaker);
-		
-		pSpeakers.Add(speaker);
-		
-	}catch(const deException &){
-		if(speaker){
-			speaker->FreeReference();
-		}
-		throw;
-	}
-	
+deSpeaker::Ref deSpeakerManager::CreateSpeaker(){
+	const deSpeaker::Ref speaker(deSpeaker::Ref::New(this));
+	GetAudioSystem()->LoadSpeaker(speaker);
+	GetScriptingSystem()->LoadSpeaker(speaker);
+	pSpeakers.Add(speaker);
 	return speaker;
 }
 

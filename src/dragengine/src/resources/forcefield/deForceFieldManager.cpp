@@ -64,24 +64,10 @@ deForceField *deForceFieldManager::GetRootForceField() const{
 	return (deForceField*)pFields.GetRoot();
 }
 
-deForceField *deForceFieldManager::CreateForceField(){
-	deForceField *field = NULL;
-	
-	try{
-		field = new deForceField(this);
-		if(!field) DETHROW(deeOutOfMemory);
-		
-		GetPhysicsSystem()->LoadForceField(field);
-		
-		pFields.Add(field);
-		
-	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
-		throw;
-	}
-	
+deForceField::Ref deForceFieldManager::CreateForceField(){
+	const deForceField::Ref field(deForceField::Ref::New(this));
+	GetPhysicsSystem()->LoadForceField(field);
+	pFields.Add(field);
 	return field;
 }
 

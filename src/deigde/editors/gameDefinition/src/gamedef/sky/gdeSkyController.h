@@ -26,6 +26,7 @@
 #define _GDESKYCONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -43,6 +44,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeSkyController> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeSkyController> List;
 
 
 	/** \name Constructors and Destructors */

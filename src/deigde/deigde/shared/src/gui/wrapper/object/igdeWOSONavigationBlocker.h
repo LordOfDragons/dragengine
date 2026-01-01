@@ -59,8 +59,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSONavigationBlocker(igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationBlocker();
+	
+public:
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationBlocker resource. */
-	inline deNavigationBlocker *GetNavigationBlocker() const{ return pNavigationBlocker; }
+	inline const deNavigationBlocker::Ref &GetNavigationBlocker() const{ return pNavigationBlocker; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

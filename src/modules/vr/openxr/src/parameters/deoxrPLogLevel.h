@@ -33,6 +33,9 @@
  */
 class deoxrPLogLevel : public deoxrParameter{
 public:
+	typedef deTObjectReference<deoxrPLogLevel> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */

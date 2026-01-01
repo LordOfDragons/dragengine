@@ -36,6 +36,9 @@
  */
 class ceCConditionTrigger : public ceConversationCondition{
 public:
+	typedef deTObjectReference<ceCConditionTrigger> Ref;
+
+public:
 	/** \brief Test mode. */
 	enum eTestModes{
 		/** \brief True if the trigger is in fired state. */
@@ -69,7 +72,9 @@ public:
 	ceCConditionTrigger(const ceCConditionTrigger &condition);
 	
 	/** \brief Cleans up the conversation condition. */
+protected:
 	~ceCConditionTrigger() override;
+public:
 	/*@}*/
 	
 	
@@ -89,7 +94,7 @@ public:
 	void SetTestMode(eTestModes testMode);
 	
 	/** \brief Create copy of condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

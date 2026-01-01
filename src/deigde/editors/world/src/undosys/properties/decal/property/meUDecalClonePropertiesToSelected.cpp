@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meUDecalClonePropertiesToSelected.h"
 #include "meUndoDataDecalProperty.h"
 #include "../../../../world/meWorld.h"
@@ -41,45 +38,23 @@
 ////////////////////////////
 
 meUDecalClonePropertiesToSelected::meUDecalClonePropertiesToSelected(
-const meDecalList &list, const decStringDictionary &properties){
-	meUndoDataDecalProperty *undoData = NULL;
-	const int count = list.GetCount();
-	meDecal *decal;
-	int i;
+const meDecal::List &list, const decStringDictionary &properties){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(count < 1){
-		DETHROW(deeInvalidParam);
-	}
+	SetShortInfo("Clone decal properties to selected");
+	pPropertyList = properties;
 	
-	try{
-		SetShortInfo("Clone decal properties to selected");
-		pPropertyList = properties;
+	list.Visit([&](meDecal *decal){
+		DEASSERT_NOTNULL(decal->GetWorld())
 		
-		for(i=0; i<count; i++){
-			decal = list.GetAt(i);
-			if(!decal->GetWorld()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			undoData = new meUndoDataDecalProperty(decal);
-			undoData->GetOldProperties() = decal->GetProperties();
-			
-			pList.Add(undoData);
-			undoData->FreeReference();
-			undoData = NULL;
-		}
+		const meUndoDataDecalProperty::Ref udata(meUndoDataDecalProperty::Ref::New(decal));
+		udata->GetOldProperties() = decal->GetProperties();
 		
-	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+		pList.Add(udata);
+	});
 }
 
 meUDecalClonePropertiesToSelected::~meUDecalClonePropertiesToSelected(){
-	pCleanUp();
 }
 
 
@@ -88,30 +63,13 @@ meUDecalClonePropertiesToSelected::~meUDecalClonePropertiesToSelected(){
 ///////////////
 
 void meUDecalClonePropertiesToSelected::Undo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
-		undoData.GetDecal()->SetProperties(undoData.GetOldProperties());
-	}
+	pList.Visit([](const meUndoDataDecalProperty &data){
+		data.GetDecal()->SetProperties(data.GetOldProperties());
+	});
 }
 
 void meUDecalClonePropertiesToSelected::Redo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataDecalProperty &undoData = *((meUndoDataDecalProperty*)pList.GetAt(i));
-		undoData.GetDecal()->SetProperties(pPropertyList);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDecalClonePropertiesToSelected::pCleanUp(){
-	pList.RemoveAll();
+	pList.Visit([&](const meUndoDataDecalProperty &data){
+		data.GetDecal()->SetProperties(pPropertyList);
+	});
 }

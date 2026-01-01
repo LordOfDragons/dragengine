@@ -39,6 +39,7 @@
 #include "../../engine/igdeEngineController.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -62,14 +63,16 @@ class igdeDEStatus_ActionStart : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
-		igdeAction("Start Engine", NULL, "Start game engine"), pPanel(panel){}
+	typedef deTObjectReference<igdeDEStatus_ActionStart> Ref;
 	
-	virtual void OnAction(){
+	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
+		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.StartEngine();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetEngineController().GetRunning());
 	}
 };
@@ -78,14 +81,16 @@ class igdeDEStatus_ActionStop : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
-		igdeAction("Stop Engine", NULL, "Stop game engine"), pPanel(panel){}
+	typedef deTObjectReference<igdeDEStatus_ActionStop> Ref;
 	
-	virtual void OnAction(){
+	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
+		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.StopEngine();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetEngineController().GetRunning());
 	}
 };
@@ -108,12 +113,12 @@ pDialogEngine(dialogEngine)
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "Engine Status:");
-	helper.EditString(groupBox, "Engine status", pTextStatus, 3, NULL);
+	helper.EditString(groupBox, "Engine status", pTextStatus, 3, {});
 	
-	panel.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel);
-	helper.Button(panel, pBtnStart, new igdeDEStatus_ActionStart(*this), true);
-	helper.Button(panel, pBtnStop, new igdeDEStatus_ActionStop(*this), true);
+	helper.Button(panel, pBtnStart, igdeDEStatus_ActionStart::Ref::New(*this));
+	helper.Button(panel, pBtnStop, igdeDEStatus_ActionStop::Ref::New(*this));
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "System Status:", true);
@@ -124,7 +129,7 @@ pDialogEngine(dialogEngine)
 	};
 	helper.IconListBox(groupBox, pListSystems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		columns, 3, "System Status", nullptr);
+		columns, 3, "System Status", {});
 	
 	pAddSystem(GetEngine()->GetGraphicSystem());
 	pAddSystem(GetEngine()->GetAudioSystem());
@@ -148,11 +153,11 @@ igdeDEStatus::~igdeDEStatus(){
 ///////////////
 
 void igdeDEStatus::UpdateStatus(){
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeListItem &item = *pListSystems->GetItemAt(i);
+		igdeListItem &item = *pListSystems->GetItems().GetAt(i);
 		const deBaseSystem &system = *((deBaseSystem*)item.GetData());
 		const deLoadableModule * const loadedModule = system.GetActiveLoadableModule();
 		
@@ -193,14 +198,14 @@ void igdeDEStatus::StartEngine(){
 	
 	pTextStatus->ClearText();
 	
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	decString message;
 	int i;
 	
 	try{
 		// test if we can start all required systems
 		for(i=0; i<count; i++){
-			deBaseSystem &system = *((deBaseSystem*)pListSystems->GetItemAt(i)->GetData());
+			deBaseSystem &system = *((deBaseSystem*)pListSystems->GetItems().GetAt(i)->GetData());
 			if(system.CanStart()){
 				continue;
 			}
@@ -216,7 +221,7 @@ void igdeDEStatus::StartEngine(){
 		pDialogEngine.GetMainWindow().StartEngine();
 		
 	}catch(const deException &e){
-		pTextStatus->SetText(e.FormatOutput().Join("\n"));
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();
@@ -233,7 +238,7 @@ void igdeDEStatus::StopEngine(){
 		pDialogEngine.GetMainWindow().StopEngine();
 		
 	}catch(const deException &e){
-		pTextStatus->SetText(e.FormatOutput().Join("\n"));
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();
@@ -248,5 +253,5 @@ void igdeDEStatus::pAddSystem(deBaseSystem *system){
 	decStringList details;
 	details.Add("-");
 	details.Add("-");
-	pListSystems->AddItem(system->GetSystemName(), details, NULL, system);
+	pListSystems->AddItem(system->GetSystemName(), details, nullptr, system);
 }

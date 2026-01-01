@@ -90,15 +90,9 @@ pRestrictedImageBufferFormats(false)
 	
 	// full screen quad VBO and VAO
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pFSQuadVAO));
-	if(!pFSQuadVAO){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(renderThread, pglBindVertexArray(pFSQuadVAO));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pFSQuadVBO));
-	if(!pFSQuadVBO){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pFSQuadVBO));
 	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad),
 		(const GLvoid *)&fsquad, GL_STATIC_DRAW));
@@ -437,7 +431,7 @@ void deoglCapabilities::pAndroidTest(deoglFramebuffer *framebuffer){
 	
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
+		deoglPixelBuffer::epfFloat4, 1, 1, 1));
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer->GetPointerFloat4();
 	deoglTexture *texture = NULL;
 	const deoglShaderSources *sources;

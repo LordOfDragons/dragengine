@@ -104,7 +104,7 @@ const char *name, const char *localizedName){
 		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
 	}
 	
-	const deoxrAction::Ref action(deoxrAction::Ref::NewWith(*this, type, name, localizedName));
+	const deoxrAction::Ref action(deoxrAction::Ref::New(*this, type, name, localizedName));
 	pActions.Add(action);
 	return action;
 }
@@ -115,7 +115,7 @@ const char *localizedName, const XrPath *subactionPath, int subactionPathCount){
 		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
 	}
 	
-	const deoxrAction::Ref action(deoxrAction::Ref::NewWith(*this, type, name, localizedName, subactionPath, subactionPathCount));
+	const deoxrAction::Ref action(deoxrAction::Ref::New(*this, type, name, localizedName, subactionPath, subactionPathCount));
 	pActions.Add(action);
 	return action;
 }

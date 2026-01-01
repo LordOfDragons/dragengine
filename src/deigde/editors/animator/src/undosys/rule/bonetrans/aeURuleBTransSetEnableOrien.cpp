@@ -44,18 +44,14 @@ aeURuleBTransSetEnableOrien::aeURuleBTransSetEnableOrien(aeRuleBoneTransformator
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Bone transformator toggle enable orientation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetEnableOrien::~aeURuleBTransSetEnableOrien(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

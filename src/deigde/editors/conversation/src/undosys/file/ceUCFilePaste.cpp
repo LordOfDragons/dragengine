@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "ceUCFilePaste.h"
 #include "../../conversation/ceConversation.h"
 #include "../../conversation/file/ceConversationFile.h"
@@ -40,57 +36,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFilePaste::ceUCFilePaste(ceConversation *conversation, const ceConversationFileList &files) :
-pConversation(NULL){
-	if(!conversation || files.GetCount() == 0){
+ceUCFilePaste::ceUCFilePaste(ceConversation *conversation, const ceConversationFile::List &files) :
+pConversation(nullptr){
+	if(!conversation || files.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = files.GetCount();
-	ceConversationFile *newFile = NULL;
-	int i;
-	
-	if(count == 1){
+	if(files.GetCount() == 1){
 		SetShortInfo("Paste file");
 		
 	}else{
 		SetShortInfo("Paste files");
 	}
 	
-	try{
-		for(i=0; i<count; i++){
-			newFile = new ceConversationFile(*files.GetAt(i));
-			decString fileID(newFile->GetID());
-			int newNameIndex = 1;
-			
-			while(conversation->GetFileList().HasWithID(fileID)){
-				newNameIndex++;
-				fileID.Format("%s_%i", newFile->GetID().GetString(), newNameIndex);
-			}
-			
-			newFile->SetID(fileID);
-			
-			pFiles.Add(newFile);
-			newFile->FreeReference();
-			newFile = NULL;
+	files.Visit([&](const ceConversationFile &f){
+		const ceConversationFile::Ref newFile(ceConversationFile::Ref::New(f));
+		decString fileID(newFile->GetID());
+		int newNameIndex = 1;
+		
+		while(conversation->GetFiles().HasMatching([&](const ceConversationFile &f2){ return f2.GetID() == fileID; })){
+			newNameIndex++;
+			fileID.Format("%s_%i", newFile->GetID().GetString(), newNameIndex);
 		}
 		
-	}catch(const deException &){
-		if(newFile){
-			newFile->FreeReference();
-		}
-		throw;
-	}
+		newFile->SetID(fileID);
+		pFiles.Add(newFile);
+	});
 	
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceUCFilePaste::~ceUCFilePaste(){
-	pFiles.RemoveAll();
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 
@@ -99,23 +75,18 @@ ceUCFilePaste::~ceUCFilePaste(){
 ///////////////
 
 void ceUCFilePaste::Undo(){
-	const int count = pFiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pConversation->RemoveFile(pFiles.GetAt(i));
-	}
+	pFiles.Visit([&](ceConversationFile *f){
+		pConversation->RemoveFile(f);
+	});
 }
 
 void ceUCFilePaste::Redo(){
-	const int count = pFiles.GetCount();
-	if(count == 0){
+	if(pFiles.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		pConversation->AddFile(pFiles.GetAt(i));
-	}
-	pConversation->SetActiveFile(pFiles.GetAt(count - 1));
+	pFiles.Visit([&](ceConversationFile *f){
+		pConversation->AddFile(f);
+	});
+	pConversation->SetActiveFile(pFiles.Last());
 }

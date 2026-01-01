@@ -65,5 +65,5 @@ pAction(action)
 ///////////////
 
 void ceWPTMATopicRemoveAction::OnAction(){
-	pConversation->GetUndoSystem()->Add(ceUCActionRemove::Ref::NewWith(pTopic, pAction));
+	pConversation->GetUndoSystem()->Add(ceUCActionRemove::Ref::New(pTopic, pAction));
 }

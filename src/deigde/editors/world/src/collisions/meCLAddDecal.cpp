@@ -34,8 +34,6 @@
 #include "../world/decal/meDecal.h"
 #include "../world/decal/meDecalSelection.h"
 #include "../world/object/meObject.h"
-#include "../undosys/gui/decal/meUAddDecal.h"
-#include "../undosys/gui/decal/meUAddObjectDecal.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/skin/igdeGDSkin.h>
@@ -98,18 +96,18 @@ void meCLAddDecal::Reset(){
 		pUndo->Undo();
 	}
 	
-	pHitList.RemoveAllEntries();
+	pHitList.RemoveAll();
 }
 
 void meCLAddDecal::RunAction(){
-	pHitList.SortByDistance();
+	pHitList.SortAscending();
 	
-	if(pHitList.GetEntryCount() == 0){
-		pUndo = NULL;
+	if(pHitList.IsEmpty()){
+		pUndo = nullptr;
 		return;
 	}
 	
-	meCLHitListEntry * const entry = pHitList.GetEntryAt(0);
+	meCLHitListEntry * const entry = pHitList.First();
 	meObject *object = entry->GetObject();
 	decVector normal;
 	
@@ -125,7 +123,7 @@ void meCLAddDecal::RunAction(){
 	//pWndMain->GetLogger()->LogErrorFormat( LOGSOURCE, "debug: %g | %g,%g,%g | %g,%g,%g\n", entry->GetDistance(), hitPoint.x, hitPoint.y, hitPoint.z, normal.x, normal.y, normal.z );
 	
 	if(!object){
-		pUndo = NULL;
+		pUndo = nullptr;
 		return;
 	}
 	
@@ -135,19 +133,19 @@ void meCLAddDecal::RunAction(){
 	decVector decalSize;
 	
 	if(pUndo){
-		decalSize = ((meUAddDecal&)(igdeUndo&)pUndo).GetDecal()->GetSize();
+		decalSize = pUndo->GetDecal()->GetSize();
 		
 	}else{
-		meDecal::Ref decal(meDecal::Ref::NewWith(pWorld->GetEnvironment()));
+		meDecal::Ref decal(meDecal::Ref::New(pWorld->GetEnvironment()));
 		
 		decal->SetSkinPath(browseSkin);
 		decal->SetSize(decal->GetDefaultSize(0.5f));
 		decalSize = decal->GetSize();
 		
-		pUndo.TakeOver(new meUAddDecal(pWorld, decal));
+		pUndo = meUAddDecal::Ref::New(pWorld, decal);
 	}
 	
-	meDecal &decal = *((meUAddDecal&)(igdeUndo&)pUndo).GetDecal();
+	meDecal &decal = pUndo->GetDecal();
 	decal.SetPosition(hitPoint + decDVector(normal * (decalSize.z * 0.5f)));
 	decal.SetRotation(rotation);
 	pUndo->Redo();
@@ -159,11 +157,11 @@ void meCLAddDecal::Finish(){
 	}
 	
 	pWorld->GetUndoSystem()->Add(pUndo, false);
-	pUndo = NULL;
+	pUndo = nullptr;
 }
 
 void meCLAddDecal::Cancel(){
-	pUndo = NULL;
+	pUndo = nullptr;
 }
 
 
@@ -180,11 +178,11 @@ void meCLAddDecal::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 		}
 		
 		if(colliderOwner->GetObject()){
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New());
 			entry->SetObject(colliderOwner->GetObject());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
-			pHitList.AddEntry(entry);
+			pHitList.Add(entry);
 		}
 		
 	}else if(info->IsHTSector()){

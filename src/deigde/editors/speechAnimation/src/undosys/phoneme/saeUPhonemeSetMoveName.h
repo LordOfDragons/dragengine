@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 
@@ -35,8 +35,12 @@ class saePhoneme;
  * Undo Action Phoneme Set Move Name.
  */
 class saeUPhonemeSetMoveName : public igdeUndo{
+public:
+	typedef deTObjectReference<saeUPhonemeSetMoveName> Ref;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeUPhonemeSetMoveName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

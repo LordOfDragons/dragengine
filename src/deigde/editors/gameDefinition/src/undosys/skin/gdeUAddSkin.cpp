@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUAddSkin::gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin) :
-pGameDefinition(NULL),
-pSkin(NULL)
+
+pSkin(nullptr)
 {
 	if(!gameDefinition || !skin){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pSkin(NULL)
 	SetShortInfo("Add skin");
 	
 	pSkin = skin;
-	skin->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUAddSkin::~gdeUAddSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -49,7 +49,6 @@
 deoglCanvasRenderWorld::deoglCanvasRenderWorld(deGraphicOpenGl &ogl, deCanvasRenderWorld &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasRenderWorld(canvas),
-pRCanvasRenderWorld(NULL),
 pCamera(NULL){
 }
 
@@ -65,7 +64,7 @@ deoglCanvasRenderWorld::~deoglCanvasRenderWorld(){
 ///////////////
 
 void deoglCanvasRenderWorld::DropRCanvas(){
-	pRCanvasRenderWorld = NULL;
+	pRCanvasRenderWorld = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
@@ -117,6 +116,6 @@ void deoglCanvasRenderWorld::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasRenderWorld::CreateRCanvas(){
-	pRCanvasRenderWorld = new deoglRCanvasRenderWorld(GetOgl().GetRenderThread());
+	pRCanvasRenderWorld = deoglRCanvasRenderWorld::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasRenderWorld;
 }

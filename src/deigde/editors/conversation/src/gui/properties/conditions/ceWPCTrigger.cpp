@@ -67,6 +67,7 @@ class cComboTestMode : public igdeComboBoxListener {
 	ceWPCTrigger &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTestMode> Ref;
 	cComboTestMode(ceWPCTrigger &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -84,7 +85,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCTriggerSetTestMode::Ref::NewWith(topic, action, condition, testMode));
+			ceUCCTriggerSetTestMode::Ref::New(topic, action, condition, testMode));
 	}
 };
 
@@ -92,6 +93,7 @@ class cTextTrigger : public igdeTextFieldListener {
 	ceWPCTrigger &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextTrigger> Ref;
 	cTextTrigger(ceWPCTrigger &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -103,7 +105,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCTriggerSetTrigger::Ref::NewWith(topic, action, condition, textField->GetText()));
+			ceUCCTriggerSetTrigger::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -121,13 +123,13 @@ ceWPCTrigger::ceWPCTrigger(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeContainer::Ref formLine;
 	
 	helper.ComboBox(*this, "Test Mode:", "How to test the trigger",
-		pCBTestMode, new cComboTestMode(*this));
-	pCBTestMode->AddItem("Fired", NULL, (void*)(intptr_t)ceCConditionTrigger::etmFired);
-	pCBTestMode->AddItem("Not Fired", NULL, (void*)(intptr_t)ceCConditionTrigger::etmNotFired);
-	pCBTestMode->AddItem("Has Ever Fired", NULL, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
-	pCBTestMode->AddItem("Has Never Fired", NULL, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
+		pCBTestMode, cComboTestMode::Ref::New(*this));
+	pCBTestMode->AddItem("Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmFired);
+	pCBTestMode->AddItem("Not Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNotFired);
+	pCBTestMode->AddItem("Has Ever Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
+	pCBTestMode->AddItem("Has Never Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
 	
-	helper.EditString(*this, "Trigger:", "Name of trigger to test", pEditTrigger, new cTextTrigger(*this));
+	helper.EditString(*this, "Trigger:", "Name of trigger to test", pEditTrigger, cTextTrigger::Ref::New(*this));
 }
 
 ceWPCTrigger::~ceWPCTrigger(){
@@ -145,7 +147,7 @@ ceCConditionTrigger *ceWPCTrigger::GetCondition() const{
 		return (ceCConditionTrigger*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

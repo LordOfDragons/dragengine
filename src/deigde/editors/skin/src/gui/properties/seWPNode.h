@@ -25,6 +25,10 @@
 #ifndef _SEWPNODE_H_
 #define _SEWPNODE_H_
 
+#include "seWPNodeListener.h"
+#include "../../skin/property/node/sePropertyNode.h"
+#include "../../skin/seSkin.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
@@ -39,13 +43,9 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-#include "../../skin/property/node/sePropertyNode.h"
-
-class seSkin;
 class seTexture;
 class seProperty;
 class seWindowProperties;
-class seWPNodeListener;
 class igdeTreeItem;
 
 
@@ -53,11 +53,14 @@ class igdeTreeItem;
  * Node panel.
  */
 class seWPNode : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPNode> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPNodeListener *pListener;
+	seWPNodeListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pPreventUpdate;
 	
 	igdeTreeList::Ref pTreeOutline;
@@ -117,7 +120,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(seSkin *skin);
@@ -125,13 +128,13 @@ public:
 	/** Skin path changed. */
 	void OnSkinPathChanged();
 	
-	/** Active texture or \em NULL if none. */
+	/** Active texture or \em nullptr if none. */
 	seTexture *GetTexture() const;
 	
-	/** Active property or \em NULL if none. */
+	/** Active property or \em nullptr if none. */
 	seProperty *GetProperty() const;
 	
-	/** Active node or \em NULL if none. */
+	/** Active node or \em nullptr if none. */
 	sePropertyNode *GetNode() const;
 	
 	/** Selected mapped type. */

@@ -148,5 +148,5 @@ void deovrHiddenMesh::pLoadHiddenMesh(){
 		: "/openvr/hiddenMesh/rightEye.demodel");
 	
 	deovrHiddenMesh_BuildModel builder(mesh);
-	pModel.TakeOver(pOvr.GetGameEngine()->GetModelManager()->CreateModel(path, builder));
+	pModel = pOvr.GetGameEngine()->GetModelManager()->CreateModel(path, builder);
 }

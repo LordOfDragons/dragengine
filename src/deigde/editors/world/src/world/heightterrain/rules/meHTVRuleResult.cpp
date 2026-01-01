@@ -45,8 +45,8 @@ meHTVRule(ertResult, 2),
 pProbability(0.0f),
 pVariation(0)
 {
-	GetSlotAt(eisProbability).SetIsInput(true);
-	GetSlotAt(eisVariation).SetIsInput(true);
+	GetSlots().GetAt(eisProbability)->SetIsInput(true);
+	GetSlots().GetAt(eisVariation)->SetIsInput(true);
 }
 
 meHTVRuleResult::meHTVRuleResult(const meHTVRuleResult &rule) :
@@ -74,11 +74,11 @@ void meHTVRuleResult::SetVariation(int variation){
 
 
 void meHTVRuleResult::Evaluate(meHTVEvaluationEnvironment &evalEnv){
-	meHTVRSlot &slotPropbability = GetSlotAt(eisProbability);
-	meHTVRSlot &slotVariation = GetSlotAt(eisVariation);
+	meHTVRSlot &slotPropbability = GetSlots().GetAt(eisProbability);
+	meHTVRSlot &slotVariation = GetSlots().GetAt(eisVariation);
 	
 	// probability
-	int linkCount = slotPropbability.GetLinkCount();
+	int linkCount = slotPropbability.GetLinks().GetCount();
 	float value;
 	
 	if(linkCount > 0){
@@ -86,7 +86,7 @@ void meHTVRuleResult::Evaluate(meHTVEvaluationEnvironment &evalEnv){
 		int l;
 		
 		for(l=0; l<linkCount; l++){
-			meHTVRLink &link = *slotPropbability.GetLinkAt(l);
+			meHTVRLink &link = *slotPropbability.GetLinks().GetAt(l);
 			
 			value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 				
@@ -105,13 +105,13 @@ void meHTVRuleResult::Evaluate(meHTVEvaluationEnvironment &evalEnv){
 	}
 	
 	// variation
-	if(slotVariation.GetLinkCount() > 0){
-		meHTVRLink &link = *slotVariation.GetLinkAt(0);
+	if(slotVariation.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *slotVariation.GetLinks().GetAt(0);
 		meHTVegetationLayer *vlayer = evalEnv.GetVLayer();
 		int variationCount = 0;
 		
 		if(vlayer){
-			variationCount = vlayer->GetVariationCount();
+			variationCount = vlayer->GetVariations().GetCount();
 		}
 		
 		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
@@ -123,6 +123,6 @@ void meHTVRuleResult::Evaluate(meHTVEvaluationEnvironment &evalEnv){
 	}
 }
 
-meHTVRule *meHTVRuleResult::Copy() const{
-	return new meHTVRuleResult(*this);
+meHTVRule::Ref meHTVRuleResult::Copy() const{
+	return meHTVRuleResult::Ref::New(*this);
 }

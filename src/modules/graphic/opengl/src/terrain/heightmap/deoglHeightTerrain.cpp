@@ -58,7 +58,7 @@ pDirtySectors(true)
 	int i;
 	
 	try{
-		pRHeightTerrain.TakeOver(new deoglRHeightTerrain(ogl.GetRenderThread(), heightTerrain));
+		pRHeightTerrain = deoglRHeightTerrain::Ref::New(ogl.GetRenderThread(), heightTerrain);
 		
 		for(i=0; i<sectorCount; i++){
 			SectorAdded(heightTerrain.GetSectorAt(i));
@@ -111,6 +111,13 @@ void deoglHeightTerrain::SyncToRender(){
 //////////////////
 
 void deoglHeightTerrain::ParametersChanged(){
+	const int count = pSectors.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((deoglHTSector*)pSectors.GetAt(i))->SectorChanged();
+	}
+	
 	pDirtySectors = true;
 }
 
@@ -187,7 +194,7 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 
 
 void deoglHeightTerrain::SectorAdded(deHeightTerrainSector *sector){
-	pSectors.Add(deoglHTSector::Ref::NewWith(*this, *sector));
+	pSectors.Add(deoglHTSector::Ref::New(*this, *sector));
 	pDirtySectors = true;
 }
 

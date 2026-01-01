@@ -28,6 +28,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 
@@ -36,11 +37,14 @@
  * \brief Game Definition Class Environment Map Probe.
  */
 class DE_DLL_EXPORT igdeGDCEnvMapProbe : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCEnvMapProbe> Ref;
-
-
-public:
+	
+	/** \brief Type holding list of objects. */
+	typedef decTObjectOrderedSet<igdeGDCEnvMapProbe> List;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epInfluenceArea,
@@ -72,17 +76,18 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition class environment map probe. */
+	/** \brief Create environment map probe. */
 	igdeGDCEnvMapProbe();
 	
-	/** \brief Create copy of a game definition class environment map probe. */
+	/** \brief Create copy of environment map probe. */
 	igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe);
 	
-	/** \brief Clean up game definition class environment map probe. */
+protected:
+	/** \brief Clean up environment map probe. */
 	virtual ~igdeGDCEnvMapProbe();
-	/*@}*/
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/
@@ -110,10 +115,10 @@ public:
 	/** \brief Set influence shape list. */
 	void SetShapeListInfluence(const decShapeList &shapeList);
 	
-	/** \brief Reflection shape or NULL if the environment map is global. */
+	/** \brief Reflection shape or nullptr if the environment map is global. */
 	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
 	
-	/** \brief Set reflection shape or NULL if the environment map is global. */
+	/** \brief Set reflection shape or nullptr if the environment map is global. */
 	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */

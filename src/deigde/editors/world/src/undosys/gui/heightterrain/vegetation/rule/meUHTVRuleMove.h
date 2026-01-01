@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRule;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
 
 
 
@@ -43,23 +43,28 @@ class meHTVRule;
  * Undo action for moving a height terrain vegetation rule.
  */
 class meUHTVRuleMove : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTVRuleMove> Ref;
+	
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 	decVector2 pOldPosition;
 	decVector2 pNewPosition;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTVRuleMove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleMove();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

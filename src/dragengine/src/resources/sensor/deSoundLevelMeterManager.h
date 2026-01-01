@@ -25,11 +25,11 @@
 #ifndef _DESOUNDLEVELMETERMANAGER_H_
 #define _DESOUNDLEVELMETERMANAGER_H_
 
+#include "deSoundLevelMeter.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSoundLevelMeter;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deSoundLevelMeter *GetRootSoundLevelMeter() const;
 	
 	/** \brief Create sound level meter. */
-	deSoundLevelMeter *CreateSoundLevelMeter();
+	deSoundLevelMeter::Ref CreateSoundLevelMeter();
 	
 	/** \brief Report and release leaking resources. */
 	void ReleaseLeakingResources() override;

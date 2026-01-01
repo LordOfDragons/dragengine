@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLRRDSRENDERABLECOLOR_H_
-#define _DEOGLRRDSRENDERABLECOLOR_H_
+#ifndef _DEOGLRRDSRENDERABLEVALUE_H_
+#define _DEOGLRRDSRENDERABLEVALUE_H_
 
 #include <dragengine/deObject.h>
 
@@ -35,6 +35,11 @@
  * Render dynamic skin value renderable.
  */
 class deoglRDSRenderableValue : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableValue> Ref;
+	
+	
 private:
 	deoglTexture *pTexture;
 	float pValue;

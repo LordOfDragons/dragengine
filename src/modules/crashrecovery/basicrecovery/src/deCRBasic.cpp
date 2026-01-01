@@ -127,7 +127,6 @@ bool deCRBasic::RecoverFromError(){
 	// show window
 	try{
 		app = new FXApp("Drag[en]gine Crash Recovery", "RPTD");
-		if(!app) DETHROW(deeOutOfMemory);
 		app->init(argc, args);
 		new decrbWindowMain(app, this);
 		app->create();
@@ -214,6 +213,8 @@ void deCRBasic::LogTraceSubValues(const deErrorTraceValue &traceValue, const cha
 
 class decrbModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<decrbModuleInternal> Ref;
+	
 	decrbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicRecovery");
 		SetDescription("Provides basic crash recovery support using the FOX Toolkit. \
@@ -234,7 +235,7 @@ Allows the user to restart failed systems and to change modules.");
 	}
 };
 
-deInternalModule *decrbRegisterInternalModule(deModuleSystem *system){
-	return new decrbModuleInternal(system);
+deTObjectReference<deInternalModule> decrbRegisterInternalModule(deModuleSystem *system){
+	return decrbModuleInternal::Ref::New(system);
 }
 #endif

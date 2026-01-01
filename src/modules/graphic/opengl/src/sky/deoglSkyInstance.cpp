@@ -48,22 +48,17 @@
 deoglSkyInstance::deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance) :
 pOgl(ogl),
 pInstance(instance),
-pRInstance(NULL),
+pRInstance(deoglRSkyInstance::Ref::New(pOgl.GetRenderThread())),
 pParentWorld(NULL),
 pOglSky(NULL),
 pEnvMapTimer(0.0f),
 pDirtySky(true),
 pDirtyControllers(true),
 pDirtyLayerMask(true),
-pSkyUpdateState(0)
-{
-	pRInstance = new deoglRSkyInstance(pOgl.GetRenderThread());
+pSkyUpdateState(0){
 }
 
 deoglSkyInstance::~deoglSkyInstance(){
-	if(pRInstance){
-		pRInstance->FreeReference();
-	}
 }
 
 

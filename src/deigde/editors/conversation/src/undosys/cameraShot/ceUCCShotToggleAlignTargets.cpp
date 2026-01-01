@@ -42,18 +42,14 @@
 ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets(ceCameraShot *cameraShot){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Toggle Billboard Targets");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleAlignTargets::~ceUCCShotToggleAlignTargets(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

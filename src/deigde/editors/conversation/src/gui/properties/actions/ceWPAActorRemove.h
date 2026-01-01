@@ -43,6 +43,7 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<ceWPAActorRemove> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */

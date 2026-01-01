@@ -26,12 +26,12 @@
 #define _GDEVAOCOMPONENT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/component/gdeOCComponent.h"
 
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 
-class gdeOCComponent;
 class gdeOCComponentTexture;
 
 class deComponentTexture;
@@ -48,7 +48,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pOCComponent;
+	gdeOCComponent::Ref pOCComponent;
 	
 	deCollider::Ref pCollider;
 	deComponent::Ref pComponent;
@@ -80,13 +80,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pOCComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pOCComponent; }
 	
-	/** \brief Component or \em NULL if not present. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	/** \brief Component or \em nullptr if not present. */
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
-	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	/** \brief Collider or \em nullptr if not present. */
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Update. */
 	void Update(float elapsed);

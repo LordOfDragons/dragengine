@@ -43,8 +43,8 @@
 meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, float nradius){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Prop Count Set Class");
 	SetMemoryConsumption(sizeof(meUHTVRulePCSetRadius));
@@ -53,14 +53,10 @@ meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVR
 	pNewRadius = nradius;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRulePCSetRadius::~meUHTVRulePCSetRadius(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

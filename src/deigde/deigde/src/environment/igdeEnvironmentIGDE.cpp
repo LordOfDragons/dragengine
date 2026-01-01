@@ -36,7 +36,6 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gamedefinition/igdeGameDefinitionList.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/dialog/igdeDialog.h>
@@ -60,9 +59,9 @@
 ////////////////////////////
 
 igdeEnvironmentIGDE::igdeEnvironmentIGDE() :
-pWindowMain(NULL)
+pWindowMain(nullptr)
 {
-	pLogger.TakeOver(new deLoggerConsoleColor);
+	pLogger = deLoggerConsoleColor::Ref::New();
 }
 
 igdeEnvironmentIGDE::~igdeEnvironmentIGDE(){
@@ -96,14 +95,16 @@ igdeGameDefinition *igdeEnvironmentIGDE::GetGameDefinition(){
 }
 
 igdeGameDefinition *igdeEnvironmentIGDE::GetSharedGameDefinition(const char *id){
-	return pWindowMain->GetSharedGameDefinitions().GetWithID(id);
+	return pWindowMain->GetSharedGameDefinitions().FindOrDefault([id](const igdeGameDefinition::Ref &gd){
+		return gd->GetID() == id;
+	});
 }
 
 igdeGDPreviewManager *igdeEnvironmentIGDE::GetGDPreviewManager(){
 	return pWindowMain->GetGDPreviewManager();
 }
 
-const igdeTexturePropertyList *igdeEnvironmentIGDE::GetTexturePropertyList(){
+const igdeTextureProperty::List &igdeEnvironmentIGDE::GetTexturePropertyList(){
 	return pWindowMain->GetTexturePropertyList();
 }
 
@@ -111,7 +112,7 @@ igdeGameProject *igdeEnvironmentIGDE::GetGameProject(){
 	return pWindowMain->GetGameProject();
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatternListTypes type){
+const igdeFilePattern::List *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
 	switch(type){
@@ -177,7 +178,7 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePatt
 	}
 }
 
-const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePatternListTypes type){
+const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePatternListTypes type){
 	igdeLoadSaveSystem &lssys = *pWindowMain->GetLoadSaveSystem();
 	
 	switch(type){
@@ -301,8 +302,7 @@ igdeUIHelper &igdeEnvironmentIGDE::GetUIHelperProperties(){
 }
 
 igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed(const char *name){
-	igdeGuiTheme *guitheme = pWindowMain->GetGuiThemeNamed(name);
-	return guitheme ? guitheme : pWindowMain->GetDefaultGuiTheme();
+	return pWindowMain->GetGuiThemes().GetAtOrDefault(name, pWindowMain->GetDefaultGuiTheme());
 }
 
 igdeGuiTheme *igdeEnvironmentIGDE::GetDefaultGuiTheme(){

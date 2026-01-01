@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _AEURULETARGETREMOVELINK_H_
 #define _AEURULETARGETREMOVELINK_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
 
-// predefinitions
-class aeRule;
-class aeLink;
-class aeControllerTarget;
+#include "../../animator/controller/aeControllerTarget.h"
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -42,16 +39,17 @@ class aeControllerTarget;
  * Removes a link from a rule target.
  */
 class aeURuleTargetRemoveLink : public igdeUndo{
-private:
-	aeRule *pRule;
-	aeControllerTarget *pTarget;
-	
-	aeLink *pLink;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleTargetRemoveLink> Ref;
 	
+	
+private:
+	aeRule::Ref pRule;
+	aeControllerTarget::Ref pTarget;
+	
+	aeLink::Ref pLink;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

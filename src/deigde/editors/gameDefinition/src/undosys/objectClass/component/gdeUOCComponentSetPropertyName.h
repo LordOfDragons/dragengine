@@ -27,10 +27,10 @@
 #define _GDEUOCCOMPONENTSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class component set property name.
  */
 class gdeUOCComponentSetPropertyName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCComponentSetPropertyName> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	gdeOCComponent::eProperties pProperty;
 	decString pOldValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCComponentSetPropertyName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

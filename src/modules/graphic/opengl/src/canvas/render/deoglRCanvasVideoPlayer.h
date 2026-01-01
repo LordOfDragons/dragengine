@@ -26,16 +26,20 @@
 #define _DEOGLRCANVASVIDEOPLAYER_H_
 
 #include "deoglRCanvas.h"
-
-class deoglRVideoPlayer;
+#include "../../video/deoglRVideoPlayer.h"
 
 
 /**
  * Render canvas video player.
  */
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCanvasVideoPlayer> Ref;
+	
+	
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -55,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player or \em NULL if not set. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player or \em NULL if not set. */
 	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);

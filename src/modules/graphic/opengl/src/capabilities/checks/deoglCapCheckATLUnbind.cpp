@@ -93,9 +93,6 @@ void deoglCapCheckATLUnbind::pTestBugExample(GLuint fbo){
 	
 	// generate test texture
 	OGL_CHECK(pRenderThread, glGenTextures(1, &texture));
-	if(!texture){
-		DETHROW(deeOutOfMemory);
-	}
 	
 	OGL_CHECK(pRenderThread, glBindTexture(GL_TEXTURE_2D, texture));
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));

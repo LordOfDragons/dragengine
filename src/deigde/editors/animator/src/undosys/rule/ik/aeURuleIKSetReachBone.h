@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -35,21 +35,22 @@ class aeRuleInverseKinematic;
  * Undo action rule inverse kinematic set reach bone.
  */
 class aeURuleIKSetReachBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleIKSetReachBone> Ref;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decString pOldValue;
 	decString pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleIKSetReachBone> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
 	 * Create new undo action.
-	 * \throws deeInvalidParam \em rule is \em NULL.
+	 * \throws deeInvalidParam \em rule is \em nullptr.
 	 */
 	aeURuleIKSetReachBone(aeRuleInverseKinematic *rule, const char *newValue);
 	

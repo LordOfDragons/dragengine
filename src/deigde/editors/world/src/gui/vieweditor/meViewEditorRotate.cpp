@@ -120,7 +120,7 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 	decDVector center, axis;
 	int i, count;
 	
-	pUndoRotate = NULL;
+	pUndoRotate = nullptr;
 	
 	CalculateRotationAxis(axis);
 	if(axis.Length() < 1e-5){
@@ -132,15 +132,15 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 	
 	if(elementMode == meWorldGuiParameters::eemObject){
 		const meObjectSelection &selection = world.GetSelectionObject();
-		const meObjectList &listSelected = selection.GetSelected();
+		const meObject::List &listSelected = selection.GetSelected();
 		
-		if(listSelected.GetCount() > 0){
-			meObjectList list;
-			meObject *object;
+		if(listSelected.IsNotEmpty()){
+			const meObject::List &list = GetWorld().GetSelectionObject().GetSelected();
+			if(list.IsEmpty()){
+				return;
+			}
 			
-			GetSelectedObjectsWithAttached(list);
-			
-			bool modifyPosition = list.GetCount() > 0;
+			bool modifyPosition = list.IsNotEmpty();
 			
 			switch(GetWorldGuiParameters().GetRotationPivotCenter()){
 			case meWorldGuiParameters::erpcActive:
@@ -148,12 +148,9 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 				break;
 				
 			case meWorldGuiParameters::erpcSelected:
-				count = listSelected.GetCount();
-				for(i=0; i<count; i++){
-					object = listSelected.GetAt(i);
-					center += object->GetPosition();
-				}
-				center /= (double)listSelected.GetCount();
+				center = listSelected.Inject(decDVector(), [](const decDVector &c, const meObject &o){
+					return c + o.GetPosition();
+				}) / (double)listSelected.GetCount();
 				break;
 				
 			case meWorldGuiParameters::erpcIndividual:
@@ -162,8 +159,8 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 				break;
 			}
 			
-			pUndoRotate.TakeOver(new meURotateObject(&world, list));
-			((meURotateObject&)(igdeUndo&)pUndoRotate).SetModifyPosition(modifyPosition);
+			pUndoRotate = meURotateObject::Ref::New(&world, list);
+			pUndoRotate->SetModifyPosition(modifyPosition);
 		}
 		
 	}else if(elementMode == meWorldGuiParameters::eemObjectShape){
@@ -183,17 +180,19 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 				activeProperty.Empty();
 			}
 			
-			if(selection.GetSelected().GetCount() == 0){
+			if(selection.GetSelected().IsEmpty()){
 				activeProperty.Empty();
 			}
 		}
 		
 		if(!activeProperty.IsEmpty()){
 			const decDMatrix matrixParent = decDMatrix::CreateRT(decDVector(activeObject->GetRotation() * DEG2RAD), activeObject->GetPosition());
-			const meObjectShapeList &listSelected = selection.GetSelected();
-			decDMatrix matrixShape;
+			const meObjectShape::List &listSelected = selection.GetSelected();
+			if(listSelected.IsEmpty()){
+				return;
+			}
 			
-			bool modifyPosition = listSelected.GetCount() > 0;
+			bool modifyPosition = listSelected.IsNotEmpty();
 			
 			switch(GetWorldGuiParameters().GetRotationPivotCenter()){
 			case meWorldGuiParameters::erpcActive:
@@ -214,29 +213,23 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 				break;
 			}
 			
-			pUndoRotate.TakeOver(new meUObjectShapeRotate(activeObject, activeProperty, listSelected));
-			((meURotateObject&)(igdeUndo&)pUndoRotate).SetModifyPosition(modifyPosition);
+			pUndoRotate = meUObjectShapeRotate::Ref::New(activeObject, activeProperty, listSelected);
+			pUndoRotate->SetModifyPosition(modifyPosition);
 		}
 		
 	}else if(elementMode == meWorldGuiParameters::eemDecal){
 		const meDecalSelection &selection = world.GetSelectionDecal();
-		const meDecalList &listSelected = selection.GetSelected();
-		
-		if(listSelected.GetCount() > 0){
-			meDecal *decal;
-			
-			count = listSelected.GetCount();
-			
-			for(i=0; i<count; i++){
-				decal = listSelected.GetAt(i);
-				center += decal->GetPosition();
-			}
-			
-			center /= (double)listSelected.GetCount();
-			
-			pUndoRotate.TakeOver(new meUDecalRotate(&world));
-			((meURotateObject&)(igdeUndo&)pUndoRotate).SetModifyPosition(listSelected.GetCount() > 1);
+		const meDecal::List &listSelected = selection.GetSelected();
+		if(listSelected.IsEmpty()){
+			return;
 		}
+		
+		center = listSelected.Inject(decDVector(), [](const decDVector &c, const meDecal &d){
+			return c + d.GetPosition();
+		}) / (double)listSelected.GetCount();
+		
+		pUndoRotate = meUDecalRotate::Ref::New(&world);
+		pUndoRotate->SetModifyPosition(listSelected.GetCount() > 1);
 	}
 	
 	if(pUndoRotate){
@@ -245,8 +238,8 @@ void meViewEditorRotate::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		
 		pNullAngle = atan2f((float)-screenDirection.y, (float)screenDirection.x);
 		
-		((meURotateObject&)(igdeUndo&)pUndoRotate).SetPivot(center);
-		((meURotateObject&)(igdeUndo&)pUndoRotate).SetAxis(axis);
+		pUndoRotate->SetPivot(center);
+		pUndoRotate->SetAxis(axis);
 	}
 }
 
@@ -254,10 +247,10 @@ void meViewEditorRotate::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
 	if(pUndoRotate){
-		if(fabs(((meURotateObject&)(igdeUndo&)pUndoRotate).GetAngle()) > 1e-5){
+		if(fabs(pUndoRotate->GetAngle()) > 1e-5f){
 			GetWorld().GetUndoSystem()->Add(pUndoRotate, false);
 		}
-		pUndoRotate = NULL;
+		pUndoRotate = nullptr;
 	}
 }
 
@@ -282,8 +275,7 @@ void meViewEditorRotate::OnMouseMove(int x, int y, bool shift, bool control){
 	// udpate the axis. this is required since due to changes to the locking the rotation axis can change
 	CalculateRotationAxis(axis);
 	
-	meURotateObject &undo = (meURotateObject&)(igdeUndo&)pUndoRotate;
-	undo.SetAxis(axis);
-	undo.SetAngle(angle);
-	undo.ProgressiveRedo();
+	pUndoRotate->SetAxis(axis);
+	pUndoRotate->SetAngle(angle);
+	pUndoRotate->ProgressiveRedo();
 }

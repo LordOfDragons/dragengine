@@ -34,12 +34,13 @@
  * \brief Base class for undo action moving things around.
  */
 class reBaseUndoMove : public igdeUndo{
+public:
+	typedef deTObjectReference<reBaseUndoMove> Ref;
+	
+	
 private:
 	decVector pDist;
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reBaseUndoMove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

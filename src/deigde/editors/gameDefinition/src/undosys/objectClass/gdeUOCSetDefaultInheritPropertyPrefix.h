@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,8 +37,12 @@ class gdeObjectClass;
  * \brief Undo action object class set default inherit property prefix.
  */
 class gdeUOCSetDefaultInheritPropertyPrefix : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetDefaultInheritPropertyPrefix> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCSetDefaultInheritPropertyPrefix> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

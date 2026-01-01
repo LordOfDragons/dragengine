@@ -44,12 +44,13 @@
 #include "../shaders/deoglShaderSources.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
+#include "deoglCapsFmtSupportSetup.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-#include "deoglCapsFmtSupportSetup.h"
 
 
 // Class deoglCapsFmtSupport
@@ -566,7 +567,6 @@ int bitsPerPixel, int flags, const char *name){
 	int errorCode;
 	
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -617,7 +617,6 @@ int bitsPerPixel, int flags, const char *name){
 	int errorCode;
 	
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -669,7 +668,6 @@ int bitsPerPixel, int flags, const char *name){
 	int errorCode;
 	
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -721,7 +719,6 @@ int bitsPerPixel, int flags, const char *name, int what){
 	
 //	renderThread.GetLogger().LogInfoFormat( "Capabilities: Testing FBO Tex2D %s", name );
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -820,7 +817,6 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 	
 //	renderThread.GetLogger().LogInfoFormat( "Capabilities Testing FBO Tex2D %s", name );
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -925,7 +921,6 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
 	
 //	renderThread.GetLogg().LogInfoFormat( "Capabilities: Testing FBO Tex2D %s", name );
 	OGL_CHECK(renderThread, glGenTextures(1, &texture));
-	if(!texture) DETHROW(deeOutOfMemory);
 	
 	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
 	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -1028,5 +1023,5 @@ const deoglCapsTextureFormatList &listSupported) const{
 	for(i=0; i<count; i++){
 		supnames.Add(listSupported.GetFormatAt(i)->GetName());
 	}
-	return supnames.Join(", ");
+	return DEJoin(supnames, ", ");
 }

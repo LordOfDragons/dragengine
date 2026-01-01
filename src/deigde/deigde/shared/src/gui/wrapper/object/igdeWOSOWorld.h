@@ -30,7 +30,7 @@
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 #include "../../../utils/igdeBaseXML.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
@@ -61,7 +61,7 @@ public:
 		/** \brief Path to skin to use or empty string. */
 		decString pathSkin;
 		
-		/** \brief Skin to use or null if not used or not loaded. */
+		/** \brief Skin to use or nullptr if not used or not loaded. */
 		deSkin::Ref skin;
 		
 		/** \brief Index of texture in skin to use. */
@@ -93,7 +93,7 @@ public:
 	
 	private:
 		const igdeWObject::Ref pWrapper;
-		decObjectOrderedSet pTextures;
+		decTObjectOrderedSet<ChildObjectTexture> pTextures;
 		
 	public:
 		/** \brief Original object matrix. */
@@ -105,14 +105,8 @@ public:
 		/** \brief Object wrapper. */
 		inline const igdeWObject::Ref &GetWrapper(){ return pWrapper; }
 		
-		/** \brief Count of textures. */
-		int GetTextureCount() const;
-		
-		/** \brief Texture at index. */
-		ChildObjectTexture &GetTextureAt(int index) const;
-		
-		/** \brief Named texture or nullptr. */
-		ChildObjectTexture *GetNamedTexture(const char *name) const;
+		/** \brief Textures. */
+		inline const decTObjectOrderedSet<ChildObjectTexture> &GetTextures() const{ return pTextures; }
 		
 		/** \brief Add texture. */
 		void AddTexture(const ChildObjectTexture::Ref &texture);
@@ -129,8 +123,6 @@ private:
 		igdeEnvironment &pEnvironment;
 		
 	public:
-		decObjectOrderedSet objects;
-		
 		LoadXmlWorld(igdeWOSOWorld &owner);
 		void LoadWorld(const decString &path);
 		
@@ -151,9 +143,7 @@ private:
 	private:
 		class Texture : public deObject{
 		public:
-			/** \brief Type holding strong reference. */
 			typedef deTObjectReference<Texture> Ref;
-			
 			
 			const ChildObject::Ref object;
 			const ChildObjectTexture::Ref texture;
@@ -162,7 +152,7 @@ private:
 		
 		igdeWOSOWorld *pOwner;
 		decStringSet pSkins;
-		decObjectOrderedSet pTextures;
+		decTObjectOrderedSet<Texture> pTextures;
 		
 	public:
 		typedef deTObjectReference<LoadObjectResources> Ref;
@@ -193,7 +183,7 @@ private:
 	decString pPathWorld;
 	decDVector pPosition;
 	decQuaternion pOrientation;
-	decObjectOrderedSet pChildObjects;
+	decTObjectOrderedSet<ChildObject> pChildObjects;
 	ChildAsyncFinished pChildAsyncFinished;
 	const LoadObjectResources::Ref pLoadObjectResources;
 	bool pNoUpdateAnyContentVisibile;
@@ -205,8 +195,11 @@ public:
 	/** \brief Create object wrapper sub world. */
 	igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub world. */
 	~igdeWOSOWorld() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -237,11 +230,8 @@ public:
 	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	
-	/** \brief Count of child objects. */
-	int GetChildObjectCount() const;
-	
-	/** \brief Child object at index. */
-	ChildObject &GetChildObjectAt(int index) const;
+	/** \brief Child objects. */
+	inline const decTObjectOrderedSet<ChildObject> &GetChildObjects() const{ return pChildObjects; }
 	
 	/** \brief Add child object. */
 	void AddChildObject(const ChildObject::Ref &object);
@@ -259,7 +249,7 @@ public:
 	void LoadTextureSkin(ChildObject &object, ChildObjectTexture &texture);
 	
 	/** \brief Update child component texture. */
-	void UpdateChildComponentTexture(ChildObject &object, ChildObjectTexture &texture);
+	void UpdateChildComponentTexture(ChildObject &object, const ChildObjectTexture &texture);
 	
 	/**
 	 * \brief Sub object is visible.

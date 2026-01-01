@@ -24,7 +24,7 @@
 
 #include "reUSetShapeOrientation.h"
 #include "../../../rig/shape/reRigShape.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVector &newOrientation){
-	if(!shape) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
@@ -43,12 +43,9 @@ reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVecto
 	pNewOrientation = newOrientation;
 	
 	SetShortInfo("Set Shape Rotation");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeOrientation::~reUSetShapeOrientation(){
-	pShape->FreeReference();
 }
 
 

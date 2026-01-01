@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
+#include "../../../world/meWorld.h"
 class meHeightTerrain;
 
 
@@ -41,17 +41,18 @@ class meHeightTerrain;
  * Undo action to set the base height of a height image.
  */
 class meUHTSetBaseHeight : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTSetBaseHeight> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldBaseHeight;
 	float pNewBaseHeight;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTSetBaseHeight> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -59,7 +60,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTSetBaseHeight();
+
+public:
 	/*@}*/
 	
 public:

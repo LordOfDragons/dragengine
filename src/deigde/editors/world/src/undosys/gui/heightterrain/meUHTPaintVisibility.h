@@ -42,6 +42,10 @@ class meBitArray;
  * Undo action to undo and redo visibility painting on a height terrain.
  */
 class meUHTPaintVisibility : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTPaintVisibility> Ref;
+	
+	
 private:
 	meWorld *pWorld;
 	
@@ -53,15 +57,16 @@ private:
 	meBitArray *pNewVis;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTPaintVisibility> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
 	meUHTPaintVisibility(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, meBitArray *oldVis);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTPaintVisibility();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

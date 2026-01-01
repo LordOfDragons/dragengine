@@ -26,6 +26,7 @@
 #define _GDEOCWORLD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/string/decString.h>
@@ -39,6 +40,9 @@ class gdeOCWorld : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCWorld> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCWorld> List;
 	
 	
 	/** \brief Properties. */

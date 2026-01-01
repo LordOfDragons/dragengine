@@ -174,7 +174,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 			
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachColorArrayTextureLevel(0, pTexture, i);
@@ -191,7 +191,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			
 			// min
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTextureMin, i);
@@ -205,7 +205,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			
 			// max
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTextureMax, i);
@@ -221,7 +221,7 @@ void deoglDRDepthMinMax::pCreateFBOs(){
 			const GLenum buffers[1] = {GL_NONE};
 			
 			for(i=0; i<pLevelCount; i++){
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				
 				fbo->AttachDepthArrayTextureLevel(pTexture, i);

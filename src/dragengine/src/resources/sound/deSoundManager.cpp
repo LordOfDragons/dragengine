@@ -92,21 +92,20 @@ deSound *deSoundManager::GetSoundWith(deVirtualFileSystem *vfs, const char *file
 	return sound && !sound->GetOutdated() ? sound : NULL;
 }
 
-deSound *deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
+deSound::Ref deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
 	return LoadSound(GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron);
 }
 
-deSound *deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
+deSound::Ref deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath, bool asynchron){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader;
 	deBaseSoundInfo soundInfo;
 	deBaseSoundModule *module;
-	deSound *sound = NULL;
+	deSound::Ref sound;
 	decPath path;
-	deSound *findSound;
 	
 	try{
 		// locate file
@@ -116,17 +115,16 @@ const char *basePath, bool asynchron){
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the sound with this filename already exists
-		findSound = (deSound*)pSounds.GetWithFilename(vfs, path.GetPathUnix());
+		deSound *findSound = (deSound*)pSounds.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findSound && findSound->GetModificationTime() != modificationTime){
 			LogInfoFormat("Sound '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findSound->MarkOutdated();
-			findSound = NULL;
+			findSound = nullptr;
 		}
 		
 		if(findSound){
-			findSound->AddReference();
 			sound = findSound;
 			
 		}else{
@@ -139,14 +137,10 @@ const char *basePath, bool asynchron){
 			module->InitLoadSound(*fileReader, soundInfo);
 			
 			// create sound file using the infos
-			sound = new deSound(this, vfs, path.GetPathUnix(), modificationTime,
+			sound = deSound::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				soundInfo.GetBytesPerSample(), soundInfo.GetSampleRate(),
 				soundInfo.GetSampleCount(), soundInfo.GetChannelCount());
 			sound->SetAsynchron(asynchron);
-			
-			// clean up
-			fileReader->FreeReference();
-			fileReader = NULL;
 			
 			// load into systems. modules can request to load the data if small enough
 			GetAudioSystem()->LoadSound(sound);
@@ -159,12 +153,6 @@ const char *basePath, bool asynchron){
 	}catch(const deException &){
 		LogErrorFormat("Loading sound '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(sound){
-			sound->FreeReference();
-		}
 		throw;
 	}
 	
@@ -182,25 +170,12 @@ void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const c
 	if(!sound || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileWriter *fileWriter = NULL;
-	deBaseSoundModule *module;
 	
-	try{
-		// find the module able to handle this sound file
-		module = (deBaseSoundModule*)GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtSound, filename);
-		
-		// save the file with it
-		fileWriter = OpenFileForWriting(*vfs, filename);
-		module->SaveSound(*fileWriter, *sound);
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	deBaseSoundModule * const module = (deBaseSoundModule*)GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtSound, filename);
+	DEASSERT_NOTNULL(module);
+	
+	module->SaveSound(OpenFileForWriting(*vfs, filename), *sound);
 }
 
 void deSoundManager::AddLoadedSound(deSound *sound){
@@ -213,45 +188,36 @@ void deSoundManager::AddLoadedSound(deSound *sound){
 
 
 
-deSoundDecoder *deSoundManager::CreateDecoder(deSound *sound){
+deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 	if(!sound || !sound->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deSoundDecoder *soundDecoder = NULL;
-	deBaseSoundDecoder *peer = NULL;
-	decBaseFileReader *reader = NULL;
-	deBaseSoundModule *module = NULL;
+	deBaseSoundModule *module = nullptr;
+	deBaseSoundDecoder *peer = nullptr;
+	deSoundDecoder::Ref soundDecoder;
 	
 	try{
 		// sound decoder is what the user actually gets
-		soundDecoder = new deSoundDecoder(*this, sound);
+		soundDecoder = deSoundDecoder::Ref::New(*this, sound);
 		
 		// find module which handles the sound file. it is not so nice to check using
 		// the file name again for the right module to choose but the result is correct
 		module = (deBaseSoundModule*)GetModuleSystem()->GetModuleAbleToLoad(
 			deModuleSystem::emtSound, sound->GetFilename());
+		DEASSERT_NOTNULL(module);
 		
 		// open file and create decoder peer
-		reader = OpenFileForReading(*sound->GetVirtualFileSystem(), sound->GetFilename());
-		peer = module->CreateDecoder(reader);
-		reader->FreeReference();
-		reader = NULL;
+		peer = module->CreateDecoder(OpenFileForReading(
+			*sound->GetVirtualFileSystem(), sound->GetFilename()));
 		
 		// assign the peer
 		soundDecoder->SetPeerSound(peer);
 		
 	}catch(const deException &e){
-		if(reader){
-			reader->FreeReference();
-		}
 		if(peer){
 			delete peer;
 		}
-		if(soundDecoder){
-			soundDecoder->FreeReference();
-		}
-		
 		LogErrorFormat("Creating decoder for sound '%s' failed",
 			sound->GetFilename().GetString());
 		

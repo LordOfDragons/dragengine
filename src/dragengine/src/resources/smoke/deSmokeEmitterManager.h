@@ -25,11 +25,11 @@
 #ifndef _DESMOKEEMITTERMANAGER_H_
 #define _DESMOKEEMITTERMANAGER_H_
 
+#include "deSmokeEmitter.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSmokeEmitter;
 
 
 /**
@@ -64,7 +64,7 @@ public:
 	deSmokeEmitter *GetRootSmokeEmitter() const;
 	
 	/** \brief Create new smoke emitter. */
-	deSmokeEmitter *CreateSmokeEmitter();
+	deSmokeEmitter::Ref CreateSmokeEmitter();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,16 +35,17 @@ class seProperty;
  * \brief Undo Action Property Set Value.
  */
 class seUPropertySetValue : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetValue> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetValue> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

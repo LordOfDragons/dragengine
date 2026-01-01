@@ -45,20 +45,11 @@ reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
 	SetShortInfo("Set Rig Root Bone");
 	
 	pRig = rig;
-	pRig->AddReference();
-	
 	pOldBone = rig->GetRootBone();
-	if(pOldBone) pOldBone->AddReference();
-	
 	pNewBone = rootBone;
-	if(rootBone) rootBone->AddReference();
 }
 
 reURigSetRootBone::~reURigSetRootBone(){
-	if(pNewBone) pNewBone->FreeReference();
-	if(pOldBone) pOldBone->FreeReference();
-	
-	if(pRig) pRig->FreeReference();
 }
 
 

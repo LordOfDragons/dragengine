@@ -32,10 +32,13 @@
  * Hand support without attached controller profile.
  */
 class deoxrDPNoControllerHands : public deoxrDeviceProfile{
+public:
+	typedef deTObjectReference<deoxrDPNoControllerHands> Ref;
+	
+	
 protected:
 	deoxrDevice::Ref pDeviceLeft;
 	deoxrDevice::Ref pDeviceRight;
-	
 	
 	
 public:

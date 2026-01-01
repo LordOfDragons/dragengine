@@ -598,7 +598,7 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 }
 
 void deoglGIState::pInitUBOClearProbes(){
-	pUBOClearProbes.TakeOver(new deoglSPBlockUBO(pRenderThread));
+	pUBOClearProbes = deoglSPBlockUBO::Ref::New(pRenderThread);
 	deoglSPBlockUBO &ubo = pUBOClearProbes;
 	
 	ubo.SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
@@ -750,15 +750,15 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		deoglPixelBuffer::Ref pixbuf;
 		pClearMaps = false;
 		
-		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4,
+		pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4,
 			pTexProbeIrradiance.GetWidth(), pTexProbeIrradiance.GetHeight(),
-			pTexProbeIrradiance.GetLayerCount()));
+			pTexProbeIrradiance.GetLayerCount());
 		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
 		pTexProbeIrradiance.SetPixels(pixbuf);
 		
 		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
 			/*
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfInt1,
+			pixbuf = deoglPixelBuffer(deoglPixelBuffer::epfInt1,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
 				pTexProbeDistance.GetLayerCount()));
 			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
@@ -768,25 +768,25 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 			pixbuf->SetToIntColor(value, 0, 0, 0);
 			pTexProbeDistance.SetPixels(pixbuf);
 			*/
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4,
+			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
-				pTexProbeDistance.GetLayerCount()));
+				pTexProbeDistance.GetLayerCount());
 			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
 			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
 			pTexProbeDistance.SetPixels(pixbuf);
 			
 		}else{
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat2,
+			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat2,
 				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
-				pTexProbeDistance.GetLayerCount()));
+				pTexProbeDistance.GetLayerCount());
 			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
 			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
 			pTexProbeDistance.SetPixels(pixbuf);
 		}
 		
-		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4,
+		pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4,
 			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(),
-			pTexProbeOffset.GetLayerCount()));
+			pTexProbeOffset.GetLayerCount());
 		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
 		pTexProbeOffset.SetPixels(pixbuf);
 	}
@@ -796,7 +796,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
 	// parameter block probe dynamic states
-	pPBProbeDynamicStates.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etGpu));
+	pPBProbeDynamicStates = deoglSPBlockSSBO::Ref::New(pRenderThread, deoglSPBlockSSBO::etGpu);
 	pPBProbeDynamicStates->SetRowMajor(rowMajor);
 	pPBProbeDynamicStates->SetParameterCount(1);
 	pPBProbeDynamicStates->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // uint state
@@ -805,7 +805,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeDynamicStates->EnsureBuffer();
 	
 	// parameter block probe offset
-	pPBProbeOffsets.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etRead));
+	pPBProbeOffsets = deoglSPBlockSSBO::Ref::New(pRenderThread, deoglSPBlockSSBO::etRead);
 	pPBProbeOffsets->SetRowMajor(rowMajor);
 	pPBProbeOffsets->SetParameterCount(2);
 	pPBProbeOffsets->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 offset
@@ -815,7 +815,7 @@ void deoglGIState::pPrepareProbeVBO(){
 	pPBProbeOffsets->EnsureBuffer();
 	
 	// parameter block probe extends
-	pPBProbeExtends.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etRead));
+	pPBProbeExtends = deoglSPBlockSSBO::Ref::New(pRenderThread, deoglSPBlockSSBO::etRead);
 	pPBProbeExtends->SetRowMajor(rowMajor);
 	pPBProbeExtends->SetParameterCount(2);
 	pPBProbeExtends->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 minExtend

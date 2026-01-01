@@ -82,7 +82,7 @@ void deoxrDPHMD::pAddDevice(){
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pDevice.TakeOver(new deoxrDevice(oxr, *this));
+	pDevice = deoxrDevice::Ref::New(oxr, *this);
 	pDevice->SetType(deInputDevice::edtVRHMD);
 	pDevice->SetName("HMD");
 	
@@ -94,7 +94,7 @@ void deoxrDPHMD::pAddDevice(){
 		deoxrSession &session = oxr.GetSession();
 		if(session.GetSystem().GetSupportsFaceEyeTracking()
 		|| session.GetSystem().GetSupportsFaceLipTracking()){
-			pDevice->SetFaceTracker(deoxrFaceTracker::Ref::NewWith(session));
+			pDevice->SetFaceTracker(deoxrFaceTracker::Ref::New(session));
 		}
 	}
 	

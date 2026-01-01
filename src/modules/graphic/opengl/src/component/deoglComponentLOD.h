@@ -25,7 +25,8 @@
 #ifndef _DEOGLCOMPONENTLOD_H_
 #define _DEOGLCOMPONENTLOD_H_
 
-class deoglRComponentLOD;
+#include "deoglRComponentLOD.h"
+
 class deoglComponent;
 
 
@@ -37,7 +38,7 @@ public:
 	deoglComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglRComponentLOD *pRLOD;
+	deoglRComponentLOD::Ref pRLOD;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -60,7 +61,7 @@ public:
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
 	/** Render component lod. */
-	inline deoglRComponentLOD *GetRLOD() const{ return pRLOD; }
+	inline const deoglRComponentLOD::Ref &GetRLOD() const{ return pRLOD; }
 	/*@}*/
 	
 private:

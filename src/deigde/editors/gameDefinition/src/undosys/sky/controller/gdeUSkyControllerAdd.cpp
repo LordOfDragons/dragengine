@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *controller) :
-pSky(NULL),
-pController(NULL)
+
+pController(nullptr)
 {
 	if(!sky || !controller){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pController(NULL)
 	SetShortInfo("Add sky controller");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerAdd::~gdeUSkyControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

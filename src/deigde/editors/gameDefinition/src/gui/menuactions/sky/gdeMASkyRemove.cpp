@@ -56,18 +56,18 @@ gdeBaseAction(windowMain, "Remove Sky",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkyRemove::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMASkyRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeSky * const category = gameDefinition.GetActiveSky();
 	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSky){
-		return NULL;
+		return {};
 	}
 	
 	gdeSky * const sky = gameDefinition.GetActiveSky();
 	if(!sky){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeURemoveSky(&gameDefinition, sky);
+	return gdeURemoveSky::Ref::New(&gameDefinition, sky);
 }
 
 void gdeMASkyRemove::Update(){
@@ -78,5 +78,5 @@ void gdeMASkyRemove::Update(){
 	}
 	
 	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSky 
-		&& gameDefinition->GetActiveSky() != NULL);
+		&& gameDefinition->GetActiveSky() != nullptr);
 }

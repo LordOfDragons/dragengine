@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Create window. */
 	igdeWindow(igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true);
+		igdeIcon *icon = nullptr, bool canResize = true);
 	
 	
 	
@@ -72,10 +72,10 @@ public:
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Window can be resized by user. */

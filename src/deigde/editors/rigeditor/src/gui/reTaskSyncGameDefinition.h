@@ -35,6 +35,9 @@ class reWindowMain;
  * \brief Synchronize game definition task.
  */
 class reTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<reTaskSyncGameDefinition> Ref;
+	
 private:
 	reWindowMain &pWindowMain;
 	
@@ -47,7 +50,9 @@ public:
 	reTaskSyncGameDefinition(reWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
+protected:
 	virtual ~reTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

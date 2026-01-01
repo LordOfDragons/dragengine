@@ -232,7 +232,7 @@ public:
 	int GetAlignmentRequirements() const override;
 	
 	/** Create copy of shader parameter block. */
-	deoglShaderParameterBlock *Copy() const override;
+	deoglShaderParameterBlock::Ref Copy() const override;
 	
 	/** Map the parameter block definition to a shader uniform block using std430 layout. */
 	void MapToStd430();

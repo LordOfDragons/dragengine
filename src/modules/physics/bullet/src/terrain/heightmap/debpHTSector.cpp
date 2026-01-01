@@ -111,7 +111,6 @@ debpHTSector::debpHTSector(debpHeightTerrain *heightTerrain, deHeightTerrainSect
 		pMaxExtend.z = pMinExtend.z + (double)sectorDim;
 		
 		pClusters = new debpHTSCluster[clusterCount * clusterCount];
-		if(!pClusters) DETHROW(deeOutOfMemory);
 		
 		pClusterCount = clusterCount;
 		
@@ -223,11 +222,6 @@ void debpHTSector::SectorChanged(){
 
 void debpHTSector::pCleanUp(){
 	if(pPhyBody) delete pPhyBody;
-	
-	if(pBulletShape){
-		pBulletShape->FreeReference();
-	}
-	
 	if(pPoints) delete [] pPoints;
 	if(pClusters) delete [] pClusters;
 }
@@ -243,7 +237,6 @@ void debpHTSector::pCreatePoints(){
 	// create arrays
 	if(count > 0){
 		pPoints = new decVector[count];
-		if(!pPoints) DETHROW(deeOutOfMemory);
 	}
 	
 	// store the coordinates remaining the same
@@ -265,11 +258,10 @@ void debpHTSector::pCreatePoints(){
 	pShape = new debpHeightTerrainShape(this);
 	pShape->setUserPointer(0); // means no shape index
 	
-	pBulletShape = new debpBulletShape(pShape);
+	pBulletShape = debpBulletShape::Ref::New(pShape);
 	
 	// create body
 	pPhyBody = new debpPhysicsBody;
-	if(!pPhyBody) DETHROW(deeOutOfMemory);
 	
 	pPhyBody->SetResponseType(debpPhysicsBody::ertStatic);
 	pPhyBody->SetOwnerHTSector(this);

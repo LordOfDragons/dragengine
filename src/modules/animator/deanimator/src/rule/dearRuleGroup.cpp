@@ -401,6 +401,12 @@ void dearRuleGroup::pCleanUp(){
 	if(pStateList){
 		delete pStateList;
 	}
+	if(pVPSStateList){
+		delete pVPSStateList;
+	}
+	if(pVPSStateList2){
+		delete pVPSStateList2;
+	}
 }
 
 void dearRuleGroup::pCreateRules(int firstLink, const decIntList &controllerMapping){

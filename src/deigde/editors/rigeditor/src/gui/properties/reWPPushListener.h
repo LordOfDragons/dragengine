@@ -35,6 +35,9 @@ class reWPPush;
  * \brief Push panel listenerer
  */
 class reWPPushListener : public reRigNotifier{
+public:
+	typedef deTObjectReference<reWPPushListener> Ref;
+	
 private:
 	reWPPush &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	reWPPushListener(reWPPush &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~reWPPushListener() override;
+public:
 	/*@}*/
 	
 	

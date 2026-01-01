@@ -224,12 +224,12 @@ pWindow(0),
 pNullCursor(0),
 #endif
 
+pX(0),
+pY(0),
 pWidth(100),
 pHeight(100),
 pFullScreen(false),
 pPaint(true),
-
-pRCanvasView(NULL),
 
 pSwapBuffers(false),
 pNotifyPositionChanged(false),
@@ -370,26 +370,10 @@ void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
 
 
 void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
-	if(rcanvasView == pRCanvasView){
-		return;
-	}
-	
-	if(pRCanvasView){
-		pRCanvasView->FreeReference();
-	}
-	
 	pRCanvasView = rcanvasView;
-	
-	if(rcanvasView){
-		rcanvasView->AddReference();
-	}
 }
 
 void deoglRRenderWindow::DropRCanvasView(){
-	if(pRCanvasView){
-		pRCanvasView->FreeReference();
-		pRCanvasView = NULL;
-	}
 }
 
 
@@ -1400,7 +1384,7 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	// create null cursor
 	cursorMask = XCreatePixmap(display, pWindow, 1, 1, 1);
 	gcv.function = GXclear;
-	gc =  XCreateGC(display, cursorMask, GCFunction, &gcv);
+	gc = XCreateGC(display, cursorMask, GCFunction, &gcv);
 	XFillRectangle(display, cursorMask, gc, 0, 0, 1, 1);
 	color.pixel = 0;
 	color.red = 0;

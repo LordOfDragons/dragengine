@@ -68,6 +68,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAGameCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPAGameCommand &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -78,7 +79,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAGameCmdSetCommand::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCAGameCmdSetCommand::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -86,11 +87,12 @@ class cActionEditCommand : public igdeAction {
 	ceWPAGameCommand &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEditCommand> Ref;
 	cActionEditCommand(ceWPAGameCommand &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAGameCommand * const action = pPanel.GetAction();
 		if(!topic || !action){
@@ -106,7 +108,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAGameCmdSetCommand::Ref::NewWith(topic, action, text));
+			ceUCAGameCmdSetCommand::Ref::New(topic, action, text));
 	}
 };
 
@@ -127,8 +129,8 @@ ceWPAGameCommand::ceWPAGameCommand(ceWPTopic &parentPanel) : ceWPAction(parentPa
 	CreateGUICommon(*this);
 	
 	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
-	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
+	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 
 ceWPAGameCommand::~ceWPAGameCommand(){
@@ -146,7 +148,7 @@ ceCAGameCommand *ceWPAGameCommand::GetAction() const{
 		return (ceCAGameCommand*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

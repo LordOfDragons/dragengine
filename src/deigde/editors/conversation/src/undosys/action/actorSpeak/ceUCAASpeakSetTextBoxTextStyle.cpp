@@ -47,27 +47,18 @@ ceCAActorSpeak *actorSpeak, const char *newText){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldStyle = actorSpeak->GetTextBoxTextStyle();
 	pNewStyle = newText;
 	
 	SetShortInfo("Actor speak text box text style");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextStyle::~ceUCAASpeakSetTextBoxTextStyle(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

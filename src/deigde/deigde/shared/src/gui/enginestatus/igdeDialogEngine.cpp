@@ -52,18 +52,18 @@ pMainWindow(mainWindow)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pTabPanels.TakeOver(new igdeTabBook(environment));
+	pTabPanels = igdeTabBook::Ref::New(environment);
 	
-	panel.TakeOver(new igdeDEStatus(*this));
+	panel = igdeDEStatus::Ref::New(*this);
 	pTabPanels->AddChild(panel, "Engine Status");
 	
-	panel.TakeOver(new igdeDEModuleStatus(*this));
+	panel = igdeDEModuleStatus::Ref::New(*this);
 	pTabPanels->AddChild(panel, "Module Status");
 	
-	panel.TakeOver(new igdeDEParameters(*this));
+	panel = igdeDEParameters::Ref::New(*this);
 	pTabPanels->AddChild(panel, "Parameters");
 	
-	panel.TakeOver(new igdeDEConsole(*this));
+	panel = igdeDEConsole::Ref::New(*this);
 	pTabPanels->AddChild(panel, "Console");
 	
 	

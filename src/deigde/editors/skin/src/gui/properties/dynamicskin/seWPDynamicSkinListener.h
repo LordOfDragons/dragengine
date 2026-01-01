@@ -35,6 +35,9 @@ class seWPDynamicSkin;
  * \brief Texture panel listener.
  */
 class seWPDynamicSkinListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPDynamicSkinListener> Ref;
+	
 private:
 	seWPDynamicSkin &pPanel;
 	
@@ -45,7 +48,9 @@ public:
 	seWPDynamicSkinListener(seWPDynamicSkin &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPDynamicSkinListener() override;
+public:
 	/*@}*/
 	
 	

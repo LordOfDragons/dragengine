@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,16 +35,17 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Start Fov.
  */
 class ceUCCShotSetFovTo : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCShotSetFovTo> Ref;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldFov;
 	float pNewFov;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCShotSetFovTo> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

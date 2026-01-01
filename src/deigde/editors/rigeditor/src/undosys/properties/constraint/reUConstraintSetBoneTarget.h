@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
-class reRigConstraint;
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,18 +36,19 @@ class reRigConstraint;
  * \brief Set constraint target bone undo action.
  */
 class reUConstraintSetBoneTarget : public igdeUndo{
-private:
-	reRigConstraint *pConstraint;
+public:
+	typedef deTObjectReference<reUConstraintSetBoneTarget> Ref;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	
+private:
+	reRigConstraint::Ref pConstraint;
+	
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUConstraintSetBoneTarget> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

@@ -46,27 +46,18 @@ ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldActorID = action->GetActor();
 	pNewActorID = newActorID;
 	
 	SetShortInfo("Actor remove set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorRemoveSetActor::~ceUCAActorRemoveSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

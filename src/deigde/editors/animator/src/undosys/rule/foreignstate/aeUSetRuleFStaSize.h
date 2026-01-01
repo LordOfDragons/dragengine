@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,16 +41,17 @@ class aeRuleForeignState;
  * Undo to set the size scaling of a foreign state rule.
  */
 class aeUSetRuleFStaSize : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleFStaSize> Ref;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleFStaSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

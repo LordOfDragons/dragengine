@@ -44,20 +44,16 @@ aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnim
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldTarget = rule->GetUpTarget();
 	pNewTarget = newTarget;
 	
 	SetShortInfo("TrackTo Set Up Target");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpTarget::~aeURuleTrackToSetUpTarget(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -44,27 +44,18 @@
 ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand){
 	if(!topic || !newCommand) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldCommand = action->GetCommand();
 	pNewCommand = newCommand;
 	
 	SetShortInfo("Action ActorCommand Set Command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAACmdSetCommand::~ceUCAACmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

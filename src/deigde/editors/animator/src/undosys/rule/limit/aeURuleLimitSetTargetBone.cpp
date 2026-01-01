@@ -44,21 +44,17 @@ aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone(aeRuleLimit *rule, const ch
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	pOldBone = rule->GetTargetBone().GetString();
+	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
 	SetShortInfo("Limit set target bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetTargetBone::~aeURuleLimitSetTargetBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

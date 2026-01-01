@@ -41,8 +41,8 @@
 
 gdeUOCParticleEmitterSetTriggerName::gdeUOCParticleEmitterSetTriggerName(gdeObjectClass *objectClass,
 gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger, const char *newValue) :
-pObjectClass(NULL),
-pParticleEmitter(NULL),
+
+
 pTrigger(trigger)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pTrigger(trigger)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetTriggerName::~gdeUOCParticleEmitterSetTriggerName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

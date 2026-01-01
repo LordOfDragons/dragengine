@@ -36,6 +36,9 @@
  * Working object for rig box shape.
  */
 class reRigShapeBox : public reRigShape{
+public:
+	typedef deTObjectReference<reRigShapeBox> Ref;
+	
 private:
 	decVector pHalfExtends;
 	
@@ -45,7 +48,9 @@ public:
 	/** Creates a new rig box shape. */
 	reRigShapeBox(deEngine *engine);
 	/** Cleans up the rig shape shape. */
+protected:
 	~reRigShapeBox() override;
+public:
 	/*@}*/
 	
 	/** @name Management */
@@ -56,7 +61,7 @@ public:
 	void SetHalfExtends(const decVector &halfExtends);
 	
 	/** Creates a copy of this shape. */
-	reRigShape *Duplicate() const override;
+	reRigShape::Ref Duplicate() const override;
 	/** Uniformly scale shape. */
 	void Scale(float scale) override;
 	

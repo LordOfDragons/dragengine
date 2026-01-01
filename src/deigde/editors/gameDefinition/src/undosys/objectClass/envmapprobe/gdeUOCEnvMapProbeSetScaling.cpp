@@ -42,8 +42,8 @@
 
 gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
 gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
-pObjectClass(NULL),
-pEnvMapProbe(NULL)
+
+pEnvMapProbe(nullptr)
 {
 	if(!objectClass || !envMapProbe){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

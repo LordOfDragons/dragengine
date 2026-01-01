@@ -33,6 +33,7 @@
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEditDirectoryListener;
 class igdeMenuCascade;
@@ -59,8 +60,13 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		cListenerTextField(igdeEditDirectory &editDirectory);
+		typedef deTObjectReference<cListenerTextField> Ref;
+		explicit cListenerTextField(igdeEditDirectory &editDirectory);
+		
+	protected:
 		virtual ~cListenerTextField();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
@@ -70,8 +76,13 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
+		typedef deTObjectReference<cActionButton> Ref;
 		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
+		
+	protected:
 		virtual ~cActionButton();
+		
+	public:
 		virtual decString DefaultDirectory();
 		virtual void Update();
 	};
@@ -88,7 +99,7 @@ private:
 	igdeTextField::Ref pText;
 	igdeButton::Ref pButton;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditDirectoryListener> pListeners;
 	
 	
 	

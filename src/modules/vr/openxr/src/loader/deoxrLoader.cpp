@@ -242,11 +242,11 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 		directories += decString(envPath).Split(':');
 	}
 	
-	directories += "~/.config";
-	directories += "/etc";
+	directories.Add("~/.config");
+	directories.Add("/etc");
 	
 	const int count = directories.GetCount();
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));
 	const decPath childPath(decPath::CreatePathUnix("openxr/1/active_runtime.json"));
 	int i;
 	
@@ -275,7 +275,7 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 void deoxrLoader::pReadConfig(){
 	pOxr.LogInfoFormat("Reading runtime configuration: %s", pRuntimeConfigFile.GetString());
 	
-	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(pRuntimeConfigFile));
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pRuntimeConfigFile));
 	const int contentLength = reader->GetLength();
 	decString content;
 	content.Set(' ', contentLength);
@@ -378,7 +378,7 @@ void deoxrLoader::pFindApiLayers(){
 			const decString filename(path.GetPathNative());
 			pOxr.LogInfoFormat("Loading API layer config file: %s", filename.GetString());
 			try{
-				pApiLayers.Add(deoxrApiLayer::Ref::NewWith(pOxr, filename));
+				pApiLayers.Add(deoxrApiLayer::Ref::New(pOxr, filename));
 				
 			}catch(const deException &e){
 				pOxr.LogException(e);
@@ -401,11 +401,11 @@ void deoxrLoader::pFindApiLayers(){
 		directories += decString(envPath).Split(':');
 	}
 	
-	directories += "~/.config";
-	directories += "/etc";
+	directories.Add("~/.config");
+	directories.Add("/etc");
 	
 	const int count = directories.GetCount();
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));
 	const decPath childPath(decPath::CreatePathUnix("openxr/1/api_layers/explicit.d"));
 	int i;
 	

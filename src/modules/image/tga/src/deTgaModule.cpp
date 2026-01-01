@@ -28,9 +28,9 @@
 #include <string.h>
 #include "deTgaModule.h"
 #include "deTgaImageInfos.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include "dragengine/common/file/decBaseFileWriter.h"
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -80,7 +80,6 @@ deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		// create infos object
 		infos = new deTgaImageInfo;
-		if(!infos) DETHROW(deeOutOfMemory);
 		// read tgaInfos.header
 		file.Read(&infos->header, sizeof(tgaHdr));
 		if(infos->header.imageType!=3 && infos->header.imageType!=2 &&
@@ -211,6 +210,8 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deTgaModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deTgaModuleInternal> Ref;
+	
 	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Targa");
 		SetDescription("Handles images in uncompressed Targe format.");
@@ -232,7 +233,7 @@ public:
 	}
 };
 
-deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
-	return new deTgaModuleInternal(system);
+deTObjectReference<deInternalModule> deTgaRegisterInternalModule(deModuleSystem *system){
+	return deTgaModuleInternal::Ref::New(system);
 }
 #endif

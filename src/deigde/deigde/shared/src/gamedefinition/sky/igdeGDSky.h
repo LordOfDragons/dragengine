@@ -26,7 +26,7 @@
 #define _IGDEGDSKY_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -43,6 +43,12 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDSky> Ref;
 	
+	/** \brief List of skies. */
+	typedef decTObjectOrderedSet<igdeGDSky> List;
+	
+	/** \brief List of controllers. */
+	typedef decTObjectOrderedSet<igdeGDSkyController> ControllersList;
+	
 	
 private:
 	decString pPath;
@@ -50,7 +56,7 @@ private:
 	decString pDescription;
 	decString pCategory;
 	
-	decObjectOrderedSet pControllers;
+	ControllersList pControllers;
 	
 	deImage::Ref pPreviewImage;
 	
@@ -99,10 +105,10 @@ public:
 	/** \brief Set category. */
 	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not loaded yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	/** \brief Preview image or nullptr if not loaded yet. */
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not loaded yet. */
+	/** \brief Set preview image or nullptr if not loaded yet. */
 	void SetPreviewImage(deImage *image);
 	/*@}*/
 	
@@ -110,11 +116,8 @@ public:
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/** \brief Controller at index. */
-	igdeGDSkyController *GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const ControllersList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(igdeGDSkyController *controller);

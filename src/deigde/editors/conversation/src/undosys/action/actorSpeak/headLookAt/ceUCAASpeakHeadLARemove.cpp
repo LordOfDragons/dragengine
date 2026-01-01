@@ -47,10 +47,10 @@ ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceC
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pHeadLA = NULL;
-	pIndex = actorSpeak->GetHeadLookAtList().IndexOf(headLookAt);
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pHeadLA = nullptr;
+	pIndex = actorSpeak->GetHeadLookAts().IndexOf(headLookAt);
 	
 	if(pIndex == -1){
 		DETHROW(deeInvalidParam);
@@ -59,25 +59,11 @@ ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceC
 	SetShortInfo("Remove HeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLARemove::~ceUCAASpeakHeadLARemove(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -86,11 +72,11 @@ ceUCAASpeakHeadLARemove::~ceUCAASpeakHeadLARemove(){
 ///////////////
 
 void ceUCAASpeakHeadLARemove::Undo(){
-	pActorSpeak->GetHeadLookAtList().InsertAt(pHeadLA, pIndex);
+	pActorSpeak->GetHeadLookAts().Insert(pHeadLA, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLARemove::Redo(){
-	pActorSpeak->GetHeadLookAtList().Remove(pHeadLA);
+	pActorSpeak->GetHeadLookAts().Remove(pHeadLA);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

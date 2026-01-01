@@ -46,18 +46,15 @@
 ////////////////////////////
 
 meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape){
-	if(!object || !property){
-		DETHROW(deeInvalidParam);
-	}
-	if(!object->GetWorld()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(object)
+	DEASSERT_NOTNULL(property)
+	DEASSERT_NOTNULL(object->GetWorld())
 	
 	igdeCodecPropertyString codec;
-	decShape *copyShape = NULL;
+	decShape *copyShape = nullptr;
 	decShapeList shapeList;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Object-Shape replace");
 	SetLongInfo("Object-Shape replace");
@@ -67,7 +64,7 @@ meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *prope
 		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
+	codec.DecodeShapeList(pOldValue, shapeList);
 	
 	try{
 		copyShape = shape.Copy();
@@ -84,13 +81,9 @@ meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *prope
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeReplace::~meUObjectShapeReplace(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -100,13 +93,13 @@ meUObjectShapeReplace::~meUObjectShapeReplace(){
 
 void meUObjectShapeReplace::Undo(){
 	if(pPropertyExists){
-		pObject->SetProperty(pProperty.GetString(), pOldValue.GetString());
+		pObject->SetProperty(pProperty, pOldValue);
 		
 	}else{
-		pObject->RemoveProperty(pProperty.GetString());
+		pObject->RemoveProperty(pProperty);
 	}
 }
 
 void meUObjectShapeReplace::Redo(){
-	pObject->SetProperty(pProperty.GetString(), pNewValue.GetString());
+	pObject->SetProperty(pProperty, pNewValue);
 }

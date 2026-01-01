@@ -214,7 +214,7 @@ static void logStackTrace(HANDLE process, deCRBasic *module){
 			module->LogErrorFormat(PRId64 "x: %s", symbol.Address, symbol.Name);
 			
 		}else{
-			printf("%p: %s\n", (void*)symbol.Address, (char*)symbol.Name);
+			printf("%p: %s\n", (void*)symbol.Address, reinterpret_cast<char*>(symbol.Name));
 		}
 	}
 }
@@ -406,7 +406,7 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 		const pid_t pid = getpid();
 		char commandBuffer[256];
 		
-		sprintf((char*)&commandBuffer, "/usr/bin/konsole -e 'gdb attach %i'", pid);
+		sprintf(reinterpret_cast<char*>(&commandBuffer), "/usr/bin/konsole -e 'gdb attach %i'", pid);
 		system(commandBuffer);
 	}
 #endif

@@ -36,6 +36,9 @@ class ceCAIfElseCase;
  * \brief Menu action paste condition to wait.
  */
 class ceWPTMAIfElseCasePasteCondition : public ceWPTMAPasteCondition{
+public:
+	typedef deTObjectReference<ceWPTMAIfElseCasePasteCondition> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -70,7 +73,7 @@ public:
 	inline ceCAIfElseCase *GetOption() const{ return pIfCase; }
 	
 	/** \brief Create undo action for pasting condition. */
-	igdeUndo *CreateUndo(const ceConversationConditionList &conditions) override;
+	igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions) override;
 	/*@}*/
 };
 

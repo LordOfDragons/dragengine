@@ -26,9 +26,9 @@
 #define _REUSETSHAPECYLINDERBOTTOMRADIUS_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeCylinder;
+#include "../../../rig/shape/reRigShapeCylinder.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeCylinder;
  * \brief Undo Set Shape BottomRadius.
  */
 class reUSetShapeCylinderBottomRadius : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetShapeCylinderBottomRadius> Ref;
+	
+	
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldBottomRadius;
 	float pNewBottomRadius;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetShapeCylinderBottomRadius> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

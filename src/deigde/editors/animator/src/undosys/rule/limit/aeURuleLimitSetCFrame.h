@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -36,16 +36,17 @@ class aeRuleLimit;
  * Undo action rule limitor set coordinate frame.
  */
 class aeURuleLimitSetCFrame : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetCFrame> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	deAnimatorRuleLimit::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleLimit::eCoordinateFrames pNewCoordFrame;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleLimitSetCFrame> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

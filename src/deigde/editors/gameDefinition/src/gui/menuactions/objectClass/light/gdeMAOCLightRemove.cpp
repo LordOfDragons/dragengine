@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCLightRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
 	if(!light){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveLight(&objectClass, light);
+	return gdeUOCRemoveLight::Ref::New(&objectClass, light);
 }
 
 void gdeMAOCLightRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL);
+		&& gameDefinition->GetActiveOCLight() != nullptr);
 }

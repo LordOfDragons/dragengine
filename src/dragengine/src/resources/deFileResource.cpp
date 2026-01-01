@@ -42,22 +42,14 @@
 deFileResource::deFileResource(deFileResourceManager *resourceManager,
 	deVirtualFileSystem *vfs, const char *filename, TIME_SYSTEM modificationTime) : 
 deResource(resourceManager),
-pVirtualFileSystem(NULL),
+pVirtualFileSystem(vfs),
 pFilename(filename),
 pModificationTime(modificationTime),
 pAsynchron(false),
-pOutdated(false)
-{
-	if(vfs){
-		pVirtualFileSystem = vfs;
-		vfs->AddReference();
-	}
+pOutdated(false){
 }
 
 deFileResource::~deFileResource(){
-	if(pVirtualFileSystem){
-		pVirtualFileSystem->FreeReference();
-	}
 }
 
 

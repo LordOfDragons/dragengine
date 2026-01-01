@@ -25,29 +25,29 @@
 #ifndef _PEEEMITTER_H_
 #define _PEEEMITTER_H_
 
+#include "peeParameter.h"
+#include "peeController.h"
+#include "peeType.h"
+#include "peeEmitterListener.h"
+
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/world/deWorld.h>
 
-#include "peeParameter.h"
-#include "peeControllerList.h"
-#include "peeTypeList.h"
-
-class peeEmitterListener;
 class peeLoadSaveSystem;
 
 class igdeWSky;
 
-class deParticleEmitter;
-class deParticleEmitterInstance;
 class deSkin;
 class deComponent;
-class deDebugDrawer;
 class igdeCamera;
-class deWorld;
 class deLogger;
 
 
@@ -57,6 +57,9 @@ class deLogger;
  */
 class peeEmitter : public igdeEditableEntity{
 public:
+	typedef deTObjectReference<peeEmitter> Ref;
+	
+	
 	/** Layer masks for colliders. */
 	enum eColliderLayerMasks{
 		/** Editing. */
@@ -78,17 +81,17 @@ public:
 private:
 	peeLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deDebugDrawer *pDDEmitter;
+	deDebugDrawer::Ref pDDEmitter;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	igdeWCoordSysArrows pDDSEmitter;
 	
-	deParticleEmitter *pEngEmitter;
-	deParticleEmitterInstance *pEngEmitterInstance;
+	deParticleEmitter::Ref pEngEmitter;
+	deParticleEmitterInstance::Ref pEngEmitterInstance;
 	
 	decVector pPosition;
 	decVector pOrientation;
@@ -103,13 +106,13 @@ private:
 	
 	igdeCamera *pCamera;
 	
-	peeControllerList pControllerList;
-	peeController *pActiveController;
+	peeController::List pControllers;
+	peeController::Ref pActiveController;
 	
-	peeTypeList pTypeList;
-	peeType *pActiveType;
+	peeType::List pTypes;
+	peeType::Ref pActiveType;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<peeEmitterListener> pListeners;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -117,7 +120,9 @@ public:
 	/** \brief Create a new emitter. */
 	peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem);
 	/** \brief Clean up the emitter. */
+protected:
 	virtual ~peeEmitter();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -126,7 +131,7 @@ public:
 	inline peeLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
@@ -136,9 +141,9 @@ public:
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine emitter. */
-	inline deParticleEmitter *GetEngineEmitter() const{ return pEngEmitter; }
+	inline const deParticleEmitter::Ref &GetEngineEmitter() const{ return pEngEmitter; }
 	/** Retrieves the engine emitter instance. */
-	inline deParticleEmitterInstance *GetEngineEmitterInstance() const{ return pEngEmitterInstance; }
+	inline const deParticleEmitterInstance::Ref &GetEngineEmitterInstance() const{ return pEngEmitterInstance; }
 	
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -187,7 +192,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** Retrieves the controller list read-only. */
-	inline const peeControllerList &GetControllers() const{ return pControllerList; }
+	inline const peeController::List &GetControllers() const{ return pControllers; }
 	/** Adds a new controller. */
 	void AddController(peeController *controller);
 	/** Inserts a new controller. */
@@ -198,18 +203,18 @@ public:
 	void RemoveController(peeController *controller);
 	/** Removes all controllers. */
 	void RemoveAllControllers();
-	/** Retrieves the active texture or NULL if none is active. */
-	inline peeController *GetActiveController() const{ return pActiveController; }
+	/** Retrieves the active texture or nullptr if none is active. */
+	inline const peeController::Ref &GetActiveController() const{ return pActiveController; }
 	/** Determines if there is an active controller or not. */
 	bool HasActiveController() const;
-	/** Sets the active controller or NULL if none is active. */
+	/** Sets the active controller or nullptr if none is active. */
 	void SetActiveController(peeController *controller);
 	/*@}*/
 	
 	/** \name Types */
 	/*@{*/
 	/** Retrieves the type list read-only. */
-	inline const peeTypeList &GetTypeList() const{ return pTypeList; }
+	inline const peeType::List &GetTypes() const{ return pTypes; }
 	/** Adds a new type. */
 	void AddType(peeType *type);
 	/** Inserts a new type. */
@@ -220,11 +225,11 @@ public:
 	void RemoveType(peeType *type);
 	/** Removes all types. */
 	void RemoveAllTypes();
-	/** Retrieves the active type or NULL if none is active. */
-	inline peeType *GetActiveType() const{ return pActiveType; }
+	/** Retrieves the active type or nullptr if none is active. */
+	inline const peeType::Ref &GetActiveType() const{ return pActiveType; }
 	/** Determines if there is an active type or not. */
 	bool HasActiveType() const;
-	/** Sets the active type or NULL if none is active. */
+	/** Sets the active type or nullptr if none is active. */
 	void SetActiveType(peeType *type);
 	/*@}*/
 	

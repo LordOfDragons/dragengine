@@ -25,12 +25,13 @@
 #ifndef _DEOALWORLD_H_
 #define _DEOALWORLD_H_
 
+#include "deoalAWorld.h"
+
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioWorld.h>
 
 class deWorld;
 class deAudioOpenAL;
-class deoalAWorld;
 class deoalComponent;
 class deoalSpeaker;
 class deoalMicrophone;
@@ -44,7 +45,7 @@ class deoalWorld : public deBaseAudioWorld{
 private:
 	deAudioOpenAL &pOal;
 	deWorld &pWorld;
-	deoalAWorld *pAWorld;
+	deoalAWorld::Ref pAWorld;
 	
 	bool pDirtyComponents;
 	bool pDirtySpeakers;
@@ -81,7 +82,7 @@ public:
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Audio world. */
-	inline deoalAWorld *GetAWorld() const{ return pAWorld; }
+	inline const deoalAWorld::Ref &GetAWorld() const{ return pAWorld; }
 	
 	
 	

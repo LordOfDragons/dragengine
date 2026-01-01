@@ -145,7 +145,7 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 				continue;
 			}
 			
-			const Device::Ref device(Device::Ref::NewWith(*this, props, xdevs[i]));
+			const Device::Ref device(Device::Ref::New(*this, props, xdevs[i]));
 			const decString serialLower(device->serial.GetLower());
 			const decString nameLower(device->name.GetLower());
 			
@@ -219,7 +219,7 @@ decString deoxrDPMndxDevSpace::pSanitizedSerial(const decString &serial) const{
 	
 	sanitized.Set(0, len);
 	const char * const a = serial.GetString();
-	char * const b = (char*)sanitized.GetString();
+	char * const b = sanitized.GetMutableString();
 	
 	for(i=0; i<len; i++){
 		const char c = a[i];
@@ -239,7 +239,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	deoxrSession &session = *pGetSession();
 	deVROpenXR &oxr = instance.GetOxr();
 	
-	device->device.TakeOverWith(oxr, *this);
+	device->device = deoxrDevice::Ref::New(oxr, *this);
 	
 	device->device->SetType(deInputDevice::edtVRTracker);
 	device->device->SetName(device->name);
@@ -255,7 +255,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	
 	XrSpace space = XR_NULL_HANDLE;
 	OXR_CHECK(instance.xrCreateXDevSpaceMNDX(session.GetSession(), &createSpaceInfo, &space));
-	device->device->SetSpacePose(deoxrSpace::Ref::NewWith(session, space));
+	device->device->SetSpacePose(deoxrSpace::Ref::New(session, space));
 	
 	oxr.GetDevices().Add(device->device);
 	pDevices.Add(device);

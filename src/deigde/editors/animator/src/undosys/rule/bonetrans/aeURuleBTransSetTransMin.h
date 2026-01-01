@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -38,16 +38,17 @@ class aeRuleBoneTransformator;
  * Undo action rule bone transformator set minimum translation.
  */
 class aeURuleBTransSetTransMin : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetTransMin> Ref;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleBTransSetTransMin> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

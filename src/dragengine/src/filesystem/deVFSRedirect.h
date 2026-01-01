@@ -47,7 +47,7 @@ public:
 	
 private:
 	const decPath pRedirectPath;
-	deVFSContainer *pContainer;
+	deVFSContainer::Ref pContainer;
 	deVirtualFileSystem *pVFS;
 	bool pHoldVFSReference;
 	
@@ -144,7 +144,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	decBaseFileReader *OpenFileForReading(const decPath &path) override;
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -155,7 +155,7 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.

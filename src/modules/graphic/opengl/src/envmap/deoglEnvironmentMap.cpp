@@ -65,11 +65,11 @@
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
 //#include "../visibility/convexhull/deoglConvexVisHullBuilder.h"
+#include "../utils/collision/deoglDCollisionBox.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
-#include "../utils/collision/deoglDCollisionBox.h"
 
 
 

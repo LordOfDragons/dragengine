@@ -88,7 +88,7 @@ pPaint(true),
 
 pPeerGraphic(NULL)
 {
-	pCanvasView.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasView());
+	pCanvasView = GetEngine()->GetCanvasManager()->CreateCanvasView();
 	pCanvasView->SetSize(decPoint(pWidth, pHeight));
 }
 

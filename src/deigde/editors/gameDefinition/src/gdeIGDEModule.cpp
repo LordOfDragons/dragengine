@@ -49,6 +49,6 @@ gdeIGDEModule::~gdeIGDEModule(){
 
 void gdeIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new gdeWindowMain(*this));
+		SetEditorWindow(gdeWindowMain::Ref::New(*this));
 	}
 }

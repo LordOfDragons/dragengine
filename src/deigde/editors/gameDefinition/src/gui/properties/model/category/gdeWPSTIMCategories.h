@@ -46,6 +46,8 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMCategories> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */

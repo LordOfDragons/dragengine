@@ -39,6 +39,9 @@
  *          directly as condition result.
  */
 class ceCConditionGameCommand : public ceConversationCondition{
+public:
+	typedef deTObjectReference<ceCConditionGameCommand> Ref;
+
 private:
 	decString pCommand;
 	bool pNegate;
@@ -51,7 +54,9 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionGameCommand(const ceCConditionGameCommand &condition);
 	/** \brief Cleans up the conversation condition. */
+protected:
 	~ceCConditionGameCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -66,7 +71,7 @@ public:
 	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

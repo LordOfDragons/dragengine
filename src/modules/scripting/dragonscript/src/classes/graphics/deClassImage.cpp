@@ -23,6 +23,8 @@
  */
 
 // includes
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -32,17 +34,17 @@
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/resources/image/deImageManager.h"
-#include "dragengine/resources/loader/deResourceLoader.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 
 
 // native structure
 struct sImgNatDat{
-	deImage *image;
+	deImage::Ref image;
 };
 
 // native functions
@@ -54,15 +56,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassImage::nfNew::RunFunction(dsRunTime *RT, dsValue *This){
-	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	sImgNatDat * const nd = new (p_GetNativeData(This)) sImgNatDat();
+	
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	deImageManager *imgMgr = clsImg->GetGameEngine()->GetImageManager();
 	// reset all
-	nd->image = NULL;
 	// load image
 	const char *filename = RT->GetValue(0)->GetString();
 	nd->image = imgMgr->LoadImage(filename, "/");
-	if(!nd->image) DSTHROW(dueInvalidParam);
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -72,7 +73,7 @@ deClassImage::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassImage::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject *listener = rt->GetValue(1)->GetRealObject();
@@ -92,12 +93,7 @@ void deClassImage::nfDestructor::RunFunction(dsRunTime *RT, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(myself);
-	
-	if(nd->image){
-		nd->image->FreeReference();
-		nd->image = NULL;
-	}
+	static_cast<sImgNatDat*>(p_GetNativeData(myself))->~sImgNatDat();
 }
 
 
@@ -107,7 +103,7 @@ deClassImage::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(i
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassImage::nfGetFilename::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushString(image->GetFilename());
 }
 
@@ -116,7 +112,7 @@ deClassImage::nfGetWidth::nfGetWidth(const sInitData &init) : dsFunction(init.cl
 "getWidth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetWidth::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushInt(image->GetWidth());
 }
 
@@ -125,7 +121,7 @@ deClassImage::nfGetHeight::nfGetHeight(const sInitData &init) : dsFunction(init.
 "getHeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetHeight::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushInt(image->GetHeight());
 }
 
@@ -134,7 +130,7 @@ deClassImage::nfGetDepth::nfGetDepth(const sInitData &init) : dsFunction(init.cl
 "getDepth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetDepth::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*) p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushInt(image->GetDepth());
 }
 
@@ -143,7 +139,7 @@ deClassImage::nfGetComponentCount::nfGetComponentCount(const sInitData &init) : 
 "getComponentCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetComponentCount::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushInt(image->GetComponentCount());
 }
 
@@ -152,7 +148,7 @@ deClassImage::nfGetBitCount::nfGetBitCount(const sInitData &init) : dsFunction(i
 "getBitCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetBitCount::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
 	RT->PushInt(image->GetBitCount());
 }
 
@@ -161,8 +157,8 @@ deClassImage::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.clsI
 "getSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPt){
 }
 void deClassImage::nfGetSize::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	const deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
+	const deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	clsImg->GetScriptModule()->PushPoint(RT, 
 		decPoint(image->GetWidth(), image->GetHeight()));
 }
@@ -173,19 +169,17 @@ deClassImage::nfSaveToFile::nfSaveToFile(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassImage::nfSaveToFile::RunFunction(dsRunTime *RT, dsValue *This){
-	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
-	deImageManager *imgMgr = clsImg->GetGameEngine()->GetImageManager();
-	deScriptingDragonScript &ds = *clsImg->GetScriptModule();
+	sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This));
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	
 	// save image
 	const char *filename = RT->GetValue(0)->GetString();
 	//ds.LogInfoFormat( "Image: saving %s", filename );
 	try{
-		imgMgr->SaveImage(nd->image, filename);
+		clsImg->GetGameEngine()->GetImageManager()->SaveImage(nd->image, filename);
 		
 	}catch(const duException &){
-		ds.LogInfoFormat("Image: saving %s failed.", filename);
+		clsImg->GetScriptModule()->LogInfoFormat("Image: saving %s failed.", filename);
 		throw;
 	}
 }
@@ -198,7 +192,7 @@ dsFunction(init.clsImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassImage::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
-	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
+	const sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This));
 	// hash code = memory location
 	RT->PushInt((int)(intptr_t)nd->image);
 }
@@ -209,15 +203,15 @@ dsFunction(init.clsImg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassImage::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
-	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	const sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This));
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	dsValue *obj = RT->GetValue(0);
 	// check if the object is a map and not null
 	if(!p_IsObjOfType(obj, clsImg)){
 		RT->PushBool(false);
 	// compare pointers
 	}else{
-		sImgNatDat *other = (sImgNatDat*)p_GetNativeData(obj);
+		const sImgNatDat *other = static_cast<sImgNatDat*>(p_GetNativeData(obj));
 		RT->PushBool(nd->image == other->image);
 	}
 }
@@ -230,7 +224,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 	p_AddParameter(init.clsImg); // image2
 }
 void deClassImage::nfEquals2::RunFunction(dsRunTime *rt, dsValue*){
-	const deClassImage &clsImage = *((deClassImage*)GetOwnerClass());
+	const deClassImage &clsImage = *(static_cast<deClassImage*>(GetOwnerClass()));
 	const deImage * const image1 = clsImage.GetImage(rt->GetValue(0)->GetRealObject());
 	const deImage * const image2 = clsImage.GetImage(rt->GetValue(1)->GetRealObject());
 	
@@ -290,10 +284,10 @@ void deClassImage::CreateClassMembers(dsEngine *engine){
 
 deImage *deClassImage::GetImage(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sImgNatDat*)p_GetNativeData(myself->GetBuffer()))->image;
+	return static_cast<sImgNatDat*>(p_GetNativeData(myself->GetBuffer()))->image;
 }
 
 void deClassImage::PushImage(dsRunTime *rt, deImage *image){
@@ -307,6 +301,5 @@ void deClassImage::PushImage(dsRunTime *rt, deImage *image){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sImgNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->image = image;
-	image->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sImgNatDat)->image = image;
 }

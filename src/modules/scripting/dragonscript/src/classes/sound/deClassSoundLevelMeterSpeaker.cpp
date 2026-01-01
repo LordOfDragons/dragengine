@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -40,8 +42,8 @@
 
 
 struct sSLMSNatDat{
-	deSpeaker *speaker;
-	float volume;
+	deSpeaker::Ref speaker;
+	float volume = 1.0f;
 };
 
 
@@ -64,12 +66,11 @@ dsFunction(init.clsSoundLevelMeterSpeaker, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSoundLevelMeterSpeaker::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
-	sSLMSNatDat &nd = *((sSLMSNatDat*)p_GetNativeData(myself));
-	
-	if(nd.speaker){
-		nd.speaker->FreeReference();
-		nd.speaker = NULL;
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
 	}
+	
+	static_cast<sSLMSNatDat*>(p_GetNativeData(myself))->~sSLMSNatDat();
 }
 
 
@@ -83,8 +84,8 @@ dsFunction(init.clsSoundLevelMeterSpeaker, "getSpeaker", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSpeaker){
 }
 void deClassSoundLevelMeterSpeaker::nfGetSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSLMSNatDat &nd = *((sSLMSNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeterSpeaker*)GetOwnerClass())->GetDS();
+	const sSLMSNatDat &nd = *static_cast<sSLMSNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassSoundLevelMeterSpeaker*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSpeaker()->PushSpeaker(rt, nd.speaker);
 }
@@ -95,7 +96,7 @@ dsFunction(init.clsSoundLevelMeterSpeaker, "getVolume", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSoundLevelMeterSpeaker::nfGetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSLMSNatDat &nd = *((sSLMSNatDat*)p_GetNativeData(myself));
+	const sSLMSNatDat &nd = *static_cast<sSLMSNatDat*>(p_GetNativeData(myself));
 	
 	rt->PushFloat(nd.volume);
 }
@@ -160,12 +161,8 @@ const deSoundLevelMeter::cAudibleSpeaker &speaker){
 	
 	rt->CreateObjectNakedOnStack(this);
 	
-	sSLMSNatDat &nd = *((sSLMSNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sSLMSNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSLMSNatDat;
 	
-	nd.speaker = speaker.GetSpeaker();
-	if(nd.speaker){
-		nd.speaker->AddReference();
-	}
-	
-	nd.volume = speaker.GetVolume();
+	nd->speaker = speaker.GetSpeaker();
+	nd->volume = speaker.GetVolume();
 }

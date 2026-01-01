@@ -56,6 +56,7 @@ namespace {
 class cTextRadius : public igdeTextFieldListener{
 	reWPPanelShapeSphere &pPanel;
 public:
+	typedef deTObjectReference<cTextRadius> Ref;
 	cTextRadius(reWPPanelShapeSphere &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -70,7 +71,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::NewWith(sphere, value));
+		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::New(sphere, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
 		}
@@ -99,10 +100,10 @@ reWPPanelShape(wpShapes, reRigShape::estSphere)
 	helper.GroupBox(*this, groupBox, "Sphere Parameters:");
 	
 	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Radius:", "Radius of the sphere in meters.",
-		pEditRadius, new cTextRadius(*this));
+		pEditRadius, cTextRadius::Ref::New(*this));
 }
 
 reWPPanelShapeSphere::~reWPPanelShapeSphere(){
@@ -127,7 +128,7 @@ void reWPPanelShapeSphere::UpdateShape(){
 		pEditRadius->ClearText();
 	}
 	
-	const bool enabled = sphere != NULL;
+	const bool enabled = sphere != nullptr;
 	pEditPosition->SetEnabled(enabled);
 	pEditRadius->SetEnabled(enabled);
 }

@@ -25,24 +25,24 @@
 #ifndef _GDEOBJECTCLASS_H_
 #define _GDEOBJECTCLASS_H_
 
-#include "billboard/gdeOCBillboardList.h"
-#include "camera/gdeOCCameraList.h"
-#include "component/gdeOCComponentList.h"
+#include "billboard/gdeOCBillboard.h"
+#include "camera/gdeOCCamera.h"
+#include "component/gdeOCComponent.h"
 #include "component/gdeOCComponentTexture.h"
-#include "component/gdeOCComponentTextureList.h"
-#include "envmapprobe/gdeOCEnvMapProbeList.h"
-#include "inherit/gdeOCInheritList.h"
-#include "light/gdeOCLightList.h"
-#include "navblocker/gdeOCNavigationBlockerList.h"
-#include "navspace/gdeOCNavigationSpaceList.h"
-#include "particleemitter/gdeOCParticleEmitterList.h"
-#include "forceField/gdeOCForceFieldList.h"
-#include "snappoint/gdeOCSnapPointList.h"
-#include "speaker/gdeOCSpeakerList.h"
-#include "world/gdeOCWorldList.h"
-#include "../property/gdePropertyList.h"
+#include "envmapprobe/gdeOCEnvMapProbe.h"
+#include "inherit/gdeOCInherit.h"
+#include "light/gdeOCLight.h"
+#include "navblocker/gdeOCNavigationBlocker.h"
+#include "navspace/gdeOCNavigationSpace.h"
+#include "particleemitter/gdeOCParticleEmitter.h"
+#include "forceField/gdeOCForceField.h"
+#include "snappoint/gdeOCSnapPoint.h"
+#include "speaker/gdeOCSpeaker.h"
+#include "world/gdeOCWorld.h"
+#include "../property/gdeProperty.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -59,6 +59,9 @@ class gdeObjectClass : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeObjectClass> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeObjectClass> List;
 	
 	
 	/** Scale modes. */
@@ -81,32 +84,32 @@ private:
 	decString pName, pDescription;
 	eScaleModes pScaleMode;
 	
-	gdePropertyList pProperties, pTextureProperties;
+	gdeProperty::List pProperties, pTextureProperties;
 	decStringDictionary pPropertyValues;
 	
 	decString pCategory;
 	decStringSet pHideTags, pPartialHideTags;
 	
-	gdeOCInheritList pInherits;
+	gdeOCInherit::List pInherits;
 	decString pDefaultInheritPropertyPrefix;
 	
 	bool pIsGhost, pCanInstantiate, pIsAttachableBehavior;
 	int pInheritSubObjects;
 	
-	gdeOCBillboardList pBillboards;
-	gdeOCCameraList pCameras;
-	gdeOCComponentList pComponents;
-	gdeOCLightList pLights;
-	gdeOCEnvMapProbeList pEnvMapProbes;
-	gdeOCSnapPointList pSnapPoints;
-	gdeOCParticleEmitterList pParticleEmitters;
-	gdeOCForceFieldList pForceFields;
-	gdeOCSpeakerList pSpeakers;
-	gdeOCNavigationBlockerList pNavigationBlockers;
-	gdeOCNavigationSpaceList pNavigationSpaces;
-	gdeOCWorldList pWorlds;
+	gdeOCBillboard::List pBillboards;
+	gdeOCCamera::List pCameras;
+	gdeOCComponent::List pComponents;
+	gdeOCLight::List pLights;
+	gdeOCEnvMapProbe::List pEnvMapProbes;
+	gdeOCSnapPoint::List pSnapPoints;
+	gdeOCParticleEmitter::List pParticleEmitters;
+	gdeOCForceField::List pForceFields;
+	gdeOCSpeaker::List pSpeakers;
+	gdeOCNavigationBlocker::List pNavigationBlockers;
+	gdeOCNavigationSpace::List pNavigationSpaces;
+	gdeOCWorld::List pWorlds;
 	
-	gdeOCComponentTextureList pTextures;
+	gdeOCComponentTexture::List pTextures;
 	gdeOCComponentTexture::Ref pActiveTexture;
 	
 	
@@ -121,7 +124,9 @@ public:
 	gdeObjectClass(const gdeObjectClass &objectClass);
 	
 	/** Clean up object class. */
+protected:
 	virtual ~gdeObjectClass();
+public:
 	/*@}*/
 	
 	
@@ -179,8 +184,8 @@ public:
 	
 	
 	/** Properties. */
-	inline gdePropertyList &GetProperties(){ return pProperties; }
-	inline const gdePropertyList &GetProperties() const{ return pProperties; }
+	inline gdeProperty::List &GetProperties(){ return pProperties; }
+	inline const gdeProperty::List &GetProperties() const{ return pProperties; }
 	
 	/** Property values. */
 	inline decStringDictionary &GetPropertyValues(){ return pPropertyValues; }
@@ -201,8 +206,8 @@ public:
 	
 	
 	/** Texture properties. */
-	inline gdePropertyList &GetTextureProperties(){ return pTextureProperties; }
-	inline const gdePropertyList &GetTextureProperties() const{ return pTextureProperties; }
+	inline gdeProperty::List &GetTextureProperties(){ return pTextureProperties; }
+	inline const gdeProperty::List &GetTextureProperties() const{ return pTextureProperties; }
 	
 	/** Notify listeners texture property changed. */
 	void NotifyTexturePropertyChanged(gdeProperty *property);
@@ -216,8 +221,8 @@ public:
 	
 	
 	/** Inherit. */
-	inline gdeOCInheritList &GetInherits(){ return pInherits; }
-	inline const gdeOCInheritList &GetInherits() const{ return pInherits; }
+	inline gdeOCInherit::List &GetInherits(){ return pInherits; }
+	inline const gdeOCInherit::List &GetInherits() const{ return pInherits; }
 	
 	/** Notify listeners inherit changed. */
 	void NotifyInheritChanged(gdeOCInherit *inherit);
@@ -241,8 +246,8 @@ public:
 	
 	
 	/** Billboards. */
-	inline gdeOCBillboardList &GetBillboards(){ return pBillboards; }
-	inline const gdeOCBillboardList &GetBillboards() const{ return pBillboards; }
+	inline gdeOCBillboard::List &GetBillboards(){ return pBillboards; }
+	inline const gdeOCBillboard::List &GetBillboards() const{ return pBillboards; }
 	
 	/** Notify listeners billboards changed. */
 	void NotifyBillboardsChanged();
@@ -253,8 +258,8 @@ public:
 	
 	
 	/** Cameras. */
-	inline gdeOCCameraList &GetCameras(){ return pCameras; }
-	inline const gdeOCCameraList &GetCameras() const{ return pCameras; }
+	inline gdeOCCamera::List &GetCameras(){ return pCameras; }
+	inline const gdeOCCamera::List &GetCameras() const{ return pCameras; }
 	
 	/** Notify listeners cameras changed. */
 	void NotifyCamerasChanged();
@@ -265,8 +270,8 @@ public:
 	
 	
 	/** Components. */
-	inline gdeOCComponentList &GetComponents(){ return pComponents; }
-	inline const gdeOCComponentList &GetComponents() const{ return pComponents; }
+	inline gdeOCComponent::List &GetComponents(){ return pComponents; }
+	inline const gdeOCComponent::List &GetComponents() const{ return pComponents; }
 	
 	/** Notify listeners components changed. */
 	void NotifyComponentsChanged();
@@ -289,8 +294,8 @@ public:
 	
 	
 	/** Lights. */
-	inline gdeOCLightList &GetLights(){ return pLights; }
-	inline const gdeOCLightList &GetLights() const{ return pLights; }
+	inline gdeOCLight::List &GetLights(){ return pLights; }
+	inline const gdeOCLight::List &GetLights() const{ return pLights; }
 	
 	/** Notify listeners lights changed. */
 	void NotifyLightsChanged();
@@ -301,8 +306,8 @@ public:
 	
 	
 	/** Environment map probes. */
-	inline gdeOCEnvMapProbeList &GetEnvMapProbes(){ return pEnvMapProbes; }
-	inline const gdeOCEnvMapProbeList &GetEnvMapProbes() const{ return pEnvMapProbes; }
+	inline gdeOCEnvMapProbe::List &GetEnvMapProbes(){ return pEnvMapProbes; }
+	inline const gdeOCEnvMapProbe::List &GetEnvMapProbes() const{ return pEnvMapProbes; }
 	
 	/** Notify listeners environment map probes changed. */
 	void NotifyEnvMapProbesChanged();
@@ -313,8 +318,8 @@ public:
 	
 	
 	/** Navigation blockers. */
-	inline gdeOCNavigationBlockerList &GetNavigationBlockers(){ return pNavigationBlockers; }
-	inline const gdeOCNavigationBlockerList &GetNavigationBlockers() const{ return pNavigationBlockers; }
+	inline gdeOCNavigationBlocker::List &GetNavigationBlockers(){ return pNavigationBlockers; }
+	inline const gdeOCNavigationBlocker::List &GetNavigationBlockers() const{ return pNavigationBlockers; }
 	
 	/** Notify listeners navigation blockers changed. */
 	void NotifyNavigationBlockersChanged();
@@ -325,8 +330,8 @@ public:
 	
 	
 	/** Navigation spaces. */
-	inline gdeOCNavigationSpaceList &GetNavigationSpaces(){ return pNavigationSpaces; }
-	inline const gdeOCNavigationSpaceList &GetNavigationSpaces() const{ return pNavigationSpaces; }
+	inline gdeOCNavigationSpace::List &GetNavigationSpaces(){ return pNavigationSpaces; }
+	inline const gdeOCNavigationSpace::List &GetNavigationSpaces() const{ return pNavigationSpaces; }
 	
 	/** Notify listeners navigation spaces changed. */
 	void NotifyNavigationSpacesChanged();
@@ -337,8 +342,8 @@ public:
 	
 	
 	/** Particle emitters. */
-	inline gdeOCParticleEmitterList &GetParticleEmitters(){ return pParticleEmitters; }
-	inline const gdeOCParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
+	inline gdeOCParticleEmitter::List &GetParticleEmitters(){ return pParticleEmitters; }
+	inline const gdeOCParticleEmitter::List &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Notify listeners particle emitters changed. */
 	void NotifyParticleEmittersChanged();
@@ -349,8 +354,8 @@ public:
 	
 	
 	/** Force fields. */
-	inline gdeOCForceFieldList &GetForceFields(){ return pForceFields; }
-	inline const gdeOCForceFieldList &GetForceFields() const{ return pForceFields; }
+	inline gdeOCForceField::List &GetForceFields(){ return pForceFields; }
+	inline const gdeOCForceField::List &GetForceFields() const{ return pForceFields; }
 	
 	/** Notify listeners force fields changed. */
 	void NotifyForceFieldsChanged();
@@ -361,8 +366,8 @@ public:
 	
 	
 	/** Snap points. */
-	inline gdeOCSnapPointList &GetSnapPoints(){ return pSnapPoints; }
-	inline const gdeOCSnapPointList &GetSnapPoints() const{ return pSnapPoints; }
+	inline gdeOCSnapPoint::List &GetSnapPoints(){ return pSnapPoints; }
+	inline const gdeOCSnapPoint::List &GetSnapPoints() const{ return pSnapPoints; }
 	
 	/** Notify listeners snap points changed. */
 	void NotifySnapPointsChanged();
@@ -376,8 +381,8 @@ public:
 	
 	
 	/** Speakers. */
-	inline gdeOCSpeakerList &GetSpeakers(){ return pSpeakers; }
-	inline const gdeOCSpeakerList &GetSpeakers() const{ return pSpeakers; }
+	inline gdeOCSpeaker::List &GetSpeakers(){ return pSpeakers; }
+	inline const gdeOCSpeaker::List &GetSpeakers() const{ return pSpeakers; }
 	
 	/** Notify listeners speakers changed. */
 	void NotifySpeakersChanged();
@@ -388,8 +393,8 @@ public:
 	
 	
 	/** Worlds. */
-	inline gdeOCWorldList &GetWorlds(){ return pWorlds; }
-	inline const gdeOCWorldList &GetWorlds() const{ return pWorlds; }
+	inline gdeOCWorld::List &GetWorlds(){ return pWorlds; }
+	inline const gdeOCWorld::List &GetWorlds() const{ return pWorlds; }
 	
 	/** Notify listeners world changed. */
 	void NotifyWorldsChanged();
@@ -400,13 +405,13 @@ public:
 	
 	
 	/** List of textures. */
-	inline gdeOCComponentTextureList &GetTextures(){ return pTextures; }
-	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
+	inline gdeOCComponentTexture::List &GetTextures(){ return pTextures; }
+	inline const gdeOCComponentTexture::List &GetTextures() const{ return pTextures; }
 	
-	/** Active texture or \em NULL if none. */
+	/** Active texture or \em nullptr if none. */
 	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
-	/** Set active texture or \em NULL if none. */
+	/** Set active texture or \em nullptr if none. */
 	void SetActiveTexture(gdeOCComponentTexture *texture);
 	
 	/** Notify listeners textures changed. */

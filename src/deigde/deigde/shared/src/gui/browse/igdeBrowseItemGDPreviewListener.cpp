@@ -57,17 +57,17 @@ igdeBrowseItemGDPreviewListener::~igdeBrowseItemGDPreviewListener(){
 ///////////////
 
 void igdeBrowseItemGDPreviewListener::ImageCreated(deImage *image){
-	const int index = pIconListBox->IndexOfItem(pListItem);
+	const int index = pIconListBox->GetItems().IndexOf(pListItem);
 	if(index == -1){
 		return;
 	}
 	
 	igdeIcon::Ref icon;
 	if(image->GetWidth() > image->GetHeight()){
-		icon.TakeOver(new igdeIcon(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth()));
+		icon = igdeIcon::Ref::New(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth());
 		
 	}else{
-		icon.TakeOver(new igdeIcon(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize));
+		icon = igdeIcon::Ref::New(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize);
 	}
 	pListItem->SetIcon(icon);
 	pIconListBox->ItemChangedAt(index);

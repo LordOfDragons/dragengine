@@ -68,6 +68,11 @@
 /////////////////////////////
 
 class DE_DLL_EXPORT igdeGDPCSkinResLoader : public igdeResourceLoaderListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSkinResLoader> Ref;
+	
+	
 private:
 	igdeGDPCSkin *pOwner;
 	decString pPathModel;
@@ -91,7 +96,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadModel(const char *path){
@@ -208,7 +213,7 @@ public:
 igdeGDPCSkin::igdeGDPCSkin(igdeEnvironment &environment, igdeGDSkin *gdskin, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDSkin(gdskin),
-pSky(NULL),
+pSky(nullptr),
 pResLoadFinished(false)
 {
 	if(!gdskin){
@@ -219,7 +224,7 @@ pResLoadFinished(false)
 igdeGDPCSkin::~igdeGDPCSkin(){
 	if(pResLoader){
 		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
-		pResLoader = NULL;
+		pResLoader = nullptr;
 	}
 	if(pSky){
 		delete pSky;
@@ -240,10 +245,10 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	// create world
-	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
+	pWorld = engine.GetWorldManager()->CreateWorld();
 	
 	// create camera
-	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera = engine.GetCameraManager()->CreateCamera();
 	pCamera->SetFov(90.0f * DEG2RAD);
 	pCamera->SetFovRatio(1.0f);
 	pCamera->SetImageDistance(0.01f);
@@ -267,7 +272,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	
 	// create light
 	/*
-	pLight.TakeOver(engine.GetLightManager()->CreateLight());
+	pLight = engine.GetLightManager()->CreateLight();
 	pLight->SetActivated(true);
 	pLight->SetCastShadows(true);
 	pLight->SetColor(decColor(1.0f, 1.0f, 1.0f));
@@ -287,10 +292,10 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	// need to show the skin using light preview
 	if(pResLoader){
 		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
-		pResLoader = NULL;
+		pResLoader = nullptr;
 	}
 	pResLoadFinished = false;
-	pResLoader.TakeOver(new igdeGDPCSkinResLoader(*this, pResLoadFinished));
+	pResLoader = igdeGDPCSkinResLoader::Ref::New(*this, pResLoadFinished);
 	igdeGDPCSkinResLoader &rl = (igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader;
 	
 	rl.LoadModel("/igde/models/previewBuilder/skin.demodel");
@@ -302,7 +307,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	
 	// create render world canvas
 	deCanvasView &container = *GetCanvas();
-	pCanvasRenderWorld.TakeOver(engine.GetCanvasManager()->CreateCanvasRenderWorld());
+	pCanvasRenderWorld = engine.GetCanvasManager()->CreateCanvasRenderWorld();
 	pCanvasRenderWorld->SetCamera(pCamera);
 	pCanvasRenderWorld->SetSize(container.GetSize());
 	container.AddCanvas(pCanvasRenderWorld);
@@ -340,10 +345,10 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 			// create light preview
 			if(pLightBoxModel && pLightBoxSkin){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
-				pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pLightBoxModel, pLightBoxSkin));
+				pComponent = engine.GetComponentManager()->CreateComponent(pLightBoxModel, pLightBoxSkin);
 				pWorld->AddComponent(pComponent);
 				
-				pLight.TakeOver(engine.GetLightManager()->CreateLight());
+				pLight = engine.GetLightManager()->CreateLight();
 				pLight->SetType(deLight::eltPoint);
 				pLight->SetAmbientRatio(0.0f);
 				pLight->SetHalfIntensityDistance(0.25f);
@@ -357,14 +362,14 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 				pCamera->SetLowestIntensity(20.0f);
 				pCamera->SetHighestIntensity(20.0f);
 				
-				pSky->SetGDSky(NULL);
+				pSky->SetGDSky(nullptr);
 			}
 			
 		}else{
 			// create component
 			if(pModel){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
-				pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pModel, pSkin));
+				pComponent = engine.GetComponentManager()->CreateComponent(pModel, pSkin);
 				
 				if(pComponent->GetTextureCount() == 1){
 					pComponent->GetTextureAt(0).SetSkin(pSkin);
@@ -377,7 +382,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 	}
 	
 	rl.Drop();
-	pResLoader = NULL;
+	pResLoader = nullptr;
 	
 	// update once
 	const float initialUpdate = 0.1f;

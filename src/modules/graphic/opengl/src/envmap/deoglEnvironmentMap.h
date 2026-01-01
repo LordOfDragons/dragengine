@@ -28,13 +28,14 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include "../utils/collision/deoglDCollisionBox.h"
-#include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/common/string/decString.h>
-
 #include "../billboard/deoglBillboardList.h"
 #include "../component/deoglComponentSet.h"
 #include "../particle/deoglParticleEmitterInstanceList.h"
 #include "../rendering/plan/deoglRenderPlanList.h"
+
+#include <dragengine/common/utils/decLayerMask.h>
+#include <dragengine/common/string/decString.h>
+
 
 class deoglRLight;
 class decConvexVolumeList;

@@ -43,7 +43,7 @@
 ////////////////////////////
 
 aeULinkRemoveUnused::aeULinkRemoveUnused(aeAnimator *animator) :
-pAnimator(NULL)
+pAnimator(nullptr)
 {
 	if(!animator){
 		DETHROW(deeInvalidParam);
@@ -62,13 +62,9 @@ pAnimator(NULL)
 	}
 	
 	pAnimator = animator;
-	pAnimator->AddReference();
 }
 
 aeULinkRemoveUnused::~aeULinkRemoveUnused(){
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }
 
 

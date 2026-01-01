@@ -133,7 +133,7 @@ public:
 	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
 	deEosSdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr);
+		const decString &function, const deServiceObject::Ref &data = {});
 	
 	void QueryUserInfo(const decUniqueID &id, const deServiceObject& request);
 	

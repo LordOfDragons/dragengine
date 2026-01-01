@@ -25,13 +25,13 @@
 #ifndef _MECLADDDECAL_H_
 #define _MECLADDDECAL_H_
 
-#include "meCLHitList.h"
+#include "meCLHitListEntry.h"
+#include "../undosys/gui/decal/meUAddDecal.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
-
 
 class meWorld;
 class meObject;
@@ -48,14 +48,14 @@ private:
 	meWindowMain *pWndMain;
 	meWorld *pWorld;
 	
-	meCLHitList pHitList;
+	meCLHitListEntry::List pHitList;
 	
 	decDVector pRayOrigin;
 	decVector pRayDirection;
 	
 	bool pAlignWithNormal;
 	
-	igdeUndo::Ref pUndo;
+	meUAddDecal::Ref pUndo;
 	
 public:
 	// constructor, destructor

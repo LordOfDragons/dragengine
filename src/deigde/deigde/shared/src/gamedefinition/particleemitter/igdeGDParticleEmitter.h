@@ -26,6 +26,7 @@
 #define _IGDEGDPARTICLEEMITTER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -51,6 +52,9 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDParticleEmitter> Ref;
+	
+	/** \brief List of particle emitters. */
+	typedef decTObjectOrderedSet<igdeGDParticleEmitter> List;
 
 
 	/** \name Constructors and Destructors */
@@ -95,10 +99,10 @@ public:
 	/** \brief Set cathegory. */
 	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not loaded yet. */
+	/** \brief Preview image or nullptr if not loaded yet. */
 	deImage *GetPreviewImage(int size) const;
 	
-	/** \brief Set preview image or NULL if not loaded yet. */
+	/** \brief Set preview image or nullptr if not loaded yet. */
 	void SetPreviewImage(int size, deImage *image);
 	/*@}*/
 };

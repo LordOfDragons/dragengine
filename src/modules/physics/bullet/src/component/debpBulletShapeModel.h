@@ -42,6 +42,11 @@ class btTriangleMeshShape;
  * parent model is released from memory.
  */
 class debpBulletShapeModel : public debpBulletShape {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpBulletShapeModel> Ref;
+	
+	
 private:
 	btTriangleMeshShape *pMeshShape;
 	btTriangleIndexVertexArray *pIndexVertexArray;

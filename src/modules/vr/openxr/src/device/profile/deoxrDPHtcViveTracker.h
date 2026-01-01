@@ -35,6 +35,10 @@
  * Vive Tracker profile.
  */
 class deoxrDPHtcViveTracker : public deoxrDeviceProfile{
+public:
+	typedef deTObjectReference<deoxrDPHtcViveTracker> Ref;
+	
+	
 private:
 	class Tracker : public deObject{
 	public:
@@ -54,12 +58,12 @@ private:
 	class RoleAction : public deObject{
 	public:
 		typedef deTObjectReference<RoleAction> Ref;
-	
-	
+		
+		
 		const deoxrPath path;
 		const deoxrAction::Ref action;
 		
-		RoleAction(const deoxrPath &path, const deoxrAction::Ref &action);
+		RoleAction(const deoxrPath &path, deoxrAction *action);
 		virtual ~RoleAction();
 	};
 	
@@ -74,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHtcViveTracker(deoxrInstance &instance);
+	explicit deoxrDPHtcViveTracker(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

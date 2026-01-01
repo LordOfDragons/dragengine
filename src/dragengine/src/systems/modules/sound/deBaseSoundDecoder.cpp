@@ -22,33 +22,19 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deBaseSoundDecoder.h"
-
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-
 
 
 // Class deBaseSoundDecoder
 /////////////////////////////
 
 deBaseSoundDecoder::deBaseSoundDecoder(decBaseFileReader *file) :
-pFile(NULL)
+pFile(file)
 {
-	if(!file){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pFile = file;
-	file->AddReference();
+	DEASSERT_NOTNULL(file)
 }
 
 deBaseSoundDecoder::~deBaseSoundDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

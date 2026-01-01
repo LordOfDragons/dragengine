@@ -105,7 +105,7 @@ pBarrierTask(nullptr)
 		deoalRTPTTraceSoundRays::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTTraceSoundRays(*this));
+			task = deoalRTPTTraceSoundRays::Ref::New(*this);
 			pTasksTraceSoundRays.Add(task);
 			pTasksReadyTraceSoundRays.Add(task);
 		}
@@ -115,7 +115,7 @@ pBarrierTask(nullptr)
 		deoalRTPTListen::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTListen(*this));
+			task = deoalRTPTListen::Ref::New(*this);
 			pTasksListen.Add(task);
 			pTasksReadyListen.Add(task);
 		}
@@ -125,7 +125,7 @@ pBarrierTask(nullptr)
 // 		deoalRTPTEnvProbeFull::Ref task;
 // 		int i;
 // 		for( i=0; i<taskCount; i++ ){
-// 			task.TakeOver( new deoalRTPTEnvProbeFull( *this ) );
+// 			task = deoalRTPTEnvProbeFull::Ref::New(*this);
 // 			pTasksFull.Add( task );
 // 		}
 // 	}
@@ -134,7 +134,7 @@ pBarrierTask(nullptr)
 		deoalRTPTRoomEstimate::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTRoomEstimate(*this));
+			task = deoalRTPTRoomEstimate::Ref::New(*this);
 			pTasksRoomEstimate.Add(task);
 			pTasksReadyRoomEstimate.Add(task);
 		}
@@ -483,16 +483,13 @@ void deoalRTParallelEnvProbe::Enable(deoalRTPTTraceSoundRaysFinish *task){
 	deMutexGuard lock(pMutex);
 	
 	// enable trace tasks then remove them all from the finish task
-	const int count = task->GetTraceTasks().GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalRTPTTraceSoundRays * const ttask = (deoalRTPTTraceSoundRays*)task->GetTraceTasks().GetAt(i);
-		const int index = pTasksRunningTraceSoundRays.IndexOf(ttask);
+	task->GetTraceTasks().Visit([this](deoalRTPTTraceSoundRays *t){
+		const int index = pTasksRunningTraceSoundRays.IndexOf(t);
 		if(index != -1){
 			pTasksRunningTraceSoundRays.RemoveFrom(index);
-			pTasksReadyTraceSoundRays.Add(ttask);
+			pTasksReadyTraceSoundRays.Add(t);
 		}
-	}
+	});
 	task->GetTraceTasks().RemoveAll();
 	
 	// enable finish task
@@ -519,16 +516,13 @@ void deoalRTParallelEnvProbe::Enable(deoalRTPTRoomEstimateFinish *task){
 	deMutexGuard lock(pMutex);
 	
 	// enable estimate tasks then remove them all from the finish task
-	const int count = task->GetEstimateTasks().GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalRTPTRoomEstimateFinish * const etask = (deoalRTPTRoomEstimateFinish*)task->GetEstimateTasks().GetAt(i);
-		const int index = pTasksRunningRoomEstimate.IndexOf(etask);
+	task->GetEstimateTasks().Visit([this](deoalRTPTRoomEstimate *t){
+		const int index = pTasksRunningRoomEstimate.IndexOf(t);
 		if(index != -1){
 			pTasksRunningRoomEstimate.RemoveFrom(index);
-			pTasksReadyRoomEstimate.Add(etask);
+			pTasksReadyRoomEstimate.Add(t);
 		}
-	}
+	});
 	task->GetEstimateTasks().RemoveAll();
 	
 	// enable finish task
@@ -555,16 +549,13 @@ void deoalRTParallelEnvProbe::Enable(deoalRTPTListenFinish *task){
 	const deMutexGuard lock(pMutex);
 	
 	// enable listen tasks then remove them all from the finish task
-	const int count = task->GetListenTasks().GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalRTPTListen * const ltask = (deoalRTPTListen*)task->GetListenTasks().GetAt(i);
-		const int index = pTasksRunningListen.IndexOf(ltask);
+	task->GetListenTasks().Visit([this](deoalRTPTListen *t){
+		const int index = pTasksRunningListen.IndexOf(t);
 		if(index != -1){
 			pTasksRunningListen.RemoveFrom(index);
-			pTasksReadyListen.Add(ltask);
+			pTasksReadyListen.Add(t);
 		}
-	}
+	});
 	task->GetListenTasks().RemoveAll();
 	
 	// enable finish task
@@ -617,7 +608,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	
 	if(taskCount > pTasksReadyTraceSoundRays.GetCount()){
 		while(pTasksReadyTraceSoundRays.GetCount() < taskCount){
-			const deoalRTPTTraceSoundRays::Ref task(deoalRTPTTraceSoundRays::Ref::NewWith(*this));
+			const deoalRTPTTraceSoundRays::Ref task(deoalRTPTTraceSoundRays::Ref::New(*this));
 			pTasksTraceSoundRays.Add(task);
 			pTasksReadyTraceSoundRays.Add(task);
 		}
@@ -633,8 +624,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	
 	const int firstIndex = pTasksReadyTraceSoundRays.GetCount() - 1;
 	for(i=0; i<taskCount; i++){
-		deoalRTPTTraceSoundRays &task = *((deoalRTPTTraceSoundRays*)
-			pTasksReadyTraceSoundRays.GetAt(firstIndex - i));
+		deoalRTPTTraceSoundRays &task = *pTasksReadyTraceSoundRays.GetAt(firstIndex - i);
 		pTasksWaitTraceSoundRays.Add(&task);
 		
 		task.SetWorld(&world, rtWorldBVH);
@@ -666,15 +656,14 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	}
 	
 	// prepare finish task
-	if(pTasksReadyTraceSoundRaysFinish.GetCount() == 0){
-		const deoalRTPTTraceSoundRaysFinish::Ref task(deoalRTPTTraceSoundRaysFinish::Ref::NewWith(*this));
+	if(pTasksReadyTraceSoundRaysFinish.IsEmpty()){
+		const deoalRTPTTraceSoundRaysFinish::Ref task(deoalRTPTTraceSoundRaysFinish::Ref::New(*this));
 		pTasksTraceSoundRaysFinish.Add(task);
 		pTasksReadyTraceSoundRaysFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();
-	deoalRTPTTraceSoundRaysFinish &task = *((deoalRTPTTraceSoundRaysFinish*)
-		pTasksReadyTraceSoundRaysFinish.GetAt(pTasksReadyTraceSoundRaysFinish.GetCount() - 1));
+	deoalRTPTTraceSoundRaysFinish &task = *pTasksReadyTraceSoundRaysFinish.Last();
 	pBarrierTask = &task;
 	
 	try{
@@ -691,9 +680,9 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		for(i=0; i<pTasksRunningTraceSoundRays.GetCount(); i++){
-			((deParallelTask*)pTasksRunningTraceSoundRays.GetAt(i))->Cancel();
-		}
+		pTasksRunningTraceSoundRays.Visit([](deoalRTPTTraceSoundRays *t){
+			t->Cancel();
+		});
 		task.Cancel();
 		throw;
 	}
@@ -726,7 +715,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	if(taskCount > pTasksReadyListen.GetCount()){
 		while(pTasksReadyListen.GetCount() < taskCount){
-			const deoalRTPTListen::Ref task(deoalRTPTListen::Ref::NewWith(*this));
+			const deoalRTPTListen::Ref task(deoalRTPTListen::Ref::New(*this));
 			pTasksListen.Add(task);
 			pTasksReadyListen.Add(task);
 		}
@@ -742,7 +731,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	const int firstIndex = pTasksReadyListen.GetCount() - 1;
 	for(i=0; i<taskCount; i++){
-		deoalRTPTListen &task = *((deoalRTPTListen*)pTasksReadyListen.GetAt(firstIndex - i));
+		deoalRTPTListen &task = *pTasksReadyListen.GetAt(firstIndex - i);
 		pTasksWaitListen.Add(&task);
 		
 		task.SetWorld(&world, rtWorldBVH);
@@ -767,15 +756,14 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	}
 	
 	// prepare finish task
-	if(pTasksReadyListenFinish.GetCount() == 0){
-		const deoalRTPTListenFinish::Ref task(deoalRTPTListenFinish::Ref::NewWith(*this));
+	if(pTasksReadyListenFinish.IsEmpty()){
+		const deoalRTPTListenFinish::Ref task(deoalRTPTListenFinish::Ref::New(*this));
 		pTasksListenFinish.Add(task);
 		pTasksReadyListenFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();
-	deoalRTPTListenFinish &task = *((deoalRTPTListenFinish*)
-		pTasksReadyListenFinish.GetAt(pTasksReadyListenFinish.GetCount() - 1));
+	deoalRTPTListenFinish &task = *pTasksReadyListenFinish.Last();
 	pBarrierTask = &task;
 	
 	try{
@@ -791,9 +779,9 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		for(i=0; i<pTasksRunningListen.GetCount(); i++){
-			((deParallelTask*)pTasksRunningListen.GetAt(i))->Cancel();
-		}
+		pTasksRunningListen.Visit([](deoalRTPTListen *t){
+			t->Cancel();
+		});
 		task.Cancel();
 		throw;
 	}
@@ -922,7 +910,7 @@ const deoalRayTraceConfig &probeConfig){
 	
 	if(taskCount > pTasksReadyRoomEstimate.GetCount()){
 		while(pTasksReadyRoomEstimate.GetCount() < taskCount){
-			const deoalRTPTRoomEstimate::Ref task(deoalRTPTRoomEstimate::Ref::NewWith(*this));
+			const deoalRTPTRoomEstimate::Ref task(deoalRTPTRoomEstimate::Ref::New(*this));
 			pTasksRoomEstimate.Add(task);
 			pTasksReadyRoomEstimate.Add(task);
 		}
@@ -938,8 +926,7 @@ const deoalRayTraceConfig &probeConfig){
 	
 	const int firstIndex = pTasksReadyRoomEstimate.GetCount() - 1;
 	for(i=0; i<taskCount; i++){
-		deoalRTPTRoomEstimate &task = *((deoalRTPTRoomEstimate*)
-			pTasksReadyRoomEstimate.GetAt(firstIndex - i));
+		deoalRTPTRoomEstimate &task = *pTasksReadyRoomEstimate.GetAt(firstIndex - i);
 		pTasksWaitRoomEstimate.Add(&task);
 		
 		task.SetWorld(&world);
@@ -965,14 +952,13 @@ const deoalRayTraceConfig &probeConfig){
 	
 	// prepare finish task
 	if(pTasksReadyRoomEstimateFinish.GetCount() == 0){
-		const deoalRTPTRoomEstimateFinish::Ref task(deoalRTPTRoomEstimateFinish::Ref::NewWith(*this));
+		const deoalRTPTRoomEstimateFinish::Ref task(deoalRTPTRoomEstimateFinish::Ref::New(*this));
 		pTasksRoomEstimateFinish.Add(task);
 		pTasksReadyRoomEstimateFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();
-	deoalRTPTRoomEstimateFinish &task = *((deoalRTPTRoomEstimateFinish*)
-		pTasksReadyRoomEstimateFinish.GetAt(pTasksReadyRoomEstimateFinish.GetCount() - 1));
+	deoalRTPTRoomEstimateFinish &task = *pTasksReadyRoomEstimateFinish.Last();
 	pBarrierTask = &task;
 	
 	try{
@@ -988,9 +974,9 @@ const deoalRayTraceConfig &probeConfig){
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		for(i=0; i<pTasksRunningRoomEstimate.GetCount(); i++){
-			((deParallelTask*)pTasksRunningRoomEstimate.GetAt(i))->Cancel();
-		}
+		pTasksRunningRoomEstimate.Visit([](deoalRTPTRoomEstimate *t){
+			t->Cancel();
+		});
 		task.Cancel();
 		throw;
 	}
@@ -1005,24 +991,24 @@ const deoalRayTraceConfig &probeConfig){
 
 
 
-void deoalRTParallelEnvProbe::pAddTasks(deParallelProcessing &parallel,
-decPointerList &tasks, int count, decPointerList &running){
+template<typename T> void deoalRTParallelEnvProbe::pAddTasks(deParallelProcessing &parallel,
+decTOrderedSet<T*> &tasks, int count, decTOrderedSet<T*> &running){
 	const int firstRunning = running.GetCount();
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
 			const int index = tasks.GetCount() - 1;
-			deParallelTask * const task = (deParallelTask*)tasks.GetAt(index);
+			T * const task = tasks.GetAt(index);
 			tasks.RemoveFrom(index);
 			running.Add(task);
 			pAddTask(parallel, task);
 		}
 		
 	}catch(const deException &){
-		for(i=firstRunning; i<running.GetCount(); i++){
-			((deParallelTask*)running.GetAt(i))->Cancel();
-		}
+		running.Visit([](T * const task){
+			task->Cancel();
+		}, firstRunning);
 		throw;
 	}
 }

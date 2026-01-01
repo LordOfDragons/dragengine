@@ -32,179 +32,138 @@
 #include "../../exceptions.h"
 
 
-
-// class decUnicodeLineBuffer
-///////////////////////////////
-
-// constructor, destructor
-////////////////////////////
-
-decUnicodeLineBuffer::decUnicodeLineBuffer(int initialSize){
-	pLines = NULL;
-	pLineCount = 0;
-	pBufferSize = 0;
-	
-	try{
-		SetBufferSize(initialSize);
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+decUnicodeLineBuffer::decUnicodeLineBuffer(int initialSize) :
+pLineCount(0),
+pPosition(0)
+{
+	SetBufferSize(initialSize);
 }
 
 decUnicodeLineBuffer::~decUnicodeLineBuffer(){
-	if(pLines) delete [] pLines;
 }
-
 
 
 // management
 ///////////////
 
-void decUnicodeLineBuffer::SetBufferSize(int bufferSize){
-	if(bufferSize < 1) DETHROW(deeInvalidParam);
-	decUnicodeString **newArray = NULL;
-	int i, realBufferSize = bufferSize + 1;
-	
-	if(bufferSize == pBufferSize) return;
-	
-	try{
-		newArray = new decUnicodeString*[realBufferSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		for(i=0; i<realBufferSize; i++) newArray[i] = NULL;
-		
-		for(i=pBufferSize; i<realBufferSize; i++){
-			newArray[i] = new decUnicodeString;
-			if(!newArray[i]) DETHROW(deeOutOfMemory);
-		}
-		
-		if(realBufferSize < pLineCount){
-			for(i=0; i<realBufferSize; i++){
-				newArray[i] = pLines[i];
-				pLines[i] = NULL;
-			}
-		}else{
-			for(i=0; i<pLineCount; i++){
-				newArray[i] = pLines[i];
-				pLines[i] = NULL;
-			}
-		}
-		
-		if(pLines){
-			for(i=0; i<pBufferSize; i++){
-				if(pLines[i]) delete pLines[i];
-			}
-			delete [] pLines;
-		}
-		
-	}catch(const deException &){
-		if(newArray){
-			for(i=0; i<bufferSize; i++){
-				if(newArray[i]) delete newArray[i];
-			}
-			delete [] newArray;
-		}
-		throw;
-	}
-	
-	pLines = newArray;
-	pBufferSize = bufferSize;
-	if(pLineCount > pBufferSize) pLineCount = pBufferSize;
+int decUnicodeLineBuffer::GetBufferSize() const{
+	return pLines.GetCount();
 }
 
-const decUnicodeString *decUnicodeLineBuffer::GetLineAt(int index) const{
-	if(index < 0 || index >= pLineCount) DETHROW(deeOutOfBoundary);
-	return (const decUnicodeString *)pLines[index];
+void decUnicodeLineBuffer::SetBufferSize(int bufferSize){
+	DEASSERT_TRUE(bufferSize > 0)
+	
+	int oldSize = pLines.GetCount();
+	if(oldSize == bufferSize){
+		// nothing to do, keep ring state
+		if(pPosition >= bufferSize){
+			pPosition = 0;
+		}
+		if(pLineCount > bufferSize){
+			pLineCount = bufferSize;
+		}
+		return;
+	}
+	
+	// build a new list of the requested size and copy the newest
+	// valid lines (up to bufferSize) from the current ring into it,
+	// preserving the chronological order.
+	decUnicodeStringList newLines;
+	while(newLines.GetCount() < bufferSize){
+		newLines.Add({});
+	}
+	
+	if(oldSize > 0 && pLineCount > 0){
+		int copyCount = pLineCount;
+		if(copyCount > bufferSize){
+			copyCount = bufferSize;
+		}
+		
+		// Skip the oldest lines if we have more lines than buffer size
+		const int skipCount = pLineCount - copyCount;
+		
+		int i;
+		for(i=0; i<copyCount; i++){
+			newLines.SetAt(i, pLines.GetAt((pPosition + skipCount + i) % oldSize));
+		}
+		
+		pLineCount = copyCount;
+		pPosition = 0;
+		
+	}else{
+		// no valid lines
+		pLineCount = 0;
+		pPosition = 0;
+	}
+	
+	pLines = std::move(newLines);
+}
+
+const decUnicodeString &decUnicodeLineBuffer::GetLineAt(int index) const{
+	DEASSERT_TRUE(index >= 0 && index < pLineCount)
+	
+	const int size = pLines.GetCount();
+	DEASSERT_TRUE(size > 0)
+	
+	return pLines.GetAt((pPosition + index) % size);
 }
 
 void decUnicodeLineBuffer::AddLine(const decUnicodeString &line){
-	decUnicodeString *rotateLine;
-	int i;
+	const int size = pLines.GetCount();
+	DEASSERT_TRUE(size > 0)
 	
-	if(pLineCount == pBufferSize){
-		*pLines[ pLineCount ] = line;
-		rotateLine = pLines[0];
-		for(i=0; i<pBufferSize; i++) pLines[i] = pLines[i + 1];
-		pLines[pBufferSize] = rotateLine;
+	if(pLineCount < size){
+		// append at tail
+		pLines.SetAt((pPosition + pLineCount) % size, line);
+		pLineCount++;
 		
 	}else{
-		*pLines[ pLineCount ] = line;
-		pLineCount++;
+		// overwrite oldest at pPosition and advance start
+		pLines.SetAt(pPosition, line);
+		pPosition = (pPosition + 1) % size;
+		// pLineCount remains == size
 	}
-	
-	if(pLineCount < pBufferSize) pLineCount++;
 }
 
 void decUnicodeLineBuffer::Clear(){
 	pLineCount = 0;
+	pPosition = 0;
 }
 
 void decUnicodeLineBuffer::AddMultipleLines(const decUnicodeString &lines){
-	int i, start = 0, next, len = lines.GetLength();
-	decUnicodeString *rotateLine;
+	if(lines.IsEmpty()){
+		return;
+	}
 	
-	if(len > 0){
-		while(start < len){
-			next = lines.Find('\n', start);
-			if(next == -1) next = len;
-			
-			if(pLineCount == pBufferSize){
-				*pLines[ pLineCount ] = lines.GetMiddle( start, next );
-				rotateLine = pLines[0];
-				for(i=0; i<pBufferSize; i++) pLines[i] = pLines[i + 1];
-				pLines[pBufferSize] = rotateLine;
-				
-			}else{
-				*pLines[ pLineCount ] = lines.GetMiddle( start, next );
-				pLineCount++;
-			}
-			
-			start = next + 1;
+	const int len = lines.GetLength();
+	int start = 0;
+	
+	while(start < len){
+		int next = lines.Find('\n', start);
+		if(next == -1){
+			next = len;
 		}
 		
-		if(lines.GetAt(len - 1) == '\n'){
-			if(pLineCount == pBufferSize){
-				pLines[pLineCount]->SetFromUTF8("");
-				rotateLine = pLines[0];
-				for(i=0; i<pBufferSize; i++) pLines[i] = pLines[i + 1];
-				pLines[pBufferSize] = rotateLine;
-				
-			}else{
-				pLines[pLineCount]->SetFromUTF8("");
-				pLineCount++;
-			}
-		}
+		AddLine(lines.GetMiddle(start, next));
+		start = next + 1;
+	}
+	
+	// if the input ended with a newline, we must add an empty trailing line.
+	if(lines.GetAt(len - 1) == '\n'){
+		AddLine({});
 	}
 }
 
 void decUnicodeLineBuffer::FillLinesInto(decUnicodeString &string){
-	int i;
-	
 	if(pLineCount == 0){
-		string.SetFromUTF8("");
-		
-	}else{
-		string = *pLines[0];
-		for(i=1; i<pLineCount; i++){
-			string.AppendCharacter('\n');
-			string += *pLines[i];
-		}
+		string.Empty();
+		return;
 	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void decUnicodeLineBuffer::pCleanUp(){
-	int i;
 	
-	if(pLines){
-		for(i=0; i<pBufferSize+1; i++){
-			if(pLines[i]) delete pLines[i];
-		}
-		delete [] pLines;
+	string = GetLineAt(0);
+	int i;
+	for(i=1; i<pLineCount; i++){
+		string.AppendCharacter('\n');
+		string += GetLineAt(i);
 	}
 }

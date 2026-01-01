@@ -25,8 +25,13 @@
 #ifndef _MEVIEW3D_H_
 #define _MEVIEW3D_H_
 
+#include "meView3DListener.h"
+#include "vieweditor/meViewEditor.h"
+#include "../world/meWorld.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
@@ -34,10 +39,6 @@
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
-class meView3DListener;
-class meViewEditor;
-
-class meWorld;
 class meWindowMain;
 
 
@@ -45,20 +46,22 @@ class meWindowMain;
  * \brief 3D view of the world.
  */
 class meView3D : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<meView3D> Ref;
+	
 private:
 	meWindowMain &pWindowMain;
-	meView3DListener *pListener;
+	meView3DListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeMouseKeyListener::Ref pListenerEditor;
-	meViewEditor *pEditor;
+	meViewEditor::Ref pEditor;
 	
 	int pFPSHistory[30];
 	float pFPSRedrawCanvasDelay;
 	
-	deFont::Ref pFontStats;
-	deFontSize::Ref pFontSizeStats;
+	igdeFont::Ref pFontStats;
 	deCanvasView::Ref pCanvasFPS;
 	deCanvasText::Ref pCanvasFPSText;
 	
@@ -87,7 +90,7 @@ public:
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
 	void SetWorld(meWorld *world);
@@ -107,8 +110,8 @@ public:
 	/** \brief Active camera changed. */
 	void ActiveCameraChanged();
 	
-	/** \brief Editor or NULL. */
-	inline meViewEditor *GetEditor() const{ return pEditor; }
+	/** \brief Editor or nullptr. */
+	inline const meViewEditor::Ref &GetEditor() const{ return pEditor; }
 	/*@}*/
 };
 

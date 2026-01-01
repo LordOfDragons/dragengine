@@ -39,6 +39,7 @@
 #include "../model/igdeListItem.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -54,6 +55,8 @@ class igdeDEParameters_ComboModule : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ComboModule> Ref;
+	
 	igdeDEParameters_ComboModule(igdeDEParameters &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -66,6 +69,8 @@ class igdeDEParameters_ComboParameter : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ComboParameter> Ref;
+	
 	igdeDEParameters_ComboParameter(igdeDEParameters &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -77,14 +82,16 @@ class igdeDEParameters_ActionSet : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
-	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
-		igdeAction("Set", NULL, "Set parameter value"), pPanel(panel){}
+	typedef deTObjectReference<igdeDEParameters_ActionSet> Ref;
 	
-	virtual void OnAction(){
+	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
+		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.ParameterSetValue();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };
@@ -93,14 +100,16 @@ class igdeDEParameters_ActionReset : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
-	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
-		igdeAction("Reset", NULL, "Reset parameter value"), pPanel(panel){}
+	typedef deTObjectReference<igdeDEParameters_ActionReset> Ref;
 	
-	virtual void OnAction(){
+	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
+		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.ParameterResetValue();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };
@@ -122,34 +131,34 @@ pDialogEngine(dialogEngine)
 	igdeContainer::Ref groupBox, line;
 	
 	
-	line.TakeOver(new igdeContainerForm(env));
+	line = igdeContainerForm::Ref::New(env);
 	AddChild(line);
 	
 	helper.ComboBox(line, "Module:", "Module to show parameters for",
-		pCBModule, new igdeDEParameters_ComboModule(*this));
+		pCBModule, igdeDEParameters_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
 	helper.ComboBox(line, "Parameter:", "Parameter to show",
-		pCBParameter, new igdeDEParameters_ComboParameter(*this));
+		pCBParameter, igdeDEParameters_ComboParameter::Ref::New(*this));
 	pCBParameter->SetDefaultSorter();
 	
 	
 	// parameter information
 	helper.GroupBoxStatic(*this, groupBox, "Parameter:");
 	
-	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, NULL);
+	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, NULL);
+	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, NULL);
+	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, {});
 	pEditAllowedValues->SetEditable(false);
 	
 	helper.FormLineStretchFirst(groupBox, "Value:", "Parameter value", line);
-	helper.EditString(line, "Parameter value", pEditValue, NULL);
-	helper.Button(line, pBtnSet, new igdeDEParameters_ActionSet(*this), true);
-	helper.Button(line, pBtnReset, new igdeDEParameters_ActionReset(*this), true);
+	helper.EditString(line, "Parameter value", pEditValue, {});
+	helper.Button(line, pBtnSet, igdeDEParameters_ActionSet::Ref::New(*this));
+	helper.Button(line, pBtnReset, igdeDEParameters_ActionReset::Ref::New(*this));
 	
 	
 	// load the lists
@@ -215,7 +224,7 @@ void igdeDEParameters::UpdateParameter(){
 		for(i=0; i<count; i++){
 			list.Add(pParameterInfo.GetSelectionEntryAt(i).value);
 		}
-		pEditAllowedValues->SetText(text + list.Join(", "));
+		pEditAllowedValues->SetText(text + DEJoin(list, ", "));
 		}break;
 		
 	case deModuleParameter::eptString:
@@ -268,7 +277,7 @@ void igdeDEParameters::UpdateModulesList(){
 
 deLoadableModule *igdeDEParameters::GetSelectedModule() const{
 	return pCBModule->GetSelectedItem() ? GetEngine()->GetModuleSystem()->
-		GetModuleNamed(pCBModule->GetSelectedItem()->GetText()) : NULL;
+		GetModuleNamed(pCBModule->GetSelectedItem()->GetText()) : nullptr;
 }
 
 const decString &igdeDEParameters::GetSelectedParameter() const{

@@ -32,9 +32,7 @@
 #include "class/igdeGDClassInherit.h"
 #include "class/igdeGDClassManager.h"
 #include "class/component/igdeGDCComponent.h"
-#include "class/component/igdeGDCComponentList.h"
 #include "class/component/igdeGDCCTexture.h"
-#include "class/component/igdeGDCCTextureList.h"
 #include "../codec/igdeCodecPropertyString.h"
 #include "../environment/igdeEnvironment.h"
 
@@ -76,10 +74,10 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 // Loading
 ////////////
 
-igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
+igdeGDClass::Ref igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
-		decXmlDocument::Ref document(decXmlDocument::Ref::NewWith());
+		decXmlDocument::Ref document(decXmlDocument::Ref::New());
 		
 		decXmlParser(GetLogger()).ParseXml(&reader, document);
 		
@@ -123,14 +121,14 @@ public:
 		}
 		
 		try{
-			pReader.TakeOver(vfs.OpenFileForReading(path));
+			pReader = vfs.OpenFileForReading(path);
 			
 		}catch(const deException &e){
 			pLogger.LogException(pLoggerSource, e);
 			return true;
 		}
 		
-		pClass.TakeOver(pOwner.LoadElementClass(pReader, path.GetPathUnix()));
+		pClass = pOwner.LoadElementClass(pReader, path.GetPathUnix());
 		
 		if(pClasses.HasNamed(pClass->GetName())){
 			pLogger.LogInfoFormat(pLoggerSource, "Ignore duplicate element class '%s'",
@@ -255,21 +253,19 @@ decVector4 igdeXMLElementClass::ReadFloatRectArea(const decXmlElementTag &root){
 igdeXMLElementClass::cMap::cMap(){}
 igdeXMLElementClass::cMap::~cMap(){}
 
-igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
+igdeGDClass::Ref igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
 	decStringDictionary properties;
 	int i;
 	
-	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(
-		new igdeGDClass(GetAttributeString(root, "name"))));
-	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(
-		new igdeGDClassInherit(GetAttributeString(root, "class"))));
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(GetAttributeString(root, "name")));
+	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(GetAttributeString(root, "class")));
 	gdClass->SetPathEClass(filename);
 	
 	decPath basePath(decPath::CreatePathUnix(filename));
 	basePath.RemoveLastComponent();
 	const decString basePathStr(basePath.GetPathUnix());
 	
-	const cMap::Ref map(cMap::Ref::NewWith());
+	const cMap::Ref map(cMap::Ref::New());
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -302,21 +298,20 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	
 	gdClass->SetPropertyValues(properties);
 	
-	gdClass->AddReference(); // caller takes over reference
 	return gdClass;
 }
 
 void igdeXMLElementClass::pReadBehavior(const decXmlElementTag &root,
 igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
 	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
-		new igdeGDClassInherit(GetAttributeString(root, "type"))));
+		GetAttributeString(root, "type")));
 	inherit->SetUseAutoPropertyPrefixId(true);
 	if(HasAttribute(root, "id")){
 		inherit->SetAutoPropertyPrefixId(GetAttributeString(root, "id"));
 	}
 	
 	decStringDictionary &properties = inherit->GetAutoPrefixProperties();
-	const cMap::Ref map(cMap::Ref::NewWith());
+	const cMap::Ref map(cMap::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -449,7 +444,7 @@ const char *filename){
 		}
 		
 		decString propertyValue;
-		if(pReadPropertyValue(*tag, propertyValue, NULL, filename)){
+		if(pReadPropertyValue(*tag, propertyValue, nullptr, filename)){
 			list.Add(propertyValue);
 		}
 	}
@@ -464,8 +459,8 @@ void igdeXMLElementClass::pReadMap(const decXmlElementTag &root, cMap &map, cons
 			continue;
 		}
 		
-		const char * const key = GetAttributeString(*tag, "key");
-		const cMap::Ref child(cMap::Ref::NewWith());
+		const decString &key = GetAttributeString(*tag, "key");
+		const cMap::Ref child(cMap::Ref::New());
 		
 		if(pReadPropertyValue(*tag, child->value, child, filename)){
 			map.map.SetAt(key, child);
@@ -479,13 +474,13 @@ const char *filename){
 		const decString &hexValue = GetAttributeString(root, "hex");
 		
 		const char bufferR[3] = {hexValue[0], hexValue[1], '\0'};
-		color.r = (float)strtol(bufferR, NULL, 16) / 255.0f;
+		color.r = (float)strtol(bufferR, nullptr, 16) / 255.0f;
 		
 		const char bufferG[3] = {hexValue[2], hexValue[3], '\0'};
-		color.g = (float)strtol(bufferG, NULL, 16) / 255.0f;
+		color.g = (float)strtol(bufferG, nullptr, 16) / 255.0f;
 		
 		const char bufferB[3] = {hexValue[4], hexValue[5], '\0'};
-		color.b = (float)strtol(bufferB, NULL, 16) / 255.0f;
+		color.b = (float)strtol(bufferB, nullptr, 16) / 255.0f;
 		
 	}else{
 		if(HasAttribute(root, "r")){
@@ -561,59 +556,52 @@ const char *filename){
 
 void igdeXMLElementClass::pProcessTextureReplacements(const cMap &map,
 igdeGDClass &gdClass, const char *basePath){
-	const decStringList keys(map.map.GetKeys());
-	const int count = keys.GetCount();
-	if(count == 0){
+	if(map.map.IsEmpty()){
 		return;
 	}
 	
-	igdeGDCCTextureList &textures = gdClass.GetComponentTextures();
+	igdeGDCCTexture::List &textures = gdClass.GetComponentTextures();
 	igdeCodecPropertyString codec;
-	deObject* object;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const decString &key = keys.GetAt(i);
-		const cMap &child = *((cMap*)map.map.GetAt(key));
-		
-		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
+	map.map.Visit([&](const decString &key, const cMap &child){
+		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::New());
 		texture->SetName(key);
 		
-		if(child.map.GetAt("skin", &object)){
-			texture->SetPathSkin(decPath::AbsolutePathUnix(
-				((cMap*)object)->value, basePath).GetPathUnix());
+		const cMap::Ref *object;
+		if(child.map.GetAt("skin", object)){
+			texture->SetPathSkin(decPath::AbsolutePathUnix((*object)->value, basePath).GetPathUnix());
 		}
 		
-		if(child.map.GetAt("tint", &object)){
+		if(child.map.GetAt("tint", object)){
 			decColor color;
-			codec.DecodeColor3(((cMap*)object)->value, color);
+			codec.DecodeColor3((*object)->value, color);
 			texture->SetColorTint(color);
 		}
 		
-		if(child.map.GetAt("transform", &object)){
-			const cMap &child2 = *((cMap*)object);
+		if(child.map.GetAt("transform", object)){
+			const cMap &child2 = **object;
 			
 			decVector2 translate;
-			if(child2.map.GetAt("translate", &object)){
-				codec.DecodeVector2(((cMap*)object)->value, translate);
+			if(child2.map.GetAt("translate", object)){
+				codec.DecodeVector2((*object)->value, translate);
 			}
 			texture->SetOffset(translate);
 			
 			decVector2 scale(1.0f, 1.0f);
-			if(child2.map.GetAt("scale", &object)){
-				codec.DecodeVector2(((cMap*)object)->value, scale);
+			if(child2.map.GetAt("scale", object)){
+				codec.DecodeVector2((*object)->value, scale);
 			}
 			texture->SetScale(scale);
 			
 			float rotate = 0.0f;
-			if(child2.map.GetAt("rotate", &object)){
-				rotate = ((cMap*)object)->value.ToFloat();
+			if(child2.map.GetAt("rotate", object)){
+				rotate = (*object)->value.ToFloat();
 			}
 			texture->SetRotation(rotate);
 		}
 		
 		textures.Add(texture);
-	}
+	});
 }
 
 /*
@@ -622,7 +610,7 @@ igdeGDCComponent &igdeXMLElementClass::pGetLoadedComponent(igdeGDClass &gdClass)
 		return *gdClass.GetComponentList().GetAt(0);
 	}
 	
-	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::NewWith());
+	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::New());
 	gdClass.AddComponent(component);
 	return component;
 }

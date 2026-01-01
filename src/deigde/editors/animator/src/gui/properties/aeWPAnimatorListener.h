@@ -35,6 +35,10 @@ class aeWPAnimator;
  * Animator panel listener
  */
 class aeWPAnimatorListener : public aeAnimatorNotifier{
+public:
+	typedef deTObjectReference<aeWPAnimatorListener> Ref;
+	
+	
 private:
 	aeWPAnimator &pPanel;
 	
@@ -47,7 +51,9 @@ public:
 	aeWPAnimatorListener(aeWPAnimator &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPAnimatorListener() override;
+public:
 	/*@}*/
 	
 	

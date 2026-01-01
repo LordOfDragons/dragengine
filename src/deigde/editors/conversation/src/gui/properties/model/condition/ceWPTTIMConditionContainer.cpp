@@ -48,7 +48,7 @@ ceWPTTIMConditionContainer::ceWPTTIMConditionContainer(
 ceWindowMain &windowMain, ceConversation &conversation, ceConversationAction &action, eTypes type) :
 ceWPTTreeItemModel(windowMain, conversation, type),
 pAction(&action),
-pChildCondition(NULL){
+pChildCondition(nullptr){
 }
 
 ceWPTTIMConditionContainer::~ceWPTTIMConditionContainer(){
@@ -66,7 +66,7 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 	
 	if(pChildCondition){
 		RemoveChild(pChildCondition);
-		pChildCondition = NULL;
+		pChildCondition = nullptr;
 	}
 	
 	pCondition = condition;
@@ -75,20 +75,10 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 		return;
 	}
 	
-	ceWPTTIMCondition *child = NULL;
-	try{
-		child = ceWPTTIMConditions::CreateConditionModel(GetWindowMain(),
-			GetConversation(), GetAction(), condition);
-		AddChild(child);
-		pChildCondition = child;
-		child->FreeReference(); // held by superclass child list
-		
-	}catch(const deException &){
-		if(child){
-			child->FreeReference();
-		}
-		throw;
-	}
+	const ceWPTTIMCondition::Ref child(ceWPTTIMConditions::CreateConditionModel(
+		GetWindowMain(), GetConversation(), GetAction(), condition));
+	AddChild(child);
+	pChildCondition = child;
 }
 
 void ceWPTTIMConditionContainer::SetOrUpdateCondition(ceConversationCondition *condition){
@@ -105,10 +95,5 @@ void ceWPTTIMConditionContainer::SetOrUpdateCondition(ceConversationCondition *c
 
 
 ceWPTTIMCondition *ceWPTTIMConditionContainer::DeepFindCondition(ceConversationCondition *condition){
-	if(pChildCondition){
-		return pChildCondition->DeepFindCondition(condition);
-		
-	}else{
-		return NULL;
-	}
+	return pChildCondition ? pChildCondition->DeepFindCondition(condition) : nullptr;
 }

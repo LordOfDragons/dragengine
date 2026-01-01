@@ -42,39 +42,17 @@
 ////////////////////////////
 
 meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
-	if(!object){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = object->GetTextureCount();
-	int i;
-	
-	if(count == 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	meWorld * const world = object->GetWorld();
-	if(!world){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pObject = NULL;
+	DEASSERT_NOTNULL(object)
+	DEASSERT_TRUE(object->GetTextures().IsNotEmpty())
+	DEASSERT_NOTNULL(object->GetWorld())
 	
 	SetShortInfo("Remove All Object Textures");
 	
-	for(i=0; i<count; i++){
-		pTextureList.AddTexture(object->GetTextureAt(i));
-	}
-	
+	pTextureList = object->GetTextures();
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveAllTextures::~meUObjectRemoveAllTextures(){
-	pTextureList.RemoveAllTextures();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -83,12 +61,9 @@ meUObjectRemoveAllTextures::~meUObjectRemoveAllTextures(){
 ///////////////
 
 void meUObjectRemoveAllTextures::Undo(){
-	const int count = pTextureList.GetTextureCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pObject->AddTexture(pTextureList.GetTextureAt(i));
-	}
+	pTextureList.Visit([&](meObjectTexture *texture){
+		pObject->AddTexture(texture);
+	});
 }
 
 void meUObjectRemoveAllTextures::Redo(){

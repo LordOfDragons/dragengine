@@ -546,6 +546,26 @@ void decObjectOrderedSet::Visit(decObjectVisitor &visitor, int from, int to, int
 	}
 }
 
+void decObjectOrderedSet::Visit(decObjectVisitor &visitor, int from) const{
+	if(from < 0){
+		from = pObjectCount + from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	int i;
+	for(i=from; i<pObjectCount; i++){
+		visitor(pObjects[i]);
+	}
+}
+
+void decObjectOrderedSet::Visit(decObjectVisitor &visitor) const{
+	int i;
+	for(i=0; i<pObjectCount; i++){
+		visitor(pObjects[i]);
+	}
+}
+
 bool decObjectOrderedSet::Find(decObjectEvaluator &evaluator,
 deObject *&found, int from, int to, int step) const{
 	DEASSERT_TRUE(step != 0)
@@ -580,6 +600,34 @@ deObject *&found, int from, int to, int step) const{
 				found = pObjects[i];
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+bool decObjectOrderedSet::Find(decObjectEvaluator &evaluator, deObject *&found, int from) const{
+	if(from < 0){
+		from = pObjectCount + from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	int i;
+	for(i=from; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			found = pObjects[i];
+			return true;
+		}
+	}
+	return false;
+}
+
+bool decObjectOrderedSet::Find(decObjectEvaluator &evaluator, deObject *&found) const{
+	int i;
+	for(i=0; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			found = pObjects[i];
+			return true;
 		}
 	}
 	return false;
@@ -622,6 +670,34 @@ decObjectOrderedSet decObjectOrderedSet::Collect(decObjectEvaluator &evaluator, 
 	return collected;
 }
 
+decObjectOrderedSet decObjectOrderedSet::Collect(decObjectEvaluator &evaluator, int from) const{
+	if(from < 0){
+		from = pObjectCount + from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	decObjectOrderedSet collected;
+	int i;
+	for(i=from; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			collected.Add(pObjects[i]);
+		}
+	}
+	return collected;
+}
+
+decObjectOrderedSet decObjectOrderedSet::Collect(decObjectEvaluator &evaluator) const{
+	decObjectOrderedSet collected;
+	int i;
+	for(i=0; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			collected.Add(pObjects[i]);
+		}
+	}
+	return collected;
+}
+
 void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator, int from, int to, int step){
 	DEASSERT_TRUE(step != 0)
 	
@@ -657,6 +733,32 @@ void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator, int from, int 
 				i++;
 				to++;
 			}
+		}
+	}
+}
+
+void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator, int from){
+	if(from < 0){
+		from = pObjectCount + from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	int i;
+	for(i=from; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			RemoveFrom(i);
+			i--;
+		}
+	}
+}
+
+void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator){
+	int i;
+	for(i=0; i<pObjectCount; i++){
+		if(evaluator(pObjects[i])){
+			RemoveFrom(i);
+			i--;
 		}
 	}
 }

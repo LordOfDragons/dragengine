@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meHTVEvaluationEnvironment.h"
 #include "meHTVegetationLayer.h"
 #include "rules/meHTVRule.h"
@@ -51,22 +47,18 @@
 ////////////////////////////
 
 meHTVEvaluationEnvironment::meHTVEvaluationEnvironment(){
-	pWorld = NULL;
-	pHTSector = NULL;
-	pHTDominantTexture = NULL;
-	pVLayer = NULL;
-	pPropField = NULL;
-	pOccupation = NULL;
+	pWorld = nullptr;
+	pHTSector = nullptr;
+	pHTDominantTexture = nullptr;
+	pVLayer = nullptr;
+	pPropField = nullptr;
+	pOccupation = nullptr;
 	pProbability = 0.0f;
 	pVariation = 0;
-	pObjects = NULL;
-	pObjectCount = 0;
-	pObjectSize = 0;
 }
 
 meHTVEvaluationEnvironment::~meHTVEvaluationEnvironment(){
 	RemoveAllObjects();
-	if(pObjects) delete [] pObjects;
 }
 
 
@@ -164,32 +156,13 @@ void meHTVEvaluationEnvironment::EvaluateRules(){
 // Objects
 ////////////
 
-meObject *meHTVEvaluationEnvironment::GetObjectAt(int index) const{
-	if(index < 0 || index >= pObjectCount) DETHROW(deeInvalidParam);
-	
-	return pObjects[index];
-}
-
 void meHTVEvaluationEnvironment::AddObject(meObject *object){
-	if(!object) DETHROW(deeInvalidParam);
-	
-	if(pObjectCount == pObjectSize){
-		int newSize = pObjectSize * 3 / 2 + 1;
-		meObject **newArray = new meObject*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pObjects){
-			memcpy(newArray, pObjects, sizeof(meObject*) * pObjectSize);
-			delete [] pObjects;
-		}
-		pObjects = newArray;
-		pObjectSize = newSize;
-	}
-	
-	pObjects[pObjectCount++] = object;
+	DEASSERT_NOTNULL(object)
+	pObjects.Add(object);
 }
 
 void meHTVEvaluationEnvironment::RemoveAllObjects(){
-	pObjectCount = 0;
+	pObjects.RemoveAll();
 }
 
 
@@ -200,33 +173,29 @@ void meHTVEvaluationEnvironment::PopulateWithObjects(){
 	if(pWorld && pPropField && pVLayer){
 		double pfsize, sectorDim = (double)pHTSector->GetHeightTerrain()->GetSectorSize();
 		dePropField *engPF = pPropField->GetEnginePropField();
-		int r, ruleCount = pVLayer->GetRuleCount();
 		float maxObjectSearchRadius = 0.0f;
 		double oa1x, oa1z, oa2x, oa2z;
 		int sa1x, sa1z, sa2x, sa2z;
-		const meHTVRule *rule;
 		decDVector objpos;
 		decPoint3 s;
 		
 		// determine the maximum search radius used in the rules
-		for(r=0; r<ruleCount; r++){
-			rule = pVLayer->GetRuleAt(r);
-			
+		pVLayer->GetRules().Visit([&](const meHTVRule::Ref &rule){
 			if(rule->GetType() == meHTVRule::ertClosestProp){
-				const meHTVRuleClosestProp &ruleCP = *((meHTVRuleClosestProp*)rule);
+				const meHTVRuleClosestProp &ruleCP = rule.DynamicCast<meHTVRuleClosestProp>();
 				
 				if(ruleCP.GetSearchRadius() > maxObjectSearchRadius){
 					maxObjectSearchRadius = ruleCP.GetSearchRadius();
 				}
 				
 			}else if(rule->GetType() == meHTVRule::ertPropCount){
-				const meHTVRulePropCount &rulePC = *((meHTVRulePropCount*)rule);
+				const meHTVRulePropCount &rulePC = rule.DynamicCast<meHTVRulePropCount>();
 				
 				if(rulePC.GetSearchRadius() > maxObjectSearchRadius){
 					maxObjectSearchRadius = rulePC.GetSearchRadius();
 				}
 			}
-		}
+		});
 		
 		// determine the range of sectors to test. usually this is only the
 		// sector the prop field is in but potentially could be more if the
@@ -258,16 +227,12 @@ void meHTVEvaluationEnvironment::PopulateWithObjects(){
 		
 		// test all objects. we do not care if the objects are affected by the rules or not as
 		// the rules itself are going to check this already. this could be improved later on.
-		const meObjectList &objects = pWorld->GetObjects();
-		const int count = objects.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			meObject * const object = objects.GetAt(i);
+		pWorld->GetObjects().Visit([&](meObject *object){
 			objpos = object->GetPosition();
 			
 			if(objpos.x >= oa1x && objpos.z >= oa1z && objpos.x <= oa2x && objpos.z <= oa2z){
 				AddObject(object);
 			}
-		}
+		});
 	}
 }

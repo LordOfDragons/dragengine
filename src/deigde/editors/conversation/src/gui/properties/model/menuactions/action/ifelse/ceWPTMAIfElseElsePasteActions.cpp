@@ -73,6 +73,6 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAIfElseElsePasteActions::CreateUndo(const ceConversationActionList &actions){
-	return new ceUCAIfElsePaste(pTopic, pIfElse, NULL, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMAIfElseElsePasteActions::CreateUndo(const ceConversationAction::List &actions){
+	return ceUCAIfElsePaste::Ref::New(pTopic, pIfElse, nullptr, actions, pIndex);
 }

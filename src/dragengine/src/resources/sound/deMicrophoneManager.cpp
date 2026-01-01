@@ -66,24 +66,10 @@ deMicrophone *deMicrophoneManager::GetRootMicrophone() const{
 	return (deMicrophone*)pMicrophones.GetRoot();
 }
 
-deMicrophone *deMicrophoneManager::CreateMicrophone(){
-	deMicrophone *microphone = NULL;
-	
-	try{
-		microphone = new deMicrophone(this);
-		if(!microphone) DETHROW(deeOutOfMemory);
-		
-		GetAudioSystem()->LoadMicrophone(microphone);
-		
-		pMicrophones.Add(microphone);
-		
-	}catch(const deException &){
-		if(microphone){
-			microphone->FreeReference();
-		}
-		throw;
-	}
-	
+deMicrophone::Ref deMicrophoneManager::CreateMicrophone(){
+	const deMicrophone::Ref microphone(deMicrophone::Ref::New(this));
+	GetAudioSystem()->LoadMicrophone(microphone);
+	pMicrophones.Add(microphone);
 	return microphone;
 }
 

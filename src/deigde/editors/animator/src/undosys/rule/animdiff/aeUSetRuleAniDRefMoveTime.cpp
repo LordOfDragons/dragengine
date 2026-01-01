@@ -42,12 +42,10 @@
 aeUSetRuleAniDRefMoveTime::aeUSetRuleAniDRefMoveTime(aeRuleAnimationDifference *rule, float newTime){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetReferenceMoveTime();
 		pNewTime = newTime;
 		
@@ -82,5 +80,4 @@ void aeUSetRuleAniDRefMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAniDRefMoveTime::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

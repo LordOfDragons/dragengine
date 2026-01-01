@@ -41,7 +41,7 @@
 
 gdeUSkinSetName::gdeUSkinSetName(
 gdeSkin *skin, const char *newValue) :
-pSkin(NULL)
+pSkin(nullptr)
 {
 	if(!skin){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pSkin(NULL)
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetName::~gdeUSkinSetName(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

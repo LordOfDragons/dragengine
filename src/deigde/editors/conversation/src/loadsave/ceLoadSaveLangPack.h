@@ -26,6 +26,7 @@
 #define _CELOADSAVELANGPACK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deBaseLanguagePackModule;
@@ -41,6 +42,7 @@ class decBaseFileWriter;
 class ceLoadSaveLangPack : public deObject{
 public:
 	typedef deTObjectReference<ceLoadSaveLangPack> Ref;
+	typedef decTObjectOrderedSet<ceLoadSaveLangPack> List;
 	
 	
 private:

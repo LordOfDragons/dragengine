@@ -34,6 +34,10 @@
  * Base class for undo actions rotating things around.
  */
 class reBaseUndoRotate : public igdeUndo{
+public:
+	typedef deTObjectReference<reBaseUndoRotate> Ref;
+	
+	
 private:
 	float pAngle;
 	decPoint3 pCenterSector;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reBaseUndoRotate> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

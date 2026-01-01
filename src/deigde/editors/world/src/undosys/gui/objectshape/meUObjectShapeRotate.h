@@ -26,10 +26,10 @@
 #define _MEUUOBJECTSHAPEROTATE_H_
 
 #include "../meBaseUndoRotate.h"
-#include <dragengine/common/collection/decIntList.h>
+#include "../../../world/object/meObject.h"
+#include "../../../world/objectshape/meObjectShape.h"
 
-class meObject;
-class meObjectShapeList;
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -37,21 +37,28 @@ class meObjectShapeList;
  * \brief Rotate object shapes undo action.
  */
 class meUObjectShapeRotate : public meBaseUndoRotate{
+public:
+	typedef deTObjectReference<meUObjectShapeRotate> Ref;
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
 	decString pOldValue;
-	decIntList pList;
+	decTList<int> pList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeRotate(meObject *object, const char *property, const meObjectShapeList &list);
+	meUObjectShapeRotate(meObject *object, const char *property, const meObjectShape::List &list);
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectShapeRotate();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -61,7 +61,7 @@ igdeDialogBrowserSkin::~igdeDialogBrowserSkin(){
 
 igdeGDSkin *igdeDialogBrowserSkin::GetSelectedSkin() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDSkin*)selection->GetData() : NULL;
+	return selection ? (igdeGDSkin*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){
@@ -79,7 +79,7 @@ void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){
 
 
 bool igdeDialogBrowserSkin::SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, const char *title){
-	igdeDialogBrowserSkin::Ref dialog(igdeDialogBrowserSkin::Ref::NewWith(
+	igdeDialogBrowserSkin::Ref dialog(igdeDialogBrowserSkin::Ref::New(
 		owner->GetEnvironment(), title));
 	if(skin){
 		dialog->SetSelectedSkin(skin);

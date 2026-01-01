@@ -25,11 +25,12 @@
 #ifndef _PEELOADSAVESYSTEM_H_
 #define _PEELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include "../emitter/peeEmitter.h"
+
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class peeLoadSaveEmitter;
 class peeWindowMain;
-class peeEmitter;
 class igdeGameDefinition;
 
 
@@ -43,7 +44,7 @@ private:
 	peeWindowMain &pWindowMain;
 	
 	peeLoadSaveEmitter *pLSEmitter;
-	igdeFilePatternList pFPEmitter;
+	igdeFilePattern::List pFPEmitter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -62,11 +63,11 @@ public:
 	/** Retrieves the load save emitter. */
 	inline peeLoadSaveEmitter &GetLSEmitter(){ return *pLSEmitter; }
 	/** Loads the emitter from file if possible. */
-	peeEmitter *LoadEmitter(const char *filename);
+	peeEmitter::Ref LoadEmitter(const char *filename);
 	/** Saves the emitter to file if possible. */
 	void SaveEmitter(peeEmitter *emitter, const char *filename);
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList *GetEmitterFilePatterns() const{ return &pFPEmitter; }
+	inline const igdeFilePattern::List *GetEmitterFilePatterns() const{ return &pFPEmitter; }
 	/*@}*/
 	
 private:

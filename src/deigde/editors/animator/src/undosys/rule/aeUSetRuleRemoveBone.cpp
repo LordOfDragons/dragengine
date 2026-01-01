@@ -44,7 +44,7 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	const decStringSet &ruleBoneList = rule->GetListBones();
 	const int boneCount = ruleBoneList.GetCount();
@@ -66,13 +66,9 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleRemoveBone::~aeUSetRuleRemoveBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

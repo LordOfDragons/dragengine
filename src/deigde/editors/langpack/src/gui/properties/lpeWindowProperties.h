@@ -25,12 +25,13 @@
 #ifndef _LPEWINDOWPROPERTIES_H_
 #define _LPEWINDOWPROPERTIES_H_
 
+#include "lpeWPLangPack.h"
+#include "lpeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class lpeLangPack;
 class lpeWindowMain;
-class lpeWPLangPack;
 
 
 
@@ -38,11 +39,14 @@ class lpeWPLangPack;
  * \brief Properties Panel.
  */
 class lpeWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<lpeWindowProperties> Ref;
+	
 private:
 	lpeWindowMain &pWindowMain;
 	
-	lpeWPLangPack *pPanelLangPack;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	lpeWPLangPack::Ref pPanelLangPack;
+	lpeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -65,7 +69,7 @@ public:
 	/** \brief Main window. */
 	inline lpeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Set language pack or NULL. */
+	/** \brief Set language pack or nullptr. */
 	void SetLangPack(lpeLangPack *langpack);
 	/*@}*/
 };

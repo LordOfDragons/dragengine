@@ -58,7 +58,7 @@
 ////////////////////////////
 
 gdeObjectClass::gdeObjectClass(const char *name) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 pName(name),
 pScaleMode(esmUniform),
 
@@ -69,7 +69,7 @@ pInheritSubObjects(igdeGDClass::FilterSubObjectsAll){
 }
 
 gdeObjectClass::gdeObjectClass(const gdeObjectClass &objectClass) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 pName(objectClass.pName),
 pDescription(objectClass.pDescription),
 pScaleMode(objectClass.pScaleMode),
@@ -85,97 +85,69 @@ pCanInstantiate(objectClass.pCanInstantiate),
 pIsAttachableBehavior(objectClass.pIsAttachableBehavior),
 pInheritSubObjects(objectClass.pInheritSubObjects)
 {
-	int i, count;
+	objectClass.pProperties.Visit([&](const gdeProperty &p){
+		pProperties.Add(gdeProperty::Ref::New(p));
+	});
 	
-	try{
-		count = objectClass.pProperties.GetCount();
-		for(i=0; i<count; i++){
-			pProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pProperties.GetAt(i)));
-		}
-		
-		count = objectClass.pTextureProperties.GetCount();
-		for(i=0; i<count; i++){
-			pTextureProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pTextureProperties.GetAt(i)));
-		}
-		
-		count = objectClass.pInherits.GetCount();
-		for(i=0; i<count; i++){
-			pInherits.Add(gdeOCInherit::Ref::NewWith(*objectClass.pInherits.GetAt(i)));
-		}
-		
-		count = objectClass.pBillboards.GetCount();
-		for(i=0; i<count; i++){
-			pBillboards.Add(gdeOCBillboard::Ref::NewWith(*objectClass.pBillboards.GetAt(i)));
-		}
-		
-		count = objectClass.pCameras.GetCount();
-		for(i=0; i<count; i++){
-			pCameras.Add(gdeOCCamera::Ref::NewWith(*objectClass.pCameras.GetAt(i)));
-		}
-		
-		count = objectClass.pComponents.GetCount();
-		for(i=0; i<count; i++){
-			pComponents.Add(gdeOCComponent::Ref::NewWith(*objectClass.pComponents.GetAt(i)));
-		}
-		
-		count = objectClass.pEnvMapProbes.GetCount();
-		for(i=0; i<count; i++){
-			pEnvMapProbes.Add(gdeOCEnvMapProbe::Ref::NewWith(*objectClass.pEnvMapProbes.GetAt(i)));
-		}
-		
-		count = objectClass.pLights.GetCount();
-		for(i=0; i<count; i++){
-			pLights.Add(gdeOCLight::Ref::NewWith(*objectClass.pLights.GetAt(i)));
-		}
-		
-		count = objectClass.pNavigationBlockers.GetCount();
-		for(i=0; i<count; i++){
-			pNavigationBlockers.Add(gdeOCNavigationBlocker::Ref::NewWith(
-				*objectClass.pNavigationBlockers.GetAt(i)));
-		}
-		
-		count = objectClass.pNavigationSpaces.GetCount();
-		for(i=0; i<count; i++){
-			pNavigationSpaces.Add(gdeOCNavigationSpace::Ref::NewWith(
-				*objectClass.pNavigationSpaces.GetAt(i)));
-		}
-		
-		count = objectClass.pParticleEmitters.GetCount();
-		for(i=0; i<count; i++){
-			pParticleEmitters.Add(gdeOCParticleEmitter::Ref::NewWith(
-				*objectClass.pParticleEmitters.GetAt(i)));
-		}
-		
-		count = objectClass.pForceFields.GetCount();
-		for(i=0; i<count; i++){
-			pForceFields.Add(gdeOCForceField::Ref::NewWith(
-				*objectClass.pForceFields.GetAt(i)));
-		}
-		
-		count = objectClass.pSnapPoints.GetCount();
-		for(i=0; i<count; i++){
-			pSnapPoints.Add(gdeOCSnapPoint::Ref::NewWith(*objectClass.pSnapPoints.GetAt(i)));
-		}
-		
-		count = objectClass.pSpeakers.GetCount();
-		for(i=0; i<count; i++){
-			pSpeakers.Add(gdeOCSpeaker::Ref::NewWith(*objectClass.pSpeakers.GetAt(i)));
-		}
-		
-		count = objectClass.pWorlds.GetCount();
-		for(i=0; i<count; i++){
-			pWorlds.Add(gdeOCWorld::Ref::NewWith(*objectClass.pWorlds.GetAt(i)));
-		}
-		
-		count = objectClass.pTextures.GetCount();
-		for(i=0; i<count; i++){
-			pTextures.Add(gdeOCComponentTexture::Ref::NewWith(*objectClass.pTextures.GetAt(i)));
-		}
-		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+	objectClass.pTextureProperties.Visit([&](const gdeProperty &p){
+		pTextureProperties.Add(gdeProperty::Ref::New(p));
+	});
+	
+	objectClass.pInherits.Visit([&](const gdeOCInherit &p){
+		pInherits.Add(gdeOCInherit::Ref::New(p));
+	});
+	
+	objectClass.pBillboards.Visit([&](const gdeOCBillboard &p){
+		pBillboards.Add(gdeOCBillboard::Ref::New(p));
+	});
+	
+	objectClass.pCameras.Visit([&](const gdeOCCamera &p){
+		pCameras.Add(gdeOCCamera::Ref::New(p));
+	});
+	
+	objectClass.pComponents.Visit([&](const gdeOCComponent &p){
+		pComponents.Add(gdeOCComponent::Ref::New(p));
+	});
+	
+	objectClass.pEnvMapProbes.Visit([&](const gdeOCEnvMapProbe &p){
+		pEnvMapProbes.Add(gdeOCEnvMapProbe::Ref::New(p));
+	});
+	
+	objectClass.pLights.Visit([&](const gdeOCLight &p){
+		pLights.Add(gdeOCLight::Ref::New(p));
+	});
+	
+	objectClass.pNavigationBlockers.Visit([&](const gdeOCNavigationBlocker &p){
+		pNavigationBlockers.Add(gdeOCNavigationBlocker::Ref::New(p));
+	});
+	
+	objectClass.pNavigationSpaces.Visit([&](const gdeOCNavigationSpace &p){
+		pNavigationSpaces.Add(gdeOCNavigationSpace::Ref::New(p));
+	});
+	
+	objectClass.pParticleEmitters.Visit([&](const gdeOCParticleEmitter &p){
+		pParticleEmitters.Add(gdeOCParticleEmitter::Ref::New(p));
+	});
+	
+	objectClass.pForceFields.Visit([&](const gdeOCForceField &p){
+		pForceFields.Add(gdeOCForceField::Ref::New(p));
+	});
+	
+	objectClass.pSnapPoints.Visit([&](const gdeOCSnapPoint &p){
+		pSnapPoints.Add(gdeOCSnapPoint::Ref::New(p));
+	});
+	
+	objectClass.pSpeakers.Visit([&](const gdeOCSpeaker &p){
+		pSpeakers.Add(gdeOCSpeaker::Ref::New(p));
+	});
+	
+	objectClass.pWorlds.Visit([&](const gdeOCWorld &p){
+		pWorlds.Add(gdeOCWorld::Ref::New(p));
+	});
+	
+	objectClass.pTextures.Visit([&](const gdeOCComponentTexture &p){
+		pTextures.Add(gdeOCComponentTexture::Ref::New(p));
+	});
 }
 
 gdeObjectClass::~gdeObjectClass(){
@@ -607,7 +579,9 @@ void gdeObjectClass::SetIsAttachableBehavior(bool isAttachableBehavior){
 
 bool gdeObjectClass::DeepGetNamedProperty(const char *name, const gdeObjectClass* &objectClass,
 const gdeProperty* &property) const{
-	property = pProperties.GetNamed(name);
+	property = pProperties.FindOrDefault([&](const gdeProperty::Ref &p){
+		return p->GetName() == name;
+	});
 	if(property){
 		objectClass = this;
 		return true;
@@ -642,13 +616,15 @@ const gdeProperty* &property) const{
 }
 
 bool gdeObjectClass::NamedPropertyDefaultValue(const char *name, decString &value) const{
-	const decString *propertyValue = NULL;
-	if(pPropertyValues.GetAt(name, &propertyValue)){
+	const decString *propertyValue = nullptr;
+	if(pPropertyValues.GetAt(name, propertyValue)){
 		value = *propertyValue;
 		return true;
 	}
 	
-	const gdeProperty * const property = pProperties.GetNamed(name);
+	const gdeProperty * const property = pProperties.FindOrDefault([&](const gdeProperty::Ref &p){
+		return p->GetName() == name;
+	});
 	if(property){
 		value = property->GetDefaultValue();
 		return true;
@@ -778,10 +754,7 @@ void gdeObjectClass::GetDefinedUsedIDs(decStringSet &definedIDs, decStringSet &u
 //////////////////////
 
 void gdeObjectClass::pCleanUp(){
-// 	gdePropertyList pProperties;
-// 	gdePropertyList pTextureProperties;
-	
-	SetGameDefinition(NULL);
+	SetGameDefinition(nullptr);
 }
 
 void gdeObjectClass::pAddPropertyNames(decStringSet &set, const decString &prefix) const{

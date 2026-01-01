@@ -34,20 +34,24 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeController;
 class aeWindowProperties;
-class aeWPControllerListener;
+#include "aeWPControllerListener.h"
 
 
 /**
  * Controller Panel.
  */
 class aeWPController : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<aeWPController> Ref;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPControllerListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPControllerListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeListBox::Ref pListController;
 	
@@ -88,7 +92,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

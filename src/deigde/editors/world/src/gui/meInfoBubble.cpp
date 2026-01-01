@@ -47,12 +47,12 @@ pView(view)
 {
 	deCanvasManager &manager = *view.GetEnvironment().GetEngineController()->GetEngine()->GetCanvasManager();
 	
-	pCanvasBubble.TakeOver(manager.CreateCanvasView());
+	pCanvasBubble = manager.CreateCanvasView();
 	pCanvasBubble->SetOrder(1000.0f);
 	pCanvasBubble->SetVisible(false);
 	view.AddCanvas(pCanvasBubble);
 	
-	pCanvasBorder.TakeOver(manager.CreateCanvasPaint());
+	pCanvasBorder = manager.CreateCanvasPaint();
 	pCanvasBorder->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasBorder->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.5f));
 	pCanvasBorder->SetLineColor(decColor(0.0f, 0.0f, 0.5f, 0.9f));
@@ -60,7 +60,7 @@ pView(view)
 	pCanvasBorder->SetOrder(0.0f);
 	pCanvasBubble->AddCanvas(pCanvasBorder);
 	
-	pCanvasContent.TakeOver(manager.CreateCanvasView());
+	pCanvasContent = manager.CreateCanvasView();
 	pCanvasContent->SetOrder(1.0f);
 	pCanvasBubble->AddCanvas(pCanvasContent);
 }

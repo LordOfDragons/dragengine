@@ -44,7 +44,7 @@ ceUCCShotSetRotTo::ceUCCShotSetRotTo(ceCameraShot *cameraShot, const decVector &
 		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set End Rotation");
 	
@@ -52,13 +52,9 @@ ceUCCShotSetRotTo::ceUCCShotSetRotTo(ceCameraShot *cameraShot, const decVector &
 	pNewRot = newRot;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetRotTo::~ceUCCShotSetRotTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

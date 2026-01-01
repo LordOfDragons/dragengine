@@ -46,25 +46,16 @@ ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
 	ceConversation *conversation = file->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pFile = NULL;
+	pConversation = nullptr;
+	pFile = nullptr;
 	
 	SetShortInfo("Remove File");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileRemove::~ceUCFileRemove(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

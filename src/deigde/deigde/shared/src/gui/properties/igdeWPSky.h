@@ -26,7 +26,7 @@
 #define _IGDEWPSTATICSKY_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include "../igdeButton.h"
 #include "../igdeContainer.h"
@@ -62,14 +62,13 @@ public:
 	
 	
 private:
-	class DE_DLL_EXPORT Controller : public deObject{
+	class cController : public deObject{
 	public:
-		typedef deTObjectReference<Controller> Ref;
-	
-	
+		typedef deTObjectReference<cController> Ref;
+		
 		int controller;
-		igdeLabel::Ref label;
-		igdeEditSliderText::Ref slider;
+		igdeLabel::WeakRef label;
+		igdeEditSliderText::WeakRef slider;
 		decString name;
 		float minimum;
 		float maximum;
@@ -85,7 +84,7 @@ private:
 	igdeButton::Ref pBtnFromGDSky;
 	
 	igdeContainer::Ref pFraControllers;
-	decObjectList pControllers;
+	decTObjectOrderedSet<cController> pControllers;
 	
 	igdeAction::Ref pAction;
 	
@@ -112,10 +111,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Sky wrapper or NULL if not set. */
+	/** \brief Sky wrapper or nullptr if not set. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	
-	/** \brief Set sky wrapper or NULL if not set. */
+	/** \brief Set sky wrapper or nullptr if not set. */
 	void SetSky(igdeWSky *sky);
 	
 	/** \brief Update widget after sky changed outside. */
@@ -132,10 +131,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**

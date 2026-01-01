@@ -42,12 +42,10 @@
 aeUSetRuleSModMaxSize::aeUSetRuleSModMaxSize(aeRuleStateManipulator *rule, const decVector &newMax){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumSize();
 		pNewMax = newMax;
 		
@@ -82,5 +80,4 @@ void aeUSetRuleSModMaxSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

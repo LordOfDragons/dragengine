@@ -25,13 +25,12 @@
 #ifndef _IGDEPROPERTY_H_
 #define _IGDEPROPERTY_H_
 
-#include "../../gui/filedialog/igdeFilePatternList.h"
+#include "../../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-
-class igdeFilePatternList;
 
 
 
@@ -45,6 +44,9 @@ class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDProperty> Ref;
+	
+	/** \brief List of properties. */
+	typedef decTObjectOrderedSet<igdeGDProperty> List;
 	
 	
 	/** \brief Property type. */
@@ -183,7 +185,7 @@ private:
 	decString pDefaultValue;
 	decStringList pOptions;
 	ePathPatternTypes pPathPatternType;
-	igdeFilePatternList pCustomPathPattern;
+	igdeFilePattern::List pCustomPathPattern;
 	decString pIdentifierGroup;
 	bool pIdentifierUsage;
 	
@@ -249,8 +251,8 @@ public:
 	void SetPathPatternType(ePathPatternTypes type);
 	
 	/** \brief Custom path pattern list. */
-	inline igdeFilePatternList &GetCustomPathPattern(){ return pCustomPathPattern; }
-	inline const igdeFilePatternList &GetCustomPathPattern() const{ return pCustomPathPattern; }
+	inline igdeFilePattern::List &GetCustomPathPattern(){ return pCustomPathPattern; }
+	inline const igdeFilePattern::List &GetCustomPathPattern() const{ return pCustomPathPattern; }
 	
 	/** \brief Identifier group or empty string if not set. */
 	inline const decString &GetIdentifierGroup() const{ return pIdentifierGroup; }

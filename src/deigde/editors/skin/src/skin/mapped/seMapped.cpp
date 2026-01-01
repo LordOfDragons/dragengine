@@ -92,15 +92,19 @@ void seMapped::SetName(const char *name){
 	NotifyNameChanged();
 }
 
-void seMapped::MakeNameUnique(const seMappedList &list){
-	if(!list.HasNamed(pName)){
+void seMapped::MakeNameUnique(const seMapped::List &list){
+	if(!list.HasMatching([&](const seMapped &m){
+		return m.GetName() == pName;
+	})){
 		return;
 	}
 	
 	decString name(pName);
 	int counter = 2;
 	
-	while(list.HasNamed(name)){
+	while(list.HasMatching([&](const seMapped &m){
+		return m.GetName() == name;
+	})){
 		name.Format("%s #%d", pName.GetString(), counter++);
 	}
 	

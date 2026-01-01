@@ -35,6 +35,10 @@ class aeAnimator;
  * Undo action animator add bone.
  */
 class aeUAnimatorAddVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorAddVertexPositionSet> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pVertexPositionSets;
@@ -42,9 +46,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUAnimatorAddVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

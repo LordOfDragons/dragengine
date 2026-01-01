@@ -102,10 +102,10 @@ void deGraphicSystem::SetActiveModule(deLoadableModule *module){
 void deGraphicSystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
 	
-	pRenderWindow = NULL;
-	pInputOverlayCanvas = NULL;
-	pDebugOverlayCanvas = NULL;
-	pActiveModule = NULL;
+	pRenderWindow = nullptr;
+	pInputOverlayCanvas = nullptr;
+	pDebugOverlayCanvas = nullptr;
+	pActiveModule = nullptr;
 }
 
 void deGraphicSystem::PostStart(){
@@ -114,7 +114,7 @@ void deGraphicSystem::PostStart(){
 	
 	// there has to be a render window to start
 	if(!pRenderWindow){
-		pRenderWindow.TakeOver(engine.GetRenderWindowManager()->CreateRenderWindow());
+		pRenderWindow = engine.GetRenderWindowManager()->CreateRenderWindow();
 		pRenderWindow->SetSize(800, 600);
 		pRenderWindow->SetTitle("Drag[en]gine Game");
 	}
@@ -165,8 +165,7 @@ void deGraphicSystem::SetRenderWindow(deRenderWindow *renderWindow){
 
 void deGraphicSystem::CreateAndSetRenderWindow(int width, int height, bool fullScreen,
 const char *title, deImage *icon){
-	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(
-		 GetEngine()->GetRenderWindowManager()->CreateRenderWindow()));
+	const deRenderWindow::Ref renderWindow(GetEngine()->GetRenderWindowManager()->CreateRenderWindow());
 	renderWindow->SetSize(width, height);
 	renderWindow->SetTitle(title);
 	renderWindow->SetFullScreen(fullScreen);
@@ -203,8 +202,8 @@ bool fullScreen, const char *title, deImage *icon, HWND hostWindow)
 
 #ifdef IMPLEMENT_CreateAndSetHostedRenderWindow
 {
-	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(
-		 GetEngine()->GetRenderWindowManager()->CreateRenderWindowInside(hostWindow)));
+	const deRenderWindow::Ref renderWindow(GetEngine()->GetRenderWindowManager()->
+		CreateRenderWindowInside(hostWindow));
 	renderWindow->SetSize(width, height);
 	renderWindow->SetTitle(title);
 	renderWindow->SetFullScreen(fullScreen);
@@ -251,7 +250,7 @@ void deGraphicSystem::RenderWindows(){
 
 void deGraphicSystem::CreateGlobalResources(){
 	if(!pDebugOverlayCanvas){
-		pDebugOverlayCanvas.TakeOver(GetEngine()->GetCanvasManager()->CreateCanvasView());
+		pDebugOverlayCanvas = GetEngine()->GetCanvasManager()->CreateCanvasView();
 	}
 }
 

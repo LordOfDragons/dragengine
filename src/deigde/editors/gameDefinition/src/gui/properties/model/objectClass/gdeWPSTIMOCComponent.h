@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCComponent;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCComponent;
  */
 class gdeWPSTIMOCComponent : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCComponent> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pComponent; }
 	
 	/** \brief Validate component and update state accordingly. */
 	void Validate();

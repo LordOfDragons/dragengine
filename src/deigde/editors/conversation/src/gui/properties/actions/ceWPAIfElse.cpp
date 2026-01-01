@@ -84,10 +84,10 @@ ceWPAIfElse::~ceWPAIfElse(){
 ceCAIfElse *ceWPAIfElse::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
 	if(!selected){
-		return NULL;
+		return nullptr;
 	}
 	
-	ceWPTTIMAIfElse *modelIfElse = NULL;
+	ceWPTTIMAIfElse *modelIfElse = nullptr;
 	
 	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElse:
@@ -118,17 +118,17 @@ ceCAIfElse *ceWPAIfElse::GetAction() const{
 		return modelIfElse->GetActionIfElse();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 ceCAIfElseCase *ceWPAIfElse::GetActiveCase() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
 	if(!selected){
-		return NULL;
+		return nullptr;
 	}
 	
-	ceWPTTIMAIfElseIfCase *modelIfCase = NULL;
+	ceWPTTIMAIfElseIfCase *modelIfCase = nullptr;
 	
 	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionIfElseCase:
@@ -151,7 +151,7 @@ ceCAIfElseCase *ceWPAIfElse::GetActiveCase() const{
 		return modelIfCase->GetIfCase();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

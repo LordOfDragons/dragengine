@@ -64,6 +64,6 @@ void ceCACoordSystemAdd::SetAliasID(const char *id){
 
 
 
-ceConversationAction *ceCACoordSystemAdd::CreateCopy() const{
-	return new ceCACoordSystemAdd(*this);
+ceConversationAction::Ref ceCACoordSystemAdd::CreateCopy() const{
+	return ceCACoordSystemAdd::Ref::New(*this);
 }

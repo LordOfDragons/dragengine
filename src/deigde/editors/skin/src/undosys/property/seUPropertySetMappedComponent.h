@@ -26,20 +26,24 @@
 #define _SEUPROPERTYSETMAPPEDCOMPONENT_H_
 
 #include "../../skin/mapped/seMapped.h"
+#include "../../skin/property/seProperty.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
 
-class seProperty;
 
 
 /**
  * Undo Action Property Set Video Path.
  */
 class seUPropertySetMappedComponent : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertySetMappedComponent> Ref;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	int pIndex;
 	const seMapped::Ref pOldValue;
@@ -48,9 +52,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertySetMappedComponent> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

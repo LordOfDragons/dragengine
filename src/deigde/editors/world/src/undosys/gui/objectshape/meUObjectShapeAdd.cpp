@@ -54,10 +54,10 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 	}
 	
 	igdeCodecPropertyString codec;
-	decShape *copyShape = NULL;
+	decShape *copyShape = nullptr;
 	decShapeList shapeList;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Object-Shape add");
 	SetLongInfo("Object-Shape add");
@@ -84,13 +84,9 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeAdd::~meUObjectShapeAdd(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

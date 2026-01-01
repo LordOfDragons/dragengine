@@ -489,13 +489,13 @@ public:
 	inline const deModel::Ref &GetDisplayModel() const{ return pDisplayModel; }
 	
 	/** \brief Set model to represent the device in 3D user interfaces or NULL if not set. */
-	void SetDisplayModel(const deModel::Ref &model);
+	void SetDisplayModel(deModel *model);
 	
 	/** \brief Skin for display model or NULL if not set. */
 	inline const deSkin::Ref &GetDisplaySkin() const{ return pDisplaySkin; }
 	
 	/** \brief Set skin for display model or NULL if not set. */
-	void SetDisplaySkin(const deSkin::Ref &skin);
+	void SetDisplaySkin(deSkin *skin);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
@@ -509,7 +509,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage(const deImage::Ref &image);
+	void SetDisplayImage(deImage *image);
 	
 	/** \brief Count of icons representing the device in bindings. */
 	int GetDisplayIconCount() const;
@@ -526,7 +526,7 @@ public:
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon(const deImage::Ref &image);
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
@@ -576,7 +576,7 @@ public:
 	 * \brief Set hand rig if ebcHand is used.
 	 * \version 1.6
 	 */
-	void SetHandRig(const deRig::Ref &rig);
+	void SetHandRig(deRig *rig);
 	
 	/**
 	 * \brief Device supports face eye expressions.
@@ -624,7 +624,7 @@ public:
 	 * \brief Set model to represent the device in VR environments or NULL if not set.
 	 * \version 1.6
 	 */
-	void SetVRModel(const deModel::Ref &model);
+	void SetVRModel(deModel *model);
 	
 	/**
 	 * \brief Skin for VR model or NULL if not set.
@@ -636,7 +636,7 @@ public:
 	 * \brief Skin for VR model or NULL if not set.
 	 * \version 1.6
 	 */
-	void SetVRSkin(const deSkin::Ref &skin);
+	void SetVRSkin(deSkin *skin);
 	/*@}*/
 	
 	

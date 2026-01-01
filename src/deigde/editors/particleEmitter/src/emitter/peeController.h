@@ -25,6 +25,7 @@
 #ifndef _PEECONTROLLER_H_
 #define _PEECONTROLLER_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
@@ -39,6 +40,10 @@ class deParticleEmitterController;
  * \brief Particle Emitter Controller.
  */
 class peeController : public deObject{
+public:
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<peeController> List;
+	
 private:
 	peeEmitter *pEmitter;
 	int pEngControllerIndex;
@@ -64,7 +69,9 @@ public:
 	/** \brief Create a new controller. */
 	peeController();
 	/** \brief Clean up the controller. */
+protected:
 	virtual ~peeController();
+public:
 	/*@}*/
 	
 	/** \name Management */

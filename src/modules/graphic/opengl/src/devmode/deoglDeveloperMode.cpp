@@ -71,10 +71,11 @@
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/common/exceptions.h>
 
 #include <dragengine/dragengine_configuration.h>
 
@@ -300,7 +301,7 @@ const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith(int width,
 		pTextureDebugImage->CreateTexture();
 		
 		if(!pFBODebugImage){
-			pFBODebugImage.TakeOverWith(pRenderThread, false);
+			pFBODebugImage = deoglFramebuffer::Ref::New(pRenderThread, false);
 			
 			pRenderThread.GetFramebuffer().Activate(pFBODebugImage);
 			
@@ -497,7 +498,7 @@ bool deoglDeveloperMode::ExecuteCommand(const decUnicodeArgumentList &command, d
 		
 	}catch(const deException &exception){
 		pRenderThread.Unfreeze();
-		answer.AppendFromUTF8(exception.FormatOutput().Join("\n"));
+		answer.AppendFromUTF8(DEJoin(exception.FormatOutput(), "\n"));
 		return true;
 	}
 	
@@ -622,7 +623,6 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 	if(formatCount > 0){
 		try{
 			formats = new GLint[formatCount];
-			if(!formats) DETHROW(deeOutOfMemory);
 			
 			OGL_CHECK(pRenderThread, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats));
 			for(f=0; f<formatCount; f++){

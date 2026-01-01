@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeText;
+#include "../../../../skin/property/node/sePropertyNodeText.h"
 
 
 
@@ -35,8 +35,12 @@ class sePropertyNodeText;
  * \brief Undo action property node text set font size.
  */
 class seUPropertyNodeTextSetSize : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeTextSetSize> Ref;
+	
+	
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeTextSetSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

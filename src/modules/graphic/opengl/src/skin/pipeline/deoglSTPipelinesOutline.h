@@ -33,10 +33,13 @@
  */
 class deoglSTPipelinesOutline : public deoglSkinTexturePipelines{
 public:
+	typedef deTObjectReference<deoglSTPipelinesOutline> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesOutline(const deoglSkinTexture &texture);
+	explicit deoglSTPipelinesOutline(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */

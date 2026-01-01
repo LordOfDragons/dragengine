@@ -121,9 +121,6 @@ void deoglSPBlockUBO::MapBuffer(){
 	if(false){ // use mapped
 		if(!pUBO){
 			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
-			if(!pUBO){
-				DETHROW(deeOutOfMemory);
-			}
 		}
 		
 		OGL_CHECK(GetRenderThread(), pglBindBuffer(GL_UNIFORM_BUFFER, pUBO));
@@ -139,12 +136,12 @@ void deoglSPBlockUBO::MapBuffer(){
 			char *data;
 			
 			if(pglMapBuffer){
-				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBuffer(
-					GL_UNIFORM_BUFFER, GL_WRITE_ONLY));
+				OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBuffer(
+					GL_UNIFORM_BUFFER, GL_WRITE_ONLY)));
 				
 			}else{
-				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
-					0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
+				OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBufferRange(
+					GL_UNIFORM_BUFFER, 0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)));
 			}
 			
 			if(!data){
@@ -178,9 +175,6 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 	if(false){ // use mapped
 		if(!pUBO){
 			OGL_CHECK(GetRenderThread(), pglGenBuffers(1, &pUBO));
-			if(!pUBO){
-				DETHROW(deeOutOfMemory);
-			}
 			pAllocateBuffer = true;
 		}
 		
@@ -195,9 +189,9 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 		try{
 			char *data;
 			
-			OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
-				GetElementStride() * element, GetElementStride() * count,
-				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT));
+			OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBufferRange(
+				GL_UNIFORM_BUFFER, GetElementStride() * element, GetElementStride() * count,
+				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT)));
 			
 			if(!data){
 				DETHROW(deeInvalidParam);
@@ -224,9 +218,6 @@ void deoglSPBlockUBO::UnmapBuffer(){
 		
 		if(!pUBO){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pUBO));
-			if(!pUBO){
-				DETHROW(deeOutOfMemory);
-			}
 			pAllocateBuffer = true;
 		}
 		
@@ -268,8 +259,8 @@ int deoglSPBlockUBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
-deoglShaderParameterBlock *deoglSPBlockUBO::Copy() const{
-	return new deoglSPBlockUBO(*this);
+deoglShaderParameterBlock::Ref deoglSPBlockUBO::Copy() const{
+	return Ref::New(*this);
 }
 
 

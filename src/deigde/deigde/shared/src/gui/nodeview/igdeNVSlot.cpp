@@ -51,16 +51,16 @@
 // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 	
 	// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
-	igdeContainerFlow::Ref nvnode(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	igdeNVSlot::Ref nvslot1, nvslot2, nvslot3, nvslot4;
-	nvslot1.TakeOver(new igdeNVSlot(env, "Input 1", "This is a test input", true));
+	igdeContainerFlow::Ref nvnode(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
+	igdeNVSlot *nvslot1, nvslot2, nvslot3, nvslot4;
+	nvslot1 = igdeNVSlot::Ref::New(env, "Input 1", "This is a test input", true);
 	nvnode->AddChild(nvslot1);
-	nvslot2.TakeOver(new igdeNVSlot(env, "Input 2", "This is a test input", true));
+	nvslot2 = igdeNVSlot::Ref::New(env, "Input 2", "This is a test input", true);
 	nvslot2->SetColor(decColor(1.0f, 0.0f, 0.0f));
 	nvnode->AddChild(nvslot2);
-	nvslot3.TakeOver(new igdeNVSlot(env, "Output 1", "This is a test output", false));
+	nvslot3 = igdeNVSlot::Ref::New(env, "Output 1", "This is a test output", false);
 	nvnode->AddChild(nvslot3);
-	nvslot4.TakeOver(new igdeNVSlot(env, "Output 2", "This is a test output", false));
+	nvslot4 = igdeNVSlot::Ref::New(env, "Output 2", "This is a test output", false);
 	nvslot4->SetColor(decColor(0.0f, 0.0f, 1.0f));
 	nvnode->AddChild(nvslot4);
 	nvslot2->AddLink(nvslot4);
@@ -82,7 +82,7 @@ pText(text),
 pEnabled(true),
 pIsInput(isInput),
 pColor(0.0f, 0.0f, 0.0f),
-pOwnerNode(NULL){
+pOwnerNode(nullptr){
 }
 
 igdeNVSlot::igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput) :
@@ -92,7 +92,7 @@ pDescription(description),
 pEnabled(true),
 pIsInput(isInput),
 pColor(0.0f, 0.0f, 0.0f),
-pOwnerNode(NULL){
+pOwnerNode(nullptr){
 }
 
 igdeNVSlot::~igdeNVSlot(){
@@ -147,29 +147,19 @@ void igdeNVSlot::SetOwnerNode(igdeNVNode *node){
 
 
 
-int igdeNVSlot::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-igdeNVLink *igdeNVSlot::GetLinkAt(int index) const{
-	return (igdeNVLink*)pLinks.GetAt(index);
-}
-
 bool igdeNVSlot::HasLink(igdeNVLink *link) const{
 	return pLinks.Has(link);
 }
 
 void igdeNVSlot::AddLink(igdeNVLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(link)
 	
-	pLinks.AddIfAbsent(link);
+	pLinks.Add(link);
 	OnLinksChanged();
 }
 
 void igdeNVSlot::RemoveLink(igdeNVLink *link){
-	pLinks.RemoveIfPresent(link);
+	pLinks.Remove(link);
 	OnLinksChanged();
 }
 

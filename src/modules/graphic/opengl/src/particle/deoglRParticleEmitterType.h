@@ -27,6 +27,7 @@
 
 #include "../light/pipeline/deoglLightPipelinesParticle.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
@@ -35,7 +36,6 @@
 
 class deoglLightShaderConfig;
 class deoglRParticleEmitter;
-class deoglRSkin;
 class deoglTexture;
 
 
@@ -44,11 +44,11 @@ class deoglTexture;
  * Render particle emitter type.
  */
 class deoglRParticleEmitterType : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglRParticleEmitterType> Ref;
-
-
-public:
+	
+	
 	/** Texture sampler curves. */
 	enum eSampleCurves{
 		// progress curves
@@ -80,7 +80,7 @@ private:
 	deoglPixelBuffer::Ref pPixelBufferSamples;
 	deoglTexture *pTextureSamples;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	bool pEmitLight;
 	bool pHasTransparency;
@@ -151,7 +151,7 @@ public:
 	
 	
 	/** Skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(deoglRSkin *skin);

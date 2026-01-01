@@ -35,6 +35,9 @@ class ceWPView;
  * \brief View panel listener.
  */
 class ceWPViewListener : public ceConversationListener{
+public:
+	typedef deTObjectReference<ceWPViewListener> Ref;
+	
 private:
 	ceWPView &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	ceWPViewListener(ceWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWPViewListener() override;
+public:
 	/*@}*/
 	
 	

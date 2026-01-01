@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCLightListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCLightListener(gdeWPSOCLight &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCLightListener() override;
+public:
 	/*@}*/
 	
 	

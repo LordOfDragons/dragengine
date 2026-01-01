@@ -48,41 +48,27 @@ ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfEls
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pCase = nullptr;
 	
 	if(ifcase){
-		pActionList = ifcase->GetActions();
+		pActions = ifcase->GetActions();
 		
 	}else{
-		pActionList = ifElse->GetElseActions();
+		pActions = ifElse->GetElseActions();
 	}
 	
 	SetShortInfo("IfElse Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -92,16 +78,16 @@ ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
 
 void ceUCAIfElseRemoveAll::Undo(){
 	if(pCase){
-		pCase->GetActions() = pActionList;
+		pCase->GetActions() = pActions;
 		
 	}else{
-		pIfElse->GetElseActions() = pActionList;
+		pIfElse->GetElseActions() = pActions;
 	}
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	if(pActionList.GetCount() > 0){
-		pTopic->SetActive(pActionList.GetAt(0), NULL);
+	if(pActions.GetCount() > 0){
+		pTopic->SetActive(pActions.GetAt(0), nullptr);
 	}
 }
 
@@ -115,5 +101,5 @@ void ceUCAIfElseRemoveAll::Redo(){
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive(pIfElse, NULL);
+	pTopic->SetActive(pIfElse, nullptr);
 }

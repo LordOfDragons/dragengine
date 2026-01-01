@@ -26,6 +26,8 @@
 #define _GDEWPSOCPARTICLEEMITTER_H_
 
 #include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCParticleEmitterListener.h"
 
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -35,10 +37,8 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCParticleEmitterListener;
 
 
 
@@ -46,11 +46,14 @@ class gdeWPSOCParticleEmitterListener;
  * \brief Object class particle emitter property panel.
  */
 class gdeWPSOCParticleEmitter : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCParticleEmitter> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCParticleEmitterListener *pListener;
+	gdeWPSOCParticleEmitterListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeEditVector::Ref pEditPosition;
@@ -82,18 +85,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class particle emitter or \em NULL if not set. */
+	/** \brief Active object class particle emitter or \em nullptr if not set. */
 	gdeOCParticleEmitter *GetParticleEmitter() const;
 	
 	/** \brief Selected property name. */

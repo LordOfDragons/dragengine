@@ -38,6 +38,10 @@ class reRigShapeHull;
  * \brief Undo action shape hull remove point.
  */
 class reUShapeHullRemovePoint : public igdeUndo{
+public:
+	typedef deTObjectReference<reUShapeHullRemovePoint> Ref;
+	
+	
 private:
 	const reRigShapeHull::Ref pShape;
 	
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUShapeHullRemovePoint> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

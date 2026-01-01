@@ -28,6 +28,7 @@
 #include "../../mapped/seMapped.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
@@ -44,6 +45,7 @@ class deEngine;
 class sePropertyNode : public deObject{
 public:
 	typedef deTObjectReference<sePropertyNode> Ref;
+	typedef decTObjectOrderedSet<sePropertyNode> List;
 	
 	
 	/** Node types. */
@@ -85,7 +87,7 @@ public:
 	
 	
 private:
-	deEngine &pEngine;
+	const deEngine &pEngine;
 	
 	sePropertyNodeGroup *pParent;
 	sePropertyNode *pMaskParent;
@@ -103,11 +105,10 @@ private:
 	decColor pColorize;
 	
 	float pTransparency;
-	sePropertyNode *pMask;
+	sePropertyNode::Ref pMask;
 	deSkinPropertyNode::eCombineModes pCombineMode;
 	
-	seMapped::Ref *pMapped;
-	int pMappedCount;
+	decTObjectList<seMapped> pMapped;
 	
 	bool pSelected;
 	bool pActive;
@@ -118,7 +119,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create node. */
-	sePropertyNode(eNodeTypes nodeType, deEngine &engine, int mappedCount);
+	sePropertyNode(eNodeTypes nodeType, const deEngine &engine, int mappedCount);
 	
 	/** Create copy of node. */
 	sePropertyNode(const sePropertyNode &node);
@@ -133,23 +134,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine. */
-	inline deEngine &GetEngine() const{ return pEngine; }
+	inline const deEngine &GetEngine() const{ return pEngine; }
 	
 	
 	
-	/** Parent node or \em NULL. */
+	/** Parent node or \em nullptr. */
 	inline sePropertyNodeGroup *GetParent() const{ return pParent; }
 	
-	/** Set parent node or \em NULL. */
+	/** Set parent node or \em nullptr. */
 	void SetParent(sePropertyNodeGroup *parent);
 	
-	/** Mask parent node or \em NULL. */
+	/** Mask parent node or \em nullptr. */
 	inline sePropertyNode *GetMaskParent() const{ return pMaskParent; }
 	
-	/** Set mask parent node or \em NULL. */
+	/** Set mask parent node or \em nullptr. */
 	void SetMaskParent(sePropertyNode *maskParent);
 	
-	/** Parent property or \em NULL if not present. */
+	/** Parent property or \em nullptr if not present. */
 	virtual seProperty *GetProperty() const;
 	
 	
@@ -246,10 +247,10 @@ public:
 	/** Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
 	void SetTransparency(float transparency);
 	
-	/** Mask node or \em NULL if not masked. */
-	inline sePropertyNode *GetMask() const{ return pMask; }
+	/** Mask node or \em nullptr if not masked. */
+	inline const sePropertyNode::Ref &GetMask() const{ return pMask; }
 	
-	/** Set mask node or \em NULL if not masked. */
+	/** Set mask node or \em nullptr if not masked. */
 	void SetMask(sePropertyNode *mask);
 	
 	/** Combine mode. */
@@ -291,7 +292,7 @@ public:
 	
 	
 	/** Create copy of node. */
-	virtual sePropertyNode *Copy() const = 0;
+	virtual Ref Copy() const = 0;
 	
 	/** Update resources. */
 	virtual void UpdateResources();

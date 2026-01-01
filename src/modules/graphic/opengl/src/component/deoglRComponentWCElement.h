@@ -34,6 +34,10 @@ class deoglRComponent;
  * Render component world compute element.
  */
 class deoglRComponentWCElement : public deoglWorldComputeElement{
+public:
+	typedef deTObjectReference<deoglRComponentWCElement> Ref;
+	
+	
 private:
 	deoglRComponent &pComponent;
 	

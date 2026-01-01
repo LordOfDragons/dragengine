@@ -27,6 +27,7 @@
 
 #include "deoglRenderPlanTasks.h"
 #include "deoglRenderPlanCompute.h"
+#include "parallel/deoglRPTFindContent.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../component/deoglComponentList.h"
 #include "../../envmap/deoglEnvMapFader.h"
@@ -57,7 +58,6 @@ class deoglTexture;
 class deoglRWorld;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTFindContent;
 
 
 
@@ -208,7 +208,7 @@ private:
 	
 	deoglRenderPlanTasks::Ref pTasks;
 	
-	deoglRPTFindContent *pTaskFindContent;
+	deoglRPTFindContent::Ref pTaskFindContent;
 	
 	deoglRenderPlanDebug *pDebug;
 	bool pDebugTiming;

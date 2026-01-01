@@ -47,11 +47,11 @@ meHTVRuleVectorMath::meHTVRuleVectorMath() : meHTVRule(ertVectorMath, 4){
 	pVectorB.Set(0.5f, 0.5f, 0.5f);
 	pOperator = eopAdd;
 	
-	GetSlotAt(eisVectorA).SetIsInput(true);
-	GetSlotAt(eisVectorB).SetIsInput(true);
+	GetSlots().GetAt(eisVectorA)->SetIsInput(true);
+	GetSlots().GetAt(eisVectorB)->SetIsInput(true);
 	
-	GetSlotAt(eosValue).SetIsInput(false);
-	GetSlotAt(eosVector).SetIsInput(false);
+	GetSlots().GetAt(eosValue)->SetIsInput(false);
+	GetSlots().GetAt(eosVector)->SetIsInput(false);
 }
 
 meHTVRuleVectorMath::meHTVRuleVectorMath(const meHTVRuleVectorMath &rule) :
@@ -86,20 +86,20 @@ void meHTVRuleVectorMath::SetOperator(eOperators oper){
 float meHTVRuleVectorMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
 	if(slot < 0 || slot > 1) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputVectorA = GetSlotAt(eisVectorA);
-	meHTVRSlot &inputVectorB = GetSlotAt(eisVectorB);
+	meHTVRSlot &inputVectorA = GetSlots().GetAt(eisVectorA);
+	meHTVRSlot &inputVectorB = GetSlots().GetAt(eisVectorB);
 	
 	decVector vectorA(pVectorA);
 	decVector vectorB(pVectorB);
 		
-	if(inputVectorA.GetLinkCount() > 0){
-		meHTVRLink &link = *inputVectorA.GetLinkAt(0);
+	if(inputVectorA.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputVectorA.GetLinks().GetAt(0);
 		
 		vectorA = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if(inputVectorB.GetLinkCount() > 0){
-		meHTVRLink &link = *inputVectorB.GetLinkAt(0);
+	if(inputVectorB.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputVectorB.GetLinks().GetAt(0);
 		
 		vectorB = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 	}
@@ -120,20 +120,20 @@ float meHTVRuleVectorMath::GetOutputSlotValueAt(int slot, meHTVEvaluationEnviron
 decVector meHTVRuleVectorMath::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
 	if(slot < 0 || slot > 1) DETHROW(deeInvalidParam);
 	
-	meHTVRSlot &inputVectorA = GetSlotAt(eisVectorA);
-	meHTVRSlot &inputVectorB = GetSlotAt(eisVectorB);
+	meHTVRSlot &inputVectorA = GetSlots().GetAt(eisVectorA);
+	meHTVRSlot &inputVectorB = GetSlots().GetAt(eisVectorB);
 	
 	decVector vectorA(pVectorA);
 	decVector vectorB(pVectorB);
 	
-	if(inputVectorA.GetLinkCount() > 0){
-		meHTVRLink &link = *inputVectorA.GetLinkAt(0);
+	if(inputVectorA.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputVectorA.GetLinks().GetAt(0);
 		
 		vectorA = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	if(inputVectorB.GetLinkCount() > 0){
-		meHTVRLink &link = *inputVectorB.GetLinkAt(0);
+	if(inputVectorB.GetLinks().IsNotEmpty()){
+		meHTVRLink &link = *inputVectorB.GetLinks().GetAt(0);
 		
 		vectorB = link.GetSourceRule()->GetOutputSlotVectorAt(link.GetSourceSlot(), evalEnv);
 	}
@@ -183,6 +183,6 @@ decVector meHTVRuleVectorMath::GetOutputSlotVectorAt(int slot, meHTVEvaluationEn
 	}
 }
 
-meHTVRule *meHTVRuleVectorMath::Copy() const{
-	return new meHTVRuleVectorMath(*this);
+meHTVRule::Ref meHTVRuleVectorMath::Copy() const{
+	return meHTVRuleVectorMath::Ref::New(*this);
 }

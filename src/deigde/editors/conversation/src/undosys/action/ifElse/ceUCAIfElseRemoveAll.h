@@ -25,13 +25,13 @@
 #ifndef _CEUCAIFELSEREMOVEALL_H_
 #define _CEUCAIFELSEREMOVEALL_H_
 
-#include "../../../conversation/action/ceConversationActionList.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceCAIfElse;
 
 
 
@@ -39,23 +39,26 @@ class ceCAIfElse;
  * \brief Undo action if-else remove all conversation actions.
  */
 class ceUCAIfElseRemoveAll : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationActionList pActionList;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAIfElseRemoveAll> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationAction::List pActions;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
 	ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseRemoveAll();
+public:
 	/*@}*/
 	
 	

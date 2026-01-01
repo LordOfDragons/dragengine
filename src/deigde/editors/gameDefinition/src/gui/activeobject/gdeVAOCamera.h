@@ -26,10 +26,12 @@
 #define _GDEVAOCAMERA_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/camera/gdeOCCamera.h"
+
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCCamera;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -44,10 +46,10 @@ public:
 	
 	
 private:
-	gdeOCCamera *pOCCamera;
+	gdeOCCamera::Ref pOCCamera;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -75,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class camera. */
-	inline gdeOCCamera *GetOCCamera() const{ return pOCCamera; }
+	inline const gdeOCCamera::Ref &GetOCCamera() const{ return pOCCamera; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

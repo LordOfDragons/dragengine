@@ -48,11 +48,9 @@ meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &ne
 	SetShortInfo("Set Object rotation");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUSetObjectRotation::~meUSetObjectRotation(){
-	if(pObject) pObject->FreeReference();
 }
 
 

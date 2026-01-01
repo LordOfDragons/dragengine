@@ -22,20 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEPROPFIELD_H_
 #define _MEPROPFIELD_H_
 
-// includes
+#include "mePropFieldType.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/propfield/dePropField.h>
 
-// predefinitions
-class mePropFieldType;
 class meWorld;
 
 class deEngine;
-class dePropField;
 
 
 
@@ -49,13 +47,11 @@ private:
 	deEngine *pEngine;
 	
 	meWorld *pWorld;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	
 	decDVector pPosition;
 	
-	mePropFieldType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
+	mePropFieldType::List pTypes;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -68,13 +64,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent world or NULL. */
+	/** Retrieves the parent world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** Sets the parent world or NULL. */
+	/** Sets the parent world or nullptr. */
 	void SetWorld(meWorld *world);
 	
 	/** Retrieves the engine height terrain. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePropField() const{ return pEngPF; }
 	
 	/** Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
@@ -87,16 +83,15 @@ public:
 	
 	/** \name Types */
 	/*@{*/
-	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves the type at the given index. */
-	mePropFieldType *GetTypeAt(int index) const;
-	/** Retrieves the index of the given type or -1 if not found. */
-	int IndexOfType(mePropFieldType *type) const;
+	/** Types. */
+	inline const mePropFieldType::List &GetTypes() const{ return pTypes; }
+	
 	/** Adds a new type. */
 	void AddType(mePropFieldType *type);
+	
 	/** Removes a type. */
 	void RemoveType(mePropFieldType *type);
+	
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/*@}*/

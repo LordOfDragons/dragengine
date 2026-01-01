@@ -34,6 +34,8 @@
 #include "../../../model/deoalModelFace.h"
 #include "../../../model/octree/deoalModelOctree.h"
 #include "../../../model/octree/deoalModelRTOctree.h"
+#include "../../../audiothread/deoalAudioThread.h"
+#include "../../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -106,9 +108,6 @@ void deoalMOVRayHitsClosest::SetLimitDistance(float limitDistance){
 }
 
 
-
-#include "../../../audiothread/deoalAudioThread.h"
-#include "../../../audiothread/deoalATLogger.h"
 
 void deoalMOVRayHitsClosest::VisitNode(deoalModelOctree &node){
 	pHasResult = false;

@@ -28,24 +28,25 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
-class gdeSkyController;
+#include "../../../gamedef/sky/gdeSky.h"
+#include "../../../gamedef/sky/gdeSkyController.h"
 
 
 /**
  * \brief Undo action add sky controller.
  */
 class gdeUSkyControllerAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUSkyControllerAdd> Ref;
+	
+	
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUSkyControllerAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

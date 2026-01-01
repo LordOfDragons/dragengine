@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -40,7 +42,14 @@
 /////////////////////
 
 struct sCurve2DNatDat{
-	decCurve2D *curve;
+	decCurve2D *curve = nullptr;
+	
+	~sCurve2DNatDat(){
+		if(curve){
+			delete curve;
+			curve = nullptr;
+		}
+	}
 };
 
 
@@ -53,14 +62,7 @@ deClassCurve2D::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCurve2D
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurve2D::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCurve2DNatDat *nd = (sCurve2DNatDat*)p_GetNativeData(myself);
-	
-	// clear ( important )
-	nd->curve = NULL;
-	
-	// create curve
-	nd->curve = new decCurve2D;
-	if(!nd->curve) DSTHROW(dueOutOfMemory);
+	(new (p_GetNativeData(myself)) sCurve2DNatDat())->curve = new decCurve2D();
 }
 
 // public func destructor()
@@ -72,12 +74,7 @@ void deClassCurve2D::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCurve2DNatDat *nd = (sCurve2DNatDat*)p_GetNativeData(myself);
-	
-	if(nd->curve){
-		delete nd->curve;
-		nd->curve = NULL;
-	}
+	static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->~sCurve2DNatDat();
 }
 
 
@@ -90,7 +87,7 @@ deClassCurve2D::nfGetPointCount::nfGetPointCount(const sInitData &init) : dsFunc
 "getPointCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCurve2D::nfGetPointCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.GetPointCount());
 }
@@ -101,8 +98,8 @@ deClassCurve2D::nfGetPointAt::nfGetPointAt(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurve2D::nfGetPointAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
-	deScriptingDragonScript *ds = ((deClassCurve2D*)GetOwnerClass())->GetDS();
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
+	const deScriptingDragonScript *ds = (static_cast<deClassCurve2D*>(GetOwnerClass()))->GetDS();
 	
 	int position = rt->GetValue(0)->GetInt();
 	
@@ -115,7 +112,7 @@ deClassCurve2D::nfIndexOfPointClosestTo::nfIndexOfPointClosestTo(const sInitData
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurve2D::nfIndexOfPointClosestTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.IndexOfPointClosestTo(rt->GetValue(0)->GetFloat()));
 }
@@ -126,7 +123,7 @@ deClassCurve2D::nfIndexOfPointBefore::nfIndexOfPointBefore(const sInitData &init
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurve2D::nfIndexOfPointBefore::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.IndexOfPointBefore(rt->GetValue(0)->GetFloat()));
 }
@@ -137,8 +134,8 @@ deClassCurve2D::nfAddPoint::nfAddPoint(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsVec2); // point
 }
 void deClassCurve2D::nfAddPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
-	deScriptingDragonScript *ds = ((deClassCurve2D*)GetOwnerClass())->GetDS();
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
+	deScriptingDragonScript *ds = (static_cast<deClassCurve2D*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject *objPoint = rt->GetValue(0)->GetRealObject();
 	if(!objPoint) DSTHROW(dueNullPointer);
@@ -153,7 +150,7 @@ deClassCurve2D::nfAddPoint2::nfAddPoint2(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsFlt); // y
 }
 void deClassCurve2D::nfAddPoint2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	float x = rt->GetValue(0)->GetFloat();
 	float y = rt->GetValue(1)->GetFloat();
@@ -167,7 +164,7 @@ deClassCurve2D::nfRemovePointFrom::nfRemovePointFrom(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurve2D::nfRemovePointFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.RemovePointFrom(rt->GetValue(0)->GetInt());
 }
@@ -177,7 +174,7 @@ deClassCurve2D::nfRemoveAllPoints::nfRemoveAllPoints(const sInitData &init) : ds
 "removeAllPoints", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurve2D::nfRemoveAllPoints::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.RemoveAllPoints();
 }
@@ -189,7 +186,7 @@ deClassCurve2D::nfSetDefaultCurve::nfSetDefaultCurve(const sInitData &init) : ds
 "setDefaultCurve", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurve2D::nfSetDefaultCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.SetDefaultCurve();
 }
@@ -200,7 +197,7 @@ deClassCurve2D::nfOffsetPointsBy::nfOffsetPointsBy(const sInitData &init) : dsFu
 	p_AddParameter(init.clsFlt); // offset
 }
 void deClassCurve2D::nfOffsetPointsBy::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.OffsetPointsBy(rt->GetValue(0)->GetFloat());
 }
@@ -211,7 +208,7 @@ deClassCurve2D::nfScalePointsBy::nfScalePointsBy(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFlt); // scale
 }
 void deClassCurve2D::nfScalePointsBy::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.ScalePointsBy(rt->GetValue(0)->GetFloat());
 }
@@ -224,7 +221,7 @@ deClassCurve2D::nfEvaluateConstant::nfEvaluateConstant(const sInitData &init) : 
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurve2D::nfEvaluateConstant::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushFloat(curve.EvaluateConstant(rt->GetValue(0)->GetFloat()));
 }
@@ -235,7 +232,7 @@ deClassCurve2D::nfEvaluateLinear::nfEvaluateLinear(const sInitData &init) : dsFu
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurve2D::nfEvaluateLinear::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushFloat(curve.EvaluateLinear(rt->GetValue(0)->GetFloat()));
 }
@@ -248,7 +245,7 @@ dsFunction(init.clsCurve2D, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 
 void deClassCurve2D::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.GetPointCount());
 }
@@ -259,15 +256,15 @@ dsFunction(init.clsCurve2D, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCurve2D::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurve2D &curve = *((sCurve2DNatDat*)p_GetNativeData(myself))->curve;
-	deClassCurve2D *clsCurve2D = (deClassCurve2D*)GetOwnerClass();
+	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
+	deClassCurve2D *clsCurve2D = static_cast<deClassCurve2D*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCurve2D)){
 		rt->PushBool(false);
 		
 	}else{
-		const decCurve2D &other = *((sCurve2DNatDat*)p_GetNativeData(obj))->curve;
+		const decCurve2D &other = *static_cast<sCurve2DNatDat*>(p_GetNativeData(obj))->curve;
 		
 		if(curve.GetPointCount() == other.GetPointCount()){
 			int p, count = curve.GetPointCount();
@@ -364,7 +361,7 @@ const decCurve2D &deClassCurve2D::GetCurve(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *((sCurve2DNatDat*)p_GetNativeData(myself->GetBuffer()))->curve;
+	return *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself->GetBuffer()))->curve;
 }
 
 void deClassCurve2D::PushCurve(dsRunTime *rt, const decCurve2D &curve){
@@ -373,11 +370,8 @@ void deClassCurve2D::PushCurve(dsRunTime *rt, const decCurve2D &curve){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCurve2DNatDat &nd = *((sCurve2DNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.curve = NULL;
-	
 	try{
-		nd.curve = new decCurve2D(curve);
+		(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCurve2DNatDat)->curve = new decCurve2D(curve);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

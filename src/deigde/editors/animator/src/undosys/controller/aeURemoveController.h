@@ -26,12 +26,12 @@
 #ifndef _AEUREMOVECONTROLLER_H_
 #define _AEUREMOVECONTROLLER_H_
 
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeController;
-class aeAnimator;
 
 
 
@@ -39,19 +39,20 @@ class aeAnimator;
  * Undo action remove controller.
  */
 class aeURemoveController : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURemoveController> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	int pIndex;
 	
-	aeLinkList pLinksUsingController;
+	aeLink::List pLinksUsingController;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURemoveController> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

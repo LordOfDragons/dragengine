@@ -27,9 +27,9 @@
 
 #include "deResourceManager.h"
 #include "../common/utils/decDateTime.h"
+#include "../common/file/decBaseFileReader.h"
+#include "../common/file/decBaseFileWriter.h"
 
-class decBaseFileReader;
-class decBaseFileWriter;
 class decPath;
 class deVirtualFileSystem;
 
@@ -69,11 +69,11 @@ public:
 		const char *filename, const char *basePath) const;
 	
 	/** \brief Open file for reading using. */
-	decBaseFileReader *OpenFileForReading(const deVirtualFileSystem &vfs,
+	decBaseFileReader::Ref OpenFileForReading(const deVirtualFileSystem &vfs,
 		const char *filename) const;
 	
 	/** \brief Open file for writing using. */
-	decBaseFileWriter *OpenFileForWriting(const deVirtualFileSystem &vfs,
+	decBaseFileWriter::Ref OpenFileForWriting(const deVirtualFileSystem &vfs,
 		const char *filename) const;
 	/*@}*/
 };

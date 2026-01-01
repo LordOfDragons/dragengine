@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -35,8 +35,12 @@ class peeType;
  * \brief Undo Action Set Type Path Collision Emitter.
  */
 class peeUTypeSetPathCollisionEmitter : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUTypeSetPathCollisionEmitter> Ref;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUTypeSetPathCollisionEmitter> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

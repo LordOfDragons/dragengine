@@ -90,7 +90,7 @@ void deovrDeviceManager::InitDevices(){
 			continue;
 		}
 		
-		device.TakeOver(new deovrDevice(pOvr, index));
+		device = deovrDevice::Ref::New(pOvr, index);
 		if(device->GetType() == deInputDevice::edtGeneric){
 			continue;
 		}
@@ -177,7 +177,7 @@ void deovrDeviceManager::Add(vr::TrackedDeviceIndex_t index){
 		return;
 	}
 	
-	const deovrDevice::Ref device(deovrDevice::Ref::NewWith(pOvr, index));
+	const deovrDevice::Ref device(deovrDevice::Ref::New(pOvr, index));
 	device->SetIndex(pDevices.GetCount());
 	pDevices.Add(device);
 	

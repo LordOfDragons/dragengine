@@ -396,8 +396,8 @@ void deoalDebugInfo::ShowDDActiveMicRays(){
 		return;
 	}
 	
-	pDDActiveMicRays.TakeOver(pAudioThread.GetOal().GetGameEngine()
-		->GetDebugDrawerManager()->CreateDebugDrawer());
+	pDDActiveMicRays = pAudioThread.GetOal().GetGameEngine()->
+		GetDebugDrawerManager()->CreateDebugDrawer();
 	pDDActiveMicRays->SetXRay(false);
 	pDDActiveMicRays->SetVisible(false);
 }
@@ -606,8 +606,8 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 
 void deoalDebugInfo::PrepareDDClosestSpeakersDirect(int count){
 	while(pDDClosestSpeakersDirect.GetCount() < count){
-		pDDClosestSpeakersDirect.Add(deDebugDrawer::Ref::New(
-			pAudioThread.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer()));
+		pDDClosestSpeakersDirect.Add(pAudioThread.GetOal().GetGameEngine()->
+			GetDebugDrawerManager()->CreateDebugDrawer());
 	}
 	
 	while(pDDClosestSpeakersDirect.GetCount() > count){
@@ -757,8 +757,8 @@ void deoalDebugInfo::UpdateVisAudSpeakers(){
 			}
 			
 			if(count == pDDVisAudSpeakers.GetCount()){
-				const deDebugDrawer::Ref dd(deDebugDrawer::Ref::New(pAudioThread.GetOal().
-					GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer()));
+				const deDebugDrawer::Ref dd(pAudioThread.GetOal().GetGameEngine()->
+					GetDebugDrawerManager()->CreateDebugDrawer());
 				dd->SetXRay(true);
 				
 				deDebugDrawerShape * const shape = new deDebugDrawerShape;

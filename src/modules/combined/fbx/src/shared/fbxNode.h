@@ -34,6 +34,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 class fbxProperty;
@@ -42,7 +43,6 @@ class fbxScene;
 class decBaseFileReader;
 class decBaseFileWriter;
 class deBaseModule;
-class decStringSet;
 
 
 /**

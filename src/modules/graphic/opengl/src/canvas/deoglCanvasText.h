@@ -26,8 +26,8 @@
 #define _DEOGLCANVASTEXT_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasText.h"
 
-class deoglRCanvasText;
 class deCanvasText;
 
 
@@ -38,7 +38,7 @@ class deCanvasText;
 class deoglCanvasText : public deoglCanvas{
 private:
 	deCanvasText &pCanvasText;
-	deoglRCanvasText *pRCanvasText;
+	deoglRCanvasText::Ref pRCanvasText;
 	
 public:
 	/** \name Constructors and Destructors */

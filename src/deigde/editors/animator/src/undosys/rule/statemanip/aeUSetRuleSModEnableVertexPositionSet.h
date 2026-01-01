@@ -27,20 +27,21 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 /**
  * Undo set rule state modifier enable vertex position set.
  */
 class aeUSetRuleSModEnableVertexPositionSet : public igdeUndo{
-private:
-	aeRuleStateManipulator *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeUSetRuleSModEnableVertexPositionSet> Ref;
 	
+	
+private:
+	aeRuleStateManipulator::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

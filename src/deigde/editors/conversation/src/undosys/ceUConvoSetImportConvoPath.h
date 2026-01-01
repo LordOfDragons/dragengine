@@ -38,6 +38,10 @@ class ceLoadSaveSystem;
  * \brief Undo Action Conversation Action Set Delay.
  */
 class ceUConvoSetImportConvoPath : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUConvoSetImportConvoPath> Ref;
+	
+	
 private:
 	ceLoadSaveSystem &pLSSystem;
 	ceConversation *pConversation;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUConvoSetImportConvoPath> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

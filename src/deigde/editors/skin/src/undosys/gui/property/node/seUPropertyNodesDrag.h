@@ -25,7 +25,7 @@
 #ifndef _SEUPROPERTYNODESDRAG_H_
 #define _SEUPROPERTYNODESDRAG_H_
 
-#include "../../../../skin/property/node/sePropertyNodeList.h"
+#include "../../../../skin/property/node/sePropertyNode.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -39,20 +39,21 @@ class sePropertyNode;
  * \brief Undo action property drag nodes.
  */
 class seUPropertyNodesDrag : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodesDrag> Ref;
+	
+	
 private:
-	sePropertyNodeList pNodes;
+	sePropertyNode::List pNodes;
 	decPoint pDistance;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodesDrag> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesDrag(const sePropertyNodeList &nodes);
+	seUPropertyNodesDrag(const sePropertyNode::List &nodes);
 	
 protected:
 	/** \brief Clean up undo. */

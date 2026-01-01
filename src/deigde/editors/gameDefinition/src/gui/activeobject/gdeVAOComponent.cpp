@@ -101,9 +101,6 @@ pPlayback(false)
 	if(!occomponent){
 		DETHROW(deeInvalidParam);
 	}
-	
-	occomponent->AddReference();
-	
 	try{
 		pCreateComponent();
 		pCreateCollider();
@@ -193,10 +190,6 @@ void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) con
 
 void gdeVAOComponent::pCleanUp(){
 	pReleaseResources();
-	
-	if(pOCComponent){
-		pOCComponent->FreeReference();
-	}
 }
 
 
@@ -220,7 +213,7 @@ void gdeVAOComponent::pCreateComponent(){
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epModel), pOCComponent->GetModelPath());
 	if(!path.IsEmpty()){
 		try{
-			model.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
+			model = engine.GetModelManager()->LoadModel(vfs, path, "/");
 			
 		}catch(const deException &e){
 			environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -231,7 +224,7 @@ void gdeVAOComponent::pCreateComponent(){
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epSkin), pOCComponent->GetSkinPath());
 	if(!path.IsEmpty()){
 		try{
-			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
+			skin = engine.GetSkinManager()->LoadSkin(vfs, path, "/");
 			
 		}catch(const deException &){
 			skin = environment.GetStockSkin(igdeEnvironment::essError);
@@ -242,7 +235,7 @@ void gdeVAOComponent::pCreateComponent(){
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epRig), pOCComponent->GetRigPath());
 	if(!path.IsEmpty()){
 		try{
-			rig.TakeOver(engine.GetRigManager()->LoadRig(vfs, path, "/"));
+			rig = engine.GetRigManager()->LoadRig(vfs, path, "/");
 			
 		}catch(const deException &e){
 			environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -253,7 +246,7 @@ void gdeVAOComponent::pCreateComponent(){
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epOcclusionMesh), pOCComponent->GetOcclusionMeshPath());
 	if(!path.IsEmpty()){
 		try{
-			occlusionMesh.TakeOver(engine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/"));
+			occlusionMesh = engine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/");
 			
 		}catch(const deException &e){
 			environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -264,7 +257,7 @@ void gdeVAOComponent::pCreateComponent(){
 	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epAudioModel), pOCComponent->GetAudioModelPath());
 	if(!path.IsEmpty()){
 		try{
-			audioModel.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
+			audioModel = engine.GetModelManager()->LoadModel(vfs, path, "/");
 			
 		}catch(const deException &e){
 			environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -282,7 +275,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// create component if model and skin are present
 	if(model && skin){
-		pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin));
+		pComponent = engine.GetComponentManager()->CreateComponent(model, skin);
 		pView.GetGameDefinition()->GetWorld()->AddComponent(pComponent);
 	}
 	if(pComponent){
@@ -305,8 +298,12 @@ void gdeVAOComponent::pCreateComponentTextures(){
 	
 	for(i=0; i<textureCount; i++){
 		const decString &textureName = model.GetTextureAt(i)->GetName();
-		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().GetNamed(textureName);
-		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().GetNamed(textureName);
+		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().FindOrDefault([&](const gdeOCComponentTexture &t){
+			return t.GetName() == textureName;
+		});
+		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().FindOrDefault([&](const gdeOCComponentTexture &t){
+			return t.GetName() == textureName;
+		});
 		
 		pUpdateComponentTexture(objectClassTexture ? objectClassTexture : componentTexture,
 			pComponent->GetTextureAt(i), i);
@@ -320,9 +317,9 @@ deComponentTexture &engTexture, int engTextureIndex){
 	
 	deSkin::Ref occtextureSkin;
 	deDynamicSkin::Ref gdctDynamicSkin;
-	deSkin *useSkin = NULL;
+	deSkin *useSkin = nullptr;
 	int useTexture = 0;
-	deDynamicSkin *useDynamicSkin = NULL;
+	deDynamicSkin *useDynamicSkin = nullptr;
 	decVector2 texCoordOffset(0.0f, 0.0f);
 	decVector2 texCoordScale(1.0f, 1.0f);
 	float texCoordRotation = 0.0f;
@@ -336,7 +333,7 @@ deComponentTexture &engTexture, int engTextureIndex){
 	if(!useSkin && texture){
 		try{
 			if(!texture->GetPathSkin().IsEmpty()){
-				occtextureSkin.TakeOver(engine.GetSkinManager()->LoadSkin(texture->GetPathSkin(), "/"));
+				occtextureSkin = engine.GetSkinManager()->LoadSkin(texture->GetPathSkin(), "/");
 			}
 			
 		}catch(const deException &){
@@ -359,7 +356,7 @@ deComponentTexture &engTexture, int engTextureIndex){
 		}
 		
 		if(gdctRequiresDynamicSkin){
-			gdctDynamicSkin.TakeOver(engine.GetDynamicSkinManager()->CreateDynamicSkin());
+			gdctDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 			if(gdctHasTint){
 				deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
 				renderable->SetColor(gdctColorTint);
@@ -395,7 +392,7 @@ deComponentTexture &engTexture, int engTextureIndex){
 
 void gdeVAOComponent::pCreateCollider(){
 	if(pComponent){
-		pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderComponent());
+		pCollider = pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderComponent();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(pOCComponent->GetColliderResponseType());
 		pCollider->SetUseLocalGravity(pOCComponent->GetColliderResponseType() != deCollider::ertDynamic);
@@ -406,7 +403,7 @@ void gdeVAOComponent::pCreateCollider(){
 		decShapeList shapeList;
 		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
 		
-		pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume());
+		pCollider = pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertStatic);
 		pCollider->SetUseLocalGravity(true);
@@ -442,7 +439,7 @@ void gdeVAOComponent::pCreateAnimator(){
 	
 	if(!pathAnimation.IsEmpty() && vfs.ExistsFile(decPath::CreatePathUnix(pathAnimation))){
 		try{
-			animation.TakeOver(engine.GetAnimationManager()->LoadAnimation(&vfs, pathAnimation, "/"));
+			animation = engine.GetAnimationManager()->LoadAnimation(&vfs, pathAnimation, "/");
 			
 		}catch(const deException &e){
 			environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -458,9 +455,8 @@ void gdeVAOComponent::pCreateAnimator(){
 		
 		igdeLoadAnimator loader(environment, environment.GetLogger(), LOGSOURCE);
 		try{
-			const decBaseFileReader::Ref reader(
-				decBaseFileReader::Ref::New(vfs.OpenFileForReading(vfsPath)));
-			animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
+			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(vfsPath));
+			animator = engine.GetAnimatorManager()->CreateAnimator();
 			loader.Load(pathAnimator, animator, reader);
 			animator->SetAnimation(animation);
 			
@@ -475,7 +471,7 @@ void gdeVAOComponent::pCreateAnimator(){
 			return;
 		}
 		
-		animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
+		animator = engine.GetAnimatorManager()->CreateAnimator();
 		animator->SetAnimation(animation);
 		
 		deAnimatorController *controller = nullptr;
@@ -514,7 +510,7 @@ void gdeVAOComponent::pCreateAnimator(){
 		
 		try{
 			const deAnimatorRuleAnimation::Ref rule(
-				deAnimatorRuleAnimation::Ref::NewWith());
+				deAnimatorRuleAnimation::Ref::New());
 			rule->SetEnableSize(true);
 			rule->SetMoveName(move);
 			rule->GetTargetMoveTime().AddLink(0);
@@ -526,7 +522,7 @@ void gdeVAOComponent::pCreateAnimator(){
 		}
 	}
 	
-	pAnimator.TakeOver(engine.GetAnimatorInstanceManager()->CreateAnimatorInstance());
+	pAnimator = engine.GetAnimatorInstanceManager()->CreateAnimatorInstance();
 	pAnimator->SetComponent(pComponent);
 	pAnimator->SetAnimator(animator);
 	
@@ -538,14 +534,14 @@ void gdeVAOComponent::pAttachComponent(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	try{
 		attachment = new deColliderAttachment(pCollider);
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		//attachment->SetPosition( pOCComponent->GetPosition() );
 		//attachment->SetOrientation( pOCComponent->GetOrientation() );
 		pCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 	}catch(const deException &){
 		if(attachment){
@@ -560,16 +556,16 @@ void gdeVAOComponent::pAttachComponent(){
 void gdeVAOComponent::pReleaseResources(){
 	deWorld &world = *pView.GetGameDefinition()->GetWorld();
 	
-	pAnimator = NULL;
+	pAnimator = nullptr;
 	
 	if(pCollider){
 		pCollider->RemoveAllAttachments(); // because otherwise cyclic loop with component
 		world.RemoveCollider(pCollider);
-		pCollider = NULL;
+		pCollider = nullptr;
 	}
 	
 	if(pComponent){
 		world.RemoveComponent(pComponent);
-		pComponent = NULL;
+		pComponent = nullptr;
 	}
 }

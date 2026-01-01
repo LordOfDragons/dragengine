@@ -55,8 +55,7 @@
 
 ceWPTTIMAIfElseIfCaseCondition::ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
-ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition),
-pIfCase(NULL)
+ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition)
 {
 	if(!ifCase){
 		DETHROW(deeInvalidParam);
@@ -65,13 +64,9 @@ pIfCase(NULL)
 	SetText("Condition");
 	
 	pIfCase = ifCase;
-	ifCase->AddReference();
 }
 
 ceWPTTIMAIfElseIfCaseCondition::~ceWPTTIMAIfElseIfCaseCondition(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 
@@ -82,14 +77,14 @@ ceWPTTIMAIfElseIfCaseCondition::~ceWPTTIMAIfElseIfCaseCondition(){
 ceWPTTIMAIfElseIfCase *ceWPTTIMAIfElseIfCaseCondition::GetModelIfCase() const{
 	ceWPTTreeItemModel * const parent = GetParent();
 	if(!parent){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(parent->GetType() == etActionIfElseCase){
 		return (ceWPTTIMAIfElseIfCase*)parent;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -99,7 +94,7 @@ ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCaseCondition::GetModelIfElse() const{
 		return ifCase->GetModelIfElse();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -117,7 +112,7 @@ void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu(igdeMenuCascade &contextMenu)
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -133,21 +128,22 @@ void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu(igdeMenuCascade &contextMenu)
 	int i;
 	
 	// condition
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Set Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAIfElseCaseSetCondition(windowMain, conversation, *topic,
-			ifElse, *pIfCase, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
+		helper.MenuCommand(subMenu, ceWPTMAIfElseCaseSetCondition::Ref::New(
+			windowMain, conversation, *topic, ifElse, *pIfCase,
+			ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseClearCondition(
-		windowMain, conversation, *topic, ifElse, *pIfCase), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseCaseClearCondition::Ref::New(
+		windowMain, conversation, *topic, ifElse, *pIfCase));
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCasePasteCondition(
-		windowMain, conversation, *topic, ifElse, *pIfCase), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseCasePasteCondition::Ref::New(
+		windowMain, conversation, *topic, ifElse, *pIfCase));
 }
 
 void ceWPTTIMAIfElseIfCaseCondition::ContextMenuCondition(
@@ -159,7 +155,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -175,20 +171,20 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition){
 	int i;
 	
 	// child action specific
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Replace Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAIfElseCaseSetCondition(windowMain, conversation, *topic,
-			ifElse, *pIfCase, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
+		helper.MenuCommand(subMenu, ceWPTMAIfElseCaseSetCondition::Ref::New(windowMain, conversation, *topic,
+			ifElse, *pIfCase, ceWPTTIMCondition::ListAddMenuConditions[i]));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseCaseClearCondition(
-		windowMain, conversation, *topic, ifElse, *pIfCase), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseCaseClearCondition::Ref::New(
+		windowMain, conversation, *topic, ifElse, *pIfCase));
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new ceWPTMACopyCondition(windowMain, condition), true);
+	helper.MenuCommand(contextMenu, ceWPTMACopyCondition::Ref::New(windowMain, condition));
 }
 
 void ceWPTTIMAIfElseIfCaseCondition::OnExpandedChanged(){

@@ -35,10 +35,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeLink;
 class aeWindowProperties;
-class aeWPLinkListener;
+#include "aeWPLinkListener.h"
 class aeEditLinkMapping;
 
 
@@ -47,10 +47,14 @@ class aeEditLinkMapping;
  * Link panel.
  */
 class aeWPLink : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<aeWPLink> Ref;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPLinkListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPLinkListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeListBox::Ref pListLink;
 	
@@ -91,7 +95,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

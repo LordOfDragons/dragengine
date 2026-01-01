@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSObjectClassListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSObjectClassListener(gdeWPSObjectClass &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSObjectClassListener() override;
+public:
 	/*@}*/
 	
 	

@@ -66,7 +66,7 @@ public:
 	igdeAction(text, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
 		if(sanimation){
 			OnAction(*sanimation);
@@ -97,6 +97,7 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraChanged> Ref;
 	cActionCameraChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(saeSAnimation &sanimation) override{
@@ -106,6 +107,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionSkyChanged> Ref;
 	cActionSkyChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(saeSAnimation &sanimation) override{
@@ -117,6 +119,7 @@ public:
 
 class cEditDisplayModelPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditDisplayModelPath> Ref;
 	cEditDisplayModelPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
@@ -126,6 +129,7 @@ public:
 
 class cEditDisplaySkinPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditDisplaySkinPath> Ref;
 	cEditDisplaySkinPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
@@ -135,6 +139,7 @@ public:
 
 class cEditDisplayRigPath : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cEditDisplayRigPath> Ref;
 	cEditDisplayRigPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
@@ -154,44 +159,38 @@ public:
 
 saeWPView::saeWPView(saeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSAnimation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener = new saeWPViewListener(*this);
+	pListener = saeWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// display
 	helper.GroupBox(content, groupBox, "Display:");
 	
 	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
-		igdeEnvironment::efpltModel, pEditDisplayModelPath, new cEditDisplayModelPath(*this));
+		igdeEnvironment::efpltModel, pEditDisplayModelPath, cEditDisplayModelPath::Ref::New(*this));
 	helper.EditPath(groupBox, "Skin:", "Path to the skin resource to use.",
-		igdeEnvironment::efpltSkin, pEditDisplaySkinPath, new cEditDisplaySkinPath(*this));
+		igdeEnvironment::efpltSkin, pEditDisplaySkinPath, cEditDisplaySkinPath::Ref::New(*this));
 	helper.EditPath(groupBox, "Rig:", "Path to the sanimation resource to use.",
-		igdeEnvironment::efpltRig, pEditDisplayRigPath, new cEditDisplayRigPath(*this));
+		igdeEnvironment::efpltRig, pEditDisplayRigPath, cEditDisplayRigPath::Ref::New(*this));
 	
 	// property panels
-	action.TakeOver(new cActionCameraChanged(*this));
+	action = cActionCameraChanged::Ref::New(*this);
 	helper.WPCamera(content, pWPCamera, action, "Camera:");
 	
-	action.TakeOver(new cActionSkyChanged(*this));
+	action = cActionSkyChanged::Ref::New(*this);
 	helper.WPSky(content, pWPSky, action, "Sky:");
 }
 
 saeWPView::~saeWPView(){
-	SetSAnimation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSAnimation(nullptr);
 }
 
 
@@ -204,12 +203,11 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 		return;
 	}
 	
-	pWPSky->SetSky(NULL);
-	pWPCamera->SetCamera(NULL);
+	pWPSky->SetSky(nullptr);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
@@ -218,8 +216,6 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(sanimation){
 		sanimation->AddListener(pListener);
-		sanimation->AddReference();
-		
 		pWPSky->SetSky(sanimation->GetSky());
 		pWPCamera->SetCamera(sanimation->GetCamera());
 		
@@ -247,7 +243,7 @@ void saeWPView::UpdateView(){
 		pEditDisplayRigPath->ClearPath();
 	}
 	
-	const bool enabled = pSAnimation != NULL;
+	const bool enabled = pSAnimation != nullptr;
 	pEditDisplayModelPath->SetEnabled(enabled);
 	pEditDisplaySkinPath->SetEnabled(enabled);
 	pEditDisplayRigPath->SetEnabled(enabled);

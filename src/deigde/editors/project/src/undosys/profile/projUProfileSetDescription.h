@@ -26,9 +26,9 @@
 #ifndef _PROJUPROFILESETDESCRIPTION_H_
 #define _PROJUPROFILESETDESCRIPTION_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetDescription : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -54,7 +54,9 @@ public:
 	projUProfileSetDescription(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProfileSetDescription();
+public:
 	/*@}*/
 	
 	

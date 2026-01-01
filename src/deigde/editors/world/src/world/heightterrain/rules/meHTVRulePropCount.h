@@ -69,8 +69,11 @@ public:
 	/** \brief Create copy of rule. */
 	meHTVRulePropCount(const meHTVRulePropCount &rule);
 	
+protected:
 	/** Cleans up the rule. */
 	~meHTVRulePropCount() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -91,11 +94,12 @@ public:
 	void Reset() override;
 	/** Retrieves the value of a given output slot. */
 	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
+	
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	meHTVRule *Copy() const override;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

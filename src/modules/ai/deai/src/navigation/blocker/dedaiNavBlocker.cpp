@@ -68,8 +68,6 @@ pDirtyExtends(true),
 pDirtyShape(true),
 
 pLayer(NULL),
-
-pDebugDrawer(NULL),
 pDDSBlocker(NULL)
 {
 	ShapeChanged();
@@ -203,8 +201,6 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 			}
 			
 			pDDSBlocker = NULL;
-			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -348,10 +344,6 @@ void dedaiNavBlocker::BlockingPriorityChanged(){
 
 void dedaiNavBlocker::pCleanUp(){
 	SetParentWorld(NULL);
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void dedaiNavBlocker::pUpdateMatrices(){

@@ -27,11 +27,11 @@
 
 #include "../common/string/decStringList.h"
 #include "../common/file/decPath.h"
+#include "../common/file/decBaseFileReader.h"
+#include "../common/file/decBaseFileWriter.h"
+#include "deVirtualFileSystem.h"
 
 class deLogger;
-class decBaseFileWriter;
-class decBaseFileReader;
-class deVirtualFileSystem;
 
 
 /**
@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decPath pCachePath;
 	
 	decStringList pMapping;
@@ -102,10 +102,10 @@ public:
 	 * \brief Open cache file by identifier for reading if existing.
 	 * \returns NULL if file is absent.
 	 */
-	decBaseFileReader *Read(const char *id);
+	decBaseFileReader::Ref Read(const char *id);
 	
 	/** \brief Open cache file by identifier for writing. */
-	decBaseFileWriter *Write(const char *id);
+	decBaseFileWriter::Ref Write(const char *id);
 	
 	/** \brief Delete cache file by identifier if present. */
 	void Delete(const char *id);

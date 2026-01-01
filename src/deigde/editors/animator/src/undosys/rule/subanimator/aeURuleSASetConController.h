@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleSubAnimator;
-class aeController;
+#include "../../../animator/rule/aeRuleSubAnimator.h"
+#include "../../../animator/controller/aeController.h"
 
 
 
@@ -41,17 +41,18 @@ class aeController;
  * Undo to set controller of a connection of a sub animator rule.
  */
 class aeURuleSASetConController : public igdeUndo{
-private:
-	aeRuleSubAnimator *pRule;
-	
-	int pTarget;
-	aeController *pOldController;
-	aeController *pNewController;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleSASetConController> Ref;
 	
+	
+private:
+	aeRuleSubAnimator::Ref pRule;
+	
+	int pTarget;
+	aeController::Ref pOldController;
+	aeController::Ref pNewController;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

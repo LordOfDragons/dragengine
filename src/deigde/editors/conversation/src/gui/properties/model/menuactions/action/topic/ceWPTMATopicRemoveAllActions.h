@@ -35,6 +35,9 @@ class ceConversationTopic;
  * \brief Menu action remove all topic actions.
  */
 class ceWPTMATopicRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	typedef deTObjectReference<ceWPTMATopicRemoveAllActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	
@@ -60,7 +63,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo() override;
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

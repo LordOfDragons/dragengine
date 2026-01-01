@@ -36,6 +36,11 @@ class deoglRenderPlanMasked;
  * Parallel task build render tasks.
  */
 class deoglRPTBuildRTsGeometry : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoglRPTBuildRTsGeometry> Ref;
+	
+	
 private:
 	deoglRenderPlanTasks &pPlan;
 	const deoglRenderPlanMasked *pMask;

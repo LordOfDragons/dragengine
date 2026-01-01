@@ -27,7 +27,6 @@
 
 #include "../devkBasics.h"
 #include "../devkTPoolReference.h"
-#include "../queue/devkCommandPool.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectLinkedList.h>
@@ -40,6 +39,7 @@ class devkDescriptorSet;
 class devkRenderPass;
 class devkFramebuffer;
 class devkImage;
+class devkCommandPool;
 
 
 /**

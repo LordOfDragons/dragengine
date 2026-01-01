@@ -48,6 +48,10 @@ class deLoadableModule;
  */
 class DE_DLL_EXPORT delEngineInstanceDirect : public delEngineInstance{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<delEngineInstanceDirect> Ref;
+	
+	
 	/** \brief Factory creating engine instances. */
 	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	private:
@@ -63,14 +67,14 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<Factory> Ref;
-	
-	
+		
+		
 		/** \brief Factory constructor. */
-		Factory(deLogger *engineLogger = nullptr);
+		explicit Factory(deLogger *engineLogger = nullptr);
 		
 	protected:
 		/** \brief Factory destructor. */
-		virtual ~Factory();
+		~Factory() override;
 		
 	public:
 		/** \brief Logger to use for new engine instances or nullptr. */
@@ -86,7 +90,7 @@ public:
 		void SetUseConsole(bool useConsole);
 		
 		/** \brief Create engine instance. */
-		virtual delEngineInstance *CreateEngineInstance(delLauncher &launcher, const char *logFile);
+		delEngineInstance::Ref CreateEngineInstance(delLauncher &launcher, const char *logFile) override;
 		
 #ifdef OS_ANDROID
 		/** \brief Configuration to use for creating OS instance. */
@@ -115,14 +119,13 @@ private:
 	deLogger::Ref pEngineLogger;
 	
 	class cModuleParamState : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cModuleParamState> Ref;
-
-
 	public:
+		/** \brief Type holding strong reference. */
+		typedef deTObjectReference<cModuleParamState> Ref;
+		
 		deLoadableModule *module;
 		decStringDictionary parameters;
-		cModuleParamState(deLoadableModule *amodule);
+		explicit cModuleParamState(deLoadableModule *amodule);
 	};
 	decObjectList pModuleParamStates;
 	

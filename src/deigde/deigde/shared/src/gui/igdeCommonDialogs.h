@@ -27,13 +27,14 @@
 
 
 #include "resources/igdeFont.h"
+#include "filedialog/igdeFilePattern.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 
 class igdeEditorModule;
 class igdeWidget;
-class igdeFilePatternList;
 
 class decString;
 class deException;
@@ -258,7 +259,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetString(igdeWidget *owner, const char *title, const char *text,
-		decString &value, const decStringList &proposals);
+		decString &value, const decTList<decString> &proposals);
 	
 	/**
 	 * \brief Request string selection input from user.
@@ -268,7 +269,7 @@ public:
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection);
+		const decTList<decString> &list, int &selection);
 	
 	
 	
@@ -280,7 +281,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request open file from user.
@@ -290,7 +291,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -300,7 +301,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -310,7 +311,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request directory from user.

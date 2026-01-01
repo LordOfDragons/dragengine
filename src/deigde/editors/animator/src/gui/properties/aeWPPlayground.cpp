@@ -71,11 +71,12 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPPlayground &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			OnAction(*animator);
@@ -84,7 +85,7 @@ public:
 	
 	virtual void OnAction(aeAnimator &animator) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			Update(*animator);
@@ -106,6 +107,7 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPPlayground &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -123,6 +125,7 @@ protected:
 	aeWPPlayground &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPPlayground &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -139,6 +142,7 @@ public:
 class cComboLocomotionType : public igdeComboBoxListener{
 	aeWPPlayground &pPanel;
 public:
+	typedef deTObjectReference<cComboLocomotionType> Ref;
 	cComboLocomotionType(aeWPPlayground &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -154,6 +158,7 @@ public:
 
 class cTextLocoLimitUp : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLimitUp> Ref;
 	cTextLocoLimitUp(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -163,6 +168,7 @@ public:
 
 class cTextLocoLimitDown : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLimitDown> Ref;
 	cTextLocoLimitDown(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -172,6 +178,7 @@ public:
 
 class cTextLocoLimitLeft : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLimitLeft> Ref;
 	cTextLocoLimitLeft(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -181,6 +188,7 @@ public:
 
 class cTextLocoLimitRight : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLimitRight> Ref;
 	cTextLocoLimitRight(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -190,6 +198,7 @@ public:
 
 class cTextLocoSpeedWalk : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoSpeedWalk> Ref;
 	cTextLocoSpeedWalk(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -199,6 +208,7 @@ public:
 
 class cTextLocoSpeedRun : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoSpeedRun> Ref;
 	cTextLocoSpeedRun(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -208,6 +218,7 @@ public:
 
 class cTextLocoAdjTimeUD : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeUD> Ref;
 	cTextLocoAdjTimeUD(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -224,6 +235,7 @@ public:
 
 class cTextLocoAdjTimeLR : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeLR> Ref;
 	cTextLocoAdjTimeLR(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -240,6 +252,7 @@ public:
 
 class cTextLocoAdjTimeStance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeStance> Ref;
 	cTextLocoAdjTimeStance(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -256,6 +269,7 @@ public:
 
 class cTextLocoAdjTimeOrientation : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeOrientation> Ref;
 	cTextLocoAdjTimeOrientation(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -272,6 +286,7 @@ public:
 
 class cTextLocoAdjTimeVelocity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeVelocity> Ref;
 	cTextLocoAdjTimeVelocity(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -288,6 +303,7 @@ public:
 
 class cTextLocoAdjTimeTurnIP : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoAdjTimeTurnIP> Ref;
 	cTextLocoAdjTimeTurnIP(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -297,6 +313,7 @@ public:
 
 class cTextLocoLegBlendTime : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLegBlendTime> Ref;
 	cTextLocoLegBlendTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -307,6 +324,7 @@ public:
 class cSpinLocoUseLegPairs : public igdeSpinTextFieldListener{
 	aeWPPlayground &pPanel;
 public:
+	typedef deTObjectReference<cSpinLocoUseLegPairs> Ref;
 	cSpinLocoUseLegPairs(aeWPPlayground &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
@@ -322,6 +340,7 @@ public:
 class cSpinLocoLeg : public igdeSpinTextFieldListener{
 	aeWPPlayground &pPanel;
 public:
+	typedef deTObjectReference<cSpinLocoLeg> Ref;
 	cSpinLocoLeg(aeWPPlayground &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField*){
@@ -333,6 +352,7 @@ public:
 
 class cTextLocoLegLiftOffTime : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLegLiftOffTime> Ref;
 	cTextLocoLegLiftOffTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -347,6 +367,7 @@ public:
 
 class cTextLocoLegPutDownTime : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLocoLegPutDownTime> Ref;
 	cTextLocoLegPutDownTime(aeWPPlayground &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, aeAnimator &animator){
@@ -361,6 +382,7 @@ public:
 
 class cEditLocoLegPDPosStand : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditLocoLegPDPosStand> Ref;
 	cEditLocoLegPDPosStand(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
@@ -375,6 +397,7 @@ public:
 
 class cEditLocoLegPDPosWalk : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditLocoLegPDPosWalk> Ref;
 	cEditLocoLegPDPosWalk(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
@@ -389,6 +412,7 @@ public:
 
 class cEditLocoLegPDPosRun : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditLocoLegPDPosRun> Ref;
 	cEditLocoLegPDPosRun(aeWPPlayground &panel) : cBaseEditVectorListener(panel){}
 	
 	virtual void OnChanged(igdeEditVector &editVector, aeAnimator &animator){
@@ -403,8 +427,11 @@ public:
 
 class cActionLocoShowShapes : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLocoShowShapes> Ref;
+	
+public:
 	cActionLocoShowShapes(aeWPPlayground &panel) : cBaseAction(panel,
-		"Show Shapes", NULL, "Determines if shapes are shown"){ }
+		"Show Shapes", nullptr, "Determines if shapes are shown"){ }
 	
 	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetShowShapes(!animator.GetLocomotion().GetShowShapes());
@@ -418,8 +445,11 @@ public:
 
 class cActionLocoUseFoGIK : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLocoUseFoGIK> Ref;
+	
+public:
 	cActionLocoUseFoGIK(aeWPPlayground &panel) : cBaseAction(panel,
-		"Use Feet-On-Ground IK", NULL, "Determines the feet-on-ground IK is used"){}
+		"Use Feet-On-Ground IK", nullptr, "Determines the feet-on-ground IK is used"){}
 	
 	void OnAction(aeAnimator &animator) override{
 		animator.GetLocomotion().SetUseFoGIK(!animator.GetLocomotion().GetUseFoGIK());
@@ -437,6 +467,7 @@ class cSliderController : public igdeEditSliderTextListener{
 	int pIndex;
 	
 public:
+	typedef deTObjectReference<cSliderController> Ref;
 	cSliderController(aeWPPlayground &panel, int index) : pPanel(panel), pIndex(index){}
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
@@ -471,19 +502,17 @@ public:
 aeWPPlayground::aeWPPlayground(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
-pControllers(NULL),
+pControllers(nullptr),
 pControllerCount(0)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPPlaygroundListener(*this);
+	pListener = aeWPPlaygroundListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -495,76 +524,76 @@ pControllerCount(0)
 	helper.GroupBox(content, groupBox, "Locomotion Testing:", true);
 	
 	helper.ComboBox(groupBox, "Locomotion Type:", "Locomotion type",
-		pCBLocomotionType, new cComboLocomotionType(*this));
-	pCBLocomotionType->AddItem("Natural", NULL, (void*)(intptr_t)aeAnimatorLocomotion::eltNatural);
-	pCBLocomotionType->AddItem("FPS", NULL, (void*)(intptr_t)aeAnimatorLocomotion::eltFPS);
-	pCBLocomotionType->AddItem("Vehicle", NULL, (void*)(intptr_t)aeAnimatorLocomotion::eltVehicle);
+		pCBLocomotionType, cComboLocomotionType::Ref::New(*this));
+	pCBLocomotionType->AddItem("Natural", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltNatural);
+	pCBLocomotionType->AddItem("FPS", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltFPS);
+	pCBLocomotionType->AddItem("Vehicle", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eltVehicle);
 	
 	helper.EditFloat(groupBox, "Look Up Limit:", "Look up limit in euler angles",
-		pEditLocoLimitUp, new cTextLocoLimitUp(*this));
+		pEditLocoLimitUp, cTextLocoLimitUp::Ref::New(*this));
 	helper.EditFloat(groupBox, "Look Down Limit:", "Look down limit in euler angles",
-		pEditLocoLimitDown, new cTextLocoLimitDown(*this));
+		pEditLocoLimitDown, cTextLocoLimitDown::Ref::New(*this));
 	helper.EditFloat(groupBox, "Look Left Limit:", "Look left limit in euler angles",
-		pEditLocoLimitLeft, new cTextLocoLimitLeft(*this));
+		pEditLocoLimitLeft, cTextLocoLimitLeft::Ref::New(*this));
 	helper.EditFloat(groupBox, "Look Right Limit:", "Look right limit in euler angles",
-		pEditLocoLimitRight, new cTextLocoLimitRight(*this));
+		pEditLocoLimitRight, cTextLocoLimitRight::Ref::New(*this));
 	
 	
 	// movement speeds
 	helper.GroupBox(content, groupBox, "Movement Speeds:", true);
 	
 	helper.EditFloat(groupBox, "Walk:", "Walk speed in meters per second",
-		pEditLocoSpeedWalk, new cTextLocoSpeedWalk(*this));
+		pEditLocoSpeedWalk, cTextLocoSpeedWalk::Ref::New(*this));
 	helper.EditFloat(groupBox, "Run:", "Run speed in meters per second",
-		pEditLocoSpeedRun, new cTextLocoSpeedRun(*this));
+		pEditLocoSpeedRun, cTextLocoSpeedRun::Ref::New(*this));
 	
 	
 	// adjustment times
 	helper.GroupBox(content, groupBox, "Adjustment Times:", true);
 	
 	helper.EditFloat(groupBox, "Look Up-Down:", "Adjustment time for looking up and down",
-		pEditLocoAdjTimeUD, new cTextLocoAdjTimeUD(*this));
+		pEditLocoAdjTimeUD, cTextLocoAdjTimeUD::Ref::New(*this));
 	helper.EditFloat(groupBox, "Look Left-Right:", "Adjustment time for looking left and right",
-		pEditLocoAdjTimeLR, new cTextLocoAdjTimeLR(*this));
+		pEditLocoAdjTimeLR, cTextLocoAdjTimeLR::Ref::New(*this));
 	helper.EditFloat(groupBox, "Stance:", "Adjustment time for changing between uprect and crouch stance",
-		pEditLocoAdjTimeStance, new cTextLocoAdjTimeStance(*this));
+		pEditLocoAdjTimeStance, cTextLocoAdjTimeStance::Ref::New(*this));
 	helper.EditFloat(groupBox, "Orientation:", "Adjustment time in seconds for actor turning",
-		pEditLocoAdjTimeOrientation, new cTextLocoAdjTimeOrientation(*this));
+		pEditLocoAdjTimeOrientation, cTextLocoAdjTimeOrientation::Ref::New(*this));
 	helper.EditFloat(groupBox, "Velocity:", "Adjustment time in seconds for velocity changing",
-		pEditLocoAdjTimeVelocity, new cTextLocoAdjTimeVelocity(*this));
+		pEditLocoAdjTimeVelocity, cTextLocoAdjTimeVelocity::Ref::New(*this));
 	helper.EditFloat(groupBox, "Turn In-Place:", "Adjustment time in seconds for turning in-place",
-		pEditLocoAdjTimeTurnIP, new cTextLocoAdjTimeTurnIP(*this));
+		pEditLocoAdjTimeTurnIP, cTextLocoAdjTimeTurnIP::Ref::New(*this));
 	
 	
 	// legs
 	helper.GroupBox(content, groupBox, "Legs:", true);
 	
 	helper.EditFloat(groupBox, "Blend Time:", "Time in seconds to blend at lift off and put down time",
-		pEditLocoLegBlendTime, new cTextLocoLegBlendTime(*this));
+		pEditLocoLegBlendTime, cTextLocoLegBlendTime::Ref::New(*this));
 	
 	helper.EditSpinInteger(groupBox, "Leg Pairs:", "Number of leg pairs to use", 1, 1,
-		pSpinLocoUseLegPairs, new cSpinLocoUseLegPairs(*this));
+		pSpinLocoUseLegPairs, cSpinLocoUseLegPairs::Ref::New(*this));
 	helper.EditSpinInteger(groupBox, "Leg:", "Leg to set parameters for", 0, 0,
-		pSpinLocoLeg, new cSpinLocoLeg(*this));
+		pSpinLocoLeg, cSpinLocoLeg::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Lift Off Time:", "Time in motion units where the foot starts to lift off the ground",
-		pEditLocoLegLiftOffTime, new cTextLocoLegLiftOffTime(*this));
+		pEditLocoLegLiftOffTime, cTextLocoLegLiftOffTime::Ref::New(*this));
 	helper.EditFloat(groupBox, "Put Down Time:", "Time in motion units where the foot stopps putting down on the ground",
-		pEditLocoLegPutDownTime, new cTextLocoLegPutDownTime(*this));
+		pEditLocoLegPutDownTime, cTextLocoLegPutDownTime::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Put Down Stand:", "Sets the stand put down position",
-		pEditLocoLegPDPosStand, new cEditLocoLegPDPosStand(*this));
+		pEditLocoLegPDPosStand, cEditLocoLegPDPosStand::Ref::New(*this));
 	helper.EditVector(groupBox, "Put Down Walk:", "Sets the walk put down position",
-		pEditLocoLegPDPosWalk, new cEditLocoLegPDPosWalk(*this));
+		pEditLocoLegPDPosWalk, cEditLocoLegPDPosWalk::Ref::New(*this));
 	helper.EditVector(groupBox, "Put Down Run:", "Sets the run put down position",
-		pEditLocoLegPDPosRun, new cEditLocoLegPDPosRun(*this));
+		pEditLocoLegPDPosRun, cEditLocoLegPDPosRun::Ref::New(*this));
 	
 	
 	// visualization
 	helper.GroupBox(content, groupBox, "Visualization:", true);
 	
-	helper.CheckBox(groupBox, pChkLocoShowShapes, new cActionLocoShowShapes(*this), true);
-	helper.CheckBox(groupBox, pChkLocoUseFoGIK, new cActionLocoUseFoGIK(*this), true);
+	helper.CheckBox(groupBox, pChkLocoShowShapes, cActionLocoShowShapes::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkLocoUseFoGIK, cActionLocoUseFoGIK::Ref::New(*this));
 }
 
 aeWPPlayground::~aeWPPlayground(){
@@ -572,12 +601,7 @@ aeWPPlayground::~aeWPPlayground(){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
-		pAnimator = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
+		pAnimator = nullptr;
 	}
 }
 
@@ -593,17 +617,14 @@ void aeWPPlayground::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
-		
-		pSpinLocoUseLegPairs->SetRange(1, animator->GetLocomotion().GetLegCount() / 2);
-		pSpinLocoLeg->SetRange(0, animator->GetLocomotion().GetLegCount() - 1);
+		pSpinLocoUseLegPairs->SetRange(1, animator->GetLocomotion().GetLegs().GetCount() / 2);
+		pSpinLocoLeg->SetRange(0, animator->GetLocomotion().GetLegs().GetCount() - 1);
 		
 	}else{
 		pSpinLocoUseLegPairs->SetRange(1, 1);
@@ -616,15 +637,15 @@ void aeWPPlayground::SetAnimator(aeAnimator *animator){
 
 aeAnimatorLocomotionLeg *aeWPPlayground::GetLeg() const{
 	if(!pAnimator){
-		return NULL;
+		return nullptr;
 	}
 	
 	const int legnum = pSpinLocoLeg->GetValue();
-	if(legnum < 0 || legnum >= pAnimator->GetLocomotion().GetLegCount()){
-		return NULL;
+	if(legnum < 0 || legnum >= pAnimator->GetLocomotion().GetLegs().GetCount()){
+		return nullptr;
 	}
 	
-	return pAnimator->GetLocomotion().GetLegAt(legnum);
+	return pAnimator->GetLocomotion().GetLegs().GetAt(legnum);
 }
 
 aeWPPlayground::sController &aeWPPlayground::GetControllerAt(int index) const{
@@ -642,7 +663,7 @@ void aeWPPlayground::RebuildControllers(){
 	// create array holding controller widgets ( even if not all are used in the end )
 	if(pControllers){
 		delete [] pControllers;
-		pControllers = NULL;
+		pControllers = nullptr;
 	}
 	pControllerCount = 0;
 	
@@ -670,8 +691,10 @@ void aeWPPlayground::RebuildControllers(){
 		text.Format("%s:", name.GetString());
 		description.Format("Current value of the controller '%s'", name.GetString());
 		
+		igdeEditSliderText::Ref slider;
 		helper.EditSliderText(pFraContent, text, description, 0.0f, 1.0f, 6, 3, 0.1f,
-			controller.slider, new cSliderController(*this, pControllerCount));
+			slider, cSliderController::Ref::New(*this, pControllerCount));
+		controller.slider = slider;
 		
 		pControllerCount++;
 		

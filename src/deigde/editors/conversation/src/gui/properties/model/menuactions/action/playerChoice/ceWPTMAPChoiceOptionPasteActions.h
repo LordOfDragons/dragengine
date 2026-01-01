@@ -37,6 +37,9 @@ class ceCAPlayerChoiceOption;
  * \brief Menu action paste all topic actions.
  */
 class ceWPTMAPChoiceOptionPasteActions : public ceWPTMAPasteActions{
+public:
+	typedef deTObjectReference<ceWPTMAPChoiceOptionPasteActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAPlayerChoice *pPlayerChoice;
@@ -81,7 +84,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) override;
+	ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) override;
 	/*@}*/
 };
 

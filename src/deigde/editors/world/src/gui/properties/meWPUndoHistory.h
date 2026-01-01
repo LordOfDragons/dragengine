@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class meWorld;
-class meWPUndoHistoryListener;
+#include "../../world/meWorld.h"
+#include "meWPUndoHistoryListener.h"
 
 
 
@@ -36,9 +36,12 @@ class meWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class meWPUndoHistory : public igdeWPUndoHistory{
+public:
+	typedef deTObjectReference<meWPUndoHistory> Ref;
+	
 private:
-	meWorld *pWorld;
-	meWPUndoHistoryListener *pListener;
+	meWorld::Ref pWorld;
+	meWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

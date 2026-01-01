@@ -66,7 +66,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pModel.TakeOver(new deModel(engine.GetModelManager(), vfs, path, 0));
+	pModel = deModel::Ref::New(engine.GetModelManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -90,7 +90,7 @@ void deRLTaskReadModel::Run(){
 	
 	pModel->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pModel->SetAsynchron(true);
-	module->LoadModel(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pModel);
+	module->LoadModel(GetVFS()->OpenFileForReading(vfsPath), pModel);
 	
 	if(!pModel->Verify()){
 		DETHROW(deeInvalidParam);

@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 
-class sePropertyNodeShape;
+#include "../../../../skin/property/node/sePropertyNodeShape.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNodeShape;
  * \brief Undo action property node shape set path.
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeShapeSetType> Ref;
+	
+	
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	deSkinPropertyNodeShape::eShapeTypes pOldValue;
 	deSkinPropertyNodeShape::eShapeTypes pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeShapeSetType> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

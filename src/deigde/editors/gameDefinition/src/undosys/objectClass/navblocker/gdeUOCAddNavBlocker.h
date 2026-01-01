@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,16 +37,17 @@ class gdeObjectClass;
  * \brief Undo action object class add navigation blocker.
  */
 class gdeUOCAddNavBlocker : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCAddNavBlocker> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCAddNavBlocker> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

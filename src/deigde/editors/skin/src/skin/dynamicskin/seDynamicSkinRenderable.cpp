@@ -56,7 +56,7 @@
 
 seDynamicSkinRenderable::seDynamicSkinRenderable(deEngine *engine, const char *name) :
 pEngine(engine),
-pDynamicSkin(NULL),
+pDynamicSkin(nullptr),
 pName(name),
 pRenderableType(ertValue),
 pActive(false),
@@ -70,12 +70,12 @@ pColor(1.0f, 1.0f, 1.0f)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEngVideoPlayer.TakeOver(engine->GetVideoPlayerManager()->CreateVideoPlayer());
+	pEngVideoPlayer = engine->GetVideoPlayerManager()->CreateVideoPlayer();
 	pEngVideoPlayer->SetLooping(true);
 }
 
 seDynamicSkinRenderable::~seDynamicSkinRenderable(){
-	SetDynamicSkin(NULL);
+	SetDynamicSkin(nullptr);
 }
 
 
@@ -190,7 +190,7 @@ void seDynamicSkinRenderable::Update(float elapsed){
 
 
 void seDynamicSkinRenderable::CreateRenderableValue(){
-	deDSRenderableValue *engRenderable = NULL;
+	deDSRenderableValue *engRenderable = nullptr;
 	
 	try{
 		engRenderable = new deDSRenderableValue(pName);
@@ -206,7 +206,7 @@ void seDynamicSkinRenderable::CreateRenderableValue(){
 }
 
 void seDynamicSkinRenderable::CreateRenderableColor(){
-	deDSRenderableColor *engRenderable = NULL;
+	deDSRenderableColor *engRenderable = nullptr;
 	
 	try{
 		engRenderable = new deDSRenderableColor(pName);
@@ -222,7 +222,7 @@ void seDynamicSkinRenderable::CreateRenderableColor(){
 }
 
 void seDynamicSkinRenderable::CreateRenderableImage(){
-	deDSRenderableImage *engRenderable = NULL;
+	deDSRenderableImage *engRenderable = nullptr;
 	
 	try{
 		engRenderable = new deDSRenderableImage(pName);
@@ -242,7 +242,7 @@ void seDynamicSkinRenderable::CreateRenderableCanvas(){
 }
 
 void seDynamicSkinRenderable::CreateRenderableVideoFrame(){
-	deDSRenderableVideoFrame *engRenderable = NULL;
+	deDSRenderableVideoFrame *engRenderable = nullptr;
 	
 	try{
 		engRenderable = new deDSRenderableVideoFrame(pName);
@@ -335,7 +335,7 @@ void seDynamicSkinRenderable::UpdateImage(){
 	
 	if(!pPathImage.IsEmpty()){
 		try{
-			image.TakeOver(pEngine->GetImageManager()->LoadImage(pPathImage, "/"));
+			image = pEngine->GetImageManager()->LoadImage(pPathImage, "/");
 			
 		}catch(const deException &e){
 			if(pDynamicSkin){
@@ -374,7 +374,7 @@ void seDynamicSkinRenderable::UpdateVideo(){
 	
 	if(!pPathVideo.IsEmpty()){
 		try{
-			video.TakeOver(pEngine->GetVideoManager()->LoadVideo(pPathVideo, "/", false));
+			video = pEngine->GetVideoManager()->LoadVideo(pPathVideo, "/", false);
 			
 		}catch(const deException &e){
 			if(pDynamicSkin){

@@ -76,26 +76,27 @@ protected:
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPAPanelRuleSubAnimator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleSubAnimator *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleSubAnimator *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleSubAnimator * const rule = (aeRuleSubAnimator*)pPanel.GetRule();
 		if(animator && rule){
@@ -118,6 +119,7 @@ protected:
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -127,13 +129,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleSubAnimator *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleSubAnimator *rule) = 0;
 };
 
 
@@ -141,6 +143,7 @@ class cPathAnimator : public igdeEditPathListener{
 	aeWPAPanelRuleSubAnimator &pPanel;
 	
 public:
+	typedef deTObjectReference<cPathAnimator> Ref;
 	cPathAnimator(aeWPAPanelRuleSubAnimator &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -150,27 +153,31 @@ public:
 		}
 		
 		pPanel.GetAnimator()->GetUndoSystem()->Add(
-			aeURuleSASetPathAnimator::Ref::NewWith(rule, editPath->GetPath()));
+			aeURuleSASetPathAnimator::Ref::New(rule, editPath->GetPath()));
 	}
 };
 
 class cComboConnection : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboConnection> Ref;
 	cComboConnection(aeWPAPanelRuleSubAnimator &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox*, aeAnimator*, aeRuleSubAnimator*){
+	igdeUndo::Ref OnChanged(igdeComboBox*, aeAnimator*, aeRuleSubAnimator*) override{
 		pPanel.UpdateConnection();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnablePosition> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleSubAnimator *rule){
-		return new aeURuleSubAnimToggleEnablePosition(rule);
+public:
+	cActionEnablePosition(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
+		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
+		return aeURuleSubAnimToggleEnablePosition::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleSubAnimator &rule) override{
@@ -181,11 +188,14 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableRotation> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleSubAnimator *rule){
-		return new aeURuleSubAnimToggleEnableRotation(rule);
+public:
+	cActionEnableRotation(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
+		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
+		return aeURuleSubAnimToggleEnableRotation::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleSubAnimator &rule) override{
@@ -196,11 +206,14 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableSize> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleSubAnimator *rule){
-		return new aeURuleSubAnimToggleEnableSize(rule);
+public:
+	cActionEnableSize(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
+		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
+		return aeURuleSubAnimToggleEnableSize::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleSubAnimator &rule) override{
@@ -211,12 +224,15 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	
+public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleSubAnimator &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
 		"Determines if vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleSubAnimator *rule){
-		return new aeURuleSubAnimToggleEnableVertexPositionSet(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleSubAnimator *rule) override{
+		return aeURuleSubAnimToggleEnableVertexPositionSet::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleSubAnimator &rule) override{
@@ -229,18 +245,19 @@ class cComboConnectionController : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
+	typedef deTObjectReference<cComboConnectionController> Ref;
 	cComboConnectionController(aeWPAPanelRuleSubAnimator &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox*, aeAnimator*, aeRuleSubAnimator *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox*, aeAnimator*, aeRuleSubAnimator *rule) override{
 		if(pPreventUpdate){
-			return NULL;
+			return {};
 		}
 		
 		const int connection = pPanel.GetCBConnection();
 		aeController * const controller = pPanel.GetCBConnectionController();
-		return connection != -1 && rule->GetControllerAt(connection) != controller
-			? new aeURuleSASetConController(rule, connection, controller) : NULL;
+		return connection != -1 && rule->GetConnections().GetAt(connection) != controller
+			? aeURuleSASetConController::Ref::New(rule, connection, controller) : igdeUndo::Ref();
 	}
 };
 
@@ -266,12 +283,12 @@ pPreventUpdate(false)
 	helper.GroupBox(*this, groupBox, "Sub Animator:");
 	
 	helper.EditPath(groupBox, "Path:", "Sets the animator to use", igdeEnvironment::efpltAnimator,
-		pEditPathAnimator, new cPathAnimator(*this));
+		pEditPathAnimator, cPathAnimator::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
-	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
-	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
-	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, groupBox, "Connections:");
@@ -280,10 +297,10 @@ pPreventUpdate(false)
 	helper.Label(groupBox, "Auto-Connected if empty", "Automatically creates connections by"
 		" matching controller names if no custom connections are defined");
 	
-	helper.ComboBox(groupBox, "Target:", "Target controller", pCBConnection, new cComboConnection(*this));
+	helper.ComboBox(groupBox, "Target:", "Target controller", pCBConnection, cComboConnection::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Controller:", "Controller to take value from",
-		pCBConnectionController, new cComboConnectionController(*this, pPreventUpdate));
+		pCBConnectionController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	
 	
 	UpdateControllerList();
@@ -316,7 +333,7 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 	if(rule && rule->GetSubAnimator()){
 		const deAnimator &subAnimator = *rule->GetSubAnimator();
 		const int nameCount = subAnimator.GetControllerCount();
-		const int count = rule->GetConnectionCount();
+		const int count = rule->GetConnections().GetCount();
 		decString text;
 		int i;
 		
@@ -332,11 +349,11 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 		}
 	}
 	
-	if(selection < pCBConnection->GetItemCount()){
+	if(selection < pCBConnection->GetItems().GetCount()){
 		pCBConnection->SetSelection(selection);
 		
-	}else if(pCBConnectionController->GetItemCount() > 0){
-		pCBConnection->SetSelection(pCBConnection->GetItemCount() - 1);
+	}else if(pCBConnectionController->GetItems().IsNotEmpty()){
+		pCBConnection->SetSelection(pCBConnection->GetItems().GetCount() - 1);
 	}
 	
 	if(pCBConnection->GetText() != selectionText){
@@ -350,19 +367,14 @@ void aeWPAPanelRuleSubAnimator::UpdateControllerList(){
 	
 	try{
 		pCBConnectionController->RemoveAllItems();
-		pCBConnectionController->AddItem("< not assigned >", NULL);
+		pCBConnectionController->AddItem("< not assigned >", nullptr);
 		
 		if(GetAnimator()){
-			const aeControllerList &list = GetAnimator()->GetControllers();
-			const int count = list.GetCount();
 			decString text;
-			int i;
-			
-			for(i=0; i<count; i++){
-				aeController * const controller = list.GetAt(i);
+			GetAnimator()->GetControllers().VisitIndexed([&](int i, aeController *controller){
 				text.Format("%d: %s", i, controller->GetName().GetString());
-				pCBConnectionController->AddItem(text, NULL, controller);
-			}
+				pCBConnectionController->AddItem(text, nullptr, controller);
+			});
 		}
 		
 		pCBConnectionController->SetSelectionWithData(selection);
@@ -405,10 +417,10 @@ void aeWPAPanelRuleSubAnimator::UpdateConnection(){
 	const int connection = GetCBConnection();
 	
 	if(rule && connection != -1){
-		pCBConnectionController->SetSelectionWithData(rule->GetControllerAt(connection));
+		pCBConnectionController->SetSelectionWithData(rule->GetConnections().GetAt(connection));
 		
 	}else{
-		pCBConnectionController->SetSelectionWithData(NULL);
+		pCBConnectionController->SetSelectionWithData(nullptr);
 	}
 	
 	pCBConnectionController->SetEnabled(rule && connection != -1);
@@ -420,5 +432,5 @@ int aeWPAPanelRuleSubAnimator::GetCBConnection() const{
 
 aeController *aeWPAPanelRuleSubAnimator::GetCBConnectionController() const{
 	return pCBConnectionController->GetSelectedItem() ?
-		(aeController*)pCBConnectionController->GetSelectedItem()->GetData() : NULL;
+		(aeController*)pCBConnectionController->GetSelectedItem()->GetData() : nullptr;
 }

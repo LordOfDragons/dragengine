@@ -34,6 +34,10 @@
  * \brief Base class for undo actions scaling things.
  */
 class reBaseUndoScale : public igdeUndo{
+public:
+	typedef deTObjectReference<reBaseUndoScale> Ref;
+	
+	
 private:
 	bool pModifyPosition;
 	bool pModifySize;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reBaseUndoScale> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

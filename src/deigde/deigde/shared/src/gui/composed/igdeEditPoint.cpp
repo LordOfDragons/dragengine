@@ -161,13 +161,10 @@ void igdeEditPoint::RemoveListener(igdeEditPointListener *listener){
 }
 
 void igdeEditPoint::NotifyPointChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeEditPointListener*)listeners.GetAt(i))->OnPointChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeEditPointListener &l){
+		l.OnPointChanged(this);
+	});
 }
 
 
@@ -209,9 +206,9 @@ void igdeEditPoint::OnDescriptionChanged(){
 void igdeEditPoint::pCreateContent(igdeUIHelper &helper){
 	// create widgets
 	helper.Label(*this, "(");
-	helper.EditInteger(*this, pDescription, pColumns, pTextX, NULL);
+	helper.EditInteger(*this, pDescription, pColumns, pTextX, {});
 	helper.Label(*this, ",");
-	helper.EditInteger(*this, pDescription, pColumns, pTextY, NULL);
+	helper.EditInteger(*this, pDescription, pColumns, pTextY, {});
 	helper.Label(*this, ")");
 	
 	// set value
@@ -219,7 +216,7 @@ void igdeEditPoint::pCreateContent(igdeUIHelper &helper){
 	pTextY->SetInteger(pPoint.y);
 	
 	// add listener
-	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY));
+	cListener::Ref listener(cListener::Ref::New(*this, pTextX, pTextY));
 	pTextX->AddListener(listener);
 	pTextY->AddListener(listener);
 }

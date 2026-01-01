@@ -143,40 +143,29 @@ void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool enabled){
 
 
 
-deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
-	deAnimatorRuleStateSnapshot *engRule = NULL;
+deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
+	const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleStateSnapshot;
-		
-		InitEngineRule(engRule);
-		
-		engRule->SetUseLastState(pUseLastState);
-		engRule->SetID(pID);
-		
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
 	
-	// finished
+	engRule->SetUseLastState(pUseLastState);
+	engRule->SetID(pID);
+	
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleStateSnapshot::CreateCopy() const{
-	return new aeRuleStateSnapshot(*this);
+aeRule::Ref aeRuleStateSnapshot::CreateCopy() const{
+	return Ref::New(*this);
 }
 
-void aeRuleStateSnapshot::ListLinks(aeLinkList &list){
+void aeRuleStateSnapshot::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 }
 

@@ -27,10 +27,10 @@
 #define _GDEUOCPARTICLEEMITTERSETTRIGGERNAME_H_
 
 #include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class particle emitter set trigger name.
  */
 class gdeUOCParticleEmitterSetTriggerName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCParticleEmitterSetTriggerName> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eTriggers pTrigger;
 	decString pOldValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCParticleEmitterSetTriggerName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

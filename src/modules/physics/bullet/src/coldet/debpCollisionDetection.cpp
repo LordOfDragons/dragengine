@@ -107,7 +107,7 @@ pDynWorld(nullptr)
 {
 	(void)pBullet;
 	
-	pColInfo = new deCollisionInfo;
+	pColInfo = deCollisionInfo::Ref::New();
 	
 	decShapeSphere hackSphere(0.001f);
 	pRayHackShape.AddShape(hackSphere, decVector(1.0f, 1.0f, 1.0f));
@@ -155,10 +155,6 @@ debpCollisionDetection::~debpCollisionDetection(){
 	}
 	if(pPointTestShape){
 		delete pPointTestShape;
-	}
-	
-	if(pColInfo){
-		pColInfo->FreeReference();
 	}
 }
 

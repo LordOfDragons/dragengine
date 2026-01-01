@@ -813,18 +813,15 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	// once such a task has finished. this consume a bit more memory but is fail safe
 	// 
 	// NOTE the running task is also kept in this list. hence the check for finished is required
-	const int count = pTaskApplyRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dearTaskApplyRules * const task = (dearTaskApplyRules*)pTaskApplyRules.GetAt(i);
-		if(task->GetFinished() && task->GetDependedOnBy().GetCount() == 0){
-			return task;
-		}
+	const dearTaskApplyRules::Ref *findTask;
+	if(pTaskApplyRules.Find([&](dearTaskApplyRules *task){
+		return task->GetFinished() && task->GetDependedOnBy().IsEmpty();
+	}, findTask)){
+		return *findTask;
 	}
 	
 	// no such task exists. create a new one and add it to the list
-	const dearTaskApplyRules::Ref task(dearTaskApplyRules::Ref::NewWith(*this));
+	const dearTaskApplyRules::Ref task(dearTaskApplyRules::Ref::New(*this));
 	pTaskApplyRules.Add(task);
 	return task;
 }

@@ -35,6 +35,9 @@ class seWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class seWPUndoHistoryListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPUndoHistoryListener> Ref;
+	
 private:
 	seWPUndoHistory &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	seWPUndoHistoryListener(seWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

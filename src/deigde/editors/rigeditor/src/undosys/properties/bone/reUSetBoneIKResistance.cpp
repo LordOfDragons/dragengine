@@ -36,11 +36,9 @@
 ////////////////////////////
 
 reUSetBoneIKResistance::reUSetBoneIKResistance(reRigBone *bone, const decVector &ikResistance){
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldIKResistance = bone->GetIKResistance();
 	pNewIKResistance = ikResistance;
 	
@@ -76,5 +74,4 @@ void reUSetBoneIKResistance::Redo(){
 //////////////////////
 
 void reUSetBoneIKResistance::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

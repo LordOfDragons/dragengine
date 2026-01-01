@@ -25,9 +25,10 @@
 #ifndef _CEWPTTREEITEM_H_
 #define _CEWPTTREEITEM_H_
 
+#include "ceWPTTreeItemModel.h"
+
 #include <deigde/gui/model/igdeTreeItem.h>
 
-class ceWPTTreeItemModel;
 class igdeTreeList;
 class igdeMenuCascade;
 
@@ -45,7 +46,7 @@ public:
 	
 private:
 	igdeTreeList *pTreeList;
-	ceWPTTreeItemModel *pModel;
+	ceWPTTreeItemModel::Ref pModel;
 	
 	
 	
@@ -68,10 +69,10 @@ public:
 	/** \brief Tree list. */
 	inline igdeTreeList &GetTreeList() const{ return *pTreeList; }
 	
-	/** \brief Model or \em NULL. */
-	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
+	/** \brief Model or \em nullptr. */
+	inline const ceWPTTreeItemModel::Ref &GetModel() const{ return pModel; }
 	
-	/** \brief Set model or \em NULL. */
+	/** \brief Set model or \em nullptr. */
 	void SetModel(ceWPTTreeItemModel *model);
 	
 	

@@ -26,7 +26,7 @@
 #define _DECOBJECTLIST_H_
 
 #include "decCollectionInterfaces.h"
-
+#include "../../dragengine_export.h"
 
 /**
  * \brief List of objects.

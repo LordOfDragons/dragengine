@@ -204,6 +204,8 @@ deBaseSoundDecoder *deSoundOGG::CreateDecoder(decBaseFileReader *reader){
 
 class deoggModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deoggModuleInternal> Ref;
+	
 	deoggModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OggVorbis");
 		SetDescription("Handles sounds in ogg vorbis format.");
@@ -226,7 +228,7 @@ public:
 	}
 };
 
-deInternalModule *deoggRegisterInternalModule(deModuleSystem *system){
-	return new deoggModuleInternal(system);
+deTObjectReference<deInternalModule> deoggRegisterInternalModule(deModuleSystem *system){
+	return deoggModuleInternal::Ref::New(system);
 }
 #endif

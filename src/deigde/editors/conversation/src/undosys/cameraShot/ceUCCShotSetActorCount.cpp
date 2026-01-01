@@ -42,7 +42,7 @@
 ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set Actor Count");
 	
@@ -50,13 +50,9 @@ ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int new
 	pNewCount = newCount;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

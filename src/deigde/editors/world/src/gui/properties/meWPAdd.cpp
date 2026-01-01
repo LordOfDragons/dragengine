@@ -67,10 +67,11 @@ class cActionClassAdd : public igdeAction{
 	igdeComboBoxFilter::Ref &pComboClass;
 	
 public:
+	typedef deTObjectReference<cActionClassAdd> Ref;
 	cActionClassAdd(meWPAdd &panel, igdeComboBoxFilter::Ref &comboClass) :
-	igdeAction("Add", NULL, "Add class"), pPanel(panel), pComboClass(comboClass){}
+	igdeAction("Add", nullptr, "Add class"), pPanel(panel), pComboClass(comboClass){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world || pComboClass->GetText().IsEmpty()){
 			return;
@@ -89,10 +90,11 @@ class cActionClassRemove : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionClassRemove> Ref;
 	cActionClassRemove(meWPAdd &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Remove", NULL, "Remove selected class"), pPanel(panel), pListBox(listBox){}
+	igdeAction("Remove", nullptr, "Remove selected class"), pPanel(panel), pListBox(listBox){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world || !pListBox->GetSelectedItem()){
 			return;
@@ -110,10 +112,11 @@ class cActionClassClear : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
-	cActionClassClear(meWPAdd &panel) : igdeAction("Clear", NULL, "Remove all classes"),
+	typedef deTObjectReference<cActionClassClear> Ref;
+	cActionClassClear(meWPAdd &panel) : igdeAction("Clear", nullptr, "Remove all classes"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
@@ -127,10 +130,11 @@ class cActionFilterObjects : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionFilterObjects> Ref;
 	cActionFilterObjects(meWPAdd &panel) : igdeAction("Enable Object Filter",
-		NULL, "Determines if objects are filtered"), pPanel(panel){ }
+		nullptr, "Determines if objects are filtered"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 };
 
@@ -138,6 +142,7 @@ class cListObjectClasses : public igdeListBoxListener{
 	meWPAdd &pPanel;
 	
 public:
+	typedef deTObjectReference<cListObjectClasses> Ref;
 	cListObjectClasses(meWPAdd &panel) : pPanel(panel){}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
@@ -152,11 +157,12 @@ class cActionObjInclusive : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
-	cActionObjInclusive(meWPAdd &panel) : igdeAction("Accept if in list", NULL,
+	typedef deTObjectReference<cActionObjInclusive> Ref;
+	cActionObjInclusive(meWPAdd &panel) : igdeAction("Accept if in list", nullptr,
 		"Determines if objects are accepted or rejected if they are in the list."),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
 		if(!world){
 			return;
@@ -170,6 +176,7 @@ class cActionRandomizeYAxis : public igdeAction {
 	meWPAdd &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionRandomizeYAxis> Ref;
 	cActionRandomizeYAxis(meWPAdd &panel) : igdeAction("Randomize Y Axis", nullptr,
 		"Determines if objects are randomized around the Y axis when added."),
 		pPanel(panel){}
@@ -196,54 +203,47 @@ public:
 
 meWPAdd::meWPAdd(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPAddListener(*this);
+	pListener = meWPAddListener::Ref::New(*this);
 	
-	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
-	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));
-	pActionClassClear.TakeOver(new cActionClassClear(*this));
+	pActionClassAdd = cActionClassAdd::Ref::New(*this, pComboObjClass);
+	pActionClassRemove = cActionClassRemove::Ref::New(*this, pListObjClasses);
+	pActionClassClear = cActionClassClear::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// object filter
 	/*
 	helper.GroupBoxFlow(content, groupBox, "Object Filter:");
 	
-	helper.CheckBoxOnly(groupBox, pChkFilterObjects, new cActionFilterObjects(*this), true);
+	helper.CheckBoxOnly(groupBox, pChkFilterObjects, cActionFilterObjects::Ref::New(*this));
 	
-	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
-	helper.ComboBoxFilter(formLine, "Object filter", pComboObjClass, NULL);
+	helper.ComboBoxFilter(formLine, "Object filter", pComboObjClass, {});
 	pComboObjClass->SetDefaultSorter();
 	helper.Button(formLine, pActionClassAdd);
 	
-	helper.ListBox(groupBox, 5, "List of object class filters", pListObjClasses,
-		new cListObjectClasses(*this));
+	helper.ListBox(groupBox, 5, "List of object class filters", pListObjClasses, cListObjectClasses::Ref::New(*this));
 	pListObjClasses->SetDefaultSorter();
 	
-	helper.CheckBoxOnly(groupBox, pChkObjInclusive, new cActionObjInclusive(*this), true);
+	helper.CheckBoxOnly(groupBox, pChkObjInclusive, cActionObjInclusive::Ref::New(*this));
 	*/
 	
 	// randomize
 	helper.GroupBoxFlow(content, groupBox, "Randomize:");
 	
-	helper.CheckBoxOnly(groupBox, pChkRandomizeYAxis, new cActionRandomizeYAxis(*this), false);
+	helper.CheckBoxOnly(groupBox, pChkRandomizeYAxis, cActionRandomizeYAxis::Ref::New(*this));
 }
 
 meWPAdd::~meWPAdd(){
-	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -258,14 +258,12 @@ void meWPAdd::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateParameters();

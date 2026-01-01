@@ -85,12 +85,8 @@
 
 saeWindowMain::saeWindowMain(saeIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pViewSAnimation(NULL),
-pWindowProperties(NULL),
-pSAnimation(NULL)
+pConfiguration(nullptr),
+pLoadSaveSystem(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -98,7 +94,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new saeWindowMainListener(*this);
+	pListener = saeWindowMainListener::Ref::New(*this);
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -108,14 +104,14 @@ pSAnimation(NULL)
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new saeWindowProperties(*this);
+	pWindowProperties = saeWindowProperties::Ref::New(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation = new saeViewSAnimation(*this);
+	pViewSAnimation = saeViewSAnimation::Ref::New(*this);
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();
@@ -127,15 +123,13 @@ saeWindowMain::~saeWindowMain(){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetSAnimation(NULL);
+	SetSAnimation(nullptr);
 	
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-		pWindowProperties = NULL;
+		pWindowProperties = nullptr;
 	}
 	if(pViewSAnimation){
-		pViewSAnimation->FreeReference();
-		pViewSAnimation = NULL;
+		pViewSAnimation = nullptr;
 	}
 	
 	if(pConfiguration){
@@ -143,9 +137,6 @@ saeWindowMain::~saeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -169,21 +160,19 @@ void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 		return;
 	}
 	
-	pViewSAnimation->SetSAnimation(NULL);
-	pWindowProperties->SetSAnimation(NULL);
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pViewSAnimation->SetSAnimation(nullptr);
+	pWindowProperties->SetSAnimation(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
 		pSAnimation->Dispose();
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
-		sanimation->AddReference();
 		sanimation->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(sanimation->GetUndoSystem());
@@ -195,8 +184,7 @@ void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 }
 
 void saeWindowMain::CreateNewSAnimation(){
-	const saeSAnimation::Ref refSAnimation(saeSAnimation::Ref::NewWith(&GetEnvironment()));
-	SetSAnimation((saeSAnimation*)refSAnimation.operator->());
+	SetSAnimation(saeSAnimation::Ref::New(&GetEnvironment()));
 }
 
 void saeWindowMain::SaveSAnimation(const char *filename){
@@ -265,7 +253,7 @@ void saeWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void saeWindowMain::LoadDocument(const char *filename){
-	SetSAnimation(saeSAnimation::Ref::New(pLoadSaveSystem->LoadSAnimation(filename)));
+	SetSAnimation(pLoadSaveSystem->LoadSAnimation(filename));
 	GetRecentFiles().AddFile(filename);
 	
 	pWindowProperties->OnSAnimationPathChanged();
@@ -289,8 +277,8 @@ void saeWindowMain::OnGameProjectChanged(){
 	CreateNewSAnimation();
 }
 
-igdeStepableTask *saeWindowMain::OnGameDefinitionChanged(){
-	return new saeTaskSyncGameDefinition(*this);
+igdeStepableTask::Ref saeWindowMain::OnGameDefinitionChanged(){
+	return saeTaskSyncGameDefinition::Ref::New(*this);
 }
 
 
@@ -329,19 +317,20 @@ public:
 	cActionBase(window, text, icon, description, mnemonic){}
 	
 	virtual void OnAction(){
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(pWindow.GetSAnimation())));
+		igdeUndo::Ref undo(OnAction(pWindow.GetSAnimation()));
 		if(undo){
 			pWindow.GetSAnimation()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation) = 0;
+	virtual igdeUndo::Ref OnAction(saeSAnimation *sanimation) = 0;
 };
 
 
 
 class cActionFileNew : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileNew> Ref;
 	cActionFileNew(saeWindowMain &window) : cActionBase(window,
 		"New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
 		"Create new Speech Animation", deInputEvent::esmControl,
@@ -360,6 +349,7 @@ public:
 
 class cActionFileOpen : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileOpen> Ref;
 	cActionFileOpen(saeWindowMain &window) : cActionBase(window,
 		"Open...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Open Speech Animation from file", deInputEvent::esmControl,
@@ -376,7 +366,7 @@ public:
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
 		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
+		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			return;
 		}
 		
@@ -387,6 +377,7 @@ public:
 
 class cActionFileSaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionFileSaveAs> Ref;
 	cActionFileSaveAs(saeWindowMain &window) : cActionBase(window,
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Save Speech Animation to different file", deInputEvent::ekcA){}
@@ -395,7 +386,7 @@ public:
 		decString filename(pWindow.GetSAnimation()->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
+		pWindow.GetLoadSaveSystem().GetFilePatternList(), filename ) ){
 			pWindow.SaveSAnimation(filename);
 		}
 	}
@@ -407,6 +398,7 @@ public:
 
 class cActionFileSave : public cActionFileSaveAs{
 public:
+	typedef deTObjectReference<cActionFileSave> Ref;
 	cActionFileSave(saeWindowMain &window) : cActionFileSaveAs(window){
 		SetText("Save");
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
@@ -436,6 +428,7 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(saeWindowMain &window) : cActionBase(window,
 		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
@@ -451,6 +444,7 @@ public:
 
 class cActionEditCopy : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(saeWindowMain &window) : cActionBase(window,
 		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
@@ -466,6 +460,7 @@ public:
 
 class cActionEditPaste : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(saeWindowMain &window) : cActionBase(window,
 		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
@@ -483,12 +478,13 @@ public:
 
 class cActionPhonemeAdd : public cActionBaseUndo{
 public:
+	typedef deTObjectReference<cActionPhonemeAdd> Ref;
 	cActionPhonemeAdd(saeWindowMain &window) : cActionBaseUndo(window,
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add phoneme", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
-		const saePhonemeList &phonemeList = sanimation->GetPhonemeList();
+	virtual igdeUndo::Ref OnAction(saeSAnimation *sanimation){
+		const saePhoneme::List &phonemes = sanimation->GetPhonemes();
 		decString ipaStringUtf8;
 		
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Phoneme",
@@ -502,40 +498,42 @@ public:
 			
 			const int ipa = ipaString.GetAt(0);
 			
-			if(phonemeList.HasIPA(ipa)){
+			if(phonemes.HasMatching([ipa](const saePhoneme &p){
+				return p.GetIPA() == ipa;
+			})){
 				igdeCommonDialogs::Error(&pWindow, "Add Phoneme",
 					"A phoneme with this IPA symbol exists already.");
 				continue;
 			}
 			
-			const saePhoneme::Ref phonemeRef(saePhoneme::Ref::NewWith(ipa));
-			return new saeUPhonemeAdd(sanimation, (saePhoneme*)phonemeRef.operator->());
+			return saeUPhonemeAdd::Ref::New(sanimation, saePhoneme::Ref::New(ipa));
 		}
 		
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetSAnimation() != NULL);
+	void Update() override{
+		SetEnabled(pWindow.GetSAnimation() != nullptr);
 	}
 };
 
 class cActionPhonemeRemove : public cActionBaseUndo{
 public:
+	typedef deTObjectReference<cActionPhonemeRemove> Ref;
 	cActionPhonemeRemove(saeWindowMain &window) : cActionBaseUndo(window,
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove phoneme", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		saePhoneme * const phoneme = sanimation->GetActivePhoneme();
 		if(!phoneme){
-			return NULL;
+			return {};
 		}
-		return new saeUPhonemeRemove(phoneme);
+		return saeUPhonemeRemove::Ref::New(phoneme);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetSAnimation() != NULL && pWindow.GetSAnimation()->GetActivePhoneme());
+	void Update() override{
+		SetEnabled(pWindow.GetSAnimation() != nullptr && pWindow.GetSAnimation()->GetActivePhoneme());
 	}
 };
 
@@ -543,12 +541,13 @@ public:
 
 class cActionWordAdd : public cActionBaseUndo{
 public:
+	typedef deTObjectReference<cActionWordAdd> Ref;
 	cActionWordAdd(saeWindowMain &window) : cActionBaseUndo(window,
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add word", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
-		const saeWordList &wordList = sanimation->GetWordList();
+	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
+		const saeWord::List &wordList = sanimation->GetWordList();
 		decString name;
 		
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Word", "Name:", name)){
@@ -557,37 +556,40 @@ public:
 				continue;
 			}
 			
-			if(wordList.HasNamed(name)){
+			if(wordList.HasMatching([name](const saeWord &w){
+				return w.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pWindow, "Add Word", "A word with this name exists already.");
 				continue;
 			}
 			
-			const saeWord::Ref wordRef(saeWord::Ref::NewWith(name));
-			return new saeUWordAdd(sanimation, (saeWord*)wordRef.operator->());
+			return saeUWordAdd::Ref::New(sanimation, saeWord::Ref::New(name));
 		}
 		
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetSAnimation() != NULL);
+	void Update() override{
+		SetEnabled(pWindow.GetSAnimation() != nullptr);
 	}
 };
 
 class cActionWordAddList : public cActionBaseUndo{
 public:
+	typedef deTObjectReference<cActionWordAddList> Ref;
 	cActionWordAddList(saeWindowMain &window) : cActionBaseUndo(window,
 		"Add List...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add words from text list", deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
-		const saeWordList &wordList = sanimation->GetWordList();
+	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
+		const saeWord::List &wordList = sanimation->GetWordList();
 		decString input;
 		
-		while(igdeCommonDialogs::GetString(&pWindow, "Add Words", "Names:", input)){
+		while(igdeCommonDialogs::GetMultilineString(&pWindow,
+		"Add Words", "Names (lines with 'word phonetics'):", input)){
 			const decStringList lines(input.Split('\n'));
 			const int countLines = lines.GetCount();
-			saeWordList addWordsList;
+			saeWord::List addWordsList;
 			int i;
 			
 			for(i=0; i<countLines; i++){
@@ -601,14 +603,16 @@ public:
 						"word where each word is of the form 'word phonetics'.");
 				}
 				
-				if(wordList.HasNamed(parts.GetAt(0))){
+				if(wordList.HasMatching([parts](const saeWord &w){
+					return w.GetName() == parts.First();
+				})){
 					igdeCommonDialogs::ErrorFormat(&pWindow, "Add Words", "A word with name '%s' "
-						"exists already.", parts.GetAt(0).GetString());
+						"exists already.", parts.First().GetString());
 					addWordsList.RemoveAll();
 					break;
 				}
 				
-				addWordsList.Add(saeWord::Ref::NewWith(parts.GetAt(0),
+				addWordsList.Add(saeWord::Ref::New(parts.First(),
 					decUnicodeString::NewFromUTF8(parts.GetAt(1))));
 			}
 			
@@ -616,33 +620,34 @@ public:
 				continue;
 			}
 			
-			return new saeUWordAddList(sanimation, addWordsList);
+			return saeUWordAddList::Ref::New(sanimation, addWordsList);
 		}
 		
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetSAnimation() != NULL);
+	void Update() override{
+		SetEnabled(pWindow.GetSAnimation() != nullptr);
 	}
 };
 
 class cActionWordRemove : public cActionBaseUndo{
 public:
+	typedef deTObjectReference<cActionWordRemove> Ref;
 	cActionWordRemove(saeWindowMain &window) : cActionBaseUndo(window,
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove word", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
 		saeWord * const word = sanimation->GetActiveWord();
 		if(!word){
-			return NULL;
+			return {};
 		}
-		return new saeUWordRemove(word);
+		return saeUWordRemove::Ref::New(word);
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetSAnimation() != NULL && pWindow.GetSAnimation()->GetActiveWord());
+	void Update() override{
+		SetEnabled(pWindow.GetSAnimation() != nullptr && pWindow.GetSAnimation()->GetActiveWord());
 	}
 };
 
@@ -653,17 +658,18 @@ protected:
 	const saeSAnimation::eDisplayModes pMode;
 	
 public:
+	typedef deTObjectReference<cActionViewDisplayMode> Ref;
 	cActionViewDisplayMode(saeWindowMain &window, saeSAnimation::eDisplayModes mode,
 		const char *text, igdeIcon *icon, const char *description,
 		deInputEvent::eKeyCodes mnemonic) :
 	cActionBase(window, text, icon, description, mnemonic),
 	pMode(mode){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWindow.GetSAnimation()->SetDisplayMode(pMode);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pWindow.GetSAnimation()->GetDisplayMode() == pMode);
 	}
 };
@@ -675,35 +681,35 @@ public:
 void saeWindowMain::pLoadIcons(){
 // 	igdeEnvironment &environment = GetEnvironment();
 	
-// 	pIconEditBone.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_terrain.png" ) );
+// 	pIconEditBone = igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_terrain.png");
 }
 
 void saeWindowMain::pCreateActions(){
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew = cActionFileNew::Ref::New(*this);
+	pActionFileOpen = cActionFileOpen::Ref::New(*this);
+	pActionFileSave = cActionFileSave::Ref::New(*this);
+	pActionFileSaveAs = cActionFileSaveAs::Ref::New(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditUndo = igdeActionUndo::Ref::New(GetEnvironment());
+	pActionEditRedo = igdeActionRedo::Ref::New(GetEnvironment());
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
-	pActionViewDispModePhoneme.TakeOver(new cActionViewDisplayMode(*this,
-		saeSAnimation::edmPhoneme, "Display Active Phoneme", NULL,
-		"Display active phoneme in the preview window", deInputEvent::ekcP));
+	pActionViewDispModePhoneme = cActionViewDisplayMode::Ref::New(*this,
+		saeSAnimation::edmPhoneme, "Display Active Phoneme", nullptr,
+		"Display active phoneme in the preview window", deInputEvent::ekcP);
 	
-	pActionViewDispModeWord.TakeOver(new cActionViewDisplayMode(*this,
-		saeSAnimation::edmWord, "Display Active Word", NULL,
-		"Display active word in the preview window", deInputEvent::ekcW));
+	pActionViewDispModeWord = cActionViewDisplayMode::Ref::New(*this,
+		saeSAnimation::edmWord, "Display Active Word", nullptr,
+		"Display active word in the preview window", deInputEvent::ekcW);
 	
-	pActionPhonemeAdd.TakeOver(new cActionPhonemeAdd(*this));
-	pActionPhonemeRemove.TakeOver(new cActionPhonemeRemove(*this));
+	pActionPhonemeAdd = cActionPhonemeAdd::Ref::New(*this);
+	pActionPhonemeRemove = cActionPhonemeRemove::Ref::New(*this);
 	
-	pActionWordAdd.TakeOver(new cActionWordAdd(*this));
-	pActionWordRemove.TakeOver(new cActionWordRemove(*this));
-	pActionWordAddList.TakeOver(new cActionWordAddList(*this));
+	pActionWordAdd = cActionWordAdd::Ref::New(*this);
+	pActionWordRemove = cActionWordRemove::Ref::New(*this);
+	pActionWordAddList = cActionWordAddList::Ref::New(*this);
 	
 	
 	
@@ -733,7 +739,7 @@ void saeWindowMain::pCreateActions(){
 void saeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -745,7 +751,7 @@ void saeWindowMain::pCreateToolBarFile(){
 void saeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -762,23 +768,23 @@ void saeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade = igdeMenuCascade::Ref::New(env, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Phoneme", deInputEvent::ekcP));
+	cascade = igdeMenuCascade::Ref::New(env, "Phoneme", deInputEvent::ekcP);
 	pCreateMenuPhoneme(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Word", deInputEvent::ekcW));
+	cascade = igdeMenuCascade::Ref::New(env, "Word", deInputEvent::ekcW);
 	pCreateMenuWord(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcI));
+	cascade = igdeMenuCascade::Ref::New(env, "View", deInputEvent::ekcI);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

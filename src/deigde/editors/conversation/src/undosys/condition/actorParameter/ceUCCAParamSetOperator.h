@@ -26,12 +26,12 @@
 #define _CEUCCAPARAMSETOPERATOR_H_
 
 #include "../../../conversation/condition/ceCConditionActorParameter.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 class ceCConditionActorParameter;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -39,17 +39,18 @@ class ceConversationTopic;
  * \brief Undo Actor Parameter Conversation Condition Set Operator.
  */
 class ceUCCAParamSetOperator : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCAParamSetOperator> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorParameter *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorParameter::Ref pCondition;
 	ceCConditionActorParameter::eOperators pOldOperator;
 	ceCConditionActorParameter::eOperators pNewOperator;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCAParamSetOperator> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -81,7 +81,7 @@ ceCAStopTopic *ceWPAStopTopic::GetAction() const{
 		return (ceCAStopTopic*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

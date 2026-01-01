@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class lpeLangPackEntry;
+#include "../../langpack/entry/lpeLangPackEntry.h"
 
 
 
@@ -37,8 +37,12 @@ class lpeLangPackEntry;
  * \brief Undo action set language pack entry text.
  */
 class lpeULangPackEntrySetText : public igdeUndo{
+public:
+	typedef deTObjectReference<lpeULangPackEntrySetText> Ref;
+	
+	
 private:
-	lpeLangPackEntry *pEntry;
+	lpeLangPackEntry::Ref pEntry;
 	
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<lpeULangPackEntrySetText> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

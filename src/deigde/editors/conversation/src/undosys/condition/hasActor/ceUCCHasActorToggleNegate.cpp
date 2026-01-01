@@ -45,32 +45,18 @@
 ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor){
 	if(!topic || !action || !hasActor) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pHasActor = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pHasActor = nullptr;
 	
 	SetShortInfo("Has Actor Negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pHasActor = hasActor;
-	hasActor->AddReference();
 }
 
 ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

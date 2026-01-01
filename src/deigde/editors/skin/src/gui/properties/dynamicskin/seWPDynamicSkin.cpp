@@ -79,11 +79,12 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(seWPDynamicSkin &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seDynamicSkinRenderable * const renderable = pPanel.GetRenderable();
 		if(skin && renderable){
@@ -93,7 +94,7 @@ public:
 	
 	virtual void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seDynamicSkinRenderable * const renderable = pPanel.GetRenderable();
 		if(skin && renderable){
@@ -116,6 +117,7 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -134,6 +136,7 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
 	cBaseEditPathListener(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -152,6 +155,7 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseColorBoxListener> Ref;
 	cBaseColorBoxListener(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -170,6 +174,7 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -188,6 +193,7 @@ protected:
 	seWPDynamicSkin &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditSliderTextListener> Ref;
 	cBaseEditSliderTextListener(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
@@ -207,13 +213,17 @@ public:
 
 
 class cActionAddRenderable : public igdeAction{
+public:
+	typedef deTObjectReference<cActionAddRenderable> Ref;
+	
+private:
 	seWPDynamicSkin &pPanel;
 public:
 	cActionAddRenderable(seWPDynamicSkin &panel) : igdeAction("Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Renderable"),
 		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSkin()){
 			return;
 		}
@@ -224,22 +234,27 @@ public:
 		}
 		
 		seDynamicSkin &dynamicSkin = pPanel.GetSkin()->GetDynamicSkin();
-		if(dynamicSkin.GetRenderableList().HasNamed(name)){
+		if(dynamicSkin.GetRenderables().HasMatching([&name](const seDynamicSkinRenderable &r){
+			return r.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pPanel, "Add Renderable", "A renderable with this name exists already.");
 			return;
 		}
 		
-		const seDynamicSkinRenderable::Ref renderable(seDynamicSkinRenderable::Ref::NewWith(pPanel.GetSkin()->GetEngine(), name));
+		const seDynamicSkinRenderable::Ref renderable(seDynamicSkinRenderable::Ref::New(pPanel.GetSkin()->GetEngine(), name));
 		dynamicSkin.AddRenderable(renderable);
 		dynamicSkin.SetActiveRenderable(renderable);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSkin());
 	}
 };
 
 class cActionRemoveRenderable : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionRemoveRenderable> Ref;
+	
 public:
 	cActionRemoveRenderable(seWPDynamicSkin &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove renderable"){}
@@ -252,24 +267,26 @@ public:
 class cListRenderable : public igdeListBoxListener{
 	seWPDynamicSkin &pPanel;
 public:
+	typedef deTObjectReference<cListRenderable> Ref;
 	cListRenderable(seWPDynamicSkin &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		if(pPanel.GetSkin()){
 			pPanel.GetSkin()->GetDynamicSkin().SetActiveRenderable(listBox->GetSelectedItem()
-				? (seDynamicSkinRenderable*)listBox->GetSelectedItem()->GetData() : NULL);
+				? (seDynamicSkinRenderable*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
 	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(menu, new cActionAddRenderable(pPanel), true);
-		helper.MenuCommand(menu, new cActionRemoveRenderable(pPanel), true);
+		helper.MenuCommand(menu, cActionAddRenderable::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionRemoveRenderable::Ref::New(pPanel));
 	}
 };
 
 class cTextRenderableName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRenderableName> Ref;
 	cTextRenderableName(seWPDynamicSkin &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, seSkin *skin, seDynamicSkinRenderable *renderable){
@@ -277,7 +294,9 @@ public:
 			return;
 		}
 		
-		if(skin->GetDynamicSkin().GetRenderableList().HasNamed(textField.GetText())){
+		if(skin->GetDynamicSkin().GetRenderables().HasMatching([&textField, &renderable](const seDynamicSkinRenderable &r){
+			return r.GetName() == textField.GetText();
+		})){
 			igdeCommonDialogs::Error(&pPanel, "Rename Renderable", "A renderable with this name exists already.");
 			textField.SetText(renderable->GetName());
 			
@@ -289,6 +308,7 @@ public:
 
 class cComboRenderableType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboRenderableType> Ref;
 	cComboRenderableType(seWPDynamicSkin &panel) : cBaseComboBoxListener(panel){}
 	
 	virtual void OnChanged(igdeComboBox &comboBox, seSkin*, seDynamicSkinRenderable *renderable){
@@ -302,6 +322,7 @@ public:
 
 class cSliderValue : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderValue> Ref;
 	cSliderValue(seWPDynamicSkin &panel) : cBaseEditSliderTextListener(panel){}
 	
 	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin*, seDynamicSkinRenderable *renderable){
@@ -311,6 +332,7 @@ public:
 
 class cTextValueRangeLower : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextValueRangeLower> Ref;
 	cTextValueRangeLower(seWPDynamicSkin &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, seSkin*, seDynamicSkinRenderable *renderable){
@@ -320,6 +342,7 @@ public:
 
 class cTextValueRangeUpper : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextValueRangeUpper> Ref;
 	cTextValueRangeUpper(seWPDynamicSkin &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual void OnChanged(igdeTextField &textField, seSkin*, seDynamicSkinRenderable *renderable){
@@ -330,6 +353,7 @@ public:
 
 class cColorColor : public cBaseColorBoxListener{
 public:
+	typedef deTObjectReference<cColorColor> Ref;
 	cColorColor(seWPDynamicSkin &panel) : cBaseColorBoxListener(panel){}
 	
 	virtual void OnChanged(igdeColorBox &colorBox, seSkin*, seDynamicSkinRenderable *renderable){
@@ -339,6 +363,7 @@ public:
 
 class cSliderColorRed : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderColorRed> Ref;
 	cSliderColorRed(seWPDynamicSkin &panel) : cBaseEditSliderTextListener(panel){}
 	
 	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin*, seDynamicSkinRenderable *renderable){
@@ -350,6 +375,7 @@ public:
 
 class cSliderColorGreen : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderColorGreen> Ref;
 	cSliderColorGreen(seWPDynamicSkin &panel) : cBaseEditSliderTextListener(panel){}
 	
 	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin*, seDynamicSkinRenderable *renderable){
@@ -361,6 +387,7 @@ public:
 
 class cSliderColorBlue : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderColorBlue> Ref;
 	cSliderColorBlue(seWPDynamicSkin &panel) : cBaseEditSliderTextListener(panel){}
 	
 	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin*, seDynamicSkinRenderable *renderable){
@@ -372,6 +399,7 @@ public:
 
 class cSliderColorAlpha : public cBaseEditSliderTextListener{
 public:
+	typedef deTObjectReference<cSliderColorAlpha> Ref;
 	cSliderColorAlpha(seWPDynamicSkin &panel) : cBaseEditSliderTextListener(panel){}
 	
 	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin*, seDynamicSkinRenderable *renderable){
@@ -384,6 +412,7 @@ public:
 
 class cPathImage : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathImage> Ref;
 	cPathImage(seWPDynamicSkin &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(igdeEditPath &editPath, seSkin*, seDynamicSkinRenderable *renderable){
@@ -394,6 +423,7 @@ public:
 
 class cPathVideo : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathVideo> Ref;
 	cPathVideo(seWPDynamicSkin &panel) : cBaseEditPathListener(panel){}
 	
 	virtual void OnChanged(igdeEditPath &editPath, seSkin*, seDynamicSkinRenderable *renderable){
@@ -412,42 +442,40 @@ public:
 
 seWPDynamicSkin::seWPDynamicSkin(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSkin(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPDynamicSkinListener(*this);
+	pListener = seWPDynamicSkinListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// renderable
 	helper.GroupBoxFlow(content, groupBox, "Renderable:");
 	
-	helper.ListBox(groupBox, 6, "Select renderable to edit", pListRenderable, new cListRenderable(*this));
+	helper.ListBox(groupBox, 6, "Select renderable to edit", pListRenderable, cListRenderable::Ref::New(*this));
 	pListRenderable->SetDefaultSorter();
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
-	helper.EditString(form, "Name:", "Unique name of the renderable", pEditName, new cTextRenderableName(*this));
+	helper.EditString(form, "Name:", "Unique name of the renderable", pEditName, cTextRenderableName::Ref::New(*this));
 	
-	helper.ComboBox(form, "Type:", "Type of renderable", pCBRenderableType, new cComboRenderableType(*this));
-	pCBRenderableType->AddItem("Value", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertValue);
-	pCBRenderableType->AddItem("Color", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertColor);
-	pCBRenderableType->AddItem("Image", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertImage);
-	pCBRenderableType->AddItem("Video Frame", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertVideoFrame);
-	pCBRenderableType->AddItem("Canvas", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertCanvas);
-	pCBRenderableType->AddItem("Camera", NULL, (void*)(intptr_t)seDynamicSkinRenderable::ertCamera);
+	helper.ComboBox(form, "Type:", "Type of renderable", pCBRenderableType, cComboRenderableType::Ref::New(*this));
+	pCBRenderableType->AddItem("Value", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertValue);
+	pCBRenderableType->AddItem("Color", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertColor);
+	pCBRenderableType->AddItem("Image", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertImage);
+	pCBRenderableType->AddItem("Video Frame", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertVideoFrame);
+	pCBRenderableType->AddItem("Canvas", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCanvas);
+	pCBRenderableType->AddItem("Camera", nullptr, (void*)(intptr_t)seDynamicSkinRenderable::ertCamera);
 	
 	
 	// type specific panels
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -456,43 +484,43 @@ pSkin(NULL)
 	
 	
 	// value
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Value:");
-	helper.EditSliderText(groupBox, "Value:", "Value", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, new cSliderValue(*this));
-	helper.EditFloat(groupBox, "Lower:", "Lower range", pEditValueLower, new cTextValueRangeLower(*this));
-	helper.EditFloat(groupBox, "Upper:", "Upper range", pEditValueUpper, new cTextValueRangeUpper(*this));
+	helper.EditSliderText(groupBox, "Value:", "Value", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSliderValue::Ref::New(*this));
+	helper.EditFloat(groupBox, "Lower:", "Lower range", pEditValueLower, cTextValueRangeLower::Ref::New(*this));
+	helper.EditFloat(groupBox, "Upper:", "Upper range", pEditValueUpper, cTextValueRangeUpper::Ref::New(*this));
 	
 	
 	// color
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Color:");
-	helper.ColorBox(groupBox, "Color:", "Color", pClrColor, new cColorColor(*this));
+	helper.ColorBox(groupBox, "Color:", "Color", pClrColor, cColorColor::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Red:", "Red color value", 0.0f, 1.0f, 6, 3, 0.1f,
-		pSldColorRed, new cSliderColorRed(*this));
+		pSldColorRed, cSliderColorRed::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Green:", "Green color value", 0.0f, 1.0f, 6, 3, 0.1f,
-		pSldColorGreen, new cSliderColorGreen(*this));
+		pSldColorGreen, cSliderColorGreen::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Blue:", "Blue color value", 0.0f, 1.0f, 6, 3, 0.1f,
-		pSldColorBlue, new cSliderColorBlue(*this));
+		pSldColorBlue, cSliderColorBlue::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Alpha:", "Alpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
-		pSldColorAlpha, new cSliderColorAlpha(*this));
+		pSldColorAlpha, cSliderColorAlpha::Ref::New(*this));
 	
 	
 	// image
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Image:");
 	helper.EditPath(groupBox, "Path:", "Path to image", igdeEnvironment::efpltImage,
-		pEditImagePath, new cPathImage(*this));
+		pEditImagePath, cPathImage::Ref::New(*this));
 	
 	
 	// video
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Video:");
 	helper.EditPath(groupBox, "Path:", "Path to video", igdeEnvironment::efpltVideo,
-		pEditVideoPath, new cPathVideo(*this));
+		pEditVideoPath, cPathVideo::Ref::New(*this));
 	
 	
 	// canvas
@@ -504,11 +532,7 @@ pSkin(NULL)
 }
 
 seWPDynamicSkin::~seWPDynamicSkin(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -523,21 +547,19 @@ void seWPDynamicSkin::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdateRenderableList();
 }
 
 seDynamicSkinRenderable *seWPDynamicSkin::GetRenderable() const{
-	return pSkin ? pSkin->GetDynamicSkin().GetActiveRenderable() : NULL;
+	return pSkin ? pSkin->GetDynamicSkin().GetActiveRenderable() : nullptr;
 }
 
 
@@ -548,14 +570,9 @@ void seWPDynamicSkin::UpdateRenderableList(){
 	pListRenderable->RemoveAllItems();
 	
 	if(pSkin){
-		const seDynamicSkinRenderableList &list = pSkin->GetDynamicSkin().GetRenderableList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			seDynamicSkinRenderable * const renderable = list.GetAt(i);
-			pListRenderable->AddItem(renderable->GetName(), NULL, renderable);
-		}
+		pSkin->GetDynamicSkin().GetRenderables().Visit([&](seDynamicSkinRenderable *renderable){
+			pListRenderable->AddItem(renderable->GetName(), nullptr, renderable);
+		});
 		
 		pListRenderable->SortItems();
 	}

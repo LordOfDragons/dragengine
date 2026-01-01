@@ -50,7 +50,9 @@ public:
 	seWPMappedListener(seWPMapped &panel);
 	
 	/** Clean up listener. */
+protected:
 	~seWPMappedListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -25,6 +25,7 @@
 #ifndef _GDEWPPROPERTYLIST_H_
 #define _GDEWPPROPERTYLIST_H_
 
+#include "gdeDefaultPropertyValue.h"
 #include "../../gamedef/property/gdeProperty.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -41,13 +42,12 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class gdeGameDefinition;
-class gdePropertyList;
 class gdeFilePattern;
 
-class igdeUndo;
 class igdeUndoSystem;
 class igdeClipboard;
 
@@ -58,8 +58,12 @@ class igdeClipboard;
  * Subclass to implement creating undo actions.
  */
 class gdeWPPropertyList : public igdeContainerFlow{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<gdeWPPropertyList> Ref;
+	
 private:
-	const gdePropertyList *pPropertyList;
+	const gdeProperty::List *pPropertyList;
 	gdeGameDefinition *pGameDefinition;
 	igdeClipboard *pClipboard;
 	
@@ -104,7 +108,7 @@ private:
 	igdeComboBox::Ref pCBIdentifierGroup;
 	igdeCheckBox::Ref pChkIdentifierUsage;
 	
-	igdeEditPropertyValue::Ref pEditDefault;
+	gdeDefaultPropertyValue::Ref pEditDefault;
 	
 	
 public:
@@ -124,29 +128,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property list to edit. */
-	inline const gdePropertyList *GetPropertyList() const{ return pPropertyList; }
+	inline const gdeProperty::List *GetPropertyList() const{ return pPropertyList; }
 	
 	/** \brief Set property list to edit. */
-	void SetPropertyList(const gdePropertyList *propPropertyList);
+	void SetPropertyList(const gdeProperty::List *propPropertyList);
 	
-	/** \brief Game definition or NULL. */
+	/** \brief Game definition or nullptr. */
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or NULL. */
+	/** \brief Set game definition or nullptr. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	igdeUndoSystem *GetUndoSystem() const;
 	
-	/** \brief Clipboard or NULL. */
+	/** \brief Clipboard or nullptr. */
 	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
 	
-	/** \brief Set clipboard or NULL. */
+	/** \brief Set clipboard or nullptr. */
 	void SetClipboard(igdeClipboard *clipboard);
 	
 	
 	
-	/** \brief Active property or NULL. */
+	/** \brief Active property or nullptr. */
 	gdeProperty *GetProperty() const;
 	
 	/** \brief Selection option or empty string if not found. */
@@ -155,7 +159,7 @@ public:
 	/** \brief Active custom pattern or -1. */
 	int GetCustomPatternIndex() const;
 	
-	/** \brief Active custom pattern or NULL. */
+	/** \brief Active custom pattern or nullptr. */
 	gdeFilePattern *GetCustomPattern() const;
 	
 	
@@ -190,46 +194,46 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionPropertiesMenu() const{ return pActionPropertiesMenu; }
-	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
-	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
-	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
-	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
+	inline const igdeActionContextMenu::Ref &GetActionPropertiesMenu() const{ return pActionPropertiesMenu; }
+	inline const igdeAction::Ref &GetActionPropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionPropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline const igdeAction::Ref &GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline const igdeAction::Ref &GetActionPropertyPaste() const{ return pActionPropertyPaste; }
 	
-	inline igdeAction *GetActionOptionAdd() const{ return pActionOptionAdd; }
-	inline igdeAction *GetActionOptionRemove() const{ return pActionOptionRemove; }
+	inline const igdeAction::Ref &GetActionOptionAdd() const{ return pActionOptionAdd; }
+	inline const igdeAction::Ref &GetActionOptionRemove() const{ return pActionOptionRemove; }
 	
-	inline igdeAction *GetActionCustomPatternAdd() const{ return pActionCustomPatternAdd; }
-	inline igdeAction *GetActionCustomPatternRemove() const{ return pActionCustomPatternRemove; }
+	inline const igdeAction::Ref &GetActionCustomPatternAdd() const{ return pActionCustomPatternAdd; }
+	inline const igdeAction::Ref &GetActionCustomPatternRemove() const{ return pActionCustomPatternRemove; }
 	
-	inline igdeActionContextMenu *GetActionCustomPatternMenu() const{ return pActionCustomPatternMenu; }
+	inline const igdeActionContextMenu::Ref &GetActionCustomPatternMenu() const{ return pActionCustomPatternMenu; }
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoAdd(gdeProperty *property) = 0;
-	virtual igdeUndo *UndoRemove(gdeProperty *property) = 0;
-	virtual igdeUndo *UndoPaste(gdeProperty *property) = 0;
-	virtual igdeUndo *UndoName(gdeProperty *property, const decString &name) = 0;
-	virtual igdeUndo *UndoDescription(gdeProperty *property, const decString &description) = 0;
-	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) = 0;
-	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value) = 0;
-	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value) = 0;
-	virtual igdeUndo *UndoDefaultValue(gdeProperty *property, const decString &newValue, const decString &oldValue) = 0;
-	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options) = 0;
-	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) = 0;
-	virtual igdeUndo *UndoIdentifierGroup(gdeProperty *property, const decString &identifier) = 0;
-	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property) = 0;
-	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) = 0;
-	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) = 0;
-	virtual igdeUndo *UndoCustomFilePatternName(gdeProperty *property,
+	virtual igdeUndo::Ref UndoAdd(gdeProperty *property) = 0;
+	virtual igdeUndo::Ref UndoRemove(gdeProperty *property) = 0;
+	virtual igdeUndo::Ref UndoPaste(gdeProperty *property) = 0;
+	virtual igdeUndo::Ref UndoName(gdeProperty *property, const decString &name) = 0;
+	virtual igdeUndo::Ref UndoDescription(gdeProperty *property, const decString &description) = 0;
+	virtual igdeUndo::Ref UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type) = 0;
+	virtual igdeUndo::Ref UndoMinimumValue(gdeProperty *property, float value) = 0;
+	virtual igdeUndo::Ref UndoMaximumValue(gdeProperty *property, float value) = 0;
+	virtual igdeUndo::Ref UndoDefaultValue(gdeProperty *property, const decString &newValue, const decString &oldValue) = 0;
+	virtual igdeUndo::Ref UndoOptions(gdeProperty *property, const decStringList &options) = 0;
+	virtual igdeUndo::Ref UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type) = 0;
+	virtual igdeUndo::Ref UndoIdentifierGroup(gdeProperty *property, const decString &identifier) = 0;
+	virtual igdeUndo::Ref UndoIdentifierUsage(gdeProperty *property) = 0;
+	virtual igdeUndo::Ref UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern) = 0;
+	virtual igdeUndo::Ref UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern) = 0;
+	virtual igdeUndo::Ref UndoCustomFilePatternName(gdeProperty *property,
 		gdeFilePattern *filePattern, const decString &name) = 0;
-	virtual igdeUndo *UndoCustomFilePatternPattern(gdeProperty *property,
+	virtual igdeUndo::Ref UndoCustomFilePatternPattern(gdeProperty *property,
 		gdeFilePattern *filePattern, const decString &pattern) = 0;
-	virtual igdeUndo *UndoCustomFilePatternExtension(gdeProperty *property,
+	virtual igdeUndo::Ref UndoCustomFilePatternExtension(gdeProperty *property,
 		gdeFilePattern *filePattern, const decString &extension) = 0;
 	/*@}*/
 };

@@ -121,25 +121,15 @@ public:
 	
 	virtual void BuildFont(deFont *font){
 		deImageManager &imageMgr = *pEngine->GetImageManager();
-		deImage *image = NULL;
-		decPath basePath;
 		
 		pModule->LoadFont(*pFile, *font);
 		
-		try{
-			basePath.SetFromUnix(pVirtualPath.GetString());
-			basePath.RemoveLastComponent();
-			
-			if(strlen(font->GetImagePath()) > 0){
-				image = imageMgr.LoadImage(font->GetImagePath(), basePath.GetPathUnix());
-				font->SetImage(image);
-				image->FreeReference();
-				image = NULL;
-			}
-			
-		}catch(const deException &){
-			if(image) image->FreeReference();
-			throw;
+		decPath basePath;
+		basePath.SetFromUnix(pVirtualPath.GetString());
+		basePath.RemoveLastComponent();
+		
+		if(!font->GetImagePath().IsEmpty()){
+			font->SetImage(imageMgr.LoadImage(font->GetImagePath(), basePath.GetPathUnix()));
 		}
 	}
 };
@@ -149,61 +139,42 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 	
 	feFontImage &fontImage = *font->GetFontImage();
 	deEngine *engine = pModule->GetGameEngine();
-	feFontGlyph *glyph = NULL;
-	deFont *engFont = NULL;
 	
 	cDirectFontLoader directFontLoader(engine, virtualPath, file, pModule);
 	
-	// protect this area
-	try{
-		// try to load the font
-		engFont = engine->GetFontManager()->CreateFont("", directFontLoader);
+	// try to load the font
+	const deFont::Ref engFont(engine->GetFontManager()->CreateFont("", directFontLoader));
+	
+	// store font information
+	font->SetFilePath(virtualPath);
+	font->SetLineHeight(engFont->GetLineHeight());
+	font->SetBaseLine(engFont->GetBaseLine());
+	font->SetColorFont(engFont->GetIsColorFont());
+	
+	// store font image information
+	fontImage.SetFilename(engFont->GetImagePath(), true);
+	
+	// store glyph information
+	const int glyphCount = engFont->GetGlyphCount();
+	int i;
+	
+	// TODO engFont->GetUndefinedGlyph()
+	
+	for(i=0; i<glyphCount; i++){
+		const deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
 		
-		// store font information
-		font->SetFilePath(virtualPath);
-		font->SetLineHeight(engFont->GetLineHeight());
-		font->SetBaseLine(engFont->GetBaseLine());
-		font->SetColorFont(engFont->GetIsColorFont());
+		const feFontGlyph::Ref glyph(feFontGlyph::Ref::New());
+		glyph->SetCode(engGlyph.GetUnicode());
+		glyph->SetU(engGlyph.GetX());
+		glyph->SetV(engGlyph.GetY());
+		// engGlyph.GetZ()
+		glyph->SetWidth(engGlyph.GetWidth());
+		glyph->SetHeight(engGlyph.GetHeight());
+		glyph->SetBearing(engGlyph.GetBearing());
+		glyph->SetBearingY(engGlyph.GetBearingY());
+		glyph->SetAdvance(engGlyph.GetAdvance());
 		
-		// store font image information
-		fontImage.SetFilename(engFont->GetImagePath(), true);
-		
-		// store glyph information
-		const int glyphCount = engFont->GetGlyphCount();
-		int i;
-		
-		// TODO engFont->GetUndefinedGlyph()
-		
-		for(i=0; i<glyphCount; i++){
-			const deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
-			
-			glyph = new feFontGlyph;
-			glyph->SetCode(engGlyph.GetUnicode());
-			glyph->SetU(engGlyph.GetX());
-			glyph->SetV(engGlyph.GetY());
-			// engGlyph.GetZ()
-			glyph->SetWidth(engGlyph.GetWidth());
-			glyph->SetHeight(engGlyph.GetHeight());
-			glyph->SetBearing(engGlyph.GetBearing());
-			glyph->SetBearingY(engGlyph.GetBearingY());
-			glyph->SetAdvance(engGlyph.GetAdvance());
-			
-			font->AddGlyph(glyph);
-			glyph = NULL;
-		}
-		
-		// time to release the font resource
-		engFont->FreeReference();
-		
-	}catch(const deException &e){
-		e.PrintError();
-		if(glyph){
-			glyph->FreeReference();
-		}
-		if(engFont){
-			engFont->FreeReference();
-		}
-		throw;
+		font->AddGlyph(glyph);
 	}
 }
 

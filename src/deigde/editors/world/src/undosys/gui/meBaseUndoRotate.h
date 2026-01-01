@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEBASEUNDOROTATE_H_
 #define _MEBASEUNDOROTATE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -36,6 +36,11 @@
  * Base class for undo actions rotating things around.
  */
 class meBaseUndoRotate : public igdeUndo{
+public:
+	typedef deTObjectReference<meBaseUndoRotate> Ref;
+	typedef decTObjectOrderedSet<meBaseUndoRotate> List;
+	
+	
 private:
 	float pAngle;
 	decDVector pPivot;
@@ -45,13 +50,13 @@ private:
 	decDMatrix pMatrix;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meBaseUndoRotate> Ref;
-	
 	// constructor, destructor
 	meBaseUndoRotate();
+	
+protected:
 	~meBaseUndoRotate();
 	
+public:
 	// management
 	/** Retrieves the angle to rotate in degrees. */
 	inline float GetAngle() const{ return pAngle; }

@@ -25,15 +25,15 @@
 #ifndef _MECLCOLLECT_H_
 #define _MECLCOLLECT_H_
 
-#include "meCLHitList.h"
-#include "../world/object/meObjectList.h"
+#include "meCLHitListEntry.h"
+#include "../filter/meFilterObjects.h"
+#include "../world/object/meObject.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class meDecal;
 class meObject;
-class meFilterObjects;
 class meWorld;
 class deCollider;
 
@@ -52,11 +52,11 @@ private:
 	bool pTestDecals;
 	bool pTestSnapPoints;
 	
-	meCLHitList pElements;
+	meCLHitListEntry::List pElements;
 	
-	const meFilterObjects *pFilterObjects;
+	meFilterObjects::Ref pFilterObjects;
 	
-	meObjectList pIgnoreObjects;
+	meObject::List pIgnoreObjects;
 	meDecal *pIgnoreDecal;
 	
 public:
@@ -93,22 +93,22 @@ public:
 	void SetIgnoreDecal(meDecal *decal);
 	
 	/** Object filter or nullptr to not use filtering. */
-	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
+	inline const meFilterObjects::Ref &GetFilterObjects() const{ return pFilterObjects; }
 	
 	/** Set object filter or nullptr to not use filtering. */
-	void SetFilterObjects(const meFilterObjects *filter);
+	void SetFilterObjects(meFilterObjects *filter);
 	
 	/** List of objects to ignore. */
-	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
-	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
+	inline meObject::List &GetIgnoreObjects(){ return pIgnoreObjects; }
+	inline const meObject::List &GetIgnoreObjects() const{ return pIgnoreObjects; }
 	
 	
 	/** Resets the collector. */
 	void Reset();
 	
 	/** List of collected elements. */
-	inline meCLHitList &GetCollectedElements(){ return pElements; }
-	inline const meCLHitList &GetCollectedElements() const{ return pElements; }
+	inline meCLHitListEntry::List &GetCollectedElements(){ return pElements; }
+	inline const meCLHitListEntry::List &GetCollectedElements() const{ return pElements; }
 	
 	
 	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);

@@ -48,7 +48,6 @@
 deoglCanvasImage::deoglCanvasImage(deGraphicOpenGl &ogl, deCanvasImage &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasImage(canvas),
-pRCanvasImage(NULL),
 pImage(NULL),
 pDirty(true){
 }
@@ -65,7 +64,7 @@ deoglCanvasImage::~deoglCanvasImage(){
 ///////////////
 
 void deoglCanvasImage::DropRCanvas(){
-	pRCanvasImage = NULL;
+	pRCanvasImage = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
@@ -133,6 +132,6 @@ void deoglCanvasImage::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasImage::CreateRCanvas(){
-	pRCanvasImage = new deoglRCanvasImage(GetOgl().GetRenderThread());
+	pRCanvasImage = deoglRCanvasImage::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasImage;
 }

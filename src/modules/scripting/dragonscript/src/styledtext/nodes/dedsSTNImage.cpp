@@ -22,15 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dedsSTNImage.h"
 
 #include <dragengine/resources/image/deImage.h>
-#include <libdscript/exceptions.h>
-
 
 
 // Class dedsSTNImage
@@ -39,29 +33,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-
 dedsSTNImage::dedsSTNImage(){
-	pImage = NULL;
 }
 
-dedsSTNImage::dedsSTNImage(deImage *image){
-	pImage = image;
-	if(image) image->AddReference();
+dedsSTNImage::dedsSTNImage(deImage *image) :
+pImage(image){
 }
 
 dedsSTNImage::~dedsSTNImage(){
-	if(pImage) pImage->FreeReference();
 }
-
 
 
 // Management
 ///////////////
 
-void dedsSTNImage::SetImage(deImage* image){
-	if(image != pImage){
-		if(pImage) pImage->FreeReference();
-		pImage = image;
-		if(image) image->AddReference();
-	}
+void dedsSTNImage::SetImage(deImage *image){
+	pImage = image;
 }

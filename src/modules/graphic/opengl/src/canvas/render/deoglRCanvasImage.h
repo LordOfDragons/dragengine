@@ -33,6 +33,11 @@
  * Render canvas image.
  */
 class deoglRCanvasImage : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCanvasImage> Ref;
+	
+	
 private:
 	deoglRImage::Ref pImage;
 	decTexMatrix2 pTCTransform;

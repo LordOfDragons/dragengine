@@ -26,6 +26,7 @@
 #define _MEVIEWEDITORADDNEW_H_
 
 #include "meViewEditorNavigation.h"
+#include "../../filter/meFilterObjectsByClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -34,7 +35,6 @@
 class meCLAddDecal;
 class meCLClosestElement;
 class meCLSnapPoint;
-class meFilterObjectsByClass;
 
 
 
@@ -42,10 +42,13 @@ class meFilterObjectsByClass;
  * \brief View editor add new element.
  */
 class meViewEditorAddNew : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorAddNew> Ref;
+	
 private:
 	meCLClosestElement *pClosestElement;
 	meCLSnapPoint *pCLSnapPoint;
-	meFilterObjectsByClass *pFilterObjectsByClass;
+	meFilterObjectsByClass::Ref pFilterObjectsByClass;
 	meCLAddDecal *pAddDecal;
 	igdeUndo::Ref pUndoAddObject;
 	igdeUndo::Ref pUndoAddNavSpace;
@@ -59,8 +62,11 @@ public:
 	/** \brief Create view editor. */
 	meViewEditorAddNew(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
 	~meViewEditorAddNew() override;
+	
+public:
 	/*@}*/
 	
 	

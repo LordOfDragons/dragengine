@@ -26,8 +26,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "deoglTerrainHeightImage.h"
-#include "dragengine/resources/terrain/heightmap/deTerrainHeightMap.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/terrain/heightmap/deTerrainHeightMap.h>
+#include <dragengine/common/exceptions.h>
 
 
 

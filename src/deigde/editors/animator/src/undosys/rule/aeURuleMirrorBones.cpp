@@ -44,7 +44,7 @@
 ////////////////////////////
 
 aeURuleMirrorBones::aeURuleMirrorBones(aeRule *rule) :
-pRule(NULL)
+pRule(nullptr)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
@@ -69,13 +69,9 @@ pRule(NULL)
 	pPatterns.Add(" right");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleMirrorBones::~aeURuleMirrorBones(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

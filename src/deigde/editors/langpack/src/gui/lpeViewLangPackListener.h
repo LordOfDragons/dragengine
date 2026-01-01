@@ -41,13 +41,18 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<lpeViewLangPackListener> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	lpeViewLangPackListener(lpeViewLangPack &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~lpeViewLangPackListener();
+public:
 	/*@}*/
 	
 	

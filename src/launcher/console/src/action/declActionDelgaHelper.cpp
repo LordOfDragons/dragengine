@@ -76,9 +76,8 @@ declActionDelgaHelper::~declActionDelgaHelper(){
 void declActionDelgaHelper::Load(){
 	Unload();
 	
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
-			pLauncher, pLauncher.GetEngine().GetLogFile())));
+	const delEngineInstance::Ref instance(pLauncher.GetEngineInstanceFactory().
+		CreateEngineInstance(pLauncher, pLauncher.GetEngine().GetLogFile()));
 	instance->StartEngine();
 	instance->LoadModules();
 	
@@ -100,13 +99,13 @@ bool declActionDelgaHelper::HasContent() const{
 
 void declActionDelgaHelper::Install(){
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
+		decPath::CreatePathNative(pLauncher.GetPathGames())));
 	
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(new decDiskFileReader(pFilename)));
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pFilename));
 	
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
-	const decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(container->OpenFileForWriting(target)));
+	const decBaseFileWriter::Ref writer(container->OpenFileForWriting(target));
 	
 	printf("Installing");
 	
@@ -157,8 +156,7 @@ void declActionDelgaHelper::Uninstall(){
 	printf("Uninstalling...\n");
 	
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
-			decPath::CreatePathNative(pLauncher.GetPathGames()))));
+		decPath::CreatePathUnix("/"), decPath::CreatePathNative(pLauncher.GetPathGames())));
 	
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());

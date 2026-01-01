@@ -69,7 +69,6 @@ const decVector &position, float radius) const{
 	try{
 		// create convex volume
 		volume = new decConvexVolume;
-		if(!volume) DETHROW(deeOutOfMemory);
 		
 		offset = (sqrtf(2.0f) - 1.0f) * radius;
 		

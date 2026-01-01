@@ -25,6 +25,9 @@
 #ifndef _PEEWINDOWCURVES_H_
 #define _PEEWINDOWCURVES_H_
 
+#include "peeWindowCurvesListener.h"
+#include "../../emitter/peeEmitter.h"
+
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -32,10 +35,8 @@
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/undo/igdeUndo.h>
 
-class peeEmitter;
 class peeParameter;
 class peeType;
-class peeWindowCurvesListener;
 class peeWindowMain;
 
 
@@ -45,6 +46,8 @@ class peeWindowMain;
  */
 class peeWindowCurves : public igdeContainerSplitted{
 public:
+	typedef deTObjectReference<peeWindowCurves> Ref;
+	
 	/** \brief Curve to edit. */
 	enum eCurves{
 		ecValue,
@@ -57,9 +60,9 @@ public:
 	
 private:
 	peeWindowMain &pWindowMain;
-	peeWindowCurvesListener *pListener;
+	peeWindowCurvesListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeIcon::Ref pIconCurveEmpty;
 	igdeIcon::Ref pIconCurveUsed;
@@ -100,7 +103,7 @@ public:
 	eCurves GetCurve() const;
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

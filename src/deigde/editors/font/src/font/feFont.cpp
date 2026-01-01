@@ -56,24 +56,21 @@
 feFont::feFont(igdeEnvironment *environment) :
 igdeEditableEntity(environment)
 {
-	pEngFont = NULL;
-	
 	SetFilePath("new.defont");
 	pLineHeight = 10;
 	pBaseLine = 7;
 	pColorFont = false;
-	pFontImage = NULL;
 	pElementMode = eemBone;
 	pWorkMode = ewmSelect;
 	
-	pGlyphSelection = NULL;
+	pGlyphSelection = nullptr;
 	
 	pDirtyFont = true;
 	
 	try{
 		pGlyphSelection = new feFontGlyphSelection(this);
 		
-		pFontImage = new feFontImage(GetEngine());
+		pFontImage = feFontImage::Ref::New(GetEngine());
 		pFontImage->SetParentFont(this);
 		
 		SetChanged(false);
@@ -159,27 +156,23 @@ void feFont::Invalidate(){
 }
 
 void feFont::Rebuild(){
-	if(pDirtyFont){
-		// free the old font
-		if(pEngFont){
-			pEngFont->FreeReference();
-			pEngFont = NULL;
-		}
-		
-		// build a new font only if it would be valid
-		if(pFontImage->GetEngineImage()){
-			// build new font. for this we use an empty name which creates an unnamed
-			// font. named fonts can only exist once but unnamed fonts can exist multiple
-			// times. in contrary to named fonts the unnamed fonts can not be retrieved
-			// using loading but this is okay for what we use them here.
-			feFontBuilder builder(this);
-			
-			pEngFont = GetEngine()->GetFontManager()->CreateFont("", builder);
-		}
-		
-		// no more dirty
-		pDirtyFont = false;
+	if(!pDirtyFont){
+		return;
 	}
+	
+	pEngFont = nullptr;
+	
+	if(pFontImage->GetEngineImage()){
+		// build new font. for this we use an empty name which creates an unnamed
+		// font. named fonts can only exist once but unnamed fonts can exist multiple
+		// times. in contrary to named fonts the unnamed fonts can not be retrieved
+		// using loading but this is okay for what we use them here.
+		feFontBuilder builder(this);
+		
+		pEngFont = GetEngine()->GetFontManager()->CreateFont("", builder);
+	}
+	
+	pDirtyFont = false;
 }
 
 
@@ -187,61 +180,34 @@ void feFont::Rebuild(){
 // Glyphs
 ///////////
 
-
-int feFont::GetGlyphCount() const{
-	return pGlyphs.GetGlyphCount();
-}
-
-feFontGlyph *feFont::GetGlyphAt(int index) const{
-	return pGlyphs.GetGlyphAt(index);
-}
-
-feFontGlyph *feFont::GetGlyphWithCode(int code) const{
-	return pGlyphs.GetGlyphWithCode(code);
-}
-
-int feFont::IndexOfGlyph(feFontGlyph *glyph) const{
-	return pGlyphs.IndexOfGlyph(glyph);
-}
-
-int feFont::IndexOfGlyphWithCode(int code) const{
-	return pGlyphs.IndexOfGlyphWithCode(code);
-}
-
-bool feFont::HasGlyph(feFontGlyph *glyph) const{
-	return pGlyphs.HasGlyph(glyph);
-}
-
-bool feFont::HasGlyphWithCode(int code) const{
-	return pGlyphs.HasGlyphWithCode(code);
-}
-
 void feFont::AddGlyph(feFontGlyph *glyph){
-	pGlyphs.AddGlyph(glyph);
+	DEASSERT_NOTNULL(glyph)
+	pGlyphs.Add(glyph);
 	glyph->SetParentFont(this);
 	NotifyGlyphStructureChanged();
 }
 
 void feFont::RemoveGlyph(feFontGlyph *glyph){
-	glyph->SetParentFont(NULL);
-	pGlyphs.RemoveGlyph(glyph);
+	const feFontGlyph::Ref guard(glyph);
+	pGlyphs.Remove(glyph);
+	glyph->SetParentFont(nullptr);
 	NotifyGlyphStructureChanged();
 }
 
-void feFont::RemoveGlyphWithCode (int code) {
-	feFontGlyph *glyph = pGlyphs.GetGlyphWithCode(code);
-	if(!glyph) DETHROW(deeInvalidParam);
-	glyph->SetParentFont(NULL);
-	pGlyphs.RemoveGlyph(glyph);
-	NotifyGlyphStructureChanged();
+void feFont::RemoveGlyphWithCode(int code) {
+	RemoveGlyph(pGlyphs.FindOrDefault([&](feFontGlyph *g){
+		return g->GetCode() == code;
+	}));
 }
 
 void feFont::RemoveAllGlyphs(){
-	int g, count = pGlyphs.GetGlyphCount();
-	for(g=0; g<count; g++){
-		pGlyphs.GetGlyphAt(g)->SetParentFont(NULL);
+	if(pGlyphs.IsEmpty()){
+		return;
 	}
-	pGlyphs.RemoveAllGlyphs();
+	pGlyphs.Visit([&](feFontGlyph &g){
+		g.SetParentFont(nullptr);
+	});
+	pGlyphs.RemoveAll();
 	NotifyGlyphStructureChanged();
 }
 
@@ -251,6 +217,7 @@ void feFont::RemoveAllGlyphs(){
 //////////////
 
 void feFont::AddNotifier(feFontNotifier *notifier){
+	DEASSERT_NOTNULL(notifier)
 	pListeners.Add(notifier);
 }
 
@@ -261,43 +228,31 @@ void feFont::RemoveNotifier(feFontNotifier *notifier){
 
 
 void feFont::NotifyModeChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->ModeChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.ModeChanged(this);
+	});
 }
 
 void feFont::NotifyStateChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->StateChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.StateChanged(this);
+	});
 	
 	Invalidate();
 }
 
 void feFont::NotifyUndoChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->UndoChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.UndoChanged(this);
+	});
 }
 
 
 
 void feFont::NotifyFontChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->FontChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.FontChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -305,12 +260,9 @@ void feFont::NotifyFontChanged(){
 
 
 void feFont::NotifyImageChanged(feFontImage *image){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->ImageChanged(this, image);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.ImageChanged(this, image);
+	});
 	
 	SetChanged(true);
 }
@@ -318,43 +270,31 @@ void feFont::NotifyImageChanged(feFontImage *image){
 
 
 void feFont::NotifyGlyphStructureChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->GlyphStructureChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.GlyphStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void feFont::NotifyGlyphChanged(feFontGlyph *glyph){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->GlyphChanged(this, glyph);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.GlyphChanged(this, glyph);
+	});
 	
 	SetChanged(true);
 }
 
 void feFont::NotifyGlyphSelectionChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->GlyphSelectionChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.GlyphSelectionChanged(this);
+	});
 }
 
 void feFont::NotifyActiveGlyphChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((feFontNotifier*)pListeners.GetAt(i))->ActiveGlyphChanged(this);
-	}
+	pListeners.Visit([&](feFontNotifier &l){
+		l.ActiveGlyphChanged(this);
+	});
 }
 
 
@@ -366,12 +306,9 @@ void feFont::pCleanUp(){
 	pListeners.RemoveAll();
 	
 	if(pFontImage){
-		pFontImage->SetParentFont(NULL);
-		pFontImage->FreeReference();
+		pFontImage->SetParentFont(nullptr);
 	}
 	
 	if(pGlyphSelection) delete pGlyphSelection;
 	RemoveAllGlyphs();
-	
-	if(pEngFont) pEngFont->FreeReference();
 }

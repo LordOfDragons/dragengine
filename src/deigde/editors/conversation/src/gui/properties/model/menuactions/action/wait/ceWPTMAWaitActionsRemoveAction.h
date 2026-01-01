@@ -51,6 +51,7 @@ protected:
 	ceWPTMAWaitActionsRemoveAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMAWaitActionsRemoveAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

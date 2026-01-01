@@ -58,8 +58,8 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAPChoiceOptionPasteSnippet::CreateUndo(const ceConversationActionList &actions){
-	ceUCActionPaste * const undo = new ceUCAPChoiceActionPaste(pTopic, pPlayerChoice, pOption, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMAPChoiceOptionPasteSnippet::CreateUndo(const ceConversationAction::List &actions){
+	const ceUCActionPaste::Ref undo = ceUCAPChoiceActionPaste::Ref::New(pTopic, pPlayerChoice, pOption, actions, pIndex);
 	undo->SetShortInfo("Paste Conversation Snippet");
 	return undo;
 }

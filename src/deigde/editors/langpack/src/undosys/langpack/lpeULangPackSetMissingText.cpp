@@ -41,7 +41,7 @@
 
 lpeULangPackSetMissingText::lpeULangPackSetMissingText(
 	lpeLangPack *langpack, const decUnicodeString &newMissingText) :
-pLangPack(NULL),
+
 pNewMissingText(newMissingText)
 {
 	if(!langpack){
@@ -54,13 +54,9 @@ pNewMissingText(newMissingText)
 	pOldMissingText = langpack->GetMissingText();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetMissingText::~lpeULangPackSetMissingText(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

@@ -26,6 +26,7 @@
 #define _GDEOCNAVIGATIONBLOCKER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/string/decString.h>
@@ -40,6 +41,9 @@ class gdeOCNavigationBlocker : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCNavigationBlocker> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCNavigationBlocker> List;
 	
 	
 	/** \brief Properties. */
@@ -91,7 +95,9 @@ public:
 	gdeOCNavigationBlocker(const gdeOCNavigationBlocker &blocker);
 	
 	/** \brief Clean up navigation blocker. */
+protected:
 	virtual ~gdeOCNavigationBlocker();
+public:
 	/*@}*/
 	
 	

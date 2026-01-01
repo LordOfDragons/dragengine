@@ -61,7 +61,7 @@ gdeWPSTIMCategoriesSkin::~gdeWPSTIMCategoriesSkin(){
 ///////////////
 
 gdeWPSTIMCategorySkin *gdeWPSTIMCategoriesSkin::GetChildWith(gdeCategory* category, bool deep) const{
-	gdeWPSTIMCategorySkin *child = (gdeWPSTIMCategorySkin*)GetFirstChild();
+	gdeWPSTIMCategorySkin *child = GetFirstChild().DynamicCast<gdeWPSTIMCategorySkin>();
 	
 	while(child){
 		if(child->GetCategory() == category){
@@ -75,10 +75,10 @@ gdeWPSTIMCategorySkin *gdeWPSTIMCategoriesSkin::GetChildWith(gdeCategory* catego
 			}
 		}
 		
-		child = (gdeWPSTIMCategorySkin*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMCategorySkin>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -98,7 +98,7 @@ void gdeWPSTIMCategoriesSkin::CategoriesChanged(){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver(new gdeWPSTIMCategorySkin(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMCategorySkin::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -127,7 +127,7 @@ void gdeWPSTIMCategoriesSkin::OnAddedToTree(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMCategorySkin(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMCategorySkin::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	

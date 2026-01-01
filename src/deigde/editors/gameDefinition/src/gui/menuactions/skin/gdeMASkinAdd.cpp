@@ -59,7 +59,7 @@ gdeBaseAction(windowMain, "Add Skin...",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last skin? what directory? );
@@ -67,12 +67,14 @@ igdeUndo *gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	if(!igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select skin material", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if(gameDefinition.GetSkins().HasWithPath(filename)){
+	if(gameDefinition.GetSkins().HasMatching([&](const gdeSkin &skin){
+		return skin.GetPath() == filename;
+	})){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Skin", "Skin with path exists already.");
-		return NULL;
+		return {};
 	}
 	
 	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
@@ -81,6 +83,6 @@ igdeUndo *gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	const gdeSkin::Ref skin(gdeSkin::Ref::NewWith(filename, filetitle));
-	return new gdeUAddSkin(&gameDefinition, skin);
+	const gdeSkin::Ref skin(gdeSkin::Ref::New(filename, filetitle));
+	return gdeUAddSkin::Ref::New(&gameDefinition, skin);
 }

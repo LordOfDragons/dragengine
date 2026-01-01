@@ -106,7 +106,7 @@ dedaiLayer *dedaiWorld::GetLayer(int layer){
 		}
 	}
 	
-	const dedaiLayer::Ref newLayer(dedaiLayer::Ref::NewWith(*this, layer));
+	const dedaiLayer::Ref newLayer(dedaiLayer::Ref::New(*this, layer));
 	pLayers.Add(newLayer);
 	return newLayer; // pLayers keeps reference
 }

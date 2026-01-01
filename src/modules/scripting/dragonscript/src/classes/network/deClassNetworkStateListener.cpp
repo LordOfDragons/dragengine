@@ -31,8 +31,8 @@
 #include "deClassNetworkState.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h>
 #include <libdscript/exceptions.h>
 
 

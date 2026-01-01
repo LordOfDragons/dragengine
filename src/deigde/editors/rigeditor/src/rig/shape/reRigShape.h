@@ -25,16 +25,18 @@
 #ifndef _RERIGSHAPE_H_
 #define _RERIGSHAPE_H_
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class reRig;
 class reRigBone;
-class igdeWDebugDrawerShape;
 class decShape;
-class deDebugDrawer;
-class deColliderVolume;
 class deEngine;
 
 
@@ -46,6 +48,8 @@ class reRigShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reRigShape> Ref;
+	
+	typedef decTObjectOrderedSet<reRigShape> List;
 	
 	
 	/** \brief Shape type. */
@@ -63,9 +67,9 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSShape;
+	deColliderVolume::Ref pCollider;
 	
 	eShapeTypes pShapeType;
 	
@@ -87,7 +91,9 @@ public:
 	reRigShape(deEngine *engine, eShapeTypes shapeType);
 	
 	/** \brief Clean up rig shape. */
+protected:
 	virtual ~reRigShape();
+public:
 	/*@}*/
 	
 	
@@ -110,7 +116,7 @@ public:
 	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Shape type. */
 	inline eShapeTypes GetShapeType() const{ return pShapeType; }
@@ -168,7 +174,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual reRigShape *Duplicate() const = 0;
+	virtual Ref Duplicate() const = 0;
 	
 	/** \brief Uniformly scale shape. */
 	virtual void Scale(float scale) = 0;

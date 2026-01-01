@@ -61,7 +61,6 @@ deoglParticleEmitterInstance::deoglParticleEmitterInstance(
 deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance) :
 pOgl(ogl),
 pInstance(instance),
-pRInstance(NULL),
 
 pEmitter(NULL),
 
@@ -76,7 +75,7 @@ pDirtyInstance(true),
 pDirtyTypes(true)
 {
 	try{
-		pRInstance = new deoglRParticleEmitterInstance(ogl.GetRenderThread());
+		pRInstance = deoglRParticleEmitterInstance::Ref::New(ogl.GetRenderThread());
 		EmitterChanged();
 		
 	}catch(const deException &){
@@ -254,7 +253,6 @@ void deoglParticleEmitterInstance::pCleanUp(){
 	
 	// types holds a reference to pRInstance. do not remove it earlier
 	if(pRInstance){
-		pRInstance->FreeReference();
 		pRInstance = NULL;
 	}
 }

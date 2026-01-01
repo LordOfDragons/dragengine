@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
+#include "../../../conversation/condition/ceCConditionLogic.h"
 class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,16 +38,17 @@ class ceConversationTopic;
  * \brief Undo Logic Conversation Condition Add Condition.
  */
 class ceUCCLogicAdd : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationCondition *pCondition;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCCLogicAdd> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::Ref pCondition;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

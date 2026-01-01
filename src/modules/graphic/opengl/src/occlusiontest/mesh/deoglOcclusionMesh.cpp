@@ -43,11 +43,10 @@
 
 deoglOcclusionMesh::deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh) :
 pOgl(ogl),
-pOcclusionMesh(occlusionMesh),
-pROcclusionMesh(NULL)
+pOcclusionMesh(occlusionMesh)
 {
 	try{
-		pROcclusionMesh = new deoglROcclusionMesh(ogl.GetRenderThread(), occlusionMesh);
+		pROcclusionMesh = deoglROcclusionMesh::Ref::New(ogl.GetRenderThread(), occlusionMesh);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -70,7 +69,4 @@ deoglOcclusionMesh::~deoglOcclusionMesh(){
 //////////////////////
 
 void deoglOcclusionMesh::pCleanUp(){
-	if(pROcclusionMesh){
-		pROcclusionMesh->FreeReference();
-	}
 }

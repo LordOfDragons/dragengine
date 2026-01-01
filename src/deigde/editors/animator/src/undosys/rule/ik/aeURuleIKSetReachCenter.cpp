@@ -44,7 +44,7 @@ aeURuleIKSetReachCenter::aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, c
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Inverse kinematic set reach center");
 	
@@ -52,13 +52,9 @@ aeURuleIKSetReachCenter::aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, c
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachCenter::~aeURuleIKSetReachCenter(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

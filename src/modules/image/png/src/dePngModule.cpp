@@ -124,7 +124,6 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		// create infos object
 		infos = new dePngImageInfo(file.GetFilename());
-		if(!infos) DETHROW(deeOutOfMemory);
 		
 		infos->feedback.module = this;
 		infos->feedback.filename = file.GetFilename();
@@ -233,7 +232,7 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
 	dePngImageInfo &pngInfos = (dePngImageInfo&)infos;
 	int componentCount = pngInfos.componentCount;
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int bitCount = pngInfos.bitCount;
 	int height = pngInfos.height;
 	int width = pngInfos.width;
@@ -255,7 +254,6 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	try{
 		// build rows array
 		rows = new png_bytep[height];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);
@@ -279,7 +277,7 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	png_structp writeStruct = NULL;
 	png_infop infoStruct = NULL;
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int componentCount = image.GetComponentCount();
 	int bitCount = image.GetBitCount();
 	dePngImageInfo::sFeedback feedback;
@@ -376,7 +374,6 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		
 		// build rows array
 		rows = new png_bytep[height];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);
@@ -422,6 +419,8 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class dePngModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dePngModuleInternal> Ref;
+	
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG");
 		SetDescription("Handles images saved in the PNG format (lossless compression).");
@@ -444,7 +443,7 @@ public:
 	}
 };
 
-deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
-	return new dePngModuleInternal(system);
+deTObjectReference<deInternalModule> depngRegisterInternalModule(deModuleSystem *system){
+	return dePngModuleInternal::Ref::New(system);
 }
 #endif

@@ -36,7 +36,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
@@ -98,8 +98,8 @@ void meASubclassAsEClass::OnAction(){
 	}
 	
 	// ask for filename to save element class to
-	igdeFilePatternList filePatterns;
-	filePatterns.AddFilePattern(new igdeFilePattern("XML Element Class", "*.deeclass", ".deeclass"));
+	igdeFilePattern::List filePatterns;
+	filePatterns.Add(igdeFilePattern::Ref::New("XML Element Class", "*.deeclass", ".deeclass"));
 	
 	decString filename(classname + ".deeclass");
 	
@@ -127,9 +127,8 @@ void meASubclassAsEClass::OnAction(){
 	
 	// write file
 	{
-	decXmlWriter xmlWriter(decBaseFileWriter::Ref::New(
-		pWindow.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix(filename))));
+	decXmlWriter xmlWriter(pWindow.GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 	WriteEClass(object, gdclass, classname, xmlWriter, basePath);
 	}
 	
@@ -156,11 +155,11 @@ const decString &classname, decXmlWriter &writer, const decString &basePath){
 	writer.WriteAttributeString("class", gdclass.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	if(object.GetProperties().GetCount() > 0){
+	if(object.GetProperties().IsNotEmpty()){
 		WriteEClassProperties(object, gdclass, writer, basePath);
 	}
 	
-	if(object.GetTextureCount() > 0){
+	if(object.GetTextures().IsNotEmpty()){
 		WriteEClassTextureReplacements(object, writer, basePath);
 	}
 	
@@ -169,16 +168,9 @@ const decString &classname, decXmlWriter &writer, const decString &basePath){
 
 void meASubclassAsEClass::WriteEClassProperties(const meObject &object,
 const igdeGDClass &gdclass, decXmlWriter &writer, const decString &basePath){
-	const decStringDictionary &properties = object.GetProperties();
-	const decStringList keys(properties.GetKeys());
-	const int propertyCount = keys.GetCount();
-	int i;
-	
-	for(i=0; i<propertyCount; i++){
-		const decString &key = keys.GetAt(i);
-		const decString &value = properties.GetAt(key);
+	object.GetProperties().Visit([&](const decString &key, const decString &value){
 		WriteEClassProperty(key, value, gdclass.GetPropertyNamed(key), writer, basePath);
-	}
+	});
 }
 
 void meASubclassAsEClass::WriteEClassProperty(const decString &property, const decString &value,
@@ -269,17 +261,13 @@ const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePat
 		break;
 		
 	case igdeGDProperty::eptList:{
-		const decStringList list(value.Split(","));
-		const int count = list.GetCount();
-		int i;
-		
 		writer.WriteOpeningTagStart("list");
 		writer.WriteAttributeString("name", property);
 		writer.WriteOpeningTagEnd();
 		
-		for(i=0; i<count; i++){
-			writer.WriteDataTagString("string", list.GetAt(i));
-		}
+		value.Split(",").Visit([&](const decString &part){
+			writer.WriteDataTagString("string", part);
+		});
 		
 		writer.WriteClosingTag("list");
 		}break;
@@ -315,16 +303,13 @@ const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePat
 
 void meASubclassAsEClass::WriteEClassTextureReplacements(const meObject &object,
 decXmlWriter &writer, const decString &basePath){
-	const int count = object.GetTextureCount();
-	int i;
-	
 	writer.WriteOpeningTagStart("map");
 	writer.WriteAttributeString("name", "component.textureReplacements");
 	writer.WriteOpeningTagEnd();
 	
-	for(i=0; i<count; i++){
-		WriteEClassTextureReplacements(*object.GetTextureAt(i), writer, basePath);
-	}
+	object.GetTextures().Visit([&](const meObjectTexture &t){
+		WriteEClassTextureReplacements(t, writer, basePath);
+	});
 	
 	writer.WriteClosingTag("map");
 }

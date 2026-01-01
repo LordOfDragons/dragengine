@@ -44,24 +44,15 @@
 aeURuleTargetRemoveLink::aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
 	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
-	pTarget = NULL;
-	pLink = NULL;
-	
 	SetShortInfo("Rule Target Remove Link");
 	
 	pRule = rule;
-	pRule->AddReference();
-	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeURuleTargetRemoveLink::~aeURuleTargetRemoveLink(){
-	if(pLink) pLink->FreeReference();
-	if(pRule) pRule->FreeReference();
 }
 
 

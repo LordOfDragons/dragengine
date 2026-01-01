@@ -54,6 +54,6 @@ pLogic(&logic){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMACLogicAddCondition::CreateUndo(ceConversationCondition *condition){
-	return new ceUCCLogicAdd(pTopic, pAction, pLogic, condition);
+igdeUndo::Ref ceWPTMACLogicAddCondition::CreateUndo(ceConversationCondition *condition){
+	return ceUCCLogicAdd::Ref::New(pTopic, pAction, pLogic, condition);
 }

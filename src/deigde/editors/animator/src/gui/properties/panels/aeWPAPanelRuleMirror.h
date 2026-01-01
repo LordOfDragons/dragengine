@@ -36,6 +36,10 @@
  * Mirror Rule Panel.
  */
 class aeWPAPanelRuleMirror : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleMirror> Ref;
+	
+	
 private:
 	igdeComboBox::Ref pCBMirrorAxis;
 	igdeComboBoxFilter::Ref pCBMirrorBone;
@@ -64,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Selected match name. */
-	aeRuleMirror::cMatchName *GetSelectedMatchBone() const;
+	aeRuleMirror::MatchName *GetSelectedMatchBone() const;
 	
 	/** Update rig bone list. */
 	void UpdateRigBoneList() override;

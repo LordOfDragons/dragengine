@@ -42,8 +42,8 @@
 
 gdeUOCForceFieldSetShape::gdeUOCForceFieldSetShape(gdeObjectClass *objectClass,
 gdeOCForceField *forceField, const decShapeList &newValue) :
-pObjectClass(NULL),
-pForceField(NULL)
+
+pForceField(nullptr)
 {
 	if(!objectClass || !forceField){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pForceField(NULL)
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetShape::~gdeUOCForceFieldSetShape(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

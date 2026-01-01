@@ -133,14 +133,21 @@ deoglRSkin *deoglSkinState::GetOwnerSkin() const{
 		return pOwnerLight->GetLightSkin();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
+}
+
+void deoglSkinState::DropOwner(){
+	pOwnerComponent = nullptr;
+	pOwnerBillboard = nullptr;
+	pOwnerDecal = nullptr;
+	pOwnerLight = nullptr;
 }
 
 deoglRDynamicSkin *deoglSkinState::GetOwnerDynamicSkin() const{
 	if(pOwnerComponent){
 		if(pOwnerComponentTexture != -1){
-			deoglRDynamicSkin * const dynamicSkin =
+			const deoglRDynamicSkin::Ref &dynamicSkin =
 				pOwnerComponent->GetTextureAt(pOwnerComponentTexture).GetDynamicSkin();
 			return dynamicSkin ? dynamicSkin : pOwnerComponent->GetDynamicSkin();
 			
@@ -158,7 +165,7 @@ deoglRDynamicSkin *deoglSkinState::GetOwnerDynamicSkin() const{
 		return pOwnerLight->GetDynamicSkin();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -272,7 +279,6 @@ deoglSkinStateRenderable *deoglSkinState::AddRenderable(){
 	if(pRenderableCount == pRenderableSize){
 		int newSize = pRenderableSize * 3 / 2 + 1;
 		deoglSkinStateRenderable **newArray = new deoglSkinStateRenderable*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pRenderables){
 			memcpy(newArray, pRenderables, sizeof(deoglSkinStateRenderable*) * pRenderableSize);
 			delete [] pRenderables;

@@ -25,11 +25,11 @@
 #ifndef _DEOGLRVIDEOPLAYER_H_
 #define _DEOGLRVIDEOPLAYER_H_
 
+#include "deoglRVideo.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
 
-class deoglRVideo;
 class deoglRenderThread;
 class deoglTexture;
 
@@ -42,7 +42,7 @@ class deoglRVideoPlayer : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRVideo *pVideo;
+	deoglRVideo::Ref pVideo;
 	deoglTexture *pCachedFrameTexture;
 	int pUpdateCachedFrameTexture;
 	
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */
-	inline deoglRVideo *GetVideo() const{ return pVideo; }
+	inline const deoglRVideo::Ref &GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
 	void SetVideo(deoglRVideo *video);

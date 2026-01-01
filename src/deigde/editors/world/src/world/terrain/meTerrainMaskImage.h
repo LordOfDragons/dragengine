@@ -27,7 +27,7 @@
 #define _METERRAINMASKIMAGE_H_
 
 // includes
-#include "dragengine/resources/image/deImage.h"
+#include <dragengine/resources/image/deImage.h>
 
 
 

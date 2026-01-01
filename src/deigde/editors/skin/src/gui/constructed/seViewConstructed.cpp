@@ -62,6 +62,7 @@ class cScrollView : public igdeScrollBarListener{
 	seViewConstructed &pView;
 	
 public:
+	typedef deTObjectReference<cScrollView> Ref;
 	cScrollView(seViewConstructed &view) : pView(view){}
 	
 	virtual void OnValueChanged(igdeScrollBar*){
@@ -75,6 +76,7 @@ class cSpinLayer : public igdeSpinTextFieldListener{
 	seViewConstructed &pView;
 	
 public:
+	typedef deTObjectReference<cSpinLayer> Ref;
 	cSpinLayer(seViewConstructed &view) : pView(view){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
@@ -93,6 +95,7 @@ class cComboZoom : public igdeComboBoxListener{
 	seViewConstructed &pView;
 	
 public:
+	typedef deTObjectReference<cComboZoom> Ref;
 	cComboZoom(seViewConstructed &view) : pView(view){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -122,50 +125,44 @@ public:
 
 seViewConstructed::seViewConstructed(seWindowMain &windowMain) :
 igdeContainerBorder(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pListener(NULL),
-pViewNode(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new seViewConstructedListener(*this);
+	pListener = seViewConstructedListener::Ref::New(*this);
 	
 	
-	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ScrollBar(bottomLine, true, 0, 0, 1, 0, pSBHorizontal, new cScrollView(*this));
-	helper.EditSpinInteger(bottomLine, "Select layer to edit", 0, 0, pSpinLayer, new cSpinLayer(*this));
+	helper.ScrollBar(bottomLine, true, 0, 0, 1, 0, pSBHorizontal, cScrollView::Ref::New(*this));
+	helper.EditSpinInteger(bottomLine, "Select layer to edit", 0, 0, pSpinLayer, cSpinLayer::Ref::New(*this));
 	
-	helper.ComboBox(bottomLine, "Select zoom factor", pCBZoom, new cComboZoom(*this));
-	pCBZoom->AddItem("800 %", NULL, (void*)(intptr_t)800);
-	pCBZoom->AddItem("600 %", NULL, (void*)(intptr_t)600);
-	pCBZoom->AddItem("400 %", NULL, (void*)(intptr_t)400);
-	pCBZoom->AddItem("300 %", NULL, (void*)(intptr_t)300);
-	pCBZoom->AddItem("200 %", NULL, (void*)(intptr_t)200);
-	pCBZoom->AddItem("150 %", NULL, (void*)(intptr_t)150);
-	pCBZoom->AddItem("100 %", NULL, (void*)(intptr_t)100);
-	pCBZoom->AddItem("50 %", NULL, (void*)(intptr_t)50);
-	pCBZoom->AddItem("25 %", NULL, (void*)(intptr_t)25);
+	helper.ComboBox(bottomLine, "Select zoom factor", pCBZoom, cComboZoom::Ref::New(*this));
+	pCBZoom->AddItem("800 %", nullptr, (void*)(intptr_t)800);
+	pCBZoom->AddItem("600 %", nullptr, (void*)(intptr_t)600);
+	pCBZoom->AddItem("400 %", nullptr, (void*)(intptr_t)400);
+	pCBZoom->AddItem("300 %", nullptr, (void*)(intptr_t)300);
+	pCBZoom->AddItem("200 %", nullptr, (void*)(intptr_t)200);
+	pCBZoom->AddItem("150 %", nullptr, (void*)(intptr_t)150);
+	pCBZoom->AddItem("100 %", nullptr, (void*)(intptr_t)100);
+	pCBZoom->AddItem("50 %", nullptr, (void*)(intptr_t)50);
+	pCBZoom->AddItem("25 %", nullptr, (void*)(intptr_t)25);
 	pCBZoom->SetSelectionWithData((void*)(intptr_t)100);
 	
 	AddChild(bottomLine, igdeContainerBorder::eaBottom);
 	
 	
-	helper.ScrollBar(false, 0, 0, 1, 0, pSBVertical, new cScrollView(*this));
+	helper.ScrollBar(false, 0, 0, 1, 0, pSBVertical, cScrollView::Ref::New(*this));
 	AddChild(pSBVertical, igdeContainerBorder::eaRight);
 	
 	
-	igdeWidget::Ref view(igdeWidget::Ref::New(pViewNode = new seViewConstructedView(windowMain)));
-	AddChild(view, igdeContainerBorder::eaCenter);
+	pViewNode = seViewConstructedView::Ref::New(windowMain);
+	AddChild(pViewNode, igdeContainerBorder::eaCenter);
 }
 
 seViewConstructed::~seViewConstructed(){
-	SetSkin(NULL);
-	
-	if(pListener){
-		delete pListener;
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -174,7 +171,7 @@ seViewConstructed::~seViewConstructed(){
 ///////////////
 
 seSkin *seViewConstructed::GetSkin() const{
-	return pViewNode ? pViewNode->GetSkin() : NULL;
+	return pViewNode ? pViewNode->GetSkin() : nullptr;
 }
 
 void seViewConstructed::SetSkin(seSkin *skin){

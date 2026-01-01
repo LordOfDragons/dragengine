@@ -36,11 +36,9 @@
 ////////////////////////////
 
 reUToggleBoneDynamic::reUToggleBoneDynamic(reRigBone *bone){
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	try{
 		SetShortInfo("Toggle Bone Dynamic");
 		
@@ -73,5 +71,4 @@ void reUToggleBoneDynamic::Redo(){
 //////////////////////
 
 void reUToggleBoneDynamic::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

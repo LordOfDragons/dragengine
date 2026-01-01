@@ -50,6 +50,7 @@ protected:
 	ceWPTMACLogicClearCondition();
 	
 public:
+	typedef deTObjectReference<ceWPTMACLogicClearCondition> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */

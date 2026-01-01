@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,16 +35,17 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set End Tilt.
  */
 class ceUCCShotSetTiltTo : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCShotSetTiltTo> Ref;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldTilt;
 	float pNewTilt;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCShotSetTiltTo> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

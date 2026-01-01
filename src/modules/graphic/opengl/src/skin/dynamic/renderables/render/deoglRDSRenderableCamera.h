@@ -25,11 +25,10 @@
 #ifndef _DEOGLRRDSRENDERABLECAMERA_H_
 #define _DEOGLRRDSRENDERABLECAMERA_H_
 
-#include <dragengine/deObject.h>
-
 #include "deoglRDSRenderable.h"
+#include "../../../../world/deoglRCamera.h"
 
-class deoglRCamera;
+#include <dragengine/deObject.h>
 
 
 
@@ -37,8 +36,13 @@ class deoglRCamera;
  * Render dynamic skin camera renderable.
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableCamera> Ref;
+	
+	
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	
 public:
 	/** \name Constructors and Destructors */

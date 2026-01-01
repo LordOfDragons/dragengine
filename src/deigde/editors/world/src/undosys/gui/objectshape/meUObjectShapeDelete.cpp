@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *property, const meObjectShapeList &list){
-	if(list.GetCount() == 0){
+meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *property, const meObjectShape::List &list){
+	if(list.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	if(!object || !property){
@@ -51,12 +51,12 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectShapeList &shapeList1 = object->GetWorld()->GetObjectShapes();
+	const meObjectShape::List &shapeList1 = object->GetWorld()->GetObjectShapes();
 	const int count = shapeList1.GetCount();
-	meObjectShapeList shapeList2;
+	meObjectShape::List shapeList2;
 	int i;
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	SetShortInfo("Object-Shape delete");
 	SetLongInfo("Object-Shape delete");
@@ -72,18 +72,14 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 		}
 	}
 	
-	shapeList2.CreatePropertyString(pNewValue);
+	meObjectShape::CreatePropertyString(shapeList2, pNewValue);
 	shapeList2.RemoveAll();
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapesDelete::~meUObjectShapesDelete(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

@@ -39,6 +39,9 @@ class gdeWPSelection;
  * \brief Properties window.
  */
 class gdeWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<gdeWindowProperties> Ref;
+	
 private:
 	gdeWindowMain &pWindowMain;
 	

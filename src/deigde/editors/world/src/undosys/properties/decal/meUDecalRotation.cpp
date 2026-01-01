@@ -49,7 +49,7 @@ meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	SetShortInfo("Set decal orientation");
 	
@@ -57,13 +57,9 @@ meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation)
 	pNewRotation = newRotation;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRotation::~meUDecalRotation(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

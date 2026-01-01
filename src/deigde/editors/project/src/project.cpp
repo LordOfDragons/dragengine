@@ -49,6 +49,6 @@ igdeEditorModule *ProjectCreateModule(igdeEnvironment *environment){
 		return new projIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }

@@ -118,8 +118,7 @@ pTailConnection(nullptr),
 pHeadServer(nullptr),
 pTailServer(nullptr),
 pHeadSocket(nullptr),
-pTailSocket(nullptr),
-pDatagram(nullptr)
+pTailSocket(nullptr)
 #ifdef OS_W32
 ,pWSAStartupCalled(false)
 #endif
@@ -166,13 +165,13 @@ bool deNetworkBasic::Init(){
 		#endif
 		
 		// create shared datagram
-		pDatagram = new deNetworkMessage;
+		pDatagram = deNetworkMessage::Ref::New();
 		pDatagram->SetDataLength(1024);
 		
 		// create receive address
-		pSharedSendDatagram.TakeOver(new deNetworkMessage);
+		pSharedSendDatagram = deNetworkMessage::Ref::New();
 		pSharedSendDatagram->SetDataLength(50);
-		pSharedSendDatagramWriter.TakeOver(new deNetworkMessageWriter(pSharedSendDatagram, false));
+		pSharedSendDatagramWriter = deNetworkMessageWriter::Ref::New(pSharedSendDatagram, false);
 		
 		// create send and receive message queues
 		//pMessagesSend = new debnMessageQueue;
@@ -208,7 +207,6 @@ void deNetworkBasic::CleanUp(){
 	}*/
 	
 	if(pDatagram){
-		pDatagram->FreeReference();
 		pDatagram = NULL;
 	}
 	
@@ -489,7 +487,7 @@ void deNetworkBasic::pReceiveDatagrams(){
 	
 	while(bnSocket){
 		while(bnSocket->ReceiveDatagram(*pDatagram, pAddressReceive)){
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(pDatagram));
+			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::New(pDatagram));
 			
 			debnConnection * const connection = pFindConnection(bnSocket, pAddressReceive);
 			const eCommandCodes command = (eCommandCodes)reader->ReadByte();
@@ -575,6 +573,8 @@ void deNetworkBasic::pProcessConnections(float elapsedTime){
 
 class denbModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<denbModuleInternal> Ref;
+	
 	denbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicNetwork");
 		SetDescription("Basic network module.");
@@ -594,7 +594,7 @@ public:
 	}
 };
 
-deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
-	return new denbModuleInternal(system);
+deTObjectReference<deInternalModule> denbRegisterInternalModule(deModuleSystem *system){
+	return denbModuleInternal::Ref::New(system);
 }
 #endif

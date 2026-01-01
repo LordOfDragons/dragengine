@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleResult;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleResult.h"
 
 
 
@@ -42,13 +42,14 @@ class meHTVRuleResult;
  */
 class meUHTVRuleResultSetVar : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleResultSetVar> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleResult *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleResult::Ref pRule;
 	
 	int pOldVar;
 	int pNewVar;
@@ -59,7 +60,11 @@ public:
 	/** \brief Create object. */
 	meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleResultSetVar();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

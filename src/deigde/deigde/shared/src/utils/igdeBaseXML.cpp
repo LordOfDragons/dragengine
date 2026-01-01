@@ -53,16 +53,10 @@ igdeBaseXML::igdeBaseXML(deLogger *logger, const char *loggerSource) :
 pLogger(logger),
 pLoggerSource(loggerSource)
 {
-	if(!logger){
-		DETHROW(deeInvalidParam);
-	}
-	logger->AddReference();
+	DEASSERT_NOTNULL(logger)
 }
 
 igdeBaseXML::~igdeBaseXML(){
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 
@@ -71,7 +65,7 @@ igdeBaseXML::~igdeBaseXML(){
 ///////////////
 
 bool igdeBaseXML::HasAttribute(const decXmlElementTag &tag, const char *name) const{
-	return tag.FindAttribute(name) != NULL;
+	return tag.FindAttribute(name) != nullptr;
 }
 
 const decString &igdeBaseXML::GetAttributeString(const decXmlElementTag &tag, const char *name) const{

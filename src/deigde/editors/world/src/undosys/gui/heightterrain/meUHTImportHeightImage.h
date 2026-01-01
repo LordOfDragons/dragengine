@@ -26,15 +26,12 @@
 #ifndef _MEUHTIMPORTHEIGHTIMAGE_H_
 #define _MEUHTIMPORTHEIGHTIMAGE_H_
 
-// includes
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrainSector.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
-
-// predefinitions
-class meWorld;
-class meHeightTerrainSector;
-
 class deImage;
 
 
@@ -46,13 +43,14 @@ class deImage;
  */
 class meUHTImportHeightImage : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTImportHeightImage> Ref;
 	
 	
+public:
+	
 private:
-	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
+	meWorld::Ref pWorld;
+	meHeightTerrainSector::Ref pSector;
 	
 	float *pOldHeights;
 	float *pNewHeights;
@@ -63,7 +61,11 @@ public:
 	/** \brief Create object. */
 	meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTImportHeightImage();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

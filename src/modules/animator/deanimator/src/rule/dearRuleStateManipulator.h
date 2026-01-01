@@ -26,7 +26,7 @@
 #define _DEARRULESTATEMANIPULATOR_H_
 
 #include "dearRule.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 class deAnimatorRuleStateManipulator;
 

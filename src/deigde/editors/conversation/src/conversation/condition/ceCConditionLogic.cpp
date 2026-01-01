@@ -49,26 +49,9 @@ ceConversationCondition(condition),
 pOperator(condition.GetOperator()),
 pTIMExpanded(condition.pTIMExpanded)
 {
-	const ceConversationConditionList &conditions = condition.GetConditions();
-	ceConversationCondition *newCondition = NULL;
-	int i, count;
-	
-	try{
-		count = conditions.GetCount();
-		for(i=0; i<count; i++){
-			newCondition = conditions.GetAt(i)->CreateCopy();
-			pConditions.Add(newCondition);
-			newCondition->FreeReference();
-			newCondition = NULL;
-		}
-		
-	}catch(const deException &){
-		if(newCondition){
-			newCondition->FreeReference();
-		}
-		pConditions.RemoveAll();
-		throw;
-	}
+	condition.GetConditions().Visit([&](const ceConversationCondition &c){
+		pConditions.Add(c.CreateCopy());
+	});
 }
 
 ceCConditionLogic::~ceCConditionLogic(){
@@ -89,8 +72,8 @@ void ceCConditionLogic::SetOperator(eOperators aOperator){
 
 
 
-ceConversationCondition *ceCConditionLogic::CreateCopy() const{
-	return new ceCConditionLogic(*this);
+ceConversationCondition::Ref ceCConditionLogic::CreateCopy() const{
+	return ceCConditionLogic::Ref::New(*this);
 }
 
 

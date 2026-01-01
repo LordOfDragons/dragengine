@@ -37,11 +37,13 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCaseActions : public ceWPTTIMActions{
 public:
+	typedef deTObjectReference<ceWPTTIMAIfElseIfCaseActions> Ref;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCaseActions(ceWindowMain &windowMain,
-		ceConversation &conversation, const ceConversationActionList &actions);
+	ceWPTTIMAIfElseIfCaseActions(ceWindowMain &windowMain, ceConversation &conversation,
+		const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */

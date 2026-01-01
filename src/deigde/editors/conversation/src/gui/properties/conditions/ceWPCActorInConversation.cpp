@@ -63,6 +63,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPCActorInConversation &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPCActorInConversation &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -74,7 +75,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAInConvoSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
+			ceUCCAInConvoSetActor::Ref::New(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -82,10 +83,11 @@ class cActionNegate : public igdeAction {
 	ceWPCActorInConversation &pPanel;
 	
 public:
-	cActionNegate(ceWPCActorInConversation &panel) : igdeAction("Negate", NULL,
+	typedef deTObjectReference<cActionNegate> Ref;
+	cActionNegate(ceWPCActorInConversation &panel) : igdeAction("Negate", nullptr,
 		"True if the information is missing instead of existing"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionActorInConversation * const condition = pPanel.GetCondition();
@@ -94,7 +96,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCCAInConvoToggleNegate::Ref::NewWith(topic, action, condition));
+			ceUCCAInConvoToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -112,10 +114,10 @@ ceWPCActorInConversation::ceWPCActorInConversation(ceWPTopic &parentPanel) :
 ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, new cComboActor(*this));
+	helper.ComboBox(*this, "Actor ID:", true, "Actor ID to test", pCBActor, cComboActor::Ref::New(*this));
 	pCBActor->SetDefaultSorter();
 		
-	helper.CheckBox(*this, pChkNegate, new cActionNegate(*this), true);
+	helper.CheckBox(*this, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCActorInConversation::~ceWPCActorInConversation(){
@@ -133,7 +135,7 @@ ceCConditionActorInConversation *ceWPCActorInConversation::GetCondition() const{
 		return (ceCConditionActorInConversation*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

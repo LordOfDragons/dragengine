@@ -61,6 +61,7 @@ namespace{
 class cListCurves : public igdeListBoxListener{
 	peeWindowCurves &pPanel;
 public:
+	typedef deTObjectReference<cListCurves> Ref;
 	cListCurves(peeWindowCurves &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -73,8 +74,9 @@ public:
 
 class cViewCurve : public igdeViewCurveBezierListener{
 	peeWindowCurves &pPanel;
-	igdeUndo::Ref &pUndo;
+	igdeUndo::Ref pUndo;
 public:
+	typedef deTObjectReference<cViewCurve> Ref;
 	cViewCurve(peeWindowCurves &panel, igdeUndo::Ref &undo) :
 	pPanel(panel),
 	pUndo(undo){
@@ -82,39 +84,39 @@ public:
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *view){
 		OnCurveChanging(view);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *view){
 		peeType * const type = pPanel.GetType();
 		peeParameter * const parameter = pPanel.GetParameter();
 		if(!type || !parameter){
-			pUndo = NULL;
+			pUndo = nullptr;
 			return;
 		}
 		
 		if(pUndo){
-			((peeUParameterSetCurve&)(igdeUndo&)pUndo).SetNewCurve(view->GetCurve());
+			pUndo.DynamicCast<peeUParameterSetCurve>()->SetNewCurve(view->GetCurve());
 			pUndo->Redo();
 			return;
 		}
 		
 		switch(pPanel.GetCurve()){
 		case peeWindowCurves::ecValue:
-			pUndo.TakeOver(new peeUParameterSetCurveValue(type, parameter, view->GetCurve()));
+			pUndo = peeUParameterSetCurveValue::Ref::New(type, parameter, view->GetCurve());
 			break;
 			
 		case peeWindowCurves::ecSpread:
-			pUndo.TakeOver(new peeUParameterSetCurveSpread(type, parameter, view->GetCurve()));
+			pUndo = peeUParameterSetCurveSpread::Ref::New(type, parameter, view->GetCurve());
 			break;
 			
 		case peeWindowCurves::ecBeam:
-			pUndo.TakeOver(new peeUParameterSetCurveBeam(type, parameter, view->GetCurve()));
+			pUndo = peeUParameterSetCurveBeam::Ref::New(type, parameter, view->GetCurve());
 			break;
 			
 		case peeWindowCurves::ecProgress:
 		default:
-			pUndo.TakeOver(new peeUParameterSetCurveProgress(type, parameter, view->GetCurve()));
+			pUndo = peeUParameterSetCurveProgress::Ref::New(type, parameter, view->GetCurve());
 			break;
 		}
 		
@@ -135,9 +137,7 @@ public:
 peeWindowCurves::peeWindowCurves(peeWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espRight,
 	igdeApplication::app().DisplayScaled(200)),
-pWindowMain(windowMain),
-pListener(NULL),
-pEmitter(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -145,16 +145,16 @@ pEmitter(NULL)
 	pIconCurveEmpty = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconCurveUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pListener = new peeWindowCurvesListener(*this);
+	pListener = peeWindowCurvesListener::Ref::New(*this);
 	
-	helper.ListBox(4, "Curve to edit", pListCurves, new cListCurves(*this));
+	helper.ListBox(4, "Curve to edit", pListCurves, cListCurves::Ref::New(*this));
 	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);
 	pListCurves->AddItem("Spread", pIconCurveEmpty, (void*)(intptr_t)ecSpread);
 	pListCurves->AddItem("Progress", pIconCurveEmpty, (void*)(intptr_t)ecProgress);
 	pListCurves->AddItem("Beam", pIconCurveEmpty, (void*)(intptr_t)ecBeam);
 	AddChild(pListCurves, igdeContainerSplitted::eaSide);
 	
-	helper.ViewCurveBezier(pEditCurve, new cViewCurve(*this, pUndoSetCurve));
+	helper.ViewCurveBezier(pEditCurve, cViewCurve::Ref::New(*this, pUndoSetCurve));
 	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
 	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 	pEditCurve->SetClamp(true);
@@ -162,10 +162,7 @@ pEmitter(NULL)
 }
 
 peeWindowCurves::~peeWindowCurves(){
-	SetEmitter(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetEmitter(nullptr);
 }
 
 
@@ -178,18 +175,16 @@ void peeWindowCurves::SetEmitter(peeEmitter *emitter){
 		return;
 	}
 	
-	pUndoSetCurve = NULL;
+	pUndoSetCurve = nullptr;
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateCurve();
@@ -202,7 +197,7 @@ peeType *peeWindowCurves::GetType() const{
 		return pEmitter->GetActiveType();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 peeParameter *peeWindowCurves::GetParameter() const{
@@ -212,7 +207,7 @@ peeParameter *peeWindowCurves::GetParameter() const{
 		return activeType->GetActiveParameter();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 peeWindowCurves::eCurves peeWindowCurves::GetCurve() const{
@@ -264,7 +259,7 @@ void peeWindowCurves::UpdateCurve(){
 }
 
 void peeWindowCurves::DropProgressiveUndo(){
-	pUndoSetCurve = NULL;
+	pUndoSetCurve = nullptr;
 }
 
 
@@ -274,12 +269,12 @@ void peeWindowCurves::DropProgressiveUndo(){
 
 void peeWindowCurves::pUpdateCurveListIcons(){
 	const peeParameter * const parameter = GetParameter();
-	const int count = pListCurves->GetItemCount();
+	const int count = pListCurves->GetItems().GetCount();
 	int i;
 	
 	if(parameter){
 		for(i=0; i<count; i++){
-			igdeListItem &item = *pListCurves->GetItemAt(i);
+			igdeListItem &item = pListCurves->GetItems().GetAt(i);
 			int pointCount;
 			
 			switch((eCurves)(intptr_t)item.GetData()){
@@ -309,7 +304,7 @@ void peeWindowCurves::pUpdateCurveListIcons(){
 		
 	}else{
 		for(i=0; i<count; i++){
-			pListCurves->GetItemAt(i)->SetIcon(pIconCurveEmpty);
+			pListCurves->GetItems().GetAt(i)->SetIcon(pIconCurveEmpty);
 			pListCurves->ItemChangedAt(i);
 		}
 	}

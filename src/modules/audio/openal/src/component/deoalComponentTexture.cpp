@@ -50,12 +50,11 @@
 deoalComponentTexture::deoalComponentTexture(deoalComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pATexture(NULL),
 pSkin(NULL),
 pDirtyTexture(true)
 {
 	try{
-		pATexture = new deoalAComponentTexture(*component.GetAComponent(), index);
+		pATexture = deoalAComponentTexture::Ref::New(*component.GetAComponent(), index);
 		TextureChanged(component.GetComponent().GetTextureAt(index));
 		
 	}catch(const deException &){
@@ -140,7 +139,4 @@ void deoalComponentTexture::MarkDirty(){
 //////////////////////
 
 void deoalComponentTexture::pCleanUp(){
-	if(pATexture){
-		pATexture->FreeReference();
-	}
 }

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNode;
  * \brief Undo action property node set size.
  */
 class seUPropertyNodeSetSize : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeSetSize> Ref;
+	
+	
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;
@@ -46,9 +50,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeSetSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

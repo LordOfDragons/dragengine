@@ -39,6 +39,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeLabel> Ref;
 	
+	/** \brief Type holding weak reference. */
+	typedef deTWeakObjectReference<igdeLabel> WeakRef;
+	
 	
 	/** \brief Alignment. */
 	enum eAlignment{
@@ -124,10 +127,10 @@ public:
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	/*@}*/
 	

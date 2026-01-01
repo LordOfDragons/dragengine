@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -48,8 +50,8 @@
 /////////////////////
 
 struct sSSSoundNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerSourceChain *source;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerSourceChain::Ref source;
 };
 
 
@@ -62,19 +64,14 @@ deClassSSChain::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSSSound
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSChain::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.synthesizer = NULL;
-	nd.source = NULL;
+	sSSSoundNatDat * const nd = new (p_GetNativeData(myself)) sSSSoundNatDat;
 	
 	// super call
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetOwnerClass()->GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	// create synthesizer source
-	nd.source = new deSynthesizerSourceChain;
-	baseClass->AssignSource(myself->GetRealObject(), nd.source);
+	nd->source = deSynthesizerSourceChain::Ref::New();
+	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 
 // public func destructor()
@@ -86,17 +83,7 @@ void deClassSSChain::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-		nd.synthesizer = NULL;
-	}
-	
-	if(nd.source){
-		nd.source->FreeReference();
-		nd.source = NULL;
-	}
+	static_cast<sSSSoundNatDat*>(p_GetNativeData(myself))->~sSSSoundNatDat();
 }
 
 
@@ -112,9 +99,9 @@ void deClassSSChain::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const deClassSSChain::eTargets target = (deClassSSChain::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -162,9 +149,9 @@ void deClassSSChain::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const deClassSSChain::eTargets target = (deClassSSChain::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -208,7 +195,7 @@ deClassSSChain::nfGetSoundCount::nfGetSoundCount(const sInitData &init) : dsFunc
 "getSoundCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSSChain::nfGetSoundCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	const sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	rt->PushInt(nd.source->GetSoundCount());
 }
 
@@ -218,8 +205,8 @@ deClassSSChain::nfAddSound::nfAddSound(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsSound); // sound
 }
 void deClassSSChain::nfAddSound::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassSSChain*)GetOwnerClass())->GetDS();
+	const sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassSSChain*>(GetOwnerClass())->GetDS();
 	deSound * const sound = ds.GetClassSound()->GetSound(rt->GetValue(0)->GetRealObject());
 	
 	nd.source->AddSound(sound);
@@ -234,7 +221,7 @@ deClassSSChain::nfRemoveAllSounds::nfRemoveAllSounds(const sInitData &init) : ds
 "removeAllSounds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSChain::nfRemoveAllSounds::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	const sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	
 	if(nd.source->GetSoundCount() == 0){
 		return;
@@ -255,7 +242,7 @@ deClassSSChain::nfSetMinSpeed::nfSetMinSpeed(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFloat); // speed
 }
 void deClassSSChain::nfSetMinSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const float speed = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(speed - nd.source->GetMinSpeed()) <= FLOAT_SAFE_EPSILON){
@@ -275,7 +262,7 @@ deClassSSChain::nfSetMaxSpeed::nfSetMaxSpeed(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFloat); // speed
 }
 void deClassSSChain::nfSetMaxSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself));
+	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const float speed = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(speed - nd.source->GetMaxSpeed()) <= FLOAT_SAFE_EPSILON){
@@ -351,7 +338,7 @@ deSynthesizerSourceChain *deClassSSChain::GetSource(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sSSSoundNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
+	return static_cast<sSSSoundNatDat*>(p_GetNativeData(myself->GetBuffer()))->source;
 }
 
 void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
@@ -361,21 +348,7 @@ void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(myself->GetBuffer()));
-	
-	if(synthesizer == nd.synthesizer){
-		return;
-	}
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-	}
-	
-	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
+	static_cast<sSSSoundNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
 }
 
 void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source){
@@ -388,22 +361,14 @@ void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 		return;
 	}
 	
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSSoundNatDat &nd = *((sSSSoundNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = NULL;
-	nd.source = NULL;
+	sSSSoundNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSSoundNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
-		nd.source = source;
-		source->AddReference();
+		nd->synthesizer = synthesizer;
+		nd->source = source;
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

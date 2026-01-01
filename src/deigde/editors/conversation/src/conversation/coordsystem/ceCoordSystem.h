@@ -55,14 +55,16 @@ public:
 	/** \brief Creates a new coordinate system. */
 	ceCoordSystem();
 	/** \brief Cleans up the conversation actor. */
+protected:
 	virtual ~ceCoordSystem();
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the parent conversation or NULL if not set. */
+	/** \brief Retrieves the parent conversation or nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
-	/** \brief Sets the parent conversation or NULL if not set. */
+	/** \brief Sets the parent conversation or nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Retrieves the id. */

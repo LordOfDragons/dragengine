@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCBillboardListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCBillboardListener(gdeWPSOCBillboard &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCBillboardListener() override;
+public:
 	/*@}*/
 	
 	

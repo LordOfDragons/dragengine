@@ -107,15 +107,7 @@ void deoglHTSTexture::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
@@ -188,7 +180,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 		GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglSkinState *skinState = nullptr;
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
@@ -230,7 +222,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::e
 
 void deoglHTSTexture::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
 	deoglRDynamicSkin *useDynamicSkin = NULL;
-	deoglSkinState *useSkinState = NULL;
+	deoglSkinState *useSkinState = nullptr;
 	
 	if(!pUseSkinTexture){
 		return;
@@ -323,10 +315,6 @@ void deoglHTSTexture::PrepareForRender(){
 //////////////////////
 
 void deoglHTSTexture::pCleanUp(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
@@ -366,8 +354,8 @@ void deoglHTSTexture::pPrepareParamBlock(){
 				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry.TakeOver(new deoglSPBlockUBO(*pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO()));
+				pParamBlockGeometry = deoglSPBlockUBO::Ref::New(*pSector.GetHeightTerrain()
+					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();
@@ -375,17 +363,12 @@ void deoglHTSTexture::pPrepareParamBlock(){
 		}
 		
 		pValidParamBlock = true;
-		pDirtyParamBlock = true;
 	}
 	
-	if(pDirtyParamBlock){
-		if(pParamBlock){
-			UpdateInstanceParamBlock(pParamBlock, *pUseSkinTexture->GetPipelines().
-				GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
-				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader());
-		}
-		
-		pDirtyParamBlock = false;
+	if(pValidParamBlock && pParamBlock){
+		UpdateInstanceParamBlock(pParamBlock, *pUseSkinTexture->GetPipelines().
+			GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
+			GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader());
 	}
 }
 
@@ -425,7 +408,7 @@ void deoglHTSTexture::pPrepareTUCs(){
 	if(pUseSkinTexture){
 		deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
 		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
+		deoglSkinState *skinState = nullptr;
 		deoglTexUnitConfig unit[8];
 		
 		if(pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV()){

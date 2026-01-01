@@ -25,10 +25,11 @@
 #ifndef _DEOGLRSKYLAYER_H_
 #define _DEOGLRSKYLAYER_H_
 
+#include "../skin/deoglRSkin.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class deoglRSkin;
 class deoglRSkyControllerTarget;
 
 
@@ -40,7 +41,7 @@ class deoglRSkyLayer{
 public:
 	/** Sky layer body. */
 	struct sBody {
-		deoglRSkin *skin;
+		deoglRSkin::Ref skin;
 		decVector vertex[4];
 		decVector2 texCoords[4];
 		decColor color;
@@ -90,7 +91,7 @@ private:
 	eLayerTypes pLayerType;
 	
 	int pTextures[6];
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	sBody *pBodies;
 	int pBodyCount;
@@ -134,7 +135,7 @@ public:
 	inline const int *GetTextures() const{ return &pTextures[0]; }
 	
 	/** Render skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	

@@ -42,6 +42,9 @@ class decXmlWriter;
  * \brief Action subclassing active object as EClass XML.
  */
 class meASubclassAsEClass : public igdeAction{
+public:
+	typedef deTObjectReference<meASubclassAsEClass> Ref;
+	
 private:
 	meWindowMain &pWindow;
 	igdeCodecPropertyString pCodec;

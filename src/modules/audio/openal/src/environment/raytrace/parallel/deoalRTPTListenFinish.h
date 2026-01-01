@@ -27,6 +27,7 @@
 
 #include "deoalRTParallelEnvProbe.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
 class decPointerList;
@@ -44,7 +45,7 @@ public:
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
-	decPointerList pTasks;
+	decTOrderedSet<deoalRTPTListen*> pTasks;
 	const deoalEnvProbe *pSourceProbe;
 	const deoalEnvProbe *pListenProbe;
 	decDVector pPosition;
@@ -72,7 +73,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies(const decPointerList &tasks);
+	void AddDependencies(const decTOrderedSet<deoalRTPTListen*> &tasks);
 	
 	/** \brief Set probes. */
 	void SetProbes(const deoalEnvProbe *source, const deoalEnvProbe *listen);
@@ -84,7 +85,7 @@ public:
 	void SetListener(deoalEnvProbeListener *listener);
 	
 	/** \brief Listen tasks (deoalRTPTListen*). */
-	inline decPointerList GetListenTasks(){ return pTasks; }
+	inline decTOrderedSet<deoalRTPTListen*> GetListenTasks(){ return pTasks; }
 	
 	
 	

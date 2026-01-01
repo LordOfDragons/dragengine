@@ -35,8 +35,6 @@
 
 class igdeUIHelper;
 
-class decStringSet;
-
 
 /**
  * \brief Toggle tags list.
@@ -57,6 +55,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionEnableAll> Ref;
 		cActionEnableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
@@ -67,6 +66,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionDisableAll> Ref;
 		cActionDisableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
@@ -108,13 +108,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable tag icon. */
-	inline igdeIcon *GetIconEnabled() const{ return pIconEnabled; }
+	inline const igdeIcon::Ref &GetIconEnabled() const{ return pIconEnabled; }
 	
 	/** \brief Set enable tag icon. */
 	void SetIconEnabled(igdeIcon *icon);
 	
 	/** \brief Disabled tag icon. */
-	inline igdeIcon *GetIconDisabled() const{ return pIconDisabled; }
+	inline const igdeIcon::Ref &GetIconDisabled() const{ return pIconDisabled; }
 	
 	/** \brief Set disabled tag icon. */
 	void SetIconDisabled(igdeIcon *icon);
@@ -171,10 +171,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**
@@ -193,8 +193,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEnableAll() const{ return pActionEnableAll; }
-	inline igdeAction *GetActionDisableAll() const{ return pActionDisableAll; }
+	inline const igdeAction::Ref &GetActionEnableAll() const{ return pActionEnableAll; }
+	inline const igdeAction::Ref &GetActionDisableAll() const{ return pActionDisableAll; }
 	/*@}*/
 	
 	

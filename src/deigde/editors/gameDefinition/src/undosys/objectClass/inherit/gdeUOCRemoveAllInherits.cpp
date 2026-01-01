@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits(gdeObjectClass *objectClass) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || objectClass->GetInherits().GetCount() == 0){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pInherits = objectClass->GetInherits();
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveAllInherits::~gdeUOCRemoveAllInherits(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -73,8 +73,7 @@
 ////////////////////////////
 
 gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass) :
-gdeWPSTreeItemModel(tree, etObjectClass),
-pObjectClass(NULL)
+gdeWPSTreeItemModel(tree, etObjectClass)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -83,13 +82,9 @@ pObjectClass(NULL)
 	SetText(objectClass->GetName());
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeWPSTIMObjectClass::~gdeWPSTIMObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -98,170 +93,170 @@ gdeWPSTIMObjectClass::~gdeWPSTIMObjectClass(){
 ///////////////
 
 gdeWPSTIMOCBillboard *gdeWPSTIMObjectClass::GetChildWith(gdeOCBillboard *billboard) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassBillboard &&
 		pObjectClass->GetBillboards().GetAt(child->GetIndex()) == billboard){
 			return (gdeWPSTIMOCBillboard*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCCamera *gdeWPSTIMObjectClass::GetChildWith(gdeOCCamera *camera) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassCamera &&
 		pObjectClass->GetCameras().GetAt(child->GetIndex()) == camera){
 			return (gdeWPSTIMOCCamera*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCComponent *gdeWPSTIMObjectClass::GetChildWith(gdeOCComponent *component) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassComponent &&
 		pObjectClass->GetComponents().GetAt(child->GetIndex()) == component){
 			return (gdeWPSTIMOCComponent*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCEnvMapProbe *gdeWPSTIMObjectClass::GetChildWith(gdeOCEnvMapProbe *envMapProbe) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassEnvMapProbe &&
 		pObjectClass->GetEnvMapProbes().GetAt(child->GetIndex()) == envMapProbe){
 			return (gdeWPSTIMOCEnvMapProbe*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCLight *gdeWPSTIMObjectClass::GetChildWith(gdeOCLight *light) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassLight &&
 		pObjectClass->GetLights().GetAt(child->GetIndex()) == light){
 			return (gdeWPSTIMOCLight*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCNavBlocker *gdeWPSTIMObjectClass::GetChildWith(gdeOCNavigationBlocker *navblocker) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassNavigationBlocker &&
 		pObjectClass->GetNavigationBlockers().GetAt(child->GetIndex()) == navblocker){
 			return (gdeWPSTIMOCNavBlocker*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCNavSpace *gdeWPSTIMObjectClass::GetChildWith(gdeOCNavigationSpace *navspace) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassNavigationSpace &&
 		pObjectClass->GetNavigationSpaces().GetAt(child->GetIndex()) == navspace){
 			return (gdeWPSTIMOCNavSpace*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCParticleEmitter *gdeWPSTIMObjectClass::GetChildWith(
 gdeOCParticleEmitter *particleEmitter) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassParticleEmitter &&
 		pObjectClass->GetParticleEmitters().GetAt(child->GetIndex()) == particleEmitter){
 			return (gdeWPSTIMOCParticleEmitter*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCForceField *gdeWPSTIMObjectClass::GetChildWith(
 gdeOCForceField *forceField) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassForceField &&
 		pObjectClass->GetForceFields().GetAt(child->GetIndex()) == forceField){
 			return (gdeWPSTIMOCForceField*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCSnapPoint *gdeWPSTIMObjectClass::GetChildWith(gdeOCSnapPoint *snapPoint) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassSnapPoint &&
 		pObjectClass->GetSnapPoints().GetAt(child->GetIndex()) == snapPoint){
 			return (gdeWPSTIMOCSnapPoint*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCSpeaker *gdeWPSTIMObjectClass::GetChildWith(gdeOCSpeaker *speaker) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassSpeaker &&
 		pObjectClass->GetSpeakers().GetAt(child->GetIndex()) == speaker){
 			return (gdeWPSTIMOCSpeaker*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 gdeWPSTIMOCWorld *gdeWPSTIMObjectClass::GetChildWith(gdeOCWorld *world) const{
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	
 	while(child){
 		if(child->GetType() == etObjectClassWorld &&
 		pObjectClass->GetWorlds().GetAt(child->GetIndex()) == world){
 			return (gdeWPSTIMOCWorld*)child;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
 	return nullptr;
@@ -290,7 +285,7 @@ bool gdeWPSTIMObjectClass::IsValid() const{
 	}
 	
 	// inherits are valid
-	const gdeOCInheritList inherits = pObjectClass->GetInherits();
+	const gdeOCInherit::List inherits = pObjectClass->GetInherits();
 	const int inheritCount = inherits.GetCount();
 	int i;
 	for(i=0; i<inheritCount; i++){
@@ -301,12 +296,12 @@ bool gdeWPSTIMObjectClass::IsValid() const{
 	}
 	
 	// sub elements are valid. for this we need to check the models
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	while(child){
 		if(!child->IsValid()){
 			return false;
 		}
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
 	// all valid
@@ -320,10 +315,10 @@ void gdeWPSTIMObjectClass::Validate(){
 }
 
 void gdeWPSTIMObjectClass::ValidateObjectClassName(){
-	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	gdeWPSTIMOCSubObject *child = GetFirstChild().DynamicCast<gdeWPSTIMOCSubObject>();
 	while(child){
 		child->ValidateObjectClassName();
-		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMOCSubObject>();
 	}
 	
 	Validate();
@@ -429,87 +424,87 @@ void gdeWPSTIMObjectClass::pAddSubObjects(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	const gdeOCBillboardList &billboards = pObjectClass->GetBillboards();
+	const gdeOCBillboard::List &billboards = pObjectClass->GetBillboards();
 	const int billboardCount = billboards.GetCount();
 	for(i=0; i<billboardCount; i++){
-		item.TakeOver(new gdeWPSTIMOCBillboard(GetTree(), pObjectClass, billboards.GetAt(i), i));
+		item = gdeWPSTIMOCBillboard::Ref::New(GetTree(), pObjectClass, billboards.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCCameraList &cameras = pObjectClass->GetCameras();
+	const gdeOCCamera::List &cameras = pObjectClass->GetCameras();
 	const int cameraCount = cameras.GetCount();
 	for(i=0; i<cameraCount; i++){
-		item.TakeOver(new gdeWPSTIMOCCamera(GetTree(), pObjectClass, cameras.GetAt(i), i));
+		item = gdeWPSTIMOCCamera::Ref::New(GetTree(), pObjectClass, cameras.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCComponentList &components = pObjectClass->GetComponents();
+	const gdeOCComponent::List &components = pObjectClass->GetComponents();
 	const int componentCount = components.GetCount();
 	for(i=0; i<componentCount; i++){
-		item.TakeOver(new gdeWPSTIMOCComponent(GetTree(), pObjectClass, components.GetAt(i), i));
+		item = gdeWPSTIMOCComponent::Ref::New(GetTree(), pObjectClass, components.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCEnvMapProbeList &envMapProbes = pObjectClass->GetEnvMapProbes();
+	const gdeOCEnvMapProbe::List &envMapProbes = pObjectClass->GetEnvMapProbes();
 	const int envMapProbeCount = envMapProbes.GetCount();
 	for(i=0; i<envMapProbeCount; i++){
-		item.TakeOver(new gdeWPSTIMOCEnvMapProbe(GetTree(), pObjectClass, envMapProbes.GetAt(i), i));
+		item = gdeWPSTIMOCEnvMapProbe::Ref::New(GetTree(), pObjectClass, envMapProbes.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCLightList &lights = pObjectClass->GetLights();
+	const gdeOCLight::List &lights = pObjectClass->GetLights();
 	const int lightCount = lights.GetCount();
 	for(i=0; i<lightCount; i++){
-		item.TakeOver(new gdeWPSTIMOCLight(GetTree(), pObjectClass, lights.GetAt(i), i));
+		item = gdeWPSTIMOCLight::Ref::New(GetTree(), pObjectClass, lights.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCNavigationBlockerList &navBlockers = pObjectClass->GetNavigationBlockers();
+	const gdeOCNavigationBlocker::List &navBlockers = pObjectClass->GetNavigationBlockers();
 	const int navBlockerCount = navBlockers.GetCount();
 	for(i=0; i<navBlockerCount; i++){
-		item.TakeOver(new gdeWPSTIMOCNavBlocker(GetTree(), pObjectClass, navBlockers.GetAt(i), i));
+		item = gdeWPSTIMOCNavBlocker::Ref::New(GetTree(), pObjectClass, navBlockers.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCNavigationSpaceList &navSpaces = pObjectClass->GetNavigationSpaces();
+	const gdeOCNavigationSpace::List &navSpaces = pObjectClass->GetNavigationSpaces();
 	const int navSpaceCount = navSpaces.GetCount();
 	for(i=0; i<navSpaceCount; i++){
-		item.TakeOver(new gdeWPSTIMOCNavSpace(GetTree(), pObjectClass, navSpaces.GetAt(i), i));
+		item = gdeWPSTIMOCNavSpace::Ref::New(GetTree(), pObjectClass, navSpaces.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCParticleEmitterList &particleEmitters = pObjectClass->GetParticleEmitters();
+	const gdeOCParticleEmitter::List &particleEmitters = pObjectClass->GetParticleEmitters();
 	const int particleEmitterCount = particleEmitters.GetCount();
 	for(i=0; i<particleEmitterCount; i++){
-		item.TakeOver(new gdeWPSTIMOCParticleEmitter(GetTree(), pObjectClass, particleEmitters.GetAt(i), i));
+		item = gdeWPSTIMOCParticleEmitter::Ref::New(GetTree(), pObjectClass, particleEmitters.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCForceFieldList &forceFields = pObjectClass->GetForceFields();
+	const gdeOCForceField::List &forceFields = pObjectClass->GetForceFields();
 	const int forceFieldCount = forceFields.GetCount();
 	for(i=0; i<forceFieldCount; i++){
-		item.TakeOver(new gdeWPSTIMOCForceField(GetTree(), pObjectClass, forceFields.GetAt(i), i));
+		item = gdeWPSTIMOCForceField::Ref::New(GetTree(), pObjectClass, forceFields.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCSnapPointList &snapPoints = pObjectClass->GetSnapPoints();
+	const gdeOCSnapPoint::List &snapPoints = pObjectClass->GetSnapPoints();
 	const int snapPointCount = snapPoints.GetCount();
 	for(i=0; i<snapPointCount; i++){
-		item.TakeOver(new gdeWPSTIMOCSnapPoint(GetTree(), pObjectClass, snapPoints.GetAt(i), i));
+		item = gdeWPSTIMOCSnapPoint::Ref::New(GetTree(), pObjectClass, snapPoints.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCSpeakerList &speakers = pObjectClass->GetSpeakers();
+	const gdeOCSpeaker::List &speakers = pObjectClass->GetSpeakers();
 	const int speakerCount = speakers.GetCount();
 	for(i=0; i<speakerCount; i++){
-		item.TakeOver(new gdeWPSTIMOCSpeaker(GetTree(), pObjectClass, speakers.GetAt(i), i));
+		item = gdeWPSTIMOCSpeaker::Ref::New(GetTree(), pObjectClass, speakers.GetAt(i), i);
 		AppendModel(item);
 	}
 	
-	const gdeOCWorldList &worlds = pObjectClass->GetWorlds();
+	const gdeOCWorld::List &worlds = pObjectClass->GetWorlds();
 	const int worldCount = worlds.GetCount();
 	for(i=0; i<worldCount; i++){
-		item.TakeOver(new gdeWPSTIMOCWorld(GetTree(), pObjectClass, worlds.GetAt(i), i));
+		item = gdeWPSTIMOCWorld::Ref::New(GetTree(), pObjectClass, worlds.GetAt(i), i);
 		AppendModel(item);
 	}
 }

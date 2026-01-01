@@ -26,13 +26,13 @@
 #define _IGDENULLINPUTMODULE_H_
 
 
-#include "dragengine/systems/modules/deInternalModule.h"
-#include "dragengine/systems/modules/input/deBaseInputModule.h"
+#include <dragengine/systems/modules/deInternalModule.h>
+#include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 
 
 /**
- * \brief Null Input Module.
+ * \brief nullptr Input Module.
  * 
  * Provides an input module which does nothing as the input is handled by the map editor already.
  */
@@ -42,7 +42,11 @@ public:
 	public:
 		typedef deTObjectReference<cModule> Ref;
 		cModule(deModuleSystem *system);
+		
+	protected:
 		virtual ~cModule();
+		
+	public:
 		virtual void CreateModule();
 	};
 	
@@ -77,7 +81,7 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt(int index);
+	virtual deInputDevice::Ref GetDeviceAt(int index);
 	
 	/** \brief Index of device with identifier or -1 if absent. */
 	virtual int IndexOfDeviceWithID(const char *id);

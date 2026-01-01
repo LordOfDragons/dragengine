@@ -36,6 +36,9 @@ class ceCAWait;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAWaitActionsRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	typedef deTObjectReference<ceWPTMAWaitActionsRemoveAllActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAWait *pWait;
@@ -65,7 +68,7 @@ public:
 	inline ceCAWait *GetWait() const{ return pWait; }
 
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo() override;
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

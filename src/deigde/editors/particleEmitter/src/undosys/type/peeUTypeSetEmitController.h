@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -37,8 +37,12 @@ class peeType;
  * \brief Undo Action Set Type Emit Controller.
  */
 class peeUTypeSetEmitController : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUTypeSetEmitController> Ref;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	deParticleEmitterType::eEmitControllers pController;
 	
 	decString pOldTarget;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUTypeSetEmitController> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */

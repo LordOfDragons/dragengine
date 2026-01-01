@@ -59,25 +59,25 @@ gdeBaseMAOCSubObject(windowMain, "Copy Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+igdeUndo::Ref gdeMAOCSnapPointCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSnapPoint){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCSnapPoint * const snapPoint = gameDefinition.GetActiveOCSnapPoint();
 	if(!snapPoint){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::NewWith(*snapPoint));
+	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::New(*snapPoint));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSnapPoint::Ref::NewWith(clipOCSnapPoint));
-	return NULL;
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSnapPoint::Ref::New(clipOCSnapPoint));
+	return {};
 }
 
 void gdeMAOCSnapPointCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-		&& gameDefinition->GetActiveOCSnapPoint() != NULL);
+		&& gameDefinition->GetActiveOCSnapPoint() != nullptr);
 }

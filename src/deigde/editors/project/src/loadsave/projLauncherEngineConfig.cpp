@@ -66,7 +66,7 @@ projLauncherEngineConfig::~projLauncherEngineConfig(){
 
 void projLauncherEngineConfig::ReadFromFile(
 decBaseFileReader &reader, projTestRunner &testRunner){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser parser(testRunner.GetWindowMain().GetLogger());
 	
@@ -136,55 +136,45 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 void projLauncherEngineConfig::pReadProfile(
 const decXmlElementTag &root, projTestRunner &testRunner){
 	const int elementCount = root.GetElementCount();
-	projTRProfile *profile = NULL;
 	int i;
 	
-	try{
-		profile = new projTRProfile;
-		profile->SetName(GetAttributeString(root, "name"));
-		
-		for(i=0; i<elementCount; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			const decString &tagName = tag->GetName();
-			
-			if(tagName == "systems"){
-				pReadProfileSystems(*tag, *profile);
-				
-			}else if(tagName == "disableModuleVersions"){
-				profile->GetDisableModuleVersions().SetAt(
-					GetAttributeString(*tag, "name"),
-					GetAttributeString(*tag, "version"));
-				
-			}else if(tagName == "modules"){
-				pReadProfileModules(*tag, *profile);
-				
-			}else if(tagName == "runArguments"){
-				profile->SetRunArguments(GetCDataString(*tag));
-				
-			}else if(tagName == "replaceRunArguments"){
-				profile->SetReplaceRunArguments(GetCDataInt(*tag) != 0);
-				
-			}else if(tagName == "window"){
-				pReadProfileWindow(*tag, *profile);
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+	const projTRProfile::Ref profile(projTRProfile::Ref::New());
+	profile->SetName(GetAttributeString(root, "name"));
+	
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-		testRunner.GetLauncherProfiles().Add(profile);
-		profile->FreeReference();
+		const decString &tagName = tag->GetName();
 		
-	}catch(const deException &){
-		if(profile){
-			profile->FreeReference();
+		if(tagName == "systems"){
+			pReadProfileSystems(*tag, profile);
+			
+		}else if(tagName == "disableModuleVersions"){
+			profile->GetDisableModuleVersions().SetAt(
+				GetAttributeString(*tag, "name"),
+				GetAttributeString(*tag, "version"));
+			
+		}else if(tagName == "modules"){
+			pReadProfileModules(*tag, profile);
+			
+		}else if(tagName == "runArguments"){
+			profile->SetRunArguments(GetCDataString(*tag));
+			
+		}else if(tagName == "replaceRunArguments"){
+			profile->SetReplaceRunArguments(GetCDataInt(*tag) != 0);
+			
+		}else if(tagName == "window"){
+			pReadProfileWindow(*tag, profile);
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		throw;
 	}
+	
+	testRunner.GetLauncherProfiles().Add(profile);
 }
 
 void projLauncherEngineConfig::pReadProfileSystems(
@@ -291,23 +281,12 @@ const decXmlElementTag &root, projTRProfile &profile, const char *module){
 		}
 		
 		if(tag->GetName() == "parameter"){
-			projTRPParameter *parameter = NULL;
+			projTRPParameter::Ref parameter(projTRPParameter::Ref::New());
+			parameter->SetModule(module);
+			parameter->SetName(GetAttributeString(*tag, "name"));
+			parameter->SetValue(GetCDataString(*tag));
 			
-			try{
-				parameter = new projTRPParameter;
-				parameter->SetModule(module);
-				parameter->SetName(GetAttributeString(*tag, "name"));
-				parameter->SetValue(GetCDataString(*tag));
-				
-				profile.GetParameters().Add(parameter);
-				parameter->FreeReference();
-				
-			}catch(const deException &){
-				if(parameter){
-					parameter->FreeReference();
-				}
-				throw;
-			}
+			profile.GetParameters().Add(parameter);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

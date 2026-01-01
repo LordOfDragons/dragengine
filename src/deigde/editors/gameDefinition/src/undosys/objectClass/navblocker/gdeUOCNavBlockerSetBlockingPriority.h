@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker set priority.
  */
 class gdeUOCNavBlockerSetBlockingPriority : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCNavBlockerSetBlockingPriority> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	int pOldValue;
 	int pNewValue;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCNavBlockerSetBlockingPriority> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

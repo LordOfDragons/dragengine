@@ -25,6 +25,7 @@
 #include "deModioUserConfig.h"
 #include "../deModio.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 
@@ -62,7 +63,7 @@ deModioUserConfig::~deModioUserConfig(){
 // Management
 ///////////////
 
-void deModioUserConfig::SetDisabledMods(const decStringSet &mods){
+void deModioUserConfig::SetDisabledMods(const DisabledMods &mods){
 	if(mods == pDisabledMods){
 		return;
 	}
@@ -103,21 +104,8 @@ void deModioUserConfig::SetModDisabled(const decString &id, bool disabled){
 
 
 Modio::Rating deModioUserConfig::GetUserRating(const decString &id) const{
-	int rating = 0;
-	if(!pUserRatings.GetAt(id, &rating)){
-		return Modio::Rating::Neutral;
-	}
-	
-	switch(rating){
-	case 0:
-		return Modio::Rating::Negative;
-		
-	case 1:
-		return Modio::Rating::Positive;
-		
-	default:
-		return Modio::Rating::Neutral;
-	}
+	const Modio::Rating *r = nullptr;
+	return pUserRatings.GetAt(id, r) ? *r : Modio::Rating::Neutral;
 }
 
 void deModioUserConfig::SetUserRating(const decString &id, Modio::Rating rating){
@@ -127,11 +115,8 @@ void deModioUserConfig::SetUserRating(const decString &id, Modio::Rating rating)
 	
 	switch(rating){
 	case Modio::Rating::Negative:
-		pUserRatings.SetAt(id, 0);
-		break;
-		
 	case Modio::Rating::Positive:
-		pUserRatings.SetAt(id, 1);
+		pUserRatings.SetAt(id, rating);
 		break;
 		
 	case Modio::Rating::Neutral:
@@ -149,20 +134,30 @@ void deModioUserConfig::WriteToFile(decBaseFileWriter &writer){
 	writer.WriteByte(0);
 	writer.WriteString8(pId);
 	
-	int i, count = pDisabledMods.GetCount();
-	writer.WriteInt(count);
-	for(i=0; i<count; i++){
-		writer.WriteString8(pDisabledMods.GetAt(i));
-	}
+	writer.WriteInt(pDisabledMods.GetCount());
+	pDisabledMods.Visit([&](const decString &modId){
+		writer.WriteString8(modId);
+	});
 	
-	decStringList keys(pUserRatings.GetKeys());
-	count = keys.GetCount();
-	writer.WriteInt(count);
-	for(i=0; i<count; i++){
-		const decString &key = keys.GetAt(i);
+	writer.WriteInt(pUserRatings.GetCount());
+	pUserRatings.GetKeys().Visit([&](const decString &key){
 		writer.WriteString8(key);
-		writer.WriteByte((uint8_t)pUserRatings.GetAt(key));
-	}
+		
+		switch(pUserRatings.GetAt(key)){
+		case Modio::Rating::Negative:
+			writer.WriteByte(0);
+			break;
+			
+		case Modio::Rating::Positive:
+			writer.WriteByte(1);
+			break;
+			
+		case Modio::Rating::Neutral:
+		default:
+			writer.WriteByte(2);
+			break;
+		}
+	});
 }
 
 
@@ -171,8 +166,7 @@ void deModioUserConfig::WriteToFile(decBaseFileWriter &writer){
 //////////////////////
 
 void deModioUserConfig::pReadFromFileV0(decBaseFileReader &reader){
-	int i, count, intValue;
-	decString key;
+	int i, count;
 	
 	pId = reader.ReadString8();
 	
@@ -183,8 +177,21 @@ void deModioUserConfig::pReadFromFileV0(decBaseFileReader &reader){
 	
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		key = reader.ReadString8();
-		intValue = reader.ReadByte();
-		pUserRatings.SetAt(key, intValue);
+		const decString key(reader.ReadString8());
+		
+		switch(reader.ReadByte()){
+		case 0:
+			pUserRatings.SetAt(key, Modio::Rating::Negative);
+			break;
+			
+		case 1:
+			pUserRatings.SetAt(key, Modio::Rating::Positive);
+			break;
+			
+		case 2:
+		default:
+			pUserRatings.SetAt(key, Modio::Rating::Neutral);
+			break;
+		}
 	}
 }

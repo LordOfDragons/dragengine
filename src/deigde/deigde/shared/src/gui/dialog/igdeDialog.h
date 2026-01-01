@@ -58,9 +58,12 @@ public:
 	public:
 		typedef deTObjectReference<AcceptDialog> Ref;
 		
-		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = NULL);
+		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
 		virtual ~AcceptDialog();
 		
+	public:
 		virtual void OnAction();
 	};
 	
@@ -75,9 +78,12 @@ public:
 	public:
 		typedef deTObjectReference<CancelDialog> Ref;
 		
-		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = NULL);
+		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
 		virtual ~CancelDialog();
 		
+	public:
 		virtual void OnAction();
 	};
 	
@@ -94,7 +100,7 @@ public:
 	/*@{*/
 	/** \brief Create dialog. */
 	igdeDialog(igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true);
+		igdeIcon *icon = nullptr, bool canResize = true);
 	
 	
 	

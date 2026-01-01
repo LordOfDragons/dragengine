@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleAnimation;
+#include "../../../animator/rule/aeRuleAnimation.h"
 
 
 
@@ -41,16 +41,17 @@ class aeRuleAnimation;
  * Undo to set the move time of a animation rule.
  */
 class aeUSetRuleAnimMoveTime : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleAnimMoveTime> Ref;
+	
+	
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 	float pOldTime;
 	float pNewTime;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleAnimMoveTime> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

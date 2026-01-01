@@ -44,27 +44,18 @@
 ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration){
 	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pCameraShot = NULL;
+	pTopic = nullptr;
+	pCameraShot = nullptr;
 	pOldDuration = cameraShot->GetDuration();
 	pNewDuration = newDuration;
 	
 	SetShortInfo("Camera Shot Set Duration");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetDuration::~ceUCACShotSetDuration(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

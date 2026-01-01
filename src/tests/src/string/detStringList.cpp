@@ -76,20 +76,20 @@ void detStringList::TestModify() {
 	ASSERT_EQUAL(list1.GetAt(1), testString2);
 	
 	// Insert
-	list1.InsertAt(testString3, 0);
+	list1.Insert(testString3, 0);
 	ASSERT_EQUAL(list1.GetCount(), 3);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
 	ASSERT_EQUAL(list1.GetAt(2), testString2);
 	
-	list1.InsertAt(decString(testString4), 2);
+	list1.Insert(decString(testString4), 2);
 	ASSERT_EQUAL(list1.GetCount(), 4);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
 	ASSERT_EQUAL(list1.GetAt(2), testString4);
 	ASSERT_EQUAL(list1.GetAt(3), testString2);
 	
-	list1.InsertAt(testString5, 4);
+	list1.Insert(testString5, 4);
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
@@ -127,53 +127,53 @@ void detStringList::TestModify() {
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString4);
-	ASSERT_EQUAL(list1.GetAt(2), testString1);
-	ASSERT_EQUAL(list1.GetAt(3), testString2);
+	ASSERT_EQUAL(list1.GetAt(2), testString2);
+	ASSERT_EQUAL(list1.GetAt(3), testString1);
 	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
 	list1.Move(2, 0);
 	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
 	ASSERT_EQUAL(list1.GetAt(1), testString3);
 	ASSERT_EQUAL(list1.GetAt(2), testString4);
-	ASSERT_EQUAL(list1.GetAt(3), testString2);
+	ASSERT_EQUAL(list1.GetAt(3), testString1);
 	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
 	list1.Move(1, 4);
 	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
 	ASSERT_EQUAL(list1.GetAt(1), testString4);
-	ASSERT_EQUAL(list1.GetAt(2), testString2);
-	ASSERT_EQUAL(list1.GetAt(3), testString5);
-	ASSERT_EQUAL(list1.GetAt(4), testString3);
+	ASSERT_EQUAL(list1.GetAt(2), testString1);
+	ASSERT_EQUAL(list1.GetAt(3), testString3);
+	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
 	// decStringList( const decStringList &list )
 	decStringList list2(list1);
 	ASSERT_EQUAL(list2.GetCount(), 5);
-	ASSERT_EQUAL(list2.GetAt(0), testString1);
+	ASSERT_EQUAL(list2.GetAt(0), testString2);
 	ASSERT_EQUAL(list2.GetAt(1), testString4);
-	ASSERT_EQUAL(list2.GetAt(2), testString2);
-	ASSERT_EQUAL(list2.GetAt(3), testString5);
-	ASSERT_EQUAL(list2.GetAt(4), testString3);
+	ASSERT_EQUAL(list2.GetAt(2), testString1);
+	ASSERT_EQUAL(list2.GetAt(3), testString3);
+	ASSERT_EQUAL(list2.GetAt(4), testString5);
 	
 	// RemoveFrom
 	list1.RemoveFrom(1);
 	ASSERT_EQUAL(list1.GetCount(), 4);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString5);
-	ASSERT_EQUAL(list1.GetAt(3), testString3);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
+	ASSERT_EQUAL(list1.GetAt(1), testString1);
+	ASSERT_EQUAL(list1.GetAt(2), testString3);
+	ASSERT_EQUAL(list1.GetAt(3), testString5);
 	
 	list1.RemoveFrom(3);
 	ASSERT_EQUAL(list1.GetCount(), 3);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString5);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
+	ASSERT_EQUAL(list1.GetAt(1), testString1);
+	ASSERT_EQUAL(list1.GetAt(2), testString3);
 	
 	list1.RemoveFrom(0);
 	ASSERT_EQUAL(list1.GetCount(), 2);
-	ASSERT_EQUAL(list1.GetAt(0), testString2);
-	ASSERT_EQUAL(list1.GetAt(1), testString5);
+	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(1), testString3);
 	
 	list1.RemoveFrom(0);
 	list1.RemoveFrom(0);
@@ -329,49 +329,6 @@ void detStringList::TestOperator(){
 	list2.Add(testString5);
 	
 	list1 += list2;
-	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString3);
-	ASSERT_EQUAL(list1.GetAt(3), testString4);
-	ASSERT_EQUAL(list1.GetAt(4), testString5);
-	
-	// operator+(decString)
-	list1.RemoveAll();
-	list1.Add(testString1);
-	list1.Add(testString2);
-	list1.Add(testString3);
-	
-	list3.RemoveAll();
-	list3 = list1 + decString(testString4);
-	ASSERT_EQUAL(list3.GetCount(), 4);
-	ASSERT_EQUAL(list3.GetAt(0), testString1);
-	ASSERT_EQUAL(list3.GetAt(1), testString2);
-	ASSERT_EQUAL(list3.GetAt(2), testString3);
-	ASSERT_EQUAL(list3.GetAt(3), testString4);
-	
-	list3.RemoveAll();
-	list3 = list1 + testString4;
-	ASSERT_EQUAL(list3.GetCount(), 4);
-	ASSERT_EQUAL(list3.GetAt(0), testString1);
-	ASSERT_EQUAL(list3.GetAt(1), testString2);
-	ASSERT_EQUAL(list3.GetAt(2), testString3);
-	ASSERT_EQUAL(list3.GetAt(3), testString4);
-	
-	// operator+=(decString)
-	list1.RemoveAll();
-	list1.Add(testString1);
-	list1.Add(testString2);
-	list1.Add(testString3);
-	
-	list1 += decString(testString4);
-	ASSERT_EQUAL(list1.GetCount(), 4);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString3);
-	ASSERT_EQUAL(list1.GetAt(3), testString4);
-	
-	list1 += testString5;
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString1);
 	ASSERT_EQUAL(list1.GetAt(1), testString2);

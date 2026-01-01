@@ -152,7 +152,7 @@ public:
 	void SetDescriptorSetLayout(devkDescriptorSetLayout *layout);
 	
 	/** Render pass. */
-	inline devkRenderPass *GetRenderPass() const{ return pRenderPass; }
+	inline const devkRenderPass::Ref &GetRenderPass() const{ return pRenderPass; }
 	
 	/** Set render pass. */
 	void SetRenderPass(devkRenderPass *renderPass);
@@ -252,7 +252,7 @@ public:
 	
 	
 	/** Specialization. */
-	inline devkSpecialization *GetSpecialization() const{ return pSpecialization; }
+	inline const devkSpecialization::Ref &GetSpecialization() const{ return pSpecialization; }
 	
 	/** Set specialization. */
 	void SetSpecialization(devkSpecialization *specialization);

@@ -42,8 +42,7 @@
 
 gdeUCategorySetName::gdeUCategorySetName(gdeGameDefinition *gameDefinition,
 gdeCategory *category, eCategoryType type, const char *newValue) :
-gdeUCategoryBase(gameDefinition, type),
-pCategory(NULL)
+gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -55,13 +54,9 @@ pCategory(NULL)
 	pNewValue = newValue;
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategorySetName::~gdeUCategorySetName(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

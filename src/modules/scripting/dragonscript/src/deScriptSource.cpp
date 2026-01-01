@@ -22,14 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deScriptSource.h"
-#include "dragengine/filesystem/deVirtualFileSystem.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include <libdscript/exceptions.h>
 
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+
+#include <libdscript/exceptions.h>
 
 
 // Class deScriptSource
@@ -40,7 +38,6 @@
 
 deScriptSource::deScriptSource(const deVirtualFileSystem &vfs, const decPath &path) :
 pVFS(vfs),
-pFileReader(NULL),
 pPath(path),
 pPathString(path.GetPathUnix()),
 pPosition(0),
@@ -48,9 +45,6 @@ pLength(0){
 }
 
 deScriptSource::~deScriptSource(){
-	if(pFileReader){
-		pFileReader->FreeReference();
-	}
 }
 
 
@@ -65,7 +59,6 @@ const char *deScriptSource::GetName(){
 void deScriptSource::Open(){
 	if(!pFileReader){
 		pFileReader = pVFS.OpenFileForReading(pPath);
-		if(!pFileReader) DSTHROW(dueOutOfMemory);
 		
 	}else{
 		pFileReader->SetPosition(0);
@@ -90,8 +83,5 @@ int deScriptSource::ReadData(char *buffer, int size){
 }
 
 void deScriptSource::Close(){
-	if(pFileReader){
-		pFileReader->FreeReference();
-		pFileReader = NULL;
-	}
+	pFileReader = nullptr;
 }

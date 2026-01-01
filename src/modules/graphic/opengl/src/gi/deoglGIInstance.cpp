@@ -231,8 +231,6 @@ pIndexFaces(0),
 pIndexVertices(0),
 pHasBVHNodes(false),
 pDirtyTUCs(true),
-pTBOMaterial(NULL),
-pTBOMaterial2(NULL),
 pDynamic(false),
 pChanged(false),
 pHardChanged(false),
@@ -242,8 +240,8 @@ pRecheckDynamic(false)
 	deoglRenderThread &renderThread = instances.GetGIState().GetRenderThread();
 	
 	try{
-		pTBOMaterial = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMaterial2 = new deoglDynamicTBOFloat16(renderThread, 4);
+		pTBOMaterial = deoglDynamicTBOUInt32::Ref::New(renderThread, 4);
+		pTBOMaterial2 = deoglDynamicTBOFloat16::Ref::New(renderThread, 4);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -282,7 +280,7 @@ void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
 	pMaxExtend = component->GetMaximumExtend();
 	
 	if(!pComponentListener){
-		pComponentListener.TakeOverWith(*this);
+		pComponentListener = cComponentListener::Ref::New(*this);
 	}
 	component->AddListener(pComponentListener);
 	
@@ -333,12 +331,12 @@ void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
 	}
 	
 	if(!pDecalListener){
-		pDecalListener.TakeOverWith(*this);
+		pDecalListener = cDecalListener::Ref::New(*this);
 	}
 	decal->AddListener(pDecalListener);
 	
 	if(!pDecalComponentListener){
-		pDecalComponentListener.TakeOverWith(*this);
+		pDecalComponentListener = cDecalComponentListener::Ref::New(*this);
 	}
 	decal->GetParentComponent()->AddListener(pDecalComponentListener);
 	
@@ -536,8 +534,8 @@ void deoglGIInstance::SetDirtyTUCs(bool dirty){
 
 const deoglDynamicTBOBlock::Ref &deoglGIInstance::GetBlockMaterial(){
 	if(!pBlockMaterial){
-		pBlockMaterial.TakeOver(pInstances.GetGIState().GetRenderThread().GetGI().GetBVHShared()
-			.GetSharedTBOMaterial()->AddBlock(pTBOMaterial, pTBOMaterial2));
+		pBlockMaterial = pInstances.GetGIState().GetRenderThread().GetGI().GetBVHShared()
+			.GetSharedTBOMaterial()->AddBlock(pTBOMaterial, pTBOMaterial2);
 	}
 	return pBlockMaterial;
 }
@@ -556,13 +554,6 @@ void deoglGIInstance::DropBlockMaterial(){
 
 void deoglGIInstance::pCleanUp(){
 	Clear();
-	
-	if(pTBOMaterial){
-		pTBOMaterial->FreeReference();
-	}
-	if(pTBOMaterial2){
-		pTBOMaterial2->FreeReference();
-	}
 }
 
 void deoglGIInstance::pInitParameters(){

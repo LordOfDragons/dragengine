@@ -134,68 +134,68 @@ void aeULinkRemove::pCleanUp(){
 }
 
 void aeULinkRemove::pAddTargets(int targetCount, aeLink *link, aeRule *rule){
-	if(rule->GetTargetBlendFactor().HasLink(link)){
-		pAddTarget(targetCount, rule, &rule->GetTargetBlendFactor());
+	if(rule->GetTargetBlendFactor()->GetLinks().Has(link)){
+		pAddTarget(targetCount, rule, rule->GetTargetBlendFactor());
 	}
 	
 	switch(rule->GetType()){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:{
 		aeRuleAnimation * const ruleAnim = (aeRuleAnimation*)rule;
 		
-		if(ruleAnim->GetTargetMoveTime().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleAnim->GetTargetMoveTime());
+		if(ruleAnim->GetTargetMoveTime()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleAnim->GetTargetMoveTime());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:{
 		aeRuleAnimationDifference * const ruleAnimDiff = (aeRuleAnimationDifference*)rule;
 		
-		if(ruleAnimDiff->GetTargetLeadingMoveTime().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleAnimDiff->GetTargetLeadingMoveTime());
+		if(ruleAnimDiff->GetTargetLeadingMoveTime()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleAnimDiff->GetTargetLeadingMoveTime());
 		}
-		if(ruleAnimDiff->GetTargetReferenceMoveTime().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleAnimDiff->GetTargetReferenceMoveTime());
+		if(ruleAnimDiff->GetTargetReferenceMoveTime()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleAnimDiff->GetTargetReferenceMoveTime());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:{
 		aeRuleAnimationSelect * const ruleAnimSelect = (aeRuleAnimationSelect*)rule;
 		
-		if(ruleAnimSelect->GetTargetMoveTime().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleAnimSelect->GetTargetMoveTime());
+		if(ruleAnimSelect->GetTargetMoveTime()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleAnimSelect->GetTargetMoveTime());
 		}
-		if(ruleAnimSelect->GetTargetSelect().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleAnimSelect->GetTargetSelect());
+		if(ruleAnimSelect->GetTargetSelect()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleAnimSelect->GetTargetSelect());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:{
 		aeRuleBoneTransformator * const ruleBoneRot = (aeRuleBoneTransformator*)rule;
 		
-		if(ruleBoneRot->GetTargetRotation().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleBoneRot->GetTargetRotation());
+		if(ruleBoneRot->GetTargetRotation()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleBoneRot->GetTargetRotation());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:{
 		aeRuleForeignState * const ruleFState = (aeRuleForeignState*)rule;
 		
-		if(ruleFState->GetTargetPosition().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleFState->GetTargetPosition());
+		if(ruleFState->GetTargetPosition()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleFState->GetTargetPosition());
 		}
-		if(ruleFState->GetTargetOrientation().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleFState->GetTargetOrientation());
+		if(ruleFState->GetTargetOrientation()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleFState->GetTargetOrientation());
 		}
-		if(ruleFState->GetTargetSize().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleFState->GetTargetSize());
+		if(ruleFState->GetTargetSize()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleFState->GetTargetSize());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:{
 		aeRuleGroup * const ruleGroup = (aeRuleGroup*)rule;
 		
-		if(ruleGroup->GetTargetSelect().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleGroup->GetTargetSelect());
+		if(ruleGroup->GetTargetSelect()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleGroup->GetTargetSelect());
 		}
 		
 		const int count = ruleGroup->GetRules().GetCount();
@@ -208,45 +208,45 @@ void aeULinkRemove::pAddTargets(int targetCount, aeLink *link, aeRule *rule){
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:{
 		aeRuleInverseKinematic * const ruleIK = (aeRuleInverseKinematic*)rule;
 		
-		if(ruleIK->GetTargetGoalPosition().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetGoalPosition());
+		if(ruleIK->GetTargetGoalPosition()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetGoalPosition());
 		}
-		if(ruleIK->GetTargetGoalOrientation().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetGoalOrientation());
+		if(ruleIK->GetTargetGoalOrientation()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetGoalOrientation());
 		}
-		if(ruleIK->GetTargetLocalPosition().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetLocalPosition());
+		if(ruleIK->GetTargetLocalPosition()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetLocalPosition());
 		}
-		if(ruleIK->GetTargetLocalOrientation().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetLocalOrientation());
+		if(ruleIK->GetTargetLocalOrientation()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetLocalOrientation());
 		}
-		if(ruleIK->GetTargetReachRange().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetReachRange());
+		if(ruleIK->GetTargetReachRange()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetReachRange());
 		}
-		if(ruleIK->GetTargetReachCenter().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleIK->GetTargetReachCenter());
+		if(ruleIK->GetTargetReachCenter()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleIK->GetTargetReachCenter());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:{
 		aeRuleStateManipulator * const ruleSManip = (aeRuleStateManipulator*)rule;
 		
-		if(ruleSManip->GetTargetPosition().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleSManip->GetTargetPosition());
+		if(ruleSManip->GetTargetPosition()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleSManip->GetTargetPosition());
 		}
-		if(ruleSManip->GetTargetRotation().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleSManip->GetTargetRotation());
+		if(ruleSManip->GetTargetRotation()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleSManip->GetTargetRotation());
 		}
 		}break;
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:{
 		aeRuleTrackTo * const ruleTrack = (aeRuleTrackTo*)rule;
 		
-		if(ruleTrack->GetTargetPosition().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleTrack->GetTargetPosition());
+		if(ruleTrack->GetTargetPosition()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleTrack->GetTargetPosition());
 		}
-		if(ruleTrack->GetTargetUp().HasLink(link)){
-			pAddTarget(targetCount, rule, &ruleTrack->GetTargetUp());
+		if(ruleTrack->GetTargetUp()->GetLinks().Has(link)){
+			pAddTarget(targetCount, rule, ruleTrack->GetTargetUp());
 		}
 		}break;
 		

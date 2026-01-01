@@ -123,7 +123,7 @@ pCulling(true)
 			fbxNode &node = *scene.NodeWithID(connection.GetSource());
 			if(node.GetName() == "Deformer"
 			&& node.GetPropertyAt(2)->CastString().GetValue() == "Cluster"){
-				pClusters.Add(fbxModelCluster::Ref::NewWith(*this, node));
+				pClusters.Add(fbxModelCluster::Ref::New(*this, node));
 			}
 		}
 	}

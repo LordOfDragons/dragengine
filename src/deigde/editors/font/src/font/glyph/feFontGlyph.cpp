@@ -41,7 +41,7 @@
 ////////////////////////////
 
 feFontGlyph::feFontGlyph(){
-	pParentFont = NULL;
+	pParentFont = nullptr;
 	
 	pCode = 0;
 	pU = 0;
@@ -142,27 +142,16 @@ void feFontGlyph::SetActive(bool active){
 	pActive = active;
 }
 
-feFontGlyph* feFontGlyph::Copy() const{
-	feFontGlyph *glyph = NULL;
-	
-	try{
-		glyph = new feFontGlyph;
-		if(!glyph) DETHROW(deeOutOfMemory);
-		
-		glyph->pCode = pCode;
-		glyph->pU = pU;
-		glyph->pV = pV;
-		glyph->pWidth = pWidth;
-		glyph->pHeight = pHeight;
-		glyph->pBearing = pBearing;
-		glyph->pBearingY = pBearingY;
-		glyph->pAdvance = pAdvance;
-		
-	}catch(const deException &){
-		if(glyph) delete glyph;
-		throw;
-	}
-	
+feFontGlyph::Ref feFontGlyph::Copy() const{
+	const feFontGlyph::Ref glyph(feFontGlyph::Ref::New());
+	glyph->pCode = pCode;
+	glyph->pU = pU;
+	glyph->pV = pV;
+	glyph->pWidth = pWidth;
+	glyph->pHeight = pHeight;
+	glyph->pBearing = pBearing;
+	glyph->pBearingY = pBearingY;
+	glyph->pAdvance = pAdvance;
 	return glyph;
 }
 

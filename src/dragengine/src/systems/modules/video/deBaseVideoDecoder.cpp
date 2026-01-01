@@ -22,31 +22,19 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deBaseVideoDecoder.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-
 
 
 // Class deBaseVideoDecoder
 /////////////////////////////
 
 deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader *file) :
-pFile(NULL)
+pFile(file)
 {
-	if(!file){
-		DETHROW(deeInvalidParam);
-	}
-	pFile = file;
-	file->AddReference();
+	DEASSERT_NOTNULL(file)
 }
 
 deBaseVideoDecoder::~deBaseVideoDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

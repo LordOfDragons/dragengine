@@ -42,19 +42,26 @@
  */
 class DE_DLL_EXPORT delEngineInstanceThreaded : public delEngineInstance{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<delEngineInstanceThreaded> Ref;
+	
+	
 	/** \brief Factory creating engine instances. */
 	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	public:
+		/** \brief Type holding strong reference. */
+		typedef deTObjectReference<Factory> Ref;
+		
 		/** \brief Factory constructor. */
 		Factory();
 		
 	protected:
 		/** \brief Factory destructor. */
-		virtual ~Factory();
+		~Factory() override;
 		
 	public:
 		/** \brief Create engine instance. */
-		virtual delEngineInstance *CreateEngineInstance(delLauncher &launcher, const char *logfile);
+		delEngineInstance::Ref CreateEngineInstance(delLauncher &launcher, const char *logfile) override;
 	};
 	
 	

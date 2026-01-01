@@ -82,31 +82,29 @@ deModel *deModelManager::GetModelWith(deVirtualFileSystem *vfs, const char *file
 	return model && !model->GetOutdated() ? model : NULL;
 }
 
-deModel *deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
+deModel::Ref deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
 	return CreateModel(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deModel *deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
+deModel::Ref deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
 deModelBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deModel *model = NULL;
-	deModel *findModel;
+	deModel::Ref model;
 	
 	try{
 		// check if a model with this filename already exists. this check is only done if
 		// the filename is not empty in which case an unnamed model is created
 		if(filename[0] != '\0'){
-			findModel = (deModel*)pModels.GetWithFilename(vfs, filename);
+			deModel * const findModel = (deModel*)pModels.GetWithFilename(vfs, filename);
 			if(findModel){
 				findModel->MarkOutdated();
-				findModel = NULL;
 			}
 		}
 		
 		// create model using the builder
-		model = new deModel(this, vfs, filename, decDateTime::GetSystemTime());
+		model = deModel::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildModel(model);
 		
 		// prepare and check model
@@ -124,9 +122,6 @@ deModelBuilder &builder){
 		pModels.Add(model);
 		
 	}catch(const deException &e){
-		if(model){
-			model->FreeReference();
-		}
 		LogErrorFormat("Creating model '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -135,20 +130,18 @@ deModelBuilder &builder){
 	return model;
 }
 
-deModel *deModelManager::LoadModel(const char *filename, const char *basePath){
+deModel::Ref deModelManager::LoadModel(const char *filename, const char *basePath){
 	return LoadModel(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deModel::Ref deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
 	deBaseModelModule *module;
-	deModel *model = NULL;
+	deModel::Ref model;
 	decPath path;
-	deModel *findModel;
 	
 	try{
 		// locate file
@@ -158,17 +151,16 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the model with this filename already exists
-		findModel = (deModel*)pModels.GetWithFilename(vfs, path.GetPathUnix());
+		deModel *findModel = (deModel*)pModels.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findModel && findModel->GetModificationTime() != modificationTime){
 			LogInfoFormat("Model '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findModel->MarkOutdated();
-			findModel = NULL;
+			findModel = nullptr;
 		}
 		
 		if(findModel){
-			findModel->AddReference();
 			model = findModel;
 			
 		}else{
@@ -177,17 +169,10 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 				deModuleSystem::emtModel, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			model = new deModel(this, vfs, path.GetPathUnix(), modificationTime);
-			if(!model){
-				DETHROW(deeOutOfMemory);
-			}
+			model = deModel::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			
 			model->SetAsynchron(false);
-			module->LoadModel(*fileReader, *model);
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
+			module->LoadModel(OpenFileForReading(*vfs, path.GetPathUnix()), *model);
 			
 			// prepare and check model
 			if(!model->Verify()){
@@ -206,12 +191,6 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		}
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(model){
-			model->FreeReference();
-		}
 		LogErrorFormat("Loading model '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;

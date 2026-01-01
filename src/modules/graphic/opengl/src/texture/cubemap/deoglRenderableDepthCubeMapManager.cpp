@@ -85,7 +85,6 @@ deoglRenderableDepthCubeMap *deoglRenderableDepthCubeMapManager::GetCubeMapWith(
 		if(pCubeMapCount == pCubeMapSize){
 			int newSize = pCubeMapSize * 3 / 2 + 1;
 			deoglRenderableDepthCubeMap **newArray = new deoglRenderableDepthCubeMap*[newSize];
-			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pCubeMaps){
 				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableDepthCubeMap*) * pCubeMapSize);
 				delete [] pCubeMaps;

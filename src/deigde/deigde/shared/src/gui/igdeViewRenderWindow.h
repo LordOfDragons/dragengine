@@ -26,8 +26,9 @@
 #define _IGDEVIEWRENDERWINDOW_H_
 
 #include "igdeWidget.h"
+#include "event/igdeMouseKeyListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/canvas/deCanvas.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
@@ -37,7 +38,6 @@ class deCamera;
 class deCanvasView;
 class deCanvasPaint;
 class deCanvasRenderWorld;
-class igdeMouseKeyListener;
 
 
 
@@ -57,7 +57,7 @@ private:
 	bool pEnableRendering;
 	bool pEngineRunning;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeMouseKeyListener> pListeners;
 	
 	
 	
@@ -84,8 +84,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Render window or NULL if absent. */
-	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
+	/** \brief Render window or nullptr if absent. */
+	inline const deRenderWindow::Ref &GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** \brief Rendering is enabled. */
 	inline bool GetEnableRendering() const{ return pEnableRendering; }

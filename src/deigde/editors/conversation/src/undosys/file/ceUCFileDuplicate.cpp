@@ -41,8 +41,8 @@
 ////////////////////////////
 
 ceUCFileDuplicate::ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID) :
-pConversation(NULL),
-pFile(NULL)
+
+pFile(nullptr)
 {
 	if(!conversation){
 		DETHROW(deeInvalidParam);
@@ -51,27 +51,17 @@ pFile(NULL)
 	SetShortInfo("Duplicate file");
 	
 	try{
-		pFile = new ceConversationFile(file);
+		pFile = ceConversationFile::Ref::New(file);
 		pFile->SetID(newID);
 		
 	}catch(const deException &){
-		if(pFile){
-			pFile->FreeReference();
-		}
 		throw;
 	}
 	
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceUCFileDuplicate::~ceUCFileDuplicate(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

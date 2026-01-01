@@ -92,7 +92,7 @@ void projConfiguration::LoadConfiguration(){
 		}
 		
 		projConfigurationXml(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
-			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
 	}catch(const deException &e){
@@ -115,7 +115,7 @@ void projConfiguration::SaveConfiguration(){
 	
 	try{
 		projConfigurationXml(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
-			decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
+			vfs.OpenFileForWriting(pathFile), *this);
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetTitle::projUProfileSetTitle(projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetTitle();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetTitle::~projUProfileSetTitle(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

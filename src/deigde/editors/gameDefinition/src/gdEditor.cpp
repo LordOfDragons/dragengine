@@ -49,6 +49,6 @@ igdeEditorModule *GameDefEditorCreateModule(igdeEnvironment *environment){
 		return new gdeIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
 }

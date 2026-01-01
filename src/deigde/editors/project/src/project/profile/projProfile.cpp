@@ -41,7 +41,7 @@
 ////////////////////////////
 
 projProfile::projProfile() :
-pProject(NULL),
+pProject(nullptr),
 pName("Profile"),
 
 pScriptDirectory("/scripts"),
@@ -55,7 +55,7 @@ pDelgaPath("projribute/MyGameApp.delga"){
 }
 
 projProfile::projProfile(const projProfile &profile) :
-pProject(NULL),
+pProject(nullptr),
 pName(profile.pName),
 pDescription(profile.pDescription),
 

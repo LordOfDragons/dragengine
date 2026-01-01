@@ -44,12 +44,10 @@ aeURuleLimitSetRotMin::aeURuleLimitSetRotMin(aeRuleLimit *rule, const decVector 
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
@@ -84,7 +82,4 @@ void aeURuleLimitSetRotMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetRotMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

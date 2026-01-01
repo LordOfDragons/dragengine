@@ -47,14 +47,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *WorldEditorCreateModule(igdeEnvironment *
 ////////////////
 
 igdeEditorModule *WorldEditorCreateModule(igdeEnvironment *environment){
-	meIGDEModule *module = NULL;
-	
 	try{
-		module = new meIGDEModule(*environment);
+		return new meIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

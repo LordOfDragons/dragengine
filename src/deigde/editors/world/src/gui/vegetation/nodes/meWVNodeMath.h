@@ -39,6 +39,9 @@ class meHTVRuleMath;
  * \brief Vegetation Editing Window Node Math.
  */
 class meWVNodeMath : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeMath> Ref;
+	
 private:
 	meHTVRuleMath *pRuleMath;
 	

@@ -36,6 +36,9 @@ class meCLMaskPaint;
  * View editor for mask painting terrain.
  */
 class meViewEditorMaskPaint : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorMaskPaint> Ref;
+	
 private:
 	meCLMaskPaint *pMaskPainter;
 	
@@ -44,8 +47,12 @@ public:
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorMaskPaint(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
 	~meViewEditorMaskPaint() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -26,10 +26,10 @@
 #ifndef _RESELECTIONCONSTRAINTS_H_
 #define _RESELECTIONCONSTRAINTS_H_
 
+#include "reRigConstraint.h"
+
 // predefinitions
 class reRig;
-class reRigConstraint;
-class reRigConstraintList;
 class deColliderVolume;
 
 
@@ -42,9 +42,8 @@ class reSelectionConstraints{
 private:
 	reRig *pRig;
 	
-	reRigConstraint **pConstraints;
-	int pConstraintCount, pConstraintSize;
-	reRigConstraint *pActiveConstraint;
+	reRigConstraint::List pConstraints;
+	reRigConstraint::Ref pActiveConstraint;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -60,14 +59,9 @@ public:
 	/** Retrieves the parent rig. */
 	inline reRig *GetParentRig() const{ return pRig; }
 	
-	/** Retrieves the number of selected constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
-	/** Retrieves the constraint at the given index. */
-	reRigConstraint *GetConstraintAt(int index) const;
-	/** Determines if the given constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
-	/** Retrieves the index of the given constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
+	/** List of selected constraints. */
+	inline const reRigConstraint::List &GetConstraints() const{ return pConstraints; }
+	
 	/** Retrieves the index of the constraint with the given collider or -1 if not found. */
 	int IndexOfConstraintWith(deColliderVolume *collider) const;
 	/** Adds a constraint if not existing already. */
@@ -77,20 +71,20 @@ public:
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	
-	/** Retrieves the active constraint or NULL. */
-	inline reRigConstraint *GetActiveConstraint() const{ return pActiveConstraint; }
+	/** Retrieves the active constraint or nullptr. */
+	inline const reRigConstraint::Ref &GetActiveConstraint() const{ return pActiveConstraint; }
 	/** Determines if an active constraint exists. */
 	bool HasActiveConstraint() const;
-	/** Sets the acitve constraint or NULL. */
+	/** Sets the acitve constraint or nullptr. */
 	void SetActiveConstraint(reRigConstraint *constraint);
 	/** Activates the next constraint in the list. */
 	//void ActivateNextConstraint();
 	
-	/** Removes all constraints and sets the active constraint to NULL. */
+	/** Removes all constraints and sets the active constraint to nullptr. */
 	void Reset();
 	
 	/** Adds all selected and visible constraints to the given list. */
-	void AddVisibleConstraintsTo(reRigConstraintList &list) const;
+	void AddVisibleConstraintsTo(reRigConstraint::List &list) const;
 	/*@}*/
 };
 

@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	try{
 		// read out-pipe handle
-		if(!ReadFile(pipeIn, &pipeOut, sizeof(pipeOut), &bytesRead, NULL)){
+		if(!ReadFile(pipeIn, &pipeOut, sizeof(pipeOut), &bytesRead, nullptr)){
 			DETHROW(deeInvalidParam);
 		}
 		if(bytesRead < sizeof(pipeOut)){
@@ -76,8 +76,8 @@ int main(int argc, char **argv){
 		return 1;
 	}
 	
-	pipeIn = (int)strtol(argv[1], NULL, 10);
-	pipeOut = (int)strtol(argv[2], NULL, 10);
+	pipeIn = (int)strtol(argv[1], nullptr, 10);
+	pipeOut = (int)strtol(argv[2], nullptr, 10);
 	
 	projTestRunProcess process(pipeIn, pipeOut);
 	process.Run();

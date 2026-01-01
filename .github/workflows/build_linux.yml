@@ -178,7 +178,7 @@ jobs:
           scons -j 4 srv_modio_build
           
           # the rest can be build full throttle
-          scons -j 14 archive installer
+          scons -j 14 archive installer detests
       
       - name: Debug Symbols
         if: ${{ ! inputs.debugBuild }}
@@ -197,6 +197,10 @@ jobs:
         with:
           category: "/language:c-cpp"
       
+      - name: Run Low Level Tests
+        run: |
+          ./src/tests/build/detests
+        
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT

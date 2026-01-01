@@ -25,12 +25,12 @@
 #ifndef _CEUCAASPEAKWORDCLEAR_H_
 #define _CEUCAASPEAKWORDCLEAR_H_
 
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -38,24 +38,27 @@ class ceConversationTopic;
  * \brief Undo action actor speak conversation action clear words.
  */
 class ceUCAASpeakWordClear : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAASpeakWordClear> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pOldWords;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::List pOldWords;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAASpeakWordClear> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
 	ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCAASpeakWordClear();
+public:
 	/*@}*/
 	
 	

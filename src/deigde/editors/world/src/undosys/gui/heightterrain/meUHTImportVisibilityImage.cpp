@@ -55,11 +55,11 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	
 	int x, y, pixelCount = resolution * resolution;
 	
-	pWorld = NULL;
+	pWorld = nullptr;
 	pSector = sector;
 	
-	pOldVis = NULL;
-	pNewVis = NULL;
+	pOldVis = nullptr;
+	pNewVis = nullptr;
 	
 	SetShortInfo("Import Visibility Image");
 	SetMemoryConsumption(sizeof(meUHTImportVisibilityImage) + 2 * (pixelCount / 8 + 1));
@@ -67,10 +67,7 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	try{
 		// create arrays
 		pOldVis = new meBitArray(resolution, resolution);
-		if(!pOldVis) DETHROW(deeOutOfMemory);
-		
 		pNewVis = new meBitArray(resolution, resolution);
-		if(!pNewVis) DETHROW(deeOutOfMemory);
 		
 		// snapshot old heights
 		sector->GetVisibilityFaces()->CopyTo(*pOldVis);
@@ -110,7 +107,6 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUHTImportVisibilityImage::~meUHTImportVisibilityImage(){
@@ -138,8 +134,6 @@ void meUHTImportVisibilityImage::Redo(){
 void meUHTImportVisibilityImage::pCleanUp(){
 	if(pNewVis) delete pNewVis;
 	if(pOldVis) delete pOldVis;
-	
-	if(pWorld) pWorld->FreeReference();
 }
 
 void meUHTImportVisibilityImage::pDoIt(meBitArray *vis){

@@ -34,6 +34,7 @@
  */
 class ceWPTTIMASetVariable : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMASetVariable> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASetVariable *GetActionSetVariable() const{ return (ceCASetVariable*)GetAction(); }
+	inline ceCASetVariable *GetActionSetVariable() const{ return GetAction().DynamicCast<ceCASetVariable>(); }
 	
 	/** \brief Text representation for operator. */
 	static const char *GetOperatorText(ceCASetVariable::eOperators anOperator);

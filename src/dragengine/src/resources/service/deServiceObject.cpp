@@ -38,49 +38,49 @@ pValueType(evtDictionary){
 }
 
 deServiceObject::Ref deServiceObject::NewBool(bool value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtBoolean;
 	object->pBoolean = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewInt(int value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtInteger;
 	object->pInteger = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewFloat(float value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtFloat;
 	object->pFloat = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewString(const char *value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtString;
 	object->pString = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewResource(deResource *value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtResource;
 	object->pResource = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewData(const decMemoryFile::Ref &value){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtData;
 	object->pData = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewList(){
-	const deServiceObject::Ref object(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref object(deServiceObject::Ref::New());
 	object->pValueType = evtList;
 	return object;
 }
@@ -100,8 +100,8 @@ pData(object.pData)
 		pDictionary.RemoveAll();
 		for(i=0; i<count; i++){
 			const decString &key = keys.GetAt(i);
-			const deServiceObject::Ref copy(deServiceObject::Ref::New(new deServiceObject(
-				*( ( deServiceObject* )object.pDictionary.GetAt( key ) ), true ) ) );
+			const deServiceObject::Ref copy(deServiceObject::Ref::New(
+				*static_cast<deServiceObject*>(object.pDictionary.GetAt(key)), true));
 			pDictionary.SetAt(key, copy);
 		}
 		

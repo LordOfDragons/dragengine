@@ -40,79 +40,80 @@
 
 igdeTreeItem::igdeTreeItem(const char *text) :
 pText(text),
-pParent(NULL),
-pPrevious(NULL),
-pData(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
+pData(nullptr),
 pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const char *text, igdeIcon *icon) :
 pText(text),
 pIcon(icon),
-pParent(NULL),
-pPrevious(NULL),
-pData(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
+pData(nullptr),
+pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const char *text, igdeIcon *icon, const char *description) :
 pText(text),
 pDescription(description),
 pIcon(icon),
-pParent(NULL),
-pPrevious(NULL),
-pData(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
+pData(nullptr),
 pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const char *text, void *data) :
 pText(text),
-pParent(NULL),
-pPrevious(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
 pData(data),
 pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const char *text, igdeIcon *icon, void *data) :
 pText(text),
 pIcon(icon),
-pParent(NULL),
-pPrevious(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
 pData(data),
 pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const char *text, igdeIcon *icon, const char *description, void *data) :
 pText(text),
 pDescription(description),
 pIcon(icon),
-pParent(NULL),
-pPrevious(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
 pData(data),
 pSelected(false),
 pExpanded(false),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::igdeTreeItem(const igdeTreeItem &treeItem) :
 pText(treeItem.pText),
 pDescription(treeItem.pDescription),
 pIcon(treeItem.pIcon),
-pParent(NULL),
-pPrevious(NULL),
+pParent(nullptr),
+pPrevious(nullptr),
 pData(treeItem.pData),
 pSelected(false),
 pExpanded(treeItem.pExpanded),
-pNativeWidget(NULL){
+pNativeWidget(nullptr){
 }
 
 igdeTreeItem::~igdeTreeItem(){
@@ -165,7 +166,7 @@ void igdeTreeItem::SetFirstChild(igdeTreeItem *item){
 
 igdeTreeItem *igdeTreeItem::GetLastChild() const{
 	igdeTreeItem *item = pFirstChild;
-	igdeTreeItem *lastChild = NULL;
+	igdeTreeItem *lastChild = nullptr;
 	while(item){
 		lastChild = item;
 		item = item->pNext;

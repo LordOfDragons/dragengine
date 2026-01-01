@@ -35,6 +35,9 @@ class ceWindowMain;
  * \brief Window Main Listener.
  */
 class ceWindowMainListener : public ceConversationListener{
+public:
+	typedef deTObjectReference<ceWindowMainListener> Ref;
+	
 private:
 	ceWindowMain &pWindow;
 	
@@ -47,7 +50,9 @@ public:
 	ceWindowMainListener(ceWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~ceWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

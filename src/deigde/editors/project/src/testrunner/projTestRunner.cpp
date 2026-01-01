@@ -91,8 +91,8 @@
 
 projTestRunner::projTestRunner(projWindowMain &windowMain) :
 pWindowMain(windowMain),
-pProfile(NULL),
-pLauncherProfile(NULL),
+pProfile(nullptr),
+pLauncherProfile(nullptr),
 
 #ifdef OS_W32
 pPipeIn(INVALID_HANDLE_VALUE),
@@ -184,11 +184,10 @@ void projTestRunner::LoadEngineConfiguration(){
 	
 	// engine file
 	pathConfigUser.AddComponent("launcher.xml");
-	decBaseFileReader::Ref reader;
 	
 	try{
-		reader.TakeOver(new decDiskFileReader(pathConfigUser.GetPathNative()));
-		projLauncherEngineConfig(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(reader, *this);
+		projLauncherEngineConfig(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
+			decDiskFileReader::Ref::New(pathConfigUser.GetPathNative()), *this);
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
@@ -235,7 +234,7 @@ bool projTestRunner::IsRunning(){
 		return false; // not running
 	}
 	
-	const pid_t result = waitpid(pProcessID, NULL, WNOHANG); 
+	const pid_t result = waitpid(pProcessID, nullptr, WNOHANG); 
 	
 	if(result == 0){
 		return true; // process still running
@@ -296,7 +295,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			memset(&secattr, '\0', sizeof(secattr));
 			secattr.nLength = sizeof(secattr);
 			secattr.bInheritHandle = TRUE;
-			secattr.lpSecurityDescriptor = NULL;
+			secattr.lpSecurityDescriptor = nullptr;
 			
 			if(!CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
 				DETHROW(deeInvalidAction);
@@ -325,11 +324,11 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if(!CreateProcess(NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
+			if(!CreateProcess(nullptr, widePath, nullptr, nullptr, TRUE, 0, nullptr, nullptr, &startInfo, &procInfo)){
 				DETHROW(deeInvalidAction);
 			}
 			
-			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, nullptr)){
 				DETHROW(deeInvalidAction);
 			}
 			if(bytesWritten < sizeof(pipesOutWrite)){
@@ -380,7 +379,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 	// avoid this problem either a separate process can be used like the one in the
 	// windows case or a flush can be forced of all open files. we use the second
 	// solution here
-	fflush(NULL);
+	fflush(nullptr);
 	
 	if(!pProcessID){
 		int pipesIn[2] = {0, 0};
@@ -428,7 +427,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			decPath pathTestRunner(decPath::CreatePathNative(pWindowMain.GetEditorModule().GetEditorPathLib()));
 			pathTestRunner.AddComponent("testrunner");
 			const decString strPathTestRunner(pathTestRunner.GetPathNative());
-			execlp(strPathTestRunner.GetString(), "testrunner", arg1, arg2, NULL);
+			execlp(strPathTestRunner.GetString(), "testrunner", arg1, arg2, nullptr);
 			// we should never get here or something went wrong
 			exit(0);
 		}
@@ -489,7 +488,7 @@ void projTestRunner::Stop(){
 	
 	#else
 	if(pProcessID){
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 		pProcessID = 0;
 	}
 	
@@ -504,8 +503,8 @@ void projTestRunner::Stop(){
 	}
 	#endif
 	
-	pProfile = NULL;
-	pLauncherProfile = NULL;
+	pProfile = nullptr;
+	pLauncherProfile = nullptr;
 
 	pWindowMain.GetLogger()->LogInfo(LOGSOURCE, "Test-Runner stopped");
 }
@@ -548,7 +547,7 @@ void projTestRunner::Kill(){
 	#else
 	if(pProcessID){
 		kill(pProcessID, SIGKILL);
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 		pProcessID = 0;
 	}
 	
@@ -563,8 +562,8 @@ void projTestRunner::Kill(){
 	}
 	#endif
 	
-	pProfile = NULL;
-	pLauncherProfile = NULL;
+	pProfile = nullptr;
+	pLauncherProfile = nullptr;
 
 	pWindowMain.GetLogger()->LogInfo(LOGSOURCE, "Test-Runner killed");
 }
@@ -605,7 +604,7 @@ void projTestRunner::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(!WriteFile(pPipeIn, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipeIn, data, length, &bytesWritten, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){
@@ -642,7 +641,7 @@ float projTestRunner::ReadFloatFromPipe(){
 void projTestRunner::ReadString16FromPipe(decString &string){
 	const int length = ReadUShortFromPipe();
 	string.Set(' ', length);
-	ReadFromPipe((char*)string.GetString(), length);
+	ReadFromPipe(string.GetMutableString(), length);
 }
 
 void projTestRunner::ReadFromPipe(void *data, int length){
@@ -653,7 +652,7 @@ void projTestRunner::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(!ReadFile(pPipeOut, data, length, &bytesRead, NULL)){
+	if(!ReadFile(pPipeOut, data, length, &bytesRead, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesRead < length){
@@ -697,11 +696,11 @@ decString projTestRunner::ReadNextLogData(){
 	if(end > position){
 		content.Set(' ', end - position);
 		pLogFileReader->SetPosition(position);
-		pLogFileReader->Read((char*)content.GetString(), end - position);
+		pLogFileReader->Read(content.GetMutableString(), end - position);
 	}
 	
 	if(!IsRunning()){
-		pLogFileReader = NULL;  // close log file
+		pLogFileReader = nullptr;  // close log file
 	}
 	
 	return content;
@@ -713,9 +712,8 @@ decString projTestRunner::GetLastLogContent(){
 	path.SetFromNative(project.GetDirectoryPath());
 	path.AddUnixPath("testRun.log");
 	
-	decBaseFileReader::Ref reader;
 	try{
-		reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
+		const decBaseFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 		
 		const int length = reader->GetLength();
 		if(length == 0){
@@ -724,7 +722,7 @@ decString projTestRunner::GetLastLogContent(){
 		
 		decString content;
 		content.Set(' ', length);
-		reader->Read((char*)content.GetString(), length);
+		reader->Read(content.GetMutableString(), length);
 		return content;
 		
 	}catch(const deException &){
@@ -741,7 +739,7 @@ decString projTestRunner::GetLastLogContent(){
 
 void projTestRunner::pInitLogFile(){
 	// make sure no reader is open
-	pLogFileReader = NULL;
+	pLogFileReader = nullptr;
 	
 	// store path to log file to use
 	const igdeGameProject &project = *pWindowMain.GetGameProject();
@@ -753,10 +751,10 @@ void projTestRunner::pInitLogFile(){
 	pPathLogFile = path.GetPathNative();
 	
 	// create log file or truncate it to 0 length if present
-	decDiskFileWriter::Ref::NewWith(pPathLogFile, false);
+	decDiskFileWriter::Ref::New(pPathLogFile, false);
 	
 	// open file for reading
-	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
+	pLogFileReader = decDiskFileReader::Ref::New(pPathLogFile);
 }
 
 void projTestRunner::pSendLaunchParameters(){
@@ -793,11 +791,9 @@ void projTestRunner::pSendLaunchParameters(){
 	projTRPParameterList parameters;
 	
 	if(pLauncherProfile){
-		const projTRPParameterList &lpparams = pLauncherProfile->GetParameters();
-		count = lpparams.GetCount();
-		for(i=0; i<count; i++){
-			parameters.Set(*lpparams.GetAt(i));
-		}
+		pLauncherProfile->GetParameters().GetParameters().Visit([&](const projTRPParameter &p){
+			parameters.Set(p);
+		});
 		
 		if(pLauncherProfile->GetReplaceRunArguments()){
 			runArguments = pLauncherProfile->GetRunArguments();
@@ -853,14 +849,13 @@ void projTestRunner::pSendLaunchParameters(){
 	WriteUCharToPipe(fullScreen ? 1 : 0);
 	WriteString16ToPipe(decString("Test Run: ") + project.GetName());
 	
-	count = parameters.GetCount();
+	count = parameters.GetParameters().GetCount();
 	WriteUShortToPipe(count);
-	for(i=0; i<count; i++){
-		const projTRPParameter &parameter = *parameters.GetAt(i);
-		WriteString16ToPipe(parameter.GetModule());
-		WriteString16ToPipe(parameter.GetName());
-		WriteString16ToPipe(parameter.GetValue());
-	}
+	parameters.GetParameters().Visit([&](const projTRPParameter &p){
+		WriteString16ToPipe(p.GetModule());
+		WriteString16ToPipe(p.GetName());
+		WriteString16ToPipe(p.GetValue());
+	});
 	
 	WriteString16ToPipe(runArguments);
 	

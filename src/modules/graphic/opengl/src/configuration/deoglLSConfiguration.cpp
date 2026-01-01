@@ -64,31 +64,19 @@ deoglLSConfiguration::~deoglLSConfiguration(){
 
 void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 	deVirtualFileSystem& vfs = pOgl.GetVFS();
-	decBaseFileReader *file = NULL;
 	decPath path;
 	
 	try{
 		path.SetFromUnix("/config/opengl.xml");
 		if(vfs.ExistsFile(path)){
 			pOgl.LogInfo("Loading configuration file 'opengl.xml'");
-			file = vfs.OpenFileForReading(path);
-			if(!file){
-				DETHROW(deeOutOfMemory);
-			}
-			
-			pLoadConfigOpenGL(configuration, *file);
-			
-			file->FreeReference();
-			file = NULL;
+			pLoadConfigOpenGL(configuration, vfs.OpenFileForReading(path));
 			
 		}else{
 			pOgl.LogInfo("Configuration file 'opengl.xml' not found. Using defaults.");
 		}
 		
 	}catch(const deException &e){
-		if(file){
-			file->FreeReference();
-		}
 		pOgl.LogException(e);
 		throw;
 	}
@@ -103,7 +91,7 @@ void deoglLSConfiguration::SaveConfig(const deoglConfiguration &){
 //////////////////////
 
 void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, decBaseFileReader &file){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	const char *name;
 	int i;

@@ -26,8 +26,7 @@
 #define _DEARCHIVECONTAINER_H_
 
 #include "../../filesystem/deVFSContainer.h"
-
-class deArchive;
+#include "deArchive.h"
 
 
 /**
@@ -45,7 +44,7 @@ public:
 	
 private:
 	const decPath pArchivePath;
-	deArchive *pArchive;
+	deArchive::Ref pArchive;
 	
 	deArchiveContainer *pLLManagerPrev;
 	deArchiveContainer *pLLManagerNext;
@@ -77,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Archive. */
-	inline deArchive *GetArchive() const{ return pArchive; }
+	inline const deArchive::Ref &GetArchive() const{ return pArchive; }
 	
 	/** \brief Archive path to map as root. */
 	inline const decPath &GetArchivePath(){ return pArchivePath; }
@@ -130,7 +129,7 @@ public:
 	 * wrapping the actual file reader to be able to safely drop it when the module is
 	 * unloaded while the reader is still held by somebody.
 	 */
-	decBaseFileReader *OpenFileForReading(const decPath &path) override;
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
@@ -145,7 +144,7 @@ public:
 	 * wrapping the actual file writer to be able to safely drop it when the module is
 	 * unloaded while the writer is still held by somebody.
 	 */
-	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.

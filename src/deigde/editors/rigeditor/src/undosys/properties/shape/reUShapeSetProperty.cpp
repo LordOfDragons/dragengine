@@ -38,19 +38,16 @@
 ////////////////////////////
 
 reUShapeSetProperty::reUShapeSetProperty(reRigShape *shape , const char *newProperty) :
-pShape(NULL){
+pShape(nullptr){
 	pShape = shape;
 	
 	pOldProperty = shape->GetProperty();
 	pNewProperty = newProperty;
 	
 	SetShortInfo("Shape set property");
-	
-	pShape->AddReference();
 }
 
 reUShapeSetProperty::~reUShapeSetProperty(){
-	pShape->FreeReference();
 }
 
 

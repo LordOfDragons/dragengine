@@ -69,7 +69,7 @@ void deoalLSConfiguration::LoadConfig(){
 		return;
 	}
 	
-	pLoadConfig(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+	pLoadConfig(vfs.OpenFileForReading(path));
 }
 
 void deoalLSConfiguration::SaveConfig(){
@@ -190,7 +190,7 @@ float deoalLSConfiguration::pGetCDataFloat(const decXmlElementTag &tag, float de
 
 
 void deoalLSConfiguration::pLoadConfig(decBaseFileReader *file){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(pOal.GetGameEngine()->GetLogger()).ParseXml(file, xmlDoc);
 	

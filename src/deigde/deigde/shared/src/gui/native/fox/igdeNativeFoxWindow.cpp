@@ -64,8 +64,8 @@ igdeNativeFoxWindow::igdeNativeFoxWindow(){}
 
 igdeNativeFoxWindow::igdeNativeFoxWindow(igdeWindow &powner, const igdeGuiTheme &guitheme) :
 FXTopWindow(FXApp::instance(), powner.GetTitle().GetString(),
-	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : NULL,
-	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : NULL,
+	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : nullptr,
+	powner.GetIcon() ? (FXIcon*)powner.GetIcon()->GetNativeIcon() : nullptr,
 	WindowFlags(powner),
 	powner.GetPosition().x, powner.GetPosition().y, powner.GetSize().x, powner.GetSize().y,
 	WindowPadLeft(guitheme), WindowPadRight(guitheme),
@@ -113,7 +113,7 @@ void igdeNativeFoxWindow::UpdatePosition(){
 }
 
 void igdeNativeFoxWindow::UpdateIcon(){
-	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : NULL;
+	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : nullptr;
 	setIcon(iicon);
 	setMiniIcon(iicon);
 }

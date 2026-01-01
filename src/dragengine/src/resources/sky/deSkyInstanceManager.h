@@ -25,11 +25,11 @@
 #ifndef _DESKYINSTANCEMANAGER_H_
 #define _DESKYINSTANCEMANAGER_H_
 
+#include "deSkyInstance.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSkyInstance;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deSkyInstance *GetRootSkyInstance() const;
 	
 	/** \brief Create sky instance. */
-	deSkyInstance *CreateSkyInstance();
+	deSkyInstance::Ref CreateSkyInstance();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

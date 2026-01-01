@@ -44,7 +44,7 @@ ceUCCShotSetPosFrom::ceUCCShotSetPosFrom(ceCameraShot *cameraShot, const decVect
 		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set Start Position");
 	
@@ -52,13 +52,9 @@ ceUCCShotSetPosFrom::ceUCCShotSetPosFrom(ceCameraShot *cameraShot, const decVect
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetPosFrom::~ceUCCShotSetPosFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

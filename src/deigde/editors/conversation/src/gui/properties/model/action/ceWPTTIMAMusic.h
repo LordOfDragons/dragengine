@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAMusic : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAMusic> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAMusic *GetActionMusic() const{ return (ceCAMusic*)GetAction(); }
+	inline ceCAMusic *GetActionMusic() const{ return (ceCAMusic*)GetAction().Pointer(); }
 	
 	/** \brief Update action. */
 	void Update() override;

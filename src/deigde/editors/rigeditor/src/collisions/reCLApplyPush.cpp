@@ -47,13 +47,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLApplyPush::reCLApplyPush(reRig *rig){
-	if(!rig) DETHROW(deeInvalidParam);
-	
-	pRig = rig;
-	
-	pPush.Set(0.0f, 0.0f, 1.0f);
-	pCollider = NULL;
+reCLApplyPush::reCLApplyPush(reRig &rig) :
+pRig(rig),
+pPush(decVector(0.0f, 0.0f, 1.0f)){
 }
 
 reCLApplyPush::~reCLApplyPush(){
@@ -80,7 +76,7 @@ void reCLApplyPush::SetCollider(deCollider *collider){
 
 
 void reCLApplyPush::Reset(){
-	pClosestCollider = NULL;
+	pClosestCollider = nullptr;
 	pClosestBone = 0;
 	pClosestDistance = 0.0f;
 }

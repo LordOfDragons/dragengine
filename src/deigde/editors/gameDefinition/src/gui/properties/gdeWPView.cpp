@@ -56,11 +56,12 @@ protected:
 	gdeWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPView &panel, const char *text, const char *description) :
 	igdeAction(text, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
 		if(gameDefinition){
 			OnAction(*gameDefinition);
@@ -72,6 +73,9 @@ public:
 
 class cActionCameraChanged : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraChanged> Ref;
+	
+public:
 	cActionCameraChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
 	void OnAction(gdeGameDefinition &gameDefinition) override{
@@ -80,6 +84,9 @@ public:
 };
 
 class cActionSkyChanged : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionSkyChanged> Ref;
+	
 public:
 	cActionSkyChanged(gdeWPView &panel) : cBaseAction(panel, "", ""){}
 	
@@ -100,31 +107,23 @@ public:
 
 gdeWPView::gdeWPView(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pGameDefinition(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new gdeWPViewListener(*this);
+	pListener = gdeWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),
-		"Camera:", false, false, true);
-	helper.WPSky(content, pWPSky, new cActionSkyChanged(*this),
-		"Environment Object:", false, false, true);
+	helper.WPCamera(content, pWPCamera, cActionCameraChanged::Ref::New(*this), "Camera:", false, false);
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "Environment Object:", false, false);
 }
 
 gdeWPView::~gdeWPView(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -137,20 +136,17 @@ void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		return;
 	}
 	
-	pWPSky->SetSky(NULL);
-	pWPCamera->SetCamera(NULL);
+	pWPSky->SetSky(nullptr);
+	pWPCamera->SetCamera(nullptr);
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		pWPCamera->SetCamera(gameDefinition->GetCamera());
 		pWPSky->SetSky(gameDefinition->GetSky());
 	}

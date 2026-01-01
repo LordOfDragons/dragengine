@@ -43,8 +43,6 @@ aeURuleLimitSetVertexPositionSetMax::aeURuleLimitSetVertexPositionSetMax(
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
 		
@@ -79,7 +77,4 @@ void aeURuleLimitSetVertexPositionSetMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetVertexPositionSetMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

@@ -153,8 +153,6 @@ void debnConnection::AcceptConnection(debnSocket *bnSocket, const debnAddress &a
 	if(!bnSocket) DETHROW(deeInvalidParam);
 	
 	pSocket = bnSocket;
-	bnSocket->AddReference();
-	
 	pRemoteAddress = address;
 	pConnection->SetRemoteAddress(address.ToString());
 	
@@ -219,7 +217,7 @@ void debnConnection::ProcessMessage(decBaseFileReader &reader){
 	
 	const int length = reader.GetLength() - reader.GetPosition();
 	
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::New());
 	message->SetDataLength(length);
 	reader.Read(message->GetBuffer(), length);
 	
@@ -561,7 +559,7 @@ bool debnConnection::ConnectTo(const char *address){
 	remoteAddress.SetFromString(address);
 	
 	// create connect socket
-	pSocket = new debnSocket(*pNetBasic);
+	pSocket = debnSocket::Ref::New(*pNetBasic);
 	
 	if(remoteAddress.GetType() == debnAddress::eatIPv6){
 		pSocket->GetAddress().SetIPv6Any();
@@ -675,7 +673,7 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 				bnMessage->SetState(debnMessage::emsPending);
 				
 				// build message
-				deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::NewWith(
+				deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
 					bnMessage->GetMessage(), false));
 				writer->WriteByte(eccReliableMessage);
 				writer->WriteUShort((uint16_t)bnMessage->GetNumber());
@@ -707,7 +705,7 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 			bnMessage->SetState(debnMessage::emsPending);
 			
 			// build message
-			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::NewWith(
+			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
 				bnMessage->GetMessage(), false));
 			writer->WriteByte(eccReliableMessage);
 			writer->WriteUShort((uint16_t)bnMessage->GetNumber());
@@ -783,7 +781,7 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 		bnMessage->SetState(debnMessage::emsPending);
 		
 		// build message
-		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::NewWith(
+		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(
 			bnMessage->GetMessage(), false));
 		writer->WriteByte(eccReliableLinkState);
 		writer->WriteUShort((uint16_t)bnMessage->GetNumber());
@@ -846,10 +844,6 @@ void debnConnection::pCleanUp(){
 	if(pModifiedStateLinks){
 		delete pModifiedStateLinks;
 	}
-	if(pSocket){
-		pSocket->FreeReference();
-	}
-	
 	if(pReliableMessagesRecv){
 		delete pReliableMessagesRecv;
 	}
@@ -884,10 +878,7 @@ void debnConnection::pDisconnect(){
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
-	if(pSocket){
-		pSocket->FreeReference();
-		pSocket = NULL;
-	}
+	pSocket = nullptr;
 	
 	// switch to disconnected state
 	pConnectionState = ecsDisconnected;
@@ -1039,22 +1030,22 @@ void debnConnection::pProcessQueuedMessages(){
 		switch(type){
 		case eccReliableMessage:{
 			pProcessReliableMessage(pReliableNumberRecv,
-				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
+				deNetworkMessageReader::Ref::New(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableLinkState:{
 			pProcessLinkState(pReliableNumberRecv,
-				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
+				deNetworkMessageReader::Ref::New(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableMessageLong:{
 			pProcessReliableMessageLong(pReliableNumberRecv,
-				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
+				deNetworkMessageReader::Ref::New(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableLinkStateLong:{
 			pProcessLinkStateLong(pReliableNumberRecv,
-				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
+				deNetworkMessageReader::Ref::New(bnMessage->GetMessage()));
 			}break;
 		}
 		
@@ -1074,7 +1065,7 @@ void debnConnection::pProcessReliableMessage(int number, decBaseFileReader &read
 	const int position = reader.GetPosition();
 	const int length = reader.GetLength() - position;
 	
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::New());
 	message->SetDataLength(length);
 	reader.Read(message->GetBuffer(), length);
 	
@@ -1099,13 +1090,13 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 	}
 	
 	// create linked network state
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::New());
 	message->SetDataLength(reader.ReadUShort());
 	reader.Read(message->GetBuffer(), message->GetDataLength());
 	
 	deNetworkState::Ref state;
 	if(scrCon){
-		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
+		state = pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly);
 		if(!scrCon->LinkState(state, message)){
 			state = NULL;
 		}
@@ -1167,7 +1158,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 void debnConnection::pProcessReliableMessageLong(int number, decBaseFileReader &reader){
 	const uint8_t flags = reader.ReadByte();
 	if((flags & (uint8_t)elmfFirst) != 0) {
-		pLongMessage.TakeOver(new deNetworkMessage);
+		pLongMessage = deNetworkMessage::Ref::New();
 	}
 	if(!pLongMessage){
 		return;
@@ -1207,8 +1198,8 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	}
 	
 	if((flags & (uint8_t)ellsfFirst) != 0){
-		pLongLinkStateMessage.TakeOver(new deNetworkMessage);
-		pLongLinkStateValues.TakeOver(new deNetworkMessage);
+		pLongLinkStateMessage = deNetworkMessage::Ref::New();
+		pLongLinkStateValues = deNetworkMessage::Ref::New();
 	}
 	
 	if(!pLongLinkStateMessage || !pLongLinkStateValues){
@@ -1244,7 +1235,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	deBaseScriptingConnection * const scrCon = pConnection->GetPeerScripting();
 	deNetworkState::Ref state;
 	if(scrCon){
-		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
+		state = pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly);
 		if(!scrCon->LinkState(state, message)){
 			state = nullptr;
 		}
@@ -1257,7 +1248,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	
 	eCommandCodes code = eccLinkDown;
 	if(bnState){
-		if(bnState->LinkReadAndVerifyAllValues(deNetworkMessageReader::Ref::NewWith(values))){
+		if(bnState->LinkReadAndVerifyAllValues(deNetworkMessageReader::Ref::New(values))){
 			// create the link if not existing, assign it a new identifier and add it
 			if(!stateLink){
 				try{

@@ -49,17 +49,17 @@
 ////////////////////////////
 
 deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList(const deoglSkinTexture &texture){
-	pPipelines[eptComponent].TakeOver(new deoglSTPipelinesComponent(texture));
-	pPipelines[eptBillboard].TakeOver(new deoglSTPipelinesBillboard(texture));
-	pPipelines[eptDecal].TakeOver(new deoglSTPipelinesDecal(texture));
-	pPipelines[eptPropField].TakeOver(new deoglSTPipelinesPropField(texture));
-	pPipelines[eptPropFieldImposter].TakeOver(new deoglSTPipelinesPropFieldImposter(texture));
-	pPipelines[eptHeightMap1].TakeOver(new deoglSTPipelinesHeightMap1(texture));
-	pPipelines[eptHeightMap2].TakeOver(new deoglSTPipelinesHeightMap2(texture));
-	pPipelines[eptParticle].TakeOver(new deoglSTPipelinesParticle(texture));
-	pPipelines[eptParticleRibbon].TakeOver(new deoglSTPipelinesParticleRibbon(texture));
-	pPipelines[eptParticleBeam].TakeOver(new deoglSTPipelinesParticleBeam(texture));
-	pPipelines[eptOutline].TakeOver(new deoglSTPipelinesOutline(texture));
+	pPipelines[eptComponent] = deoglSTPipelinesComponent::Ref::New(texture);
+	pPipelines[eptBillboard] = deoglSTPipelinesBillboard::Ref::New(texture);
+	pPipelines[eptDecal] = deoglSTPipelinesDecal::Ref::New(texture);
+	pPipelines[eptPropField] = deoglSTPipelinesPropField::Ref::New(texture);
+	pPipelines[eptPropFieldImposter] = deoglSTPipelinesPropFieldImposter::Ref::New(texture);
+	pPipelines[eptHeightMap1] = deoglSTPipelinesHeightMap1::Ref::New(texture);
+	pPipelines[eptHeightMap2] = deoglSTPipelinesHeightMap2::Ref::New(texture);
+	pPipelines[eptParticle] = deoglSTPipelinesParticle::Ref::New(texture);
+	pPipelines[eptParticleRibbon] = deoglSTPipelinesParticleRibbon::Ref::New(texture);
+	pPipelines[eptParticleBeam] = deoglSTPipelinesParticleBeam::Ref::New(texture);
+	pPipelines[eptOutline] = deoglSTPipelinesOutline::Ref::New(texture);
 }
 
 deoglSkinTexturePipelinesList::~deoglSkinTexturePipelinesList(){

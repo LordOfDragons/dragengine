@@ -601,7 +601,7 @@ void debpParticleEmitterInstanceType::KillParticle(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deParticleEmitterInstance * const trailEmitter = pParticles[index].trailEmitter;
+	const deParticleEmitterInstance::Ref &trailEmitter = pParticles[index].trailEmitter;
 	const int simtype = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt(pType).GetSimulationType();
 	
 	//debpParticleInstance &P = pParticles[ index ];
@@ -610,18 +610,20 @@ void debpParticleEmitterInstanceType::KillParticle(int index){
 	if(trailEmitter){
 		trailEmitter->SetEnableCasting(false);
 		trailEmitter->SetRemoveAfterLastParticleDied(true);
-		trailEmitter->FreeReference();
-		pParticles[index].trailEmitter = NULL;
+		pParticles[index].trailEmitter = nullptr;
 	}
 	
 	if(simtype == deParticleEmitterType::estParticle){
 		if(index < pParticleCount - 1){
-			memcpy(pParticles + index, pParticles + (pParticleCount - 1), sizeof(sParticle));
+			pParticles[index] = pParticles[pParticleCount - 1];
 		}
 		
 	}else{ // ribbon or beam
 		if(index < pParticleCount - 1){
-			memmove(pParticles + index, pParticles + (index + 1), sizeof(sParticle) * (pParticleCount - 1 - index));
+			int i;
+			for(i=index; i<pParticleCount-1; i++){
+				pParticles[i] = pParticles[i + 1];
+			}
 		}
 	}
 	
@@ -644,8 +646,7 @@ void debpParticleEmitterInstanceType::KillAllParticles(){
 		if(trailEmitter){
 			trailEmitter->SetEnableCasting(false);
 			trailEmitter->SetRemoveAfterLastParticleDied(true);
-			trailEmitter->FreeReference();
-			pParticles[pParticleCount].trailEmitter = NULL;
+			pParticles[pParticleCount].trailEmitter = nullptr;
 		}
 	}
 	
@@ -661,7 +662,10 @@ void debpParticleEmitterInstanceType::CastSingleParticle(float distance, float t
 		sParticle * const newArray = new sParticle[newSize];
 		
 		if(pParticles){
-			memcpy(newArray, pParticles, sizeof(sParticle) * pParticleSize);
+			int i;
+			for(i=0; i<pParticleSize; i++){
+				newArray[i] = pParticles[i];
+			}
 			delete [] pParticles;
 		}
 		pParticles = newArray;
@@ -702,7 +706,10 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 			sParticle * const newArray = new sParticle[newSize];
 			
 			if(pParticles){
-				memcpy(newArray, pParticles, sizeof(sParticle) * pParticleSize);
+				int i;
+				for(i=0; i<pParticleSize; i++){
+					newArray[i] = pParticles[i];
+				}
 				delete [] pParticles;
 			}
 			pParticles = newArray;
@@ -722,7 +729,7 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 			const float simTimeStep = particleCast.timeToLive * lifetimeStep;
 			
 			for(i=1; i<particleCount; i++){
-				memcpy(pParticles + pParticleCount, pParticles + (pParticleCount - 1), sizeof(sParticle));
+				pParticles[pParticleCount] = pParticles[pParticleCount - 1];
 				
 				sParticle &particleProgress = pParticles[pParticleCount++];
 				particleProgress.lifetime += lifetimeStep;
@@ -756,7 +763,7 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 
 void debpParticleEmitterInstanceType::ParticleSetCastParams(sParticle &particle, float distance, float timeOffset){
 	// important to avoid problems later on in bad cases
-	particle.trailEmitter = NULL;
+	particle.trailEmitter = nullptr;
 	
 	// calculate cast matrix for the particle
 	decDMatrix castMatrix;
@@ -1086,10 +1093,7 @@ void debpParticleEmitterInstanceType::ParticleCreateTrailEmitter(sParticle &part
 		engWorld.AddParticleEmitter(particle.trailEmitter);
 		
 	}catch(const deException &){
-		if(particle.trailEmitter){
-			particle.trailEmitter->FreeReference();
-			particle.trailEmitter = NULL;
-		}
+		particle.trailEmitter = nullptr;
 		throw;
 	}
 }
@@ -1391,67 +1395,58 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 		// create an emitter instance if one is set for this particle type and the preconditions are met
 		if(doEmitParticles){
 			deParticleEmitter * const emitEmitter = engType.GetCollisionEmitter();
-			deEngine &engine = *pInstance->GetBullet()->GetGameEngine();
-			deParticleEmitterInstance *emitInstance = NULL;
+			const deEngine &engine = *pInstance->GetBullet()->GetGameEngine();
 			
-			try{
-				// create instance
-				emitInstance = engine.GetParticleEmitterInstanceManager()->CreateInstance();
-				emitInstance->SetEmitter(emitEmitter);
-				emitInstance->SetCollisionFilter(pInstance->GetInstance()->GetCollisionFilter());
-				emitInstance->SetTimeScale(1.0f);
-				emitInstance->SetRemoveAfterLastParticleDied(true);
-				emitInstance->SetEnableCasting(true);
+			// create instance
+			const deParticleEmitterInstance::Ref emitInstance(
+				engine.GetParticleEmitterInstanceManager()->CreateInstance());
+			emitInstance->SetEmitter(emitEmitter);
+			emitInstance->SetCollisionFilter(pInstance->GetInstance()->GetCollisionFilter());
+			emitInstance->SetTimeScale(1.0f);
+			emitInstance->SetRemoveAfterLastParticleDied(true);
+			emitInstance->SetEnableCasting(true);
+			
+			// set position and orientation
+			const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * (btScalar)0.001;
+			emitInstance->SetPosition(decDVector(emitPosition.getX(), emitPosition.getY(), emitPosition.getZ()));
+			emitInstance->SetReferencePosition(emitInstance->GetPosition());
+			btVector3 emitNormal;
+			
+			const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
+			const float emitDirection = particle.castEmitDirection * type.EvaluateProgressParameter(
+				debpParticleEmitterType::escEmitDirection, particle.lifetime);
+			
+			if(emitDirection < FLOAT_SAFE_EPSILON){
+				emitNormal = rayResult.m_hitNormalWorld;
 				
-				// set position and orientation
-				const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * (btScalar)0.001;
-				emitInstance->SetPosition(decDVector(emitPosition.getX(), emitPosition.getY(), emitPosition.getZ()));
-				emitInstance->SetReferencePosition(emitInstance->GetPosition());
-				btVector3 emitNormal;
+			}else if(emitDirection > 1.0f - FLOAT_SAFE_EPSILON){
+				emitNormal = displacement.normalized();
 				
-				const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
-				const float emitDirection = particle.castEmitDirection * type.EvaluateProgressParameter(
-					debpParticleEmitterType::escEmitDirection, particle.lifetime);
-				
-				if(emitDirection < FLOAT_SAFE_EPSILON){
-					emitNormal = rayResult.m_hitNormalWorld;
-					
-				}else if(emitDirection > 1.0f - FLOAT_SAFE_EPSILON){
-					emitNormal = displacement.normalized();
-					
-				}else{
-					emitNormal = displacement.normalized() * (btScalar)emitDirection
-						+ rayResult.m_hitNormalWorld * (btScalar)(1.0f - emitDirection);
-				}
-				
-				if(emitNormal.getY() > 1.0 - DVECTOR_THRESHOLD){
-					//emitInstance->SetOrientation( decMatrix::CreateRotationX( HALF_PI ).ToQuaternion() );
-					emitInstance->SetOrientation(decQuaternion(-0.707107f, 0.0f, 0.0f, 0.707107f));
-					
-				}else if(emitNormal.getY() < DVECTOR_THRESHOLD - 1.0){
-					//emitInstance->SetOrientation( decMatrix::CreateRotationX( -HALF_PI ).ToQuaternion() );
-					emitInstance->SetOrientation(decQuaternion(0.707107f, 0.0f, 0.0f, 0.707107f));
-					
-				}else{
-					emitInstance->SetOrientation(decMatrix::CreateVU(decVector((float)emitNormal.getX(),
-						(float)emitNormal.getY(), (float)emitNormal.getZ()), decVector(0.0f, 1.0f, 0.0f)).ToQuaternion());
-				}
-				
-				// set controller values
-				ParticleSetEmitterControllers(particle, *emitInstance, particleLinearVelocity);
-				
-				// add to the world. this has to come before casting just to be safe
-				pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
-				
-				// cast a burst of particles
-				emitInstance->FreeReference();
-				
-			}catch(const deException &){
-				if(emitInstance){
-					emitInstance->FreeReference();
-				}
-				throw;
+			}else{
+				emitNormal = displacement.normalized() * (btScalar)emitDirection
+					+ rayResult.m_hitNormalWorld * (btScalar)(1.0f - emitDirection);
 			}
+			
+			if(emitNormal.getY() > 1.0 - DVECTOR_THRESHOLD){
+				//emitInstance->SetOrientation( decMatrix::CreateRotationX( HALF_PI ).ToQuaternion() );
+				emitInstance->SetOrientation(decQuaternion(-0.707107f, 0.0f, 0.0f, 0.707107f));
+				
+			}else if(emitNormal.getY() < DVECTOR_THRESHOLD - 1.0){
+				//emitInstance->SetOrientation( decMatrix::CreateRotationX( -HALF_PI ).ToQuaternion() );
+				emitInstance->SetOrientation(decQuaternion(0.707107f, 0.0f, 0.0f, 0.707107f));
+				
+			}else{
+				emitInstance->SetOrientation(decMatrix::CreateVU(decVector((float)emitNormal.getX(),
+					(float)emitNormal.getY(), (float)emitNormal.getZ()), decVector(0.0f, 1.0f, 0.0f)).ToQuaternion());
+			}
+			
+			// set controller values
+			ParticleSetEmitterControllers(particle, emitInstance, particleLinearVelocity);
+			
+			// add to the world. this has to come before casting just to be safe
+			pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
+			
+			// cast a burst of particles
 		}
 		
 		// apply collision response
@@ -1536,7 +1531,7 @@ void debpParticleEmitterInstanceType::ParticleUpdateTrailEmitter(const sParticle
 	}
 	
 	// set controller values
-	ParticleSetTrailEmitterControllers(particle, *particle.trailEmitter, particle.linearVelocity.length());
+	ParticleSetTrailEmitterControllers(particle, particle.trailEmitter, particle.linearVelocity.length());
 }
 
 void debpParticleEmitterInstanceType::ParticleSetTrailEmitterControllers(const sParticle &particle,

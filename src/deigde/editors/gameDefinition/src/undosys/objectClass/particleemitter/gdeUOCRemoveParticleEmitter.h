@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,16 +37,17 @@ class gdeObjectClass;
  * \brief Undo action object class remove particleEmitter.
  */
 class gdeUOCRemoveParticleEmitter : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveParticleEmitter> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCRemoveParticleEmitter> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

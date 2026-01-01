@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *SAnimEditorCreateModule(igdeEnvironment *
 ////////////////
 
 igdeEditorModule *SAnimEditorCreateModule(igdeEnvironment *environment){
-	saeIGDEModule *module = NULL;
-	
 	try{
-		module = new saeIGDEModule(environment);
+		return new saeIGDEModule(environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

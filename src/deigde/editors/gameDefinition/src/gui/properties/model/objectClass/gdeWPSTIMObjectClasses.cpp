@@ -62,20 +62,20 @@ gdeWPSTIMObjectClasses::~gdeWPSTIMObjectClasses(){
 ///////////////
 
 gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith(gdeObjectClass *objectClass) const{
-	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
 	
 	while(child){
 		if(child->GetObjectClass() == objectClass){
 			return child;
 		}
-		child = (gdeWPSTIMObjectClass*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void gdeWPSTIMObjectClasses::StructureChanged(){
-	const gdeObjectClassList &list = GetGameDefinition().GetObjectClasses();
+	const gdeObjectClass::List &list = GetGameDefinition().GetObjectClasses();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -86,7 +86,7 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith(objectClass);
 		
 		if(!modelObjectClass){
-			item.TakeOver(new gdeWPSTIMObjectClass(GetTree(), list.GetAt(i)));
+			item = gdeWPSTIMObjectClass::Ref::New(GetTree(), list.GetAt(i));
 			AppendModel(item);
 		}
 	}
@@ -110,31 +110,31 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 }
 
 void gdeWPSTIMObjectClasses::ValidateObjectClassName(){
-	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
 	while(child){
 		child->ValidateObjectClassName();
-		child = (gdeWPSTIMObjectClass*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 }
 
 void gdeWPSTIMObjectClasses::ValidateCategoryName(){
-	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
+	gdeWPSTIMObjectClass *child = GetFirstChild().DynamicCast<gdeWPSTIMObjectClass>();
 	while(child){
 		child->ValidateCategoryName();
-		child = (gdeWPSTIMObjectClass*)child->GetNext();
+		child = child->GetNext().DynamicCast<gdeWPSTIMObjectClass>();
 	}
 }
 
 
 
 void gdeWPSTIMObjectClasses::OnAddedToTree(){
-	const gdeObjectClassList &list = GetGameDefinition().GetObjectClasses();
+	const gdeObjectClass::List &list = GetGameDefinition().GetObjectClasses();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
 	
 	for(i=0; i<count; i++){
-		item.TakeOver(new gdeWPSTIMObjectClass(GetTree(), list.GetAt(i)));
+		item = gdeWPSTIMObjectClass::Ref::New(GetTree(), list.GetAt(i));
 		AppendModel(item);
 	}
 	
@@ -156,7 +156,7 @@ void gdeWPSTIMObjectClasses::SelectBestMatching(const char *string){
 	
 	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
-	gdeObjectClass *bestObjectClass = NULL;
+	gdeObjectClass *bestObjectClass = nullptr;
 	decString bestName;
 	
 	while(child){

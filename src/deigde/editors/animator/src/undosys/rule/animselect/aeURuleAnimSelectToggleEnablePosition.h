@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 
@@ -36,13 +36,14 @@ class aeRuleAnimationSelect;
  * Undo rule animation select set enable position.
  */
 class aeURuleAnimSelectToggleEnablePosition : public igdeUndo{
-private:
-	aeRuleAnimationSelect *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleAnimSelectToggleEnablePosition> Ref;
 	
+	
+private:
+	aeRuleAnimationSelect::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

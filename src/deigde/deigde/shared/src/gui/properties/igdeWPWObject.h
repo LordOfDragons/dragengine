@@ -141,20 +141,20 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Object or NULL if not set. */
+	/** \brief Object or nullptr if not set. */
 	inline const igdeWObject::Ref &GetObject() const{ return pObject; }
 	
-	/** \brief Set object or NULL to clear. */
+	/** \brief Set object or nullptr to clear. */
 	void SetObject(igdeWObject *object);
 	
 	/** \brief Update widget after object changed outside. */
 	void UpdateObject();
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/** \brief Undo system or nullptr. */

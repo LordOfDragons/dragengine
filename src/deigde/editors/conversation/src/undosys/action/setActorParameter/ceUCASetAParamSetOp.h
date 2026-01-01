@@ -26,10 +26,10 @@
 #define _CEUCASETAPARAMSETOP_H_
 
 #include "../../../conversation/action/ceCASetActorParameter.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,16 +37,17 @@ class ceConversationTopic;
  * \brief Undo Action Set Actor Parameter Conversation Action Set Operator.
  */
 class ceUCASetAParamSetOp : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCASetAParamSetOp> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	ceCASetActorParameter::eOperators pOldOperator;
 	ceCASetActorParameter::eOperators pNewOperator;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCASetAParamSetOp> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

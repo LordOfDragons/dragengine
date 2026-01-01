@@ -42,8 +42,8 @@
 
 gdeUOCCameraSetImageDistance::gdeUOCCameraSetImageDistance(gdeObjectClass *objectClass,
 gdeOCCamera *camera, float newValue) :
-pObjectClass(NULL),
-pCamera(NULL)
+
+pCamera(nullptr)
 {
 	if(!objectClass || !camera){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetImageDistance::~gdeUOCCameraSetImageDistance(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

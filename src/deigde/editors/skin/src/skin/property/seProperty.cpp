@@ -42,7 +42,6 @@
 #include <dragengine/resources/video/deVideoManager.h>
 
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
-#include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 
 
 
@@ -55,7 +54,7 @@
 seProperty::seProperty(deEngine *engine, const char *name) :
 pEngine(engine),
 
-pTexture(NULL),
+pTexture(nullptr),
 
 pName(name),
 pValueType(evtColor),
@@ -65,10 +64,7 @@ pValue(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
 
 pVideoSharedTime(true),
-
-pNodeGroup(NULL),
-pEngNodeGroup(NULL),
-pActiveNodeGroup(NULL),
+pEngNodeGroup(nullptr),
 pNodeSelection(*this),
 pActiveNodeLayer(0),
 pNodeTileX(false),
@@ -82,14 +78,14 @@ pActive(false)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNodeGroup = new sePropertyNodeGroup(*engine);
+	pNodeGroup = sePropertyNodeGroup::Ref::New(*engine);
 	pNodeGroup->SetProperty(this);
 }
 
 seProperty::seProperty(const seProperty &property) :
 pEngine(property.pEngine),
 
-pTexture(NULL),
+pTexture(nullptr),
 
 pName(property.pName),
 pValueType(property.pValueType),
@@ -106,10 +102,7 @@ pEngImage(property.pEngImage),
 pPathVideo(property.pPathVideo),
 pEngVideo(property.pEngVideo),
 pVideoSharedTime(property.pVideoSharedTime),
-
-pNodeGroup(NULL),
-pEngNodeGroup(NULL),
-pActiveNodeGroup(NULL),
+pEngNodeGroup(nullptr),
 pNodeSelection(*this),
 pActiveNodeLayer(0),
 pNodeColor(property.pNodeColor),
@@ -125,18 +118,14 @@ pActive(false)
 	pMappedComponents[2] = property.pMappedComponents[2];
 	pMappedComponents[3] = property.pMappedComponents[3];
 	
-	pNodeGroup = new sePropertyNodeGroup(*property.pNodeGroup);
+	pNodeGroup = sePropertyNodeGroup::Ref::New(*property.pNodeGroup);
 	pNodeGroup->SetProperty(this);
 }
 
 seProperty::~seProperty(){
-	if(pActiveNodeGroup){
-		pActiveNodeGroup->FreeReference();
-	}
 	pNodeSelection.RemoveAll();
 	if(pNodeGroup){
-		pNodeGroup->SetProperty(NULL);
-		pNodeGroup->FreeReference();
+		pNodeGroup->SetProperty(nullptr);
 	}
 }
 
@@ -218,8 +207,8 @@ void seProperty::UpdateImage(){
 	
 	if(!pPathImage.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
-			image.TakeOver(pEngine->GetImageManager()->LoadImage(
-				pPathImage, pTexture->GetSkin()->GetDirectoryPath()));
+			image = pEngine->GetImageManager()->LoadImage(
+				pPathImage, pTexture->GetSkin()->GetDirectoryPath());
 			
 		}catch(const deException &e){
 			pTexture->GetSkin()->GetLogger()->LogException("Skin Editor", e);
@@ -244,8 +233,8 @@ void seProperty::UpdateVideo(){
 	
 	if(!pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
-			video.TakeOver(pEngine->GetVideoManager()->LoadVideo(
-				pPathVideo, pTexture->GetSkin()->GetDirectoryPath(), false));
+			video = pEngine->GetVideoManager()->LoadVideo(
+				pPathVideo, pTexture->GetSkin()->GetDirectoryPath(), false);
 			
 		}catch(const deException &e){
 			pTexture->GetSkin()->GetLogger()->LogException("Skin Editor", e);
@@ -290,12 +279,8 @@ void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
 	
 	pNodeSelection.RemoveAll();
 	
-	pNodeGroup->SetProperty(NULL);
-	pNodeGroup->FreeReference();
-	
+	pNodeGroup->SetProperty(nullptr);
 	pNodeGroup = nodeGroup;
-	
-	nodeGroup->AddReference();
 	nodeGroup->SetProperty(this);
 	
 	nodeGroup->NotifyChanged();
@@ -321,13 +306,11 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 	
 	if(pActiveNodeGroup){
 		pActiveNodeGroup->SetActiveGroup(false);
-		pActiveNodeGroup->FreeReference();
 	}
 	
 	pActiveNodeGroup = node;
 	
 	if(node){
-		node->AddReference();
 		node->SetActiveGroup(true);
 	}
 	
@@ -428,8 +411,10 @@ void seProperty::UpdateResources(){
 	pNodeGroup->UpdateResources();
 }
 
-void seProperty::InitDefaults(const igdeTexturePropertyList &knownPropertyList){
-	const igdeTextureProperty * const knownProperty = knownPropertyList.GetNamed(pName);
+void seProperty::InitDefaults(const igdeTextureProperty::List &knownPropertyList){
+	const igdeTextureProperty * const knownProperty = knownPropertyList.FindOrDefault([&](const igdeTextureProperty &p){
+		return p.GetName() == pName;
+	});
 	if(!knownProperty){
 		return;
 	}

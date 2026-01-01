@@ -36,6 +36,10 @@
  * State Manipulator Rule Panel.
  */
 class aeWPAPanelRuleStateManipulator : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleStateManipulator> Ref;
+	
+	
 private:
 	igdeEditVector::Ref pEditMinPos;
 	igdeEditVector::Ref pEditMaxPos;

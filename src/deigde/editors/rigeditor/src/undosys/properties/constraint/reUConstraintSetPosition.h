@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigConstraint;
  * \brief Set constraint position undo action.
  */
 class reUConstraintSetPosition : public igdeUndo{
+public:
+	typedef deTObjectReference<reUConstraintSetPosition> Ref;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUConstraintSetPosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

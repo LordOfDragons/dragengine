@@ -25,7 +25,7 @@
 #ifndef _MECLSNAPPOINT_H_
 #define _MECLSNAPPOINT_H_
 
-#include "../world/object/meObjectList.h"
+#include "../world/object/meObject.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
@@ -57,7 +57,7 @@ private:
 	meObject *pTargetObject;
 	const igdeGDCSnapPoint *pTargetSnapPoint;
 	
-	meObjectList pIgnoreObjects;
+	meObject::List pIgnoreObjects;
 	
 	
 	
@@ -105,13 +105,13 @@ public:
 	/** \brief Distance between source point and target snap point. */
 	inline float GetDistance() const{ return pDistance; }
 	
-	/** \brief Source snap point or \em NULL to use object position. */
+	/** \brief Source snap point or \em nullptr to use object position. */
 	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{ return pSourceSnapPoint; }
 	
-	/** \brief Target object or \em NULL if not set. */
+	/** \brief Target object or \em nullptr if not set. */
 	inline meObject *GetTargetObject() const{ return pTargetObject; }
 	
-	/** \brief Target snap point or \em NULL if not set. */
+	/** \brief Target snap point or \em nullptr if not set. */
 	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{ return pTargetSnapPoint; }
 	
 	

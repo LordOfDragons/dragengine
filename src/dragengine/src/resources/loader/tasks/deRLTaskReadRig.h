@@ -34,6 +34,11 @@
  * \brief Read rig resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadRig : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadRig> Ref;
+	
+	
 private:
 	deRig::Ref pRig;
 	bool pSucceeded;

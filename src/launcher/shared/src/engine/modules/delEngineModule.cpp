@@ -31,6 +31,7 @@
 #include "../../delLauncher.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
@@ -68,7 +69,7 @@ pDescription(decUnicodeString::NewFromUTF8(module.GetDescription())),
 pAuthor(decUnicodeString::NewFromUTF8(module.GetAuthor())),
 pVersion(module.GetVersion()),
 pDirName(module.GetDirectoryName()),
-pPattern(module.GetPatternList().Join(",")),
+pPattern(DEJoin(module.GetPatternList(), ",")),
 pPriority(module.GetPriority()),
 pIsFallback(module.GetIsFallback()),
 pStatus(emsNotTested),
@@ -176,7 +177,7 @@ void delEngineModule::CalcSizeAndHashes(delLauncher &launcher){
 	
 	try{
 		if(decPath::IsNativePathAbsolute(pLibFileName)){
-			reader.TakeOver(new decDiskFileReader(pLibFileName));
+			reader = decDiskFileReader::Ref::New(pLibFileName);
 			
 		}else{
 			path.SetFromUnix("/engine/lib/modules");
@@ -184,7 +185,7 @@ void delEngineModule::CalcSizeAndHashes(delLauncher &launcher){
 			path.AddUnixPath(pDirName);
 			path.AddComponent(pVersion);
 			path.AddUnixPath(pLibFileName);
-			reader.TakeOver(launcher.GetVFS()->OpenFileForReading(path));
+			reader = launcher.GetVFS()->OpenFileForReading(path);
 		}
 		
 		pLibFileSizeIs = reader->GetLength();

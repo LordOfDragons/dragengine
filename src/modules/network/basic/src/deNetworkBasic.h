@@ -37,7 +37,6 @@
 class debnSocket;
 class debnServer;
 class debnConnection;
-class deNetworkMessage;
 
 /*
 
@@ -175,7 +174,7 @@ private:
 	debnSocket *pTailSocket;
 	
 	// sending and receiving
-	deNetworkMessage *pDatagram;
+	deNetworkMessage::Ref pDatagram;
 	debnAddress pAddressReceive;
 	deNetworkMessage::Ref pSharedSendDatagram;
 	decBaseFileWriter::Ref pSharedSendDatagramWriter;
@@ -219,7 +218,7 @@ public:
 	inline debnConfiguration &GetConfiguration(){ return pConfiguration; }
 	inline const debnConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	inline deNetworkMessage *GetSharedSendDatagram() const{ return pSharedSendDatagram; }
+	inline const deNetworkMessage::Ref &GetSharedSendDatagram() const{ return pSharedSendDatagram; }
 	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{ return pSharedSendDatagramWriter; }
 	
 	/** Register a connection. */

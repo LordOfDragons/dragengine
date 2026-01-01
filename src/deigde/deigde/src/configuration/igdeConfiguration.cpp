@@ -508,15 +508,13 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if(!pPathConfigSystem.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/system");
 		pathDiskDir.SetFromNative(pPathConfigSystem);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory(pathRootDir, pathDiskDir, true)));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathConfigUser.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/user");
 		pathDiskDir.SetFromNative(pPathConfigUser);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory(pathRootDir, pathDiskDir, false)));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 	
 	// add the data directory. currently there exists only one which
@@ -527,16 +525,14 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if(!pPathShares.IsEmpty()){
 		pathRootDir.SetFromUnix("/data");
 		pathDiskDir.SetFromNative(pPathShares);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory(pathRootDir, pathDiskDir, false)));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 	
 	// add the logs directory. this is read-write
 	if(!pPathLogs.IsEmpty()){
 		pathRootDir.SetFromUnix("/logs");
 		pathDiskDir.SetFromNative(pPathLogs);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory(pathRootDir, pathDiskDir, false)));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 }
 
@@ -556,7 +552,6 @@ void igdeConfiguration::LoadConfiguration(){
 	igdeConfigurationXML configXML(pWindowMain.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	deLogger &logger = *pWindowMain.GetLogger();
-	decBaseFileReader *reader = NULL;
 	decPath pathFile;
 	
 	// read the system wide config file if existing
@@ -564,19 +559,8 @@ void igdeConfiguration::LoadConfiguration(){
 	
 	if(vfs.ExistsFile(pathFile)){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
-			 logger.LogInfo(LOGSOURCE, "Reading system configuration file");
-			try{
-				reader = vfs.OpenFileForReading(pathFile);
-				configXML.ReadFromFile(*reader, *this);
-				
-				reader->FreeReference();
-				
-			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
-				throw;
-			}
+			logger.LogInfo(LOGSOURCE, "Reading system configuration file");
+			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 			
 		}else{
 			logger.LogError(LOGSOURCE, "System configuration file is not a regular file");
@@ -593,20 +577,7 @@ void igdeConfiguration::LoadConfiguration(){
 	if(vfs.ExistsFile(pathFile)){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfo(LOGSOURCE, "Reading user configuration file");
-			reader = NULL;
-			
-			try{
-				reader = vfs.OpenFileForReading(pathFile);
-				configXML.ReadFromFile(*reader, *this);
-				
-				reader->FreeReference();
-				
-			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
-				throw;
-			}
+			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 			
 		}else{
 			logger.LogError(LOGSOURCE, "User configuration file is not a regular file");
@@ -622,7 +593,6 @@ void igdeConfiguration::SaveConfiguration(){
 	igdeConfigurationXML configXML(pWindowMain.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	deLogger &logger = *pWindowMain.GetLogger();
-	decBaseFileWriter *writer = NULL;
 	decPath pathFile;
 	
 	pathFile.SetFromUnix(FILE_IGDE_CONFIG_USER);
@@ -630,15 +600,8 @@ void igdeConfiguration::SaveConfiguration(){
 		logger.LogInfo(LOGSOURCE, "Writing user configuration file");
 		
 		try{
-			writer = vfs.OpenFileForWriting(pathFile);
-			configXML.WriteToFile(*writer, *this);
-			
-			writer->FreeReference();
-			
+			configXML.WriteToFile(vfs.OpenFileForWriting(pathFile), *this);
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"

@@ -25,7 +25,11 @@
 #ifndef _IGDEGDPREVIEWMANAGER_H_
 #define _IGDEGDPREVIEWMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "creators/igdeGDPCObjectClass.h"
+#include "creators/igdeGDPCSkin.h"
+#include "creators/igdeGDPCSky.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -48,7 +52,7 @@ class decPath;
  * Creating preview versions of images is done asynchronous. Once
  * created it is stored on disc for later retrieval. Calling the
  * GetImage method returns the image if already preloaded. If the
- * image does not yet exist NULL is returned. In this case the
+ * image does not yet exist nullptr is returned. In this case the
  * caller has to set the create image placeholder image and call
  * CreateImage method using a listener. Once the image is loaded
  * and ready the listener is called with the created image. The
@@ -68,9 +72,9 @@ private:
 	deImage::Ref pImageFailed;
 	int pImageSize;
 	
-	decObjectList pCreatorsObjectClass;
-	decObjectList pCreatorsSkin;
-	decObjectList pCreatorsSky;
+	decTObjectOrderedSet<igdeGDPCObjectClass> pCreatorsObjectClass;
+	decTObjectOrderedSet<igdeGDPCSkin> pCreatorsSkin;
+	decTObjectOrderedSet<igdeGDPCSky> pCreatorsSky;
 	bool pHasCreators;
 	
 	
@@ -116,7 +120,7 @@ public:
 	
 	
 	/** \brief Image for creating preview in progress. */
-	inline deImage *GetImageCreating() const{ return pImageCreating; }
+	inline const deImage::Ref &GetImageCreating() const{ return pImageCreating; }
 	
 	
 	
@@ -140,7 +144,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for object class loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewObjectClass(igdeGDClass *gdclass) const;
 	
@@ -154,7 +158,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for skin loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewSkin(igdeGDSkin *gdskin) const;
 	
@@ -168,7 +172,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for sky loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewSky(igdeGDSky *gdsky) const;
 	

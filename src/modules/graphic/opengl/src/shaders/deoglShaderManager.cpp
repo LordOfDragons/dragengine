@@ -41,6 +41,7 @@
 #include "../renderthread/deoglRTLogger.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -160,7 +161,7 @@ void deoglShaderManager::ValidateCaches(){
 	// but running on the same machine with the same operating system and the same file system
 	// usually returns identical file listings. in the worst case the cache is invalidate when
 	// it could be kept valid
-	const decString validationString(pCacheValidationString.Join("\n"));
+	const decString validationString(DEJoin(pCacheValidationString, "\n"));
 	
 	// if the validation string differs from the cached validation string drop all
 	// cached shaders
@@ -170,8 +171,7 @@ void deoglShaderManager::ValidateCaches(){
 	if(vfs.ExistsFile(pathValidationString)){
 		decString oldValidationString;
 		try{
-			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading(pathValidationString)));
+			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(pathValidationString));
 			const int size = reader->GetLength();
 			oldValidationString.Set(' ', size);
 			reader->Read((void*)oldValidationString.GetString(), size);
@@ -196,8 +196,7 @@ void deoglShaderManager::ValidateCaches(){
 	
 	// write validation string
 	try{
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathValidationString))
-			->WriteString(validationString);
+		vfs.OpenFileForWriting(pathValidationString)->WriteString(validationString);
 		
 	}catch(const deException &){
 		logger.LogInfo("ShaderManager Cache: Writing validation failed");
@@ -364,8 +363,7 @@ const deoglShaderDefines &defines, cGetProgramListener *listener){
 	}
 	
 	try{
-		compiling = new cCompileProgram(*this, deoglShaderProgram::Ref::New(
-			pCreateProgram(sources, defines)));
+		compiling = new cCompileProgram(*this, pCreateProgram(sources, defines));
 		compiling->AddListener(listener);
 		
 	}catch(const deException &e){
@@ -574,7 +572,7 @@ const char *name, const deoglShaderDefines &defines){
 	}
 	
 	const deoglShaderProgramUnit::Ref unit(deoglShaderProgramUnit::Ref::New(
-		new deoglShaderProgramUnit(pRenderThread, sources, defines)));
+		pRenderThread, sources, defines));
 	pProgramUnits.Add(unit);
 	return unit;
 }
@@ -613,7 +611,7 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines) const{
 deoglShaderProgram::Ref deoglShaderManager::pCreateProgram(
 const deoglShaderSources *sources, const deoglShaderDefines &defines){
 	const deoglShaderProgram::Ref program(deoglShaderProgram::Ref::New(
-		new deoglShaderProgram(pRenderThread, sources, defines)));
+		pRenderThread, sources, defines));
 	
 	pResolveProgramUnitsLocked(program);
 	
@@ -668,8 +666,8 @@ void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
 				pRenderThread.GetLogger().LogInfoFormat("Loading shader unit source code %s...", filename);
 			}*/
 			
-			const deoglShaderUnitSourceCode::Ref sources(deoglShaderUnitSourceCode::Ref::New(
-				new deoglShaderUnitSourceCode(ogl, path)));
+			const deoglShaderUnitSourceCode::Ref sources(
+				deoglShaderUnitSourceCode::Ref::New(ogl, path));
 			
 			DEASSERT_FALSE(pUnitSourceCodes.Has(sources->GetName()))
 			
@@ -712,10 +710,10 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 				pRenderThread.GetLogger().LogInfoFormat("Loading includable source %s...", filename);
 			}*/
 			
-			reader.TakeOver(vfs.OpenFileForReading(path));
+			reader = vfs.OpenFileForReading(path);
 			const int length = reader->GetLength();
 			source.Set(' ', length);
-			reader->Read((char*)source.GetString(), length);
+			reader->Read(source.GetMutableString(), length);
 			pIncludableSources.SetAt(filename, source);
 		}
 		
@@ -756,11 +754,9 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 				pRenderThread.GetLogger().LogInfoFormat("Loading shader %s...", filename);
 			}*/
 			
-			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading(path)));
+			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 			
-			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(
-				new deoglShaderSources(logger, reader)));
+			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(logger, reader));
 			
 			if(pSources.Has(sources->GetName())){
 				ogl.LogErrorFormat("Shader file '%s' defines a shader named '%s' but"

@@ -63,7 +63,7 @@ dexsiDevice(module, esX11)
 	SetDisplayImages("mouse");
 	
 	// x11 does not provide a way to figure out mouse configuration. using XInput2 should help
-	const dexsiDeviceAxis::Ref axisX(dexsiDeviceAxis::Ref::NewWith(module));
+	const dexsiDeviceAxis::Ref axisX(dexsiDeviceAxis::Ref::New(module));
 	AddAxis(axisX);
 	axisX->SetIndex(0);
 	axisX->SetAbsolute(false);
@@ -72,7 +72,7 @@ dexsiDevice(module, esX11)
 	axisX->SetType(deInputDeviceAxis::eatMouse);
 	axisX->SetDisplayImages("mouseX");
 	
-	const dexsiDeviceAxis::Ref axisY(dexsiDeviceAxis::Ref::NewWith(module));
+	const dexsiDeviceAxis::Ref axisY(dexsiDeviceAxis::Ref::New(module));
 	AddAxis(axisY);
 	axisY->SetIndex(1);
 	axisY->SetAbsolute(false);
@@ -81,7 +81,7 @@ dexsiDevice(module, esX11)
 	axisY->SetType(deInputDeviceAxis::eatMouse);
 	axisY->SetDisplayImages("mouseY");
 	
-	const dexsiDeviceAxis::Ref wheelY(dexsiDeviceAxis::Ref::NewWith(module));
+	const dexsiDeviceAxis::Ref wheelY(dexsiDeviceAxis::Ref::New(module));
 	AddAxis(wheelY);
 	wheelY->SetIndex(2);
 	wheelY->SetAbsolute(false);
@@ -92,7 +92,7 @@ dexsiDevice(module, esX11)
 	wheelY->SetDisplayImages("mouseY");
 	wheelY->SetDisplayText("Wheel");
 	
-	const dexsiDeviceAxis::Ref wheelX(dexsiDeviceAxis::Ref::NewWith(module));
+	const dexsiDeviceAxis::Ref wheelX(dexsiDeviceAxis::Ref::New(module));
 	AddAxis(wheelX);
 	wheelX->SetIndex(3);
 	wheelX->SetAbsolute(false);
@@ -103,32 +103,32 @@ dexsiDevice(module, esX11)
 	wheelX->SetDisplayImages("mouseX");
 	wheelX->SetDisplayText("Wheel X");
 	
-	const dexsiDeviceButton::Ref buttonLeft(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref buttonLeft(dexsiDeviceButton::Ref::New(module));
 	AddButton(buttonLeft);
 	buttonLeft->SetID("left");
 	buttonLeft->SetName("Left");
 	buttonLeft->SetDisplayImages("mouseL");
 	
-	const dexsiDeviceButton::Ref buttonRight(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref buttonRight(dexsiDeviceButton::Ref::New(module));
 	AddButton(buttonRight);
 	buttonRight->SetID("right");
 	buttonRight->SetName("Right");
 	buttonRight->SetDisplayImages("mouseR");
 	
-	const dexsiDeviceButton::Ref buttonMiddle(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref buttonMiddle(dexsiDeviceButton::Ref::New(module));
 	AddButton(buttonMiddle);
 	buttonMiddle->SetID("middle");
 	buttonMiddle->SetName("Middle");
 	buttonMiddle->SetDisplayImages("mouseM");
 	
-	const dexsiDeviceButton::Ref buttonBackward(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref buttonBackward(dexsiDeviceButton::Ref::New(module));
 	AddButton(buttonBackward);
 	buttonBackward->SetID("backward");
 	buttonBackward->SetName("Backward");
 	buttonBackward->SetDisplayImages("mouseX");
 	buttonBackward->SetDisplayText("B");
 	
-	const dexsiDeviceButton::Ref buttonForward(dexsiDeviceButton::Ref::NewWith(module));
+	const dexsiDeviceButton::Ref buttonForward(dexsiDeviceButton::Ref::New(module));
 	AddButton(buttonForward);
 	buttonForward->SetID("forward");
 	buttonForward->SetName("Forward");

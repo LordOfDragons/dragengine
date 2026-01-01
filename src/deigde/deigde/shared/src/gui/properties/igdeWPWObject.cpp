@@ -62,6 +62,8 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVector> Ref;
+	
 	cBaseEditVector(igdeWPWObject &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -78,10 +80,12 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
+	
 	cBaseAction(igdeWPWObject &panel, const char *text, const char *description) :
 	igdeAction(text, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pPanel.GetObject()){
 			OnAction(*pPanel.GetObject());
 		}
@@ -96,6 +100,8 @@ class cTextClass : public igdeTextFieldListener{
 	igdeWPWObject &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextClass> Ref;
+	
 	cTextClass(igdeWPWObject &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -112,8 +118,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetGDClassNew(newGDClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -128,6 +134,8 @@ class cActionSelectClass : public cBaseAction{
 	igdeTextField &pTextField;
 	
 public:
+	typedef deTObjectReference<cActionSelectClass> Ref;
+	
 	cActionSelectClass(igdeWPWObject &panel, igdeTextField &textField) :
 	cBaseAction(panel, "...", "Brings up a dialog to select the object class."),
 	pTextField(textField){}
@@ -145,8 +153,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetGDClassNew(gdClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -160,6 +168,8 @@ public:
 
 class cEditPosition : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
+	
 	cEditPosition(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -168,8 +178,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetPositionNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -182,6 +192,8 @@ public:
 
 class cEditOrientation : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditOrientation> Ref;
+	
 	cEditOrientation(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -191,8 +203,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetOrientationNew(orientation);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -205,6 +217,8 @@ public:
 
 class cEditScaling : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditScaling> Ref;
+	
 	cEditScaling(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -213,8 +227,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetScalingNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -228,12 +242,14 @@ public:
 
 class cCheckVisible : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckVisible> Ref;
+	
 	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "Visible", "Object is visible"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetVisibleNew(!object.GetVisible());
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -246,13 +262,15 @@ public:
 
 class cCheckDynamicCollider : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckDynamicCollider> Ref;
+	
 	cCheckDynamicCollider(igdeWPWObject &panel) :
 	cBaseAction(panel, "Dynamic Collider", "Object is attached using a dynamic collider"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetDynamicColliderNew(!object.GetDynamicCollider());
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -438,7 +456,7 @@ void igdeWPWObject::OnParameterChanged(igdeAction *action){
 void igdeWPWObject::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeWPWObject::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -451,22 +469,22 @@ void igdeWPWObject::pCreateContent(){
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Class:",
 		"Game definition class to use for the object.", frameLine);
 	helper.EditString(frameLine, "Path to the sky to use.",
-		pEditClass, new cTextClass(*this));
-	helper.Button(frameLine, pBtnClass, new cActionSelectClass(*this, pEditClass), true);
+		pEditClass, cTextClass::Ref::New(*this));
+	helper.Button(frameLine, pBtnClass, cActionSelectClass::Ref::New(*this, pEditClass));
 	
 	helper.EditVector(form, "Position:", "Position of object in meters.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(form, "Orientation:", "Orientation of object in euler coordinates.",
-		pEditOrientation, new cEditOrientation(*this));
+		pEditOrientation, cEditOrientation::Ref::New(*this));
 	helper.EditVector(form, "Scaling:", "Scaling of object.",
-		pEditScaling, new cEditScaling(*this));
+		pEditScaling, cEditScaling::Ref::New(*this));
 	
-	helper.CheckBox(form, pChkVisible, new cCheckVisible(*this), true);
-	helper.CheckBox(form, pChkDynamicCollider, new cCheckDynamicCollider(*this), true);
+	helper.CheckBox(form, pChkVisible, cCheckVisible::Ref::New(*this));
+	helper.CheckBox(form, pChkDynamicCollider, cCheckDynamicCollider::Ref::New(*this));
 }

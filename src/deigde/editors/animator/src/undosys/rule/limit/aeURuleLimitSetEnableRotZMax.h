@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -35,13 +35,14 @@ class aeRuleLimit;
  * Undo action rule limitor toggle enable z rotation.
  */
 class aeURuleLimitSetEnableRotZMax : public igdeUndo{
-private:
-	aeRuleLimit *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleLimitSetEnableRotZMax> Ref;
 	
+	
+private:
+	aeRuleLimit::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

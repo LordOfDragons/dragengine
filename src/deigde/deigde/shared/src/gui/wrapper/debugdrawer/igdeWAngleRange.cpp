@@ -49,14 +49,15 @@ igdeWAngleRange::igdeWAngleRange(){
 	pRadius = 0.5f;
 	pVisible = true;
 	
-	pDDSDisk.SetEdgeColor(pColorDiskLine);
-	pDDSDisk.SetFillColor(pColorDiskArea);
+	pDDSDisk = igdeWDebugDrawerShape::Ref::New();
+	pDDSDisk->SetEdgeColor(pColorDiskLine);
+	pDDSDisk->SetFillColor(pColorDiskArea);
 	
 	pRebuildShape();
 }
 
 igdeWAngleRange::~igdeWAngleRange(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 }
 
 
@@ -65,7 +66,7 @@ igdeWAngleRange::~igdeWAngleRange(){
 ///////////////
 
 void igdeWAngleRange::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
-	pDDSDisk.SetParentDebugDrawer(debugDrawer);
+	pDDSDisk->SetParentDebugDrawer(debugDrawer);
 }
 
 
@@ -73,14 +74,14 @@ void igdeWAngleRange::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 void igdeWAngleRange::SetPosition(const decVector &position){
 	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
-		pDDSDisk.SetPosition(position);
+		pDDSDisk->SetPosition(position);
 	}
 }
 
 void igdeWAngleRange::SetOrientation(const decQuaternion &orientation){
 	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
-		pDDSDisk.SetOrientation(orientation);
+		pDDSDisk->SetOrientation(orientation);
 	}
 }
 
@@ -89,14 +90,14 @@ void igdeWAngleRange::SetOrientation(const decQuaternion &orientation){
 void igdeWAngleRange::SetDiskLineColor(const decColor &color){
 	if(!color.IsEqualTo(pColorDiskLine)){
 		pColorDiskLine = color;
-		pDDSDisk.SetEdgeColor(pColorDiskLine);
+		pDDSDisk->SetEdgeColor(pColorDiskLine);
 	}
 }
 
 void igdeWAngleRange::SetDiskAreaColor(const decColor &color){
 	if(!color.IsEqualTo(pColorDiskArea)){
 		pColorDiskArea = color;
-		pDDSDisk.SetFillColor(pColorDiskArea);
+		pDDSDisk->SetFillColor(pColorDiskArea);
 	}
 }
 
@@ -133,7 +134,7 @@ void igdeWAngleRange::SetRadius(float radius){
 void igdeWAngleRange::SetVisible(bool visible){
 	if(visible != pVisible){
 		pVisible = visible;
-		pDDSDisk.SetVisible(visible);
+		pDDSDisk->SetVisible(visible);
 	}
 }
 
@@ -143,7 +144,7 @@ void igdeWAngleRange::SetVisible(bool visible){
 //////////////////////
 
 void igdeWAngleRange::pRebuildShape(){
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	float meterPerPoint = 0.1f;
 	float angle, angleDiff;
 	float circumfence;
@@ -161,11 +162,13 @@ void igdeWAngleRange::pRebuildShape(){
 	pointCount = (int)ceilf(circumfence / meterPerPoint);
 	
 	// create the disk
-	pDDSDisk.RemoveAllFaces();
+	pDDSDisk->RemoveAllFaces();
+	if(pointCount == 0){
+		return;
+	}
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if(!ddFace) DETHROW(deeOutOfMemory);
 		
 		ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		
@@ -183,8 +186,8 @@ void igdeWAngleRange::pRebuildShape(){
 			ddFace->AddVertex(decVector());
 		}
 		
-		pDDSDisk.AddFace(ddFace);
-		ddFace = NULL;
+		pDDSDisk->AddFace(ddFace);
+		ddFace = nullptr;
 		
 	}catch(const deException &){
 		if(ddFace){

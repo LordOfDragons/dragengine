@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeCategory;
+#include "../../../../gamedef/category/gdeCategory.h"
 
 
 /**
@@ -35,7 +35,7 @@ class gdeCategory;
  */
 class gdeWPSTIMCategory : public gdeWPSTreeItemModel{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -53,10 +53,12 @@ protected:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMCategory> Ref;
+
 	/** \brief Management */
 	/*@{*/
 	/** \brief Category. */
-	inline gdeCategory *GetCategory() const{ return pCategory; }
+	inline const gdeCategory::Ref &GetCategory() const{ return pCategory; }
 	
 	
 	

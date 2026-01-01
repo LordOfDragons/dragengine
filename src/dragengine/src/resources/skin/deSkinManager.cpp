@@ -94,30 +94,29 @@ deSkin *deSkinManager::GetSkinWith(deVirtualFileSystem *vfs, const char *filenam
 	return skin && !skin->GetOutdated() ? skin : NULL;
 }
 
-deSkin *deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
+deSkin::Ref deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
 	return CreateSkin(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder){
+deSkin::Ref deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deSkin *skin = NULL;
-	deSkin *findSkin;
+	deSkin::Ref skin;
 	
 	try{
 		// check if the skin with this filename already exists. skins with a zero
 		// length file name are considered unique and match no filename
 		if(strlen(filename) > 0){
-			findSkin = (deSkin*)pSkins.GetWithFilename(vfs, filename);
+			deSkin * const findSkin = (deSkin*)pSkins.GetWithFilename(vfs, filename);
 			if(findSkin && !findSkin->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create skin using the builder
-		skin = new deSkin(this, vfs, filename, decDateTime::GetSystemTime());
+		skin = deSkin::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildSkin(skin);
 		
 		// load into graphic system
@@ -130,28 +129,23 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating skin '%s' failed", filename);
-		if(skin){
-			skin->FreeReference();
-		}
 		throw;
 	}
 	
 	return skin;
 }
 
-deSkin *deSkinManager::LoadSkin(const char *filename, const char *basePath){
+deSkin::Ref deSkinManager::LoadSkin(const char *filename, const char *basePath){
 	return LoadSkin(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deSkin::Ref deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
 	deBaseSkinModule *module;
+	deSkin::Ref skin;
 	decPath path;
-	deSkin *skin = NULL;
-	deSkin *findSkin;
 	
 	try{
 		// locate file
@@ -162,17 +156,16 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the skin with this filename already exists
-		findSkin = (deSkin*)pSkins.GetWithFilename(vfs, path.GetPathUnix());
+		deSkin *findSkin = (deSkin*)pSkins.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findSkin && findSkin->GetModificationTime() != modificationTime){
 			LogInfoFormat("Skin '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findSkin->MarkOutdated();
-			findSkin = NULL;
+			findSkin = nullptr;
 		}
 		
 		if(findSkin){
-			findSkin->AddReference();
 			skin = findSkin;
 			
 		}else{
@@ -181,15 +174,10 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 				deModuleSystem::emtSkin, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			
-			skin = new deSkin(this, vfs, path.GetPathUnix(), modificationTime);
+			skin = deSkin::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			skin->SetAsynchron(false);
 			
-			module->LoadSkin(*fileReader, *skin);
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
+			module->LoadSkin(OpenFileForReading(*vfs, path.GetPathUnix()), *skin);
 			
 			// load resources in properties
 			LoadPropertyResources(*skin);
@@ -206,12 +194,6 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading skin '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
 		throw;
 	}
 	
@@ -221,47 +203,39 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 	return skin;
 }
 
-deSkin *deSkinManager::LoadDefault(){
-	deSkin *skin = NULL;
-	deSkin * findSkin = NULL;
-	deSkinTexture * skinTex = NULL;
+deSkin::Ref deSkinManager::LoadDefault(){
 	deSkinPropertyImage * propDiff = NULL;
-	deImage::Ref imgNoTex;
+	deSkinTexture * skinTex = NULL;
+	deSkin::Ref skin;
 	
 	try{
-		findSkin = (deSkin*)pSkins.GetWithFilename(GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN);
+		deSkin * const findSkin = (deSkin*)pSkins.GetWithFilename(
+			GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN);
 		
 		if(findSkin){
 			if(!findSkin->GetPeerGraphic()){
 				GetGraphicSystem()->LoadSkin(findSkin);
 			}
-			findSkin->AddReference();
 			skin = findSkin;
 			
 		}else{
-			// fetch default image
-			imgNoTex.TakeOver(GetImageManager()->LoadDefault());
-			
-			// load skin
-			skin = new deSkin(this, GetEngine()->GetVirtualFileSystem(),
+			skin = deSkin::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
 				SKIN_NO_SKIN, decDateTime::GetSystemTime());
 			skinTex = new deSkinTexture("skin");
 			propDiff = new deSkinPropertyImage("color");
 			
-			propDiff->SetImage(imgNoTex); // attention!+1 reference
+			propDiff->SetImage(GetImageManager()->LoadDefault());
 			
 			skinTex->AddProperty(propDiff);
-			propDiff = NULL;
+			propDiff = nullptr;
 			
 			skin->AddTexture(skinTex);
-			skinTex = NULL;
+			skinTex = nullptr;
 			
-			// load into graphic system
 			GetGraphicSystem()->LoadSkin(skin);
 			GetAudioSystem()->LoadSkin(skin);
 			GetPhysicsSystem()->LoadSkin(skin);
 			
-			// add skin
 			pSkins.Add(skin);
 		}
 		
@@ -271,9 +245,6 @@ deSkin *deSkinManager::LoadDefault(){
 		}
 		if(skinTex){
 			delete skinTex;
-		}
-		if(skin){
-			skin->FreeReference();
 		}
 		throw;
 	}

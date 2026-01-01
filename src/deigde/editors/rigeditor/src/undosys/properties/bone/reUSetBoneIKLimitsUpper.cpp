@@ -36,11 +36,9 @@
 ////////////////////////////
 
 reUSetBoneIKLimitsUpper::reUSetBoneIKLimitsUpper(reRigBone *bone, const decVector &ikLimitsUpper){
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldIKLimitsUpper = bone->GetIKLimitsUpper();
 	pNewIKLimitsUpper = ikLimitsUpper;
 	
@@ -76,5 +74,4 @@ void reUSetBoneIKLimitsUpper::Redo(){
 //////////////////////
 
 void reUSetBoneIKLimitsUpper::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

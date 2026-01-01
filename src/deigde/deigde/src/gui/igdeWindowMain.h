@@ -27,8 +27,10 @@
 
 #include "../configuration/igdeConfiguration.h"
 #include "../configuration/igdeConfigurationLocal.h"
+#include "../template/igdeTemplate.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -46,8 +48,10 @@
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
@@ -60,19 +64,13 @@
 class igdeEditorModuleManager;
 class igdeEnvironmentIGDE;
 class igdeGDPreviewManager;
-class igdeGameProject;
 class igdeLoadSaveSystem;
 class igdeTaskSyncGameDefinition;
-class igdeTemplateList;
-class igdeTexturePropertyList;
 class igdeSharedFontList;
 class igdeUIHelper;
 
 class deException;
 class decTimer;
-class igdeGameDefinition;
-class igdeGameDefinitionList;
-class decUnicodeStringList;
 
 
 
@@ -80,6 +78,11 @@ class decUnicodeStringList;
  * IGDE Main Window.
  */
 class igdeWindowMain : public igdeMainWindow{
+public:
+	typedef deTObjectReference<igdeWindowMain> Ref;
+	typedef decTObjectDictionary<igdeGuiTheme> GuiThemeMap;
+	
+	
 private:
 	igdeEnvironmentIGDE &pEnvironmentIGDE;
 	igdeConfiguration pConfiguration;
@@ -87,16 +90,16 @@ private:
 	igdeEditorModuleManager *pModuleManager;
 	igdeLoadSaveSystem *pLoadSaveSystem;
 	igdeGDPreviewManager *pGDPreviewManager;
-	igdeTexturePropertyList *pTexturePropertyList;
+	igdeTextureProperty::List pTexturePropertyList;
 	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLogger::Ref pWindowLogger;
 	deVirtualFileSystem::Ref pVFS;
-	igdeTemplateList *pTemplates;
-	igdeGameDefinitionList *pSharedGameDefinitions;
-	igdeGameDefinition *pIGDEGameDefinition;
-	igdeGameProject *pGameProject;
+	igdeTemplate::List pTemplates;
+	igdeGameDefinition::List pSharedGameDefinitions;
+	igdeGameDefinition::Ref pIGDEGameDefinition;
+	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
-	decObjectDictionary pGuiThemes;
+	GuiThemeMap pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
 	deRig::Ref pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
@@ -211,36 +214,39 @@ public:
 	/** Retrieves the game definition preview manager. */
 	inline igdeGDPreviewManager *GetGDPreviewManager() const{ return pGDPreviewManager; }
 	/** Retrieves the texture property list. */
-	inline igdeTexturePropertyList *GetTexturePropertyList() const{ return pTexturePropertyList; }
+	inline const igdeTextureProperty::List &GetTexturePropertyList() const{ return pTexturePropertyList; }
 	/** Retrieves the history logger. */
-	inline igdeLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
+	inline const igdeLoggerHistory::Ref &GetLoggerHistory() const{ return pLoggerHistory; }
 	
 	/** Virtual file system. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVFS; }
 	
 	/** Project templates. */
-	inline igdeTemplateList &GetTemplates() const{ return *pTemplates; }
+		/** \brief Templates. */
+	inline igdeTemplate::List &GetTemplates(){ return pTemplates; }
+	inline const igdeTemplate::List &GetTemplates() const{ return pTemplates; }
 	
 	/** Shared game definitions. */
-	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{ return *pSharedGameDefinitions; }
+	inline igdeGameDefinition::List &GetSharedGameDefinitions(){ return pSharedGameDefinitions; }
+	inline const igdeGameDefinition::List &GetSharedGameDefinitions() const{ return pSharedGameDefinitions; }
 	
 	/** Retrieves the igde game definition. */
-	inline igdeGameDefinition *GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
 	
-	/** Logger window or NULL if not visible. */
-	inline igdeWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
+	/** Logger window or nullptr if not visible. */
+	inline const igdeWindowLogger::Ref &GetWindowLogger() const{ return pWindowLogger; }
 	
-	/** Named GuiTheme or default if not found. */
-	igdeGuiTheme *GetGuiThemeNamed(const char *name);
+	/** Gui themes. */
+	inline const GuiThemeMap &GetGuiThemes() const{ return pGuiThemes; }
 	
 	/** Default GuiTheme. */
-	inline igdeGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
+	inline const igdeGuiTheme::Ref &GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
 	/** Shared font list. */
 	inline igdeSharedFontList &GetSharedFontList() const{ return *pSharedFontList; }
 	
 	/** Shared model collision rig. */
-	inline deRig *GetSharedModelCollisionRig() const{ return pSharedModelCollisionRig; }
+	inline const deRig::Ref &GetSharedModelCollisionRig() const{ return pSharedModelCollisionRig; }
 	
 	/** Resource loader. */
 	inline igdeResourceLoader &GetResourceLoader() const{ return *pResourceLoader; }
@@ -265,7 +271,7 @@ public:
 	bool ProcessCommandLine(const decUnicodeStringList &arguments);
 	
 	/** Retrieves the active game project. */
-	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
+	inline const igdeGameProject::Ref &GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
 	void SetGameProject(igdeGameProject *project);
 	/**
@@ -283,7 +289,7 @@ public:
 	void AddRecentGameProject(const char *filename);
 	
 	/** Create a new game definition. */
-	igdeGameDefinition *CreateNewGameDefinition();
+	igdeGameDefinition::Ref CreateNewGameDefinition();
 	
 	/** Displays an exception error. */
 	void DisplayException(const deException &exception);
@@ -315,34 +321,34 @@ public:
 	bool IsSyncGameDefTaskRunning() const;
 	
 	/** Retrieves the menu bar. */
-	inline igdeMenuBar *GetMenuBar() const{ return pMenuBar; }
+	inline const igdeMenuBar::Ref &GetMenuBar() const{ return pMenuBar; }
 	
 	/** Toolbar dock sites. */
-	inline igdeToolBarDock *GetDockSiteLeft() const{ return pToolBarDockLeft; }
-	inline igdeToolBarDock *GetDockSiteTop() const{ return pToolBarDockTop; }
-	inline igdeToolBarDock *GetDockSiteRight() const{ return pToolBarDockRight; }
-	inline igdeToolBarDock *GetDockSiteBottom() const{ return pToolBarDockBottom; }
+	inline const igdeToolBarDock::Ref &GetDockSiteLeft() const{ return pToolBarDockLeft; }
+	inline const igdeToolBarDock::Ref &GetDockSiteTop() const{ return pToolBarDockTop; }
+	inline const igdeToolBarDock::Ref &GetDockSiteRight() const{ return pToolBarDockRight; }
+	inline const igdeToolBarDock::Ref &GetDockSiteBottom() const{ return pToolBarDockBottom; }
 	
 	/** Content switcher. */
-	inline igdeSwitcher *GetContentSwitcher() const{ return pSwiContent; }
+	inline const igdeSwitcher::Ref &GetContentSwitcher() const{ return pSwiContent; }
 	
 	/** Game toolbar. */
-	inline igdeToolBar *GetToolBarGame() const{ return pTBGame; }
+	inline const igdeToolBar::Ref &GetToolBarGame() const{ return pTBGame; }
 	
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconApplication() const{ return pIconApplication; }
+	inline const igdeIcon::Ref &GetIconApplication() const{ return pIconApplication; }
 	
-	inline igdeIcon *GetIconGameNew() const{ return pIconGameNew; }
-	inline igdeIcon *GetIconGameOpen() const{ return pIconGameOpen; }
-	inline igdeIcon *GetIconGameSave() const{ return pIconGameSave; }
-	inline igdeIcon *GetIconGameSaveAs() const{ return pIconGameSaveAs; }
-	inline igdeIcon *GetIconGameExit() const{ return pIconGameExit; }
-	inline igdeIcon *GetIconGameReloadXMLElementClasses() const{ return pIconGameReloadXMLElementClasses; }
-	inline igdeIcon *GetIconSettingsIgde() const{ return pIconSettingsIGDE; }
-	inline igdeIcon *GetIconSettingsEngine() const{ return pIconSettingsEngine; }
-	inline igdeIcon *GetIconSettingsTexPropList() const{ return pIconSettingsTexPropList; }
+	inline const igdeIcon::Ref &GetIconGameNew() const{ return pIconGameNew; }
+	inline const igdeIcon::Ref &GetIconGameOpen() const{ return pIconGameOpen; }
+	inline const igdeIcon::Ref &GetIconGameSave() const{ return pIconGameSave; }
+	inline const igdeIcon::Ref &GetIconGameSaveAs() const{ return pIconGameSaveAs; }
+	inline const igdeIcon::Ref &GetIconGameExit() const{ return pIconGameExit; }
+	inline const igdeIcon::Ref &GetIconGameReloadXMLElementClasses() const{ return pIconGameReloadXMLElementClasses; }
+	inline const igdeIcon::Ref &GetIconSettingsIgde() const{ return pIconSettingsIGDE; }
+	inline const igdeIcon::Ref &GetIconSettingsEngine() const{ return pIconSettingsEngine; }
+	inline const igdeIcon::Ref &GetIconSettingsTexPropList() const{ return pIconSettingsTexPropList; }
 	
 	
 	
@@ -424,7 +430,7 @@ public:
 	 * 
 	 * \param[in] title Title of the unsaved documents dialog if shown.
 	 * \param[in] message Message of the unsaved documents dialog if shown.
-	 *                    Message is optional and can be \em NULL.
+	 *                    Message is optional and can be \em nullptr.
 	 * \returns \em true if user wants to continue the action or \em false to abort.
 	 */
 	bool RequestSaveDocuments(const char *title, const char* message);

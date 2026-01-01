@@ -140,7 +140,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries(sDataEleme
 deoglPropFieldCluster::deoglPropFieldCluster(deoglRPropFieldType &propFieldType) :
 pPropFieldType(propFieldType),
 pRenderThread(propFieldType.GetPropField().GetRenderThread()),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pInstances(NULL),
 pInstanceCount(0),
@@ -338,7 +338,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor(deoglSkinTexturePipeli
 	
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
+	deoglSkinState *skinState = nullptr;
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
@@ -446,7 +446,7 @@ void deoglPropFieldCluster::pPrepareTUCs(){
 	
 	if(skinTexture){
 		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
+		deoglSkinState *skinState = nullptr;
 		deoglTexUnitConfig unit[8];
 		
 		if(skinTexture->GetVariationU() || skinTexture->GetVariationV()){
@@ -513,9 +513,6 @@ void deoglPropFieldCluster::pUpdateTBOInstances(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOInstances));
-	if(!pVBOInstances){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOInstances));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, vboData, GL_STATIC_DRAW));
 	
@@ -537,9 +534,6 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	
 	if(!pVBOBendStates){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOBendStates));
-		if(!pVBOBendStates){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOBendStates));

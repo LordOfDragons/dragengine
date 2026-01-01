@@ -46,11 +46,9 @@ feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph *glyph, int newWidth){
 	pNewWidth = newWidth;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetWidth::~feUGlyphSetWidth(){
-	if(pGlyph) pGlyph->FreeReference();
 }
 
 

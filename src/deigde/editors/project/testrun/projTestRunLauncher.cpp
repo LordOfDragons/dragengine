@@ -176,32 +176,27 @@ void projTestRunLauncher::LocatePath(){
 }
 
 void projTestRunLauncher::CreateVFS(){
-	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
-	pVFS.TakeOver(new deVirtualFileSystem);
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// add configuration containers
 	if(!pPathConfigSystem.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/system");
 		pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		pVFS->AddContainer(container);
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathConfigUser.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/user");
 		pathDiskDir.SetFromNative(pPathConfigUser.GetString());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		pVFS->AddContainer(container);
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir));
 	}
 	
 	// add data directory which is the engine share directory
 	if(!pPathShares.IsEmpty()){
 		pathRootDir.SetFromUnix("/data");
 		pathDiskDir.SetFromNative(pPathShares.GetString());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		pVFS->AddContainer(container);
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir));
 	}
 }

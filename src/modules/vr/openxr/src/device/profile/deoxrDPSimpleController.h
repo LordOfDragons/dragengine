@@ -33,6 +33,8 @@
  */
 class deoxrDPSimpleController : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPSimpleController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

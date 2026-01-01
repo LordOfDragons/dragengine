@@ -62,25 +62,11 @@ deTouchSensor *deTouchSensorManager::GetRootTouchSensor() const{
 	return (deTouchSensor*)pTouchSensors.GetRoot();
 }
 
-deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
-	deTouchSensor *touchSensor = NULL;
-	
-	try{
-		touchSensor = new deTouchSensor(this);
-		if(!touchSensor) DETHROW(deeOutOfMemory);
-		
-		GetPhysicsSystem()->LoadTouchSensor(touchSensor);
-		GetScriptingSystem()->LoadTouchSensor(touchSensor);
-		
-		pTouchSensors.Add(touchSensor);
-		
-	}catch(const deException &){
-		if(touchSensor){
-			touchSensor->FreeReference();
-		}
-		throw;
-	}
-	
+deTouchSensor::Ref deTouchSensorManager::CreateTouchSensor(){
+	const deTouchSensor::Ref touchSensor(deTouchSensor::Ref::New(this));
+	GetPhysicsSystem()->LoadTouchSensor(touchSensor);
+	GetScriptingSystem()->LoadTouchSensor(touchSensor);
+	pTouchSensors.Add(touchSensor);
 	return touchSensor;
 }
 

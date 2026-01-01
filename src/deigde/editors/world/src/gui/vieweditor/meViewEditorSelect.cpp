@@ -66,12 +66,11 @@
 meViewEditorSelect::meViewEditorSelect(meView3D &view) :
 meViewEditorNavigation(view),
 pCLSelect(nullptr),
-pCLBubbleInfo(nullptr),
-pFontSize(nullptr)
+pCLBubbleInfo(nullptr)
 {
-	pColVol.TakeOver(view.GetEngine()->GetColliderManager()->CreateColliderVolume());
+	pColVol = view.GetEngine()->GetColliderManager()->CreateColliderVolume();
 	
-	pCanvasSelect.TakeOver(view.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+	pCanvasSelect = view.GetEngine()->GetCanvasManager()->CreateCanvasPaint();
 	pCanvasSelect->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasSelect->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
 	pCanvasSelect->SetLineColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
@@ -80,22 +79,22 @@ pFontSize(nullptr)
 	pCanvasSelect->SetVisible(false);
 	view.AddCanvas(pCanvasSelect);
 	
-	pInfoBubble.TakeOver(new meInfoBubble(view));
+	pInfoBubble = meInfoBubble::Ref::New(view);
 	
-	deFontManager &fontmgr = *view.GetEngine()->GetFontManager();
-	const deFont::Ref font(deFont::Ref::New(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/")));
-	pFontSize = font->PrepareSize(font->GetLineHeight());
+	igdeFont::sConfiguration fc;
+	view.GetEnvironment().GetApplicationFont(fc);
+	pFont = view.GetEnvironment().GetSharedFont(fc);
 	
-	pInfoBubbleText.TakeOver(view.GetEngine()->GetCanvasManager()->CreateCanvasText());
-	pInfoBubbleText->SetFont(font);
-	pInfoBubbleText->SetFontSize((float)font->GetLineHeight());
+	pInfoBubbleText = view.GetEngine()->GetCanvasManager()->CreateCanvasText();
+	pInfoBubbleText->SetFont(pFont->GetEngineFont());
+	pInfoBubbleText->SetFontSize((float)pFont->GetEngineFont()->GetLineHeight());
 	pInfoBubbleText->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	pInfoBubbleText->SetOrder(0.0f);
 	pInfoBubble->GetCanvasContent()->AddCanvas(pInfoBubbleText);
 	
 	try{
-		pCLSelect = new meCLSelect(*view.GetWorld());
-		pCLBubbleInfo = new meCLSelect(*view.GetWorld());
+		pCLSelect = new meCLSelect(view.GetWorld());
+		pCLBubbleInfo = new meCLSelect(view.GetWorld());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -256,11 +255,11 @@ void meViewEditorSelect::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 	}
 }
 
-class BuildSelectionListVisitor : public meCLHitList::Visitor{
+class BuildSelectionListVisitor : public decTVisitor<meCLHitListEntry>{
 public:
 	meWorldGuiParameters::eElementModes elementMode;
 	decStringList selectionList;
-	decObjectList selectionHitEntries;
+	meCLHitListEntry::List selectionHitEntries;
 	float rayDistance;
 	BuildSelectionListVisitor() = default;
 	
@@ -343,15 +342,19 @@ void meViewEditorSelect::OnLeftMouseButtonRelease(int x, int y, bool shift, bool
 			RayTestCollision(pCLSelect, pCLSelect->GetRayOrigin(), pCLSelect->GetRayDirection(),
 				decCollisionFilter(collisionCategory, collisionFilter));
 			
-			meCLHitList &hitList = pCLSelect->GetHitList();
-			if(hitList.GetEntryCount() > 0){
-				hitList.SortByDistance();
+			meCLHitListEntry::List &hitList = pCLSelect->GetHitList();
+			if(hitList.IsNotEmpty()){
+				hitList.SortAscending();
 				
-				if(hitList.GetEntryCount() == 1 || !control){
+				if(hitList.GetCount() == 1 || !control){
 					pCLSelect->RunAction(0);
 					
 				}else{
-					hitList.RemoveDuplicates();
+					hitList.RemoveIf([&](meCLHitListEntry &a){
+						return hitList.HasMatching([&](const meCLHitListEntry &b){
+							return &a != &b && a.IsSame(b);
+						});
+					});
 					
 					BuildSelectionListVisitor visitor;
 					visitor.elementMode = GetWorldGuiParameters().GetElementMode();
@@ -454,7 +457,7 @@ void meViewEditorSelect::pCleanUp(){
 	}
 }
 
-class BuildBubbleTextVisitor : public meCLHitList::Visitor{
+class BuildBubbleTextVisitor : public decTVisitor<meCLHitListEntry>{
 public:
 	meWorldGuiParameters::eElementModes elementMode;
 	decStringList lines;
@@ -473,7 +476,7 @@ public:
 					object->GetClassName().GetString(),
 					object->GetID().ToHexString().GetString(),
 					entry.GetDistance() * rayDistance);
-				lines.InsertAt(text, 0);
+				lines.Insert(text, 0);
 			}
 			break;
 			
@@ -483,7 +486,7 @@ public:
 				text.Format("%sShape: %.1f m",
 					shape.GetActive() ? "[A] " : shape.GetSelected() ? "[S] " : "",
 					entry.GetDistance() * rayDistance);
-				lines.InsertAt(text, 0);
+				lines.Insert(text, 0);
 			}
 			break;
 			
@@ -499,7 +502,7 @@ public:
 				text.Format("%s%s",
 					decal.GetActive() ? "[A] " : decal.GetSelected() ? "[S] " : "",
 					path.GetString());
-				lines.InsertAt(text, 0);
+				lines.Insert(text, 0);
 			}
 			break;
 			
@@ -509,24 +512,18 @@ public:
 				text.Format("%sNavSpace: %.1f m",
 					navspace.GetActive() ? "[A] " : navspace.GetSelected() ? "[S] " : "",
 					entry.GetDistance() * rayDistance);
-				lines.InsertAt(text, 0);
+				lines.Insert(text, 0);
 			}
 			break;
 		}
 	}
 	
 	decString GetText() const{
-		return lines.Join("\n");
+		return DEJoin(lines, "\n");
 	}
 	
 	void ReverseText(){
-		decStringList rev;
-		const int count = lines.GetCount();
-		int i;
-		for(i=count-1; i>=0; i--){
-			rev.Add(lines[i]);
-		}
-		lines = rev;
+		lines.Reverse();
 	}
 };
 
@@ -568,13 +565,13 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 	RayTestCollision(pCLBubbleInfo, rayPosition, rayDirection,
 		decCollisionFilter(collisionCategory, collisionFilter));
 	
-	meCLHitList &collected = pCLBubbleInfo->GetHitList();
-	if(collected.GetEntryCount() == 0){
+	meCLHitListEntry::List &collected = pCLBubbleInfo->GetHitList();
+	if(collected.IsEmpty()){
 		pInfoBubble->Hide();
 		return;
 	}
 	
-	collected.SortByDistance();
+	collected.SortAscending();
 	
 	BuildBubbleTextVisitor visitor;
 	visitor.rayDistance = guiparams.GetRectSelDistance();
@@ -582,26 +579,30 @@ void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
 	visitor.rayDistance = (float)guiparams.GetRectSelDistance();
 	
 	if(singleElement){
-		visitor.operator()(*collected.GetEntryAt(0));
+		visitor.operator()(collected.First());
 		
 	}else{
 		const int limit = 5;
-		collected.RemoveDuplicates();
+		collected.RemoveIf([&](meCLHitListEntry &a){
+			return collected.HasMatching([&](const meCLHitListEntry &b){
+				return &a != &b && a.IsSame(b);
+			});
+		});
 		
-		if(collected.GetEntryCount() <= limit){
+		if(collected.GetCount() <= limit){
 			collected.Visit(visitor);
 			
 		}else{
 			collected.Visit(visitor, 0, limit);
 			
 			decString text;
-			text.Format("... and %d more", collected.GetEntryCount() - limit);
-			visitor.lines.InsertAt(text, 0);
+			text.Format("... and %d more", collected.GetCount() - limit);
+			visitor.lines.Insert(text, 0);
 		}
 	}
 	
 	pInfoBubbleText->SetText(visitor.GetText());
-	const decPoint textSize(pInfoBubbleText->GetFont()->TextSize(pInfoBubbleText->GetText(), pFontSize));
+	const decPoint textSize(pInfoBubbleText->GetFont()->TextSize(pInfoBubbleText->GetText()));
 	
 	pInfoBubbleText->SetSize(textSize);
 	pInfoBubble->GetCanvasContent()->SetSize(textSize);

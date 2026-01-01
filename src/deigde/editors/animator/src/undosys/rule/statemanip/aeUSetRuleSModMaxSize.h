@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -42,16 +42,17 @@ class aeRuleStateManipulator;
  * Undo to set the maximum size of a state modifier rule.
  */
 class aeUSetRuleSModMaxSize : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleSModMaxSize> Ref;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleSModMaxSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

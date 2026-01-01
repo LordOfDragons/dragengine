@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class camera set property name.
  */
 class gdeUOCCameraSetPropertyName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCCameraSetPropertyName> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCCameraSetPropertyName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

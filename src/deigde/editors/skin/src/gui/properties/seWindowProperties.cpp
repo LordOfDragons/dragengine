@@ -52,22 +52,22 @@ pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelMapped.TakeOver(new seWPMapped(*this));
+	pPanelMapped = seWPMapped::Ref::New(*this);
 	AddChild(pPanelMapped, "Mapped");
 	
-	pPanelTexture.TakeOver(new seWPTexture(*this));
+	pPanelTexture = seWPTexture::Ref::New(*this);
 	AddChild(pPanelTexture, "Texture");
 	
-	pPanelNode.TakeOver(new seWPNode(*this));
+	pPanelNode = seWPNode::Ref::New(*this);
 	AddChild(pPanelNode, "Node");
 	
-	pPanelDynamicSkin.TakeOver(new seWPDynamicSkin(*this));
+	pPanelDynamicSkin = seWPDynamicSkin::Ref::New(*this);
 	AddChild(pPanelDynamicSkin, "Dynamic Skin");
 	
-	pPanelView.TakeOver(new seWPView(*this));
+	pPanelView = seWPView::Ref::New(*this);
 	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver(new seWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = seWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(1); // texture

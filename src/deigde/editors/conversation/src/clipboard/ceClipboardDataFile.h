@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATAFILE_H_
 #define _CECLIPBOARDDATAFILE_H_
 
-#include "../conversation/file/ceConversationFileList.h"
+#include "../conversation/file/ceConversationFile.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	ceConversationFileList pFiles;
+	ceConversationFile::List pFiles;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	ceClipboardDataFile(const ceConversationFileList &files);
+	ceClipboardDataFile(const ceConversationFile::List &files);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Files. */
-	inline const ceConversationFileList &GetFiles() const{ return pFiles; }
+	inline const ceConversationFile::List &GetFiles() const{ return pFiles; }
 	/*@}*/
 };
 

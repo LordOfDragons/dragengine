@@ -31,8 +31,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 
-class gdeGameDefinition;
-class gdeProperty;
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "../../../gamedef/property/gdeProperty.h"
 
 
 
@@ -40,9 +40,13 @@ class gdeProperty;
  * \brief Undo action object class property set options.
  */
 class gdeUGDWPSetOptions : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDWPSetOptions> Ref;
+	
+	
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -50,9 +54,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUGDWPSetOptions> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

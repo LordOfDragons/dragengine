@@ -35,6 +35,9 @@ class meWPSObjectShape;
  * \brief Object Shape Panel Listener.
  */
 class meWPSObjectShapeListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPSObjectShapeListener> Ref;
+	
 private:
 	meWPSObjectShape &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPSObjectShapeListener(meWPSObjectShape &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPSObjectShapeListener() override;
+	
+public:
 	/*@}*/
 	
 	

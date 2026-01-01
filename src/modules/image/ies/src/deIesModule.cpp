@@ -115,6 +115,8 @@ void deIesModule::SaveImage(decBaseFileWriter&, const deImage &){
 
 class deIesModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deIesModuleInternal> Ref;
+	
 	deIesModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("IES");
 		SetDescription("Handles photometric IES files loading them as Equi-Rectangular 3D images.");
@@ -136,7 +138,7 @@ public:
 	}
 };
 
-deInternalModule *deIesRegisterInternalModule(deModuleSystem *system){
-	return new deIesModuleInternal(system);
+deTObjectReference<deInternalModule> deIesRegisterInternalModule(deModuleSystem *system){
+	return deIesModuleInternal::Ref::New(system);
 }
 #endif

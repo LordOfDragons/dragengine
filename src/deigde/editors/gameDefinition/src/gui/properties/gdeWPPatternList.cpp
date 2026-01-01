@@ -52,74 +52,79 @@
 
 namespace{
 
-class cActionAppend : public igdeAction {
+class cActionAppend : public igdeAction{
 	gdeWPPatternList &pPanel;
 	igdeEditPath::Ref &pEditPath;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionAppend> Ref;
 	cActionAppend (gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox) : 
 	igdeAction("Add", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add pattern"),
 	pPanel(panel), pEditPath(editPath), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
+	void OnAction() override{
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pEditPath->GetPath().IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
-			 pPanel.UndoSet(*pPanel.GetPatternList() + pEditPath->GetPath())));
+		decStringSet patterns(*pPanel.GetPatternList());
+		patterns.Add(pEditPath->GetPath());
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(patterns));
 		
 		pListBox->SetSelection(pListBox->IndexOfItem(pEditPath->GetPath()));
 	}
 };
 
-class cActionRemove : public igdeAction {
+class cActionRemove : public igdeAction{
 	gdeWPPatternList &pPanel;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionRemove> Ref;
 	cActionRemove(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove pattern"), pPanel(panel), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem()){
+	void OnAction() override{
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || !pListBox->GetSelectedItem()){
 			return;
 		}
 		
 		decStringSet patterns(*pPanel.GetPatternList());
 		patterns.Remove(pListBox->GetSelectedItem()->GetText());
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(patterns)));
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(patterns));
 		
-		if(pListBox->GetItemCount() > 0){
+		if(pListBox->GetItems().IsNotEmpty()){
 			pListBox->SetSelection(0);
 		}
 	}
 };
 
-class cActionClear : public igdeAction {
+class cActionClear : public igdeAction{
 	gdeWPPatternList &pPanel;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionClear> Ref;
 	cActionClear(gdeWPPatternList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Clear", NULL, "Clear pattern"), pPanel(panel), pListBox(listBox){}
+	igdeAction("Clear", nullptr, "Clear pattern"), pPanel(panel), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+	void OnAction() override{
+		if(!pPanel.GetPatternList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(decStringSet())));
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(decStringSet()));
 	}
 };
 
-class cListPatterns : public igdeListBoxListener {
+class cListPatterns : public igdeListBoxListener{
 	gdeWPPatternList &pListBox;
 	
 public:
+	typedef deTObjectReference<cListPatterns> Ref;
 	cListPatterns(gdeWPPatternList &listBox) : pListBox(listBox){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -145,17 +150,17 @@ public:
 
 gdeWPPatternList::gdeWPPatternList(igdeUIHelper &helper, int rows, const char *description) :
 igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone),
-pPatternList(NULL),
-pUndoSystem(NULL)
+pPatternList(nullptr),
+pUndoSystem(nullptr)
 {
-	pActionAdd.TakeOver(new cActionAppend (*this, pEditPath, pListBox));
-	pActionRemove.TakeOver(new cActionRemove(*this, pListBox));
-	pActionClear.TakeOver(new cActionClear(*this, pListBox));
+	pActionAdd = cActionAppend::Ref::New(*this, pEditPath, pListBox);
+	pActionRemove = cActionRemove::Ref::New(*this, pListBox);
+	pActionClear = cActionClear::Ref::New(*this, pListBox);
 	
-	helper.EditPath(*this, description, igdeEnvironment::efpltAll, pEditPath, NULL);
+	helper.EditPath(*this, description, igdeEnvironment::efpltAll, pEditPath, {});
 	pEditPath->SetAutoValidatePath(false);
 	
-	helper.ListBox(*this, rows, description, pListBox, new cListPatterns(*this));
+	helper.ListBox(*this, rows, description, pListBox, cListPatterns::Ref::New(*this));
 	pListBox->SetDefaultSorter();
 }
 
@@ -184,7 +189,7 @@ void gdeWPPatternList::SetUndoSystem(igdeUndoSystem *undoSystem){
 
 
 const decString &gdeWPPatternList::GetSelectedPattern() const{
-	if(pListBox->GetSelectedItem() != NULL){
+	if(pListBox->GetSelectedItem() != nullptr){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{

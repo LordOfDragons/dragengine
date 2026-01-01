@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -35,16 +35,17 @@ class ceTarget;
  * \brief Undo Action Target Set Actor ID.
  */
 class ceUCTargetSetActor : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCTargetSetActor> Ref;
+	
+	
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCTargetSetActor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

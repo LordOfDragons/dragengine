@@ -28,6 +28,8 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -119,11 +121,10 @@ void projRemoteClientTaskProcessor::OpenFile(const std::string &path, bool write
 	pVfsFilePath = path;
 	
 	try{
-		pVfsFileReader.TakeOver(pTaskProfileData->vfs->OpenFileForReading(
-			decPath::CreatePathUnix(path.c_str())));
+		pVfsFileReader = pTaskProfileData->vfs->OpenFileForReading(decPath::CreatePathUnix(path.c_str()));
 		
 	}catch(const deException &e){
-		Log(denLogger::LogSeverity::error, "OpenFile", e.FormatOutput().Join("\n").GetString());
+		Log(denLogger::LogSeverity::error, "OpenFile", DEJoin(e.FormatOutput(), "\n").GetString());
 		throw;
 		
 	}catch(...){
@@ -138,7 +139,7 @@ uint64_t projRemoteClientTaskProcessor::GetFileSize(){
 		return (uint64_t)pVfsFileReader->GetPosition();
 		
 	}catch(const deException &e){
-		Log(denLogger::LogSeverity::error, "GetFileSize", e.FormatOutput().Join("\n").GetString());
+		Log(denLogger::LogSeverity::error, "GetFileSize", DEJoin(e.FormatOutput(), "\n").GetString());
 		throw;
 		
 	}catch(...){
@@ -153,7 +154,7 @@ void projRemoteClientTaskProcessor::ReadFile(void *data, uint64_t offset, uint64
 		pVfsFileReader->Read(data, (int)size);
 		
 	}catch(const deException &e){
-		Log(denLogger::LogSeverity::error, "ReadFile", e.FormatOutput().Join("\n").GetString());
+		Log(denLogger::LogSeverity::error, "ReadFile", DEJoin(e.FormatOutput(), "\n").GetString());
 		throw;
 		
 	}catch(...){

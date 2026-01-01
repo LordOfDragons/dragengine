@@ -25,12 +25,13 @@
 #ifndef _IGDETRIGGEREXPRESSIONCOMPONENT_H_
 #define _IGDETRIGGEREXPRESSIONCOMPONENT_H_
 
+#include "igdeTriggerTarget.h"
+#include "igdeTriggerListener.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class igdeTriggerTarget;
-class igdeTriggerListener;
 class igdeTriggerTargetList;
 
 
@@ -41,6 +42,9 @@ class DE_DLL_EXPORT igdeTriggerExpressionComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerExpressionComponent> Ref;
+	
+	/** \brief Trigger expression component list. */
+	typedef decTObjectOrderedSet<igdeTriggerExpressionComponent> List;
 	
 	
 	/** \brief Component type. */
@@ -62,9 +66,9 @@ private:
 	bool pCurState;
 	eComponentTypes pType;
 	decString pTargetName;
-	igdeTriggerTarget *pTarget;
-	igdeTriggerListener *pTargetListener;
-	decObjectOrderedSet pChildred;
+	igdeTriggerTarget::Ref pTarget;
+	igdeTriggerListener::Ref pTargetListener;
+	List pChildren;
 	
 	
 	
@@ -78,7 +82,7 @@ public:
 	
 protected:
 	/** \brief Clean up trigger expression component. */
-	virtual ~igdeTriggerExpressionComponent();
+	~igdeTriggerExpressionComponent() override;
 	/*@}*/
 	
 	
@@ -110,16 +114,16 @@ public:
 	/** \brief Set target name. */
 	void SetTargetName(const char *name);
 	
-	/** \brief Trigger target or NULL. */
-	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
+	/** \brief Trigger target or nullptr. */
+	inline const igdeTriggerTarget::Ref &GetTarget() const{ return pTarget; }
 	
-	/** \brief Set trigger target or NULL. */
+	/** \brief Set trigger target or nullptr. */
 	void SetTarget(igdeTriggerTarget *target);
 	
-	/** \brief Target listener or NULL. */
-	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
+	/** \brief Target listener or nullptr. */
+	inline const igdeTriggerListener::Ref &GetTargetListener() const{ return pTargetListener; }
 	
-	/** \brief Set target listener or NULL. */
+	/** \brief Set target listener or nullptr. */
 	void SetTargetListener(igdeTriggerListener *listener);
 	
 	/** \brief Link trigger targets using the given trigger table. */
@@ -136,11 +140,8 @@ public:
 	
 	/** \name Children */
 	/*@{*/
-	/** \brief Count of child components. */
-	int GetChildCount() const;
-	
-	/** \brief Child component at index. */
-	igdeTriggerExpressionComponent *GetChildAt(int index) const;
+	/** \brief Children. */
+	const List &GetChildren() const{ return pChildren; }
 	
 	/** \brief Index of child component or -1 if not found. */
 	int IndexOfChild(igdeTriggerExpressionComponent *child) const;

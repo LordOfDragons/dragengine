@@ -42,12 +42,10 @@
 aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation(aeRuleInverseKinematic *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Inverse Kinematic set adjust orientation");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeURuleIKSetAdjustOrientation::Redo(){
 //////////////////////
 
 void aeURuleIKSetAdjustOrientation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

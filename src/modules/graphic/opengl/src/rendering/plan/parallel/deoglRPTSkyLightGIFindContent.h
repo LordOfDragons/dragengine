@@ -35,6 +35,11 @@ class deoglRenderPlanSkyLight;
  * Parallel task finding content.
  */
 class deoglRPTSkyLightGIFindContent : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoglRPTSkyLightGIFindContent> Ref;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	float pElapsedTime;

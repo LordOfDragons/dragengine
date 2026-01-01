@@ -42,8 +42,8 @@
 
 gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, const char *newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL)
+
+pSpeaker(nullptr)
 {
 	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetBoneName::~gdeUOCSpeakerSetBoneName(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

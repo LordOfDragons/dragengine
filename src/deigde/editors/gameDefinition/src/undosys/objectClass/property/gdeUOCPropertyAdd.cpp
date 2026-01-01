@@ -42,8 +42,7 @@
 ////////////////////////////
 
 gdeUOCPropertyAdd::gdeUOCPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property) :
-pObjectClass(NULL),
-pProperty(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -52,19 +51,10 @@ pProperty(NULL)
 	SetShortInfo("Object class add property");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPropertyAdd::~gdeUOCPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -33,6 +33,8 @@
  */
 class deoxrDPHTCViveFocus3ControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPHTCViveFocus3ControllerInteraction> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

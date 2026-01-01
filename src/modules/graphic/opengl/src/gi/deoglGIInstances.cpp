@@ -125,7 +125,7 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithDecal(deoglRDecal *decal) cons
 }
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
-	const deoglGIInstance::Ref instance(deoglGIInstance::Ref::NewWith(*this));
+	const deoglGIInstance::Ref instance(deoglGIInstance::Ref::New(*this));
 	pInstances.Add(instance);
 	return instance;
 }

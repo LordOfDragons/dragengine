@@ -387,60 +387,7 @@ public:
  */
 #define DETHROW_INFO(cls, info) throw cls(__FILE__, __LINE__, info)
 
-/**
- * \brief Throw deeNullPointer exception if pointer is nullptr.
- * \version 1.10
- */
-#define DEASSERT_NOTNULL(pointer) if(!(pointer)) DETHROW_INFO(deeNullPointer, "assertNotNull(" #pointer ")");
 
-/**
- * \brief Throw deeInvalidParam exception if pointer is not nullptr.
- * \version 1.10
- */
-#define DEASSERT_NULL(pointer) if(pointer) DETHROW_INFO(deeInvalidParam, "assertNull(" #pointer ")");
-
-/**
- * \brief Throw deeInvalidParam exception if condition is false.
- * \version 1.10
- */
-#define DEASSERT_TRUE(condition) if(!(condition)) DETHROW_INFO(deeInvalidParam, "assertTrue(" #condition ")");
-
-/**
- * \brief Throw deeInvalidParam exception if condition is true.
- * \version 1.10
- */
-#define DEASSERT_FALSE(condition) if(condition) DETHROW_INFO(deeInvalidParam, "assertFalse(" #condition ")");
-
-
-
-
-
-/**
- * \brief If precondition is true throw deeNullPointer exception if pointer is nullptr.
- * \version 1.25
- */
-#define DEASSERT_NOTNULL_IF(precondition, pointer) if((precondition) && !(pointer)) \
-	DETHROW_INFO(deeNullPointer, "assertNotNull(" #precondition " -> " #pointer ")");
-
-/**
- * \brief If precondition is true throw deeInvalidParam exception if pointer is not nullptr.
- * \version 1.25
- */
-#define DEASSERT_NULL_IF(precondition, pointer) if((precondition) && (pointer)) \
-	DETHROW_INFO(deeInvalidParam, "assertNull(" #precondition " -> " #pointer ")");
-
-/**
- * \brief If precondition is true throw deeInvalidParam exception if condition is false.
- * \version 1.25
- */
-#define DEASSERT_TRUE_IF(precondition, condition) if((precondition) && !(condition)) \
-	DETHROW_INFO(deeInvalidParam, "assertTrue(" #precondition " -> " #condition ")");
-
-/**
- * \brief If precondition is true throw deeInvalidParam exception if condition is true.
- * \version 1.25
- */
-#define DEASSERT_FALSE_IF(precondition, condition) if((precondition) && (condition)) \
-	DETHROW_INFO(deeInvalidParam, "assertFalse(" #precondition " -> " #condition ")");
+#include "exceptions_reduced.h"
 
 #endif

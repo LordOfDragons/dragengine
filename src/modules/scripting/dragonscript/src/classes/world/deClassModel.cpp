@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -46,7 +48,7 @@
 
 
 struct sMdlNatDat{
-	deModel *model;
+	deModel::Ref model;
 };
 
 
@@ -60,19 +62,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlNatDat &nd = *((sMdlNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	sMdlNatDat * const nd = new (p_GetNativeData(myself)) sMdlNatDat;
+	
+	deScriptingDragonScript &ds = *static_cast<deClassModel*>(GetOwnerClass())->GetDS();
 	deModelManager &mdlMgr = *ds.GetGameEngine()->GetModelManager();
 	
-	// prepare
-	nd.model = NULL;
-	
-	// load model
-	const char * const filename = rt->GetValue(0)->GetString();
-	nd.model = mdlMgr.LoadModel(filename, "/");
-	if(!nd.model){
-		DSTHROW(dueInvalidParam);
-	}
+	nd->model = mdlMgr.LoadModel(rt->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -82,7 +77,7 @@ deClassModel::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassModel::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -103,12 +98,7 @@ void deClassModel::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sMdlNatDat &nd = *((sMdlNatDat*)p_GetNativeData(myself));
-	
-	if(nd.model){
-		nd.model->FreeReference();
-		nd.model = NULL;
-	}
+	static_cast<sMdlNatDat*>(p_GetNativeData(myself))->~sMdlNatDat();
 }
 
 
@@ -118,7 +108,7 @@ deClassModel::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(i
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassModel::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	
 	rt->PushString(model.GetFilename());
 }
@@ -130,7 +120,7 @@ deClassModel::nfGetLodCount::nfGetLodCount(const sInitData &init) : dsFunction(i
 "getLodCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassModel::nfGetLodCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	
 	rt->PushInt(model.GetLODCount());
 }
@@ -140,7 +130,7 @@ deClassModel::nfGetTextureCount::nfGetTextureCount(const sInitData &init) : dsFu
 "getTextureCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassModel::nfGetTextureCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	
 	rt->PushInt(model.GetTextureCount());
 }
@@ -151,7 +141,7 @@ deClassModel::nfGetTextureNameAt::nfGetTextureNameAt(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // texture
 }
 void deClassModel::nfGetTextureNameAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	const int texture = rt->GetValue(0)->GetInt();
 	
 	rt->PushString(model.GetTextureAt(texture)->GetName());
@@ -163,7 +153,7 @@ deClassModel::nfGetFaceCount::nfGetFaceCount(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // lod
 }
 void deClassModel::nfGetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	const int lod = rt->GetValue(0)->GetInt();
 	
 	rt->PushInt(model.GetLODAt(lod)->GetFaceCount());
@@ -175,7 +165,7 @@ deClassModel::nfGetVertexCount::nfGetVertexCount(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // lod
 }
 void deClassModel::nfGetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
 	const int lod = rt->GetValue(0)->GetInt();
 	
 	rt->PushInt(model.GetLODAt(lod)->GetVertexCount());
@@ -186,8 +176,8 @@ deClassModel::nfGetMinimumExtend::nfGetMinimumExtend(const sInitData &init) :
 dsFunction(init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -212,8 +202,8 @@ deClassModel::nfGetMaximumExtend::nfGetMaximumExtend(const sInitData &init) :
 dsFunction(init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModel &model = *((sMdlNatDat*)p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -241,7 +231,7 @@ dsFunction(init.clsMdl, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassModel::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlNatDat &nd = *((sMdlNatDat*)p_GetNativeData(myself));
+	const sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)nd.model);
@@ -253,8 +243,8 @@ dsFunction(init.clsMdl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sMdlNatDat &nd = *((sMdlNatDat*)p_GetNativeData(myself));
-	deClassModel * const clsModel = (deClassModel*)GetOwnerClass();
+	const sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
+	const deClassModel * const clsModel = static_cast<deClassModel*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || !obj->GetRealObject()
@@ -262,7 +252,7 @@ void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const sMdlNatDat &other = *((sMdlNatDat*)p_GetNativeData(obj));
+		const sMdlNatDat &other = *static_cast<sMdlNatDat*>(p_GetNativeData(obj));
 		rt->PushBool(nd.model == other.model);
 	}
 }
@@ -332,10 +322,10 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 
 deModel *deClassModel::GetModel(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sMdlNatDat*)p_GetNativeData(myself->GetBuffer()))->model;
+	return static_cast<sMdlNatDat*>(p_GetNativeData(myself->GetBuffer()))->model;
 }
 
 void deClassModel::PushModel(dsRunTime *rt, deModel *model){
@@ -349,6 +339,5 @@ void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sMdlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->model = model;
-	model->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMdlNatDat)->model = model;
 }

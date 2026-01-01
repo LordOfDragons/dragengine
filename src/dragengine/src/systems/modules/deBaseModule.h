@@ -26,8 +26,8 @@
 #define _DEBASEMODULE_H_
 
 #include "../../common/string/decString.h"
+#include "../../filesystem/deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deEngine;
 class deOS;
 class deModuleParameter;
@@ -55,7 +55,7 @@ class decUnicodeArgumentList;
 class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	
 	
@@ -189,7 +189,7 @@ public:
 	 * The stored files are kept across restarting the application. If the disk consumption
 	 * grows old files are automatically removed without asking first to keep the size limit.
 	 */
-	inline deVirtualFileSystem &GetVFS() const { return *pVFS; }
+	inline deVirtualFileSystem &GetVFS() const { return pVFS; }
 	
 	/**
 	 * \brief Native path to read only shares directory.

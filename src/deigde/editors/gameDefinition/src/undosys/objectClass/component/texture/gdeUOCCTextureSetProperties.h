@@ -30,9 +30,9 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,10 +40,14 @@ class gdeObjectClass;
  * \brief Undo action object class component texture set properties.
  */
 class gdeUOCCTextureSetProperties : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCCTextureSetProperties> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decStringDictionary pOldValue;
 	decStringDictionary pNewValue;
@@ -51,9 +55,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCCTextureSetProperties> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

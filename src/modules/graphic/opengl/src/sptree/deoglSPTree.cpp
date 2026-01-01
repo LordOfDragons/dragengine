@@ -27,7 +27,7 @@
 #include <string.h>
 #include "deoglSPTree.h"
 #include "deoglSPTreeNode.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -55,7 +55,6 @@ deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend,
 	pStride = nodeCount.x * nodeCount.y;
 	
 	pNodes = new deoglSPTreeNode*[pTotalNodeCount];
-	if(!pNodes) DETHROW(deeOutOfMemory);
 	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = NULL;
 }
 

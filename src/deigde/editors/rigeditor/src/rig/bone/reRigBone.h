@@ -25,22 +25,24 @@
 #ifndef _RERIGBONE_H_
 #define _RERIGBONE_H_
 
-#include <dragengine/common/string/decString.h>
+#include "../shape/reRigShape.h"
+#include "../constraint/reRigConstraint.h"
 
-#include <dragengine/common/math/decMath.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
-#include "../shape/reRigShapeList.h"
-#include "../constraint/reRigConstraintList.h"
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class reRig;
 class reRigShape;
 class reRigConstraint;
 class deCollider;
-class deColliderVolume;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class deEngine;
-class deDebugDrawer;
 
 
 
@@ -48,17 +50,23 @@ class deDebugDrawer;
  * \brief Rig bone.
  */
 class reRigBone : public deObject{
+public:
+	typedef deTObjectReference<reRigBone> Ref;
+	typedef decTObjectOrderedSet<reRigBone> List;
+	typedef decTOrderedSet<deTObjectReference<reRigConstraint>, reRigConstraint*> ConstraintList;
+	
+	
 private:
 	deEngine *pEngine;
 	
 	reRig *pRig;
 	int pOrder;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSBone;
-	igdeWDebugDrawerShape *pDDSCmp;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSBone;
+	igdeWDebugDrawerShape::Ref pDDSCmp;
 	igdeWCoordSysArrows *pDDSCoordSys;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	decString pName;
 	reRigBone *pParentBone;
@@ -78,8 +86,8 @@ private:
 	decVector pIKResistance;
 	bool pIKLocked[3];
 	
-	reRigShapeList pShapes;
-	reRigConstraintList pConstraints;
+	reRigShape::List pShapes;
+	ConstraintList pConstraints;
 	
 	bool pSelected;
 	bool pActive;
@@ -89,16 +97,14 @@ private:
 	bool pVisited;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigBone> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig controller. */
 	reRigBone(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
+protected:
 	virtual ~reRigBone();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -114,16 +120,16 @@ public:
 	void SetOrder(int order);
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** \brief Sets the world filename. */
 	void SetName(const char *filename);
 	
-	/** \brief Retrieves parent rig bone or NULL if a top level bone. */
+	/** \brief Retrieves parent rig bone or nullptr if a top level bone. */
 	inline reRigBone *GetParentBone() const{ return pParentBone; }
-	/** \brief Sets the parent bone or NULL if a top level bone. */
+	/** \brief Sets the parent bone or nullptr if a top level bone. */
 	void SetParentBone(reRigBone *bone);
 	/** \brief Retrieves the position. */
 	inline decVector GetPosition() const{ return pPosition; }
@@ -201,20 +207,18 @@ public:
 	
 	/** \name Shapes */
 	/*@{*/
-	/** \brief Retrieves the number of shapes. */
-	int GetShapeCount() const;
-	/** \brief Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt(int index) const;
-	/** \brief Retrieves the shape with the given collider or NULL if not found. */
+	/** \brief Shapes. */
+	inline const reRigShape::List &GetShapes() const{ return pShapes; }
+	
+	/** \brief Retrieves the shape with the given collider or nullptr if not found. */
 	reRigShape *GetShapeWith(deColliderVolume *collider) const;
-	/** \brief Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape(reRigShape *shape) const;
-	/** \brief Determines if the shape exists. */
-	bool HasShape(reRigShape *shape) const;
+	
 	/** \brief Adds a new shape. */
 	void AddShape(reRigShape *shape);
+	
 	/** \brief Removes the given shape. */
 	void RemoveShape(reRigShape *shape);
+	
 	/** \brief Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/
@@ -268,20 +272,18 @@ public:
 	
 	/** \name Constraints */
 	/*@{*/
-	/** \brief Retrieves the number of constraints. */
-	int GetConstraintCount() const;
-	/** \brief Retrieves the constraint at the given index. */
-	reRigConstraint *GetConstraintAt(int index) const;
-	/** \brief Retrieves the constraint with the given collider or NULL if not found. */
+	/** \brief Constraints. */
+	inline const ConstraintList &GetConstraints() const{ return pConstraints; }
+	
+	/** \brief Retrieves the constraint with the given collider or nullptr if not found. */
 	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;
-	/** \brief Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
-	/** \brief Determines if the constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
+	
 	/** \brief Adds a new constraint. */
 	void AddConstraint(reRigConstraint *constraint);
+	
 	/** \brief Removes the given constraint. */
 	void RemoveConstraint(reRigConstraint *constraint);
+	
 	/** \brief Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/

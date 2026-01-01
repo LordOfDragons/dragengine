@@ -38,11 +38,9 @@
 reUToggleBoneIKLocked::reUToggleBoneIKLocked(reRigBone *bone, int axis) :
 pAxis(axis)
 {
-	if(!bone) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	try{
 		decString text;
 		text.Format("Toggle Bone IK Locked %c", 'X' + axis);
@@ -77,5 +75,4 @@ void reUToggleBoneIKLocked::Redo(){
 //////////////////////
 
 void reUToggleBoneIKLocked::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

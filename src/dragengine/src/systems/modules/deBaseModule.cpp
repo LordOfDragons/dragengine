@@ -57,8 +57,7 @@
 //////////////////////////////
 
 deBaseModule::deBaseModule(deLoadableModule &loadableModule) :
-pLoadableModule(loadableModule),
-pVFS(NULL)
+pLoadableModule(loadableModule)
 {
 	try{
 		pCreateVFS();
@@ -283,9 +282,6 @@ deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int 
 //////////////////////
 
 void deBaseModule::pCleanUp(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 void deBaseModule::pCreateVFS(){
@@ -301,7 +297,7 @@ void deBaseModule::pCreateVFS(){
 	decPath pathDisk;
 	decPath pathRoot;
 	
-	pVFS = new deVirtualFileSystem;
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	if(osFileSystem){
 		// config directory (read-write, per module version)
@@ -311,7 +307,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/config");
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
+		pVFS->AddContainer(deVFSRedirect::Ref::New(pathRoot, pathRedirect, osFileSystem, true));
 		
 		// share directory (read-only, per module version)
 		pathRedirect.SetFromUnix("/share/modules");
@@ -321,7 +317,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/share");
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
+		pVFS->AddContainer(deVFSRedirect::Ref::New(pathRoot, pathRedirect, osFileSystem, true));
 		
 	}else{
 		// system config directory (read-only, per module version)
@@ -332,7 +328,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/config");
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk, true));
 		
 		
 		// user config directory (writeable, shared between module versions)
@@ -343,7 +339,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/config");
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk));
 		
 		
 		// share directory (read-only, per module version)
@@ -355,7 +351,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/share");
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk, true));
 	}
 	
 	// asset libraries
@@ -367,7 +363,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/share");
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, vfsAssetLibraries, true));
+		pVFS->AddContainer(deVFSRedirect::Ref::New(pathRoot, pathRedirect, vfsAssetLibraries, true));
 	}
 	
 	// capture directory (writeable, shared between module versions)
@@ -378,7 +374,7 @@ void deBaseModule::pCreateVFS(){
 	
 	pathRoot.SetFromUnix("/capture");
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(pathRoot, pathDisk));
 	
 	
 	// global cache directory (writeable, shared between module versions)
@@ -390,7 +386,7 @@ void deBaseModule::pCreateVFS(){
 	
 	pathRoot.SetFromUnix("/cache/global");
 	
-	deVFSCacheDiskDirectory::Ref cachedContainer(deVFSCacheDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
+	deVFSCacheDiskDirectory::Ref cachedContainer(deVFSCacheDiskDirectory::Ref::New(pathRoot, pathDisk));
 	cachedContainer->SetMaxCacheSize(1000000); // 1000MB
 	pVFS->AddContainer(cachedContainer);
 	
@@ -399,7 +395,7 @@ void deBaseModule::pCreateVFS(){
 	pathRoot.SetFromUnix("/cache/local");
 	
 	if(engine.GetCacheAppID().IsEmpty()){
-		pVFS->AddContainer(deVFSNull::Ref::NewWith(pathRoot));
+		pVFS->AddContainer(deVFSNull::Ref::New(pathRoot));
 		
 	}else{
 		pathDisk.SetFromNative(os.GetPathUserCache());
@@ -409,7 +405,7 @@ void deBaseModule::pCreateVFS(){
 		pathDisk.AddUnixPath(typeDirectory);
 		pathDisk.AddUnixPath(directoryName);
 		
-		cachedContainer.TakeOver(new deVFSCacheDiskDirectory(pathRoot, pathDisk));
+		cachedContainer = deVFSCacheDiskDirectory::Ref::New(pathRoot, pathDisk);
 		cachedContainer->SetMaxCacheSize(1000000); // 1000MB
 		pVFS->AddContainer(cachedContainer);
 	}

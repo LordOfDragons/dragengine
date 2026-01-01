@@ -25,6 +25,7 @@
 #ifndef _DEOGLCOMPONENT_H_
 #define _DEOGLCOMPONENT_H_
 
+#include "deoglRComponent.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -33,7 +34,6 @@
 class deoglDynamicSkin;
 class deoglComponentLOD;
 class deoglComponentTexture;
-class deoglRComponent;
 class deoglSkinStateController;
 class deoglWorld;
 
@@ -48,7 +48,7 @@ class deoglComponent : public deBaseGraphicComponent, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	deComponent &pComponent;
-	deoglRComponent *pRComponent;
+	deoglRComponent::Ref pRComponent;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;
@@ -126,7 +126,7 @@ public:
 	
 	
 	/** Render component. */
-	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
+	inline const deoglRComponent::Ref &GetRComponent() const{ return pRComponent; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

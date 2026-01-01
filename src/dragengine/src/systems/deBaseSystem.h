@@ -25,12 +25,12 @@
 #ifndef _DEBASESYSTEM_H_
 #define _DEBASESYSTEM_H_
 
+#include "deModuleSystem.h"
+#include "modules/deLoadableModule.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
-#include "deModuleSystem.h"
 
 class deEngine;
-class deLoadableModule;
 class deException;
 
 
@@ -66,7 +66,7 @@ class DE_DLL_EXPORT deBaseSystem{
 private:
 	const decString pSystemName;
 	deEngine * const pEngine;
-	deLoadableModule *pActiveLoadableModule;
+	deLoadableModule::Ref pActiveLoadableModule;
 	const int pRequiredModuleType;
 	bool pRunning;
 	bool pFailed;
@@ -91,7 +91,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Active loadable module. */
-	inline deLoadableModule *GetActiveLoadableModule() const{ return pActiveLoadableModule; }
+	inline const deLoadableModule::Ref &GetActiveLoadableModule() const{ return pActiveLoadableModule; }
 	
 	/** \brief System is running. */
 	inline bool GetIsRunning() const{ return pRunning; }

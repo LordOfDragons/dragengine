@@ -87,17 +87,17 @@ deFont *deFontManager::GetFontWith(deVirtualFileSystem *vfs, const char *filenam
 	return font && !font->GetOutdated() ? font : NULL;
 }
 
-deFont *deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
+deFont::Ref deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
 	return CreateFont(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deFont *deFontManager::CreateFont(deVirtualFileSystem *vfs, const char *filename,
+deFont::Ref deFontManager::CreateFont(deVirtualFileSystem *vfs, const char *filename,
 deFontBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deFont *font = NULL;
+	deFont::Ref font;
 	
 	try{
 		// check if the animation with this filename already exists
@@ -109,7 +109,7 @@ deFontBuilder &builder){
 		}
 		
 		// create animation using the builder
-		font = new deFont(this, vfs, filename, decDateTime::GetSystemTime());
+		font = deFont::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildFont(font);
 		
 		// check and init
@@ -126,24 +126,19 @@ deFontBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating font '%s' failed", filename);
-		if(font){
-			font->FreeReference();
-		}
 		throw;
 	}
 	
 	return font;
 }
 
-deFont *deFontManager::LoadFont(const char *filename, const char *basePath){
+deFont::Ref deFontManager::LoadFont(const char *filename, const char *basePath){
 	return LoadFont(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deFont *deFontManager::LoadFont(deVirtualFileSystem *vfs, const char *filename,
+deFont::Ref deFontManager::LoadFont(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
-	decBaseFileReader *fileReader = NULL;
-	deFont *font = NULL;
-	deFont *findFont;
+	deFont::Ref font;
 	decPath path;
 	
 	try{
@@ -153,7 +148,7 @@ const char *basePath){
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		findFont = (deFont*)pFonts.GetWithFilename(vfs, path.GetPathUnix());
+		deFont *findFont = (deFont*)pFonts.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findFont && findFont->GetModificationTime() != modificationTime){
 			LogInfoFormat("Font '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -163,7 +158,6 @@ const char *basePath){
 		}
 		
 		if(findFont){
-			findFont->AddReference();
 			font = findFont;
 			
 		}else{
@@ -172,13 +166,10 @@ const char *basePath){
 				->GetModuleAbleToLoad(deModuleSystem::emtFont, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			font = new deFont(this, vfs, path.GetPathUnix(), modificationTime);
+			font = deFont::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			font->SetAsynchron(false);
 			
-			module->LoadFont(*fileReader, *font);
-			fileReader->FreeReference();
-			fileReader = NULL;
+			module->LoadFont(OpenFileForReading(*vfs, path.GetPathUnix()), font);
 			
 			// check and init
 			pLoadFontSources(font);
@@ -198,12 +189,6 @@ const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Loading font '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(font){
-			font->FreeReference();
-		}
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		throw;
 	}
 	
@@ -214,14 +199,14 @@ const char *basePath){
 #define FONT_DEBUG_IMAGE "<debug_font_image>"
 #include "../../debug/debugfont.c"
 
-deFont *deFontManager::LoadDebugFont(){
-	deFont *font = (deFont*)pFonts.GetWithFilename(GetEngine()->GetVirtualFileSystem(), FONT_DEBUG);
-	if(font){
-		if(!font->GetPeerGraphic()){
-			GetGraphicSystem()->LoadFont(font);
+deFont::Ref deFontManager::LoadDebugFont(){
+	deFont * const findFont = (deFont*)pFonts.GetWithFilename(
+		GetEngine()->GetVirtualFileSystem(), FONT_DEBUG);
+	if(findFont){
+		if(!findFont->GetPeerGraphic()){
+			GetGraphicSystem()->LoadFont(findFont);
 		}
-		font->AddReference();
-		return font;
+		return deFont::Ref(findFont);
 	}
 	
 	struct sTempGlyph{
@@ -420,11 +405,11 @@ deFont *deFontManager::LoadDebugFont(){
 		{71, 111, 6}, /* glyph 255 */
 	};
 	
-	deImage::Ref image;
+	deFont::Ref font;
 	int i;
 	
 	try{
-		image.TakeOver(GetImageManager()->CreateImage(
+		const deImage::Ref image(GetImageManager()->CreateImage(
 			gimp_debugfont.width, gimp_debugfont.height, 1, 4, 8));
 		
 		GIMP_DEBUGFONT_RUN_LENGTH_DECODE((unsigned char *)image->GetDataRGBA8(),
@@ -432,7 +417,7 @@ deFont *deFontManager::LoadDebugFont(){
 			gimp_debugfont.bytes_per_pixel);
 		image->NotifyImageDataChanged();
 		
-		font = new deFont(this, GetEngine()->GetVirtualFileSystem(),
+		font = deFont::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
 			FONT_DEBUG, decDateTime::GetSystemTime());
 		font->SetImage(image);
 		font->SetImagePath(FONT_DEBUG_IMAGE);
@@ -459,9 +444,6 @@ deFont *deFontManager::LoadDebugFont(){
 		pFonts.Add(font);
 		
 	}catch(const deException &){
-		if(font){
-			font->FreeReference();
-		}
 		throw;
 	}
 	
@@ -508,9 +490,8 @@ deFontSize *deFontManager::LoadFontSize(deFont &font, int size){
 			return found;
 		}
 		
-		return font.AddSize(size, module->LoadFontSize(
-			decBaseFileReader::Ref::New(OpenFileForReading(
-				*font.GetVirtualFileSystem(), font.GetFilename())),
+		return font.AddSize(size, module->LoadFontSize(OpenFileForReading(
+				*font.GetVirtualFileSystem(), font.GetFilename()),
 			deFont::Ref(&font), size));
 		
 	}catch(const deException &e){
@@ -567,25 +548,13 @@ void deFontManager::SystemGraphicUnload(){
 //////////////////////
 
 void deFontManager::pLoadFontSources(deFont *font){
-	deImageManager &imageMgr = *GetImageManager();
-	deImage *newImage = NULL;
-	
-	try{
-		decPath basePath(decPath::CreatePathUnix(font->GetFilename()));
-		basePath.RemoveLastComponent();
-		
-		if(!font->GetImagePath().IsEmpty()){
-			newImage = imageMgr.LoadImage(font->GetVirtualFileSystem(),
-				font->GetImagePath(), basePath.GetPathUnix());
-			font->SetImage(newImage); // attention!+1 reference
-			newImage->FreeReference();
-			newImage = NULL;
-		}
-		
-	}catch(const deException &){
-		if(newImage){
-			newImage->FreeReference();
-		}
-		throw;
+	if(font->GetImagePath().IsEmpty()){
+		return;
 	}
+	
+	decPath basePath(decPath::CreatePathUnix(font->GetFilename()));
+	basePath.RemoveLastComponent();
+	
+	font->SetImage(GetImageManager()->LoadImage(font->GetVirtualFileSystem(),
+		font->GetImagePath(), basePath.GetPathUnix()));
 }

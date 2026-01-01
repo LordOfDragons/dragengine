@@ -41,17 +41,17 @@
 ////////////////////////////
 
 gdeParticleEmitter::gdeParticleEmitter() :
-pGameDefinition(NULL){
+pGameDefinition(nullptr){
 }
 
 gdeParticleEmitter::gdeParticleEmitter(const char *path, const char *name) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 pPath(path),
 pName(name){
 }
 
 gdeParticleEmitter::gdeParticleEmitter(const gdeParticleEmitter &particleEmitter) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 
 pPath(particleEmitter.pPath),
 pName(particleEmitter.pName),
@@ -128,5 +128,5 @@ void gdeParticleEmitter::SetCategory(const char *category){
 //////////////////////
 
 void gdeParticleEmitter::pCleanUp(){
-	SetGameDefinition(NULL);
+	SetGameDefinition(nullptr);
 }

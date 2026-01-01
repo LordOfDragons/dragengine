@@ -35,6 +35,9 @@ class meWindowMain;
  * \brief Window Main Listener.
  */
 class meWindowMainListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWindowMainListener> Ref;
+	
 private:
 	meWindowMain &pWindowMain;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWindowMainListener(meWindowMain &windowMain);
+	explicit meWindowMainListener(meWindowMain &windowMain);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWindowMainListener() override;
+	
+public:
 	/*@}*/
 	
 	

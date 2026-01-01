@@ -25,15 +25,15 @@
 #ifndef _CETEXTBOX_H_
 #define _CETEXTBOX_H_
 
+#include "ceTextBoxText.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "ceTextBoxTextList.h"
-
-class deCanvasView;
 class deEngine;
 class deLogger;
 class deGraphicContext;
@@ -43,7 +43,10 @@ class deGraphicContext;
 /**
  * \brief Text box rendering actor speech in a conversation.
  */
-class ceTextBox{
+class ceTextBox : public deObject{
+public:
+	typedef deTObjectReference<ceTextBox> Ref;
+	
 private:
 	deEngine &pEngine;
 	deLogger &pLogger;
@@ -58,9 +61,9 @@ private:
 	int pPadding;
 	int pTextOffset;
 	
-	ceTextBoxTextList pTexts;
+	ceTextBoxText::List pTexts;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -69,7 +72,9 @@ public:
 	ceTextBox(deEngine &engine, deLogger &logger);
 	
 	/** \brief Clean up text box. */
+protected:
 	~ceTextBox();
+public:
 	/*@}*/
 	
 	
@@ -86,7 +91,7 @@ public:
 	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
 	inline const decString &GetPathFont() const{ return pPathFont; }
@@ -125,8 +130,8 @@ public:
 	void SetTextOffset(int offset);
 	
 	/** \brief List of texts. */
-	inline ceTextBoxTextList &GetTextList(){ return pTexts; }
-	inline const ceTextBoxTextList &GetTextList() const{ return pTexts; }
+	inline ceTextBoxText::List &GetTexts(){ return pTexts; }
+	inline const ceTextBoxText::List &GetTexts() const{ return pTexts; }
 	
 	/**
 	 * \brief Update canvas.

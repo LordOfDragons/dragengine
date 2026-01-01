@@ -44,9 +44,7 @@
 
 gdeUOCCRemoveTexture::gdeUOCCRemoveTexture(gdeObjectClass *objectClass,
 gdeOCComponent *component, gdeOCComponentTexture *texture) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -62,25 +60,11 @@ pTexture(NULL)
 	SetShortInfo("Component remove texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCRemoveTexture::~gdeUOCCRemoveTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -94,7 +78,7 @@ void gdeUOCCRemoveTexture::Undo(){
 }
 
 void gdeUOCCRemoveTexture::Redo(){
-	gdeOCComponentTextureList &list = pComponent->GetTextures();
+	gdeOCComponentTexture::List &list = pComponent->GetTextures();
 	
 	if(pTexture == pComponent->GetActiveTexture()){
 		if(list.GetCount() > 1){
@@ -106,7 +90,7 @@ void gdeUOCCRemoveTexture::Redo(){
 			}
 			
 		}else{
-			pComponent->SetActiveTexture(NULL);
+			pComponent->SetActiveTexture(nullptr);
 		}
 		
 		pObjectClass->GetGameDefinition()->NotifyOCComponentActiveTextureChanged(

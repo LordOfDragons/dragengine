@@ -154,6 +154,9 @@ public:
 	/** \brief Sector with the given coordinates or NULL if not existing. */
 	deHeightTerrainSector *GetSectorWith(const decPoint &coordinates) const;
 	
+	/** \brief Index of sector or -1 if absent. */
+	int IndexOfSector(deHeightTerrainSector *sector) const;
+	
 	/** \brief Adds a sector to the world. */
 	void AddSector(deHeightTerrainSector *sector);
 	

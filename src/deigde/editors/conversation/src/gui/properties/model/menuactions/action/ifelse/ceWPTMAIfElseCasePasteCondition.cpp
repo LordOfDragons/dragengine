@@ -53,10 +53,10 @@ pIfCase(&ifCase){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCasePasteCondition::CreateUndo(const ceConversationConditionList &conditions){
+igdeUndo::Ref ceWPTMAIfElseCasePasteCondition::CreateUndo(const ceConversationCondition::List &conditions){
 	if(conditions.GetCount() != 1){
 		//DETHROW( deeInvalidParam );
 	}
 	
-	return new ceUCAIfElseCasePasteCondition(pTopic, pIfElse, pIfCase, conditions.GetAt(0));
+	return ceUCAIfElseCasePasteCondition::Ref::New(pTopic, pIfElse, pIfCase, conditions.First());
 }

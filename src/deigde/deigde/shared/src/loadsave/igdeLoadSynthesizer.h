@@ -28,16 +28,16 @@
 #include "../utils/igdeBaseXML.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
+#include <dragengine/resources/synthesizer/effect/deSynthesizerEffect.h>
 
 class igdeEnvironment;
 class igdeGameProject;
 
 class decBaseFileReader;
 class deSynthesizer;
-class deSynthesizerSource;
 class deSynthesizerController;
 class deSynthesizerControllerTarget;
-class deSynthesizerEffect;
 
 
 /**
@@ -101,38 +101,36 @@ private:
 	
 	void pReadLink(const decXmlElementTag &root, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSource(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSource(const decXmlElementTag &root,
 		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceSound(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSourceSound(const decXmlElementTag &root,
 		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceWave(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSourceWave(const decXmlElementTag &root,
 		deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceChain(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSourceChain(const decXmlElementTag &root,
 		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceGroup(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSourceGroup(const decXmlElementTag &root,
 		const char *basePath, deSynthesizer &synthesizer);
 	
-	deSynthesizerSource *pReadSourceSynthesizer(const decXmlElementTag &root,
+	deSynthesizerSource::Ref pReadSourceSynthesizer(const decXmlElementTag &root,
 		const char *basePath, deSynthesizer &synthesizer);
 	
 	bool pReadSourceCommon(const decXmlElementTag &root,
 		deSynthesizer &synthesizer, deSynthesizerSource &source);
 	
-	void pReadControllerTarget(const decXmlElementTag &root,
-		deSynthesizer &synthesizer, deSynthesizerControllerTarget &target);
+	void pReadControllerTarget(const decXmlElementTag &root, deSynthesizerControllerTarget &target);
 	
-	deSynthesizerEffect *pReadEffect(const decXmlElementTag &root,
+	deSynthesizerEffect::Ref pReadEffect(const decXmlElementTag &root,
 		deSynthesizer &synthesizer);
 	
-	deSynthesizerEffect *pReadEffectStretch(const decXmlElementTag &root,
+	deSynthesizerEffect::Ref pReadEffectStretch(const decXmlElementTag &root,
 		deSynthesizer &synthesizer);
 	
-	bool pReadEffectCommon(const decXmlElementTag &root,
-		deSynthesizer &synthesizer, deSynthesizerEffect &effect);
+	bool pReadEffectCommon(const decXmlElementTag &root, deSynthesizerEffect &effect);
 };
 
 #endif

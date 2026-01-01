@@ -25,21 +25,21 @@
 #ifndef _MEPATHFINDTEST_H_
 #define _MEPATHFINDTEST_H_
 
-#include "types/mePathFindTestTypeList.h"
+#include "types/mePathFindTestType.h"
 
-#include <dragengine/common/math/decMath.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/navigation/navigator/deNavigatorPath.h>
+#include <dragengine/resources/navigation/navigator/deNavigator.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
 class meObject;
 class meWorld;
 
-class igdeWDebugDrawerShape;
-
-class deNavigator;
 class deEngine;
-class deDebugDrawer;
 
 
 
@@ -51,9 +51,9 @@ private:
 	deEngine *pEngine;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSPath;
-	deNavigator *pEngNavigator;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSPath;
+	deNavigator::Ref pEngNavigator;
 	
 	decDVector pStartPosition;
 	decDVector pGoalPosition;
@@ -62,11 +62,11 @@ private:
 	int pLayer;
 	float pBlockingCost;
 	deNavigationSpace::eSpaceTypes pSpaceType;
-	deNavigatorPath pPath;
+	deNavigatorPath::Ref pPath;
 	bool pShowPath;
 	bool pDirtyPath;
 	
-	mePathFindTestTypeList pTypeList;
+	mePathFindTestType::List pTypeList;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -77,8 +77,12 @@ public:
 	/*@{*/
 	/** \brief Creates a new path find test. */
 	mePathFindTest(deEngine *engine);
+	
+protected:
 	/** \brief Cleans up the path find test. */
 	virtual ~mePathFindTest();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -86,11 +90,11 @@ public:
 	/** \brief Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** \brief Retrieves the engine navigator. */
-	inline deNavigator *GetEngineNavigator() const{ return pEngNavigator; }
+	inline const deNavigator::Ref &GetEngineNavigator() const{ return pEngNavigator; }
 	
-	/** \brief Retrieves the world or NULL. */
+	/** \brief Retrieves the world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** \brief Sets the world or NULL. */
+	/** \brief Sets the world or nullptr. */
 	void SetWorld(meWorld *world);
 	
 	/** \brief Retrieves the start position. */
@@ -119,10 +123,10 @@ public:
 	void SetSpaceType(deNavigationSpace::eSpaceTypes spaceType);
 	
 	/** \brief Found path. */
-	inline const deNavigatorPath &GetPath() const{ return pPath; }
+	inline const deNavigatorPath::Ref &GetPath() const{ return pPath; }
 	
 	/** \brief Set found path. */
-	void SetPath(const deNavigatorPath &path);
+	void SetPath(deNavigatorPath *path);
 	
 	/** \brief Blocking cost. */
 	inline float GetBlockingCost() const{ return pBlockingCost; }
@@ -136,8 +140,8 @@ public:
 	void SetShowPath(bool showPath);
 	
 	/** \brief Retrieves the type list. */
-	inline mePathFindTestTypeList &GetTypeList(){ return pTypeList; }
-	inline const mePathFindTestTypeList &GetTypeList() const{ return pTypeList; }
+	inline mePathFindTestType::List &GetTypeList(){ return pTypeList; }
+	inline const mePathFindTestType::List &GetTypeList() const{ return pTypeList; }
 	/** \brief Notify world that the types changed. */
 	void NotifyTypesChanged();
 	

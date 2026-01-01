@@ -62,6 +62,6 @@ void ceCAActorRemove::SetActor(const char *id){
 
 
 
-ceConversationAction *ceCAActorRemove::CreateCopy() const{
-	return new ceCAActorRemove(*this);
+ceConversationAction::Ref ceCAActorRemove::CreateCopy() const{
+	return ceCAActorRemove::Ref::New(*this);
 }

@@ -27,10 +27,10 @@
 #define _GDEUOCFORCEFIELDSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class particle emitter set property name.
  */
 class gdeUOCForceFieldSetPropertyName : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCForceFieldSetPropertyName> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	gdeOCForceField::eProperties pProperty;
 	decString pOldValue;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCForceFieldSetPropertyName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

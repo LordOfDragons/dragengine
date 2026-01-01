@@ -31,13 +31,15 @@
 /**
  * HeightMap skin texture pipelines.
  */
-class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1
-{
+class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1{
 public:
+	typedef deTObjectReference<deoglSTPipelinesHeightMap2> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture);
+	explicit deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */

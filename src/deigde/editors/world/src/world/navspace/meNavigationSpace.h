@@ -28,21 +28,22 @@
 #include "../meColliderOwner.h"
 
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
 
-class deRig;
-class deDebugDrawer;
 class deEngine;
 class igdeEnvironment;
 class meWorld;
-class igdeWDebugDrawerShape;
-class deNavigationSpace;
-class deColliderComponent;
-class deComponent;
 
 
 
@@ -54,25 +55,28 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meNavigationSpace> Ref;
 	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<meNavigationSpace> List;
+	
 	
 private:
 	igdeEnvironment *pEnvironment;
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSNavSpace;
-	deNavigationSpace *pEngNavSpace;
-	deColliderComponent *pEngCollider;
-	deComponent *pEngColComponent;
-	deRig *pEngRig;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSNavSpace;
+	deNavigationSpace::Ref pEngNavSpace;
+	deColliderComponent::Ref pEngCollider;
+	deComponent::Ref pEngColComponent;
+	deRig::Ref pEngRig;
 	igdeWObject::Ref pObjectPlaceholder;
 	
 	decDVector pPosition;
 	decVector pOrientation;
 	decString pFilename;
 	
-	decIntList pUsedCostTypes;
+	decTList<int> pUsedCostTypes;
 	
 	bool pSelected;
 	bool pActive;
@@ -86,8 +90,12 @@ public:
 	/*@{*/
 	/** \brief Creates a new navigation space. */
 	meNavigationSpace(igdeEnvironment *environment);
+	
+protected:
 	/** \brief Cleans up the navigation space. */
 	virtual ~meNavigationSpace();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -95,13 +103,13 @@ public:
 	/** \brief Retrieves the game engine. */
 	deEngine *GetEngine() const;
 	/** \brief Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderComponent::Ref &GetEngineCollider() const{ return pEngCollider; }
 	/** \brief Retrieves the engine navigation space. */
-	inline deNavigationSpace *GetEngineNavSpace() const{ return pEngNavSpace; }
+	inline const deNavigationSpace::Ref &GetEngineNavSpace() const{ return pEngNavSpace; }
 	
-	/** \brief Retrieves the world or NULL. */
+	/** \brief Retrieves the world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** \brief Sets the world or NULL. */
+	/** \brief Sets the world or nullptr. */
 	void SetWorld(meWorld *world);
 	
 	/** \brief Retrieves the position. */
@@ -118,8 +126,8 @@ public:
 	void SetFilename(const char *filename);
 	
 	/** \brief Retrieves the list of cost types used in the loaded navigation space. */
-	inline decIntList &GetUsedCostTypes(){ return pUsedCostTypes; }
-	inline const decIntList &GetUsedCostTypes() const{ return pUsedCostTypes; }
+	inline decTList<int> &GetUsedCostTypes(){ return pUsedCostTypes; }
+	inline const decTList<int> &GetUsedCostTypes() const{ return pUsedCostTypes; }
 	
 	/** \brief Determines if the navigation space is selected. */
 	inline bool GetSelected() const{ return pSelected; }

@@ -25,46 +25,43 @@
 #ifndef _GDEGAMEDEFINITION_H_
 #define _GDEGAMEDEFINITION_H_
 
-#include "category/gdeCategoryList.h"
-#include "objectClass/gdeObjectClassList.h"
+#include "category/gdeCategory.h"
+#include "objectClass/gdeObjectClass.h"
 #include "objectClass/world/gdeOCWorld.h"
-#include "particleemitter/gdeParticleEmitterList.h"
-#include "property/gdePropertyList.h"
-#include "skin/gdeSkinList.h"
-#include "sky/gdeSkyList.h"
+#include "particleemitter/gdeParticleEmitter.h"
+#include "property/gdeProperty.h"
+#include "skin/gdeSkin.h"
+#include "sky/gdeSky.h"
+#include "objectClass/billboard/gdeOCBillboard.h"
+#include "objectClass/camera/gdeOCCamera.h"
+#include "objectClass/component/gdeOCComponent.h"
+#include "objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "objectClass/light/gdeOCLight.h"
+#include "objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "objectClass/navspace/gdeOCNavigationSpace.h"
+#include "objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "objectClass/forceField/gdeOCForceField.h"
+#include "objectClass/snappoint/gdeOCSnapPoint.h"
+#include "objectClass/speaker/gdeOCSpeaker.h"
 
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 class gdeGameDefinitionListener;
 class gdeLoadSaveSystem;
 class gdeOCInherit;
-class gdeOCBillboard;
-class gdeOCCamera;
-class gdeOCComponent;
 class gdeOCComponentTexture;
-class gdeOCEnvMapProbe;
-class gdeOCLight;
-class gdeOCNavigationBlocker;
-class gdeOCNavigationSpace;
-class gdeOCParticleEmitter;
-class gdeOCForceField;
-class gdeOCSnapPoint;
-class gdeOCSpeaker;
 class gdeOCWorld;
 class gdeSkyController;
 
 class igdeWSky;
 class igdeCamera;
-
-class deWorld;
-class deVirtualFileSystem;
 
 
 
@@ -146,7 +143,7 @@ public:
 	
 	
 private:
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
@@ -163,7 +160,7 @@ private:
 	decString pScriptModule;
 	
 	decStringList pBaseGameDefinitionIDList;
-	decObjectList pBaseGameDefinitions;
+	decTObjectOrderedSet<gdeGameDefinition> pBaseGameDefinitions;
 	
 	decString pDefaultObjectClass;
 	decString pDefaultSkin;
@@ -174,37 +171,37 @@ private:
 	gdeCategoryList pCategoriesSkin;
 	gdeCategoryList pCategoriesSky;
 	gdeCategoryList pCategoriesParticleEmitter;
-	gdeCategory *pActiveCategory;
+	gdeCategory::Ref pActiveCategory;
 	
 	decStringSet pUsedTagsObjectClass;
 	
-	gdeObjectClassList pObjectClasses;
-	gdeObjectClass *pActiveObjectClass;
-	gdeOCBillboard *pActiveOCBillboard;
-	gdeOCCamera *pActiveOCCamera;
-	gdeOCComponent *pActiveOCComponent;
-	gdeOCEnvMapProbe *pActiveOCEnvMapProbe;
-	gdeOCLight *pActiveOCLight;
-	gdeOCNavigationBlocker *pActiveOCNavigationBlocker;
-	gdeOCNavigationSpace *pActiveOCNavigationSpace;
-	gdeOCParticleEmitter *pActiveOCParticleEmitter;
-	gdeOCForceField *pActiveOCForceField;
-	gdeOCSnapPoint *pActiveOCSnapPoint;
-	gdeOCSpeaker *pActiveOCSpeaker;
+	gdeObjectClass::List pObjectClasses;
+	gdeObjectClass::Ref pActiveObjectClass;
+	gdeOCBillboard::Ref pActiveOCBillboard;
+	gdeOCCamera::Ref pActiveOCCamera;
+	gdeOCComponent::Ref pActiveOCComponent;
+	gdeOCEnvMapProbe::Ref pActiveOCEnvMapProbe;
+	gdeOCLight::Ref pActiveOCLight;
+	gdeOCNavigationBlocker::Ref pActiveOCNavigationBlocker;
+	gdeOCNavigationSpace::Ref pActiveOCNavigationSpace;
+	gdeOCParticleEmitter::Ref pActiveOCParticleEmitter;
+	gdeOCForceField::Ref pActiveOCForceField;
+	gdeOCSnapPoint::Ref pActiveOCSnapPoint;
+	gdeOCSpeaker::Ref pActiveOCSpeaker;
 	gdeOCWorld::Ref pActiveOCWorld;
 	decStringSet pClassNameList;
 	
-	gdeParticleEmitterList pParticleEmitters;
-	gdeParticleEmitter *pActiveParticleEmitter;
+	gdeParticleEmitter::List pParticleEmitters;
+	gdeParticleEmitter::Ref pActiveParticleEmitter;
 	
-	gdeSkinList pSkins;
-	gdeSkin *pActiveSkin;
+	gdeSkin::List pSkins;
+	gdeSkin::Ref pActiveSkin;
 	
-	gdeSkyList pSkies;
-	gdeSky *pActiveSky;
+	gdeSky::List pSkies;
+	gdeSky::Ref pActiveSky;
 	
-	gdePropertyList pWorldProperties;
-	gdePropertyList pDecalProperties;
+	gdeProperty::List pWorldProperties;
+	gdeProperty::List pDecalProperties;
 	
 	decStringList pAutoFindPathObjectClasses;
 	decStringList pAutoFindPathSkins;
@@ -215,9 +212,9 @@ private:
 	decStringSet pDefinedIDs;
 	decStringSet pUsedIDs;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<gdeGameDefinitionListener> pListeners;
 	
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	deVirtualFileSystem *pPreviewVFS;
 	
 	
@@ -229,7 +226,9 @@ public:
 	gdeGameDefinition(igdeEnvironment *environment);
 	
 	/** Clean up speech animation. */
+protected:
 	virtual ~gdeGameDefinition();
+public:
 	/*@}*/
 	
 	
@@ -237,7 +236,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World. */
-	inline deWorld *GetWorld() const{ return pWorld; }
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
@@ -335,7 +334,7 @@ public:
 	inline gdeCategoryList &GetCategoriesObjectClass(){ return pCategoriesObjectClass; }
 	inline const gdeCategoryList &GetCategoriesObjectClass() const{ return pCategoriesObjectClass; }
 	
-	/** Find object class category with path or \em NULL if absent. */
+	/** Find object class category with path or nullptr if absent. */
 	const gdeCategory *FindCategoryObjectClass(const char *path) const;
 	
 	/** Object classes category names. */
@@ -353,10 +352,10 @@ public:
 	inline gdeCategoryList &GetCategoriesParticleEmitter(){ return pCategoriesParticleEmitter; }
 	inline const gdeCategoryList &GetCategoriesParticleEmitter() const{ return pCategoriesParticleEmitter; }
 	
-	/** Active category or \em NULL if not set. */
-	inline gdeCategory *GetActiveCategory() const{ return pActiveCategory; }
+	/** Active category or nullptr if not set. */
+	inline const gdeCategory::Ref &GetActiveCategory() const{ return pActiveCategory; }
 	
-	/** Set active category or \em NULL if not set. */
+	/** Set active category or nullptr if not set. */
 	void SetActiveCategory(gdeCategory *category);
 	
 	
@@ -371,8 +370,8 @@ public:
 	
 	
 	/** World properties. */
-	inline gdePropertyList &GetWorldProperties(){ return pWorldProperties; }
-	inline const gdePropertyList &GetWorldProperties() const{ return pWorldProperties; }
+	inline gdeProperty::List &GetWorldProperties(){ return pWorldProperties; }
+	inline const gdeProperty::List &GetWorldProperties() const{ return pWorldProperties; }
 	
 	/** Notify listeners world properties changed. */
 	void NotifyWorldPropertiesChanged();
@@ -386,8 +385,8 @@ public:
 	
 	
 	/** Decal properties. */
-	inline gdePropertyList &GetDecalProperties(){ return pDecalProperties; }
-	inline const gdePropertyList &GetDecalProperties() const{ return pDecalProperties; }
+	inline gdeProperty::List &GetDecalProperties(){ return pDecalProperties; }
+	inline const gdeProperty::List &GetDecalProperties() const{ return pDecalProperties; }
 	
 	/** Notify listeners world properties changed. */
 	void NotifyDecalPropertiesChanged();
@@ -469,7 +468,7 @@ public:
 	/** \name Object classes */
 	/*@{*/
 	/** Object classes. */
-	inline const gdeObjectClassList &GetObjectClasses() const{ return pObjectClasses; }
+	inline const gdeObjectClass::List &GetObjectClasses() const{ return pObjectClasses; }
 	
 	/** Add object class. */
 	void AddObjectClass(gdeObjectClass *objectClass);
@@ -481,17 +480,17 @@ public:
 	void RemoveAllObjectClasses();
 	
 	/** Find object class in game definition and all base game definitions. */
-	const gdeObjectClass * const FindObjectClass(const char *name) const;
+	const gdeObjectClass *FindObjectClass(const char *name) const;
 	
 	/** Class name list. */
 	const decStringSet &GetClassNameList();
 	
 	
 	
-	/** Active object class or \em NULL if none is active. */
-	inline gdeObjectClass *GetActiveObjectClass() const{ return pActiveObjectClass; }
+	/** Active object class or nullptr if none is active. */
+	inline const gdeObjectClass::Ref &GetActiveObjectClass() const{ return pActiveObjectClass; }
 	
-	/** Set active object class or \em NULL if none is active. */
+	/** Set active object class or nullptr if none is active. */
 	void SetActiveObjectClass(gdeObjectClass *objectClass);
 	
 	/** Active object class is set. */
@@ -499,10 +498,10 @@ public:
 	
 	
 	
-	/** Active object class billboard or \em NULL if none is active. */
-	inline gdeOCBillboard *GetActiveOCBillboard() const{ return pActiveOCBillboard; }
+	/** Active object class billboard or nullptr if none is active. */
+	inline const gdeOCBillboard::Ref &GetActiveOCBillboard() const{ return pActiveOCBillboard; }
 	
-	/** Set active object class billboard or \em NULL if none is active. */
+	/** Set active object class billboard or nullptr if none is active. */
 	void SetActiveOCBillboard(gdeOCBillboard *billboard);
 	
 	/** Active object class billboard is set. */
@@ -510,10 +509,10 @@ public:
 	
 	
 	
-	/** Active object class camera or \em NULL if none is active. */
-	inline gdeOCCamera *GetActiveOCCamera() const{ return pActiveOCCamera; }
+	/** Active object class camera or nullptr if none is active. */
+	inline const gdeOCCamera::Ref &GetActiveOCCamera() const{ return pActiveOCCamera; }
 	
-	/** Set active object class camera or \em NULL if none is active. */
+	/** Set active object class camera or nullptr if none is active. */
 	void SetActiveOCCamera(gdeOCCamera *camera);
 	
 	/** Active object class camera is set. */
@@ -521,10 +520,10 @@ public:
 	
 	
 	
-	/** Active object class component or \em NULL if none is active. */
-	inline gdeOCComponent *GetActiveOCComponent() const{ return pActiveOCComponent; }
+	/** Active object class component or nullptr if none is active. */
+	inline const gdeOCComponent::Ref &GetActiveOCComponent() const{ return pActiveOCComponent; }
 	
-	/** Set active object class component or \em NULL if none is active. */
+	/** Set active object class component or nullptr if none is active. */
 	void SetActiveOCComponent(gdeOCComponent *component);
 	
 	/** Active object class component is set. */
@@ -532,10 +531,10 @@ public:
 	
 	
 	
-	/** Active object class environment map probe or \em NULL if none is active. */
-	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
+	/** Active object class environment map probe or nullptr if none is active. */
+	inline const gdeOCEnvMapProbe::Ref &GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
 	
-	/** Set active object class environment map probe or \em NULL if none is active. */
+	/** Set active object class environment map probe or nullptr if none is active. */
 	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Active object class environment map probe is set. */
@@ -543,10 +542,10 @@ public:
 	
 	
 	
-	/** Active object class light or \em NULL if none is active. */
-	inline gdeOCLight *GetActiveOCLight() const{ return pActiveOCLight; }
+	/** Active object class light or nullptr if none is active. */
+	inline const gdeOCLight::Ref &GetActiveOCLight() const{ return pActiveOCLight; }
 	
-	/** Set active object class light or \em NULL if none is active. */
+	/** Set active object class light or nullptr if none is active. */
 	void SetActiveOCLight(gdeOCLight *light);
 	
 	/** Active object class light is set. */
@@ -554,10 +553,10 @@ public:
 	
 	
 	
-	/** Active object class navigation blocker or \em NULL if none is active. */
-	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
+	/** Active object class navigation blocker or nullptr if none is active. */
+	inline const gdeOCNavigationBlocker::Ref &GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
 	
-	/** Set active object class navigation blocker or \em NULL if none is active. */
+	/** Set active object class navigation blocker or nullptr if none is active. */
 	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker);
 	
 	/** Active object class navigation blocker is set. */
@@ -565,10 +564,10 @@ public:
 	
 	
 	
-	/** Active object class navigation space or \em NULL if none is active. */
-	inline gdeOCNavigationSpace *GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
+	/** Active object class navigation space or nullptr if none is active. */
+	inline const gdeOCNavigationSpace::Ref &GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
 	
-	/** Set active object class navigation space or \em NULL if none is active. */
+	/** Set active object class navigation space or nullptr if none is active. */
 	void SetActiveOCNavigationSpace(gdeOCNavigationSpace *navspace);
 	
 	/** Active object class navigation space is set. */
@@ -576,10 +575,10 @@ public:
 	
 	
 	
-	/** Active object class particle emitter or \em NULL if none is active. */
-	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
+	/** Active object class particle emitter or nullptr if none is active. */
+	inline const gdeOCParticleEmitter::Ref &GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
 	
-	/** Set active object class particle emitter or \em NULL if none is active. */
+	/** Set active object class particle emitter or nullptr if none is active. */
 	void SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter);
 	
 	/** Active object class particle emitter is set. */
@@ -587,10 +586,10 @@ public:
 	
 	
 	
-	/** Active object class force field or \em NULL if none is active. */
-	inline gdeOCForceField *GetActiveOCForceField() const{ return pActiveOCForceField; }
+	/** Active object class force field or nullptr if none is active. */
+	inline const gdeOCForceField::Ref &GetActiveOCForceField() const{ return pActiveOCForceField; }
 	
-	/** Set active object class force field or \em NULL if none is active. */
+	/** Set active object class force field or nullptr if none is active. */
 	void SetActiveOCForceField(gdeOCForceField *field);
 	
 	/** Active object class force field is set. */
@@ -598,10 +597,10 @@ public:
 	
 	
 	
-	/** Active object class snap point or \em NULL if none is active. */
-	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
+	/** Active object class snap point or nullptr if none is active. */
+	inline const gdeOCSnapPoint::Ref &GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
 	
-	/** Set active object class snap point or \em NULL if none is active. */
+	/** Set active object class snap point or nullptr if none is active. */
 	void SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint);
 	
 	/** Active object class snap point is set. */
@@ -609,10 +608,10 @@ public:
 	
 	
 	
-	/** Active object class speaker or \em NULL if none is active. */
-	inline gdeOCSpeaker *GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
+	/** Active object class speaker or nullptr if none is active. */
+	inline const gdeOCSpeaker::Ref &GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
 	
-	/** Set active object class speaker or \em NULL if none is active. */
+	/** Set active object class speaker or nullptr if none is active. */
 	void SetActiveOCSpeaker(gdeOCSpeaker *speaker);
 	
 	/** Active object class speaker is set. */
@@ -636,7 +635,7 @@ public:
 	/** \name Particle Emitters */
 	/*@{*/
 	/** Particle emitters. */
-	inline const gdeParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
+	inline const gdeParticleEmitter::List &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Add particle emitter. */
 	void AddParticleEmitter(gdeParticleEmitter *particleEmitter);
@@ -647,10 +646,10 @@ public:
 	/** Remove all particle emitters. */
 	void RemoveAllParticleEmitters();
 	
-	/** Active particle emitter or \em NULL if none is active. */
-	inline gdeParticleEmitter *GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
+	/** Active particle emitter or nullptr if none is active. */
+	inline const gdeParticleEmitter::Ref &GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
 	
-	/** Set active particle emitter or \em NULL if none is active. */
+	/** Set active particle emitter or nullptr if none is active. */
 	void SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Active particle emitter is set. */
@@ -663,7 +662,7 @@ public:
 	/** \name Skins */
 	/*@{*/
 	/** Skins. */
-	inline const gdeSkinList &GetSkins() const{ return pSkins; }
+	inline const gdeSkin::List &GetSkins() const{ return pSkins; }
 	
 	/** Add skin. */
 	void AddSkin(gdeSkin *skin);
@@ -674,10 +673,10 @@ public:
 	/** Remove all skins. */
 	void RemoveAllSkins();
 	
-	/** Active skin or \em NULL if none is active. */
-	inline gdeSkin *GetActiveSkin() const{ return pActiveSkin; }
+	/** Active skin or nullptr if none is active. */
+	inline const gdeSkin::Ref &GetActiveSkin() const{ return pActiveSkin; }
 	
-	/** Set active skin or \em NULL if none is active. */
+	/** Set active skin or nullptr if none is active. */
 	void SetActiveSkin(gdeSkin *skin);
 	
 	/** Active skin is set. */
@@ -690,7 +689,7 @@ public:
 	/** \name Skins */
 	/*@{*/
 	/** Skins. */
-	inline const gdeSkyList &GetSkies() const{ return pSkies; }
+	inline const gdeSky::List &GetSkies() const{ return pSkies; }
 	
 	/** Add sky. */
 	void AddSky(gdeSky *sky);
@@ -701,10 +700,10 @@ public:
 	/** Remove all skies. */
 	void RemoveAllSkies();
 	
-	/** Active sky or \em NULL if none is active. */
-	inline gdeSky *GetActiveSky() const{ return pActiveSky; }
+	/** Active sky or nullptr if none is active. */
+	inline const gdeSky::Ref &GetActiveSky() const{ return pActiveSky; }
 	
-	/** Set active sky or \em NULL if none is active. */
+	/** Set active sky or nullptr if none is active. */
 	void SetActiveSky(gdeSky *sky);
 	
 	/** Active sky is set. */

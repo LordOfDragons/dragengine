@@ -43,17 +43,14 @@
 aeUMoveRuleDown::aeUMoveRuleDown(aeAnimator *animator, aeRule *rule){
 	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pRule = NULL;
+	pAnimator = nullptr;
+	pRule = nullptr;
 	
 	pIndex = animator->GetRules().IndexOf(rule);
 	if(pIndex == -1 || pIndex == animator->GetRules().GetCount() - 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeUMoveRuleDown::~aeUMoveRuleDown(){
@@ -79,6 +76,4 @@ void aeUMoveRuleDown::Redo(){
 //////////////////////
 
 void aeUMoveRuleDown::pCleanUp(){
-	if(pRule) pRule->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
 }

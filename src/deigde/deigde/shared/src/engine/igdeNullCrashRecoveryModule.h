@@ -31,7 +31,7 @@
 
 
 /**
- * \brief Null CrashRecovery Module.
+ * \brief nullptr CrashRecovery Module.
  */
 class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
 public:
@@ -39,7 +39,11 @@ public:
 	public:
 		typedef deTObjectReference<cModule> Ref;
 		cModule(deModuleSystem *system);
+		
+	protected:
 		virtual ~cModule();
+		
+	public:
 		virtual void CreateModule();
 	};
 	

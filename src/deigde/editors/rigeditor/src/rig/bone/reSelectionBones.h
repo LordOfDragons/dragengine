@@ -26,9 +26,10 @@
 #ifndef _RESELECTIONBONES_H_
 #define _RESELECTIONBONES_H_
 
+#include "reRigBone.h"
+
 // predefinitions
 class reRig;
-class reRigBone;
 class deColliderVolume;
 
 
@@ -41,9 +42,8 @@ class reSelectionBones{
 private:
 	reRig *pRig;
 	
-	reRigBone **pBones;
-	int pBoneCount, pBoneSize;
-	reRigBone *pActiveBone;
+	reRigBone::List pBones;
+	reRigBone::Ref pActiveBone;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -59,14 +59,9 @@ public:
 	/** Retrieves the parent rig. */
 	inline reRig *GetParentRig() const{ return pRig; }
 	
-	/** Retrieves the number of selected bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
-	/** Retrieves the bone at the given index. */
-	reRigBone *GetBoneAt(int index) const;
-	/** Determines if the given bone exists. */
-	bool HasBone(reRigBone *bone) const;
-	/** Retrieves the index of the given bone or -1 if not found. */
-	int IndexOfBone(reRigBone *bone) const;
+	/** List of selected bones. */
+	inline const reRigBone::List &GetBones() const{ return pBones; }
+	
 	/** Retrieves the index of the bone with the given collider or -1 if not found. */
 	int IndexOfBoneWith(deColliderVolume *collider) const;
 	/** Adds a bone if not existing already. */
@@ -76,14 +71,14 @@ public:
 	/** Removes all bones. */
 	void RemoveAllBones();
 	
-	/** Retrieves the active bone or NULL. */
-	inline reRigBone *GetActiveBone() const{ return pActiveBone; }
+	/** Retrieves the active bone or nullptr. */
+	inline const reRigBone::Ref &GetActiveBone() const{ return pActiveBone; }
 	/** Determines if an active bone exists. */
 	bool HasActiveBone() const;
-	/** Sets the acitve bone or NULL. */
+	/** Sets the acitve bone or nullptr. */
 	void SetActiveBone(reRigBone *bone);
 	
-	/** Removes all bones and sets the active bone to NULL. */
+	/** Removes all bones and sets the active bone to nullptr. */
 	void Reset();
 	/*@}*/
 };

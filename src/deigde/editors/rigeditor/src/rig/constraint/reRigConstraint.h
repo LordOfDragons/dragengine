@@ -25,18 +25,20 @@
 #ifndef _RERIGCONSTRAINT_H_
 #define _RERIGCONSTRAINT_H_
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
-class deDebugDrawer;
 class reRig;
 class reRigBone;
 class deRigConstraint;
 class reRigConstraintDof;
 class deCollider;
-class deColliderVolume;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class igdeWAngleRange;
 class deEngine;
@@ -53,16 +55,16 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSConstraint;
-	igdeWDebugDrawerShape *pDDSJointError;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSConstraint;
+	igdeWDebugDrawerShape::Ref pDDSJointError;
 	igdeWCoordSysArrows *pDDSCoordSys;
-	igdeWDebugDrawerShape *pDDSOffset;
-	igdeWDebugDrawerShape *pDDSRangeLinear;
+	igdeWDebugDrawerShape::Ref pDDSOffset;
+	igdeWDebugDrawerShape::Ref pDDSRangeLinear;
 	igdeWAngleRange *pDDSRangeAngularX;
 	igdeWAngleRange *pDDSRangeAngularY;
 	igdeWAngleRange *pDDSRangeAngularZ;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	deColliderConstraint *pEngConstraint;
 	
 	decVector pPosition;
@@ -79,7 +81,7 @@ private:
 	
 	float pBreakingThreshold;
 	
-	reRigBone *pConstraintBone;
+	deTObjectReference<reRigBone> pConstraintBone;
 	
 	decDMatrix pPoseMatrix1;
 	decDMatrix pPoseMatrix2;
@@ -94,14 +96,18 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reRigConstraint> Ref;
-
-
+	
+	typedef decTObjectOrderedSet<reRigConstraint> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig controller. */
 	reRigConstraint(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
+protected:
 	virtual ~reRigConstraint();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -123,10 +129,10 @@ public:
 	/** \brief Builds an engine rig constraint from the actual state. */
 	deRigConstraint *BuildEngineRigConstraint();
 	/** \brief Builds an engine collider constraint from the actual state. */
-	deColliderConstraint *BuildEngineColliderConstraint();
+	deColliderConstraint::Ref BuildEngineColliderConstraint();
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the constraint position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -179,9 +185,9 @@ public:
 	/** \brief Sets the breaking impulse threshold or 0 to disable. */
 	void SetBreakingThreshold(float impulseThreshold);
 	
-	/** \brief Retrieves the constraint rig bone or NULL. */
-	inline reRigBone *GetConstraintBone() const{ return pConstraintBone; }
-	/** \brief Sets the constraint rig bone or NULL. */
+	/** \brief Retrieves the constraint rig bone or nullptr. */
+	inline const deTObjectReference<reRigBone> &GetConstraintBone() const{ return pConstraintBone; }
+	/** \brief Sets the constraint rig bone or nullptr. */
 	void SetConstraintBone(reRigBone *bone);
 	
 	/** \brief Retrieves the first pose matrix. */

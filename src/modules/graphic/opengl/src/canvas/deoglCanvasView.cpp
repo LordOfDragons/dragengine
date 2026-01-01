@@ -49,7 +49,6 @@
 deoglCanvasView::deoglCanvasView(deGraphicOpenGl &ogl, deCanvasView &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasView(canvas),
-pRCanvasView(NULL),
 pDirtyPaint(false),
 pResizeRenderTarget(false),
 pSyncRequestSend(false){
@@ -68,7 +67,7 @@ deoglCanvasView::~deoglCanvasView(){
 ///////////////
 
 void deoglCanvasView::DropRCanvas(){
-	pRCanvasView = NULL;
+	pRCanvasView = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
@@ -227,7 +226,7 @@ void deoglCanvasView::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasView::CreateRCanvas(){
-	pRCanvasView = new deoglRCanvasView(GetOgl().GetRenderThread());
+	pRCanvasView = deoglRCanvasView::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasView;
 }
 

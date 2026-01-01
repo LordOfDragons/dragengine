@@ -41,9 +41,9 @@
 ////////////////////////////
 
 gdeUOCTextureSetColorTint::gdeUOCTextureSetColorTint(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const decColor &newValue) :
-pObjectClass(NULL),
-pTexture(NULL)
+gdeOCComponentTexture *texture, const decColor &newValue) :
+
+pTexture(nullptr)
 {
 	if(!objectClass || !texture){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetColorTint::~gdeUOCTextureSetColorTint(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

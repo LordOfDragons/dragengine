@@ -96,7 +96,7 @@ void deoglGI::pCleanUp(){
 }
 
 void deoglGI::pCreateUBOParameter(){
-	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(pRenderThread));
 	
 	// memory consumption:
 	// - 10 vec4 blocks = 40 components = 160 bytes
@@ -134,11 +134,11 @@ void deoglGI::pCreateUBOParameter(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(1);
 	
-	pUBOParameterSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOParameterSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBOProbeIndex(){
-	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(pRenderThread));
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe indices = 4096 components = 16384 bytes
@@ -148,11 +148,11 @@ void deoglGI::pCreateUBOProbeIndex(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(2);
 	
-	pUBOProbeIndexSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOProbeIndexSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBOProbePosition(){
-	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(pRenderThread));
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe positions = 16384 components = 65536 bytes
@@ -162,11 +162,11 @@ void deoglGI::pCreateUBOProbePosition(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(3);
 	
-	pUBOProbePositionSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOProbePositionSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBORayDirection(){
-	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(pRenderThread));
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 512 rays = 2048 components = 8192 bytes
@@ -176,5 +176,5 @@ void deoglGI::pCreateUBORayDirection(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(4);
 	
-	pUBORayDirectionSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBORayDirectionSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }

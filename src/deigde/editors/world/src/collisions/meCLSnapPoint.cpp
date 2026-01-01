@@ -35,7 +35,6 @@
 
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/snappoint/igdeGDCSnapPoint.h>
-#include <deigde/gamedefinition/class/snappoint/igdeGDCSnapPointList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -56,9 +55,9 @@ meCLSnapPoint::meCLSnapPoint(meWorld &world, meObject *object) :
 pWorld(world),
 pObject(object),
 pDistance(0.0f),
-pSourceSnapPoint(NULL),
-pTargetObject(NULL),
-pTargetSnapPoint(NULL){
+pSourceSnapPoint(nullptr),
+pTargetObject(nullptr),
+pTargetSnapPoint(nullptr){
 }
 
 meCLSnapPoint::~meCLSnapPoint(){
@@ -77,20 +76,16 @@ void meCLSnapPoint::CalcBoundingBoxShape(decShapeList &shape){
 	decVector boxMin, boxMax;
 	
 	if(pObject->GetGDClass()){
-		const igdeGDCSnapPointList &list = pObject->GetGDClass()->GetSnapPointList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			const decVector &position = list.GetAt(i)->GetPosition();
+		pObject->GetGDClass()->GetSnapPointList().Visit([&](const igdeGDCSnapPoint &s){
+			const decVector &position = s.GetPosition();
 			boxMin.SetSmallest(position);
 			boxMax.SetLargest(position);
-		}
+		});
 	}
 	
 	shape.RemoveAll();
 	
-	decShapeBox *shapeBox = NULL;
+	decShapeBox *shapeBox = nullptr;
 	
 	try{
 		shapeBox = new decShapeBox(
@@ -113,14 +108,14 @@ void meCLSnapPoint::AddIgnoreObject(meObject *object){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pIgnoreObjects.AddIfAbsent(object);
+	pIgnoreObjects.Add(object);
 }
 
 void meCLSnapPoint::Reset(){
 	pDistance = 0.0f;
-	pSourceSnapPoint = NULL;
-	pTargetObject = NULL;
-	pTargetSnapPoint = NULL;
+	pSourceSnapPoint = nullptr;
+	pTargetObject = nullptr;
+	pTargetSnapPoint = nullptr;
 }
 
 
@@ -195,28 +190,24 @@ void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	
 	// find closest snap point if object has snap points
 	if(pObject->GetGDClass()){
-		const igdeGDCSnapPointList &list = pObject->GetGDClass()->GetSnapPointList();
 		const decDMatrix matrix(pObject->GetObjectMatrix());
-		const int count = list.GetCount();
-		int i;
 		
-		for(i=0; i<count; i++){
-			igdeGDCSnapPoint * const snappoint = list.GetAt(i);
-			const decDVector sourcePosition(matrix * decDVector(snappoint->GetPosition()));
+		pObject->GetGDClass()->GetSnapPointList().Visit([&](igdeGDCSnapPoint *s){
+			const decDVector sourcePosition(matrix * decDVector(s->GetPosition()));
 			const float distance = (float)(targetPosition - sourcePosition).Length();
 			
 			if(distance > snapDistance){
-				continue;
+				return;
 			}
 			if(pTargetSnapPoint && distance >= pDistance){
-				continue;
+				return;
 			}
 			
-			pSourceSnapPoint = snappoint;
+			pSourceSnapPoint = s;
 			pTargetObject = object;
 			pTargetSnapPoint = gdcSnapPoint;
 			pDistance = distance;
-		}
+		});
 	}
 	
 	// use object position as snap point
@@ -224,7 +215,7 @@ void meCLSnapPoint::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	
 	if(distance <= snapDistance){
 		if(!pTargetSnapPoint || distance < pDistance){
-			pSourceSnapPoint = NULL;
+			pSourceSnapPoint = nullptr;
 			pTargetObject = object;
 			pTargetSnapPoint = gdcSnapPoint;
 			pDistance = distance;

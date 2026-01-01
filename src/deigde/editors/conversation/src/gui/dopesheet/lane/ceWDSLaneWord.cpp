@@ -60,6 +60,10 @@
 namespace {
 
 class cActionWordsFromText : public igdeAction{
+public:
+	typedef deTObjectReference<cActionWordsFromText> Ref;
+	
+private:
 protected:
 	ceWDSLaneWord &pLane;
 	
@@ -68,7 +72,7 @@ public:
 		nullptr, "Set words from Actor Speak Action text using speech animation information"),
 	pLane(lane){}
 
-	virtual void OnAction(){
+	void OnAction() override{
 		ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
 		if(!action){
 			return;
@@ -79,13 +83,13 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakWordFromText::Ref undo(ceUCAASpeakWordFromText::Ref::NewWith(
+		ceUCAASpeakWordFromText::Ref undo(ceUCAASpeakWordFromText::Ref::New(
 			pLane.GetWindow().GetTopic(), action));
 		undo->SetWordsFromText(action->ResolveTextBoxText(*conversation), 0.075f);
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pLane.GetWindow().GetActionASpeak());
 	}
 };
@@ -117,14 +121,14 @@ void ceWDSLaneWord::OnContextMenu(igdeMenuCascade &menu, const decPoint &positio
 	ceWDSLane::OnContextMenu(menu, position);
 	
 	igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand(menu, new cActionWordsFromText(*this), true);
+	helper.MenuCommand(menu, cActionWordsFromText::Ref::New(*this));
 }
 
 
 
-const ceStripList &ceWDSLaneWord::GetStripList() const{
+const ceStrip::List &ceWDSLaneWord::GetStripList() const{
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? action->GetWordList() : GetEmptyList();
+	return action ? action->GetWords() : GetEmptyList();
 }
 
 void ceWDSLaneWord::FillIDList(decStringList &list){
@@ -134,7 +138,7 @@ void ceWDSLaneWord::FillIDList(decStringList &list){
 	}
 	
 	const ceConversationActorList &actorList = GetWindow().GetConversation()->GetActorList();
-	ceSpeechAnimation *speechAnimation = NULL;
+	ceSpeechAnimation *speechAnimation = nullptr;
 	
 	ceConversationActor *actor = actorList.GetWithIDOrAliasID(action->GetActor());
 	if(actor){
@@ -144,50 +148,47 @@ void ceWDSLaneWord::FillIDList(decStringList &list){
 		return;
 	}
 	
-	const ceSAWordList &saWordList = speechAnimation->GetWordList();
-	const int saWordCount = saWordList.GetCount();
-	int i;
-	for(i=0; i<saWordCount; i++){
-		list.Add(saWordList.GetAt(i)->GetName());
-	}
+	speechAnimation->GetWordList().Visit([&](const ceSAWord::Ref &w){
+		list.Add(w->GetName());
+	});
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripAdd(ceStrip *strip, int index){
+igdeUndo::Ref ceWDSLaneWord::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordAdd(GetWindow().GetTopic(), action, strip, index) : NULL;
+	return action ? ceUCAASpeakWordAdd::Ref::New(GetWindow().GetTopic(), action, strip, index) : ceUCAASpeakWordAdd::Ref();
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripRemove(ceStrip *strip){
+igdeUndo::Ref ceWDSLaneWord::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordRemove(GetWindow().GetTopic(), action, strip) : NULL;
+	return action ? ceUCAASpeakWordRemove::Ref::New(GetWindow().GetTopic(), action, strip) : ceUCAASpeakWordRemove::Ref();
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripRemoveAll(){
+igdeUndo::Ref ceWDSLaneWord::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordClear(GetWindow().GetTopic(), action) : NULL;
+	return action ? ceUCAASpeakWordClear::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakWordClear::Ref();
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
+igdeUndo::Ref ceWDSLaneWord::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSet(GetWindow().GetTopic(), action, strip, withStrip) : NULL;
+	return action ? ceUCAASpeakWordSet::Ref::New(GetWindow().GetTopic(), action, strip, withStrip) : ceUCAASpeakWordSet::Ref();
 }
 
-igdeUndo *ceWDSLaneWord::UndoStripMove(ceStrip *strip, int toIndex){
+igdeUndo::Ref ceWDSLaneWord::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordMove(GetWindow().GetTopic(), action, strip, toIndex) : NULL;
+	return action ? ceUCAASpeakWordMove::Ref::New(GetWindow().GetTopic(), action, strip, toIndex) : ceUCAASpeakWordMove::Ref();
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneWord::UndoStripSetPause(ceStrip *strip, float pause){
+ceUCAASpeakStripSetPause::Ref ceWDSLaneWord::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSetPause(GetWindow().GetTopic(), action, strip, pause) : NULL;
+	return action ? ceUCAASpeakWordSetPause::Ref::New(GetWindow().GetTopic(), action, strip, pause) : ceUCAASpeakWordSetPause::Ref();
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneWord::UndoStripSetDuration(ceStrip *strip, float duration){
+ceUCAASpeakStripSetDuration::Ref ceWDSLaneWord::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordSetDuration(GetWindow().GetTopic(), action, strip, duration) : NULL;
+	return action ? ceUCAASpeakWordSetDuration::Ref::New(GetWindow().GetTopic(), action, strip, duration) : ceUCAASpeakWordSetDuration::Ref();
 }
 
-ceUCAASpeakStripsScale *ceWDSLaneWord::UndoScaleStrips(){
+ceUCAASpeakStripsScale::Ref ceWDSLaneWord::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakWordsScale(GetWindow().GetTopic(), action) : NULL;
+	return action ? ceUCAASpeakWordsScale::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakWordsScale::Ref();
 }

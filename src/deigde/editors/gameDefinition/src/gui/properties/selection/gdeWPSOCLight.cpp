@@ -95,6 +95,7 @@ protected:
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -103,13 +104,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, pPanel.GetObjectClass(), light)));
+		igdeUndo::Ref undo(OnChanged(*textField, pPanel.GetObjectClass(), light));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField,
 		gdeObjectClass *objectClass, gdeOCLight *light) = 0;
 };
 
@@ -118,6 +119,7 @@ protected:
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -126,14 +128,14 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), light)));
+		igdeUndo::Ref undo(
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), light));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 		gdeOCLight *light) = 0;
 };
 
@@ -142,6 +144,7 @@ protected:
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -150,13 +153,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, pPanel.GetObjectClass(), light)));
+		igdeUndo::Ref undo(OnChanged(*comboBox, pPanel.GetObjectClass(), light));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox,
 		gdeObjectClass *objectClass, gdeOCLight *light) = 0;
 };
 
@@ -165,6 +168,7 @@ protected:
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(gdeWPSOCLight &panel, const char *text, const char *description) :
 		igdeAction(text, description), pPanel(panel){}
 	
@@ -174,28 +178,29 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnActionLight(pPanel.GetObjectClass(), light)));
+		igdeUndo::Ref undo(OnActionLight(pPanel.GetObjectClass(), light));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light) = 0;
+	virtual igdeUndo::Ref OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light) = 0;
 };
 
 
 class cComboType : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboType> Ref;
 	cComboType(gdeWPSOCLight &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
-	gdeOCLight *light){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCLight *light) override{
 		const deLight::eLightTypes value =
 			(deLight::eLightTypes)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		if(value == light->GetType()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetType(objectClass, light, value);
+		return gdeUOCLightSetType::Ref::New(objectClass, light, value);
 	}
 };
 
@@ -203,6 +208,7 @@ class cColorLight : public igdeColorBoxListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cColorLight> Ref;
 	cColorLight(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnColorChanged(igdeColorBox *colorBox){
@@ -211,237 +217,258 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetColor::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetColor::Ref::New(
 			pPanel.GetObjectClass(), light, colorBox->GetColor()));
 	}
 };
 
 class cTextIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextIntensity> Ref;
 	cTextIntensity(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetIntensity() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetIntensity(objectClass, light, value);
+		return gdeUOCLightSetIntensity::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextAmbientRatio : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextAmbientRatio> Ref;
 	cTextAmbientRatio(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetAmbientRatio() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetAmbientRatio(objectClass, light, value);
+		return gdeUOCLightSetAmbientRatio::Ref::New(objectClass, light, value);
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener {
+class cEditPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
 	cEditPosition(gdeWPSOCLight &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		if(light->GetPosition().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetPosition(objectClass, light, vector);
+		return gdeUOCLightSetPosition::Ref::New(objectClass, light, vector);
 	}
 };
 
-class cEditRotation : public cBaseEditVectorListener {
+class cEditRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotation> Ref;
 	cEditRotation(gdeWPSOCLight &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		if(light->GetRotation().IsEqualTo(vector)){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetRotation(objectClass, light, vector);
+		return gdeUOCLightSetRotation::Ref::New(objectClass, light, vector);
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBoneName> Ref;
 	cTextBoneName(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		if(light->GetBoneName() == textField.GetText()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetBoneName(objectClass, light, textField.GetText());
+		return gdeUOCLightSetBoneName::Ref::New(objectClass, light, textField.GetText());
 	}
 };
 
 class cTextRange : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRange> Ref;
 	cTextRange(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetRange() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetRange(objectClass, light, value);
+		return gdeUOCLightSetRange::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextHalfIntensityDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextHalfIntensityDistance> Ref;
 	cTextHalfIntensityDistance(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetHalfIntensityDistance() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetHalfIntDist(objectClass, light, value);
+		return gdeUOCLightSetHalfIntDist::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextSpotAngle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSpotAngle> Ref;
 	cTextSpotAngle(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetSpotAngle() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetSpotAngle(objectClass, light, value);
+		return gdeUOCLightSetSpotAngle::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextSpotRatio : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSpotRatio> Ref;
 	cTextSpotRatio(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetSpotRatio() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetSpotRatio(objectClass, light, value);
+		return gdeUOCLightSetSpotRatio::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextSpotSmoothness : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSpotSmoothness> Ref;
 	cTextSpotSmoothness(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetSpotSmoothness() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetSpotSmoothness(objectClass, light, value);
+		return gdeUOCLightSetSpotSmoothness::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextSpotExponent : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextSpotExponent> Ref;
 	cTextSpotExponent(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const float value = textField.GetFloat();
 		if(fabsf(light->GetSpotExponent() - value) < FLOAT_SAFE_EPSILON){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetSpotExponent(objectClass, light, value);
+		return gdeUOCLightSetSpotExponent::Ref::New(objectClass, light, value);
 	}
 };
 
 class cActionActivated : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActivated> Ref;
+	
+public:
 	cActionActivated(gdeWPSOCLight &panel) :
 	cBaseAction(panel, "Activated", "Light is activated"){}
 	
-	virtual igdeUndo *OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
-		return new gdeUOCLightToggleActivated(objectClass, light);
+	virtual igdeUndo::Ref OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
+		return gdeUOCLightToggleActivated::Ref::New(objectClass, light);
 	}
 };
 
 class cActionCastShadows : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCastShadows> Ref;
+	
+public:
 	cActionCastShadows(gdeWPSOCLight &panel) :
 	cBaseAction(panel, "Cast Shadows", "Light casts shadows"){}
 	
-	virtual igdeUndo *OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
-		return new gdeUOCLightToggleCastShadows(objectClass, light);
+	virtual igdeUndo::Ref OnActionLight(gdeObjectClass *objectClass, gdeOCLight *light){
+		return gdeUOCLightToggleCastShadows::Ref::New(objectClass, light);
 	}
 };
 
 class cTextHintLightImportance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextHintLightImportance> Ref;
 	cTextHintLightImportance(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const int value = textField.GetInteger();
 		if(light->GetHintLightImportance() == value){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetHintLightImportance(objectClass, light, value);
+		return gdeUOCLightSetHintLightImportance::Ref::New(objectClass, light, value);
 	}
 };
 
 class cTextHintShadowImportance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextHintShadowImportance> Ref;
 	cTextHintShadowImportance(gdeWPSOCLight &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const int value = textField.GetInteger();
 		if(light->GetHintShadowImportance() == value){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetHintShadowImportance(objectClass, light, value);
+		return gdeUOCLightSetHintShadowImportance::Ref::New(objectClass, light, value);
 	}
 };
 
 class cComboHintMovement : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboHintMovement> Ref;
 	cComboHintMovement(gdeWPSOCLight &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const deLight::eMovementHints value =
 			(deLight::eMovementHints)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		if(value == light->GetHintMovement()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetHintMovement(objectClass, light, value);
+		return gdeUOCLightSetHintMovement::Ref::New(objectClass, light, value);
 	}
 };
 
 class cComboHintParameter : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboHintParameter> Ref;
 	cComboHintParameter(gdeWPSOCLight &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
 	gdeOCLight *light){
 		const deLight::eParameterHints value =
 			(deLight::eParameterHints)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		if(value == light->GetHintParameter()){
-			return NULL;
+			return {};
 		}
-		return new gdeUOCLightSetHintParameter(objectClass, light, value);
+		return gdeUOCLightSetHintParameter::Ref::New(objectClass, light, value);
 	}
 };
 
@@ -449,6 +476,7 @@ class cTextLightSkin : public igdeEditPathListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextLightSkin> Ref;
 	cTextLightSkin(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -457,7 +485,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetLightSkinPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetLightSkinPath::Ref::New(
 			pPanel.GetObjectClass(), light, editPath->GetPath()));
 	}
 };
@@ -467,6 +495,7 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNames> Ref;
 	cComboPropertyNames(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -480,6 +509,7 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboPropertyNameTarget> Ref;
 	cComboPropertyNameTarget(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -493,7 +523,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetPropertyName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetPropertyName::Ref::New(
 			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText()));
 	}
 };
@@ -502,6 +532,7 @@ class cComboTriggerNames : public igdeComboBoxListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNames> Ref;
 	cComboTriggerNames(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -515,6 +546,7 @@ class cComboTriggerNameTarget : public igdeComboBoxListener{
 	gdeWPSOCLight &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboTriggerNameTarget> Ref;
 	cComboTriggerNameTarget(gdeWPSOCLight &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -527,7 +559,7 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetTriggerName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCLightSetTriggerName::Ref::New(
 			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText()));
 	}
 };
@@ -544,100 +576,98 @@ public:
 
 gdeWPSOCLight::gdeWPSOCLight(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCLightListener(*this);
+	pListener = gdeWPSOCLightListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Light:");
 	
-	helper.ComboBox(groupBox, "Type:", "Light type", pCBType, new cComboType(*this));
-	pCBType->AddItem("Point", NULL, (void*)(intptr_t)deLight::eltPoint);
-	pCBType->AddItem("Spot", NULL, (void*)(intptr_t)deLight::eltSpot);
-	pCBType->AddItem("Projector", NULL, (void*)(intptr_t)deLight::eltProjector);
+	helper.ComboBox(groupBox, "Type:", "Light type", pCBType, cComboType::Ref::New(*this));
+	pCBType->AddItem("Point", nullptr, (void*)(intptr_t)deLight::eltPoint);
+	pCBType->AddItem("Spot", nullptr, (void*)(intptr_t)deLight::eltSpot);
+	pCBType->AddItem("Projector", nullptr, (void*)(intptr_t)deLight::eltProjector);
 	
-	helper.ColorBox(groupBox, "Color:", "Light color", pClrColor, new cColorLight(*this));
+	helper.ColorBox(groupBox, "Color:", "Light color", pClrColor, cColorLight::Ref::New(*this));
 	helper.EditFloat(groupBox, "Intensity:", "Light intensity",
-		pEditIntensity, new cTextIntensity(*this));
+		pEditIntensity, cTextIntensity::Ref::New(*this));
 	helper.EditFloat(groupBox, "Ambient Ratio:", "Light ambient ratio",
-		pEditAmbientRatio, new cTextAmbientRatio(*this));
+		pEditAmbientRatio, cTextAmbientRatio::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName(*this));
+		pEditBoneName, cTextBoneName::Ref::New(*this));
 	helper.EditFloat(groupBox, "Range:", "Light range in meters", 4, 1,
-		pEditRange, new cTextRange(*this));
+		pEditRange, cTextRange::Ref::New(*this));
 	helper.EditFloat(groupBox, "Half Intensity:",
 		"half intensity distance relative to light range (0 to 1)",
-		pEditHalfIntensityDistance, new cTextHalfIntensityDistance(*this));
+		pEditHalfIntensityDistance, cTextHalfIntensityDistance::Ref::New(*this));
 	helper.EditFloat(groupBox, "Spot Angle:", "Outer spot angle in degrees", 4, 1,
-		pEditSpotAngle, new cTextSpotAngle(*this));
+		pEditSpotAngle, cTextSpotAngle::Ref::New(*this));
 	helper.EditFloat(groupBox, "Spot Ratio:", "Spot ratio as height divided by width",
-		pEditSpotRatio, new cTextSpotRatio(*this));
+		pEditSpotRatio, cTextSpotRatio::Ref::New(*this));
 	helper.EditFloat(groupBox, "Spot Smoothness:",
 		"Spot smoothess as fraction from outer spot angle where inner spot angle starts",
-		pEditSpotSmoothness, new cTextSpotSmoothness(*this));
+		pEditSpotSmoothness, cTextSpotSmoothness::Ref::New(*this));
 	helper.EditFloat(groupBox, "Spot exponent:", "Spot exponent",
-		pEditSpotExponent, new cTextSpotExponent(*this));
-	helper.CheckBox(groupBox, pChkActivated, new cActionActivated(*this), true);
-	helper.CheckBox(groupBox, pChkCastShadows, new cActionCastShadows(*this), true);
+		pEditSpotExponent, cTextSpotExponent::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkActivated, cActionActivated::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkCastShadows, cActionCastShadows::Ref::New(*this));
 	helper.EditPath(groupBox, "Light Skin:", "Path to light skin",
-		igdeEnvironment::efpltSkin, pEditLightSkin, new cTextLightSkin(*this));
+		igdeEnvironment::efpltSkin, pEditLightSkin, cTextLightSkin::Ref::New(*this));
 	
 	// hints
 	helper.GroupBox(content, groupBox, "Hints:", true);
 	helper.EditInteger(groupBox, "Light Importance:", "Light importance in percentage from 0 to 100",
-		pEditHintLightImportance, new cTextHintLightImportance(*this));
+		pEditHintLightImportance, cTextHintLightImportance::Ref::New(*this));
 	helper.EditInteger(groupBox, "Shadow Importance:", "Shadow importance in percentage from 0 to 100",
-		pEditHintShadowImportance, new cTextHintShadowImportance(*this));
+		pEditHintShadowImportance, cTextHintShadowImportance::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Movement:", "Light movement hint",
-		pCBHintMovement, new cComboHintMovement(*this));
-	pCBHintMovement->AddItem("Static", NULL, (void*)(intptr_t)deLight::emhStationary);
-	pCBHintMovement->AddItem("Jittering", NULL, (void*)(intptr_t)deLight::emhJittering);
-	pCBHintMovement->AddItem("Dynamic", NULL, (void*)(intptr_t)deLight::emhDynamic);
+		pCBHintMovement, cComboHintMovement::Ref::New(*this));
+	pCBHintMovement->AddItem("Static", nullptr, (void*)(intptr_t)deLight::emhStationary);
+	pCBHintMovement->AddItem("Jittering", nullptr, (void*)(intptr_t)deLight::emhJittering);
+	pCBHintMovement->AddItem("Dynamic", nullptr, (void*)(intptr_t)deLight::emhDynamic);
 	
 	helper.ComboBox(groupBox, "Parameter:", "Light parameter hint",
-		pCBHintParameter, new cComboHintParameter(*this));
-	pCBHintParameter->AddItem("Static", NULL, (void*)(intptr_t)deLight::ephStatic);
-	pCBHintParameter->AddItem("Activation", NULL, (void*)(intptr_t)deLight::ephActivation);
-	pCBHintParameter->AddItem("Flicker", NULL, (void*)(intptr_t)deLight::ephFlicker);
-	pCBHintParameter->AddItem("Dynamic", NULL, (void*)(intptr_t)deLight::ephDynamic);
+		pCBHintParameter, cComboHintParameter::Ref::New(*this));
+	pCBHintParameter->AddItem("Static", nullptr, (void*)(intptr_t)deLight::ephStatic);
+	pCBHintParameter->AddItem("Activation", nullptr, (void*)(intptr_t)deLight::ephActivation);
+	pCBHintParameter->AddItem("Flicker", nullptr, (void*)(intptr_t)deLight::ephFlicker);
+	pCBHintParameter->AddItem("Dynamic", nullptr, (void*)(intptr_t)deLight::ephDynamic);
 	
 	// property targets
 	helper.GroupBox(content, groupBox, "Properties:");
 	helper.ComboBox(groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames(*this));
-	pCBPropertyNames->AddItem("Type", NULL, (void*)(intptr_t)gdeOCLight::epType);
-	pCBPropertyNames->AddItem("Color", NULL, (void*)(intptr_t)gdeOCLight::epColor);
-	pCBPropertyNames->AddItem("Intensity", NULL, (void*)(intptr_t)gdeOCLight::epIntensity);
-	pCBPropertyNames->AddItem("Ambient ratio", NULL, (void*)(intptr_t)gdeOCLight::epAmbientRatio);
-	pCBPropertyNames->AddItem("Range", NULL, (void*)(intptr_t)gdeOCLight::epRange);
-	pCBPropertyNames->AddItem("Half intensity distance", NULL, (void*)(intptr_t)gdeOCLight::epHalfIntDist);
-	pCBPropertyNames->AddItem("Spot Angle", NULL, (void*)(intptr_t)gdeOCLight::epSpotAngle);
-	pCBPropertyNames->AddItem("Spot Ratio", NULL, (void*)(intptr_t)gdeOCLight::epSpotRatio);
-	pCBPropertyNames->AddItem("Spot Smoothness", NULL, (void*)(intptr_t)gdeOCLight::epSpotSmoothness);
-	pCBPropertyNames->AddItem("Spot exponent", NULL, (void*)(intptr_t)gdeOCLight::epSpotExponent);
-	pCBPropertyNames->AddItem("Light skin", NULL, (void*)(intptr_t)gdeOCLight::epLightSkin);
-	pCBPropertyNames->AddItem("Activated", NULL, (void*)(intptr_t)gdeOCLight::epActivated);
-	pCBPropertyNames->AddItem("Cast shadows", NULL, (void*)(intptr_t)gdeOCLight::epCastShadows);
-	pCBPropertyNames->AddItem("Hint light importance", NULL, (void*)(intptr_t)gdeOCLight::epHintLightImportance);
-	pCBPropertyNames->AddItem("Hint shadow importance", NULL, (void*)(intptr_t)gdeOCLight::epHintShadowImportance);
-	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCLight::epAttachPosition);
-	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCLight::epAttachRotation);
+		pCBPropertyNames, cComboPropertyNames::Ref::New(*this));
+	pCBPropertyNames->AddItem("Type", nullptr, (void*)(intptr_t)gdeOCLight::epType);
+	pCBPropertyNames->AddItem("Color", nullptr, (void*)(intptr_t)gdeOCLight::epColor);
+	pCBPropertyNames->AddItem("Intensity", nullptr, (void*)(intptr_t)gdeOCLight::epIntensity);
+	pCBPropertyNames->AddItem("Ambient ratio", nullptr, (void*)(intptr_t)gdeOCLight::epAmbientRatio);
+	pCBPropertyNames->AddItem("Range", nullptr, (void*)(intptr_t)gdeOCLight::epRange);
+	pCBPropertyNames->AddItem("Half intensity distance", nullptr, (void*)(intptr_t)gdeOCLight::epHalfIntDist);
+	pCBPropertyNames->AddItem("Spot Angle", nullptr, (void*)(intptr_t)gdeOCLight::epSpotAngle);
+	pCBPropertyNames->AddItem("Spot Ratio", nullptr, (void*)(intptr_t)gdeOCLight::epSpotRatio);
+	pCBPropertyNames->AddItem("Spot Smoothness", nullptr, (void*)(intptr_t)gdeOCLight::epSpotSmoothness);
+	pCBPropertyNames->AddItem("Spot exponent", nullptr, (void*)(intptr_t)gdeOCLight::epSpotExponent);
+	pCBPropertyNames->AddItem("Light skin", nullptr, (void*)(intptr_t)gdeOCLight::epLightSkin);
+	pCBPropertyNames->AddItem("Activated", nullptr, (void*)(intptr_t)gdeOCLight::epActivated);
+	pCBPropertyNames->AddItem("Cast shadows", nullptr, (void*)(intptr_t)gdeOCLight::epCastShadows);
+	pCBPropertyNames->AddItem("Hint light importance", nullptr, (void*)(intptr_t)gdeOCLight::epHintLightImportance);
+	pCBPropertyNames->AddItem("Hint shadow importance", nullptr, (void*)(intptr_t)gdeOCLight::epHintShadowImportance);
+	pCBPropertyNames->AddItem("Attach position", nullptr, (void*)(intptr_t)gdeOCLight::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", nullptr, (void*)(intptr_t)gdeOCLight::epAttachRotation);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+		pCBPropertyNameTarget, cComboPropertyNameTarget::Ref::New(*this));
 	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
 	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
@@ -645,22 +675,18 @@ pGameDefinition(NULL)
 	// trigger targets
 	helper.GroupBox(content, groupBox, "Triggers:");
 	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
-		pCBTriggerNames, new cComboTriggerNames(*this));
-	pCBTriggerNames->AddItem("Activated", NULL, (void*)(intptr_t)gdeOCLight::etActivated);
+		pCBTriggerNames, cComboTriggerNames::Ref::New(*this));
+	pCBTriggerNames->AddItem("Activated", nullptr, (void*)(intptr_t)gdeOCLight::etActivated);
 	
 	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
-		pCBTriggerNameTarget, new cComboTriggerNameTarget(*this));
+		pCBTriggerNameTarget, cComboTriggerNameTarget::Ref::New(*this));
 	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();
 	pCBTriggerNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCLight::~gdeWPSOCLight(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -675,14 +701,12 @@ void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();
@@ -692,12 +716,12 @@ void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCLight::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
 }
 
 gdeOCLight *gdeWPSOCLight::GetLight() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCLight() : NULL;
+	return objectClass ? pGameDefinition->GetActiveOCLight() : nullptr;
 }
 
 const gdeOCLight::eProperties gdeWPSOCLight::GetPropertyName() const{

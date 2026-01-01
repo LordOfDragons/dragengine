@@ -130,7 +130,7 @@ bool deadContainer::CanDeleteFile(const decPath &){
 	return false;
 }
 
-decBaseFileReader *deadContainer::OpenFileForReading(const decPath &path){
+decBaseFileReader::Ref deadContainer::OpenFileForReading(const decPath &path){
 	const deadArchiveFile * const file = pArchiveDirectory->GetFileByPath(path);
 	if(!file){
 		DETHROW(deeFileNotFound);
@@ -139,9 +139,7 @@ decBaseFileReader *deadContainer::OpenFileForReading(const decPath &path){
 	deadContextUnpack * const context = AcquireContextUnpack();
 	
 	try{
-		const deadArchiveFileReader::Ref reader(context->OpenFileForReading(*file));
-		reader->AddReference(); // caller retains reference
-		return reader;
+		return context->OpenFileForReading(*file);
 		
 	}catch(const deException &){
 		ReleaseContextUnpack(context);
@@ -149,7 +147,7 @@ decBaseFileReader *deadContainer::OpenFileForReading(const decPath &path){
 	}
 }
 
-decBaseFileWriter *deadContainer::OpenFileForWriting(const decPath &){
+decBaseFileWriter::Ref deadContainer::OpenFileForWriting(const decPath &){
 	// not supported for the time being
 	DETHROW(deeInvalidParam);
 }

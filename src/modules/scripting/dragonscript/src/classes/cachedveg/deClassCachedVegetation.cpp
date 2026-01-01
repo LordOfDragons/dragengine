@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -70,39 +72,34 @@ struct dedsCachedVegetationInstance{
 class dedsCachedVegetationPropField : public deBaseScriptingPropField{
 private:
 	float pHeight;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	dedsCachedVegetationInstance *pInstances;
 	int pInstanceCount;
 	decVector pScalePosition;
 	
 public:
 	dedsCachedVegetationPropField(){
-		pEngPF = NULL;
 		pHeight = 0.0f;
 		pInstances = NULL;
 		pInstanceCount = 0;
 	}
 	
-	~dedsCachedVegetationPropField(){
+	~dedsCachedVegetationPropField() override{
 		if(pInstances) delete [] pInstances;
 		if(pEngPF){
-			dedsPropField * const peer = (dedsPropField*)pEngPF->GetPeerScripting();
+			dedsPropField * const peer = static_cast<dedsPropField*>(pEngPF->GetPeerScripting());
 			if(peer){
-				peer->SetDelegee(NULL);
+				peer->SetDelegee(nullptr);
 			}
-			pEngPF->FreeReference();
 		}
 	}
 	
-	inline dePropField *GetEnginePF() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePF() const{ return pEngPF; }
 	
-	void CreatePF(deEngine *engine){
+	void CreatePF(const deEngine *engine){
 		if(!pEngPF){
 			pEngPF = engine->GetPropFieldManager()->CreatePropField();
-			if(!pEngPF) DSTHROW(dueOutOfMemory);
-			
-			dedsPropField *peer = (dedsPropField*)pEngPF->GetPeerScripting();
-			peer->SetDelegee(this);
+			static_cast<dedsPropField*>(pEngPF->GetPeerScripting())->SetDelegee(this);
 		}
 	}
 	
@@ -133,11 +130,9 @@ public:
 	
 	void SetCollisionFilter(const decCollisionFilter &filter){
 		int t, typeCount = pEngPF->GetTypeCount();
-		dePropFieldType *type;
 		
 		for(t=0; t<typeCount; t++){
-			type = pEngPF->GetTypeAt(t);
-			type->SetCollisionFilter(filter);
+			pEngPF->GetTypeAt(t)->SetCollisionFilter(filter);
 		}
 	}
 	
@@ -145,13 +140,12 @@ public:
 		pScalePosition = scalePosition;
 	}
 	
-	virtual void CreateInstances(float density){
+	void CreateInstances(float density) override{
 		decVector scaleRotation((DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f);
 		float scaleScaling = 5.0f / 255.0f;
 		
 		int t, typeCount = pEngPF->GetTypeCount();
 		dePropFieldInstance *pfinstances;
-		int pfi, pficount, upficount;
 		dePropFieldType *engPFType;
 		decVector ipos, irot;
 		float iscale;
@@ -159,7 +153,7 @@ public:
 		
 		for(t=0; t<typeCount; t++){
 			// determine how many instances match this type
-			pficount = 0;
+			int pficount = 0;
 			for(i=0; i<pInstanceCount; i++){
 				if(t == pInstances[i].type) pficount++;
 			}
@@ -167,7 +161,7 @@ public:
 			// pick only density times many instances from the pool. currently the instances
 			// are random so we can simply take only density times instances but in upcoming
 			// implementations this might no more be the case.
-			upficount = pficount; // (int)(ceilf((float)pficount * density));
+			int upficount = pficount; // (int)(ceilf((float)pficount * density));
 			//if( upficount < 0 ) upficount = 0;
 			//if( upficount > pficount ) upficount = pficount;
 			
@@ -178,6 +172,7 @@ public:
 			if(upficount > 0){
 				pfinstances = engPFType->GetInstances();
 				
+				int pfi;
 				for(pfi=0, i=0; i<pInstanceCount; i++){
 					if(t == pInstances[i].type){
 						if(pfi == upficount) break;
@@ -215,12 +210,13 @@ private:
 	int pPFCount;
 	int pPFCellCount;
 	float pSectorDim;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decPoint pCoordinates;
 	decCollisionFilter pCollisionFilter;
 	
 public:
-	dedsCachedVegetationSector(deEngine *engine, float sectorDim, int pfCellCount, const decPoint &coordinates){
+	dedsCachedVegetationSector(const deEngine *engine, float sectorDim, int pfCellCount,
+	const decPoint &coordinates){
 		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		int p, pfCount = pfCellCount * pfCellCount;
@@ -230,10 +226,8 @@ public:
 		pPFCellCount = pfCellCount;
 		pSectorDim = sectorDim;
 		pCoordinates = coordinates;
-		pWorld = NULL;
 		
 		pPFs = new dedsCachedVegetationPropField[pfCount];
-		if(!pPFs) DSTHROW(dueOutOfMemory);
 		pPFCount = pfCount;
 		
 		for(p=0; p<pfCount; p++){
@@ -249,25 +243,22 @@ public:
 	}
 	
 	void SetWorld(deWorld *world){
-		if(world != pWorld){
-			int p;
-			
-			if(pWorld){
-				pWorld->FreeReference();
-				
-				for(p=0; p<pPFCount; p++){
-					pWorld->RemovePropField(pPFs[p].GetEnginePF());
-				}
+		if(world == pWorld){
+			return;
+		}
+		
+		int i;
+		if(pWorld){
+			for(i=0; i<pPFCount; i++){
+				pWorld->RemovePropField(pPFs[i].GetEnginePF());
 			}
-			
-			pWorld = world;
-			
-			if(world){
-				world->AddReference();
-				
-				for(p=0; p<pPFCount; p++){
-					world->AddPropField(pPFs[p].GetEnginePF());
-				}
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			for(i=0; i<pPFCount; i++){
+				world->AddPropField(pPFs[i].GetEnginePF());
 			}
 		}
 	}
@@ -318,15 +309,13 @@ public:
 		}
 	}
 	
-	void LoadCacheFile(deEngine *engine, decBaseFileReader &reader){
+	void LoadCacheFile(const deEngine *engine, decBaseFileReader &reader){
 		deModelManager *mdlmgr = engine->GetModelManager();
 		deSkinManager *skinmgr = engine->GetSkinManager();
-		dedsCachedVegetationInstance *instances;
 		dePropFieldType *engPFType = NULL;
 		decDVector sectorPosition;
 		decVector scalePosition;
-		int i, instanceCount;
-		int t, typeCount;
+		int i, t, typeCount;
 		int p;
 		
 		Clear();
@@ -338,7 +327,7 @@ public:
 		
 		// read the header
 		char header[10];
-		reader.Read((char*)&header, 10); // signature {char[10]}
+		reader.Read(reinterpret_cast<char*>(header), 10); // signature {char[10]}
 		if(strncmp(header, "DEPFCache ", 10) != 0) DSTHROW(dueInvalidParam); // deeInvalidFormat
 		
 		int version = reader.ReadByte(); // version {byte}
@@ -354,17 +343,15 @@ public:
 		// read the list of types and add them to each prop field
 		typeCount = reader.ReadShort(); // number of types {short}
 		
-		float rotPerForce, restitution;
-		
 		for(t=0; t<typeCount; t++){
 			// model path { string8 }
-			deModel::Ref model(deModel::Ref::New(mdlmgr->LoadModel(reader.ReadString8(), "/")));
+			deModel::Ref model(mdlmgr->LoadModel(reader.ReadString8(), "/"));
 			
 			// skin path { string8 }
-			deSkin::Ref skin(deSkin::Ref::New(skinmgr->LoadSkin(reader.ReadString8(), "/")));
+			deSkin::Ref skin(skinmgr->LoadSkin(reader.ReadString8(), "/"));
 			
-			rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
-			restitution = reader.ReadFloat(); // restitution {float}
+			const float rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
+			const float restitution = reader.ReadFloat(); // restitution {float}
 			
 			try{
 				for(p=0; p<pPFCount; p++){
@@ -393,10 +380,10 @@ public:
 			reader.ReadFloat(); // prop field position X {float}
 			reader.ReadFloat(); // prop field position Y {float}
 			reader.ReadFloat(); // prop field position Z {float}
-			instanceCount = reader.ReadInt(); // instance count {int}
+			const int instanceCount = reader.ReadInt(); // instance count {int}
 			
 			pPFs[p].SetInstanceCount(instanceCount);
-			instances = pPFs[p].GetInstances();
+			dedsCachedVegetationInstance * const instances = pPFs[p].GetInstances();
 			
 			for(i=0; i<instanceCount; i++){
 				instances[i].type = reader.ReadShort(); // instance type {short}
@@ -414,7 +401,10 @@ public:
 	}
 };
 
-class dedsCachedVegetation{
+class dedsCachedVegetation : public deObject{
+public:
+	typedef deTObjectReference<dedsCachedVegetation> Ref;
+	
 private:
 	deEngine *pEngine;
 	dedsCachedVegetationSector **pSectors;
@@ -422,7 +412,7 @@ private:
 	int pSectorSize;
 	float pSectorDim;
 	int pPFCellCount;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decCollisionFilter pCollisionFilter;
 	
 public:
@@ -435,34 +425,32 @@ public:
 		pSectorSize = 0;
 		pSectorDim = sectorDim;
 		pPFCellCount = pfCellCount;
-		pWorld = NULL;
 	}
 	
-	~dedsCachedVegetation(){
+protected:
+	~dedsCachedVegetation() override{
 		RemoveAllSectors();
 		if(pSectors) delete [] pSectors;
 	}
 	
+public:
 	void SetWorld(deWorld *world){
-		if(world != pWorld){
-			int s;
-			
-			if(pWorld){
-				pWorld->FreeReference();
-				
-				for(s=0; s<pSectorCount; s++){
-					pSectors[s]->SetWorld(NULL);
-				}
+		if(world == pWorld){
+			return;
+		}
+		
+		int i;
+		if(pWorld){
+			for(i=0; i<pSectorCount; i++){
+				pSectors[i]->SetWorld(nullptr);
 			}
-			
-			pWorld = world;
-			
-			if(world){
-				world->AddReference();
-				
-				for(s=0; s<pSectorCount; s++){
-					pSectors[s]->SetWorld(world);
-				}
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			for(i=0; i<pSectorCount; i++){
+				pSectors[i]->SetWorld(world);
 			}
 		}
 	}
@@ -488,7 +476,7 @@ public:
 	}
 	
 	void AddSectorWith(const decPoint &coordinates, const char *cacheFile){
-		deVirtualFileSystem *vfs = pEngine->GetVirtualFileSystem();
+		const deVirtualFileSystem::Ref &vfs = pEngine->GetVirtualFileSystem();
 		dedsCachedVegetationSector *sector = NULL;
 		decPath path;
 		
@@ -516,7 +504,7 @@ public:
 		try{
 			path.SetFromUnix(cacheFile);
 			
-			sector->LoadCacheFile(pEngine, decBaseFileReader::Ref::New(vfs->OpenFileForReading(path)));
+			sector->LoadCacheFile(pEngine, vfs->OpenFileForReading(path));
 			
 		}catch(...){
 			sector->Clear();
@@ -570,7 +558,7 @@ public:
 /////////////////////
 
 struct sCVegNatDat{
-	dedsCachedVegetation *cveg;
+	dedsCachedVegetation::Ref cveg;
 };
 
 
@@ -585,19 +573,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // propfieldCellCount
 }
 void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCVegNatDat *nd = (sCVegNatDat*)p_GetNativeData(myself);
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
+	sCVegNatDat * const nd = new (p_GetNativeData(myself)) sCVegNatDat;
+	
+	deClassCachedVegetation * const clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
 	float sectorDim = rt->GetValue(0)->GetFloat();
 	int propfieldCellCount = rt->GetValue(1)->GetInt();
-	
-	// clear ( important )
-	nd->cveg = NULL;
-	
-	// create cached vegetation worker object
-	nd->cveg = new dedsCachedVegetation(engine, sectorDim, propfieldCellCount);
-	if(!nd->cveg) DSTHROW(dueOutOfMemory);
+	nd->cveg = dedsCachedVegetation::Ref::New(engine, sectorDim, propfieldCellCount);
 }
 
 // public func destructor()
@@ -609,12 +592,7 @@ void deClassCachedVegetation::nfDestructor::RunFunction(dsRunTime *rt, dsValue *
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCVegNatDat *nd = (sCVegNatDat*)p_GetNativeData(myself);
-	
-	if(nd->cveg){
-		delete nd->cveg;
-		nd->cveg = NULL;
-	}
+	static_cast<dedsCachedVegetationInstance*>(p_GetNativeData(myself))->~dedsCachedVegetationInstance();
 }
 
 
@@ -628,9 +606,9 @@ deClassCachedVegetation::nfSetCollisionFilter::nfSetCollisionFilter(const sInitD
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCachedVegetation::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
-	deClassCollisionFilter &clsCF = *clsCVeg->GetDS()->GetClassCollisionFilter();
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	const deClassCollisionFilter &clsCF = *clsCVeg->GetDS()->GetClassCollisionFilter();
 	
 	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	
@@ -645,8 +623,8 @@ deClassCachedVegetation::nfHasSector::nfHasSector(const sInitData &init) : dsFun
 	p_AddParameter(init.clsPt); // coordinates
 }
 void deClassCachedVegetation::nfHasSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
+	const dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
 	if(!objCoord) DSTHROW(dueNullPointer);
@@ -663,8 +641,8 @@ deClassCachedVegetation::nfAddSector::nfAddSector(const sInitData &init) : dsFun
 	p_AddParameter(init.clsStr); // cacheFile
 }
 void deClassCachedVegetation::nfAddSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
 	const char *cacheFile = rt->GetValue(1)->GetString();
@@ -682,8 +660,8 @@ deClassCachedVegetation::nfRemoveSector::nfRemoveSector(const sInitData &init) :
 	p_AddParameter(init.clsPt); // coordinates
 }
 void deClassCachedVegetation::nfRemoveSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
 	if(!objCoord) DSTHROW(dueNullPointer);
@@ -698,7 +676,7 @@ deClassCachedVegetation::nfRemoveAllSectors::nfRemoveAllSectors(const sInitData 
 "removeAllSectors", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCachedVegetation::nfRemoveAllSectors::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
 	
 	cveg->RemoveAllSectors();
 }
@@ -711,9 +689,9 @@ deClassCachedVegetation::nfSetWorld::nfSetWorld(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsWorld); // world
 }
 void deClassCachedVegetation::nfSetWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
-	deClassWorld *clsWorld = clsCVeg->GetDS()->GetClassWorld();
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	const deClassWorld *clsWorld = clsCVeg->GetDS()->GetClassWorld();
 	
 	dsRealObject *objWorld = rt->GetValue(0)->GetRealObject();
 	
@@ -728,7 +706,7 @@ dsFunction(init.clsCVeg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassCachedVegetation::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
 	
 	rt->PushInt((int)(intptr_t)cveg);
 }
@@ -739,15 +717,15 @@ dsFunction(init.clsCVeg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = ((sCVegNatDat*)p_GetNativeData(myself))->cveg;
-	deClassCachedVegetation *clsCVeg = (deClassCachedVegetation*)GetOwnerClass();
+	const dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCVeg)){
 		rt->PushBool(false);
 		
 	}else{
-		dedsCachedVegetation *other = ((sCVegNatDat*)p_GetNativeData(obj))->cveg;
+		const dedsCachedVegetation *other = static_cast<sCVegNatDat*>(p_GetNativeData(obj))->cveg;
 		
 		rt->PushBool(cveg == other);
 	}

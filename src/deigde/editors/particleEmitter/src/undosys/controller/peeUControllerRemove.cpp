@@ -46,8 +46,8 @@ peeUControllerRemove::peeUControllerRemove(peeController *controller){
 	peeEmitter *emitter = controller->GetEmitter();
 	if(!emitter) DETHROW(deeInvalidParam);
 	
-	pEmitter = NULL;
-	pController = NULL;
+	pEmitter = nullptr;
+	pController = nullptr;
 	
 	SetShortInfo("Remove Controller");
 	
@@ -55,19 +55,10 @@ peeUControllerRemove::peeUControllerRemove(peeController *controller){
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerRemove::~peeUControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

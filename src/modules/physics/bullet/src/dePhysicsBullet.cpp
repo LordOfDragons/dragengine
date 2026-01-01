@@ -157,7 +157,6 @@ pConfiguration(NULL),
 pDeveloperMode(*this),
 pCommandExecuter(NULL),
 pParameters(NULL),
-pColInfo(NULL),
 pCollisionDetection(NULL),
 pDebug(*this)
 {
@@ -186,7 +185,7 @@ dePhysicsBullet::~dePhysicsBullet(){
 
 bool dePhysicsBullet::Init(){
 	pCollisionDetection = new debpCollisionDetection(*this);
-	pColInfo = new deCollisionInfo;
+	pColInfo = deCollisionInfo::Ref::New();
 	
 	pConfiguration->LoadConfig();
 	
@@ -203,13 +202,12 @@ void dePhysicsBullet::CleanUp(){
 	
 	if(pColInfo){
 		pColInfo->Clear(); // just to be safe in case somebody still holds a reference
-		pColInfo->FreeReference();
-		pColInfo = NULL;
+		pColInfo = nullptr;
 	}
 	
 	if(pCollisionDetection){
 		delete pCollisionDetection;
-		pCollisionDetection = NULL;
+		pCollisionDetection = nullptr;
 	}
 }
 
@@ -331,6 +329,8 @@ deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter(deSmokeEmitter *s
 
 class depbModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<depbModuleInternal> Ref;
+	
 	depbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Bullet");
 		SetDescription("Provides physical simulation using the free-software Bullet physics library.");
@@ -350,7 +350,7 @@ public:
 	}
 };
 
-deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
-	return new depbModuleInternal(system);
+deTObjectReference<deInternalModule> depbRegisterInternalModule(deModuleSystem *system){
+	return depbModuleInternal::Ref::New(system);
 }
 #endif

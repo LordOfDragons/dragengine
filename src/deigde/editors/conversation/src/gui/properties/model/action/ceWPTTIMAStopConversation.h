@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAStopConversation : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAStopConversation> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAStopConversation *GetActionStopConversation() const{ return (ceCAStopConversation*)GetAction(); }
+	inline ceCAStopConversation *GetActionStopConversation() const{ return (ceCAStopConversation*)GetAction().Pointer(); }
 	
 	/** \brief Update action. */
 	void Update() override;

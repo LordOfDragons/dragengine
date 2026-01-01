@@ -29,7 +29,7 @@
 #include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 class igdeActionListener;
@@ -64,7 +64,7 @@ private:
 	bool pEnabled;
 	bool pSelected;
 	bool pDefault;
-	decPointerOrderedSet pListeners;
+	decTOrderedSet<igdeActionListener*> pListeners;
 	
 	
 	
@@ -135,10 +135,10 @@ public:
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
 	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */

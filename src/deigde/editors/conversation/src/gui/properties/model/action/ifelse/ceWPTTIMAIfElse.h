@@ -29,7 +29,7 @@
 #include "../../../../../conversation/action/ceCAIfElse.h"
 
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseElse;
+#include "ceWPTTIMAIfElseElse.h"
 
 
 /**
@@ -37,11 +37,12 @@ class ceWPTTIMAIfElseElse;
  */
 class ceWPTTIMAIfElse : public ceWPTTIMAction{
 private:
-	ceWPTTIMAIfElseElse *pElse;
+	ceWPTTIMAIfElseElse::Ref pElse;
 	
 	
 	
 public:
+	typedef deTObjectReference<ceWPTTIMAIfElse> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -59,13 +60,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAIfElse *GetActionIfElse() const{ return (ceCAIfElse*)GetAction(); }
+	inline ceCAIfElse *GetActionIfElse() const{ return GetAction().DynamicCast<ceCAIfElse>(); }
 	
-	/** \brief Model with if-case or \em NULL. */
+	/** \brief Model with if-case or \em nullptr. */
 	ceWPTTIMAIfElseIfCase *GetIfCaseChild(ceCAIfElseCase *ifCase) const;
 	
-	/** \brief Model with else-case or \em NULL. */
-	inline ceWPTTIMAIfElseElse *GetElseChild() const{ return pElse; }
+	/** \brief Model with else-case or \em nullptr. */
+	inline const ceWPTTIMAIfElseElse::Ref &GetElseChild() const{ return pElse; }
 	
 	/** \brief Update action. */
 	void Update() override;

@@ -30,11 +30,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCCamera;
 class gdeWindowProperties;
-class gdeWPSOCCameraListener;
+#include "gdeWPSOCCameraListener.h"
 
 
 
@@ -42,11 +42,14 @@ class gdeWPSOCCameraListener;
  * \brief Object class camera property panel.
  */
 class gdeWPSOCCamera : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCCamera> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCCameraListener *pListener;
+	gdeWPSOCCameraListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
 	igdeEditVector::Ref pEditPosition, pEditRotation;
@@ -70,18 +73,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class camera or \em NULL if not set. */
+	/** \brief Active object class camera or \em nullptr if not set. */
 	gdeOCCamera *GetCamera() const;
 	
 	

@@ -40,17 +40,11 @@
 ////////////////////////////
 
 deHeightTerrainTexture::deHeightTerrainTexture(){
-	pSkin = NULL;
-	
 	pProjScaling.Set(1.0f, 1.0f);
 	pProjRotation = 0.0f;
-	
-	pMaskImage = NULL;
 }
 
 deHeightTerrainTexture::~deHeightTerrainTexture(){
-	if(pMaskImage) pMaskImage->FreeReference();
-	if(pSkin) pSkin->FreeReference();
 }
 
 
@@ -60,11 +54,7 @@ deHeightTerrainTexture::~deHeightTerrainTexture(){
 
 
 void deHeightTerrainTexture::SetSkin(deSkin *skin){
-	if(pSkin) pSkin->FreeReference();
-	
 	pSkin = skin;
-	
-	if(skin) skin->AddReference();
 }
 
 
@@ -84,9 +74,5 @@ void deHeightTerrainTexture::SetProjectionRotation(float rotation){
 
 
 void deHeightTerrainTexture::SetMaskImage(deImage *image){
-	if(pMaskImage) pMaskImage->FreeReference();
-	
 	pMaskImage = image;
-	
-	if(image) image->AddReference();
 }

@@ -26,6 +26,7 @@
 #define _GDEOCLIGHT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/light/deLight.h>
@@ -39,6 +40,9 @@ class gdeOCLight : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCLight> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCLight> List;
 	
 	
 	/** \brief Properties. */
@@ -140,7 +144,9 @@ public:
 	gdeOCLight(const gdeOCLight &light);
 	
 	/** \brief Clean up light. */
+protected:
 	virtual ~gdeOCLight();
+public:
 	/*@}*/
 	
 	

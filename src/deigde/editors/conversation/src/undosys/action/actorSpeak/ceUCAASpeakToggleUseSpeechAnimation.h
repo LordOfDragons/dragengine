@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,20 +36,23 @@ class ceConversationTopic;
  * \brief Undo action actor speak set use speech animation.
  */
 class ceUCAASpeakToggleUseSpeechAnimation : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAASpeakToggleUseSpeechAnimation> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakToggleUseSpeechAnimation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCAASpeakToggleUseSpeechAnimation();
+public:
 	/*@}*/
 	
 public:

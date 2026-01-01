@@ -25,14 +25,16 @@
 #ifndef _RERIGPUSH_H_
 #define _RERIGPUSH_H_
 
-#include <dragengine/common/math/decMath.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class reRig;
-class igdeWDebugDrawerShape;
 class deCollider;
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 
 
@@ -44,6 +46,8 @@ class reRigPush : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reRigPush> Ref;
+	
+	typedef decTObjectOrderedSet<reRigPush> List;
 	
 	
 	/** \brief Push type. */
@@ -61,9 +65,9 @@ private:
 	
 	reRig *pRig;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSPush;
-	deColliderVolume *pCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSPush;
+	deColliderVolume::Ref pCollider;
 	
 	ePushTypes pType;
 	decVector pPosition;
@@ -83,7 +87,9 @@ public:
 	/** \brief Creates a copy of a rig push. */
 	reRigPush(const reRigPush &push);
 	/** \brief Cleans up the rig push. */
+protected:
 	virtual ~reRigPush();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -94,7 +100,7 @@ public:
 	void SetRig(reRig *rig);
 	
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the push type. */
 	inline ePushTypes GetType() const{ return pType; }

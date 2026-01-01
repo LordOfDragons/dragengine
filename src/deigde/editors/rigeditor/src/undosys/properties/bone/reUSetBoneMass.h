@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -35,17 +35,18 @@ class reRigBone;
  * \brief Undo Set Bone Mass.
  */
 class reUSetBoneMass : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetBoneMass> Ref;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	float pOldMass;
 	float pNewMass;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetBoneMass> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -60,6 +60,7 @@ class cListTextureNames : public igdeListBoxListener{
 	seDialogAddTexture &pDialog;
 	
 public:
+	typedef deTObjectReference<cListTextureNames> Ref;
 	cListTextureNames(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -69,7 +70,7 @@ public:
 	}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
-		pDialog.SetTextureName(listBox->GetItemAt(index)->GetText());
+		pDialog.SetTextureName(listBox->GetItems().GetAt(index)->GetText());
 		pDialog.CloseDialog(true);
 	}
 };
@@ -78,6 +79,7 @@ class cTextTextureName : public igdeTextFieldListener{
 	seDialogAddTexture &pDialog;
 	
 public:
+	typedef deTObjectReference<cTextTextureName> Ref;
 	cTextTextureName(seDialogAddTexture &dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanging(igdeTextField *textField){
@@ -103,19 +105,18 @@ pWindowMain(windowMain)
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::NewWith(
+	igdeLabel::Ref header(igdeLabel::Ref::New(
 		env, "Enter texture name or choose from model textures."));
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5);
 	
-	helper.ListBox(content, 5, "Textures names in model", pListModelTextureNames,
-		new cListTextureNames(*this));
+	helper.ListBox(content, 5, "Textures names in model", pListModelTextureNames, cListTextureNames::Ref::New(*this));
 	pListModelTextureNames->SetDefaultSorter();
 	
-	formLine.TakeOver(new igdeContainerForm(env));
+	formLine = igdeContainerForm::Ref::New(env);
 	helper.EditString(formLine, "Name:", "Name of texture to add", 25,
-		pEditTextureName, new cTextTextureName(*this));
+		pEditTextureName, cTextTextureName::Ref::New(*this));
 	content->AddChild(formLine);
 	
 	
@@ -161,20 +162,22 @@ void seDialogAddTexture::pUpdateModelTextureList(){
 	igdeIcon::Ref iconUsed(GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus));
 	igdeIcon::Ref iconAvailable(GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus));
 	const seSkin * const skin = pWindowMain.GetSkin();
-	const deModel *engModel = NULL;
+	const deModel *engModel = nullptr;
 	
 	if(skin->GetEngineComponent()){
 		engModel = skin->GetEngineComponent()->GetModel();
 	}
 	
 	if(engModel){
-		const seTextureList &list = skin->GetTextureList();
+		const seTexture::List &list = skin->GetTextures();
 		int i, count = engModel->GetTextureCount();
 		
 		for(i=0; i<count; i++){
 			const decString &modelTextureName = engModel->GetTextureAt(i)->GetName();
 			
-			if(list.HasNamed(modelTextureName)){
+			if(list.HasMatching([&](const seTexture &t){
+				return t.GetName() == modelTextureName;
+			})){
 				pListModelTextureNames->AddItem(modelTextureName, iconUsed);
 				
 			}else{
@@ -185,7 +188,7 @@ void seDialogAddTexture::pUpdateModelTextureList(){
 	
 	pListModelTextureNames->SortItems();
 	
-	if(pListModelTextureNames->GetItemCount() > 0){
+	if(pListModelTextureNames->GetItems().IsNotEmpty()){
 		pListModelTextureNames->SetSelection(0);
 	}
 }

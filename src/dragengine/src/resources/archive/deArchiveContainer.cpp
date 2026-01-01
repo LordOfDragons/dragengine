@@ -45,7 +45,6 @@ deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archi
 const decPath &archivePath) :
 deVFSContainer(rootPath),
 pArchivePath(archivePath),
-pArchive(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
@@ -54,7 +53,6 @@ pLLManagerNext(NULL)
 	}
 	
 	pArchive = archive;
-	archive->AddReference();
 }
 
 deArchiveContainer::~deArchiveContainer(){
@@ -62,7 +60,6 @@ deArchiveContainer::~deArchiveContainer(){
 		if(pArchive->GetResourceManager()){
 			((deArchiveManager*)pArchive->GetResourceManager())->RemoveContainer(this);
 		}
-		pArchive->FreeReference();
 	}
 }
 
@@ -123,7 +120,7 @@ bool deArchiveContainer::CanDeleteFile(const decPath &path){
 	}
 }
 
-decBaseFileReader *deArchiveContainer::OpenFileForReading(const decPath &path){
+decBaseFileReader::Ref deArchiveContainer::OpenFileForReading(const decPath &path){
 	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
@@ -136,7 +133,7 @@ decBaseFileReader *deArchiveContainer::OpenFileForReading(const decPath &path){
 	}
 }
 
-decBaseFileWriter *deArchiveContainer::OpenFileForWriting(const decPath &path){
+decBaseFileWriter::Ref deArchiveContainer::OpenFileForWriting(const decPath &path){
 	if(!pArchive->GetPeerContainer()){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}

@@ -85,19 +85,15 @@ pPrimitiveSize(0),
 pRecalcNodes(NULL),
 pRecalcNodeSize(0),
 pIndexRootNode(0),
-pTBOInstance(NULL),
-pTBOMatrix(NULL),
-pBVHTBONodeBox(NULL),
-pBVHTBOIndex(NULL),
 pRenderTaskMaterial(renderThread),
 pDirty(true)
 {
 	try{
-		pTBOInstance = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMatrix = new deoglDynamicTBOFloat32(renderThread, 4);
+		pTBOInstance = deoglDynamicTBOUInt32::Ref::New(renderThread, 4);
+		pTBOMatrix = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
 		
-		pBVHTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pBVHTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
+		pBVHTBONodeBox = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pBVHTBOIndex = deoglDynamicTBOUInt16::Ref::New(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -329,7 +325,7 @@ void deoglGIBVH::BuildBVH(){
 			pBVHTBOIndex->AddVec2(node.GetFirstIndex(), node.GetPrimitiveCount());
 		}
 		
-		pBlockBVH.TakeOver(shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox));
+		pBlockBVH = shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox);
 		
 		pIndexRootNode = ((deoglDynamicTBOBlock*)(deObject*)pBlockBVH)->GetOffset();
 	}
@@ -414,20 +410,6 @@ void deoglGIBVH::DebugPrint(const decDVector &position){
 //////////////////////
 
 void deoglGIBVH::pCleanUp(){
-	if(pBVHTBONodeBox){
-		pBVHTBONodeBox->FreeReference();
-	}
-	if(pBVHTBOIndex){
-		pBVHTBOIndex->FreeReference();
-	}
-	
-	if(pTBOInstance){
-		pTBOInstance->FreeReference();
-	}
-	if(pTBOMatrix){
-		pTBOMatrix->FreeReference();
-	}
-	
 	if(pRecalcNodes){
 		delete [] pRecalcNodes;
 	}

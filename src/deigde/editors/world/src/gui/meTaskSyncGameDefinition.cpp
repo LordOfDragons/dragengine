@@ -93,7 +93,7 @@ bool meTaskSyncGameDefinition::Step(){
 		return true;
 		
 	case esProcessObjects:{
-		const meObjectList &objects = world.GetObjects();
+		const meObject::List &objects = world.GetObjects();
 		const int objectCount = objects.GetCount();
 		const int lastIndex = decMath::min(pObjectIndex + pBatchSizeObjects, objectCount);
 		int i;
@@ -109,15 +109,15 @@ bool meTaskSyncGameDefinition::Step(){
 			meObject &object = *objects.GetAt(pObjectIndex);
 			object.OnGameDefinitionChanged();
 			
-			const int textureCount = object.GetTextureCount();
+			const int textureCount = object.GetTextures().GetCount();
 			for(i=0; i<textureCount; i++){
-				meObjectTexture &texture = *object.GetTextureAt(i);
+				meObjectTexture &texture = *object.GetTextures().GetAt(i);
 				texture.LoadSkin();
 			}
 			
-			const int decalCount = object.GetDecalCount();
+			const int decalCount = object.GetDecals().GetCount();
 			for(i=0; i<decalCount; i++){
-				meDecal &decal = *object.GetDecalAt(i);
+				meDecal &decal = *object.GetDecals().GetAt(i);
 				decal.OnGameDefinitionChanged();
 				decal.LoadSkin();
 			}
@@ -131,7 +131,7 @@ bool meTaskSyncGameDefinition::Step(){
 		return true;
 		
 	case esProcessDecals:{
-		const meDecalList &decals = world.GetDecals();
+		const meDecal::List &decals = world.GetDecals();
 		const int decalCount = decals.GetCount();
 		const int lastIndex = decMath::min(pDecalIndex + pBatchSizeDecals, decalCount);
 		

@@ -25,6 +25,8 @@
 #ifndef _FEGENERATEFONT_H_
 #define _FEGENERATEFONT_H_
 
+#include "feFont.h"
+
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/string/decString.h>
@@ -32,7 +34,6 @@
 
 class feFontImage;
 class feFontGlyph;
-class feFont;
 
 class igdeEnvironment;
 
@@ -89,7 +90,7 @@ public:
 	void SetEnlargeGlpyh(int enlarge);
 	
 	/** \brief Generate font with properties. */
-	feFont *GenerateFont();
+	feFont::Ref GenerateFont();
 	/*@}*/
 	
 	

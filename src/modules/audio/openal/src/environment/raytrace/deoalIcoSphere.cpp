@@ -25,6 +25,8 @@
 #include <string.h>
 
 #include "deoalIcoSphere.h"
+#include "../../audiothread/deoalAudioThread.h"
+#include "../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -260,8 +262,6 @@ deoalIcoSphere deoalIcoSphere::Subdivide() const{
 	return ico;
 }
 
-#include "../../audiothread/deoalAudioThread.h"
-#include "../../audiothread/deoalATLogger.h"
 void deoalIcoSphere::DebugPrintBlender(deoalAudioThread &audioThread) const{
 	decString text;
 	text.Append("import bpy\n");

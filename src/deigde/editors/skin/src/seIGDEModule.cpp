@@ -52,6 +52,6 @@ seIGDEModule::~seIGDEModule(){
 
 void seIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new seWindowMain(*this));
+		SetEditorWindow(seWindowMain::Ref::New(*this));
 	}
 }

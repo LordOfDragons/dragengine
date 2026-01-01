@@ -43,11 +43,10 @@
 
 deoglComponentLOD::deoglComponentLOD(deoglComponent &component, int lodIndex) :
 pComponent(component),
-pLODIndex(lodIndex),
-pRLOD(NULL)
+pLODIndex(lodIndex)
 {
 	try{
-		pRLOD = new deoglRComponentLOD(*component.GetRComponent(), lodIndex);
+		pRLOD = deoglRComponentLOD::Ref::New(component.GetRComponent(), lodIndex);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -70,7 +69,4 @@ deoglComponentLOD::~deoglComponentLOD(){
 //////////////////////
 
 void deoglComponentLOD::pCleanUp(){
-	if(pRLOD){
-		pRLOD->FreeReference();
-	}
 }

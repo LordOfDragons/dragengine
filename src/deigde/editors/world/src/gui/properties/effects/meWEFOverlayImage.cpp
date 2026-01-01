@@ -32,14 +32,14 @@
 #include "../../world/meWorld.h"
 #include "../../worldedit.h"
 
-#include "dragengine/deEngine.h"
+#include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
-#include "dragengine/resources/effect/deEffectOverlayImage.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/resources/image/deImageManager.h"
-#include "dragengine/filesystem/deVirtualFileSystem.h"
-#include "dragengine/common/file/decPath.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/effect/deEffectOverlayImage.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -97,8 +97,8 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	new FXLabel(frameLine, "Image:");
 	pEditImage = new FXTextField(frameLine, 10, this, ID_EDITIMAGE, FRAME_SUNKEN | LAYOUT_FILL_X);
-// 	new FXButton( frameLine, "...", NULL, this, ID_BTNSELECTCLASS, BUTTON_NORMAL );
- 	new FXButton(frameLine, "...", NULL, NULL, 0, BUTTON_NORMAL);
+// 	new FXButton( frameLine, "...", nullptr, this, ID_BTNSELECTCLASS, BUTTON_NORMAL );
+ 	new FXButton(frameLine, "...", nullptr, nullptr, 0, BUTTON_NORMAL);
 	
 	// transparency
 	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
@@ -142,7 +142,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	pChkEnable->setCheck(pEffectOverlay->GetEnabled());
 	
 	// set values
-	deImage *image = pEffectOverlay->GetImage();
+	deImage::Ref image = pEffectOverlay->GetImage();
 	if(image){
 		pEditImage->setText(image->GetFilename().GetString());
 	}else{
@@ -192,7 +192,7 @@ long meWEFOverlayImage::onEditImageCommand(FXObject *sender, FXSelector selector
 	deImageManager *imageManager = pEngine->GetImageManager();
 	deVirtualFileSystem *vfs = pEngine->GetVirtualFileSystem();
 	const FXString &filename = pEditImage->getText();
-	deImage *image = NULL;
+	deImage::Ref image;
 	decPath path;
 	
 	path.SetFromUnix(filename.text());
@@ -200,10 +200,7 @@ long meWEFOverlayImage::onEditImageCommand(FXObject *sender, FXSelector selector
 		try{
 			image = imageManager->LoadImage(filename.text(), "/");
 			pEffectOverlay->SetImage(image);
-			image->FreeReference();
-			
 		}catch(const deException &e){
-			if(image) image->FreeReference();
 			pWndEffects->GetWindowMain()->GetLogger()->LogException("World Editor", e);
 		}
 	}
@@ -214,7 +211,7 @@ long meWEFOverlayImage::onEditImageCommand(FXObject *sender, FXSelector selector
 }
 
 long meWEFOverlayImage::onEditTransparencyCommand(FXObject *sender, FXSelector selector, void *data){
-	pEffectOverlay->SetTransparency(strtof(pEditTransparency->getText().text(), NULL));
+	pEffectOverlay->SetTransparency(strtof(pEditTransparency->getText().text(), nullptr));
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
 	
 	return 1;
@@ -223,7 +220,7 @@ long meWEFOverlayImage::onEditTransparencyCommand(FXObject *sender, FXSelector s
 long meWEFOverlayImage::onEditCorner1XCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(0);
 	
-	position.x = strtof(pEditCorner1X->getText().text(), NULL);
+	position.x = strtof(pEditCorner1X->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(0, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -234,7 +231,7 @@ long meWEFOverlayImage::onEditCorner1XCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner1YCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(0);
 	
-	position.y = strtof(pEditCorner1Y->getText().text(), NULL);
+	position.y = strtof(pEditCorner1Y->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(0, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -245,7 +242,7 @@ long meWEFOverlayImage::onEditCorner1YCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner2XCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(1);
 	
-	position.x = strtof(pEditCorner2X->getText().text(), NULL);
+	position.x = strtof(pEditCorner2X->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(1, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -256,7 +253,7 @@ long meWEFOverlayImage::onEditCorner2XCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner2YCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(1);
 	
-	position.y = strtof(pEditCorner2Y->getText().text(), NULL);
+	position.y = strtof(pEditCorner2Y->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(1, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -267,7 +264,7 @@ long meWEFOverlayImage::onEditCorner2YCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner3XCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(2);
 	
-	position.x = strtof(pEditCorner3X->getText().text(), NULL);
+	position.x = strtof(pEditCorner3X->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(2, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -278,7 +275,7 @@ long meWEFOverlayImage::onEditCorner3XCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner3YCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(2);
 	
-	position.y = strtof(pEditCorner3Y->getText().text(), NULL);
+	position.y = strtof(pEditCorner3Y->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(2, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -289,7 +286,7 @@ long meWEFOverlayImage::onEditCorner3YCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner4XCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(3);
 	
-	position.x = strtof(pEditCorner4X->getText().text(), NULL);
+	position.x = strtof(pEditCorner4X->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(3, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
@@ -300,7 +297,7 @@ long meWEFOverlayImage::onEditCorner4XCommand(FXObject *sender, FXSelector selec
 long meWEFOverlayImage::onEditCorner4YCommand(FXObject *sender, FXSelector selector, void *data){
 	decVector2 position = pEffectOverlay->GetTextureCoordinatesFor(3);
 	
-	position.y = strtof(pEditCorner4Y->getText().text(), NULL);
+	position.y = strtof(pEditCorner4Y->getText().text(), nullptr);
 	pEffectOverlay->SetTextureCoordinatesFor(3, position);
 	
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);

@@ -51,7 +51,7 @@ public:
 	
 	
 private:
-	decObjectList pFilterItems;
+	igdeListItem::List pFilterItems;
 	bool pFilterCaseInsensitive;
 	decString pFilterString;
 	
@@ -109,11 +109,8 @@ public:
 	 */
 	void SetFilterString(const char *filterString);
 	
-	/** \brief Number of stored filter items. */
-	int GetFilterItemCount() const;
-	
-	/** \brief Stored filter item at index. */
-	igdeListItem *GetFilterItemAt(int index) const;
+	/** \brief Filter items. */
+	inline const igdeListItem::List &GetFilterItems() const{ return pFilterItems; }
 	/*@}*/
 	
 	

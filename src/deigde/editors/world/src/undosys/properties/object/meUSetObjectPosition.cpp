@@ -48,11 +48,9 @@ meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &n
 	SetShortInfo("Set Object position");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUSetObjectPosition::~meUSetObjectPosition(){
-	if(pObject) pObject->FreeReference();
 }
 
 

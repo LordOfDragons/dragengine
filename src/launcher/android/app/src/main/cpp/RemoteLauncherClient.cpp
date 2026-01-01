@@ -93,10 +93,10 @@ pLauncher(nullptr)
     DEASSERT_NOTNULL(pMetListenerStopApplication)
     DEASSERT_NOTNULL(pMetListenerKillApplication)
 
-    pLogger = std::make_shared<ClientLogger>(*this);
+    pLogger = ClientLogger::Ref::New(*this);
     SetLogger(pLogger);
 
-    pEngineLogger.TakeOver(new EngineLogger(*this, *pLogger));
+    pEngineLogger = EngineLogger::Ref::New(*this, *pLogger);
 
     pThreadUpdater = std::make_shared<std::thread>([&](){
         while(!pExitUpdaterThread){

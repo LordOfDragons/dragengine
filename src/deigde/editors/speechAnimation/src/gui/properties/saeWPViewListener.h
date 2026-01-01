@@ -35,6 +35,9 @@ class saeWPView;
  * View panel listener.
  */
 class saeWPViewListener : public saeSAnimationListener{
+public:
+	typedef deTObjectReference<saeWPViewListener> Ref;
+	
 private:
 	saeWPView &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	saeWPViewListener(saeWPView &panel);
 	
 	/** Clean up listener. */
+protected:
 	~saeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

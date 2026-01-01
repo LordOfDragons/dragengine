@@ -22,18 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUSETOBJECTCLASS_H_
 #define _MEUSETOBJECTCLASS_H_
 
-// includes
+#include "../../../world/object/meObject.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-// predefinitions
-class meObject;
-class meObjectList;
 
 
 
@@ -41,26 +37,30 @@ class meObjectList;
  * Undo action for setting object class.
  */
 class meUSetObjectClass : public igdeUndo{
+public:
+	typedef deTObjectReference<meUSetObjectClass> Ref;
+	
+	
 private:
-	struct sObject{
-		meObject *object;
-		decString oldcname;
-		decString newcname;
-		decVector oldsize;
-		decVector oldscaling;
+	class cObject : public deObject{
+	public:
+		typedef deTObjectReference<cObject> Ref;
+		typedef decTObjectOrderedSet<cObject> List;
+		
+		meObject::Ref object;
+		decString oldcname, newcname;
+		decVector oldsize, oldscaling;
+		
+		cObject() = default;
 	};
 	
 private:
-	sObject *pObjects;
-	int pObjectCount;
+	cObject::List pObjects;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUSetObjectClass> Ref;
-	
 	// constructor, destructor
 	meUSetObjectClass(meObject *object, const char *newcname);
-	meUSetObjectClass(meObjectList &objects, const char *newcname);
+	meUSetObjectClass(meObject::List &objects, const char *newcname);
 	
 protected:
 	~meUSetObjectClass();
@@ -69,10 +69,6 @@ public:
 	// management
 	void Undo();
 	void Redo();
-	
-private:
-	void pCleanUp();
 };
 
-// end of include only once
 #endif

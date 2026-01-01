@@ -26,6 +26,7 @@
 #define _GDEOCCOMPONENTTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
@@ -52,6 +53,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCComponentTexture> Ref;
 
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCComponentTexture> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -65,7 +69,9 @@ public:
 	gdeOCComponentTexture(const gdeOCComponentTexture &texture);
 	
 	/** \brief Clean up object class component texture. */
+protected:
 	virtual ~gdeOCComponentTexture();
+public:
 	/*@}*/
 	
 	

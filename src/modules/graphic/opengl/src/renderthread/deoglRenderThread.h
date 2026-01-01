@@ -27,6 +27,7 @@
 
 #include "deoglRTLeakTracker.h"
 #include "../deoglBasics.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
@@ -35,7 +36,7 @@
 #ifdef BACKEND_OPENGL
 	#include <deSharedVulkan.h>
 	#include <devkDevice.h>
-#endif
+#endif	
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -55,7 +56,6 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvasView;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
@@ -118,9 +118,9 @@ private:
 	deoglMemoryManager pMemoryManager;
 	decObjectOrderedSet pRRenderWindowList;
 	decObjectOrderedSet pRCaptureCanvasList;
-	deoglRCanvasView *pCanvasInputOverlay;
-	deoglRCanvasView *pCanvasDebugOverlay;
-	deoglRCanvasView *pCanvasOverlay;
+	deoglRCanvasView::Ref pCanvasInputOverlay;
+	deoglRCanvasView::Ref pCanvasDebugOverlay;
+	deoglRCanvasView::Ref pCanvasOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -278,19 +278,19 @@ public:
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
 	/** Input overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or nullptr. */
 	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or nullptr. */
 	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
 	
 	/** Overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
+	inline const deoglRCanvasView::Ref &GetCanvasOverlay() const{ return pCanvasOverlay; }
 	
 	/** Set overlay canvas view or nullptr. */
 	void SetCanvasOverlay(deoglRCanvasView *canvas);
@@ -390,7 +390,7 @@ public:
 	
 #ifdef BACKEND_OPENGL
 	/** Vulkan if present. */
-	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
+	inline const deSharedVulkan::Ref &GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
 	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }

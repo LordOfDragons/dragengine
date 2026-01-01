@@ -37,6 +37,9 @@ class meHTVRuleRandom;
  * \brief Vegetation Editing Window Node Random.
  */
 class meWVNodeRandom : public meWVNode{
+public:
+	typedef deTObjectReference<meWVNodeRandom> Ref;
+	
 private:
 	meHTVRuleRandom *pRuleRandom;
 	

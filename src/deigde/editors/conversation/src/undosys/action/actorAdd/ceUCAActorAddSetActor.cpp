@@ -46,27 +46,18 @@ ceUCAActorAddSetActor::ceUCAActorAddSetActor(ceConversationTopic *topic, ceCAAct
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldActorID = action->GetID();
 	pNewActorID = newActorID;
 	
 	SetShortInfo("Actor add set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorAddSetActor::~ceUCAActorAddSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

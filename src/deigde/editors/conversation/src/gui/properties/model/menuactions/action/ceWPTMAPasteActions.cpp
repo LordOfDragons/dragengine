@@ -77,10 +77,10 @@ void ceWPTMAPasteActions::OnAction(){
 		return;
 	}
 	
-	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo(cdata->GetActions())));
+	pConversation->GetUndoSystem()->Add(CreateUndo(cdata->GetActions()));
 }
 
-ceUCActionPaste *ceWPTMAPasteActions::CreateUndo(const ceConversationActionList &actions){
+ceUCActionPaste::Ref ceWPTMAPasteActions::CreateUndo(const ceConversationAction::List &actions){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
 	DETHROW(deeInvalidParam);

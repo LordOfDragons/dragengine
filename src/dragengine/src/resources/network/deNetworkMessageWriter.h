@@ -52,7 +52,7 @@ public:
 	/** \brief Create network message writer. */
 	deNetworkMessageWriter(deNetworkMessage *message, bool append);
 	
-private:
+	/** \brief Create network message writer with same message and position. */
 	deNetworkMessageWriter(const deNetworkMessageWriter &writer);
 	
 protected:

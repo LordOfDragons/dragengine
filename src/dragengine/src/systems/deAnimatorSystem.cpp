@@ -73,9 +73,6 @@ void deAnimatorSystem::LoadAnimator(deAnimator *animator){
 		DETHROW(deeInvalidParam);
 	}
 	animator->SetPeerAnimator(pActiveModule->CreateAnimator(animator));
-	if(!animator->GetPeerAnimator()){
-		DETHROW(deeOutOfMemory);
-	}
 }
 
 void deAnimatorSystem::LoadAnimatorInstance(deAnimatorInstance *instance){
@@ -87,9 +84,6 @@ void deAnimatorSystem::LoadAnimatorInstance(deAnimatorInstance *instance){
 		DETHROW(deeInvalidParam);
 	}
 	instance->SetPeerAnimator(pActiveModule->CreateAnimatorInstance(instance));
-	if(!instance->GetPeerAnimator()){
-		DETHROW(deeOutOfMemory);
-	}
 }
 
 void deAnimatorSystem::LoadAnimation(deAnimation *animation){
@@ -101,9 +95,6 @@ void deAnimatorSystem::LoadAnimation(deAnimation *animation){
 		DETHROW(deeInvalidParam);
 	}
 	animation->SetPeerAnimator(pActiveModule->CreateAnimation(animation));
-	if(!animation->GetPeerAnimator()){
-		DETHROW(deeOutOfMemory);
-	}
 }
 
 void deAnimatorSystem::LoadComponent(deComponent *component){
@@ -115,9 +106,6 @@ void deAnimatorSystem::LoadComponent(deComponent *component){
 		DETHROW(deeInvalidParam);
 	}
 	component->SetPeerAnimator(pActiveModule->CreateComponent(component));
-	if(!component->GetPeerAnimator()){
-		DETHROW(deeOutOfMemory);
-	}
 }
 
 

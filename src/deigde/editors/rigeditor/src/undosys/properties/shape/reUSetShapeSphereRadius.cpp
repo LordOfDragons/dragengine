@@ -24,7 +24,7 @@
 
 #include "reUSetShapeSphereRadius.h"
 #include "../../../rig/shape/reRigShapeSphere.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius){
-	if(!shape) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
@@ -43,12 +43,9 @@ reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float 
 	pNewRadius = radius;
 	
 	SetShortInfo("Set Sphere Shape Radius");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){
-	pShape->FreeReference();
 }
 
 

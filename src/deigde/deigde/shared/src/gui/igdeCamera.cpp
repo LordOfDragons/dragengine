@@ -50,7 +50,7 @@ pDistance(0.0f)
 {
 	DEASSERT_NOTNULL(engine)
 	
-	pEngCamera.TakeOver(engine->GetCameraManager()->CreateCamera());
+	pEngCamera = engine->GetCameraManager()->CreateCamera();
 	
 	pFov = pEngCamera->GetFov() * RAD2DEG;
 	pFovRatio = pEngCamera->GetFovRatio();
@@ -365,7 +365,7 @@ decVector igdeCamera::GetDirectionFor(int width, int height, int x, int y) const
 }
 
 void igdeCamera::SetDefaultParameters(float lowestIntensity, float highestIntensity, float adaptionTime){
-	const deCamera::Ref camera(deCamera::Ref::New(pEngine->GetCameraManager()->CreateCamera()));
+	const deCamera::Ref camera(pEngine->GetCameraManager()->CreateCamera());
 	
 	pFov = camera->GetFov() * RAD2DEG;
 	pFovRatio = camera->GetFovRatio();
@@ -427,7 +427,7 @@ void igdeCamera::AdaptionChanged(){
 //////////////////////
 
 void igdeCamera::pCleanUp(){
-	SetEngineWorld(NULL);
+	SetEngineWorld(nullptr);
 }
 
 void igdeCamera::pUpdateCameraPosition(){

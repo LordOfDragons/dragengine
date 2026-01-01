@@ -54,7 +54,9 @@ public:
 	/** Create a copy of a state snapshot rule. */
 	aeRuleStateSnapshot(const aeRuleStateSnapshot &copy);
 	/** Clean up the animator rule. */
+protected:
 	~aeRuleStateSnapshot() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -94,13 +96,13 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
-	void ListLinks(aeLinkList& list) override;
+	void ListLinks(aeLink::List& list) override;
 	/*@}*/
 	
 	/** \name Operators */

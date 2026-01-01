@@ -27,11 +27,11 @@
 #define _AEURULEGROUPPASTERULE_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../animator/rule/aeRuleList.h"
-#include "../../../animator/link/aeLinkList.h"
-#include "../../../animator/controller/aeControllerList.h"
+#include "../../../animator/rule/aeRule.h"
+#include "../../../animator/link/aeLink.h"
+#include "../../../animator/controller/aeController.h"
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -39,21 +39,22 @@ class aeRuleGroup;
  * Undo action rule group paste rule.
  */
 class aeURuleGroupPasteRule : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleGroupPasteRule> Ref;
+	
+	
 private:
-	aeRuleGroup *pGroup;
-	aeRuleList pRuleList;
-	aeLinkList pRemoveLinkList;
-	aeControllerList pRemoveControllerList;
+	aeRuleGroup::Ref pGroup;
+	aeRule::List pRuleList;
+	aeLink::List pRemoveLinkList;
+	aeController::List pRemoveControllerList;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleGroupPasteRule> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index);
+	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRule::List &ruleList, int index);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupPasteRule();

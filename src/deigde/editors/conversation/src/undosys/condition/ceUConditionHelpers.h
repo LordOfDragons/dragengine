@@ -27,8 +27,7 @@
 
 #include <dragengine/deObject.h>
 
-class ceConversationCondition;
-class ceConversationConditionList;
+#include "../../conversation/condition/ceConversationCondition.h"
 
 
 /**
@@ -40,7 +39,7 @@ public:
 	/*@{*/
 	/** \brief Condition to set active after condition is removed. */
 	static ceConversationCondition *ActivateConditionAfterRemove(
-		const ceConversationConditionList &list, ceConversationCondition *removedCondition);
+		const ceConversationCondition::List &list, ceConversationCondition *removedCondition);
 	/*@}*/
 };
 

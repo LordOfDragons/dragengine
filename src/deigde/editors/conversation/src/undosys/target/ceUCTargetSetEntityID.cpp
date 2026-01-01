@@ -42,7 +42,7 @@
 ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID){
 	if(!target || !newID) DETHROW(deeInvalidParam);
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
 	SetShortInfo("Target Set Entity ID");
 	
@@ -50,13 +50,9 @@ ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID
 	pNewID = newID;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetEntityID::~ceUCTargetSetEntityID(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

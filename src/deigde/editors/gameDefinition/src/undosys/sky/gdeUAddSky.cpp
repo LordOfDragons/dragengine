@@ -41,8 +41,7 @@
 ////////////////////////////
 
 gdeUAddSky::gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky) :
-pGameDefinition(NULL),
-pSky(NULL)
+pGameDefinition(nullptr)
 {
 	if(!gameDefinition || !sky){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pSky(NULL)
 	SetShortInfo("Add sky");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUAddSky::~gdeUAddSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

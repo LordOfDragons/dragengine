@@ -42,12 +42,10 @@
 aeURuleIKSetGoalPosition::aeURuleIKSetGoalPosition(aeRuleInverseKinematic *rule, const decVector &newPos){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldPos = rule->GetGoalPosition();
 		pNewPos = newPos;
 		
@@ -82,5 +80,4 @@ void aeURuleIKSetGoalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetGoalPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

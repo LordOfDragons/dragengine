@@ -52,7 +52,7 @@ pPath(path)
 	pName.Set(' ', bufferCountOutput);
 	
 	OXR_CHECK(instance.xrPathToString(instance.GetInstance(),
-		path, bufferCountOutput, &bufferCountOutput, (char*)pName.GetString()));
+		path, bufferCountOutput, &bufferCountOutput, pName.GetMutableString()));
 }
 
 deoxrPath::deoxrPath(const deoxrInstance &instance, const char *name) :

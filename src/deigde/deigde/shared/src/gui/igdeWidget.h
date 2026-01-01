@@ -28,6 +28,7 @@
 #include "theme/igdeGuiTheme.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -49,6 +50,9 @@ class DE_DLL_EXPORT igdeWidget : public deObject{
 public:
 	/** \brief Strong reference. */
 	typedef deTObjectReference<igdeWidget> Ref;
+	
+	/** \brief Weak reference. */
+	typedef deTWeakObjectReference<igdeWidget> WeakRef;
 	
 	
 private:
@@ -82,7 +86,7 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Parent of widget or NULL. */
+	/** \brief Parent of widget or nullptr. */
 	inline igdeContainer *GetParent() const{ return pParent; }
 	
 	/** \brief Widget is visible. */
@@ -107,10 +111,10 @@ public:
 	deLogger *GetLogger() const;
 	
 	
-	/** \brief Widget specific GuiTheme or NULL to use parent GuiTheme. */
-	inline igdeGuiTheme *GetWidgetGuiTheme() const{ return pGuiTheme; }
+	/** \brief Widget specific GuiTheme or nullptr to use parent GuiTheme. */
+	inline const igdeGuiTheme::Ref &GetWidgetGuiTheme() const{ return pGuiTheme; }
 	
-	/** \brief Set widget specific GuiTheme or NULL to use parent GuiTheme. */
+	/** \brief Set widget specific GuiTheme or nullptr to use parent GuiTheme. */
 	void SetWidgetGuiTheme(igdeGuiTheme *guitheme);
 	
 	/** \brief Widget specific GuiTheme name or empty string to use parent GuiTheme. */
@@ -122,7 +126,7 @@ public:
 	/**
 	 * \brief GuiTheme to use.
 	 * 
-	 * Returns the first GuiTheme which is not NULL:
+	 * Returns the first GuiTheme which is not nullptr:
 	 * - Widget specific GuiTheme
 	 * - Named widget specific GuiTheme
 	 * - Parent GuiThemes (walking up the parent chain)

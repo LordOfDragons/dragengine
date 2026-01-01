@@ -100,6 +100,7 @@
 #include "../../vbo/deoglSharedVBO.h"
 #include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../vbo/deoglSharedVBOList.h"
+#include "../../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -246,7 +247,6 @@ static float atrtElapsed1 = 0;
 static float atrtElapsed1b = 0;
 static float atrtElapsed2 = 0;
 static decTimer atrtTimer;
-#include "../../renderthread/deoglRTLogger.h"
 #endif
 
 void deoglAddToRenderTask::AddComponent(const deoglRComponentLOD &lod, int specialFlags){

@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *RigEditorCreateModule(igdeEnvironment *en
 ////////////////
 
 igdeEditorModule *RigEditorCreateModule(igdeEnvironment *environment){
-	reIGDEModule *module = NULL;
-	
 	try{
-		module = new reIGDEModule(*environment);
+		return new reIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

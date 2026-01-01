@@ -44,27 +44,18 @@
 ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay){
 	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldDelay = action->GetDelay();
 	pNewDelay = newDelay;
 	
 	SetShortInfo("Action Set Delay");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionSetDelay::~ceUCActionSetDelay(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -36,6 +36,7 @@ class gdeObjectClass;
  */
 class gdeBaseMAOCSubObject : public gdeBaseAction{
 public:
+	typedef deTObjectReference<gdeBaseMAOCSubObject> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
@@ -47,11 +48,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	igdeUndo *OnAction(gdeGameDefinition &gameDefinition) override;
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition,
+	/** \brief Run action if game definition is not nullptr. */
+	virtual igdeUndo::Ref OnActionSubObject(gdeGameDefinition &gameDefinition,
 		gdeObjectClass &objectClass) = 0;
 	
 	/** \brief Request update of action parameters if required. */

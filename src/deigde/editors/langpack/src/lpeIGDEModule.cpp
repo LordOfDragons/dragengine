@@ -52,6 +52,6 @@ lpeIGDEModule::~lpeIGDEModule(){
 
 void lpeIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new lpeWindowMain(*this));
+		SetEditorWindow(lpeWindowMain::Ref::New(*this));
 	}
 }

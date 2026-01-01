@@ -82,25 +82,25 @@ public:
 	/** \brief Begin create link drag and drop. */
 	void BeginCreateLink(igdeNativeNullNVSlot *source);
 	
-	/** \brief Link drag and drop source or NULL. */
+	/** \brief Link drag and drop source or nullptr. */
 	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{ return nullptr; }
 	
 	/** \brief Set create link drag and drop position. */
 	void SetCreateLinkPosition(const decPoint &position);
 	
-	/** \brief Create link drag and drop target or NULL. */
+	/** \brief Create link drag and drop target or nullptr. */
 	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{ return nullptr; }
 	
-	/** \brief Set create link drag and drop target or NULL. */
+	/** \brief Set create link drag and drop target or nullptr. */
 	void SetCreateLinkTarget(igdeNativeNullNVSlot *target);
 	
 	/** \brief Finish create link drag and drop. */
 	void FinishCreateLink();
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
-	/** \brief Hover link or NULL. */
+	/** \brief Hover link or nullptr. */
 	inline igdeNVLink *GetHoverLink() const{ return nullptr; }
 	
 	/** \brief Set hover link. */

@@ -31,6 +31,7 @@
 
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decWeakFileWriter.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decDateTime.h>
 
@@ -38,7 +39,6 @@
 class deArchiveDelga;
 class deadContainer;
 class deadArchiveFile;
-class decWeakFileWriter;
 
 
 
@@ -105,7 +105,7 @@ public:
 	 * 
 	 * \note This method is called while the container holds the lock.
 	 */
-	decWeakFileWriter *OpenFileForWriting(const deadArchiveFile &file);
+	decWeakFileWriter::Ref OpenFileForWriting(const deadArchiveFile &file);
 	
 	/** Close file. */
 	void CloseFile();

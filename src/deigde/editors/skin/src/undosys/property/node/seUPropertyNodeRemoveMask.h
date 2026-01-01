@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 
@@ -37,9 +37,13 @@ class sePropertyNode;
  * \brief Undo action property node set mask.
  */
 class seUPropertyNodeRemoveMask : public igdeUndo{
+public:
+	typedef deTObjectReference<seUPropertyNodeRemoveMask> Ref;
+	
+	
 private:
-	sePropertyNode *pNode;
-	sePropertyNode *pMask;
+	sePropertyNode::Ref pNode;
+	sePropertyNode::Ref pMask;
 	
 	decPoint3 pOldPosition;
 	decPoint3 pOldSize;
@@ -49,9 +53,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeRemoveMask> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

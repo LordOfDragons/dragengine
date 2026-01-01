@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "Drag[en]gine",
+			"name": "Dragengine",
 			"path": "src/dragengine"
 		},
 		{
@@ -277,6 +277,10 @@
 			"path": ".github"
 		},
 		{
+			"name": "Low level testing",
+			"path": "src/tests"
+		},
+		{
 			"name": "Testing",
 			"path": "detesting"
 		},
@@ -473,6 +477,18 @@
 				"pattern": "**/*.dedm",
 				"systemId": "${workspaceFolder}/doc/xmlschema/dynamicMusic.xsd"
 			}
+		],
+		"c-cpp-flylint.excludeFromWorkspacePaths": [
+			"extern/**",
+			"ghdocs/**",
+			"vs/**",
+			"archive/**",
+			"installer/**",
+			"site_scons/**",
+			"uwp/**"
+		],
+		"c-cpp-flylint.cppcheck.extraArgs": [
+			//"--check-level=exhaustive"
 		]
 	}
 }

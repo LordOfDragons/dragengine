@@ -27,7 +27,7 @@
 
 #include "deResourceLoaderTask.h"
 #include "../../skin/deSkin.h"
-#include "../../../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deSkinPropertyImage;
 class deSkinPropertyNodeImage;
@@ -41,6 +41,10 @@ class deSkinPropertyNodeText;
  */
 class DE_DLL_EXPORT deRLTaskReadSkinInternal : public deResourceLoaderTask {
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadSkinInternal> Ref;
+	
+	
 	/**
 	 * \brief For internal use only.
 	 * 
@@ -50,15 +54,16 @@ public:
 	 * for the caller
 	 */
 	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
-	/** \brief Type holding strong reference. */
-	typedef deTThreadSafeObjectReference<cInternalTask> Ref;
-
-
+	public:
+		/** \brief Type holding strong reference. */
+		typedef deTThreadSafeObjectReference<cInternalTask> Ref;
+		
+		
 	private:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;
 		deSkinPropertyNodeText *pNodeText;
-		deResourceLoaderTask *pTask;
+		deResourceLoaderTask::Ref pTask;
 		
 	public:
 		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask *task);
@@ -69,14 +74,14 @@ public:
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
 		inline deSkinPropertyNodeImage *GetNodeImage() const{ return pNodeImage; }
 		inline deSkinPropertyNodeText *GetNodeText() const{ return pNodeText; }
-		inline deResourceLoaderTask *GetTask() const{ return pTask; }
+		inline const deResourceLoaderTask::Ref &GetTask() const{ return pTask; }
 	};
 	
 	
 	
 private:
 	deSkin::Ref pSkin;
-	decThreadSafeObjectOrderedSet pInternalTasks;
+	decTThreadSafeObjectOrderedSet<cInternalTask> pInternalTasks;
 	
 	
 	
@@ -102,7 +107,7 @@ public:
 	void Finished() override;
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/*@}*/
 	
 	

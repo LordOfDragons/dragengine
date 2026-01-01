@@ -26,7 +26,6 @@
 #define _CECCONDITIONLOGIC_H_
 
 #include "ceConversationCondition.h"
-#include "ceConversationConditionList.h"
 
 
 
@@ -35,6 +34,8 @@
  */
 class ceCConditionLogic : public ceConversationCondition{
 public:
+	typedef deTObjectReference<ceCConditionLogic> Ref;
+	
 	/** Logic operators. */
 	enum eOperators{
 		/** None of the conditions are true. */
@@ -47,7 +48,7 @@ public:
 	
 private:
 	eOperators pOperator;
-	ceConversationConditionList pConditions;
+	ceConversationCondition::List pConditions;
 	bool pTIMExpanded;
 	
 	
@@ -60,7 +61,9 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionLogic(const ceCConditionLogic &condition);
 	/** Cleans up the conversation condition. */
+protected:
 	~ceCConditionLogic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -70,11 +73,11 @@ public:
 	/** Sets the operator. */
 	void SetOperator(eOperators aOperator);
 	/** Retrieves the list of conditions. */
-	inline ceConversationConditionList &GetConditions(){ return pConditions; }
-	inline const ceConversationConditionList &GetConditions() const { return pConditions; }
+	inline ceConversationCondition::List &GetConditions(){ return pConditions; }
+	inline const ceConversationCondition::List &GetConditions() const { return pConditions; }
 	
 	/** Create a copy of this condition. */
-    ceConversationCondition *CreateCopy() const override;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 	
 	

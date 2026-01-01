@@ -113,7 +113,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set emitter or NULL if none is set. */
-	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline const deParticleEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter or NULL to unset it. */
 	void SetEmitter(deParticleEmitter *emitter);

@@ -26,10 +26,10 @@
 #define _DEOGLCANVASVIEW_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasView.h"
 
 #include <dragengine/common/collection/decPointerSet.h>
 
-class deoglRCanvasView;
 class deCanvasView;
 class deoglCanvasViewListener;
 
@@ -40,7 +40,7 @@ class deoglCanvasViewListener;
 class deoglCanvasView : public deoglCanvas{
 private:
 	deCanvasView &pCanvasView;
-	deoglRCanvasView *pRCanvasView;
+	deoglRCanvasView::Ref pRCanvasView;
 	
 	bool pDirtyPaint;
 	bool pResizeRenderTarget;

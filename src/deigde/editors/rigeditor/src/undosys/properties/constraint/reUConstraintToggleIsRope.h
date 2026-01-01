@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,15 +36,16 @@ class reRigConstraint;
  * \brief Toggle constraint is rope undo action.
  */
 class reUConstraintToggleIsRope : public igdeUndo{
+public:
+	typedef deTObjectReference<reUConstraintToggleIsRope> Ref;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUConstraintToggleIsRope> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

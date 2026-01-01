@@ -64,7 +64,7 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 		if(pWidth<1 || pHeight<1 || colorCount<1) DETHROW(deeInvalidFileFormat);
 		if(pixelBytes<1 || pixelBytes>4) DETHROW(deeInvalidFileFormat);
 		// read color table
-		if(!(colorTable = new colorEntry[colorCount])) DETHROW(deeOutOfMemory);
+		colorTable = new colorEntry[colorCount];
 		for(c=0; c<colorCount; c++){
 			lineData = xpmData[line++];
 			memcpy(&colorTable[c].index[0], lineData, pixelBytes);
@@ -89,8 +89,8 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 			}
 		}
 		// read pixels
-		if(!(destData = new rgba[pWidth*pHeight])) DETHROW(deeOutOfMemory);
-		pData = (char*)destData;
+		destData = new rgba[pWidth*pHeight];
+		pData = reinterpret_cast<char*>(destData);
 		for(y=0; y<pHeight; y++){
 			lineData = xpmData[line++];
 			destLine = destData + pWidth * (flip ? pHeight - 1 - y : y);

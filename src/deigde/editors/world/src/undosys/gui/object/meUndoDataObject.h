@@ -27,11 +27,14 @@
 
 #include "../../../world/object/meObject.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+
+class meWorld;
 
 
 /**
- * \brief Object data for undo actions.
+ * Object data for undo actions.
  * 
  * Stores information about an object suitable for undo actions. The object
  * is stored as a pointer which is either owned or not. If the object is owned
@@ -40,28 +43,30 @@
  */
 class meUndoDataObject : public deObject{
 public:
-	/** Reference. */
 	typedef deTObjectReference<meUndoDataObject> Ref;
+	typedef decTObjectOrderedSet<meUndoDataObject> List;
 	
 	
 private:
 	meObject::Ref pObject;
-	decDVector pOldPosition;
-	decVector pOldOrientation;
-	decVector pOldSize;
+	decDVector pOldPosition, pNewPosition;
+	decVector pOldRotation, pNewRotation;
+	decVector pOldSize, pNewSize;
+	decVector pOldScaling, pNewScaling;
 	meObject::Ref pAttachedTo;
+	List pAttachedObjects;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create undo data object. */
+	/** Create undo data object. */
 	meUndoDataObject(meObject *object);
 	
 protected:
-	/** \brief Clean up data object. */
-	virtual ~meUndoDataObject();
+	/** Clean up data object. */
+	~meUndoDataObject() override;
 	/*@}*/
 	
 	
@@ -69,23 +74,82 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Object pointer. */
+	/** Object pointer. */
 	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
-	/** \brief Position before redo action. */
+	/** Position before redo action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
 	
-	/** \brief Orientation before redo action. */
-	inline const decVector &GetOldOrientation() const{ return pOldOrientation; }
+	/** Rotation before redo action. */
+	inline const decVector &GetOldRotation() const{ return pOldRotation; }
 	
-	/** \brief Size before redo action. */
+	/** Size before redo action. */
 	inline const decVector &GetOldSize() const{ return pOldSize; }
 	
-	/** \brief Attached to before redo action. */
+	/** Scaling before redo action. */
+	inline const decVector &GetOldScaling() const{ return pOldScaling; }
+	
+	/** Position after redo action. */
+	inline const decDVector &GetNewPosition() const{ return pNewPosition; }
+	
+	/** Set new position. */
+	void SetNewPosition(const decDVector &position);
+	
+	/** Rotation after redo action. */
+	inline const decVector &GetNewRotation() const{ return pNewRotation; }
+	
+	/** Set new rotation. */
+	void SetNewRotation(const decVector &rotation);
+	
+	/** Size after redo action. */
+	inline const decVector &GetNewSize() const{ return pNewSize; }
+	
+	/** Set new size. */
+	void SetNewSize(const decVector &size);
+	
+	/** Scaling after redo action. */
+	inline const decVector &GetNewScaling() const{ return pNewScaling; }
+	
+	/** Set new scaling. */
+	void SetNewScaling(const decVector &scaling);
+	
+	/** Transform new geometry by matrix. */
+	void TransformNew(const decDMatrix &matrix);
+	
+	/** Old object matrix. */
+	decDMatrix GetOldMatrix() const;
+	
+	/** Inverse old object matrix. */
+	decDMatrix GetOldMatrixInverse() const;
+	
+	/** New object matrix. */
+	decDMatrix GetNewMatrix() const;
+	
+	/** Inverse new object matrix. */
+	decDMatrix GetNewMatrixInverse() const;
+	
+	/** Attached to before redo action. */
 	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
-	/** \brief Set attached to before redo action. */
+	/** Set attached to before redo action. */
 	void SetAttachedTo(meObject *object);
+	
+	/** Attached objects. */
+	inline List &GetAttachedObjects(){ return pAttachedObjects; }
+	inline const List &GetAttachedObjects() const{ return pAttachedObjects; }
+	
+	
+	/**
+	 * Add objects and all attachments. This takes care of adding only attached objects to
+	 * undo objects if they are not also part of the undo object list.
+	 */
+	static void AddObjectsWithAttachments(const meObject::List &objects, meUndoDataObject::List &list);
+	
+	/** Restore objects to their original position, rotation and size. */
+	static void RestoreOldGeometry(const meUndoDataObject::List &list, meWorld &world);
+	
+	/** Apply new object position, rotation and size and update attachments. */
+	static void ApplyNewGeometry(const meUndoDataObject::List &list, meWorld &world);
 	/*@}*/
 };
 

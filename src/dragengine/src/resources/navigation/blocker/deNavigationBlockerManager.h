@@ -25,10 +25,9 @@
 #ifndef _DENAVIGATIONBLOCKERMANAGER_H_
 #define _DENAVIGATIONBLOCKERMANAGER_H_
 
+#include "deNavigationBlocker.h"
 #include "../../deResourceManager.h"
 #include "../../deResourceList.h"
-
-class deNavigationBlocker;
 
 
 /**
@@ -61,7 +60,7 @@ public:
 	deNavigationBlocker *GetRootNavigationBlocker() const;
 	
 	/** \brief Create new blocker. */
-	deNavigationBlocker *CreateNavigationBlocker();
+	deNavigationBlocker::Ref CreateNavigationBlocker();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

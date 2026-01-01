@@ -93,7 +93,7 @@ void igdeConfigurationLocal::LoadConfiguration(){
 		}
 		
 		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
-			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
 	}catch(const deException &e){
@@ -114,10 +114,9 @@ void igdeConfigurationLocal::SaveConfiguration(){
 		return;
 	}
 	
-	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
-		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
+		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
+			vfs.OpenFileForWriting(pathFile), *this);
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);

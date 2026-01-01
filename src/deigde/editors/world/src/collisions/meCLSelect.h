@@ -25,12 +25,11 @@
 #ifndef _MECLSELECT_H_
 #define _MECLSELECT_H_
 
-#include "meCLHitList.h"
-#include "../world/object/meObjectList.h"
-#include "../world/objectshape/meObjectShapeList.h"
+#include "meCLHitListEntry.h"
+#include "../world/object/meObject.h"
+#include "../world/objectshape/meObjectShape.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class meWorld;
@@ -68,10 +67,10 @@ private:
 	bool pCanSelectNavSpaces;
 	bool pCanSelectHTNavPoints;
 	
-	meCLHitList pHitList;
+	meCLHitListEntry::List pHitList;
 	
-	meObjectList pRectSelOldObjectList;
-	meObjectShapeList pRectSelOldObjectShapeList;
+	meObject::List pRectSelOldObjectList;
+	meObjectShape::List pRectSelOldObjectShapeList;
 	
 	
 	
@@ -161,8 +160,8 @@ public:
 	void StoreRectSelect();
 	
 	/** \brief Get hit list. */
-	inline meCLHitList &GetHitList(){ return pHitList; }
-	inline const meCLHitList &GetHitList() const{ return pHitList; }
+	inline meCLHitListEntry::List &GetHitList(){ return pHitList; }
+	inline const meCLHitListEntry::List &GetHitList() const{ return pHitList; }
 	
 	/** \brief Prepare for a test clearing only the hit list. */
 	void Prepare();

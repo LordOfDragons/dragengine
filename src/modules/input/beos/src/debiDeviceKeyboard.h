@@ -34,6 +34,10 @@
  */
 class debiDeviceKeyboard : public debiDevice{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceKeyboard> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */

@@ -25,14 +25,15 @@
 #ifndef _REUBONEMIRROR_H_
 #define _REUBONEMIRROR_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/shape/reRigShape.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
-
-class reRig;
-class reRigBone;
-class reRigShapeList;
-class reRigConstraintList;
 
 
 
@@ -48,32 +49,37 @@ class reRigConstraintList;
  */
 class reUBoneMirror : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reUBoneMirror> Ref;
 	
+	
+public:
 
 private:
-	struct sBone{
-		reRigBone *boneSource;
+	class cBone : public deObject{
+	public:
+		typedef deTObjectReference<cBone> Ref;
 		
-		reRigBone *boneTarget;
+		reRigBone::Ref boneSource;
+		reRigBone::Ref boneTarget;
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
-		reRigShapeList *oldShapes;
-		reRigConstraintList *oldConstraints;
+		reRigShape::List oldShapes;
+		reRigConstraint::List oldConstraints;
 		decVector oldIKLimitsLower;
 		decVector oldIKLimitsUpper;
 		decVector oldIKResistance;
 		bool oldIKLocked[3];
+		
+		cBone() = default;
 	};
 	
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
-	sBone *pBones;
+	decTObjectList<cBone> pBones;
 	int pBoneCount;
 	
 	
@@ -104,8 +110,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
 	reRigBone *pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const;
 };
 

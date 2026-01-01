@@ -44,7 +44,7 @@ peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImp
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Emit Min Impulse");
 	
@@ -52,13 +52,9 @@ peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImp
 	pNewImpulse = newImpulse;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitMinImpulse::~peeUTypeSetEmitMinImpulse(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

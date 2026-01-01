@@ -26,12 +26,11 @@
 #define _CECONVERSATIONINFOBOX_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/string/decStringList.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class deGraphicContext;
 class ceConversation;
 
@@ -40,7 +39,10 @@ class ceConversation;
 /**
  * \brief Shows an information box for special actions in a conversation playback.
  */
-class ceConversationInfoBox{
+class ceConversationInfoBox : public deObject{
+public:
+	typedef deTObjectReference<ceConversationInfoBox> Ref;
+	
 private:
 	ceConversation &pConversation;
 	
@@ -57,10 +59,10 @@ private:
 	
 	decString pText;
 	
-	decStringList pLayoutTexts;
-	decIntList pLayoutWidths;
+	decTList<decString> pLayoutTexts;
+	decTList<int> pLayoutWidths;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -69,7 +71,9 @@ public:
 	ceConversationInfoBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
+protected:
 	~ceConversationInfoBox();
+public:
 	/*@}*/
 	
 	
@@ -125,7 +129,7 @@ public:
 	void Clear();
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/**
 	 * \brief Update canvas.

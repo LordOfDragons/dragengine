@@ -161,7 +161,7 @@ bool deWindowsInput::Init(){
 	
 	AppActivationChanged();
 	
-	pDevices.TakeOver(new dewiDeviceManager(*this));
+	pDevices = dewiDeviceManager::Ref::New(*this);
 	pDevices->UpdateDeviceList();
 	pDevices->LogDevices();
 	
@@ -184,19 +184,9 @@ int deWindowsInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deWindowsInput::GetDeviceAt(int index){
-	deInputDevice * const device = new deInputDevice;
-	
-	try{
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deWindowsInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -834,7 +824,9 @@ WPARAM deWindowsInput::pMapLeftRightKeys(WPARAM virtKey, LPARAM lParam) const{
 
 class dewiModuleInternal : public deInternalModule{
 public:
-dewiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	typedef deTObjectReference<dewiModuleInternal> Ref;
+	
+	dewiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("W32Input");
 		SetDescription("Processes input using the native windows message queue. \
 Supports Mouse and Keyboard for the time beeing.");
@@ -853,7 +845,7 @@ Supports Mouse and Keyboard for the time beeing.");
 	}
 };
 
-deInternalModule *dewiRegisterInternalModule(deModuleSystem *system){
-	return new dewiModuleInternal(system);
+deTObjectReference<deInternalModule> dewiRegisterInternalModule(deModuleSystem *system){
+	return dewiModuleInternal::Ref::New(system);
 }
 #endif

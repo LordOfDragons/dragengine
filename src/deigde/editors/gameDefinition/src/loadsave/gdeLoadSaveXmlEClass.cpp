@@ -40,8 +40,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerDictionary.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decPath.h>
@@ -75,8 +73,8 @@ pPattern(".deeclass"){
 // Loading and saving
 ///////////////////////
 
-gdeObjectClass *gdeLoadSaveXmlEClass::LoadXmlEClass(decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+gdeObjectClass::Ref gdeLoadSaveXmlEClass::LoadXmlEClass(decBaseFileReader &reader){
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -107,69 +105,60 @@ const gdeObjectClass &objectClass, decBaseFileWriter &writer){
 // Private Functions
 //////////////////////
 
-gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &root){
+gdeObjectClass::Ref gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &root){
 #if 0
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	gdeObjectClass *objectClass = NULL;
-	try{
-		objectClass = new gdeObjectClass;
-		
-		for(i=0; i<elementCount; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			const decString tagName(tag->GetName());
-			
-			if(tagName == "name"){
-				gameDefinition.SetName(GetCDataString(*tag));
-				
-			}else if(tagName == "basePath"){
-				gameDefinition.SetBasePath(GetCDataString(*tag));
-				
-			}else if(tagName == "defaultClass"){
-				gameDefinition.SetDefaultObjectClass(GetCDataString(*tag));
-				
-			}else if(tagName == "defaultSkin"){
-				gameDefinition.SetDefaultSkin(GetCDataString(*tag));
-				
-			}else if(tagName == "defaultSky"){
-				gameDefinition.SetDefaultSky(GetCDataString(*tag));
-				
-			}else if(tagName == "class"){
-				pReadObjectClass(*tag, gameDefinition);
-				
-			}else if(tagName == "skin"){
-				pReadSkin(*tag, gameDefinition);
-				
-			}else if(tagName == "sky"){
-				pReadSky(*tag, gameDefinition);
-				
-			}else if(tagName == "particleEmitter"){
-				pReadParticleEmitter(*tag, gameDefinition);
-				
-			}else if(tagName == "categories"){
-				pReadCategories(*tag, gameDefinition);
-				
-			}else if(tagName == "property"){
-				pReadProperty(*tag, gameDefinition.GetWorldProperties());
-				
-			}else if(tagName == "decalProperty"){
-				pReadProperty(*tag, gameDefinition.GetDecalProperties());
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::New());
+	
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-	}catch(const deException &){
-		if(objectClass){
-			objectClass->FreeReference();
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "name"){
+			gameDefinition.SetName(GetCDataString(*tag));
+			
+		}else if(tagName == "basePath"){
+			gameDefinition.SetBasePath(GetCDataString(*tag));
+			
+		}else if(tagName == "defaultClass"){
+			gameDefinition.SetDefaultObjectClass(GetCDataString(*tag));
+			
+		}else if(tagName == "defaultSkin"){
+			gameDefinition.SetDefaultSkin(GetCDataString(*tag));
+			
+		}else if(tagName == "defaultSky"){
+			gameDefinition.SetDefaultSky(GetCDataString(*tag));
+			
+		}else if(tagName == "class"){
+			pReadObjectClass(*tag, gameDefinition);
+			
+		}else if(tagName == "skin"){
+			pReadSkin(*tag, gameDefinition);
+			
+		}else if(tagName == "sky"){
+			pReadSky(*tag, gameDefinition);
+			
+		}else if(tagName == "particleEmitter"){
+			pReadParticleEmitter(*tag, gameDefinition);
+			
+		}else if(tagName == "categories"){
+			pReadCategories(*tag, gameDefinition);
+			
+		}else if(tagName == "property"){
+			pReadProperty(*tag, gameDefinition.GetWorldProperties());
+			
+		}else if(tagName == "decalProperty"){
+			pReadProperty(*tag, gameDefinition.GetDecalProperties());
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		throw;
 	}
 	
 	return objectClass;
@@ -218,7 +207,7 @@ const gdeGameDefinition &gameDefinition, const gdeObjectClass &objectClass){
 	}
 	
 	// write texture replacements
-	gdeOCComponentTextureList textures;
+	gdeOCComponentTexture::List textures;
 	pCollectTextures(gameDefinition, objectClass, textures);
 	
 	const int textureCount = textures.GetCount();
@@ -239,33 +228,37 @@ const gdeGameDefinition &gameDefinition, const gdeObjectClass &objectClass){
 }
 
 void gdeLoadSaveXmlEClass::pCollectTextures(const gdeGameDefinition &gameDefinition,
-const gdeObjectClass &objectClass, gdeOCComponentTextureList &list){
-	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+const gdeObjectClass &objectClass, gdeOCComponentTexture::List &list){
+	const gdeOCComponentTexture::List &textures = objectClass.GetTextures();
 	const int textureCount = textures.GetCount();
 	int i;
 	
 	for(i=0; i<textureCount; i++){
 		gdeOCComponentTexture * const texture = textures.GetAt(i);
-		if(!list.HasNamed(texture->GetName())){
+		if(!list.HasMatching([&](const gdeOCComponentTexture &t){
+			return t.GetName() == texture->GetName();
+		})){
 			list.Add(texture);
 		}
 	}
 	
-	const gdeOCComponentList &components = objectClass.GetComponents();
+	const gdeOCComponent::List &components = objectClass.GetComponents();
 	const int componentCount = components.GetCount();
 	
 	for(i=0; i<componentCount; i++){
-		const gdeOCComponentTextureList &textures2 = components.GetAt(i)->GetTextures();
+		const gdeOCComponentTexture::List &textures2 = components.GetAt(i)->GetTextures();
 		const int textureCount2 = textures2.GetCount();
 		for(i=0; i<textureCount2; i++){
 			gdeOCComponentTexture * const texture = textures2.GetAt(i);
-			if(!list.HasNamed(texture->GetName())){
+			if(!list.HasMatching([&](const gdeOCComponentTexture &t){
+				return t.GetName() == texture->GetName();
+			})){
 				list.Add(texture);
 			}
 		}
 	}
 	
-	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const gdeOCInherit::List &inherits = objectClass.GetInherits();
 	const int inheritCount = inherits.GetCount();
 	for(i=0; i<inheritCount; i++){
 		const gdeObjectClass * const resolvedClass = gameDefinition.FindObjectClass(inherits.GetAt(i)->GetName());
@@ -277,8 +270,8 @@ const gdeObjectClass &objectClass, gdeOCComponentTextureList &list){
 
 void gdeLoadSaveXmlEClass::pWritePropertyValue(decXmlWriter &writer, const gdeObjectClass &objectClass,
 bool isMapEntry, const char *name, const decString &value){
-	const gdeObjectClass *propertyOwner = NULL;
-	const gdeProperty *property = NULL;
+	const gdeObjectClass *propertyOwner = nullptr;
+	const gdeProperty *property = nullptr;
 	
 	if(objectClass.DeepGetNamedProperty(name, propertyOwner, property)){
 		pWritePropertyValue(writer, property->GetType(), isMapEntry, name, value);
@@ -490,8 +483,8 @@ const gdeObjectClass &objectClass, const gdeOCComponentTexture &texture){
 	for(i=0; i<nameCount; i++){
 		const decString &name = names.GetAt(i);
 		
-		const gdeObjectClass *propertyOwner = NULL;
-		const gdeProperty *property = NULL;
+		const gdeObjectClass *propertyOwner = nullptr;
+		const gdeProperty *property = nullptr;
 		if(objectClass.DeepGetNamedProperty(name, propertyOwner, property)){
 			pWritePropertyValue(writer, property->GetType(), true, name, properties.GetAt(name));
 			

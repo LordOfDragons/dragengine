@@ -44,27 +44,18 @@
 ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
 	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pCameraShot = NULL;
+	pTopic = nullptr;
+	pCameraShot = nullptr;
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;
 	
 	SetShortInfo("Set Camera Target");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetCameraTarget::~ceUCACShotSetCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

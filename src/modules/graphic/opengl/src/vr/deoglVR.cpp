@@ -149,8 +149,8 @@ void deoglVR::DropFBOStereo(){
 
 const deoglRenderTarget::Ref &deoglVR::GetRenderTargetDebugPanel(){
 	if(!pRenderTargetDebugPanel){
-		pRenderTargetDebugPanel.TakeOver(new deoglRenderTarget(
-			pCamera.GetRenderThread(), pDebugPanelSize, 4, 8));
+		pRenderTargetDebugPanel = deoglRenderTarget::Ref::New(
+			pCamera.GetRenderThread(), pDebugPanelSize, 4, 8);
 		pRenderTargetDebugPanel->PrepareFramebuffer();
 	}
 	
@@ -356,7 +356,7 @@ void deoglVR::pRenderStereo(){
 	pRightEye.GetRenderTarget()->PrepareFramebuffer();
 	
 	if(!pFBOStereo){
-		pFBOStereo.TakeOverWith(renderThread, false);
+		pFBOStereo = deoglFramebuffer::Ref::New(renderThread, false);
 		
 		renderThread.GetFramebuffer().Activate(pFBOStereo);
 		

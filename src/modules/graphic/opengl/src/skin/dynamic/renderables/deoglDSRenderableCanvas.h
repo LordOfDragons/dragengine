@@ -26,10 +26,10 @@
 #define _DEOGLDSRENDERABLECANVAS_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableCanvas.h"
 #include "../../../canvas/deoglCanvasViewListener.h"
 
 class deoglCanvasView;
-class deoglRDSRenderableCanvas;
 
 class deDSRenderableCanvas;
 
@@ -41,7 +41,7 @@ class deDSRenderableCanvas;
 class deoglDSRenderableCanvas : public deoglDSRenderable, deoglCanvasViewListener{
 public:
 	const deDSRenderableCanvas &pRenderableCanvas;
-	deoglRDSRenderableCanvas *pRRenderableCanvas;
+	deoglRDSRenderableCanvas::Ref pRRenderableCanvas;
 	deoglCanvasView *pCanvasView;
 	bool pDirty;
 	

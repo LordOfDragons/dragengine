@@ -54,13 +54,13 @@ pWindowMain(windowMain)
 	igdeEnvironment &env = GetEnvironment();
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelFont.TakeOver(new feWPFont(*this));
+	pPanelFont = feWPFont::Ref::New(*this);
 	AddChild(pPanelFont, "Font");
 	
-	pPanelGlyph.TakeOver(new feWPGlyph(*this));
+	pPanelGlyph = feWPGlyph::Ref::New(*this);
 	AddChild(pPanelGlyph, "Glyph");
 	
-	pPanelUndoHistory.TakeOver(new feWPUndoHistory(env));
+	pPanelUndoHistory = feWPUndoHistory::Ref::New(env);
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(0);
@@ -75,7 +75,7 @@ feWindowProperties::~feWindowProperties(){
 ///////////////
 
 void feWindowProperties::SetFont(feFont *font){
-	((feWPFont&)(igdeWidget&)pPanelFont).SetFont(font);
-	((feWPGlyph&)(igdeWidget&)pPanelGlyph).SetFont(font);
-	((feWPUndoHistory*)pPanelUndoHistory.operator->())->SetFont(font);
+	pPanelFont->SetFont(font);
+	pPanelGlyph->SetFont(font);
+	pPanelUndoHistory->SetFont(font);
 }

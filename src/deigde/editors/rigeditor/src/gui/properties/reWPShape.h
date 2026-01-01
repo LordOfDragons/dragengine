@@ -25,11 +25,14 @@
 #ifndef _REWPSHAPE_H_
 #define _REWPSHAPE_H_
 
+#include "reWPShapeListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/shape/reRigShape.h"
+
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
-class reRigShape;
+class reWindowProperties;
 class reWPShapeListener;
 class reWPPanelShape;
 class reWPPanelShapeSphere;
@@ -37,26 +40,27 @@ class reWPPanelShapeBox;
 class reWPPanelShapeCylinder;
 class reWPPanelShapeCapsule;
 class reWPPanelShapeHull;
-class reWindowProperties;
-
 
 
 /**
  * \brief Shapes panel.
  */
 class reWPShape : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<reWPShape> Ref;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRigShape *pShape;
-	reRig *pRig;
-	reWPShapeListener *pListener;
+	reRigShape::Ref pShape;
+	reRig::Ref pRig;
+	reWPShapeListener::Ref pListener;
 	
 	igdeSwitcher::Ref pSwitcher;
-	reWPPanelShapeSphere *pPanelSphere;
-	reWPPanelShapeBox *pPanelBox;
-	reWPPanelShapeCylinder *pPanelCylinder;
-	reWPPanelShapeCapsule *pPanelCapsule;
-	reWPPanelShapeHull *pPanelHull;
+	deTObjectReference<reWPPanelShapeSphere> pPanelSphere;
+	deTObjectReference<reWPPanelShapeBox> pPanelBox;
+	deTObjectReference<reWPPanelShapeCylinder> pPanelCylinder;
+	deTObjectReference<reWPPanelShapeCapsule> pPanelCapsule;
+	deTObjectReference<reWPPanelShapeHull> pPanelHull;
 	reWPPanelShape *pActivePanel;
 	
 	
@@ -81,13 +85,13 @@ public:
 	inline reWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
 	void SetShape(reRigShape *shape);

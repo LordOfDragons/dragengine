@@ -42,7 +42,7 @@
 ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float newDist){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set End Camera Distance");
 	
@@ -50,13 +50,9 @@ ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float new
 	pNewDist = newDist;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamDistTo::~ceUCCShotSetCamDistTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

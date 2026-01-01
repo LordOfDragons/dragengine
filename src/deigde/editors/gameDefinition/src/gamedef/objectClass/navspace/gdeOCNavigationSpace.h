@@ -26,6 +26,7 @@
 #define _GDEOCNAVIGATIONSPACE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/string/decString.h>
@@ -40,6 +41,9 @@ class gdeOCNavigationSpace : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCNavigationSpace> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCNavigationSpace> List;
 	
 	
 	/** \brief Properties. */
@@ -98,7 +102,9 @@ public:
 	gdeOCNavigationSpace(const gdeOCNavigationSpace &space);
 	
 	/** \brief Clean up navigation space. */
+protected:
 	virtual ~gdeOCNavigationSpace();
+public:
 	/*@}*/
 	
 	

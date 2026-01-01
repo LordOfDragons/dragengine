@@ -42,12 +42,10 @@
 aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set inverse kinematic rule use solver bone");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeURuleIKSetUseSolverBone::Redo(){
 //////////////////////
 
 void aeURuleIKSetUseSolverBone::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

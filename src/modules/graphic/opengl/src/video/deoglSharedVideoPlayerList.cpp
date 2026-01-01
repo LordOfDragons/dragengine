@@ -105,7 +105,7 @@ deVideo *video, int currentFrame, float playbackSpeed){
 	
 	// no match found. add a new shared video player
 	deoglSharedVideoPlayer *sharedVideoPlayer = NULL;
-	deVideoPlayer *videoPlayer = NULL;
+	deVideoPlayer::Ref videoPlayer;
 	
 	try{
 		videoPlayer = pOgl.GetGameEngine()->GetVideoPlayerManager()->CreateVideoPlayer();
@@ -118,14 +118,9 @@ deVideo *video, int currentFrame, float playbackSpeed){
 		pList.Add(sharedVideoPlayer);
 		
 		videoPlayer->Play();
-		videoPlayer->FreeReference();
-		
 	}catch(const deException &){
 		if(sharedVideoPlayer){
 			delete sharedVideoPlayer;
-		}
-		if(videoPlayer){
-			videoPlayer->FreeReference();
 		}
 		throw;
 	}

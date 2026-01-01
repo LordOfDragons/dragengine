@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTreeModelListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSTreeModelListener(gdeWPSTreeModel &model);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSTreeModelListener() override;
+public:
 	/*@}*/
 	
 	

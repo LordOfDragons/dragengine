@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -38,8 +38,12 @@ class peeParameter;
  * \brief Base class for undo action set parameter curve.
  */
 class peeUParameterSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUParameterSetCurve> Ref;
+	
+	
 protected:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	decCurveBezier pOldCurve;
@@ -48,9 +52,6 @@ protected:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUParameterSetCurve> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

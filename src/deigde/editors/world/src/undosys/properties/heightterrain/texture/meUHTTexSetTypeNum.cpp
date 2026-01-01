@@ -48,12 +48,9 @@ meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newT
 	pNewTypeNumber = newTypeNumber;
 	
 	SetShortInfo("Set Height Terrain Texture Type Number");
-	
-	texture->AddReference();
 }
 
 meUHTTexSetTypeNum::~meUHTTexSetTypeNum(){
-	if(pTexture) pTexture->FreeReference();
 }
 
 

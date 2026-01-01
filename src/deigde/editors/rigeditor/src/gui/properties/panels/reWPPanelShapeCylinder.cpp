@@ -59,6 +59,7 @@ namespace {
 class cTextHalfHeight : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
+	typedef deTObjectReference<cTextHalfHeight> Ref;
 	cTextHalfHeight(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -73,7 +74,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderHalfHeight::Ref undo(reUSetShapeCylinderHalfHeight::Ref::NewWith(
+		reUSetShapeCylinderHalfHeight::Ref undo(reUSetShapeCylinderHalfHeight::Ref::New(
 			cylinder, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -84,6 +85,7 @@ public:
 class cTextTopRadius : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
+	typedef deTObjectReference<cTextTopRadius> Ref;
 	cTextTopRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -98,7 +100,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderTopRadius::Ref undo(reUSetShapeCylinderTopRadius::Ref::NewWith(
+		reUSetShapeCylinderTopRadius::Ref undo(reUSetShapeCylinderTopRadius::Ref::New(
 			cylinder, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -109,6 +111,7 @@ public:
 class cTextBottomRadius : public igdeTextFieldListener{
 	reWPPanelShapeCylinder &pPanel;
 public:
+	typedef deTObjectReference<cTextBottomRadius> Ref;
 	cTextBottomRadius(reWPPanelShapeCylinder &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -123,7 +126,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderBottomRadius::Ref undo(reUSetShapeCylinderBottomRadius::Ref::NewWith(
+		reUSetShapeCylinderBottomRadius::Ref undo(reUSetShapeCylinderBottomRadius::Ref::New(
 			cylinder, value));
 		if(undo){
 			rig->GetUndoSystem()->Add(undo);
@@ -153,19 +156,19 @@ reWPPanelShape(wpShapes, reRigShape::estCylinder)
 	helper.GroupBox(*this, groupBox, "Cylinder Parameters:");
 	
 	helper.EditVector(groupBox, "Position:", "Position of the sphere relative to the parent bone.",
-		pEditPosition, new cEditPosition(*this));
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Rotation:", "Rotation of the cylinder.",
-		pEditRotation, new cEditRotation(*this));
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Half Height:", "Half height of the cylinder.",
-		pEditHalfHeight, new cTextHalfHeight(*this));
+		pEditHalfHeight, cTextHalfHeight::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Top Radius:", "Top radius in meters.",
-		pEditTopRadius, new cTextTopRadius(*this));
+		pEditTopRadius, cTextTopRadius::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Bottom Radius:", "Bottom radius in meters.",
-		pEditBottomRadius, new cTextBottomRadius(*this));
+		pEditBottomRadius, cTextBottomRadius::Ref::New(*this));
 }
 
 reWPPanelShapeCylinder::~reWPPanelShapeCylinder(){

@@ -26,6 +26,8 @@
 #define _GDEWPSOCLIGHT_H_
 
 #include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCLightListener.h"
 
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
@@ -36,11 +38,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCLight;
 class gdeWindowProperties;
-class gdeWPSOCLightListener;
 
 
 
@@ -48,11 +48,14 @@ class gdeWPSOCLightListener;
  * \brief Object class light property panel.
  */
 class gdeWPSOCLight : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCLight> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCLightListener *pListener;
+	gdeWPSOCLightListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeComboBox::Ref pCBType;
 	igdeColorBox::Ref pClrColor;
@@ -100,18 +103,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
+	/** \brief Set game definition or \em nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class light or \em NULL if not set. */
+	/** \brief Active object class light or \em nullptr if not set. */
 	gdeOCLight *GetLight() const;
 	
 	/** \brief Selected property name. */

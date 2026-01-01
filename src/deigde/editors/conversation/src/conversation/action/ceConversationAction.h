@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decIntSet.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTSet.h>
 
 
 /**
@@ -36,8 +36,8 @@
  */
 class ceConversationAction : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceConversationAction> Ref;
+	typedef decTObjectOrderedSet<ceConversationAction> List;
 	
 	
 	/** \brief Action types. */
@@ -96,7 +96,9 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceConversationAction(const ceConversationAction &action);
 	/** \brief Cleans up the conversation action. */
+protected:
 	virtual ~ceConversationAction();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -129,7 +131,7 @@ public:
 	void SetDelay(float delay);
 	
 	/** \brief Create a copy of this action. */
-	virtual ceConversationAction *CreateCopy() const = 0;
+	virtual Ref CreateCopy() const = 0;
 	/*@}*/
 };
 

@@ -36,6 +36,7 @@
 #include <deigde/engine/igdeEngineController.h>
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
@@ -75,15 +76,14 @@ pProject(project)
 	
 	pPathLogFile = path.GetPathNative();
 	
-	decDiskFileWriter::Ref::NewWith(pPathLogFile, false); // clear file
+	decDiskFileWriter::Ref::New(pPathLogFile, false); // clear file
 	
-	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
+	pLogFileReader = decDiskFileReader::Ref::New(pPathLogFile);
 	
 	SetLogger(std::make_shared<projRemoteClientLogger>("RemoteClient", pPathLogFile));
 }
 
 projRemoteClient::~projRemoteClient(){
-	pListeners.RemoveAll();
 }
 
 
@@ -109,7 +109,7 @@ decString projRemoteClient::ReadNextLogData(){
 	if(end > position){
 		content.Set(' ', end - position);
 		pLogFileReader->SetPosition(position);
-		pLogFileReader->Read((char*)content.GetString(), end - position);
+		pLogFileReader->Read(content.GetMutableString(), end - position);
 	}
 	
 	return content;
@@ -117,8 +117,7 @@ decString projRemoteClient::ReadNextLogData(){
 
 decString projRemoteClient::GetLastLogContent(){
 	try{
-		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			new decDiskFileReader(pPathLogFile)));
+		const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pPathLogFile));
 		
 		const int length = reader->GetLength();
 		if(length == 0){
@@ -127,7 +126,7 @@ decString projRemoteClient::GetLastLogContent(){
 		
 		decString content;
 		content.Set(' ', length);
-		reader->Read((char*)content.GetString(), length);
+		reader->Read(content.GetMutableString(), length);
 		return content;
 		
 	}catch(const deException &){
@@ -302,21 +301,15 @@ decString projRemoteClient::GetActiveLaunchProfile(){
 }
 
 void projRemoteClient::SetActiveLaunchProfile(const decString &profile){
-	bool changed = false;
-	
 	{
 	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(profile == pActiveLaunchProfile){
 		return;
 	}
-	
 	pActiveLaunchProfile = profile;
-	changed = true;
 	}
 	
-	if(changed){
-		NotifyActiveLaunchProfileChanged();
-	}
+	NotifyActiveLaunchProfileChanged();
 }
 
 decString projRemoteClient::GetDefaultLaunchProfile(){
@@ -325,21 +318,15 @@ decString projRemoteClient::GetDefaultLaunchProfile(){
 }
 
 void projRemoteClient::SetDefaultLaunchProfile(const decString &profile){
-	bool changed = false;
-	
 	{
 	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(profile == pDefaultLaunchProfile){
 		return;
 	}
-	
 	pDefaultLaunchProfile = profile;
-	changed = true;
 	}
 	
-	if(changed){
-		NotifyActiveLaunchProfileChanged();
-	}
+	NotifyActiveLaunchProfileChanged();
 }
 
 
@@ -354,41 +341,28 @@ void projRemoteClient::RemoveListener(projRemoteClientListener *listener){
 	pListeners.Remove(listener);
 }
 
-
 void projRemoteClient::NotifyClientChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projRemoteClientListener*)pListeners.GetAt(i))->ClientChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ClientChanged(this);
+	});
 }
 
 void projRemoteClient::NotifyClientDisconnected(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projRemoteClientListener*)pListeners.GetAt(i))->ClientDisconnected(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ClientDisconnected(this);
+	});
 }
 
 void projRemoteClient::NotifyLaunchProfilesChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projRemoteClientListener*)pListeners.GetAt(i))->LaunchProfilesChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.LaunchProfilesChanged(this);
+	});
 }
 
 void projRemoteClient::NotifyActiveLaunchProfileChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((projRemoteClientListener*)pListeners.GetAt(i))->ActiveLaunchProfileChanged(this);
-	}
+	pListeners.Visit([&](projRemoteClientListener &l){
+		l.ActiveLaunchProfileChanged(this);
+	});
 }
 
 
@@ -396,10 +370,10 @@ void projRemoteClient::NotifyActiveLaunchProfileChanged(){
 //////////////////////
 
 void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfile &profile){
-	const decMemoryFile::Ref file(decMemoryFile::Ref::NewWith("run.degame"));
+	const decMemoryFile::Ref file(decMemoryFile::Ref::New("run.degame"));
 	
 	{
-	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::NewWith(file, false));
+	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::New(file, false));
 	pBuildGameXml(xmlWriter, profile);
 	}
 	
@@ -426,8 +400,7 @@ void projRemoteClient::pBuildGameXml(decXmlWriter &writer, const projProfile &pr
 		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
 		int i;
 		for(i=0; i<iconPathCount; i++){
-			const deImage::Ref icon(deImage::Ref::New(
-				imageManager.LoadImage(iconPathList.GetAt(i), "/")));
+			const deImage::Ref icon(imageManager.LoadImage(iconPathList.GetAt(i), "/"));
 			writer.WriteOpeningTagStart("icon");
 			writer.WriteAttributeInt("size", icon->GetWidth());
 			writer.WriteOpeningTagEnd(false, false);

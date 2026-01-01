@@ -53,6 +53,6 @@ pWait(&wait)
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsRemoveAllActions::CreateUndo(){
-	return new ceUCAWaitRemoveAll(pTopic, pWait);
+igdeUndo::Ref ceWPTMAWaitActionsRemoveAllActions::CreateUndo(){
+	return ceUCAWaitRemoveAll::Ref::New(pTopic, pWait);
 }

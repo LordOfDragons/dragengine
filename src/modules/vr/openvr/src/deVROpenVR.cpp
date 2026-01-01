@@ -134,7 +134,7 @@ deovrRenderModel *deVROpenVR::GetRenderModelNamed(const char *name){
 		return (deovrRenderModel*)findObject;
 	}
 	
-	const deovrRenderModel::Ref renderModel(deovrRenderModel::Ref::NewWith(*this, name));
+	const deovrRenderModel::Ref renderModel(deovrRenderModel::Ref::New(*this, name));
 	pRenderModels.SetAt(name, renderModel);
 	return renderModel;
 }
@@ -150,7 +150,7 @@ deovrTextureMap *deVROpenVR::GetTextureMapWithID(vr::TextureID_t id){
 		}
 	}
 	
-	const deovrTextureMap::Ref textureMap(deovrTextureMap::Ref::NewWith(*this, id));
+	const deovrTextureMap::Ref textureMap(deovrTextureMap::Ref::New(*this, id));
 	pTextureMaps.Add(textureMap);
 	return textureMap;
 }
@@ -421,20 +421,9 @@ int deVROpenVR::GetDeviceCount(){
 	return pDevices.GetCount();
 }
 
-deInputDevice *deVROpenVR::GetDeviceAt(int index){
-	deInputDevice *device = nullptr;
-	
-	try{
-		device = new deInputDevice;
-		pDevices.GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deVROpenVR::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	pDevices.GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -677,13 +666,13 @@ deModel *deVROpenVR::GetHiddenArea(eEye eye){
 	switch(eye){
 	case deBaseVRModule::evreLeft:
 		if(!pHiddenMeshLeftEye){
-			pHiddenMeshLeftEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Left));
+			pHiddenMeshLeftEye = deovrHiddenMesh::Ref::New(*this, vr::Eye_Left);
 		}
 		return pHiddenMeshLeftEye->GetModel();
 		
 	case deBaseVRModule::evreRight:
 		if(!pHiddenMeshRightEye){
-			pHiddenMeshRightEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Right));
+			pHiddenMeshRightEye = deovrHiddenMesh::Ref::New(*this, vr::Eye_Right);
 		}
 		return pHiddenMeshRightEye->GetModel();
 		
@@ -773,6 +762,8 @@ vr::Hmd_Eye deVROpenVR::ConvertEye(eEye eye) const{
 
 class deovrModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deovrModuleInternal> Ref;
+	
 	deovrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenVR");
 		SetDescription("OpenVR Support.");
@@ -792,7 +783,7 @@ public:
 	}
 };
 
-deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
-	return new deovrModuleInternal(system);
+deTObjectReference<deInternalModule> deovrRegisterInternalModule(deModuleSystem *system){
+	return deovrModuleInternal::Ref::New(system);
 }
 #endif

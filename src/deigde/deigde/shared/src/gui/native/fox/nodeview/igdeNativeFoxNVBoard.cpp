@@ -70,9 +70,9 @@ igdeNativeFoxNVBoard::igdeNativeFoxNVBoard(){}
 igdeNativeFoxNVBoard::igdeNativeFoxNVBoard(igdeNVBoard &powner, FXComposite *pparent, const igdeGuiTheme &) :
 FXPacker(pparent, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
-pDoubleBuffer(NULL),
-pCreateLinkSource(NULL),
-pCreateLinkTarget(NULL),
+pDoubleBuffer(nullptr),
+pCreateLinkSource(nullptr),
+pCreateLinkTarget(nullptr),
 pIsDragBoard(false)
 {
 	enable();
@@ -153,9 +153,9 @@ decPoint igdeNativeFoxNVBoard::GetSize(){
 
 
 void igdeNativeFoxNVBoard::BeginCreateLink(igdeNativeFoxNVSlot *source){
-	SetHoverLink(NULL);
+	SetHoverLink(nullptr);
 	pCreateLinkSource = source;
-	pCreateLinkTarget = NULL;
+	pCreateLinkTarget = nullptr;
 	pCreateLinkPosition = source->GetCenterBoard();
 	update();
 }
@@ -174,28 +174,24 @@ void igdeNativeFoxNVBoard::FinishCreateLink(){
 	if(pCreateLinkSource && pCreateLinkTarget
 	&& pOwner->CanLink(&pCreateLinkSource->GetOwner(), &pCreateLinkTarget->GetOwner())){
 		igdeNVLink * const link = pOwner->AddLink(&pCreateLinkSource->GetOwner(), &pCreateLinkTarget->GetOwner());
-		pCreateLinkSource = NULL;
-		pCreateLinkTarget = NULL;
+		pCreateLinkSource = nullptr;
+		pCreateLinkTarget = nullptr;
 		update();
 		
 		pOwner->NotifyLinkAdded(link);
 		
 	}else{
-		pCreateLinkSource = NULL;
-		pCreateLinkTarget = NULL;
+		pCreateLinkSource = nullptr;
+		pCreateLinkTarget = nullptr;
 		update();
 	}
 }
 
 igdeNVLink *igdeNativeFoxNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
-	const int count = pOwner->GetLinkCount();
-	igdeNVLink *bestLink = NULL;
+	igdeNVLink *bestLink = nullptr;
 	float bestDistance = 0.0f;
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeNVLink * const link = pOwner->GetLinkAt(i);
-		
+	pOwner->GetLinks().Visit([&](igdeNVLink *link){
 		const decPoint positionSource(link->GetSource()->GetConnectorBoard());
 		const decPoint positionTarget(link->GetTarget()->GetConnectorBoard());
 		
@@ -207,14 +203,14 @@ igdeNVLink *igdeNativeFoxNVBoard::ClosestLinkNear(const decPoint &position, floa
 		
 		const float distance = PointBezierDistance(position, p1, p2, p3, p4);
 		if(distance > range){
-			continue;
+			return;
 		}
 		
 		if(!bestLink || distance <= bestDistance){
 			bestLink = link;
 			bestDistance = distance;
 		}
-	}
+	});
 	
 	return bestLink;
 }
@@ -263,7 +259,7 @@ long igdeNativeFoxNVBoard::onResize(FXObject*, FXSelector, void*){
 		pDoubleBuffer->resize(getWidth(), getHeight());
 		
 	}else{
-		pDoubleBuffer = new FXImage(getApp(), NULL, 0, getWidth(), getHeight());
+		pDoubleBuffer = new FXImage(getApp(), nullptr, 0, getWidth(), getHeight());
 		pDoubleBuffer->create();
 	}
 	
@@ -290,7 +286,7 @@ long igdeNativeFoxNVBoard::onLeftMousePress(FXObject*, FXSelector, void *pdata){
 	const bool control = (event.state & CONTROLMASK) == CONTROLMASK;
 	
 	if(shift && !control){
-		SetHoverLink(NULL);
+		SetHoverLink(nullptr);
 		pDragBoard.Set(event.win_x, event.win_y);
 		pIsDragBoard = true;
 		setDragCursor(getApp()->getDefaultCursor(DEF_MOVE_CURSOR));
@@ -347,12 +343,8 @@ long igdeNativeFoxNVBoard::onRightMouseRelease(FXObject*, FXSelector, void*){
 void igdeNativeFoxNVBoard::DrawLinks(FXDC &dc) const{
 	const FXColor colorLink = FXRGB(0, 0, 128);
 	const FXColor colorHover = FXRGB(128, 128, 255);
-	const int count = pOwner->GetLinkCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeNVLink * const link = pOwner->GetLinkAt(i);
-		
+	pOwner->GetLinks().Visit([&](igdeNVLink *link){
 		const decPoint positionSource(link->GetSource()->GetConnectorBoard());
 		const decPoint positionTarget(link->GetTarget()->GetConnectorBoard());
 		
@@ -365,7 +357,7 @@ void igdeNativeFoxNVBoard::DrawLinks(FXDC &dc) const{
 		const FXColor color = pHoverLink == link ? colorHover : colorLink;
 		
 		DrawBezier(dc, color, p1, p2, p3, p4);
-	}
+	});
 }
 
 void igdeNativeFoxNVBoard::DrawCreateLink(FXDC &dc) const{

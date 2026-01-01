@@ -100,7 +100,7 @@ void deoalAVideoPlayer::SetVideo(deVideo *video){
 		return;
 	}
 	
-	pDecoder.TakeOver(pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder(video));
+	pDecoder = pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder(video);
 	pBytesPerSample = video->GetBytesPerSample();
 	pChannelCount = video->GetChannelCount();
 	pSampleRate = video->GetSampleRate();
@@ -135,7 +135,7 @@ void deoalAVideoPlayer::SetLooping(bool looping){
 
 
 void deoalAVideoPlayer::ReadSamples(void *buffer, int bufferSize, int offset, int samples){
-	char *dataBuffer = (char*)buffer;
+	char *dataBuffer = reinterpret_cast<char*>(buffer);
 	
 	if(pSeekNextRead){
 		pSeekNextRead = false;

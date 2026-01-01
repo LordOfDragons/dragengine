@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCBillboard;
+#include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 /**
@@ -35,10 +35,12 @@ class gdeOCBillboard;
  */
 class gdeWPSTIMOCBillboard : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCBillboard *pBillboard;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCBillboard> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -56,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pBillboard; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

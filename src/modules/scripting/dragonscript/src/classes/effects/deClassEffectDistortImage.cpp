@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -44,7 +46,7 @@
 
 // Native Structure
 struct sEffDistImgMatrixNatDat{
-	deEffectDistortImage *effect;
+	deEffectDistortImage::Ref effect;
 };
 
 
@@ -57,19 +59,16 @@ deClassEffectDistortImage::nfNew::nfNew(const sInitData &init) : dsFunction(init
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffectDistortImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEffDistImgMatrixNatDat &nd = *((sEffDistImgMatrixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassEffectDistortImage*)GetOwnerClass())->GetDS();
-	
-	// clear ( important )
-	nd.effect = NULL;
+	sEffDistImgMatrixNatDat * const nd = new (p_GetNativeData(myself)) sEffDistImgMatrixNatDat;
+	const deScriptingDragonScript &ds = (static_cast<deClassEffectDistortImage*>(GetOwnerClass()))->GetDS();
 	
 	// super call
-	deClassEffect * const baseClass = (deClassEffect*)GetOwnerClass()->GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create effect
-	nd.effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectDistortImage();
-	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
+	nd->effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectDistortImage();
+	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
 }
 
 // public func destructor()
@@ -81,12 +80,7 @@ void deClassEffectDistortImage::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sEffDistImgMatrixNatDat &nd = *((sEffDistImgMatrixNatDat*)p_GetNativeData(myself));
-	
-	if(nd.effect){
-		nd.effect->FreeReference();
-		nd.effect = NULL;
-	}
+	static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself))->~sEffDistImgMatrixNatDat();
 }
 
 
@@ -100,8 +94,8 @@ deClassEffectDistortImage::nfSetImage::nfSetImage(const sInitData &init) : dsFun
 	p_AddParameter(init.clsImage); // image
 }
 void deClassEffectDistortImage::nfSetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffDistImgMatrixNatDat &nd = *((sEffDistImgMatrixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassEffectDistortImage*)GetOwnerClass())->GetDS();
+	const sEffDistImgMatrixNatDat &nd = *static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassEffectDistortImage*>(GetOwnerClass()))->GetDS();
 	
 	nd.effect->SetImage(ds.GetClassImage()->GetImage(rt->GetValue(0)->GetRealObject()));
 }
@@ -113,7 +107,7 @@ deClassEffectDistortImage::nfSetStrength::nfSetStrength(const sInitData &init) :
 	p_AddParameter(init.clsFlt); // v
 }
 void deClassEffectDistortImage::nfSetStrength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffDistImgMatrixNatDat &nd = *((sEffDistImgMatrixNatDat*)p_GetNativeData(myself));
+	const sEffDistImgMatrixNatDat &nd = *static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself));
 	
 	const float strengthU = rt->GetValue(0)->GetFloat();
 	const float strengthV = rt->GetValue(1)->GetFloat();
@@ -130,7 +124,7 @@ dsFunction(init.clsEffDistImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 }
 
 void deClassEffectDistortImage::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectDistortImage * const effect = ((sEffDistImgMatrixNatDat*)p_GetNativeData(myself))->effect;
+	deEffectDistortImage * const effect = static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)effect);
 }
@@ -141,15 +135,15 @@ dsFunction(init.clsEffDistImg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectDistortImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectDistortImage * const effect = ((sEffDistImgMatrixNatDat*)p_GetNativeData(myself))->effect;
-	deClassEffectDistortImage * const clsEffDistImg = (deClassEffectDistortImage*)GetOwnerClass();
+	const deEffectDistortImage * const effect = static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	deClassEffectDistortImage * const clsEffDistImg = static_cast<deClassEffectDistortImage*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsEffDistImg)){
 		rt->PushBool(false);
 		
 	}else{
-		deEffectDistortImage * const otherEffect = ((sEffDistImgMatrixNatDat*)p_GetNativeData(obj))->effect;
+		const deEffectDistortImage * const otherEffect = static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(obj))->effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -210,10 +204,10 @@ void deClassEffectDistortImage::CreateClassMembers(dsEngine *engine){
 
 deEffectDistortImage *deClassEffectDistortImage::GetEffect(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sEffDistImgMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
+	return static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
 void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *effect){
@@ -226,17 +220,13 @@ void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *
 		return;
 	}
 	
-	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffDistImgMatrixNatDat &nd = *((sEffDistImgMatrixNatDat*)p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.effect = NULL;
+	sEffDistImgMatrixNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEffDistImgMatrixNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.effect = effect;
-		effect->AddReference();
+		nd->effect = effect;
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		

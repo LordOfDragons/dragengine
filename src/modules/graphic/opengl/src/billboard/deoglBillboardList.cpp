@@ -148,7 +148,6 @@ void deoglBillboardList::pAddBillboard(deoglRBillboard *billboard){
 	if(pBillboardCount == pBillboardSize){
 		int newSize = pBillboardCount + 10; // * 3 / 2 + 1;
 		deoglRBillboard **newArray = new deoglRBillboard*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		if(pBillboards){
 			memcpy(newArray, pBillboards, sizeof(deoglRBillboard*) * pBillboardSize);

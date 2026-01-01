@@ -47,25 +47,16 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	
 	SetShortInfo("Actor speak toggle use speech animation");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakToggleUseSpeechAnimation::~ceUCAASpeakToggleUseSpeechAnimation(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

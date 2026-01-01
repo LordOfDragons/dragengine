@@ -40,8 +40,12 @@ class gdeProperty;
  * from a gdeProperty.
  */
 class gdeDefaultPropertyValue : public igdeEditPropertyValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeDefaultPropertyValue> Ref;
+	
 private:
-	igdeGDProperty *pGDProperty;
+	igdeGDProperty::Ref pGDProperty;
 	
 	
 public:
@@ -62,10 +66,10 @@ public:
 	/*@{*/
 	/** \brief Create and add. */
 	static void CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
+		gdeDefaultPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
 	
 	static void CreateAndAdd(igdeContainer &form, igdeUIHelper &helper, const char *label,
-		const char *description, igdeEditPropertyValue::Ref &widget,
+		const char *description, gdeDefaultPropertyValue::Ref &widget,
 		igdeEditPropertyValueListener *listener);
 	
 	/** \brief Set value. */

@@ -63,21 +63,19 @@ pIKLimitsUpper(0.0f, 0.0f, 0.0f),
 pIKResistance(0.0f, 0.0f, 0.0f),
 pIKLocked{false, false, false}
 {
-	if(!engine){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	pEngine = engine;
-	pRig = NULL;
+	pRig = nullptr;
 	pOrder = -1;
 	
-	pDebugDrawer = NULL;
-	pDDSBone = NULL;
-	pDDSCmp = NULL;
-	pDDSCoordSys = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSBone = nullptr;
+	pDDSCmp = nullptr;
+	pDDSCoordSys = nullptr;
+	pCollider = nullptr;
 	
-	pParentBone = NULL;
+	pParentBone = nullptr;
 	
 	pDynamic = false;
 	pMass = 1.0f;
@@ -105,10 +103,10 @@ pIKLocked{false, false, false}
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSBone = new igdeWDebugDrawerShape;
+		pDDSBone = igdeWDebugDrawerShape::Ref::New();
 		pDDSBone->SetParentDebugDrawer(pDebugDrawer);
 		
-		pDDSCmp = new igdeWDebugDrawerShape;
+		pDDSCmp = igdeWDebugDrawerShape::Ref::New();
 		pDDSCmp->SetVisible(false);
 		pDDSCmp->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -161,16 +159,13 @@ void reRigBone::SetRig(reRig *rig){
 		rig->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
 	}
 	
-	int i;
-	const int shapeCount = pShapes.GetShapeCount();
-	for(i=0; i<shapeCount; i++){
-		pShapes.GetShapeAt(i)->SetRig(rig);
-	}
+	pShapes.Visit([&](reRigShape &s){
+		s.SetRig(rig);
+	});
 	
-	const int constraintCount = pConstraints.GetConstraintCount();
-	for(i=0; i<constraintCount; i++){
-		pConstraints.GetConstraintAt(i)->SetRig(rig);
-	}
+	pConstraints.Visit([&](reRigConstraint &c){
+		c.SetRig(rig);
+	});
 	
 	pUpdateColliderShape();
 }
@@ -324,21 +319,17 @@ void reRigBone::SetActive(bool active){
 }
 
 void reRigBone::ShowStateChanged(){
-	int i;
-	
 	if(pRig){
 		pDebugDrawer->SetVisible(pRig->GetShowBones());
 	}
 	
-	const int shapeCount = pShapes.GetShapeCount();
-	for(i=0; i<shapeCount; i++){
-		pShapes.GetShapeAt(i)->ShowStateChanged();
-	}
+	pShapes.Visit([&](reRigShape &s){
+		s.ShowStateChanged();
+	});
 	
-	const int constraintCount = pConstraints.GetConstraintCount();
-	for(i=0; i<constraintCount; i++){
-		pConstraints.GetConstraintAt(i)->ShowStateChanged();
-	}
+	pConstraints.Visit([&](reRigConstraint &c){
+		c.ShowStateChanged();
+	});
 }
 
 void reRigBone::SetVisited(bool visited){
@@ -364,7 +355,7 @@ void reRigBone::SetPoseFromRest(){
 
 void reRigBone::UpdateFromPose(){
 	const decDMatrix oldPose = pPoseMatrix;
-	deComponent *engComponent = NULL;
+	deComponent *engComponent = nullptr;
 	
 	if(pRig){
 		engComponent = pRig->GetEngineComponent();
@@ -391,31 +382,23 @@ void reRigBone::UpdateFromPose(){
 }
 
 void reRigBone::NotifyPoseChanged(){
-	int i;
+	pShapes.Visit([&](reRigShape &s){
+		s.InvalidatePosition();
+	});
 	
-	const int shapeCount = pShapes.GetShapeCount();
-	for(i=0; i<shapeCount; i++){
-		pShapes.GetShapeAt(i)->InvalidatePosition();
-	}
-	
-	const int constraintCount = pConstraints.GetConstraintCount();
-	for(i=0; i<constraintCount; i++){
-		pConstraints.GetConstraintAt(i)->InvalidatePositions();
-	}
+	pConstraints.Visit([&](reRigConstraint &c){
+		c.InvalidatePositions();
+	});
 }
 
 void reRigBone::UpdateShapesAndConstraints(){
-	int i;
+	pShapes.Visit([&](reRigShape &s){
+		s.Update();
+	});
 	
-	const int shapeCount = pShapes.GetShapeCount();
-	for(i=0; i<shapeCount; i++){
-		pShapes.GetShapeAt(i)->Update();
-	}
-	
-	const int constraintCount = pConstraints.GetConstraintCount();
-	for(i=0; i<constraintCount; i++){
-		pConstraints.GetConstraintAt(i)->Update();
-	}
+	pConstraints.Visit([&](reRigConstraint &c){
+		c.Update();
+	});
 }
 
 
@@ -463,47 +446,18 @@ bool reRigBone::CanHaveParent(reRigBone *bone){
 // Shapes
 //////////
 
-int reRigBone::GetShapeCount() const{
-	return pShapes.GetShapeCount();
-}
-
-reRigShape *reRigBone::GetShapeAt(int index) const{
-	return pShapes.GetShapeAt(index);
-}
-
 reRigShape *reRigBone::GetShapeWith(deColliderVolume *collider) const{
-	if(!collider){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(collider)
 	
-	const int shapeCount = pShapes.GetShapeCount();
-	int i;
-	
-	for(i=0; i<shapeCount; i++){
-		reRigShape * const shape = pShapes.GetShapeAt(i);
-		
-		if(collider == shape->GetCollider()){
-			return shape;
-		}
-	}
-	
-	return NULL;
-}
-
-int reRigBone::IndexOfShape(reRigShape *shape) const{
-	return pShapes.IndexOfShape(shape);
-}
-
-bool reRigBone::HasShape(reRigShape *shape) const{
-	return pShapes.HasShape(shape);
+	return pShapes.FindOrDefault([&](reRigShape *shape){
+		return shape->GetCollider() == collider;
+	});
 }
 
 void reRigBone::AddShape(reRigShape *shape){
-	if(!shape || pShapes.HasShape(shape)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(shape)
 	
-	pShapes.AddShape(shape);
+	pShapes.Add(shape);
 	shape->SetRig(pRig);
 	shape->SetRigBone(this);
 	
@@ -513,13 +467,11 @@ void reRigBone::AddShape(reRigShape *shape){
 }
 
 void reRigBone::RemoveShape(reRigShape *shape){
-	if(!pShapes.HasShape(shape)){
-		DETHROW(deeInvalidParam);
-	}
+	const reRigShape::Ref guard(shape);
 	
-	shape->SetRigBone(NULL);
-	shape->SetRig(NULL);
-	pShapes.RemoveShape(shape);
+	pShapes.Remove(shape);
+	shape->SetRigBone(nullptr);
+	shape->SetRig(nullptr);
 	
 	if(pRig){
 		pRig->NotifyAllStructureChanged();
@@ -527,15 +479,11 @@ void reRigBone::RemoveShape(reRigShape *shape){
 }
 
 void reRigBone::RemoveAllShapes(){
-	const int shapeCount = pShapes.GetShapeCount();
-	int i;
-	
-	for(i=0; i<shapeCount; i++){
-		reRigShape &shape = *pShapes.GetShapeAt(i);
-		shape.SetRigBone(NULL);
-		shape.SetRig(NULL);
-	}
-	pShapes.RemoveAllShapes();
+	pShapes.Visit([&](reRigShape &s){
+		s.SetRigBone(nullptr);
+		s.SetRig(nullptr);
+	});
+	pShapes.RemoveAll();
 	
 	if(pRig){
 		pRig->NotifyAllStructureChanged();
@@ -636,47 +584,18 @@ void reRigBone::SetIKLocked(int axis, bool locked){
 // Constraints
 ////////////////
 
-int reRigBone::GetConstraintCount() const{
-	return pConstraints.GetConstraintCount();
-}
-
-reRigConstraint *reRigBone::GetConstraintAt(int index) const{
-	return pConstraints.GetConstraintAt(index);
-}
-
 reRigConstraint *reRigBone::GetConstraintWith(deColliderVolume *collider) const{
-	if(!collider){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(collider)
 	
-	const int constraintCount = pConstraints.GetConstraintCount();
-	int i;
-	
-	for(i=0; i<constraintCount; i++){
-		reRigConstraint * const constraint = pConstraints.GetConstraintAt(i);
-		
-		if(collider == constraint->GetCollider()){
-			return constraint;
-		}
-	}
-	
-	return NULL;
-}
-
-int reRigBone::IndexOfConstraint(reRigConstraint *constraint) const{
-	return pConstraints.IndexOfConstraint(constraint);
-}
-
-bool reRigBone::HasConstraint(reRigConstraint *constraint) const{
-	return pConstraints.HasConstraint(constraint);
+	return pConstraints.FindOrDefault([&](const reRigConstraint &c){
+		return c.GetCollider() == collider;
+	});
 }
 
 void reRigBone::AddConstraint(reRigConstraint *constraint){
-	if(pConstraints.HasConstraint(constraint)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_FALSE(pConstraints.Has(constraint))
 	
-	pConstraints.AddConstraint(constraint);
+	pConstraints.Add(constraint);
 	constraint->SetRig(pRig);
 	constraint->SetRigBone(this);
 	
@@ -686,13 +605,11 @@ void reRigBone::AddConstraint(reRigConstraint *constraint){
 }
 
 void reRigBone::RemoveConstraint(reRigConstraint *constraint){
-	if(!pConstraints.HasConstraint(constraint)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_FALSE(pConstraints.Has(constraint))
 	
-	constraint->SetRigBone(NULL);
-	constraint->SetRig(NULL);
-	pConstraints.RemoveConstraint(constraint);
+	constraint->SetRigBone(nullptr);
+	constraint->SetRig(nullptr);
+	pConstraints.Remove(constraint);
 	
 	if(pRig){
 		pRig->NotifyAllStructureChanged();
@@ -700,15 +617,11 @@ void reRigBone::RemoveConstraint(reRigConstraint *constraint){
 }
 
 void reRigBone::RemoveAllConstraints(){
-	const int constraintCount = pConstraints.GetConstraintCount();
-	int i;
-	
-	for(i=0; i<constraintCount; i++){
-		reRigConstraint &constraint = *pConstraints.GetConstraintAt(i);
-		constraint.SetRigBone(NULL);
-		constraint.SetRig(NULL);
-	}
-	pConstraints.RemoveAllConstraints();
+	pConstraints.Visit([&](reRigConstraint &c){
+		c.SetRigBone(nullptr);
+		c.SetRig(nullptr);
+	});
+	pConstraints.RemoveAll();
 	
 	if(pRig){
 		pRig->NotifyAllStructureChanged();
@@ -721,26 +634,12 @@ void reRigBone::RemoveAllConstraints(){
 //////////////////////
 
 void reRigBone::pCleanUp(){
-	SetRig(NULL);
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
+	SetRig(nullptr);
 	RemoveAllConstraints();
 	RemoveAllShapes();
 	
-	if(pDDSCmp){
-		delete pDDSCmp;
-	}
 	if(pDDSCoordSys){
 		delete pDDSCoordSys;
-	}
-	if(pDDSBone){
-		delete pDDSBone;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -803,7 +702,7 @@ void reRigBone::pUpdateColliderShape(){
 	}
 	
 	decVector halfExtends(0.02f, 0.02f, 0.06f);
-	decShapeBox *box = NULL;
+	decShapeBox *box = nullptr;
 	decShapeList shapeList;
 	
 	pCollider->SetPosition(pPoseMatrix * decVector(0.0f, 0.0f, halfExtends.z));

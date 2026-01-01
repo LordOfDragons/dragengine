@@ -34,7 +34,6 @@
 #include "../../configuration/ceConfiguration.h"
 #include "../../conversation/ceConversation.h"
 #include "../../conversation/actor/ceConversationActor.h"
-#include "../../conversation/actor/parameters/ceActorParameter.h"
 #include "../../conversation/actor/controller/ceActorController.h"
 #include "../../conversation/actor/pose/ceActorPose.h"
 #include "../../conversation/actor/gesture/ceActorGesture.h"
@@ -43,9 +42,6 @@
 #include "../../conversation/topic/ceConversationTopic.h"
 #include "../../conversation/playback/cePlayback.h"
 #include "../../conversation/playback/command/cePlaybackCommand.h"
-#include "../../conversation/playback/command/cePlaybackCommandList.h"
-#include "../../conversation/playback/variable/cePlaybackVariable.h"
-#include "../../conversation/playback/variable/cePlaybackVariableList.h"
 #include "../../conversation/prop/ceProp.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -87,11 +83,19 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 
 // Actions
 ////////////
+
+class cVariableKey : public deObject{
+public:
+	typedef deTObjectReference<cVariableKey> Ref;
+	decString name;
+	cVariableKey(const decString &n) : name(n){}
+};
 
 namespace{
 
@@ -100,24 +104,25 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(ceWPView &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(!conversation){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(conversation)));
+		igdeUndo::Ref undo(OnAction(conversation));
 		if(undo){
 			conversation->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnAction(ceConversation *conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			Update(*conversation);
@@ -139,6 +144,7 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseActionContextMenu> Ref;
 	cBaseActionContextMenu(ceWPView &panel, const char *description) :
 	igdeActionContextMenu("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 	description), pPanel(panel){}
@@ -152,7 +158,7 @@ public:
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation *conversation) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
 			Update(*conversation);
@@ -174,19 +180,20 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, conversation)));
+			igdeUndo::Ref undo(OnChanged(*comboBox, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -194,19 +201,20 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, conversation)));
+			igdeUndo::Ref undo(OnChanged(*textField, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation *conversation) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -214,19 +222,20 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editVector, conversation)));
+			igdeUndo::Ref undo(OnChanged(*editVector, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation *conversation) = 0;
 };
 
 class cBaseSpinTextFieldListener : public igdeSpinTextFieldListener{
@@ -234,19 +243,20 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseSpinTextFieldListener> Ref;
 	cBaseSpinTextFieldListener(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, conversation)));
+			igdeUndo::Ref undo(OnChanged(*textField, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeSpinTextField &textField, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeSpinTextField &textField, ceConversation *conversation) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -254,50 +264,60 @@ protected:
 	ceWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
 	cBaseEditPathListener(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if(conversation){
-			igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*editPath, conversation)));
+			igdeUndo::Ref undo(OnChanged(*editPath, conversation));
 			if(undo){
 				conversation->GetUndoSystem()->Add(undo);
 			}
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation *conversation) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation *conversation) = 0;
 };
 
 
 
 class cActionWPCamera : public cBaseAction{
 public:
-	cActionWPCamera(ceWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionWPCamera> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionWPCamera(ceWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->NotifyCameraChanged();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionWPSky : public cBaseAction{
 public:
-	cActionWPSky(ceWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionWPSky> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionWPSky(ceWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->NotifySkyChanged();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionWPEnvObject : public cBaseAction{
 public:
-	cActionWPEnvObject(ceWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionWPEnvObject> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionWPEnvObject(ceWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->NotifyEnvObjectChanged();
-		return NULL;
+		return {};
 	}
 };
 
@@ -305,41 +325,48 @@ public:
 
 class cComboProp : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboProp> Ref;
 	cComboProp(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		conversation->SetActiveProp(comboBox.GetSelectedItem()
-			? (ceProp*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceProp*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionPropAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPropAdd> Ref;
+	
+public:
 	cActionPropAdd(ceWPView &panel) : cBaseAction(panel, "Add",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Prop"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		const ceProp::Ref prop(ceProp::Ref::NewWith());
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		const ceProp::Ref prop(ceProp::Ref::New());
 		conversation->AddProp(prop);
 		conversation->SetActiveProp(prop);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPropRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPropRemove> Ref;
+	
+public:
 	cActionPropRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Prop"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetProp()){
 			conversation->RemoveProp(pPanel.GetProp());
-			if(conversation->GetPropList().GetCount() > 0){
-				conversation->SetActiveProp(conversation->GetPropList().GetAt(0));
+			if(conversation->GetProps().IsNotEmpty()){
+				conversation->SetActiveProp(conversation->GetProps().First());
 			}
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -349,40 +376,47 @@ public:
 
 class cActionPropMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionPropMenu> Ref;
 	cActionPropMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "Prop menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionPropAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionPropRemove(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionPropAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionPropRemove::Ref::New(pPanel));
 	}
 };
 
 class cTextPropName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPropName> Ref;
 	cTextPropName(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetProp()){
 			pPanel.GetProp()->SetName(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cTextPropClass : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPropClass> Ref;
 	cTextPropClass(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetProp()){
 			pPanel.GetProp()->SetObjectClass(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPropClass : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPropClass> Ref;
+	
+private:
 	igdeTextField::Ref &pTextField;
 	
 public:
@@ -390,52 +424,57 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Brings up a dialog to select the prop class"), pTextField(textField){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		if(!pPanel.GetProp() || !pPanel.GetGameDefinition()){
-			return NULL;
+			return {};
 		}
 		
 		igdeGDClass *gdClass = pPanel.GetGameDefinition()->GetClassManager()->GetNamed(pPanel.GetProp()->GetObjectClass());
 		if(igdeDialogBrowserObjectClass::SelectObjectClass(&pPanel, gdClass)){
 			pPanel.GetProp()->SetObjectClass(gdClass->GetName());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPropVisible : public cBaseAction{
 public:
-	cActionPropVisible(ceWPView &panel) : cBaseAction(panel, "Visible", NULL, "Determines if the prop is visible"){ }
+	typedef deTObjectReference<cActionPropVisible> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+public:
+	cActionPropVisible(ceWPView &panel) : cBaseAction(panel, "Visible", nullptr, "Determines if the prop is visible"){ }
+	
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		if(pPanel.GetProp()){
 			pPanel.GetProp()->SetVisible(!pPanel.GetProp()->GetVisible());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorPropPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorPropPosition> Ref;
 	cVectorPropPosition(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetProp()){
 			pPanel.GetProp()->SetPosition(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorPropRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorPropRotation> Ref;
 	cVectorPropRotation(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetProp()){
 			pPanel.GetProp()->SetOrientation(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -443,40 +482,47 @@ public:
 
 class cSpinActor : public cBaseSpinTextFieldListener{
 public:
+	typedef deTObjectReference<cSpinActor> Ref;
 	cSpinActor(ceWPView &panel) : cBaseSpinTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeSpinTextField &textField, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeSpinTextField &textField, ceConversation *conversation) override{
 		conversation->SetActiveActor(conversation->GetActorList().GetAt(textField.GetValue()));
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorAdd> Ref;
+	
+public:
 	cActionActorAdd(ceWPView &panel) : cBaseAction(panel, "Add",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Actor"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		const ceConversationActor::Ref actor(ceConversationActor::Ref::NewWith(pPanel.GetEnvironment()));
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		const ceConversationActor::Ref actor(ceConversationActor::Ref::New(pPanel.GetEnvironment()));
 		conversation->AddActor(actor);
 		conversation->SetActiveActor(actor);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorRemove> Ref;
+	
+public:
 	cActionActorRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Actor"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetActor()){
 			conversation->RemoveActor(pPanel.GetActor());
 			if(conversation->GetActorList().GetCount() > 0){
 				conversation->SetActiveActor(conversation->GetActorList().GetAt(0));
 			}
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -486,145 +532,159 @@ public:
 
 class cActionActorMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionActorMenu> Ref;
 	cActionActorMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "Actor menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionActorAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorRemove(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionActorAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorRemove::Ref::New(pPanel));
 	}
 };
 
 class cTextActorID : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextActorID> Ref;
 	cTextActorID(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetID(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cTextActorAliasID : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextActorAliasID> Ref;
 	cTextActorAliasID(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetAliasID(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorActorPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorActorPosition> Ref;
 	cVectorActorPosition(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPosition(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorActorRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorActorRotation> Ref;
 	cVectorActorRotation(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetOrientation(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorModel : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorModel> Ref;
 	cPathActorModel(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathModel(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorSkin : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorSkin> Ref;
 	cPathActorSkin(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathSkin(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorRig : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorRig> Ref;
 	cPathActorRig(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathRig(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorSpeechAnimation : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorSpeechAnimation> Ref;
 	cPathActorSpeechAnimation(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathSpeechAnimation(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorEyeAnimator : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorEyeAnimator> Ref;
 	cPathActorEyeAnimator(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathEyesAnimator(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cPathActorFacePoseAnimator : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorFacePoseAnimator> Ref;
 	cPathActorFacePoseAnimator(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetPathFacePoseAnimator(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorWaiting : public cBaseAction{
 public:
-	cActionActorWaiting(ceWPView &panel) : cBaseAction(panel, "Waiting", NULL,
+	typedef deTObjectReference<cActionActorWaiting> Ref;
+	
+public:
+	cActionActorWaiting(ceWPView &panel) : cBaseAction(panel, "Waiting", nullptr,
 	"Simulates the actor game scripts answer to the question if conversation should be waiting"){ }
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetWaiting(!pPanel.GetActor()->GetWaiting());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -635,70 +695,78 @@ public:
 
 class cTextActorBoneHeadRotator : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextActorBoneHeadRotator> Ref;
 	cTextActorBoneHeadRotator(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetActor()){
 			pPanel.GetActor()->SetBoneHeadRotator(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cComboActorPose : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboActorPose> Ref;
 	cComboActorPose(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		if(pPanel.GetActor() && comboBox.GetSelectedItem()){
 			pPanel.GetActor()->SetActivePose((ceActorPose*)comboBox.GetSelectedItem()->GetData());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorPoseAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseAdd> Ref;
+	
+public:
 	cActionActorPoseAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Actor Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceConversationActor * const actor = pPanel.GetActor();
 		if(!actor){
-			return NULL;
+			return {};
 		}
 		
 		decString name;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Pose", "Pose:", name)){
-			return NULL;
+			return {};
 		}
 		
-		if(actor->GetPoses().HasNamed(name)){
+		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Pose", "A pose with this name exists already.");
-			return NULL;
+			return {};
 		}
 		
-		const ceActorPose::Ref pose(ceActorPose::Ref::NewWith(pPanel.GetEnvironment(), name));
+		const ceActorPose::Ref pose(ceActorPose::Ref::New(pPanel.GetEnvironment(), name));
 		actor->GetPoses().Add(pose);
 		conversation->NotifyActorPosesChanged(actor);
 		actor->SetActivePose(pose);
 		conversation->NotifyActorActivePoseChanged(actor);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorPoseRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseRemove> Ref;
+	
+public:
 	cActionActorPoseRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Actor Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetActorPose()){
 			pPanel.GetActor()->GetPoses().Remove(pPanel.GetActorPose());
 			conversation->NotifyActorPosesChanged(pPanel.GetActor());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -708,29 +776,32 @@ public:
 
 class cActionActorPoseRename : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseRename> Ref;
+	
+public:
 	cActionActorPoseRename(ceWPView &panel) : cBaseAction(panel, "Rename...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Rename Actor Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceConversationActor * const actor = pPanel.GetActor();
 		ceActorPose * const pose = pPanel.GetActorPose();
 		if(!pose || !actor){
-			return NULL;
+			return {};
 		}
 		
 		decString name(pose->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Pose", "Pose:", name) || name == pose->GetName()){
-			return NULL;
+			return {};
 		}
 		
-		if(actor->GetPoses().HasNamed(name)){
+		if(actor->GetPoses().HasMatching([&](const ceActorPose::Ref &p){ return p->GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Pose", "A pose with this name exists already.");
 			
 		}else{
 			pose->SetName(name);
 			actor->NotifyPosesChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -740,66 +811,72 @@ public:
 
 class cActionActorPoseMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionActorPoseMenu> Ref;
 	cActionActorPoseMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "ActorPose menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionActorPoseAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorPoseRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorPoseRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionActorPoseAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorPoseRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorPoseRename::Ref::New(pPanel));
 	}
 };
 
 class cPathActorPoseAnimator : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorPoseAnimator> Ref;
 	cPathActorPoseAnimator(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActorPose()){
 			pPanel.GetActorPose()->SetPathAnimator(editPath.GetPath());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cComboActorPoseController : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboActorPoseController> Ref;
 	cComboActorPoseController(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox&, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox&, ceConversation*) override{
 		pPanel.UpdateActorController();
-		return nullptr;
+		return {};
 	}
 };
 
 class cActionActorPoseControllerAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseControllerAdd> Ref;
+	
+public:
 	cActionActorPoseControllerAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add actor pose controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceActorPose * const pose = pPanel.GetActorPose();
 		if(!pose){
-			return NULL;
+			return {};
 		}
 		
 		decString name;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames())){
-			return nullptr;
+			return {};
 		}
 		
-		if(pose->GetControllers().HasNamed(name)){
+		if(pose->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Controller", "A controller with this name exists already.");
-			return nullptr;
+			return {};
 		}
 		
-		const ceActorController::Ref controller(ceActorController::Ref::NewWith());
+		const ceActorController::Ref controller(ceActorController::Ref::New());
 		controller->SetName(name);
 		pose->GetControllers().Add(controller);
 		conversation->NotifyActorPosesChanged(pPanel.GetActor());
 		pPanel.SelectActorPoseController(controller);
-		return nullptr;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -809,15 +886,18 @@ public:
 
 class cActionActorPoseControllerRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseControllerRemove> Ref;
+	
+public:
 	cActionActorPoseControllerRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove actor pose controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetActorPoseController()){
 			pPanel.GetActorPose()->GetControllers().Remove(pPanel.GetActorPoseController());
 			conversation->NotifyActorPosesChanged(pPanel.GetActor());
 		}
-		return nullptr;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -827,46 +907,53 @@ public:
 
 class cActionActorPoseControllerRemoveAll : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseControllerRemoveAll> Ref;
+	
+public:
 	cActionActorPoseControllerRemoveAll(ceWPView &panel) : cBaseAction(panel, "Remove All",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all actor pose controllers"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().GetCount() > 0){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		if(pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().IsNotEmpty()){
 			pPanel.GetActorPose()->GetControllers().RemoveAll();
 			conversation->NotifyActorPosesChanged(pPanel.GetActor());
 		}
-		return nullptr;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().GetCount() > 0);
+		SetEnabled(pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().IsNotEmpty());
 	}
 };
 
 class cActionActorPoseControllerRename : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorPoseControllerRename> Ref;
+	
+public:
 	cActionActorPoseControllerRename(ceWPView &panel) : cBaseAction(panel, "Rename...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Rename Actor Pose Controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
-		if(!pPanel.GetActorPoseController()){
-			return nullptr;
+	igdeUndo::Ref OnAction(ceConversation*) override{
+		ceActorController * const controller = pPanel.GetActorPoseController();
+		if(!controller){
+			return {};
 		}
 		
-		decString name(pPanel.GetActorPoseController()->GetName());
+		decString name(controller->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Controller", "Controller:", name)
-		|| name == pPanel.GetActorPoseController()->GetName()){
-			return nullptr;
+		|| name == controller->GetName()){
+			return {};
 		}
 		
-		if(pPanel.GetActorPose()->GetControllers().HasNamed(name)){
+		if(pPanel.GetActorPose()->GetControllers().HasMatching([&](const ceActorController::Ref &c){ return c->GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Controller", "A controller with this name exists already.");
 			
 		}else{
-			pPanel.GetActorPoseController()->SetName(name);
+			controller->SetName(name);
 			pPanel.GetActor()->NotifyPosesChanged();
 		}
-		return nullptr;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -876,15 +963,16 @@ public:
 
 class cActionActorPoseControllerMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionActorPoseControllerMenu> Ref;
 	cActionActorPoseControllerMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "ActorPoseController menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionActorPoseControllerAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorPoseControllerRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorPoseControllerRemoveAll(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionActorPoseControllerAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorPoseControllerRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorPoseControllerRemoveAll::Ref::New(pPanel));
 		helper.MenuSeparator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionActorPoseControllerRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionActorPoseControllerRename::Ref::New(pPanel));
 	}
 };
 
@@ -892,17 +980,18 @@ class cComboActorPoseControllerUpdateType : public cBaseComboBoxListener{
 	igdeComboBox::Ref &pCBController;
 	
 public:
+	typedef deTObjectReference<cComboActorPoseControllerUpdateType> Ref;
 	cComboActorPoseControllerUpdateType(ceWPView &panel, igdeComboBox::Ref &cbController) :
 	cBaseComboBoxListener(panel), pCBController(cbController){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		ceActorController * const controller = pCBController->GetSelectedItem()
 			? (ceActorController*)pCBController->GetSelectedItem()->GetData() : nullptr;
 		
 		if(controller && comboBox.GetSelectedItem()){
 			controller->SetUpdateType((ceActorController::eUpdateTypes)(intptr_t)comboBox.GetSelectedItem()->GetData());
 		}
-		return nullptr;
+		return {};
 	}
 };
 
@@ -910,17 +999,18 @@ class cTextActorPoseControllerValue : public cBaseTextFieldListener{
 	igdeComboBox::Ref &pCBController;
 	
 public:
+	typedef deTObjectReference<cTextActorPoseControllerValue> Ref;
 	cTextActorPoseControllerValue(ceWPView &panel, igdeComboBox::Ref &cbController) :
 	cBaseTextFieldListener(panel), pCBController(cbController){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		ceActorController * const controller = pCBController->GetSelectedItem()
 			? (ceActorController*)pCBController->GetSelectedItem()->GetData() : nullptr;
 		
 		if(controller){
 			controller->SetValue(textField.GetFloat());
 		}
-		return nullptr;
+		return {};
 	}
 };
 
@@ -928,74 +1018,83 @@ class cTextActorPoseControllerVector : public cBaseEditVectorListener{
 	igdeComboBox::Ref &pCBController;
 	
 public:
+	typedef deTObjectReference<cTextActorPoseControllerVector> Ref;
 	cTextActorPoseControllerVector(ceWPView &panel, igdeComboBox::Ref &cbController) :
 	cBaseEditVectorListener(panel), pCBController(cbController){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		ceActorController * const controller = pCBController->GetSelectedItem()
 			? (ceActorController*)pCBController->GetSelectedItem()->GetData() : nullptr;
 		
 		if(controller){
 			controller->SetVector(editVector.GetVector());
 		}
-		return nullptr;
+		return {};
 	}
 };
 
 
 class cComboActorGesture : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboActorGesture> Ref;
 	cComboActorGesture(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation*) override{
 		pPanel.SelectActorPoseGesture(comboBox.GetSelectedItem()
-			? (ceActorGesture*)comboBox.GetSelectedItem()->GetData() : NULL);
-		return NULL;
+			? (ceActorGesture*)comboBox.GetSelectedItem()->GetData() : nullptr);
+		return {};
 	}
 };
 
 class cActionActorGestureAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorGestureAdd> Ref;
+	
+public:
 	cActionActorGestureAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Actor Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceActorPose * const pose = pPanel.GetActorPose();
 		if(!pose){
-			return NULL;
+			return {};
 		}
 		
 		decString name;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Gesture:", name)){
-			return NULL;
+			return {};
 		}
 		
-		if(pose->GetGestures().HasNamed(name)){
+		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Add Gesture", "A gesture with this name exists already.");
-			return NULL;
+			return {};
 		}
 		
-		const ceActorGesture::Ref gesture(ceActorGesture::Ref::NewWith(pPanel.GetEnvironment(), name));
-		pose->GetGestures().Add(gesture);
+		const ceActorGesture::Ref g(ceActorGesture::Ref::New(pPanel.GetEnvironment(), name));
+		pose->GetGestures().Add(g);
+		
 		pPanel.GetActor()->NotifyPoseGesturesChanged(pose);
 		pPanel.UpdateActorGestures();
-		pPanel.SelectActorPoseGesture(gesture);
-		return NULL;
+		pPanel.SelectActorPoseGesture(g);
+		return {};
 	}
 };
 
 class cActionActorGestureRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorGestureRemove> Ref;
+	
+public:
 	cActionActorGestureRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Actor Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		if(pPanel.GetActorGesture()){
 			pPanel.GetActorPose()->GetGestures().Remove(pPanel.GetActorGesture());
 			pPanel.GetActor()->NotifyPoseGesturesChanged(pPanel.GetActorPose());
 			pPanel.UpdateActorGestures();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1005,29 +1104,32 @@ public:
 
 class cActionActorGestureRename : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorGestureRename> Ref;
+	
+public:
 	cActionActorGestureRename(ceWPView &panel) : cBaseAction(panel, "Rename...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Rename Actor Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation*){
+	igdeUndo::Ref OnAction(ceConversation*) override{
 		ceActorPose * const pose = pPanel.GetActorPose();
 		ceActorGesture * const gesture = pPanel.GetActorGesture();
 		if(!gesture || !pose){
-			return NULL;
+			return {};
 		}
 		
 		decString name(gesture->GetName());
 		if(!igdeCommonDialogs::GetString(&pPanel, "Rename Gesture", "Gesture:", name) || name == gesture->GetName()){
-			return NULL;
+			return {};
 		}
 		
-		if(pose->GetGestures().HasNamed(name)){
+		if(pose->GetGestures().HasMatching([&name](const ceActorGesture &g){ return g.GetName() == name; })){
 			igdeCommonDialogs::Error(&pPanel, "Rename Gesture", "A gesture with this name exists already.");
 			
 		}else{
 			gesture->SetName(name);
 			pPanel.GetActor()->NotifyPoseGesturesChanged(pose);
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1037,56 +1139,65 @@ public:
 
 class cActionActorGestureMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionActorGestureMenu> Ref;
 	cActionActorGestureMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "ActorGesture menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionActorGestureAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorGestureRemove(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionActorGestureRename(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionActorGestureAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorGestureRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionActorGestureRename::Ref::New(pPanel));
 	}
 };
 
 class cPathActorGestureAnimator : public cBaseEditPathListener{
 public:
+	typedef deTObjectReference<cPathActorGestureAnimator> Ref;
 	cPathActorGestureAnimator(ceWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, ceConversation*) override{
 		if(pPanel.GetActorGesture() && pPanel.GetActorGesture()->GetPathAnimator() != editPath.GetPath()){
 			pPanel.GetActorGesture()->SetPathAnimator(editPath.GetPath());
 			pPanel.GetActor()->NotifyPoseGesturesChanged(pPanel.GetActorPose());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cActionActorCommandAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorCommandAdd> Ref;
+	
+public:
 	cActionActorCommandAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Actor Command"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceConversationActor * const actor = pPanel.GetActor();
 		if(!actor){
-			return NULL;
+			return {};
 		}
 		
 		decString command;
 		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
-		|| actor->GetCommands().HasWith(command)){
-			return NULL;
+		|| actor->GetCommands().HasMatching([&](const cePlaybackCommand::Ref &c){ return c->GetCommand() == command; })){
+			return {};
 		}
 		
-		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::NewWith(command, false));
+		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::New(command, false));
 		actor->GetCommands().Add(pcommand);
 		conversation->NotifyActorCommandsChanged(actor);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorCommandRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionActorCommandRemove> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1094,12 +1205,12 @@ public:
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove Actor Command"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetActor() && pListBox.GetSelectedItem()){
 			pPanel.GetActor()->GetCommands().Remove((cePlaybackCommand*)pListBox.GetSelectedItem()->GetData());
 			conversation->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1108,6 +1219,10 @@ public:
 };
 
 class cActionActorCommandClear : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionActorCommandClear> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1115,27 +1230,28 @@ public:
 	cBaseAction(panel, "Remove All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove All Actor Commands"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(pPanel.GetActor() && pListBox.GetItemCount() > 0){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		if(pPanel.GetActor() && pListBox.GetItems().IsNotEmpty()){
 			pPanel.GetActor()->GetCommands().RemoveAll();
 			conversation->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pPanel.GetActor() && pListBox.GetItemCount() > 0);
+		SetEnabled(pPanel.GetActor() && pListBox.GetItems().IsNotEmpty());
 	}
 };
 
 class cListActorCommands: public igdeListBoxListener{
 	ceWPView &pPanel;
 public:
+	typedef deTObjectReference<cListActorCommands> Ref;
 	cListActorCommands(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetActor()){
-			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
+			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItems().GetAt(index)->GetData());
 			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyActorCommandsChanged(pPanel.GetActor());
 		}
@@ -1144,9 +1260,9 @@ public:
 	virtual void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu){
 		if(pPanel.GetActor()){
 			igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-			helper.MenuCommand(menu, new cActionActorCommandAdd(pPanel), true);
-			helper.MenuCommand(menu, new cActionActorCommandRemove(pPanel, *listBox), true);
-			helper.MenuCommand(menu, new cActionActorCommandClear(pPanel, *listBox), true);
+			helper.MenuCommand(menu, cActionActorCommandAdd::Ref::New(pPanel));
+			helper.MenuCommand(menu, cActionActorCommandRemove::Ref::New(pPanel, *listBox));
+			helper.MenuCommand(menu, cActionActorCommandClear::Ref::New(pPanel, *listBox));
 		}
 	}
 };
@@ -1154,33 +1270,40 @@ public:
 
 class cActionActorParameterSet : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorParameterSet> Ref;
+	
+public:
+	typedef deTObjectReference<cVariableKey> cVariableKeyRef;
 	cActionActorParameterSet(ceWPView &panel) : cBaseAction(panel, "Set...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Set Actor Parameter"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		ceConversationActor * const actor = pPanel.GetActor();
 		if(!actor){
-			return NULL;
+			return {};
 		}
 		
 		decString name;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Set Parameter", "Parameter:", name)){
-			return NULL;
+			return {};
 		}
 		
-		ceActorParameter * const parameter = actor->GetParameters().GetNamed(name);
-		int value = parameter ? parameter->GetValue() : 0;
+		int value = actor->GetParameters().GetAtOrDefault(name, 0);
 		if(!igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter", "Value:", value)){
-			return NULL;
+			return {};
 		}
 		
-		actor->GetParameters().Set(name, value);
+		actor->GetParameters().SetAt(name, value);
 		conversation->NotifyActorParametersChanged(actor);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionActorParameterRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionActorParameterRemove> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1188,15 +1311,15 @@ public:
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove Actor Parameter"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetActor() && pListBox.GetSelectedItem()){
-			ceActorParameter * const parameter = (ceActorParameter*)pListBox.GetSelectedItem()->GetData();
-			if(parameter){
-				pPanel.GetActor()->GetParameters().Remove(parameter);
+			const cVariableKey::Ref key(pListBox.GetSelectedItemRefData().DynamicCast<cVariableKey>());
+			if(key){
+				pPanel.GetActor()->GetParameters().RemoveIfPresent(key->name);
 				conversation->NotifyActorParametersChanged(pPanel.GetActor());
 			}
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1206,25 +1329,29 @@ public:
 
 class cActionActorParameterClear : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionActorParameterClear> Ref;
+	
+public:
 	cActionActorParameterClear(ceWPView &panel) : cBaseAction(panel, "Remove All",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove All Actor Parameters"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(pPanel.GetActor() && pPanel.GetActor()->GetParameters().GetCount() > 0){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		if(pPanel.GetActor() && pPanel.GetActor()->GetParameters().IsNotEmpty()){
 			pPanel.GetActor()->GetParameters().RemoveAll();
 			conversation->NotifyActorParametersChanged(pPanel.GetActor());
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pPanel.GetActor() && pPanel.GetActor()->GetParameters().GetCount() > 0);
+		SetEnabled(pPanel.GetActor() && pPanel.GetActor()->GetParameters().IsNotEmpty());
 	}
 };
 
 class cListActorParameters: public igdeListBoxListener{
 	ceWPView &pPanel;
 public:
+	typedef deTObjectReference<cListActorParameters> Ref;
 	cListActorParameters(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int){
@@ -1232,10 +1359,10 @@ public:
 			return;
 		}
 		
-		ceActorParameter &parameter = *((ceActorParameter*)listBox->GetSelectedItem()->GetData());
-		int value = parameter.GetValue();
+		const cVariableKey::Ref parameter(listBox->GetSelectedItemRefData().DynamicCast<cVariableKey>());
+		int value = pPanel.GetActor()->GetParameters().GetAtOrDefault(parameter->name, 0);
 		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Parameter Value", "Value:", value)){
-			parameter.SetValue(value);
+			pPanel.GetActor()->GetParameters().SetAt(parameter->name, value);
 			pPanel.GetConversation()->NotifyActorParametersChanged(pPanel.GetActor());
 		}
 	}
@@ -1243,9 +1370,9 @@ public:
 	virtual void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu){
 		if(pPanel.GetActor()){
 			igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-			helper.MenuCommand(menu, new cActionActorParameterSet(pPanel), true);
-			helper.MenuCommand(menu, new cActionActorParameterRemove(pPanel, *listBox), true);
-			helper.MenuCommand(menu, new cActionActorParameterClear(pPanel), true);
+			helper.MenuCommand(menu, cActionActorParameterSet::Ref::New(pPanel));
+			helper.MenuCommand(menu, cActionActorParameterRemove::Ref::New(pPanel, *listBox));
+			helper.MenuCommand(menu, cActionActorParameterClear::Ref::New(pPanel));
 		}
 	}
 };
@@ -1253,40 +1380,47 @@ public:
 
 class cSpinCoordSys : public cBaseSpinTextFieldListener{
 public:
+	typedef deTObjectReference<cSpinCoordSys> Ref;
 	cSpinCoordSys(ceWPView &panel) : cBaseSpinTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeSpinTextField &textField, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeSpinTextField &textField, ceConversation *conversation) override{
 		conversation->SetActiveCoordSystem(conversation->GetCoordSystemList().GetAt(textField.GetValue()));
-		return NULL;
+		return {};
 	}
 };
 
 class cActionCoordSysAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCoordSysAdd> Ref;
+	
+public:
 	cActionCoordSysAdd(ceWPView &panel) : cBaseAction(panel, "Add",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Coord-System"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		const ceCoordSystem::Ref actor(ceCoordSystem::Ref::NewWith());
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		const ceCoordSystem::Ref actor(ceCoordSystem::Ref::New());
 		conversation->AddCoordSystem(actor);
 		conversation->SetActiveCoordSystem(actor);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionCoordSysRemove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCoordSysRemove> Ref;
+	
+public:
 	cActionCoordSysRemove(ceWPView &panel) : cBaseAction(panel, "Remove",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove Coord-System"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pPanel.GetCoordSys()){
 			conversation->RemoveCoordSystem(pPanel.GetCoordSys());
 			if(conversation->GetCoordSystemList().GetCount() > 0){
 				conversation->SetActiveCoordSystem(conversation->GetCoordSystemList().GetAt(0));
 			}
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1296,60 +1430,65 @@ public:
 
 class cActionCoordSysMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionCoordSysMenu> Ref;
 	cActionCoordSysMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "Coord-System menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionCoordSysAdd(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCoordSysRemove(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionCoordSysAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCoordSysRemove::Ref::New(pPanel));
 	}
 };
 
 class cTextCoordSysID : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCoordSysID> Ref;
 	cTextCoordSysID(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetCoordSys()){
 			pPanel.GetCoordSys()->SetID(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cTextCoordSysAliasID : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCoordSysAliasID> Ref;
 	cTextCoordSysAliasID(ceWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, ceConversation*) override{
 		if(pPanel.GetCoordSys()){
 			pPanel.GetCoordSys()->SetAliasID(textField.GetText());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorCoordSysPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCoordSysPosition> Ref;
 	cVectorCoordSysPosition(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetCoordSys()){
 			pPanel.GetCoordSys()->SetPosition(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cVectorCoordSysRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cVectorCoordSysRotation> Ref;
 	cVectorCoordSysRotation(ceWPView &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeEditVector &editVector, ceConversation*) override{
 		if(pPanel.GetCoordSys()){
 			pPanel.GetCoordSys()->SetOrientation(editVector.GetVector());
 		}
-		return NULL;
+		return {};
 	}
 };
 
@@ -1357,25 +1496,29 @@ public:
 
 class cComboPlaybackFile : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboPlaybackFile> Ref;
 	cComboPlaybackFile(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox&, ceConversation*){
+	igdeUndo::Ref OnChanged(igdeComboBox&, ceConversation*) override{
 		pPanel.UpdatePlaybackTopicList();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPlaybackSelectTopic : public cBaseAction{
 public:
-	cActionPlaybackSelectTopic(ceWPView &panel) : cBaseAction(panel, "Set",
-	NULL, "Set this topic as the one to play back"){}
+	typedef deTObjectReference<cActionPlaybackSelectTopic> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionPlaybackSelectTopic(ceWPView &panel) : cBaseAction(panel, "Set",
+	nullptr, "Set this topic as the one to play back"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		cePlayback &playback = *conversation->GetPlayback();
 		playback.SetTopic(pPanel.GetSelectedPlaybackTopic());
 		playback.Rewind();
 		playback.SetRunning(false);
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1385,23 +1528,29 @@ public:
 
 class cActionPlaybackRewind : public cBaseAction{
 public:
-	cActionPlaybackRewind(ceWPView &panel) : cBaseAction(panel, "Rewind",
-	NULL, "Rewind the playback to the beginning of the selected topic"){}
+	typedef deTObjectReference<cActionPlaybackRewind> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionPlaybackRewind(ceWPView &panel) : cBaseAction(panel, "Rewind",
+	nullptr, "Rewind the playback to the beginning of the selected topic"){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->GetPlayback()->Rewind();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPlaybackRunning : public cBaseAction{
 public:
-	cActionPlaybackRunning(ceWPView &panel) : cBaseAction(panel, "Running",
-	NULL, "Determines if the topic is currently played back"){ }
+	typedef deTObjectReference<cActionPlaybackRunning> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionPlaybackRunning(ceWPView &panel) : cBaseAction(panel, "Running",
+	nullptr, "Determines if the topic is currently played back"){ }
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->GetPlayback()->SetRunning(!conversation->GetPlayback()->GetRunning());
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -1412,12 +1561,15 @@ public:
 
 class cActionPlaybackPaused : public cBaseAction{
 public:
-	cActionPlaybackPaused(ceWPView &panel) : cBaseAction(panel, "Paused",
-	NULL, "Determines if the played back is paused"){ }
+	typedef deTObjectReference<cActionPlaybackPaused> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionPlaybackPaused(ceWPView &panel) : cBaseAction(panel, "Paused",
+	nullptr, "Determines if the played back is paused"){ }
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->GetPlayback()->SetPaused(!conversation->GetPlayback()->GetPaused());
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -1428,12 +1580,15 @@ public:
 
 class cActionPlaybackAutoAdvanceCommands : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPlaybackAutoAdvanceCommands> Ref;
+	
+public:
 	cActionPlaybackAutoAdvanceCommands(ceWPView &panel) : cBaseAction(panel, "Auto Advance",
 	nullptr, "Auto advance certain commands (game/actor commands, trigger, add/remove actor/coordsystem)"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->GetPlayback()->SetAutoAdvanceCommands(!conversation->GetPlayback()->GetAutoAdvanceCommands());
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &conversation) override{
@@ -1444,39 +1599,47 @@ public:
 
 class cComboPlaybackCameraHandling : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboPlaybackCameraHandling> Ref;
 	cComboPlaybackCameraHandling(ceWPView &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	igdeUndo::Ref OnChanged(igdeComboBox &comboBox, ceConversation *conversation) override{
 		if(comboBox.GetSelectedItem()){
 			conversation->GetPlayback()->SetCameraHandling(
 				(cePlayback::eCameraHandling)(intptr_t)comboBox.GetSelectedItem()->GetData());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cActionPlaybackCommandAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPlaybackCommandAdd> Ref;
+	
+public:
 	cActionPlaybackCommandAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Playback Command"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString command;
 		if(!igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Add Command", "Command:", command)
-		|| conversation->GetPlayback()->GetCommands().HasWith(command)){
-			return NULL;
+		|| conversation->GetPlayback()->GetCommands().HasMatching([&](const cePlaybackCommand::Ref &c){ return c->GetCommand() == command; })){
+			return {};
 		}
 		
-		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::NewWith(command, false));
+		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::New(command, false));
 		conversation->GetPlayback()->GetCommands().Add(pcommand);
 		conversation->NotifyPlaybackCommandListChanged();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPlaybackCommandRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPlaybackCommandRemove> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1484,13 +1647,13 @@ public:
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove Playback Command"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pListBox.GetSelectedItem()){
 			conversation->GetPlayback()->GetCommands().Remove(
 				(cePlaybackCommand*)pListBox.GetSelectedItem()->GetData());
 			conversation->NotifyPlaybackCommandListChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1499,6 +1662,10 @@ public:
 };
 
 class cActionPlaybackCommandClear : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPlaybackCommandClear> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1506,27 +1673,28 @@ public:
 	cBaseAction(panel, "Remove All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove All Playback Commands"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(pListBox.GetItemCount() > 0){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		if(pListBox.GetItems().IsNotEmpty()){
 			conversation->GetPlayback()->GetCommands().RemoveAll();
 			conversation->NotifyPlaybackCommandListChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pListBox.GetItemCount() > 0);
+		SetEnabled(pListBox.GetItems().IsNotEmpty());
 	}
 };
 
 class cListPlaybackCommands: public igdeListBoxListener{
 	ceWPView &pPanel;
 public:
+	typedef deTObjectReference<cListPlaybackCommands> Ref;
 	cListPlaybackCommands(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int index){
 		if(pPanel.GetConversation()){
-			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItemAt(index)->GetData());
+			cePlaybackCommand &pcommand = *((cePlaybackCommand*)listBox->GetItems().GetAt(index)->GetData());
 			pcommand.SetValue(!pcommand.GetValue());
 			pPanel.GetConversation()->NotifyPlaybackCommandListChanged();
 		}
@@ -1535,9 +1703,9 @@ public:
 	virtual void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu){
 		if(pPanel.GetConversation()){
 			igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-			helper.MenuCommand(menu, new cActionPlaybackCommandAdd(pPanel), true);
-			helper.MenuCommand(menu, new cActionPlaybackCommandRemove(pPanel, *listBox), true);
-			helper.MenuCommand(menu, new cActionPlaybackCommandClear(pPanel, *listBox), true);
+			helper.MenuCommand(menu, cActionPlaybackCommandAdd::Ref::New(pPanel));
+			helper.MenuCommand(menu, cActionPlaybackCommandRemove::Ref::New(pPanel, *listBox));
+			helper.MenuCommand(menu, cActionPlaybackCommandClear::Ref::New(pPanel, *listBox));
 		}
 	}
 };
@@ -1545,23 +1713,30 @@ public:
 
 class cActionPlaybackVariableAdd : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionPlaybackVariableAdd> Ref;
+	
+public:
 	cActionPlaybackVariableAdd(ceWPView &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Playback Variable"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		decString variable;
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Variable", "Variable:", variable)
-		|| conversation->GetPlayback()->GetVariables().HasNamed(variable)){
-			return NULL;
+		|| conversation->GetPlayback()->GetVariables().Has(variable)){
+			return {};
 		}
 		
-		conversation->GetPlayback()->GetVariables().Set(variable, 0);
+		conversation->GetPlayback()->GetVariables().SetAt(variable, 0);
 		conversation->NotifyPlaybackVarListChanged();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPlaybackVariableSet : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPlaybackVariableSet> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1569,21 +1744,20 @@ public:
 	cBaseAction(panel, "Set...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"Set Playback Variable"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(!pListBox.GetSelectedItem()){
-			return NULL;
+			return {};
 		}
 		
-		cePlaybackVariable &variable = *((cePlaybackVariable*)pListBox.GetSelectedItem()->GetData());
-		int value = variable.GetValue();
-		if(!igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value)
-		|| variable.GetValue() == value){
-			return NULL;
+		const decString name(pListBox.GetSelectedItemRefData().DynamicCast<cVariableKey>()->name);
+		cePlayback::VariableMap &variables = conversation->GetPlayback()->GetVariables();
+		const int curValue = variables.GetAtOrDefault(name, 0);
+		int value = curValue;
+		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value) && value != curValue){
+			variables.SetAt(name, value);
+			conversation->NotifyPlaybackVarListChanged();
 		}
-		
-		variable.SetValue(value);
-		conversation->NotifyPlaybackVarListChanged();
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1592,6 +1766,10 @@ public:
 };
 
 class cActionPlaybackVariableRemove : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPlaybackVariableRemove> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1599,13 +1777,13 @@ public:
 	cBaseAction(panel, "Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove Playback Variable"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		if(pListBox.GetSelectedItem()){
 			conversation->GetPlayback()->GetVariables().Remove(
-				(cePlaybackVariable*)pListBox.GetSelectedItem()->GetData());
+				pListBox.GetSelectedItemRefData().DynamicCast<cVariableKey>()->name);
 			conversation->NotifyPlaybackVarListChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
@@ -1614,6 +1792,10 @@ public:
 };
 
 class cActionPlaybackVariableClear : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPlaybackVariableClear> Ref;
+	
+private:
 	igdeListBox &pListBox;
 	
 public:
@@ -1621,22 +1803,23 @@ public:
 	cBaseAction(panel, "Remove All", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove All Playback Variables"), pListBox(listBox){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
-		if(pListBox.GetItemCount() > 0){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
+		if(pListBox.GetItems().IsNotEmpty()){
 			conversation->GetPlayback()->GetVariables().RemoveAll();
 			conversation->NotifyPlaybackVarListChanged();
 		}
-		return NULL;
+		return {};
 	}
 	
 	void Update(const ceConversation &) override{
-		SetEnabled(pListBox.GetItemCount() > 0);
+		SetEnabled(pListBox.GetItems().IsNotEmpty());
 	}
 };
 
 class cListPlaybackVariables: public igdeListBoxListener{
 	ceWPView &pPanel;
 public:
+	typedef deTObjectReference<cListPlaybackVariables> Ref;
 	cListPlaybackVariables(ceWPView &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox *listBox, int){
@@ -1644,11 +1827,12 @@ public:
 			return;
 		}
 		
-		cePlaybackVariable &variable = *((cePlaybackVariable*)listBox->GetSelectedItem()->GetData());
-		int value = variable.GetValue();
-		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value)
-		&& variable.GetValue() != value){
-			variable.SetValue(value);
+		const decString name(listBox->GetSelectedItemRefData().DynamicCast<cVariableKey>()->name);
+		cePlayback::VariableMap &variables = pPanel.GetConversation()->GetPlayback()->GetVariables();
+		const int curValue = variables.GetAtOrDefault(name, 0);
+		int value = curValue;
+		if(igdeCommonDialogs::GetInteger(&pPanel, "Set Variable", "Value:", value) && value != curValue){
+			variables.SetAt(name, value);
 			pPanel.GetConversation()->NotifyPlaybackVarListChanged();
 		}
 	}
@@ -1656,10 +1840,10 @@ public:
 	virtual void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu){
 		if(pPanel.GetConversation()){
 			igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-			helper.MenuCommand(menu, new cActionPlaybackVariableAdd(pPanel), true);
-			helper.MenuCommand(menu, new cActionPlaybackVariableSet(pPanel, *listBox), true);
-			helper.MenuCommand(menu, new cActionPlaybackVariableRemove(pPanel, *listBox), true);
-			helper.MenuCommand(menu, new cActionPlaybackVariableClear(pPanel, *listBox), true);
+			helper.MenuCommand(menu, cActionPlaybackVariableAdd::Ref::New(pPanel));
+			helper.MenuCommand(menu, cActionPlaybackVariableSet::Ref::New(pPanel, *listBox));
+			helper.MenuCommand(menu, cActionPlaybackVariableRemove::Ref::New(pPanel, *listBox));
+			helper.MenuCommand(menu, cActionPlaybackVariableClear::Ref::New(pPanel, *listBox));
 		}
 	}
 };
@@ -1668,11 +1852,14 @@ public:
 
 class cActionPlaybackTriggerTable : public cBaseAction{
 public:
-	cActionPlaybackTriggerTable(ceWPView &panel) : cBaseAction(panel, "", NULL, ""){}
+	typedef deTObjectReference<cActionPlaybackTriggerTable> Ref;
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+public:
+	cActionPlaybackTriggerTable(ceWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
+	
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->NotifyPlaybackTriggerTableChanged();
-		return NULL;
+		return {};
 	}
 };
 
@@ -1680,11 +1867,14 @@ public:
 
 class cActionMissingWordsCopy : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionMissingWordsCopy> Ref;
+	
+public:
 	cActionMissingWordsCopy(ceWPView &panel) : cBaseAction(panel, "Copy To Clipboard",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy missing words found during playback to clipboard"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		const decStringSet &list = conversation->GetPlayback()->GetMissingWords();
 		const int count = list.GetCount();
 		decStringList ordered;
@@ -1694,34 +1884,38 @@ public:
 		}
 		ordered.SortAscending();
 		
-		decString text(ordered.Join("\n"));
+		decString text(DEJoin(ordered, "\n"));
 		igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Copy To Clipboard", "Text for you to copy to the clipboard", text);
-		return NULL;
+		return {};
 	}
 };
 
 class cActionMissingWordsClear : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionMissingWordsClear> Ref;
+	
+public:
 	cActionMissingWordsClear(ceWPView &panel) : cBaseAction(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 		"Clear list of missing words found during playback"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	igdeUndo::Ref OnAction(ceConversation *conversation) override{
 		conversation->GetPlayback()->GetMissingWords().RemoveAll();
 		conversation->NotifyPlaybackMissingWordsChanged();
-		return NULL;
+		return {};
 	}
 };
 
 class cActionPlaybackMissingWordsMenu : public cBaseActionContextMenu{
 public:
+	typedef deTObjectReference<cActionPlaybackMissingWordsMenu> Ref;
 	cActionPlaybackMissingWordsMenu(ceWPView &panel) : cBaseActionContextMenu(panel, "Missing Words menu"){}
 	
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation*){
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionMissingWordsCopy(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionMissingWordsClear(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionMissingWordsCopy::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionMissingWordsClear::Ref::New(pPanel));
 	}
 };
 
@@ -1737,140 +1931,138 @@ public:
 
 ceWPView::ceWPView(ceWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
-	igdeActionContextMenu *actionContextMenu;
+	igdeActionContextMenu::Ref actionContextMenu;
 	
-	pListener = new ceWPViewListener(*this);
+	pListener = ceWPViewListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// wrapper properties
-	helper.WPCamera(content, pWPCamera, new cActionWPCamera(*this), "Camera:", false, true, true);
-	helper.WPCamera(content, pWPCameraFree, new cActionWPCamera(*this), "Camera Free:", false, true, true);
-	helper.WPSky(content, pWPSky, new cActionWPSky(*this), "Sky:", false, true, true);
-	helper.WPWObject(content, pWPEnvObject, new cActionWPEnvObject(*this), "Environment Object:", false, true, true);
+	helper.WPCamera(content, pWPCamera, cActionWPCamera::Ref::New(*this), "Camera:", false, true);
+	helper.WPCamera(content, pWPCameraFree, cActionWPCamera::Ref::New(*this), "Camera Free:", false, true);
+	helper.WPSky(content, pWPSky, cActionWPSky::Ref::New(*this), "Sky:", false, true);
+	helper.WPWObject(content, pWPEnvObject, cActionWPEnvObject::Ref::New(*this), "Environment Object:", false, true);
 	
 	
 	// props
 	helper.GroupBox(content, groupBox, "Props:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Prop:", "Prop to edit", formLine);
-	helper.ComboBox(formLine, "Prop to edit", pCBProps, new cComboProp(*this));
+	helper.ComboBox(formLine, "Prop to edit", pCBProps, cComboProp::Ref::New(*this));
 	pCBProps->SetDefaultSorter();
-	actionContextMenu = new cActionPropMenu(*this);
-	helper.Button(formLine, pBtnPropMenu, actionContextMenu, true);
+	actionContextMenu = cActionPropMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnPropMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnPropMenu);
 	
-	helper.EditString(groupBox, "Name:", "Sets the name of the prop", pEditPropName, new cTextPropName(*this));
+	helper.EditString(groupBox, "Name:", "Sets the name of the prop", pEditPropName, cTextPropName::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Object:", "Class of the prop", formLine);
-	helper.EditString(formLine, "Class of the prop", pEditPropClass, new cTextPropClass(*this));
-	helper.Button(formLine, pBtnPropMenu, new cActionPropClass(*this, pEditPropClass), true);
+	helper.EditString(formLine, "Class of the prop", pEditPropClass, cTextPropClass::Ref::New(*this));
+	helper.Button(formLine, pBtnPropMenu, cActionPropClass::Ref::New(*this, pEditPropClass));
 	
-	helper.CheckBox(groupBox, pChkPropVisible, new cActionPropVisible(*this), true);
-	helper.EditVector(groupBox, "Position:", "Prop position", pEditPropPos, new cVectorPropPosition(*this));
-	helper.EditVector(groupBox, "Rotation:", "Prop rotation", pEditPropRot, new cVectorPropRotation(*this));
+	helper.CheckBox(groupBox, pChkPropVisible, cActionPropVisible::Ref::New(*this));
+	helper.EditVector(groupBox, "Position:", "Prop position", pEditPropPos, cVectorPropPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "Rotation:", "Prop rotation", pEditPropRot, cVectorPropRotation::Ref::New(*this));
 	
 	
 	// props
 	helper.GroupBoxFlow(content, groupBox, "Actors:", false);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Actor:", "Actor to edit", formLine);
-	helper.EditSpinInteger(formLine, "Actor to edit", 0, 0, pSpinActor, new cSpinActor(*this));
-	actionContextMenu = new cActionActorMenu(*this);
-	helper.Button(formLine, pBtnActorMenu, actionContextMenu, true);
+	helper.EditSpinInteger(formLine, "Actor to edit", 0, 0, pSpinActor, cSpinActor::Ref::New(*this));
+	actionContextMenu = cActionActorMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnActorMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorMenu);
 	
 	helper.EditString(form, "ID:", "Unique actor ID in the conversation",
-		pEditActorID, new cTextActorID(*this));
+		pEditActorID, cTextActorID::Ref::New(*this));
 	helper.EditString(form, "Alias ID:", "Optional unique actor alias ID",
-		pEditActorAliasID, new cTextActorAliasID(*this));
-	helper.EditVector(form, "Position:", "Actor position", pEditActorPos, new cVectorActorPosition(*this));
-	helper.EditVector(form, "Rotation:", "Actor rotation", pEditActorOri, new cVectorActorRotation(*this));
+		pEditActorAliasID, cTextActorAliasID::Ref::New(*this));
+	helper.EditVector(form, "Position:", "Actor position", pEditActorPos, cVectorActorPosition::Ref::New(*this));
+	helper.EditVector(form, "Rotation:", "Actor rotation", pEditActorOri, cVectorActorRotation::Ref::New(*this));
 	helper.EditPath(form, "Model:", "Actor model to use", igdeEnvironment::efpltModel,
-		pEditActorPathModel, new cPathActorModel(*this));
+		pEditActorPathModel, cPathActorModel::Ref::New(*this));
 	helper.EditPath(form, "Skin:", "Actor skin to use", igdeEnvironment::efpltSkin,
-		pEditActorPathSkin, new cPathActorSkin(*this));
+		pEditActorPathSkin, cPathActorSkin::Ref::New(*this));
 	helper.EditPath(form, "Rig:", "Actor rig to use", igdeEnvironment::efpltRig,
-		pEditActorPathRig, new cPathActorRig(*this));
+		pEditActorPathRig, cPathActorRig::Ref::New(*this));
 	helper.EditPath(form, "Speech Animation:", "Speech animation to use",
-		igdeEnvironment::efpltSpeechAnimation, pEditActorPathSpeechAnim, new cPathActorSpeechAnimation(*this));
+		igdeEnvironment::efpltSpeechAnimation, pEditActorPathSpeechAnim, cPathActorSpeechAnimation::Ref::New(*this));
 	helper.EditPath(form, "Eye Animator:", "Eye animator to use",
-		igdeEnvironment::efpltAnimator, pEditActorPathEyeAnimator, new cPathActorEyeAnimator(*this));
+		igdeEnvironment::efpltAnimator, pEditActorPathEyeAnimator, cPathActorEyeAnimator::Ref::New(*this));
 	helper.EditPath(form, "Face Pose Animator:", "Face pose animator to use",
-		igdeEnvironment::efpltAnimator, pEditActorPathFaceAnimator, new cPathActorFacePoseAnimator(*this));
-	helper.CheckBox(form, pChkActorWaiting, new cActionActorWaiting(*this), true);
+		igdeEnvironment::efpltAnimator, pEditActorPathFaceAnimator, cPathActorFacePoseAnimator::Ref::New(*this));
+	helper.CheckBox(form, pChkActorWaiting, cActionActorWaiting::Ref::New(*this));
 	helper.EditString(form, "Head Rotator:", "Name of head rotator bone or empty string if not used",
-		pEditActorBoneHeadRotator, new cTextActorBoneHeadRotator(*this));
+		pEditActorBoneHeadRotator, cTextActorBoneHeadRotator::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(form, "Actor Pose:", "Actor pose to edit", formLine);
-	helper.ComboBox(formLine, "Actor pose to edit", pCBActorPose, new cComboActorPose(*this));
-	actionContextMenu = new cActionActorPoseMenu(*this);
-	helper.Button(formLine, pBtnActorPoseMenu, actionContextMenu, true);
+	helper.ComboBox(formLine, "Actor pose to edit", pCBActorPose, cComboActorPose::Ref::New(*this));
+	actionContextMenu = cActionActorPoseMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnActorPoseMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseMenu);
 	
 	helper.EditPath(form, "Animator:", "Animator to use",
-		igdeEnvironment::efpltAnimator, pEditActorPosePathAnimator, new cPathActorPoseAnimator(*this));
+		igdeEnvironment::efpltAnimator, pEditActorPosePathAnimator, cPathActorPoseAnimator::Ref::New(*this));
 	
 	
 	helper.GroupBox(groupBox, groupBox2, "Animator Controllers:", true);
 	
 	helper.FormLineStretchFirst(groupBox2, "Controller:", "Controller to edit", formLine);
-	helper.ComboBox(formLine, "Controller to edit", pCBActorPoseController, new cComboActorPoseController(*this));
-	actionContextMenu = new cActionActorPoseControllerMenu(*this);
-	helper.Button(formLine, pBtnActorPoseControllerMenu, actionContextMenu, true);
+	helper.ComboBox(formLine, "Controller to edit", pCBActorPoseController, cComboActorPoseController::Ref::New(*this));
+	actionContextMenu = cActionActorPoseControllerMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnActorPoseControllerMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorPoseControllerMenu);
 	
-	helper.ComboBox(groupBox2, "Update Type:", "How to update the controller", pCBActorPoseControllerUpdateType,
-		new cComboActorPoseControllerUpdateType(*this, pCBActorPoseController));
-	pCBActorPoseControllerUpdateType->AddItem("Constant Value", NULL,
+	helper.ComboBox(groupBox2, "Update Type:", "How to update the controller",
+		pCBActorPoseControllerUpdateType, cComboActorPoseControllerUpdateType::Ref::New(*this, pCBActorPoseController));
+	pCBActorPoseControllerUpdateType->AddItem("Constant Value", nullptr,
 		(void*)(intptr_t)ceActorController::eutConstant);
-	pCBActorPoseControllerUpdateType->AddItem("Elapsed Time", NULL,
+	pCBActorPoseControllerUpdateType->AddItem("Elapsed Time", nullptr,
 		(void*)(intptr_t)ceActorController::eutElapsedTime);
-	pCBActorPoseControllerUpdateType->AddItem("Head Left-Right", NULL,
+	pCBActorPoseControllerUpdateType->AddItem("Head Left-Right", nullptr,
 		(void*)(intptr_t)ceActorController::eutHeadLeftRight);
-	pCBActorPoseControllerUpdateType->AddItem("Head Up-Down", NULL,
+	pCBActorPoseControllerUpdateType->AddItem("Head Up-Down", nullptr,
 		(void*)(intptr_t)ceActorController::eutHeadUpDown);
-	pCBActorPoseControllerUpdateType->AddItem("Eyes Left-Right", NULL,
+	pCBActorPoseControllerUpdateType->AddItem("Eyes Left-Right", nullptr,
 		(void*)(intptr_t)ceActorController::eutEyesLeftRight);
-	pCBActorPoseControllerUpdateType->AddItem("Eyes Up-Down", NULL,
+	pCBActorPoseControllerUpdateType->AddItem("Eyes Up-Down", nullptr,
 		(void*)(intptr_t)ceActorController::eutEyesUpDown);
 	
 	helper.EditFloat(groupBox2, "Value:", "Constant value to use if the update type is constant",
-		pEditActorPoseControllerValue, new cTextActorPoseControllerValue(*this, pCBActorPoseController));
+		pEditActorPoseControllerValue, cTextActorPoseControllerValue::Ref::New(*this, pCBActorPoseController));
 	helper.EditVector(groupBox2, "Vector:", "Constant vector to use if the update type is constant",
-		pEditActorPoseControllerVector, new cTextActorPoseControllerVector(*this, pCBActorPoseController));
+		pEditActorPoseControllerVector, cTextActorPoseControllerVector::Ref::New(*this, pCBActorPoseController));
 	
 	
 	helper.GroupBox(groupBox, groupBox2, "Actor Gestures:", true);
 	
 	helper.FormLineStretchFirst(groupBox2, "Gesture:", "Actor gesture to edit", formLine);
-	helper.ComboBox(formLine, "Actor gesture to edit", pCBActorGesture, new cComboActorGesture(*this));
-	actionContextMenu = new cActionActorGestureMenu(*this);
-	helper.Button(formLine, pBtnActorGestureMenu, actionContextMenu, true);
+	helper.ComboBox(formLine, "Actor gesture to edit", pCBActorGesture, cComboActorGesture::Ref::New(*this));
+	actionContextMenu = cActionActorGestureMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnActorGestureMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnActorGestureMenu);
 	
 	helper.EditPath(groupBox2, "Animator:", "Animator to use", igdeEnvironment::efpltAnimator,
-		pEditActorGesturePathAnimator, new cPathActorGestureAnimator(*this));
+		pEditActorGesturePathAnimator, cPathActorGestureAnimator::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "Actor Command Simulation:", false, true);
-	helper.ListBox(groupBox2, 5, "Actor Commands", pListActorCommands, new cListActorCommands(*this));
+	helper.ListBox(groupBox2, 5, "Actor Commands", pListActorCommands, cListActorCommands::Ref::New(*this));
 	pListActorCommands->SetDefaultSorter();
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "Actor Parameters:", false, true);
-	helper.ListBox(groupBox2, 5, "Actor Parameters", pListActorParameters, new cListActorParameters(*this));
+	helper.ListBox(groupBox2, 5, "Actor Parameters", pListActorParameters, cListActorParameters::Ref::New(*this));
 	pListActorParameters->SetDefaultSorter();
 	
 	
@@ -1878,80 +2070,76 @@ pConversation(NULL)
 	helper.GroupBox(content, groupBox, "Coordinate Systems:", true);
 	
 	helper.FormLineStretchFirst(groupBox, "Coord-System:", "Coordinate system to edit", formLine);
-	helper.EditSpinInteger(formLine, "Coordinate system to edit", 0, 0, pSpinCoordSys, new cSpinCoordSys(*this));
-	actionContextMenu = new cActionCoordSysMenu(*this);
-	helper.Button(formLine, pBtnCoordSysMenu, actionContextMenu, true);
+	helper.EditSpinInteger(formLine, "Coordinate system to edit", 0, 0, pSpinCoordSys, cSpinCoordSys::Ref::New(*this));
+	actionContextMenu = cActionCoordSysMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnCoordSysMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnCoordSysMenu);
 	
 	helper.EditString(groupBox, "ID:", "Unique coordinate system ID in the conversation",
-		pEditCoordSysID, new cTextCoordSysID(*this));
+		pEditCoordSysID, cTextCoordSysID::Ref::New(*this));
 	helper.EditString(groupBox, "Alias ID:", "Optional unique coordinate system alias ID",
-		pEditCoordSysAliasID, new cTextCoordSysAliasID(*this));
+		pEditCoordSysAliasID, cTextCoordSysAliasID::Ref::New(*this));
 	helper.EditVector(groupBox, "Position:", "Position of the coordinate system",
-		pEditCoordSysPosition, new cVectorCoordSysPosition(*this));
+		pEditCoordSysPosition, cVectorCoordSysPosition::Ref::New(*this));
 	helper.EditVector(groupBox, "Rotation:", "Orientation of the coordinate system",
-		pEditCoordSysRotation, new cVectorCoordSysRotation(*this));
+		pEditCoordSysRotation, cVectorCoordSysRotation::Ref::New(*this));
 	
 	
 	// playback
 	helper.GroupBoxFlow(content, groupBox, "Playback:", false);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	groupBox->AddChild(form);
 	
 	helper.ComboBoxFilter(form, "File:", "File to show topics for",
-		pCBPlaybackFile, new cComboPlaybackFile(*this));
+		pCBPlaybackFile, cComboPlaybackFile::Ref::New(*this));
 	pCBPlaybackFile->SetDefaultSorter();
 	
-	helper.ComboBoxFilter(form, "Topic:", "Topic to play back", pCBPlaybackTopic, NULL);
+	helper.ComboBoxFilter(form, "Topic:", "Topic to play back", pCBPlaybackTopic, {});
 	pCBPlaybackTopic->SetDefaultSorter();
 	
 	helper.FormLine(form, "", "", formLine);
-	helper.Button(formLine, pBtnPlaybackSelectTopic, new cActionPlaybackSelectTopic(*this), true);
-	helper.Button(formLine, pBtnPlaybackRewind, new cActionPlaybackRewind(*this), true);
+	helper.Button(formLine, pBtnPlaybackSelectTopic, cActionPlaybackSelectTopic::Ref::New(*this));
+	helper.Button(formLine, pBtnPlaybackRewind, cActionPlaybackRewind::Ref::New(*this));
 	
 	helper.FormLine(form, "", "", formLine);
-	helper.CheckBoxOnly(formLine, pChkPlaybackRunning, new cActionPlaybackRunning(*this), true);
-	helper.CheckBoxOnly(formLine, pChkPlaybackPaused, new cActionPlaybackPaused(*this), true);
-	helper.CheckBoxOnly(formLine, pChkPlaybackAutoAdvanceCommands, new cActionPlaybackAutoAdvanceCommands(*this), true);
+	helper.CheckBoxOnly(formLine, pChkPlaybackRunning, cActionPlaybackRunning::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkPlaybackPaused, cActionPlaybackPaused::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkPlaybackAutoAdvanceCommands, cActionPlaybackAutoAdvanceCommands::Ref::New(*this));
 	
 	helper.ComboBox(form, "Camera Handling:", "How camera is handled",
-		pCBPlaybackCameraHandling, new cComboPlaybackCameraHandling(*this));
-	pCBPlaybackCameraHandling->AddItem("Conversation", NULL, (void*)(intptr_t)cePlayback::echConversation);
-	pCBPlaybackCameraHandling->AddItem("Camera Shot", NULL, (void*)(intptr_t)cePlayback::echCameraShot);
-	pCBPlaybackCameraHandling->AddItem("Free", NULL, (void*)(intptr_t)cePlayback::echFree);
+		pCBPlaybackCameraHandling, cComboPlaybackCameraHandling::Ref::New(*this));
+	pCBPlaybackCameraHandling->AddItem("Conversation", nullptr, (void*)(intptr_t)cePlayback::echConversation);
+	pCBPlaybackCameraHandling->AddItem("Camera Shot", nullptr, (void*)(intptr_t)cePlayback::echCameraShot);
+	pCBPlaybackCameraHandling->AddItem("Free", nullptr, (void*)(intptr_t)cePlayback::echFree);
 	pCBPlaybackCameraHandling->SetSelectionWithData((void*)(intptr_t)cePlayback::echFree);
 	
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "Game Command:", false, true);
-	helper.ListBox(groupBox2, 5, "Game Commands", pListPlaybackCommands, new cListPlaybackCommands(*this));
+	helper.ListBox(groupBox2, 5, "Game Commands", pListPlaybackCommands, cListPlaybackCommands::Ref::New(*this));
 	pListPlaybackCommands->SetDefaultSorter();
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "Variables:", false, true);
-	helper.ListBox(groupBox2, 5, "Variables", pListPlaybackVars, new cListPlaybackVariables(*this));
+	helper.ListBox(groupBox2, 5, "Variables", pListPlaybackVars, cListPlaybackVariables::Ref::New(*this));
 	pListPlaybackVars->SetDefaultSorter();
 	
 	
 	helper.WPTriggerTable(groupBox, pWPPlaybackTriggerTable,
-		new cActionPlaybackTriggerTable(*this), "Trigger Table:", false, true, true);
+		cActionPlaybackTriggerTable::Ref::New(*this), "Trigger Table:", false, true);
 	
 	
 	helper.GroupBoxFlow(groupBox, groupBox2, "Debug:", false, false);
 	
 	helper.FormLineStretchFirst(groupBox2, "Missing Words:", "Missing words found during playback", formLine);
-	helper.ComboBox(formLine, "Missing words found during playback", pCBPlaybackMissingWords, NULL);
+	helper.ComboBox(formLine, "Missing words found during playback", pCBPlaybackMissingWords, {});
 	pCBPlaybackMissingWords->SetDefaultSorter();
-	actionContextMenu = new cActionPlaybackMissingWordsMenu(*this);
-	helper.Button(formLine, pBtnPlaybackMissingWordsMenu, actionContextMenu, true);
+	actionContextMenu = cActionPlaybackMissingWordsMenu::Ref::New(*this);
+	helper.Button(formLine, pBtnPlaybackMissingWordsMenu, actionContextMenu);
 	actionContextMenu->SetWidget(pBtnPlaybackMissingWordsMenu);
 }
 
 ceWPView::~ceWPView(){
-	SetConversation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetConversation(nullptr);
 }
 
 
@@ -1965,22 +2153,19 @@ void ceWPView::SetConversation(ceConversation *conversation){
 	}
 	
 	pWPEnvObject->SetObject(nullptr);
-	pWPSky->SetSky(NULL);
-	pWPCamera->SetCamera(NULL);
-	pWPCameraFree->SetCamera(NULL);
-	pWPPlaybackTriggerTable->SetTriggerTargetList(NULL);
+	pWPSky->SetSky(nullptr);
+	pWPCamera->SetCamera(nullptr);
+	pWPCameraFree->SetCamera(nullptr);
+	pWPPlaybackTriggerTable->SetTriggerTargetList(nullptr);
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
-		
 		pWPSky->SetSky(conversation->GetSky());
 		pWPEnvObject->SetObject(conversation->GetEnvObject());
 		pWPCamera->SetCamera(conversation->GetCamera());
@@ -2024,12 +2209,12 @@ void ceWPView::UpdateCamera(){
 
 
 ceConversationActor *ceWPView::GetActor() const{
-	return pConversation ? pConversation->GetActiveActor() : NULL;
+	return pConversation ? pConversation->GetActiveActor() : nullptr;
 }
 
 ceActorPose *ceWPView::GetActorPose() const{
 	const ceConversationActor * const actor = GetActor();
-	return actor ? actor->GetActivePose() : NULL;
+	return actor ? actor->GetActivePose() : nullptr;
 }
 
 ceActorController *ceWPView::GetActorPoseController() const{
@@ -2039,25 +2224,20 @@ ceActorController *ceWPView::GetActorPoseController() const{
 
 ceActorGesture *ceWPView::GetActorGesture() const{
 	return GetActorPose() && pCBActorGesture->GetSelectedItem()
-		? (ceActorGesture*)pCBActorGesture->GetSelectedItem()->GetData() : NULL;
+		? (ceActorGesture*)pCBActorGesture->GetSelectedItem()->GetData() : nullptr;
 }
 
 ceProp *ceWPView::GetProp() const{
-	return pConversation ? pConversation->GetActiveProp() : NULL;
+	return pConversation ? pConversation->GetActiveProp() : nullptr;
 }
 
 void ceWPView::UpdatePropList(){
 	pCBProps->RemoveAllItems();
 	
 	if(pConversation){
-		const cePropList &list = pConversation->GetPropList();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceProp * const prop = list.GetAt(i);
-			pCBProps->AddItem(prop->GetName(), NULL, prop);
-		}
+		pConversation->GetProps().Visit([&](ceProp *prop){
+			pCBProps->AddItem(prop->GetName(), nullptr, prop);
+		});
 	}
 	
 	pCBProps->SortItems();
@@ -2153,22 +2333,17 @@ void ceWPView::UpdateActors(){
 
 void ceWPView::UpdateActorPoses(){
 	ceConversationActor * const actor = GetActor();
-	ceActorPose *activePose = actor ? actor->GetActivePose() : NULL;
+	ceActorPose *activePose = actor ? actor->GetActivePose() : nullptr;
 	
 	pCBActorPose->RemoveAllItems();
 	
 	if(actor){
-		const ceActorPoseList &poses = actor->GetPoses();
-		const int poseCount = poses.GetCount();
-		int i;
+		actor->GetPoses().Visit([&](ceActorPose *p){
+			pCBActorPose->AddItem(p->GetName(), nullptr, p);
+		});
 		
-		for(i=0; i<poseCount; i++){
-			ceActorPose * const pose = poses.GetAt(i);
-			pCBActorPose->AddItem(pose->GetName(), NULL, pose);
-		}
-		
-		if(!activePose && poseCount > 0){
-			activePose = poses.GetAt(0);
+		if(!activePose && actor->GetPoses().GetCount() > 0){
+			activePose = actor->GetPoses().First();
 		}
 		actor->SetActivePose(activePose);
 	}
@@ -2204,20 +2379,14 @@ void ceWPView::UpdateActorGestures(){
 	pCBActorGesture->RemoveAllItems();
 	
 	if(pose){
-		const ceActorGestureList &gestures = pose->GetGestures();
-		const int gestureCount = gestures.GetCount();
-		int i;
-		
-		for(i=0; i<gestureCount; i++){
-			ceActorGesture * const poseGesture = gestures.GetAt(i);
-			pCBActorGesture->AddItem(poseGesture->GetName(), NULL, poseGesture);
-		}
-		
+		pose->GetGestures().Visit([&](ceActorGesture *g){
+			pCBActorGesture->AddItem(g->GetName(), nullptr, g);
+		});
 		pCBActorGesture->SortItems();
 	}
 	
 	pCBActorGesture->SetSelectionWithData(gesture);
-	if(!pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItemCount() > 0){
+	if(!pCBActorGesture->GetSelectedItem() && pCBActorGesture->GetItems().IsNotEmpty()){
 		pCBActorGesture->SetSelection(0);
 	}
 	gesture = GetActorGesture();
@@ -2256,21 +2425,13 @@ void ceWPView::UpdateActorControllers(){
 	ceActorController * const selection = pCBActorPoseController->GetSelectedItem()
 		? (ceActorController*)pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
 	
+	pCBActorPoseController->RemoveAllItems();
+	
 	if(pose){
-		const int count = pose->GetControllers().GetCount();
-		decString text;
-		int i;
-		
-		pCBActorPoseController->RemoveAllItems();
-		for(i=0; i<count; i++){
-			ceActorController * const controller = pose->GetControllers().GetAt(i);
-			pCBActorPoseController->AddItem(controller->GetName(), nullptr, controller);
-		}
-		
+		pose->GetControllers().Visit([&](ceActorController *c){
+			pCBActorPoseController->AddItem(c->GetName(), nullptr, c);
+		});
 		pCBActorPoseController->SetSelectionWithData(selection);
-		
-	}else{
-		pCBActorPoseController->RemoveAllItems();
 	}
 	
 	pCBActorPoseController->SetEnabled(pose);
@@ -2309,56 +2470,56 @@ void ceWPView::SelectActorPoseController(ceActorController *controller){
 void ceWPView::UpdateActorCommands(){
 	const ceConversationActor * const actor = GetActor();
 	cePlaybackCommand * const selection = pListActorCommands->GetSelectedItem()
-		? (cePlaybackCommand*)pListActorCommands->GetSelectedItem()->GetData() : NULL;
+		? (cePlaybackCommand*)pListActorCommands->GetSelectedItem()->GetData() : nullptr;
 	
 	pListActorCommands->RemoveAllItems();
 	
 	if(actor){
 		igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
 		igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
-		const cePlaybackCommandList &list = actor->GetCommands();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			cePlaybackCommand * const entry = list.GetAt(i);
-			pListActorCommands->AddItem(entry->GetCommand(),
-				entry->GetValue() ? iconTrue : iconFalse, entry);
-		}
+		actor->GetCommands().Visit([&](cePlaybackCommand *c){
+			pListActorCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
+		});
 	}
 	
 	pListActorCommands->SortItems();
 	
 	pListActorCommands->SetSelectionWithData(selection);
-	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItemCount() > 0){
+	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItems().IsNotEmpty()){
 		pListActorCommands->SetSelection(0);
 	}
 }
 
 void ceWPView::UpdateActorParameters(){
-	const ceConversationActor * const actor = GetActor();
-	ceActorParameter * const selection = pListActorParameters->GetSelectedItem()
-		? (ceActorParameter*)pListActorParameters->GetSelectedItem()->GetData() : NULL;
+	const cVariableKey::Ref selection(pListActorParameters->GetSelectedItemRefData().DynamicCast<cVariableKey>());
 	
 	pListActorParameters->RemoveAllItems();
 	
+	const ceConversationActor * const actor = GetActor();
 	if(actor){
-		const ceActorParameterList &list = actor->GetParameter();
-		const int count = list.GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceActorParameter * const parameter = list.GetAt(i);
-			text.Format("%s = %d", parameter->GetName().GetString(), parameter->GetValue());
-			pListActorParameters->AddItem(text, NULL, parameter);
-		}
+		actor->GetParameter().Visit([&](const decString &name, int value){
+			decString text;
+			text.Format("%s = %d", name.GetString(), value);
+			pListActorParameters->AddItemRef(text, nullptr, cVariableKey::Ref::New(name));
+		});
 	}
 	
 	pListActorParameters->SortItems();
 	
-	pListActorParameters->SetSelectionWithData(selection);
-	if(!pListActorParameters->GetSelectedItem() && pListActorParameters->GetItemCount() > 0){
+	if(selection){
+		const int count = pListActorParameters->GetItems().GetCount();
+		int i;
+		for(i=0; i<count; i++){
+			const cVariableKey::Ref varKey = pListActorParameters->GetItems().GetAt(i)->
+				GetRefData().DynamicCast<cVariableKey>();
+			if(varKey->name == selection->name){
+				pListActorParameters->SetSelection(i);
+				break;
+			}
+		}
+	}
+	
+	if(!pListActorParameters->GetSelectedItem() && pListActorParameters->GetItems().IsNotEmpty()){
 		pListActorParameters->SetSelection(0);
 	}
 }
@@ -2366,7 +2527,7 @@ void ceWPView::UpdateActorParameters(){
 
 
 ceCoordSystem *ceWPView::GetCoordSys() const{
-	return pConversation ? pConversation->GetActiveCoordSystem() : NULL;
+	return pConversation ? pConversation->GetActiveCoordSystem() : nullptr;
 }
 
 void ceWPView::UpdateCoordSystems(){
@@ -2410,14 +2571,9 @@ void ceWPView::UpdatePlaybackFileList(){
 	pCBPlaybackFile->RemoveAllItems();
 	
 	if(pConversation){
-		const ceConversationFileList list(pConversation->AllFiles());
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceConversationFile * const file = list.GetAt(i);
-			pCBPlaybackFile->AddItem(file->GetID(), NULL, file);
-		}
+		pConversation->AllFiles().Visit([this](ceConversationFile *f){
+			pCBPlaybackFile->AddItem(f->GetID(), nullptr, f);
+		});
 		
 		pCBPlaybackFile->SortItems();
 		pCBPlaybackFile->StoreFilterItems();
@@ -2428,7 +2584,7 @@ void ceWPView::UpdatePlaybackFileList(){
 
 ceConversationFile *ceWPView::GetSelectedPlaybackFile() const{
 	return pCBPlaybackFile->GetSelectedItem()
-		? (ceConversationFile*)pCBPlaybackFile->GetSelectedItem()->GetData() : NULL;
+		? (ceConversationFile*)pCBPlaybackFile->GetSelectedItem()->GetData() : nullptr;
 }
 
 void ceWPView::UpdatePlaybackTopicList(){
@@ -2438,15 +2594,9 @@ void ceWPView::UpdatePlaybackTopicList(){
 	pCBPlaybackTopic->RemoveAllItems();
 	
 	if(selectedFile){
-		const ceConversationTopicList list(pConversation->AllTopics(selectedFile->GetID()));
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			ceConversationTopic * const topic = list.GetAt(i);
-			pCBPlaybackTopic->AddItem(topic->GetID(), NULL, topic);
-		}
-		
+		pConversation->AllTopics(selectedFile->GetID()).Visit([&](ceConversationTopic *topic){
+			pCBPlaybackTopic->AddItem(topic->GetID(), nullptr, topic);
+		});
 		pCBPlaybackTopic->SortItems();
 		pCBPlaybackTopic->StoreFilterItems();
 	}
@@ -2456,7 +2606,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 
 ceConversationTopic *ceWPView::GetSelectedPlaybackTopic() const{
 	return pCBPlaybackTopic->GetSelectedItem()
-		? (ceConversationTopic*)pCBPlaybackTopic->GetSelectedItem()->GetData() : NULL;
+		? (ceConversationTopic*)pCBPlaybackTopic->GetSelectedItem()->GetData() : nullptr;
 }
 
 void ceWPView::UpdatePlayback(){
@@ -2477,55 +2627,55 @@ void ceWPView::UpdatePlayback(){
 
 void ceWPView::UpdatePlaybackCommands(){
 	cePlaybackCommand * const selectedEntry = pListPlaybackCommands->GetSelectedItem()
-		? (cePlaybackCommand*)pListPlaybackCommands->GetSelectedItem()->GetData() : NULL;
+		? (cePlaybackCommand*)pListPlaybackCommands->GetSelectedItem()->GetData() : nullptr;
 	
 	pListPlaybackCommands->RemoveAllItems();
 	
 	if(pConversation){
 		igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
 		igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
-		const cePlaybackCommandList &list = pConversation->GetPlayback()->GetCommands();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			cePlaybackCommand * const entry = list.GetAt(i);
-			pListPlaybackCommands->AddItem(entry->GetCommand(),
-				entry->GetValue() ? iconTrue : iconFalse, entry);
-		}
+		pConversation->GetPlayback()->GetCommands().Visit([&](cePlaybackCommand *c){
+			pListPlaybackCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
+		});
 	}
 	
 	pListPlaybackCommands->SortItems();
 	
 	pListPlaybackCommands->SetSelectionWithData(selectedEntry);
-	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItemCount() > 0){
+	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItems().IsNotEmpty()){
 		pListPlaybackCommands->SetSelection(0);
 	}
 }
 
 void ceWPView::UpdatePlaybackVariables(){
-	cePlaybackVariable * const selectedVariable = pListPlaybackVars->GetSelectedItem()
-		? (cePlaybackVariable*)pListPlaybackVars->GetSelectedItem()->GetData() : NULL;
+	const cVariableKey::Ref selection(pListPlaybackVars->GetSelectedItemRefData().DynamicCast<cVariableKey>());
 	
 	pListPlaybackVars->RemoveAllItems();
 	
 	if(pConversation){
-		const cePlaybackVariableList &list = pConversation->GetPlayback()->GetVariables();
-		const int count = list.GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			cePlaybackVariable * const variable = list.GetAt(i);
-			text.Format("%s = %d", variable->GetName().GetString(), variable->GetValue());
-			pListPlaybackVars->AddItem(text, NULL, variable);
-		}
+		pConversation->GetPlayback()->GetVariables().Visit([&](const decString &n, int v){
+			decString text;
+			text.Format("%s = %d", n.GetString(), v);
+			pListPlaybackVars->AddItemRef(text, nullptr, cVariableKey::Ref::New(n));
+		});
 	}
 	
 	pListPlaybackVars->SortItems();
 	
-	pListPlaybackVars->SetSelectionWithData(selectedVariable);
-	if(!pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItemCount() > 0){
+	if(selection){
+		const int count = pListPlaybackVars->GetItems().GetCount();
+		int i;
+		for(i=0; i<count; i++){
+			const cVariableKey::Ref varKey = pListPlaybackVars->GetItems().GetAt(i)->
+				GetRefData().DynamicCast<cVariableKey>();
+			if(varKey->name == selection->name){
+				pListPlaybackVars->SetSelection(i);
+				break;
+			}
+		}
+	}
+	
+	if(!pListPlaybackVars->GetSelectedItem() && pListPlaybackVars->GetItems().IsNotEmpty()){
 		pListPlaybackVars->SetSelection(0);
 	}
 }
@@ -2552,7 +2702,7 @@ void ceWPView::UpdatePlaybackMissingWords(){
 	pCBPlaybackMissingWords->SortItems();
 	
 	pCBPlaybackMissingWords->SetText(selectedWord);
-	if(!pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItemCount() > 0){
+	if(!pCBPlaybackMissingWords->GetSelectedItem() && pCBPlaybackMissingWords->GetItems().IsNotEmpty()){
 		pCBPlaybackMissingWords->SetSelection(0);
 	}
 }

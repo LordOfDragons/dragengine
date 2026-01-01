@@ -56,7 +56,7 @@
 ////////////////////////////
 
 ceWPTTIMAIfElseElse::ceWPTTIMAIfElseElse(ceWindowMain &windowMain,
-ceConversation &conversation, const ceConversationActionList &actions) :
+ceConversation &conversation, const ceConversationAction::List &actions) :
 ceWPTTIMActions(windowMain, conversation, etActionIfElseElse, actions)
 {
 	SetIcon(windowMain.GetIconActionIfElseCaseElse());
@@ -74,14 +74,14 @@ ceWPTTIMAIfElseElse::~ceWPTTIMAIfElseElse(){
 ceWPTTIMAIfElse *ceWPTTIMAIfElseElse::GetModelIfElse() const{
 	ceWPTTreeItemModel * const parent = GetParent();
 	if(!parent){
-		return NULL;
+		return nullptr;
 	}
 	
 	if(parent->GetType() == etActionIfElse){
 		return (ceWPTTIMAIfElse*)parent;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -100,7 +100,7 @@ void ceWPTTIMAIfElseElse::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -113,24 +113,24 @@ void ceWPTTIMAIfElseElse::OnContextMenu(igdeMenuCascade &contextMenu){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	int i;
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Add Action", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAIfElseElseAddAction(windowMain, conversation, *topic,
-			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAppend), true);
+		helper.MenuCommand(subMenu, ceWPTMAIfElseElseAddAction::Ref::New(windowMain, conversation, *topic,
+			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAppend));
 	}
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseCopyActions(windowMain, ifElse), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElsePasteActions(
-		windowMain, conversation, *topic, ifElse, indexAppend), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElsePasteSnippet(
-		windowMain, conversation, *topic, ifElse, indexAppend), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseCopyActions::Ref::New(windowMain, ifElse));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteActions::Ref::New(
+		windowMain, conversation, *topic, ifElse, indexAppend));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteSnippet::Ref::New(
+		windowMain, conversation, *topic, ifElse, indexAppend));
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseRemoveAllActions(
-		windowMain, conversation, *topic, ifElse), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseRemoveAllActions::Ref::New(
+		windowMain, conversation, *topic, ifElse));
 }
 
 void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action){
@@ -150,7 +150,7 @@ void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConv
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
+		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -158,46 +158,45 @@ void ceWPTTIMAIfElseElse::ContextMenuAction(igdeMenuCascade &contextMenu, ceConv
 	igdeEnvironment &environment = windowMain.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
 	ceCAIfElse &ifElse = *modelIfElse->GetActionIfElse();
-	const ceConversationActionList &actions = ifElse.GetElseActions();
-	const int indexAction = action ? actions.IndexOf(action) : -1;
+	const int indexAction = action ? ifElse.GetElseActions().IndexOf(action) : -1;
 	int i;
 	
 	// child action specific
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseMoveAction(windowMain, conversation,
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseMoveAction::Ref::New(windowMain, conversation,
 		*topic, ifElse, action, indexAction - 1, "Move Action Up",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseMoveAction(windowMain, conversation,
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp)));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseMoveAction::Ref::New(windowMain, conversation,
 		*topic, ifElse, action, indexAction + 1, "Move Action Down",
-		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)), true);
+		windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown)));
 	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand(contextMenu, new ceWPTMACopyAction(windowMain, action), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseCutAction(
-		windowMain, conversation, *topic, ifElse, action), true);
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElsePasteActions(windowMain, conversation,
-		*topic, ifElse, indexAction, "Paste Actions Before" ), true );
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElsePasteActions(windowMain, conversation,
-		*topic, ifElse, indexAction + 1, "Paste Actions After" ), true );
+	helper.MenuCommand(contextMenu, ceWPTMACopyAction::Ref::New(windowMain, action));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseCutAction::Ref::New(
+		windowMain, conversation, *topic, ifElse, action));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteActions::Ref::New(
+		windowMain, conversation, *topic, ifElse, indexAction, "Paste Actions Before"));
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElsePasteActions::Ref::New(
+		windowMain, conversation, *topic, ifElse, indexAction + 1, "Paste Actions After"));
 	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand(contextMenu, new ceWPTMAIfElseElseRemoveAction(
-		windowMain, conversation, *topic, ifElse, action), true);
+	helper.MenuCommand(contextMenu, ceWPTMAIfElseElseRemoveAction::Ref::New(
+		windowMain, conversation, *topic, ifElse, action));
 	helper.MenuSeparator(contextMenu);
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
 		environment, "Insert Action Before", environment.GetStockIcon(igdeEnvironment::esiPlus)));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAIfElseElseAddAction(windowMain, conversation, *topic,
-			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAction), true);
+		helper.MenuCommand(subMenu, ceWPTMAIfElseElseAddAction::Ref::New(windowMain, conversation, *topic,
+			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAction));
 	}
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action After",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu = igdeMenuCascade::Ref::New(environment, "Insert Action After",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
-		helper.MenuCommand(subMenu, new ceWPTMAIfElseElseAddAction(windowMain, conversation, *topic,
-			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1), true);
+		helper.MenuCommand(subMenu, ceWPTMAIfElseElseAddAction::Ref::New(windowMain, conversation, *topic,
+			ifElse, ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1));
 	}
 }
 

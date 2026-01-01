@@ -45,28 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeImage::sePropertyNodeImage(deEngine &engine) :
+sePropertyNodeImage::sePropertyNodeImage(const deEngine &engine) :
 sePropertyNode(entImage, engine, MappedCount),
-pImage(NULL),
 pRepeat(1, 1){
 }
 
 sePropertyNodeImage::sePropertyNodeImage(const sePropertyNodeImage &node) :
 sePropertyNode(node),
 pPath(node.pPath),
-pImage(NULL),
-pRepeat(node.pRepeat)
-{
-	pImage = node.pImage;
-	if(pImage){
-		pImage->AddReference();
-	}
+pImage(node.pImage),
+pRepeat(node.pRepeat){
 }
 
 sePropertyNodeImage::~sePropertyNodeImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -85,7 +76,7 @@ void sePropertyNodeImage::SetPath(const char *path){
 }
 
 void sePropertyNodeImage::UpdateImage(){
-	deImage *image = NULL;
+	deImage::Ref image;
 	
 	if(!pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin()){
 		const decString &basePath = GetProperty()->GetTexture()->GetSkin()->GetDirectoryPath();
@@ -98,16 +89,6 @@ void sePropertyNodeImage::UpdateImage(){
 		}
 	}
 	
-	if(image == pImage){
-		if(image){
-			image->FreeReference();
-		}
-		return;
-	}
-	
-	if(pImage){
-		pImage->FreeReference();
-	}
 	pImage = image;
 }
 
@@ -127,8 +108,8 @@ void sePropertyNodeImage::SetRepeat(const decPoint &count){
 
 
 
-sePropertyNode *sePropertyNodeImage::Copy() const{
-	return new sePropertyNodeImage(*this);
+sePropertyNode::Ref sePropertyNodeImage::Copy() const{
+	return sePropertyNodeImage::Ref::New(*this);
 }
 
 void sePropertyNodeImage::UpdateResources(){

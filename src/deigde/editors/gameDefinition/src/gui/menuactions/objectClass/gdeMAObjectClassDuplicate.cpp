@@ -58,26 +58,28 @@ gdeBaseAction(windowMain, "Duplicate Object Class...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinition){
+igdeUndo::Ref gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
 	if(!objectClass){
-		return NULL;
+		return {};
 	}
 	
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(objectClass->GetName());
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Duplicate Object Class", "Name:", name)){
-		if(list.HasNamed(name)){
+		if(list.HasMatching([&](const gdeObjectClass &oc){
+			return oc.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pWindowMain, "Duplicate Object Class", "Object Class exists already.");
 			continue;
 		}
 		
-		const gdeObjectClass::Ref duplicate(gdeObjectClass::Ref::NewWith(*objectClass));
-		((gdeObjectClass&)(deObject&)duplicate).SetName(name);
-		return new gdeUAddObjectClass(&gameDefinition, duplicate);
+		const gdeObjectClass::Ref duplicate(gdeObjectClass::Ref::New(*objectClass));
+		duplicate->SetName(name);
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, duplicate);
 	}
-	return NULL;
+	return {};
 }
 
 void gdeMAObjectClassDuplicate::Update(){
@@ -88,5 +90,5 @@ void gdeMAObjectClassDuplicate::Update(){
 	}
 	
 	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL);
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

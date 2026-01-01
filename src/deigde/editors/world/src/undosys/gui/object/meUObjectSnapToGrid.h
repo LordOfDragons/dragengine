@@ -25,13 +25,12 @@
 #ifndef _MEUOBJECTSNAPTOGRID_H_
 #define _MEUOBJECTSNAPTOGRID_H_
 
+#include "meUndoDataObject.h"
+#include "../../../world/meWorld.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class meWorld;
-class meObject;
-class meObjectList;
 
 
 
@@ -39,35 +38,31 @@ class meObjectList;
  * \brief Undo action snap objects to grid.
  */
 class meUObjectSnapToGrid : public igdeUndo{
-private:
-	struct sObject{
-		meObject *object;
-		decDVector position;
-	};
-	
+public:
+	typedef deTObjectReference<meUObjectSnapToGrid> Ref;
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	sObject *pObjects;
-	int pObjectCount;
+	meUndoDataObject::List pObjects;
 	
 	double pGrid;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectSnapToGrid> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid);
+	meUObjectSnapToGrid(meWorld *world, const meObject::List &objects, float grid);
 	
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectSnapToGrid();
+
+public:
 	/*@}*/
 	
 	
@@ -80,11 +75,6 @@ public:
 	/** \brief Redo action. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

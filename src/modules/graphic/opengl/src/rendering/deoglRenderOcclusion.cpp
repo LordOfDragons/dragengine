@@ -316,7 +316,7 @@ pAddToRenderTask(NULL)
 		
 		
 		
-		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(renderThread));
+		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(renderThread));
 		ubo->SetRowMajor(indirectMatrixAccess);
 		ubo->SetParameterCount(5);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 4, 6); // mat4 pMatrixVP[6]
@@ -326,14 +326,14 @@ pAddToRenderTask(NULL)
 		ubo->GetParameterAt(4).SetAll(deoglSPBParameter::evtFloat, 4, 1, 2); // vec4 pClipPlane[2]
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(deoglSkinShader::eubRenderParameters);
-		pRenderParamBlockSingleUse.TakeOver(deoglSPBSingleUse::Ref::NewWith(renderThread, ubo));
+		pRenderParamBlockSingleUse = deoglSPBSingleUse::Ref::New(renderThread, ubo);
 		
-		ubo.TakeOver(new deoglSPBlockUBO(renderThread));
+		ubo = deoglSPBlockUBO::Ref::New(renderThread);
 		ubo->SetParameterCount(1);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1); // mat4x3 pMatrixModel
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(deoglSkinShader::eubInstanceParameters);
-		pOccMapFrustumParamBlockSingleUse.TakeOver(deoglSPBSingleUse::Ref::NewWith(renderThread, ubo));
+		pOccMapFrustumParamBlockSingleUse = deoglSPBSingleUse::Ref::New(renderThread, ubo);
 		
 		pRenderTask = new deoglRenderTask(renderThread);
 		pAddToRenderTask = new deoglAddToRenderTask(renderThread, *pRenderTask);
@@ -369,15 +369,9 @@ pAddToRenderTask(NULL)
 		};
 		
 		OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOFrustumPlanes));
-		if(!pVAOFrustumPlanes){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOFrustumPlanes));
 		
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFrustumPlanes));
-		if(!pVBOFrustumPlanes){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFrustumPlanes));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(pointsFrustumPlanes), (const GLvoid *)&pointsFrustumPlanes, GL_STATIC_DRAW));
 		

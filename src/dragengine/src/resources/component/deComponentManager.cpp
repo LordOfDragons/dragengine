@@ -67,26 +67,13 @@ deComponent *deComponentManager::GetRootComponent() const{
 	return (deComponent*)pComponents.GetRoot();
 }
 
-deComponent *deComponentManager::CreateComponent(deModel *model, deSkin *skin){
-	deComponent *component = NULL;
-	
-	try{
-		component = new deComponent(this, model, skin);
-		
-		GetGraphicSystem()->LoadComponent(component);
-		GetPhysicsSystem()->LoadComponent(component);
-		GetAudioSystem()->LoadComponent(component);
-		GetAnimatorSystem()->LoadComponent(component);
-		
-		pComponents.Add(component);
-		
-	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
-		throw;
-	}
-	
+deComponent::Ref deComponentManager::CreateComponent(deModel *model, deSkin *skin){
+	const deComponent::Ref component(deComponent::Ref::New(this, model, skin));
+	GetGraphicSystem()->LoadComponent(component);
+	GetPhysicsSystem()->LoadComponent(component);
+	GetAudioSystem()->LoadComponent(component);
+	GetAnimatorSystem()->LoadComponent(component);
+	pComponents.Add(component);
 	return component;
 }
 

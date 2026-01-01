@@ -55,7 +55,7 @@ gdeMACategoryAdd(windowMain, "Add Object Class Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
-	return AddCategory(gameDefinition, NULL,
+igdeUndo::Ref gdeMACategoryObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, nullptr,
 		gameDefinition.GetCategoriesObjectClass(), gdeUCategoryBase::ectObjectClass);
 }

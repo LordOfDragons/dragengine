@@ -27,7 +27,7 @@
 #include "../../../world/decal/meDecal.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -45,10 +45,8 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	//if( decal->GetParentObject() ){
-		pOldIndex = decal->GetParentObject()->IndexOfDecal(decal);
+		pOldIndex = decal->GetParentObject()->GetDecals().IndexOf(decal);
 	//}
 	
 	SetShortInfo("Lower decal to the bottom.");
@@ -56,7 +54,6 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 }
 
 meULowerDecalBottom::~meULowerDecalBottom(){
-	if(pDecal) pDecal->FreeReference();
 }
 
 

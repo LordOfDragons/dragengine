@@ -36,6 +36,7 @@
  */
 class ceCASetActorParameter : public ceConversationAction{
 public:
+	typedef deTObjectReference<ceCASetActorParameter> Ref;
 	/** \brief Operator. */
 	enum eOperators{
 		/** \brief Set parameter. */
@@ -73,7 +74,9 @@ public:
 	ceCASetActorParameter(const ceCASetActorParameter &action);
 	
 	/** \brief Clean up conversation action. */
+protected:
 	~ceCASetActorParameter() override;
+public:
 	/*@}*/
 	
 	
@@ -113,7 +116,7 @@ public:
 	
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

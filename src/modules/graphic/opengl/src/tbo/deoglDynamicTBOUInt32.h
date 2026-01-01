@@ -36,6 +36,10 @@
  */
 class deoglDynamicTBOUInt32 : public deoglDynamicTBO{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBOUInt32> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dynamic tbo. */
@@ -93,7 +97,7 @@ public:
 	void DebugPrint() override;
 	
 	/** TBO format. */
-	virtual GLenum GetTBOFormat();
+	GLenum GetTBOFormat() override;
 	/*@}*/
 };
 

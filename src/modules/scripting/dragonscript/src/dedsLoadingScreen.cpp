@@ -97,17 +97,16 @@ void dedsLoadingScreen::pCreateScreen(){
 	deCanvasView * const content = engine.GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
 	DEASSERT_NOTNULL(content)
 	
-	pCanvasBackground.TakeOver(canvasManager.CreateCanvasPaint());
+	pCanvasBackground = canvasManager.CreateCanvasPaint();
 	pCanvasBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f));
 	pCanvasBackground->SetShapeType(deCanvasPaint::estRectangle);
 	pCanvasBackground->SetThickness(0.0f);
 	pCanvasBackground->SetOrder((float)content->GetCanvasCount());
 	content->AddCanvas(pCanvasBackground);
 	
-	const deImage::Ref image(deImage::Ref::New(
-		imageManager.LoadImage("loadingScreen.webp", "/shareddata/images")));
+	const deImage::Ref image(imageManager.LoadImage("loadingScreen.webp", "/shareddata/images"));
 	
-	pCanvasImage.TakeOver(canvasManager.CreateCanvasImage());
+	pCanvasImage = canvasManager.CreateCanvasImage();
 	pCanvasImage->SetImage(image);
 	pCanvasImage->SetSize(decPoint(image->GetWidth(), image->GetHeight()));
 	pCanvasImage->SetOrder((float)content->GetCanvasCount());

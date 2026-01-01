@@ -25,11 +25,11 @@
 #ifndef _DETOUCHSENSORMANAGER_H_
 #define _DETOUCHSENSORMANAGER_H_
 
+#include "deTouchSensor.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deTouchSensor;
 
 
 /**
@@ -64,7 +64,7 @@ public:
 	deTouchSensor *GetRootTouchSensor() const;
 	
 	/** \brief Create new touch sensor. */
-	deTouchSensor *CreateTouchSensor();
+	deTouchSensor::Ref CreateTouchSensor();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

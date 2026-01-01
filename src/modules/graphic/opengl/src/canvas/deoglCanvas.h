@@ -25,10 +25,11 @@
 #ifndef _DEOGLCANVAS_H_
 #define _DEOGLCANVAS_H_
 
+#include "render/deoglRCanvas.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCanvas.h>
 
-class deoglRCanvas;
 class deCanvas;
 class deGraphicOpenGl;
 
@@ -42,7 +43,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCanvas &pCanvas;
 	
-	deoglRCanvas *pRCanvas;
+	deoglRCanvas::Ref pRCanvas;
 	bool pDirtyGeometry;
 	bool pDirtyTransform;
 	bool pDirtyColorTransform;
@@ -77,7 +78,7 @@ public:
 	inline const deCanvas &GetCanvas() const{ return pCanvas; }
 	
 	/** Render canvas or \em NULL if not set. */
-	inline deoglRCanvas *GetRCanvas() const{ return pRCanvas; }
+	inline const deoglRCanvas::Ref &GetRCanvas() const{ return pRCanvas; }
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();

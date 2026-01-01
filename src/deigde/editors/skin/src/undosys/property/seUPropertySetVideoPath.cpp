@@ -43,7 +43,7 @@ seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const cha
 		DETHROW(deeInvalidParam);
 	}
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Video Path");
 	
@@ -51,13 +51,9 @@ seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const cha
 	pNewPath = newPath;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetVideoPath::~seUPropertySetVideoPath(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -39,6 +39,11 @@ class igdeDialogEngine;
  * \brief Panel showing the status of a module in the game engine.
  */
 class DE_DLL_EXPORT igdeDEModuleStatus : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<igdeDEModuleStatus> Ref;
+	
+	
+private:
 	igdeDialogEngine &pDialogEngine;
 	
 	igdeComboBox::Ref pCBModule;

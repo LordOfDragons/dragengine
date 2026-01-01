@@ -27,15 +27,18 @@
 
 #include "ceWPTTIMCondition.h"
 
-class ceConversationConditionList;
+#include "../../../../conversation/condition/ceConversationCondition.h"
 
 
 /**
  * \brief Conditions tree model.
  */
 class ceWPTTIMConditions : public ceWPTTIMCondition{
+public:
+	typedef deTObjectReference<ceWPTTIMConditions> Ref;
+
 private:
-	const ceConversationConditionList &pConditions;
+	const ceConversationCondition::List &pConditions;
 	
 	
 	
@@ -45,7 +48,7 @@ public:
 	/** \brief Create new tree item model. */
 	ceWPTTIMConditions(ceWindowMain &windowMain, eTypes type, ceConversation &conversation,
 		ceConversationAction &action, ceConversationCondition *condition,
-		const ceConversationConditionList &conditions);
+		const ceConversationCondition::List &conditions);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -57,7 +60,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with condition or \em NULL. */
+	/** \brief Model with condition or \em nullptr. */
 	ceWPTTIMCondition *GetChildWith(ceConversationCondition *condition) const;
 	
 	/** \brief Structure changed. */
@@ -77,7 +80,7 @@ public:
 	
 	
 	/** \brief Create condition model. */
-	static ceWPTTIMCondition *CreateConditionModel(ceWindowMain &windowMain,
+	static ceWPTTIMCondition::Ref CreateConditionModel(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationAction &action,
 		ceConversationCondition *condition);
 	/*@}*/

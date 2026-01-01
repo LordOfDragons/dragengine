@@ -79,17 +79,17 @@ const char *filename) const{
 	return langpack && !langpack->GetOutdated() ? langpack : NULL;
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack(
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(
 const char *filename, deLanguagePackBuilder &builder){
 	return CreateLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, deLanguagePackBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deLanguagePack *langPack = NULL;
+	deLanguagePack::Ref langPack;
 	
 	try{
 		deLanguagePack * const findLangPack = (deLanguagePack*)
@@ -98,7 +98,7 @@ const char *filename, deLanguagePackBuilder &builder){
 			DETHROW(deeInvalidParam);
 		}
 		
-		langPack = new deLanguagePack(this, vfs, filename, decDateTime::GetSystemTime());
+		langPack = deLanguagePack::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildLanguagePack(*langPack);
 		
 		if(!langPack->Verify()){
@@ -110,29 +110,24 @@ const char *filename, deLanguagePackBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating language pack '%s' failed", filename);
-		if(langPack){
-			langPack->FreeReference();
-		}
 		throw;
 	}
 	
 	return langPack;
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack(
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(
 const char *filename, const char *basePath){
 	return LoadLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
-	deLanguagePack *langPack = NULL;
-	deLanguagePack *findLangPack;
+	deLanguagePack::Ref langPack;
 	decPath path;
 	
 	try{
@@ -141,17 +136,17 @@ const char *filename, const char *basePath){
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		findLangPack = (deLanguagePack*)pLangPacks.GetWithFilename(vfs, path.GetPathUnix());
+		deLanguagePack *findLangPack = (deLanguagePack*)
+			pLangPacks.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findLangPack && findLangPack->GetModificationTime() != modificationTime){
 			LogInfoFormat("Language Pack '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findLangPack->MarkOutdated();
-			findLangPack = NULL;
+			findLangPack = nullptr;
 		}
 		
 		if(findLangPack){
-			findLangPack->AddReference();
 			langPack = findLangPack;
 			
 		}else{
@@ -159,13 +154,8 @@ const char *filename, const char *basePath){
 				GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtLanguagePack,
 					path.GetPathUnix());
 			
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			
-			langPack = new deLanguagePack(this, vfs, path.GetPathUnix(), modificationTime);
-			module->LoadLanguagePack(*fileReader, *langPack);
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
+			langPack = deLanguagePack::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
+			module->LoadLanguagePack(OpenFileForReading(*vfs, path.GetPathUnix()), *langPack);
 			
 			if(!langPack->Verify()){
 				DETHROW(deeInvalidParam);
@@ -178,12 +168,6 @@ const char *filename, const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Loading language pack '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(langPack){
-			langPack->FreeReference();
-		}
 		throw;
 	}
 	
@@ -203,7 +187,7 @@ void deLanguagePackManager::ReleaseLeakingResources(){
 	const int count = GetLanguagePackCount();
 	
 	if(count > 0){
-		deLanguagePack *langPack = (deLanguagePack*)pLangPacks.GetRoot();
+		deLanguagePack::Ref langPack((deLanguagePack*)pLangPacks.GetRoot());
 		
 		LogWarnFormat("%i leaking language packs", count);
 		

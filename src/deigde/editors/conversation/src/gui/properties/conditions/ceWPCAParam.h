@@ -38,6 +38,9 @@ class ceCConditionActorParameter;
  * \brief Actor Parameter Conversation Condition property window.
  */
 class ceWPCAParam : public ceWPCondition{
+public:
+	typedef deTObjectReference<ceWPCAParam> Ref;
+
 private:
 	igdeComboBox::Ref pCBActorID;
 	igdeComboBox::Ref pCBOperator;

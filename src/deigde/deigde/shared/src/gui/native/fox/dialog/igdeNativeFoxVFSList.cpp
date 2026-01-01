@@ -85,8 +85,8 @@ pEnvironment(&environment)
 	
 	// init
 	appendHeader("Name", pIconSortAsc, 300);
-	appendHeader("Size", NULL, 100);
-	appendHeader("Time", NULL, 120);
+	appendHeader("Size", nullptr, 100);
+	appendHeader("Time", nullptr, 120);
 	getHeader()->setTarget(this);
 	getHeader()->setSelector(ID_HEADER);
 	
@@ -241,9 +241,9 @@ void igdeNativeFoxVFSList::SetSorting(igdeNativeFoxVFSList::eSorting sorting){
 	if(sorting != pSorting){
 		pSorting = sorting;
 		
-		setHeaderIcon(0, NULL); // name
-		setHeaderIcon(1, NULL); // size
-		setHeaderIcon(2, NULL); // modification time
+		setHeaderIcon(0, nullptr); // name
+		setHeaderIcon(1, nullptr); // size
+		setHeaderIcon(2, nullptr); // modification time
 		
 		if(pSorting == igdeNativeFoxVFSList::esNameAsc){
 			setSortFunc(igdeNativeFoxVFSListItem::fSortNameAsc);
@@ -278,7 +278,7 @@ igdeNativeFoxVFSListItem *igdeNativeFoxVFSList::GetSelectedItem() const{
 	const int index = getCurrentItem();
 	
 	if(index < 0){
-		return NULL;
+		return nullptr;
 		
 	}else{
 		return (igdeNativeFoxVFSListItem*)getItem(index);

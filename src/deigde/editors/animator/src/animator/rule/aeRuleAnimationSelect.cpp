@@ -47,7 +47,9 @@ aeRule(deAnimatorRuleVisitorIdentify::ertAnimationSelect),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true)
+pEnableVertexPositionSet(true),
+pTargetMoveTime(aeControllerTarget::Ref::New()),
+pTargetSelect(aeControllerTarget::Ref::New())
 {
 	SetName("Animation Select");
 }
@@ -59,8 +61,8 @@ pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pTargetMoveTime(copy.pTargetMoveTime),
-pTargetSelect(copy.pTargetSelect){
+pTargetMoveTime(aeControllerTarget::Ref::New(copy.pTargetMoveTime)),
+pTargetSelect(aeControllerTarget::Ref::New(copy.pTargetSelect)){
 }
 
 aeRuleAnimationSelect::~aeRuleAnimationSelect(){
@@ -136,18 +138,18 @@ void aeRuleAnimationSelect::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
-		pTargetSelect.UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
+		pTargetMoveTime->UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
+		pTargetSelect->UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
 	}
 }
 
 int aeRuleAnimationSelect::CountLinkUsage(aeLink *link) const{
 	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if(pTargetMoveTime.HasLink(link)){
+	if(pTargetMoveTime->GetLinks().Has(link)){
 		usageCount++;
 	}
-	if(pTargetSelect.HasLink(link)){
+	if(pTargetSelect->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -157,12 +159,12 @@ int aeRuleAnimationSelect::CountLinkUsage(aeLink *link) const{
 void aeRuleAnimationSelect::RemoveLinkFromTargets(aeLink *link){
 	aeRule::RemoveLinkFromTargets(link);
 	
-	if(pTargetMoveTime.HasLink(link)){
-		pTargetMoveTime.RemoveLink(link);
+	if(pTargetMoveTime->GetLinks().Has(link)){
+		pTargetMoveTime->RemoveLink(link);
 	}
 	
-	if(pTargetSelect.HasLink(link)){
-		pTargetSelect.RemoveLink(link);
+	if(pTargetSelect->GetLinks().Has(link)){
+		pTargetSelect->RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -171,51 +173,41 @@ void aeRuleAnimationSelect::RemoveLinkFromTargets(aeLink *link){
 void aeRuleAnimationSelect::RemoveLinksFromAllTargets(){
 	aeRule::RemoveLinksFromAllTargets();
 	
-	pTargetMoveTime.RemoveAllLinks();
-	pTargetSelect.RemoveAllLinks();
+	pTargetMoveTime->RemoveAllLinks();
+	pTargetSelect->RemoveAllLinks();
 	
 	UpdateTargets();
 }
 
 
 
-deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
-	deAnimatorRuleAnimationSelect *engRule = NULL;
+deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
+	const deAnimatorRuleAnimationSelect::Ref engRule(deAnimatorRuleAnimationSelect::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleAnimationSelect;
-		
-		InitEngineRule(engRule);
-		
-		engRule->GetMoves() = pMoves;
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
-		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
+	
+	engRule->GetMoves() = pMoves;
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
+	pTargetMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
+	pTargetSelect->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleAnimationSelect::CreateCopy() const{
-	return new aeRuleAnimationSelect(*this);
+aeRule::Ref aeRuleAnimationSelect::CreateCopy() const{
+	return Ref::New(*this);
 }
 
-void aeRuleAnimationSelect::ListLinks(aeLinkList &list){
+void aeRuleAnimationSelect::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-	pTargetMoveTime.AddLinksToList(list);
-	pTargetSelect.AddLinksToList(list);
+	pTargetMoveTime->AddLinksToList(list);
+	pTargetSelect->AddLinksToList(list);
 }
 
 

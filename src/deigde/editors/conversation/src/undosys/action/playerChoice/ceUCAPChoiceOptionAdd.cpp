@@ -49,33 +49,19 @@ ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPla
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pPlayerChoice = NULL;
-	pOption = NULL;
+	pTopic = nullptr;
+	pPlayerChoice = nullptr;
+	pOption = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Player Choice Add Option");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	pOption = option;
-	option->AddReference();
 }
 
 ceUCAPChoiceOptionAdd::~ceUCAPChoiceOptionAdd(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -89,6 +75,6 @@ void ceUCAPChoiceOptionAdd::Undo(){
 }
 
 void ceUCAPChoiceOptionAdd::Redo(){
-	pPlayerChoice->GetOptions().InsertAt(pOption, pIndex);
+	pPlayerChoice->GetOptions().Insert(pOption, pIndex);
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

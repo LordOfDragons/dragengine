@@ -51,7 +51,7 @@ meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNavSpace = NULL;
+	pNavSpace = nullptr;
 	
 	SetShortInfo("NavSpace Set Path");
 	
@@ -59,13 +59,9 @@ meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *
 	pNewPath = newPath;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetPath::~meUNavSpaceSetPath(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

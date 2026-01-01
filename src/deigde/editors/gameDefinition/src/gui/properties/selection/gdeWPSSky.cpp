@@ -78,10 +78,11 @@
 
 namespace{
 
-class cEditPath : public igdeEditPathListener {
+class cEditPath : public igdeEditPathListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditPath> Ref;
 	cEditPath(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnEditPathChanged(igdeEditPath *editPath){
@@ -90,7 +91,9 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetSkies().HasWithPath(editPath->GetPath())){
+		if(pPanel.GetGameDefinition()->GetSkies().HasMatching([&](const gdeSky &s){
+			return s.GetPath() == editPath->GetPath();
+		})){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change sky emitter path",
 				"A sky emitter with this path exists already.");
 			editPath->SetPath(sky->GetPath());
@@ -98,14 +101,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkySetPath::Ref::NewWith(sky, editPath->GetPath()));
+			gdeUSkySetPath::Ref::New(sky, editPath->GetPath()));
 	}
 };
 
-class cTextName : public igdeTextFieldListener {
+class cTextName : public igdeTextFieldListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -115,14 +119,15 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkySetName::Ref::NewWith(sky, textField->GetText()));
+			gdeUSkySetName::Ref::New(sky, textField->GetText()));
 	}
 };
 
-class cTextDescription : public igdeTextAreaListener {
+class cTextDescription : public igdeTextAreaListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -132,38 +137,41 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkySetDescription::Ref::NewWith(sky, textArea->GetText()));
+			gdeUSkySetDescription::Ref::New(sky, textArea->GetText()));
 	}
 };
 
 
-class cActionControllerAdd : public igdeAction {
+class cActionControllerAdd : public igdeAction{
 	gdeWPSSky &pPanel;
 	igdeComboBox &pComboBox;
 public:
+	typedef deTObjectReference<cActionControllerAdd> Ref;
 	cActionControllerAdd(gdeWPSSky &panel, igdeComboBox &comboBox) : 
 	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add controller"),
 	pPanel(panel), pComboBox(comboBox){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeSky * const sky = pPanel.GetSky();
 		if(!sky || sky->GetTags().Has(pComboBox.GetText())){
 			return;
 		}
 		
-		const gdeSkyControllerList &list = sky->GetControllers();
+		const gdeSkyController::List &list = sky->GetControllers();
 		decString name("Controller");
 		
 		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Controller", "Name:", name)){
-			if(list.HasNamed(name)){
+			if(list.HasMatching([&](const gdeSkyController &c){
+				return c.GetName() == name;
+			})){
 				igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Add Controller", "Controller exists already.");
 				continue;
 			}
 			
-			const gdeSkyController::Ref controller(gdeSkyController::Ref::NewWith(name, 0.0f));
+			const gdeSkyController::Ref controller(gdeSkyController::Ref::New(name, 0.0f));
 			
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-				gdeUSkyControllerAdd::Ref::NewWith(sky, controller));
+				gdeUSkyControllerAdd::Ref::New(sky, controller));
 			
 			pComboBox.SetSelection(pComboBox.IndexOfItem(name));
 			pPanel.UpdateController();
@@ -172,33 +180,35 @@ public:
 	}
 };
 
-class cActionControllerRemove : public igdeAction {
+class cActionControllerRemove : public igdeAction{
 	gdeWPSSky &pPanel;
 	igdeComboBox &pComboBox;
 public:
+	typedef deTObjectReference<cActionControllerRemove> Ref;
 	cActionControllerRemove(gdeWPSSky &panel, igdeComboBox &comboBox) : 
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove controller"),
 	pPanel(panel), pComboBox(comboBox){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeSkyController * const controller = pPanel.GetController();
 		if(!controller){
 			return;
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkyControllerRemove::Ref::NewWith(pPanel.GetSky(), controller));
+			gdeUSkyControllerRemove::Ref::New(pPanel.GetSky(), controller));
 		
-		if(pComboBox.GetItemCount() > 0){
+		if(pComboBox.GetItems().IsNotEmpty()){
 			pComboBox.SetSelection(0);
 			pPanel.UpdateController();
 		}
 	}
 };
 
-class cActionControllerMenu : public igdeActionContextMenu {
+class cActionControllerMenu : public igdeActionContextMenu{
 	gdeWPSSky &pPanel;
 public:
+	typedef deTObjectReference<cActionControllerMenu> Ref;
 	cActionControllerMenu(gdeWPSSky &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Controller menu"),
 	pPanel(panel){}
@@ -209,15 +219,16 @@ public:
 		helper.MenuCommand(contextMenu, pPanel.GetActionControllerRemove());
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetSky() != NULL);
+	void Update() override{
+		SetEnabled(pPanel.GetSky() != nullptr);
 	}
 };
 
-class cComboController : public igdeComboBoxListener {
+class cComboController : public igdeComboBoxListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboController> Ref;
 	cComboController(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -225,10 +236,11 @@ public:
 	}
 };
 
-class cTextControllerName : public igdeTextFieldListener {
+class cTextControllerName : public igdeTextFieldListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextControllerName> Ref;
 	cTextControllerName(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -237,22 +249,25 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetSky()->GetControllers().HasNamed(textField->GetText())){
+		if(pPanel.GetSky()->GetControllers().HasMatching([&](const gdeSkyController &c){
+			return c.GetName() == textField->GetText();
+		})){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename controller",
 				"A controller with this name exists already.");
 			textField->SetText(controller->GetName());
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUSkyControllerSetName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUSkyControllerSetName::Ref::New(
 			pPanel.GetSky(), controller, textField->GetText()));
 	}
 };
 
-class cTextControllerValue : public igdeTextFieldListener {
+class cTextControllerValue : public igdeTextFieldListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextControllerValue> Ref;
 	cTextControllerValue(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -262,16 +277,17 @@ public:
 			return;
 		}
 		
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUSkyControllerSetValue::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUSkyControllerSetValue::Ref::New(
 			pPanel.GetSky(), controller, value));
 	}
 };
 
 
-class cComboCategory : public igdeComboBoxListener {
+class cComboCategory : public igdeComboBoxListener{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboCategory> Ref;
 	cComboCategory(gdeWPSSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -281,20 +297,21 @@ public:
 		}
 		
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
-			gdeUSkySetCategory::Ref::NewWith(sky, comboBox->GetText()));
+			gdeUSkySetCategory::Ref::New(sky, comboBox->GetText()));
 	}
 };
 
-class cActionJumpToCategory : public igdeAction {
+class cActionJumpToCategory : public igdeAction{
 	gdeWPSSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionJumpToCategory> Ref;
 	cActionJumpToCategory(gdeWPSSky &panel) : 
 	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallStrongRight),
 		"Jump to Category"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		gdeSky * const sky = pPanel.GetSky();
 		if(!sky){
 			return;
@@ -311,7 +328,7 @@ public:
 		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySky);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSky());
 	}
 };
@@ -328,55 +345,47 @@ public:
 
 gdeWPSSky::gdeWPSSky(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSSkyListener(*this);
+	pListener = gdeWPSSkyListener::Ref::New(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// sky
 	helper.GroupBox(content, groupBox, "Sky:");
 	helper.EditPath(groupBox, "Path:", "Path to sky emitter",
-		igdeEnvironment::efpltSky, pEditPath, new cEditPath(*this));
-	helper.EditString(groupBox, "Name:", "Sky name", pEditName, new cTextName(*this));
+		igdeEnvironment::efpltSky, pEditPath, cEditPath::Ref::New(*this));
+	helper.EditString(groupBox, "Name:", "Sky name", pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Sky description",
-		pEditDescription, 15, 5, new cTextDescription(*this));
+		pEditDescription, 15, 5, cTextDescription::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(groupBox, "Category: ", "Category", frameLine);
-	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, new cComboCategory(*this));
+	helper.ComboBoxFilter(frameLine, true, "Category", pCBCategory, cComboCategory::Ref::New(*this));
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive(true);
-	helper.Button(frameLine, pBtnJumpToCategory, new cActionJumpToCategory(*this), true);
+	helper.Button(frameLine, pBtnJumpToCategory, cActionJumpToCategory::Ref::New(*this));
 	
 	// controller
 	helper.GroupBox(content, groupBox, "Controllers:");
 	
 	helper.FormLineStretchFirst(groupBox, "Controller:", "Controller to edit", frameLine);
-	helper.ComboBox(frameLine, "Controller to edit", pCBController, new cComboController(*this));
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this, pCBController));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this, pCBController));
-	pActionControllerMenu.TakeOver(new cActionControllerMenu(*this));
+	helper.ComboBox(frameLine, "Controller to edit", pCBController, cComboController::Ref::New(*this));
+	pActionControllerAdd = cActionControllerAdd::Ref::New(*this, pCBController);
+	pActionControllerRemove = cActionControllerRemove::Ref::New(*this, pCBController);
+	pActionControllerMenu = cActionControllerMenu::Ref::New(*this);
 	helper.Button(frameLine, pActionControllerMenu);
 	
-	helper.EditString(groupBox, "Name:", "Controller name", pEditControllerName,
-		new cTextControllerName(*this));
-	helper.EditFloat(groupBox, "Value:", "Controller value", pEditControllerValue,
-		new cTextControllerValue(*this));
+	helper.EditString(groupBox, "Name:", "Controller name", pEditControllerName, cTextControllerName::Ref::New(*this));
+	helper.EditFloat(groupBox, "Value:", "Controller value", pEditControllerValue, cTextControllerValue::Ref::New(*this));
 }
 
 gdeWPSSky::~gdeWPSSky(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -391,14 +400,12 @@ void gdeWPSSky::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateSky();
@@ -409,17 +416,20 @@ void gdeWPSSky::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeSky *gdeWPSSky::GetSky() const{
-	return pGameDefinition ? pGameDefinition->GetActiveSky() : NULL;
+	return pGameDefinition ? pGameDefinition->GetActiveSky() : nullptr;
 }
 
 gdeSkyController *gdeWPSSky::GetController() const{
 	const gdeSky * const sky = GetSky();
 	if(!sky){
-		return NULL;
+		return nullptr;
 	}
 	
+	const decString &name = pCBController->GetSelectedItem()->GetText();
 	return pCBController->GetSelectedItem()
-		? sky->GetControllers().GetNamed(pCBController->GetSelectedItem()->GetText()) : NULL;
+		? sky->GetControllers().FindOrDefault([&](const gdeSkyController &c){
+			return c.GetName() == name;
+		}) : nullptr;
 }
 
 
@@ -480,7 +490,7 @@ void gdeWPSSky::UpdateSky(){
 		pCBCategory->SetInvalidValue(false);
 	}
 	
-	const bool enabled = sky != NULL;
+	const bool enabled = sky != nullptr;
 	pEditPath->SetEnabled(enabled);
 	pEditName->SetEnabled(enabled);
 	pEditDescription->SetEnabled(enabled);
@@ -496,7 +506,7 @@ void gdeWPSSky::UpdateController(){
 	pCBController->RemoveAllItems();
 	
 	if(sky){
-		const gdeSkyControllerList &controllers = sky->GetControllers();
+		const gdeSkyController::List &controllers = sky->GetControllers();
 		const int count = controllers.GetCount();
 		int i;
 		for(i=0; i<count; i++){
@@ -504,8 +514,11 @@ void gdeWPSSky::UpdateController(){
 		}
 		pCBController->SortItems();
 		
-		if(!selectedController && pCBController->GetItemCount() > 0){
-			selectedController = controllers.GetNamed(pCBController->GetItemAt(0)->GetText());
+		if(!selectedController && pCBController->GetItems().IsNotEmpty()){
+			const decString &name = pCBController->GetItems().First()->GetText();
+			selectedController = controllers.FindOrDefault([&](const gdeSkyController &c){
+				return c.GetName() == name;
+			});
 		}
 	}
 	
@@ -522,7 +535,7 @@ void gdeWPSSky::UpdateController(){
 		pEditControllerValue->ClearText();
 	}
 	
-	const bool enabled = selectedController != NULL;
+	const bool enabled = selectedController != nullptr;
 	pEditControllerName->SetEnabled(enabled);
 	pEditControllerValue->SetEnabled(enabled);
 }

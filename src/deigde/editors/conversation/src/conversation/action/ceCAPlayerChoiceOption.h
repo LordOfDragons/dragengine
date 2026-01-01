@@ -25,13 +25,13 @@
 #ifndef _CECAPLAYERCHOICEOPTION_H_
 #define _CECAPLAYERCHOICEOPTION_H_
 
+#include "ceConversationAction.h"
+#include "../condition/ceConversationCondition.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-
-#include "ceConversationActionList.h"
-
-class ceConversationCondition;
 
 
 /**
@@ -40,8 +40,8 @@ class ceConversationCondition;
 class ceCAPlayerChoiceOption : public deObject{
 private:
 	decUnicodeString pText;
-	ceConversationCondition *pCondition;
-	ceConversationActionList pActions;
+	ceConversationCondition::Ref pCondition;
+	ceConversationAction::List pActions;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
 	bool pTIMActionsExpanded;
@@ -49,8 +49,8 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCAPlayerChoiceOption> Ref;
+	typedef decTObjectOrderedSet<ceCAPlayerChoiceOption> List;
 
 
 	/** \name Constructors and Destructors */
@@ -77,15 +77,15 @@ public:
 	/** \brief Set display text. */
 	void SetText(const decUnicodeString &text);
 	
-	/** \brief Condition or \em NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	/** \brief Condition or \em nullptr if there is none. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
-	/** \brief Set condition or \em NULL if there is none. */
+	/** \brief Set condition or \em nullptr if there is none. */
 	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief Actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/*@}*/
 	
 	

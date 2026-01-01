@@ -47,45 +47,23 @@ ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActor
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pHeadLA = NULL;
-	pOldStrip = NULL;
-	pNewStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pHeadLA = nullptr;
+	pOldStrip = nullptr;
+	pNewStrip = nullptr;
 	
 	SetShortInfo("Set head look-at");
 	
-	pOldStrip = new ceStrip(*headLookAt);
+	pOldStrip = ceStrip::Ref::New(*headLookAt);
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLASet::~ceUCAASpeakHeadLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

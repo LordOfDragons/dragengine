@@ -25,6 +25,9 @@
 #ifndef _MELSWORLD_H_
 #define _MELSWORLD_H_
 
+#include <deigde/gui/igdeStepableTask.h>
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class meWorld;
@@ -32,14 +35,18 @@ class decXmlElementTag;
 class decBaseFileReader;
 class decBaseFileWriter;
 class meLoadSaveSystem;
-class igdeStepableTask;
 
 
 
 /**
  * Base class for loading and saving worlds.
  */
-class meLSWorld{
+class meLSWorld : public deObject{
+public:
+	typedef deTObjectReference<meLSWorld> Ref;
+	typedef decTObjectOrderedSet<meLSWorld> List;
+	
+	
 private:
 	decString pName;
 	decString pPattern;
@@ -49,8 +56,12 @@ private:
 public:
 	// constructor, destructor
 	meLSWorld();
+	
+protected:
 	virtual ~meLSWorld();
 
+
+public:
 	// management
 	inline const decString &GetName() const{ return pName; }
 
@@ -64,7 +75,7 @@ public:
 	virtual void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file) = 0;
 	
 	/** \brief Create stepable loader. */
-	virtual igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file) = 0;
+	virtual igdeStepableTask::Ref CreateLoadTask(meWorld *world, decBaseFileReader *file) = 0;
 };
 
 // end of include only once

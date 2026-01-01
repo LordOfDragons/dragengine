@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceFacePose::ceFacePose(const char *name) :
-pConversation(NULL),
+pConversation(nullptr),
 pName(name){
 }
 
@@ -61,7 +61,9 @@ void ceFacePose::SetName(const char *name){
 	if(!name) DETHROW(deeInvalidParam);
 	
 	if(!pName.Equals(name)){
-		if(pConversation && pConversation->GetFacePoseList().HasNamed(name)) DETHROW(deeInvalidParam);
+		if(pConversation){
+			DEASSERT_FALSE(pConversation->GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == name; }));
+		}
 		
 		pName = name;
 		

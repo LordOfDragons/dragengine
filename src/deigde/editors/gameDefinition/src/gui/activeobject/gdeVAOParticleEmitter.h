@@ -26,13 +26,14 @@
 #define _GDEVAOPARTICLEEMITTER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
-class gdeOCParticleEmitter;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -47,13 +48,13 @@ public:
 	
 	
 private:
-	gdeOCParticleEmitter *pOCParticleEmitter;
+	gdeOCParticleEmitter::Ref pOCParticleEmitter;
 	
 	deParticleEmitter::Ref pEmitter;
 	deParticleEmitterInstance::Ref pInstance;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -81,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pOCParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pOCParticleEmitter; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

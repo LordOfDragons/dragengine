@@ -97,9 +97,8 @@ void debpConfiguration::SetSimulatePropFields(bool simulatePropFields){
 
 void debpConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pBullet->GetVFS();
-	decBaseFileReader *reader = NULL;
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	// read the configuration file if it exists
 	decPath path;
@@ -109,22 +108,7 @@ void debpConfiguration::LoadConfig(){
 		return;
 	}
 	
-	try{
-		reader = vfs.OpenFileForReading(path);
-		if(!reader){
-			DETHROW(deeInvalidParam);
-		}
-		
-		decXmlParser(pBullet->GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
-		
-		reader->FreeReference();
-		
-	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
-		throw;
-	}
+	decXmlParser(pBullet->GetGameEngine()->GetLogger()).ParseXml(vfs.OpenFileForReading(path), xmlDoc);
 	
 	// some cleanup visiting
 	xmlDoc->StripComments();

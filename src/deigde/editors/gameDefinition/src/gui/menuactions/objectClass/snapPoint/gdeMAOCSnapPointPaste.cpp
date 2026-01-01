@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
 	if(!clip){
-		return NULL;
+		return {};
 	}
 	
 	const gdeClipboardDataOCSnapPoint &clipOCSnapPoint =
 		(const gdeClipboardDataOCSnapPoint &)(igdeClipboardData&)clip;
 	
-	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith(*clipOCSnapPoint.GetSnapPoint()));
+	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::New(*clipOCSnapPoint.GetSnapPoint()));
 	
-	igdeUndo * const undo = new gdeUOCAddSnapPoint(&objectClass,
+	const igdeUndo::Ref undo = gdeUOCAddSnapPoint::Ref::New(&objectClass,
 		snapPoint);
 	undo->SetShortInfo("Paste object class snap point");
 	return undo;
 }
 
 void gdeMAOCSnapPointPaste::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL
+	SetEnabled(GetActiveObjectClass() != nullptr
 		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
 }

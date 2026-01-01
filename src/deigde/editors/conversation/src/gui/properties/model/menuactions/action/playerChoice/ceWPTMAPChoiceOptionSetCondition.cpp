@@ -55,6 +55,5 @@ pOption(&option){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceOptionSetCondition::CreateUndo(ceConversationCondition *condition){
-	return new ceUCAPChoiceOptionSetCondition(pTopic, pPlayerChoice, pOption, condition);
-}
+igdeUndo::Ref ceWPTMAPChoiceOptionSetCondition::CreateUndo(ceConversationCondition *condition){
+	return ceUCAPChoiceOptionSetCondition::Ref::New(pTopic, pPlayerChoice, pOption, condition);}

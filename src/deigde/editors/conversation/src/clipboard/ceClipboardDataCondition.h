@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATACONDITION_H_
 #define _CECLIPBOARDDATACONDITION_H_
 
-#include "../conversation/condition/ceConversationConditionList.h"
+#include "../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	ceConversationConditionList pConditions;
+	ceConversationCondition::List pConditions;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataCondition(const ceConversationConditionList &conditions);
+	ceClipboardDataCondition(const ceConversationCondition::List &conditions);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the condition. */
-	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
+	inline const ceConversationCondition::List &GetConditions() const{ return pConditions; }
 	/*@}*/
 };
 

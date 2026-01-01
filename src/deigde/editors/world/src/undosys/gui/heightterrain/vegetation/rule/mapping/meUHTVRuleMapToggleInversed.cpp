@@ -43,21 +43,17 @@
 meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Mapping Toggle Inversed");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapToggleInversed));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

@@ -25,10 +25,11 @@
 #ifndef _IGDETEXTUREPROPERTY_H_
 #define _IGDETEXTUREPROPERTY_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
-
 
 
 /**
@@ -36,8 +37,12 @@
  * 
  * Stores the definition of a texture property.
  */
-class DE_DLL_EXPORT igdeTextureProperty{
+class DE_DLL_EXPORT igdeTextureProperty : public deObject{
 public:
+	typedef deTObjectReference<igdeTextureProperty> Ref;
+	
+	typedef decTObjectOrderedSet<igdeTextureProperty> List;
+	
 	/** \brief Value types. */
 	enum ePropertyTypes{
 		/** \brief Single value. */
@@ -69,12 +74,13 @@ public:
 	/** \brief Create texture property. */
 	igdeTextureProperty(const char *name);
 	
+protected:
 	/** \brief Clean up texture property. */
-	~igdeTextureProperty();
+	~igdeTextureProperty() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

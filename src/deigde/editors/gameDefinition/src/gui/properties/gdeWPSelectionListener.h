@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSelectionListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSelectionListener(gdeWPSelection &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSelectionListener() override;
+public:
 	/*@}*/
 	
 	

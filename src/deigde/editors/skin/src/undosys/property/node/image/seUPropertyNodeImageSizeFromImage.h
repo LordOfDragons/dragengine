@@ -36,6 +36,8 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSizeFromImage : public seUPropertyNodeSetSize{
 public:
+	typedef deTObjectReference<seUPropertyNodeImageSizeFromImage> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

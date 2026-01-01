@@ -27,18 +27,16 @@
 
 #include "../meColliderOwner.h"
 
+#include <deigde/gamedefinition/class/snappoint/igdeGDCSnapPoint.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-
-#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class meWorld;
 class meColliderOwner;
-class igdeGDCSnapPoint;
-class igdeWDebugDrawerShape;
-
-class deColliderVolume;
 
 
 
@@ -47,17 +45,17 @@ class deColliderVolume;
  */
 class meObjectSnapPoint : public deObject{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meObjectSnapPoint> Ref;
+	typedef decTObjectOrderedSet<meObjectSnapPoint> List;
 	
 	
 private:
 	meWorld *pWorld;
 	meObject *pObject;
-	igdeGDCSnapPoint *pSnapPoint;
+	igdeGDCSnapPoint::Ref pSnapPoint;
 	
-	igdeWDebugDrawerShape *pDDShape;
-	deColliderVolume *pCollider;
+	igdeWDebugDrawerShape::Ref pDDShape;
+	deColliderVolume::Ref pCollider;
 	
 	meColliderOwner pColliderOwner;
 	
@@ -69,8 +67,11 @@ public:
 	/** \brief Create snap point. */
 	meObjectSnapPoint(meObject *object, igdeGDCSnapPoint *snapPoint);
 	
+protected:
 	/** \brief Clean up snap point. */
 	virtual ~meObjectSnapPoint();
+	
+public:
 	/*@}*/
 	
 	
@@ -81,7 +82,7 @@ public:
 	inline meObject *GetObject() const{ return pObject; }
 	
 	/** \brief Snap point. */
-	inline igdeGDCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
+	inline const igdeGDCSnapPoint::Ref &GetSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

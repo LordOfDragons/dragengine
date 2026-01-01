@@ -44,7 +44,6 @@
 deoalAComponentTexture::deoalAComponentTexture(deoalAComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pSkin(NULL),
 pUseSkin(NULL),
 pUseTexture(NULL),
 
@@ -58,9 +57,6 @@ pTransmissionHigh(1.0f){
 }
 
 deoalAComponentTexture::~deoalAComponentTexture(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -72,16 +68,7 @@ void deoalAComponentTexture::SetSkin(deoalASkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 

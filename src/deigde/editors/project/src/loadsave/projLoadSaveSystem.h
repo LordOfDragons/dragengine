@@ -25,11 +25,10 @@
 #ifndef _PROJLOADSAVESYSTEM_H_
 #define _PROJLOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class projWindowMain;
 class igdeGameDefinition;
-class igdeFilePatternList;
 
 
 
@@ -40,7 +39,7 @@ class projLoadSaveSystem{
 private:
 	projWindowMain &pWindowMain;
 	
-	igdeFilePatternList pFPDelga;
+	igdeFilePattern::List pFPDelga;
 	
 	
 	
@@ -62,7 +61,7 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Delga file pattern list. */
-	inline const igdeFilePatternList &GetDelgaFilePatterns() const{ return pFPDelga; }
+	inline const igdeFilePattern::List &GetDelgaFilePatterns() const{ return pFPDelga; }
 	/*@}*/
 	
 	

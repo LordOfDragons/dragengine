@@ -172,8 +172,7 @@ void decZFileReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref decZFileReader::Duplicate(){
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		new decZFileReader(pReader, pPureMode, pPureLength)));
+	const decZFileReader::Ref reader(decZFileReader::Ref::New(pReader, pPureMode, pPureLength));
 	reader->SetPosition(GetPosition());
 	return reader;
 }
@@ -264,9 +263,6 @@ void decZFileReader::pSetContentPosition(int position){
 				}
 				
 				void * const content = realloc(pContent, newCapacity);
-				if(!content){
-					DETHROW(deeOutOfMemory);
-				}
 				pContent = content;
 				pContentCapacity = newCapacity;
 				
@@ -278,9 +274,6 @@ void decZFileReader::pSetContentPosition(int position){
 			const int newCapacity = pContentCapacity - (int)zstream->avail_out;
 			
 			void * const content = realloc(pContent, newCapacity); // reduce to used size
-			if(!content){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pContent = content;
 			pContentSize = newCapacity;

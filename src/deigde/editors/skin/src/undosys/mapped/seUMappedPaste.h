@@ -35,6 +35,8 @@ class seClipboardDataMapped;
  */
 class seUMappedPaste : public seUMappedAdd{
 public:
+	typedef deTObjectReference<seUMappedPaste> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

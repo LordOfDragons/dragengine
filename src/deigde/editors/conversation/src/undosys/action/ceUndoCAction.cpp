@@ -43,21 +43,12 @@
 ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic){
 	if(!action || !topic) DETHROW(deeInvalidParam);
 	
-	pAction = NULL;
-	pTopic = NULL;
+	pAction = nullptr;
+	pTopic = nullptr;
 	
 	pAction = action;
-	action->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUndoCAction::~ceUndoCAction(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
 }

@@ -192,20 +192,9 @@ int deBeOSInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deBeOSInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deBeOSInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -870,6 +859,8 @@ void deBeOSInput::pSetAutoRepeatEnabled(bool enabled){
 
 class debiModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<debiModuleInternal> Ref;
+	
 	debiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BeOSInput");
 		SetDescription("Processes input on BeOS type operating systems.");
@@ -889,7 +880,7 @@ public:
 	}
 };
 
-deInternalModule *debiRegisterInternalModule(deModuleSystem *system){
-	return new debiModuleInternal(system);
+deTObjectReference<deInternalModule> debiRegisterInternalModule(deModuleSystem *system){
+	return debiModuleInternal::Ref::NewWith(system);
 }
 #endif

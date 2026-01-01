@@ -54,16 +54,16 @@ pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelGameDefinition.TakeOver(new gdeWPGameDefinition(*this));
+	pPanelGameDefinition = gdeWPGameDefinition::Ref::New(*this);
 	AddChild(pPanelGameDefinition, "Game Definition");
 	
-	pPanelSelection.TakeOver(new gdeWPSelection(*this));
+	pPanelSelection = gdeWPSelection::Ref::New(*this);
 	AddChild(pPanelSelection, "Selection");
 	
-	pPanelView.TakeOver(new gdeWPView(*this));
+	pPanelView = gdeWPView::Ref::New(*this);
 	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver(new gdeWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = gdeWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "Undo");
 	
 	SetActivePanel(1); // selection

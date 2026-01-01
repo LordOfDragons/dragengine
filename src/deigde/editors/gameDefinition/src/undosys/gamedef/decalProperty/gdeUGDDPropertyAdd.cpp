@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUGDDPropertyAdd::gdeUGDDPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
-pGameDefinition(NULL),
-pProperty(NULL)
+
+pProperty(nullptr)
 {
 	if(!gamedef || !property){
 		DETHROW(deeInvalidParam);
@@ -51,19 +51,10 @@ pProperty(NULL)
 	SetShortInfo("Game definition add property");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPropertyAdd::~gdeUGDDPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

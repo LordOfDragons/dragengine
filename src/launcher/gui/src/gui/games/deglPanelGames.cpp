@@ -136,7 +136,6 @@ FXVerticalFrame(container, LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT | FRAME_SUNKEN, 0, 0
 	
 	// create content
 	pListGames = new ExtIconList(this, this, ID_LIST_GAMES, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y);
-	if(!pListGames) DETHROW(deeOutOfMemory);
 	
 	pListGames->appendHeader("Game", nullptr, 350);
 	pListGames->appendHeader("Status", nullptr, 150);
@@ -661,7 +660,7 @@ long deglPanelGames::onPUGameShowLogs(FXObject*, FXSelector, void*){
 	path.AddComponent("games");
 	path.AddComponent(game->GetIdentifier().ToHexString(false));
 	
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(path));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(path));
 	if(!container->ExistsFile(decPath::CreatePathUnix("/logs"))){
 		FXMessageBox::information(this, MBOX_OK, "Show Logs",
 			"There are no logs for this game. Logs will be present after running the game");

@@ -28,15 +28,13 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeListBoxListener.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
-#include <dragengine/common/collection/decIntSet.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-class igdeListBoxListener;
 class igdeIcon;
 class igdeListItem;
 
@@ -62,14 +60,14 @@ public:
 	
 private:
 	bool pEnabled;
-	decObjectList pItems;
+	igdeListItem::List pItems;
 	eSelectionMode pSelectionMode;
 	int pSelection;
 	igdeListItemSorter::Ref pSorter;
 	int pRows;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeListBoxListener> pListeners;
 	
 	
 	
@@ -119,17 +117,14 @@ public:
 	
 	
 	
-	/** \brief Number of items. */
-	int GetItemCount() const;
+	/** \brief List items. */
+	const igdeListItem::List &GetItems() const{ return pItems; }
 	
-	/** \brief Item at index. */
-	igdeListItem *GetItemAt(int index) const;
-	
-	/** \brief Item with data or NULL if not found. */
+	/** \brief Item with data or nullptr if not found. */
 	igdeListItem *GetItemWithData(void *data) const;
 	
-	/** \brief Item is present. */
-	bool HasItem(igdeListItem *item) const;
+	/** \brief Item with reference data or nullptr if not found. */
+	igdeListItem *GetItemWithRefData(const deObject::Ref &data) const;
 	
 	/** \brief Item with text is present. */
 	bool HasItem(const char *item) const;
@@ -137,8 +132,8 @@ public:
 	/** \brief Item with data is present. */
 	bool HasItemWithData(void *data) const;
 	
-	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem(igdeListItem *item) const;
+	/** \brief Item with reference data is present. */
+	bool HasItemWithRefData(const deObject::Ref &data) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
 	int IndexOfItem(const char *item) const;
@@ -146,22 +141,30 @@ public:
 	/** \brief Index of item with data or -1 if absent. */
 	int IndexOfItemWithData(void *data) const;
 	
+	/** \brief Index of item with reference data or -1 if absent. */
+	int IndexOfItemWithRefData(const deObject::Ref &data) const;
+	
 	/** \brief Add item. */
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	void AddItem(const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	void AddItemRef(const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
 	
-	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	void AddItemRef(igdeListItem::Ref &item, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	void InsertItem(int index, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	void InsertItemRef(int index, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
+	void InsertItemRef(igdeListItem::Ref &item, int index, const char *text,
+		igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);
@@ -177,10 +180,10 @@ public:
 	
 	
 	
-	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
+	/** \brief Sorter or nullptr. */
+	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
+	/** \brief Set sorter or nullptr. */
 	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
@@ -206,6 +209,9 @@ public:
 	/** \brief Selected item data or nullptr. */
 	void *GetSelectedItemData() const;
 	
+	/** \brief Selected item reference data or nullptr. */
+	deObject::Ref GetSelectedItemRefData() const;
+	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection(int selection);
 	
@@ -215,6 +221,13 @@ public:
 	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
 	 */
 	void SetSelectionWithData(void *data);
+	
+	/**
+	 * \brief Set selected item matching reference data.
+	 * 
+	 * Short-cut for calling SetSelection(IndexOfItemWithRefData(refData)).
+	 */
+	void SetSelectionWithRefData(const deObject::Ref &data);
 	
 	/** \brief Add item to the selection range if absent. */
 	void SelectItem(int index);

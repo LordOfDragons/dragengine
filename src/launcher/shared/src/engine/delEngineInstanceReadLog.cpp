@@ -118,10 +118,7 @@ void delEngineInstanceReadLog::PrepareBufferSource(int requiredLength){
 		return;
 	}
 	
-	pBufferSource = (char*)realloc(pBufferSource, requiredLength + 1);
-	if(!pBufferSource){
-		DETHROW(deeOutOfMemory);
-	}
+	pBufferSource = reinterpret_cast<char*>(realloc(pBufferSource, requiredLength + 1));
 	
 	pBufferSourceLen = requiredLength;
 }
@@ -131,10 +128,7 @@ void delEngineInstanceReadLog::PrepareBufferMessage(int requiredLength){
 		return;
 	}
 	
-	pBufferMessage = (char*)realloc(pBufferMessage, requiredLength + 1);
-	if(!pBufferMessage){
-		DETHROW(deeOutOfMemory);
-	}
+	pBufferMessage = reinterpret_cast<char*>(realloc(pBufferMessage, requiredLength + 1));
 	
 	pBufferMessageLen = requiredLength;
 }

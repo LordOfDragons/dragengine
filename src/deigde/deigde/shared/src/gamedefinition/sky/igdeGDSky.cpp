@@ -51,24 +51,9 @@ pName(sky.pName),
 pDescription(sky.pDescription),
 pCategory(sky.pCategory)
 {
-	const int controllerCount = sky.GetControllerCount();
-	igdeGDSkyController *controller = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<controllerCount; i++){
-			controller = new igdeGDSkyController(*sky.GetControllerAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			controller = NULL;
-		}
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
-	}
+	sky.GetControllers().Visit([&](const igdeGDSkyController &c){
+		pControllers.Add(igdeGDSkyController::Ref::New(c));
+	});
 }
 
 igdeGDSky::~igdeGDSky(){
@@ -104,18 +89,8 @@ void igdeGDSky::SetPreviewImage(deImage *image){
 // Controllers
 ////////////////
 
-int igdeGDSky::GetControllerCount() const{
-	return pControllers.GetCount();
-}
-
-igdeGDSkyController *igdeGDSky::GetControllerAt(int index) const{
-	return (igdeGDSkyController*)pControllers.GetAt(index);
-}
-
 void igdeGDSky::AddController(igdeGDSkyController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(controller)
 	pControllers.Add(controller);
 }
 

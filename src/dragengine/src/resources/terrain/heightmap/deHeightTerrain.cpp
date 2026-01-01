@@ -77,6 +77,10 @@ void deHeightTerrain::SetBaseHeight(float height){
 	}
 	
 	pBaseHeight = height;
+	
+	if(pPeerGraphic){
+		pPeerGraphic->ParametersChanged();
+	}
 }
 
 void deHeightTerrain::SetHeightScaling(float scaling){
@@ -86,6 +90,10 @@ void deHeightTerrain::SetHeightScaling(float scaling){
 	}
 	
 	pHeightScaling = scaling;
+	
+	if(pPeerGraphic){
+		pPeerGraphic->ParametersChanged();
+	}
 }
 
 void deHeightTerrain::SetCollisionFilter(const decCollisionFilter &collisionFilter){
@@ -143,6 +151,10 @@ deHeightTerrainSector *deHeightTerrain::GetSectorWith(const decPoint &coordinate
 	}
 	
 	return NULL;
+}
+
+int deHeightTerrain::IndexOfSector(deHeightTerrainSector *sector) const{
+	return pSectors.IndexOf(sector);
 }
 
 void deHeightTerrain::AddSector(deHeightTerrainSector *sector){

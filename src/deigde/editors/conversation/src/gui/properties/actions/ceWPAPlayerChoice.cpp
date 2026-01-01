@@ -75,6 +75,7 @@ class cTextVarName : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextVarName> Ref;
 	cTextVarName(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -85,7 +86,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAPChoiceSetVarName::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCAPChoiceSetVarName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -93,6 +94,7 @@ class cTextOptionText : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextOptionText> Ref;
 	cTextOptionText(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -104,7 +106,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAPChoiceOptionSetText::Ref::NewWith(topic, action, option,
+			ceUCAPChoiceOptionSetText::Ref::New(topic, action, option,
 				decUnicodeString::NewFromUTF8(textField->GetText())));
 	}
 };
@@ -113,11 +115,12 @@ class cActionEditOptionText : public igdeAction {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEditOptionText> Ref;
 	cActionEditOptionText(ceWPAPlayerChoice &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();
@@ -134,7 +137,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAPChoiceOptionSetText::Ref::NewWith(topic, action, option,
+			ceUCAPChoiceOptionSetText::Ref::New(topic, action, option,
 				decUnicodeString::NewFromUTF8(text)));
 	}
 };
@@ -157,11 +160,11 @@ ceWPAction(parentPanel){
 	CreateGUICommon(*this);
 	
 	helper.EditString(*this, "Variable:", "Name of the variable to store the choice in or empty to use none",
-		pEditVarName, new cTextVarName(*this));
+		pEditVarName, cTextVarName::Ref::New(*this));
 	
 	helper.FormLineStretchFirst(*this, "Option Text:", "Text to display for option", formLine);
-	helper.EditString(formLine, "Text to display for option", pEditOptionText, new cTextOptionText(*this));
-	helper.Button(formLine, pBtnOptionText, new cActionEditOptionText(*this), true);
+	helper.EditString(formLine, "Text to display for option", pEditOptionText, cTextOptionText::Ref::New(*this));
+	helper.Button(formLine, pBtnOptionText, cActionEditOptionText::Ref::New(*this));
 }
 
 ceWPAPlayerChoice::~ceWPAPlayerChoice(){
@@ -175,10 +178,10 @@ ceWPAPlayerChoice::~ceWPAPlayerChoice(){
 ceCAPlayerChoice *ceWPAPlayerChoice::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
 	if(!selected){
-		return NULL;
+		return nullptr;
 	}
 	
-	ceWPTTIMAPlayerChoice *modelPlayerChoice = NULL;
+	ceWPTTIMAPlayerChoice *modelPlayerChoice = nullptr;
 	
 	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionPlayerChoice:
@@ -209,17 +212,17 @@ ceCAPlayerChoice *ceWPAPlayerChoice::GetAction() const{
 		return modelPlayerChoice->GetActionPlayerChoice();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 ceCAPlayerChoiceOption *ceWPAPlayerChoice::GetActiveOption() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
 	if(!selected){
-		return NULL;
+		return nullptr;
 	}
 	
-	ceWPTTIMAPlayerChoiceOption *modelOption = NULL;
+	ceWPTTIMAPlayerChoiceOption *modelOption = nullptr;
 	
 	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionPlayerChoiceOption:
@@ -242,7 +245,7 @@ ceCAPlayerChoiceOption *ceWPAPlayerChoice::GetActiveOption() const{
 		return modelOption->GetOption();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

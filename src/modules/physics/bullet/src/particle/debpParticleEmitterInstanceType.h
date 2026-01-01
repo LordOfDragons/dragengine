@@ -27,12 +27,12 @@
 
 #include "LinearMath/btVector3.h"
 
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
 
 class debpForceField;
 class debpParticleEmitterInstance;
 class debpComponent;
-class deParticleEmitterInstance;
 
 
 
@@ -42,53 +42,53 @@ class deParticleEmitterInstance;
 class debpParticleEmitterInstanceType{
 public:
 	struct sParticle{
-		btVector3 position;
-		btVector3 linearVelocity;
-		btVector3 force;
-		float rotation;
-		float angularVelocity;
-		btVector3 gravity;
-		float forceFieldDirect;
-		float forceFieldSurface;
-		float forceFieldMass;
-		float forceFieldSpeed;
-		float timeToLive;
-		float lifetimeFactor;
-		float lifetime;
-		float size;
-		float mass;
-		float brown;
-		float damp;
-		float drag;
-		float elasticity;
-		float roughness;
+		btVector3 position = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		btVector3 linearVelocity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		btVector3 force = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		float rotation = 0.0f;
+		float angularVelocity = 0.0f;
+		btVector3 gravity = btVector3();
+		float forceFieldDirect = 0.0f;
+		float forceFieldSurface = 0.0f;
+		float forceFieldMass = 0.0f;
+		float forceFieldSpeed = 0.0f;
+		float timeToLive = 0.0f;
+		float lifetimeFactor = 0.0f;
+		float lifetime = 0.0f;
+		float size = 0.0f;
+		float mass = 0.0f;
+		float brown = 0.0f;
+		float damp = 0.0f;
+		float drag = 0.0f;
+		float elasticity = 0.0f;
+		float roughness = 0.0f;
 		
-		float castSize;
-		float castMass;
-		float castRotation;
-		float castLinearVelocity;
-		float castAngularVelocity;
-		float castBrown;
-		float castDamp;
-		float castDrag;
-		btVector3 castGravity;
-		float castLocalGravity;
-		float castForceFieldDirect;
-		float castForceFieldSurface;
-		float castForceFieldMass;
-		float castForceFieldSpeed;
-		float castElasticity;
-		float castRoughness;
-		float castEmitDirection;
-		float castEmitParticleCount;
+		float castSize = 0.0f;
+		float castMass = 0.0f;
+		float castRotation = 0.0f;
+		float castLinearVelocity = 0.0f;
+		float castAngularVelocity = 0.0f;
+		float castBrown = 0.0f;
+		float castDamp = 0.0f;
+		float castDrag = 0.0f;
+		btVector3 castGravity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		float castLocalGravity = 0.0f;
+		float castForceFieldDirect = 0.0f;
+		float castForceFieldSurface = 0.0f;
+		float castForceFieldMass = 0.0f;
+		float castForceFieldSpeed = 0.0f;
+		float castElasticity = 0.0f;
+		float castRoughness = 0.0f;
+		float castEmitDirection = 0.0f;
+		float castEmitParticleCount = 0.0f;
 		
-		float castEmissivity;
-		unsigned char castRed;
-		unsigned char castGreen;
-		unsigned char castBlue;
-		unsigned char castTransparency;
+		float castEmissivity = 0.0f;
+		unsigned char castRed = 0;
+		unsigned char castGreen = 0;
+		unsigned char castBlue = 0;
+		unsigned char castTransparency = 0;
 		
-		deParticleEmitterInstance *trailEmitter;
+		deParticleEmitterInstance::Ref trailEmitter = {};
 	};
 	
 private:

@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPGameDefinitionListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPGameDefinitionListener(gdeWPGameDefinition &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPGameDefinitionListener() override;
+public:
 	/*@}*/
 	
 	

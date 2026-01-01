@@ -66,6 +66,8 @@ private:
 	bool pSuccess;
 	
 public:
+	typedef deTObjectReference<igdeWOSOBillboardResLoadComponent> Ref;
+	
 	igdeWOSOBillboardResLoadComponent(igdeWOSOBillboard &owner) :
 	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
@@ -74,7 +76,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadSkin(const char *path){
@@ -143,7 +145,7 @@ igdeWOSOBillboard::igdeWOSOBillboard(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDBillboard(gdBillboard),
 pAddedToWorld(false),
-pAttachment(NULL),
+pAttachment(nullptr),
 pRenderEnvMap(false)
 {
 	pLoadResources();
@@ -152,7 +154,7 @@ pRenderEnvMap(false)
 igdeWOSOBillboard::~igdeWOSOBillboard(){
 	if(pResLoad){
 		((igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	pDestroyBillboard();
 }
@@ -249,10 +251,10 @@ bool igdeWOSOBillboard::IsContentVisible(){
 void igdeWOSOBillboard::pLoadResources(){
 	if(pResLoad){
 		((igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver(new igdeWOSOBillboardResLoadComponent(*this));
+	pResLoad = igdeWOSOBillboardResLoadComponent::Ref::New(*this);
 	igdeWOSOBillboardResLoadComponent &rl =
 		(igdeWOSOBillboardResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
@@ -275,13 +277,13 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 	}
 	
 	if(!skin){
-		pResLoad = NULL;
+		pResLoad = nullptr;
 		pDestroyBillboard();
 		return;
 	}
 	
 	if(!pBillboard){
-		pBillboard.TakeOver(GetEngine().GetBillboardManager()->CreateBillboard());
+		pBillboard = GetEngine().GetBillboardManager()->CreateBillboard();
 		
 		pBillboard->SetSizeFixedToScreen(pGDBillboard.GetSizeFixedToScreen());
 		
@@ -319,7 +321,7 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOBillboard::pDestroyBillboard(){
@@ -334,7 +336,7 @@ void igdeWOSOBillboard::pDestroyBillboard(){
 		GetWrapper().GetWorld()->RemoveBillboard(pBillboard);
 	}
 	
-	pBillboard = NULL;
+	pBillboard = nullptr;
 	pAddedToWorld = false;
 }
 
@@ -347,7 +349,7 @@ void igdeWOSOBillboard::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pBillboard);
@@ -386,8 +388,8 @@ void igdeWOSOBillboard::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 void igdeWOSOBillboard::pUpdateExtends(){

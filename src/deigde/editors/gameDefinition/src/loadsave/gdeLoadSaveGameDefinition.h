@@ -25,13 +25,17 @@
 #ifndef _GDELOADSAVEGAMEDEFINITION_H_
 #define _GDELOADSAVEGAMEDEFINITION_H_
 
+#include "../gamedef/category/gdeCategory.h"
+#include "../gamedef/filepattern/gdeFilePattern.h"
+#include "../gamedef/property/gdeProperty.h"
+
 #include <deigde/utils/igdeBaseXML.h>
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/string/decStringDictionary.h>
 
 class gdeCategory;
-class gdeCategoryList;
-class gdeFilePatternList;
 class gdeGameDefinition;
 class gdeLoadSaveSystem;
 class gdeOCBillboard;
@@ -50,13 +54,9 @@ class gdeOCSpeaker;
 class gdeOCWorld;
 class gdeObjectClass;
 class gdeParticleEmitter;
-class gdeProperty;
-class gdePropertyList;
 class gdeSkin;
 class gdeSky;
 
-class decStringDictionary;
-class decStringSet;
 class decBaseFileReader;
 class decBaseFileWriter;
 class decXmlWriter;
@@ -104,7 +104,7 @@ public:
 	
 private:
 	void pReadGameDefinition(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
-	void pReadProperty(const decXmlElementTag &root, gdePropertyList &propertyList);
+	void pReadProperty(const decXmlElementTag &root, gdeProperty::List &propertyList);
 	void pReadProperty(const decXmlElementTag &root, gdeProperty &property);
 	void pReadObjectClass(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
 	void pReadObjectClassInherit(const decXmlElementTag &root, gdeObjectClass &objectClass);
@@ -122,7 +122,7 @@ private:
 	void pReadObjectClassNavigationBlocker(const decXmlElementTag &root, gdeObjectClass &objectClass);
 	void pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass);
 	void pReadObjectClassTexture(const decXmlElementTag &root, gdeObjectClass &objectClass);
-	void pReadCustomFilePatternList(const decXmlElementTag &root, gdeFilePatternList &list);
+	void pReadCustomFilePatternList(const decXmlElementTag &root, gdeFilePattern::List &list);
 	void pReadParticleEmitter(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
 	void pReadSkin(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
 	void pReadSky(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
@@ -157,7 +157,7 @@ private:
 	void pWriteCategories(decXmlWriter &writer, const gdeCategoryList &categories, const char *name);
 	void pWriteCategory(decXmlWriter &writer, const gdeCategory &category);
 	void pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties, const char *tagName);
-	void pWriteProperties(decXmlWriter &writer, const gdePropertyList &properties, const char *tagName);
+	void pWriteProperties(decXmlWriter &writer, const gdeProperty::List &properties, const char *tagName);
 	void pWriteProperty(decXmlWriter &writer, const gdeProperty &property, const char *tagName);
 };
 

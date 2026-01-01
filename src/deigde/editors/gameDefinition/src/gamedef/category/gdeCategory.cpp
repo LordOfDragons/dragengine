@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "gdeCategory.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class gdeCategory
@@ -39,42 +34,28 @@
 ////////////////////////////
 
 gdeCategory::gdeCategory() :
-pParent(NULL),
+pParent(nullptr),
 pHidden(false){
 }
 
 gdeCategory::gdeCategory(const char *name) :
 pName(name),
-pParent(NULL),
+pParent(nullptr),
 pHidden(false){
 }
 
 gdeCategory::gdeCategory(const gdeCategory &category) :
 pName(category.pName),
 pDescription(category.pDescription),
-pParent(NULL),
+pParent(nullptr),
 pAutoCategorizePattern(category.pAutoCategorizePattern),
 pHidden(category.pHidden)
 {
-	const int count = category.pCategories.GetCount();
-	gdeCategory *subCategory = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			subCategory = new gdeCategory(*category.pCategories.GetAt(i));
-			subCategory->pParent = this;
-			pCategories.Add(subCategory);
-			subCategory->FreeReference();
-			subCategory = NULL;
-		}
-		
-	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
-		throw;
-	}
+	category.pCategories.Visit([&](const gdeCategory &c){
+		gdeCategory::Ref sc = gdeCategory::Ref::New(c);
+		sc->pParent = this;
+		pCategories.Add(sc);
+	});
 }
 
 gdeCategory::~gdeCategory(){
@@ -98,12 +79,7 @@ void gdeCategory::SetParent(gdeCategory *parent){
 }
 
 decString gdeCategory::GetPath() const{
-	if(pParent){
-		return pParent->GetPath() + "/" + pName;
-		
-	}else{
-		return pName;
-	}
+	return pParent ? pParent->GetPath() + "/" + pName : pName;
 }
 
 void gdeCategory::SetAutoCategorizePattern(const decStringSet &patternList){
@@ -126,24 +102,18 @@ void gdeCategory::AddCategory(gdeCategory *category){
 }
 
 void gdeCategory::RemoveCategory(gdeCategory *category){
-	if(!pCategories.Has(category)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	category->SetParent(NULL);
+	const gdeCategory:: Ref guard(category);
 	pCategories.Remove(category);
+	
+	category->SetParent(nullptr);
 }
 
 void gdeCategory::RemoveAllCategories(){
-	const int count = pCategories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pCategories.GetAt(i)->SetParent(NULL);
-	}
+	pCategories.Visit([&](gdeCategory &c){
+		c.SetParent(nullptr);
+	});
 	pCategories.RemoveAll();
 }
-
 
 
 gdeCategory &gdeCategory::operator=(const gdeCategory &category){
@@ -151,27 +121,13 @@ gdeCategory &gdeCategory::operator=(const gdeCategory &category){
 	pDescription = category.pDescription;
 	pAutoCategorizePattern = category.pAutoCategorizePattern;
 	
-	const int count = category.pCategories.GetCount();
-	gdeCategory *subCategory = NULL;
-	int i;
-	
 	pCategories.RemoveAll();
 	
-	try{
-		for(i=0; i<count; i++){
-			subCategory = new gdeCategory(*category.pCategories.GetAt(i));
-			subCategory->pParent = this;
-			pCategories.Add(subCategory);
-			subCategory->FreeReference();
-			subCategory = NULL;
-		}
-		
-	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
-		throw;
-	}
+	category.pCategories.Visit([&](const gdeCategory &c){
+		gdeCategory::Ref sc = gdeCategory::Ref::New(c);
+		sc->pParent = this;
+		pCategories.Add(sc);
+	});
 	
 	return *this;
 }

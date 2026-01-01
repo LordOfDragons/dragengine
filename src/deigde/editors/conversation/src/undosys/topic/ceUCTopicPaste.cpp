@@ -40,57 +40,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics) :
-pFile(NULL){
-	if(!file || topics.GetCount() == 0){
+ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopic::List &topics) :
+pFile(nullptr){
+	if(!file || topics.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = topics.GetCount();
-	ceConversationTopic *newTopic = NULL;
-	int i;
-	
-	if(count == 1){
+	if(topics.GetCount() == 1){
 		SetShortInfo("Paste topic");
 		
 	}else{
 		SetShortInfo("Paste topics");
 	}
 	
-	try{
-		for(i=0; i<count; i++){
-			newTopic = new ceConversationTopic(*topics.GetAt(i));
-			decString topicID(newTopic->GetID());
-			int newNameIndex = 1;
-			
-			while(file->GetTopicList().HasWithID(topicID)){
-				newNameIndex++;
-				topicID.Format("%s_%i", newTopic->GetID().GetString(), newNameIndex);
-			}
-			
-			newTopic->SetID(topicID);
-			
-			pTopics.Add(newTopic);
-			newTopic->FreeReference();
-			newTopic = NULL;
+	topics.Visit([&](const ceConversationTopic &t){
+		const ceConversationTopic::Ref topic(ceConversationTopic::Ref::New(t));
+		decString topicID(topic->GetID());
+		
+		int newNameIndex = 1;
+		while(file->GetTopics().HasMatching([&](const ceConversationTopic *t2){ return t2->GetID() == topicID; })){
+			newNameIndex++;
+			topicID.Format("%s_%i", topic->GetID().GetString(), newNameIndex);
 		}
 		
-	}catch(const deException &){
-		if(newTopic){
-			newTopic->FreeReference();
-		}
-		throw;
-	}
+		topic->SetID(topicID);
+		pTopics.Add(topic);
+	});
 	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCTopicPaste::~ceUCTopicPaste(){
-	pTopics.RemoveAll();
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 
@@ -99,23 +79,18 @@ ceUCTopicPaste::~ceUCTopicPaste(){
 ///////////////
 
 void ceUCTopicPaste::Undo(){
-	const int count = pTopics.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pFile->RemoveTopic(pTopics.GetAt(i));
-	}
+	pTopics.Visit([&](ceConversationTopic *t){
+		pFile->RemoveTopic(t);
+	});
 }
 
 void ceUCTopicPaste::Redo(){
-	const int count = pTopics.GetCount();
-	if(count == 0){
+	if(pTopics.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		pFile->AddTopic(pTopics.GetAt(i));
-	}
-	pFile->SetActiveTopic(pTopics.GetAt(count - 1));
+	pTopics.Visit([&](ceConversationTopic *t){
+		pFile->AddTopic(t);
+	});
+	pFile->SetActiveTopic(pTopics.Last());
 }

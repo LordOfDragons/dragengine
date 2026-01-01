@@ -25,12 +25,20 @@
 #ifndef _MEOBJECT_H_
 #define _MEOBJECT_H_
 
-#include "meObjectList.h"
+#include "meObject.h"
+#include "meObjectLink.h"
+#include "meObjectSnapPoint.h"
+#include "texture/meObjectTexture.h"
 #include "../meColliderOwner.h"
+#include "../decal/meDecal.h"
+#include "../idgroup/meMapIDGroup.h"
+
+#include <deigde/gamedefinition/class/igdeGDClass.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/string/decString.h>
@@ -38,15 +46,11 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
-
-#include <deigde/gamedefinition/class/igdeGDClass.h>
-#include <deigde/gui/wrapper/igdeWObject.h>
-#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShapeList.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class meCamera;
-class meDecal;
-class meObjectLink;
-class meObjectTexture;
 class meWorld;
 
 class igdeEnvironment;
@@ -55,23 +59,18 @@ class igdeWDebugDrawerShape;
 class igdeGameDefinition;
 
 class deCollider;
-class deColliderVolume;
-class deComponent;
 class deComponentTexture;
 class decShape;
-class decStringList;
-class deDebugDrawer;
-class deDecalList;
 class deEngine;
 
 
 /**
- * \brief World object.
+ * World object.
  */
 class meObject : public deObject{
 public:
-	/** Reference. */
 	typedef deTObjectReference<meObject> Ref;
+	typedef decTObjectOrderedSet<meObject> List;
 	
 	
 private:
@@ -86,57 +85,53 @@ private:
 	};
 	
 	class cWOTexture : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cWOTexture> Ref;
-
-
 	public:
+		typedef deTObjectReference<cWOTexture> Ref;
+		
 		deSkin::Ref skin;
 		int texture;
 		deDynamicSkin::Ref dynamicSkin;
 		decTexMatrix2 texCoordTransform;
 		
 		cWOTexture(const deComponentTexture &componentTexture);
+		
+	protected:
+		~cWOTexture() override = default;
 	};
 	
 	igdeEnvironment *pEnvironment;
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSObject;
-	igdeWDebugDrawerShape *pDDSLightAoE;
-	igdeWDebugDrawerShape *pDDSOcclusionMesh;
-	igdeWDebugDrawerShape *pDDSObjectShapes;
-	igdeWDebugDrawerShapeList pDDSListNavSpaces;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSObject;
+	igdeWDebugDrawerShape::Ref pDDSLightAoE;
+	igdeWDebugDrawerShape::Ref pDDSOcclusionMesh;
+	igdeWDebugDrawerShape::Ref pDDSObjectShapes;
+	igdeWDebugDrawerShape::List pDDSListNavSpaces;
 	igdeWCoordSysArrows *pDDSCoordSysArrows;
 	
 	igdeWObject::Ref pWObject;
-	decObjectList pWOTextures;
-	deComponent *pEngComponentBroken;
-	deColliderVolume *pColDetCollider;
+	decTObjectOrderedSet<cWOTexture> pWOTextures;
+	deComponent::Ref pEngComponentBroken;
+	deColliderVolume::Ref pColDetCollider;
 	meCamera *pCamera;
 	
 	float pRange;
 	
-	decObjectList pLinks;
-	decObjectList pSnapPoints;
+	meObjectLink::List pLinks;
+	meObjectSnapPoint::List pSnapPoints;
 	
-	meObjectTexture **pTextures;
-	int pTextureCount;
-	int pTextureSize;
-	meObjectTexture *pActiveTexture;
+	meObjectTexture::List pTextures;
+	meObjectTexture::Ref pActiveTexture;
 	
-	meDecal **pDecals;
-	int pDecalCount;
-	int pDecalSize;
+	meDecal::List pDecals;
 	
-	meObject *pAttachedTo;
-	meObjectList pAttachedObjectsList;
+	Ref pAttachedTo;
+	List pAttachedObjects;
 	decString pAttachedToID;
 	
-	decObjectList pMapIDGroup;
-	decObjectList pTexMapIDGroup;
+	meMapIDGroup::List pMapIDGroup, pTexMapIDGroup;
 	
 	decString pClassName;
 	igdeGDClass *pClassDef;
@@ -163,28 +158,32 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new object. */
+	/** Creates a new object. */
 	meObject(igdeEnvironment *environment);
-	/** \brief Cleans up the object. */
+	
+protected:
+	/** Cleans up the object. */
 	virtual ~meObject();
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the environment. */
+	/** Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
-	/** \brief Retrieves the object wrapper. */
+	/** Retrieves the object wrapper. */
 	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
-	/** \brief Retrieves the collision detection collider. */
-	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
+	/** Retrieves the collision detection collider. */
+	inline const deColliderVolume::Ref &GetColDetCollider() const{ return pColDetCollider; }
 	
-	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	/** Debug drawer. */
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
-	/** \brief Dispose of the component. */
+	/** Dispose of the component. */
 	void Dispose();
 	
-	/** \brief Retrieves the camera or nullptr if not existing. */
+	/** Retrieves the camera or nullptr if not existing. */
 	inline meCamera *GetCamera() const{ return pCamera; }
 	
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -196,49 +195,48 @@ public:
 	void SetActive(bool active);
 	inline bool GetVisible() const{ return pVisible; }
 	void SetVisible(bool visible);
-	/** \brief Determines if missing textures are shown. */
+	/** Determines if missing textures are shown. */
 	inline bool GetShowMissingTextures() const{ return pShowMissingTextures; }
-	/** \brief Sets if missing textures are shown. */
+	/** Sets if missing textures are shown. */
 	void SetShowMissingTextures(bool showMissingTextures);
 	
-	/** \brief Retrieves the scale mode of the object class or esmFree if no class exists. */
+	/** Retrieves the scale mode of the object class or esmFree if no class exists. */
 	igdeGDClass::eScaleModes GetScaleMode() const;
 	
 	/**
-	 * \brief Determines if this object is a ghost according to the object class.
+	 * Determines if this object is a ghost according to the object class.
 	 * \details if the object class does not exist the object is assumed to be no ghost.
 	 */
 	bool IsGhost() const;
 	
-	/** \brief Game definition changed. */
+	/** Game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	/** \brief Active camera changes. */
+	/** Active camera changes. */
 	void OnActiveCameraChanged();
 	
 	/** \name Links */
 	/*@{*/
-	/** \brief Retrieves the number of links. */
-	int GetLinkCount() const;
-	/** \brief Retrieves a link by index. */
-	meObjectLink *GetLinkAt(int index) const;
-	/** \brief Retrieves the link to another object or NULL if not linked. */
+	/** Links. */
+	const meObjectLink::List &GetLinks() const{ return pLinks; }
+	
+	/** Retrieves the link to another object or nullptr if not linked. */
 	meObjectLink *GetLinkTo(meObject *target) const;
-	/** \brief Determines if a link exists to another object. */
+	
+	/** Determines if a link exists to another object. */
 	bool HasLinkTo(meObject *target) const;
-	/** \brief Determines if a link exists. */
-	bool HasLink(meObjectLink *link) const;
-	/** \brief Retrieves the index of a link or -1 if not found. */
-	int IndexOfLink(meObjectLink *link) const;
-	/** \brief Adds a link. */
+	
+	/** Adds a link. */
 	void AddLink(meObjectLink *link);
-	/** \brief Removes a link. */
+	
+	/** Removes a link. */
 	void RemoveLink(meObjectLink *link);
-	/** \brief Removes all links. */
+	
+	/** Removes all links. */
 	void RemoveAllLinks();
 	
 	/**
-	 * \brief Determines if a link to another object is possible.
+	 * Determines if a link to another object is possible.
 	 * \details A link is possible if both objects have a game definition class and if the
 	 *          other object exists as a link partner (either directly or as superclass)
 	 *          in the game definition of this object.
@@ -246,92 +244,95 @@ public:
 	bool CanLinkTo(meObject *object) const;
 	/*@}*/
 	
-	/** \brief Updates the component mostly playing the animation if any. */
+	/** Updates the component mostly playing the animation if any. */
 	void Update(float elapsed);
 	
-	/** \brief Retrieves the class name. */
+	/** Retrieves the class name. */
 	inline const decString &GetClassName() const{ return pClassName; }
-	/** \brief Sets the class name. */
+	/** Sets the class name. */
 	void SetClassName(const char *className);
 	
-	/** \brief Retrieves the game definition class or NULL if not found. */
+	/** Retrieves the game definition class or nullptr if not found. */
 	inline igdeGDClass *GetGDClass() const{ return pClassDef; }
 	
-	/** \brief Retrieves the position. */
+	/** Retrieves the position. */
 	inline decDVector GetPosition() const{ return pPosition; }
-	/** \brief Sets the position. */
+	/** Sets the position. */
 	void SetPosition(const decDVector &pos);
-	/** \brief Retrieves the rotation. */
+	/** Retrieves the rotation. */
 	inline decVector GetRotation() const{ return pRotation; }
-	/** \brief Sets the rotation. */
+	/** Sets the rotation. */
 	void SetRotation(const decVector &rot);
-	/** \brief Retrieves the size. */
+	/** Retrieves the size. */
 	inline decVector GetSize() const{ return pSize; }
-	/** \brief Sets the size. */
+	/** Sets the size. */
 	void SetSize(const decVector &size);
-	/** \brief Retrieves the scaling. */
+	/** Retrieves the scaling. */
 	inline decVector GetScaling() const{ return pScaling; }
-	/** \brief Sets the scaling. */
+	/** Sets the scaling. */
 	void SetScaling(const decVector &scaling);
 	
 	/** Set scaling and size for undo actions. */
 	void SetSizeAndScaling(const decVector &size, const decVector &scaling);
 	
-	/** \brief ID. */
+	/** ID. */
 	inline const decUniqueID &GetID() const{ return pID; }
 	
-	/** \brief Set ID. */
+	/** Set ID. */
 	void SetID(const decUniqueID &id);
 	
-	/** \brief Update debug drawer with all object shapes defined in all properties. */
+	/** Update debug drawer with all object shapes defined in all properties. */
 	void UpdateDDSObjectShapes();
 	
 	
 	
-	/** \brief Object this object is attached to or \em NULL. */
-	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
+	/** Object this object is attached to or \em nullptr. */
+	inline const Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
-	/** \brief Set object this object is attached to or \em NULL. */
+	/** Set object this object is attached to or \em nullptr. */
 	void SetAttachedTo(meObject *object);
 	
-	/** \brief List of attached objects. */
-	inline meObjectList &GetAttachedObjectsList(){ return pAttachedObjectsList; }
-	inline const meObjectList &GetAttachedObjectsList() const { return pAttachedObjectsList; }
+	/** List of attached objects. */
+	inline List &GetAttachedObjects(){ return pAttachedObjects; }
+	inline const List &GetAttachedObjects() const { return pAttachedObjects; }
 	
-	/** \brief Attachted to ID used temporary for loading. */
+	/** List of all directly and indirectly attached objects. */
+	meObject::List GetAllAttachedObjects() const;
+	
+	/** Attachted to ID used temporary for loading. */
 	inline const decString &GetAttachedToID() const{ return pAttachedToID; }
 	
-	/** \brief Set attachted to ID used temporary for loading. */
+	/** Set attachted to ID used temporary for loading. */
 	void SetAttachedToID(const char *id);
 	
 	
 	
-	/** \brief Update navigation test path. */
+	/** Update navigation test path. */
 	void UpdateNavPathTest();
 	
-	/** \brief Get object matrix. */
+	/** Get object matrix. */
 	decDMatrix GetObjectMatrix();
 	
-	/** \brief Get inverse object matrix. */
+	/** Get inverse object matrix. */
 	decDMatrix GetInverseObjectMatrix();
 	
 	
 	
-	/** \brief Decrement use count on identifier group identifiers. */
+	/** Decrement use count on identifier group identifiers. */
 	void DecrementIDGroupIDUsage();
 	
-	/** \brief Increment use count on identifier group identifiers. */
+	/** Increment use count on identifier group identifiers. */
 	void IncrementIDGroupIDUsage();
 	
-	/** \brief Update id group list matching game definition class. */
+	/** Update id group list matching game definition class. */
 	void UpdateIDGroupList();
 	
 	
 	
-	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
+	/** Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
 	
-	/** \brief For internal use only. */
+	/** For internal use only. */
 	void WOAsyncFinished();
 	void WOAnyContentVisibleChanged();
 	void WOExtendsChanged();
@@ -339,80 +340,85 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** \brief Retrieves the number of decals. */
-	inline int GetDecalCount() const{ return pDecalCount; }
-	/** \brief Retrieves the decal at the given index. */
-	meDecal *GetDecalAt(int index) const;
-	/** \brief Retrieves the index of the decal of -1 if not found. */
-	int IndexOfDecal(meDecal *decal) const;
-	/** \brief Determines if the decal exists. */
-	bool HasDecal(meDecal *decal) const;
-	/** \brief Adds a decal. */
+	/** Decals. */
+	inline const meDecal::List &GetDecals() const{ return pDecals; }
+	
+	/** Adds a decal. */
 	void AddDecal(meDecal *decal);
-	/** \brief Inserts a decal at the given location. */
+	
+	/** Inserts a decal at the given location. */
 	void InsertDecalAt(meDecal *decal, int index);
-	/** \brief Removes a decal. */
+	
+	/** Removes a decal. */
 	void RemoveDecal(meDecal *decal);
-	/** \brief Removes all decals. */
+	
+	/** Removes all decals. */
 	void RemoveAllDecals();
-	/** \brief Moves a decal to a new location. */
+	
+	/** Moves a decal to a new location. */
 	void MoveDecalTo(meDecal *decal, int index);
 	/*@}*/
 	
 	/** \name Collision Detection */
 	/*@{*/
 	/**
-	 * \brief Stores all decals in contact with the given surface point into the provided list.
+	 * Stores all decals in contact with the given surface point into the provided list.
 	 * \details The point is best taken from an earlier collision test and is in world coordinates.
 	 */
 	void FindDecalsAt(const decVector &point, deDecalList *list);
 	/**
-	 * \brief Stores all decals in contact with the given shape into the provided list.
+	 * Stores all decals in contact with the given shape into the provided list.
 	 */
 	void FindDecalsTouching(decShape *shape, deDecalList *list);
 	
-	/** \brief Update trigger targets. */
+	/** Update trigger targets. */
 	void UpdateTriggerTargets();
-	/** \brief Checks links. */
+	/** Checks links. */
 	void CheckLinks();
 	/*@}*/
 	
 	/** \name Texture */
 	/*@{*/
-	/** \brief Retrieves the number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
-	/** \brief Retrieves the texture at the given index. */
-	meObjectTexture *GetTextureAt(int index) const;
-	/** \brief Retrieves the texture with the given name of NULL if not found. */
+	/** Textures. */
+	inline const meObjectTexture::List &GetTextures() const{ return pTextures; }
+	
+	/** Retrieves the texture with the given name of nullptr if not found. */
 	meObjectTexture *GetTextureNamed(const char *name) const;
-	/** \brief Determines if a texture with the given name exists. */
+	
+	/** Determines if a texture with the given name exists. */
 	bool HasTextureNamed(const char *name) const;
-	/** \brief Retrieves the index of the texture or -1 if not found. */
-	int IndexOfTexture(meObjectTexture *texture) const;
-	/** \brief Retrieves the index of the texture with the given name or -1 if not found. */
+	
+	/** Retrieves the index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed(const char *name) const;
-	/** \brief Determines if the texture exists. */
-	bool HasTexture(meObjectTexture *texture) const;
-	/** \brief Adds a texture. */
+	
+	/** Adds a texture. */
 	void AddTexture(meObjectTexture *texture);
-	/** \brief Removes a texture. */
+	
+	/** Removes a texture. */
 	void RemoveTexture(meObjectTexture *texture);
-	/** \brief Removes all textures. */
+	
+	/** Removes all textures. */
 	void RemoveAllTextures();
-	/** \brief Retrieves the active texture or NULL. */
-	inline meObjectTexture *GetActiveTexture() const{ return pActiveTexture; }
-	/** \brief Sets the active texture or NULL. */
+	
+	/** Retrieves the active texture or nullptr. */
+	inline const meObjectTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
+	
+	/** Sets the active texture or nullptr. */
 	void SetActiveTexture(meObjectTexture *texture);
-	/** \brief Updates the engine component textures. */
+	
+	/** Updates the engine component textures. */
 	void UpdateComponentTextures();
+	
 	/**
-	 * \brief Checks if the component is fully invisible or otherwise broken in a way the user can not
+	 * Checks if the component is fully invisible or otherwise broken in a way the user can not
 	 *        see the component in the editor. Returns true if this is the case false otherwise.
 	 */
 	bool IsComponentBroken() const;
-	/** \brief Retrieves the list of texture names in the object. */
+	
+	/** Retrieves the list of texture names in the object. */
 	void GetTextureNameList(decStringList &list) const;
-	/** \brief Retrieves the list of texture names in the component model if existing. */
+	
+	/** Retrieves the list of texture names in the component model if existing. */
 	void GetModelTextureNameList(decStringList &list) const;
 	/*@}*/
 	
@@ -420,36 +426,36 @@ public:
 	
 	/** \name Properties */
 	/*@{*/
-	/** \brief Properties. */
+	/** Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
-	/** \brief Set property. */
+	/** Set property. */
 	void SetProperty(const char *key, const char *value);
 	
-	/** \brief Set properties. */
+	/** Set properties. */
 	void SetProperties(const decStringDictionary &properties);
 	
-	/** \brief Remove property if present. */
+	/** Remove property if present. */
 	void RemoveProperty(const char *key);
 	
-	/** \brief Removes all properties. */
+	/** Removes all properties. */
 	void RemoveAllProperties();
 	
-	/** \brief Active property. */
+	/** Active property. */
 	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
-	/** \brief Set active property. */
+	/** Set active property. */
 	void SetActiveProperty(const char *property);
 	
 	
 	
-	/** \brief Property is a shape property. */
+	/** Property is a shape property. */
 	bool IsPropertyShape(const char *property) const;
 	
-	/** \brief Property is a shape list property. */
+	/** Property is a shape list property. */
 	bool IsPropertyShapeList(const char *property) const;
 	
-	/** \brief Property is a shape or shape list property. */
+	/** Property is a shape or shape list property. */
 	bool IsPropertyShapeOrShapeList(const char *property) const;
 	/*@}*/
 	
@@ -457,16 +463,16 @@ public:
 	
 	/** \name Attach behaviors */
 	/*@{*/
-	/** \brief Attach behaviors. */
+	/** Attach behaviors. */
 	inline const decStringList &GetAttachBehaviors() const{ return pAttachBehaviors; }
 	
-	/** \brief Set attach behaviors. */
+	/** Set attach behaviors. */
 	void SetAttachBehaviors(const decStringList &list);
 	
-	/** \brief Active attach behavior. */
+	/** Active attach behavior. */
 	inline int GetActiveAttachBehavior() const{ return pActiveAttachBehavior; }
 	
-	/** \brief Set active attach behavior. */
+	/** Set active attach behavior. */
 	void SetActiveAttachBehavior(int attachBehavior);
 	/*@}*/
 	
@@ -505,6 +511,8 @@ private:
 	
 	void pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &prefix);
 	bool pShowStateIsVisible();
+	
+	void pAddAttachedObject(meObject::List &list);
 };
 
 #endif

@@ -44,7 +44,7 @@
 
 igdeActionSelectDirectory::igdeActionSelectDirectory(igdeEnvironment &environment,
 	igdeTextField &textField, bool useGameVFS) :
-igdeAction("...", NULL, "Select directory"),
+igdeAction("...", nullptr, "Select directory"),
 pEnvironment(environment),
 pUseGameVFS(useGameVFS),
 pTextField(textField){

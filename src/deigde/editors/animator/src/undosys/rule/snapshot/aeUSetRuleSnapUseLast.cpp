@@ -42,12 +42,10 @@
 aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state snapshot rule use last");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeUSetRuleSnapUseLast::Redo(){
 //////////////////////
 
 void aeUSetRuleSnapUseLast::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

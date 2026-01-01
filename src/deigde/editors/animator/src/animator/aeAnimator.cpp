@@ -30,7 +30,6 @@
 #include "aeAnimator.h"
 #include "aeAnimatorNotifier.h"
 #include "aeSubAnimator.h"
-#include "attachment/aeAttachment.h"
 #include "controller/aeController.h"
 #include "link/aeLink.h"
 #include "locomotion/aeAnimatorLocomotion.h"
@@ -100,45 +99,36 @@ pWindowMain(windowMain)
 {
 	deEngine * engine = GetEngine();
 	
-	pEngWorld = NULL;
+	pEngWorld = nullptr;
 	
-	pEngLight = NULL;
-	pEngComponent = NULL;
-	pEngAnimator = NULL;
-	pEngAnimatorInstance = NULL;
-	pEngCollider = NULL;
+	pEngLight = nullptr;
+	pEngComponent = nullptr;
+	pEngAnimator = nullptr;
+	pEngAnimatorInstance = nullptr;
+	pEngCollider = nullptr;
 	
-	pLocomotion = NULL;
-	pWakeboard = NULL;
-	pSubAnimator = NULL;
-	pTestingSubAnimator = NULL;
+	pLocomotion = nullptr;
+	pWakeboard = nullptr;
+	pSubAnimator = nullptr;
+	pTestingSubAnimator = nullptr;
 	pResetState = false;
 	
-	pCamera = NULL;
+	pCamera = nullptr;
 	
-	pActiveController = NULL;
-	pActiveLink = NULL;
-	pActiveRule = NULL;
-	
-	pAttachments = NULL;
-	pAttachmentCount = 0;
-	pAttachmentSize = 0;
-	pActiveAttachment = NULL;
+	pActiveController = nullptr;
+	pActiveLink = nullptr;
+	pActiveRule = nullptr;
 	
 	pPaused = false;
 	pPlaySpeed = 1.0f;
 	pTimeStep = 0.05f;
 	
-	pDDBones = NULL;
-	pDDSBones = NULL;
+	pDDBones = nullptr;
+	pDDSBones = nullptr;
 	pDDSBoneCount = 0;
 	pDDSBoneSize = 1.0f;
 	
-	pSky = NULL;
-	
-	pNotifiers = NULL;
-	pNotifierCount = 0;
-	pNotifierSize = 0;
+	pSky = nullptr;
 	
 	try{
 		SetFilePath("new.deanimator");
@@ -159,7 +149,7 @@ pWindowMain(windowMain)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(windowMain.GetEnvironment()));
+		pEnvObject = igdeWObject::Ref::New(windowMain.GetEnvironment());
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		
@@ -359,9 +349,9 @@ void aeAnimator::UpdateWorld(float elapsed){
 	
 	// update attachments
 	if(!pPaused){
-		for(i=0; i<pAttachmentCount; i++){
-			pAttachments[i]->Update(realTimeElapsed);
-		}
+		pAttachments.Visit([&](aeAttachment *attachment){
+			attachment->Update(realTimeElapsed);
+		});
 	}
 	
 	// update debug drawers
@@ -486,11 +476,11 @@ void aeAnimator::RemoveController(aeController *controller){
 			}
 			
 		}else{
-			SetActiveController(NULL);
+			SetActiveController(nullptr);
 		}
 	}
 	
-	controller->SetAnimator(NULL);
+	controller->SetAnimator(nullptr);
 	pControllers.Remove(controller);
 	
 	pUpdateLinks();
@@ -498,12 +488,12 @@ void aeAnimator::RemoveController(aeController *controller){
 }
 
 void aeAnimator::RemoveAllControllers(){
-	SetActiveController(NULL);
+	SetActiveController(nullptr);
 	
 	const int count = pControllers.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetAnimator(NULL);
+		pControllers.GetAt(i)->SetAnimator(nullptr);
 	}
 	pControllers.RemoveAll();
 	
@@ -584,11 +574,11 @@ void aeAnimator::RemoveLink(aeLink *link){
 			}
 			
 		}else{
-			SetActiveLink(NULL);
+			SetActiveLink(nullptr);
 		}
 	}
 	
-	link->SetAnimator(NULL);
+	link->SetAnimator(nullptr);
 	pLinks.Remove(link);
 	
 	RebuildRules();
@@ -596,7 +586,7 @@ void aeAnimator::RemoveLink(aeLink *link){
 }
 
 void aeAnimator::RemoveAllLinks(){
-	SetActiveLink(NULL);
+	SetActiveLink(nullptr);
 	
 	const int ruleCount = pRules.GetCount();
 	int i;
@@ -606,7 +596,7 @@ void aeAnimator::RemoveAllLinks(){
 	
 	const int count = pLinks.GetCount();
 	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->SetAnimator(NULL);
+		pLinks.GetAt(i)->SetAnimator(nullptr);
 	}
 	pLinks.RemoveAll();
 	
@@ -674,11 +664,11 @@ void aeAnimator::RemoveRule(aeRule *rule){
 			}
 			
 		}else{
-			SetActiveRule(NULL);
+			SetActiveRule(nullptr);
 		}
 	}
 	
-	rule->SetAnimator(NULL);
+	rule->SetAnimator(nullptr);
 	pRules.Remove(rule);
 	
 	RebuildRules();
@@ -686,12 +676,12 @@ void aeAnimator::RemoveRule(aeRule *rule){
 }
 
 void aeAnimator::RemoveAllRules(){
-	SetActiveRule(NULL);
+	SetActiveRule(nullptr);
 	
 	const int count = pRules.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetAnimator(NULL);
+		pRules.GetAt(i)->SetAnimator(nullptr);
 	}
 	pRules.RemoveAll();
 	
@@ -713,7 +703,7 @@ void aeAnimator::RebuildRules(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetEngineRule(NULL);
+		pRules.GetAt(i)->SetEngineRule(nullptr);
 	}
 	
 	if(!pEngAnimator){
@@ -723,13 +713,13 @@ void aeAnimator::RebuildRules(){
 	pEngAnimator->RemoveAllRules();
 	
 	if(pResetState){
-		const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::NewWith());
+		const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::New());
 		engRule->SetUseLastState(true);
 		pEngAnimator->AddRule(engRule);
 	}
 	
 	for(i=0; i<count; i++){
-		const deAnimatorRule::Ref engRule(deAnimatorRule::Ref::New(pRules.GetAt(i)->CreateEngineRule()));
+		const deAnimatorRule::Ref engRule(pRules.GetAt(i)->CreateEngineRule());
 		pEngAnimator->AddRule(engRule);
 		pRules.GetAt(i)->SetEngineRule(engRule);
 	}
@@ -862,139 +852,61 @@ void aeAnimator::RemoveAllVertexPositionSets(){
 // Attachments
 ////////////////
 
-aeAttachment *aeAnimator::GetAttachmentAt(int index) const{
-	if(index < 0 || index >= pAttachmentCount) DETHROW(deeInvalidParam);
-	
-	return pAttachments[index];
-}
-
 aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
-	if(!name) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pAttachmentCount; i++){
-		if(pAttachments[i]->GetName().Equals(name)){
-			return pAttachments[i];
-		}
-	}
-	
-	return NULL;
-}
-
-int aeAnimator::IndexOfAttachment(aeAttachment *attachment) const{
-	if(!attachment) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pAttachmentCount; i++){
-		if(attachment == pAttachments[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool aeAnimator::HasAttachment(aeAttachment *attachment) const{
-	return IndexOfAttachment(attachment) != -1;
-}
-
-bool aeAnimator::HasAttachmentNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	for(i=0; i<pAttachmentCount; i++){
-		if(pAttachments[i]->GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
+	DEASSERT_NOTNULL(name)
+	return pAttachments.FindOrDefault([&](const aeAttachment &a){ return a.GetName() == name; });
 }
 
 void aeAnimator::AddAttachment(aeAttachment *attachment){
-	if(HasAttachment(attachment)) DETHROW(deeInvalidParam);
-	
-	if(pAttachmentCount == pAttachmentSize){
-		int newSize = pAttachmentSize * 3 / 2 + 1;
-		aeAttachment **newArray = new aeAttachment*[newSize];
-		if(pAttachments){
-			memcpy(newArray, pAttachments, sizeof(aeAttachment*) * pAttachmentSize);
-			delete [] pAttachments;
-		}
-		pAttachments = newArray;
-		pAttachmentSize = newSize;
-	}
-	
-	pAttachments[pAttachmentCount] = attachment;
-	pAttachmentCount++;
-	
-	attachment->AddReference();
+	pAttachments.Add(attachment);
 	attachment->SetAnimator(this);
 	
 	NotifyAttachmentStructureChanged();
 }
 
 void aeAnimator::RemoveAttachment(aeAttachment *attachment){
-	int i, index = IndexOfAttachment(attachment);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	if(attachment == pActiveAttachment) SetActiveAttachment(NULL);
-	
-	for(i=index+1; i<pAttachmentCount; i++){
-		pAttachments[i - 1] = pAttachments[i];
-	}
-	pAttachmentCount--;
-	
-	attachment->SetAnimator(NULL);
-	attachment->FreeReference();
-	
+	const aeAttachment::Ref guard(attachment);
+	pAttachments.Remove(attachment);
+	attachment->SetAnimator(nullptr);
 	NotifyAttachmentStructureChanged();
 }
 
 void aeAnimator::RemoveAllAttachments(){
-	SetActiveAttachment(NULL);
+	SetActiveAttachment(nullptr);
 	
-	while(pAttachmentCount > 0){
-		pAttachmentCount--;
-		pAttachments[pAttachmentCount]->SetAnimator(NULL);
-		pAttachments[pAttachmentCount]->FreeReference();
-	}
+	pAttachments.Visit([](aeAttachment *attachment){
+		attachment->SetAnimator(nullptr);
+	});
+	pAttachments.RemoveAll();
 	
 	NotifyAttachmentStructureChanged();
 }
 
 void aeAnimator::SetActiveAttachment(aeAttachment *attachment){
-	if(attachment != pActiveAttachment){
-		pActiveAttachment = attachment;
-		
-		NotifyActiveAttachmentChanged();
+	if(attachment == pActiveAttachment){
+		return;
 	}
+	
+	pActiveAttachment = attachment;
+	NotifyActiveAttachmentChanged();
 }
 
 void aeAnimator::AttachAttachments(){
-	int i;
-	
-	for(i=0; i<pAttachmentCount; i++){
-		pAttachments[i]->AttachCollider();
-	}
+	pAttachments.Visit([](aeAttachment *attachment){
+		attachment->AttachCollider();
+	});
 }
 
 void aeAnimator::DetachAttachments(){
-	int i;
-	
-	for(i=0; i<pAttachmentCount; i++){
-		pAttachments[i]->DetachCollider();
-	}
+	pAttachments.Visit([](aeAttachment *attachment){
+		attachment->DetachCollider();
+	});
 }
 
 void aeAnimator::AttachmentsResetPhysics(){
-	int i;
-	
-	for(i=0; i<pAttachmentCount; i++){
-		pAttachments[i]->ResetPhysics();
-	}
+	pAttachments.Visit([](aeAttachment *attachment){
+		attachment->ResetPhysics();
+	});
 }
 
 
@@ -1002,219 +914,132 @@ void aeAnimator::AttachmentsResetPhysics(){
 // Notifiers
 //////////////
 
-aeAnimatorNotifier *aeAnimator::GetNotifierAt(int index) const{
-	if(index < 0 || index >= pNotifierCount) DETHROW(deeInvalidParam);
-	
-	return pNotifiers[index];
-}
-
-int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
-	if(!notifier) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		if(notifier == pNotifiers[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool aeAnimator::HasNotifier(aeAnimatorNotifier *notifier) const{
-	if(!notifier) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		if(notifier == pNotifiers[i]) return true;
-	}
-	
-	return false;
-}
-
 void aeAnimator::AddNotifier(aeAnimatorNotifier *notifier){
-	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
-	
-	if(pNotifierCount == pNotifierSize){
-		int newSize = pNotifierSize * 3 / 2 + 1;
-		aeAnimatorNotifier **newArray = new aeAnimatorNotifier*[newSize];
-		if(pNotifiers){
-			memcpy(newArray, pNotifiers, sizeof(aeAnimatorNotifier*) * pNotifierSize);
-			delete [] pNotifiers;
-		}
-		pNotifiers = newArray;
-		pNotifierSize = newSize;
-	}
-	
-	pNotifiers[pNotifierCount] = notifier;
-	pNotifierCount++;
-	
-	notifier->AddReference();
+	pNotifiers.Add(notifier);
 }
 
 void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
-	int i, index = IndexOfNotifier(notifier);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pNotifierCount; i++){
-		pNotifiers[i - 1] = pNotifiers[i];
-	}
-	pNotifierCount--;
-	
-	notifier->FreeReference();
+	pNotifiers.Remove(notifier);
 }
 
 void aeAnimator::RemoveAllNotifiers(){
-	while(pNotifierCount > 0){
-		pNotifierCount--;
-		pNotifiers[pNotifierCount]->FreeReference();
-	}
+	pNotifiers.RemoveAll();
 }
 
 
 void aeAnimator::NotifyStateChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->StateChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->StateChanged(this);
+	});
 }
 
 void aeAnimator::NotifyUndoChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->UndoChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->UndoChanged(this);
+	});
 }
 
 void aeAnimator::NotifyAnimatorChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->AnimatorChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->AnimatorChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyViewChanged(){
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ViewChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ViewChanged(this);
+	});
 }
 
 void aeAnimator::NotifyModelChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ModelChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ModelChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifySkyChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->SkyChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->SkyChanged(this);
+	});
 }
 
 void aeAnimator::NotifyEnvObjectChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->EnvObjectChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->EnvObjectChanged(this);
+	});
 }
 
 void aeAnimator::NotifyRigChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->RigChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->RigChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyAnimationChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->AnimationChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->AnimationChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyPlaybackChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PlaybackChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->PlaybackChanged(this);
+	});
 }
 
 void aeAnimator::NotifyLocomotionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->LocomotionChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->LocomotionChanged(this);
+	});
 }
 
 
 
 void aeAnimator::NotifyActiveControllerChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ActiveControllerChanged(this, pActiveController);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ActiveControllerChanged(this, pActiveController);
+	});
 }
 
 void aeAnimator::NotifyControllerChanged(aeController *controller){
-	if(!controller) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ControllerChanged(this, controller);
-	}
+	DEASSERT_NOTNULL(controller)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ControllerChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyControllerNameChanged(aeController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ControllerNameChanged(this, controller);
-	}
+	DEASSERT_NOTNULL(controller)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ControllerNameChanged(this, controller);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyControllerValueChanged(aeController *controller){
-	if(!controller) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ControllerValueChanged(this, controller);
-	}
+	DEASSERT_NOTNULL(controller)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ControllerValueChanged(this, controller);
+	});
 }
 
 void aeAnimator::NotifyControllerStructureChanged(){
-	int n;
-	
 	pUpdateEngineControllers();
 	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ControllerStructureChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ControllerStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -1222,43 +1047,35 @@ void aeAnimator::NotifyControllerStructureChanged(){
 
 
 void aeAnimator::NotifyActiveLinkChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ActiveLinkChanged(this, pActiveLink);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ActiveLinkChanged(this, pActiveLink);
+	});
 }
 
 void aeAnimator::NotifyLinkChanged(aeLink *link){
-	if(!link) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->LinkChanged(this, link);
-	}
+	DEASSERT_NOTNULL(link)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->LinkChanged(this, link);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyLinkNameChanged(aeLink *link){
-	if(!link) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->LinkNameChanged(this, link);
-	}
+	DEASSERT_NOTNULL(link)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->LinkNameChanged(this, link);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyLinkStructureChanged(){
-	int n;
-	
 	pUpdateLinks();
 	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->LinkStructureChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->LinkStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -1266,39 +1083,31 @@ void aeAnimator::NotifyLinkStructureChanged(){
 
 
 void aeAnimator::NotifyActiveRuleChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ActiveRuleChanged(this, pActiveRule);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ActiveRuleChanged(this, pActiveRule);
+	});
 }
 
 void aeAnimator::NotifyRuleChanged(aeRule *rule){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->RuleChanged(this, rule);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->RuleChanged(this, rule);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyRuleNameChanged(aeRule *rule){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->RuleNameChanged(this, rule);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->RuleNameChanged(this, rule);
+	});
 	
 	SetChanged(true);
 }
 
 void aeAnimator::NotifyRuleStructureChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->RuleStructureChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->RuleStructureChanged(this);
+	});
 	
 	SetChanged(true);
 }
@@ -1306,46 +1115,36 @@ void aeAnimator::NotifyRuleStructureChanged(){
 
 
 void aeAnimator::NotifyActiveAttachmentChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ActiveAttachmentChanged(this, pActiveAttachment);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->ActiveAttachmentChanged(this, pActiveAttachment);
+	});
 }
 
 void aeAnimator::NotifyAttachmentChanged(aeAttachment *attachment){
-	if(!attachment) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->AttachmentChanged(this, attachment);
-	}
+	DEASSERT_NOTNULL(attachment)
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->AttachmentChanged(this, attachment);
+	});
 }
 
 void aeAnimator::NotifyAttachmentStructureChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->AttachmentStructureChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->AttachmentStructureChanged(this);
+	});
 }
 
 
 
 void aeAnimator::NotifyCameraChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->CameraChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->CameraChanged(this);
+	});
 }
 
 void aeAnimator::NotifyCameraViewChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->CameraViewChanged(this);
-	}
+	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
+		listener->CameraViewChanged(this);
+	});
 }
 
 
@@ -1359,9 +1158,6 @@ void aeAnimator::pCleanUp(){
 	}
 	
 	RemoveAllNotifiers();
-	if(pNotifiers){
-		delete [] pNotifiers;
-	}
 	
 	pEnvObject = nullptr;
 	if(pSky){
@@ -1373,10 +1169,6 @@ void aeAnimator::pCleanUp(){
 	}
 	
 	RemoveAllAttachments();
-	if(pAttachments){
-		delete [] pAttachments;
-	}
-	
 	RemoveAllRules();
 	RemoveAllLinks();
 	RemoveAllControllers();
@@ -1395,38 +1187,30 @@ void aeAnimator::pCleanUp(){
 	}
 	
 	if(pEngAnimatorInstance){
-		pEngAnimatorInstance->SetAnimator(NULL);
-		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
+		pEngAnimatorInstance->SetAnimator(nullptr);
+		pEngAnimatorInstance->SetComponent(nullptr);
 	}
 	if(pEngAnimator){
-		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
+		pEngAnimator->SetRig(nullptr);
 	}
 	
 	if(pEngWorld){
 		if(pDDBones){
 			pEngWorld->RemoveDebugDrawer(pDDBones);
-			pDDBones->FreeReference();
 		}
 		
 		if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 		
 		if(pEngCollider){
-			pEngCollider->SetComponent(NULL);
+			pEngCollider->SetComponent(nullptr);
 			pEngWorld->RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngLight){
 			pEngWorld->RemoveLight(pEngLight);
-			pEngLight->FreeReference();
 		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1478,15 +1262,15 @@ void aeAnimator::pCreateCollider(){
 
 void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
-	deModel *displayModel = NULL;
-	deSkin *displaySkin = NULL;
-	deRig *displayRig = NULL;
+	deModel::Ref displayModel;
+	deSkin::Ref displaySkin;
+	deRig::Ref displayRig;
 	
 	// detach all colliders
 	DetachAttachments();
 	
 	// disable collider
-	pEngCollider->SetComponent(NULL);
+	pEngCollider->SetComponent(nullptr);
 	pEngCollider->SetEnabled(false);
 	
 	// try to load the model, skin and rig if possible
@@ -1504,10 +1288,10 @@ void aeAnimator::pUpdateComponent(){
 		}
 		
 		if(pRigPath.IsEmpty()){
-			pEngRig = NULL;
+			pEngRig = nullptr;
 			
 		}else{
-			pEngRig.TakeOver(engine->GetRigManager()->LoadRig(pRigPath, GetDirectoryPath()));
+			pEngRig = engine->GetRigManager()->LoadRig(pRigPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){
@@ -1519,11 +1303,10 @@ void aeAnimator::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!displaySkin){
 			displaySkin = GetGameDefinition()->GetDefaultSkin();
-			displaySkin->AddReference();
 		}
 		
 		// reset the animator
-		pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
+		pEngAnimatorInstance->SetComponent(nullptr); // otherwise the animator is not reset
 		
 		// update the component with the model and skin
 		if(displayModel && displaySkin){
@@ -1544,8 +1327,7 @@ void aeAnimator::pUpdateComponent(){
 			}
 			
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
-			pEngComponent = NULL;
+			pEngComponent = nullptr;
 		}
 		
 		// set the rig if the component exists
@@ -1561,34 +1343,22 @@ void aeAnimator::pUpdateComponent(){
 		
 		// free the reference we hold
 		if(displayRig){
-			displayRig->FreeReference();
-			displayRig = NULL;
+			displayRig = nullptr;
 		}
 		if(displayModel){
-			displayModel->FreeReference();
-			displayModel = NULL;
+			displayModel = nullptr;
 		}
 		if(displaySkin){
-			displaySkin->FreeReference();
-			displaySkin = NULL;
+			displaySkin = nullptr;
 		}
 		
 	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
 		throw;
 	}
 	
 	// update the collider
 	pEngCollider->SetComponent(pEngComponent);
-	pEngCollider->SetEnabled(pEngComponent != NULL);
+	pEngCollider->SetEnabled(pEngComponent != nullptr);
 	
 	// update the animator
 	pEngAnimatorInstance->SetComponent(pEngComponent);
@@ -1606,8 +1376,8 @@ void aeAnimator::pUpdateAnimator(){
 	
 	try{
 		if(!pAnimationPath.IsEmpty()){
-			animation.TakeOver(GetEngine()->GetAnimationManager()->
-				LoadAnimation(pAnimationPath, GetDirectoryPath()));
+			animation = GetEngine()->GetAnimationManager()->
+				LoadAnimation(pAnimationPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){
@@ -1641,7 +1411,7 @@ void aeAnimator::pAnimCompChanged(){
 }
 
 void aeAnimator::pUpdateEngineControllers(){
-	deAnimatorController *engController = NULL;
+	deAnimatorController *engController = nullptr;
 	int i;
 	
 	// set all engine controller indices in our controllers to -1
@@ -1651,7 +1421,7 @@ void aeAnimator::pUpdateEngineControllers(){
 	}
 	
 	// remove the animator from the animator instance
-	pEngAnimatorInstance->SetAnimator(NULL);
+	pEngAnimatorInstance->SetAnimator(nullptr);
 	
 	// remove all controllers
 	pEngAnimator->RemoveAllControllers();
@@ -1661,7 +1431,7 @@ void aeAnimator::pUpdateEngineControllers(){
 		for(i=0; i<count; i++){
 			engController = new deAnimatorController;
 			pEngAnimator->AddController(engController);
-			engController = NULL;
+			engController = nullptr;
 		}
 		
 	}catch(const deException &){
@@ -1699,7 +1469,7 @@ void aeAnimator::pUpdateDDSBones(){
 	if(boneCount != pDDSBoneCount){
 		if(pDDSBones){
 			delete [] pDDSBones;
-			pDDSBones = NULL;
+			pDDSBones = nullptr;
 			pDDSBoneCount = 0;
 		}
 		

@@ -40,6 +40,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/math/decMath.h>
@@ -456,7 +457,7 @@ void fbxNode::DebugPrintStructure(deBaseModule &module, const decString &prefix,
 			properties.Add(GetPropertyAt(i)->DebugTypeName());
 		}
 		module.LogInfoFormat("%sNode (%s): %s", prefix.GetString(),
-			pName.GetString(), properties.Join(", ").GetString());
+			pName.GetString(), DEJoin(properties, ", ").GetString());
 		
 		for(i=0; i<nodeCount; i++){
 			GetNodeAt(i)->DebugPrintStructure(module, childPrefix, false);
@@ -493,7 +494,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 	
 	int i;
 	for(i=0; i<countProperties; i++){
-		pProperties.Add(fbxProperty::Ref::New(fbxProperty::Read(reader)));
+		pProperties.Add(fbxProperty::Read(reader));
 	}
 	
 	const int position = reader.GetPosition();
@@ -536,7 +537,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 			break;
 		}
 		
-		pNodes.Add(fbxNode::Ref::NewWith(scene, reader, checkEndOffset));
+		pNodes.Add(fbxNode::Ref::New(scene, reader, checkEndOffset));
 	}
 }
 

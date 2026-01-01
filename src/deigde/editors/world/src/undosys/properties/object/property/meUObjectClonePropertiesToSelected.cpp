@@ -41,45 +41,23 @@
 ////////////////////////////
 
 meUObjectClonePropertiesToSelected::meUObjectClonePropertiesToSelected(
-const meObjectList &list, const decStringDictionary &properties){
-	meUndoDataObjectProperty *undoData = NULL;
-	const int count = list.GetCount();
-	meObject *object;
-	int i;
+const meObject::List &list, const decStringDictionary &properties){
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(count < 1){
-		DETHROW(deeInvalidParam);
-	}
+	SetShortInfo("Clone object properties to selected");
+	pProperties = properties;
 	
-	try{
-		SetShortInfo("Clone object properties to selected");
-		pProperties = properties;
+	list.Visit([&](meObject *object){
+		DEASSERT_NOTNULL(object->GetWorld())
 		
-		for(i=0; i<count; i++){
-			object = list.GetAt(i);
-			if(!object->GetWorld()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			undoData = new meUndoDataObjectProperty(object);
-			undoData->GetOldProperties() = object->GetProperties();
-			
-			pList.Add(undoData);
-			undoData->FreeReference();
-			undoData = NULL;
-		}
+		const meUndoDataObjectProperty:: Ref udata(meUndoDataObjectProperty::Ref::New(object));
+		udata->GetOldProperties() = object->GetProperties();
 		
-	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+		pList.Add(udata);
+	});
 }
 
 meUObjectClonePropertiesToSelected::~meUObjectClonePropertiesToSelected(){
-	pCleanUp();
 }
 
 
@@ -88,32 +66,13 @@ meUObjectClonePropertiesToSelected::~meUObjectClonePropertiesToSelected(){
 ///////////////
 
 void meUObjectClonePropertiesToSelected::Undo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
-		
-		undoData.GetObject()->SetProperties(undoData.GetOldProperties());
-	}
+	pList.Visit([&](const meUndoDataObjectProperty &data){
+		data.GetObject()->SetProperties(data.GetOldProperties());
+	});
 }
 
 void meUObjectClonePropertiesToSelected::Redo(){
-	const int count = pList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
-		
-		undoData.GetObject()->SetProperties(pProperties);
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectClonePropertiesToSelected::pCleanUp(){
-	pList.RemoveAll();
+	pList.Visit([&](const meUndoDataObjectProperty &data){
+		data.GetObject()->SetProperties(pProperties);
+	});
 }

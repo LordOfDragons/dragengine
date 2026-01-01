@@ -27,9 +27,10 @@
 
 #include <deigde/gui/wrapper/igdeWObject.h>
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/deObject.h>
 
 class ceConversation;
 
@@ -51,8 +52,8 @@ private:
 	bool pVisible;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceProp> Ref;
+	typedef decTObjectOrderedSet<ceProp> List;
 
 
 	/** \name Constructors and Destructors */
@@ -60,7 +61,9 @@ public:
 	/** \brief Creates a new prop. */
 	ceProp();
 	/** \brief Cleans up the prop. */
+protected:
 	virtual ~ceProp();
+public:
 	/*@}*/
 	
 	/** \name Management */

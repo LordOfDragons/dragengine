@@ -158,7 +158,7 @@ PyObject *spTypeModuleLoader::cfFindModule(PyObject *myself, PyObject *args){
 PyObject *spTypeModuleLoader::cfLoadModule(PyObject *myself, PyObject *args){
 	const spTypeModuleLoader &clsModuleLoader = *((spTypeModuleLoader*)GetOwnerClass(myself));
 	ScriptingPython &sp = clsModuleLoader.GetSP();
-	spScriptFile *scriptFile = NULL;
+	spScriptFile::Ref scriptFile;
 	PyObject *loadedModule = NULL;
 	const char *fullname = NULL;
 	decPath lookupPath;
@@ -175,20 +175,17 @@ PyObject *spTypeModuleLoader::cfLoadModule(PyObject *myself, PyObject *args){
 	// load script file
 	try{
 		// load script file
-		scriptFile = new spScriptFile(clsModuleLoader.GetSP(), fullname, lookupPath.GetPathUnix());
+		scriptFile.TakeOver(new spScriptFile(clsModuleLoader.GetSP(), fullname, lookupPath.GetPathUnix()));
 		scriptFile->PythonCreate();
 		
 		loadedModule = scriptFile->GetPyModule();
 		
 		// register loaded module
 		sp.GetScriptFileList().Add(scriptFile);
-		scriptFile->FreeReference();
-		
 	}catch(const deException &e){
 		sp.LogException(e);
 		if(scriptFile){
 			scriptFile->PythonCleanUp();
-			scriptFile->FreeReference();
 		}
 		
 		PyErr_SetString(PyExc_RuntimeError, "Failed to load module!");

@@ -66,10 +66,7 @@ mePathFindTest::mePathFindTest(deEngine *engine){
 	}
 	
 	pEngine = engine;
-	pWorld = NULL;
-	
-	pDDSPath = NULL;
-	pEngNavigator = NULL;
+	pWorld = nullptr;
 	
 	pLayer = 0;
 	pBlockingCost = 1000.0f;
@@ -88,7 +85,7 @@ mePathFindTest::mePathFindTest(deEngine *engine){
 		pDebugDrawer->SetXRay(true);
 		pDebugDrawer->SetVisible(pShowPath);
 		
-		pDDSPath = new igdeWDebugDrawerShape;
+		pDDSPath = igdeWDebugDrawerShape::Ref::New();
 		pDDSPath->SetEdgeColor(decColor(1.0f, 0.0f, 0.5f, 1.0f));
 		pDDSPath->SetFillColor(decColor(1.0f, 0.0f, 0.5f, 0.25f));
 		pDDSPath->SetParentDebugDrawer(pDebugDrawer);
@@ -226,7 +223,7 @@ void mePathFindTest::SetSpaceType(deNavigationSpace::eSpaceTypes spaceType){
 	Invalidate();
 }
 
-void mePathFindTest::SetPath(const deNavigatorPath &path){
+void mePathFindTest::SetPath(deNavigatorPath *path){
 	pPath = path;
 }
 
@@ -280,6 +277,7 @@ void mePathFindTest::Update(){
 		return;
 	}
 	
+	pPath = deNavigatorPath::Ref::New();
 	pEngNavigator->FindPath(pPath, pStartPosition, pGoalPosition);
 	pUpdateDDPath();
 	pDirtyPath = false;
@@ -291,18 +289,7 @@ void mePathFindTest::Update(){
 //////////////////////
 
 void mePathFindTest::pCleanUp(){
-	SetWorld(NULL);
-	
-	if(pEngNavigator){
-		pEngNavigator->FreeReference();
-	}
-	
-	if(pDDSPath){
-		delete pDDSPath;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -314,7 +301,11 @@ void mePathFindTest::pUpdateDDPath(){
 	
 	pDDSPath->RemoveAllFaces();
 	
-	const int count = pPath.GetCount();
+	if(!pPath){
+		return;
+	}
+	
+	const int count = pPath->GetCount();
 	if(count == 0){
 		return;
 	}
@@ -324,7 +315,7 @@ void mePathFindTest::pUpdateDDPath(){
 	const float circleStep = DEG2RAD * (360.0f / (float)circlePointCount);
 	const decVector up(0.0f, 1.0f, 0.0f);
 	
-	deDebugDrawerShapeFace *ddsFace = NULL;
+	deDebugDrawerShapeFace *ddsFace = nullptr;
 	decVector lastPoints[circlePointCount], points[circlePointCount];
 	decVector prevPos, pos, nextPos;
 	decMatrix matrix;
@@ -334,14 +325,14 @@ void mePathFindTest::pUpdateDDPath(){
 	
 	try{
 		for(i=0; i<count; i++){
-			pos = (pPath.GetAt(i) - pStartPosition).ToVector();
+			pos = (pPath->GetAt(i) - pStartPosition).ToVector();
 			
 			if(i > 0){
-				prevPos = (pPath.GetAt(i - 1) - pStartPosition).ToVector();
+				prevPos = (pPath->GetAt(i - 1) - pStartPosition).ToVector();
 			}
 			
 			if(i < count - 1){
-				nextPos = (pPath.GetAt(i + 1) - pStartPosition).ToVector();
+				nextPos = (pPath->GetAt(i + 1) - pStartPosition).ToVector();
 				
 			}else{
 				nextPos = pos;
@@ -384,7 +375,7 @@ void mePathFindTest::pUpdateDDPath(){
 				ddsFace->AddVertex(points[(j + 1) % circlePointCount]);
 				ddsFace->AddVertex(lastPoints[(j + 1) % circlePointCount]);
 				pDDSPath->AddFace(ddsFace);
-				ddsFace = NULL;
+				ddsFace = nullptr;
 			}
 			
 			for(j=0; j<circlePointCount; j++){
@@ -401,18 +392,13 @@ void mePathFindTest::pUpdateDDPath(){
 }
 
 void mePathFindTest::pUpdateTypes(){
-	const int count = pTypeList.GetCount();
-	int i;
-	
 	pEngNavigator->RemoveAllTypes();
 	
-	for(i=0; i<count; i++){
-		const mePathFindTestType &type = *pTypeList.GetAt(i);
+	pTypeList.Visit([&](const mePathFindTestType &type){
 		deNavigatorType &engType = *pEngNavigator->AddType(type.GetTypeNumber());
-		
 		engType.SetFixCost(type.GetFixCost());
 		engType.SetCostPerMeter(type.GetCostPerMeter());
-	}
+	});
 	
 	pEngNavigator->NotifyTypesChanged();
 }

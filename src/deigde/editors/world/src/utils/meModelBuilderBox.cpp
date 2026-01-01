@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meModelBuilderBox.h"
 
 #include <dragengine/common/exceptions.h>
@@ -62,9 +58,9 @@ meModelBuilderBox::~meModelBuilderBox(){
 ///////////////
 
 void meModelBuilderBox::BuildModel(deModel *model){
-	deModelTexture *modelTexture = NULL;
+	deModelTexture *modelTexture = nullptr;
 	const float halfSize = pSize * 0.5f;
-	deModelLOD *modelLOD = NULL;
+	deModelLOD *modelLOD = nullptr;
 	
 	// we need a lod mesh and a dummy texture
 	try{

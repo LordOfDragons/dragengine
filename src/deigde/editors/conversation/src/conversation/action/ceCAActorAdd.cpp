@@ -64,6 +64,6 @@ void ceCAActorAdd::SetAliasID(const char *id){
 
 
 
-ceConversationAction *ceCAActorAdd::CreateCopy() const{
-	return new ceCAActorAdd(*this);
+ceConversationAction::Ref ceCAActorAdd::CreateCopy() const{
+	return ceCAActorAdd::Ref::New(*this);
 }

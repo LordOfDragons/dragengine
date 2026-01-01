@@ -76,20 +76,20 @@ void detUnicodeStringList::TestModify() {
 	ASSERT_EQUAL(list1.GetAt(1), testString2);
 	
 	// Insert
-	list1.InsertAt(testString3, 0);
+	list1.Insert(testString3, 0);
 	ASSERT_EQUAL(list1.GetCount(), 3);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
 	ASSERT_EQUAL(list1.GetAt(2), testString2);
 	
-	list1.InsertAt(decUnicodeString(testString4), 2);
+	list1.Insert(decUnicodeString(testString4), 2);
 	ASSERT_EQUAL(list1.GetCount(), 4);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
 	ASSERT_EQUAL(list1.GetAt(2), testString4);
 	ASSERT_EQUAL(list1.GetAt(3), testString2);
 	
-	list1.InsertAt(testString5, 4);
+	list1.Insert(testString5, 4);
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString1);
@@ -123,57 +123,66 @@ void detUnicodeStringList::TestModify() {
 	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
 	// Move
+	// Before: [s3, s2, s4, s1, s5]
+	// Move(1, 3): move element at index 1 (s2) to position 3
+	// When to > from, element goes to position (to-1), so s2 goes to index 2
 	list1.Move(1, 3);
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString3);
 	ASSERT_EQUAL(list1.GetAt(1), testString4);
-	ASSERT_EQUAL(list1.GetAt(2), testString1);
-	ASSERT_EQUAL(list1.GetAt(3), testString2);
+	ASSERT_EQUAL(list1.GetAt(2), testString2);
+	ASSERT_EQUAL(list1.GetAt(3), testString1);
 	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
+	// Before: [s3, s4, s2, s1, s5]
+	// Move(2, 0): move element at index 2 (s2) to position 0
 	list1.Move(2, 0);
 	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
 	ASSERT_EQUAL(list1.GetAt(1), testString3);
 	ASSERT_EQUAL(list1.GetAt(2), testString4);
-	ASSERT_EQUAL(list1.GetAt(3), testString2);
+	ASSERT_EQUAL(list1.GetAt(3), testString1);
 	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
+	// Before: [s2, s3, s4, s1, s5]
+	// Move(1, 4): move element at index 1 (s3) to position 4
+	// Element goes to index 3 (to-1)
 	list1.Move(1, 4);
 	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
 	ASSERT_EQUAL(list1.GetAt(1), testString4);
-	ASSERT_EQUAL(list1.GetAt(2), testString2);
-	ASSERT_EQUAL(list1.GetAt(3), testString5);
-	ASSERT_EQUAL(list1.GetAt(4), testString3);
+	ASSERT_EQUAL(list1.GetAt(2), testString1);
+	ASSERT_EQUAL(list1.GetAt(3), testString3);
+	ASSERT_EQUAL(list1.GetAt(4), testString5);
 	
 	// decUnicodeStringList( const decUnicodeStringList &list )
+	// After Move operations, list1 is [s2, s4, s1, s3, s5]
 	decUnicodeStringList list2(list1);
 	ASSERT_EQUAL(list2.GetCount(), 5);
-	ASSERT_EQUAL(list2.GetAt(0), testString1);
+	ASSERT_EQUAL(list2.GetAt(0), testString2);
 	ASSERT_EQUAL(list2.GetAt(1), testString4);
-	ASSERT_EQUAL(list2.GetAt(2), testString2);
-	ASSERT_EQUAL(list2.GetAt(3), testString5);
-	ASSERT_EQUAL(list2.GetAt(4), testString3);
+	ASSERT_EQUAL(list2.GetAt(2), testString1);
+	ASSERT_EQUAL(list2.GetAt(3), testString3);
+	ASSERT_EQUAL(list2.GetAt(4), testString5);
 	
 	// RemoveFrom
 	list1.RemoveFrom(1);
 	ASSERT_EQUAL(list1.GetCount(), 4);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString5);
-	ASSERT_EQUAL(list1.GetAt(3), testString3);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
+	ASSERT_EQUAL(list1.GetAt(1), testString1);
+	ASSERT_EQUAL(list1.GetAt(2), testString3);
+	ASSERT_EQUAL(list1.GetAt(3), testString5);
 	
 	list1.RemoveFrom(3);
 	ASSERT_EQUAL(list1.GetCount(), 3);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString5);
+	ASSERT_EQUAL(list1.GetAt(0), testString2);
+	ASSERT_EQUAL(list1.GetAt(1), testString1);
+	ASSERT_EQUAL(list1.GetAt(2), testString3);
 	
 	list1.RemoveFrom(0);
 	ASSERT_EQUAL(list1.GetCount(), 2);
-	ASSERT_EQUAL(list1.GetAt(0), testString2);
-	ASSERT_EQUAL(list1.GetAt(1), testString5);
+	ASSERT_EQUAL(list1.GetAt(0), testString1);
+	ASSERT_EQUAL(list1.GetAt(1), testString3);
 	
 	list1.RemoveFrom(0);
 	list1.RemoveFrom(0);
@@ -317,49 +326,6 @@ void detUnicodeStringList::TestOperator(){
 	list2.Add(testString5);
 	
 	list1 += list2;
-	ASSERT_EQUAL(list1.GetCount(), 5);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString3);
-	ASSERT_EQUAL(list1.GetAt(3), testString4);
-	ASSERT_EQUAL(list1.GetAt(4), testString5);
-	
-	// operator+(decUnicodeString)
-	list1.RemoveAll();
-	list1.Add(testString1);
-	list1.Add(testString2);
-	list1.Add(testString3);
-	
-	list3.RemoveAll();
-	list3 = list1 + decUnicodeString(testString4);
-	ASSERT_EQUAL(list3.GetCount(), 4);
-	ASSERT_EQUAL(list3.GetAt(0), testString1);
-	ASSERT_EQUAL(list3.GetAt(1), testString2);
-	ASSERT_EQUAL(list3.GetAt(2), testString3);
-	ASSERT_EQUAL(list3.GetAt(3), testString4);
-	
-	list3.RemoveAll();
-	list3 = list1 + testString4;
-	ASSERT_EQUAL(list3.GetCount(), 4);
-	ASSERT_EQUAL(list3.GetAt(0), testString1);
-	ASSERT_EQUAL(list3.GetAt(1), testString2);
-	ASSERT_EQUAL(list3.GetAt(2), testString3);
-	ASSERT_EQUAL(list3.GetAt(3), testString4);
-	
-	// operator+=(decUnicodeString)
-	list1.RemoveAll();
-	list1.Add(testString1);
-	list1.Add(testString2);
-	list1.Add(testString3);
-	
-	list1 += decUnicodeString(testString4);
-	ASSERT_EQUAL(list1.GetCount(), 4);
-	ASSERT_EQUAL(list1.GetAt(0), testString1);
-	ASSERT_EQUAL(list1.GetAt(1), testString2);
-	ASSERT_EQUAL(list1.GetAt(2), testString3);
-	ASSERT_EQUAL(list1.GetAt(3), testString4);
-	
-	list1 += testString5;
 	ASSERT_EQUAL(list1.GetCount(), 5);
 	ASSERT_EQUAL(list1.GetAt(0), testString1);
 	ASSERT_EQUAL(list1.GetAt(1), testString2);

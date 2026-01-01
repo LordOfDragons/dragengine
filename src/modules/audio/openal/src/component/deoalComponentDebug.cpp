@@ -130,7 +130,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 	}
 	
 	if(!pDDFaces){
-		pDDFaces.TakeOver(pComponent.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
+		pDDFaces = pComponent.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDDFaces->SetXRay(true);
 		pDDFaces->SetVisible(true);
 		pComponent.GetParentWorld()->GetWorld().AddDebugDrawer(pDDFaces);

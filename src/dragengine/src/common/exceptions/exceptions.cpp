@@ -29,6 +29,18 @@
 #include "../exceptions.h"
 
 
+// Functions
+//////////////
+
+DE_DLL_EXPORT void DEThrowNullPointer(const char *file, int line, const char *message){
+	throw deeNullPointer(file, line, message);
+}
+
+DE_DLL_EXPORT void DEThrowInvalidParam(const char *file, int line, const char *message){
+	throw deeInvalidParam(file, line, message);
+}
+
+
 
 // Subclass Constructors
 //////////////////////////

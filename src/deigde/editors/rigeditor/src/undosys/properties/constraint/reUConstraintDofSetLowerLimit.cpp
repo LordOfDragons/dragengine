@@ -55,14 +55,9 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pNewValue = newValue;
 	
 	SetShortInfo("Constraint DOF set lower limit");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintDofSetLowerLimit::~reUConstraintDofSetLowerLimit(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

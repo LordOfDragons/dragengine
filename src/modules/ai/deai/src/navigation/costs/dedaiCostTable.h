@@ -25,7 +25,7 @@
 #ifndef _DEDAICOSTTABLE_H_
 #define _DEDAICOSTTABLE_H_
 
-#include <dragengine/common/collection/decIntOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -39,7 +39,7 @@
  */
 class dedaiCostTable{
 private:
-	decIntOrderedSet pTypes;
+	decTOrderedSet<int> pTypes;
 	bool pChanged;
 	
 	

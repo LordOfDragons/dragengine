@@ -35,6 +35,10 @@
  * \brief FBX property long.
  */
 class fbxPropertyLong : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyLong> Ref;
+	
+	
 private:
 	int64_t pValue;
 	
@@ -47,7 +51,7 @@ public:
 	fbxPropertyLong();
 	
 	/** \brief Load property. */
-	fbxPropertyLong(decBaseFileReader &reader);
+	explicit fbxPropertyLong(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

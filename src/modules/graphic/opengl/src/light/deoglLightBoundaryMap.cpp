@@ -49,8 +49,8 @@ pRenderThread(renderThread),
 pTextureMin(NULL),
 pTextureMax(NULL),
 
-pPixBufBoundaryMin(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
-pPixBufBoundaryMax(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
+pPixBufBoundaryMin(deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
+pPixBufBoundaryMax(deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
 
 pSize(size),
 pLevelCount(1)
@@ -151,7 +151,7 @@ void deoglLightBoundaryMap::pCreateFBOs(){
 	int i;
 	
 	for(i=0; i<pLevelCount; i++){
-		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 		
 		pRenderThread.GetFramebuffer().Activate(fbo);
 		

@@ -39,6 +39,8 @@
 #include "../../../utils/cache/deoalRayCacheRay.h"
 #include "../../../utils/cache/deoalRayCacheRayHit.h"
 #include "../../../world/octree/deoalWorldOctree.h"
+#include "../../../audiothread/deoalAudioThread.h"
+#include "../../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -70,8 +72,6 @@ void deoalWOVRayHitsElement::SetResult(deoalRayTraceResult *result){
 }
 
 #ifdef WOVRAYHITSELEMENT_DO_TIMING
-#include "../../../audiothread/deoalAudioThread.h"
-#include "../../../audiothread/deoalATLogger.h"
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModel.h>
 void deoalWOVRayHitsElement::StartTiming(){

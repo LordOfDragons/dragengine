@@ -42,8 +42,8 @@
 
 gdeUOCNavBlockerSetBoneName::gdeUOCNavBlockerSetBoneName(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navBlocker, const char *newValue) :
-pObjectClass(NULL),
-pNavBlocker(NULL)
+
+pNavBlocker(nullptr)
 {
 	if(!objectClass || !navBlocker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navBlocker;
-	navBlocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetBoneName::~gdeUOCNavBlockerSetBoneName(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

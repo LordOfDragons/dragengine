@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/ai/deBaseAINavigationBlocker.h>
 
 class deDEAIModule;
 class dedaiLayer;
 class dedaiWorld;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deNavigationBlocker;
 
@@ -61,7 +61,7 @@ private:
 	
 	decConvexVolumeList pConvexVolumeList;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSBlocker;
 	
 	

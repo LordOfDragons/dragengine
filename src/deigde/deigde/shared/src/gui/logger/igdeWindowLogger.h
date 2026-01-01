@@ -25,12 +25,12 @@
 #ifndef _IGDEWINDOWLOGGER_H_
 #define _IGDEWINDOWLOGGER_H_
 
+#include "igdeWindowLoggerListener.h"
 #include "../igdeWindow.h"
 #include "../igdeTextArea.h"
+#include "../../logger/igdeLoggerHistory.h"
 
-class igdeLoggerHistory;
 class igdeLoggerHistoryEntry;
-class igdeWindowLoggerListener;
 
 
 
@@ -52,8 +52,8 @@ public:
 	
 	
 private:
-	igdeWindowLoggerListener *pListener;
-	igdeLoggerHistory *pLogger;
+	igdeWindowLoggerListener::Ref pListener;
+	igdeLoggerHistory::Ref pHistoryLogger;
 	igdeTextArea::Ref pEditLogs;
 	int pPendingAddedLogs;
 	bool pPendingClearLogs;
@@ -64,21 +64,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger window. */
-	igdeWindowLogger(igdeEnvironment &environment);
+	explicit igdeWindowLogger(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up logger window. */
 	virtual ~igdeWindowLogger();
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Logger or NULL. */
-	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
+	/** \brief History logger or nullptr. */
+	inline const igdeLoggerHistory::Ref &GetHistoryLogger() const{ return pHistoryLogger; }
 	
-	/** \brief Set logger or NULL. */
-	void SetLogger(igdeLoggerHistory *logger);
+	/** \brief Set logger or nullptr. */
+	void SetHistoryLogger(igdeLoggerHistory *logger);
 	
 	
 	

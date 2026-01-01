@@ -29,7 +29,7 @@
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -53,17 +53,20 @@ protected:
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditPoint3 &pEditPoint3;
-		igdeTextField::Ref pTextX;
-		igdeTextField::Ref pTextY;
-		igdeTextField::Ref pTextZ;
+		igdeTextField::WeakRef pTextX;
+		igdeTextField::WeakRef pTextY;
+		igdeTextField::WeakRef pTextZ;
 		
 	public:
 		typedef deTObjectReference<cListener> Ref;
 		
-		cListener(igdeEditPoint3 &editPoint3, igdeTextField *textX,
+		cListener(igdeEditPoint3 &editPoint, igdeTextField *textX,
 			igdeTextField *textY, igdeTextField *textZ);
 		
+	protected:
 		virtual ~cListener();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 		virtual void OnTextChanging(igdeTextField *textField);
 	};
@@ -82,7 +85,7 @@ private:
 	igdeTextField::Ref pTextZ;
 	bool pPreventUpdate;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPoint3Listener> pListeners;
 	
 	
 	

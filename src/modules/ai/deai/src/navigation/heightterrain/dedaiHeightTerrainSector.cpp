@@ -139,7 +139,7 @@ void dedaiHeightTerrainSector::HeightChanged(const decPoint &from, const decPoin
 
 
 void dedaiHeightTerrainSector::NavSpaceAdded(deHeightTerrainNavSpace *navspace){
-	pNavSpaces.Add(dedaiHeightTerrainNavSpace::Ref::NewWith(*this, *navspace));
+	pNavSpaces.Add(dedaiHeightTerrainNavSpace::Ref::New(*this, *navspace));
 }
 
 void dedaiHeightTerrainSector::NavSpaceRemoved(int index){

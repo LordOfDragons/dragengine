@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCATrigger;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCATrigger.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action trigger conversation action set name.
  */
 class ceUCATriggerSetName : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCATriggerSetName> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCATrigger *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCATrigger::Ref pAction;
 	decString pOldName;
 	decString pNewName;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCATriggerSetName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCATriggerSetName();
+public:
 	/*@}*/
 	
 public:

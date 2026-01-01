@@ -53,19 +53,15 @@ meUDecalTCRotation::meUDecalTCRotation(meDecal *decal, float newRotation){
 	
 	SetShortInfo("Decal Texture Rotation");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldRotation = decal->GetTexCoordRotation();
 	pNewRotation = newRotation;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCRotation::~meUDecalTCRotation(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

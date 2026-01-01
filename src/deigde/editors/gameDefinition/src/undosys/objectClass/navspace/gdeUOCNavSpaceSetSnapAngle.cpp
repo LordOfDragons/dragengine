@@ -42,8 +42,7 @@
 
 gdeUOCNavSpaceSetSnapAngle::gdeUOCNavSpaceSetSnapAngle(gdeObjectClass *objectClass,
 gdeOCNavigationSpace *navspace, float newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetSnapAngle::~gdeUOCNavSpaceSetSnapAngle(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

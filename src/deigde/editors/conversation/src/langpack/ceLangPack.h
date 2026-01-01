@@ -26,8 +26,8 @@
 #define _CELANGPACK_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class ceLangPackEntry;
@@ -39,16 +39,15 @@ class ceLangPackEntry;
 class ceLangPack : public deObject{
 public:
 	typedef deTObjectReference<ceLangPack> Ref;
+	typedef decTDictionary<decString,decUnicodeString> EntryMap;
 	
 	
 private:
 	decString pPath;
 	
 	decString pIdentifier;
-	decUnicodeString pName;
-	decUnicodeString pDescription;
-	decUnicodeString pMissingText;
-	decObjectOrderedSet pEntries;
+	decUnicodeString pName, pDescription, pMissingText;
+	EntryMap pEntries;
 	
 	bool pChanged;
 	
@@ -58,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create language pack. */
-	ceLangPack(const char *path);
+	explicit ceLangPack(const char *path);
 	
 protected:
 	/** Cleans up language pack. */
@@ -92,32 +91,10 @@ public:
 	/** Language pack changed and needs to be saved. */
 	inline bool GetChanged() const{ return pChanged; }
 	void SetChanged(bool changed);
-	/*@}*/
 	
-	
-	
-	/** \name Entries */
-	/*@{*/
-	/** Count of entries. */
-	int GetEntryCount() const;
-	
-	/** Entry at index. */
-	ceLangPackEntry *GetEntryAt(int index) const;
-	
-	/** Named entry or nullptr if absent. */
-	ceLangPackEntry *GetEntryNamed(const char *name) const;
-	
-	/** Add entry. */
-	void AddEntry(ceLangPackEntry *entry);
-	
-	/** Remove entry. */
-	void RemoveEntry(ceLangPackEntry *entry);
-	
-	/** Remove all entries. */
-	void RemoveAllEntries();
-	
-	/** Get sorted list of entry names. */
-	void GetEntryNames(decStringList &list) const;
+	/** Entries */
+	inline EntryMap &GetEntries(){ return pEntries; }
+	inline const EntryMap &GetEntries() const{ return pEntries; }
 	/*@}*/
 };
 

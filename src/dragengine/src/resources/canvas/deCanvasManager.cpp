@@ -66,129 +66,52 @@ deCanvas *deCanvasManager::GetRootCanvas() const{
 	return (deCanvas*)pCanvas.GetRoot();
 }
 
-deCanvasImage *deCanvasManager::CreateCanvasImage(){
-	deCanvasImage *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasImage(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasImage::Ref deCanvasManager::CreateCanvasImage(){
+	const deCanvasImage::Ref canvas(deCanvasImage::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasPaint *deCanvasManager::CreateCanvasPaint(){
-	deCanvasPaint *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasPaint(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasPaint::Ref deCanvasManager::CreateCanvasPaint(){
+	const deCanvasPaint::Ref canvas(deCanvasPaint::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasCanvasView *deCanvasManager::CreateCanvasCanvasView(){
-	deCanvasCanvasView *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasCanvasView(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasCanvasView::Ref deCanvasManager::CreateCanvasCanvasView(){
+	const deCanvasCanvasView::Ref canvas(deCanvasCanvasView::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasRenderWorld *deCanvasManager::CreateCanvasRenderWorld(){
-	deCanvasRenderWorld *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasRenderWorld(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasRenderWorld::Ref deCanvasManager::CreateCanvasRenderWorld(){
+	const deCanvasRenderWorld::Ref canvas(deCanvasRenderWorld::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasText *deCanvasManager::CreateCanvasText(){
-	deCanvasText *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasText(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasText::Ref deCanvasManager::CreateCanvasText(){
+	const deCanvasText::Ref canvas(deCanvasText::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasVideoPlayer *deCanvasManager::CreateCanvasVideoPlayer(){
-	deCanvasVideoPlayer *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasVideoPlayer(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasVideoPlayer::Ref deCanvasManager::CreateCanvasVideoPlayer(){
+	const deCanvasVideoPlayer::Ref canvas(deCanvasVideoPlayer::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasView *deCanvasManager::CreateCanvasView(){
-	deCanvasView *canvas = NULL;
-	
-	try{
-		canvas = new deCanvasView(this);
-		GetGraphicSystem()->LoadCanvas(canvas);
-		pCanvas.Add(canvas);
-		
-	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCanvasView::Ref deCanvasManager::CreateCanvasView(){
+	const deCanvasView::Ref canvas(deCanvasView::Ref::New(this));
+	GetGraphicSystem()->LoadCanvas(canvas);
+	pCanvas.Add(canvas);
 	return canvas;
 }
 

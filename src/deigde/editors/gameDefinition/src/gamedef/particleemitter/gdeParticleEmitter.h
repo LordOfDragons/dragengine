@@ -26,6 +26,7 @@
 #define _GDEPARTICLEEMITTER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -50,6 +51,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeParticleEmitter> Ref;
 
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeParticleEmitter> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -63,7 +67,9 @@ public:
 	gdeParticleEmitter(const gdeParticleEmitter &particleEmitter);
 	
 	/** \brief Clean up particle emitter. */
+protected:
 	virtual ~gdeParticleEmitter();
+public:
 	/*@}*/
 	
 	

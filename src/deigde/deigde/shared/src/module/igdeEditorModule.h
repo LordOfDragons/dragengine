@@ -25,16 +25,17 @@
 #ifndef _IGDEEDITORMODULE_H_
 #define _IGDEEDITORMODULE_H_
 
-#include <dragengine/common/string/decString.h>
+#include "../gui/igdeEditorWindow.h"
 
-class decStringList;
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
+
 class igdeEnvironment;
-class igdeEditorWindow;
 class igdeStepableTask;
 class deEngine;
 class deLogger;
 class deException;
-class decUnicodeStringList;
 
 
 /**
@@ -49,7 +50,7 @@ private:
 	decString pLoggingName;
 	decString pEditorDirectory;
 	decString pEditorPathLib;
-	igdeEditorWindow *pEditorWindow;
+	igdeEditorWindow::Ref pEditorWindow;
 	
 	
 	
@@ -94,7 +95,7 @@ public:
 	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
+	inline const igdeEditorWindow::Ref &GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.
@@ -183,12 +184,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update NULL can be returned. The caller delets the task once
+	 * does not need any update nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns NULL.
+	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/**
 	 * \brief Process command line arguments.

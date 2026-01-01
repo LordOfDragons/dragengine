@@ -44,7 +44,7 @@ peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *ne
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Model Skin Path");
 	
@@ -52,13 +52,9 @@ peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *ne
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetModelSkinPath::~peeUTypeSetModelSkinPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

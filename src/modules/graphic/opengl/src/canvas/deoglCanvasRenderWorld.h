@@ -26,8 +26,8 @@
 #define _DEOGLCANVASRENDERWORLD_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasRenderWorld.h"
 
-class deoglRCanvasRenderWorld;
 class deoglCamera;
 
 class deCanvasRenderWorld;
@@ -39,7 +39,7 @@ class deCanvasRenderWorld;
 class deoglCanvasRenderWorld : public deoglCanvas{
 private:
 	deCanvasRenderWorld &pCanvasRenderWorld;
-	deoglRCanvasRenderWorld *pRCanvasRenderWorld;
+	deoglRCanvasRenderWorld::Ref pRCanvasRenderWorld;
 	deoglCamera *pCamera;
 	
 	

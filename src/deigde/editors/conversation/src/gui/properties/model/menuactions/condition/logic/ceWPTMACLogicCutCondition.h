@@ -38,6 +38,9 @@ class ceConversationAction;
  * \brief Menu action cut action to topic.
  */
 class ceWPTMACLogicCutCondition : public ceWPTMACopyCondition{
+public:
+	typedef deTObjectReference<ceWPTMACLogicCutCondition> Ref;
+	
 private:
 	ceConversation *pConversation;
 	ceConversationTopic *pTopic;

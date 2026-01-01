@@ -25,6 +25,10 @@
 #ifndef _CEVIEWCONVO_H_
 #define _CEVIEWCONVO_H_
 
+#include "ceViewConversationListener.h"
+#include "ceCanvasRuleOfThirdsAid.h"
+#include "../conversation/ceConversation.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
@@ -32,10 +36,7 @@
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 
 
-class ceViewConversationListener;
-class ceCanvasRuleOfThirdsAid;
 class ceWindowMain;
-class ceConversation;
 class decBoundary;
 
 
@@ -44,13 +45,16 @@ class decBoundary;
  * \brief Conversation View.
  */
 class ceViewConversation : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<ceViewConversation> Ref;
+	
 private:
 	ceWindowMain &pWindowMain;
-	ceViewConversationListener *pListener;
+	ceViewConversationListener::Ref pListener;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
-	ceCanvasRuleOfThirdsAid *pRuleOfThirdsAid;
+	ceCanvasRuleOfThirdsAid::Ref pRuleOfThirdsAid;
 	deCanvasPaint::Ref pCanvasBackground;
 	
 	igdeMouseCameraListener::Ref pCameraMouseListener;
@@ -64,7 +68,9 @@ public:
 	ceViewConversation(ceWindowMain &windowMain);
 	
 	/** \brief Cleans up conversation view. */
+protected:
 	virtual ~ceViewConversation();
+public:
 	/*@}*/
 	
 	
@@ -75,7 +81,7 @@ public:
 	void ResetView();
 	
 	/** \brief Monitored conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);
@@ -84,7 +90,7 @@ public:
 	void GetViewportWithRatio(decBoundary &viewport) const;
 	
 	/** \brief Rule of thirds aid canvas. */
-	inline ceCanvasRuleOfThirdsAid *GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
+	inline const ceCanvasRuleOfThirdsAid::Ref &GetRuleOfThirdsAid() const{ return pRuleOfThirdsAid; }
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

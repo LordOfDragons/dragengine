@@ -21,7 +21,6 @@ public:
 private:
 	void TestModify();
 	void TestTesting();
-	void TestSort();
 	void TestOperator();
 };
 

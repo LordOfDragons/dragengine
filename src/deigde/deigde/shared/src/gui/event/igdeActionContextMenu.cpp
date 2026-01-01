@@ -84,11 +84,11 @@ void igdeActionContextMenu::OnAction(){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(pWidget->GetEnvironment()));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(pWidget->GetEnvironment()));
 	
 	AddContextMenuEntries(menu);
 	
-	if(menu->GetChildCount() != 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->PopupBottom(pWidget);
 	}
 }

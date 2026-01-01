@@ -147,11 +147,9 @@ void igdeNativeFoxGroupBox::UpdateTitleAlignment(){
 }
 
 void igdeNativeFoxGroupBox::UpdateStretchLast(){
-	const int count = pOwner->GetChildCount();
-	int i;
-	for(i=0; i<count; i++){
-		igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(i));
-	}
+	pOwner->GetChildren().Visit([](igdeWidget *widget){
+		igdeUIFoxHelper::UpdateLayoutFlags(widget);
+	});
 	recalc();
 }
 
@@ -184,19 +182,19 @@ igdeFont *igdeNativeFoxGroupBox::GroupBoxFont(const igdeGroupBox &powner, const 
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::groupBoxFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::groupBoxFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::groupBoxFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -247,12 +245,12 @@ long igdeNativeFoxGroupBox::onChildLayoutFlags(FXObject*, FXSelector, void *pdat
 	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X;
 	
-	const int index = pOwner->IndexOfChild(clflags.widget);
+	const int index = pOwner->GetChildren().IndexOf(clflags.widget);
 	if(index == -1){
 		return 1;
 	}
 	
-	if(pOwner->GetStretchLast() && index == pOwner->GetChildCount() - 1){
+	if(pOwner->GetStretchLast() && index == pOwner->GetChildren().GetCount() - 1){
 		clflags.flags |= LAYOUT_FILL_Y;
 	}
 	

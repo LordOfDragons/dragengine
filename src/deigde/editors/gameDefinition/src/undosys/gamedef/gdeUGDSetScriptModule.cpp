@@ -41,7 +41,7 @@
 
 gdeUGDSetScriptModule::gdeUGDSetScriptModule(
 gdeGameDefinition *gameDefinition, const char *newValue) :
-pGameDefinition(NULL),
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetScriptModule();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetScriptModule::~gdeUGDSetScriptModule(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

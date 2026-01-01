@@ -84,33 +84,24 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed(const char *filena
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *filename){
-	deadArchiveDirectory * directory = GetDirectoryNamed(filename);
-	if(directory){
-		return directory;
+	deadArchiveDirectory * const findDirectory = GetDirectoryNamed(filename);
+	if(findDirectory){
+		return findDirectory;
 	}
 	
-	try{
-		directory = new deadArchiveDirectory(pModule, filename);
-		pDirectories.Add(directory);
-		directory->FreeReference();
-		
-	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
-		throw;
-	}
+	const deadArchiveDirectory::Ref directory(deadArchiveDirectory::Ref::New(pModule, filename));
+	pDirectories.Add(directory);
 	return directory;
 }
 
 deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &path){
 	const int count = path.GetComponentCount();
 	if(count == 0){
-		return NULL;
+		return nullptr;
 		
 	}else if(count == 1){
 		return GetDirectoryNamed(path.GetComponentAt(0));
@@ -122,7 +113,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 	for(i=0; i<count; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
 		if(!directory){
-			return NULL;
+			return nullptr;
 		}
 	}
 	
@@ -181,13 +172,13 @@ deadArchiveFile *deadArchiveDirectory::GetFileNamed(const char *filename) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 	const int count = path.GetComponentCount();
 	if(count == 0){
-		return NULL;
+		return nullptr;
 		
 	}else if(count == 1){
 		return GetFileNamed(path.GetComponentAt(0));
@@ -199,7 +190,7 @@ deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 	for(i=0; i<count-1; i++){
 		directory = directory->GetDirectoryNamed(path.GetComponentAt(i));
 		if(!directory){
-			return NULL;
+			return nullptr;
 		}
 	}
 	

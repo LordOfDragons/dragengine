@@ -102,7 +102,6 @@ void deoglShape::sVBOData::SetFromSelFalse(const sVBOData &data){
 
 deoglShape::deoglShape(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pVBOBlock(NULL),
 pPointOffsetFaces(0),
 pPointCountFaces(0),
 pPointOffsetLines(0),
@@ -112,7 +111,6 @@ pPointCountLines(0){
 deoglShape::~deoglShape(){
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock->FreeReference();
 	}
 }
 
@@ -135,8 +133,7 @@ deoglSharedVBOBlock *deoglShape::GetVBOBlock(){
 		}catch(const deException &){
 			if(pVBOBlock){
 				pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-				pVBOBlock->FreeReference();
-				pVBOBlock = NULL;
+				pVBOBlock = nullptr;
 			}
 			throw;
 		}

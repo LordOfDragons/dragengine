@@ -26,11 +26,11 @@
 #define _DEOGLDSRENDERABLECOLOR_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableColor.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deDSRenderableColor;
-class deoglRDSRenderableColor;
 
 
 
@@ -40,7 +40,7 @@ class deoglRDSRenderableColor;
 class deoglDSRenderableColor : public deoglDSRenderable{
 public:
 	const deDSRenderableColor &pRenderableColor;
-	deoglRDSRenderableColor *pRRenderableColor;
+	deoglRDSRenderableColor::Ref pRRenderableColor;
 	decColor pColor;
 	bool pDirty;
 	

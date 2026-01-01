@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPUndoHistoryListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPUndoHistoryListener(gdeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	

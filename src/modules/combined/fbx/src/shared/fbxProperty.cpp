@@ -179,48 +179,48 @@ decMatrix fbxProperty::GetValueAtAsMatrix(int index) const{
 
 
 
-fbxProperty *fbxProperty::Read(decBaseFileReader &reader){
+fbxProperty::Ref fbxProperty::Read(decBaseFileReader &reader){
 	const char typeCode = reader.ReadChar();
 	
 	switch(typeCode){
 	case 'C':
-		return new fbxPropertyBool(reader);
+		return fbxPropertyBool::Ref::New(reader);
 		
 	case 'Y':
-		return new fbxPropertyShort(reader);
+		return fbxPropertyShort::Ref::New(reader);
 		
 	case 'I':
-		return new fbxPropertyInteger(reader);
+		return fbxPropertyInteger::Ref::New(reader);
 		
 	case 'L':
-		return new fbxPropertyLong(reader);
+		return fbxPropertyLong::Ref::New(reader);
 		
 	case 'F':
-		return new fbxPropertyFloat(reader);
+		return fbxPropertyFloat::Ref::New(reader);
 		
 	case 'D':
-		return new fbxPropertyDouble(reader);
+		return fbxPropertyDouble::Ref::New(reader);
 		
 	case 'b':
-		return new fbxPropertyArrayBool(reader);
+		return fbxPropertyArrayBool::Ref::New(reader);
 		
 	case 'i':
-		return new fbxPropertyArrayInteger(reader);
+		return fbxPropertyArrayInteger::Ref::New(reader);
 		
 	case 'l':
-		return new fbxPropertyArrayLong(reader);
+		return fbxPropertyArrayLong::Ref::New(reader);
 		
 	case 'f':
-		return new fbxPropertyArrayFloat(reader);
+		return fbxPropertyArrayFloat::Ref::New(reader);
 		
 	case 'd':
-		return new fbxPropertyArrayDouble(reader);
+		return fbxPropertyArrayDouble::Ref::New(reader);
 		
 	case 'S':
-		return new fbxPropertyString(reader);
+		return fbxPropertyString::Ref::New(reader);
 		
 	case 'R':
-		return new fbxPropertyBinary(reader);
+		return fbxPropertyBinary::Ref::New(reader);
 		
 	default:
 		DETHROW_INFO(deeInvalidFileFormat, "unknown property type code");
@@ -289,7 +289,7 @@ void fbxProperty::pGetValueReader(decBaseFileReader &reader, decBaseFileReader::
 		
 	case 1: // z-lib encoded
 		(void)compressedLength;
-		valueReader.TakeOver(new decZFileReader(&reader, true, compressedLength));
+		valueReader = decZFileReader::Ref::New(&reader, true, compressedLength);
 		break;
 		
 	default:{

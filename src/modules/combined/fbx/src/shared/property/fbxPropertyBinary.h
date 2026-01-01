@@ -35,6 +35,10 @@
  * \brief FBX property string.
  */
 class fbxPropertyBinary : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyBinary> Ref;
+	
+	
 private:
 	uint8_t *pValue;
 	int pLength;
@@ -48,7 +52,7 @@ public:
 	fbxPropertyBinary();
 	
 	/** \brief Load property. */
-	fbxPropertyBinary(decBaseFileReader &reader);
+	explicit fbxPropertyBinary(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -37,8 +37,12 @@ class reRigConstraint;
  * \brief Set constraint dof spring stiffness undo action.
  */
 class reUConstraintDofSetSpringStiffness : public igdeUndo{
+public:
+	typedef deTObjectReference<reUConstraintDofSetSpringStiffness> Ref;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	deColliderConstraint::eDegreesOfFreedom pDof;
 	
 	float pOldValue;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUConstraintDofSetSpringStiffness> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

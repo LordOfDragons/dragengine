@@ -41,30 +41,21 @@
 ////////////////////////////
 
 saeUWordRemove::saeUWordRemove(saeWord *word){
-	if(!word) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(word)
 	
-	saeSAnimation *sanimation = word->GetSAnimation();
-	if(!sanimation) DETHROW(deeInvalidParam);
+	saeSAnimation * const sanimation = word->GetSAnimation();
+	DEASSERT_NOTNULL(sanimation)
 	
-	pSAnimation = NULL;
-	pWord = NULL;
+	pSAnimation = nullptr;
+	pWord = nullptr;
 	
 	SetShortInfo("Remove Word");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordRemove::~saeUWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

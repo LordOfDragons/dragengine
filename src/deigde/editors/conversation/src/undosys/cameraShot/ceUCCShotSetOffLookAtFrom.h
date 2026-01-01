@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -37,16 +37,17 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Start Look-At Position.
  */
 class ceUCCShotSetOffLookAtFrom : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCShotSetOffLookAtFrom> Ref;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldPos;
 	decVector pNewPos;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCShotSetOffLookAtFrom> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

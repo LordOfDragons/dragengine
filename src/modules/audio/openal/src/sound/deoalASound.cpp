@@ -231,7 +231,6 @@ void deoalASound::pLoadFromCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileReader::Ref reader;
 	
 	const decPath path(decPath::CreatePathUnix(pFilename));
 	if(!vfs.CanReadFile(path)){
@@ -242,7 +241,7 @@ void deoalASound::pLoadFromCache(){
 	caches.Lock();
 	
 	try{
-		reader.TakeOver(cacheSound.Read(pFilename));
+		decBaseFileReader::Ref reader(cacheSound.Read(pFilename));
 		if(!reader){
 			// cache file absent
 			caches.Unlock();
@@ -324,7 +323,6 @@ void deoalASound::pLoadFromCache(){
 		
 	}catch(const deException &){
 		// damaged cache file
-		reader = NULL;
 		cacheSound.Delete(pFilename);
 		caches.Unlock();
 		
@@ -346,7 +344,6 @@ void deoalASound::pWriteToCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileWriter::Ref writer;
 	
 	const decPath path(decPath::CreatePathUnix(pFilename));
 	if(!vfs.CanReadFile(path)){
@@ -374,12 +371,12 @@ void deoalASound::pWriteToCache(){
 	caches.Lock();
 	
 	try{
-		writer.TakeOver(cacheSound.Write(pFilename));
+		decBaseFileWriter::Ref writer(cacheSound.Write(pFilename));
 		writer->Write(&header, sizeof(header));
 		if(pStreamDataSize > 0){
 			writer->Write(pStreamData, pStreamDataSize);
 		}
-		writer = NULL;
+		writer = nullptr;
 		
 		caches.Unlock();
 		if(enableCacheLogging){
@@ -387,7 +384,6 @@ void deoalASound::pWriteToCache(){
 		}
 		
 	}catch(const deException &e){
-		writer = NULL;
 		cacheSound.Delete(pFilename);
 		caches.Unlock();
 		
@@ -482,11 +478,9 @@ void deoalASound::pLoadEntireSound(deSound &sound){
 		return;
 	}
 	
-	deSoundDecoder::Ref decoder(deSoundDecoder::Ref::New(
-		 pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder(&sound)));
-	
 	pStreamData = new char[bufferSize];
 	pStreamDataSize = bufferSize;
 	
-	decoder->ReadSamples(pStreamData, bufferSize);
+	pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder(&sound)->
+		ReadSamples(pStreamData, bufferSize);
 }

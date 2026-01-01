@@ -47,15 +47,15 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	
 	deImage &oldImage = *fontImage->GetEngineImage();
 	
-	pImage = NULL;
+	pImage = nullptr;
 	
 	pOldWidth = oldImage.GetWidth();
 	pOldHeight = oldImage.GetHeight();
-	pOldColor = NULL;
+	pOldColor = nullptr;
 	
 	pNewWidth = newImage->GetWidth();
 	pNewHeight = newImage->GetHeight();
-	pNewColor = NULL;
+	pNewColor = nullptr;
 	
 	pOldPath = fontImage->GetFilename();
 	pNewPath = newPath;
@@ -81,7 +81,6 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	}
 	
 	pImage = fontImage;
-	fontImage->AddReference();
 }
 
 feUFontImportImage::~feUFontImportImage(){
@@ -113,8 +112,6 @@ void feUFontImportImage::Redo(){
 void feUFontImportImage::pCleanUp(){
 	if(pNewColor) delete [] pNewColor;
 	if(pOldColor) delete [] pOldColor;
-	
-	if(pImage) pImage->FreeReference();
 }
 
 void feUFontImportImage::pStoreColors(deImage &image, decColor *colors){

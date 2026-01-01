@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUPropertyNodeData::seUPropertyNodeData(sePropertyNode *node) :
-pNode(NULL)
+pNode(nullptr)
 {
 	if(!node){
 		DETHROW(deeInvalidParam);
@@ -53,13 +53,9 @@ pNode(NULL)
 	pMatrix = node->CreateScreenTransformMatrix();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeData::~seUPropertyNodeData(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

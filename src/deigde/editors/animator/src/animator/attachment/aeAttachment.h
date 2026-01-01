@@ -43,7 +43,7 @@ class deEngine;
  * Attach object.
  */
 class aeAttachment : public deObject{
-	public:
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeAttachment> Ref;
 	
@@ -76,7 +76,9 @@ public:
 	aeAttachment(igdeEnvironment *environment, const char *name = "Attachment");
 	
 	/** Clean up attachment. */
+protected:
 	virtual ~aeAttachment();
+public:
 	/*@}*/
 	
 	

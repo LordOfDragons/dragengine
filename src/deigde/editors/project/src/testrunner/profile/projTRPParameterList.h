@@ -25,74 +25,62 @@
 #ifndef _PROJTRPPARAMETERLIST_H_
 #define _PROJTRPPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "projTRPParameter.h"
 
-class projTRPParameter;
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
- * \brief Profile module parameters.
+ * Profile module parameters.
  */
 class projTRPParameterList{
 private:
-	decObjectOrderedSet pParameters;
+	decTObjectOrderedSet<projTRPParameter> pParameters;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create profile module parameters. */
+	/** Create profile module parameters. */
 	projTRPParameterList();
 	
-	/** \brief Clean up profile module parameters. */
+	/** Clean up profile module parameters. */
 	~projTRPParameterList();
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of parameters. */
-	int GetCount() const;
+	/** Parameters. */
+	inline const decTObjectOrderedSet<projTRPParameter> &GetParameters() const{ return pParameters; }
 	
-	/** \brief Parameter at index. */
-	projTRPParameter *GetAt(int index) const;
-	
-	/** \brief Named parameter with module or \em NULL if absent. */
+	/** Named parameter with module or \em nullptr if absent. */
 	projTRPParameter *GetWith(const char *module, const char *name) const;
 	
-	/** \brief Parameter is present. */
-	bool Has(projTRPParameter *parameter) const;
-	
-	/** \brief Named parameter with module is present. */
+	/** Named parameter with module is present. */
 	bool HasWith(const char *module, const char *name) const;
 	
-	/** \brief Index of parameter or -1 if absent. */
-	int IndexOf(projTRPParameter *module) const;
-	
-	/** \brief Index of named parameter with module or -1 if absent. */
+	/** Index of named parameter with module or -1 if absent. */
 	int IndexOfWith(const char *module, const char *name) const;
 	
-	/** \brief Add parameter. */
+	/** Add parameter. */
 	void Add(projTRPParameter *parameter);
 	
-	/** \brief Remove parameter. */
+	/** Remove parameter. */
 	void Remove(projTRPParameter *parameter);
 	
-	/** \brief Remove named parameter with module if present. */
+	/** Remove named parameter with module if present. */
 	void RemoveWith(const char *module, const char *name);
 	
-	/** \brief Remove all parameters. */
+	/** Remove all parameters. */
 	void RemoveAll();
 	
 	
-	
-	/** \brief Set parameter. */
+	/** Set parameter. */
 	void Set(const char *module, const char *name, const char *value);
 	
-	/** \brief Set parameter. */
+	/** Set parameter. */
 	void Set(const projTRPParameter &parameter);
 	/*@}*/
 };

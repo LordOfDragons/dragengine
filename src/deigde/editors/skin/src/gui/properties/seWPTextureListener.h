@@ -35,6 +35,9 @@ class seWPTexture;
  * \brief Texture panel listener.
  */
 class seWPTextureListener : public seSkinListener{
+public:
+	typedef deTObjectReference<seWPTextureListener> Ref;
+	
 private:
 	seWPTexture &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	seWPTextureListener(seWPTexture &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~seWPTextureListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */

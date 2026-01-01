@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -35,11 +36,14 @@
  * \brief Game Definition Billboard.
  */
 class DE_DLL_EXPORT igdeGDCBillboard : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCBillboard> Ref;
-
-
-public:
+	
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<igdeGDCBillboard> List;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epSkin,
@@ -75,14 +79,17 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition billboard. */
+		/** \brief Create billboard. */
 	igdeGDCBillboard();
 	
-	/** \brief Create game definition billboard as a copy of another game definition billboard. */
+	/** \brief Create copy of billboard. */
 	igdeGDCBillboard(const igdeGDCBillboard &billboard);
 	
-	/** \brief Clean up game definition billboard. */
+protected:
+	/** \brief Clean up billboard. */
 	virtual ~igdeGDCBillboard();
+	
+public:
 	/*@}*/
 	
 	

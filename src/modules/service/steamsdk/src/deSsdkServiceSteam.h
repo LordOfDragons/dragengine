@@ -96,7 +96,7 @@ public:
 	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
 	deSsdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr);
+		const decString &function, const deServiceObject::Ref &data = {});
 	
 	void RequestCurrentStats(const decUniqueID &id);
 	void GetStats(const decUniqueID &id, const deServiceObject& request);

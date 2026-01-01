@@ -42,12 +42,10 @@
 aeUSetRuleSModEnableSize::aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state manipulator rule enable position");
 		
 	}catch(const deException &){
@@ -79,5 +77,4 @@ void aeUSetRuleSModEnableSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

@@ -152,22 +152,21 @@ void igdeViewRenderWindow::RemoveCanvas(deCanvas *canvas){
 }
 
 deCanvasView *igdeViewRenderWindow::GetRenderWindowCanvas() const{
-	return pRenderWindow ? pRenderWindow->GetCanvasView() : NULL;
+	return pRenderWindow ? pRenderWindow->GetCanvasView() : nullptr;
 }
 
 deCanvasRenderWorld *igdeViewRenderWindow::GetCanvasRenderWorld() const{
-	return (deCanvasRenderWorld*)(deCanvas*)pCanvasRenderWorld;
+	return static_cast<deCanvasRenderWorld*>(pCanvasRenderWorld.Pointer());
 }
 
 deCanvasPaint *igdeViewRenderWindow::GetCanvasBackground() const{
-	return (deCanvasPaint*)(deCanvas*)pCanvasBackground;
+	return static_cast<deCanvasPaint*>(pCanvasBackground.Pointer());
 }
 
 void igdeViewRenderWindow::CreateCanvas(){
 	if(!pCanvasBackground){
-		pCanvasBackground.TakeOver(GetEngineController().GetEngine()->
-			GetCanvasManager()->CreateCanvasPaint());
-		deCanvasPaint &background = (deCanvasPaint&)(deCanvas&)pCanvasBackground;
+		pCanvasBackground = GetEngineController().GetEngine()->GetCanvasManager()->CreateCanvasPaint();
+		deCanvasPaint &background = static_cast<deCanvasPaint&>(pCanvasBackground.Reference());
 		background.SetOrder(0.0f);
 		background.SetShapeType(deCanvasPaint::estRectangle);
 		background.SetThickness(0.0f);
@@ -175,22 +174,21 @@ void igdeViewRenderWindow::CreateCanvas(){
 		AddCanvas(pCanvasBackground);
 	}
 	if(!pCanvasRenderWorld){
-		pCanvasRenderWorld.TakeOver(GetEngineController().GetEngine()->
-			GetCanvasManager()->CreateCanvasRenderWorld());
+		pCanvasRenderWorld = GetEngineController().GetEngine()->GetCanvasManager()->CreateCanvasRenderWorld();
 		pCanvasRenderWorld->SetOrder(1.0f);
 		AddCanvas(pCanvasRenderWorld);
 	}
 }
 
 void igdeViewRenderWindow::GrabInput(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
+	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
 	if(native){
 		native->GrabInput();
 	}
 }
 
 void igdeViewRenderWindow::ReleaseInput(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
+	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
 	if(native){
 		native->ReleaseInput();
 	}
@@ -208,98 +206,67 @@ void igdeViewRenderWindow::AddListener(igdeMouseKeyListener *listener){
 void igdeViewRenderWindow::RemoveListener(igdeMouseKeyListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeViewRenderWindow::NotifyKeyPress(deInputEvent::eKeyCodes keyCode, int key){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnKeyPress(this, keyCode, key);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnKeyPress(this, keyCode, key);
+	});
 }
 
 void igdeViewRenderWindow::NotifyKeyRelease(deInputEvent::eKeyCodes keyCode, int key){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnKeyRelease(this, keyCode, key);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnKeyRelease(this, keyCode, key);
+	});
 }
 
 void igdeViewRenderWindow::NotifyButtonPress(int button, const decPoint &position, int modifiers){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnButtonPress(this,
-			button, position, modifiers);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnButtonPress(this, button, position, modifiers);
+	});
 }
 
 void igdeViewRenderWindow::NotifyButtonRelease(int button, const decPoint &position, int modifiers){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnButtonRelease(this,
-			button, position, modifiers);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnButtonRelease(this, button, position, modifiers);
+	});
 }
 
 void igdeViewRenderWindow::NotifyDoubleClicked(int button, const decPoint &position, int modifiers){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnDoubleClicked(this,
-			button, position, modifiers);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnDoubleClicked(this, button, position, modifiers);
+	});
 }
 
 void igdeViewRenderWindow::NotifyMouseMoved(const decPoint &position, int modifiers){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnMouseMoved(this, position, modifiers);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnMouseMoved(this, position, modifiers);
+	});
 }
 
 void igdeViewRenderWindow::NotifyMouseWheeled(const decPoint &position, const decPoint &change, int modifiers){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnMouseWheeled(this, position, change, modifiers);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnMouseWheeled(this, position, change, modifiers);
+	});
 }
 
 void igdeViewRenderWindow::NotifyMouseEnter(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnMouseEnter(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnMouseEnter(this);
+	});
 }
 
 void igdeViewRenderWindow::NotifyMouseLeave(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeMouseKeyListener*)listeners.GetAt(i))->OnMouseLeave(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeMouseKeyListener &l){
+		l.OnMouseLeave(this);
+	});
 }
 
 
@@ -337,7 +304,7 @@ void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
 	}
 	
 	if(!pRenderWindow){
-		pRenderWindow.TakeOver(GetEngineController().CreateRenderWindow(*this));
+		pRenderWindow = GetEngineController().CreateRenderWindow(*this);
 		pRenderWindow->SetPaint(pEnableRendering);
 		CreateCanvas();
 	}

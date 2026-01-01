@@ -25,6 +25,8 @@
 #ifndef _DEOGLRCAMERA_H_
 #define _DEOGLRCAMERA_H_
 
+#include "deoglRWorld.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -33,7 +35,6 @@
 class deoglREffect;
 class deoglRenderPlan;
 class deoglRenderThread;
-class deoglRWorld;
 class deoglTexture;
 class deoglVR;
 
@@ -44,7 +45,7 @@ class deoglVR;
 class deoglRCamera : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglRWorld *pParentWorld;
+	deoglRWorld::Ref pParentWorld;
 	
 	decDVector pPosition;
 	decDMatrix pInverseCameraMatrix;
@@ -108,7 +109,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world or \em NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline const deoglRWorld::Ref &GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
 	void SetParentWorld(deoglRWorld *parentWorld);

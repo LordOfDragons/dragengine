@@ -46,34 +46,20 @@ ceUCCAParamSetTestValue::ceUCCAParamSetTestValue(ceConversationTopic *topic, ceC
 ceCConditionActorParameter *condition, int newValue){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldValue = condition->GetTestValue();
 	pNewValue = newValue;
 	
 	SetShortInfo("Condition ActorParameter: Set Test Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestValue::~ceUCCAParamSetTestValue(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

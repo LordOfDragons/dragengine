@@ -63,7 +63,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pRig.TakeOver(new deRig(engine.GetRigManager(), vfs, path, 0));
+	pRig = deRig::Ref::New(engine.GetRigManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -87,7 +87,7 @@ void deRLTaskReadRig::Run(){
 	
 	pRig->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pRig->SetAsynchron(true);
-	module->LoadRig(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pRig);
+	module->LoadRig(GetVFS()->OpenFileForReading(vfsPath), pRig);
 	
 	if(!pRig->Verify()){
 		DETHROW(deeInvalidParam);

@@ -24,7 +24,7 @@
 
 #include "reUSetShapeBoxHalfExtends.h"
 #include "../../../rig/shape/reRigShapeBox.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -35,7 +35,7 @@
 ////////////////////////////
 
 reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const decVector &halfExtends){
-	if(!shape) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
@@ -43,12 +43,9 @@ reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const
 	pNewHalfExtends = halfExtends;
 	
 	SetShortInfo("Set Box Shape HalfExtends");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeBoxHalfExtends::~reUSetShapeBoxHalfExtends(){
-	pShape->FreeReference();
 }
 
 

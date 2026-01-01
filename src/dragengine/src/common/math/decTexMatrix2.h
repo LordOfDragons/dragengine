@@ -38,6 +38,9 @@ public:
 	/*@{*/
 	/** \brief Create identity matrix. */
 	decTexMatrix2();
+	
+	/** \brief Create identity matrix. */
+	decTexMatrix2(const decTexMatrix2 &copy);
 	/*@}*/
 	
 	

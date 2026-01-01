@@ -46,16 +46,13 @@ ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose *facePose){
 	ceConversation *conversation = facePose->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pFacePose = NULL;
+	pConversation = nullptr;
+	pFacePose = nullptr;
 	
 	SetShortInfo("Remove Face Pose");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCFacePoseRemove::~ceUCFacePoseRemove(){

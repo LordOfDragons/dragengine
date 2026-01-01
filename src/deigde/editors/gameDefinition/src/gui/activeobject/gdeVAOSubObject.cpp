@@ -181,24 +181,26 @@ void gdeVAOSubObject::PropertyShapeList(const decString &name, decShapeList &lis
 
 const char *gdeVAOSubObject::pPropertyValue(const decString &name) const{
 	if(name.IsEmpty()){
-		return NULL;
+		return nullptr;
 	}
 	
 	const gdeObjectClass &objectClass = *pView.GetObjectClass();
 	const decString realName(pPropertyPrefix + name);
 	
 	// find in property values
-	const decString *propertyValue = NULL;
-	if(objectClass.GetPropertyValues().GetAt(realName, &propertyValue)){
+	const decString *propertyValue = nullptr;
+	if(objectClass.GetPropertyValues().GetAt(realName, propertyValue)){
 		return propertyValue->GetString();
 	}
 	
 	// find in properties
-	const gdeProperty * const property = objectClass.GetProperties().GetNamed(realName);
+	const gdeProperty * const property = objectClass.GetProperties().FindOrDefault([&](const gdeProperty &p){
+		return p.GetName() == realName;
+	});
 	if(property){
 		return property->GetDefaultValue();
 	}
 	
 	// not found
-	return NULL;
+	return nullptr;
 }

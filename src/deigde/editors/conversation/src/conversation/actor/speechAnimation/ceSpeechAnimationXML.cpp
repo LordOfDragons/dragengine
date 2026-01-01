@@ -74,7 +74,7 @@ void ceSpeechAnimationXML::ReadFromFile(const decString &pathSAnimation, decBase
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -97,8 +97,8 @@ void ceSpeechAnimationXML::ReadFromFile(const decString &pathSAnimation, decBase
 void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const char *basePath, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	deAnimation *animation = NULL;
-	deRig *rig = NULL;
+	deAnimation::Ref animation;
+	deRig::Ref rig;
 	int i;
 	
 	for(i=0; i <elementCount; i++){
@@ -109,34 +109,24 @@ void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const c
 				
 			}else if(strcmp(tag->GetName(), "rig") == 0){
 				if(strlen(GetCDataString(*tag)) > 0){
-					rig = NULL;
+					rig = nullptr;
 					
 					try{
 						rig = sanimation.GetEngine()->GetRigManager()->LoadRig(GetCDataString(*tag), basePath);
 						sanimation.GetEngineAnimator()->SetRig(rig);
-						rig->FreeReference();
-						
 					}catch(const deException &){
-						if(rig){
-							rig->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
 				
 			}else if(strcmp(tag->GetName(), "animation") == 0){
 				if(strlen(GetCDataString(*tag)) > 0){
-					animation = NULL;
+					animation = nullptr;
 					
 					try{
 						animation = sanimation.GetEngine()->GetAnimationManager()->LoadAnimation(GetCDataString(*tag), basePath);
 						sanimation.GetEngineAnimator()->SetAnimation(animation);
-						animation->FreeReference();
-						
 					}catch(const deException &){
-						if(animation){
-							animation->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -162,14 +152,14 @@ void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const c
 void ceSpeechAnimationXML::pReadPhoneme(const decXmlElementTag &root, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	ceSAPhoneme *phoneme = NULL;
+	ceSAPhoneme::Ref phoneme;
 	decString text;
 	int e;
 	
 	try{
-		phoneme = new ceSAPhoneme(GetAttributeInt(root, "ipa"));
+		phoneme = ceSAPhoneme::Ref::New(GetAttributeInt(root, "ipa"));
 		
-		if(sanimation.GetPhonemeList().HasIPA(phoneme->GetIPA())){
+		if(sanimation.GetPhonemes().Has(phoneme->GetIPA())){
 			text.Format("%i", phoneme->GetIPA());
 			LogErrorGenericProblemValue(root, text.GetString(), "Duplicate Phoneme");
 		}
@@ -193,13 +183,9 @@ void ceSpeechAnimationXML::pReadPhoneme(const decXmlElementTag &root, ceSpeechAn
 			}
 		}
 		
-		sanimation.GetPhonemeList().Add(phoneme);
+		sanimation.GetPhonemes().SetAt(phoneme->GetIPA(), phoneme);
 		
 	}catch(const deException &){
-		if(phoneme){
-			phoneme->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -207,14 +193,16 @@ void ceSpeechAnimationXML::pReadPhoneme(const decXmlElementTag &root, ceSpeechAn
 void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	ceSAWord *word = NULL;
+	ceSAWord::Ref word;
 	int e;
 	
 	try{
-		word = new ceSAWord(GetAttributeString(root, "name"));
+		word = ceSAWord::Ref::New(GetAttributeString(root, "name"));
 		
-		if(sanimation.GetWordList().HasNamed(word->GetName().GetString())){
-			LogErrorGenericProblemValue(root, word->GetName().GetString(), "Duplicate Word");
+		if(sanimation.GetWordList().HasMatching([&](const ceSAWord::Ref &w){
+			return w->GetName() == word->GetName();
+		})){
+			LogErrorGenericProblemValue(root, word->GetName(), "Duplicate Word");
 		}
 		
 		for(e=0; e<elementCount; e++){
@@ -230,10 +218,6 @@ void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnima
 		sanimation.GetWordList().Add(word);
 		
 	}catch(const deException &){
-		if(word){
-			word->FreeReference();
-		}
-		
 		throw;
 	}
 }

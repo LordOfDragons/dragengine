@@ -61,7 +61,7 @@ igdeDialogBrowserParticleEmitter::~igdeDialogBrowserParticleEmitter(){
 
 igdeGDParticleEmitter *igdeDialogBrowserParticleEmitter::GetSelectedParticleEmitter() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDParticleEmitter*)selection->GetData() : NULL;
+	return selection ? (igdeGDParticleEmitter*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticleEmitter *gdParticleEmitter){
@@ -81,7 +81,7 @@ void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticle
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner,
 igdeGDParticleEmitter* &particleEmitter, const char *title){
 	igdeDialogBrowserParticleEmitter::Ref dialog(
-		igdeDialogBrowserParticleEmitter::Ref::NewWith(owner->GetEnvironment(), title));
+		igdeDialogBrowserParticleEmitter::Ref::New(owner->GetEnvironment(), title));
 	if(particleEmitter){
 		dialog->SetSelectedParticleEmitter(particleEmitter);
 	}
@@ -97,7 +97,9 @@ igdeGDParticleEmitter* &particleEmitter, const char *title){
 
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter, const char *title){
 	const igdeGDParticleEmitterManager &particleEmitterManager = owner->GetGameDefinition()->GetParticleEmitterManager();
-	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().GetWithPath(particleEmitter);
+	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().FindOrDefault([&](const igdeGDParticleEmitter &s){
+		return s.GetPath() == particleEmitter;
+	});
 	if(SelectParticleEmitter(owner, gdParticleEmitter, title)){
 		particleEmitter = gdParticleEmitter->GetPath();
 		return true;

@@ -67,7 +67,7 @@
 deModuleSystem::deModuleSystem(deEngine *engine) :
 pEngine(engine),
 pInternalModulesLibrary(nullptr),
-pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith())
+pVFSAssetLibraries(deVirtualFileSystem::Ref::New())
 {
 	DEASSERT_NOTNULL(engine)
 }
@@ -776,7 +776,7 @@ void deModuleSystem::pAddInternalModules(const FPRegisterInternalModule *functio
 	int i = 0;
 	
 	while(functions[i]){
-		const deInternalModule::Ref module(deInternalModule::Ref::New(functions[i++](this)));
+		const deInternalModule::Ref module(functions[i++](this));
 		
 		if(!module){
 			continue;
@@ -809,16 +809,15 @@ void deModuleSystem::pAddInternalModules(const FPRegisterInternalModule *functio
 void deModuleSystem::pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type){
 	deLogger &logger = *pEngine->GetLogger();
 	decPath searchPath, modulePath;
-	deLibraryModule *module = NULL;
 	int i, j;
 	
 	try{
 		// find directories
-		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 		
 		searchPath.SetFromNative(basePath);
 		searchPath.AddUnixPath(directory);
-		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(searchPath));
 		
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
@@ -854,7 +853,8 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 				
 				// try loading module. use an own try-catch to continue loading other modules in case this one fails badly
 				try{
-					module = new deLibraryModule(this, modulePath.GetPathNative());
+					const deLibraryModule::Ref module(deLibraryModule::Ref::New(
+						this, modulePath.GetPathNative()));
 					
 					// load module
 					module->LoadModule();
@@ -901,23 +901,14 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 					
 					// add module and free filename
 					AddModule(module);
-					module->FreeReference();
-					module = NULL;
 					
 				}catch(const deException &e){
-					if(module){
-						module->FreeReference();
-						module = NULL;
-					}
 					logger.LogException(LOGSOURCE, e);
 				}
 			}
 		}
 		
 	}catch(const deException &e){
-		if(module){
-			module->FreeReference();
-		}
 		logger.LogException(LOGSOURCE, e);
 	}
 }
@@ -929,12 +920,12 @@ void deModuleSystem::pInitAssetLibrary(){
 	const decPath rootPath(decPath::CreatePathUnix("/"));
 	
 	if(pEngine->GetOSFileSystem()){
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSRedirect(
-			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true)));
+		pVFSAssetLibraries->AddContainer(deVFSRedirect::Ref::New(
+			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true));
 		
 	}else{
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare()))));
+		pVFSAssetLibraries->AddContainer(deVFSDiskDirectory::Ref::New(
+			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare())));
 	}
 	
 	deCollectFileSearchVisitor collect("dragengine-*.deal");
@@ -949,9 +940,7 @@ void deModuleSystem::pInitAssetLibrary(){
 		logger.LogInfoFormat(LOGSOURCE, "Found engine asset library: %s",
 			pathAsset.GetLastComponent().GetString());
 		
-		pVFSAssetLibraries->AddContainer(deArchiveContainer::Ref::New(arcMgr.CreateContainer(
-			rootPath,
-			deArchive::Ref::New(arcMgr.OpenArchive(pVFSAssetLibraries, pathAsset.GetPathNative(), "/")),
-			rootPath)));
+		pVFSAssetLibraries->AddContainer(arcMgr.CreateContainer(rootPath,
+			arcMgr.OpenArchive(pVFSAssetLibraries, pathAsset.GetPathNative(), "/"), rootPath));
 	}
 }

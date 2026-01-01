@@ -26,10 +26,9 @@
 #define _AEURULESASETPATHANIMATOR_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/collection/decObjectList.h>
 
-class aeRuleSubAnimator;
-class aeController;
+#include "../../../animator/controller/aeController.h"
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 
 
 
@@ -37,20 +36,20 @@ class aeController;
  * Undo rule sub animator set path animator.
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleSASetPathAnimator> Ref;
+	
+	
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
-	decString pOldPath;
-	decString pNewPath;
+	decString pOldPath, pNewPath;
 	
-	decObjectList pOldConnections;
+	aeController::List pOldConnections;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleSASetPathAnimator> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

@@ -46,34 +46,20 @@ ceUCCVarSetVariable::ceUCCVarSetVariable(ceConversationTopic *topic, ceConversat
 ceCConditionVariable *condition, const char *newVariable){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldVariable = condition->GetVariable();
 	pNewVariable = newVariable;
 	
 	SetShortInfo("Condition Variable: Set Variable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetVariable::~ceUCCVarSetVariable(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

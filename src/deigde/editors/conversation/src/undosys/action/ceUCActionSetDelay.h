@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,16 +36,17 @@ class ceConversationTopic;
  * \brief Undo Action Conversation Action Set Delay.
  */
 class ceUCActionSetDelay : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCActionSetDelay> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	float pOldDelay;
 	float pNewDelay;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCActionSetDelay> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

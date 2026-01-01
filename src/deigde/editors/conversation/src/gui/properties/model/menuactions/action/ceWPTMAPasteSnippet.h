@@ -26,10 +26,10 @@
 #define _CEWPTMAPASTESNIPPET_H_
 
 #include "../ceWPTMenuAction.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
+#include "../../../../../undosys/action/ceUCActionPaste.h"
 
 class ceConversation;
-class ceConversationActionList;
-class ceUCActionPaste;
 
 
 
@@ -47,6 +47,7 @@ protected:
 	ceWPTMAPasteSnippet();
 	
 public:
+	typedef deTObjectReference<ceWPTMAPasteSnippet> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
@@ -65,7 +66,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions) = 0;
+	virtual ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) = 0;
 	/*@}*/
 };
 

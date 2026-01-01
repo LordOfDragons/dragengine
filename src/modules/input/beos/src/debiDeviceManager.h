@@ -25,12 +25,13 @@
 #ifndef _DEBIDEVICEMANAGER_H_
 #define _DEBIDEVICEMANAGER_H_
 
+#include "debiDeviceMouse.h"
+#include "debiDeviceKeyboard.h"
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deBeOSInput;
 class debiDevice;
-class debiDeviceMouse;
-class debiDeviceKeyboard;
 
 
 
@@ -43,8 +44,8 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	debiDeviceMouse *pMouse;
-	debiDeviceKeyboard *pKeyboard;
+	debiDeviceMouse::Ref pMouse;
+	debiDeviceKeyboard::Ref pKeyboard;
 	
 	
 	
@@ -82,10 +83,10 @@ public:
 	
 	
 	/** \brief Mouse device. */
-	inline debiDeviceMouse *GetMouse() const{ return pMouse; }
+	inline const debiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** \brief Keyboard device. */
-	inline debiDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	inline const debiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 	
 	

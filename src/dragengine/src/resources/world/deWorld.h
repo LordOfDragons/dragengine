@@ -26,6 +26,7 @@
 #define _DEWORLD_H_
 
 #include "../deResource.h"
+#include "../terrain/heightmap/deHeightTerrain.h"
 #include "../../common/math/decMath.h"
 
 class decCollisionFilter;
@@ -39,7 +40,6 @@ class deComponent;
 class deDebugDrawer;
 class deEnvMapProbe;
 class deForceField;
-class deHeightTerrain;
 class deLight;
 class deLumimeter;
 class deMicrophone;
@@ -76,7 +76,7 @@ public:
 	
 	
 private:
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	decDVector pSize;
 	
 	decVector pGravity;
@@ -205,7 +205,7 @@ public:
 	void Clear();
 	
 	/** \brief Assigned height terrain or NULL. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set assigned height terrain or NULL to remove it. */
 	void SetHeightTerrain(deHeightTerrain *heightTerrain);

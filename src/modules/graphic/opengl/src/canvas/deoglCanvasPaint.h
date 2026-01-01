@@ -26,8 +26,8 @@
 #define _DEOGLCANVASPAINT_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasPaint.h"
 
-class deoglRCanvasPaint;
 class deCanvasPaint;
 
 
@@ -38,7 +38,7 @@ class deCanvasPaint;
 class deoglCanvasPaint : public deoglCanvas{
 private:
 	deCanvasPaint &pCanvasPaint;
-	deoglRCanvasPaint *pRCanvasPaint;
+	deoglRCanvasPaint::Ref pRCanvasPaint;
 	
 public:
 	/** \name Constructors and Destructors */

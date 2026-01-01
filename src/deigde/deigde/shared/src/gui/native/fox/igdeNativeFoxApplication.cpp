@@ -34,6 +34,7 @@
 #include "../../igdeMainWindow.h"
 #include "../../igdeWindow.h"
 
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -67,14 +68,19 @@ igdeNativeFoxApplication::igdeNativeFoxApplication(){
 igdeNativeFoxApplication::igdeNativeFoxApplication(igdeApplication &powner) :
 FXApp("DEIGDE", "Drag[en]gine"),
 pOwner(&powner),
-pToolTip(NULL),
+pToolTip(nullptr),
 pDisableModalUpdating(false),
-pFoxArgs(NULL),
+pDeleteNormalFont(false),
+pFoxArgs(nullptr),
 pFoxArgCount(0),
 pDisplayScaleFactor(100){
 }
 
 igdeNativeFoxApplication::~igdeNativeFoxApplication(){
+	if(pDeleteNormalFont){
+		delete getNormalFont();
+	}
+	
 	if(pFoxArgs){
 		int i;
 		for(i=0; i<pFoxArgCount; i++){
@@ -194,6 +200,7 @@ void igdeNativeFoxApplication::Initialize(decUnicodeStringList &arguments){
 	FXFontDesc fontDesc(fontNormal.getFontDesc());
 	fontDesc.size = (FXuint)((int)fontDesc.size * pDisplayScaleFactor / 100);
 	setNormalFont(new FXFont(this, fontDesc));
+	pDeleteNormalFont = true;
 	
 	// create tool tip and application
 	pToolTip = new FXToolTip(this, TOOLTIP_PERMANENT); // TOOLTIP_PERMANENT, TOOLTIP_VARIABLE
@@ -227,11 +234,11 @@ void igdeNativeFoxApplication::Run(){
 void igdeNativeFoxApplication::Quit(){
 	if(pToolTip){
 		delete pToolTip;
-		pToolTip = NULL;
+		pToolTip = nullptr;
 	}
 	
 	// leak check
-	const int widgetCount = igdeUIFoxHelper::DebugCountWindows(NULL);
+	const int widgetCount = igdeUIFoxHelper::DebugCountWindows(nullptr);
 	if(widgetCount > 1){
 		printf("igdeNativeFoxApplication: %d leaking widgets\n", widgetCount);
 		dumpWidgets();
@@ -277,7 +284,7 @@ void igdeNativeFoxApplication::GetAppFontConfig(igdeFont::sConfiguration &config
 }
 
 void igdeNativeFoxApplication::ShowError(const deException &exception) const{
-	const decString foxMessage(exception.FormatOutput().Join("\n"));
+	const decString foxMessage(DEJoin(exception.FormatOutput(), "\n"));
 	FXMessageBox::error(FXApp::instance(), FX::MBOX_OK, "Application Error", "%s", foxMessage.GetString());
 }
 

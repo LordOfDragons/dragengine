@@ -35,6 +35,9 @@ class ceWPTopic;
  * Topic panel listener.
  */
 class ceWPTopicListener : public ceConversationListener{
+public:
+	typedef deTObjectReference<ceWPTopicListener> Ref;
+	
 private:
 	ceWPTopic &pPanel;
 	
@@ -47,7 +50,9 @@ public:
 	ceWPTopicListener(ceWPTopic &panel);
 	
 	/** Clean up listener. */
+protected:
 	~ceWPTopicListener() override;
+public:
 	/*@}*/
 	
 	

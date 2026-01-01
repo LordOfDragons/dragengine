@@ -67,22 +67,11 @@ void reRigShapeSphere::SetRadius(float radius){
 	}
 }
 
-reRigShape *reRigShapeSphere::Duplicate() const{
-	reRigShapeSphere *shape = NULL;
-	
-	try{
-		shape = new reRigShapeSphere(GetEngine());
-		if(!shape) DETHROW(deeOutOfMemory);
-		
-		shape->SetPosition(GetPosition());
-		shape->SetOrientation(GetOrientation());
-		shape->SetRadius(GetRadius());
-		
-	}catch(const deException &){
-		if(shape) shape->FreeReference();
-		throw;
-	}
-	
+reRigShape::Ref reRigShapeSphere::Duplicate() const{
+	const reRigShapeSphere::Ref shape(reRigShapeSphere::Ref::New(GetEngine()));
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	shape->SetRadius(GetRadius());
 	return shape;
 }
 

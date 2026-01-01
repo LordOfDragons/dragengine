@@ -26,6 +26,7 @@
 #define _DECPOINTERDICTIONARY_H_
 
 #include "../string/decString.h"
+#include "../string/decStringList.h"
 
 class decPointerList;
 

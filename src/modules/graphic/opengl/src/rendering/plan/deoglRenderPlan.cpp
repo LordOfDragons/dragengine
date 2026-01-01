@@ -129,8 +129,7 @@ pLodMaxPixelError(0),
 pLodLevelOffset(0),
 pOcclusionMap(NULL),
 pOcclusionTest(NULL),
-pGIState(NULL),
-pTaskFindContent(NULL)
+pGIState(NULL)
 {
 	pCamera = NULL;
 	pCameraFov = DEG2RAD * 90.0f;
@@ -342,10 +341,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
 	if(!pCompute){
-		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
+		pCompute = deoglRenderPlanCompute::Ref::New(*this);
 	}
 	if(!pTasks){
-		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
+		pTasks = deoglRenderPlanTasks::Ref::New(*this);
 	}
 	
 	// the rest is safe
@@ -806,7 +805,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionTest->RemoveAllInputData();
 	
 	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
-		pTaskFindContent = new deoglRPTFindContent(*this);
+		pTaskFindContent = deoglRPTFindContent::Ref::New(*this);
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	
@@ -832,8 +831,6 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 	
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
 		*this, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 
@@ -2046,7 +2043,6 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 	if(pMaskedPlanCount == pMaskedPlanSize){
 		int newSize = pMaskedPlanSize * 3 / 2 + 1;
 		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		memset(newArray, '\0', sizeof(deoglRenderPlanMasked*) * newSize);
 		if(pMaskedPlans){
@@ -2254,7 +2250,7 @@ void deoglRenderPlan::pUpdateHTView(){
 	pHTView = nullptr;
 	
 	if(pWorld && pWorld->GetHeightTerrain()){
-		pHTView.TakeOver(new deoglHTView(pWorld->GetHeightTerrain()));
+		pHTView = deoglHTView::Ref::New(pWorld->GetHeightTerrain());
 		pHTView->Prepare();
 	}
 }

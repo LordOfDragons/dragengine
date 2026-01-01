@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -42,18 +42,19 @@ class meHeightTerrainTexture;
  * Undo action to set the uv offset of a height image texture.
  */
 class meUHTSetTexUVRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTSetTexUVRotation> Ref;
+	
+	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	float pOldRotation;
 	float pNewRotation;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTSetTexUVRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -61,7 +62,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTSetTexUVRotation();
+
+public:
 	/*@}*/
 	
 public:

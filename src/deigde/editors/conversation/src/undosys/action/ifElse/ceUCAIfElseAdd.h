@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -38,17 +38,18 @@ class ceCAIfElse;
  * \brief Undo action if-else add conversation action.
  */
 class ceUCAIfElseAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAIfElseAdd> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAIfElseAdd> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -56,7 +57,9 @@ public:
 	ceCAIfElseCase *ifcase, ceConversationAction *action, int index);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseAdd();
+public:
 	/*@}*/
 	
 	

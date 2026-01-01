@@ -25,10 +25,15 @@
 #ifndef _CELOADSAVECONVO_H_
 #define _CELOADSAVECONVO_H_
 
+#include "../conversation/action/ceConversationAction.h"
+#include "../conversation/condition/ceConversationCondition.h"
+#include "../conversation/strip/ceStrip.h"
+
 #include <deigde/utils/igdeBaseXML.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 
 class ceCAIfElseCase;
 class ceCAComment;
@@ -63,18 +68,14 @@ class ceCConditionVariable;
 class ceControllerValueList;
 class ceConversation;
 class ceConversationAction;
-class ceConversationActionList;
 class ceConversationCondition;
-class ceConversationConditionList;
 class ceConversationFile;
 class ceConversationTopic;
 class ceFacePose;
 class ceGesture;
 class ceLoadSaveSystem;
-class ceStripList;
 class ceTarget;
 
-class decStringList;
 class decCurveBezier;
 class decCurveBezierPoint;
 class decBaseFileReader;
@@ -121,7 +122,7 @@ private:
 	void pWriteFacePose(decXmlWriter &writer, const ceFacePose &facePose);
 	void pWriteFile(decXmlWriter &writer, const ceConversationFile &file);
 	void pWriteTopic(decXmlWriter &writer, const ceConversationTopic &topic);
-	void pWriteActionList(decXmlWriter &writer, const ceConversationActionList &list);
+	void pWriteActionList(decXmlWriter &writer, const ceConversationAction::List &list);
 	void pWriteActionCommon(decXmlWriter &writer, const ceConversationAction &action);
 	void pWriteActionCameraShot(decXmlWriter &writer, const ceCACameraShot &action);
 	void pWriteActionMusic(decXmlWriter &writer, const ceCAMusic &action);
@@ -144,11 +145,11 @@ private:
 	void pWriteActionCoordSystemAdd(decXmlWriter &writer, const ceCACoordSystemAdd &action);
 	void pWriteActionCoordSystemRemove(decXmlWriter &writer, const ceCACoordSystemRemove &action);
 	void pWriteActionComment(decXmlWriter &writer, const ceCAComment &action);
-	void pWriteStripList(decXmlWriter &writer, const ceStripList &list);
+	void pWriteStripList(decXmlWriter &writer, const ceStrip::List &list);
 	void pWriteCurveBezier(decXmlWriter &writer, const decCurveBezier &curve);
 	void pWriteCurveBezierPoint(decXmlWriter &writer, const decCurveBezierPoint &point);
 	void pWriteCondition(decXmlWriter &writer, ceConversationCondition *condition);
-	void pWriteConditionList(decXmlWriter &writer, const ceConversationConditionList &list);
+	void pWriteConditionList(decXmlWriter &writer, const ceConversationCondition::List &list);
 	void pWriteConditionLogic(decXmlWriter &writer, const ceCConditionLogic &condition);
 	void pWriteConditionHasActor(decXmlWriter &writer, const ceCConditionHasActor &condition);
 	void pWriteConditionActorInConversation(decXmlWriter &writer, const ceCConditionActorInConversation &condition);
@@ -165,8 +166,8 @@ private:
 	void pReadFacePose(const decXmlElementTag &root, ceConversation &conversation);
 	void pReadFile(const decXmlElementTag &root, ceConversation &conversation);
 	void pReadTopic(const decXmlElementTag &root, ceConversation &conversation, ceConversationFile &file);
-	void pReadActionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationActionList &list);
-	ceConversationAction *pReadAction(const decXmlElementTag &root, ceConversation &conversation);
+	void pReadActionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationAction::List &list);
+	ceConversationAction::Ref pReadAction(const decXmlElementTag &root, ceConversation &conversation);
 	bool pReadActionCommon(const decXmlElementTag &root, ceConversationAction &action);
 	void pReadActionCameraShot(const decXmlElementTag &root, ceCACameraShot &action);
 	void pReadActionMusic(const decXmlElementTag &root, ceCAMusic &action);
@@ -189,14 +190,14 @@ private:
 	void pReadActionCoordSystemAdd(const decXmlElementTag &root, ceCACoordSystemAdd &action);
 	void pReadActionCoordSystemRemove(const decXmlElementTag &root, ceCACoordSystemRemove &action);
 	void pReadActionComment(const decXmlElementTag &root, ceCAComment &action);
-	void pReadStripList(const decXmlElementTag &root, ceStripList &list);
+	void pReadStripList(const decXmlElementTag &root, ceStrip::List &list);
 	void pReadCurveBezier(const decXmlElementTag &root, decCurveBezier &curve);
 	void pReadCurveBezierPoint(const decXmlElementTag &root, decCurveBezier &curve);
 	void pReadVector(const decXmlElementTag &tag, decVector &vector);
 	void pReadVector2(const decXmlElementTag &tag, decVector2 &vector);
 	void pReadStringList(const decXmlElementTag &root, decStringList &list, const char *entryTagName);
-	void pReadConditionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationConditionList &list);
-	ceConversationCondition *pReadCondition(const decXmlElementTag &root, ceConversation &conversation);
+	void pReadConditionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationCondition::List &list);
+	ceConversationCondition::Ref pReadCondition(const decXmlElementTag &root, ceConversation &conversation);
 	void pReadConditionLogic(const decXmlElementTag &root, ceConversation &conversation, ceCConditionLogic &condition);
 	void pReadConditionHasActor(const decXmlElementTag &root, ceCConditionHasActor &condition);
 	void pReadConditionActorInConversation(const decXmlElementTag &root, ceCConditionActorInConversation &condition);

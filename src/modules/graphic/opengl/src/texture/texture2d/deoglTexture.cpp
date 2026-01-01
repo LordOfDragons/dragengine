@@ -316,7 +316,7 @@ void deoglTexture::CreateTexture(){
 		config.SetMipMapCount(pRealMipMapLevelCount);
 	}
 	
-	pImage.TakeOver(new devkImage(pRenderThread.GetContext().GetDevice(), config));
+	pImage = devkImage::Ref::New(pRenderThread.GetContext().GetDevice(), config);
 #endif
 	
 	UpdateMemoryUsage();
@@ -439,7 +439,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
 		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, 1)));
+			deoglPixelBuffer::epfByte4, width, height, 1));
 		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4();
 		const int count = width * height;
 		int i;
@@ -480,7 +480,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
 		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, 1)));
+			deoglPixelBuffer::epfFloat4, width, height, 1));
 		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4();
 		const int count = width * height;
 		int i;

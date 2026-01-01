@@ -79,16 +79,12 @@ const char *filename, const char *basePath) const{
 	return false;
 }
 
-decBaseFileReader *deFileResourceManager::OpenFileForReading(
+decBaseFileReader::Ref deFileResourceManager::OpenFileForReading(
 const deVirtualFileSystem &vfs, const char *filename) const{
-	decPath path;
-	path.SetFromUnix(filename);
-	return vfs.OpenFileForReading(path);
+	return vfs.OpenFileForReading(decPath::CreatePathUnix(filename));
 }
 
-decBaseFileWriter *deFileResourceManager::OpenFileForWriting(
+decBaseFileWriter::Ref deFileResourceManager::OpenFileForWriting(
 const deVirtualFileSystem &vfs, const char *filename) const{
-	decPath path;
-	path.SetFromUnix(filename);
-	return vfs.OpenFileForWriting(path);
+	return vfs.OpenFileForWriting(decPath::CreatePathUnix(filename));
 }

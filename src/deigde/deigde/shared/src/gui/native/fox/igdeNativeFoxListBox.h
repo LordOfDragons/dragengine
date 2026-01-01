@@ -83,7 +83,7 @@ public:
 	/** \brief List box. */
 	inline FXList *GetListBox() const{ return pListBox; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	

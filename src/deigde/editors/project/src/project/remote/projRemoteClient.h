@@ -27,16 +27,17 @@
 
 #include <unordered_set>
 
+#include "projRemoteClientListener.h"
+
 #include <deremotelauncher/derlRemoteClient.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
 class projProject;
 class projProfile;
-class projRemoteClientListener;
 
 class decXmlWriter;
 
@@ -66,7 +67,7 @@ private:
 	decString pActiveLaunchProfile;
 	decString pDefaultLaunchProfile;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<projRemoteClientListener> pListeners;
 	
 	ListSysProps pReceivedSysProps;
 	

@@ -26,6 +26,7 @@
 #define _RERIGSHAPEHULL_H_
 
 #include "reRigShape.h"
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -37,11 +38,11 @@ class reRigShapeHull : public reRigShape{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<reRigShapeHull> Ref;
+	typedef decTList<decVector> PointList;
 	
 	
 private:
-	decVector *pPoints;
-	int pPointCount;
+	PointList pPoints;
 	
 	
 	
@@ -61,14 +62,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Point arrays. */
-	inline decVector *GetPoints() const{ return pPoints; }
-	
-	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
-	
-	/** \brief Point at index. */
-	const decVector &GetPointAt(int index) const;
+	/** \brief Points. */
+	inline const PointList &GetPoints() const{ return pPoints; }
 	
 	/** \brief Add point. */
 	void AddPoint(const decVector &point);
@@ -85,7 +80,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	reRigShape *Duplicate() const override;
+	reRigShape::Ref Duplicate() const override;
 	
 	/** \brief Uniformly scale shape. */
 	void Scale(float scale) override;

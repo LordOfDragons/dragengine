@@ -63,7 +63,7 @@
 
 igdeEditorModuleManager::igdeEditorModuleManager(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pActiveModule(NULL)
+pActiveModule(nullptr)
 {
 	try{
 		decPath pathModules(decPath::CreatePathNative(windowMain.GetConfiguration().GetPathLib()));
@@ -103,7 +103,7 @@ void igdeEditorModuleManager::SetActiveModule(igdeEditorModuleDefinition *module
 	pWindowMain.SwitchToModuleWindow();
 	
 	if(module){
-		if(pRecentlyUsed.GetAt(0) != module){
+		if(pRecentlyUsed.First() != module){
 			ChangeModuleRecentUsedPosition(module, 0);
 			pWindowMain.GetConfigurationLocal().SaveConfiguration();
 		}
@@ -118,15 +118,11 @@ void igdeEditorModuleManager::SetActiveModule(igdeEditorModuleDefinition *module
 }
 
 void igdeEditorModuleManager::ActivateMostRecentModule(){
-	const int count = pRecentlyUsed.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pRecentlyUsed.GetAt(i);
-		if(module->IsModuleRunning()){
-			SetActiveModule(module);
-			return;
-		}
+	igdeEditorModuleDefinition * const module = pRecentlyUsed.FindOrDefault([](const igdeEditorModuleDefinition *m){
+		return m->IsModuleRunning();
+	});
+	if(module){
+		SetActiveModule(module);
 	}
 }
 
@@ -142,68 +138,48 @@ void igdeEditorModuleManager::ActivateProjectManager(){
 // Modules
 ////////////
 
-int igdeEditorModuleManager::GetModuleCount() const{
-	return pModules.GetCount();
-}
-
-igdeEditorModuleDefinition *igdeEditorModuleManager::GetModuleAt(int index) const{
-	return (igdeEditorModuleDefinition*)pModules.GetAt(index);
-}
-
 igdeEditorModuleDefinition *igdeEditorModuleManager::GetModuleWithID(const char *id) const{
-	const int count = pModules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
+	for(const auto &module : pModules){
 		if(module->GetID() == id){
 			return module;
 		}
-	}
-	
-	return NULL;
+	};
+	return nullptr;
 }
 
 void igdeEditorModuleManager::RemoveAllModules(){
-	SetActiveModule(NULL);
+	SetActiveModule(nullptr);
 	
 	pRecentlyUsed.RemoveAll();
 	
-	while(pModules.GetCount() > 0){
-		const int index = pModules.GetCount() - 1;
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(index);
-		
-		if(module->IsModuleRunning()){
-			module->UnloadModule();
+	pModules.VisitReverse([&](igdeEditorModuleDefinition &module){
+		if(module.IsModuleRunning()){
+			module.UnloadModule();
 		}
-		
-		pModules.RemoveFrom(index);
-	}
+	});
+	pModules.RemoveAll();
 }
 
 void igdeEditorModuleManager::StartModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	const int count = pModules.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(!module->CanLoad() || module->IsModuleRunning()){
-			continue;
+	pModules.Visit([&](igdeEditorModuleDefinition &module){
+		if(!module.CanLoad() || module.IsModuleRunning()){
+			return;
 		}
 		
-		logger.LogInfoFormat(LOGSOURCE, "Starting editor module %s.", module->GetID().GetString());
-		if(module->LoadModule(&pWindowMain.GetEnvironment())){
-			continue;
+		logger.LogInfoFormat(LOGSOURCE, "Starting editor module %s.", module.GetID().GetString());
+		if(module.LoadModule(&pWindowMain.GetEnvironment())){
+			return;
 		}
 		
-		switch(module->GetErrorCode()){
+		switch(module.GetErrorCode()){
 		case igdeEditorModuleDefinition::eecCreateModuleFailed:
 			logger.LogError(LOGSOURCE, "  Creation of module failed.");
 			break;
 			
 		case igdeEditorModuleDefinition::eecLibFileNotFound:
-			logger.LogErrorFormat(LOGSOURCE, "  Library %s not found.", module->GetLibraryPath().GetString());
+			logger.LogErrorFormat(LOGSOURCE, "  Library %s not found.", module.GetLibraryPath().GetString());
 			break;
 			
 		case igdeEditorModuleDefinition::eecLibFileNotRegularFile:
@@ -227,43 +203,38 @@ void igdeEditorModuleManager::StartModules(){
 			break;
 			
 		default:
-			logger.LogErrorFormat(LOGSOURCE, "  ?? (%d)", module->GetErrorCode());
+			logger.LogErrorFormat(LOGSOURCE, "  ?? (%d)", module.GetErrorCode());
 		}
-	}
+	});
 	
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 	ActivateMostRecentModule();
 }
 
 void igdeEditorModuleManager::StopModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	const int count = pModules.GetCount();
-	int i;
 	
-	SetActiveModule(NULL);
+	SetActiveModule(nullptr);
 	
-	for(i=0; i<count; i++){
-		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);
-		if(!module->IsModuleRunning()){
-			continue;
+	pModules.Visit([&](igdeEditorModuleDefinition &module){
+		if(!module.IsModuleRunning()){
+			return;
 		}
 		
-		logger.LogInfoFormat(LOGSOURCE, "Stopping editor module %s.", module->GetID().GetString());
+		logger.LogInfoFormat(LOGSOURCE, "Stopping editor module %s.", module.GetID().GetString());
 		try{
-			module->UnloadModule();
+			module.UnloadModule();
 			
 		}catch(const deException &e){
 			logger.LogException(LOGSOURCE, e);
 		}
-	}
-}
-
-igdeEditorModuleDefinition *igdeEditorModuleManager::GetRecentModuleAt(int index) const{
-	return (igdeEditorModuleDefinition*)pRecentlyUsed.GetAt(index);
+	});
 }
 
 void igdeEditorModuleManager::ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position){
-	pRecentlyUsed.Move(module, position);
+	try{
+		pRecentlyUsed.Move(module, position);
+	}catch(...){}
 	
 #ifdef OS_W32
 	int i;
@@ -284,7 +255,7 @@ void igdeEditorModuleManager::ResetRecentUsedPosition(){
 	pRecentlyUsed.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		pRecentlyUsed.Add(pModules.GetAt(i));
+		pRecentlyUsed.Add((igdeEditorModuleDefinition*)pModules.GetAt(i));
 	}
 }
 
@@ -302,10 +273,10 @@ void igdeEditorModuleManager::pScanForModules(){
 	int i;
 	
 	try{
-		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 		
 		const decPath searchPath(decPath::CreatePathNative(pPathModules));
-		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(searchPath));
 		
 		deCollectDirectorySearchVisitor collectDirectories;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collectDirectories);
@@ -332,7 +303,7 @@ void igdeEditorModuleManager::pScanForModules(){
 			
 			// try loading module
 			const igdeEditorModuleDefinition::Ref module(
-				igdeEditorModuleDefinition::Ref::NewWith(*this, modulePath.GetPathNative()));
+				igdeEditorModuleDefinition::Ref::New(*this, modulePath.GetPathNative()));
 			
 			if(module->GetErrorCode() != igdeEditorModuleDefinition::eecSuccess){
 				switch(module->GetErrorCode()){

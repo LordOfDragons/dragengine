@@ -26,13 +26,13 @@
 #define _IGDENATIVEFOXFILEDIALOG_H_
 
 #include "../foxtoolkit.h"
+#include "../../../filedialog/igdeFilePattern.h"
 
 
 class igdeEnvironment;
 class deVirtualFileSystem;
 class igdeNativeFoxVFSList;
 class igdeNativeFoxVFSDirectoryBox;
-class igdeFilePatternList;
 class dePatternList;
 class decPath;
 class igdeWidget;
@@ -88,7 +88,7 @@ private:
 	FXComboBox *pCBFilter;
 	FXButton *pBtnAccept;
 	
-	const igdeFilePatternList *pFilePatternList;
+	const igdeFilePattern::List *pFilePatternList;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -133,9 +133,9 @@ public:
 	void SetFilename(const char *filename, const char *basePath);
 	
 	/** Retrieves the assigned file pattern list.*/
-	inline const igdeFilePatternList *GetFilePatternList() const{ return pFilePatternList; }
+	inline const igdeFilePattern::List *GetFilePatternList() const{ return pFilePatternList; }
 	/** Sets the assigned file pattern list. */
-	void SetFilePatternList(const igdeFilePatternList *filePatternList);
+	void SetFilePatternList(const igdeFilePattern::List *filePatternList);
 	
 	/** Updates the file type combo box. */
 	void UpdateFileTypeBox();

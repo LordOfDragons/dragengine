@@ -69,13 +69,13 @@ static int pToUpper(int character){
 /////////////////////////////////
 
 decUnicodeString::decUnicodeString(){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	pSize = 1;
 }
 
 decUnicodeString::decUnicodeString(const decUnicodeString &string){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	
 	if(string.pLength > 0){
@@ -85,7 +85,7 @@ decUnicodeString::decUnicodeString(const decUnicodeString &string){
 }
 
 decUnicodeString::decUnicodeString(const decUnicodeString &string1, const decUnicodeString &string2){
-	pString = NULL;
+	pString = nullptr;
 	pLength = 0;
 	
 	if(string1.pLength + string2.pLength > 0){
@@ -104,9 +104,19 @@ decUnicodeString::decUnicodeString(const decUnicodeString &string1, const decUni
 }
 
 decUnicodeString::decUnicodeString(int character){
-	pString = NULL;
+	pString = nullptr;
 	pCreateString(pCharSize(character), 1);
 	pSetAt(0, character);
+}
+
+decUnicodeString::decUnicodeString(decUnicodeString &&string) :
+pString(string.pString),
+pLength(string.pLength),
+pSize(string.pSize)
+{
+	string.pString = nullptr;
+	string.pLength = 0;
+	string.pSize = 1;
 }
 
 decUnicodeString decUnicodeString::NewFromUTF8(const char *string){
@@ -185,9 +195,9 @@ void decUnicodeString::SetValue(char value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -197,9 +207,9 @@ void decUnicodeString::SetValue(unsigned char value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -209,9 +219,9 @@ void decUnicodeString::SetValue(short value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -221,9 +231,9 @@ void decUnicodeString::SetValue(unsigned short value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -233,9 +243,9 @@ void decUnicodeString::SetValue(int value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -245,9 +255,9 @@ void decUnicodeString::SetValue(unsigned int value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -257,9 +267,9 @@ void decUnicodeString::SetValue(float value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -269,9 +279,9 @@ void decUnicodeString::SetValue(double value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		memcpy_s(reinterpret_cast<char*>(pString), length, temp.GetString(), length);
 	#else
-		strcpy((char*)pString, temp.GetString());
+		memcpy(reinterpret_cast<char*>(pString), temp.GetString(), length);
 	#endif
 }
 
@@ -1144,7 +1154,7 @@ decString decUnicodeString::ToUTF8() const{
 	// create string with the required size
 	decString string;
 	string.Set(' ', utflen);
-	char *buffer = (char*)string.GetString();
+	char *buffer = string.GetMutableString();
 	
 	for(i=0; i<pLength; i++){
 		const int character = pGetAt(i);
@@ -1316,6 +1326,24 @@ decUnicodeString &decUnicodeString::operator=(const decUnicodeString &string){
 	return *this;
 }
 
+decUnicodeString & decUnicodeString::operator=(decUnicodeString &&string){
+	if(this == &string) {
+		return *this;
+	}
+	
+	pFreeString();
+	
+	pString = string.pString;
+	pSize = string.pSize;
+	pLength = string.pLength;
+
+	string.pString = nullptr;
+	string.pSize = 1;
+	string.pLength = 0;
+	
+	return *this;
+}
+
 decUnicodeString &decUnicodeString::operator+=(const decUnicodeString &string){
 	Append(string);
 	return *this;
@@ -1361,7 +1389,7 @@ void decUnicodeString::pFreeString(){
 		}else{
 			delete [] ((unsigned int *)pString);
 		}
-		pString = NULL;
+		pString = nullptr;
 	}
 	pLength = 0;
 }
@@ -1371,9 +1399,6 @@ void decUnicodeString::pCreateString(int size, int length){
 	
 	if(length > 0){
 		pString = new char[length * size];
-		if(!pString){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	pSize = size;
 	pLength = length;
@@ -1390,7 +1415,7 @@ void decUnicodeString::pGrowString(int size, int length){
 		old.pLength = pLength; 
 		
 		// create string
-		pString = NULL;
+		pString = nullptr;
 		pCreateString(size > pSize ? size : pSize, length > pLength ? length : pLength);
 		for(i=0; i<old.pLength; i++){
 			pSetAt(i, old.pGetAt(i));

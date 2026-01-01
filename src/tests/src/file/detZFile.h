@@ -3,23 +3,23 @@
 
 #include "../detCase.h"
 
-class decZFileReader;
-class decMemoryFileReader;
-class decMemoryFileWriter;
-class decMemoryFile;
-class decZFileWriter;
+#include <dragengine/common/file/decZFileReader.h>
+#include <dragengine/common/file/decMemoryFileReader.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
+#include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decZFileWriter.h>
 
 // class detZFile
 class detZFile : public detCase{
 private:
-	decMemoryFile *pMemoryFileCompressed;
+	decMemoryFile::Ref pMemoryFileCompressed;
 	char *pTestBuffer;
 	
-	decMemoryFileWriter *pMemoryFileWriter;
-	decZFileWriter *pZWriter;
+	decMemoryFileWriter::Ref pMemoryFileWriter;
+	decZFileWriter::Ref pZWriter;
 	
-	decMemoryFileReader *pMemoryFileReader;
-	decZFileReader *pZReader;
+	decMemoryFileReader::Ref pMemoryFileReader;
+	decZFileReader::Ref pZReader;
 	
 public:
 	detZFile();

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navspace, float newSnapDist) :
-pNavSpace(NULL),
+
 pNewSnapDist(newSnapDist)
 {
 	if(!navspace){
@@ -52,13 +52,9 @@ pNewSnapDist(newSnapDist)
 	SetShortInfo("Height terrain nav-space set snap distance");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetSnapDist::~meUHTNavSpaceSetSnapDist(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

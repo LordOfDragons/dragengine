@@ -70,7 +70,7 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Editor window or NULL. */
+	/** \brief Editor window or nullptr. */
 	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
 	
 	/** \brief Maximum count of files to remember. */
@@ -88,10 +88,10 @@ public:
 	/** \brief Set recent files. */
 	void SetFiles(const decStringList &files);
 	
-	/** \brief Menu to synchronize or NULL if not used. */
-	inline igdeMenuCascade *GetMenu() const{ return pMenu; }
+	/** \brief Menu to synchronize or nullptr if not used. */
+	inline const igdeMenuCascade::Ref &GetMenu() const{ return pMenu; }
 	
-	/** \brief Set menu to synchronize or NULL if not used. */
+	/** \brief Set menu to synchronize or nullptr if not used. */
 	void SetMenu(igdeMenuCascade *menu);
 	
 	/** \brief Add file in first position. */

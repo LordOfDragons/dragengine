@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECLIPBOARD_H_
 #define _RECLIPBOARD_H_
 
-// predefinitions
-class reBaseClip;
-
+#include "reBaseClip.h"
 
 
 /**
@@ -39,7 +36,7 @@ class reBaseClip;
  */
 class reClipboard{
 private:
-	reBaseClip *pClip;
+	reBaseClip::Ref pClip;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -54,12 +51,12 @@ public:
 	/*@{*/
 	/** Determines if a clip is held by the clipboatd. */
 	bool HasClip() const;
-	/** Retrieves the clip or NULL if not set. */
-	inline reBaseClip *GetClip() const{ return pClip; }
+	/** Retrieves the clip or nullptr if not set. */
+	inline const reBaseClip::Ref &GetClip() const{ return pClip; }
+	
 	/** Sets the held clip replacing the old one if existing. */
 	void SetClip(reBaseClip *clip);
 	/*@}*/
 };
 
-// end of include only once
 #endif

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
 
 
@@ -37,18 +37,19 @@ class ceStrip;
  * \brief Undo Action Set Actor Speak Conversation Action Head LookAt.
  */
 class ceUCAASpeakHeadLASet : public igdeUndo{
-private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pHeadLA;
-	
-	ceStrip *pOldStrip;
-	ceStrip *pNewStrip;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceUCAASpeakHeadLASet> Ref;
 	
+	
+private:
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pHeadLA;
+	
+	ceStrip::Ref pOldStrip;
+	ceStrip::Ref pNewStrip;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

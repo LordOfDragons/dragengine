@@ -39,6 +39,9 @@ class reRigShapeHull;
  * \brief Rig shape hull panel.
  */
 class reWPPanelShapeHull : public reWPPanelShape{
+public:
+	typedef deTObjectReference<reWPPanelShapeHull> Ref;
+	
 private:
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;

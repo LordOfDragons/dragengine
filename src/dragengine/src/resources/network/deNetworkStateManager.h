@@ -25,11 +25,11 @@
 #ifndef _DENETWORKSTATEMANAGER_H_
 #define _DENETWORKSTATEMANAGER_H_ 
 
+#include "deNetworkState.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deNetworkState;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deNetworkState *GetRootNetworkState() const;
 	
 	/** \brief Create network state. */
-	deNetworkState *CreateState(bool readOnly);
+	deNetworkState::Ref CreateState(bool readOnly);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

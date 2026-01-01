@@ -67,12 +67,12 @@ bool deVFSNull::CanDeleteFile(const decPath &){
 	return true;
 }
 
-decBaseFileReader *deVFSNull::OpenFileForReading(const decPath &path){
+decBaseFileReader::Ref deVFSNull::OpenFileForReading(const decPath &path){
 	DETHROW(deeInvalidAction);
 }
 
-decBaseFileWriter *deVFSNull::OpenFileForWriting(const decPath &path){
-	return new decNullFileWriter(path.GetPathUnix());
+decBaseFileWriter::Ref deVFSNull::OpenFileForWriting(const decPath &path){
+	return decNullFileWriter::Ref::New(path.GetPathUnix());
 }
 
 void deVFSNull::DeleteFile(const decPath &){

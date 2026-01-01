@@ -55,7 +55,7 @@ gdeMACategoryAdd(windowMain, "Add Particle Emitter Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
-	return AddCategory(gameDefinition, NULL,
+igdeUndo::Ref gdeMACategoryParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, nullptr,
 		gameDefinition.GetCategoriesParticleEmitter(), gdeUCategoryBase::ectParticleEmitter);
 }

@@ -25,17 +25,18 @@
 #ifndef _MELOADSAVESYSTEM_H_
 #define _MELOADSAVESYSTEM_H_
 
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
+#include "meLSWorld.h"
+#include "heightterrain/meLSHeightTerrain.h"
+#include "../world/meWorld.h"
+
+#include <deigde/gui/igdeStepableTask.h>
+#include <deigde/gui/filedialog/igdeFilePattern.h>
 
 class meLoadSaveNavTest;
-class meLSWorld;
-class meLSHeightTerrain;
 class meLSPFCache;
 class meWindowMain;
-class meWorld;
 class meHeightTerrain;
 class meHeightTerrainSector;
-class igdeStepableTask;
 class igdeGameDefinition;
 
 
@@ -47,20 +48,16 @@ class meLoadSaveSystem{
 private:
 	meWindowMain *pWndMain;
 	
-	meLSWorld **pLSWorlds;
-	int pLSWorldCount, pLSWorldSize;
-	
-	meLSHeightTerrain **pLSHTs;
-	int pLSHTCount;
-	int pLSHTSize;
+	meLSWorld::List pLSWorlds;
+	meLSHeightTerrain::List pLSHTs;
 	
 	meLoadSaveNavTest *pLSNavTest;
-	igdeFilePatternList pFPNavTest;
+	igdeFilePattern::List pFPNavTest;
 	
 	meLSPFCache *pLSPFCache;
 	
-	igdeFilePatternList pFilePatternList;
-	igdeFilePatternList pPropFieldCacheFilePatterns;
+	igdeFilePattern::List pFilePatternList;
+	igdeFilePattern::List pPropFieldCacheFilePatterns;
 	
 public:
 	// constructor, destructor
@@ -71,25 +68,29 @@ public:
 	inline meWindowMain *GetWindowMain() const{ return pWndMain; }
 	
 	// world management
-	inline int GetLSWorldCount() const{ return pLSWorldCount; }
-	meLSWorld *GetLSWorldAt(int index) const;
+	inline const meLSWorld::List &GetLSWorlds() const{ return pLSWorlds; }
+	
 	meLSWorld *FindLSWorldMatching(const char *filename) const;
+	
 	void AddLSWorld(meLSWorld *world);
-	meWorld *LoadWorld(const char *filename, igdeGameDefinition *gameDefinition,
-		igdeStepableTask **task);
+	
+	meWorld::Ref LoadWorld(const char *filename, igdeGameDefinition *gameDefinition,
+		igdeStepableTask::Ref &task);
+	
 	void SaveWorld(meWorld *world, const char *filename);
 	
 	// height terrain sectors
-	/** Retrieves the number of height terrain loaders. */
-	inline int GetLSHeightTerrainCount() const{ return pLSHTCount; }
-	/** Retrieves the height terrain loader at the given index. */
-	meLSHeightTerrain *GetLSHeightTerrainAt(int index) const;
+	inline const meLSHeightTerrain::List &GetLSHeightTerrains() const{ return pLSHTs; }
+	
 	/** Retrieves the matching height terrain loader. */
 	meLSHeightTerrain *FindLSHeightTerrainMatching(const char *filename) const;
+	
 	/** Adds a height terrain loader. */
 	void AddLSHeightTerrain(meLSHeightTerrain *loader);
+	
 	/** Loads a height terrain using the matching loader. */
 	void LoadHeightTerrain(meHeightTerrain &heightTerrain, const char *filename);
+	
 	/** Saves a height terrain using the matching loader. */
 	void SaveHeightTerrain(meHeightTerrain &heightTerrain, const char *filename);
 	
@@ -101,10 +102,10 @@ public:
 	void SavePFCache(meHeightTerrainSector &sector, const char *filename);
 	
 	/** Retrieves the file pattern list. */
-	inline const igdeFilePatternList &GetFilePatternList() const{ return pFilePatternList; }
+	inline const igdeFilePattern::List &GetFilePatternList() const{ return pFilePatternList; }
 	
 	/** Retrieves the prop field cache file patterns. */
-	inline const igdeFilePatternList &GetPropFieldCacheFilePatterns() const{ return pPropFieldCacheFilePatterns; }
+	inline const igdeFilePattern::List &GetPropFieldCacheFilePatterns() const{ return pPropFieldCacheFilePatterns; }
 	
 	/** \brief Retrieves the load save navigation test. */
 	inline meLoadSaveNavTest *GetLSNavTest(){ return pLSNavTest; }
@@ -113,7 +114,7 @@ public:
 	/** \brief Saves the navigation test to file. */
 	void SaveNavTest(const char *filename, meWorld &world);
 	/** \brief Retrieves the navigation test file pattern list. */
-	inline const igdeFilePatternList *GetNavTestFilePatterns() const{ return &pFPNavTest; }
+	inline const igdeFilePattern::List *GetNavTestFilePatterns() const{ return &pFPNavTest; }
 	
 private:
 	void pCleanUp();

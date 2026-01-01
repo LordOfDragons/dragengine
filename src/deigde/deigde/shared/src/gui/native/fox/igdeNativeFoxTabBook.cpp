@@ -107,11 +107,11 @@ igdeNativeFoxTabBook::igdeNativeFoxTabBook(igdeTabBook &powner, FXComposite *ppa
 	FXComposite *windowParent, int layoutFlags, const igdeGuiTheme &guitheme) :
 FXVerticalFrame(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
-pAutoScroller(NULL),
-// pBtnScrollHeadersLeft( NULL ),
-// pBtnScrollHeadersRight( NULL ),
-pHeaders(NULL),
-pSwitcher(NULL),
+pAutoScroller(nullptr),
+// pBtnScrollHeadersLeft( nullptr ),
+// pBtnScrollHeadersRight( nullptr ),
+pHeaders(nullptr),
+pSwitcher(nullptr),
 pFont(TabBookFont(powner, guitheme)),
 pPadLeft(TabBookPadLeft(guitheme)),
 pPadRight(TabBookPadRight(guitheme)),
@@ -229,19 +229,19 @@ igdeFont *igdeNativeFoxTabBook::TabBookFont(const igdeTabBook &powner, const igd
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::tabBookFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::tabBookFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::tabBookFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::tabBookFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::tabBookFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::tabBookFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
@@ -280,7 +280,7 @@ long igdeNativeFoxTabBook::onHeaderUpdate(FXObject *sender, FXSelector, void*){
 	const int switcherIndex = pSwitcher->getCurrent();
 	
 	return sender->handle(this, FXSEL(SEL_COMMAND,
-		headerIndex == switcherIndex ? ID_CHECK : ID_UNCHECK), NULL);
+		headerIndex == switcherIndex ? ID_CHECK : ID_UNCHECK), nullptr);
 }
 
 long igdeNativeFoxTabBook::onHeaderMouseWheel(FXObject*, FXSelector, void *pdata){

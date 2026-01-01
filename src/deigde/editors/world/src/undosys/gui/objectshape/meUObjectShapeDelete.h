@@ -25,21 +25,24 @@
 #ifndef _MEUOBJECTSHAPEDELETE_H_
 #define _MEUOBJECTSHAPEDELETE_H_
 
+#include "../../../world/object/meObject.h"
+#include "../../../world/objectshape/meObjectShape.h"
+
 #include <dragengine/common/shape/decShapeList.h>
 
 #include <deigde/undo/igdeUndo.h>
-
-class meObject;
-class meObjectShapeList;
-
 
 
 /**
  * \brief Object Shape delete shapes undo action.
  */
 class meUObjectShapesDelete : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectShapesDelete> Ref;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
@@ -47,15 +50,16 @@ private:
 	decString pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectShapesDelete> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapesDelete(meObject *object, const char *property, const meObjectShapeList &list);
+	meUObjectShapesDelete(meObject *object, const char *property, const meObjectShape::List &list);
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectShapesDelete();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

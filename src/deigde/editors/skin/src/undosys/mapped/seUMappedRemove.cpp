@@ -44,26 +44,16 @@ pSkin(mapped ? mapped->GetSkin() : nullptr)
 	
 	SetShortInfo("Remove Mapped");
 	
-	int i, j, k;
-	
-	const seTextureList &textureList = pSkin->GetTextureList();
-	const int textureCount = textureList.GetCount();
-	for(i=0; i<textureCount; i++){
-		seTexture * const texture = textureList.GetAt(i);
-		
-		const sePropertyList &propertyList = texture->GetPropertyList();
-		const int propertyCount = propertyList.GetCount();
-		
-		for(j=0; j<propertyCount; j++){
-			seProperty * const property = propertyList.GetAt(j);
-			
-			for(k=0; k<4; k++){
-				if(property->GetMappedComponent(k) == mapped){
-					pDependencies.Add(sDependency::Ref::NewWith(property, k));
+	pSkin->GetTextures().Visit([&](seTexture *texture){
+		texture->GetProperties().Visit([&](seProperty *property){
+			int i;
+			for(i=0; i<4; i++){
+				if(property->GetMappedComponent(i) == mapped){
+					pDependencies.Add(cDependency::Ref::New(property, i));
 				}
 			}
-		}
-	}
+		});
+	});
 }
 
 seUMappedRemove::~seUMappedRemove(){
@@ -81,29 +71,19 @@ int seUMappedRemove::GetDependencyCount() const{
 void seUMappedRemove::Undo(){
 	pSkin->AddMapped(pMapped);
 	
-	const int count = pDependencies.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const sDependency &dependency = *((sDependency*)pDependencies.GetAt(i));
-		
+	pDependencies.Visit([&](const cDependency &dependency){
 		if(dependency.mappedComponent != -1){
 			dependency.property->SetMappedComponent(dependency.mappedComponent, pMapped);
 		}
-	}
+	});
 }
 
 void seUMappedRemove::Redo(){
-	const int count = pDependencies.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const sDependency &dependency = *((sDependency*)pDependencies.GetAt(i));
-		
+	pDependencies.Visit([&](const cDependency &dependency){
 		if(dependency.mappedComponent != -1){
 			dependency.property->SetMappedComponent(dependency.mappedComponent, nullptr);
 		}
-	}
+	});
 	
 	pSkin->RemoveMapped(pMapped);
 }

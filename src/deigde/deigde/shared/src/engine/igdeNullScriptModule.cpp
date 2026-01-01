@@ -26,23 +26,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include "igdeNullScriptModule.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingConnection.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingServer.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingPropField.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingServer.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingPropField.h>
+#include <dragengine/common/exceptions.h>
 
 
 // cModule
 igdeNullScriptModule::cModule::cModule(deModuleSystem *system) : deInternalModule(system){
 	SetName("NullScript");
 	SetType(deModuleSystem::emtScript);
-	SetDescription("Null Scripting Module");
+	SetDescription("nullptr Scripting Module");
 	SetAuthor("Plüss Roland");
 	SetVersion("1.0");
 	SetDirectoryName("NullScript");
@@ -113,15 +113,15 @@ deBaseScriptingPropField *igdeNullScriptModule::CreatePropField(dePropField *pro
 
 deBaseScriptingParticleEmitterInstance *igdeNullScriptModule::CreateParticleEmitterInstance(
 deParticleEmitterInstance *instance){
-	return NULL;
+	return nullptr;
 }
 
 deBaseScriptingSoundLevelMeter *igdeNullScriptModule::CreateSoundLevelMeter(deSoundLevelMeter *meter){
-	return NULL;
+	return nullptr;
 }
 
 deBaseScriptingSpeaker *igdeNullScriptModule::CreateSpeaker(deSpeaker *speaker){
-	return NULL;
+	return nullptr;
 }
 
 
@@ -130,11 +130,11 @@ deBaseScriptingSpeaker *igdeNullScriptModule::CreateSpeaker(deSpeaker *speaker){
 ///////////
 
 const char *igdeNullScriptModule::GetSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 const char *igdeNullScriptModule::GetVFSSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 bool igdeNullScriptModule::InitGame(){

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDENVNODELISTENER_H_
-#define _IGDENVNODELISTENER_H_
+#ifndef _IGDENVBOARDLISTENER_H_
+#define _IGDENVBOARDLISTENER_H_
 
 
 #include <dragengine/deObject.h>

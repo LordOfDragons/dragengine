@@ -51,7 +51,6 @@
 deoglDecal::deoglDecal(deGraphicOpenGl &ogl, const deDecal &decal) :
 pOgl(ogl),
 pDecal(decal),
-pRDecal(NULL),
 
 pDynamicSkin(NULL),
 
@@ -73,7 +72,7 @@ pNotifyTUCChanged(false),
 pParentComponent(NULL)
 {
 	try{
-		pRDecal = new deoglRDecal(ogl.GetRenderThread());
+		pRDecal = deoglRDecal::Ref::New(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -255,10 +254,6 @@ void deoglDecal::VisibleChanged(){
 //////////////////////
 
 void deoglDecal::pCleanUp(){
-	if(pRDecal){
-		pRDecal->FreeReference();
-	}
-	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);
 	}

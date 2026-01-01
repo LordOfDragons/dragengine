@@ -43,25 +43,16 @@
 ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot){
 	if(!conversation || !cameraShot) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pCameraShot = NULL;
+	pConversation = nullptr;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Add Camera Shot");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotAdd::~ceUCCShotAdd(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

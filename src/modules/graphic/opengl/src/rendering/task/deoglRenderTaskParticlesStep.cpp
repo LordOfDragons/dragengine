@@ -143,7 +143,6 @@ deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::AddInstan
 	if(pInstanceCount == pInstanceSize){
 		int newSize = pInstanceSize + 10;
 		sInstance *newArray = new sInstance[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pInstances){
 			memcpy(newArray, pInstances, sizeof(sInstance) * pInstanceSize);
 			delete [] pInstances;

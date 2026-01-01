@@ -27,7 +27,7 @@
 #define _RERIGBUILDER_H_
 
 // includes
-#include "dragengine/resources/rig/deRigBuilder.h"
+#include <dragengine/resources/rig/deRigBuilder.h>
 
 // predefinitions
 class reRig;

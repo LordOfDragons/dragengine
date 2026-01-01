@@ -27,8 +27,9 @@
 
 #include "../ceWPTMenuAction.h"
 
+#include <deigde/undo/igdeUndo.h>
+
 class ceConversation;
-class igdeUndo;
 
 
 
@@ -46,6 +47,7 @@ protected:
 	ceWPTMARemoveAllActions();
 	
 public:
+	typedef deTObjectReference<ceWPTMARemoveAllActions> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
@@ -64,7 +66,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	virtual igdeUndo::Ref CreateUndo();
 	/*@}*/
 };
 

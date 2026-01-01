@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
-class peeEmitter;
+#include "../../emitter/peeController.h"
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -36,17 +36,18 @@ class peeEmitter;
  * \brief Undo Action Remove Controller.
  */
 class peeUControllerRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUControllerRemove> Ref;
+	
+	
 private:
-	peeEmitter *pEmitter;
-	peeController *pController;
+	peeEmitter::Ref pEmitter;
+	peeController::Ref pController;
 	int pIndex;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUControllerRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */

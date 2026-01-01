@@ -149,17 +149,17 @@ void dedsVRPlaceholder::pCreateWorld(){
 	pDS.LogInfo("Create VR Placeholder");
 	deEngine &engine = *pDS.GetGameEngine();
 	
-	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
+	pWorld = engine.GetWorldManager()->CreateWorld();
 	pWorld->SetDisableLights(true);
 	
-	const deModel::Ref model(deModel::Ref::New(engine.GetModelManager()->LoadModel(
-		"/shareddata/models/vrplaceholder/vrplaceholder.demodel", "/")));
+	const deModel::Ref model(engine.GetModelManager()->LoadModel(
+		"/shareddata/models/vrplaceholder/vrplaceholder.demodel", "/"));
 	
-	const deSkin::Ref skin(deSkin::Ref::New(engine.GetSkinManager()->LoadSkin(
-		"/shareddata/models/vrplaceholder/vrplaceholder.deskin", "/")));
+	const deSkin::Ref skin(engine.GetSkinManager()->LoadSkin(
+		"/shareddata/models/vrplaceholder/vrplaceholder.deskin", "/"));
 	
 	
-	const deSky::Ref sky(deSky::Ref::New(engine.GetSkyManager()->CreateSky()));
+	const deSky::Ref sky(engine.GetSkyManager()->CreateSky());
 	sky->SetBgColor(decColor(0.0f, 0.5f, 1.0f));
 	sky->SetLayerCount(1);
 	
@@ -167,16 +167,15 @@ void dedsVRPlaceholder::pCreateWorld(){
 	skyLayer.SetAmbientIntensity(1.0f);
 	skyLayer.SetLightIntensity(0.0f);
 	
-	const deSkyInstance::Ref skyInstance(deSkyInstance::Ref::New(
-		engine.GetSkyInstanceManager()->CreateSkyInstance()));
+	const deSkyInstance::Ref skyInstance(engine.GetSkyInstanceManager()->CreateSkyInstance());
 	skyInstance->SetSky(sky);
 	pWorld->AddSky(skyInstance);
 	
 	
-	pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin));
+	pComponent = engine.GetComponentManager()->CreateComponent(model, skin);
 	pWorld->AddComponent(pComponent);
 	
-	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera = engine.GetCameraManager()->CreateCamera();
 	pCamera->SetEnableGI(false);
 	pCamera->SetEnableHDRR(false);
 	pWorld->AddCamera(pCamera);
@@ -212,7 +211,7 @@ void dedsVRPlaceholder::pFindHmdDevice(){
 	pDeviceIndexHmd = -1;
 	
 	for(i=0; i<count; i++){
-		const deInputDevice::Ref device(deInputDevice::Ref::New(module.GetDeviceAt(i)));
+		const deInputDevice::Ref device(module.GetDeviceAt(i));
 		if(device->GetType() == deInputDevice::eDeviceTypes::edtVRHMD){
 			pDeviceIndexHmd = i;
 			return;

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char *newValue) :
-pGameDefinition(NULL),
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetVFSPath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetVFSPath::~gdeUGDSetVFSPath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

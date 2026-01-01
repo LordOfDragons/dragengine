@@ -84,26 +84,27 @@ protected:
 	aeWPRule &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPRule &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRule * const rule = pPanel.GetRule();
 		if(animator && rule){
@@ -124,37 +125,47 @@ public:
 
 class cActionCopy : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCopy> Ref;
+	
+public:
 	cActionCopy(aeWPRule &panel) : cBaseAction(panel, "Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy rule to clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataRule::Ref::NewWith(rule));
-		return NULL;
+			aeClipboardDataRule::Ref::New(rule));
+		return {};
 	}
 };
 
 class cActionCut : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCut> Ref;
+	
+public:
 	cActionCut(aeWPRule &panel) : cBaseAction(panel, "Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut rule into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataRule::Ref::NewWith(rule));
+			aeClipboardDataRule::Ref::New(rule));
 		
 		if(rule->GetParentGroup()){
-			return new aeURuleGroupRemoveRule(rule->GetParentGroup(), rule);
+			return aeURuleGroupRemoveRule::Ref::New(rule->GetParentGroup(), rule);
 			
 		}else{
-			return new aeURemoveRule(animator, rule);
+			return aeURemoveRule::Ref::New(animator, rule);
 		}
 	}
 };
 
 class cActionPaste : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionPaste> Ref;
+	
+private:
 protected:
 	const bool pInsert;
 	
@@ -162,21 +173,21 @@ public:
 	cActionPaste(aeWPRule &panel, const char *name, igdeIcon *icon, const char *description, bool insert) :
 		cBaseAction(panel, name, icon, description), pInsert(insert){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) override{
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
 		if(!cdata){
-			return NULL;
+			return {};
 		}
 		
 		if(rule->GetParentGroup()){
-			const aeRuleList &list = rule->GetParentGroup()->GetRules();
-			return new aeURuleGroupPasteRule(rule->GetParentGroup(), cdata->GetRules(),
+			const aeRule::List &list = rule->GetParentGroup()->GetRules();
+			return aeURuleGroupPasteRule::Ref::New(rule->GetParentGroup(), cdata->GetRules(),
 				pInsert ? list.IndexOf(rule) : list.GetCount());
 			
 		}else{
-			const aeRuleList &list = animator->GetRules();
-			return new aeUPasteRule(animator, cdata->GetRules(),
+			const aeRule::List &list = animator->GetRules();
+			return aeUPasteRule::Ref::New(animator, cdata->GetRules(),
 				pInsert ? list.IndexOf(rule) : list.GetCount());
 		}
 	}
@@ -189,6 +200,7 @@ public:
 
 class cActionPasteAppend : public cActionPaste{
 public:
+	typedef deTObjectReference<cActionPasteAppend> Ref;
 	cActionPasteAppend(aeWPRule &panel) : cActionPaste(panel, "Paste Append",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste and append rule from clipboard", false){}
@@ -196,6 +208,7 @@ public:
 
 class cActionPasteInsert : public cActionPaste{
 public:
+	typedef deTObjectReference<cActionPasteInsert> Ref;
 	cActionPasteInsert(aeWPRule &panel) : cActionPaste(panel, "Paste Insert",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste and insert rule from clipboard ", true){}
@@ -203,20 +216,21 @@ public:
 
 class cActionPasteIntoGroup : public cActionPaste{
 public:
+	typedef deTObjectReference<cActionPasteIntoGroup> Ref;
 	cActionPasteIntoGroup(aeWPRule &panel) : cActionPaste(panel, "Paste Into Group",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste rules from clipboard into group", false){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRule *rule){
+	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
 		if(!cdata || rule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup){
-			return NULL;
+			return {};
 		}
 		
 		aeRuleGroup * const group = (aeRuleGroup*)rule;
-		const aeRuleList &list = group->GetRules();
-		return new aeURuleGroupPasteRule(group, cdata->GetRules(), list.GetCount());
+		const aeRule::List &list = group->GetRules();
+		return aeURuleGroupPasteRule::Ref::New(group, cdata->GetRules(), list.GetCount());
 	}
 	
 	void Update(const aeAnimator & , const aeRule &rule) override{
@@ -230,13 +244,14 @@ class cTreeRules : public igdeTreeListListener{
 	aeWPRule &pPanel;
 	
 public:
+	typedef deTObjectReference<cTreeRules> Ref;
 	cTreeRules(aeWPRule &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(animator){
 			animator->SetActiveRule(treeList->GetSelection()
-				? (aeRule*)treeList->GetSelection()->GetData() : NULL);
+				? (aeRule*)treeList->GetSelection()->GetData() : nullptr);
 		}
 	}
 	
@@ -258,7 +273,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add"));
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddAnimSelect());
@@ -274,7 +289,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddMirror());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Add Into Group"));
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Add Into Group");
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimSelect());
@@ -290,7 +305,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupMirror());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
+		submenu = igdeMenuCascade::Ref::New(menu.GetEnvironment(), "Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimSelect());
@@ -311,11 +326,11 @@ public:
 		helper.MenuCommand(menu, windowMain.GetActionRuleDown());
 		
 		helper.MenuSeparator(menu);
-		helper.MenuCommand(menu, new cActionCopy(pPanel), true);
-		helper.MenuCommand(menu, new cActionCut(pPanel), true);
-		helper.MenuCommand(menu, new cActionPasteAppend(pPanel), true);
-		helper.MenuCommand(menu, new cActionPasteInsert(pPanel), true);
-		helper.MenuCommand(menu, new cActionPasteIntoGroup(pPanel), true);
+		helper.MenuCommand(menu, cActionCopy::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionCut::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteAppend::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteInsert::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteIntoGroup::Ref::New(pPanel));
 	}
 };
 
@@ -332,92 +347,85 @@ public:
 aeWPRule::aeWPRule(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
-pPanelAnim(NULL),
-pPanelAnimDiff(NULL),
-pPanelAnimSelect(NULL),
-pPanelBoneRot(NULL),
-pPanelFState(NULL),
-pPanelGroup(NULL),
-pPanelIK(NULL),
-pPanelSManip(NULL),
-pPanelSSnapshot(NULL),
-pPanelSubAnimator(NULL),
-pPanelTrackTo(NULL),
-pPanelLimit(NULL),
+pPanelAnim(nullptr),
+pPanelAnimDiff(nullptr),
+pPanelAnimSelect(nullptr),
+pPanelBoneRot(nullptr),
+pPanelFState(nullptr),
+pPanelGroup(nullptr),
+pPanelIK(nullptr),
+pPanelSManip(nullptr),
+pPanelSSnapshot(nullptr),
+pPanelSubAnimator(nullptr),
+pPanelTrackTo(nullptr),
+pPanelLimit(nullptr),
 pPanelMirror(nullptr),
-pActivePanel(NULL)
+pActivePanel(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPRuleListener(*this);
+	pListener = aeWPRuleListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "Rules:");
-	helper.TreeList(groupBox, pTreeRule, 8, "Rules", new cTreeRules(*this));
+	helper.TreeList(groupBox, pTreeRule, 8, "Rules", cTreeRules::Ref::New(*this));
 	
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	content->AddChild(pSwitcher);
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	pSwitcher->AddChild(panel);
+	pSwitcher->AddChild(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
 	
-	panel.TakeOver(pPanelAnim = new aeWPAPanelRuleAnimation(*this));
-	pSwitcher->AddChild(panel);
+	pPanelAnim = aeWPAPanelRuleAnimation::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAnim);
 	
-	panel.TakeOver(pPanelAnimDiff = new aeWPAPanelRuleAnimationDifference(*this));
-	pSwitcher->AddChild(panel);
+	pPanelAnimDiff = aeWPAPanelRuleAnimationDifference::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAnimDiff);
 	
-	panel.TakeOver(pPanelAnimSelect = new aeWPAPanelRuleAnimationSelect(*this));
-	pSwitcher->AddChild(panel);
+	pPanelAnimSelect = aeWPAPanelRuleAnimationSelect::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAnimSelect);
 	
-	panel.TakeOver(pPanelBoneRot = new aeWPAPanelRuleBoneTransformator(*this));
-	pSwitcher->AddChild(panel);
+	pPanelBoneRot = aeWPAPanelRuleBoneTransformator::Ref::New(*this);
+	pSwitcher->AddChild(pPanelBoneRot);
 	
-	panel.TakeOver(pPanelFState = new aeWPAPanelRuleForeignState(*this));
-	pSwitcher->AddChild(panel);
+	pPanelFState = aeWPAPanelRuleForeignState::Ref::New(*this);
+	pSwitcher->AddChild(pPanelFState);
 	
-	panel.TakeOver(pPanelGroup = new aeWPAPanelRuleGroup(*this));
-	pSwitcher->AddChild(panel);
+	pPanelGroup = aeWPAPanelRuleGroup::Ref::New(*this);
+	pSwitcher->AddChild(pPanelGroup);
 	
-	panel.TakeOver(pPanelIK = new aeWPAPanelRuleInverseKinematic(*this));
-	pSwitcher->AddChild(panel);
+	pPanelIK = aeWPAPanelRuleInverseKinematic::Ref::New(*this);
+	pSwitcher->AddChild(pPanelIK);
 	
-	panel.TakeOver(pPanelSManip = new aeWPAPanelRuleStateManipulator(*this));
-	pSwitcher->AddChild(panel);
+	pPanelSManip = aeWPAPanelRuleStateManipulator::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSManip);
 	
-	panel.TakeOver(pPanelSSnapshot = new aeWPAPanelRuleStateSnapshot(*this));
-	pSwitcher->AddChild(panel);
+	pPanelSSnapshot = aeWPAPanelRuleStateSnapshot::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSSnapshot);
 	
-	panel.TakeOver(pPanelSubAnimator = new aeWPAPanelRuleSubAnimator(*this));
-	pSwitcher->AddChild(panel);
+	pPanelSubAnimator = aeWPAPanelRuleSubAnimator::Ref::New(*this);
+	pSwitcher->AddChild(pPanelSubAnimator);
 	
-	panel.TakeOver(pPanelTrackTo = new aeWPAPanelRuleTrackTo(*this));
-	pSwitcher->AddChild(panel);
+	pPanelTrackTo = aeWPAPanelRuleTrackTo::Ref::New(*this);
+	pSwitcher->AddChild(pPanelTrackTo);
 	
-	panel.TakeOver(pPanelLimit = new aeWPAPanelRuleLimit(*this));
-	pSwitcher->AddChild(panel);
+	pPanelLimit = aeWPAPanelRuleLimit::Ref::New(*this);
+	pSwitcher->AddChild(pPanelLimit);
 	
-	panel.TakeOver(pPanelMirror = new aeWPAPanelRuleMirror(*this));
-	pSwitcher->AddChild(panel);
+	pPanelMirror = aeWPAPanelRuleMirror::Ref::New(*this);
+	pSwitcher->AddChild(pPanelMirror);
 	
-	pSwitcher->SetCurrent(0);  // empty
+	pSwitcher->SetCurrent(0); // empty
 }
 
 aeWPRule::~aeWPRule(){
-	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -432,14 +440,12 @@ void aeWPRule::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	if(pActivePanel){
@@ -457,7 +463,7 @@ void aeWPRule::SetAnimator(aeAnimator *animator){
 }
 
 aeRule *aeWPRule::GetRule() const{
-	return pAnimator ? pAnimator->GetActiveRule() : NULL;
+	return pAnimator ? pAnimator->GetActiveRule() : nullptr;
 }
 
 
@@ -476,24 +482,19 @@ void aeWPRule::UpdateLinkList(){
 
 void aeWPRule::UpdateRuleTree(){
 	if(pAnimator){
-		const aeRuleList &list = pAnimator->GetRules();
-		const int count = list.GetCount();
 		igdeTreeItem *nextItem = pTreeRule->GetFirstChild();
-		int i;
 		
-		for(i=0; i<count; i++){
-			aeRule * const rule = list.GetAt(i);
-			
+		pAnimator->GetRules().Visit([&](aeRule *rule){
 			if(!nextItem){
-				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
-				pTreeRule->AppendItem(NULL, newItem);
+				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New(""));
+				pTreeRule->AppendItem(nullptr, newItem);
 				nextItem = newItem;
 			}
 			
 			UpdateRuleTreeItem(nextItem, rule);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;
@@ -533,21 +534,16 @@ void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
 	
 	if(rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup){
 		const aeRuleGroup &ruleGroup = *((aeRuleGroup*)rule);
-		const aeRuleList &list = ruleGroup.GetRules();
-		const int count = list.GetCount();
 		igdeTreeItem *nextItem = item->GetFirstChild();
-		int i;
 		
 		if(item->GetExpanded() != ruleGroup.GetTreeListExpanded()){
 			item->SetExpanded(ruleGroup.GetTreeListExpanded());
 			pTreeRule->ItemChanged(item);
 		}
 		
-		for(i=0; i<count; i++){
-			aeRule * const rule2 = list.GetAt(i);
-			
+		ruleGroup.GetRules().Visit([&](aeRule *rule2){
 			if(!nextItem){
-				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
+				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New(""));
 				pTreeRule->AppendItem(item, newItem);
 				nextItem = newItem;
 			}
@@ -555,7 +551,7 @@ void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){
 			UpdateRuleTreeItem(nextItem, rule2);
 			
 			nextItem = nextItem->GetNext();
-		}
+		});
 		
 		while(nextItem){
 			igdeTreeItem * const removeItem = nextItem;

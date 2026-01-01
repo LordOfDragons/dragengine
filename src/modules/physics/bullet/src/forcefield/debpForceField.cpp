@@ -58,11 +58,9 @@ pDirtyGeometry(true)
 	/*
 	try{
 		pVortices = new debpFFVortex*[20];
-		if(!pVortices) DETHROW(deeOutOfMemory);
 		
 		for(pVortexSize=0; pVortexSize<20; pVortexSize++){
 			pVortices[pVortexSize] = new debpFFVortex;
-			if(!pVortices[pVortexSize]) DETHROW(deeOutOfMemory);
 		}
 		
 	}catch(const deException &){

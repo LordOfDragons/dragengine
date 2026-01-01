@@ -67,25 +67,11 @@ deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
 	return (deParticleEmitter*)pParticleEmitters.GetRoot();
 }
 
-deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
-	deParticleEmitter *psys = NULL;
-	
-	try{
-		psys = new deParticleEmitter(this);
-		if(!psys) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadParticleEmitter(psys);
-		GetPhysicsSystem()->LoadParticleEmitter(psys);
-		
-		pParticleEmitters.Add(psys);
-		
-	}catch(const deException &){
-		if(psys){
-			psys->FreeReference();
-		}
-		throw;
-	}
-	
+deParticleEmitter::Ref deParticleEmitterManager::CreateParticleEmitter(){
+	const deParticleEmitter::Ref psys(deParticleEmitter::Ref::New(this));
+	GetGraphicSystem()->LoadParticleEmitter(psys);
+	GetPhysicsSystem()->LoadParticleEmitter(psys);
+	pParticleEmitters.Add(psys);
 	return psys;
 }
 

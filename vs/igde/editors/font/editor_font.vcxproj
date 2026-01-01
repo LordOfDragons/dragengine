@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -29,90 +29,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\deigde\editors\font\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
@@ -352,4 +268,90 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\feIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feFontNotifier.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\feGenerateFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyph.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\glyph\feFontGlyphSelection.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\font\image\feFontImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\fonteditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\feWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFIImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\fontimage\feViewFontImageListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPFontListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyph.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPGlyphListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\gui\properties\feWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\loadsave\feLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.h" />
+  </ItemGroup>
 </Project>

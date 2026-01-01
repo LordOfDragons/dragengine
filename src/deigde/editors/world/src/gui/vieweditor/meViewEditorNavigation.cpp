@@ -78,8 +78,8 @@ void meViewEditorNavigation::OnRightMouseButtonPress(int x, int y, bool shift, b
 	meWorld &world = GetWorld();
 	meCamera * const activeCamera = world.GetActiveCamera();
 	
-	pUndoCameraMove = NULL;
-	pUndoCameraRotate = NULL;
+	pUndoCameraMove = nullptr;
+	pUndoCameraRotate = nullptr;
 	
 	// distance
 	if(shift && control){
@@ -87,7 +87,7 @@ void meViewEditorNavigation::OnRightMouseButtonPress(int x, int y, bool shift, b
 		pNavigating = true;
 		
 		if(activeCamera->HasHostObject()){
-			pUndoCameraMove.TakeOver(new meUCameraMoveObject(activeCamera->GetHostObject()));
+			pUndoCameraMove = meUCameraMoveObject::Ref::New(activeCamera->GetHostObject());
 		}
 		
 	// move
@@ -95,7 +95,7 @@ void meViewEditorNavigation::OnRightMouseButtonPress(int x, int y, bool shift, b
 		pNavigating = true;
 		
 		if(activeCamera->HasHostObject()){
-			pUndoCameraMove.TakeOver(new meUCameraMoveObject(activeCamera->GetHostObject()));
+			pUndoCameraMove = meUCameraMoveObject::Ref::New(activeCamera->GetHostObject());
 		}
 		
 	// rotate
@@ -105,7 +105,7 @@ void meViewEditorNavigation::OnRightMouseButtonPress(int x, int y, bool shift, b
 		pNavigating = true;
 		
 		if(activeCamera->HasHostObject()){
-			pUndoCameraRotate.TakeOver(new meUCameraRotateObject(activeCamera->GetHostObject()));
+			pUndoCameraRotate = meUCameraRotateObject::Ref::New(activeCamera->GetHostObject());
 		}
 	}
 }
@@ -117,14 +117,14 @@ void meViewEditorNavigation::OnRightMouseButtonRelease(int x, int y, bool shift,
 		if(((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).HasChanged()){
 			GetWorld().GetUndoSystem()->Add(pUndoCameraMove, false);
 		}
-		pUndoCameraMove = NULL;
+		pUndoCameraMove = nullptr;
 	}
 	
 	if(pUndoCameraRotate){
 		if(((meUCameraRotateObject&)(igdeUndo&)pUndoCameraRotate).HasChanged()){
 			GetWorld().GetUndoSystem()->Add(pUndoCameraRotate, false);
 		}
-		pUndoCameraRotate = NULL;
+		pUndoCameraRotate = nullptr;
 	}
 	
 	if(pNavigating){

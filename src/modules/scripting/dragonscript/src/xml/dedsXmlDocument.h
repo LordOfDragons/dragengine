@@ -34,6 +34,10 @@
  */
 class dedsXmlDocument : public decXmlDocument{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsXmlDocument> Ref;
+	
+	
 	/** \brief Element types. */
 	enum eElementTypes{
 		/** \brief Element. */

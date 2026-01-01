@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,11 +45,22 @@ struct sRuntimeMeterNatDat{
 		int updates;
 	};
 	
-	decTimer *meters;
-	int meterCount;
+	decTimer *meters = nullptr;
+	int meterCount = 0;
 	
-	sCounter *counters;
-	int counterCount;
+	sCounter *counters = nullptr;
+	int counterCount = 0;
+	
+	~sRuntimeMeterNatDat(){
+		if(meters){
+			delete [] meters;
+			meters = nullptr;
+		}
+		if(counters){
+			delete [] counters;
+			counters = nullptr;
+		}
+	}
 	
 	decTimer &GetMeterAt(int index){
 		if(index < 0){
@@ -95,37 +108,20 @@ struct sRuntimeMeterNatDat{
 deClassRuntimeMeter::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsRTM,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassRuntimeMeter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat * const nd = (sRuntimeMeterNatDat*)p_GetNativeData(myself);
-	
-	nd->meters = NULL;
-	nd->meterCount = 0;
-	nd->counters = NULL;
-	nd->counterCount = 0;
+void deClassRuntimeMeter::nfNew::RunFunction(dsRunTime*, dsValue *myself){
+	new (p_GetNativeData(myself)) sRuntimeMeterNatDat;
 }
 
 // public func destructor()
 deClassRuntimeMeter::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsRTM,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassRuntimeMeter::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassRuntimeMeter::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
-	
-	if(nd.meters){
-		delete [] nd.meters;
-		nd.meters = NULL;
-		nd.meterCount = 0;
-	}
-	
-	if(nd.counters){
-		delete [] nd.counters;
-		nd.counters = NULL;
-		nd.counterCount = 0;
-	}
+	static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself))->~sRuntimeMeterNatDat();
 }
 
 
@@ -139,7 +135,7 @@ deClassRuntimeMeter::nfReset::nfReset(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsInt); // meter
 }
 void deClassRuntimeMeter::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int meter = rt->GetValue(0)->GetInt();
 	nd.GetMeterAt(meter).Reset();
 }
@@ -151,7 +147,7 @@ deClassRuntimeMeter::nfReset2::nfReset2(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsInt); // meterCount
 }
 void deClassRuntimeMeter::nfReset2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int meterFirst = rt->GetValue(0)->GetInt();
 	const int meterCount = rt->GetValue(1)->GetInt();
 	int i;
@@ -167,7 +163,7 @@ deClassRuntimeMeter::nfElapsed::nfElapsed(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsInt); // meter
 }
 void deClassRuntimeMeter::nfElapsed::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int meter = rt->GetValue(0)->GetInt();
 	const float elapsed = nd.GetMeterAt(meter).GetElapsedTime();
 	rt->PushFloat(elapsed);
@@ -179,7 +175,7 @@ deClassRuntimeMeter::nfElapsedMicroSec::nfElapsedMicroSec(const sInitData &init)
 	p_AddParameter(init.clsInt); // meter
 }
 void deClassRuntimeMeter::nfElapsedMicroSec::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int meter = rt->GetValue(0)->GetInt();
 	const int elapsed = (int)(nd.GetMeterAt(meter).GetElapsedTime() * 1e6f);
 	rt->PushInt(elapsed);
@@ -193,7 +189,7 @@ deClassRuntimeMeter::nfCounterReset::nfCounterReset(const sInitData &init) : dsF
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	counter.time = 0;
 	counter.updates = 0;
@@ -206,7 +202,7 @@ deClassRuntimeMeter::nfCounterReset2::nfCounterReset2(const sInitData &init) : d
 	p_AddParameter(init.clsInt); // counterCount
 }
 void deClassRuntimeMeter::nfCounterReset2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int counterFirst = rt->GetValue(0)->GetInt();
 	const int counterCount = rt->GetValue(1)->GetInt();
 	int i;
@@ -225,7 +221,7 @@ deClassRuntimeMeter::nfCounterAdd::nfCounterAdd(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const int meter = rt->GetValue(0)->GetInt();
 	const int elapsed = (int)(nd.GetMeterAt(meter).GetElapsedTime() * 1e6f);
 	sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(1)->GetInt());
@@ -239,7 +235,7 @@ deClassRuntimeMeter::nfCounterTime::nfCounterTime(const sInitData &init) : dsFun
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	rt->PushInt(counter.time);
 }
@@ -250,7 +246,7 @@ dsFunction(init.clsRTM, "counterTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterTimeSeconds::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	rt->PushFloat((float)(1e-6 * (double)counter.time));
 }
@@ -261,7 +257,7 @@ deClassRuntimeMeter::nfCounterUpdates::nfCounterUpdates(const sInitData &init) :
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterUpdates::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	rt->PushInt(counter.updates);
 }
@@ -272,7 +268,7 @@ deClassRuntimeMeter::nfCounterAverageTime::nfCounterAverageTime(const sInitData 
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterAverageTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	
 	if(counter.updates > 0){
@@ -289,7 +285,7 @@ dsFunction(init.clsRTM, "counterAverageTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC 
 	p_AddParameter(init.clsInt); // counter
 }
 void deClassRuntimeMeter::nfCounterAverageTimeSeconds::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat &nd = *((sRuntimeMeterNatDat*)p_GetNativeData(myself));
+	sRuntimeMeterNatDat &nd = *static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself));
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt(rt->GetValue(0)->GetInt());
 	
 	if(counter.updates > 0){

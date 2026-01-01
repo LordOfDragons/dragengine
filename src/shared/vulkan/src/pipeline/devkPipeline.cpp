@@ -93,19 +93,20 @@ pSaveCache(false)
 			if(vfs.ExistsFile(path)){
 				baseModule.LogInfoFormat("Vulkan Pipeline: Read Cache for device %x", pDevice.GetProperties().deviceID);
 				
-				decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+				decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 				
 				cacheInfo.initialDataSize = reader->GetLength();
 				if(cacheInfo.initialDataSize > 0){
 					cacheInfo.pInitialData = new char[cacheInfo.initialDataSize];
-					reader->Read((char*)cacheInfo.pInitialData, (int)cacheInfo.initialDataSize);
+					reader->Read(reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData)),
+						(int)cacheInfo.initialDataSize);
 				}
 			}
 			
 		}catch(const deException &e){
 			baseModule.LogException(e);
 			if(cacheInfo.pInitialData){
-				delete [] (char*)cacheInfo.pInitialData;
+				delete [] reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData));
 			}
 			pDropCache();
 		}
@@ -193,7 +194,7 @@ void devkPipeline::pCleanUp(){
 					data = new char[sizeData];
 					VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(device, pCache, &sizeData, data));
 					
-					decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(path))->Write(data, (int)sizeData);
+					vfs.OpenFileForWriting(path)->Write(data, (int)sizeData);
 				}
 				
 			}catch(const deException &e){

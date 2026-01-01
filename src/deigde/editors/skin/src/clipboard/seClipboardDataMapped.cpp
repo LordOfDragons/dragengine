@@ -37,16 +37,14 @@ const char * const seClipboardDataMapped::TYPE_NAME = "mapped";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataMapped::seClipboardDataMapped(const seMappedList &list) :
+seClipboardDataMapped::seClipboardDataMapped(const seMapped::List &list) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = list.GetCount();
-	DEASSERT_TRUE(count > 0)
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	int i;
-	for(i=0; i<count; i++){
-		pMapped.Add(seMapped::Ref::NewWith(*list.GetAt(i)));
-	}
+	list.Visit([&](const seMapped &m){
+		pMapped.Add(seMapped::Ref::New(m));
+	});
 }
 
 seClipboardDataMapped::~seClipboardDataMapped(){
@@ -56,11 +54,3 @@ seClipboardDataMapped::~seClipboardDataMapped(){
 
 // Management
 ///////////////
-
-int seClipboardDataMapped::GetCount() const{
-	return pMapped.GetCount();
-}
-
-const seMapped &seClipboardDataMapped::GetAt(int index) const{
-	return *((const seMapped *)pMapped.GetAt(index));
-}

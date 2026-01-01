@@ -25,6 +25,7 @@
 #ifndef _IGDESTEPABLETASK_H_
 #define _IGDESTEPABLETASK_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -45,7 +46,12 @@
  * required or if the task finished. Progress is measured from 0 to 1
  * usually displayed as 100 percent.
  */
-class DE_DLL_EXPORT igdeStepableTask{
+class DE_DLL_EXPORT igdeStepableTask : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeStepableTask> Ref;
+	
+	
 private:
 	decString pMessage;
 	float pProgress;
@@ -60,12 +66,13 @@ public:
 	/** \brief Create task. */
 	igdeStepableTask();
 	
+protected:
 	/** \brief Clean up task. */
-	virtual ~igdeStepableTask();
+	~igdeStepableTask() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Message. */

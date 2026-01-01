@@ -42,11 +42,11 @@ class deInputDevice;
  * \brief Android input device.
  */
 class deainpDevice : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deainpDevice> Ref;
-
-
-public:
+	
+	
 	/** \brief Source identifier. */
 	enum eSources{
 		/** \brief Android. */

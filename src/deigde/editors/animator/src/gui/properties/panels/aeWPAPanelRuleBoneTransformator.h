@@ -35,6 +35,10 @@
  * Bone transformator rule panel.
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleBoneTransformator> Ref;
+	
+	
 private:
 	igdeEditVector::Ref pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
 	igdeEditVector::Ref pEditMinScale, pEditMaxScale, pEditAxis;

@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCParticleEmitterRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
 	if(!particleEmitter){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveParticleEmitter(&objectClass, particleEmitter);
+	return gdeUOCRemoveParticleEmitter::Ref::New(&objectClass, particleEmitter);
 }
 
 void gdeMAOCParticleEmitterRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-		&& gameDefinition->GetActiveOCParticleEmitter() != NULL);
+		&& gameDefinition->GetActiveOCParticleEmitter() != nullptr);
 }

@@ -112,30 +112,16 @@ void igdeListBox::Focus(){
 
 
 
-int igdeListBox::GetItemCount() const{
-	return pItems.GetCount();
-}
-
-igdeListItem *igdeListBox::GetItemAt(int index) const{
-	return (igdeListItem*)pItems.GetAt(index);
-}
-
 igdeListItem *igdeListBox::GetItemWithData(void *data) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeListItem * const item = (igdeListItem*)pItems.GetAt(i);
-		if(item->GetData() == data){
-			return item;
-		}
-	}
-	
-	return NULL;
+	return pItems.FindOrDefault([&](const igdeListItem &item){
+		return item.GetData() == data;
+	});
 }
 
-bool igdeListBox::HasItem(igdeListItem *item) const{
-	return pItems.Has(item);
+igdeListItem *igdeListBox::GetItemWithRefData(const deObject::Ref &refData) const{
+	return pItems.FindOrDefault([&](const igdeListItem &item){
+		return item.GetRefData() == refData;
+	});
 }
 
 bool igdeListBox::HasItem(const char *item) const{
@@ -146,8 +132,8 @@ bool igdeListBox::HasItemWithData(void *data) const{
 	return IndexOfItemWithData(data) != -1;
 }
 
-int igdeListBox::IndexOfItem(igdeListItem *item) const{
-	return pItems.IndexOf(item);
+bool igdeListBox::HasItemWithRefData(const deObject::Ref &refData) const{
+	return IndexOfItemWithRefData(refData) != -1;
 }
 
 int igdeListBox::IndexOfItem(const char *item) const{
@@ -155,29 +141,21 @@ int igdeListBox::IndexOfItem(const char *item) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetText() == item){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetText() == item;
+	});
 }
 
 int igdeListBox::IndexOfItemWithData(void *data) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((const igdeListItem*)pItems.GetAt(i))->GetData() == data){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &item){
+		return item.GetData() == data;
+	});
+}
+
+int igdeListBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
+	return pItems.IndexOfMatching([&](const igdeListItem &item){
+		return item.GetRefData() == refData;
+	});
 }
 
 void igdeListBox::AddItem(igdeListItem *item){
@@ -197,8 +175,19 @@ void igdeListBox::AddItem(const char *text, igdeIcon *icon, void *data){
 	AddItem(item, text, icon, data);
 }
 
+void igdeListBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item;
+	AddItemRef(item, text, icon, refData);
+}
+
 void igdeListBox::AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
+	AddItem(item);
+}
+
+void igdeListBox::AddItemRef(igdeListItem::Ref &item, const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	item = igdeListItem::Ref::New(text, icon);
+	item->SetRefData(refData);
 	AddItem(item);
 }
 
@@ -224,14 +213,27 @@ void igdeListBox::InsertItem(int index, const char *text, igdeIcon *icon, void *
 	InsertItem(item, index, text, icon, data);
 }
 
+void igdeListBox::InsertItemRef(int index, const char *text, igdeIcon *icon,
+const deObject::Ref &refData){
+	igdeListItem::Ref item;
+	InsertItemRef(item, index, text, icon, refData);
+}
+
 void igdeListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
+	InsertItem(index, item);
+}
+
+void igdeListBox::InsertItemRef(igdeListItem::Ref &item, int index, const char *text,
+igdeIcon *icon, const deObject::Ref &refData){
+	item = igdeListItem::Ref::New(text, icon);
+	item->SetRefData(refData);
 	InsertItem(index, item);
 }
 
 void igdeListBox::MoveItem(int fromIndex, int toIndex){
-	pItems.Move(fromIndex, toIndex);
+	pItems.MoveIndex(fromIndex, toIndex);
 	
 	if(pSelection != -1){
 		if(fromIndex < toIndex){
@@ -301,38 +303,7 @@ void igdeListBox::SetSorter(igdeListItemSorter *sorter){
 }
 
 void igdeListBox::SetDefaultSorter(){
-	pSorter.TakeOver(new igdeListItemSorter);
-}
-
-static void igdeListBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
-	igdeListItem::Ref pivot((igdeListItem*)items.GetAt(left));
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while(left < right){
-		while(left < right && sorter.Precedes(pivot, *((igdeListItem*)items.GetAt(right)))){
-			right--;
-		}
-		if(left != right){
-			items.SetAt(left, items.GetAt(right));
-			left++;
-		}
-		while(left < right && sorter.Precedes(*((igdeListItem*)items.GetAt(left)), pivot)){
-			left++;
-		}
-		if(left != right){
-			items.SetAt(right, items.GetAt(left));
-			right--;
-		}
-	}
-	
-	items.SetAt(left, (igdeListItem*)pivot);
-	if(l_hold < left){
-		igdeListBox_Sort(items, sorter, l_hold, left - 1);
-	}
-	if(r_hold > left){
-		igdeListBox_Sort(items, sorter, left + 1, r_hold);
-	}
+	pSorter = igdeListItemSorter::Ref::New();
 }
 
 void igdeListBox::SortItems(){
@@ -347,7 +318,9 @@ void igdeListBox::SortItems(){
 	
 	igdeListItem * const selected = GetSelectedItem();
 	
-	igdeListBox_Sort(pItems, pSorter, 0, count - 1);
+	pItems.Sort([&](const igdeListItem &a, const igdeListItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
 	if(selected){
 		pSelection = pItems.IndexOf(selected);
@@ -368,11 +341,17 @@ void igdeListBox::SetSelectionMode(eSelectionMode mode){
 }
 
 igdeListItem *igdeListBox::GetSelectedItem() const{
-	return pSelection != -1 ? (igdeListItem*)pItems.GetAt(pSelection) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
 }
 
 void *igdeListBox::GetSelectedItemData() const{
-	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetData() : nullptr;
+	igdeListItem * const item = GetSelectedItem();
+	return item ? item->GetData() : nullptr;
+}
+
+deObject::Ref igdeListBox::GetSelectedItemRefData() const{
+	igdeListItem * const item = GetSelectedItem();
+	return item ? item->GetRefData() : deObject::Ref();
 }
 
 void igdeListBox::SetSelection(int selection){
@@ -393,6 +372,10 @@ void igdeListBox::SetSelectionWithData(void *data){
 	SetSelection(IndexOfItemWithData(data));
 }
 
+void igdeListBox::SetSelectionWithRefData(const deObject::Ref &refData){
+	SetSelection(IndexOfItemWithRefData(refData));
+}
+
 void igdeListBox::SelectItem(int index){
 	if(pSelectionMode != esmMultiple){
 		DETHROW(deeInvalidParam);
@@ -401,12 +384,12 @@ void igdeListBox::SelectItem(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(item.GetSelected()){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected(true);
+	item->SetSelected(true);
 	OnSelectionChanged();
 }
 
@@ -415,19 +398,16 @@ void igdeListBox::SelectAllItems(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
 	
-	for(i=0; i<count; i++){
-		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
+	pItems.Visit([&](igdeListItem &item){
 		if(item.GetSelected()){
-			continue;
+			return;
 		}
 		
 		item.SetSelected(true);
 		changed = true;
-	}
+	});
 	
 	if(changed){
 		OnSelectionChanged();
@@ -442,12 +422,12 @@ void igdeListBox::DeselectItem(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	igdeListItem &item = *((igdeListItem*)pItems.GetAt(index));
-	if(!item.GetSelected()){
+	igdeListItem * const item = pItems.GetAt(index);
+	if(!item->GetSelected()){
 		return;
 	}
 	
-	item.SetSelected(false);
+	item->SetSelected(false);
 	OnSelectionChanged();
 }
 
@@ -456,19 +436,15 @@ void igdeListBox::DeselectAllItems(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pItems.GetCount();
 	bool changed = false;
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeListItem &item = *((igdeListItem*)pItems.GetAt(i));
+	pItems.Visit([&](igdeListItem &item){
 		if(!item.GetSelected()){
-			continue;
+			return;
 		}
 		
 		item.SetSelected(false);
 		changed = true;
-	}
+	});
 	
 	if(changed){
 		OnSelectionChanged();
@@ -492,7 +468,7 @@ void igdeListBox::ShowContextMenu(const decPoint &position){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
 	const int count = pListeners.GetCount();
 	int i;
@@ -500,7 +476,7 @@ void igdeListBox::ShowContextMenu(const decPoint &position){
 		((igdeListBoxListener*)pListeners.GetAt(i))->AddContextMenuEntries(this, menu);
 	}
 	
-	if(menu->GetChildCount() > 0){
+	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(*this, position);
 	}
 }
@@ -517,49 +493,35 @@ void igdeListBox::AddListener(igdeListBoxListener *listener){
 void igdeListBox::RemoveListener(igdeListBoxListener *listener){
 	pListeners.Remove(listener);
 }
-
 void igdeListBox::NotifySelectionChanged(){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnSelectionChanged(this);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnSelectionChanged(this);
+	});
 }
 
 void igdeListBox::NotifyItemSelected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnItemSelected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnItemSelected(this, index);
+	});
 }
 
 void igdeListBox::NotifyItemDeselected(int index){
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnItemDeselected(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnItemDeselected(this, index);
+	});
 }
 
 void igdeListBox::NotifyDoubleClickItem(int index){
-	if(index < 0 || index >= pItems.GetCount()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pItems.GetCount())
 	
-	const decObjectOrderedSet listeners(pListeners);
-	const int count = listeners.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((igdeListBoxListener*)listeners.GetAt(i))->OnDoubleClickItem(this, index);
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeListBoxListener &l){
+		l.OnDoubleClickItem(this, index);
+	});
 }
 
 

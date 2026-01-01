@@ -25,17 +25,15 @@
 #ifndef _IGDETEXTAREA_H_
 #define _IGDETEXTAREA_H_
 
-#include <stdlib.h>
-
 #include "igdeWidget.h"
+#include "event/igdeTextAreaListener.h"
+#include "resources/igdeTextStyle.h"
+#include "resources/igdeTextSegment.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeTextAreaListener;
-class igdeTextStyle;
-class igdeTextSegment;
 class igdeAction;
 
 
@@ -49,7 +47,6 @@ class igdeAction;
  * AppendText() is safe to be used.
  */
 class DE_DLL_EXPORT igdeTextArea : public igdeWidget{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTextArea> Ref;
@@ -63,10 +60,10 @@ private:
 	bool pEditable;
 	decString pDescription;
 	
-	decObjectOrderedSet pStyles;
-	decObjectOrderedSet pSegments;
+	igdeTextStyle::List pStyles;
+	igdeTextSegment::List pSegments;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTextAreaListener> pListeners;
 	
 	
 	
@@ -129,13 +126,10 @@ public:
 	
 	
 	
-	/** \brief Number of styles. */
-	int GetStyleCount() const;
+	/** \brief Styles. */
+	const igdeTextStyle::List &GetStyles() const{ return pStyles; }
 	
-	/** \brief Get style at index. */
-	igdeTextStyle *GetStyleAt(int index) const;
-	
-	/** \brief Get named style or NULL if absent. */
+	/** \brief Get named style or nullptr if absent. */
 	igdeTextStyle *GetStyleNamed(const char *name) const;
 	
 	/** \brief Index of named style or -1 if absent. */
@@ -217,13 +211,10 @@ public:
 	
 	
 	
-	/** \brief Number of segments. */
-	int GetSegmentCount() const;
+	/** \brief Segments. */
+	const igdeTextSegment::List &GetSegments() const{ return pSegments; }
 	
-	/** \brief Get segment at index. */
-	const igdeTextSegment &GetSegmentAt(int index) const;
-	
-	/** \brief Segment containing position or NULL if not found. */
+	/** \brief Segment containing position or nullptr if not found. */
 	const igdeTextSegment *GetSegmentWith(int offset) const;
 	
 	/**
@@ -235,7 +226,7 @@ public:
 	 * \param[in] begin Offset to first character.
 	 * \param[in] end Offset to last character.
 	 * \param[in] style Name of style.
-	 * \param[in] action Action to use on clicking or NULL.
+	 * \param[in] action Action to use on clicking or nullptr.
 	 */
 	void SetTextSegment(int begin, int end, const char *style, igdeAction *action);
 	

@@ -133,7 +133,6 @@ void dePhysicsSystem::LoadComponent(deComponent *component){
 	if(!GetIsRunning()) return;
 	if(component->GetPeerPhysics()) DETHROW(deeInvalidParam);
 	component->SetPeerPhysics(pActiveModule->CreateComponent(component));
-	if(!component->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 }
 
 void dePhysicsSystem::LoadModel(deModel *model){
@@ -172,9 +171,6 @@ void dePhysicsSystem::LoadWorld(deWorld *world){
 			DETHROW(deeInvalidParam);
 		}
 		world->SetPeerPhysics(pActiveModule->CreateWorld(world));
-		if(!world->GetPeerPhysics()){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 }
 
@@ -182,7 +178,6 @@ void dePhysicsSystem::LoadCollider(deCollider *collider){
 	if(!GetIsRunning()) return;
 	if(collider->GetPeerPhysics()) DETHROW(deeInvalidParam);
 	collider->SetPeerPhysics(pActiveModule->CreateCollider(collider));
-	if(!collider->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 }
 
 void dePhysicsSystem::LoadDecal(deDecal *decal){
@@ -192,9 +187,6 @@ void dePhysicsSystem::LoadDecal(deDecal *decal){
 		}
 		
 		decal->SetPeerPhysics(pActiveModule->CreateDecal(decal));
-		if(!decal->GetPeerPhysics()){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 }
 
@@ -204,7 +196,6 @@ void dePhysicsSystem::LoadTouchSensor(deTouchSensor *touchSensor){
 	if(touchSensor->GetPeerPhysics()) DETHROW(deeInvalidParam);
 	
 	touchSensor->SetPeerPhysics(pActiveModule->CreateTouchSensor(touchSensor));
-	if(!touchSensor->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 }
 
 void dePhysicsSystem::LoadHeightTerrain(deHeightTerrain *heightTerrain){
@@ -212,7 +203,6 @@ void dePhysicsSystem::LoadHeightTerrain(deHeightTerrain *heightTerrain){
 		if(heightTerrain->GetPeerPhysics()) DETHROW(deeInvalidParam);
 		
 		heightTerrain->SetPeerPhysics(pActiveModule->CreateHeightTerrain(heightTerrain));
-		if(!heightTerrain->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -221,7 +211,6 @@ void dePhysicsSystem::LoadPropField(dePropField *propField){
 		if(propField->GetPeerPhysics()) DETHROW(deeInvalidParam);
 		
 		propField->SetPeerPhysics(pActiveModule->CreatePropField(propField));
-		if(!propField->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -230,7 +219,6 @@ void dePhysicsSystem::LoadForceField(deForceField *forceField){
 		if(forceField->GetPeerPhysics()) DETHROW(deeInvalidParam);
 		
 		forceField->SetPeerPhysics(pActiveModule->CreateForceField(forceField));
-		if(!forceField->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -239,7 +227,6 @@ void dePhysicsSystem::LoadParticleEmitter(deParticleEmitter *emitter){
 		if(emitter->GetPeerPhysics()) DETHROW(deeInvalidParam);
 		
 		emitter->SetPeerPhysics(pActiveModule->CreateParticleEmitter(emitter));
-		if(!emitter->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -250,9 +237,6 @@ void dePhysicsSystem::LoadParticleEmitterInstance(deParticleEmitterInstance *ins
 		}
 		
 		instance->SetPeerPhysics(pActiveModule->CreateParticleEmitterInstance(instance));
-		if(!instance->GetPeerPhysics()){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 }
 
@@ -261,6 +245,5 @@ void dePhysicsSystem::LoadSmokeEmitter(deSmokeEmitter *smokeEmitter){
 		if(smokeEmitter->GetPeerPhysics()) DETHROW(deeInvalidParam);
 		
 		smokeEmitter->SetPeerPhysics(pActiveModule->CreateSmokeEmitter(smokeEmitter));
-		if(!smokeEmitter->GetPeerPhysics()) DETHROW(deeOutOfMemory);
 	}
 }

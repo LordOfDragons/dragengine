@@ -58,26 +58,20 @@
 
 ceActorGesture::ceActorGesture(igdeEnvironment &environment, const char *name) :
 pEnvironment(environment),
-pEngAnimator(NULL),
 pName(name){
 }
 
 ceActorGesture::ceActorGesture(const ceActorGesture &gesture) :
 pEnvironment(gesture.pEnvironment),
-pEngAnimator(NULL),
 pName(gesture.pName),
 pPathAnimator(gesture.pPathAnimator)
 {
 	pEngAnimator = gesture.pEngAnimator;
-	if(pEngAnimator){
-		pEngAnimator->AddReference();
-	}
 }
 
 ceActorGesture::~ceActorGesture(){
 	if(pEngAnimator){
-		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
+		pEngAnimator->SetRig(nullptr);
 	}
 }
 
@@ -110,32 +104,19 @@ void ceActorGesture::pLoadAnimator(){
 	}
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	decBaseFileReader::Ref reader;
-	deAnimator *animator = NULL;
 	
 	try{
-		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
-			decPath::CreatePathUnix(pPathAnimator)));
-		animator = engine.GetAnimatorManager()->CreateAnimator();
+		const deAnimator::Ref animator(engine.GetAnimatorManager()->CreateAnimator());
 		
-		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
-			Load(pPathAnimator, *animator, reader);
-		
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
+		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).Load(
+			pPathAnimator, *animator, engine.GetVirtualFileSystem()->OpenFileForReading(
+				decPath::CreatePathUnix(pPathAnimator)));
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
-		if(animator){
-			animator->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
 		pEngAnimator = nullptr;
 	}
 }

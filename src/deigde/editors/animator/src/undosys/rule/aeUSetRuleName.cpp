@@ -42,18 +42,16 @@
 aeUSetRuleName::aeUSetRuleName(aeRule *rule, const char *newName){
 	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldName = rule->GetName();
 	pNewName = newName;
 	
 	SetShortInfo("Set Rule Name");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleName::~aeUSetRuleName(){
-	if(pRule) pRule->FreeReference();
 }
 
 

@@ -25,12 +25,13 @@
 #ifndef _DEBNSERVER_H_
 #define _DEBNSERVER_H_
 
+#include "debnSocket.h"
+
 #include <dragengine/systems/modules/network/deBaseNetworkServer.h>
 
 class deServer;
 class debnAddress;
 class deNetworkBasic;
-class debnSocket;
 class decBaseFileReader;
 
 
@@ -43,7 +44,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deServer *pServer;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	bool pListening;
 	
 	debnServer *pPreviousServer;
@@ -67,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
 	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);

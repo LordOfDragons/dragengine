@@ -50,54 +50,31 @@ igdeClipboard::~igdeClipboard(){
 // Management
 ///////////////
 
-int igdeClipboard::GetCount() const{
-	return pData.GetCount();
-}
-
 bool igdeClipboard::HasWithTypeName(const char *typeName) const{
-	const int count = pData.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((igdeClipboardData*)pData.GetAt(i))->GetTypeName() == typeName){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-igdeClipboardData *igdeClipboard::GetAt(int index) const{
-	return (igdeClipboardData*)pData.GetAt(index);
+	return pData.HasMatching([&](const igdeClipboardData &data){
+		return data.GetTypeName() == typeName;
+	});
 }
 
 igdeClipboardData *igdeClipboard::GetWithTypeName(const char *typeName) const{
-	const int count = pData.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		igdeClipboardData * const data = (igdeClipboardData*)pData.GetAt(i);
-		if(data->GetTypeName() == typeName){
-			return data;
-		}
-	}
-	
-	return NULL;
+	return pData.FindOrDefault([&](const igdeClipboardData &data){
+		return data.GetTypeName() == typeName;
+	});
 }
 
 void igdeClipboard::Set(igdeClipboardData *data){
-	if(!data){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(data)
 	
 	Clear(data->GetTypeName());
 	pData.Add(data);
 }
 
 void igdeClipboard::Clear(const char *typeName){
-	igdeClipboardData * const data = GetWithTypeName(typeName);
-	if(data){
-		pData.Remove(data);
+	const int index = pData.IndexOfMatching([&](const igdeClipboardData &data){
+		return data.GetTypeName() == typeName;
+	});
+	if(index != -1){
+		pData.RemoveFrom(index);
 	}
 }
 

@@ -50,33 +50,19 @@ ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConvers
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pWait = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pWait = nullptr;
+	pAction = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("Action Wait Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitAdd::~ceUCAWaitAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -91,12 +77,12 @@ void ceUCAWaitAdd::Undo(){
 	pWait->GetActions().Remove(pAction);
 	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive(activateAction ? activateAction : pWait, NULL);
+	pTopic->SetActive(activateAction ? activateAction : pWait, nullptr);
 }
 
 void ceUCAWaitAdd::Redo(){
-	pWait->GetActions().InsertAt(pAction, pIndex);
+	pWait->GetActions().Insert(pAction, pIndex);
 	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive(pAction, NULL);
+	pTopic->SetActive(pAction, nullptr);
 }

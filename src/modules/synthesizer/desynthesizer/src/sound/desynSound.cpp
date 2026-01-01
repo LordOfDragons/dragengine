@@ -141,24 +141,11 @@ void desynSound::LoadEntireSound(){
 		return;
 	}
 	
-	deSoundDecoder *decoder = NULL;
+	pStreamData = new char[bufferSize];
+	pStreamDataSize = bufferSize;
 	
-	try{
-		decoder = pModule.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound);
-		
-		pStreamData = new char[bufferSize];
-		pStreamDataSize = bufferSize;
-		
-		decoder->ReadSamples(pStreamData, bufferSize);
-		
-		decoder->FreeReference();
-		
-	}catch(const deException &){
-		if(decoder){
-			decoder->FreeReference();
-		}
-		throw;
-	}
+	pModule.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound)->
+		ReadSamples(pStreamData, bufferSize);
 }
 
 void desynSound::Prepare(){
@@ -224,7 +211,7 @@ void desynSound::pLoadFromCache(){
 	caches.Lock();
 	
 	try{
-		reader.TakeOver(cacheSound.Read(filename));
+		reader = cacheSound.Read(filename);
 		if(!reader){
 			// cache file absent
 			caches.Unlock();
@@ -354,7 +341,7 @@ void desynSound::pWriteToCache(){
 	caches.Lock();
 	
 	try{
-		writer.TakeOver(cacheSound.Write(filename));
+		writer = cacheSound.Write(filename);
 		writer->Write(&header, sizeof(header));
 		if(pStreamDataSize > 0){
 			writer->Write(pStreamData, pStreamDataSize);

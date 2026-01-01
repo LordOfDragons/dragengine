@@ -25,10 +25,11 @@
 #ifndef _MECLIPBOARDDATAOBJECT_H_
 #define _MECLIPBOARDDATAOBJECT_H_
 
+#include "meCDOObject.h"
+
 #include <deigde/clipboard/igdeClipboardData.h>
 #include <dragengine/common/math/decMath.h>
 
-class meCDOObject;
 class meWorld;
 
 
@@ -38,7 +39,6 @@ class meWorld;
  */
 class meClipboardDataObject : public igdeClipboardData{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meClipboardDataObject> Ref;
 	
 	/** \brief Type name. */
@@ -47,8 +47,7 @@ public:
 	
 	
 private:
-	meCDOObject **pObjects;
-	int pObjectCount;
+	meCDOObject::List pObjects;
 	
 	
 	
@@ -73,17 +72,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of objects. */
-	inline int GetObjectCount() const{ return pObjectCount; }
-	
-	/** \brief Object at index. */
-	meCDOObject *GetObjectAt(int index) const;
+	/** Objects. */
+	inline const meCDOObject::List &GetObjects() const{ return pObjects; }
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUSkyControllerRemove::gdeUSkyControllerRemove(gdeSky *sky, gdeSkyController *controller) :
-pSky(NULL),
-pController(NULL)
+
+pController(nullptr)
 {
 	if(!sky || !controller){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pController(NULL)
 	SetShortInfo("Remove sky controller");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerRemove::~gdeUSkyControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

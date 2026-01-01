@@ -42,8 +42,8 @@
 ////////////////////////////
 
 gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
-pObjectClass(NULL),
-pSpeaker(NULL)
+
+pSpeaker(nullptr)
 {
 	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
@@ -56,19 +56,10 @@ pSpeaker(NULL)
 	SetShortInfo("Remove speaker");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSpeaker::~gdeUOCRemoveSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -87,7 +78,7 @@ void gdeUOCRemoveSpeaker::Redo(){
 		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker){
 			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSpeaker(NULL);
+		gameDefinition->SetActiveOCSpeaker(nullptr);
 	}
 	
 	pObjectClass->GetSpeakers().Remove(pSpeaker);

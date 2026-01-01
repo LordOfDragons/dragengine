@@ -48,7 +48,7 @@
 ////////////////////////////
 
 ceCoordSystem::ceCoordSystem(){
-	pConversation = NULL;
+	pConversation = nullptr;
 }
 
 ceCoordSystem::~ceCoordSystem(){

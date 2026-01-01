@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "debnMessageAckList.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -62,7 +62,6 @@ void debnMessageAckList::AddAck(int number){
 	if(pAckCount == pAckSize){
 		int newSize = pAckSize * 3 / 2 + 1;
 		int *newArray = new int[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pAcks){
 			memcpy(newArray, pAcks, sizeof(int) * pAckSize);
 			delete [] pAcks;

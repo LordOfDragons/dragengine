@@ -60,42 +60,23 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
 		}
 	}
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pAction = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pAction = nullptr;
+	pCase = nullptr;
 	pIndex = index;
 	
 	SetShortInfo("IfElse Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElseAdd::~ceUCAIfElseAdd(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -104,7 +85,7 @@ ceUCAIfElseAdd::~ceUCAIfElseAdd(){
 ///////////////
 
 void ceUCAIfElseAdd::Undo(){
-	ceConversationAction *activateAction = NULL;
+	ceConversationAction *activateAction = nullptr;
 	
 	if(pCase){
 		activateAction = ceUActionHelpers::ActivateActionAfterRemove(pCase->GetActions(), pAction);
@@ -117,18 +98,18 @@ void ceUCAIfElseAdd::Undo(){
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive(activateAction ? activateAction : pIfElse, NULL);
+	pTopic->SetActive(activateAction ? activateAction : pIfElse, nullptr);
 }
 
 void ceUCAIfElseAdd::Redo(){
 	if(pCase){
-		pCase->GetActions().InsertAt(pAction, pIndex);
+		pCase->GetActions().Insert(pAction, pIndex);
 		
 	}else{
-		pIfElse->GetElseActions().InsertAt(pAction, pIndex);
+		pIfElse->GetElseActions().Insert(pAction, pIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive(pAction, NULL);
+	pTopic->SetActive(pAction, nullptr);
 }

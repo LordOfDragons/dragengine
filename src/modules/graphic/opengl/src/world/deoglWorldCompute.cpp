@@ -36,6 +36,7 @@
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 
@@ -68,7 +69,7 @@ pClearGeometryCount(0)
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBOElements.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOElements = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOElements->SetRowMajor(rowMajor);
 	pSSBOElements->SetParameterCount(11);
 	pSSBOElements->GetParameterAt(espeMinExtend).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1);
@@ -84,7 +85,7 @@ pClearGeometryCount(0)
 	pSSBOElements->GetParameterAt(espeLodIndex).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
 	pSSBOElements->MapToStd140();
 	
-	pSSBOElementGeometries.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOElementGeometries = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOElementGeometries->SetRowMajor(rowMajor);
 	pSSBOElementGeometries->SetParameterCount(9);
 	pSSBOElementGeometries->GetParameterAt(espegElement).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
@@ -98,7 +99,7 @@ pClearGeometryCount(0)
 	pSSBOElementGeometries->GetParameterAt(espegTUCs).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOElementGeometries->MapToStd140();
 	
-	pSharedSPBGeometries.TakeOver(new deoglSharedBlockSPB(pSSBOElementGeometries));
+	pSharedSPBGeometries = deoglSharedBlockSPB::Ref::New(pSSBOElementGeometries);
 }
 
 deoglWorldCompute::~deoglWorldCompute(){
@@ -755,7 +756,7 @@ void deoglWorldCompute::pDebugPrintElements(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintUpdateElements(){
@@ -773,7 +774,7 @@ void deoglWorldCompute::pDebugPrintUpdateElements(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintUpdateGeometries(){
@@ -791,7 +792,7 @@ void deoglWorldCompute::pDebugPrintUpdateGeometries(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintClearGeometries(){
@@ -806,5 +807,5 @@ void deoglWorldCompute::pDebugPrintClearGeometries(){
 		string.Format("[%d:%d,%d]", i, pClearGeometries[i].first, pClearGeometries[i].count);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }

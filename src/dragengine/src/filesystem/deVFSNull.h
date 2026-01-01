@@ -93,13 +93,13 @@ public:
 	 * 
 	 * Throws file not found exception.
 	 */
-	decBaseFileReader *OpenFileForReading(const decPath &path) override;
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) override;
 	
 	/**
 	 * \brief Open file for writing.
 	 * \returns Null writer.
 	 */
-	decBaseFileWriter *OpenFileForWriting(const decPath &path) override;
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) override;
 	
 	/**
 	 * \brief Delete file.

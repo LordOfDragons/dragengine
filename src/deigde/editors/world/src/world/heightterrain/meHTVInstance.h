@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVINSTANCE_H_
 #define _MEHTVINSTANCE_H_
 
-// includes
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
-
-// predefinitions
-
 
 
 /**
@@ -38,7 +35,11 @@
  *
  * Instance of a vegetation prop to be used later on in a prop field.
  */
-class meHTVInstance{
+class meHTVInstance : public deObject{
+public:
+	typedef deTObjectReference<meHTVInstance> Ref;
+	typedef decTObjectOrderedSet<meHTVInstance> List;
+	
 private:
 	short pVLayer;
 	short pVariation;
@@ -51,10 +52,13 @@ public:
 	/*@{*/
 	/** Creates a new instance. */
 	meHTVInstance();
+	
+protected:
 	/** Cleans up the instance. */
-	~meHTVInstance();
+	~meHTVInstance() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation layer index. */

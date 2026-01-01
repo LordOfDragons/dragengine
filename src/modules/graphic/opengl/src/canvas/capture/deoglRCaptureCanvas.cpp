@@ -46,8 +46,9 @@
 
 deoglRCaptureCanvas::deoglRCaptureCanvas(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pCanvasView(NULL),
-pCapturePending(false){
+pCapturePending(false),
+pComponentCount(0),
+pBitCount(0){
 	LEAK_CHECK_CREATE(renderThread, CaptureCanvas);
 }
 
@@ -65,16 +66,7 @@ void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
 	if(canvasView == pCanvasView){
 		return;
 	}
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
-	
 	pCanvasView = canvasView;
-	
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCaptureCanvas::SetCapturePending(bool capturePending){
@@ -115,7 +107,7 @@ void deoglRCaptureCanvas::StartCapture(int width, int height, int componentCount
 		}
 	}
 	
-	pPixelBuffer.TakeOver(new deoglPixelBuffer(pbformat, width, height, 1));
+	pPixelBuffer = deoglPixelBuffer::Ref::New(pbformat, width, height, 1);
 	
 	pCapturePending = true;
 	pComponentCount = componentCount;
@@ -134,7 +126,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 		return;
 	}
 	
-	deoglRCanvasView * const rcanvasView = renderWindow.GetRCanvasView();
+	const deoglRCanvasView::Ref &rcanvasView = renderWindow.GetRCanvasView();
 	if(rcanvasView != pCanvasView){
 		return;
 	}
@@ -146,7 +138,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 	if(width == renderWindow.GetWidth() && height == renderWindow.GetHeight()){
 		// extract image into memory
 		const deoglPixelBuffer::Ref tempData(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(pPixelBuffer->GetFormat(), width, height, 1)));
+			pPixelBuffer->GetFormat(), width, height, 1));
 		
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
@@ -154,8 +146,8 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 		
 		// copy data over in in the correct order (hence flipped upside down)
-		const char * const ptrTempData = (char*)tempData->GetPointer();
-		char * const ptrPixBuf = (char*)pPixelBuffer->GetPointer();
+		const char * const ptrTempData = reinterpret_cast<char*>(tempData->GetPointer());
+		char * const ptrPixBuf = reinterpret_cast<char*>(pPixelBuffer->GetPointer());
 		const int stride = pPixelBuffer->GetLineStride();
 		int y;
 		

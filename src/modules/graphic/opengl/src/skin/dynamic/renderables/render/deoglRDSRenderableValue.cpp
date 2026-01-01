@@ -97,7 +97,7 @@ deoglTexture *deoglRDSRenderableValue::GetRenderTexture(){
 	
 	if(pDirty){
 		const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfByte4, 1, 1, 1)));
+			deoglPixelBuffer::epfByte4, 1, 1, 1));
 		pixelBuffer->SetToFloatColor(pValue, pValue, pValue, 1.0f);
 		pTexture->SetPixels(pixelBuffer);
 		

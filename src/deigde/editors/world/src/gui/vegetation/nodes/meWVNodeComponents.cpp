@@ -57,6 +57,7 @@ protected:
 	meWVNodeComponents &pNode;
 	
 public:
+	typedef deTObjectReference<cEditVector> Ref;
 	cEditVector(meWVNodeComponents &node) : pNode(node){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -65,7 +66,7 @@ public:
 		}
 		
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
-			meUHTVRuleCompSetVector::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+			meUHTVRuleCompSetVector::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
 				pNode.GetRuleComponents(), editVector->GetVector()));
 	}
 };
@@ -91,26 +92,26 @@ pRuleComponents(rule)
 	SetTitle("Components");
 	
 	// slots
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"X", "X component of vector",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Y", "Y component of vector",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY));
 	
-	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+	AddSlot(meWVNodeSlot::Ref::New(env,
 		"Z", "Z component of vector",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ));
 	
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
 		"Vector", "Vector to decompose",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
-	helper.EditVector(slot, "Input vector.", pEditVector, new cEditVector(*this));
+	helper.EditVector(slot, "Input vector.", pEditVector, cEditVector::Ref::New(*this));
 	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver(new igdeContainerForm(env));
+	pFraParameters = igdeContainerForm::Ref::New(env);
 	AddChild(pFraParameters);
 }
 

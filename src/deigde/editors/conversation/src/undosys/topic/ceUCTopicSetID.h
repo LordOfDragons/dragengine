@@ -25,13 +25,15 @@
 #ifndef _CEUCTOPICSETID_H_
 #define _CEUCTOPICSETID_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversation;
-class ceConversationActionList;
 
 
 
@@ -39,20 +41,21 @@ class ceConversationActionList;
  * \brief Undo action topic set id.
  */
 class ceUCTopicSetID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCTopicSetID> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	
 	decString pOldID;
 	decString pNewID;
 	
-	ceUndoCActionList pSnippets;
+	decTObjectOrderedSet<ceUndoCAction> pSnippets;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCTopicSetID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
@@ -60,7 +63,9 @@ public:
 		ceConversationTopic *topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~ceUCTopicSetID();
+public:
 	/*@}*/
 	
 	
@@ -81,7 +86,7 @@ private:
 	void pSetID(const char *id);
 	
 	void pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
-		const char *matchTopicID, const ceConversationActionList &actions);
+		const char *matchTopicID, const ceConversationAction::List &actions);
 };
 
 #endif

@@ -43,8 +43,8 @@
 meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nupper){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Mapping Set Upper");
 	SetMemoryConsumption(sizeof(meUHTVRuleMapSetUpper));
@@ -53,14 +53,10 @@ meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVR
 	pNewUpper = nupper;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetUpper::~meUHTVRuleMapSetUpper(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject(windowMain, "Remove Object Class Speaker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerRemove::OnActionSubObject(
+igdeUndo::Ref gdeMAOCSpeakerRemove::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
 	if(!speaker){
-		return NULL;
+		return {};
 	}
 	
-	return new gdeUOCRemoveSpeaker(&objectClass, speaker);
+	return gdeUOCRemoveSpeaker::Ref::New(&objectClass, speaker);
 }
 
 void gdeMAOCSpeakerRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-		&& gameDefinition->GetActiveOCSpeaker() != NULL);
+		&& gameDefinition->GetActiveOCSpeaker() != nullptr);
 }

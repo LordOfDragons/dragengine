@@ -59,7 +59,6 @@ igdeDialog(windowMain.GetEnvironment(), "Distribute"),
 
 pWindowMain(windowMain),
 pProfile(profile),
-pTaskDistribute(NULL),
 pCloseDialogOnFinished(false),
 pPrintToConsole(false),
 pSuccess(true)
@@ -70,40 +69,40 @@ pSuccess(true)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	pActionShowInFSManager.TakeOver(new igdeActionExternOpen(env, "Show in File Manager",
-		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager"));
+	pActionShowInFSManager = igdeActionExternOpen::Ref::New(env, "Show in File Manager",
+		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager");
 	
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5));
 	
 	// build information
 	igdeContainer::Ref groupBox;
 	helper.GroupBoxStatic(content, groupBox, "DELGA:");
 	
-	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, NULL);
+	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, {});
 	pEditDelgaPath->SetEditable(false);
 	
-	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, NULL);
+	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, {});
 	pEditDelgaSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, NULL);
+	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, {});
 	pEditDelgaFileCount->SetEditable(false);
 	
-	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL);
+	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, {});
 	pEditDelgaDirCount->SetEditable(false);
 	
 	// logs and info line
-	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	
 	helper.GroupBoxStaticFlow(containerLogs, groupBox, "Logs:", true);
 	
-	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, NULL);
+	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, {});
 	pEditLogs->SetEditable(false);
 	
 	// info line
-	groupBox.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX, 5));
+	groupBox = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX, 5);
 	containerLogs->AddChild(groupBox);
 	
 	helper.Button(groupBox, pActionShowInFSManager);
@@ -120,9 +119,6 @@ pSuccess(true)
 }
 
 projDialogDistribute::~projDialogDistribute(){
-	if(pTaskDistribute){
-		delete pTaskDistribute;
-	}
 }
 
 
@@ -220,5 +216,5 @@ void projDialogDistribute::pStartBuilding(){
 	pEditDelgaFileCount->SetText("0");
 	pEditDelgaDirCount->SetText("0");
 	
-	pTaskDistribute = new projTaskDistribute(pWindowMain, *pWindowMain.GetProject(), *pProfile);
+	pTaskDistribute = projTaskDistribute::Ref::New(pWindowMain, *pWindowMain.GetProject(), *pProfile);
 }

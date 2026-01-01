@@ -42,17 +42,17 @@
 ////////////////////////////
 
 gdeSky::gdeSky() :
-pGameDefinition(NULL){
+pGameDefinition(nullptr){
 }
 
 gdeSky::gdeSky(const char *path, const char *name) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 pPath(path),
 pName(name){
 }
 
 gdeSky::gdeSky(const gdeSky &sky) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 
 pPath(sky.pPath),
 pName(sky.pName),
@@ -60,28 +60,13 @@ pDescription(sky.pDescription),
 pCategory(sky.pCategory),
 pTags(sky.pTags)
 {
-	const int controllerCount = sky.pControllers.GetCount();
-	gdeSkyController *controller = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<controllerCount; i++){
-			controller = new gdeSkyController(*sky.pControllers.GetAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			controller = NULL;
-		}
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
-	}
+	sky.pControllers.Visit([&](const gdeSkyController &c){
+		pControllers.Add(gdeSkyController::Ref::New(c));
+	});
 }
 
 gdeSky::~gdeSky(){
-	SetGameDefinition(NULL);
+	SetGameDefinition(nullptr);
 }
 
 

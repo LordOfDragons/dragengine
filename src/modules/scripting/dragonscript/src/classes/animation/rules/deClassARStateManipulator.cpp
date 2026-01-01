@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARStaMNatDat{
-	deAnimator *animator;
-	deAnimatorRuleStateManipulator *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleStateManipulator::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARStateManipulator::nfNew::nfNew(const sInitData &init) : dsFunction(init
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARStateManipulator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARStaMNatDat * const nd = new (p_GetNativeData(myself)) sARStaMNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleStateManipulator;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = deAnimatorRuleStateManipulator::Ref::New();
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARStateManipulator::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARStaMNatDat*>(p_GetNativeData(myself))->~sARStaMNatDat();
 }
 
 
@@ -117,7 +105,7 @@ deClassARStateManipulator::nfSetEnablePosition::nfSetEnablePosition(const sInitD
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateManipulator::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -132,7 +120,7 @@ deClassARStateManipulator::nfSetEnableOrientation::nfSetEnableOrientation(const 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateManipulator::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableRotation(rt->GetValue(0)->GetBool());
 	
@@ -147,7 +135,7 @@ deClassARStateManipulator::nfSetEnableSize::nfSetEnableSize(const sInitData &ini
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateManipulator::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -162,7 +150,7 @@ dsFunction(init.clsARStaM, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUB
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateManipulator::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -179,8 +167,8 @@ deClassARStateManipulator::nfSetMinimumPosition::nfSetMinimumPosition(const sIni
 	p_AddParameter(init.clsVec); // position
 }
 void deClassARStateManipulator::nfSetMinimumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -198,8 +186,8 @@ deClassARStateManipulator::nfSetMaximumPosition::nfSetMaximumPosition(const sIni
 	p_AddParameter(init.clsVec); // position
 }
 void deClassARStateManipulator::nfSetMaximumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -217,8 +205,8 @@ deClassARStateManipulator::nfSetMinimumRotation::nfSetMinimumRotation(const sIni
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassARStateManipulator::nfSetMinimumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -236,8 +224,8 @@ deClassARStateManipulator::nfSetMaximumRotation::nfSetMaximumRotation(const sIni
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassARStateManipulator::nfSetMaximumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -255,8 +243,8 @@ deClassARStateManipulator::nfSetMinimumSize::nfSetMinimumSize(const sInitData &i
 	p_AddParameter(init.clsVec); // size
 }
 void deClassARStateManipulator::nfSetMinimumSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -274,8 +262,8 @@ deClassARStateManipulator::nfSetMaximumSize::nfSetMaximumSize(const sInitData &i
 	p_AddParameter(init.clsVec); // size
 }
 void deClassARStateManipulator::nfSetMaximumSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
-	const deClassARStateManipulator &clsARStaM = *((deClassARStateManipulator*)GetOwnerClass());
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
+	const deClassARStateManipulator &clsARStaM = *static_cast<deClassARStateManipulator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARStaM.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -293,7 +281,7 @@ dsFunction(init.clsARStaM, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PU
 	p_AddParameter(init.clsFlt); // weight
 }
 void deClassARStateManipulator::nfSetMinimumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetMinimumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
@@ -308,7 +296,7 @@ dsFunction(init.clsARStaM, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PU
 	p_AddParameter(init.clsFlt); // weight
 }
 void deClassARStateManipulator::nfSetMaximumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetMaximumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
@@ -330,9 +318,9 @@ void deClassARStateManipulator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	const deClassARStateManipulator::eTargets target = (deClassARStateManipulator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -376,9 +364,9 @@ void deClassARStateManipulator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *r
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself));
+	sARStaMNatDat &nd = *static_cast<sARStaMNatDat*>(p_GetNativeData(myself));
 	const deClassARStateManipulator::eTargets target = (deClassARStateManipulator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -484,7 +472,7 @@ deAnimatorRuleStateManipulator *deClassARStateManipulator::GetRule(dsRealObject 
 		return NULL;
 	}
 	
-	return ((sARStaMNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARStaMNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -493,22 +481,7 @@ void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator 
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARStaMNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateManipulator *rule){
@@ -521,22 +494,14 @@ void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator *animator, de
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARStaMNatDat &nd = *((sARStaMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARStaMNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARStaMNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

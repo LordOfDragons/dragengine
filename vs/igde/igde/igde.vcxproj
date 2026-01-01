@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -37,68 +37,6 @@
   <ItemGroup>
     <None Include="..\..\..\src\deigde\deigde\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\deigde.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.cpp" />
-    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\deigde.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.h" />
-    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\deigde\deigde\src\deigde-res.rc" />
@@ -347,4 +285,60 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\deigde.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\deigde.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.h" />
+  </ItemGroup>
 </Project>

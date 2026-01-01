@@ -46,6 +46,7 @@ protected:
 	ceWPTMATopicAddAction();
 	
 public:
+	typedef deTObjectReference<ceWPTMATopicAddAction> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
@@ -65,7 +66,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo(ceConversationAction *action) override;
+	igdeUndo::Ref CreateUndo(ceConversationAction *action) override;
 	/*@}*/
 };
 

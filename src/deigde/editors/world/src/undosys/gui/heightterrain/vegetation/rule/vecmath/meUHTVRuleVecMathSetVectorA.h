@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleVectorMath;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleVectorMath.h"
 
 
 
@@ -44,13 +44,14 @@ class meHTVRuleVectorMath;
  */
 class meUHTVRuleVecMathSetVectorA : public igdeUndo{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTVRuleVecMathSetVectorA> Ref;
 	
 	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleVectorMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleVectorMath::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;
@@ -61,7 +62,11 @@ public:
 	/** \brief Create object. */
 	meUHTVRuleVecMathSetVectorA(meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule, const decVector &nvector);
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTVRuleVecMathSetVectorA();
+
+public:
 	/*@}*/
 	
 	/** \name Management */

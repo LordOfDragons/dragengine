@@ -35,6 +35,10 @@ class peeWPView;
  * \brief View panel listener.
  */
 class peeWPViewListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPViewListener> Ref;
+	
 private:
 	peeWPView &pPanel;
 	
@@ -47,7 +51,9 @@ public:
 	peeWPViewListener(peeWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~peeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

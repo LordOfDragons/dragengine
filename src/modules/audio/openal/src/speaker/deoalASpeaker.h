@@ -26,6 +26,9 @@
 #define _DEOALASPEAKER_H_
 
 #include "../deoalBasics.h"
+#include "../sound/deoalASound.h"
+#include "../synthesizer/deoalASynthesizerInstance.h"
+#include "../video/deoalAVideoPlayer.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerSet.h>
@@ -36,9 +39,6 @@
 
 class deoalAudioThread;
 class deoalAMicrophone;
-class deoalASound;
-class deoalASynthesizerInstance;
-class deoalAVideoPlayer;
 class deoalSource;
 class deoalAWorld;
 class deoalWorldOctree;
@@ -60,9 +60,9 @@ private:
 	deoalAMicrophone *pParentMicrophone;
 	deoalWorldOctree *pOctreeNode;
 	
-	deoalASound *pSound;
-	deoalASynthesizerInstance *pSynthesizer;
-	deoalAVideoPlayer *pVideoPlayer;
+	deoalASound::Ref pSound;
+	deoalASynthesizerInstance::Ref pSynthesizer;
+	deoalAVideoPlayer::Ref pVideoPlayer;
 	unsigned int pSourceUpdateTracker;
 	deSoundDecoder::Ref pSoundDecoder;
 	
@@ -167,13 +167,13 @@ public:
 	
 	
 	/** Sound object or \em NULL. */
-	inline deoalASound *GetSound() const{ return pSound; }
+	inline const deoalASound::Ref &GetSound() const{ return pSound; }
 	
 	/** Synthesizer instance object or \em NULL. */
-	inline deoalASynthesizerInstance *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deoalASynthesizerInstance::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** Video player object or \em NULL. */
-	inline deoalAVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoalAVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/**
 	 * Set source.
@@ -183,7 +183,7 @@ public:
 		deoalAVideoPlayer *videoPlayer);
 	
 	/** Sound decoder or NULL. */
-	inline deSoundDecoder *GetSoundDecoder() const{ return pSoundDecoder; }
+	inline const deSoundDecoder::Ref &GetSoundDecoder() const{ return pSoundDecoder; }
 	
 	/**
 	 * Set sound decoder or NULL.

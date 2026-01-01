@@ -52,6 +52,6 @@ meIGDEModule::~meIGDEModule(){
 
 void meIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new meWindowMain(*this));
+		SetEditorWindow(meWindowMain::Ref::New(*this));
 	}
 }

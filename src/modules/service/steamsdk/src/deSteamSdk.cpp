@@ -163,7 +163,7 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 		
 		deVirtualFileSystem &vfs = GetVFS();
 		const decPath pathAppId(decPath::CreatePathUnix("/cache/global/steam_appid.txt"));
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathAppId))->WriteString(appId);
+		vfs.OpenFileForWriting(pathAppId)->WriteString(appId);
 		
 		try{
 			deEngine &engine = *GetGameEngine();
@@ -229,7 +229,7 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 	DETHROW_INFO(deeInvalidAction, errorMsg);
 }
 
-deBaseServiceService* deSteamSdk::CreateService(deService *service,
+deBaseServiceService *deSteamSdk::CreateService(deService *service,
 const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(service)
 	

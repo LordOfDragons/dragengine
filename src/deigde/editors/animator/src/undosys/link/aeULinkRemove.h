@@ -28,10 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include "../../animator/aeAnimator.h"
+#include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
-
-class aeControllerTarget;
 
 
 
@@ -39,10 +38,14 @@ class aeControllerTarget;
  * Undo Link Remove.
  */
 class aeULinkRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkRemove> Ref;
+	
+	
 private:
 	struct sTarget{
 		aeRule::Ref rule;
-		aeControllerTarget *target;
+		aeControllerTarget::Ref target;
 	};
 	
 	aeAnimator::Ref pAnimator;
@@ -52,9 +55,6 @@ private:
 	int pTargetCount;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeULinkRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

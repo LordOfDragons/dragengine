@@ -46,7 +46,7 @@
 meHTVRulePropCount::meHTVRulePropCount() : meHTVRule(ertPropCount, 1){
 	pSearchRadius = 1.0f;
 	
-	GetSlotAt(eosCount).SetIsInput(false);
+	GetSlots().GetAt(eosCount)->SetIsInput(false);
 	
 	Reset();
 }
@@ -84,19 +84,14 @@ void meHTVRulePropCount::SetSearchRadius(float searchRadius){
 void meHTVRulePropCount::UpdateResult(meHTVEvaluationEnvironment &evalEnv){
 	if(pDirty){
 		const decDVector &ipos = evalEnv.GetPosition();
-		int o, objectCount = evalEnv.GetObjectCount();
-		meObject *object;
 		int count = 0;
-		
-		for(o=0; o<objectCount; o++){
-			object = evalEnv.GetObjectAt(o);
-			
-			if(pPropClass.Equals(object->GetClassName())){
-				if((float)(object->GetPosition() - ipos).Length() <= pSearchRadius){
+		evalEnv.GetObjects().Visit([&](const meObject &object){
+			if(pPropClass.Equals(object.GetClassName())){
+				if((float)(object.GetPosition() - ipos).Length() <= pSearchRadius){
 					count++;
 				}
 			}
-		}
+		});
 		
 		pCount = (float)count;
 		
@@ -128,6 +123,6 @@ decVector meHTVRulePropCount::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnv
 	return decVector(pCount, pCount, pCount);
 }
 
-meHTVRule *meHTVRulePropCount::Copy() const{
-	return new meHTVRulePropCount(*this);
+meHTVRule::Ref meHTVRulePropCount::Copy() const{
+	return meHTVRulePropCount::Ref::New(*this);
 }

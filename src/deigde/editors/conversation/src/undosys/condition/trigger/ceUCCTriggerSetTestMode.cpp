@@ -47,34 +47,20 @@ ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldTestMode = condition->GetTestMode();
 	pNewTestMode = newTestMode;
 	
 	SetShortInfo("Condition trigger set test mode");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCTriggerSetTestMode::~ceUCCTriggerSetTestMode(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

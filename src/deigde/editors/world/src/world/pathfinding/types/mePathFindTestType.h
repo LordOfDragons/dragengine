@@ -25,6 +25,7 @@
 #ifndef _MEPATHFINDTESTTYPE_H_
 #define _MEPATHFINDTESTTYPE_H_
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 
@@ -34,25 +35,34 @@
  * @brief Path Find Test Type.
  */
 class mePathFindTestType : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePathFindTestType> Ref;
+	
+	/** \brief List type. */
+	typedef decTObjectOrderedSet<mePathFindTestType> List;
+	
+	
 private:
 	decString pName;
 	int pTypeNumber;
 	float pFixCost;
 	float pCostPerMeter;
 	
+	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePathFindTestType> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */
-	mePathFindTestType(int typeNumber);
+	explicit mePathFindTestType(int typeNumber);
+	
+protected:
 	/** Cleans up the path find test type. */
-	virtual ~mePathFindTestType();
+	~mePathFindTestType() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the type number. */

@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dedsSTNParagraph.h"
 #include "dedsStyledTextNode.h"
 
 #include <libdscript/exceptions.h>
-
 
 
 // Class dedsSTNParagraph
@@ -39,91 +34,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-
 dedsSTNParagraph::dedsSTNParagraph(){
-	pNodes = NULL;
-	pNodeSize = 0;
-	pNodeCount = 0;
 }
 
 dedsSTNParagraph::~dedsSTNParagraph(){
 	RemoveAllNodes();
-	if(pNodes) delete [] pNodes;
 }
-
 
 
 // Management
 ///////////////
 
+int dedsSTNParagraph::GetNodeCount() const{
+	return pNodes.GetCount();
+}
+
 dedsStyledTextNode* dedsSTNParagraph::GetNodeAt(int index) const{
-	if(index < 0 || index >= pNodeCount) DSTHROW(dueInvalidParam);
-	
-	return pNodes[index];
+	return static_cast<dedsStyledTextNode*>(pNodes.GetAt(index));
 }
 
-int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode* node) const{
-	if(!node) DSTHROW(dueInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNodeCount; n++){
-		if(node == pNodes[n]){
-			return n;
-		}
-	}
-	
-	return -1;
+int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode *node) const{
+	return pNodes.IndexOf(node);
 }
 
-bool dedsSTNParagraph::HasNode(dedsStyledTextNode* node) const{
-	if(!node) DSTHROW(dueInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNodeCount; n++){
-		if(node == pNodes[n]){
-			return true;
-		}
-	}
-	
-	return false;
+bool dedsSTNParagraph::HasNode(dedsStyledTextNode *node) const{
+	return pNodes.Has(node);
 }
 
-void dedsSTNParagraph::AddNode(dedsStyledTextNode* node){
-	if(HasNode(node)) DSTHROW(dueInvalidParam);
-	
-	if(pNodeCount == pNodeSize){
-		int newSize = pNodeSize + 10;
-		dedsStyledTextNode **newArray = new dedsStyledTextNode*[newSize];
-		if(!newArray) DSTHROW(dueOutOfMemory);
-		if(pNodes){
-			memcpy(newArray, pNodes, sizeof(dedsStyledTextNode*) * pNodeSize);
-			delete [] pNodes;
-		}
-		pNodes = newArray;
-		pNodeSize = newSize;
-	}
-	
-	pNodes[pNodeCount] = node;
-	node->AddReference();
-	pNodeCount++;
+void dedsSTNParagraph::AddNode(dedsStyledTextNode *node){
+	pNodes.Add(node);
 }
 
-void dedsSTNParagraph::RemoveNode(dedsStyledTextNode* node){
-	int n, index = IndexOfNode(node);
-	
-	if(index == -1) DSTHROW(dueInvalidParam);
-	
-	for(n=index+1; n<pNodeCount; n++){
-		pNodes[n - 1] = pNodes[n];
-	}
-	pNodeCount--;
+void dedsSTNParagraph::RemoveNode(dedsStyledTextNode *node){
+	pNodes.Remove(node);
 }
 
 void dedsSTNParagraph::RemoveAllNodes(){
-	while(pNodeCount > 0){
-		pNodeCount--;
-		pNodes[pNodeCount]->FreeReference();
-	}
+	pNodes.RemoveAll();
 }

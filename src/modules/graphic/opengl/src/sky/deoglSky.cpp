@@ -46,18 +46,12 @@
 deoglSky::deoglSky(deGraphicOpenGl &ogl, const deSky &sky) :
 pOgl(ogl),
 pSky(sky),
-pRSky(NULL),
+pRSky(deoglRSky::Ref::New(pOgl.GetRenderThread())),
 pDirtyParameters(true),
-pUpdateTracker(0)
-{
-	pRSky = new deoglRSky(pOgl.GetRenderThread());
+pUpdateTracker(0){
 }
 
 deoglSky::~deoglSky(){
-	if(pRSky){
-		pRSky->FreeReference();
-		pRSky = NULL;
-	}
 }
 
 

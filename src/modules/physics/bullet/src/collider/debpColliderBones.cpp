@@ -150,7 +150,7 @@ bool debpColliderBones::HasBreakableConstraints() const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deColliderConstraint*)pConstraints.GetAt(i))->GetBreakingThreshold() > 0.01f){
+		if(static_cast<deColliderConstraint*>(pConstraints.GetAt(i))->GetBreakingThreshold() > 0.01f){
 			return true;
 		}
 	}
@@ -739,13 +739,11 @@ void debpColliderBones::CreateDebugDrawers(){
 		}
 		
 		const deColliderBone &colbone = pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex());
-		deDebugDrawer *boneDebugDrawer = ddmanager.CreateDebugDrawer();
+		deDebugDrawer::Ref boneDebugDrawer(ddmanager.CreateDebugDrawer());
 		boneDebugDrawer->SetXRay(true);
 		boneDebugDrawer->SetPosition(colbone.GetPosition());
 		boneDebugDrawer->SetOrientation(colbone.GetOrientation());
 		pBonesPhysics[i]->SetDebugDrawer(boneDebugDrawer);
-		boneDebugDrawer->FreeReference();
-		
 		if(world){
 			world->GetWorld().AddDebugDrawer(boneDebugDrawer);
 		}
@@ -1108,7 +1106,6 @@ bool debpColliderBones::UpdateStaticCollisionTests(){
 //////////////////////
 
 void debpColliderBones::pCleanUp(){
-	const int ccount = pConstraints.GetCount();
 	int i;
 	
 	if(pBonesPhysics){
@@ -1130,10 +1127,6 @@ void debpColliderBones::pCleanUp(){
 	
 	if(pBones){
 		delete [] pBones;
-	}
-	
-	for(i=0; i<ccount; i++){
-		delete (deColliderConstraint*)pConstraints.GetAt(i);
 	}
 }
 
@@ -1344,7 +1337,7 @@ void debpColliderBones::pCreateConstraints(const deRig &rig){
 				}
 				
 				// add a new temporary bone constraint
-				deColliderConstraint * const bc = new deColliderConstraint;
+				const deColliderConstraint::Ref bc(deColliderConstraint::Ref::New());
 				pConstraints.Add(bc);
 				
 				// set the temporary bone constraint from the rig constraint

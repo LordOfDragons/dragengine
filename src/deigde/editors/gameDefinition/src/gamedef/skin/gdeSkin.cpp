@@ -41,17 +41,17 @@
 ////////////////////////////
 
 gdeSkin::gdeSkin() :
-pGameDefinition(NULL){
+pGameDefinition(nullptr){
 }
 
 gdeSkin::gdeSkin(const char *path, const char *name) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 pPath(path),
 pName(name){
 }
 
 gdeSkin::gdeSkin(const gdeSkin &skin) :
-pGameDefinition(NULL),
+pGameDefinition(nullptr),
 
 pPath(skin.pPath),
 pName(skin.pName),
@@ -141,5 +141,5 @@ void gdeSkin::SetTags(const decStringSet &tags){
 //////////////////////
 
 void gdeSkin::pCleanUp(){
-	SetGameDefinition(NULL);
+	SetGameDefinition(nullptr);
 }

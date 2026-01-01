@@ -40,6 +40,9 @@
  * in progress. Otherwise simply do nothing if the right mouse button is pressed during mouse move.
  */
 class meViewEditorNavigation : public meViewEditor{
+public:
+	typedef deTObjectReference<meViewEditorNavigation> Ref;
+	
 private:
 	float pOldDist;
 	float pOldZoom;
@@ -56,8 +59,12 @@ public:
 	/*@{*/
 	/** Creates a new view editor. */
 	meViewEditorNavigation(meView3D &view);
+	
+protected:
 	/** Cleans up the view editor. */
 	~meViewEditorNavigation() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -28,7 +28,7 @@
 
 #include "ceLoadSaveConversation.h"
 #include "../conversation/ceConversation.h"
-#include "../conversation/action/ceConversationActionList.h"
+#include "../conversation/action/ceConversationAction.h"
 #include "../conversation/action/ceCACameraShot.h"
 #include "../conversation/action/ceCAMusic.h"
 #include "../conversation/action/ceCAActorSpeak.h"
@@ -52,7 +52,6 @@
 #include "../conversation/action/ceCAIfElseCase.h"
 #include "../conversation/camerashot/ceCameraShot.h"
 #include "../conversation/condition/ceConversationCondition.h"
-#include "../conversation/condition/ceConversationConditionList.h"
 #include "../conversation/condition/ceCConditionLogic.h"
 #include "../conversation/condition/ceCConditionHasActor.h"
 #include "../conversation/condition/ceCConditionActorInConversation.h"
@@ -111,7 +110,7 @@ igdeBaseXML(logger, loggerSource){
 
 void ceLoadSaveConversation::LoadConversation(ceConversation &conversation,
 decBaseFileReader &reader, const char *filename){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -156,31 +155,19 @@ void ceLoadSaveConversation::pWriteConversation(decXmlWriter &writer, const ceCo
 		}
 	}
 	
-	const ceTargetList &targetList = conversation.GetTargetList();
-	count = targetList.GetCount();
-	if(count > 0){
+	if(conversation.GetTargets().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<count; i++){
-			pWriteTarget(writer, *targetList.GetAt(i));
-		}
+		conversation.GetTargets().Visit([&](const ceTarget &t){ pWriteTarget(writer, t); });
 	}
 	
-	const ceCameraShotList &cameraShotList = conversation.GetCameraShotList();
-	count = cameraShotList.GetCount();
-	if(count > 0){
+	if(conversation.GetCameraShotList().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<count; i++){
-			pWriteCameraShot(writer, *cameraShotList.GetAt(i));
-		}
+		conversation.GetCameraShotList().Visit([&](const ceCameraShot &c){ pWriteCameraShot(writer, c); });
 	}
 	
-	const ceGestureList &gestureList = conversation.GetGestureList();
-	count = gestureList.GetCount();
-	if(count > 0){
+	if(conversation.GetGestures().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<count; i++){
-			pWriteGesture(writer, *gestureList.GetAt(i));
-		}
+		conversation.GetGestures().Visit([&](const ceGesture &g){ pWriteGesture(writer, g); });
 	}
 	
 	const decStringList &facePoseControllerNameList = conversation.GetFacePoseControllerNameList();
@@ -194,22 +181,14 @@ void ceLoadSaveConversation::pWriteConversation(decXmlWriter &writer, const ceCo
 		writer.WriteClosingTag("facePoseControllerNames");
 	}
 	
-	const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
-	count = facePoseList.GetCount();
-	if(count > 0){
+	if(conversation.GetFacePoseList().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<count; i++){
-			pWriteFacePose(writer, *facePoseList.GetAt(i));
-		}
+		conversation.GetFacePoseList().Visit([&](const ceFacePose &f){ pWriteFacePose(writer, f); });
 	}
 	
-	const ceConversationFileList &fileList = conversation.GetFileList();
-	count = fileList.GetCount();
-	if(count > 0){
+	if(conversation.GetFiles().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<count; i++){
-			pWriteFile(writer, *fileList.GetAt(i));
-		}
+		conversation.GetFiles().Visit([&](const ceConversationFile &f){ pWriteFile(writer, f); });
 	}
 	
 	writer.WriteClosingTag("conversation", true);
@@ -377,45 +356,33 @@ void ceLoadSaveConversation::pWriteGesture(decXmlWriter &writer, const ceGesture
 }
 
 void ceLoadSaveConversation::pWriteFacePose(decXmlWriter &writer, const ceFacePose &facePose){
-	const ceControllerValueList &controllerList = facePose.GetControllerList();
-	int i, count;
-	
 	writer.WriteOpeningTagStart("facePose");
 	writer.WriteAttributeString("name", facePose.GetName());
 	writer.WriteOpeningTagEnd();
 	
-	count = controllerList.GetCount();
-	for(i=0; i<count; i++){
-		const ceControllerValue &entry = *controllerList.GetAt(i);
-		
+	facePose.GetControllers().Visit([&](const ceControllerValue &c){
 		writer.WriteOpeningTagStart("controller");
 		
-		if(entry.GetControllerIndex() == -1){
-			writer.WriteAttributeString("name", entry.GetController());
+		if(c.GetControllerIndex() == -1){
+			writer.WriteAttributeString("name", c.GetController());
 			
 		}else{ // deprecated
-			writer.WriteAttributeInt("index", entry.GetControllerIndex());
+			writer.WriteAttributeInt("index", c.GetControllerIndex());
 		}
 		
-		writer.WriteAttributeFloat("value", entry.GetValue());
+		writer.WriteAttributeFloat("value", c.GetValue());
 		writer.WriteOpeningTagEnd(true);
-	}
+	});
 	
 	writer.WriteClosingTag("facePose");
 }
 
 void ceLoadSaveConversation::pWriteFile(decXmlWriter &writer, const ceConversationFile &file){
-	const ceConversationTopicList &topicList = file.GetTopicList();
-	int i, count;
-	
 	writer.WriteOpeningTagStart("group");
 	writer.WriteAttributeString("id", file.GetID());
 	writer.WriteOpeningTagEnd();
 	
-	count = topicList.GetCount();
-	for(i=0; i<count; i++){
-		pWriteTopic(writer, *topicList.GetAt(i));
-	}
+	file.GetTopics().Visit([&](const ceConversationTopic &t){ pWriteTopic(writer, t); });
 	
 	writer.WriteClosingTag("group");
 }
@@ -426,76 +393,76 @@ void ceLoadSaveConversation::pWriteTopic(decXmlWriter &writer, const ceConversat
 	writer.WriteOpeningTagEnd();
 	
 	writer.WriteOpeningTag("actions");
-	pWriteActionList(writer, topic.GetActionList());
+	pWriteActionList(writer, topic.GetActions());
 	writer.WriteClosingTag("actions");
 	
 	writer.WriteClosingTag("topic");
 }
 
-void ceLoadSaveConversation::pWriteActionList(decXmlWriter &writer, const ceConversationActionList &list){
+void ceLoadSaveConversation::pWriteActionList(decXmlWriter &writer, const ceConversationAction::List &list){
 	const int count = list.GetCount();
-	ceConversationAction *action;
+	ceConversationAction::Ref action;
 	int i;
 	
 	for(i=0; i<count; i++){
 		action = list.GetAt(i);
 		
 		if(action->GetType() == ceConversationAction::eatCameraShot){
-			pWriteActionCameraShot(writer, *((ceCACameraShot*)action));
+			pWriteActionCameraShot(writer, (ceCACameraShot&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatMusic){
-			pWriteActionMusic(writer, *((ceCAMusic*)action));
+			pWriteActionMusic(writer, (ceCAMusic&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatActorSpeak){
-			pWriteActionActorSpeak(writer, *((ceCAActorSpeak*)action));
+			pWriteActionActorSpeak(writer, (ceCAActorSpeak&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatIfElse){
-			pWriteActionIfElse(writer, *((ceCAIfElse*)action));
+			pWriteActionIfElse(writer, (ceCAIfElse&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatPlayerChoice){
-			pWriteActionPlayerChoice(writer, *((ceCAPlayerChoice*)action));
+			pWriteActionPlayerChoice(writer, (ceCAPlayerChoice&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatStopConversation){
-			pWriteActionStopConversation(writer, *((ceCAStopConversation*)action));
+			pWriteActionStopConversation(writer, (ceCAStopConversation&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatStopTopic){
-			pWriteActionStopTopic(writer, *((ceCAStopTopic*)action));
+			pWriteActionStopTopic(writer, (ceCAStopTopic&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatSnippet){
-			pWriteActionSnippet(writer, *((ceCASnippet*)action));
+			pWriteActionSnippet(writer, (ceCASnippet&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatSetVariable){
-			pWriteActionSetVariable(writer, *((ceCASetVariable*)action));
+			pWriteActionSetVariable(writer, (ceCASetVariable&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatSetActorParameter){
-			pWriteActionSetActorParameter(writer, *((ceCASetActorParameter*)action));
+			pWriteActionSetActorParameter(writer, (ceCASetActorParameter&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatActorCommand){
-			pWriteActionActorCommand(writer, *((ceCAActorCommand*)action));
+			pWriteActionActorCommand(writer, (ceCAActorCommand&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatGameCommand){
-			pWriteActionGameCommand(writer, *((ceCAGameCommand*)action));
+			pWriteActionGameCommand(writer, (ceCAGameCommand&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatWait){
-			pWriteActionWait(writer, *((ceCAWait*)action));
+			pWriteActionWait(writer, (ceCAWait&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatTrigger){
-			pWriteActionTrigger(writer, *((ceCATrigger*)action));
+			pWriteActionTrigger(writer, (ceCATrigger&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatActorAdd){
-			pWriteActionActorAdd(writer, *((ceCAActorAdd*)action));
+			pWriteActionActorAdd(writer, (ceCAActorAdd&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatActorRemove){
-			pWriteActionActorRemove(writer, *((ceCAActorRemove*)action));
+			pWriteActionActorRemove(writer, (ceCAActorRemove&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatCoordSystemAdd){
-			pWriteActionCoordSystemAdd(writer, *((ceCACoordSystemAdd*)action));
+			pWriteActionCoordSystemAdd(writer, (ceCACoordSystemAdd&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatCoordSystemRemove){
-			pWriteActionCoordSystemRemove(writer, *((ceCACoordSystemRemove*)action));
+			pWriteActionCoordSystemRemove(writer, (ceCACoordSystemRemove&)*action);
 			
 		}else if(action->GetType() == ceConversationAction::eatComment){
-			pWriteActionComment(writer, *((ceCAComment*)action));
+			pWriteActionComment(writer, (ceCAComment&)*action);
 		}
 	}
 }
@@ -560,29 +527,29 @@ void ceLoadSaveConversation::pWriteActionActorSpeak(decXmlWriter &writer, const 
 	if(!action.GetPathSound().IsEmpty()){
 		writer.WriteDataTagString("pathSound", action.GetPathSound());
 	}
-	if(action.GetWordList().GetCount() > 0){
+	if(action.GetWords().GetCount() > 0){
 		writer.WriteOpeningTag("words");
-		pWriteStripList(writer, action.GetWordList());
+		pWriteStripList(writer, action.GetWords());
 		writer.WriteClosingTag("words");
 	}
-	if(action.GetFacePoseList().GetCount() > 0){
+	if(action.GetFacePoses().GetCount() > 0){
 		writer.WriteOpeningTag("facePoses");
-		pWriteStripList(writer, action.GetFacePoseList());
+		pWriteStripList(writer, action.GetFacePoses());
 		writer.WriteClosingTag("facePoses");
 	}
-	if(action.GetGestureList().GetCount() > 0){
+	if(action.GetGestures().GetCount() > 0){
 		writer.WriteOpeningTag("gestures");
-		pWriteStripList(writer, action.GetGestureList());
+		pWriteStripList(writer, action.GetGestures());
 		writer.WriteClosingTag("gestures");
 	}
-	if(action.GetBodyLookAtList().GetCount() > 0){
+	if(action.GetBodyLookAts().GetCount() > 0){
 		writer.WriteOpeningTag("bodyLookAts");
-		pWriteStripList(writer, action.GetBodyLookAtList());
+		pWriteStripList(writer, action.GetBodyLookAts());
 		writer.WriteClosingTag("bodyLookAts");
 	}
-	if(action.GetHeadLookAtList().GetCount() > 0){
+	if(action.GetHeadLookAts().GetCount() > 0){
 		writer.WriteOpeningTag("headLookAts");
-		pWriteStripList(writer, action.GetHeadLookAtList());
+		pWriteStripList(writer, action.GetHeadLookAts());
 		writer.WriteClosingTag("headLookAts");
 	}
 	if(action.GetEyesLookAtList().GetCount() > 0){
@@ -604,17 +571,11 @@ void ceLoadSaveConversation::pWriteActionActorSpeak(decXmlWriter &writer, const 
 }
 
 void ceLoadSaveConversation::pWriteActionIfElse(decXmlWriter &writer, const ceCAIfElse &action){
-	const ceCAIfElseCaseList &caseList = action.GetCases();
-	const int count = caseList.GetCount();
-	int i;
-	
 	writer.WriteOpeningTag("ifElse");
 	
 	pWriteActionCommon(writer, action);
 	
-	for(i=0; i<count; i++){
-		pWriteActionIfElseCase(writer, *caseList.GetAt(i));
-	}
+	action.GetCases().Visit([&](const ceCAIfElseCase &c){ pWriteActionIfElseCase(writer, c); });
 	
 	if(action.GetElseActions().GetCount() > 0){
 		writer.WriteOpeningTag("else");
@@ -644,10 +605,6 @@ void ceLoadSaveConversation::pWriteActionIfElseCase(decXmlWriter &writer, const 
 }
 
 void ceLoadSaveConversation::pWriteActionPlayerChoice(decXmlWriter &writer, const ceCAPlayerChoice &action){
-	const ceCAPlayerChoiceOptionList &optionList = action.GetOptions();
-	const int count = optionList.GetCount();
-	int i;
-	
 	writer.WriteOpeningTag("playerChoice");
 	
 	pWriteActionCommon(writer, action);
@@ -662,9 +619,9 @@ void ceLoadSaveConversation::pWriteActionPlayerChoice(decXmlWriter &writer, cons
 		writer.WriteClosingTag("actions");
 	}
 	
-	for(i=0; i<count; i++){
-		pWriteActionPlayerChoiceOption(writer, *optionList.GetAt(i));
-	}
+	action.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+		pWriteActionPlayerChoiceOption(writer, o);
+	});
 	
 	writer.WriteClosingTag("playerChoice");
 }
@@ -928,13 +885,10 @@ ceConversationCondition *condition){
 }
 
 void ceLoadSaveConversation::pWriteConditionList(decXmlWriter &writer,
-const ceConversationConditionList &list){
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pWriteCondition(writer, list.GetAt(i));
-	}
+const ceConversationCondition::List &list){
+	list.Visit([&](ceConversationCondition *c){
+		pWriteCondition(writer, c);
+	});
 }
 
 void ceLoadSaveConversation::pWriteConditionLogic(decXmlWriter &writer,
@@ -1121,22 +1075,17 @@ const ceCConditionTrigger &condition){
 	writer.WriteClosingTag("trigger");
 }
 
-void ceLoadSaveConversation::pWriteStripList(decXmlWriter &writer, const ceStripList &list){
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const ceStrip &entry = *list.GetAt(i);
-		
+void ceLoadSaveConversation::pWriteStripList(decXmlWriter &writer, const ceStrip::List &list){
+	list.Visit([&](const ceStrip &s){
 		writer.WriteOpeningTagStart("entry");
-		if(entry.GetPause() > FLOAT_SAFE_EPSILON){
-			writer.WriteAttributeFloat("pause", entry.GetPause());
+		if(s.GetPause() > FLOAT_SAFE_EPSILON){
+			writer.WriteAttributeFloat("pause", s.GetPause());
 		}
-		writer.WriteAttributeFloat("duration", entry.GetDuration());
+		writer.WriteAttributeFloat("duration", s.GetDuration());
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(entry.GetID());
+		writer.WriteTextString(s.GetID());
 		writer.WriteClosingTag("entry", false);
-	}
+	});
 }
 
 void ceLoadSaveConversation::pWriteCurveBezier(decXmlWriter &writer, const decCurveBezier &curve){
@@ -1235,13 +1184,13 @@ void ceLoadSaveConversation::pReadConversation(const decXmlElementTag &root, ceC
 void ceLoadSaveConversation::pReadTarget(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	ceTarget *target = NULL;
+	ceTarget::Ref target;
 	int e;
 	
 	try{
-		target = new ceTarget;
+		target = ceTarget::Ref::New();
 		target->SetName(GetAttributeString(root, "name"));
-		if(conversation.GetTargetList().HasNamed(target->GetName())){
+		if(conversation.GetTargets().HasMatching([&](const ceTarget &t){ return t.GetName() == target->GetName(); })){
 			LogErrorGenericProblemValue(root, target->GetName(), "A target with this name exists already");
 		}
 		
@@ -1273,159 +1222,144 @@ void ceLoadSaveConversation::pReadTarget(const decXmlElementTag &root, ceConvers
 		}
 		
 		conversation.AddTarget(target);
-		target->FreeReference();
-		
 	}catch(const deException &){
-		if(target){
-			target->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadCameraShot(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceCameraShot *cameraShot = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
-	try{
-		cameraShot = new ceCameraShot;
-		cameraShot->SetName(GetAttributeString(root, "name"));
-		if(conversation.GetCameraShotList().HasNamed(cameraShot->GetName())){
-			LogErrorGenericProblemValue(root, cameraShot->GetName(), "A camera shot with this name exists already");
-		}
+	const ceCameraShot::Ref cameraShot(ceCameraShot::Ref::New());
+	cameraShot->SetName(GetAttributeString(root, "name"));
+	if(conversation.GetCameraShotList().HasMatching([&](const ceCameraShot &c){ return c.GetName() == cameraShot->GetName(); })){
+		LogErrorGenericProblemValue(root, cameraShot->GetName(), "A camera shot with this name exists already");
+	}
+	
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		for(e=0; e<elementCount; e++){
-			tag = root.GetElementIfTag(e);
-			
-			if(tag){
-				if(strcmp(tag->GetName(), "actorCount") == 0){
-					cameraShot->SetActorCount(GetCDataInt(*tag));
-					
-				}else if(strcmp(tag->GetName(), "cameraTarget") == 0){
-					cameraShot->SetCameraTarget(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "offsetCameraFrom") == 0){
-					cameraShot->SetOffsetCameraFrom(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "offsetCameraTo") == 0){
-					cameraShot->SetOffsetCameraTo(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "cameraOrbitFrom") == 0){
-					cameraShot->SetCameraOrbitFrom(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "cameraOrbitTo") == 0){
-					cameraShot->SetCameraOrbitTo(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "cameraDistanceFrom") == 0){
-					cameraShot->SetCameraDistanceFrom(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "cameraDistanceTo") == 0){
-					cameraShot->SetCameraDistanceTo(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "lookAtTarget") == 0){
-					cameraShot->SetLookAtTarget(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "offsetLookAtFrom") == 0){
-					cameraShot->SetOffsetLookAtFrom(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "offsetLookAtTo") == 0){
-					cameraShot->SetOffsetLookAtTo(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "positionFrom") == 0){
-					cameraShot->SetPositionFrom(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "positionTo") == 0){
-					cameraShot->SetPositionTo(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "rotationFrom") == 0){
-					cameraShot->SetRotationFrom(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "rotationTo") == 0){
-					cameraShot->SetRotationTo(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "tiltFrom") == 0){
-					cameraShot->SetTiltFrom(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "tiltTo") == 0){
-					cameraShot->SetTiltTo(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "fovFrom") == 0){
-					cameraShot->SetFovFrom(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "fovTo") == 0){
-					cameraShot->SetFovTo(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "alignTargets") == 0){
-					cameraShot->SetAlignTargets(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "lockUpAxis") == 0){
-					cameraShot->SetLockUpAxis(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "relativeToLookAt") == 0){
-					cameraShot->SetRelativeToLookAt(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "lockCameraTarget") == 0){
-					cameraShot->SetLockCameraTarget(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "lockLookAtTarget") == 0){
-					cameraShot->SetLockLookAtTarget(GetCDataBool(*tag));
-					
-				/*
-				}else if(strcmp(tag->GetName(), "curve") == 0){
-					id = GetAttributeString(*tag, "id");
-					
-					for(i=0; i<ceCameraShot::EP_COUNT; i++){
-						if(strcmp(id, vParameterNames[i]) == 0){
-							curve.RemoveAllPoints();
-							pReadCurveBezier(*tag, curve);
-							cameraShot->SetParameterCurve(i, curve);
-							break;
-						}
+		if(tag){
+			if(strcmp(tag->GetName(), "actorCount") == 0){
+				cameraShot->SetActorCount(GetCDataInt(*tag));
+				
+			}else if(strcmp(tag->GetName(), "cameraTarget") == 0){
+				cameraShot->SetCameraTarget(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "offsetCameraFrom") == 0){
+				cameraShot->SetOffsetCameraFrom(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "offsetCameraTo") == 0){
+				cameraShot->SetOffsetCameraTo(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "cameraOrbitFrom") == 0){
+				cameraShot->SetCameraOrbitFrom(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "cameraOrbitTo") == 0){
+				cameraShot->SetCameraOrbitTo(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "cameraDistanceFrom") == 0){
+				cameraShot->SetCameraDistanceFrom(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "cameraDistanceTo") == 0){
+				cameraShot->SetCameraDistanceTo(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "lookAtTarget") == 0){
+				cameraShot->SetLookAtTarget(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "offsetLookAtFrom") == 0){
+				cameraShot->SetOffsetLookAtFrom(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "offsetLookAtTo") == 0){
+				cameraShot->SetOffsetLookAtTo(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "positionFrom") == 0){
+				cameraShot->SetPositionFrom(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "positionTo") == 0){
+				cameraShot->SetPositionTo(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "rotationFrom") == 0){
+				cameraShot->SetRotationFrom(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "rotationTo") == 0){
+				cameraShot->SetRotationTo(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "tiltFrom") == 0){
+				cameraShot->SetTiltFrom(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "tiltTo") == 0){
+				cameraShot->SetTiltTo(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "fovFrom") == 0){
+				cameraShot->SetFovFrom(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "fovTo") == 0){
+				cameraShot->SetFovTo(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "alignTargets") == 0){
+				cameraShot->SetAlignTargets(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "lockUpAxis") == 0){
+				cameraShot->SetLockUpAxis(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "relativeToLookAt") == 0){
+				cameraShot->SetRelativeToLookAt(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "lockCameraTarget") == 0){
+				cameraShot->SetLockCameraTarget(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "lockLookAtTarget") == 0){
+				cameraShot->SetLockLookAtTarget(GetCDataBool(*tag));
+				
+			/*
+			}else if(strcmp(tag->GetName(), "curve") == 0){
+				id = GetAttributeString(*tag, "id");
+				
+				for(i=0; i<ceCameraShot::EP_COUNT; i++){
+					if(strcmp(id, vParameterNames[i]) == 0){
+						curve.RemoveAllPoints();
+						pReadCurveBezier(*tag, curve);
+						cameraShot->SetParameterCurve(i, curve);
+						break;
 					}
-					if(i == ceCameraShot::EP_COUNT){
-						LogErrorUnknownValue(*tag, id);
-					}
-				*/
-					
-				}else{
-					LogWarnUnknownTag(root, *tag);
 				}
+				if(i == ceCameraShot::EP_COUNT){
+					LogErrorUnknownValue(*tag, id);
+				}
+			*/
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
-		
-		conversation.AddCameraShot(cameraShot);
-		cameraShot->FreeReference();
-		
-	}catch(const deException &){
-		if(cameraShot){
-			cameraShot->FreeReference();
-		}
-		throw;
 	}
+	
+	conversation.AddCameraShot(cameraShot);
 }
 
 void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceGesture *gesture = NULL;
+	ceGesture::Ref gesture;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		gesture = new ceGesture;
+		gesture = ceGesture::Ref::New();
 		gesture->SetName(GetAttributeString(root, "name"));
-		if(conversation.GetGestureList().HasNamed(gesture->GetName())){
+		if(conversation.GetGestures().HasMatching([&](const ceGesture &g){ return g.GetName() == gesture->GetName(); })){
 			LogErrorGenericProblemValue(root, gesture->GetName(), "A gesture with this name exists already");
 		}
 		
@@ -1449,74 +1383,55 @@ void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConver
 		}
 		
 		conversation.AddGesture(gesture);
-		gesture->FreeReference();
-		
 	}catch(const deException &){
-		if(gesture){
-			gesture->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadFacePose(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceControllerValue *entry = NULL;
-	ceFacePose *facePose = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
-	try{
-		facePose = new ceFacePose;
-		facePose->SetName(GetAttributeString(root, "name"));
-		if(conversation.GetFacePoseList().HasNamed(facePose->GetName())){
-			LogErrorGenericProblemValue(root, facePose->GetName(), "A face pose with this name exists already");
-		}
+	const ceFacePose::Ref facePose(ceFacePose::Ref::New());
+	facePose->SetName(GetAttributeString(root, "name"));
+	if(conversation.GetFacePoseList().HasMatching([&](const ceFacePose &f){ return f.GetName() == facePose->GetName(); })){
+		LogErrorGenericProblemValue(root, facePose->GetName(), "A face pose with this name exists already");
+	}
+	
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		for(e=0; e<elementCount; e++){
-			tag = root.GetElementIfTag(e);
-			
-			if(tag){
-				if(strcmp(tag->GetName(), "controller") == 0){
-					if(HasAttribute(*tag, "index")){ // deprecated
-						entry = new ceControllerValue(GetAttributeInt(*tag, "index"), GetAttributeFloat(*tag, "value"));
-						
-					}else{
-						entry = new ceControllerValue(GetAttributeString(*tag, "name"), GetAttributeFloat(*tag, "value"));
-					}
-					facePose->GetControllerList().Add(entry);
-					entry->FreeReference();
+		if(tag){
+			if(strcmp(tag->GetName(), "controller") == 0){
+				ceControllerValue::Ref entry;
+				if(HasAttribute(*tag, "index")){ // deprecated
+					entry = ceControllerValue::Ref::New(GetAttributeInt(*tag, "index"), GetAttributeFloat(*tag, "value"));
 					
 				}else{
-					LogWarnUnknownTag(root, *tag);
+					entry = ceControllerValue::Ref::New(GetAttributeString(*tag, "name"), GetAttributeFloat(*tag, "value"));
 				}
+				facePose->GetControllers().Add(entry);
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
-		
-		conversation.AddFacePose(facePose);
-		facePose->FreeReference();
-		
-	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
-		if(facePose){
-			facePose->FreeReference();
-		}
-		throw;
 	}
+	
+	conversation.AddFacePose(facePose);
 }
 
 void ceLoadSaveConversation::pReadFile(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceConversationFile *file = NULL;
+	ceConversationFile::Ref file;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		file = new ceConversationFile;
+		file = ceConversationFile::Ref::New();
 		file->SetID(GetAttributeString(root, "id"));
-		if(conversation.GetFileList().HasWithID(file->GetID())){
+		if(conversation.GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == file->GetID(); })){
 			LogErrorGenericProblemValue(root, file->GetID(), "An file with this ID exists already");
 		}
 		
@@ -1534,26 +1449,21 @@ void ceLoadSaveConversation::pReadFile(const decXmlElementTag &root, ceConversat
 		}
 		
 		conversation.AddFile(file);
-		file->FreeReference();
-		
 	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversation &conversation, ceConversationFile &file){
 	const int elementCount = root.GetElementCount();
-	ceConversationTopic *topic = NULL;
+	ceConversationTopic::Ref topic;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		topic = new ceConversationTopic;
+		topic = ceConversationTopic::Ref::New();
 		topic->SetID(GetAttributeString(root, "id"));
-		if(file.GetTopicList().HasWithID(topic->GetID())){
+		if(file.GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == topic->GetID(); })){
 			LogErrorGenericProblemValue(root, topic->GetID(), "A topic with this ID exists already");
 		}
 		
@@ -1562,9 +1472,9 @@ void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversa
 			
 			if(tag){
 				if(strcmp(tag->GetName(), "actions") == 0){
-					pReadActionList(*tag, conversation, topic->GetActionList());
-					if(topic->GetActionList().GetCount() > 0){
-						topic->SetActive(topic->GetActionList().GetAt(0), NULL);
+					pReadActionList(*tag, conversation, topic->GetActions());
+					if(topic->GetActions().GetCount() > 0){
+						topic->SetActive(topic->GetActions().GetAt(0), nullptr);
 					}
 					
 				}else{
@@ -1574,19 +1484,14 @@ void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversa
 		}
 		
 		file.AddTopic(topic);
-		topic->FreeReference();
-		
 	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
 		throw;
 	}
 }
 
-void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationActionList &list){
+void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root,
+ceConversation &conversation, ceConversationAction::List &list){
 	const int elementCount = root.GetElementCount();
-	ceConversationAction *action = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -1594,335 +1499,115 @@ void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceCon
 		tag = root.GetElementIfTag(e);
 		
 		if(tag){
-			action = NULL;
-			
-			try{
-				action = pReadAction(*tag, conversation);
-				
-				if(!action){
-					LogErrorUnknownTag(root, *tag);
-				}
-				
+			const ceConversationAction::Ref action(pReadAction(*tag, conversation));
+			if(action){
 				list.Add(action);
-				action->FreeReference();
 				
-			}catch(const deException &){
-				if(action){
-					action->FreeReference();
-				}
-				throw;
+			}else{
+				LogErrorUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag &root, ceConversation &conversation){
+ceConversationAction::Ref ceLoadSaveConversation::pReadAction(const decXmlElementTag &root, ceConversation &conversation){
 	if(strcmp(root.GetName(), "cameraShot") == 0){
-		ceCACameraShot *action = NULL;
-		
-		try{
-			action = new ceCACameraShot;
-			pReadActionCameraShot(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCACameraShot::Ref a(ceCACameraShot::Ref::New());
+		pReadActionCameraShot(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "music") == 0){
-		ceCAMusic *action = NULL;
-		
-		try{
-			action = new ceCAMusic;
-			pReadActionMusic(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAMusic::Ref a(ceCAMusic::Ref::New());
+		pReadActionMusic(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "actorSpeak") == 0){
-		ceCAActorSpeak *action = NULL;
-		
-		try{
-			action = new ceCAActorSpeak(conversation.GetEngine());
-			pReadActionActorSpeak(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAActorSpeak::Ref a(ceCAActorSpeak::Ref::New(conversation.GetEngine()));
+		pReadActionActorSpeak(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "ifElse") == 0){
-		ceCAIfElse *action = NULL;
-		
-		try{
-			action = new ceCAIfElse;
-			pReadActionIfElse(root, conversation, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAIfElse::Ref a(ceCAIfElse::Ref::New());
+		pReadActionIfElse(root, conversation, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "playerChoice") == 0){
-		ceCAPlayerChoice *action = NULL;
-		
-		try{
-			action = new ceCAPlayerChoice;
-			pReadActionPlayerChoice(root, conversation, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAPlayerChoice::Ref a(ceCAPlayerChoice::Ref::New());
+		pReadActionPlayerChoice(root, conversation, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "stopConversation") == 0){
-		ceCAStopConversation *action = NULL;
-		
-		try{
-			action = new ceCAStopConversation;
-			pReadActionStopConversation(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAStopConversation::Ref a(ceCAStopConversation::Ref::New());
+		pReadActionStopConversation(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "stopTopic") == 0){
-		ceCAStopTopic *action = NULL;
-		
-		try{
-			action = new ceCAStopTopic;
-			pReadActionStopTopic(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAStopTopic::Ref a(ceCAStopTopic::Ref::New());
+		pReadActionStopTopic(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "snippet") == 0){
-		ceCASnippet *action = NULL;
-		
-		try{
-			action = new ceCASnippet;
-			pReadActionSnippet(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCASnippet::Ref a(ceCASnippet::Ref::New());
+		pReadActionSnippet(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "setVariable") == 0){
-		ceCASetVariable *action = NULL;
-		
-		try{
-			action = new ceCASetVariable;
-			pReadActionSetVariable(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCASetVariable::Ref a(ceCASetVariable::Ref::New());
+		pReadActionSetVariable(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "setActorParameter") == 0){
-		ceCASetActorParameter *action = NULL;
-		
-		try{
-			action = new ceCASetActorParameter;
-			pReadActionSetActorParameter(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCASetActorParameter::Ref a(ceCASetActorParameter::Ref::New());
+		pReadActionSetActorParameter(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "actorCommand") == 0){
-		ceCAActorCommand *action = NULL;
-		
-		try{
-			action = new ceCAActorCommand;
-			pReadActionActorCommand(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAActorCommand::Ref a(ceCAActorCommand::Ref::New());
+		pReadActionActorCommand(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "gameCommand") == 0){
-		ceCAGameCommand *action = NULL;
-		
-		try{
-			action = new ceCAGameCommand;
-			pReadActionGameCommand(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAGameCommand::Ref a(ceCAGameCommand::Ref::New());
+		pReadActionGameCommand(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "wait") == 0){
-		ceCAWait *action = NULL;
-		
-		try{
-			action = new ceCAWait;
-			pReadActionWait(root, conversation, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAWait::Ref a(ceCAWait::Ref::New());
+		pReadActionWait(root, conversation, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "trigger") == 0){
-		ceCATrigger *action = NULL;
-		
-		try{
-			action = new ceCATrigger;
-			pReadActionTrigger(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCATrigger::Ref a(ceCATrigger::Ref::New());
+		pReadActionTrigger(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "actorAdd") == 0){
-		ceCAActorAdd *action = NULL;
-		
-		try{
-			action = new ceCAActorAdd;
-			pReadActionActorAdd(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAActorAdd::Ref a(ceCAActorAdd::Ref::New());
+		pReadActionActorAdd(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "actorRemove") == 0){
-		ceCAActorRemove *action = NULL;
-		
-		try{
-			action = new ceCAActorRemove;
-			pReadActionActorRemove(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAActorRemove::Ref a(ceCAActorRemove::Ref::New());
+		pReadActionActorRemove(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "coordSystemAdd") == 0){
-		ceCACoordSystemAdd *action = NULL;
-		
-		try{
-			action = new ceCACoordSystemAdd;
-			pReadActionCoordSystemAdd(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCACoordSystemAdd::Ref a(ceCACoordSystemAdd::Ref::New());
+		pReadActionCoordSystemAdd(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "coordSystemRemove") == 0){
-		ceCACoordSystemRemove *action = NULL;
-		
-		try{
-			action = new ceCACoordSystemRemove;
-			pReadActionCoordSystemRemove(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCACoordSystemRemove::Ref a(ceCACoordSystemRemove::Ref::New());
+		pReadActionCoordSystemRemove(root, a);
+		return a;
 		
 	}else if(strcmp(root.GetName(), "comment") == 0){
-		ceCAComment *action = NULL;
-		
-		try{
-			action = new ceCAComment;
-			pReadActionComment(root, *action);
-			
-		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
-			throw;
-		}
-		
-		return action;
+		const ceCAComment::Ref a(ceCAComment::Ref::New());
+		pReadActionComment(root, a);
+		return a;
 		
 	}else{
-		return NULL;
+		return {};
 	}
 }
 
@@ -2020,22 +1705,22 @@ void ceLoadSaveConversation::pReadActionActorSpeak(const decXmlElementTag &root,
 				action.SetPathSound(GetCDataString(*tag));
 				
 			}else if(strcmp(tag->GetName(), "words") == 0){
-				pReadStripList(*tag, action.GetWordList());
+				pReadStripList(*tag, action.GetWords());
 				
 			}else if(strcmp(tag->GetName(), "facePoses") == 0){
-				pReadStripList(*tag, action.GetFacePoseList());
+				pReadStripList(*tag, action.GetFacePoses());
 				
 			}else if(strcmp(tag->GetName(), "gestures") == 0){
-				pReadStripList(*tag, action.GetGestureList());
+				pReadStripList(*tag, action.GetGestures());
 				
 			}else if(strcmp(tag->GetName(), "bodyLookAts") == 0){
-				pReadStripList(*tag, action.GetBodyLookAtList());
+				pReadStripList(*tag, action.GetBodyLookAts());
 				
 			}else if(strcmp(tag->GetName(), "headLookAts") == 0){
-				pReadStripList(*tag, action.GetHeadLookAtList());
+				pReadStripList(*tag, action.GetHeadLookAts());
 				
 			}else if(strcmp(tag->GetName(), "eyesLookAts") == 0){
-				pReadStripList(*tag, action.GetEyesLookAtList());
+				pReadStripList(*tag, action.GetEyesLookAts());
 				
 			}else if(strcmp(tag->GetName(), "movement") == 0){
 				action.SetMovement(GetCDataString(*tag));
@@ -2055,7 +1740,6 @@ void ceLoadSaveConversation::pReadActionActorSpeak(const decXmlElementTag &root,
 
 void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceConversation &conversation, ceCAIfElse &action){
 	const int elementCount = root.GetElementCount();
-	ceConversationConditionList conditionList;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -2065,28 +1749,27 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 		if(tag){
 			if(strcmp(tag->GetName(), "condition") == 0){ // DEPRECATED
 				LogWarnGenericProblemTag(root, tag->GetName(), "DEPRECATED");
-				ceCAIfElseCase *ifcase;
+				ceCAIfElseCase::Ref ifcase;
 				if(action.GetCases().GetCount() == 0){
-					ifcase = new ceCAIfElseCase;
+					ifcase = ceCAIfElseCase::Ref::New();
 					action.GetCases().Add(ifcase);
 				}else{
 					ifcase = action.GetCases().GetAt(0);
 				}
 				
-				conditionList.RemoveAll();
+				ceConversationCondition::List conditionList;
 				pReadConditionList(*tag, conversation, conditionList);
 				if(conditionList.GetCount() == 1){
-					ifcase->SetCondition(conditionList.GetAt(0));
+					ifcase->SetCondition(conditionList.First());
 				}else{
 					LogErrorGenericProblemTag(root, tag->GetName(), "Exactly one condition expected but not found.");
 				}
-				conditionList.RemoveAll();
 				
 			}else if(strcmp(tag->GetName(), "if") == 0){ // DEPRECATED
 				LogWarnGenericProblemTag(root, tag->GetName(), "DEPRECATED");
-				ceCAIfElseCase *ifcase;
+				ceCAIfElseCase::Ref ifcase;
 				if(action.GetCases().GetCount() == 0){
-					ifcase = new ceCAIfElseCase;
+					ifcase = ceCAIfElseCase::Ref::New();
 					action.GetCases().Add(ifcase);
 				}else{
 					ifcase = action.GetCases().GetAt(0);
@@ -2109,27 +1792,25 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 
 void ceLoadSaveConversation::pReadActionIfElseCase(const decXmlElementTag &root, ceConversation &conversation, ceCAIfElse &action){
 	const int elementCount = root.GetElementCount();
-	ceConversationConditionList conditionList;
-	ceCAIfElseCase *ifcase = NULL;
+	ceCAIfElseCase::Ref ifcase;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		ifcase = new ceCAIfElseCase;
+		ifcase = ceCAIfElseCase::Ref::New();
 		
 		for(e=0; e<elementCount; e++){
 			tag = root.GetElementIfTag(e);
 			
 			if(tag){
 				if(strcmp(tag->GetName(), "condition") == 0){
-					conditionList.RemoveAll();
+					ceConversationCondition::List conditionList;
 					pReadConditionList(*tag, conversation, conditionList);
 					if(conditionList.GetCount() == 1){
-						ifcase->SetCondition(conditionList.GetAt(0));
+						ifcase->SetCondition(conditionList.First());
 					}else{
 						LogErrorGenericProblemTag(root, tag->GetName(), "Exactly one condition expected but not found.");
 					}
-					conditionList.RemoveAll();
 					
 				}else if(strcmp(tag->GetName(), "actions") == 0){
 					pReadActionList(*tag, conversation, ifcase->GetActions());
@@ -2141,12 +1822,7 @@ void ceLoadSaveConversation::pReadActionIfElseCase(const decXmlElementTag &root,
 		}
 		
 		action.GetCases().Add(ifcase);
-		ifcase->FreeReference();
-		
 	}catch(const deException &){
-		if(ifcase){
-			ifcase->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2178,12 +1854,12 @@ void ceLoadSaveConversation::pReadActionPlayerChoice(const decXmlElementTag &roo
 
 void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTag &root, ceConversation &conversation, ceCAPlayerChoice &action){
 	const int elementCount = root.GetElementCount();
-	ceCAPlayerChoiceOption *option = NULL;
+	ceCAPlayerChoiceOption::Ref option;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		option = new ceCAPlayerChoiceOption;
+		option = ceCAPlayerChoiceOption::Ref::New();
 		
 		for(e=0; e<elementCount; e++){
 			tag = root.GetElementIfTag(e);
@@ -2193,11 +1869,11 @@ void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTa
 					option->SetText(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 					
 				}else if(strcmp(tag->GetName(), "condition") == 0){
-					ceConversationConditionList conditions;
+					ceConversationCondition::List conditions;
 					pReadConditionList(*tag, conversation, conditions);
 					
 					if(conditions.GetCount() == 1){
-						option->SetCondition(conditions.GetAt(0));
+						option->SetCondition(conditions.First());
 						
 					}else{
 						LogErrorGenericProblemTag(root, tag->GetName(),
@@ -2214,12 +1890,7 @@ void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTa
 		}
 		
 		action.GetOptions().Add(option);
-		option->FreeReference();
-		
 	}catch(const deException &){
-		if(option){
-			option->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2420,7 +2091,6 @@ void ceLoadSaveConversation::pReadActionGameCommand(const decXmlElementTag &root
 
 void ceLoadSaveConversation::pReadActionWait(const decXmlElementTag &root, ceConversation &conversation, ceCAWait &action){
 	const int elementCount = root.GetElementCount();
-	ceConversationConditionList conditionList;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -2429,14 +2099,13 @@ void ceLoadSaveConversation::pReadActionWait(const decXmlElementTag &root, ceCon
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "condition") == 0){
-				conditionList.RemoveAll();
+				ceConversationCondition::List conditionList;
 				pReadConditionList(*tag, conversation, conditionList);
 				if(conditionList.GetCount() == 1){
-					action.SetCondition(conditionList.GetAt(0));
+					action.SetCondition(conditionList.First());
 				}else{
 					LogErrorGenericProblemTag(root, tag->GetName(), "Exactly one condition expected but not found.");
 				}
-				conditionList.RemoveAll();
 				
 			}else if(strcmp(tag->GetName(), "interval") == 0){
 				action.SetInterval(GetCDataFloat(*tag));
@@ -2585,9 +2254,8 @@ void ceLoadSaveConversation::pReadActionComment(const decXmlElementTag &root, ce
 }
 
 void ceLoadSaveConversation::pReadConditionList(const decXmlElementTag &root,
-ceConversation &conversation, ceConversationConditionList &list){
+ceConversation &conversation, ceConversationCondition::List &list){
 	const int elementCount = root.GetElementCount();
-	ceConversationCondition *condition = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -2595,159 +2263,60 @@ ceConversation &conversation, ceConversationConditionList &list){
 		tag = root.GetElementIfTag(e);
 		
 		if(tag){
-			condition = NULL;
-			
-			try{
-				condition = pReadCondition(*tag, conversation);
-				
-				if(!condition){
-					LogErrorUnknownTag(root, *tag);
-				}
-				
+			const ceConversationCondition::Ref condition(pReadCondition(*tag, conversation));
+			if(condition){
 				list.Add(condition);
-				condition->FreeReference();
 				
-			}catch(const deException &){
-				if(condition){
-					condition->FreeReference();
-				}
-				throw;
+			}else{
+				LogErrorUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElementTag &root, ceConversation &conversation){
+ceConversationCondition::Ref ceLoadSaveConversation::pReadCondition(const decXmlElementTag &root, ceConversation &conversation){
 	if(strcmp(root.GetName(), "logic") == 0){
-		ceCConditionLogic *condition = NULL;
-		
-		try{
-			condition = new ceCConditionLogic;
-			pReadConditionLogic(root, conversation, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionLogic::Ref c(ceCConditionLogic::Ref::New());
+		pReadConditionLogic(root, conversation, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "hasActor") == 0){
-		ceCConditionHasActor *condition = NULL;
-		
-		try{
-			condition = new ceCConditionHasActor;
-			pReadConditionHasActor(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionHasActor::Ref c(ceCConditionHasActor::Ref::New());
+		pReadConditionHasActor(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "actorInConversation") == 0){
-		ceCConditionActorInConversation *condition = NULL;
-		
-		try{
-			condition = new ceCConditionActorInConversation;
-			pReadConditionActorInConversation(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionActorInConversation::Ref c(ceCConditionActorInConversation::Ref::New());
+		pReadConditionActorInConversation(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "variable") == 0){
-		ceCConditionVariable *condition = NULL;
-		
-		try{
-			condition = new ceCConditionVariable;
-			pReadConditionVariable(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionVariable::Ref c(ceCConditionVariable::Ref::New());
+		pReadConditionVariable(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "actorParameter") == 0){
-		ceCConditionActorParameter *condition = NULL;
-		
-		try{
-			condition = new ceCConditionActorParameter;
-			pReadConditionActorParameter(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionActorParameter::Ref c(ceCConditionActorParameter::Ref::New());
+		pReadConditionActorParameter(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "actorCommand") == 0){
-		ceCConditionActorCommand *condition = NULL;
-		
-		try{
-			condition = new ceCConditionActorCommand;
-			pReadConditionActorCommand(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionActorCommand::Ref c(ceCConditionActorCommand::Ref::New());
+		pReadConditionActorCommand(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "gameCommand") == 0){
-		ceCConditionGameCommand *condition = NULL;
-		
-		try{
-			condition = new ceCConditionGameCommand;
-			pReadConditionGameCommand(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionGameCommand::Ref c(ceCConditionGameCommand::Ref::New());
+		pReadConditionGameCommand(root, c);
+		return c;
 		
 	}else if(strcmp(root.GetName(), "trigger") == 0){
-		ceCConditionTrigger *condition = NULL;
-		
-		try{
-			condition = new ceCConditionTrigger;
-			pReadConditionTrigger(root, *condition);
-			
-		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
-			throw;
-		}
-		
-		return condition;
+		const ceCConditionTrigger::Ref c(ceCConditionTrigger::Ref::New());
+		pReadConditionTrigger(root, c);
+		return c;
 		
 	}else{
-		return NULL;
+		return {};
 	}
 }
 
@@ -3025,14 +2594,12 @@ void ceLoadSaveConversation::pReadConditionTrigger(const decXmlElementTag &root,
 	}
 }
 
-void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStripList &list){
+void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStrip::List &list){
 	const int elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
-	ceStrip *entry;
 	int e;
 	
 	for(e=0; e<elementCount; e++){
-		tag = root.GetElementIfTag(e);
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "entry") == 0){
@@ -3042,19 +2609,7 @@ void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStri
 					pause = GetAttributeFloat(*tag, "pause");
 				}
 				
-				entry = NULL;
-				
-				try{
-					entry = new ceStrip(GetCDataString(*tag), GetAttributeFloat(*tag, "duration"), pause);
-					list.Add(entry);
-					entry->FreeReference();
-					
-				}catch(const deException &){
-					if(entry){
-						entry->FreeReference();
-					}
-					throw;
-				}
+				list.Add(ceStrip::Ref::New(GetCDataString(*tag), GetAttributeFloat(*tag, "duration"), pause));
 				
 			}else{
 				LogWarnUnknownTag(root, *tag);
@@ -3134,17 +2689,17 @@ void ceLoadSaveConversation::pReadVector(const decXmlElementTag &tag, decVector 
 	
 	value = tag.FindAttribute("x");
 	if(value){
-		vector.x = (float)strtod(value->GetValue(), NULL);
+		vector.x = (float)strtod(value->GetValue(), nullptr);
 	}
 	
 	value = tag.FindAttribute("y");
 	if(value){
-		vector.y = (float)strtod(value->GetValue(), NULL);
+		vector.y = (float)strtod(value->GetValue(), nullptr);
 	}
 	
 	value = tag.FindAttribute("z");
 	if(value){
-		vector.z = (float)strtod(value->GetValue(), NULL);
+		vector.z = (float)strtod(value->GetValue(), nullptr);
 	}
 }
 
@@ -3153,12 +2708,12 @@ void ceLoadSaveConversation::pReadVector2(const decXmlElementTag &tag, decVector
 	
 	value = tag.FindAttribute("x");
 	if(value){
-		vector.x = (float)strtod(value->GetValue(), NULL);
+		vector.x = (float)strtod(value->GetValue(), nullptr);
 	}
 	
 	value = tag.FindAttribute("y");
 	if(value){
-		vector.y = (float)strtod(value->GetValue(), NULL);
+		vector.y = (float)strtod(value->GetValue(), nullptr);
 	}
 }
 

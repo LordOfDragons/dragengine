@@ -193,7 +193,7 @@ public:
 	/** \brief Module is running. */
 	bool IsModuleRunning() const;
 	
-	/** \brief Editor module or NULL if not running. */
+	/** \brief Editor module or nullptr if not running. */
 	inline igdeEditorModule *GetModule() const{ return pModule; }
 	
 	/**
@@ -201,7 +201,7 @@ public:
 	 * 
 	 * After loading the Start method is called on the module. If the module succeeded loading
 	 * it is available using the GetModule method. If the loading failed or starting the module
-	 * failed the module is set to null and an exception is thrown.
+	 * failed the module is set to nullptr and an exception is thrown.
 	 */
 	bool LoadModule(igdeEnvironment *environment);
 	

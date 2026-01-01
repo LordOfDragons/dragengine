@@ -36,6 +36,9 @@ class ceCAIfElse;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAIfElseElseRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	typedef deTObjectReference<ceWPTMAIfElseElseRemoveAllActions> Ref;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -65,7 +68,7 @@ public:
 	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
 
 	/** \brief Create undo action for adding action. */
-	igdeUndo *CreateUndo() override;
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

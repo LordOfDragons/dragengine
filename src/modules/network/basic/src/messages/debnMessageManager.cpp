@@ -28,8 +28,8 @@
 #include <string.h>
 #include "debnMessage.h"
 #include "debnMessageManager.h"
-#include "dragengine/resources/network/deNetworkMessage.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/deNetworkMessage.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -99,7 +99,6 @@ void debnMessageManager::AddMessage(debnMessage *message){
 	if(pMessageCount == pMessageSize){
 		int newSize = pMessageSize * 3 / 2 + 1;
 		debnMessage **newArray = new debnMessage*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pMessages){
 			memcpy(newArray, pMessages, sizeof(debnMessage*) * pMessageSize);
 			delete [] pMessages;

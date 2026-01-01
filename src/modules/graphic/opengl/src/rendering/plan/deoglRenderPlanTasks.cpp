@@ -40,6 +40,13 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../world/deoglRWorld.h"
+#include "../task/deoglRenderTaskPipeline.h"
+#include "../task/deoglRenderTaskTexture.h"
+#include "../task/deoglRenderTaskVAO.h"
+#include "../task/deoglRenderTaskInstance.h"
+#include "../task/shared/deoglRenderTaskSharedTexture.h"
+#include "../task/shared/deoglRenderTaskSharedVAO.h"
+#include "../task/shared/deoglRenderTaskSharedInstance.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -69,10 +76,7 @@ pSolidGeometryXRayTask(nullptr),
 pSolidGeometryHeight1XRayTask(nullptr),
 pSolidGeometryHeight2XRayTask(nullptr),
 pSolidGeometryOutlineXRayTask(nullptr),
-pSolidDecalsXRayTask(nullptr),
-
-pTaskDepth(NULL),
-pTaskGeometry(NULL)
+pSolidDecalsXRayTask(nullptr)
 {
 	deoglRenderThread &renderthread = plan.GetRenderThread();
 	
@@ -92,11 +96,11 @@ pTaskGeometry(NULL)
 	pSolidGeometryOutlineXRayTask = new deoglRenderTask(renderthread);
 	pSolidDecalsXRayTask = new deoglRenderTask(renderthread);
 	
-	pCRTSolidDepth.TakeOver(new deoglComputeRenderTask(renderthread));
-	pCRTSolidGeometry.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidDepth = deoglComputeRenderTask::Ref::New(renderthread);
+	pCRTSolidGeometry = deoglComputeRenderTask::Ref::New(renderthread);
 	
-	pCRTSolidDepthXRay.TakeOver(new deoglComputeRenderTask(renderthread));
-	pCRTSolidGeometryXRay.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidDepthXRay = deoglComputeRenderTask::Ref::New(renderthread);
+	pCRTSolidGeometryXRay = deoglComputeRenderTask::Ref::New(renderthread);
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
@@ -228,10 +232,10 @@ void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	
-	pTaskDepth = new deoglRPTBuildRTsDepth(*this, mask);
+	pTaskDepth = deoglRPTBuildRTsDepth::Ref::New(*this, mask);
 	pp.AddTaskAsync(pTaskDepth);
 	
-	pTaskGeometry = new deoglRPTBuildRTsGeometry(*this, mask);
+	pTaskGeometry = deoglRPTBuildRTsGeometry::Ref::New(*this, mask);
 	pp.AddTaskAsync(pTaskGeometry);
 }
 
@@ -244,8 +248,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskDepth->GetElapsedTime());
-	
-	pTaskDepth->FreeReference();
 	pTaskDepth = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -259,13 +261,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 // DEBUG
 #if 0
 
-#include "../task/deoglRenderTaskPipeline.h"
-#include "../task/deoglRenderTaskTexture.h"
-#include "../task/deoglRenderTaskVAO.h"
-#include "../task/deoglRenderTaskInstance.h"
-#include "../task/shared/deoglRenderTaskSharedTexture.h"
-#include "../task/shared/deoglRenderTaskSharedVAO.h"
-#include "../task/shared/deoglRenderTaskSharedInstance.h"
 static void LogRT(deoglRTLogger &l, const char *name, int pass, const deoglRenderTask &rt){
 	l.LogInfoFormat("%s: %d", name, rt.GetTotalSubInstanceCount());
 	int p, t, v, i, pc = rt.GetPipelineCount();
@@ -310,8 +305,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskGeometry->GetElapsedTime());
-	
-	pTaskGeometry->FreeReference();
 	pTaskGeometry = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel

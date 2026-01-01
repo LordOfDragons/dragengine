@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAIfElseCase;
-class ceCAIfElse;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -37,23 +37,26 @@ class ceCAIfElse;
  * \brief Undo action if-else remove case.
  */
 class ceUCAIfElseCaseRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAIfElseCaseRemove> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	int pIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAIfElseCaseRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
 	ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseCaseRemove();
+public:
 	/*@}*/
 	
 	

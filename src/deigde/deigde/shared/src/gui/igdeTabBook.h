@@ -28,7 +28,6 @@
 #include "igdeContainer.h"
 #include "resources/igdeIcon.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -43,8 +42,28 @@ public:
 	typedef deTObjectReference<igdeTabBook> Ref;
 	
 	
+	/**
+	 * \brief Header.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	class DE_DLL_EXPORT cHeader : public deObject{
+	public:
+		typedef deTObjectReference<cHeader> Ref;
+		typedef decTObjectOrderedSet<cHeader> List;
+		
+		decString text;
+		decString description;
+		igdeIcon::Ref icon;
+		
+		cHeader(const char *text, igdeIcon *icon, const char *description);
+		
+	protected:
+		~cHeader() override;
+	};
+	
+	
 private:
-	decObjectList pHeaders;
+	cHeader::List pHeaders;
 	int pActivePanel;
 	
 	
@@ -107,24 +126,6 @@ public:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	/*@{*/
-	/**
-	 * \brief Header.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	class DE_DLL_EXPORT cHeader : public deObject{
-	public:
-		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<cHeader> Ref;
-		
-		
-		decString text;
-		decString description;
-		igdeIcon::Ref icon;
-		
-		cHeader(const char *text, igdeIcon *icon, const char *description);
-		virtual ~cHeader();
-	};
-	
 	/**
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.

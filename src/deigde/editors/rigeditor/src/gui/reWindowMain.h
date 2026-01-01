@@ -25,6 +25,11 @@
 #ifndef _REWINDOWMAIN_H_
 #define _REWINDOWMAIN_H_
 
+#include "reWindowMainListener.h"
+#include "reView3D.h"
+#include "properties/reWindowProperties.h"
+#include "../rig/reRig.h"
+
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -33,18 +38,14 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 
-class reWindowMainListener;
 class reConfiguration;
-class reView3D;
-class reRig;
 class reClipboard;
-class reWindowProperties;
 class reEngineController;
 class reLoadSaveSystem;
 class reIGDEModule;
 
-class decStringList;
 class deCmdLineArgs;
 class deEngine;
 class deLogger;
@@ -62,8 +63,12 @@ class igdeEnvironment;
  * \brief Main application window.
  */
 class reWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<reWindowMain> Ref;
+	
+	
 private:
-	reWindowMainListener *pListener;
+	reWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconEditBone;
 	igdeIcon::Ref pIconEditShape;
@@ -142,10 +147,10 @@ private:
 	reClipboard *pClipboard;
 	reLoadSaveSystem *pLoadSaveSystem;
 	
-	reView3D *pView3D;
-	reWindowProperties *pWindowProperties;
+	reView3D::Ref pView3D;
+	reWindowProperties::Ref pWindowProperties;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	
@@ -186,7 +191,7 @@ public:
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
@@ -200,19 +205,19 @@ public:
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconEditBone() const{ return pIconEditBone; }
-	inline igdeIcon *GetIconEditShape() const{ return pIconEditShape; }
-	inline igdeIcon *GetIconEditConstraint() const{ return pIconEditConstraint; }
-	inline igdeIcon *GetIconEditPush() const{ return pIconEditPush; }
-	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
-	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
-	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
-	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
-// 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
-	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
-	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
-	inline igdeIcon *GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline const igdeIcon::Ref &GetIconEditBone() const{ return pIconEditBone; }
+	inline const igdeIcon::Ref &GetIconEditShape() const{ return pIconEditShape; }
+	inline const igdeIcon::Ref &GetIconEditConstraint() const{ return pIconEditConstraint; }
+	inline const igdeIcon::Ref &GetIconEditPush() const{ return pIconEditPush; }
+	inline const igdeIcon::Ref &GetIconEditSelect() const{ return pIconEditSelect; }
+	inline const igdeIcon::Ref &GetIconEditMove() const{ return pIconEditMove; }
+	inline const igdeIcon::Ref &GetIconEditScale() const{ return pIconEditScale; }
+	inline const igdeIcon::Ref &GetIconEditRotate() const{ return pIconEditRotate; }
+// 	inline const igdeIcon::Ref &GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline const igdeIcon::Ref &GetIconEditLockLocal() const{ return pIconEditLockLocal; }
 	
 	
 	
@@ -285,12 +290,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	/*@}*/
 	
 	

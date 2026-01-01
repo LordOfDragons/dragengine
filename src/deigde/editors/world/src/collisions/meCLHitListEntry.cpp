@@ -101,7 +101,7 @@ void meCLHitListEntry::SortDecals(){
 	DETHROW(deeInvalidParam);
 }
 
-int meCLHitListEntry::CompareTo(const meCLHitListEntry &entry) const{
+int meCLHitListEntry::Compare(const meCLHitListEntry &entry) const{
 	const float difference = entry.GetDistance() - pDistance;
 	
 	if(difference > FLOAT_SAFE_EPSILON){
@@ -122,8 +122,8 @@ int meCLHitListEntry::CompareTo(const meCLHitListEntry &entry) const{
 		int otherIndex = 0;
 		
 		if(pObject){
-			myIndex = pObject->IndexOfDecal(pDecal);
-			otherIndex = entry.pObject->IndexOfDecal(entry.pDecal);
+			myIndex = pObject->GetDecals().IndexOf(pDecal);
+			otherIndex = entry.pObject->GetDecals().IndexOf(entry.pDecal);
 			
 			if(myIndex < otherIndex){
 				return 1;
@@ -138,11 +138,11 @@ int meCLHitListEntry::CompareTo(const meCLHitListEntry &entry) const{
 }
 
 bool meCLHitListEntry::IsSame(const meCLHitListEntry &entry) const{
-	return pObject == entry.GetObject()
-		&& pObjectShape == entry.GetObjectShape()
-		&& pDecal == entry.GetDecal()
-		&& pNavSpace == entry.GetNavigationSpace()
-		&& pHTNavSpacePoint == entry.GetHTNavSpacePoint()
-		&& pHTSector == entry.GetHTSector()
-		&& pSnapPoint == entry.GetSnapPoint();
+	return pObject == entry.pObject
+		&& pObjectShape == entry.pObjectShape
+		&& pDecal == entry.pDecal
+		&& pNavSpace == entry.pNavSpace
+		&& pHTNavSpacePoint == entry.pHTNavSpacePoint
+		&& pHTSector == entry.pHTSector
+		&& pSnapPoint == entry.pSnapPoint;
 }

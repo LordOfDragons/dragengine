@@ -117,7 +117,7 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 
 void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 	fbxNode * const nodePose = scene.FirstNodeNamed("Pose");
-	const fbxRig::Ref loadRig(fbxRig::Ref::NewWith(scene, nodePose));
+	const fbxRig::Ref loadRig(fbxRig::Ref::New(scene, nodePose));
 	/*
 	decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
 	LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);
@@ -166,6 +166,8 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 
 class fbxRigModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<fbxRigModuleInternal> Ref;
+	
 	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXRig");
 		SetDescription("Handles rigs in the binary FBX format.");
@@ -188,7 +190,7 @@ public:
 	}
 };
 
-deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
-	return new fbxRigModuleInternal(system);
+deTObjectReference<deInternalModule> fbxRigRegisterInternalModule(deModuleSystem *system){
+	return fbxRigModuleInternal::Ref::New(system);
 }
 #endif

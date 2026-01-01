@@ -100,34 +100,30 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
 	
-	pDEWorld = NULL;
+	pDEWorld = nullptr;
 	
-	pEngColCollider = NULL;
-	pEngForceField = NULL;
-	pSky = NULL;
-	pEngMicrophone = NULL;
+	pEngColCollider = nullptr;
+	pEngForceField = nullptr;
+	pSky = nullptr;
+	pEngMicrophone = nullptr;
 	
 	pSize.Set(1000.0, 1000.0, 1000.0);
 	pGravity.Set(0.0f, -9.81f, 0.0f);
-	pHeightTerrain = NULL;
-	pWeather = NULL;
+	pHeightTerrain = nullptr;
+	pWeather = nullptr;
 	
 	pDepChanged = false;
 	
-	pFreeRoamCamera = NULL;
-	pPlayerCamera = NULL;
-	pActiveCamera = NULL;
+	pFreeRoamCamera = nullptr;
+	pPlayerCamera = nullptr;
+	pActiveCamera = nullptr;
 	
-	pLumimeter = NULL;
-	pPathFindTest = NULL;
+	pLumimeter = nullptr;
+	pPathFindTest = nullptr;
 	
 	pFullBright = false;
 	
-	pGuiParams = NULL;
-	
-	pNotifiers = NULL;
-	pNotifierCount = 0;
-	pNotifierSize = 0;
+	pGuiParams = nullptr;
 	
 	try{
 		SetFilePath("new.deworld");
@@ -145,12 +141,8 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pEngColCollider = engine->GetColliderManager()->CreateColliderVolume();
 		
 		// create height terrain
-		pHeightTerrain = new meHeightTerrain(*this);
-		
-		meHeightTerrainSector * const htsector = new meHeightTerrainSector(engine, decPoint());
-		pHeightTerrain->AddSector(htsector);
-		htsector->FreeReference();
-		
+		pHeightTerrain = meHeightTerrain::Ref::New(*this);
+		pHeightTerrain->AddSector(meHeightTerrainSector::Ref::New(engine, decPoint()));
 		pHeightTerrain->SetSaved(false);
 		pHeightTerrain->SetDepChanged(false);
 		pHeightTerrain->SetChanged(false);
@@ -161,7 +153,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pSky->SetWorld(pDEWorld);
 		
 		// background object
-		pBgObject.TakeOver(new igdeWObject(*environment));
+		pBgObject = igdeWObject::Ref::New(*environment);
 		pBgObject->SetWorld(pDEWorld);
 		
 		// create weather
@@ -181,7 +173,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pActiveCamera = pFreeRoamCamera;
 		
 		// create sensors
-		pLumimeter = new meLumimeter(engine);
+		pLumimeter = meLumimeter::Ref::New(engine);
 		pLumimeter->SetWorld(this);
 		
 		// create microphone
@@ -195,19 +187,20 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pDEWorld->AddMicrophone(pEngMicrophone);
 		
 		// create path find test
-		pPathFindTest = new mePathFindTest(engine);
+		pPathFindTest = mePathFindTest::Ref::New(engine);
 		pPathFindTest->SetWorld(this);
 		
-		pMusic.TakeOver(new meMusic(*this));
+		pMusic = meMusic::Ref::New(*this);
 		
 		// debug drawer
-		pDDLimitBox.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
+		pDDLimitBox = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDDLimitBox->SetVisible(false);
 		pDEWorld->AddDebugDrawer(pDDLimitBox);
 		
-		pDDSLimitBox.SetParentDebugDrawer(pDDLimitBox);
-		pDDSLimitBox.SetEdgeColor(decColor(0.75f, 0.0f, 0.75f, 0.8f));
-		pDDSLimitBox.SetFillColor(decColor(0.5f, 0.0f, 0.5f, 0.1f));
+		pDDSLimitBox = igdeWDebugDrawerShape::Ref::New();
+		pDDSLimitBox->SetParentDebugDrawer(pDDLimitBox);
+		pDDSLimitBox->SetEdgeColor(decColor(0.75f, 0.0f, 0.75f, 0.8f));
+		pDDSLimitBox->SetFillColor(decColor(0.5f, 0.0f, 0.5f, 0.1f));
 		
 		// make sure all is set properly
 		SetChanged(false);
@@ -313,7 +306,7 @@ void meWorld::InitDelegates(){
 
 void meWorld::CollisionTestBox(const decDVector &position, const decQuaternion &orientation,
 const decVector &halfExtends, deBaseScriptingCollider *listener, const decCollisionFilter &filter){
-	decShapeBox *box = NULL;
+	decShapeBox *box = nullptr;
 	decShapeList shapeList;
 	
 	pEngColCollider->SetCollisionFilter(filter);
@@ -324,7 +317,7 @@ const decVector &halfExtends, deBaseScriptingCollider *listener, const decCollis
 	try{
 		box = new decShapeBox(halfExtends);
 		shapeList.Add(box);
-		box = NULL;
+		box = nullptr;
 		
 	}catch(const deException &){
 		if(box){
@@ -460,7 +453,7 @@ void meWorld::RemoveObject(meObject *object){
 	
 	pObjectIDMap.Remove(object->GetID().ToHexString());
 	
-	object->SetWorld(NULL);
+	object->SetWorld(nullptr);
 	pObjects.Remove(object);
 	
 	SetChanged(true);
@@ -474,7 +467,7 @@ void meWorld::RemoveAllObjects(){
 	
 	int i;
 	for(i=0; i<count; i++){
-		pObjects.GetAt(i)->SetWorld(NULL);
+		pObjects.GetAt(i)->SetWorld(nullptr);
 	}
 	
 	pObjects.RemoveAll();
@@ -507,13 +500,7 @@ meObject *meWorld::GetObjectWithID(const decUniqueID &id) const{
 }
 
 meObject *meWorld::GetObjectWithID(const char *hexID) const{
-	deObject *object;
-	if(pObjectIDMap.GetAt(hexID, &object)){
-		return (meObject*)object;
-		
-	}else{
-		return NULL;
-	}
+	return pObjectIDMap.GetAtOrDefault(hexID);
 }
 
 
@@ -534,7 +521,7 @@ void meWorld::RemoveDecal(meDecal *decal){
 	DEASSERT_NOTNULL(decal)
 	DEASSERT_TRUE(pDecals.Has(decal))
 	
-	decal->SetWorld(NULL);
+	decal->SetWorld(nullptr);
 	pDecals.Remove(decal);
 	SetChanged(true);
 }
@@ -547,7 +534,7 @@ void meWorld::RemoveAllDecals(){
 	
 	int i;
 	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->SetWorld(NULL);
+		pDecals.GetAt(i)->SetWorld(nullptr);
 	}
 	
 	pDecals.RemoveAll();
@@ -579,15 +566,13 @@ void meWorld::RemoveNavSpace(meNavigationSpace *navspace){
 }
 
 void meWorld::RemoveAllNavSpaces(){
-	const int count = pNavSpaces.GetCount();
-	if(count == 0){
+	if(pNavSpaces.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		pNavSpaces.GetAt(i)->SetWorld(NULL);
-	}
+	pNavSpaces.Visit([](meNavigationSpace &n){
+		n.SetWorld(nullptr);
+	});
 	pNavSpaces.RemoveAll();
 	SetChanged(true);
 }
@@ -654,7 +639,7 @@ void meWorld::SetProperty(const char *key, const char *value){
 void meWorld::SetProperties(const decStringDictionary &properties){
 	pProperties = properties;
 	
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		pActiveProperty.Empty();
 		
 	}else{
@@ -675,7 +660,7 @@ void meWorld::RemoveProperty(const char *key){
 	pProperties.Remove(key);
 	
 	if(pActiveProperty == key){
-		if(pProperties.GetCount() == 0){
+		if(pProperties.IsEmpty()){
 			pActiveProperty.Empty();
 			
 		}else{
@@ -691,7 +676,7 @@ void meWorld::RemoveProperty(const char *key){
 }
 
 void meWorld::RemoveAllProperties(){
-	if(pProperties.GetCount() == 0){
+	if(pProperties.IsEmpty()){
 		return;
 	}
 	
@@ -738,7 +723,7 @@ void meWorld::SetActiveCamera(meCamera *camera){
 // #define DO_TIMING
 
 #ifdef DO_TIMING
-#include "dragengine/common/utils/decTimer.h"
+#include <dragengine/common/utils/decTimer.h>
 static decTimer timerTotal;
 static decTimer timer;
 
@@ -874,360 +859,239 @@ void meWorld::SetPathNavTest(const char *path){
 // Notifiers
 //////////////
 
-meWorldNotifier *meWorld::GetNotifierAt(int index) const{
-	if(index < 0 || index >= pNotifierCount) DETHROW(deeInvalidParam);
-	
-	return pNotifiers[index];
-}
-
-int meWorld::IndexOfNotifier(meWorldNotifier *notifier) const{
-	if(!notifier) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		if(notifier == pNotifiers[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool meWorld::HasNotifier(meWorldNotifier *notifier) const{
-	if(!notifier) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		if(notifier == pNotifiers[i]) return true;
-	}
-	
-	return false;
-}
-
 void meWorld::AddNotifier(meWorldNotifier *notifier){
-	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
-	
-	if(pNotifierCount == pNotifierSize){
-		int newSize = pNotifierSize * 3 / 2 + 1;
-		meWorldNotifier **newArray = new meWorldNotifier*[newSize];
-		if(pNotifiers){
-			memcpy(newArray, pNotifiers, sizeof(meWorldNotifier*) * pNotifierSize);
-			delete [] pNotifiers;
-		}
-		pNotifiers = newArray;
-		pNotifierSize = newSize;
-	}
-	
-	pNotifiers[pNotifierCount] = notifier;
-	pNotifierCount++;
-	
-	notifier->AddReference();
+	DEASSERT_NOTNULL(notifier)
+	pNotifiers.Add(notifier);
 }
 
 void meWorld::RemoveNotifier(meWorldNotifier *notifier){
-	int i, index = IndexOfNotifier(notifier);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pNotifierCount; i++){
-		pNotifiers[i - 1] = pNotifiers[i];
-	}
-	pNotifierCount--;
-	
-	notifier->FreeReference();
+	pNotifiers.Remove(notifier);
 }
-
-void meWorld::RemoveAllNotifiers(){
-	while(pNotifierCount > 0){
-		pNotifierCount--;
-		pNotifiers[pNotifierCount]->FreeReference();
-	}
-}
-
 
 
 void meWorld::NotifyWorldParametersChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->WorldParametersChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.WorldParametersChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void meWorld::NotifySkyChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->SkyChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.SkyChanged(this);
+	});
 	
 	SetChanged(true); // sky information is saved as world-editor specific data
 }
 
 void meWorld::NotifyBgObjectChanged(){
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->BgObjectChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.BgObjectChanged(this);
+	});
 	
 	SetChanged(true); // bg object is saved as world-editor specific data
 }
 
 void meWorld::NotifyLimitBoxChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->LimitBoxChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.LimitBoxChanged(this);
+	});
 	
 	SetChanged(true); // limit box is saved as world-editor specific data
 }
 
 void meWorld::NotifyModeChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ModeChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ModeChanged(this);
+	});
 }
 
 void meWorld::NotifyStateChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->StateChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.StateChanged(this);
+	});
 }
 
 void meWorld::NotifyUndoChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->UndoChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.UndoChanged(this);
+	});
 }
 
 void meWorld::NotifyLumimeterChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->LumimeterChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.LumimeterChanged(this);
+	});
 }
 
 void meWorld::NotifyPathFindTestChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PathFindTestChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PathFindTestChanged(this);
+	});
 }
 
 void meWorld::NotifyMusicChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->MusicChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.MusicChanged(this);
+	});
 }
 
 void meWorld::NotifyLightingChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->LightingChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.LightingChanged(this);
+	});
 }
 
 void meWorld::NotifyEditingChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->EditingChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.EditingChanged(this);
+	});
 }
 
 void meWorld::NotifyHeightPaintChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HeightPaintChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HeightPaintChanged(this);
+	});
 }
 
 void meWorld::NotifyMaskPaintChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->MaskPaintChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.MaskPaintChanged(this);
+	});
 }
 
 void meWorld::NotifyVisibilityPaintChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->VisibilityPaintChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.VisibilityPaintChanged(this);
+	});
 }
 
 void meWorld::NotifyTriggerTableChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->TriggerTableChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.TriggerTableChanged(this);
+	});
 }
 
 void meWorld::NotifyClassHideTagsChanged(){
-	int i;
-	
 	pShowStateChanged();
-	
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ClassHideTagsChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ClassHideTagsChanged(this);
+	});
 }
 
-
-
 void meWorld::NotifyPropertiesChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->PropertiesChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PropertiesChanged(this);
+	});
 	
 	SetChanged(true);
 }
 
 void meWorld::NotifyActivePropertyChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ActivePropertyChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ActivePropertyChanged(this);
+	});
 }
 
-
-
 void meWorld::NotifyHTChanged(){
-	int n;
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTChanged(this);
+	});
 }
 
 void meWorld::NotifyHTStateChanged(){
-	int n;
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTStateChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTStateChanged(this);
+	});
 }
 
 void meWorld::NotifyHTSChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSHeightChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSHeightChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSHeightChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSVisibilityChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSVisibilityChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSVisibilityChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSTextureCountChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSTextureCountChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSTextureCountChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSActiveTextureChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSActiveTextureChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSActiveTextureChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSTextureChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
 	if(!sector || !texture) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSTextureChanged(this, sector, texture);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSTextureChanged(this, sector, texture);
+	});
 }
 
 void meWorld::NotifyHTSTextureMaskChanged(meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
 	if(!sector || !texture) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSTextureMaskChanged(this, sector, texture);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSTextureMaskChanged(this, sector, texture);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceCountChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceCountChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceCountChanged(this);
+	});
 }
 
 void meWorld::NotifyHTActiveNavSpaceChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTActiveNavSpaceChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTActiveNavSpaceChanged(this);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceChanged(meHeightTerrainNavSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceChanged(this, navspace);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceTypeCountChanged(meHeightTerrainNavSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceTypeCountChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceTypeCountChanged(this, navspace);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceActiveTypeChanged(meHeightTerrainNavSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceActiveTypeChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceActiveTypeChanged(this, navspace);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceTypeChanged(meHeightTerrainNavSpace *navspace,
@@ -1235,215 +1099,168 @@ meHeightTerrainNavSpaceType *type){
 	if(!navspace || !type){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceTypeChanged(this, navspace, type);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceTypeChanged(this, navspace, type);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceFacesChanged(meHeightTerrainNavSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceFacesChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceFacesChanged(this, navspace);
+	});
 }
 
 void meWorld::NotifyHTNavSpaceSelectedPointsChanged(){
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->HTNavSpaceSelectedPointsChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTNavSpaceSelectedPointsChanged(this);
+	});
 }
 
 void meWorld::NotifyHTSPropFieldCountChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSPropFieldCountChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSPropFieldCountChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSActivePropFieldChanged(meHeightTerrainSector *sector){
 	if(!sector) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSActivePropFieldChanged(this, sector);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSActivePropFieldChanged(this, sector);
+	});
 }
 
 void meWorld::NotifyHTSPropFieldChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
 	if(!sector || !propField) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSPropFieldChanged(this, sector, propField);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSPropFieldChanged(this, sector, propField);
+	});
 }
 
 void meWorld::NotifyHTSPropFieldMaskChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
 	if(!sector || !propField) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSPropFieldMaskChanged(this, sector, propField);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSPropFieldMaskChanged(this, sector, propField);
+	});
 }
 
 void meWorld::NotifyHTSPFTypeCountChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField){
 	if(!sector || !propField) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSPFTypeCountChanged(this, sector, propField);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSPFTypeCountChanged(this, sector, propField);
+	});
 }
 
 void meWorld::NotifyHTSPFTypeChanged(meHeightTerrainSector *sector, meHeightTerrainPropField *propField, meHeightTerrainPFType *type){
 	if(!sector || !propField || !type) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTSPFTypeChanged(this, sector, propField, type);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTSPFTypeChanged(this, sector, propField, type);
+	});
 }
 
 void meWorld::NotifyHTVLayerCountChanged(){
-	int n;
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLayerCountChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLayerCountChanged(this);
+	});
 }
 
 void meWorld::NotifyHTActiveVLayerChanged(){
-	int n;
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTActiveVLayerChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTActiveVLayerChanged(this);
+	});
 }
 
 void meWorld::NotifyHTVLayerChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLayerChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLayerChanged(this, vlayer);
+	});
 }
 
 void meWorld::NotifyHTVLVariationCountChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLVariationCountChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLVariationCountChanged(this, vlayer);
+	});
 }
 
 void meWorld::NotifyHTVLActiveVariationChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLActiveVariationChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLActiveVariationChanged(this, vlayer);
+	});
 }
 
 void meWorld::NotifyHTVLVariationChanged(meHTVegetationLayer *vlayer, meHTVVariation *variation){
 	if(!vlayer || !variation) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLVariationChanged(this, vlayer, variation);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLVariationChanged(this, vlayer, variation);
+	});
 }
 
 void meWorld::NotifyHTVLRuleCountChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLRuleCountChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLRuleCountChanged(this, vlayer);
+	});
 }
 
 void meWorld::NotifyHTVLActiveRuleChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLActiveRuleChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLActiveRuleChanged(this, vlayer);
+	});
 }
 
 void meWorld::NotifyHTVLRuleChanged(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLRuleChanged(this, vlayer, rule);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLRuleChanged(this, vlayer, rule);
+	});
 }
 
 void meWorld::NotifyHTVLRuleMoved(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLRuleMoved(this, vlayer, rule);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLRuleMoved(this, vlayer, rule);
+	});
 }
 
 void meWorld::NotifyHTVLLinkCountChanged(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->HTVLLinkCountChanged(this, vlayer);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.HTVLLinkCountChanged(this, vlayer);
+	});
 }
 
-
-
 void meWorld::NotifyObjectSelectionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectSelectionChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectSelectionChanged(this);
+	});
 }
 
 void meWorld::NotifyObjectChanged(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectClassChanged(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectClassChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectClassChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectGeometryChanged(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectGeometryChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectGeometryChanged(this, object);
+	});
 	
 	pHeightTerrain->InvalidatePropFields(object);
 }
@@ -1452,214 +1269,162 @@ void meWorld::NotifyObjectPropertiesChanged(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectPropertiesChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectPropertiesChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectActivePropertyChanged(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ObjectActivePropertyChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectActivePropertyChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectAttachBehaviorsChanged(meObject *object){
 	DEASSERT_NOTNULL(object)
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ObjectAttachBehaviorsChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectAttachBehaviorsChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectActiveAttachBehaviorChanged(meObject *object){
 	DEASSERT_NOTNULL(object)
-	
-	int i;
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->ObjectActiveAttachBehaviorChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectActiveAttachBehaviorChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectAdded(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectAdded(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectAdded(this, object);
+	});
 }
 
 void meWorld::NotifyObjectRemoved(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectRemoved(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectRemoved(this, object);
+	});
 }
 
 void meWorld::NotifyObjectTextureCountChanged(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectTextureCountChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectTextureCountChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectActiveTextureChanged(meObject *object){
 	if(!object) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectActiveTextureChanged(this, object);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectActiveTextureChanged(this, object);
+	});
 }
 
 void meWorld::NotifyObjectTextureChanged(meObject *object, meObjectTexture *texture){
 	if(!object || !texture) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectTextureChanged(this, object, texture);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectTextureChanged(this, object, texture);
+	});
 }
 
 void meWorld::NotifyObjectTexturePropertiesChanged(meObject *object, meObjectTexture *texture){
 	if(!object || !texture){
 		DETHROW(deeInvalidParam);
 	}
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectTexturePropertiesChanged(this, object, texture);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectTexturePropertiesChanged(this, object, texture);
+	});
 }
 
 void meWorld::NotifyObjectTextureActivePropertyChanged(meObject *object, meObjectTexture *texture){
 	if(!object || !texture){
 		DETHROW(deeInvalidParam);
 	}
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectTextureActivePropertyChanged(this, object, texture);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectTextureActivePropertyChanged(this, object, texture);
+	});
 }
 
-
-
 void meWorld::NotifyObjectShapeListChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectShapeListChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectShapeListChanged(this);
+	});
 }
 
 void meWorld::NotifyObjectShapeSelectionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ObjectShapeSelectionChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectShapeSelectionChanged(this);
+	});
 }
 
-
-
 void meWorld::NotifyDecalSelectionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalSelectionChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalSelectionChanged(this);
+	});
 }
 
 void meWorld::NotifyDecalCountChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalCountChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalCountChanged(this);
+	});
 }
 
 void meWorld::NotifyDecalChanged(meDecal *decal){
 	if(!decal) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalChanged(this, decal);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalChanged(this, decal);
+	});
 }
 
 void meWorld::NotifyDecalGeometryChanged(meDecal *decal){
 	if(!decal) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalGeometryChanged(this, decal);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalGeometryChanged(this, decal);
+	});
 }
 
 void meWorld::NotifyDecalPropertiesChanged(meDecal *decal){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalPropertiesChanged(this, decal);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalPropertiesChanged(this, decal);
+	});
 }
 
 void meWorld::NotifyDecalActivePropertyChanged(meDecal *decal){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->DecalActivePropertyChanged(this, decal);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.DecalActivePropertyChanged(this, decal);
+	});
 }
 
-
-
 void meWorld::NotifyNavSpaceSelectionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->NavSpaceSelectionChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.NavSpaceSelectionChanged(this);
+	});
 }
 
 void meWorld::NotifyNavSpaceCountChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->NavSpaceCountChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.NavSpaceCountChanged(this);
+	});
 }
 
 void meWorld::NotifyNavSpaceChanged(meNavigationSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->NavSpaceChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.NavSpaceChanged(this, navspace);
+	});
 	
 	pPathFindTest->Invalidate();
 }
@@ -1668,12 +1433,9 @@ void meWorld::NotifyNavSpaceGeometryChanged(meNavigationSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->NavSpaceGeometryChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.NavSpaceGeometryChanged(this, navspace);
+	});
 	
 	pPathFindTest->Invalidate();
 }
@@ -1682,89 +1444,62 @@ void meWorld::NotifyNavSpaceUsedCostTypesChanged(meNavigationSpace *navspace){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
-	
-	int i;
-	
-	for(i=0; i<pNotifierCount; i++){
-		pNotifiers[i]->NavSpaceUsedCostTypesChanged(this, navspace);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.NavSpaceUsedCostTypesChanged(this, navspace);
+	});
 }
 
-
-
 void meWorld::NotifyPFSelectionChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFSelectionChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFSelectionChanged(this);
+	});
 }
 
 void meWorld::NotifyPFCountChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFCountChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFCountChanged(this);
+	});
 }
 
 void meWorld::NotifyPFChanged(mePropField *field){
 	if(!field) DETHROW(deeInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFChanged(this, field);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFChanged(this, field);
+	});
 }
 
 void meWorld::NotifyPFTypeCountChanged(mePropField *field){
 	if(!field) DETHROW(deeInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFTypeCountChanged(this, field);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFTypeCountChanged(this, field);
+	});
 }
 
 void meWorld::NotifyPFActiveTypeChanged(mePropField *field){
 	if(!field) DETHROW(deeInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFActiveTypeChanged(this, field);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFActiveTypeChanged(this, field);
+	});
 }
 
 void meWorld::NotifyPFTypeChanged(mePropField *field, mePropFieldType *type){
 	if(!field || !type) DETHROW(deeInvalidParam);
-	
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->PFTypeChanged(this, field, type);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.PFTypeChanged(this, field, type);
+	});
 }
 
-
-
 void meWorld::NotifyActiveCameraChanged(){
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->ActiveCameraChanged(this);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ActiveCameraChanged(this);
+	});
 }
 
 void meWorld::NotifyCameraChanged(meCamera *camera){
 	if(!camera) DETHROW(deeInvalidParam);
-	int n;
-	
-	for(n=0; n<pNotifierCount; n++){
-		pNotifiers[n]->CameraChanged(this, camera);
-	}
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.CameraChanged(this, camera);
+	});
 }
 
 
@@ -1773,10 +1508,7 @@ void meWorld::NotifyCameraChanged(meCamera *camera){
 //////////////////////
 
 void meWorld::pCleanUp(){
-	RemoveAllNotifiers();
-	if(pNotifiers){
-		delete [] pNotifiers;
-	}
+	pNotifiers.RemoveAll();
 	
 	pSelectionNavigationSpace.RemoveAll();
 	pSelectionDecal.RemoveAll();
@@ -1789,17 +1521,14 @@ void meWorld::pCleanUp(){
 	RemoveAllDecals();
 	RemoveAllObjects();
 	
+	pHeightTerrain = nullptr;
+	
 	if(pPlayerCamera){
 		delete pPlayerCamera;
 	}
 	if(pFreeRoamCamera){
 		delete pFreeRoamCamera;
 	}
-	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
-	
 	if(pWeather){
 		delete pWeather;
 	}
@@ -1807,40 +1536,26 @@ void meWorld::pCleanUp(){
 	pMusic = nullptr;
 	if(pPathFindTest){
 		pPathFindTest->SetWorld(nullptr);
-		pPathFindTest->FreeReference();
 	}
 	if(pLumimeter){
 		pLumimeter->SetWorld(nullptr);
-		pLumimeter->FreeReference();
 	}
 	
 	if(pGuiParams){
 		delete pGuiParams;
 	}
-	
-	if(pEngColCollider){
-		pEngColCollider->FreeReference();
-	}
-	
 	pBgObject = nullptr;
 	if(pSky){
 		delete pSky;
 	}
-	if(pEngForceField){
-		pEngForceField->FreeReference();
-	}
-	
 	if(pDEWorld){
 		if(pEngMicrophone){
 			if(GetEngine()->GetAudioSystem()->GetActiveMicrophone() == pEngMicrophone){
-				GetEngine()->GetAudioSystem()->SetActiveMicrophone(NULL);
+				GetEngine()->GetAudioSystem()->SetActiveMicrophone(nullptr);
 			}
 			
 			pDEWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
-		
-		pDEWorld->FreeReference();
 	}
 }
 
@@ -1880,10 +1595,10 @@ void meWorld::pShowStateChanged(){
 }
 
 void meWorld::pUpdateDDLimitBox(){
-	pDDSLimitBox.RemoveAllShapes();
+	pDDSLimitBox->RemoveAllShapes();
 	
 	if(!(pLimitBoxMaxExtend - pLimitBoxMinExtend).IsZero()){
-		pDDSLimitBox.AddBoxShape(
+		pDDSLimitBox->AddBoxShape(
 			decVector(0.001f, 0.001f, 0.001f).Largest(pLimitBoxMaxExtend - pLimitBoxMinExtend) * 0.5f,
 			(pLimitBoxMaxExtend + pLimitBoxMinExtend) * 0.5f, decQuaternion());
 		pDDLimitBox->SetVisible(true);

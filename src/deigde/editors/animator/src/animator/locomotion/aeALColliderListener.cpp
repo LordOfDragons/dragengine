@@ -58,7 +58,7 @@
 ////////////////////////////
 
 aeALColliderListener::aeALColliderListener(){
-	pLocomotion = NULL;
+	pLocomotion = nullptr;
 }
 
 aeALColliderListener::~aeALColliderListener(){
@@ -87,7 +87,7 @@ void aeALColliderListener::CollisionResponse(deCollider *owner, deCollisionInfo 
 		owner->SetLinearVelocity(linvelo - normal * (normal * linvelo));
 	}
 	
-	if(pLocomotion->GetLegCount() > 1){
+	if(pLocomotion->GetLegs().GetCount() > 1){
 		float correctTurn = owner->GetAngularVelocity().y * info->GetDistance();
 		if(correctTurn > 0.0f){
 			correctTurn += 0.1f;

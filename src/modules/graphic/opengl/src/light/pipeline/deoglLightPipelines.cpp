@@ -90,8 +90,8 @@ pPipeline(pipeline)
 void deoglLightPipelines::cPipelineGetShaderListener::GetShaderFinished(deoglLightShader *shader){
 	if(shader){
 		pConfig.SetShader(shader->GetShader());
-		pPipeline.TakeOver(new deoglLightPipeline(pBatched.GetRenderThread().
-			GetPipelineManager().GetWith(pConfig), shader));
+		pPipeline = deoglLightPipeline::Ref::New(pBatched.GetRenderThread().
+			GetPipelineManager().GetWith(pConfig), deoglLightShader::Ref(shader));
 		
 	}else{
 		pBatched.GetRenderThread().GetLogger().LogErrorFormat("%s::pCreatePipelines(%s, %s)",
@@ -269,8 +269,8 @@ int modifierMask, deoglBatchedShaderLoading &batched){
 			
 			pipconf.SetShader(shader->GetShader());
 			
-			pPipelines[type][modifier].TakeOver(new deoglLightPipeline(
-				pipelineManager.GetWith(pipconf), shader));
+			pPipelines[type][modifier] = deoglLightPipeline::Ref::New(
+				pipelineManager.GetWith(pipconf), deoglLightShader::Ref(shader));
 			
 			batched.Loaded();
 		}

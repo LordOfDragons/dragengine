@@ -52,7 +52,7 @@ public:
 	
 private:
 	// time stamp...
-	int pType;
+	eMessageTypes pType;
 	decString pSource;
 	decString pMessage;
 	
@@ -64,33 +64,48 @@ public:
 	/** \brief Create logger history entry. */
 	igdeLoggerHistoryEntry();
 	
+	/** \brief Create copy of logger history entry. */
+	igdeLoggerHistoryEntry(const igdeLoggerHistoryEntry &entry);
+	
+	/** \brief Move logger history entry. */
+	igdeLoggerHistoryEntry(igdeLoggerHistoryEntry &&entry);
+	
 	/** \brief Clean up logger history entry. */
 	~igdeLoggerHistoryEntry();
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline int GetType() const{ return pType; }
+	inline eMessageTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType(int type);
+	void SetType(eMessageTypes type);
 	
 	/** \brief Source. */
 	inline const decString &GetSource() const{ return pSource; }
-	inline decString &GetSource(){ return pSource; }
+	
+	/** \brief Set source. */
+	void SetSource(const char *source);
 	
 	/** \brief Message. */
 	inline const decString &GetMessage() const{ return pMessage; }
-	inline decString &GetMessage(){ return pMessage; }
+	
+	/** \brief Set message. */
+	void SetMessage(const char *message);
 	
 	/** \brief Clears the entry. */
 	void Clear();
 	
 	/** \brief Clean up message entry by removing extra blanks and newlines at the end. */
 	void CleanUpMessage();
+	
+	/** \brief Assign operator. */
+	igdeLoggerHistoryEntry &operator=(const igdeLoggerHistoryEntry &entry);
+	
+	/** \brief Move operator. */
+	igdeLoggerHistoryEntry &operator=(igdeLoggerHistoryEntry &&entry) noexcept;
 	/*@}*/
 };
 

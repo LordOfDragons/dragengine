@@ -41,7 +41,7 @@
 
 projUProjectSetPathCapture::projUProjectSetPathCapture(
 projProject *project, const char *newValue) :
-pProject(NULL),
+
 pNewValue(newValue)
 {
 	if(!project){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = project->GetPathCapture();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetPathCapture::~projUProjectSetPathCapture(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

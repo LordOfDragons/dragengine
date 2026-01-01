@@ -42,7 +42,6 @@
  */
 class ceCAActorCommand : public ceConversationAction{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCAActorCommand> Ref;
 	
 	
@@ -58,7 +57,9 @@ public:
 	/** Creates a new conversation action. */
 	ceCAActorCommand(const ceCAActorCommand &action);
 	/** Cleans up the conversation action. */
+protected:
 	~ceCAActorCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -73,7 +74,7 @@ public:
 	void SetCommand(const char *command);
 	
 	/** Create a copy of this action. */
-    ceConversationAction *CreateCopy() const override;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

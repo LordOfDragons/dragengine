@@ -41,8 +41,6 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeTextFieldListener.h"
-#include "../filedialog/igdeFilePattern.h"
-#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../menu/igdeMenuCascade.h"
@@ -68,6 +66,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(igdeWPCamera &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
@@ -84,6 +83,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(igdeWPCamera &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -101,6 +101,7 @@ protected:
 	igdeWPCamera &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(igdeWPCamera &panel, const char *text, const char *description = "",
 		igdeIcon *icon = nullptr) : igdeAction(text, icon, description), pPanel(panel){}
 	
@@ -117,6 +118,7 @@ public:
 
 class cEditCameraPosition : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraPosition> Ref;
 	cEditCameraPosition(igdeWPCamera &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnVectorChanged(igdeCamera &camera, const decVector &vector) override{
@@ -131,6 +133,7 @@ public:
 
 class cEditCameraRotation : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditCameraRotation> Ref;
 	cEditCameraRotation(igdeWPCamera &panel) : cBaseEditVectorListener(panel){}
 	
 	void OnVectorChanged(igdeCamera &camera, const decVector &vector) override{
@@ -145,6 +148,7 @@ public:
 
 class cTextOrbitDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextOrbitDistance> Ref;
 	cTextOrbitDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -160,6 +164,7 @@ public:
 
 class cTextFov : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextFov> Ref;
 	cTextFov(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -175,6 +180,7 @@ public:
 
 class cTextFovRatio : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextFovRatio> Ref;
 	cTextFovRatio(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -190,6 +196,7 @@ public:
 
 class cTextImageDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextImageDistance> Ref;
 	cTextImageDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -205,6 +212,7 @@ public:
 
 class cTextViewDistance : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextViewDistance> Ref;
 	cTextViewDistance(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -220,6 +228,7 @@ public:
 
 class cTextExposure : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextExposure> Ref;
 	cTextExposure(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -235,6 +244,7 @@ public:
 
 class cTextAdaptionTime : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextAdaptionTime> Ref;
 	cTextAdaptionTime(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -250,6 +260,7 @@ public:
 
 class cTextLowIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextLowIntensity> Ref;
 	cTextLowIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -265,6 +276,7 @@ public:
 
 class cTextHighIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextHighIntensity> Ref;
 	cTextHighIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -280,6 +292,7 @@ public:
 
 class cCheckEnableHDRR : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckEnableHDRR> Ref;
 	cCheckEnableHDRR(igdeWPCamera &panel) : cBaseAction(panel, "Enable HDRR",
 		"Enable high definition range rendering (HDRR) if supported"){ }
 	
@@ -291,6 +304,7 @@ public:
 
 class cCheckEnableGI : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckEnableGI> Ref;
 	cCheckEnableGI(igdeWPCamera &panel) : cBaseAction(panel, "Enable GI",
 		"Enable global illumination (GI) if supported"){ }
 	
@@ -302,6 +316,7 @@ public:
 
 class cTextWhiteIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextWhiteIntensity> Ref;
 	cTextWhiteIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -318,6 +333,7 @@ public:
 
 class cTextBloomIntensity : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBloomIntensity> Ref;
 	cTextBloomIntensity(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -333,6 +349,7 @@ public:
 
 class cTextBloomStrength : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextBloomStrength> Ref;
 	cTextBloomStrength(igdeWPCamera &panel) : cBaseTextFieldListener(panel){}
 	
 	void OnChanged(igdeTextField *textField, igdeCamera &camera) override{
@@ -349,6 +366,7 @@ public:
 class cSliderBloomSize : public igdeEditSliderTextListener{
 	igdeWPCamera &pPanel;
 public:
+	typedef deTObjectReference<cSliderBloomSize> Ref;
 	cSliderBloomSize(igdeWPCamera &panel) : igdeEditSliderTextListener(), pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -374,6 +392,7 @@ public:
 class cSliderBloomBlend : public igdeEditSliderTextListener{
 	igdeWPCamera &pPanel;
 public:
+	typedef deTObjectReference<cSliderBloomBlend> Ref;
 	cSliderBloomBlend(igdeWPCamera &panel) : igdeEditSliderTextListener(), pPanel(panel){}
 	
 	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
@@ -399,6 +418,7 @@ public:
 class cEditToneMapCurve : public igdeViewCurveBezierListener{
 	igdeWPCamera &pPanel;
 public:
+	typedef deTObjectReference<cEditToneMapCurve> Ref;
 	cEditToneMapCurve(igdeWPCamera &panel) : igdeViewCurveBezierListener(), pPanel(panel){}
 	
 	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
@@ -424,6 +444,7 @@ public:
 class cActionCameraSetDefaultParams : public cBaseAction{
 	const float pLowestIntensity, pHighestIntensity, pAdaptionTime;
 public:
+	typedef deTObjectReference<cActionCameraSetDefaultParams> Ref;
 	cActionCameraSetDefaultParams(igdeWPCamera &panel, float lowestIntensity,
 		float highestIntensity, float adaptionTime, const char *text) : cBaseAction(panel,
 		text, "Set default parameters"), pLowestIntensity(lowestIntensity),
@@ -437,6 +458,7 @@ public:
 
 class cActionCameraLoad : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraLoad> Ref;
 	cActionCameraLoad(igdeWPCamera &panel) : cBaseAction(panel, "Load...", "Load parameters from file",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen)){}
 	
@@ -448,14 +470,15 @@ public:
 		}
 		
 		igdeLoadSaveCamera lscamera(pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE");
-		lscamera.Load(igdeWPCamera::lastCameraFile, camera, decBaseFileReader::Ref::New(
+		lscamera.Load(igdeWPCamera::lastCameraFile, camera,
 			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile))));
+				decPath::CreatePathUnix(igdeWPCamera::lastCameraFile)));
 	}
 };
 
 class cActionCameraSave : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCameraSave> Ref;
 	cActionCameraSave(igdeWPCamera &panel) : cBaseAction(panel, "Save...", "Save parameters to file",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave)){}
 	
@@ -467,9 +490,8 @@ public:
 		}
 		
 		igdeLoadSaveCamera lscamera(pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE");
-		lscamera.Save(camera, decBaseFileWriter::Ref::New(
-			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile))));
+		lscamera.Save(camera, pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile)));
 	}
 };
 
@@ -483,18 +505,18 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelperProperties();
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic"), true);
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic"));
 		
 		helper.Separator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionCameraLoad(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSave(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionCameraLoad::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCameraSave::Ref::New(pPanel));
 	}
 	
 	void Update() override{
@@ -511,13 +533,13 @@ public:
 
 decString igdeWPCamera::lastCameraFile("Camera.decamera");
 
-static igdeFilePatternList sCreateFilePatternList(){
-	igdeFilePatternList list;
-	list.AddFilePattern(new igdeFilePattern("Drag[en]gine Camera", "*.decamera", ".decamera"));
+static igdeFilePattern::List sCreateFilePatternList(){
+	igdeFilePattern::List list;
+	list.Add(igdeFilePattern::Ref::New("Drag[en]gine Camera", "*.decamera", ".decamera"));
 	return list;
 }
 
-const igdeFilePatternList igdeWPCamera::patternCamera(sCreateFilePatternList());
+const igdeFilePattern::List igdeWPCamera::patternCamera(sCreateFilePatternList());
 
 
 
@@ -697,64 +719,61 @@ void igdeWPCamera::pCreateContent(){
 	igdeContainer::Ref form, frameLine, group;
 	
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
 	helper.EditVector(form, "Position:", "Position of the camera",
-		pEditPosition, new cEditCameraPosition(*this));
+		pEditPosition, cEditCameraPosition::Ref::New(*this));
 	helper.EditVector(form, "Rotation:", "Rotation of the camera",
-		pEditRotation, new cEditCameraRotation(*this));
+		pEditRotation, cEditCameraRotation::Ref::New(*this));
 	
 	helper.EditFloat(form, "Orbit Distance:", "Distance to center point",
-		pEditOrbitDistance, new cTextOrbitDistance(*this));
+		pEditOrbitDistance, cTextOrbitDistance::Ref::New(*this));
 	
-	helper.EditVector(form, "View:", "View direction of the camera", pEditViewDir, nullptr);
+	helper.EditVector(form, "View:", "View direction of the camera", pEditViewDir, {});
 	pEditViewDir->SetEditable(false);
 	
 	helper.FormLineStretchFirst(form, "", "", frameLine);
 	
-	helper.CheckBoxOnly(frameLine, pChkEnableHDRR, new cCheckEnableHDRR(*this), true);
+	helper.CheckBoxOnly(frameLine, pChkEnableHDRR, cCheckEnableHDRR::Ref::New(*this));
 	
-	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::NewWith(*this));
+	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::New(*this));
 	helper.Button(frameLine, pBtnCamera, actionMenuCamera);
 	actionMenuCamera->SetWidget(pBtnCamera);
 	
-	helper.CheckBox(form, pChkEnableGI, new cCheckEnableGI(*this), true);
+	helper.CheckBox(form, pChkEnableGI, cCheckEnableGI::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, group, "Internal parameters:", true);
-	helper.EditFloat(group, "Field of view:", "Field of view in degrees", pEditFov,
-		new cTextFov(*this));
+	helper.EditFloat(group, "Field of view:", "Field of view in degrees", pEditFov, cTextFov::Ref::New(*this));
 	helper.EditFloat(group, "Field of view ratio:", "Field of view ratio (height / width)",
-		pEditFovRatio, new cTextFovRatio(*this));
+		pEditFovRatio, cTextFovRatio::Ref::New(*this));
 	
 	helper.EditFloat(group, "Image distance:", "Image distance in meters (near clipping plane)",
-		pEditImageDist, new cTextImageDistance(*this));
+		pEditImageDist, cTextImageDistance::Ref::New(*this));
 	helper.EditFloat(group, "View distance:", "View distance in meters (far clipping plane)",
-		pEditViewDist, new cTextViewDistance(*this));
+		pEditViewDist, cTextViewDistance::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, group, "Exposure controls:", true);
 	helper.EditFloat(group, "Lower intensity:", "Lower intensity to adapt to",
-		pEditLowInt, new cTextLowIntensity(*this));
+		pEditLowInt, cTextLowIntensity::Ref::New(*this));
 	helper.EditFloat(group, "Higher intensity:", "Higher intensity to adapt to",
-		pEditHiInt, new cTextHighIntensity(*this));
-	helper.EditFloat(group, "Exposure:", "Exposure multiplier", pEditExposure,
-		new cTextExposure(*this));
-	helper.EditFloat(group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime,
-		new cTextAdaptionTime(*this));
+		pEditHiInt, cTextHighIntensity::Ref::New(*this));
+	helper.EditFloat(group, "Exposure:", "Exposure multiplier", pEditExposure, cTextExposure::Ref::New(*this));
+	helper.EditFloat(group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(*this, group, "Tone mapping:", true, true);
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	group->AddChild(form);
 	
 	helper.EditFloat(form, "White intensity:",
 		"White intensity multiplier (avoid bright parts wash out to white)",
-		pEditWhiteIntensity, new cTextWhiteIntensity(*this));
+		pEditWhiteIntensity, cTextWhiteIntensity::Ref::New(*this));
 	
 	helper.Label(group, "Custom Curve:");
-	helper.ViewCurveBezier(group, pEditToneMapCurve, new cEditToneMapCurve(*this));
+	helper.ViewCurveBezier(group, pEditToneMapCurve, cEditToneMapCurve::Ref::New(*this));
 	pEditToneMapCurve->SetDefaultSize(decPoint(200, 150));
 	pEditToneMapCurve->ClearCurve();
 	pEditToneMapCurve->SetClamp(true);
@@ -764,13 +783,13 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.GroupBox(*this, group, "Bloom / Overbright:", true);
 	helper.EditSliderText(group, "Blend:", "Bloom blend factor (enable/disable bloom)",
-		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, new cSliderBloomBlend(*this));
+		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, cSliderBloomBlend::Ref::New(*this));
 	helper.EditFloat(group, "Intensity:",
 		"Bloom intensity multiplier (overbright begin threshold)",
-		pEditBloomIntensity, new cTextBloomIntensity(*this));
+		pEditBloomIntensity, cTextBloomIntensity::Ref::New(*this));
 	helper.EditFloat(group, "Strength:",
 		"Bloom strength (scale intensity above threshold)",
-		pEditBloomStrength, new cTextBloomStrength(*this));
+		pEditBloomStrength, cTextBloomStrength::Ref::New(*this));
 	helper.EditSliderText(group, "Size:", "Bloom size (blur size relative to screen width)",
-		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, new cSliderBloomSize(*this));
+		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, cSliderBloomSize::Ref::New(*this));
 }

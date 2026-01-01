@@ -25,14 +25,15 @@
 #ifndef _CEWPTTREEMODEL_H_
 #define _CEWPTTREEMODEL_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "ceWPTTreeModelListener.h"
+#include "../../../conversation/ceConversation.h"
 
-class ceConversation;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationAction;
 class ceConversationCondition;
 class ceWPTTIMAction;
 class ceWPTTIMCondition;
-class ceWPTTreeModelListener;
 class ceWPTTreeItem;
 class ceWPTTreeItemModel;
 class ceWindowMain;
@@ -47,8 +48,11 @@ class igdeMenuCascade;
  * 
  * Tree model is responsible to update the visual state and content of assigned tree list.
  */
-class ceWPTTreeModel{
+class ceWPTTreeModel : public deObject{
 public:
+	typedef deTObjectReference<ceWPTTreeModel> Ref;
+	typedef decTObjectOrderedSet<ceWPTTreeItemModel> ModelList;
+	
 	class PreventUpdateGuard{
 		ceWPTTreeModel &pModel;
 		bool pPrevPreventUpdate;
@@ -64,11 +68,11 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceConversation *pConversation;
-	ceWPTTreeModelListener *pListener;
+	ceConversation::Ref pConversation;
+	ceWPTTreeModelListener::Ref pListener;
 	ceConversationListener &pForwardListener;
 	
-	decObjectOrderedSet pChildren;
+	ModelList pChildren;
 	
 	igdeTreeList *pTreeList; // weak reference
 	bool pPreventUpdate;
@@ -95,15 +99,11 @@ public:
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game definition. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	
-	
-	/** Number of children. */
-	int GetChildCount() const;
-	
-	/** Child at index. */
-	ceWPTTreeItemModel *GetChildAt(int index) const;
+	/** Child models. */
+	inline const ModelList &GetChildren() const{ return pChildren; }
 	
 	/** Add child. */
 	void AddChild(ceWPTTreeItemModel *child);
@@ -129,7 +129,7 @@ public:
 	
 	
 	
-	/** Child with action or \em NULL. */
+	/** Child with action or \em nullptr. */
 	ceWPTTIMAction *GetChildWith(ceConversationAction *action) const;
 	
 	
@@ -138,13 +138,13 @@ public:
 	void UpdateActions();
 	
 	
-	/** Assigned tree list or \em NULL. */
+	/** Assigned tree list or \em nullptr. */
 	inline igdeTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/**
-	 * Assign tree list or \em NULL.
+	 * Assign tree list or \em nullptr.
 	 * 
-	 * If tree list is not \em NULL fully updates tree with stored data.
+	 * If tree list is not \em nullptr fully updates tree with stored data.
 	 */
 	void SetTreeList(igdeTreeList *treeList);
 	

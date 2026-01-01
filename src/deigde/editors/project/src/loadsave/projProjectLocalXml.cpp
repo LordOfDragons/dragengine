@@ -60,7 +60,7 @@ projProjectLocalXml::~projProjectLocalXml(){
 ///////////////
 
 void projProjectLocalXml::ReadFromFile(decBaseFileReader &reader, projProject &project){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -129,13 +129,15 @@ projProject &project){
 	}
 	
 	// select active profile
-	const projProfileList &profiles = project.GetProfiles();
+	const projProfile::List &profiles = project.GetProfiles();
 	
 	if(!activeProfile.IsEmpty()){
-		project.SetActiveProfile(profiles.GetNamed(activeProfile));
+		project.SetActiveProfile(profiles.FindOrDefault([&](const projProfile &p){
+			return p.GetName() == activeProfile;
+		}));
 	}
 	
-	if(!project.GetActiveProfile() && profiles.GetCount() > 0){
-		project.SetActiveProfile(profiles.GetAt(0));
+	if(!project.GetActiveProfile() && profiles.IsNotEmpty()){
+		project.SetActiveProfile(profiles.First());
 	}
 }

@@ -60,27 +60,27 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class Speaker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCSpeakerCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker){
-		return NULL;
+		return {};
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
 	if(!speaker){
-		return NULL;
+		return {};
 	}
 	
-	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::NewWith(*speaker));
+	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::New(*speaker));
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSpeaker::Ref::NewWith(clipOCSpeaker));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSpeaker::Ref::New(clipOCSpeaker));
 	
-	return new gdeUOCRemoveSpeaker(&objectClass, speaker);
+	return gdeUOCRemoveSpeaker::Ref::New(&objectClass, speaker);
 }
 
 void gdeMAOCSpeakerCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
 	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-		&& gameDefinition->GetActiveOCSpeaker() != NULL);
+		&& gameDefinition->GetActiveOCSpeaker() != nullptr);
 }

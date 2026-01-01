@@ -26,13 +26,12 @@
 #define _PROJPROFILE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/utils/decUuid.h>
 
-
 class projProject;
-
 
 
 /**
@@ -69,10 +68,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<projProfile> Ref;
-
-
+	typedef decTObjectOrderedSet<projProfile> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create profile. */

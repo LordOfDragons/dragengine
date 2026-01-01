@@ -28,13 +28,13 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "event/igdeTreeListListener.h"
 #include "model/igdeTreeItem.h"
 #include "model/igdeTreeItemSorter.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-class igdeTreeListListener;
 class igdeIcon;
 class igdeTreeItem;
 
@@ -56,7 +56,7 @@ private:
 	int pRows;
 	decString pDescription;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTreeListListener> pListeners;
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	
 	
 	/** \brief First child item. */
-	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
+	inline const igdeTreeItem::Ref &GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Last child item. */
 	igdeTreeItem *GetLastChild() const;
@@ -115,10 +115,10 @@ public:
 	/** \brief Number of children. */
 	int GetChildrenCount() const;
 	
-	/** \brief Item with data or NULL if not found. */
+	/** \brief Item with data or nullptr if not found. */
 	igdeTreeItem *GetItemWithData(void *data) const;
 	
-	/** \brief Item with data starting at parent or NULL if not found. */
+	/** \brief Item with data starting at parent or nullptr if not found. */
 	igdeTreeItem *GetItemWithData(igdeTreeItem *parent, void *data) const;
 	
 	/** \brief Item is present. */
@@ -135,30 +135,30 @@ public:
 	
 	/** \brief Add item of type igdeTreeItem with text as last child of parent. */
 	igdeTreeItem *AppendItem(igdeTreeItem *parent, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void AppendItem(igdeTreeItem *parent, igdeTreeItem::Ref &item, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Insert item before another. */
 	void InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem *item);
 	
 	/** \brief Insert item of type igdeTreeItem with text at index. */
 	igdeTreeItem *InsertItemBefore(igdeTreeItem *beforeItem, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
-		const char *text, igdeIcon *icon = NULL, void *data = NULL);
+		const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Insert item after another. */
 	void InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem *item);
 	
 	/** \brief Insert item of type igdeTreeItem with text at index. */
 	igdeTreeItem *InsertItemAfter(igdeTreeItem *afterItem, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
-		const char *text, igdeIcon *icon = NULL, void *data = NULL);
+		const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Move item before another. */
 	void MoveItemBefore(igdeTreeItem *item, igdeTreeItem *beforeItem);
@@ -180,10 +180,10 @@ public:
 	
 	
 	
-	/** \brief Sorter or NULL. */
-	inline igdeTreeItemSorter *GetSorter() const{ return pSorter; }
+	/** \brief Sorter or nullptr. */
+	inline const igdeTreeItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
+	/** \brief Set sorter or nullptr. */
 	void SetSorter(igdeTreeItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
@@ -197,10 +197,10 @@ public:
 	
 	
 	
-	/** \brief Selected item or NULL. */
-	inline igdeTreeItem *GetSelection() const{ return pSelection; }
+	/** \brief Selected item or nullptr. */
+	inline const igdeTreeItem::Ref &GetSelection() const{ return pSelection; }
 	
-	/** \brief Set selected item or NULL. */
+	/** \brief Set selected item or nullptr. */
 	void SetSelection(igdeTreeItem *selection);
 	
 	/**

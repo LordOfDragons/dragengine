@@ -27,9 +27,7 @@
 
 #include "seUPropertyNodeData.h"
 #include "seUPropertyNodesShear.h"
-#include "../../../../skin/property/node/sePropertyNode.h"
 #include "../../../../skin/property/node/sePropertyNodeGroup.h"
-#include "../../../../skin/property/node/sePropertyNodeList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodesShear::seUPropertyNodesShear(const sePropertyNodeList &nodes,
+seUPropertyNodesShear::seUPropertyNodesShear(const sePropertyNode::List &nodes,
 const decVector2 &pivot, const decVector2 &origin, float rotation, float shearing) :
 pPivot(pivot),
 pOrigin(origin),
@@ -50,18 +48,9 @@ pShearing(shearing)
 {
 	SetShortInfo("Resize nodes");
 	
-	const int count = nodes.GetCount();
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			pAddNodes(nodes.GetAt(i));
-		}
-		
-	}catch(const deException &){
-		pNodes.RemoveAll();
-		throw;
-	}
+	nodes.Visit([&](sePropertyNode *n){
+		pAddNodes(n);
+	});
 }
 
 seUPropertyNodesShear::~seUPropertyNodesShear(){
@@ -121,18 +110,13 @@ void seUPropertyNodesShear::SetDistance(const decVector2 &distance){
 }
 
 void seUPropertyNodesShear::Undo(){
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const seUPropertyNodeData &data = *((seUPropertyNodeData*)pNodes.GetAt(i));
-		sePropertyNode &node = *data.GetNode();
-		
-		node.SetPosition(data.GetPosition());
-		node.SetSize(data.GetSize());
-		node.SetRotation(data.GetRotation());
-		node.SetShearing(data.GetShearing());
-	}
+	pNodes.Visit([](const seUPropertyNodeData &d){
+		sePropertyNode &node = *d.GetNode();
+		node.SetPosition(d.GetPosition());
+		node.SetSize(d.GetSize());
+		node.SetRotation(d.GetRotation());
+		node.SetShearing(d.GetShearing());
+	});
 }
 
 void seUPropertyNodesShear::Redo(){
@@ -140,16 +124,12 @@ void seUPropertyNodesShear::Redo(){
 		return;
 	}
 	
-	const int count = pNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const seUPropertyNodeData &data = *((seUPropertyNodeData*)pNodes.GetAt(i));
-		sePropertyNode &node = *data.GetNode();
+	pNodes.Visit([&](const seUPropertyNodeData &d){
+		sePropertyNode &node = *d.GetNode();
 		
-		node.SetFromMatrix(data.GetMatrix() * pTransform * data.CreateInverseParentMatrix(),
-			data.GetSize(), data.GetRotation());
-	}
+		node.SetFromMatrix(d.GetMatrix() * pTransform * d.CreateInverseParentMatrix(),
+			d.GetSize(), d.GetRotation());
+	});
 }
 
 
@@ -158,31 +138,16 @@ void seUPropertyNodesShear::Redo(){
 //////////////////////
 
 void seUPropertyNodesShear::pAddNodes(sePropertyNode *node){
-	seUPropertyNodeData *data = NULL;
+	pNodes.Add(seUPropertyNodeData::Ref::New(node));
 	
-	try{
-		data = new seUPropertyNodeData(node);
-		pNodes.Add(data);
-		data->FreeReference();
-		data = NULL;
-		
-		if(node->GetMask()){
-			pAddNodes(node->GetMask());
-		}
-		
-		if(node->GetNodeType() == sePropertyNode::entGroup){
-			const sePropertyNodeGroup &nodeGroup = (sePropertyNodeGroup&)*node;
-			const int count = nodeGroup.GetNodeCount();
-			int i;
-			for(i=0; i<count; i++){
-				pAddNodes(nodeGroup.GetNodeAt(i));
-			}
-		}
-		
-	}catch(const deException &){
-		if(data){
-			data->FreeReference();
-		}
-		throw;
+	if(node->GetMask()){
+		pAddNodes(node->GetMask());
+	}
+	
+	if(node->GetNodeType() == sePropertyNode::entGroup){
+		const sePropertyNodeGroup &nodeGroup = (sePropertyNodeGroup&)*node;
+		nodeGroup.GetNodes().Visit([&](sePropertyNode *n){
+			pAddNodes(n);
+		});
 	}
 }

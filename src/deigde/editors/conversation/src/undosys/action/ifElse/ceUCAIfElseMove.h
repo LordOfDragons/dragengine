@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -38,18 +38,19 @@ class ceCAIfElse;
  * \brief Undo action if-else move conversation action.
  */
 class ceUCAIfElseMove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCAIfElseMove> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationAction::Ref pAction;
 	int pOldIndex;
 	int pNewIndex;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCAIfElseMove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
@@ -57,7 +58,9 @@ public:
 	ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex);
 	
 	/** \brief Clean up undo object. */
+protected:
 	virtual ~ceUCAIfElseMove();
+public:
 	/*@}*/
 	
 	

@@ -34,6 +34,7 @@
  */
 class ceWPTTIMASnippet : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMASnippet> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASnippet *GetActionSnippet() const{ return (ceCASnippet*)GetAction(); }
+	inline ceCASnippet *GetActionSnippet() const{ return GetAction().DynamicCast<ceCASnippet>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

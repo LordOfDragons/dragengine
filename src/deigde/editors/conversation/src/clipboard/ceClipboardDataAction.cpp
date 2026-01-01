@@ -42,29 +42,13 @@ const char * const ceClipboardDataAction::TYPE_NAME = "action";
 // Constructor, destructor
 ////////////////////////////
 
-ceClipboardDataAction::ceClipboardDataAction(const ceConversationActionList &actions) :
+ceClipboardDataAction::ceClipboardDataAction(const ceConversationAction::List &actions) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = actions.GetCount();
-	ceConversationAction *action = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			action = actions.GetAt(i)->CreateCopy();
-			pActions.Add(action);
-			action->FreeReference();
-			action = NULL;
-		}
-		
-	}catch(const deException &){
-		if(action){
-			action->FreeReference();
-		}
-		throw;
-	}
+	actions.Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceClipboardDataAction::~ceClipboardDataAction(){
-	pActions.RemoveAll();
 }

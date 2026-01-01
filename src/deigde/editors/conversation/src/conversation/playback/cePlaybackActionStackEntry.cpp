@@ -29,7 +29,6 @@
 
 #include "cePlaybackActionStackEntry.h"
 #include "../action/ceConversationAction.h"
-#include "../action/ceConversationActionList.h"
 #include "../topic/ceConversationTopic.h"
 #include "../condition/ceConversationCondition.h"
 
@@ -44,12 +43,8 @@
 ////////////////////////////
 
 cePlaybackActionStackEntry::cePlaybackActionStackEntry() :
-pParentTopic(NULL),
-pParentList(NULL),
-
-pLoopCondition(NULL),
+pParentList(nullptr),
 pLooping(false),
-
 pNextIndex(0){
 }
 
@@ -66,23 +61,14 @@ void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
 	if(topic == pParentTopic){
 		return;
 	}
-	
-	if(pParentTopic){
-		pParentTopic->FreeReference();
-	}
-	
 	pParentTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetParentAction(ceConversationAction *action){
 	pParentAction = action;
 }
 
-void cePlaybackActionStackEntry::SetParentList(const ceConversationActionList *list){
+void cePlaybackActionStackEntry::SetParentList(const ceConversationAction::List *list){
 	pParentList = list;
 }
 
@@ -92,16 +78,7 @@ void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condi
 	if(condition == pLoopCondition){
 		return;
 	}
-	
-	if(pLoopCondition){
-		pLoopCondition->FreeReference();
-	}
-	
 	pLoopCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetLooping(bool looping){
@@ -113,7 +90,7 @@ void cePlaybackActionStackEntry::SetLooping(bool looping){
 void cePlaybackActionStackEntry::SetNextIndex(int index){
 	if(!pParentList){
 		pNextIndex = 0;
-		pNextAction = NULL;
+		pNextAction = nullptr;
 		return;
 	}
 	
@@ -127,14 +104,14 @@ void cePlaybackActionStackEntry::SetNextIndex(int index){
 		pNextAction = pParentList->GetAt(pNextIndex);
 		
 	}else{
-		pNextAction = NULL;
+		pNextAction = nullptr;
 	}
 }
 
 void cePlaybackActionStackEntry::AdvanceIndex(){
 	if(!pParentList){
 		pNextIndex = 0;
-		pNextAction = NULL;
+		pNextAction = nullptr;
 		return;
 	}
 	
@@ -156,21 +133,21 @@ bool cePlaybackActionStackEntry::HasNextAction() const{
 }
 
 void cePlaybackActionStackEntry::Clear(){
-	pNextAction = NULL;
+	pNextAction = nullptr;
 	pNextIndex = 0;
 	
-	SetLoopCondition(NULL);
+	SetLoopCondition(nullptr);
 	SetLooping(false);
 	
-	SetParentList(NULL);
-	SetParentAction(NULL);
-	SetParentTopic(NULL);
+	SetParentList(nullptr);
+	SetParentAction(nullptr);
+	SetParentTopic(nullptr);
 }
 
 void cePlaybackActionStackEntry::ForwardLast(){
 	if(!pParentList){
 		pNextIndex = 0;
-		pNextAction = NULL;
+		pNextAction = nullptr;
 		return;
 	}
 	
@@ -185,7 +162,7 @@ void cePlaybackActionStackEntry::ForwardLast(){
 void cePlaybackActionStackEntry::ForwardEnd(){
 	if(!pParentList){
 		pNextIndex = 0;
-		pNextAction = NULL;
+		pNextAction = nullptr;
 		return;
 	}
 	
@@ -194,6 +171,6 @@ void cePlaybackActionStackEntry::ForwardEnd(){
 
 void cePlaybackActionStackEntry::CancelLooping(){
 	SetLooping(false);
-	SetLoopCondition(NULL);
+	SetLoopCondition(nullptr);
 	ForwardEnd();
 }

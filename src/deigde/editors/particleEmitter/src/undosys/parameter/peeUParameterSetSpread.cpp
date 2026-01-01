@@ -45,7 +45,7 @@ peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *para
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	pParameter = parameter;
 	
 	SetShortInfo("Set Parameter Spread");
@@ -54,13 +54,9 @@ peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *para
 	pNewSpread = newSpread;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetSpread::~peeUParameterSetSpread(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

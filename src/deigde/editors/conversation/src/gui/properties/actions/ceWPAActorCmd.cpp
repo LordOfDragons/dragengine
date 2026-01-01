@@ -69,6 +69,7 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboActor> Ref;
 	cComboActor(ceWPAActorCmd &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -79,7 +80,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAACmdSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
+			ceUCAACmdSetActor::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -87,6 +88,7 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextCommand> Ref;
 	cTextCommand(ceWPAActorCmd &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -97,7 +99,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAACmdSetCommand::Ref::NewWith(topic, action, textField->GetText()));
+			ceUCAACmdSetCommand::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -105,11 +107,12 @@ class cActionEditCommand : public igdeAction {
 	ceWPAActorCmd &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionEditCommand> Ref;
 	cActionEditCommand(ceWPAActorCmd &panel) : igdeAction("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Edit command in larger dialog"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
 		if(!topic || !action){
@@ -125,7 +128,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAACmdSetCommand::Ref::NewWith(topic, action, text));
+			ceUCAACmdSetCommand::Ref::New(topic, action, text));
 	}
 };
 
@@ -144,12 +147,12 @@ ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	
 	CreateGUICommon(*this);
 	
-	helper.ComboBox(*this, "Actor ID:", true, "Actor to send command to", pCBActorID, new cComboActor(*this));
+	helper.ComboBox(*this, "Actor ID:", true, "Actor to send command to", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
 	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
-	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
-	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
+	helper.EditString(formLine, "Command to send", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 
 ceWPAActorCmd::~ceWPAActorCmd(){
@@ -167,7 +170,7 @@ ceCAActorCommand *ceWPAActorCmd::GetAction() const{
 		return (ceCAActorCommand*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

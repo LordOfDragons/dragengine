@@ -369,7 +369,7 @@ mode is XIModeRelative, this device sends relative coordinates.
 #if 0
 	Display * const display = pModule.GetOSUnix()->GetDisplay();
 	XDeviceInfo *xdevices = NULL;
-	dexsiDevice *device = NULL;
+	dexsiDevice::Ref device;
 	int i, countDevices;
 	
 	try{
@@ -391,14 +391,10 @@ mode is XIModeRelative, this device sends relative coordinates.
 			// device can only be added if it is core or extension device. all other uses
 			// are not useful since we can not open the device
 			
-			device = new dexsiDevice(pModule, xdevices[i]);
-			device->FreeReference();
+			device = dedsInputDevice::Ref::New(pModule, xdevices[i]);
 		}
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		if(xdevices){
 			XFreeDeviceList(xdevices);
 		}
@@ -426,8 +422,8 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 			pathDevice.Format(basePath[bp], i);
 			
 			try{
-				const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::New(
-						new dexsiDeviceLibEvent(pModule, pathDevice)));
+				const dexsiDeviceLibEvent::Ref device(
+					dexsiDeviceLibEvent::Ref::New(pModule, pathDevice));
 				
 				// devices without buttons and axes are not interesting to us. this weeds out
 				// non-input devices like audio devices
@@ -461,11 +457,11 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 
 
 void dexsiDeviceManager::pCreateDevices(){
-	pX11CoreMouse.TakeOver(new dexsiDeviceCoreMouse(pModule));
+	pX11CoreMouse = dexsiDeviceCoreMouse::Ref::New(pModule);
 	pX11CoreMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pX11CoreMouse);
 	
-	pX11CoreKeyboard.TakeOver(new dexsiDeviceCoreKeyboard(pModule));
+	pX11CoreKeyboard = dexsiDeviceCoreKeyboard::Ref::New(pModule);
 	pX11CoreKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pX11CoreKeyboard);
 	
@@ -646,8 +642,7 @@ bool dexsiDeviceManager::pProbeDevice(const decString &path){
 	pModule.LogInfoFormat("Probing event device file: %s", path.GetString());
 	
 	try{
-		const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::New(
-			new dexsiDeviceLibEvent(pModule, path)));
+		const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::New(pModule, path));
 		
 		switch(device->GetType()){
 		case deInputDevice::edtGamepad:

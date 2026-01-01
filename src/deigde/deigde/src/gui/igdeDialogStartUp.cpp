@@ -57,6 +57,8 @@
 class igdeDialogStartUp_ListRecentProjects : public igdeListBoxListener{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ListRecentProjects> Ref;
+	
 	igdeDialogStartUp_ListRecentProjects(igdeDialogStartUp &dialog) : pDialog(dialog){}
 	
 	virtual void OnDoubleClickItem(igdeListBox*, int){
@@ -68,15 +70,17 @@ public:
 class igdeDialogStartUp_ActionLoadRecent : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionLoadRecent> Ref;
+	
 	igdeDialogStartUp_ActionLoadRecent(igdeDialogStartUp &dialog) :
 	igdeAction("Load Recent", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load selected recent game project"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.LoadSelectedRecentProject();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pDialog.GetWindowMain().GetConfiguration().GetRecentProjectList().GetCount() > 0);
 		SetDefault(GetEnabled());
 	}
@@ -85,11 +89,13 @@ public:
 class igdeDialogStartUp_ActionLoadFile : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionLoadFile> Ref;
+	
 	igdeDialogStartUp_ActionLoadFile(igdeDialogStartUp &dialog) :
 	igdeAction("Load Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load game project from file"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.LoadProjectFromFile();
 	}
 };
@@ -97,15 +103,17 @@ public:
 class igdeDialogStartUp_ActionNewProject : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionNewProject> Ref;
+	
 	igdeDialogStartUp_ActionNewProject(igdeDialogStartUp &dialog) :
 	igdeAction("New Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
 		"Create new game project"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.NewGameProject();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetDefault(pDialog.GetWindowMain().GetConfiguration().GetRecentProjectList().GetCount() == 0);
 	}
 };
@@ -113,11 +121,13 @@ public:
 class igdeDialogStartUp_ActionQuit : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionQuit> Ref;
+	
 	igdeDialogStartUp_ActionQuit(igdeDialogStartUp &dialog) :
 	igdeAction("Quit IGDE", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit),
 		"Quit the IGDE application"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.Cancel();
 	}
 };
@@ -139,14 +149,13 @@ pWindowMain(windowMain)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
-	helper.ListBox(10, "Recently loaded game projects", pListRecentProjects,
-		new igdeDialogStartUp_ListRecentProjects(*this));
+	helper.ListBox(10, "Recently loaded game projects", pListRecentProjects, igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
 	
 	
-	pActionLoadRecent.TakeOver(new igdeDialogStartUp_ActionLoadRecent(*this));
-	pActionLoadFile.TakeOver(new igdeDialogStartUp_ActionLoadFile(*this));
-	pActionNewProject.TakeOver(new igdeDialogStartUp_ActionNewProject(*this));
-	pActionQuit.TakeOver(new igdeDialogStartUp_ActionQuit(*this));
+	pActionLoadRecent = igdeDialogStartUp_ActionLoadRecent::Ref::New(*this);
+	pActionLoadFile = igdeDialogStartUp_ActionLoadFile::Ref::New(*this);
+	pActionNewProject = igdeDialogStartUp_ActionNewProject::Ref::New(*this);
+	pActionQuit = igdeDialogStartUp_ActionQuit::Ref::New(*this);
 	
 	igdeAction *actions[4] = {pActionLoadRecent, pActionLoadFile, pActionNewProject, pActionQuit};
 	igdeContainer::Ref buttonBar;
@@ -155,7 +164,7 @@ pWindowMain(windowMain)
 	
 	pUpdateRecentProjectList();
 	
-	AddContent(pListRecentProjects, igdeLabel::Ref::NewWith(env, "Recently used Game Projects"), buttonBar);
+	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "Recently used Game Projects"), buttonBar);
 }
 
 igdeDialogStartUp::~igdeDialogStartUp(){
@@ -198,7 +207,7 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 }
 
 void igdeDialogStartUp::NewGameProject(){
-	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::NewWith(pWindowMain));
+	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::New(pWindowMain));
 	if(!dialog->Run(this)){
 		return;
 	}
@@ -239,7 +248,7 @@ void igdeDialogStartUp::pUpdateRecentProjectList(){
 		pListRecentProjects->AddItem(text);
 	}
 	
-	if(pListRecentProjects->GetItemCount() > 0){
+	if(pListRecentProjects->GetItems().IsNotEmpty()){
 		pListRecentProjects->SetSelection(0);
 	}
 	

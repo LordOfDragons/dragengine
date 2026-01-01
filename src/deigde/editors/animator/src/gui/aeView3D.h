@@ -26,6 +26,7 @@
 #define _AEVIEW3D_H_
 
 #include "gizmo/aeGizmoManager.h"
+#include "../animator/aeAnimator.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
@@ -34,7 +35,6 @@
 
 
 class aeWindowMain;
-class aeAnimator;
 
 
 
@@ -42,10 +42,15 @@ class aeAnimator;
  * 3D view.
  */
 class aeView3D : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeView3D> Ref;
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseKeyListener::Ref pLocomotionInteraction;
@@ -79,7 +84,7 @@ public:
 	void ResetView();
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

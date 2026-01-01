@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class Speaker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+igdeUndo::Ref gdeMAOCSpeakerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
 		.GetWithTypeName(gdeClipboardDataOCSpeaker::TYPE_NAME));
 	if(!clip){
-		return NULL;
+		return {};
 	}
 	
 	const gdeClipboardDataOCSpeaker &clipOCSpeaker =
 		(const gdeClipboardDataOCSpeaker &)(igdeClipboardData&)clip;
 	
-	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::NewWith(*clipOCSpeaker.GetSpeaker()));
+	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::New(*clipOCSpeaker.GetSpeaker()));
 	
-	igdeUndo * const undo = new gdeUOCAddSpeaker(&objectClass,
+	const igdeUndo::Ref undo = gdeUOCAddSpeaker::Ref::New(&objectClass,
 		speaker);
 	undo->SetShortInfo("Paste object class speaker");
 	return undo;
 }
 
 void gdeMAOCSpeakerPaste::Update(){
-	SetEnabled(GetActiveObjectClass() != NULL
+	SetEnabled(GetActiveObjectClass() != nullptr
 		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCSpeaker::TYPE_NAME));
 }

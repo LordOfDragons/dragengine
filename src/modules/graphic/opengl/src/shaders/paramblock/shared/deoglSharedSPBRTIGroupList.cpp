@@ -59,38 +59,28 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetAt(int index) const{
 	return (deoglSharedSPBRTIGroup*)pGroups.GetAt(index);
 }
 
-deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith(deoglSharedSPB &sharedSPB, int textureCount) const{
+deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::GetWith(deoglSharedSPB &sharedSPB, int textureCount) const{
 	const int count = pGroups.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
 		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pGroups.GetAt(i);
 		if(&group->GetSharedSPB() == &sharedSPB && group->GetTextureCount() == textureCount){
-			group->AddReference();
-			return group;
+			return deoglSharedSPBRTIGroup::Ref(group);
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
-deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetOrAddWith(deoglSharedSPB &sharedSPB, int textureCount){
-	deoglSharedSPBRTIGroup * const group = GetWith(sharedSPB, textureCount);
+deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::GetOrAddWith(deoglSharedSPB &sharedSPB, int textureCount){
+	const deoglSharedSPBRTIGroup::Ref group(GetWith(sharedSPB, textureCount));
 	return group ? group : AddWith(sharedSPB, textureCount);
 }
 
-deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &sharedSPB, int textureCount){
-	deoglSharedSPBRTIGroup *group = nullptr;
-	try{
-		group = new deoglSharedSPBRTIGroup(this, sharedSPB, textureCount);
-		pGroups.Add(group);
-		
-	}catch(const deException &){
-		if(group){
-			group->FreeReference();
-		}
-		throw;
-	}
+deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &sharedSPB, int textureCount){
+	const deoglSharedSPBRTIGroup::Ref group(deoglSharedSPBRTIGroup::Ref::New(this, sharedSPB, textureCount));
+	pGroups.Add(group);
 	return group;
 }
 

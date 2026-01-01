@@ -22,17 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECAMERA_H_
 #define _RECAMERA_H_
 
-// includes
+#include "bone/reRigBone.h"
+
 #include <deigde/gui/igdeCamera.h>
 
-// predefinitions
 class reRig;
-class reRigBone;
-
 
 
 /**
@@ -48,7 +45,7 @@ class reCamera : public igdeCamera{
 private:
 	reRig *pRig;
 	
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decDVector pFreePosition;
 	decVector pFreeOrientation;
@@ -70,9 +67,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the bone or NULL. */
-	inline reRigBone *GetBone() const{ return pBone; }
-	/** Sets the bone or NULL. */
+	/** Retrieves the bone or nullptr. */
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
+	/** Sets the bone or nullptr. */
 	void SetBone(reRigBone *bone);
 	/** Retrieves the free position. */
 	inline const decDVector &GetFreePosition() const{ return pFreePosition; }

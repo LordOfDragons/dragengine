@@ -25,11 +25,10 @@
 #ifndef _DEARCHIVEMANAGER_H_
 #define _DEARCHIVEMANAGER_H_
 
+#include "deArchive.h"
+#include "deArchiveContainer.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
-
-class deArchive;
-class deArchiveContainer;
 
 
 /**
@@ -65,20 +64,14 @@ public:
 	/** \brief Root archive resource for iteration purpose. */
 	deArchive *GetRootArchive() const;
 	
-	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith(const char *filename) const;
-	
-	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith(deVirtualFileSystem *vfs, const char *filename) const;
+	/** \brief Open archive from file relative to base path. */
+	deArchive::Ref OpenArchive(const char *filename, const char *basePath);
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive(const char *filename, const char *basePath);
-	
-	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deArchive::Ref OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Create archive container. */
-	deArchiveContainer *CreateContainer(const decPath &rootPath,
+	deArchiveContainer::Ref CreateContainer(const decPath &rootPath,
 		deArchive *archive, const decPath &archivePath);
 	
 	/** \brief Release leaking resources and report them. */

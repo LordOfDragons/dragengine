@@ -33,6 +33,10 @@
  * \brief FBX property array bool.
  */
 class fbxPropertyArrayBool : public fbxProperty{
+public:
+	typedef deTObjectReference<fbxPropertyArrayBool> Ref;
+	
+	
 private:
 	bool *pValues;
 	int pCount;
@@ -46,7 +50,7 @@ public:
 	fbxPropertyArrayBool();
 	
 	/** \brief Load property. */
-	fbxPropertyArrayBool(decBaseFileReader &reader);
+	explicit fbxPropertyArrayBool(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */

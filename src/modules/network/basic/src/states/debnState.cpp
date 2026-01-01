@@ -242,7 +242,6 @@ void debnState::ValueAdded(int index, deNetworkValue *value){
 	if(pValueCount == pValueSize){
 		int newSize = pValueSize * 3 / 2 + 1;
 		debnValue **newArray = new debnValue*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pValues){
 			memcpy(newArray, pValues, sizeof(debnValue*) * pValueSize);
 			delete [] pValues;

@@ -42,8 +42,8 @@
 
 gdeUOCBillboardSetOffset::gdeUOCBillboardSetOffset(gdeObjectClass *objectClass,
 gdeOCBillboard *billboard, const decVector2 &newValue) :
-pObjectClass(NULL),
-pBillboard(NULL)
+
+pBillboard(nullptr)
 {
 	if(!objectClass || !billboard){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetOffset::~gdeUOCBillboardSetOffset(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

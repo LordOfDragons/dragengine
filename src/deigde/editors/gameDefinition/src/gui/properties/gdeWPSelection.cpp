@@ -96,6 +96,7 @@ class cTreeObjects : public igdeTreeListListener{
 	gdeWPSelection &pPanel;
 	
 public:
+	typedef deTObjectReference<cTreeObjects> Ref;
 	cTreeObjects(gdeWPSelection &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeTreeList *treeList){
@@ -104,7 +105,7 @@ public:
 			return;
 		}
 		
-		gdeWPSTreeItemModel * const item = (gdeWPSTreeItemModel*)treeList->GetSelection();
+		gdeWPSTreeItemModel * const item = treeList->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
 		if(item){
 			item->OnSelected();
 			
@@ -120,7 +121,7 @@ public:
 	}
 	
 	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu){
-		gdeWPSTreeItemModel * const item = (gdeWPSTreeItemModel*)treeList->GetSelection();
+		gdeWPSTreeItemModel * const item = treeList->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
 		if(item){
 			item->OnContextMenu(menu);
 			
@@ -144,85 +145,79 @@ gdeWPSelection::gdeWPSelection(gdeWindowProperties &windowProperties) :
 igdeContainerSplitted(windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom,
 	igdeApplication::app().DisplayScaled(600)),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL),
-pSwitcher(NULL),
-pTreeObjects(NULL),
-pModelTreeObjects(NULL)
+pSwitcher(nullptr),
+pTreeObjects(nullptr),
+pModelTreeObjects(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new gdeWPSelectionListener(*this);
+	pListener = gdeWPSelectionListener::Ref::New(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
-	helper.TreeList(10, "Game definition objects", pTreeObjects, new cTreeObjects(*this));
+	helper.TreeList(10, "Game definition objects", pTreeObjects, cTreeObjects::Ref::New(*this));
 	AddChild(pTreeObjects, igdeContainerSplitted::eaCenter);
 	
 	helper.Label(pSwitcher, "No Selection");
 	
-	pPanelCategory.TakeOver(new gdeWPSCategory(windowProperties));
+	pPanelCategory = gdeWPSCategory::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelCategory);
 	
-	pPanelObjectClass.TakeOver(new gdeWPSObjectClass(windowProperties));
+	pPanelObjectClass = gdeWPSObjectClass::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelObjectClass);
 	
-	pPanelOCBillboard.TakeOver(new gdeWPSOCBillboard(windowProperties));
+	pPanelOCBillboard = gdeWPSOCBillboard::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCBillboard);
 	
-	pPanelOCCamera.TakeOver(new gdeWPSOCCamera(windowProperties));
+	pPanelOCCamera = gdeWPSOCCamera::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCCamera);
 	
-	pPanelOCComponent.TakeOver(new gdeWPSOCComponent(windowProperties));
+	pPanelOCComponent = gdeWPSOCComponent::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCComponent);
 	
-	pPanelOCEnvMapProbe.TakeOver(new gdeWPSOCEnvMapProbe(windowProperties));
+	pPanelOCEnvMapProbe = gdeWPSOCEnvMapProbe::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCEnvMapProbe);
 	
-	pPanelOCLight.TakeOver(new gdeWPSOCLight(windowProperties));
+	pPanelOCLight = gdeWPSOCLight::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCLight);
 	
-	pPanelOCNavigationBlocker.TakeOver(new gdeWPSOCNavigationBlocker(windowProperties));
+	pPanelOCNavigationBlocker = gdeWPSOCNavigationBlocker::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCNavigationBlocker);
 	
-	pPanelOCNavigationSpace.TakeOver(new gdeWPSOCNavigationSpace(windowProperties));
+	pPanelOCNavigationSpace = gdeWPSOCNavigationSpace::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCNavigationSpace);
 	
-	pPanelOCParticleEmitter.TakeOver(new gdeWPSOCParticleEmitter(windowProperties));
+	pPanelOCParticleEmitter = gdeWPSOCParticleEmitter::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCParticleEmitter);
 	
-	pPanelOCForceField.TakeOver(new gdeWPSOCForceField(windowProperties));
+	pPanelOCForceField = gdeWPSOCForceField::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCForceField);
 	
-	pPanelOCSnapPoint.TakeOver(new gdeWPSOCSnapPoint(windowProperties));
+	pPanelOCSnapPoint = gdeWPSOCSnapPoint::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCSnapPoint);
 	
-	pPanelOCSpeaker.TakeOver(new gdeWPSOCSpeaker(windowProperties));
+	pPanelOCSpeaker = gdeWPSOCSpeaker::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCSpeaker);
 	
-	pPanelOCWorld.TakeOver(new gdeWPSOCWorld(windowProperties));
+	pPanelOCWorld = gdeWPSOCWorld::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCWorld);
 	
-	pPanelParticleEmitter.TakeOver(new gdeWPSParticleEmitter(windowProperties));
+	pPanelParticleEmitter = gdeWPSParticleEmitter::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelParticleEmitter);
 	
-	pPanelSkin.TakeOver(new gdeWPSSkin(windowProperties));
+	pPanelSkin = gdeWPSSkin::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelSkin);
 	
-	pPanelSky.TakeOver(new gdeWPSSky(windowProperties));
+	pPanelSky = gdeWPSSky::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelSky);
 	
 	pSwitcher->SetCurrent(epNone);
 }
 
 gdeWPSelection::~gdeWPSelection(){
-	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -235,40 +230,37 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		return;
 	}
 	
-	((gdeWPSCategory&)(igdeWidget&)pPanelCategory).SetGameDefinition(NULL);
-	((gdeWPSObjectClass&)(igdeWidget&)pPanelObjectClass).SetGameDefinition(NULL);
-	((gdeWPSOCBillboard&)(igdeWidget&)pPanelOCBillboard).SetGameDefinition(NULL);
-	((gdeWPSOCCamera&)(igdeWidget&)pPanelOCCamera).SetGameDefinition(NULL);
-	((gdeWPSOCComponent&)(igdeWidget&)pPanelOCComponent).SetGameDefinition(NULL);
-	((gdeWPSOCEnvMapProbe&)(igdeWidget&)pPanelOCEnvMapProbe).SetGameDefinition(NULL);
-	((gdeWPSOCLight&)(igdeWidget&)pPanelOCLight).SetGameDefinition(NULL);
-	((gdeWPSOCNavigationBlocker&)(igdeWidget&)pPanelOCNavigationBlocker).SetGameDefinition(NULL);
-	((gdeWPSOCNavigationSpace&)(igdeWidget&)pPanelOCNavigationSpace).SetGameDefinition(NULL);
-	((gdeWPSOCParticleEmitter&)(igdeWidget&)pPanelOCParticleEmitter).SetGameDefinition(NULL);
-	((gdeWPSOCForceField&)(igdeWidget&)pPanelOCForceField).SetGameDefinition(NULL);
-	((gdeWPSOCSnapPoint&)(igdeWidget&)pPanelOCSnapPoint).SetGameDefinition(NULL);
-	((gdeWPSOCSpeaker&)(igdeWidget&)pPanelOCSpeaker).SetGameDefinition(NULL);
+	((gdeWPSCategory&)(igdeWidget&)pPanelCategory).SetGameDefinition(nullptr);
+	((gdeWPSObjectClass&)(igdeWidget&)pPanelObjectClass).SetGameDefinition(nullptr);
+	((gdeWPSOCBillboard&)(igdeWidget&)pPanelOCBillboard).SetGameDefinition(nullptr);
+	((gdeWPSOCCamera&)(igdeWidget&)pPanelOCCamera).SetGameDefinition(nullptr);
+	((gdeWPSOCComponent&)(igdeWidget&)pPanelOCComponent).SetGameDefinition(nullptr);
+	((gdeWPSOCEnvMapProbe&)(igdeWidget&)pPanelOCEnvMapProbe).SetGameDefinition(nullptr);
+	((gdeWPSOCLight&)(igdeWidget&)pPanelOCLight).SetGameDefinition(nullptr);
+	((gdeWPSOCNavigationBlocker&)(igdeWidget&)pPanelOCNavigationBlocker).SetGameDefinition(nullptr);
+	((gdeWPSOCNavigationSpace&)(igdeWidget&)pPanelOCNavigationSpace).SetGameDefinition(nullptr);
+	((gdeWPSOCParticleEmitter&)(igdeWidget&)pPanelOCParticleEmitter).SetGameDefinition(nullptr);
+	((gdeWPSOCForceField&)(igdeWidget&)pPanelOCForceField).SetGameDefinition(nullptr);
+	((gdeWPSOCSnapPoint&)(igdeWidget&)pPanelOCSnapPoint).SetGameDefinition(nullptr);
+	((gdeWPSOCSpeaker&)(igdeWidget&)pPanelOCSpeaker).SetGameDefinition(nullptr);
 	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(nullptr);
-	((gdeWPSParticleEmitter&)(igdeWidget&)pPanelParticleEmitter).SetGameDefinition(NULL);
-	((gdeWPSSkin&)(igdeWidget&)pPanelSkin).SetGameDefinition(NULL);
-	((gdeWPSSky&)(igdeWidget&)pPanelSky).SetGameDefinition(NULL);
+	((gdeWPSParticleEmitter&)(igdeWidget&)pPanelParticleEmitter).SetGameDefinition(nullptr);
+	((gdeWPSSkin&)(igdeWidget&)pPanelSkin).SetGameDefinition(nullptr);
+	((gdeWPSSky&)(igdeWidget&)pPanelSky).SetGameDefinition(nullptr);
 	
 	if(pModelTreeObjects){
 		delete pModelTreeObjects;
-		pModelTreeObjects = NULL;
+		pModelTreeObjects = nullptr;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		pModelTreeObjects = new gdeWPSTreeModel(pTreeObjects, pWindowProperties.GetWindowMain(), gameDefinition);
 	}
 	
@@ -387,7 +379,7 @@ void gdeWPSelection::Find(const char *text){
 		return;
 	}
 	
-	gdeWPSTreeItemModel * const item = (gdeWPSTreeItemModel*)pTreeObjects->GetSelection();
+	gdeWPSTreeItemModel * const item = pTreeObjects->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
 	if(item){
 		item->SelectBestMatching(text);
 		

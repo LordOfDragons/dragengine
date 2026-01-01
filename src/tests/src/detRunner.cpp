@@ -3,6 +3,13 @@
 #include <string.h>
 #include "detRunner.h"
 #include "detCase.h"
+#include "collection/detTOrderedSet.h"
+#include "collection/detTNamedOrderedSet.h"
+#include "collection/detTList.h"
+#include "collection/detTSet.h"
+#include "collection/detTDictionary.h"
+#include "collection/detTLinkedList.h"
+#include "collection/detHelperFunctions.h"
 #include "curve/detCurve2D.h"
 #include "curve/detCurveBezier3D.h"
 #include "string/detString.h"
@@ -10,9 +17,8 @@
 #include "string/detStringDictionary.h"
 #include "string/detUnicodeString.h"
 #include "string/detUnicodeStringList.h"
+#include "string/detUnicodeLineBuffer.h"
 #include "string/detStringSet.h"
-#include "string/detUnicodeStringSet.h"
-#include "string/detUnicodeStringDictionary.h"
 #include "path/detPath.h"
 #include "math/detMath.h"
 #include "math/detColorMatrix.h"
@@ -153,9 +159,7 @@ public:
 // entry point
 ////////////////
 int main(int argc, char **args){
-	detRunner runner;
-	runner.Run();
-	return 0;
+	return detRunner().Run() ? 0 : 1;
 }
 
 
@@ -179,8 +183,14 @@ detRunner::detRunner(){
 	pAddTest(new detStringDictionary);
 	pAddTest(new detUnicodeString);
 	pAddTest(new detUnicodeStringList);
-	pAddTest(new detUnicodeStringSet);
-	pAddTest(new detUnicodeStringDictionary);
+	pAddTest(new detUnicodeLineBuffer);
+	pAddTest(new detTOrderedSet);
+	pAddTest(new detTNamedOrderedSet);
+	pAddTest(new detTList);
+	pAddTest(new detTSet);
+	pAddTest(new detTDictionary);
+	pAddTest(new detTLinkedList);
+	pAddTest(new detHelperFunctions);
 	pAddTest(new detPath);
 	pAddTest(new detZFile);
 	pAddTest(new detMath);
@@ -200,9 +210,8 @@ detRunner::~detRunner(){
 		delete [] pCases;
 	}
 }
-void detRunner::Run(){
+bool detRunner::Run(){
 	int i, errorCount = 0;
-	detCase *curTest;
 	
 	setvbuf(stdout, NULL, _IONBF, 0);
 	
@@ -211,7 +220,7 @@ void detRunner::Run(){
 	printf("for a longer period of time.\n\n");
 	printf("*** Start Testing (%i Tests) ***", pCount);
 	for(i=0; i<pCount; i++){
-		curTest = pCases[i];
+		detCase * const curTest = pCases[i];
 		printf("\n- Test %s: P", curTest->GetTestName());
 		try{
 			curTest->Prepare();
@@ -227,8 +236,10 @@ void detRunner::Run(){
 	
 	if(errorCount > 0){
 		printf("*** %i tests failed ***\n", errorCount);
+		return false;
 	}else{
 		printf("\n*** All tests passed successfully ***\n");
+		return true;
 	}
 }
 

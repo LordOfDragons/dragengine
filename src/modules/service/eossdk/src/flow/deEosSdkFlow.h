@@ -27,6 +27,7 @@
 
 #include "../deEosSdkPendingRequest.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/resources/service/deServiceObject.h>

@@ -33,7 +33,7 @@
 #include "../gui/igdeWindowMain.h"
 
 #include <dragengine/deEngine.h>
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
@@ -94,11 +94,11 @@ void igdeScriptModule::ShutDown(){
 }
 
 const char *igdeScriptModule::GetSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 const char *igdeScriptModule::GetVFSSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 
@@ -129,15 +129,15 @@ deBaseScriptingPropField *igdeScriptModule::CreatePropField(dePropField *propFie
 
 deBaseScriptingParticleEmitterInstance *igdeScriptModule::CreateParticleEmitterInstance(
 deParticleEmitterInstance *instance){
-	return NULL;
+	return nullptr;
 }
 
 deBaseScriptingSoundLevelMeter *igdeScriptModule::CreateSoundLevelMeter(deSoundLevelMeter *meter){
-	return NULL;
+	return nullptr;
 }
 
 deBaseScriptingSpeaker *igdeScriptModule::CreateSpeaker(deSpeaker *speaker){
-	return NULL;
+	return nullptr;
 }
 
 

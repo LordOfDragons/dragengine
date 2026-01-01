@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -50,7 +52,7 @@
 /////////////////////
 
 struct sDecalNatDat{
-	deDecal *decal;
+	deDecal::Ref decal;
 };
 
 
@@ -61,18 +63,12 @@ dsFunction(init.clsDecal, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDecal::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sDecalNatDat &nd = *((sDecalNatDat*)p_GetNativeData(myself));
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	sDecalNatDat * const nd = new (p_GetNativeData(myself)) sDecalNatDat;
+	
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	deDecalManager &decalMgr = *clsDecal.GetDS().GetGameEngine()->GetDecalManager();
 	
-	// clear ( important )
-	nd.decal = NULL;
-	
-	// create decal
-	nd.decal = decalMgr.CreateDecal();
-	if(!nd.decal){
-		DSTHROW(dueOutOfMemory);
-	}
+	nd->decal = decalMgr.CreateDecal();
 }
 
 // public func destructor()
@@ -85,11 +81,7 @@ void deClassDecal::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sDecalNatDat &nd = *((sDecalNatDat*)p_GetNativeData(myself));
-	if(nd.decal){
-		nd.decal->FreeReference();
-		nd.decal = NULL;
-	}
+	static_cast<sDecalNatDat*>(p_GetNativeData(myself))->~sDecalNatDat();
 }
 
 
@@ -103,8 +95,8 @@ dsFunction(init.clsDecal, "getPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassDecal::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, decal.GetPosition());
@@ -117,8 +109,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // position
 }
 void deClassDecal::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
@@ -130,8 +122,8 @@ dsFunction(init.clsDecal, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassDecal::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, decal.GetOrientation());
@@ -144,8 +136,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassDecal::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject()));
@@ -157,8 +149,8 @@ dsFunction(init.clsDecal, "getSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassDecal::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, decal.GetSize());
@@ -171,8 +163,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // size
 }
 void deClassDecal::nfSetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetSize(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
@@ -184,8 +176,8 @@ dsFunction(init.clsDecal, "getTransform", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsTextureMatrix2){
 }
 void deClassDecal::nfGetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassTexMatrix2()->PushTexMatrix(rt, decal.GetTransform());
@@ -198,8 +190,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsTextureMatrix2); // matrix
 }
 void deClassDecal::nfSetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetTransform(ds.GetClassTexMatrix2()->GetTexMatrix(rt->GetValue(0)->GetRealObject()));
@@ -214,8 +206,8 @@ dsFunction(init.clsDecal, "getSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassDecal::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, decal.GetSkin());
@@ -228,8 +220,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkin); // skin
 }
 void deClassDecal::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetSkin(ds.GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
@@ -241,7 +233,7 @@ dsFunction(init.clsDecal, "getTexture", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassDecal::nfGetTexture::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
 	
 	rt->PushInt(decal.GetTexture());
 }
@@ -253,7 +245,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // texture
 }
 void deClassDecal::nfSetTexture::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
 	
 	decal.SetTexture(rt->GetValue(0)->GetInt());
 }
@@ -264,8 +256,8 @@ dsFunction(init.clsDecal, "getDynamicSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDynamicSkin){
 }
 void deClassDecal::nfGetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, decal.GetDynamicSkin());
@@ -278,8 +270,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDynamicSkin); // dynamicSkin
 }
 void deClassDecal::nfSetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	decal.SetDynamicSkin(ds.GetClassDynamicSkin()->GetDynamicSkin(rt->GetValue(0)->GetRealObject()));
@@ -293,7 +285,7 @@ dsFunction(init.clsDecal, "getVisible", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassDecal::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
 	
 	rt->PushBool(decal.GetVisible());
 }
@@ -305,7 +297,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // visible
 }
 void deClassDecal::nfSetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
+	deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
 	
 	decal.SetVisible(rt->GetValue(0)->GetBool());
 }
@@ -318,8 +310,8 @@ dsFunction(init.clsDecal, "getParentComponent", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsComponent){
 }
 void deClassDecal::nfGetParentComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDecal &decal = *(((sDecalNatDat*)p_GetNativeData(myself))->decal);
-	const deClassDecal &clsDecal = *((deClassDecal*)GetOwnerClass());
+	const deDecal &decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = clsDecal.GetDS();
 	
 	ds.GetClassComponent()->PushComponent(rt, decal.GetParentComponent());
@@ -337,7 +329,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
 void deClassDecal::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	rt->PushInt((int)(intptr_t)(((sDecalNatDat*)p_GetNativeData(myself))->decal));
+	rt->PushInt((int)(intptr_t)(static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal));
 }
 
 // public func bool equals( Object obj )
@@ -347,15 +339,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassDecal::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal * const decal = ((sDecalNatDat*)p_GetNativeData(myself))->decal;
-	deClassDecal * const clsDecal = (deClassDecal*)GetOwnerClass();
+	const deDecal * const decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	deClassDecal * const clsDecal = static_cast<deClassDecal*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsDecal)){
 		rt->PushBool(false);
 		
 	}else{
-		deDecal * const otherDecal = ((sDecalNatDat*)p_GetNativeData(obj))->decal;
+		const deDecal * const otherDecal = static_cast<sDecalNatDat*>(p_GetNativeData(obj))->decal;
 		rt->PushBool(decal == otherDecal);
 	}
 }
@@ -439,10 +431,10 @@ void deClassDecal::CreateClassMembers(dsEngine *engine){
 
 deDecal *deClassDecal::GetDecal(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sDecalNatDat*)p_GetNativeData(myself->GetBuffer()))->decal;
+	return static_cast<sDecalNatDat*>(p_GetNativeData(myself->GetBuffer()))->decal;
 }
 
 void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
@@ -456,6 +448,5 @@ void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sDecalNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->decal = decal;
-	decal->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sDecalNatDat)->decal = decal;
 }

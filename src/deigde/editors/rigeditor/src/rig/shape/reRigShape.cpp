@@ -55,17 +55,15 @@
 ////////////////////////////
 
 reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
-	if(!engine){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(engine)
 	
 	pEngine = engine;
-	pRig = NULL;
-	pRigBone = NULL;
+	pRig = nullptr;
+	pRigBone = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSShape = NULL;
-	pCollider = NULL;
+	pDebugDrawer = nullptr;
+	pDDSShape = nullptr;
+	pCollider = nullptr;
 	
 	pShapeType = shapeType;
 	
@@ -90,7 +88,7 @@ reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
-		pDDSShape = new igdeWDebugDrawerShape;
+		pDDSShape = igdeWDebugDrawerShape::Ref::New();
 		pUpdateDDSColor();
 		pDDSShape->SetParentDebugDrawer(pDebugDrawer);
 		
@@ -229,17 +227,6 @@ bool reRigShape::IsVisible() const{
 void reRigShape::pRSCleanUp(){
 	pRigBone = nullptr;
 	pSetRig(nullptr, false);
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
-	if(pDDSShape){
-		delete pDDSShape;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 
@@ -285,7 +272,7 @@ void reRigShape::pUpdateShapes(){
 	}
 	
 	// debug drawer shape
-	decShape *shape = NULL;
+	decShape *shape = nullptr;
 	pDDSShape->RemoveAllShapes();
 	
 	try{
@@ -300,7 +287,7 @@ void reRigShape::pUpdateShapes(){
 	}
 	
 	// collider
-	shape = NULL;
+	shape = nullptr;
 	decShapeList shapeList;
 	
 	try{

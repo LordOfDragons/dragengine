@@ -20,7 +20,9 @@
 // Constructors, Destructor
 /////////////////////////////
 
-detZFile::detZFile(){
+detZFile::detZFile() :
+pTestBuffer(nullptr)
+{
 	Prepare();
 }
 
@@ -34,16 +36,21 @@ detZFile::~detZFile(){
 ////////////
 
 void detZFile::Prepare(){
-	pMemoryFileCompressed = NULL;
-	pTestBuffer = NULL;
+	if(pTestBuffer){
+		delete [] pTestBuffer;
+		pTestBuffer = nullptr;
+	}
 	
-	pMemoryFileWriter = NULL;
-	pZWriter = NULL;
+	pMemoryFileCompressed = nullptr;
+	pTestBuffer = nullptr;
 	
-	pMemoryFileReader = NULL;
-	pZReader = NULL;
+	pMemoryFileWriter = nullptr;
+	pZWriter = nullptr;
 	
-	pMemoryFileCompressed = new decMemoryFile("compressed");
+	pMemoryFileReader = nullptr;
+	pZReader = nullptr;
+	
+	pMemoryFileCompressed = decMemoryFile::Ref::New("compressed");
 	pTestBuffer = new char[16000];
 }
 
@@ -54,15 +61,11 @@ void detZFile::Run(){
 void detZFile::CleanUp(){
 	pDestroyZReader();
 	pDestroyZWriter();
+	pMemoryFileCompressed = nullptr;
 	
 	if(pTestBuffer){
 		delete [] pTestBuffer;
-		pTestBuffer = NULL;
-	}
-	
-	if(pMemoryFileCompressed){
-		pMemoryFileCompressed->FreeReference();
-		pMemoryFileCompressed = NULL;
+		pTestBuffer = nullptr;
 	}
 }
 
@@ -294,71 +297,34 @@ void detZFile::pTestZFile(){
 
 
 void detZFile::pOutputCompressedToFile(){
-	decDiskFileWriter *writer = NULL;
-	
-	try{
-		writer = new decDiskFileWriter("detests_ztest_compressed", false);
-		writer->Write(pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength());
-		writer->FreeReference();
-		
-	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
-		}
-		throw;
-	}
+	decDiskFileWriter::Ref::New("detests_ztest_compressed", false)->Write(
+		pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength());
 }
 
 void detZFile::pOutputTestBufferToFile(int size){
-	decDiskFileWriter *reader = NULL;
-	
-	try{
-		reader = new decDiskFileWriter("detests_ztest_uncompressed", false);
-		reader->Write(pTestBuffer, size);
-		reader->FreeReference();
-		
-	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
-		throw;
-	}
+	decDiskFileWriter::Ref::New("detests_ztest_uncompressed", false)->Write(pTestBuffer, size);
 }
 
 
 
 void detZFile::pCreateZWriter(){
-	pMemoryFileWriter = new decMemoryFileWriter(pMemoryFileCompressed, false);
-	pZWriter = new decZFileWriter(pMemoryFileWriter);
-	pMemoryFileWriter = NULL;
+	pZWriter = decZFileWriter::Ref::New(decMemoryFileWriter::Ref::New(pMemoryFileCompressed, false));
+	pMemoryFileWriter = nullptr;
 }
 
 void detZFile::pDestroyZWriter(){
-	if(pZWriter){
-		pZWriter->FreeReference();
-		pZWriter = NULL;
-	}
-	if(pMemoryFileWriter){
-		pMemoryFileWriter->FreeReference();
-		pMemoryFileWriter = NULL;
-	}
+	pZWriter = nullptr;
+	pMemoryFileWriter = nullptr;
 }
 
 
 
 void detZFile::pCreateZReader(){
-	pMemoryFileReader = new decMemoryFileReader(pMemoryFileCompressed);
-	pZReader = new decZFileReader(pMemoryFileReader);
-	pMemoryFileReader = NULL;
+	pZReader = decZFileReader::Ref::New(decMemoryFileReader::Ref::New(pMemoryFileCompressed));
+	pMemoryFileReader = nullptr;
 }
 
 void detZFile::pDestroyZReader(){
-	if(pZReader){
-		pZReader->FreeReference();
-		pZReader = NULL;
-	}
-	if(pMemoryFileReader){
-		pMemoryFileReader->FreeReference();
-		pMemoryFileReader = NULL;
-	}
+	pZReader = nullptr;
+	pMemoryFileReader = nullptr;
 }

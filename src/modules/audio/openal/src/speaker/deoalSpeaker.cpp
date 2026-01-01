@@ -65,7 +65,6 @@
 deoalSpeaker::deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker) :
 pOal(oal),
 pSpeaker(speaker),
-pASpeaker(NULL),
 pParentWorld(NULL),
 pParentMicrophone(NULL),
 pSound(NULL),
@@ -91,7 +90,7 @@ pLLSyncWorld(this),
 pLLSyncMic(this)
 {
 	try{
-		pASpeaker = new deoalASpeaker(oal.GetAudioThread());
+		pASpeaker = deoalASpeaker::Ref::New(oal.GetAudioThread());
 		pASpeaker->SetBackLink(this);
 		
 		SourceChanged();
@@ -138,8 +137,7 @@ void deoalSpeaker::Synchronize(){
 		if(pDirtySoundDecoder){
 			deSoundDecoder::Ref soundDecoder;
 			if(pSound && pSound->GetASound()->GetStreaming()){
-				soundDecoder.TakeOver(pOal.GetGameEngine()->GetSoundManager()
-					->CreateDecoder(&pSound->GetSound()));
+				soundDecoder = pOal.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound->GetSound());
 			}
 			pASpeaker->SetSoundDecoder(soundDecoder);
 			pDirtySoundDecoder = false;
@@ -404,7 +402,6 @@ void deoalSpeaker::pCleanUp(){
 	
 	if(pASpeaker){
 		pASpeaker->SetBackLink(NULL);
-		pASpeaker->FreeReference();
 		pASpeaker = NULL;
 	}
 }
@@ -445,9 +442,9 @@ void deoalSpeaker::pSyncSource(){
 		pVideoPlayer->Synchronize();
 	}
 	
-	pASpeaker->SetSource(pSound ? pSound->GetASound() : NULL,
-		pSynthesizer ? pSynthesizer->GetAInstance() : NULL,
-		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer() : NULL);
+	pASpeaker->SetSource(pSound ? pSound->GetASound() : nullptr,
+		pSynthesizer ? pSynthesizer->GetAInstance() : nullptr,
+		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer() : nullptr);
 	
 	pDirtySoundDecoder = true;
 	

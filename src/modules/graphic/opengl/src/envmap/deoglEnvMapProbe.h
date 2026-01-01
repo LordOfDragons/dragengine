@@ -25,9 +25,9 @@
 #ifndef _DEOGLENVMAPPROBE_H_
 #define _DEOGLENVMAPPROBE_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicEnvMapProbe.h>
+#include "deoglREnvMapProbe.h"
 
-class deoglREnvMapProbe;
+#include <dragengine/systems/modules/graphic/deBaseGraphicEnvMapProbe.h>
 
 class deGraphicOpenGl;
 class deEnvMapProbe;
@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEnvMapProbe &pEnvMapProbe;
 	
-	deoglREnvMapProbe *pREnvMapProbe;
+	deoglREnvMapProbe::Ref pREnvMapProbe;
 	
 	bool pDirtyOctreeNode;
 	bool pDirtyEnvMapProbe;
@@ -72,7 +72,7 @@ public:
 	
 	
 	/** Render environment map probe. */
-	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
+	inline const deoglREnvMapProbe::Ref &GetREnvMapProbe() const{ return pREnvMapProbe; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

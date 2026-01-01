@@ -60,11 +60,9 @@
 ////////////////////////////
 
 meObjectSnapPoint::meObjectSnapPoint(meObject *object, igdeGDCSnapPoint *snapPoint) :
-pWorld(NULL),
+pWorld(nullptr),
 pObject(object),
 pSnapPoint(snapPoint),
-pDDShape(NULL),
-pCollider(NULL),
 pColliderOwner(this)
 {
 	if(!object || !snapPoint){
@@ -101,7 +99,7 @@ pColliderOwner(this)
 		object->GetColDetCollider()->AddAttachment(attachment);
 		
 		// create debug drawer shape
-		pDDShape = new igdeWDebugDrawerShape;
+		pDDShape = igdeWDebugDrawerShape::Ref::New();
 		pDDShape->SetVisible(true);
 		pDDShape->SetEdgeColor(decColor(0.0f, 0.5f, 0.0f, 0.5f));
 		pDDShape->SetFillColor(decColor(0.0f, 0.5f, 0.0f, 0.1f));
@@ -153,7 +151,7 @@ void meObjectSnapPoint::SetWorld(meWorld *world){
 //////////////////////
 
 void meObjectSnapPoint::pCleanUp(){
-	SetWorld(NULL);
+	SetWorld(nullptr);
 	
 	if(pObject && pCollider){
 		deColliderAttachment * const attachment =
@@ -162,14 +160,6 @@ void meObjectSnapPoint::pCleanUp(){
 			pObject->GetColDetCollider()->RemoveAttachment(attachment);
 		}
 		
-		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, NULL);
-	}
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
-	if(pDDShape){
-		delete pDDShape;
+		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, nullptr);
 	}
 }

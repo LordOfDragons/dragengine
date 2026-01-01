@@ -26,10 +26,11 @@
 #define _GDEOCCOMPONENT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/collider/deCollider.h>
 
-#include "gdeOCComponentTextureList.h"
+#include "gdeOCComponentTexture.h"
 
 
 
@@ -40,6 +41,9 @@ class gdeOCComponent : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCComponent> Ref;
+
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCComponent> List;
 	
 	
 	/** \brief Properties. */
@@ -113,8 +117,8 @@ private:
 	
 	decString pPropertyNames[epMove + 1];
 	
-	gdeOCComponentTextureList pTextures;
-	gdeOCComponentTexture *pActiveTexture;
+	gdeOCComponentTexture::List pTextures;
+	gdeOCComponentTexture::Ref pActiveTexture;
 	
 	
 	
@@ -128,7 +132,9 @@ public:
 	gdeOCComponent(const gdeOCComponent &component);
 	
 	/** \brief Clean up component. */
+protected:
 	virtual ~gdeOCComponent();
+public:
 	/*@}*/
 	
 	
@@ -278,13 +284,13 @@ public:
 	
 	
 	/** \brief List of textures. */
-	inline gdeOCComponentTextureList &GetTextures(){ return pTextures; }
-	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
+	inline gdeOCComponentTexture::List &GetTextures(){ return pTextures; }
+	inline const gdeOCComponentTexture::List &GetTextures() const{ return pTextures; }
 	
-	/** \brief Active texture or \em NULL if none. */
-	inline gdeOCComponentTexture *GetActiveTexture() const{ return pActiveTexture; }
+	/** \brief Active texture or \em nullptr if none. */
+	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
-	/** \brief Set active texture or \em NULL if none. */
+	/** \brief Set active texture or \em nullptr if none. */
 	void SetActiveTexture(gdeOCComponentTexture *texture);
 	/*@}*/
 };

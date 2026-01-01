@@ -33,6 +33,7 @@
  */
 class gdeMAOCNavBlockerCopy : public gdeBaseMAOCSubObject{
 public:
+	typedef deTObjectReference<gdeMAOCNavBlockerCopy> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
@@ -43,8 +44,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass) override;
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass) override;
 	
 	/** \brief Request update of action parameters if required. */
 	void Update() override;

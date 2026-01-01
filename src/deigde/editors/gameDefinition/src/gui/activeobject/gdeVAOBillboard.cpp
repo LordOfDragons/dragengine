@@ -69,8 +69,6 @@ pOCBillboard(ocbillboard)
 	if(!ocbillboard){
 		DETHROW(deeInvalidParam);
 	}
-	ocbillboard->AddReference();
-	
 	pCreateBillboard();
 	pCreateCollider();
 	pAttachBillboard();
@@ -135,10 +133,6 @@ void gdeVAOBillboard::GetExtends(decVector &minExtend, decVector &maxExtend) con
 
 void gdeVAOBillboard::pCleanUp(){
 	pReleaseResources();
-	
-	if(pOCBillboard){
-		pOCBillboard->FreeReference();
-	}
 }
 
 void gdeVAOBillboard::pCreateBillboard(){
@@ -155,7 +149,7 @@ void gdeVAOBillboard::pCreateBillboard(){
 	path = PropertyString(pOCBillboard->GetPropertyName(gdeOCBillboard::epSkin), pOCBillboard->GetSkinPath());
 	if(!path.IsEmpty()){
 		try{
-			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
+			skin = engine.GetSkinManager()->LoadSkin(vfs, path, "/");
 			
 		}catch(const deException &){
 			skin = environment.GetStockSkin(igdeEnvironment::essError);
@@ -164,7 +158,7 @@ void gdeVAOBillboard::pCreateBillboard(){
 	
 	// create billboard if skin is present
 	if(skin){
-		pBillboard.TakeOver(engine.GetBillboardManager()->CreateBillboard());
+		pBillboard = engine.GetBillboardManager()->CreateBillboard();
 		pBillboard->SetSkin(skin);
 		pBillboard->SetAxis(PropertyVector(pOCBillboard->GetPropertyName(gdeOCBillboard::epAxis), pOCBillboard->GetAxis()));
 		pBillboard->SetSize(pOCBillboard->GetSize());
@@ -186,7 +180,7 @@ void gdeVAOBillboard::pCreateCollider(){
 		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
 	}
 	
-	pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume());
+	pCollider = pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume();
 	pCollider->SetEnabled(true);
 	pCollider->SetResponseType(deCollider::ertKinematic);
 	pCollider->SetUseLocalGravity(true);
@@ -204,13 +198,13 @@ void gdeVAOBillboard::pAttachBillboard(){
 		return;
 	}
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pCollider);
 		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		pCollider->AddAttachment(attachment);
-		attachment = NULL;
+		attachment = nullptr;
 		
 	}catch(const deException &){
 		if(attachment){
@@ -226,11 +220,11 @@ void gdeVAOBillboard::pReleaseResources(){
 	if(pCollider){
 		pCollider->RemoveAllAttachments(); // because otherwise cyclic loop with component
 		world.RemoveCollider(pCollider);
-		pCollider = NULL;
+		pCollider = nullptr;
 	}
 	
 	if(pBillboard){
 		world.RemoveBillboard(pBillboard);
-		pBillboard = NULL;
+		pBillboard = nullptr;
 	}
 }

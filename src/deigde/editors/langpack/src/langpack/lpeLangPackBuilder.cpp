@@ -59,7 +59,7 @@ lpeLangPackBuilder::~lpeLangPackBuilder(){
 ///////////////
 
 void lpeLangPackBuilder::BuildLanguagePack(deLanguagePack &langPack){
-	const lpeLangPackEntryList &entryList = pLangPack->GetEntryList();
+	const lpeLangPackEntry::List &entryList = pLangPack->GetEntries();
 	const int entryCount = entryList.GetCount();
 	int i;
 	

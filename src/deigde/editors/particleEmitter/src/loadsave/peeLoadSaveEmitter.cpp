@@ -158,7 +158,7 @@ peeLoadSaveEmitter::peeLoadSaveEmitter(peeLoadSaveSystem *lssys, deLogger *logge
 ///////////////////////
 
 void peeLoadSaveEmitter::LoadEmitter(peeLoadSaveSystem&, peeEmitter &emitter, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -185,26 +185,20 @@ void peeLoadSaveEmitter::SaveEmitter(peeLoadSaveSystem&, const peeEmitter &emitt
 //////////////////////
 
 void peeLoadSaveEmitter::pWriteEmitter(decXmlWriter &writer, const peeEmitter &emitter){
-	const peeControllerList &controllerList = emitter.GetControllers();
-	const int controllerCount = controllerList.GetCount();
-	const peeTypeList &typeList = emitter.GetTypeList();
-	const int typeCount = typeList.GetCount();
-	int i;
-	
 	writer.WriteOpeningTag("particleEmitter", false, true);
 	
-	for(i=0; i<controllerCount; i++){
-		pWriteController(writer, *controllerList.GetAt(i));
-	}
+	emitter.GetControllers().Visit([&](const peeController &c){
+		pWriteController(writer, c);
+	});
 	
 	writer.WriteDataTagFloat("burstLifetime", emitter.GetBurstLifetime());
 	writer.WriteDataTagBool("emitBurst", emitter.GetEmitBurst());
 	
-	if(typeCount > 0){
+	if(emitter.GetTypes().IsNotEmpty()){
 		writer.WriteNewline();
-		for(i=0; i<typeCount; i++){
-			pWriteType(writer, emitter, *typeList.GetAt(i));
-		}
+		emitter.GetTypes().Visit([&](const peeType &t){
+			pWriteType(writer, emitter, t);
+		});
 	}
 	
 	writer.WriteClosingTag("particleEmitter", true);
@@ -328,7 +322,7 @@ void peeLoadSaveEmitter::pWriteType(decXmlWriter &writer, const peeEmitter &emit
 void peeLoadSaveEmitter::pWriteParameter(decXmlWriter &writer, const peeEmitter &emitter,
 const peeType &type, deParticleEmitterType::eParameters parameterType, const char *name){
 	const peeParameter &parameter = *type.GetParameterAt(parameterType);
-	const peeControllerList &controllerList = emitter.GetControllers();
+	const peeController::List &controllers = emitter.GetControllers();
 	
 	writer.WriteOpeningTagStart("parameter");
 	writer.WriteAttributeString("id", name);
@@ -339,12 +333,12 @@ const peeType &type, deParticleEmitterType::eParameters parameterType, const cha
 		writer.WriteDataTagFloat("spread", parameter.GetSpread());
 	}
 	
-	const int controllerValue = controllerList.IndexOf(parameter.GetControllerValue());
+	const int controllerValue = controllers.IndexOf(parameter.GetControllerValue());
 	if(controllerValue != -1){
 		writer.WriteDataTagInt("controllerValue", controllerValue);
 	}
 	
-	const int controllerSpread = controllerList.IndexOf(parameter.GetControllerSpread());
+	const int controllerSpread = controllers.IndexOf(parameter.GetControllerSpread());
 	if(controllerSpread != -1){
 		writer.WriteDataTagInt("controllerSpread", controllerSpread);
 	}
@@ -396,186 +390,166 @@ void peeLoadSaveEmitter::pReadEmitter(const decXmlElementTag &root, peeEmitter &
 
 void peeLoadSaveEmitter::pReadController(const decXmlElementTag &root, peeEmitter &emitter){
 	const int elementCount = root.GetElementCount();
-	peeController *controller = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
-	try{
-		controller = new peeController;
+	const peeController::Ref controller(peeController::Ref::New());
+	
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		for(e=0; e<elementCount; e++){
-			tag = root.GetElementIfTag(e);
-			
-			if(tag){
-				if(strcmp(tag->GetName(), "name") == 0){
-					controller->SetName(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "clamp") == 0){
-					controller->SetClamp(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "frozen") == 0){
-					controller->SetFrozen(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "lower") == 0){ // deprecated
-					controller->SetLower(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "upper") == 0){ // deprecated
-					controller->SetUpper(GetCDataFloat(*tag));
-					
-				}else if(strcmp(tag->GetName(), "limits") == 0){
-					controller->SetLower(GetAttributeFloat(*tag, "lower"));
-					controller->SetUpper(GetAttributeFloat(*tag, "upper"));
+		if(tag){
+			if(strcmp(tag->GetName(), "name") == 0){
+				controller->SetName(GetCDataString(*tag));
 				
-				}else if(strcmp(tag->GetName(), "linkToTime") == 0){
-					controller->SetLinkToTime(GetCDataBool(*tag));
-					
-				}else{
-					LogWarnUnknownTag(root, *tag);
-				}
+			}else if(strcmp(tag->GetName(), "clamp") == 0){
+				controller->SetClamp(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "frozen") == 0){
+				controller->SetFrozen(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "lower") == 0){ // deprecated
+				controller->SetLower(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "upper") == 0){ // deprecated
+				controller->SetUpper(GetCDataFloat(*tag));
+				
+			}else if(strcmp(tag->GetName(), "limits") == 0){
+				controller->SetLower(GetAttributeFloat(*tag, "lower"));
+				controller->SetUpper(GetAttributeFloat(*tag, "upper"));
+			
+			}else if(strcmp(tag->GetName(), "linkToTime") == 0){
+				controller->SetLinkToTime(GetCDataBool(*tag));
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
-		
-		emitter.AddController(controller);
-		controller->FreeReference();
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
 	}
+	
+	emitter.AddController(controller);
 }
 
 void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emitter){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	const char *identifier;
-	peeType *type = NULL;
 	int i;
 	
-	try{
-		type = new peeType(emitter.GetEngine());
+	const peeType::Ref type(peeType::Ref::New(emitter.GetEngine()));
+	
+	for(i=0; i<elementCount; i++){
+		tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<elementCount; i++){
-			tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		if(strcmp(tag->GetName(), "name") == 0){
+			type->SetName(GetCDataString(*tag));
 			
-			if(strcmp(tag->GetName(), "name") == 0){
-				type->SetName(GetCDataString(*tag));
+		}else if(strcmp(tag->GetName(), "skin") == 0){
+			type->SetSkinPath(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "model") == 0){
+			type->SetModelPath(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "modelSkin") == 0){
+			type->SetModelSkinPath(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "castFrom") == 0){
+			identifier = GetCDataString(*tag);
+			
+			if(strcmp(identifier, "vertex") == 0){
+				type->SetCastFrom(deParticleEmitterType::ecfVertex);
 				
-			}else if(strcmp(tag->GetName(), "skin") == 0){
-				type->SetSkinPath(GetCDataString(*tag));
+			}else if(strcmp(identifier, "face") == 0){
+				type->SetCastFrom(deParticleEmitterType::ecfFace);
 				
-			}else if(strcmp(tag->GetName(), "model") == 0){
-				type->SetModelPath(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "modelSkin") == 0){
-				type->SetModelSkinPath(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "castFrom") == 0){
-				identifier = GetCDataString(*tag);
-				
-				if(strcmp(identifier, "vertex") == 0){
-					type->SetCastFrom(deParticleEmitterType::ecfVertex);
-					
-				}else if(strcmp(identifier, "face") == 0){
-					type->SetCastFrom(deParticleEmitterType::ecfFace);
-					
-				}else if(strcmp(identifier, "volume") == 0){
-					type->SetCastFrom(deParticleEmitterType::ecfVolume);
-					
-				}else{
-					LogWarnUnknownValue(*tag, identifier);
-				}
-				
-			}else if(strcmp(tag->GetName(), "simulationType") == 0){
-				identifier = GetCDataString(*tag);
-				
-				if(strcmp(identifier, "particle") == 0){
-					type->SetSimulationType(deParticleEmitterType::estParticle);
-					
-				}else if(strcmp(identifier, "ribbon") == 0){
-					type->SetSimulationType(deParticleEmitterType::estRibbon);
-					
-				}else if(strcmp(identifier, "beam") == 0){
-					type->SetSimulationType(deParticleEmitterType::estBeam);
-					
-				}else{
-					LogWarnUnknownValue(*tag, identifier);
-				}
-				
-			}else if(strcmp(tag->GetName(), "intervalAsDistance") == 0){
-				type->SetIntervalAsDistance(GetCDataBool(*tag));
-				
-			}else if(strcmp(tag->GetName(), "trailEmitter") == 0){
-				type->SetPathTrailEmitter(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "trailController") == 0){
-				identifier = GetAttributeString(*tag, "id");
-				deParticleEmitterType::eEmitControllers controller;
-				if(!ControllerForName(controller, identifier)){
-					LogErrorUnknownValue(*tag, identifier);
-					continue;
-				}
-				type->SetTrailController(controller, GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "physicsSize") == 0){
-				type->SetPhysicsSize(GetCDataFloat(*tag));
-				
-			}else if(strcmp(tag->GetName(), "collisionResponse") == 0){
-				identifier = GetCDataString(*tag);
-				
-				if(strcmp(identifier, "destroy") == 0){
-					type->SetCollisionResponse(deParticleEmitterType::ecrDestroy);
-					
-				}else if(strcmp(identifier, "physical") == 0){
-					type->SetCollisionResponse(deParticleEmitterType::ecrPhysical);
-					
-				}else if(strcmp(identifier, "custom") == 0){
-					type->SetCollisionResponse(deParticleEmitterType::ecrCustom);
-					
-				}else{
-					LogWarnUnknownValue(*tag, identifier);
-				}
-				
-			}else if(strcmp(tag->GetName(), "collisionEmitter") == 0){
-				type->SetPathCollisionEmitter(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "emitMinImpulse") == 0){
-				type->SetEmitMinImpulse(GetCDataFloat(*tag));
-				
-			}else if(strcmp(tag->GetName(), "emitController") == 0){
-				identifier = GetAttributeString(*tag, "id");
-				deParticleEmitterType::eEmitControllers controller;
-				if(!ControllerForName(controller, identifier)){
-					LogErrorUnknownValue(*tag, identifier);
-					continue;
-				}
-				type->SetEmitController(controller, GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "parameter") == 0){
-				pReadParameter(*tag, emitter, *type);
+			}else if(strcmp(identifier, "volume") == 0){
+				type->SetCastFrom(deParticleEmitterType::ecfVolume);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, identifier);
 			}
+			
+		}else if(strcmp(tag->GetName(), "simulationType") == 0){
+			identifier = GetCDataString(*tag);
+			
+			if(strcmp(identifier, "particle") == 0){
+				type->SetSimulationType(deParticleEmitterType::estParticle);
+				
+			}else if(strcmp(identifier, "ribbon") == 0){
+				type->SetSimulationType(deParticleEmitterType::estRibbon);
+				
+			}else if(strcmp(identifier, "beam") == 0){
+				type->SetSimulationType(deParticleEmitterType::estBeam);
+				
+			}else{
+				LogWarnUnknownValue(*tag, identifier);
+			}
+			
+		}else if(strcmp(tag->GetName(), "intervalAsDistance") == 0){
+			type->SetIntervalAsDistance(GetCDataBool(*tag));
+			
+		}else if(strcmp(tag->GetName(), "trailEmitter") == 0){
+			type->SetPathTrailEmitter(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "trailController") == 0){
+			identifier = GetAttributeString(*tag, "id");
+			deParticleEmitterType::eEmitControllers controller;
+			if(!ControllerForName(controller, identifier)){
+				LogErrorUnknownValue(*tag, identifier);
+				continue;
+			}
+			type->SetTrailController(controller, GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "physicsSize") == 0){
+			type->SetPhysicsSize(GetCDataFloat(*tag));
+			
+		}else if(strcmp(tag->GetName(), "collisionResponse") == 0){
+			identifier = GetCDataString(*tag);
+			
+			if(strcmp(identifier, "destroy") == 0){
+				type->SetCollisionResponse(deParticleEmitterType::ecrDestroy);
+				
+			}else if(strcmp(identifier, "physical") == 0){
+				type->SetCollisionResponse(deParticleEmitterType::ecrPhysical);
+				
+			}else if(strcmp(identifier, "custom") == 0){
+				type->SetCollisionResponse(deParticleEmitterType::ecrCustom);
+				
+			}else{
+				LogWarnUnknownValue(*tag, identifier);
+			}
+			
+		}else if(strcmp(tag->GetName(), "collisionEmitter") == 0){
+			type->SetPathCollisionEmitter(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "emitMinImpulse") == 0){
+			type->SetEmitMinImpulse(GetCDataFloat(*tag));
+			
+		}else if(strcmp(tag->GetName(), "emitController") == 0){
+			identifier = GetAttributeString(*tag, "id");
+			deParticleEmitterType::eEmitControllers controller;
+			if(!ControllerForName(controller, identifier)){
+				LogErrorUnknownValue(*tag, identifier);
+				continue;
+			}
+			type->SetEmitController(controller, GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "parameter") == 0){
+			pReadParameter(*tag, emitter, *type);
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		emitter.AddType(type);
-		type->FreeReference();
-		
-	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
-		throw;
 	}
+	
+	emitter.AddType(type);
 }
 
 void peeLoadSaveEmitter::pReadParameter(const decXmlElementTag &root, peeEmitter &emitter, peeType &type){
-	const peeControllerList &controllerList = emitter.GetControllers();
+	const peeController::List &controllers = emitter.GetControllers();
 	const char *id = GetAttributeString(root, "id");
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
@@ -603,20 +577,20 @@ void peeLoadSaveEmitter::pReadParameter(const decXmlElementTag &root, peeEmitter
 				index = GetCDataInt(*tag);
 				
 				if(index == -1){
-					parameter.SetControllerValue(NULL);
+					parameter.SetControllerValue(nullptr);
 					
 				}else{
-					parameter.SetControllerValue(controllerList.GetAt(index));
+					parameter.SetControllerValue(controllers.GetAt(index));
 				}
 				
 			}else if(strcmp(tag->GetName(), "controllerSpread") == 0){
 				index = GetCDataInt(*tag);
 				
 				if(index == -1){
-					parameter.SetControllerSpread(NULL);
+					parameter.SetControllerSpread(nullptr);
 					
 				}else{
-					parameter.SetControllerSpread(controllerList.GetAt(index));
+					parameter.SetControllerSpread(controllers.GetAt(index));
 				}
 				
 			}else if(strcmp(tag->GetName(), "curveValue") == 0){

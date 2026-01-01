@@ -25,23 +25,26 @@
 #ifndef _SEVIEWSKIN_H_
 #define _SEVIEWSKIN_H_
 
+#include "../skin/seSkin.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/undo/igdeUndo.h>
 
-
 class seWindowMain;
-class seSkin;
 
 
 /**
  * \brief Skin preview.
  */
 class seViewSkin : public igdeViewRenderWindow{
+public:
+	typedef deTObjectReference<seViewSkin> Ref;
+	
 private:
 	seWindowMain &pWindowMain;
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
@@ -66,7 +69,7 @@ public:
 	void ResetView();
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

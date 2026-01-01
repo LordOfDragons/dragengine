@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 /**
  * Undo phoneme set vertex position set.
  */
 class saeUPhonemeSetVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<saeUPhonemeSetVertexPositionSet> Ref;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeUPhonemeSetVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

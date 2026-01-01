@@ -28,13 +28,25 @@
 #include "../utils/igdeBaseXML.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimationDifference.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleAnimationSelect.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleStateManipulator.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleStateSnapshot.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleInverseKinematic.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 
 class deAnimatorControllerTarget;
 class igdeEnvironment;
 class igdeGameProject;
 
 class deAnimator;
-class deAnimatorRule;
 class decBaseFileReader;
 
 
@@ -95,22 +107,22 @@ private:
 	void pReadAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
 	void pReadController(const decXmlElementTag &root, deAnimator &animator);
 	void pReadLink(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRule(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
-	deAnimatorRule *pReadRuleAnimation(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleAnimationDifference(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleAnimationSelect(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleBoneTransformator(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleStateManipulator(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleStateSnapshot(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleInverseKinematic(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleForeignState(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleGroup(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
-	deAnimatorRule *pReadRuleSubAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
-	deAnimatorRule *pReadRuleLimit(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleTrackTo(const decXmlElementTag &root, deAnimator &animator);
-	deAnimatorRule *pReadRuleMirror(const decXmlElementTag &root, deAnimator &animator);
-	bool pReadRuleCommon(const decXmlElementTag &root, deAnimator &animator, deAnimatorRule &rule);
-	void pReadControllerTarget(const decXmlElementTag &root, deAnimator &animator, deAnimatorControllerTarget &target);
+	deAnimatorRule::Ref pReadRule(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleAnimation(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleAnimationDifference(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleAnimationSelect(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleBoneTransformator(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleStateManipulator(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleStateSnapshot(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleInverseKinematic(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleForeignState(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleGroup(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleSubAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleLimit(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleTrackTo(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule::Ref pReadRuleMirror(const decXmlElementTag &root, deAnimator &animator);
+	bool pReadRuleCommon(const decXmlElementTag &root, deAnimatorRule &rule);
+	void pReadControllerTarget(const decXmlElementTag &root, deAnimatorControllerTarget &target);
 };
 
 #endif

@@ -67,45 +67,17 @@
 
 cePlayback::cePlayback(ceConversation &conversation) :
 pConversation(conversation),
-
-pTopic(NULL),
-pActors(NULL),
-pActorCount(0),
 pRunning(false),
 pPaused(false),
 pAutoAdvanceCommands(true),
 pCameraHandling(echFree),
-pTextBoxText(NULL),
-pCamera(NULL),
-pMainActionStack(cePlaybackActionStack::Ref::NewWith()),
-pActiveActionStack(pMainActionStack),
-
-pLastPlayedAction(NULL),
-pLastPlayedActionTopic(NULL)
-{
-	pCamera = new cePlaybackCamera(*this);
+pCamera(cePlaybackCamera::Ref::New(*this)),
+pMainActionStack(cePlaybackActionStack::Ref::New()),
+pActiveActionStack(pMainActionStack){
 }
 
 cePlayback::~cePlayback(){
-	if(pLastPlayedAction){
-		pLastPlayedAction->FreeReference();
-	}
-	if(pLastPlayedActionTopic){
-		pLastPlayedActionTopic->FreeReference();
-	}
-	if(pActors){
-		delete [] pActors;
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 	ClearTextBoxText();
-	if(pTextBoxText){
-		pTextBoxText->FreeReference();
-	}
-	if(pCamera){
-		delete pCamera;
-	}
 }
 
 
@@ -115,16 +87,7 @@ cePlayback::~cePlayback(){
 
 void cePlayback::SetTopic(ceConversationTopic *topic){
 	if(topic != pTopic){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
-		
 		pTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
-		
 		Rewind();
 		
 		pConversation.NotifyPlaybackChanged();
@@ -140,15 +103,15 @@ void cePlayback::SetRunning(bool running){
 	
 	if(running){
 		//SetCameraHandling( echConversation );
-		pConversation.GetInfoBox().Clear();
+		pConversation.GetInfoBox()->Clear();
 		ClearTextBoxText();
 		//ResetCamera();
 		
 	}else{
 		pTestActionList.RemoveAll();
 		
-		pConversation.GetInfoBox().SetBackgroundColor(decColor(1.0f, 0.0f, 0.0f, 0.5f));
-		pConversation.GetInfoBox().SetText("Conversation Finished");
+		pConversation.GetInfoBox()->SetBackgroundColor(decColor(1.0f, 0.0f, 0.0f, 0.5f));
+		pConversation.GetInfoBox()->SetText("Conversation Finished");
 	}
 	
 	pConversation.NotifyPlaybackChanged();
@@ -188,15 +151,14 @@ void cePlayback::Rewind(){
 	pSideActionStacks.RemoveAll();
 	pMainActionStack->Clear();
 	pActiveActionStack = pMainActionStack;
-	SetLastPlayedAction(NULL, NULL);
+	SetLastPlayedAction(nullptr, nullptr);
 	
-	int i;
-	for(i=0; i<pActorCount; i++){
-		pActors[i].Reset();
-	}
+	pActors.Visit([](cePlaybackActor &actor){
+		actor.Reset();
+	});
 	
-	pConversation.GetInfoBox().Clear();
-	pConversation.GetPlayerChoiceBox().Clear();
+	pConversation.GetInfoBox()->Clear();
+	pConversation.GetPlayerChoiceBox()->Clear();
 	ClearTextBoxText();
 	//ResetCamera();
 	
@@ -206,7 +168,7 @@ void cePlayback::Rewind(){
 void cePlayback::ResetCamera(){
 	pCamera->Reset();
 	
-	if(pActorCount == 1){
+	if(pActors.GetCount() == 1){
 		pCamera->SetCoordSys1Actor(*pConversation.GetActorList().GetAt(0));
 		pCamera->SetOffsetCameraFrom(decVector(0.0f, 1.65f, 0.0f));
 		pCamera->SetCameraDistanceFrom(0.5f);
@@ -219,7 +181,7 @@ void cePlayback::ResetCamera(){
 		pCamera->SetParameterCurve(cePlaybackCamera::epLookAtZ, 0.0f);
 		*/
 		
-	}else if(pActorCount > 1){
+	}else if(pActors.GetCount() > 1){
 		const ceConversationActorList &list = pConversation.GetActorList();
 		ceConversationActor &actor1 = *list.GetAt(0);
 		ceConversationActor &actor2 = *list.GetAt(1);
@@ -247,84 +209,67 @@ void cePlayback::PlaySingleAction(ceConversationAction *action, float time){
 	SetRunning(false);
 	SetPaused(false);
 	
-	pTestActionList.RemoveAll();
-	
-	if(action){//&& action->GetType() == ceConversationAction::eatActorSpeak){
-		pTestActionList.Add(action);
-		
-		if(action->GetType() != ceConversationAction::eatActorSpeak){
-			time = 0.0f;
-		}
-		
-		//time += action->GetDelay();
+	if(!action){
+		return;
 	}
+	
+	pTestActionList.RemoveAll();
+	pTestActionList.Add(action);
+	
+	if(action->GetType() != ceConversationAction::eatActorSpeak){
+		time = 0.0f;
+	}
+	//time += action->GetDelay();
 	
 	pSideActionStacks.RemoveAll();
 	pMainActionStack->Clear();
-	pActiveActionStack = pMainActionStack;
-	SetLastPlayedAction(NULL, NULL);
 	
-	if(pTestActionList.GetCount() > 0){
-		const float timeStep = 0.1f;
-		
-		AdvanceToNextAction();
-		SetRunning(true);
-		pConversation.Update(0.0f);
-		
-		while(time > 1e-5f){
-			if(time > timeStep){
-				pConversation.Update(timeStep);
-				
-			}else{
-				pConversation.Update(time);
-			}
+	AdvanceToNextAction();
+	SetRunning(true);
+	pConversation.Update(0.0f);
+	
+	const float timeStep = 0.1f;
+	while(time > 1e-5f){
+		if(time > timeStep){
+			pConversation.Update(timeStep);
 			
-			time -= timeStep;
+		}else{
+			pConversation.Update(time);
 		}
+		
+		time -= timeStep;
 	}
 }
 
 
 
+int cePlayback::GetActorCount() const{
+	return pActors.GetCount();
+}
+
 void cePlayback::SetActorCount(int count){
-	if(count != pActorCount){
-		int i;
-		
-		if(pActors){
-			delete [] pActors;
-			pActors = NULL;
-			pActorCount = 0;
-		}
-		
-		if(count > 0){
-			pActors = new cePlaybackActor[count];
-			pActorCount = count;
-		}
-		
-		for(i=0; i<count; i++){
-			pActors[i].SetTextBox(pConversation.GetTextBox());
-		}
+	if(count == pActors.GetCount()){
+		return;
+	}
+	
+	pActors.RemoveAll();
+	for(int i=0; i<count; i++){
+		pActors.Add(cePlaybackActor::Ref::New());
+		pActors.GetAt(i)->SetTextBox(pConversation.GetTextBox());
 	}
 }
 
 cePlaybackActor &cePlayback::GetActorAt(int index) const{
-	if(index < 0 || index >= pActorCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pActors[index];
+	return pActors.GetAt(index);
 }
 
 
 
 void cePlayback::Update(float elapsed){
 	if((pTopic || pTestActionList.GetCount() > 0) && pRunning && !pPaused){
-		int i;
-		
-		for(i=0; i<pActorCount; i++){
-			pActors[i].Update(elapsed);
-		}
-		
+		pActors.Visit([&](cePlaybackActor &a){
+			a.Update(elapsed);
+		});
 		ProcessActions(elapsed);
 	}
 	
@@ -346,10 +291,10 @@ void cePlayback::UpdateCamera(float elapsed){
 		const ceCameraShot &cameraShot = *pConversation.GetActiveCameraShot();
 		const ceConversationActorList &list = pConversation.GetActorList();
 		
-		if(pActorCount == 1){
+		if(pActors.GetCount() == 1){
 			pCamera->SetCoordSys1Actor(*list.GetAt(0));
 			
-		}else if(pActorCount > 1){
+		}else if(pActors.GetCount() > 1){
 			if(cameraShot.GetActorCount() > 1){
 				pCamera->SetCoordSys2Actors(*list.GetAt(0), *list.GetAt(1));
 				
@@ -360,14 +305,14 @@ void cePlayback::UpdateCamera(float elapsed){
 		
 		// set the other parameters straight into the camera
 		if(cameraShot.GetCameraTarget().IsEmpty()){
-			pCamera->SetCameraTarget(NULL);
+			pCamera->SetCameraTarget(nullptr);
 			
 		}else{
 			pCamera->SetCameraTarget(pConversation.GetTargetNamed(cameraShot.GetCameraTarget()));
 		}
 		
 		if(cameraShot.GetLookAtTarget().IsEmpty()){
-			pCamera->SetLookAtTarget(NULL);
+			pCamera->SetLookAtTarget(nullptr);
 			
 		}else{
 			pCamera->SetLookAtTarget(pConversation.GetTargetNamed(cameraShot.GetLookAtTarget()));
@@ -429,30 +374,27 @@ void cePlayback::UpdateCamera(float elapsed){
 }
 
 void cePlayback::ProcessActions(float elapsed){
-	const decObjectOrderedSet lanes(pSideActionStacks);
-	const int count = lanes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pActiveActionStack = (cePlaybackActionStack*)lanes.GetAt(i);
+	cePlaybackActionStack::List(pSideActionStacks).Visit([&](const cePlaybackActionStack::Ref &s){
+		pActiveActionStack = s;
 		pProcessActions(elapsed);
-	}
+	});
 	
 	pActiveActionStack = pMainActionStack;
 	pProcessActions(elapsed);
 }
 
 void cePlayback::AdvanceToNextAction(){
-	if(!pTopic && pTestActionList.GetCount() == 0){
+	if(!pTopic && pTestActionList.IsEmpty()){
 		SetRunning(false);
 		return;
 	}
 	
 	if(pActiveActionStack->IsEmpty()){
-		if(pTestActionList.GetCount() > 0){
-			pActiveActionStack->Push(NULL, pTestActionList.GetAt(0), &pTestActionList, 0);
+		if(pTestActionList.IsNotEmpty()){
+			pActiveActionStack->Push(nullptr, pTestActionList.First(), &pTestActionList, 0);
 			
 		}else{
-			pActiveActionStack->Push(pTopic, NULL, &pTopic->GetActionList(), 0);
+			pActiveActionStack->Push(pTopic, nullptr, &pTopic->GetActions(), 0);
 		}
 		return;
 	}
@@ -481,30 +423,17 @@ void cePlayback::AdvanceToNextAction(){
 }
 
 void cePlayback::FastForwardSpeaking(){
-	if(pTopic && pTestActionList.GetCount() == 0 && pRunning && !pPaused){
+	if(pTopic && pTestActionList.IsEmpty() && pRunning && !pPaused){
+		float timeToForward = pActors.Inject(0.0f, [](float t, const cePlaybackActor &a){
+			if(!a.IsSpeechDone()){
+				t = decMath::max(t, a.GetSpeechLength() - a.GetElapsedTime());
+			}
+			return t;
+		});
+		
 		const float timeStep = 0.1f;
-		float timeToForward = 0.0f;
-		float actorTime;
-		int i;
-		
-		for(i=0; i<pActorCount; i++){
-			if(!pActors[i].IsSpeechDone()){
-				actorTime = pActors[i].GetSpeechLength() - pActors[i].GetElapsedTime();
-				
-				if(actorTime > timeToForward){
-					timeToForward = actorTime;
-				}
-			}
-		}
-		
 		while(timeToForward > 1e-5f){
-			if(timeToForward > timeStep){
-				pConversation.Update(timeStep);
-				
-			}else{
-				pConversation.Update(timeToForward);
-			}
-			
+			pConversation.Update(decMath::min(timeStep, timeToForward));
 			timeToForward -= timeStep;
 		}
 	}
@@ -527,32 +456,25 @@ void cePlayback::CancelLoopingLayer(int stackDepth){
 
 
 void cePlayback::SetTextBoxText(const decUnicodeString &text){
-	ceTextBox &textBox = *pConversation.GetTextBox();
-	ceTextBoxTextList &textBoxTextList = textBox.GetTextList();
-	
 	ClearTextBoxText();
 	
 	if(!pTextBoxText){
-		pTextBoxText = new ceTextBoxText;
+		pTextBoxText = ceTextBoxText::Ref::New();
 		pTextBoxText->SetName(decUnicodeString::NewFromUTF8("Playback:"));
 	}
 	
 	pTextBoxText->SetText(text);
 	
-	textBoxTextList.Add(pTextBoxText);
-	textBox.UpdateCanvas();
+	pConversation.GetTextBox()->GetTexts().Add(pTextBoxText);
+	pConversation.GetTextBox()->UpdateCanvas();
 }
 
 void cePlayback::ClearTextBoxText(){
 	if(pTextBoxText){
 		ceTextBox &textBox = *pConversation.GetTextBox();
-		ceTextBoxTextList &textBoxTextList = textBox.GetTextList();
-		
-		if(textBoxTextList.Has(pTextBoxText)){
-			textBoxTextList.Remove(pTextBoxText);
+		if(textBox.GetTexts().Remove(pTextBoxText)){
 			textBox.UpdateCanvas();
 		}
-		
 		pTextBoxText->SetText(decUnicodeString());
 	}
 }
@@ -564,7 +486,7 @@ void cePlayback::ClearTextBoxText(){
 
 void cePlayback::pProcessActions(float elapsed){
 	ceConversationTopic *actionTopic = pLastPlayedActionTopic;
-	ceConversationAction *action = NULL;
+	ceConversationAction::Ref action;
 	int i;
 	
 	// check if any stack entry upwards contains a condition evaluating to false. in
@@ -621,8 +543,8 @@ void cePlayback::pProcessActions(float elapsed){
 				const bool useActorWait = !action->GetWaitSpeakOnly();
 				
 				if(action->GetWaitForActorID().IsEmpty()){
-					for(i=0; i<pActorCount; i++){
-						if(!pActors[i].IsSpeechDone()
+					for(i=0; i<pActors.GetCount(); i++){
+						if(!pActors.GetAt(i)->IsSpeechDone()
 						|| (useActorWait && actorList.GetAt(i)->GetWaiting())){
 							return;
 						}
@@ -631,7 +553,7 @@ void cePlayback::pProcessActions(float elapsed){
 				}else{
 					const int index = actorList.IndexWithIDOrAliasID(action->GetWaitForActorID());
 					if(index != -1){
-						if(!pActors[index].IsSpeechDone()
+						if(!pActors.GetAt(index)->IsSpeechDone()
 						|| (useActorWait && actorList.GetAt(index)->GetWaiting())){
 							return;
 						}
@@ -662,8 +584,8 @@ void cePlayback::pProcessActions(float elapsed){
 			
 		}else if(pActiveActionStack == pMainActionStack){
 			// end of conversation. wait for all actors to be done speaking and exit the loop
-			for(i=0; i<pActorCount; i++){
-				if(!pActors[i].IsSpeechDone()){
+			for(const auto &a : pActors){
+				if(!a->IsSpeechDone()){
 					return;
 				}
 			}
@@ -678,26 +600,10 @@ void cePlayback::pProcessActions(float elapsed){
 
 void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
 	if(topic != pLastPlayedActionTopic){
-		if(pLastPlayedActionTopic){
-			pLastPlayedActionTopic->FreeReference();
-		}
-		
 		pLastPlayedActionTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
 	}
 	
 	if(action != pLastPlayedAction){
-		if(pLastPlayedAction){
-			pLastPlayedAction->FreeReference();
-		}
-		
 		pLastPlayedAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 }

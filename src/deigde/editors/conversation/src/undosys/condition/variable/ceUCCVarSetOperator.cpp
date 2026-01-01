@@ -46,34 +46,20 @@ ceConversationAction *action, ceCConditionVariable *condition,
 ceCConditionVariable::eOperators newOperator){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pCondition = nullptr;
 	pOldOperator = condition->GetOperator();
 	pNewOperator = newOperator;
 	
 	SetShortInfo("Condition Variable: Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetOperator::~ceUCCVarSetOperator(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

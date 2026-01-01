@@ -42,11 +42,10 @@
 
 deoglSkin::deoglSkin(deGraphicOpenGl &ogl, const deSkin &skin) :
 pOgl(ogl),
-pSkin(skin),
-pRSkin(nullptr)
+pSkin(skin)
 {
 	try{
-		pRSkin = new deoglRSkin(ogl.GetRenderThread(), *this, skin);
+		pRSkin = deoglRSkin::Ref::New(ogl.GetRenderThread(), *this, skin);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -65,11 +64,10 @@ deoglSkin::~deoglSkin(){
 
 void deoglSkin::RecreateRSkin(){
 	if(pRSkin){
-		pRSkin->FreeReference();
 		pRSkin = nullptr;
 	}
 
-	pRSkin = new deoglRSkin(pOgl.GetRenderThread(), *this, pSkin);
+	pRSkin = deoglRSkin::Ref::New(pOgl.GetRenderThread(), *this, pSkin);
 }
 
 
@@ -80,6 +78,5 @@ void deoglSkin::RecreateRSkin(){
 void deoglSkin::pCleanUp(){
 	if(pRSkin){
 		pRSkin->DropOwnerSkin();
-		pRSkin->FreeReference();
 	}
 }

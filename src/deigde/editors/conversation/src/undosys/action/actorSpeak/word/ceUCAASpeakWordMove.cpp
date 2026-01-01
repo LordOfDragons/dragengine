@@ -48,38 +48,24 @@ ceStrip *word, int newIndex){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pWord = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pWord = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetWordList().IndexOf(word);
+	pOldIndex = actorSpeak->GetWords().IndexOf(word);
 	
 	if(pOldIndex == -1) DETHROW(deeInvalidParam);
-	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetWordList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetWords().GetCount()) DETHROW(deeInvalidParam);
 	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
 ///////////////
 
 void ceUCAASpeakWordMove::Undo(){
-	pActorSpeak->GetWordList().MoveTo(pWord, pOldIndex);
+	pActorSpeak->GetWords().Move(pWord, pOldIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordMove::Redo(){
-	pActorSpeak->GetWordList().MoveTo(pWord, pNewIndex);
+	pActorSpeak->GetWords().Move(pWord, pNewIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

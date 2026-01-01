@@ -203,7 +203,7 @@ void deWebp3DTarball::Load3DImage(deWebp3DImageInfo &infos, decBaseFileReader &f
 	
 	const int strideLine = image.GetWidth() * image.GetComponentCount();
 	const int strideImage = strideLine * image.GetHeight();
-	char * const imageData = (char*)image.GetData();
+	char * const imageData = reinterpret_cast<char*>(image.GetData());
 	sTarballHeader header;
 	unsigned short z;
 	int i;
@@ -265,7 +265,7 @@ void deWebp3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 	DEASSERT_TRUE(image.GetBitCount() == 8)
 	DEASSERT_TRUE(image.GetComponentCount() >= 3)
 	
-	const char * const imageData = (char*)image.GetData();
+	const char * const imageData = reinterpret_cast<char*>(image.GetData());
 	const int strideLine = image.GetWidth() * image.GetComponentCount();
 	const int strideImage = strideLine * image.GetHeight();
 	const bool hasAlpha = image.GetComponentCount() == 4;
@@ -327,13 +327,13 @@ void deWebp3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 	memset(&paddingBytes[0], '\0', 512);
 	
 	// save file
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith(""));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(""));
 	
 	// write file by creating an archive with an image for each z coordinate
 	for(z=0; z<image.GetDepth(); z++){
 		// save slice to memory file
 		Save2DImage(image.GetWidth(), image.GetHeight(), hasAlpha,
-			decMemoryFileWriter::Ref::NewWith(memoryFile, false),
+			decMemoryFileWriter::Ref::New(memoryFile, false),
 			imageData + (strideImage * z));
 		
 		// determine the file size and padding. tar requires files to be
@@ -396,7 +396,7 @@ void deWebp3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 
 
 void deWebp3DTarball::Get2DImageInfos(sImageInfo &info2D, decBaseFileReader &file, int size){
-	const decMemoryFile::Ref data(decMemoryFile::Ref::NewWith("data"));
+	const decMemoryFile::Ref data(decMemoryFile::Ref::New("data"));
 	data->Resize(size);
 	file.Read(data->GetPointer(), size);
 	
@@ -442,7 +442,7 @@ void deWebp3DTarball::Load2DImage(deWebp3DImageInfo &info3D,
 decBaseFileReader &file, int size, void *imagedata){
 	DEASSERT_NOTNULL(imagedata)
 	
-	const decMemoryFile::Ref data(decMemoryFile::Ref::NewWith("data"));
+	const decMemoryFile::Ref data(decMemoryFile::Ref::New("data"));
 	data->Resize(size);
 	file.Read(data->GetPointer(), size);
 	

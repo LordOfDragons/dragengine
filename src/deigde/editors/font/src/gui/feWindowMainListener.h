@@ -35,6 +35,9 @@ class feWindowMain;
  * \brief Window editor listener.
  */
 class feWindowMainListener : public feFontNotifier{
+public:
+	typedef deTObjectReference<feWindowMainListener> Ref;
+	
 private:
 	feWindowMain &pWindow;
 	
@@ -47,7 +50,9 @@ public:
 	feWindowMainListener(feWindowMain &window);
 	
 	/** \brief Clean up listener. */
+protected:
 	~feWindowMainListener() override;
+public:
 	/*@}*/
 	
 	

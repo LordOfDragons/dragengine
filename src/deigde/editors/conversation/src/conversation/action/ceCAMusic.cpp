@@ -61,6 +61,6 @@ void ceCAMusic::SetName(const char *name){
 
 
 
-ceConversationAction *ceCAMusic::CreateCopy() const{
-	return new ceCAMusic(*this);
+ceConversationAction::Ref ceCAMusic::CreateCopy() const{
+	return ceCAMusic::Ref::New(*this);
 }

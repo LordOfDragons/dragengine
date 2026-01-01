@@ -29,7 +29,7 @@
 #include "../../../../../conversation/action/ceCAPlayerChoice.h"
 
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceActions;
+#include "ceWPTTIMAPlayerChoiceActions.h"
 
 
 /**
@@ -37,11 +37,12 @@ class ceWPTTIMAPlayerChoiceActions;
  */
 class ceWPTTIMAPlayerChoice : public ceWPTTIMAction{
 private:
-	ceWPTTIMAPlayerChoiceActions *pActions;
+	ceWPTTIMAPlayerChoiceActions::Ref pActions;
 	
 	
 	
 public:
+	typedef deTObjectReference<ceWPTTIMAPlayerChoice> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -59,13 +60,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return (ceCAPlayerChoice*)GetAction(); }
+	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return GetAction().DynamicCast<ceCAPlayerChoice>(); }
 	
-	/** \brief Model with option or \em NULL. */
+	/** \brief Model with option or \em nullptr. */
 	ceWPTTIMAPlayerChoiceOption *GetOptionChild(ceCAPlayerChoiceOption *option) const;
 	
-	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{ return pActions; }
+	/** \brief Model with actions or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceActions::Ref &GetActionsChild() const{ return pActions; }
 	
 	/** \brief Update action. */
 	void Update() override;

@@ -80,13 +80,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Model or NULL if not set. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model or NULL it not set. */
 	void SetModel(deModel *model);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);

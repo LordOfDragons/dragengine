@@ -88,19 +88,16 @@
 ////////////////////////////
 
 meHeightTerrainSector::meHeightTerrainSector(deEngine *engine, const decPoint &coordinates) :
-pActiveNavSpace(NULL),
-pDDSelNavPoints(NULL)
+pActiveNavSpace(nullptr)
 {
 	if(!engine) DETHROW(deeInvalidParam);
 	
-	pHeightTerrain = NULL;
+	pHeightTerrain = nullptr;
 	
 	pEngine = engine;
-	pEngSector = NULL;
+	pEngSector = nullptr;
 	
 	pDDPointsPerCluster = 64;
-	pDDClusterCount = 16;
-	pDDClusters = NULL;
 	
 	pCoordinates = coordinates;
 	
@@ -112,25 +109,13 @@ pDDSelNavPoints(NULL)
 	pHeightImageChanged = false;
 	pHeightImageSaved = false;
 	
-	pVisFaces = NULL;
+	pVisFaces = nullptr;
 	pVisImageChanged = false;
 	pVisImageSaved = false;
 	
-	pTextures = NULL;
-	pTextureCount = 0;
-	pTextureSize = 0;
-	pActiveTexture = NULL;
-	
-	pPropFields = NULL;
-	pPropFieldCount = 0;
 	pPropFieldCellCount = 0;
 	pPFCacheChanged = false;
 	pPFCacheSaved = false;
-	
-	pPFLayers = NULL;
-	pPFLayerCount = 0;
-	pPFLayerSize = 0;
-	pActivePFLayer = NULL;
 	
 	try{
 		pSetPropFieldCount(10);
@@ -174,18 +159,13 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 			if(world){
 				world->RemoveDebugDrawer(pDDSelNavPoints);
 			}
-			pDDSelNavPoints->FreeReference();
 		}
 		
 		if(world){
 			pRemoveDDEdgesFromWorld(*world);
-			
-			int i;
-			for(i=0; i<pPropFieldCount; i++){
-				if(pPropFields[i]){
-					world->RemovePropField(pPropFields[i]->GetEnginePropField());
-				}
-			}
+			pPropFields.Visit([&](const meHeightTerrainPropField &p){
+				world->RemovePropField(p.GetEnginePropField());
+			});
 		}
 	}
 	
@@ -203,12 +183,9 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 				world->AddDebugDrawer(pDDSelNavPoints);
 			}
 			
-			int i;
-			for(i=0; i<pPropFieldCount; i++){
-				if(pPropFields[i]){
-					world->AddPropField(pPropFields[i]->GetEnginePropField());
-				}
-			}
+			pPropFields.Visit([&](const meHeightTerrainPropField &p){
+				world->AddPropField(p.GetEnginePropField());
+			});
 		}
 	}
 	
@@ -235,31 +212,28 @@ void meHeightTerrainSector::CreateEngineSector(){
 	}
 	
 	decPoint pointCount(pHeightTerrain->GetSectorResolution(), pHeightTerrain->GetSectorResolution());
-	const int navSpaceCount = pNavSpaces.GetCount();
-	deHeightTerrainNavSpace *engNavSpace = NULL;
-	deHeightTerrainTexture *engTexture = NULL;
-	int i;
+	deHeightTerrainNavSpace *engNavSpace = nullptr;
+	deHeightTerrainTexture *engTexture = nullptr;
 	
 	try{
 		pEngSector->SetHeightImage(pHeightImage);
 		UpdateVisibilitySector(pEngSector);
 		
 		// create textures
-		for(i=0; i<pTextureCount; i++){
-			engTexture = pTextures[i]->CreateEngineTexture();
+		pTextures.Visit([&](meHeightTerrainTexture &t){
+			engTexture = t.CreateEngineTexture();
 			pEngSector->AddTexture(engTexture);
-			pTextures[i]->SetEngineTexture(engTexture);
-			engTexture = NULL;
-		}
+			t.SetEngineTexture(engTexture);
+			engTexture = nullptr;
+		});
 		
 		// add navigation spaces
-		for(i=0; i<navSpaceCount; i++){
-			meHeightTerrainNavSpace &navspace = *((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i));
-			engNavSpace = navspace.CreateEngineNavSpace();
+		pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+			engNavSpace = n.CreateEngineNavSpace();
 			pEngSector->AddNavSpace(engNavSpace);
-			navspace.SetEngineNavSpace(engNavSpace);
-			engNavSpace = NULL;
-		}
+			n.SetEngineNavSpace(engNavSpace);
+			engNavSpace = nullptr;
+		});
 		
 	}catch(const deException &){
 		if(engNavSpace){
@@ -277,15 +251,12 @@ void meHeightTerrainSector::DestroyEngineSector(){
 		return;
 	}
 	
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
-	for(i=0; i<navSpaceCount; i++){
-		((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->SetEngineNavSpace(NULL);
-	}
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->SetEngineTexture(NULL);
-	}
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+		n.SetEngineNavSpace(nullptr);
+	});
+	pTextures.Visit([&](meHeightTerrainTexture &t){
+		t.SetEngineTexture(nullptr);
+	});
 	pEngSector->RemoveAllTextures();
 	
 	if(pHeightTerrain){
@@ -294,7 +265,7 @@ void meHeightTerrainSector::DestroyEngineSector(){
 	}else{
 		delete pEngSector; // should never happen
 	}
-	pEngSector = NULL;
+	pEngSector = nullptr;
 }
 
 
@@ -318,15 +289,12 @@ void meHeightTerrainSector::SectorSizeOrResChanged(){
 	pCreateDDEdges();
 	pRepositionDebugDrawers();
 	
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	for(i=0; i<navSpaceCount; i++){
-		((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->SectorSizeOrResChanged();
-	}
-	
-	for(i=0; i<pPFLayerCount; i++){
-		pPFLayers[i]->SectorSizeOrResChanged();
-	}
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+		n.SectorSizeOrResChanged();
+	});
+	pPFLayers.Visit([&](meHeightTerrainPFLayer &l){
+		l.SectorSizeOrResChanged();
+	});
 }
 
 
@@ -343,9 +311,10 @@ void meHeightTerrainSector::SetActive(bool active){
 
 
 void meHeightTerrainSector::NotifySectorChanged(){
-	if(pHeightTerrain){
-		if(pHeightTerrain->GetEngineHeightTerrain()){
-			pHeightTerrain->GetEngineHeightTerrain()->NotifySectorChanged(pHeightTerrain->IndexOfSector(this));
+	if(pHeightTerrain && pEngSector){
+		deHeightTerrain * const engHT = pHeightTerrain->GetEngineHeightTerrain();
+		if(engHT){
+			engHT->NotifySectorChanged(engHT->IndexOfSector(pEngSector));
 		}
 		pHeightTerrain->SetChanged(true);
 	}
@@ -354,11 +323,9 @@ void meHeightTerrainSector::NotifySectorChanged(){
 
 
 void meHeightTerrainSector::InitDelegates(igdeEnvironment *environment){
-	int p;
-	
-	for(p=0; p<pPropFieldCount; p++){
-		pPropFields[p]->InitDelegates(environment);
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.InitDelegates(environment);
+	});
 }
 
 
@@ -554,47 +521,38 @@ decDVector meHeightTerrainSector::GetWorldPosition() const{
 
 
 void meHeightTerrainSector::Update(){
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->Update();
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.Update();
+	});
 }
 
 void meHeightTerrainSector::UpdateVInstances(){
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->UpdateVInstances();
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.UpdateVInstances();
+	});
 }
 
 void meHeightTerrainSector::ClearVegetation(){
-	if(!pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
+	if(!pHeightTerrain || pHeightTerrain->GetVLayers().IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->Clear();
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.Clear();
+	});
 	SetPFCacheChanged(true);
 }
 
 void meHeightTerrainSector::RebuildVegetationPropFieldTypes(){
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->RebuildVegetationPropFieldTypes();
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.RebuildVegetationPropFieldTypes();
+	});
 }
 
 
 
 void meHeightTerrainSector::SetRadiusOfInfluence(float radius){
-	if(radius < 0.0f){
-		pRadiusOfInfluence = 0.0f;
-		
-	}else{
-		pRadiusOfInfluence = radius;
-	}
+	pRadiusOfInfluence = decMath::max(radius, 0.0f);
 }
 
 
@@ -610,9 +568,7 @@ void meHeightTerrainSector::ShowStateChanged(){
 // Height Image
 /////////////////
 
-void meHeightTerrainSector::SetDataType(int dataType){
-	if(dataType < edtInt8 || dataType > edtFloat) DETHROW(deeInvalidParam);
-	
+void meHeightTerrainSector::SetDataType(eDataTypes dataType){
 	if(dataType != pDataType){
 		pDataType = dataType;
 		
@@ -758,7 +714,7 @@ void meHeightTerrainSector::LoadVisibilityFromImage(){
 		const decString baseDir(pHeightTerrain->GetBaseDirectory());
 		if(pEngine->GetVirtualFileSystem()->ExistsFile(decPath::AbsolutePathUnix(pPathVisImage, baseDir))){
 			try{
-				image.TakeOver(pEngine->GetImageManager()->LoadImage(pPathVisImage, baseDir));
+				image = pEngine->GetImageManager()->LoadImage(pPathVisImage, baseDir);
 				if(image->GetComponentCount() != 1 || image->GetWidth() != resolution || image->GetHeight() != resolution){
 					DETHROW(deeInvalidParam);
 					// TODO tell the user this is not going to work
@@ -828,83 +784,29 @@ void meHeightTerrainSector::LoadVisibilityFromImage(){
 // Textures
 /////////////
 
-meHeightTerrainTexture *meHeightTerrainSector::GetTextureAt(int index) const{
-	if(index < 0 || index >= pTextureCount) DETHROW(deeInvalidParam);
-	
-	return pTextures[index];
-}
-
 meHeightTerrainTexture *meHeightTerrainSector::GetTextureNamed(const char *name) const{
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		if(pTextures[i]->GetName() == name){
-			return pTextures[i];
-		}
-	}
-	return NULL;
+	return pTextures.FindOrDefault([&](const meHeightTerrainTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 bool meHeightTerrainSector::HasTextureNamed(const char *name) const{
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		if(pTextures[i]->GetName() == name){
-			return true;
-		}
-	}
-	return false;
-}
-
-int meHeightTerrainSector::IndexOfTexture(meHeightTerrainTexture *texture) const{
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		if(texture == pTextures[i]){
-			return i;
-		}
-	}
-	return -1;
+	return pTextures.HasMatching([&](const meHeightTerrainTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 int meHeightTerrainSector::IndexOfTextureNamed(const char *name) const{
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		if(pTextures[i]->GetName() == name){
-			return i;
-		}
-	}
-	return -1;
-}
-
-bool meHeightTerrainSector::HasTexture(meHeightTerrainTexture *texture) const{
-	int i;
-	for(i=0; i<pTextureCount; i++){
-		if(texture == pTextures[i]){
-			return true;
-		}
-	}
-	return false;
+	return pTextures.IndexOfMatching([&](const meHeightTerrainTexture &t){
+		return t.GetName() == name;
+	});
 }
 
 void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
-	deHeightTerrainTexture *engTexture = NULL;
-	
-	if(pTextureCount == pTextureSize){
-		int newSize = pTextureCount * 3 / 2 + 1;
-		meHeightTerrainTexture **newArray = new meHeightTerrainTexture*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pTextures){
-			memcpy(newArray, pTextures, sizeof(meHeightTerrainTexture*) * pTextureSize);
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	pTextures[pTextureCount] = texture;
-	pTextureCount++;
-	
-	texture->AddReference();
+	deHeightTerrainTexture *engTexture = nullptr;
+	pTextures.Add(texture);
 	texture->SetSector(this);
 	
 	if(pEngSector){
@@ -930,27 +832,23 @@ void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 }
 
 void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
-	int i, index = IndexOfTexture(texture);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const meHeightTerrainTexture::Ref guard(texture);
+	
+	if(texture == pActiveTexture){
+		SetActiveTexture(nullptr);
+	}
+	
+	pTextures.Remove(texture);
 	
 	if(texture->GetEngineTexture()){
 		if(pEngSector){
 			pEngSector->RemoveTexture(texture->GetEngineTexture());
 		}
-		texture->SetEngineTexture(NULL);
+		texture->SetEngineTexture(nullptr);
 	}
 	
-	if(texture == pActiveTexture) SetActiveTexture(NULL);
-	
-	for(i=index+1; i<pTextureCount; i++){
-		pTextures[i - 1] = pTextures[i];
-	}
-	pTextureCount--;
-	
-	texture->SetSector(NULL);
-	texture->SetEngineTexture(NULL);
-	texture->FreeReference();
-	
+	texture->SetSector(nullptr);
+	texture->SetEngineTexture(nullptr);
 	NotifySectorChanged();
 	
 	if(pHeightTerrain){
@@ -960,24 +858,19 @@ void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 }
 
 void meHeightTerrainSector::RemoveAllTextures(){
-	int i;
+	SetActiveTexture(nullptr);
 	
-	for(i=0; i<pTextureCount; i++){
-		pTextures[i]->SetEngineTexture(NULL);
-	}
+	pTextures.Visit([&](meHeightTerrainTexture &t){
+		t.SetEngineTexture(nullptr);
+	});
 	if(pEngSector){
 		pEngSector->RemoveAllTextures();
 	}
 	
-	SetActiveTexture(NULL);
-	
-	while(pTextureCount > 0){
-		pTextureCount--;
-		
-		pTextures[pTextureCount]->SetSector(NULL);
-		pTextures[pTextureCount]->SetEngineTexture(NULL);
-		pTextures[pTextureCount]->FreeReference();
-	}
+	pTextures.Visit([&](meHeightTerrainTexture &t){
+		t.SetSector(nullptr);
+	});
+	pTextures.RemoveAll();
 	
 	NotifySectorChanged();
 	
@@ -998,9 +891,7 @@ void meHeightTerrainSector::SetActiveTexture(meHeightTerrainTexture *texture){
 }
 
 meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y) const{
-	if(!pHeightTerrain){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(pHeightTerrain)
 	
 	const int resolution = pHeightTerrain->GetSectorResolution();
 	
@@ -1009,8 +900,6 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 	float bx = x - (float)gx;
 	float by = y - (float)gy;
 	float s1, s2, s3, s4, s5, s6, s7;
-	deImage *mask;
-	int t;
 	
 	if(gx < 0){
 		gx = 0;
@@ -1030,8 +919,8 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 		by = 0.0f;
 	}
 	
-	for(t=pTextureCount-1; t>=0; t--){
-		mask = pTextures[t]->GetMaskImage();
+	meHeightTerrainTexture * const htt = pTextures.FindReverseOrDefault([&](meHeightTerrainTexture &t){
+		deImage * const mask = t.GetMaskImage();
 		
 		if(mask){
 			meTerrainMaskImage tmi(mask);
@@ -1047,19 +936,16 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 			s7 = s5 * (1.0f - by) + s6 * by;
 			
 			if(s7 > 0.5f){
-				return pTextures[t];
+				return true;
 			}
 			
 		}else{
-			return pTextures[t];
+			return true;
 		}
-	}
+		return false;
+	});
 	
-	if(pTextureCount > 0){
-		return pTextures[0];
-	}
-	
-	return NULL;
+	return htt ? htt : (pTextures.IsNotEmpty() ? pTextures.First() : nullptr);
 }
 
 
@@ -1067,53 +953,10 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 // PropFields
 ///////////////
 
-meHeightTerrainPFLayer *meHeightTerrainSector::GetPFLayerAt(int index) const{
-	if(index < 0 || index >= pPFLayerCount) DETHROW(deeInvalidParam);
-	
-	return pPFLayers[index];
-}
-
-int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const{
-	if(!pflayer) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPFLayerCount; i++){
-		if(pflayer == pPFLayers[i]) return i;
-	}
-	
-	return -1;
-}
-
-bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer *pflayer) const{
-	if(!pflayer) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pPFLayerCount; i++){
-		if(pflayer == pPFLayers[i]) return true;
-	}
-	
-	return false;
-}
-
 void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
-	if(!pflayer) DETHROW(deeInvalidParam);
+	DEASSERT_NOTNULL(pflayer)
 	
-	if(pPFLayerCount == pPFLayerSize){
-		int newSize = pPFLayerCount * 3 / 2 + 1;
-		meHeightTerrainPFLayer **newArray = new meHeightTerrainPFLayer*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pPFLayers){
-			memcpy(newArray, pPFLayers, sizeof(meHeightTerrainPFLayer*) * pPFLayerSize);
-			delete [] pPFLayers;
-		}
-		pPFLayers = newArray;
-		pPFLayerSize = newSize;
-	}
-	
-	pPFLayers[pPFLayerCount] = pflayer;
-	pPFLayerCount++;
-	
-	pflayer->AddReference();
+	pPFLayers.Add(pflayer);
 	pflayer->SetHTSector(this);
 	
 	if(pHeightTerrain){
@@ -1121,22 +964,20 @@ void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 //		pHeightTerrain->GetWorld().NotifyHTSPFLayerCountChanged( this );
 	}
 	
-	if(!pActivePFLayer) SetActivePFLayer(pflayer);
+	if(!pActivePFLayer){
+		SetActivePFLayer(pflayer);
+	}
 }
 
 void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
-	int i, index = IndexOfPFLayer(pflayer);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const meHeightTerrainPFLayer::Ref guard(pflayer);
 	
-	if(pflayer == pActivePFLayer) SetActivePFLayer(NULL);
-	
-	for(i=index+1; i<pPFLayerCount; i++){
-		pPFLayers[i - 1] = pPFLayers[i];
+	if(pflayer == pActivePFLayer){
+		SetActivePFLayer(nullptr);
 	}
-	pPFLayerCount--;
 	
-	pflayer->SetHTSector(NULL);
-	pflayer->FreeReference();
+	pPFLayers.Remove(pflayer);
+	pflayer->SetHTSector(nullptr);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetChanged(true);
@@ -1145,14 +986,12 @@ void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
 }
 
 void meHeightTerrainSector::RemoveAllPFLayers(){
-	SetActivePFLayer(NULL);
+	SetActivePFLayer(nullptr);
 	
-	while(pPFLayerCount > 0){
-		pPFLayerCount--;
-		
-		pPFLayers[pPFLayerCount]->SetHTSector(NULL);
-		pPFLayers[pPFLayerCount]->FreeReference();
-	}
+	pPFLayers.Visit([&](meHeightTerrainPFLayer &l){
+		l.SetHTSector(nullptr);
+	});
+	pPFLayers.RemoveAll();
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetChanged(true);
@@ -1172,21 +1011,13 @@ void meHeightTerrainSector::SetActivePFLayer(meHeightTerrainPFLayer *pflayer){
 
 
 
-meHeightTerrainPropField *meHeightTerrainSector::GetPropFieldAt(int index) const{
-	if(index < 0 || index >= pPropFieldCount) DETHROW(deeInvalidParam);
-	
-	return pPropFields[index];
-}
-
 void meHeightTerrainSector::InvalidateHeights(const decPoint &fromGrid, const decPoint &toGrid){
 	pUpdateDDEdgesHeights(fromGrid, toGrid);
 	pUpdateDDSelNavPointHeights();
 	
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	for(i=0; i<navSpaceCount; i++){
-		((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->InvalidateHeights();
-	}
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+		n.InvalidateHeights();
+	});
 	
 	pRepositionDebugDrawers();
 }
@@ -1196,7 +1027,7 @@ void meHeightTerrainSector::InvalidatePropFields(const decPoint &fromGrid, const
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pPropFieldCount == 0 || pHeightTerrain->GetVLayerCount() == 0){
+	if(pPropFields.IsEmpty() || pHeightTerrain->GetVLayers().IsEmpty()){
 		return;
 	}
 	
@@ -1210,17 +1041,16 @@ void meHeightTerrainSector::InvalidatePropFields(const decPoint &fromGrid, const
 	float areaToX = ((float)toGrid.x * areaFactor - areaOffset) + pRadiusOfInfluence;
 	float areaToY = (areaOffset - (float)fromGrid.y * areaFactor) + pRadiusOfInfluence;
 	bool dirty = false;
-	int p;
 	
-	for(p=0; p<pPropFieldCount; p++){
-		const decVector2 &minExtend = pPropFields[p]->GetMinimumExtend();
-		const decVector2 &maxExtend = pPropFields[p]->GetMaximumExtend();
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		const decVector2 &minExtend = p.GetMinimumExtend();
+		const decVector2 &maxExtend = p.GetMaximumExtend();
 		
 		if(minExtend.x < areaToX && maxExtend.x > areaFromX && minExtend.y < areaToY && maxExtend.y > areaFromY){
 			dirty = true;
-			pPropFields[p]->Invalidate();
+			p.Invalidate();
 		}
-	}
+	});
 	
 	if(dirty){
 		SetPFCacheChanged(true);
@@ -1228,23 +1058,21 @@ void meHeightTerrainSector::InvalidatePropFields(const decPoint &fromGrid, const
 }
 
 void meHeightTerrainSector::InvalidateAllPropFields(){
-	if(!pHeightTerrain || pHeightTerrain->GetVLayerCount() == 0){
+	if(!pHeightTerrain || pHeightTerrain->GetVLayers().IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->Invalidate();
-	}
+	pPropFields.Visit([](meHeightTerrainPropField &p){
+		p.Invalidate();
+	});
 	SetPFCacheChanged(true);
 }
 
 void meHeightTerrainSector::ValidateAllPropFields(){
-	int i;
-	for(i=0; i<pPropFieldCount; i++){
-		pPropFields[i]->MarkVInstancesValid();
-		pPropFields[i]->Validate();
-	}
+	pPropFields.Visit([](meHeightTerrainPropField &p){
+		p.MarkVInstancesValid();
+		p.Validate();
+	});
 }
 
 void meHeightTerrainSector::SetPathPFCache(const char *path){
@@ -1297,72 +1125,22 @@ void meHeightTerrainSector::SetPFCacheSaved(bool saved){
 // Navigation spaces
 //////////////////////
 
-int meHeightTerrainSector::GetNavSpaceCount() const{
-	return pNavSpaces.GetCount();
-}
-
-meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceAt(int index) const{
-	return (meHeightTerrainNavSpace*)pNavSpaces.GetAt(index);
-}
-
 meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = pNavSpaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		meHeightTerrainNavSpace * const navspace = (meHeightTerrainNavSpace*)pNavSpaces.GetAt(i);
-		if(navspace->GetName() == name){
-			return navspace;
-		}
-	}
-	
-	return NULL;
+	return pNavSpaces.FindOrDefault([&](const meHeightTerrainNavSpace &n){
+		return n.GetName() == name;
+	});
 }
 
 bool meHeightTerrainSector::HasNavSpaceNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = pNavSpaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int meHeightTerrainSector::IndexOfNavSpace(meHeightTerrainNavSpace *navspace) const{
-	return pNavSpaces.IndexOf(navspace);
+	return pNavSpaces.HasMatching([&](const meHeightTerrainNavSpace &n){
+		return n.GetName() == name;
+	});
 }
 
 int meHeightTerrainSector::IndexOfNavSpaceNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = pNavSpaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool meHeightTerrainSector::HasNavSpace(meHeightTerrainNavSpace *navspace) const{
-	return pNavSpaces.Has(navspace);
+	return pNavSpaces.IndexOfMatching([&](const meHeightTerrainNavSpace &n){
+		return n.GetName() == name;
+	});
 }
 
 void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
@@ -1373,7 +1151,7 @@ void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
 	pNavSpaces.Add(navspace);
 	navspace->SetHTSector(this);
 	
-	deHeightTerrainNavSpace *engNavSpace = NULL;
+	deHeightTerrainNavSpace *engNavSpace = nullptr;
 	
 	try{
 		engNavSpace = navspace->CreateEngineNavSpace();
@@ -1399,24 +1177,21 @@ void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
 }
 
 void meHeightTerrainSector::RemoveNavSpace(meHeightTerrainNavSpace *navspace){
-	const int index = pNavSpaces.IndexOf(navspace);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
+	const meHeightTerrainNavSpace::Ref guard(navspace);
+	
+	if(navspace == pActiveNavSpace){
+		SetActiveNavSpace(nullptr);
 	}
+	
+	pNavSpaces.Remove(navspace);
 	
 	if(navspace->GetEngineNavSpace()){
 		pEngSector->RemoveNavSpace(navspace->GetEngineNavSpace());
-		navspace->SetEngineNavSpace(NULL);
+		navspace->SetEngineNavSpace(nullptr);
 	}
 	
-	if(navspace == pActiveNavSpace){
-		SetActiveNavSpace(NULL);
-	}
-	
-	navspace->SetHTSector(NULL);
-	navspace->SetEngineNavSpace(NULL);
-	
-	pNavSpaces.RemoveFrom(index);
+	navspace->SetHTSector(nullptr);
+	navspace->SetEngineNavSpace(nullptr);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetWorldChanged();
@@ -1426,22 +1201,20 @@ void meHeightTerrainSector::RemoveNavSpace(meHeightTerrainNavSpace *navspace){
 }
 
 void meHeightTerrainSector::RemoveAllNavSpaces(){
-	const int count = pNavSpaces.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		meHeightTerrainNavSpace &navspace = *((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i));
-		navspace.SetEngineNavSpace(NULL);
-		navspace.SetHTSector(NULL);
-	}
-	if(pEngSector){ // in case called from destructor
-		pEngSector->RemoveAllNavSpaces();
-	}
-	
-	SetActiveNavSpace(NULL);
+	SetActiveNavSpace(nullptr);
 	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().GetPathFindTest()->Invalidate();
 	}
+	
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &navspace){
+		navspace.SetEngineNavSpace(nullptr);
+		navspace.SetHTSector(nullptr);
+	});
+	if(pEngSector){ // in case called from destructor
+		pEngSector->RemoveAllNavSpaces();
+	}
+	
 	pNavSpaces.RemoveAll();
 	
 	if(pHeightTerrain){
@@ -1470,7 +1243,7 @@ void meHeightTerrainSector::SetActiveNavSpace(meHeightTerrainNavSpace *navspace)
 	}
 }
 
-void meHeightTerrainSector::SetSelectedNavPoints(const decIntList &points){
+void meHeightTerrainSector::SetSelectedNavPoints(const decTList<int> &points){
 	if(points == pSelectedNavPoints){
 		return;
 	}
@@ -1490,25 +1263,19 @@ void meHeightTerrainSector::SetSelectedNavPoints(const decIntList &points){
 //////////////////////
 
 void meHeightTerrainSector::pCleanUp(){
-	SetHeightTerrain(NULL);
+	SetHeightTerrain(nullptr);
 	
 	RemoveAllNavSpaces();
 	
 	pSetPropFieldCount(0);
 	
 	RemoveAllPFLayers();
-	if(pPFLayers){
-		delete [] pPFLayers;
-	}
 	
 	if(pVisFaces){
 		delete pVisFaces;
 	}
 	
 	RemoveAllTextures();
-	if(pTextures){
-		delete [] pTextures;
-	}
 	
 	pFreeDDEdges();
 }
@@ -1527,7 +1294,7 @@ void meHeightTerrainSector::pLoadHeightImage(){
 			// load the image
 			deImage::Ref image;
 			try{
-				image.TakeOver(pEngine->GetImageManager()->LoadImage(pPathHeightImage, baseDir));
+				image = pEngine->GetImageManager()->LoadImage(pPathHeightImage, baseDir);
 				image->RetainImageData(); // keep image data in memory... needs a better solution to avoid double loading
 				
 				// TODO this is not a nice solution here. it is possible that the user specifies
@@ -1583,7 +1350,7 @@ void meHeightTerrainSector::pLoadHeightImage(){
 void meHeightTerrainSector::pCreateHeightImage(){
 	if(pHeightTerrain){
 		const int resolution = pHeightTerrain->GetSectorResolution();
-		pHeightImage.TakeOver(pEngine->GetImageManager()->CreateImage(resolution, resolution, 1, 1, 32));
+		pHeightImage = pEngine->GetImageManager()->CreateImage(resolution, resolution, 1, 1, 32);
 		
 		int p, pixelCount = resolution * resolution;
 		sGrayscale32 * const imageData = pHeightImage->GetDataGrayscale32();
@@ -1592,7 +1359,7 @@ void meHeightTerrainSector::pCreateHeightImage(){
 		}
 		
 	}else{
-		pHeightImage = NULL;
+		pHeightImage = nullptr;
 	}
 	
 	if(pEngSector){
@@ -1604,7 +1371,7 @@ void meHeightTerrainSector::pCreateHeightImage(){
 void meHeightTerrainSector::pCreateVisibility(){
 	if(pVisFaces){
 		delete pVisFaces;
-		pVisFaces = NULL;
+		pVisFaces = nullptr;
 	}
 	
 	if(!pHeightTerrain){
@@ -1616,52 +1383,24 @@ void meHeightTerrainSector::pCreateVisibility(){
 }
 
 void meHeightTerrainSector::pSetPropFieldCount(int cellCount){
-	int pfcount = cellCount * cellCount;
-	
 	// free the old
-	if(pPropFields){
-		while(pPropFieldCount > 0){
-			pPropFieldCount--;
-			if(pPropFields[pPropFieldCount]){
-				pPropFields[pPropFieldCount]->SetHTSector(NULL);
-				delete pPropFields[pPropFieldCount];
-			}
-		}
-		
-		delete [] pPropFields;
-		pPropFields = NULL;
-		
-		pPropFieldCellCount = 0;
-		pPropFieldCount = 0;
-	}
+	pPropFields.Visit([&](meHeightTerrainPropField &p){
+		p.SetHTSector(nullptr);
+	});
+	pPropFields.RemoveAll();
+	pPropFieldCellCount = 0;
 	
 	// create the new array
+	int pfcount = cellCount * cellCount;
 	if(pfcount > 0){
-		meHeightTerrainPropField *propField = NULL;
-		int p;
-		
-		try{
-			pPropFields = new meHeightTerrainPropField*[pfcount];
-			if(!pPropFields) DETHROW(deeOutOfMemory);
-			
-			for(p=0; p<pfcount; p++) pPropFields[p] = NULL;
-			
-			while(pPropFieldCount < pfcount){
-				propField = new meHeightTerrainPropField(pEngine);
-				if(!propField) DETHROW(deeOutOfMemory);
-				
-				propField->SetHTSector(this);
-				
-				pPropFields[pPropFieldCount++] = propField;
-				propField = NULL;
-			}
-			
-			pPropFieldCellCount = cellCount;
-			
-		}catch(const deException &){
-			if(propField) delete propField;
-			throw;
+		int i;
+		for(i=0; i<pfcount; i++){
+			const meHeightTerrainPropField::Ref pf(meHeightTerrainPropField::Ref::New(pEngine));
+			pf->SetHTSector(this);
+			pPropFields.Add(pf);
 		}
+		
+		pPropFieldCellCount = cellCount;
 	}
 	
 	pUpdatePropFieldPositions();
@@ -1695,7 +1434,7 @@ void meHeightTerrainSector::pUpdatePropFieldPositions(){
 		maxExtend.y = (float)position.z + halfCellSize;
 		
 		for(x=0; x<pPropFieldCellCount; x++, p++){
-			engPF = pPropFields[p]->GetEnginePropField();
+			engPF = pPropFields.GetAt(p)->GetEnginePropField();
 			
 			position.x = sectorOffsetX - cellOffset + cellSize * (double)x;
 			minExtend.x = (float)position.x - halfCellSize;
@@ -1704,7 +1443,7 @@ void meHeightTerrainSector::pUpdatePropFieldPositions(){
 			engPF->SetPosition(position);
 			//engPF->SetSize( size );
 			
-			pPropFields[p]->SetExtend(minExtend, maxExtend);
+			pPropFields.GetAt(p)->SetExtend(minExtend, maxExtend);
 		}
 	}
 }
@@ -1718,17 +1457,15 @@ void meHeightTerrainSector::pRepositionDebugDrawers(){
 	
 	const double aliasingOffset = 0.001; // small offset to make edges win over faces underneath them
 	const float sectorSize = pHeightTerrain->GetSectorSize();
-	const int count = pDDEdges.GetCount();
-	int i;
 	
 	const decDVector position(
 		(double)sectorSize * (double)pCoordinates.x,
 		(double)pHeightTerrain->GetBaseHeight() + aliasingOffset,
 		(double)sectorSize * (double)pCoordinates.y);
 	
-	for(i=0; i<count; i++){
-		((deDebugDrawer*)pDDEdges.GetAt(i))->SetPosition(position);
-	}
+	pDDEdges.Visit([&](deDebugDrawer &dd){
+		dd.SetPosition(position);
+	});
 	
 	if(pDDSelNavPoints){
 		pDDSelNavPoints->SetPosition(position);
@@ -1753,58 +1490,58 @@ void meHeightTerrainSector::pCreateDDEdges(){
 	deDebugDrawerManager &ddmgr = *pEngine->GetDebugDrawerManager();
 	const float stepPoint = 1.0f / (float)(resolution - 1);
 	const decVector normal(0.0f, 1.0f, 0.0f);
-	deDebugDrawerShapeFace *face = NULL;
-	deDebugDrawerShape *ddshape = NULL;
-	deDebugDrawer *debugDrawer = NULL;
+	deDebugDrawerShapeFace *face = nullptr;
+	deDebugDrawerShape *ddshape = nullptr;
 	int pcx, pcz, curx, curz;
 	decVector corners[4];
 	int cx, cz, x, z;
 	
 	pDDPointsPerCluster = resolution / 16; // 64 for 1024. ensures the number of clusters does not explode for large images
-	pDDClusterCount = ((resolution - 2) / (pDDPointsPerCluster - 1)) + 1;
+	const int clusterCount = ((resolution - 2) / (pDDPointsPerCluster - 1)) + 1;
 	
-	pDDClusters = new sDDCluster[pDDClusterCount * pDDClusterCount];
+	pDDClusters.RemoveAll();
 	
 	try{
-		for(curz=0, cz=0; cz<pDDClusterCount; cz++){
-			if(cz < pDDClusterCount - 1){
+		for(curz=0, cz=0; cz<clusterCount; cz++){
+			if(cz < clusterCount - 1){
 				pcz = pDDPointsPerCluster;
 				
 			}else{
 				pcz = resolution - curz;
 			}
 			
-			for(curx=0, cx=0; cx<pDDClusterCount; cx++){
+			for(curx=0, cx=0; cx<clusterCount; cx++){
 				// cluster information
-				if(cx < pDDClusterCount - 1){
+				if(cx < clusterCount - 1){
 					pcx = pDDPointsPerCluster;
 					
 				}else{
 					pcx = resolution - curx;
 				}
 				
-				sDDCluster &cluster = pDDClusters[pDDClusterCount * cz + cx];
-				cluster.pointFrom.Set(curx, curz);
-				cluster.pointTo = cluster.pointFrom + decPoint(pcx - 1, pcz - 1);
-				cluster.faceCount.Set(pcx - 1, pcz - 1);
+				const cDDCluster::Ref cluster(cDDCluster::Ref::New());
+				cluster->pointFrom.Set(curx, curz);
+				cluster->pointTo = cluster->pointFrom + decPoint(pcx - 1, pcz - 1);
+				cluster->faceCount.Set(pcx - 1, pcz - 1);
+				pDDClusters.Add(cluster);
 				
 				curx += pDDPointsPerCluster - 1;
 				
 				// debug drawer
-				debugDrawer = ddmgr.CreateDebugDrawer();
+				const deDebugDrawer::Ref debugDrawer(ddmgr.CreateDebugDrawer());
 				debugDrawer->SetXRay(false); //true);
 				
 				ddshape = new deDebugDrawerShape;
 				ddshape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
 				
-				for(z=cluster.pointFrom.y; z<cluster.pointTo.y; z++){
+				for(z=cluster->pointFrom.y; z<cluster->pointTo.y; z++){
 					const sGrayscale32 * const heightsRow1 = heights + resolution * z;
 					const sGrayscale32 * const heightsRow2 = heights + resolution * (z + 1);
 					
 					corners[0].z = corners[1].z = 0.5f - stepPoint * (float)z;
 					corners[2].z = corners[3].z = 0.5f - stepPoint * (float)(z + 1);
 					
-					for(x=cluster.pointFrom.x; x<cluster.pointTo.x; x++){
+					for(x=cluster->pointFrom.x; x<cluster->pointTo.x; x++){
 						corners[0].x = corners[3].x = stepPoint * (float)x - 0.5f;
 						corners[1].x = corners[2].x = stepPoint * (float)(x + 1) - 0.5f;
 						
@@ -1821,7 +1558,7 @@ void meHeightTerrainSector::pCreateDDEdges(){
 						face->SetNormal(normal); //(corners[1] - corners[0]) % (corners[2] - corners[1]));
 						
 						ddshape->AddFace(face);
-						face = NULL;
+						face = nullptr;
 					}
 				}
 				
@@ -1829,7 +1566,6 @@ void meHeightTerrainSector::pCreateDDEdges(){
 				debugDrawer->NotifyShapeLayoutChanged();
 				
 				pDDEdges.Add(debugDrawer);
-				debugDrawer->FreeReference();
 			}
 			
 			curz += pDDPointsPerCluster - 1;
@@ -1842,9 +1578,6 @@ void meHeightTerrainSector::pCreateDDEdges(){
 		if(ddshape){
 			delete ddshape;
 		}
-		if(debugDrawer){
-			debugDrawer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1855,27 +1588,19 @@ void meHeightTerrainSector::pCreateDDEdges(){
 
 void meHeightTerrainSector::pFreeDDEdges(){
 	pDDEdges.RemoveAll();
-	
-	if(pDDClusters){
-		delete [] pDDClusters;
-		pDDClusters = NULL;
-	}
+	pDDClusters.RemoveAll();
 }
 
 void meHeightTerrainSector::pAddDDEdgesToWorld(deWorld &world){
-	const int count = pDDEdges.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		world.AddDebugDrawer((deDebugDrawer*)pDDEdges.GetAt(i));
-	}
+	pDDEdges.Visit([&](deDebugDrawer *dd){
+		world.AddDebugDrawer(dd);
+	});
 }
 
 void meHeightTerrainSector::pRemoveDDEdgesFromWorld(deWorld &world){
-	const int count = pDDEdges.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		world.RemoveDebugDrawer((deDebugDrawer*)pDDEdges.GetAt(i));
-	}
+	pDDEdges.Visit([&](deDebugDrawer *dd){
+		world.RemoveDebugDrawer(dd);
+	});
 }
 
 void meHeightTerrainSector::pUpdateDDEdgesColors(){
@@ -1901,41 +1626,38 @@ void meHeightTerrainSector::pUpdateDDEdgesColors(){
 		}
 	}
 	
-	const int count = pDDEdges.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deDebugDrawer &debugDrawer = *((deDebugDrawer*)pDDEdges.GetAt(i));
-		debugDrawer.GetShapeAt(0)->SetEdgeColor(color);
-// 		debugDrawer.GetShapeAt( 0 )->SetEdgeColor( decColor(
+	pDDEdges.Visit([&](deDebugDrawer &dd){
+		dd.GetShapeAt(0)->SetEdgeColor(color);
+// 		dd.GetShapeAt( 0 )->SetEdgeColor( decColor(
 // 			( float )( ((i*12)%256) % pDDEdgesClusterCount ) / ( float )pDDEdgesClusterCount, 0.0f,
 // 			( float )( ((i*12)%256) / pDDEdgesClusterCount ) / ( float )pDDEdgesClusterCount, 1.0f ) );
-		debugDrawer.NotifyShapeColorChanged();
-		debugDrawer.SetVisible(visible);
-	}
+		dd.NotifyShapeColorChanged();
+		dd.SetVisible(visible);
+	});
 }
 
 void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, const decPoint &toGrid){
 // 	printf( "pUpdateDDSEdgesHeights BEGIN\n" );
 // 	decTimer timer; timer.Reset();
-	if(!pHeightTerrain || !pDDClusters){
+	if(!pHeightTerrain || pDDClusters.IsEmpty()){
 		return;
 	}
 	
 	const int resolution = pHeightTerrain->GetSectorResolution();
+	const int clusterCount = pDDClusters.GetCount();
 	
 	const decPoint clusterFrom(decPoint().Largest((fromGrid - decPoint(1, 1)) / (pDDPointsPerCluster - 1)));
-	const decPoint clusterTo(decPoint(pDDClusterCount - 1, pDDClusterCount - 1)
+	const decPoint clusterTo(decPoint(clusterCount - 1, clusterCount - 1)
 		.Smallest(toGrid / (pDDPointsPerCluster - 1)));
 	const sGrayscale32 * const heights = pHeightImage->GetDataGrayscale32();
 	int cx, cz, x, z;
 	
 	for(cz=clusterFrom.y; cz<=clusterTo.y; cz++){
 		for(cx=clusterFrom.x; cx<=clusterTo.x; cx++){
-			const sDDCluster &cluster = pDDClusters[pDDClusterCount * cz + cx];
+			const cDDCluster &cluster = pDDClusters.GetAt(clusterCount * cz + cx);
 			const decPoint faceFrom(cluster.pointFrom.Largest(fromGrid - decPoint(1, 1)));
 			const decPoint faceTo(cluster.pointTo.Smallest(toGrid));
-			deDebugDrawer &debugDrawer = *((deDebugDrawer*)pDDEdges.GetAt(pDDClusterCount * cz + cx));
+			deDebugDrawer &debugDrawer = pDDEdges.GetAt(clusterCount * cz + cx);
 			deDebugDrawerShape &shape = *debugDrawer.GetShapeAt(0);
 			
 			for(z=faceFrom.y; z<faceTo.y; z++){
@@ -1979,7 +1701,7 @@ void meHeightTerrainSector::pCreateDDSelNavPoints(){
 	pDDSelNavPoints = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
 	pDDSelNavPoints->SetXRay(false);
 	
-	deDebugDrawerShape *ddshape = NULL;
+	deDebugDrawerShape *ddshape = nullptr;
 	
 	try{
 		ddshape = new deDebugDrawerShape;
@@ -2019,7 +1741,6 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsColors(){
 void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
 	decShapeList &shapes = ddshape.GetShapeList();
-	int i;
 	
 	shapes.RemoveAll();
 	
@@ -2029,25 +1750,22 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 		const int sectorResolution = pHeightTerrain->GetSectorResolution();
 		const float heightScale = pHeightTerrain->GetHeightScaling();
 		const float radius = 0.25f; // / (float)sectorResolution;
-		const int count = pSelectedNavPoints.GetCount();
 		const float invPointLast = 1.0f / (float)(sectorResolution - 1);
 		
-		for(i=0; i<count; i++){
-			const int navpoint = pSelectedNavPoints.GetAt(i);
+		pSelectedNavPoints.Visit([&](int navpoint){
 			const decVector center(
 				sectorSize * ((float)(navpoint % sectorResolution) * invPointLast - 0.5f),
 				heightScale * heights[navpoint].value,
 				sectorSize * (0.5f - (float)(navpoint / sectorResolution) * invPointLast));
 			shapes.Add(new decShapeSphere(radius, center));
-		}
+		});
 	}
 	
 	pDDSelNavPoints->NotifyShapeContentChanged();
 }
 
 void meHeightTerrainSector::pUpdateDDSelNavPointHeights(){
-	const int count = pSelectedNavPoints.GetCount();
-	if(count == 0 || !pHeightTerrain || !pHeightImage){
+	if(pSelectedNavPoints.IsEmpty() || !pHeightTerrain || !pHeightImage){
 		return;
 	}
 	
@@ -2055,24 +1773,20 @@ void meHeightTerrainSector::pUpdateDDSelNavPointHeights(){
 	deDebugDrawerShape &ddshape = *pDDSelNavPoints->GetShapeAt(0);
 	const float heightScale = pHeightTerrain->GetHeightScaling();
 	decShapeList &shapes = ddshape.GetShapeList();
-	int i;
 	
-	for(i=0; i<count; i++){
-		const int navpoint = pSelectedNavPoints.GetAt(i);
+	pSelectedNavPoints.VisitIndexed([&](int i, int navpoint){
 		decShape &shape = *shapes.GetAt(i);
 		
 		decVector position(shape.GetPosition());
 		position.y = heightScale * heights[navpoint].value;
 		shape.SetPosition(position);
-	}
+	});
 	
 	pDDSelNavPoints->NotifyShapeGeometryChanged();
 }
 
 void meHeightTerrainSector::pUpdateNavSpaceDDColors(){
-	const int count = pNavSpaces.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((meHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->UpdateDDColors();
-	}
+	pNavSpaces.Visit([&](meHeightTerrainNavSpace &n){
+		n.UpdateDDColors();
+	});
 }

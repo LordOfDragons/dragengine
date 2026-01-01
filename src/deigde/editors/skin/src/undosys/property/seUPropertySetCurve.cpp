@@ -43,8 +43,8 @@
 seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property){
 	if(!layer || !property) DETHROW(deeInvalidParam);
 	
-	pLayer = NULL;
-	pProperty = NULL;
+	pLayer = nullptr;
+	pProperty = nullptr;
 	
 	SetShortInfo("Property Set Curve");
 	
@@ -52,12 +52,10 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 	pNewCurve = pOldCurve;
 	
 	pLayer = layer;
-	layer->AddReference();
 	pProperty = property;
 }
 
 seUPropertySetCurve::~seUPropertySetCurve(){
-	if(pLayer) pLayer->FreeReference();
 }
 
 

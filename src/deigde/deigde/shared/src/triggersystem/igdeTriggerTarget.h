@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGERTARGET_H_
 #define _IGDETRIGGERTARGET_H_
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 
@@ -41,12 +41,15 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerTarget> Ref;
 	
+	/** \brief List of targets. */
+	typedef decTObjectOrderedSet<igdeTriggerTarget> List;
+	
 	
 private:
 	decString pName;
 	bool pFired;
 	bool pHasFired;
-	decObjectSet pListeners;
+	decTObjectOrderedSet<igdeTriggerListener> pListeners;
 	
 	
 	
@@ -54,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger target. */
-	igdeTriggerTarget(const char *name);
+	explicit igdeTriggerTarget(const char *name);
 	
 	
 	

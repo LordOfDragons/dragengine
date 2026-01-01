@@ -42,7 +42,7 @@
 ceUCCShotSetOffLookAtFrom::ceUCCShotSetOffLookAtFrom(ceCameraShot *cameraShot, const decVector &newPos){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set Start Look-At Position");
 	
@@ -50,13 +50,9 @@ ceUCCShotSetOffLookAtFrom::ceUCCShotSetOffLookAtFrom(ceCameraShot *cameraShot, c
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetOffLookAtFrom::~ceUCCShotSetOffLookAtFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

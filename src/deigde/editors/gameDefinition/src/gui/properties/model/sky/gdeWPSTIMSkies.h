@@ -36,6 +36,8 @@ class gdeSky;
  */
 class gdeWPSTIMSkies : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMSkies> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +53,7 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with sky or \em NULL. */
+	/** \brief Model with sky or \em nullptr. */
 	gdeWPSTIMSky *GetChildWith(gdeSky *sky) const;
 	
 	/** \brief Structure changed. */

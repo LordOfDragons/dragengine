@@ -96,25 +96,26 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionBase> Ref;
 	cActionBase(projPanelProfiles &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pPanel.GetProject();
 		if(!project || !project->GetActiveProfile()){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(project, project->GetActiveProfile())));
+		igdeUndo::Ref undo(OnAction(project, project->GetActiveProfile()));
 		if(undo){
 			project->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(projProject *project, projProfile *profile) = 0;
+	virtual igdeUndo::Ref OnAction(projProject *project, projProfile *profile) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetActiveProfile());
 	}
@@ -125,6 +126,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -138,13 +140,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, project, profile)));
+		igdeUndo::Ref undo(OnChanged(textField, project, profile));
 		if(undo){
 			project->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -153,6 +155,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextAreaListener> Ref;
 	cBaseTextAreaListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -166,13 +169,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textArea, project, profile)));
+		igdeUndo::Ref undo(OnChanged(textArea, project, profile));
 		if(undo){
 			project->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject *project,
+	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -181,6 +184,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPointListener> Ref;
 	cBaseEditPointListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnPointChanged(igdeEditPoint *editPoint){
@@ -194,13 +198,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editPoint, project, profile)));
+		igdeUndo::Ref undo(OnChanged(editPoint, project, profile));
 		if(undo){
 			project->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject *project,
+	virtual igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -211,6 +215,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cListProfile> Ref;
 	cListProfile(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -224,7 +229,7 @@ public:
 			project->SetActiveProfile((projProfile*)selection->GetData());
 			
 		}else{
-			project->SetActiveProfile(NULL);
+			project->SetActiveProfile(nullptr);
 		}
 	}
 };
@@ -233,129 +238,145 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
 	projProfile *profile){
 		const decString &name = textField->GetText();
 		if(name == profile->GetName()){
-			return NULL;
+			return {};
 		}
 		
-		if(project->GetProfiles().HasNamed(name)){
+		if(project->GetProfiles().HasMatching([&](const projProfile &p){
+			return p.GetName() == name;
+		})){
 			igdeCommonDialogs::Error(&pPanel, "Rename profile",
 				"A profile with this name exists already.");
 			textField->SetText(profile->GetName());
-			return NULL;
+			return {};
 		}
 		
-		return new projUProfileSetName(profile, name);
+		return projUProfileSetName::Ref::New(profile, name);
 	}
 };
 
 class cTextDescription : public cBaseTextAreaListener{
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject*,
+	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*,
 	projProfile *profile){
 		if(textArea->GetText() == profile->GetDescription()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetDescription(profile, textArea->GetText());
+		return projUProfileSetDescription::Ref::New(profile, textArea->GetText());
 	}
 };
 
 class cTextScriptDirectory : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScriptDirectory> Ref;
 	cTextScriptDirectory(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetScriptDirectory()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetScriptDirectory(profile, textField->GetText());
+		return projUProfileSetScriptDirectory::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cActionScriptDirectory : public cActionBase{
 public:
-	cActionScriptDirectory(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game scripts are located"){}
+	typedef deTObjectReference<cActionScriptDirectory> Ref;
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile*){
-		return NULL; // TODO we need a VFS version of FXDirDialog since this is VFS path
+	cActionScriptDirectory(projPanelProfiles &panel) : cActionBase(panel,
+		"...", nullptr, "VFS directory where the game scripts are located"){}
+	
+	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
+		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
 	}
 };
 
 class cTextGameObject : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextGameObject> Ref;
 	cTextGameObject(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetGameObject()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetGameObject(profile, textField->GetText());
+		return projUProfileSetGameObject::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cTextPathConfig : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPathConfig> Ref;
 	cTextPathConfig(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetPathConfig()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetPathConfig(profile, textField->GetText());
+		return projUProfileSetPathConfig::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cActionPathConfig : public cActionBase{
 public:
-	cActionPathConfig(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game stores configuration files"){}
+	typedef deTObjectReference<cActionPathConfig> Ref;
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile*){
-		return NULL; // TODO we need a VFS version of FXDirDialog since this is VFS path
+	cActionPathConfig(projPanelProfiles &panel) : cActionBase(panel,
+		"...", nullptr, "VFS directory where the game stores configuration files"){}
+	
+	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
+		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
 	}
 };
 
 class cTextPathCapture : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPathCapture> Ref;
 	cTextPathCapture(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetPathCapture()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetPathCapture(profile, textField->GetText());
+		return projUProfileSetPathCapture::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cActionPathCapture : public cActionBase{
 public:
-	cActionPathCapture(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game stores captured files"){}
+	typedef deTObjectReference<cActionPathCapture> Ref;
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile*){
-		return NULL; // TODO we need a VFS version of FXDirDialog since this is VFS path
+	cActionPathCapture(projPanelProfiles &panel) : cActionBase(panel,
+		"...", nullptr, "VFS directory where the game stores captured files"){}
+	
+	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
+		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
 	}
 };
 
 class cActionGenerateIdentifier : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGenerateIdentifier> Ref;
+	
 	cActionGenerateIdentifier(projPanelProfiles &panel) : cActionBase(panel,
 		"Generate Identifier", nullptr, "Generate Identifier"){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		if(igdeCommonDialogs::Question(&pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
 		"Generating new identifier can break the game. Do you really want to generate new identifier?")
 		== igdeCommonDialogs::ebYes){
-			return new projUProfileSetIdentifier(profile, decUuid::Random());
+			return projUProfileSetIdentifier::Ref::New(profile, decUuid::Random());
 		}
-		return nullptr;
+		return {};
 	}
 };
 
@@ -363,6 +384,8 @@ class cActionMenuIdentifier : public igdeActionContextMenu{
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuIdentifier> Ref;
+	
 	cActionMenuIdentifier(projPanelProfiles &panel) : igdeActionContextMenu("",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Identifier menu"),
 	pPanel(panel){}
@@ -373,97 +396,105 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionGenerateIdentifier(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionGenerateIdentifier::Ref::New(pPanel));
 	}
 };
 
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextIdentifier> Ref;
 	cTextIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		try{
 			const decUuid value(textField->GetText(), false);
-			return value != profile->GetIdentifier() ? new projUProfileSetIdentifier(profile, value) : NULL;
+			return value != profile->GetIdentifier()
+				? projUProfileSetIdentifier::Ref::New(profile, value) : projUProfileSetIdentifier::Ref();
 			
 		}catch(const deException &){
 			igdeCommonDialogs::Error(&pPanel, "Invalid Input",
 				"Identifier has to be a valid UUID in the format 8-4-4-4-6 groups of hex-encoded values");
 			textField->SetText(profile->GetIdentifier().ToHexString(false));
-			return NULL;
+			return {};
 		}
 	}
 };
 
 class cTextAliasIdentifier : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextAliasIdentifier> Ref;
 	cTextAliasIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetAliasIdentifier()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetAliasIdentifier(profile, textField->GetText());
+		return projUProfileSetAliasIdentifier::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cTextTitle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextTitle> Ref;
 	cTextTitle(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetTitle()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetTitle(profile, textField->GetText());
+		return projUProfileSetTitle::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cTextGameDescription : public cBaseTextAreaListener{
 public:
+	typedef deTObjectReference<cTextGameDescription> Ref;
 	cTextGameDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile) override{
 		if(textArea->GetText() == profile->GetGameDescription()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetGameDescription(profile, textArea->GetText());
+		return projUProfileSetGameDescription::Ref::New(profile, textArea->GetText());
 	}
 };
 
 class cTextCreator : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCreator> Ref;
 	cTextCreator(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetCreator()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetCreator(profile, textField->GetText());
+		return projUProfileSetCreator::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cTextWebsite : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextWebsite> Ref;
 	cTextWebsite(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetWebsite()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetWebsite(profile, textField->GetText());
+		return projUProfileSetWebsite::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cEditWindowSize : public cBaseEditPointListener{
 public:
+	typedef deTObjectReference<cEditWindowSize> Ref;
 	cEditWindowSize(projPanelProfiles &panel) : cBaseEditPointListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile) override{
 		if(editPoint->GetPoint() == profile->GetWindowSize()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetWindowSize(profile, editPoint->GetPoint());
+		return projUProfileSetWindowSize::Ref::New(profile, editPoint->GetPoint());
 	}
 };
 
@@ -473,18 +504,20 @@ class cActionAddIcon : public cActionBase{
 	igdeEditPath &pEditPath;
 	
 public:
+	typedef deTObjectReference<cActionAddIcon> Ref;
+	
 	cActionAddIcon(projPanelProfiles &panel, igdeEditPath &editPath) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus), "Add icon"),
 	pEditPath(editPath){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		if(pEditPath.GetPath().IsEmpty() || profile->GetIcons().Has(pEditPath.GetPath())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet icons(profile->GetIcons());
 		icons.Add(pEditPath.GetPath());
-		return new projUProfileSetIcons(profile, icons);
+		return projUProfileSetIcons::Ref::New(profile, icons);
 	}
 };
 
@@ -492,20 +525,22 @@ class cActionRemoveIcon : public cActionBase{
 	igdeListBox &pListIcons;
 	
 public:
+	typedef deTObjectReference<cActionRemoveIcon> Ref;
+	
 	cActionRemoveIcon(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
 		"Remove selected icon"),
 	pListIcons(listPatterns){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		const igdeListItem * const selection = pListIcons.GetSelectedItem();
 		if(!selection || !profile->GetIcons().Has(selection->GetText())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet icons(profile->GetIcons());
 		icons.Remove(selection->GetText());
-		return new projUProfileSetIcons(profile, icons);
+		return projUProfileSetIcons::Ref::New(profile, icons);
 	}
 	
 	void Update() override{
@@ -520,19 +555,21 @@ class cActionAddExcludePattern : public cActionBase{
 	igdeTextField &pTextPattern;
 	
 public:
+	typedef deTObjectReference<cActionAddExcludePattern> Ref;
+	
 	cActionAddExcludePattern(projPanelProfiles &panel, igdeTextField &textPattern) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
 		"Add file pattern to set"),
 	pTextPattern(textPattern){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		if(profile->GetExcludePatterns().Has(pTextPattern.GetText())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet patterns(profile->GetExcludePatterns());
 		patterns.Add(pTextPattern.GetText());
-		return new projUProfileSetExcludePatterns(profile, patterns);
+		return projUProfileSetExcludePatterns::Ref::New(profile, patterns);
 	}
 };
 
@@ -540,20 +577,22 @@ class cActionRemoveExcludePattern : public cActionBase{
 	igdeListBox &pListPatterns;
 	
 public:
+	typedef deTObjectReference<cActionRemoveExcludePattern> Ref;
+	
 	cActionRemoveExcludePattern(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
 		"Remove selected file pattern from set"),
 	pListPatterns(listPatterns){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		const igdeListItem * const selection = pListPatterns.GetSelectedItem();
 		if(!selection || !profile->GetExcludePatterns().Has(selection->GetText())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet patterns(profile->GetExcludePatterns());
 		patterns.Remove(selection->GetText());
-		return new projUProfileSetExcludePatterns(profile, patterns);
+		return projUProfileSetExcludePatterns::Ref::New(profile, patterns);
 	}
 	
 	void Update() override{
@@ -568,19 +607,21 @@ class cActionAddRequiredExtension : public cActionBase{
 	igdeTextField &pTextExtension;
 	
 public:
+	typedef deTObjectReference<cActionAddRequiredExtension> Ref;
+	
 	cActionAddRequiredExtension(projPanelProfiles &panel, igdeTextField &textExtension) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
 		"Add resource file extension to set"),
 	pTextExtension(textExtension){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		if(profile->GetRequiredExtensions().Has(pTextExtension.GetText())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet patterns(profile->GetRequiredExtensions());
 		patterns.Add(pTextExtension.GetText());
-		return new projUProfileSetRequiredExtensions(profile, patterns);
+		return projUProfileSetRequiredExtensions::Ref::New(profile, patterns);
 	}
 };
 
@@ -588,20 +629,22 @@ class cActionRemoveRequiredExtension : public cActionBase{
 	igdeListBox &pListPatterns;
 	
 public:
+	typedef deTObjectReference<cActionRemoveRequiredExtension> Ref;
+	
 	cActionRemoveRequiredExtension(projPanelProfiles &panel, igdeListBox &listPatterns) :
 	cActionBase(panel, "", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
 		"Remove selected resource file extension from set"),
 	pListPatterns(listPatterns){}
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile *profile){
+	igdeUndo::Ref OnAction(projProject*, projProfile *profile) override{
 		const igdeListItem * const selection = pListPatterns.GetSelectedItem();
 		if(!selection || !profile->GetRequiredExtensions().Has(selection->GetText())){
-			return NULL;
+			return {};
 		}
 		
 		decStringSet patterns(profile->GetRequiredExtensions());
 		patterns.Remove(selection->GetText());
-		return new projUProfileSetRequiredExtensions(profile, patterns);
+		return projUProfileSetRequiredExtensions::Ref::New(profile, patterns);
 	}
 	
 	void Update() override{
@@ -614,23 +657,26 @@ public:
 
 class cTextDelgaPath : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextDelgaPath> Ref;
 	cTextDelgaPath(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetDelgaPath()){
-			return NULL;
+			return {};
 		}
-		return new projUProfileSetDelgaPath(profile, textField->GetText());
+		return projUProfileSetDelgaPath::Ref::New(profile, textField->GetText());
 	}
 };
 
 class cActionDelgaPath : public cActionBase{
 public:
-	cActionDelgaPath(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where to place the build DELGA file"){}
+	typedef deTObjectReference<cActionDelgaPath> Ref;
 	
-	virtual igdeUndo *OnAction(projProject*, projProfile*){
-		return NULL; // TODO we need a VFS version of FXDirDialog since this is VFS path
+	cActionDelgaPath(projPanelProfiles &panel) : cActionBase(panel,
+		"...", nullptr, "VFS directory where to place the build DELGA file"){}
+	
+	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
+		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
 	}
 };
 
@@ -638,13 +684,14 @@ public:
 
 class cTextRunArguments : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRunArguments> Ref;
 	cTextRunArguments(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetRunArguments()){
-			return nullptr;
+			return {};
 		}
-		return new projUProfileSetRunArguments(profile, textField->GetText());
+		return projUProfileSetRunArguments::Ref::New(profile, textField->GetText());
 	}
 };
 
@@ -662,15 +709,12 @@ projPanelProfiles::projPanelProfiles(projWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
 	igdeApplication::app().DisplayScaled(250)),
 
-pWindowMain(windowMain),
-
-pProject(NULL),
-pListener(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelProfilesListener(*this);
+	pListener = projPanelProfilesListener::Ref::New(*this);
 	
 	
 	
@@ -681,7 +725,7 @@ pListener(NULL)
 	sidePanel->SetWidgetGuiThemeName("");
 	AddChild(scroll, eaSide);
 	
-	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, new cListProfile(*this));
+	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, cListProfile::Ref::New(*this));
 	helper.Button(sidePanel, windowMain.GetActionProfileAdd());
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
@@ -707,11 +751,11 @@ pListener(NULL)
 	igdeContainer::Ref frameLine;
 	const char *description;
 	
-	groupBox.TakeOver(new igdeContainerForm(env));
+	groupBox = igdeContainerForm::Ref::New(env);
 	sidePanel->AddChild(groupBox);
-	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Profile description.",
-		pEditDescription, 5, new cTextDescription(*this));
+		pEditDescription, 5, cTextDescription::Ref::New(*this));
 	
 	
 	// game parameters
@@ -719,61 +763,59 @@ pListener(NULL)
 	
 	description = "VFS directory where the game scripts are located.";
 	helper.FormLineStretchFirst(groupBox, "Script Directory:", description, frameLine);
-	helper.EditString(frameLine, description, pEditScriptDirectory, new cTextScriptDirectory(*this));
-	pActionScriptDirectory.TakeOver(new cActionScriptDirectory(*this));
+	helper.EditString(frameLine, description, pEditScriptDirectory, cTextScriptDirectory::Ref::New(*this));
+	pActionScriptDirectory = cActionScriptDirectory::Ref::New(*this);
 	helper.Button(frameLine, pActionScriptDirectory);
 	
 	helper.EditString(groupBox, "Game Object:",
 		"Game object the scripting module uses as entry point to run the game.",
-		pEditGameObject, new cTextGameObject(*this));
+		pEditGameObject, cTextGameObject::Ref::New(*this));
 	
 	description = "VFS directory where the game stores configuration files.";
 	helper.FormLineStretchFirst(groupBox, "Config Path:", description, frameLine);
-	helper.EditString(frameLine, description, pEditPathConfig,
-		new cTextPathConfig(*this));
-	pActionPathConfig.TakeOver(new cActionPathConfig(*this));
+	helper.EditString(frameLine, description, pEditPathConfig, cTextPathConfig::Ref::New(*this));
+	pActionPathConfig = cActionPathConfig::Ref::New(*this);
 	helper.Button(frameLine, pActionPathConfig);
 	
 	description = "VFS directory where the game stores captured files.";
 	helper.FormLineStretchFirst(groupBox, "Capture Path:", description, frameLine);
-	helper.EditString(frameLine, description, pEditPathCapture,
-		new cTextPathCapture(*this));
-	pActionPathCapture.TakeOver(new cActionPathCapture(*this));
+	helper.EditString(frameLine, description, pEditPathCapture, cTextPathCapture::Ref::New(*this));
+	pActionPathCapture = cActionPathCapture::Ref::New(*this);
 	helper.Button(frameLine, pActionPathCapture);
 	
-	pActionMenuIdentifier.TakeOver(new cActionMenuIdentifier(*this));
+	pActionMenuIdentifier = cActionMenuIdentifier::Ref::New(*this);
 	helper.FormLineStretchFirst(groupBox, "Identifier:",
 		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine);
 	helper.EditString(formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
-		pEditIdentifier, new cTextIdentifier(*this));
+		pEditIdentifier, cTextIdentifier::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuIdentifier, pActionMenuIdentifier);
 	pActionMenuIdentifier->SetWidget(pBtnMenuIdentifier);
 	
 	helper.EditString(groupBox, "Alias Identifier:", "Alias identifier of game used by Launchers to simplify running the game.",
-		pEditAliasIdentifier, new cTextAliasIdentifier(*this));
+		pEditAliasIdentifier, cTextAliasIdentifier::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Title:", "Title to display for the game by Launchers.",
-		pEditTitle, new cTextTitle(*this));
+		pEditTitle, cTextTitle::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Description:", "Description to display for the game by Launchers.",
-		pEditGameDescription, 10, new cTextGameDescription(*this));
+		pEditGameDescription, 10, cTextGameDescription::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Creator:", "Creator (or author) of the game.",
-		pEditCreator, new cTextCreator(*this));
+		pEditCreator, cTextCreator::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Website:", "Website (or any other kind of internet presence) of project or creator (author).",
-		pEditWebsite, new cTextWebsite(*this));
+		pEditWebsite, cTextWebsite::Ref::New(*this));
 	
 	helper.EditPoint(groupBox, "Window Size:", "Size of run-time window or 0 to run fullscreen.",
-		pEditWindowSize, new cEditWindowSize(*this));
+		pEditWindowSize, cEditWindowSize::Ref::New(*this));
 	
 	
 	// processing parameters
-	groupBox.TakeOver(new igdeGroupBox(env, "Processing Parameters:", false));
+	groupBox = igdeGroupBox::Ref::New(env, "Processing Parameters:", false);
 	sidePanel->AddChild(groupBox);
 	
 	igdeContainer::Ref subGroup, subGroup2;
-	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	subGroup = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(subGroup);
 	
 	// icons
@@ -781,14 +823,14 @@ pListener(NULL)
 	
 	description = "Set of icons of different size representing the project.";
 	helper.FormLineStretchFirst(subGroup2, "Path:", description, frameLine);
-	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, NULL);
-	pActionAddIcon.TakeOver(new cActionAddIcon(*this, pEditIconPath));
+	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, {});
+	pActionAddIcon = cActionAddIcon::Ref::New(*this, pEditIconPath);
 	helper.Button(frameLine, pActionAddIcon);
 	
-	helper.ListBox(subGroup2, 4, description, pListIcons, NULL);
+	helper.ListBox(subGroup2, 4, description, pListIcons, {});
 	pListIcons->SetDefaultSorter();
 	
-	pActionRemoveIcon.TakeOver(new cActionRemoveIcon(*this, pListIcons));
+	pActionRemoveIcon = cActionRemoveIcon::Ref::New(*this, pListIcons);
 	helper.Button(frameLine, pActionRemoveIcon);
 	
 	// exclude patterns
@@ -796,14 +838,14 @@ pListener(NULL)
 	
 	description = "Set of file patterns to exclude from projribution process.";
 	helper.FormLineStretchFirst(subGroup2, "Pattern:", description, frameLine);
-	helper.EditString(frameLine, description, pEditExcludePattern, NULL);
-	pActionAddExcludePattern.TakeOver(new cActionAddExcludePattern(*this, pEditExcludePattern));
+	helper.EditString(frameLine, description, pEditExcludePattern, {});
+	pActionAddExcludePattern = cActionAddExcludePattern::Ref::New(*this, pEditExcludePattern);
 	helper.Button(frameLine, pActionAddExcludePattern);
 	
-	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, NULL);
+	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, {});
 	pListExcludePatterns->SetDefaultSorter();
 	
-	pActionRemoveExcludePattern.TakeOver(new cActionRemoveExcludePattern(*this, pListExcludePatterns));
+	pActionRemoveExcludePattern = cActionRemoveExcludePattern::Ref::New(*this, pListExcludePatterns);
 	helper.Button(frameLine, pActionRemoveExcludePattern);
 	
 	// required extensions
@@ -811,19 +853,19 @@ pListener(NULL)
 	
 	description = "Set of resource file extensions (.extension) required by the project";
 	helper.FormLineStretchFirst(subGroup2, "Extension:", description, frameLine);
-	helper.EditString(frameLine, description, pEditRequiredExtension, NULL);
-	pActionAddRequiredExtension.TakeOver(new cActionAddRequiredExtension(*this, pEditRequiredExtension));
+	helper.EditString(frameLine, description, pEditRequiredExtension, {});
+	pActionAddRequiredExtension = cActionAddRequiredExtension::Ref::New(*this, pEditRequiredExtension);
 	helper.Button(frameLine, pActionAddRequiredExtension);
 	
-	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, NULL);
+	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, {});
 	pListRequiredExtensions->SetDefaultSorter();
 	
-	pActionRemoveRequiredExtension.TakeOver(new cActionRemoveRequiredExtension(*this, pListRequiredExtensions));
+	pActionRemoveRequiredExtension = cActionRemoveRequiredExtension::Ref::New(*this, pListRequiredExtensions);
 	helper.Button(frameLine, pActionRemoveRequiredExtension);
 	
 	
 	// row
-	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	subGroup = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	sidePanel->AddChild(subGroup);
 	
 	// delga parameters
@@ -831,8 +873,8 @@ pListener(NULL)
 	
 	description = "VFS directory where to place the build DELGA file.";
 	helper.FormLineStretchFirst(groupBox, "DELGA File:", description, frameLine);
-	helper.EditString(frameLine, description, pEditDelgaPath, new cTextDelgaPath(*this));
-	pActionDelgaPath.TakeOver(new cActionDelgaPath(*this));
+	helper.EditString(frameLine, description, pEditDelgaPath, cTextDelgaPath::Ref::New(*this));
+	pActionDelgaPath = cActionDelgaPath::Ref::New(*this);
 	helper.Button(frameLine, pActionDelgaPath);
 	
 	
@@ -840,15 +882,11 @@ pListener(NULL)
 	helper.GroupBox(subGroup, groupBox, "Test Run:");
 	
 	helper.EditString(groupBox, "Arguments:", "Arguments to use while test running",
-		pEditRunArguments, new cTextRunArguments(*this));
+		pEditRunArguments, cTextRunArguments::Ref::New(*this));
 }
 
 projPanelProfiles::~projPanelProfiles(){
-	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetProject(nullptr);
 }
 
 
@@ -867,13 +905,11 @@ void projPanelProfiles::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 	}
 	
@@ -882,12 +918,12 @@ void projPanelProfiles::SetProject(projProject *project){
 }
 
 void projPanelProfiles::UpdateProject(){
-	pListProfiles->SetEnabled(pProject != NULL);
+	pListProfiles->SetEnabled(pProject);
 }
 
 projProfile *projPanelProfiles::GetActiveProfile() const{
 	if(!pProject){
-		return NULL;
+		return nullptr;
 	}
 	return pProject->GetActiveProfile();
 }
@@ -904,14 +940,9 @@ void projPanelProfiles::UpdateProfiles(){
 	pListProfiles->RemoveAllItems();
 	
 	if(pProject){
-		const projProfileList &list = pProject->GetProfiles();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			projProfile * const profile = list.GetAt(i);
-			pListProfiles->AddItem(profile->GetName(), NULL, profile);
-		}
+		pProject->GetProfiles().Visit([&](projProfile *profile){
+			pListProfiles->AddItem(profile->GetName(), nullptr, profile);
+		});
 		
 		pListProfiles->SortItems();
 	}
@@ -927,7 +958,7 @@ void projPanelProfiles::UpdateProfile(){
 	pActionPathConfig->Update();
 	pActionDelgaPath->Update();
 	
-	const bool enable = profile != NULL;
+	const bool enable = profile != nullptr;
 	pEditName->SetEnabled(enable);
 	pEditDescription->SetEnabled(enable);
 	pEditScriptDirectory->SetEnabled(enable);
@@ -1007,12 +1038,12 @@ void projPanelProfiles::UpdateIcons(){
 		pListIcons->SetSelection(pListIcons->IndexOfItem(selection));
 	}
 	
-	if(pListIcons->GetSelection() == -1 && pListIcons->GetItemCount() > 0){
+	if(pListIcons->GetSelection() == -1 && pListIcons->GetItems().IsNotEmpty()){
 		pListIcons->SetSelection(0);
 	}
 	
-	pEditIconPath->SetEnabled(profile != NULL);
-	pListIcons->SetEnabled(profile != NULL);
+	pEditIconPath->SetEnabled(profile != nullptr);
+	pListIcons->SetEnabled(profile != nullptr);
 	
 	pActionAddIcon->Update();
 	pActionRemoveIcon->Update();
@@ -1043,12 +1074,12 @@ void projPanelProfiles::UpdateExcludePatterns(){
 		pListExcludePatterns->SetSelection(pListExcludePatterns->IndexOfItem(selection));
 	}
 	
-	if(pListExcludePatterns->GetSelection() == -1 && pListExcludePatterns->GetItemCount() > 0){
+	if(pListExcludePatterns->GetSelection() == -1 && pListExcludePatterns->GetItems().IsNotEmpty()){
 		pListExcludePatterns->SetSelection(0);
 	}
 	
-	pEditExcludePattern->SetEnabled(profile != NULL);
-	pListExcludePatterns->SetEnabled(profile != NULL);
+	pEditExcludePattern->SetEnabled(profile != nullptr);
+	pListExcludePatterns->SetEnabled(profile != nullptr);
 	
 	pActionAddExcludePattern->Update();
 	pActionRemoveExcludePattern->Update();
@@ -1079,12 +1110,12 @@ void projPanelProfiles::UpdateRequiredExtensions(){
 		pListRequiredExtensions->SetSelection(pListRequiredExtensions->IndexOfItem(selection));
 	}
 	
-	if(pListRequiredExtensions->GetSelection() == -1 && pListRequiredExtensions->GetItemCount() > 0){
+	if(pListRequiredExtensions->GetSelection() == -1 && pListRequiredExtensions->GetItems().IsNotEmpty()){
 		pListRequiredExtensions->SetSelection(0);
 	}
 	
-	pEditRequiredExtension->SetEnabled(profile != NULL);
-	pListRequiredExtensions->SetEnabled(profile != NULL);
+	pEditRequiredExtension->SetEnabled(profile != nullptr);
+	pListRequiredExtensions->SetEnabled(profile != nullptr);
 	
 	pActionAddRequiredExtension->Update();
 	pActionRemoveRequiredExtension->Update();

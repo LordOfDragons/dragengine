@@ -33,6 +33,10 @@
  * Foreign State Rule Panel.
  */
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleForeignState> Ref;
+	
+	
 private:
 	igdeComboBoxFilter::Ref pCBBone;
 	igdeComboBoxFilter::Ref pCBVertexPositionSet;

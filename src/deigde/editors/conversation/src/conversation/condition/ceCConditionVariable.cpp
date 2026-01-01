@@ -82,6 +82,6 @@ void ceCConditionVariable::SetTestVariable(const char *variable){
 
 
 
-ceConversationCondition *ceCConditionVariable::CreateCopy() const{
-	return new ceCConditionVariable(*this);
+ceConversationCondition::Ref ceCConditionVariable::CreateCopy() const{
+	return ceCConditionVariable::Ref::New(*this);
 }

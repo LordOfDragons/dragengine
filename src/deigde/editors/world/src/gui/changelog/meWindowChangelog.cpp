@@ -92,6 +92,7 @@ class cListChangelog : public igdeIconListBoxListener{
 	meWindowChangelog &pWindow;
 	
 public:
+	typedef deTObjectReference<cListChangelog> Ref;
 	cListChangelog(meWindowChangelog &window) : pWindow(window){}
 	
 	virtual void AddContextMenuEntries(igdeIconListBox*, igdeMenuCascade&){
@@ -111,13 +112,11 @@ public:
 
 meWindowChangelog::meWindowChangelog(meWindowMain &windowMain) :
 igdeContainerBorder(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pListener(NULL),
-pWorld(NULL)
+pWindowMain(windowMain)
 {
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	pListener = new meWindowChangelogListener(*this);
+	pListener = meWindowChangelogListener::Ref::New(*this);
 	
 	igdeUIHelper::sColumnHeader headers[3] = {
 		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
@@ -125,21 +124,16 @@ pWorld(NULL)
 		igdeUIHelper::sColumnHeader("Filename", nullptr, igdeApplication::app().DisplayScaled(380))};
 	helper.IconListBox(
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 3, "Changes", pListChanges, new cListChangelog(*this));
+		headers, 3, "Changes", pListChanges, cListChangelog::Ref::New(*this));
 	AddChild(pListChanges, igdeContainerBorder::eaCenter);
 	
-	pListChanges->SetSorter(cChangelogSorter::Ref::NewWith());
+	pListChanges->SetSorter(cChangelogSorter::Ref::New());
 }
 
 meWindowChangelog::~meWindowChangelog(){
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
-		pWorld = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
+		pWorld = nullptr;
 	}
 }
 
@@ -157,14 +151,12 @@ void meWindowChangelog::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateChangelog();
@@ -180,12 +172,10 @@ void meWindowChangelog::UpdateChangelog(){
 	}
 	
 	meHeightTerrain * const hterrain = pWorld->GetHeightTerrain();
-	igdeListItem::Ref refEntry;
-	int i, j;
 	
 	try{
 		if(pWorld->GetChanged()){
-			refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetWorld));
+			const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetWorld));
 			meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 			entry.SetWorld(pWorld);
 			entry.UpdateText();
@@ -194,22 +184,19 @@ void meWindowChangelog::UpdateChangelog(){
 		}
 		
 		if(pWorld->GetDepChanged()){
-			const int htsectorCount = hterrain->GetSectorCount();
-			
 			if(pWorld->GetHeightTerrain()->GetChanged()){
-				refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHeightTerrain));
+				const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHeightTerrain));
 				meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 				entry.SetWorld(pWorld);
 				entry.UpdateText();
 				pListChanges->AddItem(refEntry);
 			}
 			
-			for(i=0; i<htsectorCount; i++){
-				meHeightTerrainSector &htsector = *hterrain->GetSectorAt(i);
+			hterrain->GetSectors().Visit([&](meHeightTerrainSector &htsector){
 				const decPoint &scoord = htsector.GetCoordinates();
 				
 				if(htsector.GetHeightImageChanged()){
-					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTHeight));
+					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTHeight));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -218,7 +205,7 @@ void meWindowChangelog::UpdateChangelog(){
 				}
 				
 				if(htsector.GetVisibilityChanged()){
-					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTVisibility));
+					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTVisibility));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -227,7 +214,7 @@ void meWindowChangelog::UpdateChangelog(){
 				}
 				
 				if(htsector.GetPFCacheChanged()){
-					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTPFCache));
+					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTPFCache));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -236,38 +223,33 @@ void meWindowChangelog::UpdateChangelog(){
 				}
 				
 				if(pWorld->GetHeightTerrain()->GetDepChanged()){
-					const int httextureCount = htsector.GetTextureCount();
-					
-					for(j=0; j<httextureCount; j++){
-						meHeightTerrainTexture &httexture = *htsector.GetTextureAt(j);
+					htsector.GetTextures().Visit([&](meHeightTerrainTexture &httexture){
 						if(!httexture.GetMaskChanged()){
-							continue;
+							return;
 						}
 						
-						refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTTextureMask));
+						const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTTextureMask));
 						meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 						entry.SetHTTexture(&httexture);
 						entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
 						entry.UpdateText();
 						pListChanges->AddItem(refEntry);
-					}
+					});
 				}
 				
-				const int navSpaceCount = htsector.GetNavSpaceCount();
-				for(j=0; j<navSpaceCount; j++){
-					meHeightTerrainNavSpace * const navspace = htsector.GetNavSpaceAt(j);
+				htsector.GetNavSpaces().Visit([&](meHeightTerrainNavSpace *navspace){
 					if(!navspace->GetNavSpaceChanged()){
-						continue;
+						return;
 					}
 					
-					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTNavSpace));
+					const igdeListItem::Ref refEntry(meWCEntry::Ref::New(*this, meWCEntry::eetHTNavSpace));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetHTNavSpace(navspace);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
 					entry.UpdateText();
 					pListChanges->AddItem(refEntry);
-				}
-			}
+				});
+			});
 		}
 		
 	}catch(const deException &e){

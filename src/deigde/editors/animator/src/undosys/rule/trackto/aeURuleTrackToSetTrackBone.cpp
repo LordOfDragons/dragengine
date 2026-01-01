@@ -44,20 +44,16 @@ aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, cons
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldName = rule->GetTrackBone();
 	pNewName = newName;
 	
 	SetShortInfo("TrackTo Set Track Bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetTrackBone::~aeURuleTrackToSetTrackBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -35,13 +35,14 @@ class aeRuleBoneTransformator;
  * Undo action rule bone transformator toggle enable rotation.
  */
 class aeURuleBTransSetEnableOrien : public igdeUndo{
-private:
-	aeRuleBoneTransformator *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleBTransSetEnableOrien> Ref;
 	
+	
+private:
+	aeRuleBoneTransformator::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

@@ -40,9 +40,9 @@
  */
 class DE_DLL_EXPORT igdeWConnection{
 private:
-	igdeWDebugDrawerShape pDDSConnection;
-	igdeWDebugDrawerShape pDDSArrowAnchor;
-	igdeWDebugDrawerShape pDDSArrowTarget;
+	igdeWDebugDrawerShape::Ref pDDSConnection;
+	igdeWDebugDrawerShape::Ref pDDSArrowAnchor;
+	igdeWDebugDrawerShape::Ref pDDSArrowTarget;
 	
 	decVector pAnchorPosition;
 	decVector pTargetPosition;
@@ -72,7 +72,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set parent debug drawer or NULL. */
+	/** \brief Set parent debug drawer or nullptr. */
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Anchor position. */

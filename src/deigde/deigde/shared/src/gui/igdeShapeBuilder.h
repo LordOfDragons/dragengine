@@ -25,7 +25,7 @@
 #ifndef _IGDESHAPEBUILDER_H_
 #define _IGDESHAPEBUILDER_H_
 
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 class decConvexVolumeList;

@@ -25,12 +25,14 @@
 #ifndef _MEUHTNAVSPACEFACEREMOVE_H_
 #define _MEUHTNAVSPACEFACEREMOVE_H_
 
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceFace.h"
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpaceType;
-class meHeightTerrainNavSpaceFace;
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class decObjectOrderedSet;
+class meHeightTerrainNavSpaceType;
 
 
 
@@ -38,29 +40,39 @@ class decObjectOrderedSet;
  * \brief Undo action height terrain navigation space remove face.
  */
 class meUHTNavSpaceFaceRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTNavSpaceFaceRemove> Ref;
+	
+	
 private:
-	struct sFace{
-		meHeightTerrainNavSpaceType *type;
-		meHeightTerrainNavSpaceFace *face;
+	class cFace : public deObject{
+	public:
+		typedef deTObjectReference<cFace> Ref;
+		typedef decTObjectOrderedSet<cFace> List;
+		
+		meHeightTerrainNavSpaceType::Ref type;
+		meHeightTerrainNavSpaceFace::Ref face;
+		
+		cFace() = default;
 	};
 	
-	sFace *pFaces;
-	int pFaceCount;
+	cFace::List pFaces;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTNavSpaceFaceRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceFaceRemove(const decObjectOrderedSet &faces);
+	meUHTNavSpaceFaceRemove(const meHeightTerrainNavSpaceFace::List &faces);
 	
 protected:
 	/** \brief Clean up undo action. */
+
+protected:
 	virtual ~meUHTNavSpaceFaceRemove();
+
+public:
 	/*@}*/
 	
 	
@@ -74,11 +86,6 @@ public:
 	/** \brief Redo. */
 	virtual void Redo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

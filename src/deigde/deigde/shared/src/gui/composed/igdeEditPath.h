@@ -30,12 +30,12 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeActionSelectFile.h"
-#include "../filedialog/igdeFilePatternList.h"
+#include "../filedialog/igdeFilePattern.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../environment/igdeEnvironment.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditPathListener;
@@ -66,8 +66,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cListenerTextField> Ref;
 		cListenerTextField(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cListenerTextField();
+		
+	public:
 		virtual void OnTextChanged(igdeTextField *textField);
 	};
 	
@@ -77,8 +82,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionButton> Ref;
 		cActionButton(igdeEditPath &editPath, const char *description);
+		
+	protected:
 		virtual ~cActionButton();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -89,8 +99,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionButtonMenu> Ref;
 		cActionButtonMenu(igdeEditPath &editPath, const char *description);
+		
+	protected:
 		virtual ~cActionButtonMenu();
+		
+	public:
 		virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 		virtual void Update();
 	};
@@ -102,8 +117,13 @@ protected:
 		bool pUseRelativePath;
 		
 	public:
+		typedef deTObjectReference<cActionSelectFileDialog> Ref;
 		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
+		
+	protected:
 		virtual ~cActionSelectFileDialog();
+		
+	public:
 		virtual void PrepareFile(decString &path);
 		virtual bool AcceptFile(decString &path);
 		virtual decString DefaultPath();
@@ -115,8 +135,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionSkinSelectDialog> Ref;
 		cActionSkinSelectDialog(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionSkinSelectDialog();
+		
+	public:
 		virtual void OnAction();
 	};
 	
@@ -126,8 +151,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionBrowseFile> Ref;
 		cActionBrowseFile(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionBrowseFile();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -138,8 +168,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionConvertAbsolute> Ref;
 		cActionConvertAbsolute(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionConvertAbsolute();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -150,8 +185,13 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionConvertRelative> Ref;
 		cActionConvertRelative(igdeEditPath &editPath);
+		
+	protected:
 		virtual ~cActionConvertRelative();
+		
+	public:
 		virtual void OnAction();
 		virtual void Update();
 	};
@@ -160,9 +200,9 @@ protected:
 	
 private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
-	igdeFilePatternList pCustomPatternList;
+	igdeFilePattern::List pCustomPatternList;
 	
-	decObjectOrderedSet pSelectPathActions;
+	decTObjectOrderedSet<igdeAction> pSelectPathActions;
 	decString pDefaultPath;
 	bool pAutoValidatePath;
 	bool pUseGameVFS;
@@ -175,7 +215,7 @@ private:
 	igdeButton::Ref pButton;
 	igdeButton::Ref pButtonMenu;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPathListener> pListeners;
 	
 	
 	
@@ -186,7 +226,7 @@ public:
 	igdeEditPath(igdeUIHelper &helper, igdeEnvironment::eFilePatternListTypes resourceType,
 		const char *description = "", bool useGameVFS = true);
 	
-	igdeEditPath(igdeUIHelper &helper, const igdeFilePatternList &filePatterns,
+	igdeEditPath(igdeUIHelper &helper, const igdeFilePattern::List &filePatterns,
 		const char *description = "", bool useGameVFS = true);
 	
 	
@@ -221,8 +261,8 @@ public:
 	 * 
 	 * If you change the content call SetSelectPathActions() to make the changes effective.
 	 */
-	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
-	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
+	inline igdeFilePattern::List &GetCustomPatternList(){ return pCustomPatternList; }
+	inline const igdeFilePattern::List &GetCustomPatternList() const{ return pCustomPatternList; }
 	
 	
 	

@@ -26,10 +26,10 @@
 #ifndef _RESELECTIONSHAPES_H_
 #define _RESELECTIONSHAPES_H_
 
+#include "reRigShape.h"
+
 // predefinitions
 class reRig;
-class reRigShape;
-class reRigShapeList;
 class deColliderVolume;
 
 
@@ -42,9 +42,8 @@ class reSelectionShapes{
 private:
 	reRig *pRig;
 	
-	reRigShape **pShapes;
-	int pShapeCount, pShapeSize;
-	reRigShape *pActiveShape;
+	reRigShape::List pShapes;
+	reRigShape::Ref pActiveShape;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -60,14 +59,9 @@ public:
 	/** Retrieves the parent rig. */
 	inline reRig *GetParentRig() const{ return pRig; }
 	
-	/** Retrieves the number of selected shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
-	/** Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt(int index) const;
-	/** Determines if the given shape exists. */
-	bool HasShape(reRigShape *shape) const;
-	/** Retrieves the index of the given shape or -1 if not found. */
-	int IndexOfShape(reRigShape *shape) const;
+	/** List of selected shapes. */
+	inline const reRigShape::List &GetShapes() const{ return pShapes; }
+	
 	/** Retrieves the index of the shape with the given collider or -1 if not found. */
 	int IndexOfShapeWith(deColliderVolume *collider) const;
 	/** Adds a shape if not existing already. */
@@ -77,18 +71,18 @@ public:
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	
-	/** Retrieves the active shape or NULL. */
-	inline reRigShape *GetActiveShape() const{ return pActiveShape; }
+	/** Retrieves the active shape or nullptr. */
+	inline const reRigShape::Ref &GetActiveShape() const{ return pActiveShape; }
 	/** Determines if an active shape exists. */
 	bool HasActiveShape() const;
-	/** Sets the acitve shape or NULL. */
+	/** Sets the acitve shape or nullptr. */
 	void SetActiveShape(reRigShape *shape);
 	
-	/** Removes all shapes and sets the active shape to NULL. */
+	/** Removes all shapes and sets the active shape to nullptr. */
 	void Reset();
 	
 	/** Adds all selected and visible shapes to the given list. */
-	void AddVisibleShapesTo(reRigShapeList &list) const;
+	void AddVisibleShapesTo(reRigShape::List &list) const;
 	/*@}*/
 };
 

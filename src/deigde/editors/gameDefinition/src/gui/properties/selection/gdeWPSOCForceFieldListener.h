@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCForceFieldListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCForceFieldListener(gdeWPSOCForceField &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCForceFieldListener() override;
+public:
 	/*@}*/
 	
 	

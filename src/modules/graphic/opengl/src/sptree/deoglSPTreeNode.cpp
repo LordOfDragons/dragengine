@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "deoglSPTreeNode.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -74,33 +74,27 @@ void deoglSPTreeNode::SetSplitState(int splitState){
 			
 			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x - halfSize, pCenter.y, pCenter.z),
 				decVector(halfSize, pHalfSize.y, pHalfSize.z));
-			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
 			pChildRight = new deoglSPTreeNode(decVector(pCenter.x + halfSize, pCenter.y, pCenter.z),
 				decVector(halfSize, pHalfSize.y, pHalfSize.z));
-			if(!pChildRight) DETHROW(deeOutOfMemory);
 			
 		}else if(splitState == essYAxis){
 			float halfSize = pHalfSize.y * 0.5f;
 			
 			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y - halfSize, pCenter.z),
 				decVector(pHalfSize.x, halfSize, pHalfSize.z));
-			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
 			pChildRight = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y + halfSize, pCenter.z),
 				decVector(pHalfSize.x, halfSize, pHalfSize.z));
-			if(!pChildRight) DETHROW(deeOutOfMemory);
 			
 		}else if(splitState == essZAxis){
 			float halfSize = pHalfSize.z * 0.5f;
 			
 			pChildLeft = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y, pCenter.z - halfSize),
 				decVector(pHalfSize.x, pHalfSize.y, halfSize));
-			if(!pChildLeft) DETHROW(deeOutOfMemory);
 			
 			pChildRight = new deoglSPTreeNode(decVector(pCenter.x, pCenter.y, pCenter.z + halfSize),
 				decVector(pHalfSize.x, pHalfSize.y, halfSize));
-			if(!pChildRight) DETHROW(deeOutOfMemory);
 		}
 	}
 }

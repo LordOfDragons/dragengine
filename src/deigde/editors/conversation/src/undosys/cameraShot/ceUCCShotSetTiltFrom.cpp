@@ -42,7 +42,7 @@
 ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera Shot Set Start Tilt");
 	
@@ -50,13 +50,9 @@ ceUCCShotSetTiltFrom::ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTi
 	pNewTilt = newTilt;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetTiltFrom::~ceUCCShotSetTiltFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

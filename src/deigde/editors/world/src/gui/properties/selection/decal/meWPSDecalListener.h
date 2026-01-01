@@ -35,6 +35,9 @@ class meWPSDecal;
  * \brief Decal panel listener.
  */
 class meWPSDecalListener : public meWorldNotifier{
+public:
+	typedef deTObjectReference<meWPSDecalListener> Ref;
+	
 private:
 	meWPSDecal &pPanel;
 	
@@ -46,8 +49,11 @@ public:
 	/** \brief Create listener. */
 	meWPSDecalListener(meWPSDecal &panel);
 	
+protected:
 	/** \brief Clean up listener. */
 	~meWPSDecalListener() override;
+	
+public:
 	/*@}*/
 	
 	

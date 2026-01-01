@@ -26,9 +26,9 @@
 #ifndef _PROJUDISTRIBUTORSETGAMEOBJECT_H_
 #define _PROJUDISTRIBUTORSETGAMEOBJECT_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
 
-class projProject;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetGameObject : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -54,7 +54,9 @@ public:
 	projUProjectSetGameObject(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
 	virtual ~projUProjectSetGameObject();
+public:
 	/*@}*/
 	
 	

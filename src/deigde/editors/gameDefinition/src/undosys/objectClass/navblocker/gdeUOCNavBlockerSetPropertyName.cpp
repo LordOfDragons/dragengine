@@ -41,8 +41,8 @@
 
 gdeUOCNavBlockerSetPropertyName::gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, gdeOCNavigationBlocker::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pNavBlocker(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetPropertyName::~gdeUOCNavBlockerSetPropertyName(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

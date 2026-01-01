@@ -55,7 +55,7 @@ igdeEditableEntity::igdeEditableEntity(igdeEnvironment *environment){
 	pChanged = false;
 	pSaved = false;
 	
-	pUndoSystem = NULL;
+	pUndoSystem = nullptr;
 	
 	try{
 		pUndoSystem = new igdeUndoSystem(this);

@@ -121,6 +121,6 @@ void dearAnimation::pCreateMoves(){
 	
 	int i;
 	for(i=0; i<count; i++){
-		pMoves.Add(dearAnimationMove::Ref::NewWith(*pAnimation->GetMove(i)));
+		pMoves.Add(dearAnimationMove::Ref::New(*pAnimation->GetMove(i)));
 	}
 }

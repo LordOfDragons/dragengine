@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -53,27 +53,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.h" />
-    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\foxtoolkit.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\module.xml" />
@@ -451,4 +430,25 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\corefault\decrbCoreFault.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\deCRBasic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelConsole.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelErrorTrace.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelModuleStatus.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelParameters.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbPanelStatus.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\decrbWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\foxtoolkit.h" />
+  </ItemGroup>
 </Project>

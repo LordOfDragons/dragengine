@@ -35,6 +35,11 @@ class aeWPController;
  * Controller panel listener
  */
 class aeWPControllerListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPControllerListener> Ref;
+	
+	
 private:
 	aeWPController &pPanel;
 	
@@ -47,7 +52,9 @@ public:
 	aeWPControllerListener(aeWPController &panel);
 	
 	/** Clean up listener. */
+protected:
 	~aeWPControllerListener() override;
+public:
 	/*@}*/
 	
 	

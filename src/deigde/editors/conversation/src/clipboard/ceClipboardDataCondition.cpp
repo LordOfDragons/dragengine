@@ -42,29 +42,13 @@ const char * const ceClipboardDataCondition::TYPE_NAME = "condition";
 // Constructor, destructor
 ////////////////////////////
 
-ceClipboardDataCondition::ceClipboardDataCondition(const ceConversationConditionList &conditions) :
+ceClipboardDataCondition::ceClipboardDataCondition(const ceConversationCondition::List &conditions) :
 igdeClipboardData(TYPE_NAME)
 {
-	ceConversationCondition *condition = NULL;
-	const int count = conditions.GetCount();
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			condition = conditions.GetAt(i)->CreateCopy();
-			pConditions.Add(condition);
-			condition->FreeReference();
-			condition = NULL;
-		}
-		
-	}catch(const deException &){
-		if(condition){
-			condition->FreeReference();
-		}
-		throw;
-	}
+	conditions.Visit([&](const ceConversationCondition &c){
+		pConditions.Add(c.CreateCopy());
+	});
 }
 
 ceClipboardDataCondition::~ceClipboardDataCondition(){
-	pConditions.RemoveAll();
 }

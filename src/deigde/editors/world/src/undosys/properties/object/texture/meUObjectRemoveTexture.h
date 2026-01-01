@@ -31,8 +31,8 @@
 
 // predefinitions
 class meWorld;
-class meObject;
-class meObjectTexture;
+#include "../../../../world/object/meObject.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -40,14 +40,15 @@ class meObjectTexture;
  * Undo action for removing a texture from an object.
  */
 class meUObjectRemoveTexture : public igdeUndo{
-private:
-	meObject *pObject;
-	meObjectTexture *pTexture;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUObjectRemoveTexture> Ref;
 	
+	
+private:
+	meObject::Ref pObject;
+	meObjectTexture::Ref pTexture;
+	
+public:
 	// constructor, destructor
 	meUObjectRemoveTexture(meObjectTexture *texture);
 	

@@ -25,9 +25,9 @@
 #ifndef _DEOGLDEBUGDRAWER_H_
 #define _DEOGLDEBUGDRAWER_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicDebugDrawer.h>
+#include "deoglRDebugDrawer.h"
 
-class deoglRDebugDrawer;
+#include <dragengine/systems/modules/graphic/deBaseGraphicDebugDrawer.h>
 
 class deGraphicOpenGl;
 class deDebugDrawer;
@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deDebugDrawer &pDebugDrawer;
 	
-	deoglRDebugDrawer *pRDebugDrawer;
+	deoglRDebugDrawer::Ref pRDebugDrawer;
 	
 	bool pDirtyDebugDrawer;
 	bool pDirtyShapes;
@@ -70,7 +70,7 @@ public:
 	
 	
 	/** Render debug drawer. */
-	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
+	inline const deoglRDebugDrawer::Ref &GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

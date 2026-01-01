@@ -35,6 +35,10 @@
  * Undo action set mapped input lower.
  */
 class seUMappedSetInputLower : public igdeUndo{
+public:
+	typedef deTObjectReference<seUMappedSetInputLower> Ref;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUMappedSetInputLower> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

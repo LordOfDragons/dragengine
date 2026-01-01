@@ -34,7 +34,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/resources/deResource.h>
@@ -93,7 +93,7 @@ void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReade
 	}
 	
 	// find best protocol to speak
-	decIntSet clientProtocols;
+	decTSet<int> clientProtocols;
 	const int clientProtocolCount = reader.ReadUShort();
 	int i;
 	for(i=0; i<clientProtocolCount; i++){
@@ -113,8 +113,7 @@ void debnServer::ProcessConnectionRequest(debnAddress &address, decBaseFileReade
 	eProtocols protocol = epDENetworkProtocol;
 	
 	// create connection 
-	deConnection::Ref connection(deConnection::Ref::New(
-		 pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection()));
+	deConnection::Ref connection(pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection());
 	((debnConnection*)connection->GetPeerNetwork())->AcceptConnection(pSocket, address, protocol);
 	
 	// send back result
@@ -154,7 +153,7 @@ bool debnServer::ListenOn(const char *address){
 	pNetBasic->LogInfoFormat("debnServer.ListenOn: Listening on '%s'", useAddress.GetString());
 	
 	try{
-		pSocket = new debnSocket(*pNetBasic);
+		pSocket = debnSocket::Ref::New(*pNetBasic);
 		
 		pSocket->GetAddress().SetFromString(useAddress);
 		pSocket->Bind();
@@ -164,10 +163,7 @@ bool debnServer::ListenOn(const char *address){
 		pNetBasic->RegisterServer(this);
 		
 	}catch(const deException &e){
-		if(pSocket){
-			pSocket->FreeReference();
-			pSocket = nullptr;
-		}
+		pSocket = nullptr;
 		pNetBasic->LogException(e);
 		return false;
 	}
@@ -187,9 +183,7 @@ void debnServer::StopListening(){
 		
 		pNetBasic->UnregisterServer(this);
 	}
-	
-	pSocket->FreeReference();
-	pSocket = NULL;
+	pSocket = nullptr;
 	
 	pListening = false;
 }

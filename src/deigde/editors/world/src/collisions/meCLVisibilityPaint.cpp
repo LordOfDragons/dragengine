@@ -59,12 +59,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLVisibilityPaint::meCLVisibilityPaint(meWorld *world){
-	if(!world) DETHROW(deeInvalidParam);
+meCLVisibilityPaint::meCLVisibilityPaint(meWorld *world) :
+pInSession(false)
+{
+	DEASSERT_NOTNULL(world)
 	
 	pWorld = world;
 	
-	pOldVis = NULL;
+	pOldVis = nullptr;
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 }
@@ -84,9 +86,11 @@ void meCLVisibilityPaint::SetRay(const decDVector &origin, const decVector &dire
 }
 
 void meCLVisibilityPaint::BeginSession(){
+	DEASSERT_FALSE(pInSession)
+	
 	if(pOldVis){
 		delete pOldVis;
-		pOldVis = NULL;
+		pOldVis = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
@@ -96,12 +100,16 @@ void meCLVisibilityPaint::BeginSession(){
 	
 	pSessionSector.SetZero();
 	pSessionGrid.SetZero();
+	
+	pInSession = true;
 }
 
 void meCLVisibilityPaint::PreparePaint(){
-	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-	float sectorDim = hterrain->GetSectorSize();
-	int imageDim = hterrain->GetSectorResolution();
+	DEASSERT_TRUE(pInSession)
+	
+	meHeightTerrain &hterrain = pWorld->GetHeightTerrain();
+	float sectorDim = hterrain.GetSectorSize();
+	int imageDim = hterrain.GetSectorResolution();
 	const meWorldGuiParameters &guiparams = pWorld->GetGuiParameters();
 	
 	pDrawMode = guiparams.GetVPDrawMode();
@@ -115,101 +123,95 @@ void meCLVisibilityPaint::PreparePaint(){
 }
 
 void meCLVisibilityPaint::Paint(){
-	if(pHasHit){
-		meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-		bool visValue = pDrawMode == meWorldGuiParameters::evpdmVisible;
-		float sectorDim = hterrain->GetSectorSize();
-		int s, sectorCount = hterrain->GetSectorCount();
-		int imageDim = hterrain->GetSectorResolution();
-		meHeightTerrainSector *htsector;
-		meBitArray *htsvis;
-		decBoundary region;
-		decVector2 center;
-		double divX, divZ;
-		int x, y;
-		
-		// determine the paint location
-		divX = pHitPoint.x / sectorDim + 0.5;
-		divZ = 0.5 - pHitPoint.z / sectorDim;
-		
-		pPaintSector.x = (int)divX;
-		pPaintSector.y = (int)divZ;
-		
-		pPaintGrid.x = (float)((divX - (double)pPaintSector.x) * (double)(imageDim + 1));
-		if(pPaintGrid.x < 0.0f) pPaintGrid.x += sectorDim;
-		pPaintGrid.y = (float)((divZ - (double)pPaintSector.y) * (double)(imageDim + 1));
-		if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
-		
-		// update the old visibility
-		if(!pOldVis){
-			pSessionSector = pPaintSector;
-			
-			pSessionGrid.x = (int)pPaintGrid.x;
-			if(pSessionGrid.x < 0) pSessionGrid.x = 0;
-			if(pSessionGrid.x >= imageDim) pSessionGrid.x = imageDim - 1;
-			
-			pSessionGrid.y = (int)pPaintGrid.y;
-			if(pSessionGrid.y < 0) pSessionGrid.y = 0;
-			if(pSessionGrid.y >= imageDim) pSessionGrid.y = imageDim - 1;
-			
-//pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLVisibilityPaint::Paint] session: s=(%i,%i) g=(%i,%i)\n", pSessionSector.x, pSessionSector.y, pSessionGrid.x, pSessionGrid.y );
-		}
-		
-		pUpdateOldVisibility(pPaintSector, pPaintGrid, decVector2(pPaintRadius, pPaintRadius));
-		
-		// paint
-		for(s=0; s<sectorCount; s++){
-			htsector = hterrain->GetSectorAt(s);
-			const decPoint &scoord = htsector->GetCoordinates();
-			
-	//		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
-	//		&&  scoord.x <= pAreaModifySector.x2 && scoord.y <= pAreaModifySector.y2 ){
-				region.x1 = (pAreaModifySector.x1 - scoord.x) * imageDim + pAreaModifyGrid.x1;
-				region.y1 = (pAreaModifySector.y1 - scoord.y) * imageDim + pAreaModifyGrid.y1;
-				region.x2 = (pAreaModifySector.x2 - scoord.x) * imageDim + pAreaModifyGrid.x2;
-				region.y2 = (pAreaModifySector.y2 - scoord.y) * imageDim + pAreaModifyGrid.y2;
-				
-				if(region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim){
-					if(region.x1 < 0) region.x1 = 0;
-					if(region.y1 < 0) region.y1 = 0;
-					if(region.x2 >= imageDim) region.x2 = imageDim - 1;
-					if(region.y2 >= imageDim) region.y2 = imageDim - 1;
-					
-					center.x = (pPaintSector.x - scoord.x) * imageDim + pPaintGrid.x;
-					center.y = (pPaintSector.y - scoord.y) * imageDim + pPaintGrid.y;
-					
-					htsvis = htsector->GetVisibilityFaces();
-					
-					for(y=region.y1; y<=region.y2; y++){
-						for(x=region.x1; x<=region.x2; x++){
-							htsvis->SetValueAt(x, y, visValue);
-						}
-					}
-					
-					htsector->SetVisibilityChanged(true);
-					
-					if(htsector->GetEngineSector()){
-						htsector->UpdateVisibilitySector(htsector->GetEngineSector());
-					}
-					htsector->RebuildEngineSector();
-					
-					pWorld->NotifyHTSVisibilityChanged(htsector);
-				}
-	//		}
-		}
-		
-// pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "[meCLVisibilityPaint::Paint] modified: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)\n", pAreaModifySector.x1, pAreaModifySector.y1,
-// pAreaModifySector.x2, pAreaModifySector.y2, pAreaModifyGrid.x1, pAreaModifyGrid.y1, pAreaModifyGrid.x2, pAreaModifyGrid.y2 );
-		
-		// notify
-		hterrain->NotifyHeightsChanged(pAreaModifySector, pAreaModifyGrid);
+	DEASSERT_TRUE(pInSession)
+	
+	if(!pHasHit){
+		return;
 	}
+	
+	meHeightTerrain &hterrain = pWorld->GetHeightTerrain();
+	bool visValue = pDrawMode == meWorldGuiParameters::evpdmVisible;
+	float sectorDim = hterrain.GetSectorSize();
+	int imageDim = hterrain.GetSectorResolution();
+	meBitArray *htsvis;
+	decBoundary region;
+	decVector2 center;
+	double divX, divZ;
+	int x, y;
+	
+	// determine the paint location
+	divX = pHitPoint.x / sectorDim + 0.5;
+	divZ = 0.5 - pHitPoint.z / sectorDim;
+	
+	pPaintSector.x = (int)divX;
+	pPaintSector.y = (int)divZ;
+	
+	pPaintGrid.x = (float)((divX - (double)pPaintSector.x) * (double)(imageDim + 1));
+	if(pPaintGrid.x < 0.0f) pPaintGrid.x += sectorDim;
+	pPaintGrid.y = (float)((divZ - (double)pPaintSector.y) * (double)(imageDim + 1));
+	if(pPaintGrid.y < 0.0f) pPaintGrid.y += sectorDim;
+	
+	// update the old visibility
+	if(!pOldVis){
+		pSessionSector = pPaintSector;
+		
+		pSessionGrid.x = (int)pPaintGrid.x;
+		if(pSessionGrid.x < 0) pSessionGrid.x = 0;
+		if(pSessionGrid.x >= imageDim) pSessionGrid.x = imageDim - 1;
+		
+		pSessionGrid.y = (int)pPaintGrid.y;
+		if(pSessionGrid.y < 0) pSessionGrid.y = 0;
+		if(pSessionGrid.y >= imageDim) pSessionGrid.y = imageDim - 1;
+	}
+	
+	pUpdateOldVisibility(pPaintSector, pPaintGrid, decVector2(pPaintRadius, pPaintRadius));
+	
+	// paint
+	hterrain.GetSectors().Visit([&](meHeightTerrainSector *htsector){
+		const decPoint &scoord = htsector->GetCoordinates();
+		
+//		if( scoord.x >= pAreaModifySector.x1 && scoord.y >= pAreaModifySector.y1
+//		&&  scoord.x <= pAreaModifySector.x2 && scoord.y <= pAreaModifySector.y2 ){
+			region.x1 = (pAreaModifySector.x1 - scoord.x) * imageDim + pAreaModifyGrid.x1;
+			region.y1 = (pAreaModifySector.y1 - scoord.y) * imageDim + pAreaModifyGrid.y1;
+			region.x2 = (pAreaModifySector.x2 - scoord.x) * imageDim + pAreaModifyGrid.x2;
+			region.y2 = (pAreaModifySector.y2 - scoord.y) * imageDim + pAreaModifyGrid.y2;
+			
+			if(region.x2 >= 0 && region.y2 >= 0 && region.x1 < imageDim && region.y1 < imageDim){
+				if(region.x1 < 0) region.x1 = 0;
+				if(region.y1 < 0) region.y1 = 0;
+				if(region.x2 >= imageDim) region.x2 = imageDim - 1;
+				if(region.y2 >= imageDim) region.y2 = imageDim - 1;
+				
+				center.x = (pPaintSector.x - scoord.x) * imageDim + pPaintGrid.x;
+				center.y = (pPaintSector.y - scoord.y) * imageDim + pPaintGrid.y;
+				
+				htsvis = htsector->GetVisibilityFaces();
+				for(y=region.y1; y<=region.y2; y++){
+					for(x=region.x1; x<=region.x2; x++){
+						htsvis->SetValueAt(x, y, visValue);
+					}
+				}
+				
+				htsector->SetVisibilityChanged(true);
+				htsector->RebuildEngineSector();
+				
+				pWorld->NotifyHTSVisibilityChanged(htsector);
+			}
+//		}
+	});
+	
+	
+	// notify
+	hterrain.NotifyHeightsChanged(pAreaModifySector, pAreaModifyGrid);
 }
 
 void meCLVisibilityPaint::EndSession(){
+	DEASSERT_TRUE(pInSession)
+	
 	// check if we have any changes at all
 	if(pOldVis){
-		pWorld->GetUndoSystem()->Add(meUHTPaintVisibility::Ref::NewWith(pDrawMode, pWorld,
+		pWorld->GetUndoSystem()->Add(meUHTPaintVisibility::Ref::New(pDrawMode, pWorld,
 			decPoint(pAreaSector.x1, pAreaSector.y1), decPoint(pAreaGrid.x1, pAreaGrid.y1),
 			decPoint(pModifyWidth, pModifyHeight), pOldVis), false);
 	}
@@ -217,10 +219,12 @@ void meCLVisibilityPaint::EndSession(){
 	// clean up
 	if(pOldVis){
 		delete pOldVis;
-		pOldVis = NULL;
+		pOldVis = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
+	
+	pInSession = false;
 }
 
 
@@ -345,7 +349,7 @@ pWorld->GetLogger()->LogInfoFormat(LOGSOURCE, "[meCLVisibilityPaint::pGrowHeight
 		int y, newHeight = pModifyHeight + growBy.y;
 		int x, newWidth = pModifyWidth + growBy.x;
 		meHeightTerrainSector *htsector;
-		meBitArray *oldvis = NULL;
+		meBitArray *oldvis = nullptr;
 		decBoundary retain;
 		decPoint scoord;
 		int sgx, sgy;
@@ -357,7 +361,6 @@ pWorld->GetLogger()->LogInfoFormat(LOGSOURCE, "[meCLVisibilityPaint::pGrowHeight
 		
 		try{
 			oldvis = new meBitArray(newWidth, newHeight);
-			if(!oldvis) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

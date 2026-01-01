@@ -22,56 +22,63 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECLHITLISTENTRY_H_
 #define _RECLHITLISTENTRY_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include "../rig/bone/reRigBone.h"
+#include "../rig/shape/reRigShape.h"
+#include "../rig/constraint/reRigConstraint.h"
+#include "../rig/push/reRigPush.h"
 
-// predefinitions
-class reRigBone;
-class reRigShape;
-class reRigConstraint;
-class reRigPush;
-
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
  * Entry of a hit list.
  */
-class reCLHitListEntry{
+class reCLHitListEntry : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reCLHitListEntry> Ref;
+	
+	typedef decTObjectOrderedSet<reCLHitListEntry> List;
+	
+	
 private:
-	reRigBone *pBone;
-	reRigShape *pShape;
-	reRigConstraint *pConstraint;
-	reRigPush *pPush;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
+	reRigConstraint::Ref pConstraint;
+	reRigPush::Ref pPush;
 	float pDistance;
 	decVector pNormal;
 	
 public:
 	// constructor, destructor
 	reCLHitListEntry();
-	~reCLHitListEntry();
 	
+protected:
+	~reCLHitListEntry() override;
+	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Clears the entry. */
 	void Clear();
-	/** Retrieves the rig bone or NULL. */
-	inline reRigBone *GetBone() const{ return pBone; }
-	/** Sets the rig bone or NULL. */
+	/** Retrieves the rig bone or nullptr. */
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
+	/** Sets the rig bone or nullptr. */
 	void SetBone(reRigBone *bone);
-	/** Retrieves the rig shape or NULL. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	/** Retrieves the rig shape or nullptr. */
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	/** Sets the rig shape. */
 	void SetShape(reRigShape *shape);
-	/** Retrieves the rig constraint or NULL. */
-	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
+	/** Retrieves the rig constraint or nullptr. */
+	inline const reRigConstraint::Ref &GetConstraint() const{ return pConstraint; }
 	/** Sets the rig constraint. */
 	void SetConstraint(reRigConstraint *constraint);
-	/** Retrieves the rig push or NULL. */
-	inline reRigPush *GetPush() const{ return pPush; }
+	/** Retrieves the rig push or nullptr. */
+	inline const reRigPush::Ref &GetPush() const{ return pPush; }
 	/** Sets the rig push. */
 	void SetPush(reRigPush *push);
 	
@@ -89,7 +96,7 @@ public:
 	 * Compares this entry to another one. Returns 1 if this entry is ordinally larger,
 	 * -1 if smaller or 0 if equal.
 	 */
-	int CompareTo(const reCLHitListEntry &entry) const;
+	int Compare(const reCLHitListEntry &entry) const;
 	/*@}*/
 };
 

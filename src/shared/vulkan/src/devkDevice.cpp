@@ -375,7 +375,7 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get graphic device queue failed");
 			}
-			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexGraphic, i, queue));
+			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexGraphic, i, queue);
 		}
 		
 		// compute queues
@@ -389,7 +389,7 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get compute device queue failed");
 			}
-			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexCompute, i, queue));
+			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexCompute, i, queue);
 		}
 		
 		// transfer queues
@@ -403,7 +403,7 @@ void devkDevice::pCreateDevice(){
 			if(!queue){
 				DETHROW_INFO(deeInvalidAction, "get transfer device queue failed");
 			}
-			pQueues[nextQueue++].TakeOver(new devkQueue(*this, pFamilyIndexTransfer, i, queue));
+			pQueues[nextQueue++] = devkQueue::Ref::New(*this, pFamilyIndexTransfer, i, queue);
 		}
 	}
 }

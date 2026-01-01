@@ -358,11 +358,9 @@ void deoglRHTSector::pCreateHeightMap(const deHeightTerrainSector &sector){
 	// instead of calculating these identical LOD chains multiple times they
 	// could be pushed into a LOD chain cache instead which reduces not only
 	// memory consumption but also processing time during loading time.
-	int offset;
 	
 	for(z=0; z<pClusterCount; z++){
-		offset = pClusterCount * z;
-		
+		const int offset = pClusterCount * z;
 		for(x=0; x<pClusterCount; x++){
 			pClusters[offset + x].InitFromHeightImage(sector);
 		}
@@ -404,7 +402,7 @@ void deoglRHTSector::pSetTextureCount(int count){
 
 
 
-//#include "dragengine/common/utils/decTimer.h"
+//#include <dragengine/common/utils/decTimer.h>
 //static decTimer timer;
 //#define DEBUG_RESET_TIMERS				timer.Reset();
 //#define DEBUG_PRINT_TIMER(what)			printf( "[OGL] Timer: %s = %iys\n", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
@@ -533,7 +531,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 	
 	const int pixelCount = maskWidth * maskHeight;
 	for(m=0; m<maskCount; m++){
-		pPixBufMasks[m].TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1));
+		pPixBufMasks[m] = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1);
 		deoglPixelBuffer::sFloat4 * const pbdata = pPixBufMasks[m]->GetPointerFloat4();
 		
 		for(t=m*4; t<textureCount; t++){
@@ -730,9 +728,6 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 	for(v=0, c=0; c<clusterCount; c++){
 		if(!pVBODataPoints1[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints1[v]));
-			if(!pVBODataPoints1[v]){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pVBODataPoints1Count++;
 		}
@@ -791,9 +786,6 @@ void deoglRHTSector::pCreateVBODataFaces(){
 	for(v=0, c=0; c<clusterCount; c++){
 		if(!pVBODataFaces[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataFaces[v]));
-			if(!pVBODataFaces[v]){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pVBODataFacesCount++;
 		}
@@ -858,7 +850,6 @@ void deoglRHTSector::pUpdateHeightMap(){
 		
 		if(vboCount > 0){
 			pVBODataPoints2 = new GLuint[vboCount];
-			if(!pVBODataPoints2) DETHROW(deeOutOfMemory);
 			
 			for(v=0; v<vboCount; v++){
 				pVBODataPoints2[v] = 0;
@@ -867,7 +858,6 @@ void deoglRHTSector::pUpdateHeightMap(){
 			for(v=0, c=0; c<clusterCount; c++){
 				if(!pVBODataPoints2[v]){
 					OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints2[v]));
-					if(!pVBODataPoints2[v]) DETHROW(deeOutOfMemory);
 					
 					pVBODataPoints2Count++;
 				}

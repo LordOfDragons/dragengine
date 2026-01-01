@@ -47,39 +47,20 @@ ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *a
 ceCConditionLogic *logic, ceConversationCondition *condition){
 	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pLogic = NULL;
-	pCondition = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pLogic = nullptr;
+	pCondition = nullptr;
 	
 	SetShortInfo("Logic Add Condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCLogicAdd::~ceUCCLogicAdd(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

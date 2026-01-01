@@ -36,6 +36,9 @@
  */
 class debpShapeHackBox : public debpShapeBox{
 public:
+	typedef deTObjectReference<debpShapeHackBox> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shape. */

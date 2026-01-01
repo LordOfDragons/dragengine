@@ -39,19 +39,14 @@ const char * const gdeClipboardDataOCBillboard::TYPE_NAME = "OCBillboard";
 ////////////////////////////
 
 gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard(gdeOCBillboard *billboard) :
-igdeClipboardData(TYPE_NAME),
-pBillboard(NULL)
+igdeClipboardData(TYPE_NAME)
 {
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pBillboard = billboard;
-	billboard->AddReference();
 }
 
 gdeClipboardDataOCBillboard::~gdeClipboardDataOCBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
 }

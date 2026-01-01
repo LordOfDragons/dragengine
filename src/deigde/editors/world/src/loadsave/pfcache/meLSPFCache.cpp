@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include "meLSPFCache.h"
-#include "meLSPFCacheTypeList.h"
 
 #include "../../world/heightterrain/meHTVegetationLayer.h"
 #include "../../world/heightterrain/meHTVVariation.h"
@@ -44,6 +43,17 @@
 #include <dragengine/resources/propfield/dePropField.h>
 
 
+struct sType{
+	int vlayer = 0, variation = 0;
+	
+	sType() = default;
+	sType(int vl, int var) : vlayer(vl), variation(var){}
+	
+	bool operator==(const sType &o) const{
+		return vlayer == o.vlayer && variation == o.variation;
+	}
+};
+
 
 // Class meLSPFCache
 //////////////////////
@@ -51,9 +61,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meLSPFCache::meLSPFCache(){
-	pName = "Drag[en]gine Prop Field Cache";
-	pPattern = ".depfc";
+meLSPFCache::meLSPFCache() :
+pName("Drag[en]gine Prop Field Cache"),
+pPattern(".depfc"){
 }
 
 meLSPFCache::~meLSPFCache(){
@@ -66,17 +76,16 @@ meLSPFCache::~meLSPFCache(){
 
 void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader &file){
 	double sectorDim = (double)sector.GetHeightTerrain()->GetSectorSize();
-	int p, propfieldCount = sector.GetPropFieldCount();
+	int p, propfieldCount = sector.GetPropFields().GetCount();
 	const decPoint &scoord = sector.GetCoordinates();
 	meHeightTerrainPropField *propfield;
-	meLSPFCacheTypeList typeList;
+	decTOrderedSet<sType> typeList;
 	decVector propfieldPosition;
 	meHTVegetationLayer *vlayer;
 	meHTVVariation *variation;
 	decDVector sectorPosition;
 	decVector scalePosition;
 	decVector scaleRotation;
-	int i, instanceCount;
 	float scaleScaling;
 	int t, typeCount;
 	decVector irot;
@@ -97,7 +106,7 @@ void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader 
 	
 	// read the header
 	char header[10];
-	file.Read((char*)&header, 10); // signature {char[10]}
+	file.Read(reinterpret_cast<char*>(&header), 10); // signature {char[10]}
 	if(strncmp(header, "DEPFCache ", 10) != 0){
 		DETHROW_INFO(deeInvalidFileFormat, file.GetFilename());
 	}
@@ -117,7 +126,7 @@ void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader 
 	int lookforVLayer, lookforVariation;
 	float rotPerForce, restitution;
 	decString pathModel, pathSkin;
-	int l, layerCount = sector.GetHeightTerrain()->GetVLayerCount();
+	int l, layerCount = sector.GetHeightTerrain()->GetVLayers().GetCount();
 	int v, variationCount;
 	
 	for(t=0; t<typeCount; t++){
@@ -129,15 +138,15 @@ void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader 
 		lookforVLayer = -1;
 		lookforVariation = -1;
 		for(l=0; l<layerCount; l++){
-			vlayer = sector.GetHeightTerrain()->GetVLayerAt(l);
-			variationCount = vlayer->GetVariationCount();
+			vlayer = sector.GetHeightTerrain()->GetVLayers().GetAt(l);
+			variationCount = vlayer->GetVariations().GetCount();
 			
 			for(v=0; v<variationCount; v++){
-				variation = vlayer->GetVariationAt(v);
+				variation = vlayer->GetVariations().GetAt(v);
 				
 				if(pathModel.Equals(variation->GetPathModel()) && pathSkin.Equals(variation->GetPathSkin())
-				&&  fabsf(rotPerForce - variation->GetRotationPerForce()) < 0.001f
-				&&  fabsf(restitution - variation->GetRestitution()) < 0.001f){
+				&& fabsf(rotPerForce - variation->GetRotationPerForce()) < 0.001f
+				&& fabsf(restitution - variation->GetRestitution()) < 0.001f){
 					lookforVLayer = l;
 					lookforVariation = v;
 					break;
@@ -147,30 +156,31 @@ void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader 
 		
 		if(lookforVLayer == -1 || lookforVariation == -1) DETHROW(deeInvalidAction);
 		
-		typeList.AddType(lookforVLayer, lookforVariation);
+		typeList.Add({lookforVLayer, lookforVariation});
 	}
 	
 	// read the prop fields
 	propfieldCount = file.ReadShort(); // prop field count {short}
-	if(propfieldCount != sector.GetPropFieldCount()) DETHROW(deeInvalidAction);
+	if(propfieldCount != sector.GetPropFields().GetCount()) DETHROW(deeInvalidAction);
 	
 	for(p=0; p<propfieldCount; p++){
-		propfield = sector.GetPropFieldAt(p);
+		propfield = sector.GetPropFields().GetAt(p);
 		
 		propfieldPosition = (propfield->GetEnginePropField()->GetPosition() - sectorPosition).ToVector();
 		
 		file.ReadFloat(); // prop field position X {float}
 		file.ReadFloat(); // prop field position Y {float}
 		file.ReadFloat(); // prop field position Z {float}
-		instanceCount = file.ReadInt(); // instance count {int}
+		const int instanceCount = file.ReadInt(); // instance count {int}
 		
 		propfield->RemoveAllVInstances();
 		
+		int i;
 		for(i=0; i<instanceCount; i++){
 			meHTVInstance &instance = propfield->AddVInstance();
 			
 			t = file.ReadShort(); // instance type {short}
-			const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt(t);
+			const sType &type = typeList.GetAt(t);
 			
 			ipos.x = (float)file.ReadShort() * scalePosition.x; // instance position X {short, encoded}
 			ipos.y = file.ReadFloat(); // instance position Y {float}
@@ -188,16 +198,15 @@ void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader 
 	}
 }
 
-void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &file){
+void meLSPFCache::SaveToFile(const meHeightTerrainSector &sector, decBaseFileWriter &file){
 	double sectorDim = (double)sector.GetHeightTerrain()->GetSectorSize();
-	int p, propfieldCount = sector.GetPropFieldCount();
+	int p, propfieldCount = sector.GetPropFields().GetCount();
 	const decPoint &scoord = sector.GetCoordinates();
 	meHeightTerrainPropField *propfield;
 	float twopi = DEG2RAD * 360.0f;
-	meLSPFCacheTypeList typeList;
+	decTOrderedSet<sType> typeList;
 	decVector propfieldPosition;
 	meHTVegetationLayer *vlayer;
-	meHTVVariation *variation;
 	decDVector sectorPosition;
 	decVector scalePosition;
 	decVector scaleRotation;
@@ -208,13 +217,13 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 	
 	// build the list of all types
 	for(p=0; p<propfieldCount; p++){
-		propfield = sector.GetPropFieldAt(p);
-		instanceCount = propfield->GetVInstanceCount();
+		propfield = sector.GetPropFields().GetAt(p);
+		instanceCount = propfield->GetVInstances().GetCount();
 		
 		for(i=0; i<instanceCount; i++){
-			const meHTVInstance &instance = propfield->GetVInstanceAt(i);
+			const meHTVInstance &instance = propfield->GetVInstances().GetAt(i);
 			
-			typeList.AddType(instance.GetVLayer(), instance.GetVariation());
+			typeList.Add({instance.GetVLayer(), instance.GetVariation()});
 		}
 	}
 	
@@ -239,13 +248,13 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 	file.WriteFloat(1.0f / scalePosition.z); // scalePositionZ {float}
 	
 	// write the list of types
-	typeCount = typeList.GetTypeCount();
+	typeCount = typeList.GetCount();
 	file.WriteShort((short)typeCount); // number of types {short}
 	
 	for(t=0; t<typeCount; t++){
-		const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt(t);
-		vlayer = sector.GetHeightTerrain()->GetVLayerAt(type.vlayer);
-		variation = vlayer->GetVariationAt(type.variation);
+		const sType &type = typeList.GetAt(t);
+		vlayer = sector.GetHeightTerrain()->GetVLayers().GetAt(type.vlayer);
+		const meHTVVariation * const variation = vlayer->GetVariations().GetAt(type.variation);
 		
 		file.WriteString8(variation->GetPathModel().GetString()); // model path {string8}
 		file.WriteString8(variation->GetPathSkin().GetString()); // skin path {string8}
@@ -257,8 +266,8 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 	file.WriteShort((short)propfieldCount); // prop field count {short}
 	
 	for(p=0; p<propfieldCount; p++){
-		propfield = sector.GetPropFieldAt(p);
-		instanceCount = propfield->GetVInstanceCount();
+		propfield = sector.GetPropFields().GetAt(p);
+		instanceCount = propfield->GetVInstances().GetCount();
 		
 		if(!propfield->GetEnginePropField()) DETHROW(deeInvalidParam); // HACK because the position is not yet in the propfield itself
 		
@@ -270,7 +279,7 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 		file.WriteInt(instanceCount); // instance count {int}
 		
 		for(i=0; i<instanceCount; i++){
-			const meHTVInstance &instance = propfield->GetVInstanceAt(i);
+			const meHTVInstance &instance = propfield->GetVInstances().GetAt(i);
 			const decVector &ipos = instance.GetPosition();
 			
 			irot = instance.GetRotation();
@@ -293,7 +302,7 @@ void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &f
 				irot.z = fmodf(irot.z, twopi);
 			}
 			
-			t = typeList.IndexOfTypeWith(instance.GetVLayer(), instance.GetVariation());
+			t = typeList.IndexOf({instance.GetVLayer(), instance.GetVariation()});
 			if(t == -1) DETHROW(deeInvalidAction); // can never happen but better safe then sorry
 			
 			file.WriteShort((short)t); // instance type {short}

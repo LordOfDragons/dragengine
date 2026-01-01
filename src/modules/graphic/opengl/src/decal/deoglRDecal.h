@@ -25,8 +25,13 @@
 #ifndef _DEOGLRDECAL_H_
 #define _DEOGLRDECAL_H_
 
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+#include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
@@ -38,16 +43,11 @@ class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
-class deoglRDynamicSkin;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
-class deoglSharedVBOBlock;
-class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
 class deoglSkinShader;
-class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
 class deoglRenderTaskSharedInstance;
@@ -60,15 +60,17 @@ class deoglDecalListener;
  * Render decal.
  */
 class deoglRDecal : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDecal> Ref;
+	
+	
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRDecal &pDecal;
 	public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDecal> Ref;
-
-
+		typedef deTObjectReference<WorldComputeElement> Ref;
 		WorldComputeElement(deoglRDecal &decal);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
@@ -84,20 +86,20 @@ private:
 	decTexMatrix2 pTransform;
 	bool pVisible;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
-	deoglSkinState *pSkinState;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
+	deoglSkinState::Ref pSkinState;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglRDynamicSkin *pUseDynamicSkin;
-	deoglSkinState *pUseSkinState;
+	deoglRDynamicSkin::Ref pUseDynamicSkin;
+	deoglSkinState::Ref pUseSkinState;
 	
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	int pPointCount;
 	
 	bool pDirtyVBO;
@@ -105,9 +107,9 @@ private:
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry, *pTUCDepth, *pTUCCounter, *pTUCShadow, *pTUCEnvMap;
@@ -188,36 +190,36 @@ public:
 	
 	
 	/** Skin or \em NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * Set skin state or \em NULL if there is none.
+	 * Drop skin state.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState(deoglSkinState *skinState);
+	void DropSkinState();
 	
 	/** Retrieves the actual skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	/** Retrieves the actual skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	/** Retrieves the actual skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	/** Retrieves the actual dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	inline const deoglSkinState::Ref &GetUseSkinState() const{ return pUseSkinState; }
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -226,7 +228,7 @@ public:
 	void UpdateSkinState();
 	
 	/** Retrieves the vbo block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
@@ -274,7 +276,7 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Render task shared instance or NULL. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
@@ -389,6 +391,7 @@ private:
 		int element, deoglSkinShader &skinShader);
 	
 	void pRequiresPrepareForRender();
+	void pSetSkinState(deoglSkinState *skinState);
 };
 
 #endif

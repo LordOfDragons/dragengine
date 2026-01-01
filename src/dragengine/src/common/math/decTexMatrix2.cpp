@@ -46,6 +46,14 @@ decTexMatrix2::decTexMatrix2(){
 	a23 = 0.0f;
 }
 
+decTexMatrix2::decTexMatrix2(const decTexMatrix2 &copy) :
+a11(copy.a11),
+a12(copy.a12),
+a13(copy.a13),
+a21(copy.a21),
+a22(copy.a22),
+a23(copy.a23){
+}
 
 
 // Matrix creation

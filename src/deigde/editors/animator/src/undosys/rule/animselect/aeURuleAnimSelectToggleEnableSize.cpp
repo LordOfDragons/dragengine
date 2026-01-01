@@ -41,7 +41,7 @@
 
 aeURuleAnimSelectToggleEnableSize::aeURuleAnimSelectToggleEnableSize(
 aeRuleAnimationSelect *rule) :
-pRule(NULL)
+pRule(nullptr)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
@@ -50,13 +50,9 @@ pRule(NULL)
 	SetShortInfo("Rule animation toggle enable size");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnableSize::~aeURuleAnimSelectToggleEnableSize(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

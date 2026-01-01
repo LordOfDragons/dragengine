@@ -24,6 +24,7 @@
 
 #include "deMCCommon.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -118,7 +119,7 @@ deServiceObject::Ref deMCCommon::MetadataMap(const std::vector<Modio::Metadata> 
 }
 
 deServiceObject::Ref deMCCommon::ModTag(const Modio::ModTag &tag){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	so->SetStringChildAt("tag", tag.Tag.c_str());
 	so->SetStringChildAt("tagLocalized", tag.TagLocalized.c_str());
@@ -175,7 +176,7 @@ std::map<std::string, std::string> deMCCommon::StringMap(const deServiceObject &
 }
 
 deServiceObject::Ref deMCCommon::StringMap(const std::map<std::string, std::string> &map){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	std::map<std::string, std::string>::const_iterator iter;
 	for(iter = map.cbegin(); iter != map.cend(); iter++){
@@ -259,7 +260,7 @@ std::int64_t deMCCommon::DateTime(const deServiceObject &so){
 }
 
 deServiceObject::Ref deMCCommon::DateTime(std::int64_t datetime){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	const decDateTime dt((TIME_SYSTEM)datetime);
 	
 	so->SetIntChildAt("year", dt.GetYear());
@@ -337,7 +338,7 @@ std::vector<std::int64_t> deMCCommon::IDList(const deServiceObject &so){
 }
 
 deServiceObject::Ref deMCCommon::FileMetadata(const Modio::FileMetadata &data){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	so->SetChildAt("metadataId", ID(data.MetadataId));
 	so->SetChildAt("modId", ID(data.ModId));
@@ -474,7 +475,7 @@ deServiceObject::Ref deMCCommon::ModProgressState(const Modio::ModProgressInfo::
 }
 
 deServiceObject::Ref deMCCommon::ModProgressInfo(const Modio::ModProgressInfo &info){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	const Modio::ModProgressInfo::EModProgressState state = info.GetCurrentState();
 	const double total = decMath::max((double)info.GetTotalProgress(state), 1.0);
 	const double current = (double)info.GetCurrentProgress(state);
@@ -541,7 +542,7 @@ Modio::AuthenticationProvider deMCCommon::AuthenticationProvider(const deService
 }
 
 deServiceObject::Ref deMCCommon::NeedAcceptTerms(const Modio::Terms &terms){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("terms", terms.TermsText.c_str());
 	so->SetStringChildAt("buttonAccept", terms.Buttons.AgreeText.c_str());
 	so->SetStringChildAt("buttonDecline", terms.Buttons.DisagreeText.c_str());
@@ -553,7 +554,7 @@ deServiceObject::Ref deMCCommon::NeedAcceptTerms(const Modio::Terms &terms){
 	soLinks->AddChild(TermsLink(terms.Links.Manage));
 	so->SetChildAt("links", soLinks);
 	
-	const deServiceObject::Ref soCredParams(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soCredParams(deServiceObject::Ref::New());
 	soCredParams->SetStringChildAt("termsAccepted", "1");
 	so->SetChildAt("credentialParameters", soCredParams);
 	
@@ -561,7 +562,7 @@ deServiceObject::Ref deMCCommon::NeedAcceptTerms(const Modio::Terms &terms){
 }
 
 deServiceObject::Ref deMCCommon::TermsLink(const Modio::Terms::Link &link){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("label", link.Text.c_str());
 	so->SetStringChildAt("url", link.URL.c_str());
 	so->SetBoolChildAt("required", link.bRequired);

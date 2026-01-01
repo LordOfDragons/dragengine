@@ -52,74 +52,79 @@
 
 namespace{
 
-class cActionAppend : public igdeAction {
+class cActionAppend : public igdeAction{
 	gdeWPTagList &pPanel;
 	igdeComboBoxFilter::Ref &pComboBox;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionAppend> Ref;
 	cActionAppend (gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox) : 
 	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add tag"),
 	pPanel(panel), pComboBox(comboBox), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem()){
+	void OnAction() override{
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pComboBox->GetText().IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
-			 pPanel.UndoSet(*pPanel.GetTagList() + pComboBox->GetText())));
+		decStringSet tags(*pPanel.GetTagList());
+		tags.Add(pComboBox->GetText());
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(tags));
 		
 		pListBox->SetSelection(pListBox->IndexOfItem(pComboBox->GetText()));
 	}
 };
 
-class cActionRemove : public igdeAction {
+class cActionRemove : public igdeAction{
 	gdeWPTagList &pPanel;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionRemove> Ref;
 	cActionRemove(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
 	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove tag"), pPanel(panel), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem()){
+	void OnAction() override{
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || !pListBox->GetSelectedItem()){
 			return;
 		}
 		
 		decStringSet tags(*pPanel.GetTagList());
 		tags.Remove(pListBox->GetSelectedItem()->GetText());
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(tags)));
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(tags));
 		
-		if(pListBox->GetItemCount() > 0){
+		if(pListBox->GetItems().IsNotEmpty()){
 			pListBox->SetSelection(0);
 		}
 	}
 };
 
-class cActionClear : public igdeAction {
+class cActionClear : public igdeAction{
 	gdeWPTagList &pPanel;
 	igdeListBox::Ref &pListBox;
 	
 public:
+	typedef deTObjectReference<cActionClear> Ref;
 	cActionClear(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
-	igdeAction("Clear", NULL, "Clear tag"), pPanel(panel), pListBox(listBox){}
+	igdeAction("Clear", nullptr, "Clear tag"), pPanel(panel), pListBox(listBox){}
 	
-	virtual void OnAction(){
-		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
+	void OnAction() override{
+		if(!pPanel.GetTagList() || !pPanel.GetUndoSystem() || pListBox->GetItems().IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(decStringSet())));
+		pPanel.GetUndoSystem()->Add(pPanel.UndoSet(decStringSet()));
 	}
 };
 
-class cListTags : public igdeListBoxListener {
+class cListTags : public igdeListBoxListener{
 	gdeWPTagList &pListBox;
 	
 public:
+	typedef deTObjectReference<cListTags> Ref;
 	cListTags(gdeWPTagList &listBox) : pListBox(listBox){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -145,22 +150,22 @@ public:
 
 gdeWPTagList::gdeWPTagList(igdeUIHelper &helper, int rows, const char *description) :
 igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone),
-pTagList(NULL),
-pUndoSystem(NULL)
+pTagList(nullptr),
+pUndoSystem(nullptr)
 {
-	pActionAdd.TakeOver(new cActionAppend (*this, pComboBox, pListBox));
-	pActionRemove.TakeOver(new cActionRemove(*this, pListBox));
-	pActionClear.TakeOver(new cActionClear(*this, pListBox));
+	pActionAdd = cActionAppend::Ref::New(*this, pComboBox, pListBox);
+	pActionRemove = cActionRemove::Ref::New(*this, pListBox);
+	pActionClear = cActionClear::Ref::New(*this, pListBox);
 	
-	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(
 		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ComboBoxFilter(comboLine, true, description, pComboBox, NULL);
+	helper.ComboBoxFilter(comboLine, true, description, pComboBox, {});
 	pComboBox->SetDefaultSorter();
 	pComboBox->SetFilterCaseInsentive(true);
 	helper.Button(comboLine, pActionAdd);
 	AddChild(comboLine);
 	
-	helper.ListBox(*this, rows, description, pListBox, new cListTags(*this));
+	helper.ListBox(*this, rows, description, pListBox, cListTags::Ref::New(*this));
 	pListBox->SetDefaultSorter();
 }
 
@@ -189,7 +194,7 @@ void gdeWPTagList::SetUndoSystem(igdeUndoSystem *undoSystem){
 
 
 const decString &gdeWPTagList::GetSelectedTag() const{
-	if(pListBox->GetSelectedItem() != NULL){
+	if(pListBox->GetSelectedItem() != nullptr){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{

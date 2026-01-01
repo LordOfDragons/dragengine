@@ -25,6 +25,8 @@
 #ifndef _AEWPAPANELRULE_H_
 #define _AEWPAPANELRULE_H_
 
+#include "../../../animator/controller/aeControllerTarget.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -41,7 +43,6 @@ class aeRule;
 class aeLink;
 class aeWPRule;
 class aeWindowMain;
-class aeControllerTarget;
 
 
 
@@ -49,10 +50,15 @@ class aeControllerTarget;
  * Base rule option panel.
  */
 class aeWPAPanelRule : public igdeContainerFlow{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<aeWPAPanelRule> Ref;
+	
+	
 private:
 	aeWPRule &pWPRule;
 	deAnimatorRuleVisitorIdentify::eRuleTypes pRequiredType;
-	aeControllerTarget *pTarget;
+	aeControllerTarget::Ref pTarget;
 	
 	igdeTextField::Ref pEditName;
 	igdeComboBox::Ref pCBBlendMode;
@@ -107,13 +113,13 @@ public:
 	/** Animator. */
 	aeAnimator *GetAnimator() const;
 	
-	/** Selected rule or \em NULL. */
+	/** Selected rule or \em nullptr. */
 	aeRule *GetRule() const;
 	
-	/** Target or \em NULL. */
-	inline aeControllerTarget *GetTarget() const{ return pTarget; }
+	/** Target or \em nullptr. */
+	inline const aeControllerTarget::Ref &GetTarget() const{ return pTarget; }
 	
-	/** Set target or \em NULL. */
+	/** Set target or \em nullptr. */
 	void SetTarget(aeControllerTarget *target);
 	
 	
@@ -157,7 +163,7 @@ public:
 	/** Set bone combo box text. */
 	void SetCBBoneText(const char *text);
 	
-	/** Selected bone list or NULL. */
+	/** Selected bone list or nullptr. */
 	const char *GetListBoneSelection() const;
 	
 	/** Vertex position set combo box text. */
@@ -166,7 +172,7 @@ public:
 	/** Set vertex position set combo box text. */
 	void SetCBVertexPositionSetText(const char *text);
 	
-	/** Selected vertex position set list or NULL. */
+	/** Selected vertex position set list or nullptr. */
 	const char *GetListVertexPositionSetSelection() const;
 	
 	/** Link combo box selection. */

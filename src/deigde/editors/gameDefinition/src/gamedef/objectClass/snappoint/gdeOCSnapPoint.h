@@ -26,6 +26,7 @@
 #define _GDEOCSNAPPOINT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -50,6 +51,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCSnapPoint> Ref;
 
+	/** \brief Type holding list. */
+	typedef decTObjectOrderedSet<gdeOCSnapPoint> List;
+
 
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -60,7 +64,9 @@ public:
 	gdeOCSnapPoint(const gdeOCSnapPoint &snapPoint);
 	
 	/** \brief Clean up snap point. */
+protected:
 	virtual ~gdeOCSnapPoint();
+public:
 	/*@}*/
 	
 	

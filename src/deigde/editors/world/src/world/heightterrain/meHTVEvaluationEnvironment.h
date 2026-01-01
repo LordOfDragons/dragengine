@@ -22,20 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEHTVEVALUATIONENVIRONMENT_H_
 #define _MEHTVEVALUATIONENVIRONMENT_H_
 
-// includes
+#include "../object/meObject.h"
+
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meHeightTerrainSector;
 class meHeightTerrainPropField;
 class meHeightTerrainTexture;
 class meHTVegetationLayer;
 class meBitArray;
-class meObject;
 class meWorld;
 
 
@@ -70,9 +68,7 @@ private:
 	meHeightTerrainPropField *pPropField;
 	meBitArray *pOccupation;
 	
-	meObject **pObjects;
-	int pObjectCount;
-	int pObjectSize;
+	meObject::List pObjects;
 	
 	float pProbability;
 	int pVariation;
@@ -108,9 +104,9 @@ public:
 	inline meHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	/** Sets the height terrain sector. */
 	void SetHTSector(meHeightTerrainSector *htsector);
-	/** Retrieves the dominant texture or NULL if none exists. */
+	/** Retrieves the dominant texture or nullptr if none exists. */
 	inline meHeightTerrainTexture *GetHTDominantTexture() const{ return pHTDominantTexture; }
-	/** Sets the dominant texture or NULL if none exists. */
+	/** Sets the dominant texture or nullptr if none exists. */
 	void SetHTDominantTexture(meHeightTerrainTexture *texture);
 	/** Retrieves the height terrain coordinates. */
 	inline const decVector2 &GetHTCoordinates() const{ return pHTCoordinates; }
@@ -156,12 +152,12 @@ public:
 	
 	/** \name Objects */
 	/*@{*/
-	/** Retrieves the number of objects. */
-	inline int GetObjectCount() const{ return pObjectCount; }
-	/** Retrieves the object at the given position. */
-	meObject *GetObjectAt(int index) const;
+	/** Objects. */
+	inline const meObject::List &GetObjects() const{ return pObjects; }
+	
 	/** Adds an object. */
 	void AddObject(meObject *object);
+	
 	/** Removes all objects. */
 	void RemoveAllObjects();
 	

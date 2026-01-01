@@ -65,10 +65,10 @@ meCLMaskPaint::meCLMaskPaint(meWorld *world){
 	if(!world) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
-	pSector = NULL;
-	pTexture = NULL;
+	pSector = nullptr;
+	pTexture = nullptr;
 	
-	pOldValues = NULL;
+	pOldValues = nullptr;
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 }
@@ -99,7 +99,7 @@ bool meCLMaskPaint::CanPaint() const{
 void meCLMaskPaint::BeginSession(){
 	if(pOldValues){
 		delete [] pOldValues;
-		pOldValues = NULL;
+		pOldValues = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
@@ -176,7 +176,7 @@ void meCLMaskPaint::Paint(){
 void meCLMaskPaint::EndSession(){
 	// check if we have any changes at all
 	if(pOldValues){
-		pWorld->GetUndoSystem()->Add(meUHTPaintMask::Ref::NewWith(pDrawMode, pWorld,
+		pWorld->GetUndoSystem()->Add(meUHTPaintMask::Ref::New(pDrawMode, pWorld,
 			pSector, pTexture, decPoint(pAreaGrid.x1, pAreaGrid.y1),
 			decPoint(pModifyWidth, pModifyHeight), pOldValues), false);
 	}
@@ -184,13 +184,13 @@ void meCLMaskPaint::EndSession(){
 	// clean up
 	if(pOldValues){
 		delete [] pOldValues;
-		pOldValues = NULL;
+		pOldValues = nullptr;
 	}
 	pModifyWidth = 0;
 	pModifyHeight = 0;
 	
-	pTexture = NULL;
-	pSector = NULL;
+	pTexture = nullptr;
+	pSector = nullptr;
 }
 
 
@@ -376,7 +376,7 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 	if(growBy.x > 0 || growBy.y > 0){
 		int y, newHeight = pModifyHeight + growBy.y;
 		int x, newWidth = pModifyWidth + growBy.x;
-		unsigned char *oldValues = NULL;
+		unsigned char *oldValues = nullptr;
 		decBoundary retain;
 		int sgx, sgy;
 		
@@ -387,7 +387,6 @@ void meCLMaskPaint::pUpdateOldValues(const decVector2 &grid, const decVector2 &s
 		
 		try{
 			oldValues = new unsigned char[newWidth * newHeight];
-			if(!oldValues) DETHROW(deeOutOfMemory);
 			
 			for(y=0; y<newHeight; y++){
 				for(x=0; x<newWidth; x++){

@@ -32,7 +32,6 @@
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/meObjectSelection.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
-#include "../../../../world/object/texture/meObjectTextureList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -76,7 +75,7 @@ void meWPSObjectListener::ObjectSelectionChanged(meWorld *world){
 	pPanel.UpdateIdentifierLists();
 	pPanel.UpdateLight();
 	
-	if(object && !object->GetActiveTexture() && object->GetTextureCount() > 0){
+	if(object && !object->GetActiveTexture() && object->GetTextures().IsNotEmpty()){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;
@@ -162,7 +161,7 @@ void meWPSObjectListener::ObjectTextureCountChanged(meWorld*, meObject *object){
 	
 	pPanel.UpdateTextureList();
 	
-	if(!object->GetActiveTexture() && object->GetTextureCount() > 0){
+	if(!object->GetActiveTexture() && object->GetTextures().IsNotEmpty()){
 		// combo box displays textures in sorted order. using first texture from object would
 		// not necessarily select the top most texture. ensure this is the case
 		decStringList names;

@@ -25,7 +25,7 @@
 #ifndef _DEOGLDECALMESHBUILDER_H_
 #define _DEOGLDECALMESHBUILDER_H_
 
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 class deoglRDecal;
 class deoglDMBConvexVolumeList;

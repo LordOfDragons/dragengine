@@ -43,9 +43,8 @@
 
 gdeUOCPCFPSetPattern::gdeUOCPCFPSetPattern(gdeObjectClass *objectClass,
 gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
-pObjectClass(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+
+pProperty(nullptr)
 {
 	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -57,25 +56,11 @@ pFilePattern(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCPCFPSetPattern::~gdeUOCPCFPSetPattern(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

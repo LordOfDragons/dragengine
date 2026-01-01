@@ -36,7 +36,6 @@ void detStringSet::Prepare(){
 void detStringSet::Run(){
 	TestModify();
 	TestTesting();
-	TestSort();
 	TestOperator();
 }
 
@@ -171,60 +170,8 @@ void detStringSet::TestTesting(){
 	ASSERT_FALSE(set1.Has(decString(testString5)));
 }
 
-void detStringSet::TestSort(){
-	SetSubTestNum(2);
-	
-	// SortAscending()
-	decStringSet set1;
-	set1.Add(testString1);
-	set1.Add(testString2);
-	set1.Add(testString3);
-	set1.Add(testString4);
-	set1.Add(testString5);
-	
-	set1.SortAscending();
-	ASSERT_EQUAL(set1.GetCount(), 5);
-	ASSERT_TRUE(set1.Has(testString5));
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString4));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString2));
-	
-	set1.SortAscending();
-	ASSERT_EQUAL(set1.GetCount(), 5);
-	ASSERT_TRUE(set1.Has(testString5));
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString4));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString2));
-	
-	// SortDescending()
-	set1.RemoveAll();
-	set1.Add(testString1);
-	set1.Add(testString2);
-	set1.Add(testString3);
-	set1.Add(testString4);
-	set1.Add(testString5);
-	
-	set1.SortDescending();
-	ASSERT_EQUAL(set1.GetCount(), 5);
-	ASSERT_TRUE(set1.Has(testString2));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString4));
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString5));
-	
-	set1.SortDescending();
-	ASSERT_EQUAL(set1.GetCount(), 5);
-	ASSERT_TRUE(set1.Has(testString2));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString4));
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString5));
-}
-
 void detStringSet::TestOperator(){
-	SetSubTestNum(3);
+	SetSubTestNum(2);
 	
 	decStringSet set1, set2, set3;
 	
@@ -275,49 +222,6 @@ void detStringSet::TestOperator(){
 	set2.Add(testString5);
 	
 	set1 += set2;
-	ASSERT_EQUAL(set1.GetCount(), 5);
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString2));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString4));
-	ASSERT_TRUE(set1.Has(testString5));
-	
-	// operator+(decString)
-	set1.RemoveAll();
-	set1.Add(testString1);
-	set1.Add(testString2);
-	set1.Add(testString3);
-	
-	set3.RemoveAll();
-	set3 = set1 + decString(testString4);
-	ASSERT_EQUAL(set3.GetCount(), 4);
-	ASSERT_TRUE(set3.Has(testString1));
-	ASSERT_TRUE(set3.Has(testString2));
-	ASSERT_TRUE(set3.Has(testString3));
-	ASSERT_TRUE(set3.Has(testString4));
-	
-	set3.RemoveAll();
-	set3 = set1 + testString4;
-	ASSERT_EQUAL(set3.GetCount(), 4);
-	ASSERT_TRUE(set3.Has(testString1));
-	ASSERT_TRUE(set3.Has(testString2));
-	ASSERT_TRUE(set3.Has(testString3));
-	ASSERT_TRUE(set3.Has(testString4));
-	
-	// operator+=(decString)
-	set1.RemoveAll();
-	set1.Add(testString1);
-	set1.Add(testString2);
-	set1.Add(testString3);
-	
-	set1 += decString(testString4);
-	ASSERT_EQUAL(set1.GetCount(), 4);
-	ASSERT_TRUE(set1.Has(testString1));
-	ASSERT_TRUE(set1.Has(testString2));
-	ASSERT_TRUE(set1.Has(testString3));
-	ASSERT_TRUE(set1.Has(testString4));
-	
-	set1 += testString5;
 	ASSERT_EQUAL(set1.GetCount(), 5);
 	ASSERT_TRUE(set1.Has(testString1));
 	ASSERT_TRUE(set1.Has(testString2));

@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -42,15 +42,16 @@ class meHeightTerrainTexture;
  * Undo action to add a texture to a height terrain.
  */
 class meUHTAddTexture : public igdeUndo{
-private:
-	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUHTAddTexture> Ref;
 	
+	
+private:
+	meWorld::Ref pWorld;
+	meHeightTerrainSector *pSector;
+	meHeightTerrainTexture::Ref pTexture;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -58,7 +59,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTAddTexture();
+
+public:
 	/*@}*/
 	
 public:

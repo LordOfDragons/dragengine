@@ -25,18 +25,18 @@
 #ifndef _AEWINDOWPROPERTIES_H_
 #define _AEWINDOWPROPERTIES_H_
 
+#include "aeWPAnimator.h"
+#include "aeWPRule.h"
+#include "aeWPController.h"
+#include "aeWPLink.h"
+#include "aeWPView.h"
+#include "aeWPPlayground.h"
+#include "aeWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class aeRule;
-class aeWPAnimator;
-class aeController;
 class aeWindowMain;
-class aeWPRule;
-class aeWPController;
-class aeWPLink;
-class aeWPView;
-class aeWPPlayground;
 class aeAnimator;
 
 
@@ -44,16 +44,20 @@ class aeAnimator;
  * Properties Panel.
  */
 class aeWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<aeWindowProperties> Ref;
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeWPAnimator *pPropAnimator;
-	aeWPRule *pPropRule;
-	aeWPLink *pPropLink;
-	aeWPController *pPropController;
-	aeWPView *pPropView;
-	aeWPPlayground *pPropPlayground;
-	igdeWPUndoHistory::Ref pPanelUndoHistory;
+	aeWPAnimator::Ref pPropAnimator;
+	aeWPRule::Ref pPropRule;
+	aeWPLink::Ref pPropLink;
+	aeWPController::Ref pPropController;
+	aeWPView::Ref pPropView;
+	aeWPPlayground::Ref pPropPlayground;
+	aeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 public:

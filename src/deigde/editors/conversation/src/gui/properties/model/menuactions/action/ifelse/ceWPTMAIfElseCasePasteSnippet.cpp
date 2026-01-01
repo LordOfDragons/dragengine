@@ -58,8 +58,8 @@ pIndex(index)
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAIfElseCasePasteSnippet::CreateUndo(const ceConversationActionList &actions){
-	ceUCActionPaste * const undo = new ceUCAIfElsePaste(pTopic, pIfElse, pIfCase, actions, pIndex);
+ceUCActionPaste::Ref ceWPTMAIfElseCasePasteSnippet::CreateUndo(const ceConversationAction::List &actions){
+	const ceUCActionPaste::Ref undo = ceUCAIfElsePaste::Ref::New(pTopic, pIfElse, pIfCase, actions, pIndex);
 	undo->SetShortInfo("Paste Conversation Snippet");
 	return undo;
 }

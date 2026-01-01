@@ -26,10 +26,10 @@
 #define _aeULinkRemoveUnusedUNUSED_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/link/aeLink.h"
 
 class aeRule;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -37,16 +37,17 @@ class aeAnimator;
  * Undo action remove unused links.
  */
 class aeULinkRemoveUnused : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkRemoveUnused> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
-	aeLinkList pLinks;
+	aeAnimator::Ref pAnimator;
+	aeLink::List pLinks;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeULinkRemoveUnused> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
@@ -63,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Has links. */
-	inline bool HasLinks() const{ return pLinks.GetCount() > 0; }
+	inline bool HasLinks() const{ return pLinks.IsNotEmpty(); }
 	
 	/** Undo action. */
 	virtual void Undo();

@@ -66,6 +66,7 @@ class cTextComment : public igdeTextAreaListener {
 	ceWPAComment &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextComment> Ref;
 	cTextComment(ceWPAComment &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -76,7 +77,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCACommentSetComment::Ref::NewWith(topic, action, textArea->GetText()));
+			ceUCACommentSetComment::Ref::New(topic, action, textArea->GetText()));
 	}
 };
 
@@ -93,7 +94,7 @@ public:
 ceWPAComment::ceWPAComment(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	helper.EditString(*this, "Comment:", "Comment", pEditComment, 8, new cTextComment(*this));
+	helper.EditString(*this, "Comment:", "Comment", pEditComment, 8, cTextComment::Ref::New(*this));
 }
 
 ceWPAComment::~ceWPAComment(){
@@ -111,7 +112,7 @@ ceCAComment *ceWPAComment::GetAction() const{
 		return (ceCAComment*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

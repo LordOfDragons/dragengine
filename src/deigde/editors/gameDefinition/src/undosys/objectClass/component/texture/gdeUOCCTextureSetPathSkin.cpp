@@ -42,10 +42,8 @@
 ////////////////////////////
 
 gdeUOCCTextureSetPathSkin::gdeUOCCTextureSetPathSkin(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const char *newValue) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+gdeOCComponent *component, gdeOCComponentTexture *texture, const char *newValue) :
+pObjectClass(nullptr)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -57,25 +55,11 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetPathSkin::~gdeUOCCTextureSetPathSkin(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

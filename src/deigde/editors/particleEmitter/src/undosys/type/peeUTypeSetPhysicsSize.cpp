@@ -44,7 +44,7 @@ peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Physics Size");
 	
@@ -52,13 +52,9 @@ peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
 	pNewSize = newSize;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

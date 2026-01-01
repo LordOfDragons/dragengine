@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "meUObjectCloneTexturesToSelected.h"
 #include "meUndoDataObjectTexture.h"
 #include "../../../../world/meWorld.h"
@@ -42,53 +39,23 @@
 ////////////////////////////
 
 meUObjectCloneTexturesToSelected::meUObjectCloneTexturesToSelected(
-const meObjectList &list, const meObjectTextureList &textureList){
-	int textureCount = textureList.GetTextureCount();
-	meUndoDataObjectTexture *undoData = NULL;
-	const int objectCount = list.GetCount();
-	meObject *object;
-	int i, j;
+const meObject::List &list, const meObjectTexture::List &textureList){
+	DEASSERT_TRUE(list.IsNotEmpty())
+	DEASSERT_TRUE(textureList.IsNotEmpty())
 	
-	if(objectCount < 1){
-		DETHROW(deeInvalidParam);
-	}
+	SetShortInfo("Clone object textures to selected");
+	pTextureList = textureList;
 	
-	try{
-		SetShortInfo("Clone object textures to selected");
+	list.Visit([&](meObject *object){
+		DEASSERT_NOTNULL(object->GetWorld())
 		
-		for(i=0; i<textureCount; i++){
-			pTextureList.AddTexture(textureList.GetTextureAt(i));
-		}
-		
-		for(i=0; i<objectCount; i++){
-			object = list.GetAt(i);
-			
-			if(!object->GetWorld()){
-				DETHROW(deeInvalidParam);
-			}
-			
-			undoData = new meUndoDataObjectTexture(object);
-			textureCount = object->GetTextureCount();
-			for(j=0; j<textureCount; j++){
-				undoData->GetOldTextureList().AddTexture(object->GetTextureAt(j));
-			}
-			
-			pList.Add(undoData);
-			undoData->FreeReference();
-			undoData = NULL;
-		}
-		
-	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
-		pCleanUp();
-		throw;
-	}
+		const meUndoDataObjectTexture::Ref udata(meUndoDataObjectTexture::Ref::New(object));
+		udata->GetOldTextureList() = object->GetTextures();
+		pList.Add(udata);
+	});
 }
 
 meUObjectCloneTexturesToSelected::~meUObjectCloneTexturesToSelected(){
-	pCleanUp();
 }
 
 
@@ -97,68 +64,29 @@ meUObjectCloneTexturesToSelected::~meUObjectCloneTexturesToSelected(){
 ///////////////
 
 void meUObjectCloneTexturesToSelected::Undo(){
-	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
-	int i, j, textureCount;
-	meObject *object;
-	
-	for(i=0; i<count; i++){
-		undoData = (meUndoDataObjectTexture*)pList.GetAt(i);
-		meObjectTextureList &oldTextureList = undoData->GetOldTextureList();
-		object = undoData->GetObject();
+	pList.Visit([&](const meUndoDataObjectTexture &data){
+		meObject * const object = data.GetObject();
 		
 		object->RemoveAllTextures();
-		textureCount = oldTextureList.GetTextureCount();
-		for(j=0; j<textureCount; j++){
-			object->AddTexture(oldTextureList.GetTextureAt(j));
-		}
-	}
+		data.GetOldTextureList().Visit([&](meObjectTexture *t){
+			object->AddTexture(t);
+		});
+	});
 }
 
 void meUObjectCloneTexturesToSelected::Redo(){
-	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
-	meObjectTexture *texture = NULL;
-	int i, j, textureCount;
-	meObject *object;
-	
-	for(i=0; i<count; i++){
-		undoData = (meUndoDataObjectTexture*)pList.GetAt(i);
-		meObjectTextureList &newTextureList = undoData->GetNewTextureList();
-		object = undoData->GetObject();
+	pList.Visit([&](meUndoDataObjectTexture &data){
+		meObject * const object = data.GetObject();
 		
-		if(newTextureList.GetTextureCount() == 0){
-			textureCount = pTextureList.GetTextureCount();
-			
-			try{
-				for(j=0; j<textureCount; j++){
-					texture = new meObjectTexture(*pTextureList.GetTextureAt(j));
-					newTextureList.AddTexture(texture);
-					texture->FreeReference();
-					texture = NULL;
-				}
-				
-			}catch(const deException &){
-				if(texture){
-					texture->FreeReference();
-				}
-				throw;
-			}
+		if(data.GetNewTextureList().IsEmpty()){
+			pTextureList.Visit([&](const meObjectTexture &t){
+				data.GetNewTextureList().Add(meObjectTexture::Ref::New(t));
+			});
 		}
 		
 		object->RemoveAllTextures();
-		textureCount = newTextureList.GetTextureCount();
-		for(j=0; j<textureCount; j++){
-			object->AddTexture(newTextureList.GetTextureAt(j));
-		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectCloneTexturesToSelected::pCleanUp(){
-	pList.RemoveAll();
+		data.GetNewTextureList().Visit([&](meObjectTexture *t){
+			object->AddTexture(t);
+		});
+	});
 }

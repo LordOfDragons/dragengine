@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEBASEUNDOSCALE_H_
 #define _MEBASEUNDOSCALE_H_
 
-// includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -36,6 +35,11 @@
  * Base class for undo actions scaling things.
  */
 class meBaseUndoScale : public igdeUndo{
+public:
+	typedef deTObjectReference<meBaseUndoScale> Ref;
+	typedef decTObjectOrderedSet<meBaseUndoScale> List;
+	
+	
 private:
 	bool pModifyPosition;
 	bool pModifySize;
@@ -45,13 +49,13 @@ private:
 	bool pScaleUniform;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meBaseUndoScale> Ref;
-	
 	// constructor, destructor
 	meBaseUndoScale();
+	
+protected:
 	~meBaseUndoScale();
 	
+public:
 	// management
 	/** Determines if the position has to be modified. */
 	inline bool GetModifyPosition() const{ return pModifyPosition; }

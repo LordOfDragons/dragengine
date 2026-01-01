@@ -26,14 +26,15 @@
 #define _AERULE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 #include "../controller/aeControllerTarget.h"
+#include "../link/aeLink.h"
 
-class aeLinkList;
 class aeAnimator;
 class aeRuleGroup;
 class deAnimatorRule;
@@ -48,6 +49,7 @@ class aeRule : public deObject{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<aeRule> Ref;
+	typedef decTObjectOrderedSet<aeRule> List;
 	
 	
 private:
@@ -66,7 +68,7 @@ private:
 	bool pInvertBlendFactor;
 	bool pEnabled;
 	
-	aeControllerTarget pTargetBlendFactor;
+	aeControllerTarget::Ref pTargetBlendFactor;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -76,7 +78,9 @@ public:
 	/** Create a copy of an animator rule. */
 	aeRule(const aeRule &copy);
 	/** Clean up the animator rule. */
+protected:
 	virtual ~aeRule();
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -86,21 +90,21 @@ public:
 	/** Set the parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
-	/** Retrieve the engine animator rule or NULL. */
+	/** Retrieve the engine animator rule or nullptr. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
-	/** Set the engine animator rule or NULL. */
+	/** Set the engine animator rule or nullptr. */
 	void SetEngineRule(deAnimatorRule *rule);
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule() = 0;
+	virtual deAnimatorRule::Ref CreateEngineRule() = 0;
 	/** Init the given engine rule with the default rule properties. */
 	void InitEngineRule(deAnimatorRule *engRule) const;
 	
 	/** Retrieve the rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
-	/** Retrieve the parent group or NULL if there is none. */
+	/** Retrieve the parent group or nullptr if there is none. */
 	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
-	/** Set the parent group or NULL if there is none. */
+	/** Set the parent group or nullptr if there is none. */
 	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
@@ -138,17 +142,16 @@ public:
 	virtual void RemoveLinksFromAllTargets();
 	
 	/** Retrieve the source factor target. */
-	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline const aeControllerTarget::Ref &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks(aeLinkList& list);
+	virtual void ListLinks(aeLink::List& list);
 	
 	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const = 0;
+	virtual aeRule::Ref CreateCopy() const = 0;
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
@@ -205,7 +208,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** Create a new rule from a rule type. */
-	static aeRule *CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type);
+	static aeRule::Ref CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type);
 	/*@}*/
 };
 

@@ -58,8 +58,11 @@ public:
 	/** \brief Create object wrapper sub object. */
 	igdeWOSOEnvMapProbe(igdeWObject &wrapper, const igdeGDCEnvMapProbe &gdEnvMapProbe, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOEnvMapProbe();
+	
+public:
 	/*@}*/
 	
 	
@@ -67,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe resource. */
-	inline deEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
+	inline const deEnvMapProbe::Ref &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

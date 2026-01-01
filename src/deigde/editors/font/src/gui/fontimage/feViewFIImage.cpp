@@ -55,16 +55,11 @@ feViewFIImage::feViewFIImage(feWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 
-pFont(NULL),
-
 pBorderSize(2),
 pZoom(100){
 }
 
 feViewFIImage::~feViewFIImage(){
-	if(pFont){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -77,17 +72,7 @@ void feViewFIImage::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}
-	
-	if(pFont){
-		pFont->FreeReference();
-	}
-	
 	pFont = font;
-	
-	if(font){
-		font->AddReference();
-	}
-	
 	ResizeCanvas();
 }
 
@@ -129,7 +114,7 @@ void feViewFIImage::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
 	if(!pCanvasImageBackground){
-		pCanvasImageBackground.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+		pCanvasImageBackground = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint();
 		pCanvasImageBackground->SetShapeType(deCanvasPaint::estRectangle);
 		pCanvasImageBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 1.0f));
 		pCanvasImageBackground->SetLineColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
@@ -139,14 +124,14 @@ void feViewFIImage::CreateCanvas(){
 	}
 	
 	if(!pCanvasFontImage){
-		pCanvasFontImage.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage());
+		pCanvasFontImage = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage();
 		pCanvasFontImage->SetOrder(3.0f);
 		pCanvasFontImage->SetVisible(false);
 		AddCanvas(pCanvasFontImage);
 	}
 	
 	if(!pCanvasActiveGlyph){
-		pCanvasActiveGlyph.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+		pCanvasActiveGlyph = pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint();
 		pCanvasActiveGlyph->SetShapeType(deCanvasPaint::estRectangle);
 		pCanvasActiveGlyph->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
 		pCanvasActiveGlyph->SetLineColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
@@ -230,7 +215,7 @@ void feViewFIImage::ResizeCanvas(){
 	}
 	
 	if(pCanvasActiveGlyph){
-		const feFontGlyph * const activeGlyph = pFont->GetGlyphSelection().GetActiveGlyph();
+		const feFontGlyph * const activeGlyph = pFont->GetGlyphSelection().GetActive();
 		
 		if(activeGlyph){
 			pCanvasActiveGlyph->SetVisible(true);

@@ -44,18 +44,14 @@ peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
 	SetShortInfo("Set Type Interval As Distance");
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

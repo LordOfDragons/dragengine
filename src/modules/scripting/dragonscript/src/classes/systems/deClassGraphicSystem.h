@@ -28,7 +28,7 @@
 
 // includes
 #include <libdscript/libdscript.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 class deEngine;

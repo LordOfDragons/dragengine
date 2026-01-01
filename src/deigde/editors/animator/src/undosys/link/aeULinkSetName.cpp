@@ -43,7 +43,7 @@
 aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
 	if(!link || !newName) DETHROW(deeInvalidParam);
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	pOldName = link->GetName();
 	pNewName = newName;
@@ -51,11 +51,9 @@ aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
 	SetShortInfo("Set Link Name");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkSetName::~aeULinkSetName(){
-	if(pLink) pLink->FreeReference();
 }
 
 

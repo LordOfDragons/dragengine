@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSkin;
-class seTexture;
+#include "../../skin/seSkin.h"
+#include "../../skin/texture/seTexture.h"
 
 
 
@@ -36,14 +36,15 @@ class seTexture;
  * \brief Undo Action Remove Texture.
  */
 class seUTextureRemove : public igdeUndo{
-private:
-	seTexture *pTexture;
-	seSkin *pSkin;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<seUTextureRemove> Ref;
 	
+	
+private:
+	seTexture::Ref pTexture;
+	seSkin::Ref pSkin;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

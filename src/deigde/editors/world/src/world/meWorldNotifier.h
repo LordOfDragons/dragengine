@@ -27,8 +27,8 @@
 #define _MEWORLDNOTIFIER_H_
 
 // includes
-#include "dragengine/deObject.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainNavSpace;
@@ -59,17 +59,20 @@ class mePropFieldType;
  * Notifier for changes in a world.
  */
 class meWorldNotifier : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meWorldNotifier> Ref;
-
-
 public:
+	typedef deTObjectReference<meWorldNotifier> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin notifier. */
 	meWorldNotifier();
+	
+protected:
 	/** Cleans up the skin notifier. */
 	virtual ~meWorldNotifier();
+	
+public:
 	/*@}*/
 	
 	/** \name Notifications */

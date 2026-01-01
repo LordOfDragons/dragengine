@@ -59,7 +59,7 @@ igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(){}
 
 igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(igdeMenuCommand &powner, FXComposite *pparent) :
 FXMenuCommand(pparent, BuildConstrText(powner), powner.GetIcon()
-	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF),
+	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr, this, ID_SELF),
 pOwner(&powner)
 {
 	if(!powner.GetEnabled()){
@@ -119,7 +119,7 @@ UpdateMnemonic:
 */
 
 void igdeNativeFoxMenuCommand::UpdateIcon(){
-	FXIcon *iicon = NULL;
+	FXIcon *iicon = nullptr;
 	if(pOwner->GetIcon()){
 		iicon = (FXIcon*)pOwner->GetIcon()->GetNativeIcon();
 	}

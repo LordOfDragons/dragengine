@@ -73,19 +73,19 @@ public:
 	deSkin *GetSkinWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new skin. */
-	deSkin *CreateSkin(const char *filename, deSkinBuilder &builder);
+	deSkin::Ref CreateSkin(const char *filename, deSkinBuilder &builder);
 	
 	/** \brief Create new skin. */
-	deSkin *CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder);
+	deSkin::Ref CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder);
 	
 	/** \brief Loads a skinfrom the given file relative to the given base path. */
-	deSkin *LoadSkin(const char *filename, const char *basePath);
+	deSkin::Ref LoadSkin(const char *filename, const char *basePath);
 	
 	/** \brief Loads a skinfrom the given file relative to the given base path. */
-	deSkin *LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deSkin::Ref LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Loads the default skin. */
-	deSkin *LoadDefault();
+	deSkin::Ref LoadDefault();
 	
 	/**
 	 * \brief Add loaded and fully prepared skin.

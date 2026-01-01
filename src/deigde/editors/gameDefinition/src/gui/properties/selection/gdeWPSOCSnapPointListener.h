@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCSnapPointListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCSnapPointListener(gdeWPSOCSnapPoint &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCSnapPointListener() override;
+public:
 	/*@}*/
 	
 	

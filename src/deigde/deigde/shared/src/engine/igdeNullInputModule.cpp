@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "igdeNullInputModule.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -39,7 +39,7 @@
 igdeNullInputModule::cModule::cModule(deModuleSystem *system) : deInternalModule(system){
 	SetName("NullInput");
 	SetType(deModuleSystem::emtInput);
-	SetDescription("Null Input Module");
+	SetDescription("nullptr Input Module");
 	SetAuthor("Plüss Roland");
 	SetVersion("1.0");
 	SetDirectoryName("NullInput");
@@ -90,7 +90,7 @@ int igdeNullInputModule::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *igdeNullInputModule::GetDeviceAt(int index){
+deInputDevice::Ref igdeNullInputModule::GetDeviceAt(int index){
 	DETHROW(deeInvalidParam);
 }
 

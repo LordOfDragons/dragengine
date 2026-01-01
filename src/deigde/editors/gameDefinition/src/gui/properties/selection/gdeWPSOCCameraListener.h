@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCCameraListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPSOCCameraListener(gdeWPSOCCamera &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPSOCCameraListener() override;
+public:
 	/*@}*/
 	
 	

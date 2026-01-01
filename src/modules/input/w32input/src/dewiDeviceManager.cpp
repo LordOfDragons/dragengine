@@ -267,11 +267,11 @@ void dewiDeviceManager::pCleanUp(){
 }
 
 void dewiDeviceManager::pCreateDevices(){
-	pMouse.TakeOver(new dewiDeviceMouse(pModule));
+	pMouse = dewiDeviceMouse::Ref::New(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOver(new dewiDeviceKeyboard(pModule));
+	pKeyboard = dewiDeviceKeyboard::Ref::New(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 }
@@ -285,8 +285,8 @@ void dewiDeviceManager::pCreateControllers(){
 			continue;
 		}
 		
-		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController(pModule, controller)));
+		const dewiDeviceWinRTController::Ref device(
+			dewiDeviceWinRTController::Ref::New(pModule, controller));
 
 		if(device->GetType() != deInputDevice::edtGeneric){
 			device->SetIndex(pDevices.GetCount());
@@ -324,8 +324,8 @@ void dewiDeviceManager::pProcessAddRemoveDevices(){
 			continue;
 		}
 
-		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController(pModule, controller)));
+		const dewiDeviceWinRTController::Ref device(
+			dewiDeviceWinRTController::Ref::New(pModule, controller));
 
 		if(device->GetType() == deInputDevice::edtGeneric){
 			continue;

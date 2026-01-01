@@ -78,10 +78,10 @@ igdeEditorModuleManager &moduleManager, const char *filePath) :
 pModuleManager(moduleManager),
 pFilePath(filePath),
 pLibSize(0),
-pLibHandle(NULL),
+pLibHandle(nullptr),
 pCanLoad(false),
 pErrorCode(eecSuccess),
-pModule(NULL)
+pModule(nullptr)
 {
 	pLoadFile();
 	pVerify();
@@ -104,7 +104,7 @@ void igdeEditorModuleDefinition::SetDirectoryName(const char *directoryName){
 }
 
 bool igdeEditorModuleDefinition::IsModuleRunning() const{
-	return pModule != NULL;
+	return pModule != nullptr;
 }
 
 bool igdeEditorModuleDefinition::LoadModule(igdeEnvironment *environment){
@@ -144,7 +144,7 @@ bool igdeEditorModuleDefinition::LoadModule(igdeEnvironment *environment){
 		pModuleManager.GetWindowMain().GetLogger()->LogException(LOGSOURCE, e);
 		if(pModule){
 			delete pModule;
-			pModule = NULL;
+			pModule = nullptr;
 		}
 		
 		return false;
@@ -160,7 +160,7 @@ void igdeEditorModuleDefinition::UnloadModule(){
 	
 	pModule->Stop();
 	delete pModule;
-	pModule = NULL;
+	pModule = nullptr;
 }
 
 
@@ -169,11 +169,11 @@ void igdeEditorModuleDefinition::UnloadModule(){
 //////////////////////
 
 void igdeEditorModuleDefinition::pLoadFile(){
-	pParseFile(decDiskFileReader::Ref::NewWith(pFilePath));
+	pParseFile(decDiskFileReader::Ref::New(pFilePath));
 }
 
 void igdeEditorModuleDefinition::pParseFile(decBaseFileReader& reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	int i, j;
 	
@@ -311,11 +311,11 @@ bool igdeEditorModuleDefinition::pLoadLibrary(){
 		int err = GetLastError();
 		LPVOID lpMsgBuf;
 		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
+			nullptr, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, nullptr);
 		
 		// Display the string.
-		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(%i): %s.", err, (char*)lpMsgBuf);
+		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(%i): %s.", err, reinterpret_cast<char*>(lpMsgBuf));
 		
 		// Free the buffer.
 		LocalFree(lpMsgBuf);

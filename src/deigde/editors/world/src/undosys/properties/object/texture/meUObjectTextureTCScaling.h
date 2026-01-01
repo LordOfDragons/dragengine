@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -37,15 +37,16 @@ class meObjectTexture;
  * \brief Undo Action Object Texture TexCoord Scaling.
  */
 class meUObjectTextureTCScaling : public igdeUndo{
+public:
+	typedef deTObjectReference<meUObjectTextureTCScaling> Ref;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUObjectTextureTCScaling> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
@@ -53,7 +54,11 @@ public:
 	
 protected:
 	/** \brief Clean up undo object. */
+
+protected:
 	virtual ~meUObjectTextureTCScaling();
+
+public:
 	/*@}*/
 	
 public:

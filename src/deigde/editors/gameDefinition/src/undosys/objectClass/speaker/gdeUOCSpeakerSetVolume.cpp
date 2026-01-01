@@ -42,8 +42,8 @@
 
 gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL)
+
+pSpeaker(nullptr)
 {
 	if(!objectClass || !speaker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetVolume::~gdeUOCSpeakerSetVolume(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

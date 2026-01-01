@@ -44,27 +44,18 @@
 ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile){
 	if(!topic || !newFile) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pSnippet = NULL;
+	pTopic = nullptr;
+	pSnippet = nullptr;
 	pOldFile = snippet->GetFile();
 	pNewFile = newFile;
 	
 	SetShortInfo("Snippet Set File");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetSetFile::~ceUCASnippetSetFile(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

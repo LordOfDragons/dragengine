@@ -29,7 +29,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class gdeGameDefinition;
 class gdeWPSTreeItem;

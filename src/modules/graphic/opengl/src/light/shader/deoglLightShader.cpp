@@ -44,6 +44,7 @@
 #include "../../texture/deoglTextureStageManager.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 
 
 // Definitions
@@ -213,7 +214,7 @@ void deoglLightShader::PrepareShader(cShaderPreparedListener *listener){
 
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
-	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(pRenderThread));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetCompact(false);
 	spb->SetParameterCount(EIUT_COUNT);
@@ -230,7 +231,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
-	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(pRenderThread));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetCompact(false);
 	spb->SetParameterCount(ELUT_COUNT);
@@ -247,7 +248,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam(deoglRenderThread &renderThread){
-	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(renderThread));
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(renderThread));
 	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount(1);
 	spb->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1);
@@ -269,7 +270,7 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 	pSources = nullptr;
 	
 	try{
-		pSources.TakeOver(new deoglShaderSources);
+		pSources = deoglShaderSources::Ref::New();
 		
 		GenerateDefines(defines);
 		GenerateVertexSC();
@@ -282,7 +283,7 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 		InitShaderParameters();
 		
 		// create shader
-		pShader.TakeOver(new deoglShaderProgram(pRenderThread, pSources, defines));
+		pShader = deoglShaderProgram::Ref::New(pRenderThread, pSources, defines);
 		smgr.ResolveProgramUnits(pShader);
 		
 		// cache id
@@ -298,12 +299,12 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 		cacheIdComponents.Add(pSources->GetPathVertexSourceCode());
 		cacheIdComponents.Add(pSources->GetPathGeometrySourceCode());
 		cacheIdComponents.Add(pSources->GetPathFragmentSourceCode());
-		cacheIdParts.Add(cacheIdComponents.Join(","));
+		cacheIdParts.Add(DEJoin(cacheIdComponents, ","));
 		cacheIdComponents.RemoveAll();
 		
 		cacheIdParts.Add(defines.CalcCacheId());
 		
-		pShader->SetCacheId(cacheIdParts.Join(";"));
+		pShader->SetCacheId(DEJoin(cacheIdParts, ";"));
 		
 		// compile shader
 		if(listener){

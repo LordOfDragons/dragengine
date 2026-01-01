@@ -36,14 +36,15 @@ class ceFacePose;
  * \brief Undo Action Remove Face Pose.
  */
 class ceUCFacePoseRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCFacePoseRemove> Ref;
+	
+	
 private:
 	ceConversation *pConversation;
 	ceFacePose *pFacePose;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCFacePoseRemove> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -25,11 +25,11 @@
 #ifndef _SEDYNAMICSKIN_H_
 #define _SEDYNAMICSKIN_H_
 
-#include "seDynamicSkinRenderableList.h"
+#include "seDynamicSkinRenderable.h"
 
 class seSkin;
 
-class deDynamicSkin;
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 
 
@@ -41,16 +41,16 @@ class seDynamicSkin{
 private:
 	seSkin *pParentSkin;
 	
-	deDynamicSkin *pEngDynamicSkin;
+	deDynamicSkin::Ref pEngDynamicSkin;
 	
-	seDynamicSkinRenderableList pRenderableList;
-	seDynamicSkinRenderable *pActiveRenderable;
+	seDynamicSkinRenderable::List pRenderables;
+	seDynamicSkinRenderable::Ref pActiveRenderable;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dynamic skin. */
-	seDynamicSkin(seSkin *parentSkin);
+	explicit seDynamicSkin(seSkin *parentSkin);
 	/** Cleans up the dynamic skin. */
 	~seDynamicSkin();
 	/*@}*/
@@ -61,7 +61,7 @@ public:
 	inline seSkin *GetParentSkin() const{ return pParentSkin; }
 	
 	/** Retrieves the engine dynamic skin. */
-	inline deDynamicSkin *GetEngineDynamicSkin() const{ return pEngDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetEngineDynamicSkin() const{ return pEngDynamicSkin; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -74,18 +74,18 @@ public:
 	/** @name Renderables */
 	/*@{*/
 	/** Retrieves the renderable list read-only. */
-	inline const seDynamicSkinRenderableList &GetRenderableList() const{ return pRenderableList; }
+	inline const seDynamicSkinRenderable::List &GetRenderables() const{ return pRenderables; }
 	/** Adds a new renderable. */
 	void AddRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes a renderable. */
 	void RemoveRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes all renderables. */
 	void RemoveAllRenderables();
-	/** Retrieves the active renderable or NULL if none is active. */
-	inline seDynamicSkinRenderable *GetActiveRenderable() const{ return pActiveRenderable; }
+	/** Retrieves the active renderable or nullptr if none is active. */
+	inline const seDynamicSkinRenderable::Ref &GetActiveRenderable() const{ return pActiveRenderable; }
 	/** Determines if there is an active renderable or not. */
 	bool HasActiveRenderable() const;
-	/** Sets the active renderable or NULL if none is active. */
+	/** Sets the active renderable or nullptr if none is active. */
 	void SetActiveRenderable(seDynamicSkinRenderable *renderable);
 	/*@}*/
 	

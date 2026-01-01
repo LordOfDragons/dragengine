@@ -118,7 +118,6 @@ void debpPropField::TypeAdded(int index, dePropFieldType *type){
 	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
 		debpPropFieldType **newArray = new debpPropFieldType*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTypes){
 			memcpy(newArray, pTypes, sizeof(debpPropFieldType*) * pTypeSize);
 			delete [] pTypes;
@@ -128,7 +127,6 @@ void debpPropField::TypeAdded(int index, dePropFieldType *type){
 	}
 	
 	pTypes[pTypeCount] = new debpPropFieldType(this, type);
-	if(!pTypes[pTypeCount]) DETHROW(deeOutOfMemory);
 	pTypeCount++;
 	
 	pDirty = true;

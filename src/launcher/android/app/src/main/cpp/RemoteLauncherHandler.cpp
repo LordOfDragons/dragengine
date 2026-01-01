@@ -1,6 +1,9 @@
 #include "GameActivityHandler.h"
 #include "GameRunParams.h"
 #include "Launcher.h"
+#include "RemoteLauncherHandler.h"
+#include "RemoteLauncherClient.h"
+
 #include <android/log.h>
 #include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/game/delGameRunParams.h>
@@ -9,8 +12,6 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLoggerFile.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include "RemoteLauncherHandler.h"
-#include "RemoteLauncherClient.h"
 
 extern JavaVM *vJavaVM;
 
@@ -31,7 +32,7 @@ void RemoteLauncherHandler::pInitGameForRun() {
 }
 
 void RemoteLauncherHandler::pCreateEngineLogger(){
-    pEngineLogger.TakeOver(new deLoggerChain);
+    pEngineLogger = deLoggerChain::Ref::New();
     pEngineLogger->AddLogger(pClient->GetEngineLogger());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));
@@ -42,12 +43,9 @@ void RemoteLauncherHandler::pCreateEngineLogger(){
 
     diskPath.RemoveLastComponent();
 
-    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(
-        new deVFSDiskDirectory(diskPath)));
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(diskPath));
 
-    pEngineLogger->AddLogger(deLogger::Ref::New(
-        new deLoggerFile(decBaseFileWriter::Ref::New(
-            diskDir->OpenFileForWriting(filePath)))));
+    pEngineLogger->AddLogger(deLoggerFile::Ref::New(diskDir->OpenFileForWriting(filePath)));
 }
 
 

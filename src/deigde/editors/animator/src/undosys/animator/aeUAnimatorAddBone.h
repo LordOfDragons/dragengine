@@ -36,6 +36,10 @@ class aeAnimator;
  * Undo action animator add bone.
  */
 class aeUAnimatorAddBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorAddBone> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pBones;
@@ -43,9 +47,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUAnimatorAddBone> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

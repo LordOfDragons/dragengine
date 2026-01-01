@@ -26,9 +26,9 @@
 #define _REUSETSHAPEPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShape;
+#include "../../../rig/shape/reRigShape.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShape;
  * \brief Undo Set Shape Position.
  */
 class reUSetShapePosition : public igdeUndo{
+public:
+	typedef deTObjectReference<reUSetShapePosition> Ref;
+	
+	
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;
@@ -45,9 +49,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reUSetShapePosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

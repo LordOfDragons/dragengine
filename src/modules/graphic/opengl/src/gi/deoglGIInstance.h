@@ -28,6 +28,8 @@
 #include "../component/deoglComponentListener.h"
 #include "../decal/deoglDecalListener.h"
 #include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
@@ -39,8 +41,6 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOUInt32;
 class decLayerMask;
 
 
@@ -143,8 +143,8 @@ private:
 	decPointerList pTUCs;
 	bool pDirtyTUCs;
 	deoglDynamicTBOBlock::Ref pBlockMaterial;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
+	deoglDynamicTBOUInt32::Ref pTBOMaterial;
+	deoglDynamicTBOFloat16::Ref pTBOMaterial2;
 	
 	bool pDynamic;
 	bool pChanged;

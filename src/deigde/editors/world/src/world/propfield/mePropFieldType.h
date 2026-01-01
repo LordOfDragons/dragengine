@@ -22,20 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEPROPFIELDTYPE_H_
 #define _MEPROPFIELDTYPE_H_
 
-// includes
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 
-// predefinitions
 class mePropField;
 
-class deSkin;
-class deModel;
 class deEngine;
 class dePropFieldType;
 class dePropFieldInstance;
@@ -55,9 +53,9 @@ private:
 	dePropFieldType *pEngPFType;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotPerForceX;
 	float pRotPerForceZ;
 	
@@ -65,28 +63,32 @@ private:
 	int pInstanceCount;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<mePropFieldType> Ref;
-
-
+	typedef decTObjectOrderedSet<mePropFieldType> List;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	mePropFieldType(deEngine *engine);
+	explicit mePropFieldType(deEngine *engine);
+	
+protected:
 	/** Cleans up the object. */
-	virtual ~mePropFieldType();
+	~mePropFieldType() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the prop field or NULL. */
+	/** Retrieves the prop field or nullptr. */
 	inline mePropField *GetPropField() const{ return pPropField; }
-	/** Sets the prop field or NULL. */
+	/** Sets the prop field or nullptr. */
 	void SetPropField(mePropField *propField);
 	
-	/** Retrieves the engine prop field type or NULL. */
+	/** Retrieves the engine prop field type or nullptr. */
 	inline dePropFieldType *GetEnginePFType() const{ return pEngPFType; }
-	/** Sets the engine prop field type or NULL. */
+	/** Sets the engine prop field type or nullptr. */
 	void SetEnginePFType(dePropFieldType *engPFType);
 	
 	/** Creates an engine prop field type. */

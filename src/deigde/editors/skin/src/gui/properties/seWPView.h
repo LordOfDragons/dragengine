@@ -25,6 +25,9 @@
 #ifndef _SEWPVIEW_H_
 #define _SEWPVIEW_H_
 
+#include "seWPViewListener.h"
+#include "../../skin/seSkin.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -36,9 +39,7 @@
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 
-class seSkin;
 class seWindowProperties;
-class seWPViewListener;
 
 
 
@@ -46,12 +47,15 @@ class seWPViewListener;
  * \brief View Panel.
  */
 class seWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<seWPView> Ref;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPViewListener *pListener;
+	seWPViewListener::Ref pListener;
 	bool pPreventUpdate;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	igdeComboBox::Ref pCBPreviewMode;
 	
@@ -89,7 +93,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *sky);

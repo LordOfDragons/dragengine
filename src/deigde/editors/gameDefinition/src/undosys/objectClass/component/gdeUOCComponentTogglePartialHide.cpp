@@ -42,8 +42,8 @@
 
 gdeUOCComponentTogglePartialHide::gdeUOCComponentTogglePartialHide(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
-pComponent(NULL)
+
+pComponent(nullptr)
 {
 	if(!objectClass || !component){
 		DETHROW(deeInvalidParam);
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle partial hide");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentTogglePartialHide::~gdeUOCComponentTogglePartialHide(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

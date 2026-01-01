@@ -122,7 +122,7 @@ void fbxSkinModule::SaveSkin(decBaseFileWriter&, const deSkin &){
 
 void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 	fbxNode &nodeGeometry = *scene.FirstNodeNamed("Geometry");
-	const fbxModel::Ref model(fbxModel::Ref::NewWith(scene, nodeGeometry));
+	const fbxModel::Ref model(fbxModel::Ref::New(scene, nodeGeometry));
 	
 	// find connections involving model node
 	const int64_t idModel = model->GetModelID();
@@ -141,7 +141,7 @@ void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 		
 		fbxNode &node = *scene.NodeWithID(connection.OtherID(idModel));
 		if(node.GetName() == "Material"){
-			pLoadMaterial(skin, scene, fbxMaterial::Ref::NewWith(scene, node));
+			pLoadMaterial(skin, scene, fbxMaterial::Ref::New(scene, node));
 		}
 	}
 }
@@ -236,22 +236,22 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 // 			LogInfoFormat( "texture map '%s'", mpname.GetString() );
 			
 			if(mpname == "DiffuseColor"){
-				fbxTexDiffuseColor.TakeOver(new fbxTexture(scene, node));
+				fbxTexDiffuseColor = fbxTexture::Ref::New(scene, node);
 				
 			}else if(mpname == "SpecularColor"){
-				fbxTexSpecularColor.TakeOver(new fbxTexture(scene, node));
+				fbxTexSpecularColor = fbxTexture::Ref::New(scene, node);
 				
 			}else if(mpname == "Shininess"){
-				fbxTexShininess.TakeOver(new fbxTexture(scene, node));
+				fbxTexShininess = fbxTexture::Ref::New(scene, node);
 				
 			}else if(mpname == "EmissiveColor"){
-				fbxTexEmissiveColor.TakeOver(new fbxTexture(scene, node));
+				fbxTexEmissiveColor = fbxTexture::Ref::New(scene, node);
 				
 			}else if(mpname == "TransparencyFactor"){
-				fbxTexTransparencyFactor.TakeOver(new fbxTexture(scene, node));
+				fbxTexTransparencyFactor = fbxTexture::Ref::New(scene, node);
 				
 			}else if(mpname == "Bump" || mpname == "NormalMap"){
-				fbxTexBump.TakeOver(new fbxTexture(scene, node));
+				fbxTexBump = fbxTexture::Ref::New(scene, node);
 			}
 		}
 		
@@ -387,6 +387,8 @@ void fbxSkinModule::pAddPropertyImage(deSkinTexture &texture, const char *name, 
 
 class fbxSkinModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<fbxSkinModuleInternal> Ref;
+	
 	fbxSkinModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXSkin");
 		SetDescription("Handles skins in the binary FBX format.");
@@ -409,7 +411,7 @@ public:
 	}
 };
 
-deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem *system){
-	return new fbxSkinModuleInternal(system);
+deTObjectReference<deInternalModule> fbxSkinRegisterInternalModule(deModuleSystem *system){
+	return fbxSkinModuleInternal::Ref::New(system);
 }
 #endif

@@ -461,7 +461,7 @@ deoglRenderBase(renderThread)
 		
 		
 		
-		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(renderThread));
+		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(renderThread));
 		ubo->SetRowMajor(matrixAccessWorking);
 		ubo->SetParameterCount(4);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2 pBlendFactors
@@ -470,7 +470,7 @@ deoglRenderBase(renderThread)
 		ubo->GetParameterAt(3).SetAll(deoglSPBParameter::evtFloat, 4, 1, 100); // vec3 pEnvMapPosLayer[100]
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(1);
-		pRenderParamBlockSingleUse.TakeOver(new deoglSPBSingleUse(renderThread, ubo));
+		pRenderParamBlockSingleUse = deoglSPBSingleUse::Ref::New(renderThread, ubo);
 		
 		pRenderTask = new deoglRenderTask(renderThread);
 		pAddToRenderTask = new deoglAddToRenderTask(renderThread, *pRenderTask);
@@ -493,7 +493,7 @@ deoglRenderBase(renderThread)
 		}
 		
 		
-		ubo.TakeOver(new deoglSPBlockUBO(renderThread));
+		ubo = deoglSPBlockUBO::Ref::New(renderThread);
 		ubo->SetRowMajor(matrixAccessWorking);
 		ubo->SetParameterCount(8);
 		ubo->GetParameterAt(spbarEnvMapMatrixInfluence).SetAll(deoglSPBParameter::evtFloat, 4, 3, 8);
@@ -506,7 +506,7 @@ deoglRenderBase(renderThread)
 		ubo->GetParameterAt(spbarEnvMapCount).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(1);
-		pEnvMapsParamBlockSingleUse.TakeOver(new deoglSPBSingleUse(renderThread, ubo));
+		pEnvMapsParamBlockSingleUse = deoglSPBSingleUse::Ref::New(renderThread, ubo);
 		
 	}catch(const deException &){
 		pCleanUp();

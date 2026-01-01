@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -36,16 +36,17 @@ class aeRule;
  * Undo action rule set blend factor.
  */
 class aeUSetRuleBlendFactor : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleBlendFactor> Ref;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	float pOldFactor;
 	float pNewFactor;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleBlendFactor> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

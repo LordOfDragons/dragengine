@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 
 
 
@@ -35,22 +35,25 @@ class ceGesture;
  * \brief Undo action gesture toggle hold.
  */
 class ceUCGestureToggleHold : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCGestureToggleHold> Ref;
+	
+	
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCGestureToggleHold> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
 	ceUCGestureToggleHold(ceGesture *file);
 	
 	/** \breif Clean up undo action. */
+protected:
 	virtual ~ceUCGestureToggleHold();
+public:
 	/*@}*/
 	
 	

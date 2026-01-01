@@ -53,19 +53,15 @@ meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
 	
 	SetShortInfo("Decal Texture Offset");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldOffset = decal->GetTexCoordOffset();
 	pNewOffset = newOffset;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCOffset::~meUDecalTCOffset(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

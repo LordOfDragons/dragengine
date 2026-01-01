@@ -44,7 +44,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNode::sePropertyNode(eNodeTypes nodeType, deEngine &engine, int mappedCount) :
+sePropertyNode::sePropertyNode(eNodeTypes nodeType, const deEngine &engine, int mappedCount) :
 pEngine(engine),
 
 pParent(nullptr),
@@ -62,14 +62,15 @@ pGamma(1.0f),
 pColorize(1.0f, 1.0f, 1.0f),
 
 pTransparency(1.0f),
-pMask(nullptr),
 pCombineMode(deSkinPropertyNode::ecmBlend),
 
-pMapped(new seMapped::Ref[mappedCount]),
-pMappedCount(mappedCount),
-
 pSelected(false),
-pActive(false){
+pActive(false)
+{
+	int i;
+	for(i=0; i<mappedCount; i++){
+		pMapped.Add({});
+	}
 }
 
 sePropertyNode::sePropertyNode(const sePropertyNode &node) :
@@ -91,11 +92,9 @@ pGamma(node.pGamma),
 pColorize(node.pColorize),
 
 pTransparency(node.pTransparency),
-pMask(nullptr),
 pCombineMode(node.pCombineMode),
 
-pMapped(new seMapped::Ref[node.pMappedCount]),
-pMappedCount(node.pMappedCount),
+pMapped(node.pMapped),
 
 pSelected(false),
 pActive(false)
@@ -104,21 +103,11 @@ pActive(false)
 		pMask = node.pMask->Copy();
 		pMask->SetMaskParent(this);
 	}
-	
-	int i;
-	for(i=0; i<node.pMappedCount; i++){
-		pMapped[i] = node.pMapped[i];
-	}
 }
 
 sePropertyNode::~sePropertyNode(){
 	if(pMask){
 		pMask->SetMaskParent(nullptr);
-		pMask->FreeReference();
-	}
-	
-	if(pMapped){
-		delete [] pMapped;
 	}
 }
 
@@ -153,7 +142,7 @@ seProperty *sePropertyNode::GetProperty() const{
 		return pMaskParent->GetProperty();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -333,14 +322,12 @@ void sePropertyNode::SetMask(sePropertyNode *mask){
 	}
 	
 	if(pMask){
-		pMask->SetMaskParent(NULL);
-		pMask->FreeReference();
+		pMask->SetMaskParent(nullptr);
 	}
 	
 	pMask = mask;
 	
 	if(mask){
-		mask->AddReference();
 		mask->SetMaskParent(this);
 	}
 	
@@ -358,21 +345,15 @@ void sePropertyNode::SetCombineMode(deSkinPropertyNode::eCombineModes mode){
 }
 
 const seMapped::Ref &sePropertyNode::GetMappedFor(int type) const{
-	DEASSERT_TRUE(type >= 0)
-	DEASSERT_TRUE(type < pMappedCount)
-	
-	return pMapped[type];
+	return pMapped.GetAt(type);
 }
 
 void sePropertyNode::SetMappedFor(int type, seMapped *mapped){
-	DEASSERT_TRUE(type >= 0)
-	DEASSERT_TRUE(type < pMappedCount)
-	
-	if(pMapped[type] == mapped){
+	if(pMapped.GetAt(type) == mapped){
 		return;
 	}
 	
-	pMapped[type] = mapped;
+	pMapped.SetAt(type, mapped);
 	
 	NotifyChanged();
 }

@@ -45,27 +45,15 @@
 meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pLinks = NULL;
-	pLinkCount = 0;
+	pVLayer = nullptr;
 	
 	SetShortInfo("Cut Vegetation Layer Links");
 	SetMemoryConsumption(sizeof(meUHTVLinkCut));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLinkCut::~meUHTVLinkCut(){
-	if(pLinks){
-		while(pLinkCount > 0){
-			pLinkCount--;
-			pLinks[pLinkCount]->FreeReference();
-		}
-		delete [] pLinks;
-	}
-	
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -73,53 +61,20 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 // Management
 ///////////////
 
-void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
-	if(!link) DETHROW(deeInvalidParam);
-	
-	meHTVRLink **newArray = new meHTVRLink*[pLinkCount + 1];
-	if(!newArray) DETHROW(deeOutOfMemory);
-	if(pLinks){
-		memcpy(newArray, pLinks, sizeof(meHTVRLink*) * pLinkCount);
-		delete [] pLinks;
-	}
-	pLinks = newArray;
-	pLinks[pLinkCount++] = link;
-	
-	link->AddReference();
-}
-
-
-
 void meUHTVLinkCut::Undo(){
-	meHTVRule *ruleSource, *ruleDestination;
-	int l, slotSource, slotDestination;
-	
-	for(l=0; l<pLinkCount; l++){
-		ruleSource = pLinks[l]->GetSourceRule();
-		ruleDestination = pLinks[l]->GetDestinationRule();
-		slotSource = pLinks[l]->GetSourceSlot();
-		slotDestination = pLinks[l]->GetDestinationSlot();
+	pLinks.Visit([&](meHTVRLink *l){
+		l->GetSourceRule()->GetSlots().GetAt(l->GetSourceSlot())->AddLink(l);
+		l->GetDestinationRule()->GetSlots().GetAt(l->GetDestinationSlot())->AddLink(l);
 		
-		ruleSource->GetSlotAt(slotSource).AddLink(pLinks[l]);
-		ruleDestination->GetSlotAt(slotDestination).AddLink(pLinks[l]);
-		
-		pVLayer->AddLink(pLinks[l]);
-	}
+		pVLayer->AddLink(l);
+	});
 }
 
 void meUHTVLinkCut::Redo(){
-	meHTVRule *ruleSource, *ruleDestination;
-	int l, slotSource, slotDestination;
-	
-	for(l=0; l<pLinkCount; l++){
-		ruleSource = pLinks[l]->GetSourceRule();
-		ruleDestination = pLinks[l]->GetDestinationRule();
-		slotSource = pLinks[l]->GetSourceSlot();
-		slotDestination = pLinks[l]->GetDestinationSlot();
+	pLinks.Visit([&](meHTVRLink *l){
+		l->GetSourceRule()->GetSlots().GetAt(l->GetSourceSlot())->RemoveLink(l);
+		l->GetDestinationRule()->GetSlots().GetAt(l->GetDestinationSlot())->RemoveLink(l);
 		
-		ruleSource->GetSlotAt(slotSource).RemoveLink(pLinks[l]);
-		ruleDestination->GetSlotAt(slotDestination).RemoveLink(pLinks[l]);
-		
-		pVLayer->RemoveLink(pLinks[l]);
-	}
+		pVLayer->RemoveLink(l);
+	});
 }

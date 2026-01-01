@@ -89,9 +89,6 @@ void deoglCapCheckFramebufferTextureSingle::Check(GLuint fbo){
 	try{
 		// generate test array texture
 		OGL_CHECK(renderThread, glGenTextures(1, &texture));
-		if(!texture){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
 		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));

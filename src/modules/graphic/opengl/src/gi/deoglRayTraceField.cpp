@@ -61,7 +61,7 @@ pProbesPerLine(128), // equals image width of 1024
 pTexRays(renderThread)
 {
 	try{
-		pUBO.TakeOver(new deoglSPBlockUBO(renderThread));
+		pUBO = deoglSPBlockUBO::Ref::New(renderThread);
 		deoglSPBlockUBO &ubo = pUBO;
 		
 		ubo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
@@ -202,7 +202,7 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 	bool setupFbo = false;
 	
 	if(!pFBORays){
-		pFBORays.TakeOverWith(pRenderThread, false);
+		pFBORays = deoglFramebuffer::Ref::New(pRenderThread, false);
 		setupFbo = true;
 	}
 	

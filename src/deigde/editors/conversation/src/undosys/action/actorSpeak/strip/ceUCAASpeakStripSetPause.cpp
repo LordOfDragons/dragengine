@@ -48,34 +48,20 @@ ceStrip *word, float newPause){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pStrip = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pStrip = nullptr;
 	pOldPause = word->GetPause();
 	pNewPause = newPause;
 	
 	SetShortInfo("Strip Set Pause");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = word;
-	word->AddReference();
 }
 
 ceUCAASpeakStripSetPause::~ceUCAASpeakStripSetPause(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

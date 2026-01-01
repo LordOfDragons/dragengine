@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPViewListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	gdeWPViewListener(gdeWPView &panel);
 	
 	/** \brief Clean up listener. */
+protected:
 	~gdeWPViewListener() override;
+public:
 	/*@}*/
 	
 	

@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 /**
  * \brief Undo action set controller minimum.
  */
 class peeUControllerSetLower : public igdeUndo{
+public:
+	typedef deTObjectReference<peeUControllerSetLower> Ref;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	float pOldLower;
 	float pOldUpper;
@@ -44,16 +48,15 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeUControllerSetLower> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
 	peeUControllerSetLower(peeController *controller, float newValue);
 	
 	/** \brief Clean up undo action. */
+protected:
     virtual ~peeUControllerSetLower();
+public:
 	/*@}*/
 	
 	

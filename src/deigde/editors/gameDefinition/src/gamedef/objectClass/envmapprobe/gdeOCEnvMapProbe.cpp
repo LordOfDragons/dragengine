@@ -41,7 +41,7 @@
 
 gdeOCEnvMapProbe::gdeOCEnvMapProbe() :
 pScaling(1.0f, 1.0f, 1.0f),
-pShapeReflection(NULL),
+pShapeReflection(nullptr),
 pInfluenceBorderSize(0.1f),
 pInfluencePriority(0){
 }
@@ -51,7 +51,7 @@ pPosition(probe.GetPosition()),
 pRotation(probe.GetRotation()),
 pScaling(probe.GetScaling()),
 pShapeListInfluence(probe.GetShapeListInfluence()),
-pShapeReflection(NULL),
+pShapeReflection(nullptr),
 pShapeListReflectionMask(probe.GetShapeListReflectionMask()),
 pInfluenceBorderSize(probe.pInfluenceBorderSize),
 pInfluencePriority(probe.pInfluencePriority)

@@ -47,12 +47,11 @@ deoglDSRenderableVideoFrame::deoglDSRenderableVideoFrame(deoglDynamicSkin &dynam
 	const deDSRenderableVideoFrame &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableVideoFrame(renderable),
-pRRenderableVideoFrame(NULL),
 pVideoPlayer(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableVideoFrame = new deoglRDSRenderableVideoFrame(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableVideoFrame = deoglRDSRenderableVideoFrame::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
 		if(renderable.GetVideoPlayer()){
 			pVideoPlayer = (deoglVideoPlayer*)renderable.GetVideoPlayer()->GetPeerGraphic();
@@ -136,10 +135,6 @@ void deoglDSRenderableVideoFrame::DropVideoPlayer(){
 //////////////////////
 
 void deoglDSRenderableVideoFrame::pCleanUp(){
-	if(pRRenderableVideoFrame){
-		pRRenderableVideoFrame->FreeReference();
-	}
-	
 	if(pVideoPlayer){
 		pVideoPlayer->GetNotifyRenderables().Remove(this);
 	}

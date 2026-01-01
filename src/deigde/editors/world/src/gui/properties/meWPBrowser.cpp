@@ -40,13 +40,12 @@
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
 #include "../../world/decal/meDecal.h"
-#include "../../world/decal/meDecalList.h"
+#include "../../world/decal/meDecal.h"
 #include "../../world/decal/meDecalSelection.h"
 #include "../../world/object/meObject.h"
-#include "../../world/object/meObjectList.h"
+#include "../../world/object/meObject.h"
 #include "../../world/object/meObjectSelection.h"
 #include "../../world/object/texture/meObjectTexture.h"
-#include "../../world/object/texture/meObjectTextureList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGDCategory.h>
@@ -106,6 +105,7 @@ class cComboType : public igdeComboBoxListener{
 	meWPBrowser &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboType> Ref;
 	cComboType(meWPBrowser &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -121,15 +121,16 @@ class cActionSelectionMode : public igdeAction{
 	const meWPBrowser::eSelectionMode pMode;
 	
 public:
+	typedef deTObjectReference<cActionSelectionMode> Ref;
 	cActionSelectionMode(meWPBrowser &panel, meWPBrowser::eSelectionMode mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pPanel(panel), pMode(mode){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.SetSelectionMode(pMode);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetSelectionMode() == pMode);
 	}
@@ -139,6 +140,7 @@ class cTreeCategories : public igdeTreeListListener{
 	meWPBrowser &pPanel;
 	
 public:
+	typedef deTObjectReference<cTreeCategories> Ref;
 	cTreeCategories(meWPBrowser &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeTreeList*){
@@ -152,6 +154,7 @@ class cTextFilter : public igdeTextFieldListener{
 	meWPBrowser &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextFilter> Ref;
 	cTextFilter(meWPBrowser &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField*){
@@ -168,11 +171,12 @@ class cActionSetSkinObjTex : public igdeAction{
 	const decString pName;
 	
 public:
+	typedef deTObjectReference<cActionSetSkinObjTex> Ref;
 	cActionSetSkinObjTex(meWPBrowser &panel, const decString &name) : igdeAction(
-		decString("Active Object Set Texture: ") + name, NULL,
+		decString("Active Object Set Texture: ") + name, nullptr,
 		decString("Set texture '") + name + "' of active object"), pPanel(panel), pName(name){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
 		if(!gdskin){
 			return;
@@ -192,14 +196,14 @@ public:
 				return;
 			}
 			
-			undo.TakeOver(new meUObjectTextureSetSkin(texture, newskin));
+			undo = meUObjectTextureSetSkin::Ref::New(texture, newskin);
 			
 		}else{
-			const meObjectTexture::Ref refTexture(meObjectTexture::Ref::NewWith(object->GetEnvironment(), pName));
+			const meObjectTexture::Ref refTexture(meObjectTexture::Ref::New(object->GetEnvironment(), pName));
 			texture = refTexture;
 			texture->SetSkinPath(newskin);
 			
-			undo.TakeOver(new meUObjectAddTexture(object, texture));
+			undo = meUObjectAddTexture::Ref::New(object, texture);
 		}
 		pPanel.GetWorld()->GetUndoSystem()->Add(undo);
 	}
@@ -210,11 +214,12 @@ class cActionSetSkinObjProp : public igdeAction{
 	const decString pName;
 	
 public:
+	typedef deTObjectReference<cActionSetSkinObjProp> Ref;
 	cActionSetSkinObjProp(meWPBrowser &panel, const decString &name) : igdeAction(
-		decString("Active Object Set Property: ") + name, NULL,
+		decString("Active Object Set Property: ") + name, nullptr,
 		decString("Set property '") + name + "' of active object"), pPanel(panel), pName(name){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
 		if(!gdskin){
 			return;
@@ -234,10 +239,10 @@ public:
 				return;
 			}
 			
-			undo.TakeOver(new meUObjectSetProperty(object, pName, oldValue, newValue));
+			undo = meUObjectSetProperty::Ref::New(object, pName, oldValue, newValue);
 			
 		}else{
-			undo.TakeOver(new meUObjectAddProperty(object, pName, newValue));
+			undo = meUObjectAddProperty::Ref::New(object, pName, newValue);
 		}
 		pPanel.GetWorld()->GetUndoSystem()->Add(undo);
 	}
@@ -247,6 +252,7 @@ class cListItems : public igdeIconListBoxListener{
 	meWPBrowser &pPanel;
 	
 public:
+	typedef deTObjectReference<cListItems> Ref;
 	cListItems(meWPBrowser &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeIconListBox*){
@@ -310,13 +316,11 @@ public:
 				object->GetModelTextureNameList(names);
 				names.SortAscending();
 				
-				const int textureCount = names.GetCount();
-				if(textureCount > 0){
+				if(names.IsNotEmpty()){
 					helper.MenuSeparator(menu);
-					int i;
-					for(i=0; i<textureCount; i++){
-						helper.MenuCommand(menu, new cActionSetSkinObjTex(pPanel, names.GetAt(i)), true);
-					}
+					names.Visit([&](const decString &name){
+						helper.MenuCommand(menu, cActionSetSkinObjTex::Ref::New(pPanel, name));
+					});
 				}
 				
 				// skin based properties
@@ -325,13 +329,11 @@ public:
 					meHelpers::GetPatternTypePropertyNames(*object->GetGDClass(), igdeGDProperty::epptSkin, names);
 					names.SortAscending();
 					
-					const int nameCount = names.GetCount();
-					if(nameCount > 0){
+					if(names.IsNotEmpty()){
 						helper.MenuSeparator(menu);
-						int i;
-						for(i=0; i<nameCount; i++){
-							helper.MenuCommand(menu, new cActionSetSkinObjProp(pPanel, names.GetAt(i)), true);
-						}
+						names.Visit([&](const decString &name){
+							helper.MenuCommand(menu, cActionSetSkinObjProp::Ref::New(pPanel, name));
+						});
 					}
 				}
 				
@@ -355,7 +357,7 @@ public:
 		helper.MenuCommand(menu, pPanel.GetActionPIRebuild());
 		
 		// view
-		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::NewWith(helper.GetEnvironment(), "View"));
+		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::New(helper.GetEnvironment(), "View"));
 		
 		helper.MenuOption(menuView, pPanel.GetActionPISizeSmall());
 		helper.MenuOption(menuView, pPanel.GetActionPISizeMedium());
@@ -375,37 +377,35 @@ class cActionSetClass : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetClass(meWPBrowser &panel) : igdeAction("Set Class", NULL,
+	typedef deTObjectReference<cActionSetClass> Ref;
+	cActionSetClass(meWPBrowser &panel) : igdeAction("Set Class", nullptr,
 		"Set class of selected objects"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const igdeGDClass * const gdclass = pPanel.GetSelectedObjectClass();
 		if(!gdclass || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
 			return;
 		}
 		
-		const meObjectList &selection = pPanel.GetWorld()->GetSelectionObject().GetSelected();
+		const meObject::List &selection = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &cname = gdclass->GetName();
-		const int count = selection.GetCount();
-		meObjectList list;
-		int i;
+		meObject::List list;
 		
-		for(i=0; i<count; i++){
-			meObject * const object = selection.GetAt(i);
+		selection.Visit([&](meObject * const object){
 			if(!cname.Equals(object->GetClassName())){
 				list.Add(object);
 			}
-		}
+		});
 		
-		if(list.GetCount() == 0){
+		if(list.IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetWorld()->GetUndoSystem()->Add(meUSetObjectClass::Ref::NewWith(list, cname));
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUSetObjectClass::Ref::New(list, cname));
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetSelectedObjectClass() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 0
+	void Update() override{
+		SetEnabled(pPanel.GetSelectedObjectClass() && pPanel.GetWorld()->GetSelectionObject().GetSelected().IsNotEmpty()
 			&& pPanel.GetWorld()->GetGuiParameters().GetElementMode() == meWorldGuiParameters::eemObject);
 	}
 };
@@ -414,37 +414,36 @@ class cActionSetSkin : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetSkin(meWPBrowser &panel) : igdeAction("Objects Set Active Texture Skin", NULL,
+	typedef deTObjectReference<cActionSetSkin> Ref;
+	cActionSetSkin(meWPBrowser &panel) : igdeAction("Objects Set Active Texture Skin", nullptr,
 		"Set skin of active texture of selected objects"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
 		if(!gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemObject){
 			return;
 		}
 		
-		const meObjectList &selection = pPanel.GetWorld()->GetSelectionObject().GetSelected();
+		const meObject::List &selection = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &newskin = gdskin->GetPath();
-		const int count = selection.GetCount();
-		meObjectTextureList list;
-		int i;
+		meObjectTexture::List list;
 		
-		for(i=0; i<count; i++){
-			meObjectTexture * const texture = selection.GetAt(i)->GetActiveTexture();
-			if(texture && !newskin.Equals(texture->GetSkinPath())){
-				list.AddTexture(texture);
+		selection.Visit([&](meObject * const object){
+			meObjectTexture * const texture = object->GetActiveTexture();
+			if(texture && newskin != texture->GetSkinPath()){
+				list.Add(texture);
 			}
-		}
+		});
 		
-		if(list.GetTextureCount() == 0){
+		if(list.IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::NewWith(list, newskin));
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::New(list, newskin));
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetSelectedSkin() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 0
+	void Update() override{
+		SetEnabled(pPanel.GetSelectedSkin() && pPanel.GetWorld()->GetSelectionObject().GetSelected().IsNotEmpty()
 			&& pPanel.GetWorld()->GetGuiParameters().GetElementMode() == meWorldGuiParameters::eemObject);
 	}
 };
@@ -453,37 +452,35 @@ class cActionSetDecal : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetDecal(meWPBrowser &panel) : igdeAction("Decals Set Skin", NULL,
+	typedef deTObjectReference<cActionSetDecal> Ref;
+	cActionSetDecal(meWPBrowser &panel) : igdeAction("Decals Set Skin", nullptr,
 		"Set skin of selected decals"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
 		if(!gdskin || pPanel.GetWorld()->GetGuiParameters().GetElementMode() != meWorldGuiParameters::eemDecal){
 			return;
 		}
 		
-		const meDecalList &selection = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
+		const meDecal::List &selection = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
 		const decString &newskin = gdskin->GetPath();
-		const int count = selection.GetCount();
-		meDecalList list;
-		int i;
+		meDecal::List list;
 		
-		for(i=0; i<count; i++){
-			meDecal * const decal = selection.GetAt(i);
+		selection.Visit([&](meDecal * const decal){
 			if(!newskin.Equals(decal->GetSkinPath())){
 				list.Add(decal);
 			}
-		}
+		});
 		
-		if(list.GetCount() == 0){
+		if(list.IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetWorld()->GetUndoSystem()->Add(meUDecalSkin::Ref::NewWith(list, newskin));
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUDecalSkin::Ref::New(list, newskin));
 	}
 	
-	virtual void Update(){
-		SetEnabled(pPanel.GetSelectedSkin() && pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 0
+	void Update() override{
+		SetEnabled(pPanel.GetSelectedSkin() && pPanel.GetWorld()->GetSelectionDecal().GetSelected().IsNotEmpty()
 			&& pPanel.GetWorld()->GetGuiParameters().GetElementMode() == meWorldGuiParameters::eemDecal);
 	}
 };
@@ -492,17 +489,18 @@ class cActionSetSky : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetSky(meWPBrowser &panel) : igdeAction("Set Sky", NULL,
+	typedef deTObjectReference<cActionSetSky> Ref;
+	cActionSetSky(meWPBrowser &panel) : igdeAction("Set Sky", nullptr,
 		"Change preview sky of world to the selected sky"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeGDSky * const gdsky = pPanel.GetSelectedSky();
 		if(gdsky){
 			pPanel.GetWorld()->GetSky()->SetGDSky(gdsky);
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedSky());
 	}
 };
@@ -512,15 +510,16 @@ class cActionPreviewSize : public igdeAction{
 	const meWPBrowser::ePreviewSize pSize;
 	
 public:
+	typedef deTObjectReference<cActionPreviewSize> Ref;
 	cActionPreviewSize(meWPBrowser &panel, meWPBrowser::ePreviewSize size,
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pPanel(panel), pSize(size){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.SetPreviewSize(pSize);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetPreviewSize() == pSize);
 	}
@@ -531,15 +530,16 @@ class cActionViewMode : public igdeAction{
 	const meWPBrowser::eViewModes pMode;
 	
 public:
+	typedef deTObjectReference<cActionViewMode> Ref;
 	cActionViewMode(meWPBrowser &panel, meWPBrowser::eViewModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pPanel(panel), pMode(mode){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.SetViewMode(pMode);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld());
 		SetSelected(pPanel.GetViewMode() == pMode);
 	}
@@ -549,14 +549,15 @@ class cActionPIRebuild : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionPIRebuild(meWPBrowser &panel) : igdeAction("Rebuild Preview", NULL,
+	typedef deTObjectReference<cActionPIRebuild> Ref;
+	cActionPIRebuild(meWPBrowser &panel) : igdeAction("Rebuild Preview", nullptr,
 		"Rebuild Preview"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.RebuildPISelectedItem();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWorld() && pPanel.GetSelectedListItem());
 	}
 };
@@ -574,8 +575,6 @@ public:
 meWPBrowser::meWPBrowser(meWindowProperties &windowProperties) :
 igdeContainerBox(windowProperties.GetEnvironment(), igdeContainerBox::eaY),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL),
 pPreviewSize(epsLarge),
 pSelectionMode(esmCategory),
 pViewMode(evmPreview)
@@ -586,79 +585,79 @@ pViewMode(evmPreview)
 	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
-	pListener = new meWPBrowserListener(*this);
+	pListener = meWPBrowserListener::Ref::New(*this);
 	
 	
-	pActionSetClass.TakeOver(new cActionSetClass(*this));
-	pActionSetSkin.TakeOver(new cActionSetSkin(*this));
-	pActionSetDecal.TakeOver(new cActionSetDecal(*this));
-	pActionSetSky.TakeOver(new cActionSetSky(*this));
+	pActionSetClass = cActionSetClass::Ref::New(*this);
+	pActionSetSkin = cActionSetSkin::Ref::New(*this);
+	pActionSetDecal = cActionSetDecal::Ref::New(*this);
+	pActionSetSky = cActionSetSky::Ref::New(*this);
 	
-	pActionPISizeSmall.TakeOver(new cActionPreviewSize(*this, epsSmall,
-		"Small Preview Image", NULL, "Small Preview Image"));
-	pActionPISizeMedium.TakeOver(new cActionPreviewSize(*this, epsMedium,
-		"Medium Preview Image", NULL, "Medium Preview Image"));
-	pActionPISizeLarge.TakeOver(new cActionPreviewSize(*this, epsLarge,
-		"Large Preview Image", NULL, "Large Preview Image"));
+	pActionPISizeSmall = cActionPreviewSize::Ref::New(*this, epsSmall,
+		"Small Preview Image", nullptr, "Small Preview Image");
+	pActionPISizeMedium = cActionPreviewSize::Ref::New(*this, epsMedium,
+		"Medium Preview Image", nullptr, "Medium Preview Image");
+	pActionPISizeLarge = cActionPreviewSize::Ref::New(*this, epsLarge,
+		"Large Preview Image", nullptr, "Large Preview Image");
 	
-	pActionPIViewList.TakeOver(new cActionViewMode(*this, evmList,
-		"List Mode", NULL, "List Mode"));
-	pActionPIViewPreview.TakeOver(new cActionViewMode(*this, evmPreview,
-		"Preview Mode", NULL, "Preview Mode"));
+	pActionPIViewList = cActionViewMode::Ref::New(*this, evmList,
+		"List Mode", nullptr, "List Mode");
+	pActionPIViewPreview = cActionViewMode::Ref::New(*this, evmPreview,
+		"Preview Mode", nullptr, "Preview Mode");
 	
-	pActionPIRebuild.TakeOver(new cActionPIRebuild(*this));
+	pActionPIRebuild = cActionPIRebuild::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espTop,
-		igdeApplication::app().DisplayScaled(400)));
+	content = igdeContainerSplitted::Ref::New(env, igdeContainerSplitted::espTop,
+		igdeApplication::app().DisplayScaled(400));
 	AddChild(content);
 	
 	
 	// browser
-	frameLine.TakeOver(new igdeGroupBox(env, "Browser:"));
-	((igdeGroupBox&)(igdeWidget&)frameLine).SetCanCollapse(false);
-	((igdeGroupBox&)(igdeWidget&)frameLine).SetStretchLast(true);
+	frameLine = igdeGroupBox::Ref::New(env, "Browser:");
+	frameLine.DynamicCast<igdeGroupBox>()->SetCanCollapse(false);
+	frameLine.DynamicCast<igdeGroupBox>()->SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaSide);
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
+	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	frameLine->AddChild(groupBox);
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(frameLine);
 	
-	helper.ComboBox(frameLine, "Type of items to browse", pCBTypes, new cComboType(*this));
-	pCBTypes->AddItem("Object Class", NULL, (void*)(intptr_t)epitObjectClass);
-	pCBTypes->AddItem("Skin", NULL, (void*)(intptr_t)epitSkin);
-	pCBTypes->AddItem("Sky", NULL, (void*)(intptr_t)epitSky);
+	helper.ComboBox(frameLine, "Type of items to browse", pCBTypes, cComboType::Ref::New(*this));
+	pCBTypes->AddItem("Object Class", nullptr, (void*)(intptr_t)epitObjectClass);
+	pCBTypes->AddItem("Skin", nullptr, (void*)(intptr_t)epitSkin);
+	pCBTypes->AddItem("Sky", nullptr, (void*)(intptr_t)epitSky);
 	
-	helper.Button(frameLine, pBtnSelByCat, new cActionSelectionMode(*this, esmCategory,
-		"Category", NULL, "Browse by category"), true);
-	helper.Button(frameLine, pBtnSelByFilter, new cActionSelectionMode(*this, esmFilter,
-		"Filter", NULL, "Browse by filtering"), true);
+	helper.Button(frameLine, pBtnSelByCat, cActionSelectionMode::Ref::New(*this, esmCategory,
+		"Category", nullptr, "Browse by category"));
+	helper.Button(frameLine, pBtnSelByFilter, cActionSelectionMode::Ref::New(*this, esmFilter,
+		"Filter", nullptr, "Browse by filtering"));
 	
 	
-	pSwitcherSelBy.TakeOver(new igdeSwitcher(env));
+	pSwitcherSelBy = igdeSwitcher::Ref::New(env);
 	groupBox->AddChild(pSwitcherSelBy);
 	
 	
 	// category tree
-	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "Categories", new cTreeCategories(*this));
+	helper.TreeList(pSwitcherSelBy, pTreeCategories, 10, "Categories", cTreeCategories::Ref::New(*this));
 	pTreeCategories->SetDefaultSorter();
 	
 	
 	// filter
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	pSwitcherSelBy->AddChild(form);
 	
 	helper.EditString(form, "Filter:", "Show items containing filter case insensitive",
-		pEditFilter, new cTextFilter(*this));
+		pEditFilter, cTextFilter::Ref::New(*this));
 	
 	
 	// items
-	frameLine.TakeOver(new igdeGroupBox(env, "Items:"));
-	((igdeGroupBox&)(igdeWidget&)frameLine).SetCanCollapse(false);
-	((igdeGroupBox&)(igdeWidget&)frameLine).SetStretchLast(true);
+	frameLine = igdeGroupBox::Ref::New(env, "Items:");
+	frameLine.DynamicCast<igdeGroupBox>()->SetCanCollapse(false);
+	frameLine.DynamicCast<igdeGroupBox>()->SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaCenter);
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst));
+	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst);
 	frameLine->AddChild(groupBox);
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
@@ -666,22 +665,18 @@ pViewMode(evmPreview)
 	};
 	helper.IconListBox(groupBox, pListItems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 1, "Items", new cListItems(*this));
+		headers, 1, "Items", cListItems::Ref::New(*this));
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode(igdeIconListBox::evmIconVertical);
 	
-	helper.EditString(groupBox, "Item information", pEditInfos, 50, 5, NULL);
+	helper.EditString(groupBox, "Item information", pEditInfos, 50, 5, {});
 	pEditInfos->SetEditable(false);
 	
 	OnGameDefinitionChanged();
 }
 
 meWPBrowser::~meWPBrowser(){
-	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -696,14 +691,12 @@ void meWPBrowser::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	CurrentItemChanged();
@@ -721,7 +714,7 @@ void meWPBrowser::UpdateCategoryList(){
 		return;
 	}
 	
-	igdeGDCategory *categories = NULL;
+	igdeGDCategory *categories = nullptr;
 	
 	switch(GetPreviewItemType()){
 	case epitObjectClass:
@@ -749,17 +742,13 @@ void meWPBrowser::UpdateCategoryListWith(igdeGDCategory *category){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int categoryCount = category->GetCategoryCount();
-	int i;
+	pTreeCategories->AppendItem(nullptr, "< No Category >");
 	
-	pTreeCategories->AppendItem(NULL, "< No Category >");
-	
-	for(i=0; i<categoryCount; i++){
-		igdeGDCategory * const child = category->GetCategoryAt(i);
+	category->GetCategories().Visit([&](igdeGDCategory * const child){
 		if(!child->GetHidden()){
-			AddCategoryToList(child, NULL);
+			AddCategoryToList(child, nullptr);
 		}
-	}
+	});
 }
 
 void meWPBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent){
@@ -767,23 +756,19 @@ void meWPBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *pare
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int categoryCount = category->GetCategoryCount();
-	int i;
-	
-	igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(category->GetName(), category));
+	igdeTreeItem::Ref item(igdeTreeItem::Ref::New(category->GetName(), category));
 	pTreeCategories->AppendItem(parent, item);
 	
-	for(i=0; i<categoryCount; i++){
-		igdeGDCategory * const child = category->GetCategoryAt(i);
+	category->GetCategories().Visit([&](igdeGDCategory * const child){
 		if(!child->GetHidden()){
 			AddCategoryToList(child, item);
 		}
-	}
+	});
 }
 
 void meWPBrowser::UpdateItemList(){
 	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
+	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : nullptr;
 	
 	pListItems->RemoveAllItems();
 	
@@ -828,7 +813,7 @@ void meWPBrowser::UpdateItemList(){
 	pListItems->SortItems();
 	
 	pListItems->SetSelectionWithData(selection);
-	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItems().IsNotEmpty()){
 		pListItems->SetSelection(0);
 	}
 }
@@ -844,9 +829,9 @@ void meWPBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon = igdeIcon::Ref::New(*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pListItems, item, iconSize));
 	
 	switch(GetPreviewItemType()){
 	case meWPBrowser::epitObjectClass:{
@@ -931,7 +916,7 @@ void meWPBrowser::SetPreviewItemType(ePreviewItemType type){
 
 igdeGDCategory *meWPBrowser::GetSelectedCategory() const{
 	const igdeTreeItem * const selection = pTreeCategories->GetSelection();
-	return selection ? (igdeGDCategory*)selection->GetData() : NULL;
+	return selection ? (igdeGDCategory*)selection->GetData() : nullptr;
 }
 
 void meWPBrowser::SelectCategory(igdeGDCategory *category){
@@ -962,22 +947,22 @@ void meWPBrowser::SetSelectionMode(eSelectionMode mode){
 }
 
 igdeListItem *meWPBrowser::GetSelectedListItem() const{
-	return pWorld ? pListItems->GetSelectedItem() : NULL;
+	return pWorld ? pListItems->GetSelectedItem() : nullptr;
 }
 
 igdeGDClass *meWPBrowser::GetSelectedObjectClass() const{
 	return pWorld && GetPreviewItemType() == epitObjectClass && pListItems->GetSelectedItem()
-		? (igdeGDClass*)pListItems->GetSelectedItem()->GetData() : NULL;
+		? (igdeGDClass*)pListItems->GetSelectedItem()->GetData() : nullptr;
 }
 
 igdeGDSkin *meWPBrowser::GetSelectedSkin() const{
 	return pWorld && GetPreviewItemType() == epitSkin && pListItems->GetSelectedItem()
-		? (igdeGDSkin*)pListItems->GetSelectedItem()->GetData() : NULL;
+		? (igdeGDSkin*)pListItems->GetSelectedItem()->GetData() : nullptr;
 }
 
 igdeGDSky *meWPBrowser::GetSelectedSky() const{
 	return pWorld && GetPreviewItemType() == epitSky && pListItems->GetSelectedItem()
-		? (igdeGDSky*)pListItems->GetSelectedItem()->GetData() : NULL;
+		? (igdeGDSky*)pListItems->GetSelectedItem()->GetData() : nullptr;
 }
 
 void meWPBrowser::SetPreviewSize(ePreviewSize size){
@@ -1053,12 +1038,12 @@ void meWPBrowser::OnGameDefinitionChanged(){
 			break;
 			
 		case epitSky:
-			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkyManager()->GetSkyList().GetWithPath(selection));
+			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkyManager()->GetSkyWithPath(selection));
 			break;
 		}
 	}
 	
-	if(!pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0){
+	if(!pListItems->GetSelectedItem() && pListItems->GetItems().IsNotEmpty()){
 		pListItems->SetSelection(0);
 	}
 }

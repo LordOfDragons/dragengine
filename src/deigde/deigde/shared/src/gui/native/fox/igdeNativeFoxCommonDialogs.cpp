@@ -32,10 +32,9 @@
 #include "igdeNativeFoxCommonDialogs.h"
 #include "dialog/igdeNativeFoxFileDialog.h"
 #include "../../igdeWidget.h"
-#include "../../filedialog/igdeFilePattern.h"
-#include "../../filedialog/igdeFilePatternList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -152,7 +151,7 @@ const char *text, int &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_INTEGER);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_INTEGER);
 	
 	decString initialValue;
 	initialValue.Format("%d", value);
@@ -175,7 +174,7 @@ const char *text, float &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_REAL);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_REAL);
 	
 	decString initialValue;
 	initialValue.Format("%g", value);
@@ -198,7 +197,7 @@ const char *text, decString &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_STRING);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_STRING);
 	
 	dialog.setText(value.GetString());
 	
@@ -212,14 +211,14 @@ const char *text, decString &value){
 }
 
 bool igdeNativeFoxCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decStringList &list, int &selection){
+const char *text, const decTList<decString> &list, int &selection){
 	if(!owner || !owner->GetNativeWidget() || !title || !text || list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXChoiceBox dialog(foxOwner, title, text, NULL, list.Join("\n").GetString());
+	FXChoiceBox dialog(foxOwner, title, text, nullptr, DEJoin(list, "\n").GetString());
 	
 	//dialog.setCurrentItem( selection );
 	// TODO fox does not expose "list" member to set selection. create an own dialog anyways
@@ -231,7 +230,7 @@ const char *text, const decStringList &list, int &selection){
 
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -253,7 +252,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileOpen(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -274,7 +273,7 @@ deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &fi
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-const igdeFilePatternList &filePatterns, decString &filename){
+const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}
@@ -294,7 +293,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 	
 	// TEMP
 	if(true){
-		const igdeFilePattern &pattern = *filePatterns.GetFilePatternAt(dialog.getCurrentPattern());
+		const igdeFilePattern &pattern = *filePatterns.GetAt(dialog.getCurrentPattern());
 		if(!filename.MatchesPattern(pattern.GetPattern())){
 			filename.Append(pattern.GetDefaultExtension());
 		}
@@ -305,7 +304,7 @@ const igdeFilePatternList &filePatterns, decString &filename){
 }
 
 bool igdeNativeFoxCommonDialogs::GetFileSave(igdeWidget *owner, const char *title,
-deVirtualFileSystem &vfs, const igdeFilePatternList &filePatterns, decString &filename){
+deVirtualFileSystem &vfs, const igdeFilePattern::List &filePatterns, decString &filename){
 	if(!owner || !owner->GetNativeWidget() || !title){
 		DETHROW(deeInvalidParam);
 	}

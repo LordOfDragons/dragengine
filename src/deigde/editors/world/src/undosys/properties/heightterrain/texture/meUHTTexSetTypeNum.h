@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -42,16 +42,17 @@ class meHeightTerrainTexture;
  * Undo action to set the type number of a height terrain texture.
  */
 class meUHTTexSetTypeNum : public igdeUndo{
+public:
+	typedef deTObjectReference<meUHTTexSetTypeNum> Ref;
+	
+	
 private:
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	int pOldTypeNumber;
 	int pNewTypeNumber;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUHTTexSetTypeNum> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
@@ -59,7 +60,11 @@ public:
 	
 protected:
 	/** \brief Clean up object. */
+
+protected:
 	virtual ~meUHTTexSetTypeNum();
+
+public:
 	/*@}*/
 	
 public:

@@ -62,7 +62,7 @@ deglConfigXML::~deglConfigXML(){
 ///////////////
 
 void deglConfigXML::ReadFromFile(decBaseFileReader &reader, deglConfiguration &config){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();

@@ -26,12 +26,12 @@
 #define _CEUCCLOGICSETOPERATOR_H_
 
 #include "../../../conversation/condition/ceCConditionLogic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 class ceCConditionLogic;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -39,17 +39,18 @@ class ceConversationTopic;
  * \brief Undo Logic Conversation Condition Set Operator.
  */
 class ceUCCLogicSetOperator : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCCLogicSetOperator> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceCConditionLogic::eOperators pOldOperator;
 	ceCConditionLogic::eOperators pNewOperator;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCCLogicSetOperator> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

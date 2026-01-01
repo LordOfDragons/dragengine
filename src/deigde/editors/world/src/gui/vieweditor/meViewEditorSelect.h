@@ -28,19 +28,23 @@
 #include "meViewEditorNavigation.h"
 #include "../meInfoBubble.h"
 
+#include <deigde/gui/resources/igdeFont.h>
+
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 
 class meCLSelect;
 class meCLCollect;
-class deFontSize;
 
 
 /**
  * View editor for selecting scene elements.
  */
 class meViewEditorSelect : public meViewEditorNavigation{
+public:
+	typedef deTObjectReference<meViewEditorSelect> Ref;
+	
 private:
 	meCLSelect *pCLSelect, *pCLBubbleInfo;
 	deCollider::Ref pColVol;
@@ -49,7 +53,7 @@ private:
 	
 	meInfoBubble::Ref pInfoBubble;
 	deCanvasText::Ref pInfoBubbleText;
-	deFontSize *pFontSize;
+	igdeFont::Ref pFont;
 	
 	decPoint pLastMousePosition;
 	
@@ -60,8 +64,11 @@ public:
 	/** Create view editor. */
 	meViewEditorSelect(meView3D &view);
 	
+protected:
 	/** Clean up view editor. */
 	~meViewEditorSelect() override;
+	
+public:
 	/*@}*/
 	
 	

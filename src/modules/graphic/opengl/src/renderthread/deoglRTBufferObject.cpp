@@ -64,7 +64,7 @@ pInstanceArraySizeUBO(0),
 pInstanceArraySizeSSBO(0),
 
 pBillboardSPBListUBO(NULL),
-pBillboardRTIGroups(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)),
+pBillboardRTIGroups(deoglSharedSPBRTIGroupList::Ref::New(renderThread)),
 
 pTemporaryVBOData(NULL),
 pTemporaryVBODataSize(0)
@@ -248,7 +248,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
 	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
-	pLayoutOccMeshInstanceUBO.TakeOver(new deoglSPBlockUBO(pRenderThread));
+	pLayoutOccMeshInstanceUBO = deoglSPBlockUBO::Ref::New(pRenderThread);
 	pLayoutOccMeshInstanceUBO->SetRowMajor(rowMajor);
 	pLayoutOccMeshInstanceUBO->SetCompact(false);
 	pLayoutOccMeshInstanceUBO->SetParameterCount(1);
@@ -268,7 +268,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	if(choices.GetUseSSBORender()){
 		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutOccMeshInstanceSSBO.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etStream));
+		pLayoutOccMeshInstanceSSBO = deoglSPBlockSSBO::Ref::New(pRenderThread, deoglSPBlockSSBO::etStream);
 		pLayoutOccMeshInstanceSSBO->SetRowMajor(rowMajor);
 		pLayoutOccMeshInstanceSSBO->SetCompact(false);
 		pLayoutOccMeshInstanceSSBO->SetParameterCount(1);

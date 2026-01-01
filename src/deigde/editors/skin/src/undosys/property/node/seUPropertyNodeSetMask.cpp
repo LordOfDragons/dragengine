@@ -42,8 +42,8 @@
 ////////////////////////////
 
 seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask) :
-pNode(NULL),
-pMask(NULL)
+
+pMask(nullptr)
 {
 	if(!node || !node->GetProperty() || node->GetMask() || !mask){
 		DETHROW(deeInvalidParam);
@@ -57,19 +57,10 @@ pMask(NULL)
 	pOldShearing = mask->GetShearing();
 	
 	pMask = mask;
-	mask->AddReference();
-	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 
@@ -78,7 +69,7 @@ seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
 ///////////////
 
 void seUPropertyNodeSetMask::Undo(){
-	pNode->SetMask(NULL);
+	pNode->SetMask(nullptr);
 	
 	pMask->SetPosition(pOldPosition);
 	pMask->SetSize(pOldSize);

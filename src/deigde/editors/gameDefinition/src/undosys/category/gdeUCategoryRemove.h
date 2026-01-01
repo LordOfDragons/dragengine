@@ -34,9 +34,12 @@
  * \brief Undo action remove category.
  */
 class gdeUCategoryRemove : public gdeUCategoryBase{
+public:
+	typedef deTObjectReference<gdeUCategoryRemove> Ref;
+	
 private:
-	gdeCategory *pParent;
-	gdeCategory *pCategory;
+	gdeCategory::Ref pParent;
+	gdeCategory::Ref pCategory;
 	
 	
 	

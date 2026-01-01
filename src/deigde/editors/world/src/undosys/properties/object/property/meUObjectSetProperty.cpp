@@ -51,18 +51,16 @@ meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, co
 	
 	SetShortInfo("Change object property");
 	
-	pObject = NULL;
+	pObject = nullptr;
 	
 	pKey = key;
 	pOldValue = oldValue;
 	pNewValue = newValue;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetProperty::~meUObjectSetProperty(){
-	pCleanUp();
 }
 
 
@@ -86,15 +84,4 @@ void meUObjectSetProperty::Redo(){
 
 void meUObjectSetProperty::ProgressiveRedo(){
 	Redo();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUObjectSetProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

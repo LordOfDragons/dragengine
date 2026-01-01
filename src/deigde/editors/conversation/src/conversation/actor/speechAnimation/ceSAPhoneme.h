@@ -26,6 +26,7 @@
 #define _CESAPHONEME_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -44,16 +45,18 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceSAPhoneme> Ref;
-
-
+	typedef decTObjectDictionary<ceSAPhoneme,int> Map;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new phoneme. */
 	ceSAPhoneme(int ipa);
 	/** Cleans up the phoneme. */
+protected:
 	virtual ~ceSAPhoneme();
+public:
 	/*@}*/
 	
 	/** \name Management */

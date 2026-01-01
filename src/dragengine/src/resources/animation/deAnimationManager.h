@@ -25,11 +25,11 @@
 #ifndef _DEANIMATIONMANAGER_H_
 #define _DEANIMATIONMANAGER_H_
 
+#include "deAnimation.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 
 class deEngine;
-class deAnimation;
 class deAnimationBuilder;
 
 
@@ -70,16 +70,16 @@ public:
 	deAnimation *GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new animation object using a builder. */
-	deAnimation *CreateAnimation(const char *filename, deAnimationBuilder &builder);
+	deAnimation::Ref CreateAnimation(const char *filename, deAnimationBuilder &builder);
 	
 	/** \brief Create new animation object using a builder. */
-	deAnimation *CreateAnimation(deVirtualFileSystem *vfs, const char *filename, deAnimationBuilder &builder);
+	deAnimation::Ref CreateAnimation(deVirtualFileSystem *vfs, const char *filename, deAnimationBuilder &builder);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation(const char *filename, const char *basePath);
+	deAnimation::Ref LoadAnimation(const char *filename, const char *basePath);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deAnimation::Ref LoadAnimation(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Save animation to file.

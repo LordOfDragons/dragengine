@@ -43,8 +43,8 @@
 meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
 	SetShortInfo("Vegetation Layer Rule Closest Prop Set Class");
 	SetMemoryConsumption(sizeof(meUHTVRuleCPSetRadius));
@@ -53,14 +53,10 @@ meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVR
 	pNewRadius = nradius;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCPSetRadius::~meUHTVRuleCPSetRadius(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

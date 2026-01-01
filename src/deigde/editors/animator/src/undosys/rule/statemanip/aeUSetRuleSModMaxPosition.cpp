@@ -42,12 +42,10 @@
 aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rule, const decVector &newMax){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
 		
@@ -82,5 +80,4 @@ void aeUSetRuleSModMaxPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

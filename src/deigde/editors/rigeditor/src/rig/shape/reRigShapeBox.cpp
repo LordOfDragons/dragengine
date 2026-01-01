@@ -67,22 +67,11 @@ void reRigShapeBox::SetHalfExtends(const decVector &halfExtends){
 	}
 }
 
-reRigShape *reRigShapeBox::Duplicate() const{
-	reRigShapeBox *shape = NULL;
-	
-	try{
-		shape = new reRigShapeBox(GetEngine());
-		if(!shape) DETHROW(deeOutOfMemory);
-		
-		shape->SetPosition(GetPosition());
-		shape->SetOrientation(GetOrientation());
-		shape->SetHalfExtends(GetHalfExtends());
-		
-	}catch(const deException &){
-		if(shape) shape->FreeReference();
-		throw;
-	}
-	
+reRigShape::Ref reRigShapeBox::Duplicate() const{
+	const reRigShapeBox::Ref shape(reRigShapeBox::Ref::New(GetEngine()));
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	shape->SetHalfExtends(GetHalfExtends());
 	return shape;
 }
 

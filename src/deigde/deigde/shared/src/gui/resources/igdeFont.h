@@ -130,7 +130,7 @@ public:
 	 * 
 	 * Engine font is created the first time it is requested.
 	 */
-	deFont *GetEngineFont();
+	const deFont::Ref &GetEngineFont();
 	/*@}*/
 	
 	

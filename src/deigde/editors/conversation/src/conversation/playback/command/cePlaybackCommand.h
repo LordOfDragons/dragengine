@@ -26,6 +26,7 @@
 #define _CEPLAYBACKCOMMAND_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -39,8 +40,8 @@ private:
 	bool pValue;
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<cePlaybackCommand> Ref;
+	typedef decTObjectOrderedSet<cePlaybackCommand> List;
 
 
 	/** \name Constructors and Destructors */

@@ -26,8 +26,10 @@
 #define _PROJPANELTESTRUN_H_
 
 #include "projPanelRemoteClient.h"
+#include "projPanelTestRunListener.h"
 #include "../project/remote/projRemoteClient.h"
 #include "../project/profile/projProfile.h"
+#include "../project/projProject.h"
 
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -37,11 +39,9 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
-class projProject;
-class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
 
@@ -52,6 +52,9 @@ class projWindowMain;
  */
 class projPanelTestRun : public igdeContainerSplitted{
 public:
+	typedef deTObjectReference<projPanelTestRun> Ref;
+	
+	
 	static const char *styleWarning;
 	static const char *styleError;
 	
@@ -61,8 +64,8 @@ public:
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelTestRunListener *pListener;
+	projProject::Ref pProject;
+	projPanelTestRunListener::Ref pListener;
 	
 	projTestRunner *pTestRunner;
 	bool pIsRunning;
@@ -78,7 +81,7 @@ private:
 	
 	igdeTextArea::Ref pEditLogs;
 	
-	decObjectOrderedSet pRemoteClients;
+	decTObjectOrderedSet<projPanelRemoteClient> pRemoteClients;
 	
 	igdeComboBox::Ref pCBProfile;
 	igdeComboBox::Ref pCBLaunchProfile;
@@ -103,7 +106,9 @@ public:
 	projPanelTestRun(projWindowMain &windowMain);
 	
 	/** \brief Clean up view. */
+protected:
 	virtual ~projPanelTestRun();
+public:
 	/*@}*/
 	
 	
@@ -114,12 +119,12 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);
 	
-	/** \brief Test runner or \em NULL. */
+	/** \brief Test runner or \em nullptr. */
 	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }
 	
 	
@@ -195,7 +200,7 @@ public:
 	void UpdateRemoteClients(float elapsed);
 	
 	/** \brief Panel for remote client or nullptr. */
-	projPanelRemoteClient::Ref GetRemoteClientPanel(projRemoteClient *client) const;
+	projPanelRemoteClient *GetRemoteClientPanel(projRemoteClient *client) const;
 	/*@}*/
 	
 	

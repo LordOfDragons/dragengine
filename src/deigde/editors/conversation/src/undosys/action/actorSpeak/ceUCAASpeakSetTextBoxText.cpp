@@ -44,27 +44,18 @@
 ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const decUnicodeString &newText){
 	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldText = actorSpeak->GetTextBoxText();
 	pNewText = newText;
 	
 	SetShortInfo("Actor Speak Set Text Box Text");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxText::~ceUCAASpeakSetTextBoxText(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

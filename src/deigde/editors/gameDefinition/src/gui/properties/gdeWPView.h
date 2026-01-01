@@ -30,8 +30,8 @@
 #include <deigde/gui/properties/igdeWPSky.h>
 
 class gdeWindowProperties;
-class gdeWPViewListener;
-class gdeGameDefinition;
+#include "gdeWPViewListener.h"
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -39,10 +39,13 @@ class gdeGameDefinition;
  * \brief View property window.
  */
 class gdeWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPView> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPViewListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPViewListener::Ref pListener;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPCamera::Ref pWPCamera;
@@ -66,9 +69,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not present. */
+	/** \brief Set game definition or \em nullptr if not present. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Update view. */

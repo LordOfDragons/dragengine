@@ -84,11 +84,8 @@ public:
 	/**
 	 * \brief Create named service.
 	 * \throw deeInvalidParam Named service not supported by any loaded service module.
-	 * 
-	 * Caller takes over reference. Use deService::Ref::New() or deService::Ref:TakeOver
-	 * to acquire the returned reference correctly.
 	 */
-	deService *CreateService(const char *name, const deServiceObject::Ref &data);
+	deService::Ref CreateService(const char *name, const deServiceObject::Ref &data);
 	
 	/**
 	 * \brief Queue request response event.

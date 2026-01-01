@@ -45,16 +45,12 @@
 ////////////////////////////
 
 gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
-igdeEditPropertyValue(helper),
-pGDProperty(NULL)
+igdeEditPropertyValue(helper)
 {
-	pGDProperty = new igdeGDProperty("Property");
+	pGDProperty = igdeGDProperty::Ref::New("Property");
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
-	if(pGDProperty){
-		pGDProperty->FreeReference();
-	}
 }
 
 
@@ -63,23 +59,21 @@ gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
 ///////////////
 
 void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &form, igdeUIHelper &helper,
-const char *label, const char *description, igdeEditPropertyValue::Ref &widget,
+const char *label, const char *description, gdeDefaultPropertyValue::Ref &widget,
 igdeEditPropertyValueListener *listener){
 	helper.Label(form, label, description, igdeLabel::eaLeft | igdeLabel::eaMiddle);
-	widget.TakeOver(new gdeDefaultPropertyValue(helper));
+	widget = gdeDefaultPropertyValue::Ref::New(helper);
 	if(listener){
 		widget->AddListener(listener);
-		listener->FreeReference();
 	}
 	form.AddChild(widget);
 }
 
 void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
-igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
-	widget.TakeOver(new gdeDefaultPropertyValue(helper));
+gdeDefaultPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
+	widget = gdeDefaultPropertyValue::Ref::New(helper);
 	if(listener){
 		widget->AddListener(listener);
-		listener->FreeReference();
 	}
 	parent.AddChild(widget);
 }

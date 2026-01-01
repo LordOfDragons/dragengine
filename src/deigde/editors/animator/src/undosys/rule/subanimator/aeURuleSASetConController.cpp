@@ -43,26 +43,17 @@
 aeURuleSASetConController::aeURuleSASetConController(aeRuleSubAnimator *rule, int target, aeController *newController){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pTarget = target;
-	pOldController = NULL;
-	pNewController = NULL;
+	pOldController = nullptr;
+	pNewController = nullptr;
 	
 	SetShortInfo("Sub-Animator: Set connection controller");
 	
-	pOldController = rule->GetControllerAt(target);
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
+	pOldController = rule->GetConnections().GetAt(target);
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
-	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSASetConController::~aeURuleSASetConController(){
@@ -88,7 +79,4 @@ void aeURuleSASetConController::Redo(){
 //////////////////////
 
 void aeURuleSASetConController::pCleanUp(){
-	if(pNewController) pNewController->FreeReference();
-	if(pOldController) pOldController->FreeReference();
-	if(pRule) pRule->FreeReference();
 }

@@ -52,21 +52,20 @@ gdeBaseMAOCSubObject(windowMain, "Cut Object Class World",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldCut::OnActionSubObject(
+igdeUndo::Ref gdeMAOCWorldCut::OnActionSubObject(
 gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
 	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCWorld){
-		return nullptr;
+		return {};
 	}
 	
 	gdeOCWorld * const world = gameDefinition.GetActiveOCWorld();
 	if(!world){
-		return nullptr;
+		return {};
 	}
 	
-	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::NewWith(*world))));
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(gdeOCWorld::Ref::New(*world)));
 	
-	return new gdeUOCRemoveWorld(&objectClass, world);
+	return gdeUOCRemoveWorld::Ref::New(&objectClass, world);
 }
 
 void gdeMAOCWorldCut::Update(){

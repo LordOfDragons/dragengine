@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACoordSystemRemove;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACoordSystemRemove.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,22 +36,25 @@ class ceConversationTopic;
  * \brief Undo action coordinate system remove conversation action set coordinate system id.
  */
 class ceUCACoordSysRemoveSetCoordSysID : public igdeUndo{
+public:
+	typedef deTObjectReference<ceUCACoordSysRemoveSetCoordSysID> Ref;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemRemove *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemRemove::Ref pAction;
 	decString pOldCoordSystemID;
 	decString pNewCoordSystemID;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceUCACoordSysRemoveSetCoordSysID> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID);
 	/** \brief Cleans up the undo object. */
+protected:
 	virtual ~ceUCACoordSysRemoveSetCoordSysID();
+public:
 	/*@}*/
 	
 public:

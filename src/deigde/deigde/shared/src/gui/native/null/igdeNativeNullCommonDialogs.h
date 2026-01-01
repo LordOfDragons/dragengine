@@ -26,11 +26,12 @@
 #define _IGDENATIVENULLCOMMONDIALOGS_H_
 
 #include "../../igdeCommonDialogs.h"
+#include "../../../gui/filedialog/igdeFilePattern.h"
 
-#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
-class igdeFilePatternList;
+class igdeWidget;
 
 class decString;
 class deException;
@@ -89,7 +90,7 @@ public:
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection);
+		const decTList<decString> &list, int &selection);
 	
 	
 	
@@ -101,7 +102,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request open file from user.
@@ -111,7 +112,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileOpen(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -121,7 +122,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -131,7 +132,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename);
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request directory from user.

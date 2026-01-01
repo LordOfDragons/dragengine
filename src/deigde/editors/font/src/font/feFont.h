@@ -25,22 +25,21 @@
 #ifndef _FEFONT_H_
 #define _FEFONT_H_
 
+#include "glyph/feFontGlyphSelection.h"
+#include "image/feFontImage.h"
+
 #include <deigde/editableentity/igdeEditableEntity.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
-
-#include "glyph/feFontGlyphList.h"
-#include "glyph/feFontGlyphSelection.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/font/deFont.h>
 
 class igdeGameDefinition;
 class igdeEnvironment;
 class feFontNotifier;
 class feUndoSystem;
-class feFontImage;
 class feFontGlyph;
 
 class deEngine;
-class deFont;
 class deLogger;
 
 
@@ -82,12 +81,12 @@ public:
 	
 	
 private:
-	deFont *pEngFont;
+	deFont::Ref pEngFont;
 	
-	feFontImage *pFontImage;
+	feFontImage::Ref pFontImage;
 	int pLineHeight, pBaseLine;
 	bool pColorFont;
-	feFontGlyphList pGlyphs;
+	feFontGlyph::List pGlyphs;
 	feFontGlyphSelection *pGlyphSelection;
 	
 	decString pBasePath;
@@ -100,7 +99,7 @@ private:
 	
 	bool pDirtyFont;
 	
-	decObjectSet pListeners;
+	decTObjectOrderedSet<feFontNotifier> pListeners;
 	
 	
 	
@@ -111,7 +110,9 @@ public:
 	feFont(igdeEnvironment *environment);
 	
 	/** \brief Clean up font. */
+protected:
 	virtual ~feFont();
+public:
 	/*@}*/
 	
 	
@@ -119,7 +120,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine font. */
-	inline deFont *GetEngineFont() const{ return pEngFont; }
+	inline const deFont::Ref &GetEngineFont() const{ return pEngFont; }
 	
 	/** \brief Height of a line of text. */
 	inline int GetLineHeight() const{ return pLineHeight; }
@@ -140,7 +141,7 @@ public:
 	void SetBaseLine(int baseLine);
 	
 	/** \brief Font image. */
-	inline feFontImage *GetFontImage() const{ return pFontImage; }
+	inline const feFontImage::Ref &GetFontImage() const{ return pFontImage; }
 	
 	
 	
@@ -178,26 +179,8 @@ public:
 	
 	/** \name Glyphs */
 	/*@{*/
-	/** \brief Number of glyphs. */
-	int GetGlyphCount() const;
-	
-	/** \brief Glyph at the given position. */
-	feFontGlyph *GetGlyphAt(int index) const;
-	
-	/** \brief Glyph with the given code or NULL if not found. */
-	feFontGlyph *GetGlyphWithCode(int code) const;
-	
-	/** \brief Index of the given glyph or -1 if not found. */
-	int IndexOfGlyph(feFontGlyph *glyph) const;
-	
-	/** \brief Index of the glyph with the given code or -1 if not found. */
-	int IndexOfGlyphWithCode(int code) const;
-	
-	/** \brief Glyph exists. */
-	bool HasGlyph(feFontGlyph *glyph) const;
-	
-	/** \brief Glyph with the given code exists. */
-	bool HasGlyphWithCode(int code) const;
+	/** \brief Glyphs. */
+	inline const feFontGlyph::List &GetGlyphs() const{ return pGlyphs; }
 	
 	/** \brief Add glyph. */
 	void AddGlyph(feFontGlyph *glyph);

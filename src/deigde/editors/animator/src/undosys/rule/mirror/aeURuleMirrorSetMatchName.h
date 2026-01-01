@@ -35,23 +35,23 @@
  * Undo set mirror set match name at.
  */
 class aeURuleMirrorSetMatchName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetMatchName> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
 	const int pIndex;
-	aeRuleMirror::cMatchName::Ref pOldValue;
-	aeRuleMirror::cMatchName::Ref pNewValue;
+	aeRuleMirror::MatchName::Ref pOldValue, pNewValue;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleMirrorSetMatchName> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetMatchName(aeRuleMirror *rule, int index, aeRuleMirror::cMatchName *newValue);
+	aeURuleMirrorSetMatchName(aeRuleMirror *rule, int index, aeRuleMirror::MatchName *newValue);
 	
 protected:
 	/** Clean up undo. */

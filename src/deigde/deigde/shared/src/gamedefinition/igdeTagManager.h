@@ -26,9 +26,7 @@
 #define _IGDETAGMANAGER_H_
 
 #include <dragengine/common/string/decStringList.h>
-
-class decStringSet;
-
+#include <dragengine/common/string/decStringSet.h>
 
 
 /**

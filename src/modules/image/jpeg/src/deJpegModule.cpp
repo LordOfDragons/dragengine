@@ -185,7 +185,7 @@ deBaseImageInfo *deJpegModule::InitLoadImage(decBaseFileReader &file){
 void deJpegModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
 	deJpegImageInfo &info = (deJpegImageInfo&)infos;
 	int componentCount = info.GetComponentCount();
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int bitCount = info.GetBitCount();
 	int height = info.GetHeight();
 	int width = info.GetWidth();
@@ -241,7 +241,7 @@ void deJpegModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 }
 
 void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	char * const imageData = (char*)image.GetData();
+	char * const imageData = reinterpret_cast<char*>(image.GetData());
 	const int componentCount = image.GetComponentCount();
 	const int bitCount = image.GetBitCount();
 	const int height = image.GetHeight();
@@ -345,6 +345,8 @@ void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deJpegModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deJpegModuleInternal> Ref;
+	
 	deJpegModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("JPEG");
 		SetDescription("Handles images saved in the JPEG format (lossy compression).");
@@ -367,7 +369,7 @@ public:
 	}
 };
 
-deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
-	return new deJpegModuleInternal(system);
+deTObjectReference<deInternalModule> deJpegRegisterInternalModule(deModuleSystem *system){
+	return deJpegModuleInternal::Ref::New(system);
 }
 #endif

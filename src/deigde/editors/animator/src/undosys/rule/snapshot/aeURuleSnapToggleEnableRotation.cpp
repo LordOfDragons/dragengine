@@ -44,12 +44,10 @@ aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation(aeRuleStateSnap
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule state snapshot toggle enable rotation");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleSnapToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

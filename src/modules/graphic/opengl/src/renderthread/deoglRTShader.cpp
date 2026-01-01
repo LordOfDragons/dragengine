@@ -184,7 +184,7 @@ void deoglRTShader::UpdateSSBOSkinTextures(){
 	pDirtySSBOSkinTextures = false;
 	
 	if(!pSSBOSkinTextures){
-		pSSBOSkinTextures.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etStream));
+		pSSBOSkinTextures = deoglSPBlockSSBO::Ref::New(pRenderThread, deoglSPBlockSSBO::etStream);
 		pSSBOSkinTextures->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 		pSSBOSkinTextures->SetParameterCount(1);
 		pSSBOSkinTextures->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1); // uvec4

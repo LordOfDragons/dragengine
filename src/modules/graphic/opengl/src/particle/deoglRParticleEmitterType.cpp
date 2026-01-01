@@ -63,8 +63,6 @@ pParameterSamples(NULL),
 
 pTextureSamples(NULL),
 
-pSkin(NULL),
-
 pEmitLight(false)
 {
 	LEAK_CHECK_CREATE(emitter.GetRenderThread(), ParticleEmitterType);
@@ -76,11 +74,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	if(pParameterSamples){
 		delete [] pParameterSamples;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	if(pTextureSamples){
 		delete pTextureSamples;
 	}
@@ -132,7 +125,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	const float * const samplesTranspBeam = pParameterSamples + escTransparencyBeam * 256;
 	const float * const samplesEmissiveBeam = pParameterSamples + escEmissivityBeam * 256;
 	
-	pPixelBufferSamples.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat3, 256, 4, 1));
+	pPixelBufferSamples = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 256, 4, 1);
 	deoglPixelBuffer::sFloat3 *pbdata = pPixelBufferSamples->GetPointerFloat3();
 	int i;
 	
@@ -270,16 +263,7 @@ void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void deoglRParticleEmitterType::CheckEmitLight(const deParticleEmitterType &type){
@@ -301,7 +285,7 @@ deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
 		return pPipelines;
 	}
 	
-	pPipelines.TakeOver(new deoglLightPipelinesParticle(*this));
+	pPipelines = deoglLightPipelinesParticle::Ref::New(*this);
 	
 	deoglBatchedShaderLoading batched(pEmitter.GetRenderThread(), 1000.0f, true);
 	try{

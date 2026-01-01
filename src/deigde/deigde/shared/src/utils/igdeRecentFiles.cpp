@@ -53,6 +53,8 @@ class igdeRecentFiles_ActionOpenFile : public igdeAction{
 	decString pFilename;
 	
 public:
+	typedef deTObjectReference<igdeRecentFiles_ActionOpenFile> Ref;
+	
 	igdeRecentFiles_ActionOpenFile(igdeRecentFiles &recentFiles, const char *filename) :
 	pRecentFiles(recentFiles), pFilename(filename){
 		/*
@@ -72,8 +74,8 @@ public:
 		SetDescription(decString("Load ") + filename);
 	}
 	
-	virtual void OnAction(){
-		igdeAction::Ref guard(this);
+	void OnAction() override{
+		const Ref guard(this);
 		pRecentFiles.OpenFile(pFilename);
 	}
 };
@@ -82,16 +84,18 @@ class igdeRecentFiles_ActionClear : public igdeAction{
 	igdeRecentFiles &pRecentFiles;
 	
 public:
+	typedef deTObjectReference<igdeRecentFiles_ActionClear> Ref;
+	
 	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("Clear List",
 	recentFiles.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"Clear List"), pRecentFiles(recentFiles){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pRecentFiles.RemoveAllFiles();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pRecentFiles.GetFiles().GetCount() > 0);
 	}
 };
@@ -107,7 +111,7 @@ public:
 
 igdeRecentFiles::igdeRecentFiles(igdeEnvironment &environment, bool unixPath, int size) :
 pEnvironment(environment),
-pEditorWindow(NULL),
+pEditorWindow(nullptr),
 pSize(0),
 pUnixPath(unixPath)
 {
@@ -193,7 +197,7 @@ void igdeRecentFiles::AddFile(const char *filename){
 	if(index != -1){
 		pFiles.RemoveFrom(index);
 	}
-	pFiles.InsertAt(filename, 0);
+	pFiles.Insert(filename, 0);
 	EnsureSize();
 	UpdateMenu();
 	FilesChanged();
@@ -286,11 +290,11 @@ void igdeRecentFiles::UpdateMenu(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		helper.MenuCommand(pMenu, new igdeRecentFiles_ActionOpenFile(*this, pFiles.GetAt(i)), true);
+		helper.MenuCommand(pMenu, igdeRecentFiles_ActionOpenFile::Ref::New(*this, pFiles.GetAt(i)));
 	}
 	
 	helper.MenuSeparator(pMenu);
-	helper.MenuCommand(pMenu, new igdeRecentFiles_ActionClear(*this), true);
+	helper.MenuCommand(pMenu, igdeRecentFiles_ActionClear::Ref::New(*this));
 }
 
 void igdeRecentFiles::FilesChanged(){

@@ -25,6 +25,9 @@
 #ifndef _SAEWPVIEW_H_
 #define _SAEWPVIEW_H_
 
+#include "saeWPViewListener.h"
+#include "../../sanimation/saeSAnimation.h"
+
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPSky.h>
@@ -32,8 +35,6 @@
 
 class saeWindowProperties;
 class saeGameDefinition;
-class saeWPViewListener;
-class saeSAnimation;
 
 
 
@@ -41,10 +42,13 @@ class saeSAnimation;
  * View property window.
  */
 class saeWPView : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<saeWPView> Ref;
+	
 private:
 	saeWindowProperties &pWindowProperties;
-	saeWPViewListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPViewListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeEditPath::Ref pEditDisplayModelPath;
 	igdeEditPath::Ref pEditDisplaySkinPath;
@@ -75,7 +79,7 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

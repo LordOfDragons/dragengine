@@ -25,10 +25,11 @@
 #ifndef _CECONVERSATIONFILE_H_
 #define _CECONVERSATIONFILE_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/string/decString.h>
+#include "../topic/ceConversationTopic.h"
 
-#include "../topic/ceConversationTopicList.h"
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 class ceConversation;
 
@@ -43,14 +44,14 @@ private:
 	
 	decString pID;
 	
-	ceConversationTopicList pTopics;
-	ceConversationTopic *pActiveTopic;
+	ceConversationTopic::List pTopics;
+	ceConversationTopic::Ref pActiveTopic;
 	
 	
 	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceConversationFile> Ref;
+	typedef decTObjectOrderedSet<ceConversationFile> List;
 
 
 	/** \name Constructors and Destructors */
@@ -62,17 +63,19 @@ public:
 	ceConversationFile(const ceConversationFile &file);
 	
 	/** \brief Clean up conversation file. */
+protected:
 	virtual ~ceConversationFile();
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent conversation or \em NULL if not set. */
+	/** \brief Parent conversation or \em nullptr if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set parent conversation or \em NULL if not set. */
+	/** \brief Set parent conversation or \em nullptr if not set. */
 	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Identifier. */
@@ -87,7 +90,7 @@ public:
 	/** \name Topics */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopicList() const{ return pTopics; }
+	inline const ceConversationTopic::List &GetTopics() const{ return pTopics; }
 	
 	/** \brief Add topic. */
 	void AddTopic(ceConversationTopic *topic);
@@ -98,10 +101,10 @@ public:
 	/** \brief Remove all topics. */
 	void RemoveAllTopics();
 	
-	/** \brief Active topic or \em NULL if none is active. */
-	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
+	/** \brief Active topic or \em nullptr if none is active. */
+	inline const ceConversationTopic::Ref &GetActiveTopic() const{ return pActiveTopic; }
 	
-	/** \brief Set active topic or \em NULL if none is active. */
+	/** \brief Set active topic or \em nullptr if none is active. */
 	void SetActiveTopic(ceConversationTopic *topic);
 	/*@}*/
 };

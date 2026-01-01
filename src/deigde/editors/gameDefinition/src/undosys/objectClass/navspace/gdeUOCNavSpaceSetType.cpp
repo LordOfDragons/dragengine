@@ -42,8 +42,7 @@
 
 gdeUOCNavSpaceSetType::gdeUOCNavSpaceSetType(gdeObjectClass *objectClass,
 gdeOCNavigationSpace *navspacer, deNavigationSpace::eSpaceTypes newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass || !navspacer){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navspacer;
-	navspacer->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetType::~gdeUOCNavSpaceSetType(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -45,6 +45,10 @@ class decShapeBox;
  * a visitor.
  */
 class debpShapeBox : public debpShape{
+public:
+	typedef deTObjectReference<debpShapeBox> Ref;
+	
+	
 private:
 	decShapeBox *pSBox;
 	debpDCollisionBox pCBox;

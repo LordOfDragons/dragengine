@@ -61,7 +61,7 @@ igdeDialogBrowserSky::~igdeDialogBrowserSky(){
 
 igdeGDSky *igdeDialogBrowserSky::GetSelectedSky() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDSky*)selection->GetData() : NULL;
+	return selection ? (igdeGDSky*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
@@ -79,7 +79,7 @@ void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
 
 
 bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title){
-	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::NewWith(
+	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::New(
 		owner->GetEnvironment(), title));
 	if(sky){
 		dialog->SetSelectedSky(sky);
@@ -96,7 +96,9 @@ bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const c
 
 bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, decString &sky, const char *title){
 	const igdeGDSkyManager &skyManager = *owner->GetGameDefinition()->GetSkyManager();
-	igdeGDSky *gdSky = skyManager.GetSkyList().GetWithPath(sky);
+	igdeGDSky *gdSky = skyManager.GetSkyList().FindOrDefault([&](const igdeGDSky &s){
+		return s.GetPath() == sky;
+	});
 	if(SelectSky(owner, gdSky, title)){
 		sky = gdSky->GetPath();
 		return true;

@@ -25,9 +25,11 @@
 #ifndef _IGDETRIGGEREXPRESSION_H_
 #define _IGDETRIGGEREXPRESSION_H_
 
+#include "igdeTriggerExpressionComponent.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
-class igdeTriggerExpressionComponent;
 class igdeTriggerTargetList;
 class igdeTriggerListener;
 
@@ -42,9 +44,12 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTriggerExpression> Ref;
 	
+	/** \brief List of trigger expressions. */
+	typedef decTObjectOrderedSet<igdeTriggerExpression> List;
+	
 	
 private:
-	igdeTriggerExpressionComponent *pRootComponent;
+	igdeTriggerExpressionComponent::Ref pRootComponent;
 	bool pResult;
 	bool pEnabled;
 	
@@ -56,24 +61,27 @@ public:
 	/** \brief Create trigger expression. */
 	igdeTriggerExpression();
 	
+protected:
 	/** \brief Clean up trigger expression. */
-	virtual ~igdeTriggerExpression();
+	~igdeTriggerExpression() override;
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Root expression component or null if not set. */
-	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
+	/** \brief Root expression component or nullptr if not set. */
+	inline const igdeTriggerExpressionComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
-	/** \brief Set root expression component or null if not set. */
+	/** \brief Set root expression component or nullptr if not set. */
 	void SetRootComponent(igdeTriggerExpressionComponent *component);
 	
-	/** \brief Determines if the expression is empty hence root component is null. */
+	/** \brief Determines if the expression is empty hence root component is nullptr. */
 	bool IsEmpty() const;
 	
-	/** \brief Determines if the expression is not empty hence root component is not null. */
+	/** \brief Determines if the expression is not empty hence root component is not nullptr. */
 	bool IsNotEmpty() const;
 	
 	/** \brief Result of the expression. */

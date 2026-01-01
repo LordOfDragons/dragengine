@@ -137,7 +137,7 @@ void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 		meHeightTerrainSector * const htsector = pWorld.GetHeightTerrain()->
 			GetSectorWith(info->GetHTSector()->GetSector());
 		
-		if(htsector->GetTextureCount() == 0){
+		if(htsector->GetTextures().IsEmpty()){
 			return;
 		}
 		

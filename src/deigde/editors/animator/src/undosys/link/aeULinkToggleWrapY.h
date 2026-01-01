@@ -28,20 +28,21 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 /**
  * Undo action toggle wrap Y.
  */
 class aeULinkToggleWrapY : public igdeUndo{
-private:
-	aeLink *pLink;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeULinkToggleWrapY> Ref;
 	
+	
+private:
+	aeLink::Ref pLink;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

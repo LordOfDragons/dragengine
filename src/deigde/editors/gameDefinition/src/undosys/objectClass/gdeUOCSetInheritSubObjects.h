@@ -38,8 +38,12 @@
  * \brief Undo action object class set inherit sub objects.
  */
 class gdeUOCSetInheritSubObjects : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCSetInheritSubObjects> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	int pOldValue;
 	int pNewValue;
@@ -47,9 +51,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCSetInheritSubObjects> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

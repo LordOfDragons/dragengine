@@ -55,7 +55,7 @@ gdeMACategoryAdd(windowMain, "Add Skin Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategorySkinAdd::OnAction(gdeGameDefinition &gameDefinition){
-	return AddCategory(gameDefinition, NULL,
+igdeUndo::Ref gdeMACategorySkinAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, nullptr,
 		gameDefinition.GetCategoriesSkin(), gdeUCategoryBase::ectSkin);
 }

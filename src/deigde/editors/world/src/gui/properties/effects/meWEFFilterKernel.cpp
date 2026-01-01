@@ -31,9 +31,9 @@
 #include "meWTFilterKernel.h"
 #include "../meWindowMain.h"
 #include "../../worldedit.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/resources/effect/deEffectFilterKernel.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/effect/deEffectFilterKernel.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -75,7 +75,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	// prepare
 	pWndEffects = windowEffects;
 	pEffectFilterKernel = effectFilterKernel;
-	pTemplates = NULL;
+	pTemplates = nullptr;
 	pTemplateCount = 0;
 	pTemplateSize = 0;
 	
@@ -130,8 +130,8 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	pCBTemplates = new FXComboBox(frameLine, 10, this, ID_CBTEMPLATES, FRAME_SUNKEN | LAYOUT_FILL_X);
 	pCBTemplates->setEditable(true);
 	pCBTemplates->setNumVisible(6);
- 	new FXButton(frameLine, "Apply", NULL, this, ID_BTNAPPLYTEMPLATE, BUTTON_NORMAL);
- 	new FXButton(frameLine, "Save", NULL, this, ID_BTNSAVETEMPLATE, BUTTON_NORMAL);
+ 	new FXButton(frameLine, "Apply", nullptr, this, ID_BTNAPPLYTEMPLATE, BUTTON_NORMAL);
+ 	new FXButton(frameLine, "Save", nullptr, this, ID_BTNSAVETEMPLATE, BUTTON_NORMAL);
 	for(i=0; i<pTemplateCount; i++){
 		pCBTemplates->appendItem(pTemplates[i]->GetName(), pTemplates[i]);
 	}
@@ -197,10 +197,7 @@ void meWEFFilterKernel::AddTemplate(meWTFilterKernel *aTemplate){
 	
 	if(pTemplateCount == pTemplateSize){
 		int i, newSize = pTemplateCount * 3 / 2 + 1;
-		meWTFilterKernel **newArray = new meWTFilterKernel*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		
-		if(pTemplates){
+		meWTFilterKernel **newArray = new meWTFilterKernel*[newSize]		if(pTemplates){
 			for(i=0; i<pTemplateCount; i++) newArray[i] = pTemplates[i];
 			delete [] pTemplates;
 		}
@@ -219,7 +216,7 @@ void meWEFFilterKernel::AddTemplate(meWTFilterKernel *aTemplate){
 ///////////
 
 long meWEFFilterKernel::onEditRowsCommand(FXObject *sender, FXSelector selector, void *data){
-	int rows = (int)strtol(pEditRows->getText().text(), NULL, 10);
+	int rows = (int)strtol(pEditRows->getText().text(), nullptr, 10);
 	int adjustedRows;
 	
 	if(rows < 1){
@@ -245,7 +242,7 @@ long meWEFFilterKernel::onEditRowsCommand(FXObject *sender, FXSelector selector,
 }
 
 long meWEFFilterKernel::onEditColsCommand(FXObject *sender, FXSelector selector, void *data){
-	int cols = (int)strtol(pEditCols->getText().text(), NULL, 10);
+	int cols = (int)strtol(pEditCols->getText().text(), nullptr, 10);
 	int adjustedCols;
 	
 	if(cols < 1){
@@ -277,7 +274,7 @@ long meWEFFilterKernel::onTableKernelChanged(FXObject *sender, FXSelector select
 	if(row == -1 || col == -1) return 1;
 	
 	pEffectFilterKernel->SetKernelValueAt(row, col,
-		strtof(pTblKernel->getItemText(row, col).text(), NULL));
+		strtof(pTblKernel->getItemText(row, col).text(), nullptr));
 	pWndEffects->GetWindowMain()->UpdateWindows(meWindowMain::eumAllViews);
 	
 	UpdateFilterKernel();
@@ -347,21 +344,15 @@ long meWEFFilterKernel::onBtnSaveTemplateCommand(FXObject *sender, FXSelector se
 //////////////////////
 
 void meWEFFilterKernel::pAddTemplates(){
-	meWTFilterKernel *aTemplate = NULL;
+	meWTFilterKernel *aTemplate = nullptr;
 	
 	try{
 		// Identity
-		aTemplate = new meWTFilterKernel("Null Filter 3x3", 3, 3, 1.0f);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = new meWTFilterKernel("Null Filter 3x3", 3, 3, 1.0f)		AddTemplate(aTemplate);
+		aTemplate = nullptr;
 		
 		// Simple Blur
-		aTemplate = new meWTFilterKernel("Simple Blur 3x3", 3, 3, 1.0f);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		aTemplate->SetKernelValueAt(0, 0, 0.1f);
+		aTemplate = new meWTFilterKernel("Simple Blur 3x3", 3, 3, 1.0f)		aTemplate->SetKernelValueAt(0, 0, 0.1f);
 		aTemplate->SetKernelValueAt(1, 0, 0.1f);
 		aTemplate->SetKernelValueAt(2, 0, 0.1f);
 		aTemplate->SetKernelValueAt(0, 1, 0.1f);
@@ -372,13 +363,10 @@ void meWEFFilterKernel::pAddTemplates(){
 		aTemplate->SetKernelValueAt(2, 2, 0.1f);
 		
 		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = nullptr;
 		
 		// Edge detection
-		aTemplate = new meWTFilterKernel("2 Way Edge Detection 3x3", 3, 3, 1.0f);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		aTemplate->SetKernelValueAt(0, 0, 0.0f);
+		aTemplate = new meWTFilterKernel("2 Way Edge Detection 3x3", 3, 3, 1.0f)		aTemplate->SetKernelValueAt(0, 0, 0.0f);
 		aTemplate->SetKernelValueAt(1, 0, -1.0f);
 		aTemplate->SetKernelValueAt(2, 0, 0.0f);
 		aTemplate->SetKernelValueAt(0, 1, -1.0f);
@@ -389,13 +377,10 @@ void meWEFFilterKernel::pAddTemplates(){
 		aTemplate->SetKernelValueAt(2, 2, 0.0f);
 		
 		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = nullptr;
 		
 		// Edge detection
-		aTemplate = new meWTFilterKernel("3 Way Edge Detection 3x3", 3, 3, 1.0f);
-		if(!aTemplate) DETHROW(deeOutOfMemory);
-		
-		aTemplate->SetKernelValueAt(0, 0, -1.0f);
+		aTemplate = new meWTFilterKernel("3 Way Edge Detection 3x3", 3, 3, 1.0f)		aTemplate->SetKernelValueAt(0, 0, -1.0f);
 		aTemplate->SetKernelValueAt(1, 0, -1.0f);
 		aTemplate->SetKernelValueAt(2, 0, -1.0f);
 		aTemplate->SetKernelValueAt(0, 1, -1.0f);
@@ -406,7 +391,7 @@ void meWEFFilterKernel::pAddTemplates(){
 		aTemplate->SetKernelValueAt(2, 2, -1.0f);
 		
 		AddTemplate(aTemplate);
-		aTemplate = NULL;
+		aTemplate = nullptr;
 		
 	}catch(const deException &){
 		if(aTemplate) delete aTemplate;

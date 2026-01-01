@@ -25,22 +25,22 @@
 #ifndef _DEOGLRCOMPONENTCOMPONENT_H_
 #define _DEOGLRCOMPONENTCOMPONENT_H_
 
+#include "../skin/deoglRSkin.h"
+#include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 
-#include "../skin/deoglSkinTexture.h"
-#include "../skin/pipeline/deoglSkinTexturePipelines.h"
-
 class deoglRComponent;
-class deoglRDynamicSkin;
-class deoglRSkin;
 class deoglShaderParameterBlock;
 class deoglShaderProgram;
-class deoglSharedSPBElement;
 class deoglSharedSPBRTIGroup;
 class deoglSharedVideoPlayerList;
 class deoglSkinShader;
-class deoglSkinState;
 class deoglSkinTexture;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
@@ -58,21 +58,21 @@ private:
 	
 	decTexMatrix2 pTransform;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
-	deoglSkinState *pSkinState;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
+	deoglSkinState::Ref pSkinState;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglSkinState *pUseSkinState;
-	deoglRDynamicSkin *pUseDynamicSkin;
+	deoglSkinState::Ref pUseSkinState;
+	deoglRDynamicSkin::Ref pUseDynamicSkin;
 	bool pUseDoubleSided;
 	bool pUseDecal;
 	bool pIsRendered;
 	int pRenderTaskFilters;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
 	decObjectList pSharedSPBRTIGroupShadow;
 	
@@ -131,25 +131,25 @@ public:
 	
 	
 	/** Skin or NULL if there is none. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if there is none. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or NULL if there is none. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * Set skin state or NULL if there is none.
+	 * Set Drop state.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState(deoglSkinState *skinState);
+	void DropSkinState();
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -158,7 +158,7 @@ public:
 	void UpdateSkinState(deoglComponent &component);
 	
 	/** Skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	
 	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
@@ -167,10 +167,10 @@ public:
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	/** Skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	inline const deoglSkinState::Ref &GetUseSkinState() const{ return pUseSkinState; }
 	
 	/** Dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	
 	/** Texture to use is double sided. */
 	inline bool GetUseDoubleSided() const{ return pUseDoubleSided; }
@@ -196,7 +196,7 @@ public:
 	void PrepareParamBlocks();
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup(int lodLevel) const;
@@ -354,6 +354,7 @@ private:
 	void pUpdateIsRendered();
 	void pUpdateRenderTaskFilters();
 	int pShadowCombineCount(int lodLevel) const;
+	void pSetSkinState(deoglSkinState *skinState);
 };
 
 #endif

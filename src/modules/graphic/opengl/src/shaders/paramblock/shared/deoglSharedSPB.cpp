@@ -43,7 +43,7 @@
 
 deoglSharedSPB::deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock) :
 pParameterBlock(parameterBlock),
-pElements(NULL),
+pElements(nullptr),
 pSize(parameterBlock->GetElementCount()),
 pCount(0)
 {
@@ -68,9 +68,9 @@ deoglSharedSPBElement *deoglSharedSPB::GetElementAt(int index) const{
 	return pElements[index];
 }
 
-deoglSharedSPBElement *deoglSharedSPB::AddElement(){
+deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
 	if(pCount == pSize){
-		return NULL;
+		return {};
 	}
 	
 	int i;
@@ -79,9 +79,10 @@ deoglSharedSPBElement *deoglSharedSPB::AddElement(){
 			continue;
 		}
 		
-		pElements[i] = new deoglSharedSPBElement(*this, i);
+		const deoglSharedSPBElement::Ref element(deoglSharedSPBElement::Ref::New(*this, i));
+		pElements[i] = element;
 		pCount++;
-		return pElements[i];
+		return element;
 	}
 	
 	DETHROW(deeInvalidParam);
@@ -92,6 +93,6 @@ void deoglSharedSPB::RemoveElement(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pElements[index] = NULL;
+	pElements[index] = nullptr;
 	pCount--;
 }

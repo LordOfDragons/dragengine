@@ -30,6 +30,11 @@
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
+#include "../skin/deoglRSkin.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -39,14 +44,9 @@
 class deoglWorldOctree;
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSkin;
-class deoglSkinState;
-class deoglRDynamicSkin;
-class deoglEnvironmentMap;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglShaderParameterBlock;
-class deoglSharedSPBElement;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 class deoglRenderPlanMasked;
@@ -59,11 +59,17 @@ class deBillboard;
  * Render billboard.
  */
 class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRBillboard> Ref;
+	
+	
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldComputeElement{
+	class WorldComputeElement : public deoglWorldComputeElement{
 		deoglRBillboard &pBillboard;
 	public:
+		typedef deTObjectReference<WorldComputeElement> Ref;
 		WorldComputeElement(deoglRBillboard &billboard);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
@@ -74,11 +80,11 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	
 	decDVector pPosition;
 	decVector pAxis;
@@ -90,7 +96,7 @@ private:
 	bool pSizeFixedToScreen;
 	bool pVisible;
 	
-	deoglSkinState *pSkinState;
+	deoglSkinState::Ref pSkinState;
 	deoglSkinRendered pSkinRendered;
 	int pSkyShadowSplitMask;
 	float pSortDistance;
@@ -98,13 +104,13 @@ private:
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
-	deoglEnvironmentMap *pRenderEnvMapFade;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMapFade;
 	float pRenderEnvMapFadePerTime;
 	float pRenderEnvMapFadeFactor;
 	bool pDirtyRenderEnvMap;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	deoglSharedSPBRTIGroup::Ref pSharedSPBRTIGroup;
 	
 	deoglTexUnitsConfig *pTUCDepth;
@@ -179,7 +185,7 @@ public:
 	
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
@@ -188,7 +194,7 @@ public:
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if not set. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -197,7 +203,7 @@ public:
 	void UpdateSkin(float elapsed);
 	
 	/** Skin state. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/** Init skin state states. */
 	void InitSkinStateStates();
@@ -222,7 +228,7 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	inline deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup() const{ return *pSharedSPBRTIGroup; }
@@ -452,13 +458,13 @@ public:
 	void SetWorldMarkedRemove(bool marked);
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);

@@ -59,7 +59,7 @@ igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(){}
 
 igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(igdeProgressBar &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme) :
-FXProgressBar(pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags(powner), 0, 0, 0, 0,
+FXProgressBar(pparent, nullptr, 0, layoutFlags.flags | ProgressBarFlags(powner), 0, 0, 0, 0,
 	ProgressBarPadLeft(guitheme), ProgressBarPadRight(guitheme),
 	ProgressBarPadTop(guitheme), ProgressBarPadBottom(guitheme)),
 pOwner(&powner)
@@ -153,19 +153,19 @@ igdeFont *igdeNativeFoxProgressBar::ProgressBarFont(const igdeProgressBar &powne
 	igdeFont::sConfiguration configuration;
 	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if(guitheme.HasProperty(igdeGuiThemePropertyNames::progressBarFontSizeAbsolute)){
+	if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::progressBarFontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::progressBarFontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::progressBarFontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::progressBarFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::progressBarFontSize, 1.0f);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSizeAbsolute)){
 		configuration.size = (float)guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
+	}else if(guitheme.GetProperties().Has(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
 			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}

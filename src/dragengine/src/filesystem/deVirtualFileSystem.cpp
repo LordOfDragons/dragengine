@@ -182,7 +182,7 @@ bool deVirtualFileSystem::CanDeleteFile(const decPath &path) const{
 	return false;
 }
 
-decBaseFileReader *deVirtualFileSystem::OpenFileForReading(const decPath &path) const{
+decBaseFileReader::Ref deVirtualFileSystem::OpenFileForReading(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
@@ -203,7 +203,7 @@ decBaseFileReader *deVirtualFileSystem::OpenFileForReading(const decPath &path) 
 	DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 }
 
-decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting(const decPath &path) const{
+decBaseFileWriter::Ref deVirtualFileSystem::OpenFileForWriting(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;

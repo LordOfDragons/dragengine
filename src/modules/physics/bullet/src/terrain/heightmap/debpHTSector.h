@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPHTSECTOR_H_
 #define _DEBPHTSECTOR_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include "../../debpBulletShape.h"
 
-// predefinitions
-class debpBulletShape;
+#include <dragengine/common/math/decMath.h>
+
 class debpHeightTerrain;
 class debpHeightTerrainShape;
 class debpPhysicsBody;
@@ -77,7 +75,7 @@ private:
 	
 	debpPhysicsBody *pPhyBody;
 	debpHeightTerrainShape *pShape;
-	debpBulletShape *pBulletShape;
+	debpBulletShape::Ref pBulletShape;
 	
 public:
 	/** @name Constructors and Destructors */

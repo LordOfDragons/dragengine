@@ -24,7 +24,6 @@
 
 #include <stdlib.h>
 
-#include "meCDOObject.h"
 #include "meClipboardDataObject.h"
 #include "../world/meWorld.h"
 #include "../world/object/meObject.h"
@@ -45,79 +44,26 @@ const char * const meClipboardDataObject::TYPE_NAME = "object";
 meClipboardDataObject::meClipboardDataObject(const meWorld &world) :
 igdeClipboardData(TYPE_NAME)
 {
-	const meObjectList &list = world.GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
+	const meObject::List &list = world.GetSelectionObject().GetSelected();
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if(count == 0){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
-	int i;
-	
-	try{
-		pObjects = new meCDOObject*[count];
-		while(pObjectCount < count){
-			meObject &object = *list.GetAt(pObjectCount);
-			pObjects[pObjectCount] = new meCDOObject(object);
+	list.Visit([&](const meObject &object){
+		const meCDOObject::Ref cdo(meCDOObject::Ref::New(object));
+		
+		if(object.GetAttachedTo()){
+			// if the object is attached to another copied object store the relative index
+			cdo->SetAttachToIndex(list.IndexOf(object.GetAttachedTo()));
 			
-			if(object.GetAttachedTo()){
-				// if the object is attached to another copied object store the relative index
-				for(i=0; i<count; i++){
-					if(list.GetAt(i) == object.GetAttachedTo()){
-						pObjects[pObjectCount]->SetAttachToIndex(i);
-						break;
-					}
-				}
-				
-				// otherwise the object is attached to a not copied object.
-				// in this case store the hex-string id of the object
-				if(pObjects[pObjectCount]->GetAttachToIndex() == -1){
-					pObjects[pObjectCount]->SetAttachToID(
-						object.GetAttachedTo()->GetID().ToHexString());
-				}
+			// otherwise the object is attached to a not copied object.
+			// in this case store the hex-string id of the object
+			if(cdo->GetAttachToIndex() == -1){
+				cdo->SetAttachToID(object.GetAttachedTo()->GetID().ToHexString());
 			}
-			
-			pObjectCount++;
 		}
 		
-	}catch(const deException &){
-		pCleanUp();
-		throw;
-	}
+		pObjects.Add(cdo);
+	});
 }
 
 meClipboardDataObject::~meClipboardDataObject(){
-	pCleanUp();
-}
-
-
-
-// Management
-///////////////
-
-meCDOObject *meClipboardDataObject::GetObjectAt(int index) const{
-	if(index < 0 || index >= pObjectCount){
-		DETHROW(deeOutOfBoundary);
-	}
-	return pObjects[index];
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meClipboardDataObject::pCleanUp(){
-	if(pObjects){
-		while(pObjectCount > 0){
-			if(pObjects[pObjectCount - 1]){
-				delete pObjects[pObjectCount - 1];
-			}
-			pObjectCount--;
-		}
-		delete [] pObjects;
-	}
 }

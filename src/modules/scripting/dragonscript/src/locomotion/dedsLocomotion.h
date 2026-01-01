@@ -27,13 +27,13 @@
 
 #include "dedsLControllerMapping.h"
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/smooth/decSmoothVector.h>
 #include <dragengine/common/math/smooth/decSmoothFloat.h>
-#include <dragengine/deObject.h>
+#include <dragengine/resources/collider/deColliderCollisionTest.h>
+#include <dragengine/resources/collider/deCollider.h>
 
-class deColliderCollisionTest;
-class deCollider;
 class deAnimatorInstance;
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -43,11 +43,11 @@ class decBaseFileWriter;
  * \brief Locomotion implementation similar to animator editor.
  */
 class dedsLocomotion : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<dedsLocomotion> Ref;
-
-
-public:
+	
+	
 	/** \brief Tilt modes. */
 	enum eTiltModes{
 		/** \brief No tilt calculation. */
@@ -121,11 +121,11 @@ private:
 	
 	bool pCanTilt;
 	eTiltModes pTiltMode;
-	deColliderCollisionTest *pCCTTiltSingle;
-	deColliderCollisionTest *pCCTTiltFrontLeft;
-	deColliderCollisionTest *pCCTTiltFrontRight;
-	deColliderCollisionTest *pCCTTiltBackLeft;
-	deColliderCollisionTest *pCCTTiltBackRight;
+	deColliderCollisionTest::Ref pCCTTiltSingle;
+	deColliderCollisionTest::Ref pCCTTiltFrontLeft;
+	deColliderCollisionTest::Ref pCCTTiltFrontRight;
+	deColliderCollisionTest::Ref pCCTTiltBackLeft;
+	deColliderCollisionTest::Ref pCCTTiltBackRight;
 	
 	float pLimitTiltUp;
 	float pLimitTiltDown;
@@ -141,7 +141,7 @@ private:
 	int pControllerMappingCount;
 	int pControllerMappingSize;
 	
-	deCollider *pAICollider;
+	deCollider::Ref pAICollider;
 	bool pUpdateAIColliderAngularVelocity;
 	
 public:
@@ -150,10 +150,12 @@ public:
 	/** \brief Create a new locomotion. */
 	dedsLocomotion();
 	
+protected:
 	/** \brief Clean up the locomotion. */
-	virtual ~dedsLocomotion();
+	~dedsLocomotion() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actor can turn. */
@@ -393,31 +395,31 @@ public:
 	void SetTiltMode(eTiltModes mode);
 	
 	/** \brief Single collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltSingle() const{ return pCCTTiltSingle; }
+	inline const deColliderCollisionTest::Ref &GetCCTTiltSingle() const{ return pCCTTiltSingle; }
 	
 	/** \brief Set single collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltSingle(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front left collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltFrontLeft() const{ return pCCTTiltFrontLeft; }
+	inline const deColliderCollisionTest::Ref &GetCCTTiltFrontLeft() const{ return pCCTTiltFrontLeft; }
 	
 	/** \brief Set front left collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front right collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltFrontRight() const{ return pCCTTiltFrontRight; }
+	inline const deColliderCollisionTest::Ref &GetCCTTiltFrontRight() const{ return pCCTTiltFrontRight; }
 	
 	/** \brief Set front right collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back left collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltBackLeft() const{ return pCCTTiltBackLeft; }
+	inline const deColliderCollisionTest::Ref &GetCCTTiltBackLeft() const{ return pCCTTiltBackLeft; }
 	
 	/** \brief Set back left collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back right collider collision test for tilt calculation or NULL if not set. */
-	inline deColliderCollisionTest *GetCCTTiltBackRight() const{ return pCCTTiltBackRight; }
+	inline const deColliderCollisionTest::Ref &GetCCTTiltBackRight() const{ return pCCTTiltBackRight; }
 	
 	/** \brief Set back right collider collision test for tilt calculation or NULL if not set. */
 	void SetCCTTiltBackRight(deColliderCollisionTest *collisionTest);
@@ -501,7 +503,7 @@ public:
 	
 	
 	/** \brief AI Collider to update or NULL if not used. */
-	inline deCollider *GetAICollider() const{ return pAICollider; }
+	inline const deCollider::Ref &GetAICollider() const{ return pAICollider; }
 	
 	/** \brief Set AI Collider to update or NULL if not used. */
 	void SetAICollider(deCollider *collider);

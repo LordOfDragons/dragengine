@@ -35,6 +35,9 @@ class ceConversationAction;
  * \brief Base class for conditions.
  */
 class ceWPTTIMCondition : public ceWPTTreeItemModel{
+public:
+	typedef deTObjectReference<ceWPTTIMCondition> Ref;
+	
 private:
 	ceConversationAction *pAction;
 	ceConversationCondition::Ref pCondition;
@@ -67,7 +70,7 @@ public:
 	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
 	/** \brief Condition. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/** \brief Deep find condition. */
 	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) override;

@@ -38,13 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupNodesUp::seUPNGroupNodesUp(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+seUPNGroupNodesUp::seUPNGroupNodesUp(sePropertyNodeGroup *node,
+	const sePropertyNode::List &children) :
 seUPNGroupMoveNodes(node, children)
 {
 	SetShortInfo("Move nodes up");
 	
-	if(pCount > 0 && pChildren[pCount - 1].index == node->GetNodeCount() - 1){
-		pClearChildNodes(); // has no effect
+	if(pChildren.IsNotEmpty() && pChildren.Last()->index == node->GetNodes().GetCount() - 1){
+		pChildren.RemoveAll(); // has no effect
 	}
 }
 
@@ -57,15 +58,13 @@ seUPNGroupNodesUp::~seUPNGroupNodesUp(){
 ///////////////
 
 void seUPNGroupNodesUp::Undo(){
-	int i;
-	for(i=0; i<pCount; i++){
-		pNode->MoveNode(pChildren[i].node, pChildren[i].index);
-	}
+	pChildren.Visit([&](const cNode &child){
+		pNode->MoveNode(child.node, child.index);
+	});
 }
 
 void seUPNGroupNodesUp::Redo(){
-	int i;
-	for(i=pCount-1; i>=0; i--){
-		pNode->MoveNode(pChildren[i].node, pChildren[i].index + 1);
-	}
+	pChildren.VisitReverse([&](const cNode &child){
+		pNode->MoveNode(child.node, child.index + 1);
+	});
 }

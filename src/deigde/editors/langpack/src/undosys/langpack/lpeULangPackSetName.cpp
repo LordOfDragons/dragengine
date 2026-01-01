@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackSetName::lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName) :
-pLangPack(NULL),
+
 pNewName(newName)
 {
 	if(!langpack){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = langpack->GetName();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetName::~lpeULangPackSetName(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

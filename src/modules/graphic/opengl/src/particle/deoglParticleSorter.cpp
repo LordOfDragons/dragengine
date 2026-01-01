@@ -91,7 +91,6 @@ void deoglParticleSorter::AddParticle(deoglRParticleEmitterInstance *instance, i
 	if(pParticleCount == pParticleSize){
 		int newSize = pParticleSize + 10;
 		sParticle **newArray = new sParticle*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pParticles){
 			memcpy(newArray, pParticles, sizeof(sParticle*) * pParticleSize);
 			delete [] pParticles;
@@ -99,7 +98,6 @@ void deoglParticleSorter::AddParticle(deoglRParticleEmitterInstance *instance, i
 		pParticles = newArray;
 		for(; pParticleSize<newSize; pParticleSize++){
 			pParticles[pParticleSize] = new sParticle;
-			if(!pParticles[pParticleSize]) DETHROW(deeOutOfMemory);
 		}
 	}
 	

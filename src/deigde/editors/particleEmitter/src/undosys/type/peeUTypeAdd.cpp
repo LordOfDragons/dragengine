@@ -45,25 +45,16 @@ peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitter = NULL;
-	pType = NULL;
+	pEmitter = nullptr;
+	pType = nullptr;
 	
 	SetShortInfo("Add Type");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeAdd::~peeUTypeAdd(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

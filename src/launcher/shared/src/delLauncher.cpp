@@ -60,7 +60,7 @@
 #ifdef OS_ANDROID
 delLauncher::delLauncher(const sConfig &config) :
 pConfig(config),
-pLoggerHistory(delLoggerHistory::Ref::NewWith()),
+pLoggerHistory(delLoggerHistory::Ref::New()),
 pLogSource(config.loggerSource),
 pEngine(*this, config.engineLogFileTitle),
 pGameManager(*this),
@@ -79,12 +79,12 @@ pPatchManager(*this)
 	DEASSERT_FALSE(config.osConfig.pathEngine.IsEmpty())
 	
 	try{
-		pLogger.TakeOver(new deLoggerChain);
-		pLogger->AddLogger(deLoggerConsole::Ref::NewWith());
+		pLogger = deLoggerChain::Ref::New();
+		pLogger->AddLogger(deLoggerConsole::Ref::New());
 		pLogger->AddLogger(pLoggerHistory);
 		
 		const delEngineInstanceDirect::Factory::Ref factory(
-			delEngineInstanceDirect::Factory::Ref::NewWith());
+			delEngineInstanceDirect::Factory::Ref::New());
 		factory->SetConfig(config.osConfig);
 		pEngineInstanceFactory = factory;
 		
@@ -99,16 +99,16 @@ pPatchManager(*this)
 
 #else
 delLauncher::delLauncher(const char *loggerSource, const char *engineLogFileTitle) :
-pLoggerHistory(delLoggerHistory::Ref::NewWith()),
+pLoggerHistory(delLoggerHistory::Ref::New()),
 pLogSource(loggerSource),
 pEngine(*this, engineLogFileTitle),
 pGameManager(*this),
 pPatchManager(*this),
-pEngineInstanceFactory(delEngineInstance::Factory::Ref::New(new delEngineInstanceThreaded::Factory))
+pEngineInstanceFactory(delEngineInstanceThreaded::Factory::Ref::New())
 {
 	try{
-		pLogger.TakeOver(new deLoggerChain);
-		pLogger->AddLogger(deLoggerConsoleColor::Ref::NewWith());
+		pLogger = deLoggerChain::Ref::New();
+		pLogger->AddLogger(deLoggerConsoleColor::Ref::New());
 		pLogger->AddLogger(pLoggerHistory);
 		
 		pLocatePath();
@@ -137,8 +137,8 @@ void delLauncher::AddFileLogger(const char *filetitle){
 	decString filename;
 	filename.Format("/logs/%s.log", filetitle);
 	
-	pLogger->AddLogger(deLoggerFile::Ref::New(new deLoggerFile(decBaseFileWriter::Ref::New(
-		pVFS->OpenFileForWriting(decPath::CreatePathUnix(filename))))));
+	pLogger->AddLogger(deLoggerFile::Ref::New(
+		pVFS->OpenFileForWriting(decPath::CreatePathUnix(filename))));
 }
 
 void delLauncher::SetEngineInstanceFactory(delEngineInstance::Factory *factory){
@@ -154,8 +154,8 @@ void delLauncher::Prepare(){
 	pLogger->LogInfoFormat(pLogSource, "Logs path: %s", pPathLogs.GetString());
 	
 	{
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		pEngineInstanceFactory->CreateEngineInstance(*this, pEngine.GetLogFile())));
+	const delEngineInstance::Ref instance(pEngineInstanceFactory->
+		CreateEngineInstance(*this, pEngine.GetLogFile()));
 	instance->StartEngine();
 	instance->LoadModules();
 	
@@ -183,16 +183,16 @@ void delLauncher::Prepare(){
 
 
 
-delGame * delLauncher::CreateGame(){
-	return new delGame(*this);
+delGame::Ref delLauncher::CreateGame(){
+	return delGame::Ref::New(*this);
 }
 
-delGameProfile *delLauncher::CreateGameProfile(const delGameProfile *copyFrom){
-	return copyFrom ? new delGameProfile(*copyFrom) : new delGameProfile;
+delGameProfile::Ref delLauncher::CreateGameProfile(const delGameProfile *copyFrom){
+	return copyFrom ? delGameProfile::Ref::New(*copyFrom) : delGameProfile::Ref::New();
 }
 
-delGameIcon *delLauncher::CreateGameIcon(int size, const char *path){
-	return new delGameIcon(size, path);
+delGameIcon::Ref delLauncher::CreateGameIcon(int size, const char *path){
+	return delGameIcon::Ref::New(size, path);
 }
 
 
@@ -395,7 +395,7 @@ void delLauncher::pLocatePath(){
 }
 
 void delLauncher::pInitVFS(){
-	pVFS.TakeOver(new deVirtualFileSystem);
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// add the found path to the virtual file system. this makes it easier to find the
 	// files later on without having to deal with file system specific quirks
@@ -404,12 +404,12 @@ void delLauncher::pInitVFS(){
 	// as we want to read the config files one by one and mapping both containers to
 	// the same path would shadow the system config files.
 	if(!pPathConfigSystem.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/system"),
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/config/system"),
 			decPath::CreatePathNative(pPathConfigSystem), true));
 	}
 	
 	if(!pPathConfigUser.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/user"),
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/config/user"),
 			decPath::CreatePathNative(pPathConfigUser), false));
 	}
 	
@@ -418,13 +418,13 @@ void delLauncher::pInitVFS(){
 	// the shares container is set to read-write as the launcher has to potentiall install
 	// new games or uninstall them
 	if(!pPathShares.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/data"),
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/data"),
 			decPath::CreatePathNative(pPathShares), false));
 	}
 	
 	// add the logs directory. this is read-write
 	if(!pPathLogs.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/logs"),
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/logs"),
 			decPath::CreatePathNative(pPathLogs), false));
 	}
 }

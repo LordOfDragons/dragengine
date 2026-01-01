@@ -146,11 +146,11 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 	fbxNode &nodeGeometry = *scene.FirstNodeNamed("Geometry");
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull("Pose");
 	
-	const fbxModel::Ref loadModel(fbxModel::Ref::NewWith(scene, nodeGeometry));
+	const fbxModel::Ref loadModel(fbxModel::Ref::New(scene, nodeGeometry));
 	
 	fbxRig::Ref loadRig;
 	if(nodePose){
-		loadRig.TakeOverWith(scene, nodePose);
+		loadRig = fbxRig::Ref::New(scene, nodePose);
 		//loadRig->DebugPrintStructure( *this, "LoadModel ", true );
 		loadModel->MatchClusters(loadRig);
 		loadModel->BuildWeights();
@@ -556,6 +556,8 @@ void fbxModelModule::pEnsureTextureIndex(deModel &model, int count){
 
 class fbxModelModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<fbxModelModuleInternal> Ref;
+	
 	fbxModelModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXModel");
 		SetDescription("Handles models in the binary FBX format.");
@@ -578,7 +580,7 @@ public:
 	}
 };
 
-deInternalModule *fbxModelRegisterInternalModule(deModuleSystem *system){
-	return new fbxModelModuleInternal(system);
+deTObjectReference<deInternalModule> fbxModelRegisterInternalModule(deModuleSystem *system){
+	return fbxModelModuleInternal::Ref::New(system);
 }
 #endif

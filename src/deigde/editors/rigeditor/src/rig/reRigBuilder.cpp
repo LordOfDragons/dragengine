@@ -63,9 +63,7 @@ reRigBuilder::~reRigBuilder(){
 
 void reRigBuilder::BuildRig(deRig *engRig){
 	if(!engRig) DETHROW(deeInvalidParam);
-	int s, shapeCount = pRig->GetShapeCount();
-	int b, boneCount = pRig->GetBoneCount();
-	decShape *shape = NULL;
+	decShape *shape = nullptr;
 	decStringList shapeProperties;
 	decShapeList shapes;
 	
@@ -76,9 +74,9 @@ void reRigBuilder::BuildRig(deRig *engRig){
 	// in pose mode cranks up the build rig. One solution would be to put
 	// all bones in rest mode for building the rig and then placing them
 	// back in pose mode afterwards.
-	for(b=0; b<boneCount; b++){
-		pRig->GetBoneAt(b)->SetPoseFromRest();
-	}
+	pRig->GetBones().Visit([&](reRigBone &bone){
+		bone.SetPoseFromRest();
+	});
 	
 	try{
 		// parameters
@@ -87,19 +85,20 @@ void reRigBuilder::BuildRig(deRig *engRig){
 		
 		// add bones. we have to respect the order of the bones to create
 		// a valid engine rig.
-		for(b=0; b<boneCount; b++){
-			BuildRigBone(engRig, pRig->GetBoneWithOrder(b));
+		const int boneCount = pRig->GetBones().GetCount();
+		int i;
+		for(i=0; i<boneCount; i++){
+			BuildRigBone(engRig, pRig->GetBoneWithOrder(i));
 		}
 		
 		// add shapes
-		for(s=0; s<shapeCount; s++){
-			shape = pRig->GetShapeAt(s)->CreateShape();
-			
+		pRig->GetShapes().Visit([&](reRigShape &rigShape){
+			shape = rigShape.CreateShape();
 			shapes.Add(shape);
-			shape = NULL;
+			shape = nullptr;
 			
-			shapeProperties.Add(pRig->GetShapeAt(s)->GetProperty());
-		}
+			shapeProperties.Add(rigShape.GetProperty());
+		});
 		
 		// root bone
 		if(pRig->GetRootBone()){
@@ -120,24 +119,19 @@ void reRigBuilder::BuildRig(deRig *engRig){
 void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 	if(!engRig || !rigBone) DETHROW(deeInvalidParam);
 	
-	int c, constraintCount = rigBone->GetConstraintCount();
-	int s, shapeCount = rigBone->GetShapeCount();
-	deRigConstraint *engConstraint = NULL;
-	deRigBone *engBone = NULL;
-	reRigBone *parentBone;
-	decShape *shape = NULL;
+	deRigConstraint *engConstraint = nullptr;
+	deRigBone *engBone = nullptr;
+	decShape *shape = nullptr;
 	decStringList shapeProperties;
 	decShapeList shapes;
 	
 	try{
 		// create engine bone
-		engBone = new deRigBone(rigBone->GetName().GetString());
-		if(!engBone) DETHROW(deeOutOfMemory);
+		engBone = new deRigBone(rigBone->GetName());
 		
 		// set options
-		parentBone = rigBone->GetParentBone();
-		if(parentBone){
-			engBone->SetParent(parentBone->GetOrder());
+		if(rigBone->GetParentBone()){
+			engBone->SetParent(rigBone->GetParentBone()->GetOrder());
 			
 		}else{
 			engBone->SetParent(-1);
@@ -158,23 +152,20 @@ void reRigBuilder::BuildRigBone(deRig *engRig, reRigBone *rigBone){
 		engBone->SetIKLockedZ(rigBone->GetIKLockedZ());
 		
 		// add shapes
-		for(s=0; s<shapeCount; s++){
-			shape = rigBone->GetShapeAt(s)->CreateShape();
-			
+		rigBone->GetShapes().Visit([&](reRigShape &rigShape){
+			shape = rigShape.CreateShape();
 			shapes.Add(shape);
-			shape = NULL;
+			shape = nullptr;
 			
-			shapeProperties.Add(rigBone->GetShapeAt(s)->GetProperty());
-		}
+			shapeProperties.Add(rigShape.GetProperty());
+		});
 		
 		// add constraints
-		for(c=0; c<constraintCount; c++){
-			engConstraint = rigBone->GetConstraintAt(c)->BuildEngineRigConstraint();
-			if(!engConstraint) DETHROW(deeOutOfMemory);
-			
+		rigBone->GetConstraints().Visit([&](reRigConstraint &rigConstraint){
+			engConstraint = rigConstraint.BuildEngineRigConstraint();
 			engBone->AddConstraint(engConstraint);
-			engConstraint = NULL;
-		}
+			engConstraint = nullptr;
+		});
 		
 		// add to the rig
 		engRig->AddBone(engBone);

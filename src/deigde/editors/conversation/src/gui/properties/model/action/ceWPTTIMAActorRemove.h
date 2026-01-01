@@ -34,6 +34,7 @@
  */
 class ceWPTTIMAActorRemove : public ceWPTTIMAction{
 public:
+	typedef deTObjectReference<ceWPTTIMAActorRemove> Ref;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
@@ -51,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorRemove *GetActionActorRemove() const{ return (ceCAActorRemove*)GetAction(); }
+	inline ceCAActorRemove *GetActionActorRemove() const{ return GetAction().DynamicCast<ceCAActorRemove>(); }
 	
 	/** \brief Update action. */
 	void Update() override;

@@ -42,7 +42,7 @@
 saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	if(!phoneme) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
 	SetShortInfo("Phoneme Set IPA");
 	
@@ -50,13 +50,9 @@ saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	pNewIPA = newIPA;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

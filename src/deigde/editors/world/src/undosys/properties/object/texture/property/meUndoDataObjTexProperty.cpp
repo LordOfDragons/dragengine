@@ -46,13 +46,9 @@ pPropertyExists(false)
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
-	texture->AddReference();
 }
 
 meUndoDataObjTexProperty::~meUndoDataObjTexProperty(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

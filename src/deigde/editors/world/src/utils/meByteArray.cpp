@@ -41,7 +41,7 @@
 meByteArray::meByteArray(int colons, int rows) :
 pColons(colons),
 pRows(rows),
-pValues(NULL)
+pValues(nullptr)
 {
 	if(colons < 1 || rows < 1) {
 		DETHROW(deeInvalidParam);
@@ -54,7 +54,7 @@ pValues(NULL)
 meByteArray::meByteArray(const meByteArray &array) :
 pColons(array.pColons),
 pRows(array.pRows),
-pValues(NULL)
+pValues(nullptr)
 {
 	pValues = new unsigned char[pColons * pRows];
 	*this = array;

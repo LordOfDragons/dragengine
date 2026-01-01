@@ -66,6 +66,7 @@ class cTextInterval : public igdeTextFieldListener {
 	ceWPAWait &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextInterval> Ref;
 	cTextInterval(ceWPAWait &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -81,7 +82,7 @@ public:
 		}
 		
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
-			ceUCAWaitSetInterval::Ref::NewWith(topic, action, interval));
+			ceUCAWaitSetInterval::Ref::New(topic, action, interval));
 	}
 };
 
@@ -101,7 +102,7 @@ ceWPAWait::ceWPAWait(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	CreateGUICommon(*this);
 	
 	helper.EditFloat(*this, "Interval:", "Interval in seconds to test condition",
-		pEditInterval, new cTextInterval(*this));
+		pEditInterval, cTextInterval::Ref::New(*this));
 }
 
 ceWPAWait::~ceWPAWait(){
@@ -119,7 +120,7 @@ ceCAWait *ceWPAWait::GetAction() const{
 		return (ceCAWait*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

@@ -28,7 +28,7 @@
 #include "../igdeTagManager.h"
 #include "../igdeGDCategory.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -46,8 +46,12 @@ class deLogger;
  * information useful searching for the right class to use.
  */
 class DE_DLL_EXPORT igdeGDClassManager{
+public:
+	typedef decTObjectOrderedSet<igdeGDClass> ClassesList;
+	
+	
 private:
-	decObjectOrderedSet pClasses;
+	ClassesList pClasses;
 	
 	igdeGDCategory::Ref pCategories;
 	
@@ -74,27 +78,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
-	/** \brief Number of game classes. */
-	int GetCount() const;
-	
-	/** \brief Determines if the given class exists. */
-	bool Has(igdeGDClass *gdClass) const;
+	/** \brief Classes list. */
+	inline const ClassesList &GetClasses() const{ return pClasses; }
 	
 	/** \brief Determines if a class with the given name exists. */
 	bool HasNamed(const char *name) const;
 	
-	/** \brief Index of the given class or -1 if not found. */
-	int IndexOf(igdeGDClass *gdClass) const;
-	
 	/** \brief Index of the class with the given name or -1 if not found. */
 	int IndexOfNamed(const char *name) const;
 	
-	/** \brief Game class at the given index. */
-	igdeGDClass *GetAt(int index) const;
-	
-	/** \brief Game class with the given name or NULL if not found. */
+	/** \brief Game class with the given name or nullptr if not found. */
 	igdeGDClass *GetNamed(const char *name) const;
 	
 	/** \brief Adds a new game class. */

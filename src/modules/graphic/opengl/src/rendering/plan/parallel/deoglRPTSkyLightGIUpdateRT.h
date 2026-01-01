@@ -36,6 +36,11 @@ class deoglRComponent;
  * Parallel task update render task.
  */
 class deoglRPTSkyLightGIUpdateRT : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoglRPTSkyLightGIUpdateRT> Ref;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	float pElapsedTime;

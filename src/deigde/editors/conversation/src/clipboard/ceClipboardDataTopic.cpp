@@ -42,29 +42,13 @@ const char * const ceClipboardDataTopic::TYPE_NAME = "topic";
 // Constructor, destructor
 ////////////////////////////
 
-ceClipboardDataTopic::ceClipboardDataTopic(const ceConversationTopicList &topics) :
+ceClipboardDataTopic::ceClipboardDataTopic(const ceConversationTopic::List &topics) :
 igdeClipboardData(TYPE_NAME)
 {
-	const int count = topics.GetCount();
-	ceConversationTopic *topic = NULL;
-	int i;
-	
-	try{
-		for(i=0; i<count; i++){
-			topic = new ceConversationTopic(*topics.GetAt(i));
-			pTopics.Add(topic);
-			topic->FreeReference();
-			topic = NULL;
-		}
-		
-	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
-		throw;
-	}
+	topics.Visit([&](const ceConversationTopic &t){
+		pTopics.Add(ceConversationTopic::Ref::New(t));
+	});
 }
 
 ceClipboardDataTopic::~ceClipboardDataTopic(){
-	pTopics.RemoveAll();
 }

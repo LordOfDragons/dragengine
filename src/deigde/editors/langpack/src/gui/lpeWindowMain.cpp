@@ -74,6 +74,24 @@
 
 
 
+// Recent files classes
+/////////////////////////
+
+lpeWindowMain::cRecentFilesRefLangPack::cRecentFilesRefLangPack(lpeWindowMain &windowMain) :
+igdeRecentFiles(windowMain.GetEnvironment(), true, 10),
+pWindowMain(windowMain){
+}
+
+void lpeWindowMain::cRecentFilesRefLangPack::OpenFile(const char *filename){
+	pWindowMain.SetReferenceLangPack(pWindowMain.GetLoadSaveSystem().LoadLangPack(filename));
+}
+
+void lpeWindowMain::cRecentFilesRefLangPack::FilesChanged(){
+	pWindowMain.GetConfiguration().SaveConfiguration();
+}
+
+
+
 // Class lpeWindowMain
 ////////////////////////
 
@@ -83,10 +101,8 @@
 lpeWindowMain::lpeWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
 pListener(new lpeWindowMainListener(*this)),
-pLoadSaveSystem(NULL),
-pWindowProperties(NULL),
-pViewLangPack(NULL),
-pLangPack(NULL)
+pLoadSaveSystem(nullptr),
+pRecentFilesRefLangPack(*this)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -104,14 +120,14 @@ pLangPack(NULL)
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild(splitted);
 	
-	pWindowProperties = new lpeWindowProperties(*this);
+	pWindowProperties = lpeWindowProperties::Ref::New(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewLangPack = new lpeViewLangPack(*this);
+	pViewLangPack = lpeViewLangPack::Ref::New(*this);
 	splitted->AddChild(pViewLangPack, igdeContainerSplitted::eaCenter);
 	
 	CreateNewLangPack();
@@ -122,15 +138,13 @@ lpeWindowMain::~lpeWindowMain(){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetLangPack(NULL);
+	SetLangPack(nullptr);
 	
 	if(pViewLangPack){
-		pViewLangPack->FreeReference();
-		pViewLangPack = NULL;
+		pViewLangPack = nullptr;
 	}
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-		pWindowProperties = NULL;
+		pWindowProperties = nullptr;
 	}
 	
 	if(pConfiguration){
@@ -138,10 +152,6 @@ lpeWindowMain::~lpeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -161,20 +171,18 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 		return;
 	}
 	
-	pWindowProperties->SetLangPack(NULL);
-	pViewLangPack->SetLangPack(NULL);
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pWindowProperties->SetLangPack(nullptr);
+	pViewLangPack->SetLangPack(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
 	
 	if(langpack){
-		langpack->AddReference();
 		langpack->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(langpack->GetUndoSystem());
@@ -186,20 +194,7 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 }
 
 void lpeWindowMain::CreateNewLangPack(){
-	lpeLangPack *langpack = NULL;
-	
-	try{
-		langpack = new lpeLangPack(&GetEnvironment());
-		
-		SetLangPack(langpack);
-		langpack->FreeReference();
-		
-	}catch(const deException &){
-		if(langpack){
-			langpack->FreeReference();
-		}
-		throw;
-	}
+	SetLangPack(lpeLangPack::Ref::New(&GetEnvironment()));
 }
 
 void lpeWindowMain::SaveLangPack(const char *filename){
@@ -237,11 +232,9 @@ void lpeWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void lpeWindowMain::LoadDocument(const char *filename){
-	lpeLangPack * const langpack = pLoadSaveSystem->LoadLangPack(filename);
+	const lpeLangPack::Ref langpack(pLoadSaveSystem->LoadLangPack(filename));
 	
 	SetLangPack(langpack);
-	langpack->FreeReference();
-	
 	langpack->SetFilePath(filename);
 	langpack->SetChanged(false);
 	langpack->SetSaved(true);
@@ -274,6 +267,10 @@ void lpeWindowMain::OnGameProjectChanged(){
 namespace{
 
 class cActionBase : public igdeAction{
+public:
+	typedef deTObjectReference<cActionBase> Ref;
+	
+private:
 protected:
 	lpeWindowMain &pWindow;
 	
@@ -293,11 +290,12 @@ public:
 
 class cActionLangPackNew : public cActionBase{
 public:
+	typedef deTObjectReference<cActionLangPackNew> Ref;
 	cActionLangPackNew(lpeWindowMain &window) : cActionBase(window, "New",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates new language pack",
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Language Pack",
 		"Creating new language pack discarding current one. Is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewLangPack();
@@ -308,11 +306,12 @@ public:
 
 class cActionLangPackOpen : public cActionBase{
 public:
+	typedef deTObjectReference<cActionLangPackOpen> Ref;
 	cActionLangPackOpen(lpeWindowMain &window) : cActionBase(window, "Open...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens language pack from file",
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		decString filename(pWindow.GetLangPack()->GetFilePath());
 		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -326,8 +325,6 @@ public:
 		
 		// replace language pack
 		pWindow.SetLangPack(langpack);
-		langpack->FreeReference();
-		
 		// store information
 		langpack->SetFilePath(filename);
 		langpack->SetChanged(false);
@@ -339,11 +336,12 @@ public:
 
 class cActionLangPackSaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionLangPackSaveAs> Ref;
 	cActionLangPackSaveAs(lpeWindowMain &window) : cActionBase(window, "Save As...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves the font under a differen file", deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetLangPack()){
 			return;
 		}
@@ -356,7 +354,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetLangPack());
 	}
 };
@@ -364,6 +362,7 @@ public:
 
 class cActionLangPackSave : public cActionLangPackSaveAs{
 public:
+	typedef deTObjectReference<cActionLangPackSave> Ref;
 	cActionLangPackSave(lpeWindowMain &window) : cActionLangPackSaveAs(window){
 		SetText("Save");
 		SetDescription("Saves the font to file");
@@ -397,11 +396,12 @@ public:
 
 class cActionLangPackOpenRef : public cActionBase{
 public:
+	typedef deTObjectReference<cActionLangPackOpenRef> Ref;
 	cActionLangPackOpenRef(lpeWindowMain &window) : cActionBase(window, "Open Reference...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Opens reference language pack from file", deInputEvent::ekcR){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		decString filename(pWindow.GetLangPack()->GetFilePath());
 		if(!igdeCommonDialogs::GetFileOpen(&pWindow, "Open Reference Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -410,8 +410,8 @@ public:
 		}
 		
 		pWindow.GetEditorModule().LogInfoFormat("Loading language pack %s", filename.GetString());
-		pWindow.SetReferenceLangPack(lpeLangPack::Ref::New(
-			pWindow.GetLoadSaveSystem().LoadLangPack(filename)));
+		pWindow.SetReferenceLangPack(pWindow.GetLoadSaveSystem().LoadLangPack(filename));
+		pWindow.GetRecentFilesRefLangPack().AddFile(filename);
 	}
 };
 
@@ -419,15 +419,16 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCut> Ref;
 	cActionEditCut(lpeWindowMain &window) : cActionBase(window,
 		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -435,15 +436,16 @@ public:
 
 class cActionEditCopy : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	cActionEditCopy(lpeWindowMain &window) : cActionBase(window,
 		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -451,16 +453,17 @@ public:
 
 class cActionEditPaste : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	cActionEditPaste(lpeWindowMain &window) : cActionBase(window,
 		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled(pWindow.GetClipboard().GetCount() > 0);
+	void Update() override{
+		SetEnabled(pWindow.GetClipboard().GetData().IsNotEmpty());
 		// HasWithTypeName( "..." )
 	}
 };
@@ -469,11 +472,12 @@ public:
 
 class cActionEntryAdd : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEntryAdd> Ref;
 	cActionEntryAdd(lpeWindowMain &window) : cActionBase(window,
 		"Add entry", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add language pack entry", deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		lpeLangPack * const langpack = pWindow.GetLangPack();
 		if(!langpack){
 			return;
@@ -483,30 +487,34 @@ public:
 			? langpack->GetEntrySelection().GetActive()->GetName() : decString("Entry"));
 		
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Entry", "Identifier:", name)){
-			if(langpack->GetEntryList().HasNamed(name)){
+			if(langpack->GetEntries().HasMatching([&](const lpeLangPackEntry &e){
+				return e.GetName() == name;
+			})){
 				igdeCommonDialogs::Error(&pWindow, "Add Entry",
 					"There exists already an entry with this name");
 				continue;
 			}
 			
 			igdeUndo::Ref undo;
-			const lpeLangPackEntry::Ref entry(lpeLangPackEntry::Ref::NewWith());
+			const lpeLangPackEntry::Ref entry(lpeLangPackEntry::Ref::New());
 			entry->SetName(name);
 			
 			const lpeLangPack * const refLangPack = pWindow.GetReferenceLangPack();
 			lpeLangPackEntry *refEntry = nullptr;
 			if(refLangPack){
-				refEntry = refLangPack->GetEntryList().GetNamed(name);
+				refEntry = refLangPack->GetEntries().FindOrDefault([&](const lpeLangPackEntry &e){
+					return e.GetName() == name;
+				});
 			}
 			
-			undo.TakeOver(new lpeULangPackEntryAdd(langpack, entry, refEntry));
+			undo = lpeULangPackEntryAdd::Ref::New(langpack, entry, refEntry);
 			
 			langpack->GetUndoSystem()->Add(undo);
 			return;
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetLangPack() != nullptr);
 	}
 };
@@ -514,37 +522,28 @@ public:
 
 class cActionEntryRemove : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEntryRemove> Ref;
 	cActionEntryRemove(lpeWindowMain &window) : cActionBase(window,
 		"Remove entry", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected language pack entry", deInputEvent::ekcR){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		lpeLangPack * const langpack = pWindow.GetLangPack();
 		if(!langpack){
 			return;
 		}
 		
-		const lpeLangPackEntryList &selection = langpack->GetEntrySelection().GetSelected();
-		const int count = selection.GetCount();
-		lpeLangPackEntryList list;
-		int i;
+		const lpeLangPackEntry::List list(langpack->GetEntrySelection().GetSelected().Collect([&](lpeLangPackEntry *e){
+			return e->GetLangPack() == langpack;
+		}));
 		
-		for(i=0; i<count; i++){
-			lpeLangPackEntry * const entry = selection.GetAt(i);
-			if(entry->GetLangPack() == langpack){
-				list.Add(entry);
-			}
+		if(list.IsNotEmpty()){
+			langpack->GetUndoSystem()->Add(lpeULangPackEntryRemove::Ref::New(
+				langpack, list, pWindow.GetReferenceLangPack()));
 		}
-		
-		if(list.GetCount() == 0){
-			return;
-		}
-		
-		langpack->GetUndoSystem()->Add(lpeULangPackEntryRemove::Ref::NewWith(
-			langpack, list, pWindow.GetReferenceLangPack()));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetLangPack() && pWindow.GetLangPack()
 			->GetEntrySelection().GetSelected().GetCount() > 0);
 	}
@@ -553,17 +552,18 @@ public:
 
 class cActionEntryNextMissing : public cActionBase{
 public:
+	typedef deTObjectReference<cActionEntryNextMissing> Ref;
 	cActionEntryNextMissing(lpeWindowMain &window) : cActionBase(window,
 		"Select next missing", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning),
 		"Select next missing language pack entry", deInputEvent::ekcM){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pWindow.GetLangPack()){
 			pWindow.SelectNextMissingEntry();
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetLangPack());
 	}
 };
@@ -576,23 +576,23 @@ public:
 //////////////////////
 
 void lpeWindowMain::pLoadIcons(){
-	//pIconLangPackNew.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/file_new.png" ) );
+	//pIconLangPackNew = igdeIcon::LoadPNG(GetEditorModule(), "icons/file_new.png");
 }
 
 void lpeWindowMain::pCreateActions(){
-	pActionLangPackNew.TakeOver(new cActionLangPackNew(*this));
-	pActionLangPackOpen.TakeOver(new cActionLangPackOpen(*this));
-	pActionLangPackSave.TakeOver(new cActionLangPackSave(*this));
-	pActionLangPackSaveAs.TakeOver(new cActionLangPackSaveAs(*this));
-	pActionLangPackOpenRef.TakeOver(new cActionLangPackOpenRef(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
-	pActionEntryAdd.TakeOver(new cActionEntryAdd(*this));
-	pActionEntryRemove.TakeOver(new cActionEntryRemove(*this));
-	pActionEntryNextMissing.TakeOver(new cActionEntryNextMissing(*this));
+	pActionLangPackNew = cActionLangPackNew::Ref::New(*this);
+	pActionLangPackOpen = cActionLangPackOpen::Ref::New(*this);
+	pActionLangPackSave = cActionLangPackSave::Ref::New(*this);
+	pActionLangPackSaveAs = cActionLangPackSaveAs::Ref::New(*this);
+	pActionLangPackOpenRef = cActionLangPackOpenRef::Ref::New(*this);
+	pActionEditUndo = igdeActionUndo::Ref::New(GetEnvironment());
+	pActionEditRedo = igdeActionRedo::Ref::New(GetEnvironment());
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
+	pActionEntryAdd = cActionEntryAdd::Ref::New(*this);
+	pActionEntryRemove = cActionEntryRemove::Ref::New(*this);
+	pActionEntryNextMissing = cActionEntryNextMissing::Ref::New(*this);
 	
 	
 	// register for updating
@@ -614,7 +614,7 @@ void lpeWindowMain::pCreateActions(){
 void lpeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionLangPackNew);
 	helper.ToolBarButton(pTBFile, pActionLangPackOpen);
@@ -634,7 +634,7 @@ void lpeWindowMain::pCreateToolBarFile(){
 void lpeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -651,15 +651,15 @@ void lpeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Language Pack", deInputEvent::ekcL));
+	cascade = igdeMenuCascade::Ref::New(env, "Language Pack", deInputEvent::ekcL);
 	pCreateMenuLangPack(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade = igdeMenuCascade::Ref::New(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Entry", deInputEvent::ekcN));
+	cascade = igdeMenuCascade::Ref::New(env, "Entry", deInputEvent::ekcN);
 	pCreateMenuEntry(cascade);
 	AddSharedMenu(cascade);
 }
@@ -675,6 +675,7 @@ void lpeWindowMain::pCreateMenuLangPack(igdeMenuCascade &menu){
 	
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, pActionLangPackOpenRef);
+	helper.MenuRecentFiles(menu, pRecentFilesRefLangPack, "Open Recent Reference Language Pack");
 }
 
 void lpeWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){

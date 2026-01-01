@@ -787,7 +787,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 	}
 	
 	const deoglPixelBuffer::Ref pbConeMap(deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer(deoglPixelBuffer::epfByte1, size.x, size.y, size.z)));
+		deoglPixelBuffer::epfByte1, size.x, size.y, size.z));
 	pbConeMap->SetToIntColor(255, 255, 255, 255);
 	
 	stepCount = 128;

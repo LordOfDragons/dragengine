@@ -80,22 +80,20 @@ void deoglSharedVBOBlock::DropVBO(){
 void deoglSharedVBOBlock::DelayedRemove(){
 	class cDelayedRemove : public deObject{
 	private:
-		deoglSharedVBOBlock * const pVBOBlock;
+		const deoglSharedVBOBlock::Ref pVBOBlock;
 		
 	public:
-		cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){
-			vboBlock->AddReference();
-		}
+		typedef deTObjectReference<cDelayedRemove> Ref;
+		explicit cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){}
 		
 	protected:
 		~cDelayedRemove(){
 			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-			pVBOBlock->FreeReference();
 		}
 	};
 	
-	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().AddReleaseObject(
-		deObject::Ref::New(new cDelayedRemove(this)));
+	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().
+		AddReleaseObject(cDelayedRemove::Ref::New(this));
 }
 
 void deoglSharedVBOBlock::SetSize(int size){

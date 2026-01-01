@@ -46,27 +46,18 @@ ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAC
 		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pComment = NULL;
+	pTopic = nullptr;
+	pComment = nullptr;
 	pOldComment = action->GetComment();
 	pNewComment = newComment;
 	
 	SetShortInfo("Comment set comment");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pComment = action;
-	action->AddReference();
 }
 
 ceUCACommentSetComment::~ceUCACommentSetComment(){
-	if(pComment){
-		pComment->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

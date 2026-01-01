@@ -35,6 +35,10 @@
  * Undo set rule mirror axis.
  */
 class aeURuleMirrorSetAxis : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetAxis> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -44,9 +48,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleMirrorSetAxis> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

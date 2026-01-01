@@ -104,7 +104,7 @@ void igdeLoadSky::Load(const decString &pathSky, deSky &sky, decBaseFileReader &
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -292,17 +292,9 @@ deSkyLayer &layer, const char *basePath){
 			const decString path(GetCDataString(*tag));
 			
 			if(!path.IsEmpty()){
-				deSkin *skin = NULL;
-				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
-					layer.SetSkin(skin);
-					skin->FreeReference();
-					
+					layer.SetSkin(sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath));
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}
@@ -335,7 +327,7 @@ deSkyLayer &layer, const char *basePath){
 
 void igdeLoadSky::pReadTarget(const decXmlElementTag &root, deSkyLayer &layer){
 	const decString &type = GetAttributeString(root, "type");
-	deSkyControllerTarget *target = NULL;
+	deSkyControllerTarget *target = nullptr;
 	
 	if(type == "offsetX"){
 		target = &layer.GetTarget(deSkyLayer::etOffsetX);
@@ -448,17 +440,9 @@ deSkyLayerBody &body, const char *basePath){
 			const decString path(GetCDataString(*tag));
 			
 			if(!path.IsEmpty()){
-				deSkin *skin = NULL;
-				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
-					body.SetSkin(skin);
-					skin->FreeReference();
-					
+					body.SetSkin(sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath));
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}

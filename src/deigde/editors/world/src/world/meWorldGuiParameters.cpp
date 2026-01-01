@@ -65,10 +65,10 @@ pHPLevelStrength(0.5f),
 pHPSmoothStrength(0.5f),
 
 pMPDrawMode(empdmDraw),
-pMPRadius(10.0f),
+pMPRadius(2.5f),
 
 pVPDrawMode(evpdmInvisible),
-pVPRadius(10.0f),
+pVPRadius(2.5f),
 
 pRotationPivotCenter(erpcActive),
 

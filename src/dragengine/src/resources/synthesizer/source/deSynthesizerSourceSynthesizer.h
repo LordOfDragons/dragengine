@@ -26,8 +26,7 @@
 #define _DESYNTHESIZERSOURCESYNTHESIZER_H_
 
 #include "deSynthesizerSource.h"
-
-class deSound;
+#include "../deSynthesizer.h"
 
 
 /**
@@ -40,7 +39,7 @@ public:
 	
 	
 private:
-	deSynthesizer *pSynthesizer;
+	deSynthesizer::Ref pSynthesizer;
 	
 	int *pConnections;
 	int pConnectionCount;
@@ -67,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if silent. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
 	void SetSynthesizer(deSynthesizer *synthesizer);

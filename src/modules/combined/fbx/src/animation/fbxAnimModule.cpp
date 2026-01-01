@@ -123,10 +123,10 @@ void fbxAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &
 //////////////////////
 
 void fbxAnimModule::pLoadAnimation(deAnimation &animation, fbxScene &scene){
-	fbxAnimation::Ref loadAnimation(fbxAnimation::Ref::NewWith(scene));
+	fbxAnimation::Ref loadAnimation(fbxAnimation::Ref::New(scene));
 	
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull("Pose");
-	fbxRig::Ref loadRig(fbxRig::Ref::NewWith(scene, nodePose));
+	fbxRig::Ref loadRig(fbxRig::Ref::New(scene, nodePose));
 	// loadRig->DebugPrintStructure( *this, "LoadAnimation ", true );
 	loadAnimation->MatchRig(*loadRig);
 	
@@ -276,6 +276,8 @@ const fbxAnimationMove &loadMove){
 
 class fbxAnimModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<fbxAnimModuleInternal> Ref;
+	
 	fbxAnimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXAnim");
 		SetDescription("Handles animations in the binary FBX model format.");
@@ -298,7 +300,7 @@ public:
 	}
 };
 
-deInternalModule *fbxAnimRegisterInternalModule(deModuleSystem *system){
-	return new fbxAnimModuleInternal(system);
+deTObjectReference<deInternalModule> fbxAnimRegisterInternalModule(deModuleSystem *system){
+	return fbxAnimModuleInternal::Ref::New(system);
 }
 #endif

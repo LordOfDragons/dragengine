@@ -88,7 +88,6 @@ void deErrorTrace::AddPoint(deErrorTracePoint *point){
 	if(pPointCount == pPointSize){
 		int i, newSize = pPointSize * 3 / 2 + 1;
 		deErrorTracePoint **newArray = new deErrorTracePoint*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pPoints){
 			for(i=0; i<pPointCount; i++) newArray[i] = pPoints[i];
 			delete [] pPoints;
@@ -125,7 +124,6 @@ deErrorTracePoint *deErrorTrace::AddPoint(deLoadableModule *sourceModule, const 
 	deErrorTracePoint *newPoint = NULL;
 	try{
 		newPoint = new deErrorTracePoint(sourceModule, sourceFunc, sourceLine);
-		if(!newPoint) DETHROW(deeOutOfMemory);
 		AddPoint(newPoint);
 	}catch(const deException &){
 		if(newPoint) delete newPoint;

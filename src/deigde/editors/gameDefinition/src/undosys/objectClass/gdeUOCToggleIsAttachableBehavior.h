@@ -36,14 +36,15 @@
  * \brief Undo action object class toggle is attachable behavior.
  */
 class gdeUOCToggleIsAttachableBehavior : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCToggleIsAttachableBehavior> Ref;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeUOCToggleIsAttachableBehavior> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

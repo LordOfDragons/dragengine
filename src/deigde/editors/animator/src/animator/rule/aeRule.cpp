@@ -42,7 +42,6 @@
 #include "aeRuleTrackTo.h"
 #include "aeRuleMirror.h"
 #include "../aeAnimator.h"
-#include "../link/aeLinkList.h"
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -66,21 +65,22 @@
 ////////////////////////////
 
 aeRule::aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type) :
-pAnimator(NULL),
-pParentGroup(NULL),
-pEngRule(NULL),
+pAnimator(nullptr),
+pParentGroup(nullptr),
+pEngRule(nullptr),
 pName("Rule"),
 pType(type),
 pBlendMode(deAnimatorRule::ebmBlend),
 pBlendFactor(1.0f),
 pInvertBlendFactor(false),
-pEnabled(true){
+pEnabled(true),
+pTargetBlendFactor(aeControllerTarget::Ref::New()){
 }
 
 aeRule::aeRule(const aeRule &copy) :
-pAnimator(NULL),
-pParentGroup(NULL),
-pEngRule(NULL),
+pAnimator(nullptr),
+pParentGroup(nullptr),
+pEngRule(nullptr),
 pName(copy.pName),
 pType(copy.pType),
 pListBones(copy.pListBones),
@@ -89,11 +89,11 @@ pBlendMode(copy.pBlendMode),
 pBlendFactor(copy.pBlendFactor),
 pInvertBlendFactor(copy.pInvertBlendFactor),
 pEnabled(copy.pEnabled),
-pTargetBlendFactor(copy.pTargetBlendFactor){
+pTargetBlendFactor(aeControllerTarget::Ref::New(copy.pTargetBlendFactor)){
 }
 
 aeRule::~aeRule(){
-	SetAnimator(NULL);
+	SetAnimator(nullptr);
 }
 
 
@@ -115,7 +115,7 @@ void aeRule::SetAnimator(aeAnimator *animator){
 		return;
 	}
 	
-	pEngRule = NULL;
+	pEngRule = nullptr;
 	pAnimator = animator;
 	
 	OnParentAnimatorChanged();
@@ -141,7 +141,7 @@ void aeRule::InitEngineRule(deAnimatorRule *engRule) const{
 	engRule->GetListBones() = pListBones;
 	engRule->GetListVertexPositionSets() = pListVertexPositionSets;
 	
-	pTargetBlendFactor.UpdateEngineTarget(animator, engRule->GetTargetBlendFactor());
+	pTargetBlendFactor->UpdateEngineTarget(animator, engRule->GetTargetBlendFactor());
 }
 
 
@@ -225,14 +225,14 @@ void aeRule::UpdateCompAnim(){
 void aeRule::UpdateTargets(){
 	aeAnimator * const animator = GetAnimator();
 	if(pEngRule && animator){
-		pTargetBlendFactor.UpdateEngineTarget(animator, pEngRule->GetTargetBlendFactor());
+		pTargetBlendFactor->UpdateEngineTarget(animator, pEngRule->GetTargetBlendFactor());
 	}
 }
 
 int aeRule::CountLinkUsage(aeLink *link) const{
 	int usageCount = 0;
 	
-	if(pTargetBlendFactor.HasLink(link)){
+	if(pTargetBlendFactor->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
@@ -240,19 +240,19 @@ int aeRule::CountLinkUsage(aeLink *link) const{
 }
 
 void aeRule::RemoveLinkFromTargets(aeLink *link){
-	if(pTargetBlendFactor.HasLink(link)){
-		pTargetBlendFactor.RemoveLink(link);
+	if(pTargetBlendFactor->GetLinks().Has(link)){
+		pTargetBlendFactor->RemoveLink(link);
 	}
 }
 
 void aeRule::RemoveLinksFromAllTargets(){
-	pTargetBlendFactor.RemoveAllLinks();
+	pTargetBlendFactor->RemoveAllLinks();
 }
 
 
 
-void aeRule::ListLinks(aeLinkList &list){
-	pTargetBlendFactor.AddLinksToList(list);
+void aeRule::ListLinks(aeLink::List &list){
+	pTargetBlendFactor->AddLinksToList(list);
 }
 
 
@@ -412,43 +412,43 @@ aeRule &aeRule::operator=(const aeRule &copy){
 // Helper
 ///////////
 
-aeRule *aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type){
+aeRule::Ref aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type){
 	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
-		return new aeRuleAnimation;
+		return aeRuleAnimation::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:
-		return new aeRuleAnimationDifference;
+		return aeRuleAnimationDifference::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:
-		return new aeRuleAnimationSelect;
+		return aeRuleAnimationSelect::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:
-		return new aeRuleBoneTransformator;
+		return aeRuleBoneTransformator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:
-		return new aeRuleForeignState;
+		return aeRuleForeignState::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
-		return new aeRuleGroup;
+		return aeRuleGroup::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:
-		return new aeRuleInverseKinematic;
+		return aeRuleInverseKinematic::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
-		return new aeRuleLimit;
+		return aeRuleLimit::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
-		return new aeRuleStateManipulator;
+		return aeRuleStateManipulator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
-		return new aeRuleStateSnapshot;
+		return aeRuleStateSnapshot::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-		return new aeRuleSubAnimator;
+		return aeRuleSubAnimator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
-		return new aeRuleTrackTo;
+		return aeRuleTrackTo::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertMirror:
 		return aeRuleMirror::CreateDefault();

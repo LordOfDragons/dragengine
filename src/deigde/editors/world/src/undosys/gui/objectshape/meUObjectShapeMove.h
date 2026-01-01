@@ -26,10 +26,10 @@
 #define _MEUOBJECTSHAPEMOVE_H_
 
 #include "../meBaseUndoMove.h"
-#include <dragengine/common/collection/decIntList.h>
+#include "../../../world/object/meObject.h"
+#include "../../../world/objectshape/meObjectShape.h"
 
-class meObject;
-class meObjectShapeList;
+#include <dragengine/common/collection/decTList.h>
 
 
 
@@ -37,21 +37,28 @@ class meObjectShapeList;
  * \brief Move object shapes undo action.
  */
 class meUObjectShapeMove : public meBaseUndoMove{
+public:
+	typedef deTObjectReference<meUObjectShapeMove> Ref;
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
 	decString pOldValue;
-	decIntList pList;
+	decTList<int> pList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list);
+	meUObjectShapeMove(meObject *object, const char *property, const meObjectShape::List &list);
+	
+protected:
 	/** \brief Clean up undo object. */
 	~meUObjectShapeMove() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */

@@ -25,11 +25,12 @@
 #ifndef _PEEPARAMETER_H_
 #define _PEEPARAMETER_H_
 
+#include "peeController.h"
+
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 class peeType;
-class peeController;
 class deParticleEmitterParameter;
 
 
@@ -44,8 +45,8 @@ private:
 	
 	float pValue;
 	float pSpread;
-	peeController *pControllerValue;
-	peeController *pControllerSpread;
+	peeController::Ref pControllerValue;
+	peeController::Ref pControllerSpread;
 	decCurveBezier pCurveValue;
 	decCurveBezier pCurveSpread;
 	decCurveBezier pCurveProgress;
@@ -78,11 +79,11 @@ public:
 	/** Sets the cast value spread. */
 	void SetSpread(float spread);
 	/** Retrieves the curve controller for the cast value. */
-	inline peeController *GetControllerValue() const{ return pControllerValue; }
+	inline const peeController::Ref &GetControllerValue() const{ return pControllerValue; }
 	/** Sets the curve controller for the cast value. */
 	void SetControllerValue(peeController *controller);
 	/** Retrieves the curve controller for the cast value spread. */
-	inline peeController *GetControllerSpread() const{ return pControllerSpread; }
+	inline const peeController::Ref &GetControllerSpread() const{ return pControllerSpread; }
 	/** Sets the curve controller for the cast value spread. */
 	void SetControllerSpread(peeController *controller);
 	/** Retrieves the cast value curve. */

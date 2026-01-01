@@ -45,14 +45,10 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *AnimatorEditorCreateModule(igdeEnvironmen
 ////////////////
 
 igdeEditorModule *AnimatorEditorCreateModule(igdeEnvironment *environment){
-	aeIGDEModule *module = NULL;
-	
 	try{
-		module = new aeIGDEModule(*environment);
+		return new aeIGDEModule(*environment);
 		
 	}catch(const deException &){
-		return NULL;
+		return nullptr;
 	}
-	
-	return module;
 }

@@ -140,7 +140,7 @@ public:
 	int GetDeviceCount() override;
 	
 	/** Information for input device at index. */
-	deInputDevice *GetDeviceAt(int index) override;
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** Index of device with identifier or -1 if absent. */
 	int IndexOfDeviceWithID(const char *id) override;

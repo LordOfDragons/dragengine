@@ -42,8 +42,8 @@
 
 gdeUOCNavBlockerSetBlockingPriority::gdeUOCNavBlockerSetBlockingPriority(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, int newValue) :
-pObjectClass(NULL),
-pNavBlocker(NULL)
+
+pNavBlocker(nullptr)
 {
 	if(!objectClass || !navblocker){
 		DETHROW(deeInvalidParam);
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetBlockingPriority::~gdeUOCNavBlockerSetBlockingPriority(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

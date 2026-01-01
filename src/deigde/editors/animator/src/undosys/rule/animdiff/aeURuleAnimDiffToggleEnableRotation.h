@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -36,13 +36,14 @@ class aeRuleAnimationDifference;
  * Undo rule animation difference set enable rotation.
  */
 class aeURuleAnimDiffToggleEnableRotation : public igdeUndo{
-private:
-	aeRuleAnimationDifference *pRule;
-	
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeURuleAnimDiffToggleEnableRotation> Ref;
 	
+	
+private:
+	aeRuleAnimationDifference::Ref pRule;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

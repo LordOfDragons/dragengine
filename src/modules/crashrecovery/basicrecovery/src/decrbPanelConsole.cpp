@@ -29,10 +29,11 @@
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/string/unicode/decUnicodeLineBuffer.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -76,7 +77,6 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	
 	// create console line buffer
 	pLog = new decUnicodeLineBuffer(200);
-	if(!pLog) DETHROW(deeOutOfMemory);
 	
 	// module selection
 	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
@@ -203,7 +203,7 @@ long decrbPanelConsole::onEditSendCommand(FXObject*, FXSelector, void*){
 			module->SendCommand(argList, answer);
 			
 		}catch(const deException &e){
-			answer.SetFromUTF8(e.FormatOutput().Join("\n"));
+			answer.SetFromUTF8(DEJoin(e.FormatOutput(), "\n"));
 		}
 		if(answer.GetLength() > 0 && answer.GetAt(answer.GetLength() - 1) != '\n'){
 			answer.AppendFromUTF8("\n");

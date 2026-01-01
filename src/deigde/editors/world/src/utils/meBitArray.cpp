@@ -29,8 +29,8 @@
 
 #include "meBitArray.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 
 
  
@@ -49,8 +49,6 @@ meBitArray::meBitArray(int colons, int rows){
 	pByteCount = ((colons * rows - 1) >> 3) + 1;
 	
 	pBytes = new unsigned char[pByteCount];
-	if(!pBytes) DETHROW(deeOutOfMemory);
-	
 	memset(pBytes, 255, pByteCount);
 }
 

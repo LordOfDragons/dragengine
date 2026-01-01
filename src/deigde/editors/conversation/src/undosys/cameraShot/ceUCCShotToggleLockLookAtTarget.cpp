@@ -44,18 +44,14 @@ ceUCCShotToggleLockLookAtTarget::ceUCCShotToggleLockLookAtTarget(ceCameraShot *c
 		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
 	SetShortInfo("Camera shot lock look-at target");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockLookAtTarget::~ceUCCShotToggleLockLookAtTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

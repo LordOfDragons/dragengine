@@ -32,8 +32,6 @@
 #include "../gui/feWindowMain.h"
 
 #include <deigde/engine/igdeEngineController.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 
 #include <dragengine/deEngine.h>
@@ -59,14 +57,9 @@ feLoadSaveSystem::feLoadSaveSystem(feWindowMain *wndMain){
 	if(!wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
-	
-	pLSFonts = NULL;
-	pLSFontCount = 0;
-	pLSFontSize = 0;
 }
 
 feLoadSaveSystem::~feLoadSaveSystem(){
-	pCleanUp();
 }
 	
 
@@ -74,153 +67,39 @@ feLoadSaveSystem::~feLoadSaveSystem(){
 // Management
 ///////////////
 
-feLoadSaveFont *feLoadSaveSystem::GetLSFontAt(int index) const{
-	if(index < 0 || index >= pLSFontCount) DETHROW(deeInvalidParam);
-	
-	return pLSFonts[index];
-}
-
-int feLoadSaveSystem::IndexOfLSFont(feLoadSaveFont *lsFont) const{
-	if(!lsFont) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSFontCount; i++){
-		if(lsFont == pLSFonts[i]){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool feLoadSaveSystem::HasLSFont(feLoadSaveFont *lsFont) const{
-	if(!lsFont) DETHROW(deeInvalidParam);
-	int i;
-	
-	for(i=0; i<pLSFontCount; i++){
-		if(lsFont == pLSFonts[i]){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-int feLoadSaveSystem::IndexOfLSFontMatching(const char *filename){
-	const decString testFilename(filename);
-	int i;
-	
-	for(i=0; i<pLSFontCount; i++){
-		if(testFilename.MatchesPattern(pLSFonts[i]->GetPattern())){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void feLoadSaveSystem::AddLSFont(feLoadSaveFont *lsFont){
-	if(HasLSFont(lsFont)) DETHROW(deeInvalidParam);
-	
-	if(pLSFontCount == pLSFontSize){
-		int newSize = pLSFontSize * 3 / 2 + 1;
-		feLoadSaveFont **newArray = new feLoadSaveFont*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pLSFonts){
-			memcpy(newArray, pLSFonts, sizeof(feLoadSaveFont*) * pLSFontSize);
-			delete [] pLSFonts;
-		}
-		pLSFonts = newArray;
-		pLSFontSize = newSize;
-	}
-	
-	pLSFonts[pLSFontCount] = lsFont;
-	pLSFontCount++;
-}
-
-void feLoadSaveSystem::RemoveLSFont(feLoadSaveFont *lsFont){
-	int i, index = IndexOfLSFont(lsFont);
-	if(index == -1) DETHROW(deeInvalidParam);
-	
-	for(i=index+1; i<pLSFontCount; i++){
-		pLSFonts[i - 1] = pLSFonts[i];
-	}
-	pLSFontCount--;
-	
-	delete lsFont;
-}
-
-void feLoadSaveSystem::RemoveAllLSFonts(){
-	while(pLSFontCount > 0){
-		pLSFontCount--;
-		delete pLSFonts[pLSFontCount];
-	}
-}
-
 void feLoadSaveSystem::UpdateLSFonts(){
 	deEngine *engine = pWndMain->GetEngine();
 	deModuleSystem *modSys = engine->GetModuleSystem();
 	int m, moduleCount = modSys->GetModuleCount();
 	deLoadableModule *loadableModule;
-	feLoadSaveFont *lsFont = NULL;
 	
-	// remove all load save fonts
-	RemoveAllLSFonts();
+	pLSFonts.RemoveAll();
 	
-	try{
-		// add a new load save font for each font module found in the engine that is also
-		// running and usable therefore
-		for(m=0; m<moduleCount; m++){
-			loadableModule = modSys->GetModuleAt(m);
-			
-			if(loadableModule->GetType() != deModuleSystem::emtFont) continue;
-			if(!loadableModule->IsLoaded()) continue;
-			
-			lsFont = new feLoadSaveFont((deBaseFontModule*)loadableModule->GetModule());
-			if(!lsFont) DETHROW(deeOutOfMemory);
-			
-			AddLSFont(lsFont);
-			lsFont = NULL;
-		}
+	// add a new load save font for each font module found in the engine that is also
+	// running and usable therefore
+	for(m=0; m<moduleCount; m++){
+		loadableModule = modSys->GetModuleAt(m);
 		
-	}catch(const deException &){
-		if(lsFont) delete lsFont;
-		throw;
+		if(loadableModule->GetType() != deModuleSystem::emtFont) continue;
+		if(!loadableModule->IsLoaded()) continue;
+		
+		pLSFonts.Add(feLoadSaveFont::Ref::New((deBaseFontModule*)loadableModule->GetModule()));
 	}
 }
 
 
 
-feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gameDefinition){
+feFont::Ref feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gameDefinition){
 	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
-	//decDiskFileReader file( filename );
 	deEngine *engine = pWndMain->GetEngine();
-	decBaseFileReader *fileReader = NULL;
-	feFont *font = NULL;
-	decPath path;
-	int lsIndex;
 	
-	lsIndex = IndexOfLSFontMatching(filename);
-	if(lsIndex == -1) DETHROW(deeInvalidParam);
+	feLoadSaveFont &lsfont = pLSFonts.FindOrDefault([&](feLoadSaveFont &lf){
+		return decString::StringMatchesPattern(filename, lf.GetPattern());
+	});
 	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
-		
-		font = new feFont(&pWndMain->GetEnvironment());
-		if(!font) DETHROW(deeOutOfMemory);
-		
-		pLSFonts[lsIndex]->LoadFont(filename, font, fileReader);
-		fileReader->FreeReference();
-		
-	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(font) font->FreeReference();
-		throw;
-	}
+	const feFont::Ref font(feFont::Ref::New(&pWndMain->GetEnvironment()));
+	lsfont.LoadFont(filename, font, engine->GetVirtualFileSystem()->OpenFileForReading(
+		decPath::CreatePathUnix(filename)));
 	
 	return font;
 }
@@ -228,38 +107,17 @@ feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gam
 void feLoadSaveSystem::SaveFont(feFont *font, const char *filename){
 	if(!font || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWndMain->GetEngine();
-	decBaseFileWriter *fileWriter = NULL;
-	decPath path;
-	int lsIndex;
 	
-	lsIndex = IndexOfLSFontMatching(filename);
-	if(lsIndex == -1) DETHROW(deeInvalidParam);
+	feLoadSaveFont &lsfont = pLSFonts.FindOrDefault([&](feLoadSaveFont &lf){
+		return decString::StringMatchesPattern(filename, lf.GetPattern());
+	});
 	
-//	decDiskFileWriter file( filename, false );
-	
-	path.SetFromUnix(filename);
-	
-	try{
-		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting(path);
-		
-		pLSFonts[lsIndex]->SaveFont(filename, font, fileWriter);
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	lsfont.SaveFont(filename, font, engine->GetVirtualFileSystem()->OpenFileForWriting(
+		decPath::CreatePathUnix(filename)));
 }
 
 
 
 
 // Private Functions
-//////////////////////	
-
-void feLoadSaveSystem::pCleanUp(){
-	RemoveAllLSFonts();
-	if(pLSFonts) delete [] pLSFonts;
-}
+//////////////////////

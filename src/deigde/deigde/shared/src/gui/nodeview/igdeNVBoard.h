@@ -26,27 +26,29 @@
 #define _IGDENVBOARD_H_
 
 #include "igdeNVNode.h"
+#include "igdeNVLink.h"
+#include "igdeNVBoardListener.h"
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeNVLink;
 class igdeNVSlot;
-class igdeNVBoardListener;
 
 
 /**
  * \brief IGDE UI NodeView Board.
  */
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeNVBoard> Ref;
+	
+	typedef decTObjectOrderedSet<igdeNVNode> NodesList;
+	typedef decTObjectOrderedSet<igdeNVLink> LinksList;
 	
 	
 private:
@@ -54,11 +56,11 @@ private:
 	bool pEnabled;
 	decPoint pOffset;
 	
-	decObjectOrderedSet pNodes;
-	decObjectOrderedSet pLinks;
+	NodesList pNodes;
+	LinksList pLinks;
 	igdeNVNode::Ref pActiveNode;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeNVBoardListener> pListeners;
 	
 	
 	
@@ -66,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVBoard(igdeEnvironment &environment);
+	explicit igdeNVBoard(igdeEnvironment &environment);
 	
 	
 	
@@ -113,14 +115,8 @@ public:
 	
 	
 	
-	/** \brief Number of nodes. */
-	int GetNodeCount() const;
-	
-	/** \brief Node at index. */
-	igdeNVNode *GetNodeAt(int index) const;
-	
-	/** \brief Has node. */
-	bool HasNode(igdeNVNode *node) const;
+	/** \brief Nodes. */
+	const NodesList &GetNodes() const{ return pNodes; }
 	
 	/** \brief Add node. */
 	void AddNode(igdeNVNode *node);
@@ -131,25 +127,19 @@ public:
 	/** \brief Remove all nodes. */
 	void RemoveAllNodes();
 	
-	/** \brief Active node. or NULL */
+	/** \brief Active node. or nullptr */
 	inline igdeNVNode *GetActiveNode() const{ return (igdeNVNode*)(deObject*)pActiveNode; }
 	
-	/** \brief Set active node or NULL. */
+	/** \brief Set active node or nullptr. */
 	void SetActiveNode(igdeNVNode *node);
 	
 	
 	
-	/** \brief Number of links. */
-	int GetLinkCount() const;
+	/** \brief Links. */
+	const LinksList &GetLinks() const{ return pLinks; }
 	
-	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt(int index) const;
-	
-	/** \brief Link between source and target or NULL if not linked. */
+	/** \brief Link between source and target or nullptr if not linked. */
 	igdeNVLink *GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
-	
-	/** \brief Has link. */
-	bool HasLink(igdeNVLink *link) const;
 	
 	/** \brief Has link between source and target. */
 	bool HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
@@ -158,7 +148,7 @@ public:
 	bool CanLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Add link. */
-	igdeNVLink *AddLink(igdeNVSlot *source, igdeNVSlot *target);
+	igdeNVLink::Ref AddLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Remove link. */
 	void RemoveLink(igdeNVLink *link);
@@ -169,7 +159,7 @@ public:
 	/** \brief Remove all links with sockets belonging to node. */
 	void RemoveAllNodeLinks(igdeNVNode *node);
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range = 6.0f) const;
 	
 	/** \brief Show context menu at position. */

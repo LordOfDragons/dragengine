@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass *objectClass, const char *newValue) :
-pObjectClass(NULL)
+pObjectClass(nullptr)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

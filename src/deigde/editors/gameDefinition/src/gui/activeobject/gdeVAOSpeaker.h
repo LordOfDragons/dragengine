@@ -26,11 +26,12 @@
 #define _GDEVAOSPEAKER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCSpeaker;
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -45,10 +46,10 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pOCSpeaker;
+	gdeOCSpeaker::Ref pOCSpeaker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -76,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
+	inline const gdeOCSpeaker::Ref &GetOCSpeaker() const{ return pOCSpeaker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;
@@ -98,4 +99,3 @@ private:
 };
 
 #endif
- 

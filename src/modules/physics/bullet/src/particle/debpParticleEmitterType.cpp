@@ -328,7 +328,6 @@ void debpParticleEmitterType::pSampleParameters(int curve, const deParticleEmitt
 			
 		}else{
 			decCurveBezierEvaluator evalCurve(parameter.GetCurveProgress());
-			const float factor = 1.0f / 255.0f;
 			
 			for(i=0; i<256; i++){
 				progressSamples[i] = evalCurve.EvaluateAt((float)i * factor);
