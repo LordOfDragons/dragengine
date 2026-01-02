@@ -72,9 +72,9 @@ devkCommandBuffer::Ref devkCommandPool::GetCommandBuffer(){
 	// if this command buffer is not finished yet all command buffers after it will not
 	// be finished either. this works since submitted command buffers are added to the
 	// end of the list
-	if(pFreeCommandBuffers.GetCount() > 0){
+	if(pFreeCommandBuffers.IsNotEmpty()){
 		devkCommandBuffer * const findCommandBuffer = static_cast<devkCommandBuffer*>(
-			pFreeCommandBuffers.GetAt(0)->GetOwner());
+			pFreeCommandBuffers.GetRoot()->GetOwner());
 		
 		if(findCommandBuffer->IsFinished(true)){
 			devkCommandBuffer::Ref commandBuffer(findCommandBuffer);

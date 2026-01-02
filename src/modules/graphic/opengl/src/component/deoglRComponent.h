@@ -43,7 +43,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -197,7 +197,7 @@ private:
 	deoglRComponent *pLLWorldPrev;
 	deoglRComponent *pLLWorldNext;
 	
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRComponent>::Element pLLPrepareForRenderWorld;
 	
 	
 	
@@ -747,8 +747,8 @@ public:
 	void SetLLWorldNext(deoglRComponent *component);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRComponent>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRComponent>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

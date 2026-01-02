@@ -69,11 +69,11 @@ void deoglPersistentRenderTaskTexture::SetTUC(const deoglTexUnitsConfig *tuc){
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalPointCount() const{
-	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iter = pVAOs.GetRoot();
 	int pointCount = 0;
 	
 	while(iter){
-		pointCount += ((deoglPersistentRenderTaskVAO*)iter->GetOwner())->GetTotalPointCount();
+		pointCount += iter->GetOwner()->GetTotalPointCount();
 		iter = iter->GetNext();
 	}
 	
@@ -81,11 +81,11 @@ int deoglPersistentRenderTaskTexture::GetTotalPointCount() const{
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iter = pVAOs.GetRoot();
 	int instanceCount = 0;
 	
 	while(iter){
-		instanceCount += ((deoglPersistentRenderTaskVAO*)iter->GetOwner())->GetInstanceCount();
+		instanceCount += iter->GetOwner()->GetInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -93,11 +93,11 @@ int deoglPersistentRenderTaskTexture::GetTotalInstanceCount() const{
 }
 
 int deoglPersistentRenderTaskTexture::GetTotalSubInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iter = pVAOs.GetRoot();
 	int subInstanceCount = 0;
 	
 	while(iter){
-		subInstanceCount += ((deoglPersistentRenderTaskVAO*)iter->GetOwner())->GetTotalSubInstanceCount();
+		subInstanceCount += iter->GetOwner()->GetTotalSubInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -116,7 +116,7 @@ int deoglPersistentRenderTaskTexture::GetVAOCount() const{
 	return pVAOs.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTaskTexture::GetRootVAO() const{
+decTLinkedList<deoglPersistentRenderTaskVAO>::Element *deoglPersistentRenderTaskTexture::GetRootVAO() const{
 	return pVAOs.GetRoot();
 }
 
@@ -158,9 +158,9 @@ void deoglPersistentRenderTaskTexture::RemoveVAO(deoglPersistentRenderTaskVAO *v
 }
 
 void deoglPersistentRenderTaskTexture::RemoveAllVAOs(){
-	decPointerLinkedList::cListEntry *iter = pVAOs.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iter = pVAOs.GetRoot();
 	while(iter){
-		pPool.ReturnVAO((deoglPersistentRenderTaskVAO*)iter->GetOwner());
+		pPool.ReturnVAO(iter->GetOwner());
 		iter = iter->GetNext();
 	}
 	pVAOs.RemoveAll();

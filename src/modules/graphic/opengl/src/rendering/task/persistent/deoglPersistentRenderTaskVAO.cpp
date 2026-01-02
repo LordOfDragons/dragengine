@@ -70,11 +70,11 @@ void deoglPersistentRenderTaskVAO::SetVAO(const deoglVAO *vao){
 }
 
 int deoglPersistentRenderTaskVAO::GetTotalPointCount() const{
-	decPointerLinkedList::cListEntry *iter = pInstances.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iter = pInstances.GetRoot();
 	int pointCount = 0;
 	
 	while(iter){
-		const deoglPersistentRenderTaskInstance &instance = *((deoglPersistentRenderTaskInstance*)iter->GetOwner());
+		const deoglPersistentRenderTaskInstance &instance = *iter->GetOwner();
 		pointCount += (instance.GetIndexCount() + instance.GetPointCount()) * decMath::max(instance.GetSubInstanceCount(), 1);
 		iter = iter->GetNext();
 	}
@@ -83,11 +83,11 @@ int deoglPersistentRenderTaskVAO::GetTotalPointCount() const{
 }
 
 int deoglPersistentRenderTaskVAO::GetTotalSubInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pInstances.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iter = pInstances.GetRoot();
 	int subInstanceCount = 0;
 	
 	while(iter){
-		subInstanceCount += ((deoglPersistentRenderTaskInstance*)iter->GetOwner())->GetSubInstanceCount();
+		subInstanceCount += iter->GetOwner()->GetSubInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -100,7 +100,7 @@ int deoglPersistentRenderTaskVAO::GetInstanceCount() const{
 	return pInstances.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTaskVAO::GetRootInstance() const{
+decTLinkedList<deoglPersistentRenderTaskInstance>::Element *deoglPersistentRenderTaskVAO::GetRootInstance() const{
 	return pInstances.GetRoot();
 }
 
@@ -139,9 +139,9 @@ void deoglPersistentRenderTaskVAO::RemoveInstance(deoglPersistentRenderTaskInsta
 }
 
 void deoglPersistentRenderTaskVAO::RemoveAllInstances(){
-	decPointerLinkedList::cListEntry *iter = pInstances.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iter = pInstances.GetRoot();
 	while(iter){
-		pPool.ReturnInstance((deoglPersistentRenderTaskInstance*)iter->GetOwner());
+		pPool.ReturnInstance(iter->GetOwner());
 		iter = iter->GetNext();
 	}
 	pInstances.RemoveAll();

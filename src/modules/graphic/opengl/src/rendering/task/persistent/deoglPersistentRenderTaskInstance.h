@@ -27,7 +27,7 @@
 
 #include "../../../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskVAO;
@@ -45,7 +45,7 @@ class deoglSharedSPBRTIGroup;
 class deoglPersistentRenderTaskInstance{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLVAO;
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element pLLVAO;
 	
 	deoglPersistentRenderTaskVAO *pParentVAO;
 	const deoglShaderParameterBlock *pParamBlock;
@@ -58,7 +58,7 @@ private:
 	GLenum pPrimitiveType;
 	int pTessPatchVertexCount;
 	
-	decPointerLinkedList pSubInstances;
+	decTLinkedList<deoglPersistentRenderTaskSubInstance> pSubInstances;
 	deoglSharedSPB *pSubInstanceSPB;
 	const deoglSharedSPBRTIGroup *pSubInstanceSPBGroup;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
@@ -142,7 +142,7 @@ public:
 	int GetSubInstanceCount() const;
 	
 	/** Root sub instance. */
-	decPointerLinkedList::cListEntry *GetRootSubInstance() const;
+	decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element *GetRootSubInstance() const;
 	
 	/** Add sub instance. */
 	deoglPersistentRenderTaskSubInstance *AddSubInstance(int indexInstance, int flags);
@@ -188,8 +188,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLVAO(){ return pLLVAO; }
-	inline const decPointerLinkedList::cListEntry &GetLLVAO() const{ return pLLVAO; }
+	inline decTLinkedList<deoglPersistentRenderTaskInstance>::Element &GetLLVAO(){ return pLLVAO; }
+	inline const decTLinkedList<deoglPersistentRenderTaskInstance>::Element &GetLLVAO() const{ return pLLVAO; }
 	/*@}*/
 };
 

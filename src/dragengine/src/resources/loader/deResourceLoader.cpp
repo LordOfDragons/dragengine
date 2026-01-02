@@ -344,5 +344,5 @@ const char *path, eResourceType resourceType) const{
 	};
 	
 	const deResourceLoaderTask::Ref *t;
-	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t) ? *t : nullptr;
+	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t) ? (*t).Pointer() : nullptr;
 }

@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKSUBINSTANCE_H_
 #define _DEOGLPERSISTENTRENDERTASKSUBINSTANCE_H_
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
@@ -38,7 +38,7 @@ class deoglPersistentRenderTaskInstance;
 class deoglPersistentRenderTaskSubInstance{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLInstance;
+	decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element pLLInstance;
 	
 	deoglPersistentRenderTaskInstance *pParentInstance;
 	
@@ -87,8 +87,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLInstance(){ return pLLInstance; }
-	inline const decPointerLinkedList::cListEntry &GetLLInstance() const{ return pLLInstance; }
+	inline decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element &GetLLInstance(){ return pLLInstance; }
+	inline const decTLinkedList<deoglPersistentRenderTaskSubInstance>::Element &GetLLInstance() const{ return pLLInstance; }
 	/*@}*/
 };
 

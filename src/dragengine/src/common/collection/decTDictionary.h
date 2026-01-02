@@ -39,7 +39,7 @@
  * Such functions are provided in decGlobalFunctions.h (int, unsigned int, void*) as well as
  * certain classes like decString.
  */
-template<typename K, typename V, typename VP = V>
+template<typename K, typename V, typename VP = V, typename KP = K>
 class decTDictionary{
 private:
 	struct sDictEntry{
@@ -105,7 +105,7 @@ public:
 	}
 	
 	/** \brief Create copy of a dictionary. */
-	decTDictionary(const decTDictionary<K,V,VP> &dict) : pBuckets(nullptr), pBucketCount(dict.pBucketCount), pEntryCount(0){
+	decTDictionary(const decTDictionary<K,V,VP,KP> &dict) : pBuckets(nullptr), pBucketCount(dict.pBucketCount), pEntryCount(0){
 		pBuckets = new sDictEntry*[pBucketCount];
 		int i;
 		for(i=0; i<pBucketCount; i++){
@@ -122,7 +122,7 @@ public:
 	}
 	
 	/** \brief Move dictionary. */
-	decTDictionary(decTDictionary<K,V,VP> &&dict) : pBuckets(dict.pBuckets), pBucketCount(dict.pBucketCount), pEntryCount(dict.pEntryCount){
+	decTDictionary(decTDictionary<K,V,VP,KP> &&dict) : pBuckets(dict.pBuckets), pBucketCount(dict.pBucketCount), pEntryCount(dict.pEntryCount){
 		dict.pBuckets = nullptr;
 		dict.pBucketCount = 0;
 		dict.pEntryCount = 0;
@@ -152,7 +152,7 @@ public:
 	/**
 	 * \brief Determine if a key is located in the dictionary.
 	 */
-	bool Has(const K &key) const{
+	bool Has(const KP &key) const{
 		return pGetEntry(key) != nullptr;
 	}
 	
@@ -227,7 +227,7 @@ public:
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	const V &GetAt(const K &key) const{
+	const V &GetAt(const KP &key) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		DEASSERT_NOTNULL(entry)
 		
@@ -238,7 +238,7 @@ public:
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	V &GetAt(const K &key){
+	V &GetAt(const KP &key){
 		sDictEntry * const entry = pGetEntry(key);
 		DEASSERT_NOTNULL(entry)
 		
@@ -250,7 +250,7 @@ public:
 	 * \retval true Value of \em key stored in \em value.
 	 * \retval false \em key is not present in the dictionary.
 	 */
-	bool GetAt(const K &key, const V *&value) const{
+	bool GetAt(const KP &key, const V *&value) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		if(entry){
 			value = &entry->value;
@@ -262,7 +262,7 @@ public:
 	/**
 	 * \brief Value for key or default value if absent.
 	 */
-	V GetAtOrDefault(const K &key, const V &defaultValue = V()) const{
+	V GetAtOrDefault(const KP &key, const V &defaultValue = V()) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		return entry ? entry->value : defaultValue;
 	}
@@ -293,7 +293,7 @@ public:
 	 * \brief Remove a key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	void Remove(const K &key){
+	void Remove(const KP &key){
 		DEASSERT_TRUE(RemoveIfPresent(key))
 	}
 	
@@ -301,7 +301,7 @@ public:
 	 * \brief Remove a key if present in the dictionary.
 	 * \returns true if removed.
 	 */
-	bool RemoveIfPresent(const K &key){
+	bool RemoveIfPresent(const KP &key){
 		const unsigned int hash = DEHash(key);
 		const int bucketIndex = hash % pBucketCount;
 		sDictEntry *iterEntry = pBuckets[bucketIndex];
@@ -383,7 +383,7 @@ public:
 	}
 	
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool Equals(const decTDictionary<K,V,VP> &dict) const{
+	bool Equals(const decTDictionary<K,V,VP,KP> &dict) const{
 		if(dict.pEntryCount != pEntryCount){
 			return false;
 		}
@@ -510,8 +510,8 @@ public:
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
 	 */
 	template<typename Evaluator>
-	decTDictionary<K,V,VP> Collect(Evaluator &evaluator) const{
-		decTDictionary<K,V,VP> collected;
+	decTDictionary<K,V,VP,KP> Collect(Evaluator &evaluator) const{
+		decTDictionary<K,V,VP,KP> collected;
 		int i;
 		
 		for(i=0; i<pBucketCount; i++){
@@ -529,7 +529,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTDictionary<K,V,VP> Collect(Evaluator &&evaluator) const{
+	decTDictionary<K,V,VP,KP> Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
 	}
 	
@@ -636,18 +636,18 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool operator==(const decTDictionary<K,V,VP> &dict) const{
+	bool operator==(const decTDictionary<K,V,VP,KP> &dict) const{
 		return Equals(dict);
 	}
 	
 	/** \brief Determine if dictionary is not equal to another dictionary. */
-	bool operator!=(const decTDictionary<K,V,VP> &dict) const{
+	bool operator!=(const decTDictionary<K,V,VP,KP> &dict) const{
 		return !Equals(dict);
 	}
 	
 	/** \brief New dictionary containing keys of this dictionary and the keys of another applied ontop of it. */
-	decTDictionary<K,V,VP> operator+(const decTDictionary<K,V,VP> &dict) const{
-		decTDictionary<K,V,VP> ndict(*this);
+	decTDictionary<K,V,VP,KP> operator+(const decTDictionary<K,V,VP,KP> &dict) const{
+		decTDictionary<K,V,VP,KP> ndict(*this);
 		int i;
 		
 		for(i=0; i<dict.pBucketCount; i++){
@@ -666,7 +666,7 @@ public:
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	const V &operator[](const K &key) const{
+	const V &operator[](const KP &key) const{
 		return GetAt(key);
 	}
 	
@@ -674,12 +674,12 @@ public:
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	V &operator[](const K &key){
+	V &operator[](const KP &key){
 		return GetAt(key);
 	}
 	
 	/** \brief Copy dictionary to this dictionary. */
-	decTDictionary<K,V,VP> &operator=(const decTDictionary<K,V,VP> &dict){
+	decTDictionary<K,V,VP,KP> &operator=(const decTDictionary<K,V,VP,KP> &dict){
 		if(&dict == this){
 			return *this;
 		}
@@ -700,7 +700,7 @@ public:
 	}
 	
 	/** \brief Move dictionary. */
-	decTDictionary<K,V,VP> &operator=(decTDictionary<K,V,VP> &&dict){
+	decTDictionary<K,V,VP,KP> &operator=(decTDictionary<K,V,VP,KP> &&dict){
 		if(&dict == this){
 			return *this;
 		}
@@ -723,7 +723,7 @@ public:
 	}
 	
 	/** \brief Set all keys from dictionary to this dictionary. */
-	decTDictionary<K,V,VP> &operator+=(const decTDictionary<K,V,VP> &dict){
+	decTDictionary<K,V,VP,KP> &operator+=(const decTDictionary<K,V,VP,KP> &dict){
 		int i;
 		
 		for(i=0; i<dict.pBucketCount; i++){
@@ -822,7 +822,7 @@ public:
 	
 	
 private:
-	sDictEntry *pGetEntry(const K &key) const{
+	sDictEntry *pGetEntry(const KP &key) const{
 		const unsigned int hash = DEHash(key);
 		const int bucketIndex = hash % pBucketCount;
 		sDictEntry *iterEntry = pBuckets[bucketIndex];
@@ -845,8 +845,11 @@ private:
  * 
  * This template uses deTObjectReference.
  */
-template<typename V, typename K = decString>
-using decTObjectDictionary = decTDictionary<K, deTObjectReference<V>, V*>;
+#include <type_traits>
+
+template<typename V, typename K = decString, typename VP = V*,
+	typename KP = typename std::conditional<std::is_same<K, decString>::value, const char*,K>::type>
+using decTObjectDictionary = decTDictionary<K, deTObjectReference<V>, VP, KP>;
 
 /**
  * \brief String keyed thread safe object dictionary template class.
@@ -854,8 +857,9 @@ using decTObjectDictionary = decTDictionary<K, deTObjectReference<V>, V*>;
  * This template uses deTThreadSafeObjectReference to get thread safe assignment of
  * object references. This does not make the set itself thread safe though.
  */
-template<typename V, typename K = decString>
-using decTThreadSafeObjectDictionary = decTDictionary<K, deTThreadSafeObjectReference<V>, V*>;
+template<typename V, typename K = decString, typename VP = V*,
+	typename KP = typename std::conditional<std::is_same<K, decString>::value, const char*,K>::type>
+using decTThreadSafeObjectDictionary = decTDictionary<K, deTThreadSafeObjectReference<V>, VP, KP>;
 
 /**
  * \brief Dictionary template class mapping values to string keys.
@@ -863,6 +867,6 @@ using decTThreadSafeObjectDictionary = decTDictionary<K, deTThreadSafeObjectRefe
  * Convenience typedef for string-keyed dictionaries.
  */
 template<typename V, typename VP = V>
-using decTStringDictionary = decTDictionary<decString, V, VP>;
+using decTStringDictionary = decTDictionary<decString, V, VP, const char*>;
 
 #endif

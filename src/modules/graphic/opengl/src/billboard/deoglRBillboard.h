@@ -37,7 +37,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -141,7 +141,7 @@ private:
 	deoglRBillboard *pLLWorldPrev;
 	deoglRBillboard *pLLWorldNext;
 	
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRBillboard>::Element pLLPrepareForRenderWorld;
 	
 	
 	
@@ -522,8 +522,8 @@ public:
 	void SetLLWorldNext(deoglRBillboard *billboard);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRBillboard>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRBillboard>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKTEXTURE_H_
 #define _DEOGLPERSISTENTRENDERTASKTEXTURE_H_
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
 
 class deoglPersistentRenderTaskPool;
@@ -42,12 +42,12 @@ class deoglVAO;
 class deoglPersistentRenderTaskTexture{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLTexture;
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element pLLTexture;
 	
 	deoglPersistentRenderTaskPipeline *pParentPipeline;
 	const deoglTexUnitsConfig *pTUC;
 	const deoglShaderParameterBlock *pParamBlock;
-	decPointerLinkedList pVAOs;
+	decTLinkedList<deoglPersistentRenderTaskVAO> pVAOs;
 	decPointerDictionaryExt pVAOsMap;
 	
 	
@@ -97,7 +97,7 @@ public:
 	int GetVAOCount() const;
 	
 	/** Root VAO. */
-	decPointerLinkedList::cListEntry *GetRootVAO() const;
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element *GetRootVAO() const;
 	
 	/** Texture with TUC or NULL. */
 	deoglPersistentRenderTaskVAO *GetVAOWith(const deoglVAO *vao) const;
@@ -122,8 +122,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
-	inline const decPointerLinkedList::cListEntry &GetLLShader() const{ return pLLTexture; }
+	inline decTLinkedList<deoglPersistentRenderTaskTexture>::Element &GetLLTexture(){ return pLLTexture; }
+	inline const decTLinkedList<deoglPersistentRenderTaskTexture>::Element &GetLLShader() const{ return pLLTexture; }
 	/*@}*/
 };
 

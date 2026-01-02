@@ -80,25 +80,25 @@ void detTDictionary::TestStringIntBasic(){
 	ASSERT_EQUAL(dict.GetCount(), 3);
 	ASSERT_FALSE(dict.IsEmpty());
 	ASSERT_TRUE(dict.IsNotEmpty());
-	ASSERT_TRUE(dict.Has(decString("a")));
+	ASSERT_TRUE(dict.Has("a"));
 	
 	// GetAt const version (returns const V&)
-	ASSERT_EQUAL(dict.GetAt(decString("a")), 1);
+	ASSERT_EQUAL(dict.GetAt("a"), 1);
 	
 	// operator[] const version
 	ASSERT_EQUAL(dict[decString("b")], 2);
 
 	// Update existing key
 	dict.SetAt(decString("a"), 10);
-	ASSERT_EQUAL(dict.GetAt(decString("a")), 10);
+	ASSERT_EQUAL(dict.GetAt("a"), 10);
 	ASSERT_EQUAL(dict.GetCount(), 3); // count unchanged
 
 	// GetAt with output parameter
 	const int *value = 0;
-	ASSERT_TRUE(dict.GetAt(decString("b"), value));
+	ASSERT_TRUE(dict.GetAt("b", value));
 	ASSERT_NOT_NULL(value);
 	ASSERT_EQUAL(*value, 2);
-	ASSERT_FALSE(dict.GetAt(decString("missing"), value));
+	ASSERT_FALSE(dict.GetAt("missing", value));
 
 	// GetAt non-const version (returns V&)
 	decTStringIntDict dict4;
@@ -195,13 +195,13 @@ void detTDictionary::TestStringIntKeysValues(){
 	ASSERT_TRUE(values.Has(30));
 
 	// Remove
-	dict.Remove(decString("key2"));
+	dict.Remove("key2");
 	ASSERT_EQUAL(dict.GetCount(), 2);
-	ASSERT_FALSE(dict.Has(decString("key2")));
+	ASSERT_FALSE(dict.Has("key2"));
 
 	// RemoveIfPresent
-	ASSERT_TRUE(dict.RemoveIfPresent(decString("key1")));
-	ASSERT_FALSE(dict.RemoveIfPresent(decString("key1"))); // already removed
+	ASSERT_TRUE(dict.RemoveIfPresent("key1"));
+	ASSERT_FALSE(dict.RemoveIfPresent("key1")); // already removed
 	ASSERT_EQUAL(dict.GetCount(), 1);
 
 	// RemoveAll
@@ -237,17 +237,17 @@ void detTDictionary::TestStringObjectRefBasic(){
 	dict.SetAt(decString("kb"), tagB);
 	dict.SetAt(decString("kc"), tagC);
 	ASSERT_EQUAL(dict.GetCount(), 3);
-	ASSERT_TRUE(dict.Has(decString("ka")));
-	ASSERT_TRUE(dict.GetAt(decString("kb")) == tagB);
+	ASSERT_TRUE(dict.Has("ka"));
+	ASSERT_TRUE(dict.GetAt("kb") == tagB);
 
 	// Update existing key
 	dict.SetAt(decString("ka"), tagB);
-	ASSERT_TRUE(dict.GetAt(decString("ka")) == tagB);
+	ASSERT_TRUE(dict.GetAt("ka") == tagB);
 	ASSERT_EQUAL(dict.GetCount(), 3);
 
 	// Remove
 	dict.Remove(decString("ka"));
-	ASSERT_FALSE(dict.Has(decString("ka")));
+	ASSERT_FALSE(dict.Has("ka"));
 	ASSERT_EQUAL(dict.GetCount(), 2);
 
 	// RemoveIfPresent
@@ -320,16 +320,16 @@ void detTDictionary::TestGetAtOrDefault(){
 	dict.SetAt(decString("c"), 30);
 
 	// GetAtOrDefault with existing key
-	ASSERT_EQUAL(dict.GetAtOrDefault(decString("a"), 999), 10);
-	ASSERT_EQUAL(dict.GetAtOrDefault(decString("b"), -1), 20);
+	ASSERT_EQUAL(dict.GetAtOrDefault("a", 999), 10);
+	ASSERT_EQUAL(dict.GetAtOrDefault("b", -1), 20);
 
 	// GetAtOrDefault with missing key (returns default)
-	ASSERT_EQUAL(dict.GetAtOrDefault(decString("missing"), 999), 999);
-	ASSERT_EQUAL(dict.GetAtOrDefault(decString("x"), 0), 0);
+	ASSERT_EQUAL(dict.GetAtOrDefault("missing", 999), 999);
+	ASSERT_EQUAL(dict.GetAtOrDefault("x", 0), 0);
 
 	// Verify dictionary not modified
 	ASSERT_EQUAL(dict.GetCount(), 3);
-	ASSERT_FALSE(dict.Has(decString("missing")));
+	ASSERT_FALSE(dict.Has("missing"));
 
 	// Test with ObjectRef values
 	decTStringXmlTagDict dictObj;
@@ -562,18 +562,18 @@ void detTDictionary::TestRemoveIf(){
 	};
 	dict.RemoveIf(evaluator);
 	ASSERT_EQUAL(dict.GetCount(), 2);
-	ASSERT_FALSE(dict.Has(decString("a")));
-	ASSERT_FALSE(dict.Has(decString("b")));
-	ASSERT_TRUE(dict.Has(decString("c")));
-	ASSERT_TRUE(dict.Has(decString("d")));
+	ASSERT_FALSE(dict.Has("a"));
+	ASSERT_FALSE(dict.Has("b"));
+	ASSERT_TRUE(dict.Has("c"));
+	ASSERT_TRUE(dict.Has("d"));
 
 	// RemoveIf with rvalue evaluator (remove specific key)
 	dict.RemoveIf([](const decString &key, const int &value) -> bool {
 		return key == "c";
 	});
 	ASSERT_EQUAL(dict.GetCount(), 1);
-	ASSERT_FALSE(dict.Has(decString("c")));
-	ASSERT_TRUE(dict.Has(decString("d")));
+	ASSERT_FALSE(dict.Has("c"));
+	ASSERT_TRUE(dict.Has("d"));
 
 	// RemoveIf with no matches
 	dict.SetAt(decString("e"), 50);

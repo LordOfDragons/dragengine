@@ -654,7 +654,7 @@ void deoglRenderGeometry::RenderTask(const deoglComputeRenderTask &renderTask){
 }
 
 void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask){
-	const decPointerLinkedList::cListEntry *iterPipeline = renderTask.GetRootPipeline();
+	const decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *iterPipeline = renderTask.GetRootPipeline();
 	if(!iterPipeline){
 		return;
 	}
@@ -668,7 +668,7 @@ void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
 	while(iterPipeline){
-		const deoglPersistentRenderTaskPipeline &rtpipeline = *((deoglPersistentRenderTaskPipeline*)iterPipeline->GetOwner());
+		const deoglPersistentRenderTaskPipeline &rtpipeline = *iterPipeline->GetOwner();
 		const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
 		deoglShaderCompiled &shader = pipeline.GetShader();
 		
@@ -678,19 +678,19 @@ void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask
 			renderParamBlock->Activate();
 		}
 		
-		const decPointerLinkedList::cListEntry *iterTexture = rtpipeline.GetRootTexture();
+		const decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iterTexture = rtpipeline.GetRootTexture();
 		while(iterTexture){
-			const deoglPersistentRenderTaskTexture &texture = *((deoglPersistentRenderTaskTexture*)iterTexture->GetOwner());
+			const deoglPersistentRenderTaskTexture &texture = *iterTexture->GetOwner();
 			
 			if(texture.GetParameterBlock()){
 				texture.GetParameterBlock()->Activate();
 			}
 			texture.GetTUC()->Apply();
 			
-			const decPointerLinkedList::cListEntry *iterVAO = texture.GetRootVAO();
+			const decTLinkedList<deoglPersistentRenderTaskVAO>::Element *iterVAO = texture.GetRootVAO();
 			while(iterVAO){
-				const deoglPersistentRenderTaskVAO &rtvao = *((deoglPersistentRenderTaskVAO*)iterVAO->GetOwner());
-				const decPointerLinkedList::cListEntry *iterInstance = rtvao.GetRootInstance();
+				const deoglPersistentRenderTaskVAO &rtvao = *iterVAO->GetOwner();
+				const decTLinkedList<deoglPersistentRenderTaskInstance>::Element *iterInstance = rtvao.GetRootInstance();
 				if(!iterInstance){
 					iterVAO = iterVAO->GetNext();
 					continue;
@@ -706,7 +706,7 @@ void deoglRenderGeometry::RenderTask(const deoglPersistentRenderTask &renderTask
 				const int indexSize = vao->GetIndexSize();
 				
 				while(iterInstance){
-					const deoglPersistentRenderTaskInstance &instance = *((deoglPersistentRenderTaskInstance*)iterInstance->GetOwner());
+					const deoglPersistentRenderTaskInstance &instance = *iterInstance->GetOwner();
 					
 					if(instance.GetParameterBlock()){
 						instance.GetParameterBlock()->Activate();

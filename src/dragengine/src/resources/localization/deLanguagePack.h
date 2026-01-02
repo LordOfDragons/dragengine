@@ -26,7 +26,7 @@
 #define _DELANGUAGEPACK_H_
 
 #include "../deFileResource.h"
-#include "../../common/collection/decPointerDictionary.h"
+#include "../../common/collection/decTDictionary.h"
 #include "../../common/string/unicode/decUnicodeString.h"
 
 class deLanguagePackEntry;
@@ -53,7 +53,7 @@ private:
 	deLanguagePackEntry *pEntries;
 	int pEntryCount;
 	
-	decPointerDictionary pLookupTable;
+	decTStringDictionary<deLanguagePackEntry*> pLookupTable;
 	
 	
 	

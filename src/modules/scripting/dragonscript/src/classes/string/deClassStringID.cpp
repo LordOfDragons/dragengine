@@ -227,7 +227,7 @@ pDS(ds)
 {
 	// empty string is the first entry in the table
 	pStrings.Add("");
-	pLookUpTable.SetAt("", (void*)(intptr_t)0);
+	pLookUpTable.SetAt("", 0);
 	
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
@@ -301,14 +301,14 @@ int deClassStringID::InsertString(const char *string){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	void *entry;
-	if(pLookUpTable.GetAt(string, &entry)){
-		return (int)(intptr_t)entry;
+	const int *entry;
+	if(pLookUpTable.GetAt(string, entry)){
+		return *entry;
 	}
 	
 	const int index = pStrings.GetCount();
 	pStrings.Add(string);
-	pLookUpTable.SetAt(string, reinterpret_cast<void*>(static_cast<intptr_t>(index)));
+	pLookUpTable.SetAt(string, index);
 	return index;
 }
 

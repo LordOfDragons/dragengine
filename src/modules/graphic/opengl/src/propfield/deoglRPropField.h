@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 #include "../deoglGL.h"
 
@@ -61,7 +61,7 @@ private:
 	bool pTypesRequirePrepareForRender;
 	
 	bool pWorldMarkedRemove;
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRPropField>::Element pLLPrepareForRenderWorld;
 	
 	
 	
@@ -161,8 +161,8 @@ public:
 	void SetWorldMarkedRemove(bool marked);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRPropField>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRPropField>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

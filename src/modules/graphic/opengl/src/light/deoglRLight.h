@@ -36,7 +36,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
@@ -171,7 +171,7 @@ private:
 	deoglRLight *pLLWorldPrev;
 	deoglRLight *pLLWorldNext;
 	
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRLight>::Element pLLPrepareForRenderWorld;
 	
 	
 	
@@ -596,8 +596,8 @@ public:
 	inline deoglRLight *GetLLWorldNext() const{ return pLLWorldNext; }
 	void SetLLWorldNext(deoglRLight *light);
 	
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRLight>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRLight>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 private:

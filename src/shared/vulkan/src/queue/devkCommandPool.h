@@ -29,7 +29,7 @@
 #include "devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class devkDevice;
 
@@ -47,7 +47,7 @@ private:
 	const devkQueue::Ref pQueue;
 	
 	VkCommandPool pPool;
-	decObjectLinkedList pFreeCommandBuffers;
+	decTObjectLinkedList<devkCommandBuffer> pFreeCommandBuffers;
 	
 	
 public:

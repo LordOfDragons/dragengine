@@ -38,7 +38,7 @@
  * 
  * All elements except default constructed values are allowed. Elements can not be included multiple times in the list.
  * 
- * To use an element with the linked list add the cListEntry class instance as member to the class
+ * To use an element with the linked list add the Element class instance as member to the class
  * to be stored in the linked list like this:
  * 
  * \code{.cpp}
@@ -46,7 +46,7 @@
  * 
  * class MyClass{
  * public:
- * decTLinkedList<MyClass>::cListEntry MyList;
+ * decTLinkedList<MyClass>::Element MyList;
  * ...
  * }
  * 
@@ -55,7 +55,7 @@
  * }
  * \endcode
  * 
- * The constructor call links the cListEntry to the owner class and allows to retrieve the owner
+ * The constructor call links the Element to the owner class and allows to retrieve the owner
  * class put in the list from a list entry.
  * 
  * Template parameter TG allows to define reference holder type, for example
@@ -564,6 +564,7 @@ public:
 		// before clearing the Element is in a proper cleared state before the reference goes
 		// out of scope
 		const TR guard(entry->pReference);
+		(void)guard; // suppress unused variable warning
 		entry->pReference = TR();
 		
 		pCount--;

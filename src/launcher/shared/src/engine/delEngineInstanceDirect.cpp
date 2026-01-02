@@ -1063,7 +1063,7 @@ const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &file
 	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New());
 	delgaVfs->AddContainer(container);
 	
-	const deArchive::Ref delgaArchiveamgr.OpenArchive(delgaVfs, delgaFile, "/"));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFile, "/"));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));

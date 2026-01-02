@@ -329,10 +329,10 @@ void deoalMicrophone::pSyncSpeakers(){
 	
 	// synchronize speakers requiring to be synchronized. this has to be done in a way speakers
 	// can add themselves to synchronize again for the next frame from inside Synchronize().
-	decPointerLinkedList::cListEntry * const tailSpeaker = pListSyncSpeakers.GetTail();
+	decTLinkedList<deoalSpeaker>::Element * const tailSpeaker = pListSyncSpeakers.GetTail();
 	while(pListSyncSpeakers.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncSpeakers.GetRoot();
-		deoalSpeaker &speaker = *((deoalSpeaker*)entry->GetOwner());
+		decTLinkedList<deoalSpeaker>::Element * const entry = pListSyncSpeakers.GetRoot();
+		deoalSpeaker &speaker = *entry->GetOwner();
 		pListSyncSpeakers.Remove(entry);
 		
 		speaker.Synchronize(); // can potentially re-add the speaker

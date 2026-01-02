@@ -61,11 +61,11 @@ deoglPersistentRenderTaskPipeline::~deoglPersistentRenderTaskPipeline(){
 ///////////////
 
 int deoglPersistentRenderTaskPipeline::GetTotalPointCount() const{
-	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iter = pTextures.GetRoot();
 	int pointCount = 0;
 	
 	while(iter){
-		pointCount += ((deoglPersistentRenderTaskTexture*)iter->GetOwner())->GetTotalPointCount();
+		pointCount += iter->GetOwner()->GetTotalPointCount();
 		iter = iter->GetNext();
 	}
 	
@@ -73,11 +73,11 @@ int deoglPersistentRenderTaskPipeline::GetTotalPointCount() const{
 }
 
 int deoglPersistentRenderTaskPipeline::GetTotalVAOCount() const{
-	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iter = pTextures.GetRoot();
 	int vaoCount = 0;
 	
 	while(iter){
-		vaoCount += ((deoglPersistentRenderTaskTexture*)iter->GetOwner())->GetVAOCount();
+		vaoCount += iter->GetOwner()->GetVAOCount();
 		iter = iter->GetNext();
 	}
 	
@@ -85,11 +85,11 @@ int deoglPersistentRenderTaskPipeline::GetTotalVAOCount() const{
 }
 
 int deoglPersistentRenderTaskPipeline::GetTotalInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iter = pTextures.GetRoot();
 	int instanceCount = 0;
 	
 	while(iter){
-		instanceCount += ((deoglPersistentRenderTaskTexture*)iter->GetOwner())->GetTotalInstanceCount();
+		instanceCount += iter->GetOwner()->GetTotalInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -97,11 +97,11 @@ int deoglPersistentRenderTaskPipeline::GetTotalInstanceCount() const{
 }
 
 int deoglPersistentRenderTaskPipeline::GetTotalSubInstanceCount() const{
-	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iter = pTextures.GetRoot();
 	int subInstanceCount = 0;
 	
 	while(iter){
-		subInstanceCount += ((deoglPersistentRenderTaskTexture*)iter->GetOwner())->GetTotalSubInstanceCount();
+		subInstanceCount += iter->GetOwner()->GetTotalSubInstanceCount();
 		iter = iter->GetNext();
 	}
 	
@@ -136,7 +136,7 @@ int deoglPersistentRenderTaskPipeline::GetTextureCount() const{
 	return pTextures.GetCount();
 }
 
-decPointerLinkedList::cListEntry *deoglPersistentRenderTaskPipeline::GetRootTexture() const{
+decTLinkedList<deoglPersistentRenderTaskTexture>::Element *deoglPersistentRenderTaskPipeline::GetRootTexture() const{
 	return pTextures.GetRoot();
 }
 
@@ -180,9 +180,9 @@ void deoglPersistentRenderTaskPipeline::RemoveTexture(deoglPersistentRenderTaskT
 }
 
 void deoglPersistentRenderTaskPipeline::RemoveAllTextures(){
-	decPointerLinkedList::cListEntry *iter = pTextures.GetRoot();
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *iter = pTextures.GetRoot();
 	while(iter){
-		pPool.ReturnTexture((deoglPersistentRenderTaskTexture*)iter->GetOwner());
+		pPool.ReturnTexture(iter->GetOwner());
 		iter = iter->GetNext();
 	}
 	pTextures.RemoveAll();

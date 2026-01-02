@@ -29,7 +29,6 @@
 #include "../canvas/deoglCanvasViewListener.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
 
@@ -91,7 +90,7 @@ public:
 	
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglLight>::Element pLLSyncWorld;
 	
 	
 	
@@ -218,8 +217,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglLight>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglLight>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

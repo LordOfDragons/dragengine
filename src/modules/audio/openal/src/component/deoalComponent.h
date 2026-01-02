@@ -28,7 +28,7 @@
 #include "deoalAComponent.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioComponent.h>
 
 class deoalComponentDebug;
@@ -77,7 +77,7 @@ private:
 	
 	deoalComponentDebug *pDebug;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoalComponent>::Element pLLSyncWorld;
 	
 	
 	
@@ -208,8 +208,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalComponent>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalComponent>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

@@ -29,7 +29,7 @@
 #include "../devkTPoolReference.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class devkDevice;
@@ -63,7 +63,7 @@ private:
 	VkFence pFence;
 	bool pFenceActive;
 	
-	decObjectLinkedList::cListEntry pLLPool;
+	decTObjectLinkedList<devkCommandBuffer>::Element pLLPool;
 	
 	
 public:
@@ -174,7 +174,7 @@ public:
 	void ReturnToPool();
 	
 	/** Command pool linked list. */
-	inline decObjectLinkedList::cListEntry &GetLLPool(){ return pLLPool; }
+	inline decTObjectLinkedList<devkCommandBuffer>::Element &GetLLPool(){ return pLLPool; }
 	/*@}*/
 	
 	

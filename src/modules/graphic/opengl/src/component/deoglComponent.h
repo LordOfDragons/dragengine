@@ -28,7 +28,7 @@
 #include "deoglRComponent.h"
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicComponent.h>
 
 class deoglDynamicSkin;
@@ -99,7 +99,7 @@ public:
 	bool pDecalRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglComponent>::Element pLLSyncWorld;
 	
 	
 	
@@ -273,8 +273,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglComponent>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglComponent>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

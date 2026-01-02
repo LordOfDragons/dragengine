@@ -26,7 +26,7 @@
 #define _DEOGLPERSISTENTRENDERTASK_H_
 
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../../deoglBasics.h"
@@ -61,9 +61,9 @@ private:
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	decPointerLinkedList pOwners;
+	decTLinkedList<deoglPersistentRenderTaskOwner> pOwners;
 	decPointerDictionaryExt pOwnersMap;
-	decPointerLinkedList pPipelines;
+	decTLinkedList<deoglPersistentRenderTaskPipeline> pPipelines;
 	decPointerDictionaryExt pPipelinesMap;
 	
 	
@@ -109,7 +109,7 @@ public:
 	int GetOwnerCount() const;
 	
 	/** Get root owner. */
-	decPointerLinkedList::cListEntry *GetRootOwner() const;
+	decTLinkedList<deoglPersistentRenderTaskOwner>::Element *GetRootOwner() const;
 	
 	/** Get matching owner or NULL. */
 	deoglPersistentRenderTaskOwner *GetOwnerWith(deObject *owner, unsigned int hash) const;
@@ -129,7 +129,7 @@ public:
 	int GetPipelineCount() const;
 	
 	/** Root pipeline. */
-	decPointerLinkedList::cListEntry *GetRootPipeline() const;
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *GetRootPipeline() const;
 	
 	/** Pipeline with pipeline or nullptr. */
 	deoglPersistentRenderTaskPipeline *GetPipelineWith(const deoglPipeline *pipeline) const;

@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 #define _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
 
 class deoglPersistentRenderTask;
@@ -42,14 +42,14 @@ class deoglTexUnitsConfig;
 class deoglPersistentRenderTaskPipeline{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLTask;
+	decTLinkedList<deoglPersistentRenderTaskPipeline>::Element pLLTask;
 	
 	deoglPersistentRenderTask *pParentTask;
 	const deoglPipeline *pPipeline;
 	deoglSPBlockUBO *pParamBlock;
 	int pSPBInstanceIndexBase;
 	int pDrawIDOffset;
-	decPointerLinkedList pTextures;
+	decTLinkedList<deoglPersistentRenderTaskTexture> pTextures;
 	decPointerDictionaryExt pTexturesMap;
 	
 	
@@ -116,7 +116,7 @@ public:
 	int GetTextureCount() const;
 	
 	/** Root texture. */
-	decPointerLinkedList::cListEntry *GetRootTexture() const;
+	decTLinkedList<deoglPersistentRenderTaskTexture>::Element *GetRootTexture() const;
 	
 	/** Texture with TUC or NULL. */
 	deoglPersistentRenderTaskTexture *GetTextureWith(const deoglTexUnitsConfig *tuc) const;
@@ -141,8 +141,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
+	inline decTLinkedList<deoglPersistentRenderTaskPipeline>::Element &GetLLTask(){ return pLLTask; }
+	inline const decTLinkedList<deoglPersistentRenderTaskPipeline>::Element &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

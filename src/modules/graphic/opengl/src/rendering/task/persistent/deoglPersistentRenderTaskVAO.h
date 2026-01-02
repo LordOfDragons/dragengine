@@ -28,7 +28,7 @@
 #include "../../../deoglBasics.h"
 
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglPersistentRenderTaskPool;
@@ -46,11 +46,11 @@ class deoglVAO;
 class deoglPersistentRenderTaskVAO{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLTexture;
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element pLLTexture;
 	
 	deoglPersistentRenderTaskTexture *pParentTexture;
 	const deoglVAO *pVAO;
-	decPointerLinkedList pInstances;
+	decTLinkedList<deoglPersistentRenderTaskInstance> pInstances;
 	decPointerDictionaryExt pInstancesMap;
 	
 	
@@ -95,7 +95,7 @@ public:
 	int GetInstanceCount() const;
 	
 	/** Root instance. */
-	decPointerLinkedList::cListEntry *GetRootInstance() const;
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element *GetRootInstance() const;
 	
 	/** Instance with shared sub instance spb. */
 	deoglPersistentRenderTaskInstance *GetInstanceWith(const deoglSharedSPBRTIGroup *group) const;
@@ -121,8 +121,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
-	inline const decPointerLinkedList::cListEntry &GetLLTexture() const{ return pLLTexture; }
+	inline decTLinkedList<deoglPersistentRenderTaskVAO>::Element &GetLLTexture(){ return pLLTexture; }
+	inline const decTLinkedList<deoglPersistentRenderTaskVAO>::Element &GetLLTexture() const{ return pLLTexture; }
 	/*@}*/
 };
 

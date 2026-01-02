@@ -28,7 +28,6 @@
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 #include "deoglRBillboard.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
 
 class deGraphicOpenGl;
@@ -73,7 +72,7 @@ public:
 	bool pDynamicSkinRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoglBillboard>::Element pLLSyncWorld;
 	
 	
 	
@@ -128,8 +127,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoglBillboard>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoglBillboard>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

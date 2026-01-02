@@ -27,7 +27,7 @@
 
 #include "deoglRWorld.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicWorld.h>
 
 class deoglHeightTerrain;
@@ -69,8 +69,8 @@ private:
 	
 	bool pSyncing;
 	
-	decPointerLinkedList pListSyncComponents;
-	decPointerLinkedList pListSyncBillboards;
+	decTLinkedList<deoglComponent> pListSyncComponents;
+	decTLinkedList<deoglBillboard> pListSyncBillboards;
 	
 	
 	

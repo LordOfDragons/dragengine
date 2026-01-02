@@ -26,7 +26,7 @@
 #define _DEOGLPERSISTENTRENDERTASKOWNER_H_
 
 #include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
@@ -40,7 +40,7 @@ class deoglPersistentRenderTaskSubInstance;
  */
 class deoglPersistentRenderTaskOwner{
 private:
-	decPointerLinkedList::cListEntry pLLTask;
+	decTLinkedList<deoglPersistentRenderTaskOwner>::Element pLLTask;
 	
 	void *pOwner;
 	unsigned int pHash;
@@ -138,8 +138,9 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
+	/** Linked list. */
+	inline decTLinkedList<deoglPersistentRenderTaskOwner>::Element &GetLLTask(){ return pLLTask; }
+	inline const decTLinkedList<deoglPersistentRenderTaskOwner>::Element &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

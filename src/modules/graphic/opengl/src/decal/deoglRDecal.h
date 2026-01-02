@@ -37,7 +37,6 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
 
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;

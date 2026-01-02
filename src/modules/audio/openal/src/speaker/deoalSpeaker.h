@@ -27,8 +27,8 @@
 
 #include "deoalASpeaker.h"
 
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSpeaker.h>
 
 class deAudioOpenAL;
@@ -72,8 +72,8 @@ private:
 	bool pDirtyVideoPlayer;
 	bool pDirtyResetStreaming;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
-	decPointerLinkedList::cListEntry pLLSyncMic;
+	decTLinkedList<deoalSpeaker>::Element pLLSyncWorld;
+	decTLinkedList<deoalSpeaker>::Element pLLSyncMic;
 	
 	
 	
@@ -185,12 +185,12 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalSpeaker>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalSpeaker>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	
 	/** \brief Microphone syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncMic(){ return pLLSyncMic; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncMic() const{ return pLLSyncMic; }
+	inline decTLinkedList<deoalSpeaker>::Element &GetLLSyncMic(){ return pLLSyncMic; }
+	inline const decTLinkedList<deoalSpeaker>::Element &GetLLSyncMic() const{ return pLLSyncMic; }
 	/*@}*/
 	
 	

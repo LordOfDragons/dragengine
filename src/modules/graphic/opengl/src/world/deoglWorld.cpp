@@ -813,10 +813,10 @@ void deoglWorld::pSyncComponents(){
 	#ifdef HACK_TEST_CS
 	int syncComponentCount = 0;
 	#endif
-	decPointerLinkedList::cListEntry * const tailComponent = pListSyncComponents.GetTail();
+	decTLinkedList<deoglComponent>::Element * const tailComponent = pListSyncComponents.GetTail();
 	while(pListSyncComponents.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncComponents.GetRoot();
-		deoglComponent &component = *((deoglComponent*)entry->GetOwner());
+		decTLinkedList<deoglComponent>::Element * const entry = pListSyncComponents.GetRoot();
+		deoglComponent &component = *entry->GetOwner();
 		pListSyncComponents.Remove(entry);
 		
 		component.SyncToRender(); // can potentially re-add the component
@@ -969,10 +969,10 @@ void deoglWorld::pSyncBillboards(){
 		DEBUG_PRINT_TIMER("DirtyBillboards");
 	}
 	
-	decPointerLinkedList::cListEntry * const tailBillboard = pListSyncBillboards.GetTail();
+	decTLinkedList<deoglBillboard>::Element * const tailBillboard = pListSyncBillboards.GetTail();
 	while(pListSyncBillboards.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncBillboards.GetRoot();
-		deoglBillboard &billboard = *((deoglBillboard*)entry->GetOwner());
+		decTLinkedList<deoglBillboard>::Element * const entry = pListSyncBillboards.GetRoot();
+		deoglBillboard &billboard = *entry->GetOwner();
 		pListSyncBillboards.Remove(entry);
 		
 		billboard.SyncToRender(); // can potentially re-add the billboard

@@ -260,9 +260,9 @@ void deoglRWorld::EarlyPrepareForRender(deoglRenderPlan &plan){
 	pCreateSkyEnvMap();
 	
 	// early prepare lights
-	const decPointerLinkedList::cListEntry *iterLight = pListPrepareForRenderLights.GetRoot();
+	const decTLinkedList<deoglRLight>::Element *iterLight = pListPrepareForRenderLights.GetRoot();
 	while(iterLight){
-		((deoglRLight*)iterLight->GetOwner())->EarlyPrepareForRender();
+		iterLight->GetOwner()->EarlyPrepareForRender();
 		iterLight = iterLight->GetNext();
 	}
 	SPECIAL_TIMER_PRINT_EARLY("Lights")
@@ -292,10 +292,10 @@ void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanM
 	{
 		const deoglDebugTraceGroup debugTrace2(pRenderThread, "Components");
 		pListPrepareRenderComponents.RemoveAll();
-		decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
+		decTLinkedList<deoglRComponent>::Element * const tailComponent = pListPrepareForRenderComponents.GetTail();
 		while(pListPrepareForRenderComponents.GetRoot()){
-			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderComponents.GetRoot();
-			deoglRComponent &component = *((deoglRComponent*)entry->GetOwner());
+			decTLinkedList<deoglRComponent>::Element * const entry = pListPrepareForRenderComponents.GetRoot();
+			deoglRComponent &component = *entry->GetOwner();
 			pListPrepareForRenderComponents.Remove(entry);
 			
 			if(component.GetParentWorld()){ // sanity check
@@ -316,10 +316,10 @@ void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanM
 	{
 		const deoglDebugTraceGroup debugTrace2(pRenderThread, "Billboards");
 		pListPrepareRenderBillboards.RemoveAll();
-		decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
+		decTLinkedList<deoglRBillboard>::Element * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
 		while(pListPrepareForRenderBillboards.GetRoot()){
-			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderBillboards.GetRoot();
-			deoglRBillboard &billboard = *((deoglRBillboard*)entry->GetOwner());
+			decTLinkedList<deoglRBillboard>::Element * const entry = pListPrepareForRenderBillboards.GetRoot();
+			deoglRBillboard &billboard = *entry->GetOwner();
 			pListPrepareForRenderBillboards.Remove(entry);
 			
 			if(billboard.GetParentWorld()){ // sanity check
@@ -340,10 +340,10 @@ void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanM
 	{
 		const deoglDebugTraceGroup debugTrace2(pRenderThread, "Lights");
 		pListPrepareRenderLights.RemoveAll();
-		decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
+		decTLinkedList<deoglRLight>::Element * const tailLight = pListPrepareForRenderLights.GetTail();
 		while(pListPrepareForRenderLights.GetRoot()){
-			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
-			deoglRLight &light = *((deoglRLight*)entry->GetOwner());
+			decTLinkedList<deoglRLight>::Element * const entry = pListPrepareForRenderLights.GetRoot();
+			deoglRLight &light = *entry->GetOwner();
 			pListPrepareForRenderLights.Remove(entry);
 			
 			if(light.GetParentWorld()){ // sanity check
@@ -364,10 +364,10 @@ void deoglRWorld::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanM
 	{
 		const deoglDebugTraceGroup debugTrace2(pRenderThread, "PropFields");
 		pListPrepareRenderPropFields.RemoveAll();
-		decPointerLinkedList::cListEntry * const tailPropField = pListPrepareForRenderPropFields.GetTail();
+		decTLinkedList<deoglRPropField>::Element * const tailPropField = pListPrepareForRenderPropFields.GetTail();
 		while(pListPrepareForRenderPropFields.GetRoot()){
-			decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderPropFields.GetRoot();
-			deoglRPropField &propField = *((deoglRPropField*)entry->GetOwner());
+			decTLinkedList<deoglRPropField>::Element * const entry = pListPrepareForRenderPropFields.GetRoot();
+			deoglRPropField &propField = *entry->GetOwner();
 			pListPrepareForRenderPropFields.Remove(entry);
 			
 			if(propField.GetParentWorld()){ // sanity check

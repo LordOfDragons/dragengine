@@ -28,8 +28,8 @@
 #include "deoalAMicrophone.h"
 #include "../speaker/deoalSpeakerList.h"
 
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioMicrophone.h>
 
 class deAudioOpenAL;
@@ -59,9 +59,9 @@ private:
 	bool pDirtyOctreeNode;
 	bool pDirtyLayerMask;
 	
-	decPointerLinkedList pListSyncSpeakers;
+	decTLinkedList<deoalSpeaker> pListSyncSpeakers;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoalMicrophone>::Element pLLSyncWorld;
 	
 	
 	
@@ -167,8 +167,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalMicrophone>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalMicrophone>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

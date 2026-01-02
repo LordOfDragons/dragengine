@@ -26,7 +26,7 @@
 #define _DECLASSSTRINGID_H_
 
 #include <libdscript/libdscript.h>
-#include <dragengine/common/collection/decPointerDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 
 class deEngine;
@@ -46,7 +46,7 @@ private:
 	deScriptingDragonScript &pDS;
 	
 	decStringList pStrings;
-	decPointerDictionary pLookUpTable;
+	decTStringDictionary<int> pLookUpTable;
 	
 	
 	

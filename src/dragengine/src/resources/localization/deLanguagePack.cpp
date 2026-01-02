@@ -130,10 +130,9 @@ const decUnicodeString &deLanguagePack::Translate(const char *name) const{
 
 const decUnicodeString &deLanguagePack::Translate(const char *name,
 const decUnicodeString &defaultValue) const{
-	void *pointer;
-	
-	if(pLookupTable.GetAt(name, &pointer)){
-		return ((const deLanguagePackEntry*)pointer)->GetText();
+	deLanguagePackEntry * const *pointer;
+	if(pLookupTable.GetAt(name, pointer)){
+		return (*pointer)->GetText();
 		
 	}else{
 		return defaultValue;
@@ -143,9 +142,9 @@ const decUnicodeString &defaultValue) const{
 bool deLanguagePack::Translate(const char *name, const decUnicodeString **text) const {
 	DEASSERT_NOTNULL(text);
 	
-	void *pointer;
-	if(pLookupTable.GetAt(name, &pointer)){
-		*text = &( ( const deLanguagePackEntry* )pointer )->GetText();
+	deLanguagePackEntry * const *pointer;
+	if(pLookupTable.GetAt(name, pointer)){
+		*text = &((*pointer)->GetText());
 		return true;
 		
 	}else{

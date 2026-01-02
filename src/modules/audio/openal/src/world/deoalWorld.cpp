@@ -402,10 +402,10 @@ void deoalWorld::pSyncComponents(){
 	}
 	
 	// synchronize components requiring to be synchronized
-	decPointerLinkedList::cListEntry * const tailComponent = pListSyncComponents.GetTail();
+	decTLinkedList<deoalComponent>::Element * const tailComponent = pListSyncComponents.GetTail();
 	while(pListSyncComponents.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncComponents.GetRoot();
-		deoalComponent &component = *((deoalComponent*)entry->GetOwner());
+		decTLinkedList<deoalComponent>::Element * const entry = pListSyncComponents.GetRoot();
+		deoalComponent &component = *entry->GetOwner();
 		pListSyncComponents.Remove(entry);
 		
 		component.Synchronize(); // can potentially re-add the component
@@ -435,10 +435,10 @@ void deoalWorld::pSyncSpeakers(){
 	}
 	
 	// synchronize speakers requiring to be synchronized
-	decPointerLinkedList::cListEntry * const tailSpeaker = pListSyncSpeakers.GetTail();
+	decTLinkedList<deoalSpeaker>::Element * const tailSpeaker = pListSyncSpeakers.GetTail();
 	while(pListSyncSpeakers.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncSpeakers.GetRoot();
-		deoalSpeaker &speaker = *((deoalSpeaker*)entry->GetOwner());
+		decTLinkedList<deoalSpeaker>::Element * const entry = pListSyncSpeakers.GetRoot();
+		deoalSpeaker &speaker = *entry->GetOwner();
 		pListSyncSpeakers.Remove(entry);
 		
 		speaker.Synchronize(); // can potentially re-add the speaker
@@ -468,10 +468,10 @@ void deoalWorld::pSyncMicrophones(){
 	}
 	
 	// synchronize microphones requiring to be synchronized
-	decPointerLinkedList::cListEntry * const tailMicrophone = pListSyncMicrophones.GetTail();
+	decTLinkedList<deoalMicrophone>::Element * const tailMicrophone = pListSyncMicrophones.GetTail();
 	while(pListSyncMicrophones.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncMicrophones.GetRoot();
-		deoalMicrophone &microphone = *((deoalMicrophone*)entry->GetOwner());
+		decTLinkedList<deoalMicrophone>::Element * const entry = pListSyncMicrophones.GetRoot();
+		deoalMicrophone &microphone = *entry->GetOwner();
 		pListSyncMicrophones.Remove(entry);
 		
 		microphone.Synchronize(); // can potentially re-add the microphone
@@ -501,10 +501,10 @@ void deoalWorld::pSyncSoundLevelMeters(){
 	}
 	
 	// synchronize soundLevelMeters requiring to be synchronized
-	decPointerLinkedList::cListEntry * const tailSoundLevelMeter = pListSyncSoundLevelMeters.GetTail();
+	decTLinkedList<deoalSoundLevelMeter>::Element * const tailSoundLevelMeter = pListSyncSoundLevelMeters.GetTail();
 	while(pListSyncSoundLevelMeters.GetRoot()){
-		decPointerLinkedList::cListEntry * const entry = pListSyncSoundLevelMeters.GetRoot();
-		deoalSoundLevelMeter &soundLevelMeter = *((deoalSoundLevelMeter*)entry->GetOwner());
+		decTLinkedList<deoalSoundLevelMeter>::Element * const entry = pListSyncSoundLevelMeters.GetRoot();
+		deoalSoundLevelMeter &soundLevelMeter = *entry->GetOwner();
 		pListSyncSoundLevelMeters.Remove(entry);
 		
 		soundLevelMeter.Synchronize(); // can potentially re-add the soundLevelMeter

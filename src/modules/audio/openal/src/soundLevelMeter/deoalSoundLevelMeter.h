@@ -29,7 +29,7 @@
 #include "../speaker/deoalSpeakerList.h"
 
 #include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSoundLevelMeter.h>
@@ -63,7 +63,7 @@ private:
 	
 	decObjectSet pOldSpeakers;
 	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoalSoundLevelMeter>::Element pLLSyncWorld;
 	
 	
 	
@@ -158,8 +158,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalSoundLevelMeter>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalSoundLevelMeter>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	

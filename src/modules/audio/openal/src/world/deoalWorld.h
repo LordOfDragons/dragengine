@@ -27,7 +27,7 @@
 
 #include "deoalAWorld.h"
 
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioWorld.h>
 
 class deWorld;
@@ -54,10 +54,10 @@ private:
 	bool pDirtyAllMicLayerMask;
 	bool pDirtyAudioParameters;
 	
-	decPointerLinkedList pListSyncComponents;
-	decPointerLinkedList pListSyncSpeakers;
-	decPointerLinkedList pListSyncMicrophones;
-	decPointerLinkedList pListSyncSoundLevelMeters;
+	decTLinkedList<deoalComponent> pListSyncComponents;
+	decTLinkedList<deoalSpeaker> pListSyncSpeakers;
+	decTLinkedList<deoalMicrophone> pListSyncMicrophones;
+	decTLinkedList<deoalSoundLevelMeter> pListSyncSoundLevelMeters;
 	
 	
 	
