@@ -26,7 +26,7 @@
 #define _DEOGLPERSISTENTRENDERTASKTEXTURE_H_
 
 #include <dragengine/common/collection/decTLinkedList.h>
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskPipeline;
@@ -48,7 +48,7 @@ private:
 	const deoglTexUnitsConfig *pTUC;
 	const deoglShaderParameterBlock *pParamBlock;
 	decTLinkedList<deoglPersistentRenderTaskVAO> pVAOs;
-	decPointerDictionaryExt pVAOsMap;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskVAO*> pVAOsMap;
 	
 	
 	

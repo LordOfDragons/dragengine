@@ -135,30 +135,23 @@ void deoglCanvasView::SyncContentToRender(){
 //////////////
 
 void deoglCanvasView::AddListener(deoglCanvasViewListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void deoglCanvasView::RemoveListener(deoglCanvasViewListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
-
 void deoglCanvasView::NotifyDestroyed(){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglCanvasViewListener*)pListeners.GetAt(i))->CanvasViewDestroyed();
-	}
+	pListeners.Visit([&](deoglCanvasViewListener *listener){
+		listener->CanvasViewDestroyed();
+	});
 }
 
 void deoglCanvasView::NotifyRequiresSync(){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglCanvasViewListener*)pListeners.GetAt(i))->CanvasViewRequiresSync();
-	}
+	pListeners.Visit([&](deoglCanvasViewListener *listener){
+		listener->CanvasViewRequiresSync();
+	});
 }
 
 

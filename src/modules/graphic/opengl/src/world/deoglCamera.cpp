@@ -308,31 +308,27 @@ void deoglCamera::VRRenderParametersChanged(){
 
 // Private Functions
 //////////////////////
-
 void deoglCamera::pCleanUp(){
-	SetParentWorld(NULL);
+	SetParentWorld(nullptr);
+	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
 	// case they can not use the old pointer to remove themselves from the dynamic skin
-	int i, count = pNotifyRenderables.GetCount();
-	for(i=0; i<count; i++){
-		((deoglDSRenderableCamera*)pNotifyRenderables.GetAt(i))->DropCamera();
-	}
+	pNotifyRenderables.Visit([&](deoglDSRenderableCamera *renderable){
+		renderable->DropCamera();
+	});
 	
-	count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasRenderWorld*)pNotifyCanvas.GetAt(i))->DropCamera();
-	}
+	pNotifyCanvas.Visit([&](deoglCanvasRenderWorld *canvas){
+		canvas->DropCamera();
+	});
 }
 
 void deoglCamera::pRequiresSync(){
-	int i, count = pNotifyRenderables.GetCount();
-	for(i=0; i<count; i++){
-		((deoglDSRenderableCamera*)pNotifyRenderables.GetAt(i))->CameraRequiresSync();
-	}
+	pNotifyRenderables.Visit([&](deoglDSRenderableCamera *renderable){
+		renderable->CameraRequiresSync();
+	});
 	
-	count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasRenderWorld*)pNotifyCanvas.GetAt(i))->CameraRequiresSync();
-	}
+	pNotifyCanvas.Visit([&](deoglCanvasRenderWorld *canvas){
+		canvas->CameraRequiresSync();
+	});
 }

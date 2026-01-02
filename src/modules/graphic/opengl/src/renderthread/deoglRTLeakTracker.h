@@ -25,10 +25,11 @@
 #ifndef _DEOGLRRTLEAKTRACKER_H_
 #define _DEOGLRRTLEAKTRACKER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
+class deObject;
 
 
 
@@ -84,17 +85,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Report leaks. */
-	void ReportLeaks(const char *name, const decPointerSet &tracker);
+	void ReportLeaks(const char *name, const decTSet<deObject*> &tracker);
 	/*@}*/
 	
 	
 	
 #ifdef ENABLE_LEAK_TRACKING
 #define DECLARE_TRACKER(type) \
-private: decPointerSet p ## type; \
-public: inline decPointerSet &Get ## type(){ return p ## type; } \
-public: inline void Add ## type(void *object){AddTracked(p ## type, object);} \
-public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object);}
+private: decTSet<deObject*> p ## type; \
+public: inline decTSet<deObject*> &Get ## type(){ return p ## type; } \
+public: inline void Add ## type(deObject *object){AddTracked(p ## type, object);} \
+public: inline void Remove ## type(deObject *object){RemoveTracked(p ## type, object);}
 	DECLARE_TRACKER(Billboard)
 	DECLARE_TRACKER(Camera)
 	DECLARE_TRACKER(CanvasCanvasView)
@@ -143,8 +144,8 @@ public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object
 	DECLARE_TRACKER(SkyInstance)
 	DECLARE_TRACKER(World)
 	
-	void AddTracked(decPointerSet &list, void *object);
-	void RemoveTracked(decPointerSet &list, void *object);
+	void AddTracked(decTSet<deObject*> &list, deObject *object);
+	void RemoveTracked(decTSet<deObject*> &list, deObject *object);
 #endif
 };
 

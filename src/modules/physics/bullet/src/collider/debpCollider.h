@@ -25,7 +25,7 @@
 #ifndef _DEBPCOLLIDER_H_
 #define _DEBPCOLLIDER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
@@ -39,6 +39,7 @@ class debpColliderRig;
 class debpColliderVolume;
 class debpCollisionWorld;
 class debpWorld;
+class debpTouchSensor;
 
 class deCollider;
 class deColliderCollisionTest;
@@ -82,8 +83,8 @@ private:
 	
 	decPointerList pCollisionTests;
 	
-	decPointerSet pAttachedToList;
-	decPointerSet pTrackingTouchSensors;
+	decTOrderedSet<debpCollider*> pAttachedToList;
+	decTOrderedSet<debpTouchSensor*> pTrackingTouchSensors;
 	
 	int pIndex;
 	bool pIsMoving;
@@ -320,18 +321,18 @@ public:
 	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	/** Retrieves an attachment. */
 	debpColliderAttachment *GetAttachmentAt(int index) const;
-	
+
 	/** Retrieves the list of colliders this collider is attached to. */
-	inline decPointerSet &GetAttachedToList(){ return pAttachedToList; }
-	inline const decPointerSet &GetAttachedToList() const{ return pAttachedToList; }
-	
+	inline decTOrderedSet<debpCollider*> &GetAttachedToList(){ return pAttachedToList; }
+	inline const decTOrderedSet<debpCollider*> &GetAttachedToList() const{ return pAttachedToList; }
+
 	/** List of touch sensors tracking this collider. */
-	inline decPointerSet &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
-	inline const decPointerSet &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
+	inline decTOrderedSet<debpTouchSensor*> &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
+	inline const decTOrderedSet<debpTouchSensor*> &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
 	/*@}*/
-	
-	
-	
+
+
+
 	/** \name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */

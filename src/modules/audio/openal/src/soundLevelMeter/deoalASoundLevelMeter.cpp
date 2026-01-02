@@ -333,7 +333,7 @@ void deoalASoundLevelMeter::pCleanUp(){
 void deoalASoundLevelMeter::pAddSpeaker(deoalASpeaker *speaker){
 	pSpeakers.Add(deoalASoundLevelMeterSpeaker::Ref::New(*this, speaker));
 	
-	speaker->GetSoundLevelMeters().AddIfAbsent(this);
+	speaker->GetSoundLevelMeters().Add(this);
 }
 
 int deoalASoundLevelMeter::pIndexOfSpeaker(deoalASpeaker *speaker) const{
@@ -351,7 +351,7 @@ int deoalASoundLevelMeter::pIndexOfSpeaker(deoalASpeaker *speaker) const{
 
 void deoalASoundLevelMeter::pRemoveSpeakerFrom(int index){
 	((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(index))
-		->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent(this);
+		->GetSpeaker()->GetSoundLevelMeters().Remove(this);
 	
 	const int last = pSpeakers.GetCount() - 1;
 	if(index < last){
@@ -365,8 +365,7 @@ void deoalASoundLevelMeter::pRemoveAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))
-			->GetSpeaker()->GetSoundLevelMeters().RemoveIfPresent(this);
+		((deoalASoundLevelMeterSpeaker*)pSpeakers.GetAt(i))->GetSpeaker()->GetSoundLevelMeters().Remove(this);
 	}
 	pSpeakers.RemoveAll();
 }

@@ -25,7 +25,7 @@
 #ifndef _DEOGLRENDERWINDOWLIST_H_
 #define _DEOGLRENDERWINDOWLIST_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deGraphicOpenGl;
 class deoglRenderWindow;
@@ -38,7 +38,7 @@ class deoglRenderWindow;
 class deoglRenderWindowList{
 private:
 	deGraphicOpenGl &pOgl;
-	decPointerSet pWindows;
+	decTOrderedSet<deoglRenderWindow*> pWindows;
 	bool pDirty;
 	
 public:
@@ -55,11 +55,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of windows. */
-	int GetCount() const;
-	
-	/** Window at index. */
-	deoglRenderWindow *GetAt(int index) const;
+	/** Windows. */
+	inline const decTOrderedSet<deoglRenderWindow*> &GetWindows() const{ return pWindows; }
 	
 	/** Add window. */
 	void Add(deoglRenderWindow *window);

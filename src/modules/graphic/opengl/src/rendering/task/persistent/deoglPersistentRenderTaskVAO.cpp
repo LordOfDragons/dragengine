@@ -106,12 +106,8 @@ decTLinkedList<deoglPersistentRenderTaskInstance>::Element *deoglPersistentRende
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::GetInstanceWith(
 const deoglSharedSPBRTIGroup *group) const{
-	if(!group){
-		DETHROW(deeInvalidParam);
-	}
-	
-	deoglPersistentRenderTaskInstance *instance;
-	return pInstancesMap.GetAt(group, group->GetUniqueKey(), (void**)&instance) ? instance : NULL;
+	DEASSERT_NOTNULL(group)
+	return pInstancesMap.GetAtOrDefault(group->GetUniqueKey());
 }
 
 deoglPersistentRenderTaskInstance *deoglPersistentRenderTaskVAO::AddInstance(
@@ -121,18 +117,16 @@ deoglSharedSPB *spb, const deoglSharedSPBRTIGroup *group){
 	instance->SetParentVAO(this);
 	instance->SetSubInstanceSPB(spb, group);
 	if(group){
-		pInstancesMap.SetAt(group, group->GetUniqueKey(), instance);
+		pInstancesMap.SetAt(group->GetUniqueKey(), instance);
 	}
 	return instance;
 }
 
 void deoglPersistentRenderTaskVAO::RemoveInstance(deoglPersistentRenderTaskInstance *instance){
-	if(!instance){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(instance)
 	
 	if(instance->GetSubInstanceSPBGroup()){
-		pInstancesMap.Remove(instance->GetSubInstanceSPBGroup(), instance->GetSubInstanceSPBGroup()->GetUniqueKey());
+		pInstancesMap.Remove(instance->GetSubInstanceSPBGroup()->GetUniqueKey());
 	}
 	pInstances.Remove(&instance->GetLLVAO());
 	pPool.ReturnInstance(instance);

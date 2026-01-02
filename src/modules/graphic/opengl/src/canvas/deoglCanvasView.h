@@ -28,7 +28,7 @@
 #include "deoglCanvas.h"
 #include "render/deoglRCanvasView.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deCanvasView;
 class deoglCanvasViewListener;
@@ -45,7 +45,7 @@ private:
 	bool pDirtyPaint;
 	bool pResizeRenderTarget;
 	
-	decPointerSet pListeners;
+	decTOrderedSet<deoglCanvasViewListener*> pListeners;
 	bool pSyncRequestSend;
 	
 	

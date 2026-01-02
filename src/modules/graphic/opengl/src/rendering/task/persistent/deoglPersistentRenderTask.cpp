@@ -112,36 +112,31 @@ decTLinkedList<deoglPersistentRenderTaskOwner>::Element *deoglPersistentRenderTa
 	return pOwners.GetRoot();
 }
 
-deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::GetOwnerWith(deObject *owner, unsigned int hash) const{
-	deoglPersistentRenderTaskOwner *rtowner;
-	return pOwnersMap.GetAt(owner, hash, (void**)&rtowner) ? rtowner : NULL;
+deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::GetOwnerWith(unsigned int uniqueKey) const{
+	return pOwnersMap.GetAtOrDefault(uniqueKey);
 }
 
-deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::AddOwner(deObject *owner, unsigned int hash){
+deoglPersistentRenderTaskOwner *deoglPersistentRenderTask::AddOwner(deObject *owner, unsigned int uniqueKey){
 	// commented out in the name of performance
-// 	if( pOwnersMap.Has( owner, hash ) ){
-// 		DETHROW( deeInvalidParam );
-// 	}
+// 	DEASSERT_FALSE(pOwnersMap.Has(uniqueKey))
 	
 	deoglPersistentRenderTaskOwner * const rtowner = pPool.GetOwner();
-	rtowner->SetOwner(owner, hash);
+	rtowner->SetOwner(owner, uniqueKey);
 	pOwners.Add(&rtowner->GetLLTask());
-	pOwnersMap.SetAt(owner, hash, rtowner);
+	pOwnersMap.SetAt(uniqueKey, rtowner);
 	return rtowner;
 }
 
 void deoglPersistentRenderTask::RemoveOwner(deoglPersistentRenderTaskOwner *owner){
-	if(!owner){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(owner)
 	
-	pOwnersMap.Remove(owner->GetOwner(), owner->GetHash());
+	pOwnersMap.Remove(owner->GetUniqueKey());
 	pOwners.Remove(&owner->GetLLTask());
 	pPool.ReturnOwner(owner);
 }
 
 void deoglPersistentRenderTask::RemoveAllOwners(){
-	decTLinkedList<deoglPersistentRenderTaskOwner>::Element *iter = pOwners.GetRoot();
+	const decTLinkedList<deoglPersistentRenderTaskOwner>::Element *iter = pOwners.GetRoot();
 	while(iter){
 		pPool.ReturnOwner(iter->GetOwner());
 		iter = iter->GetNext();
@@ -162,9 +157,7 @@ decTLinkedList<deoglPersistentRenderTaskPipeline>::Element *deoglPersistentRende
 
 deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::GetPipelineWith(const deoglPipeline *pipeline) const{
 	DEASSERT_NOTNULL(pipeline)
-	
-	deoglPersistentRenderTaskPipeline *rtpipeline;
-	return pPipelinesMap.GetAt(pipeline, pipeline->GetRTSIndex(), (void**)&rtpipeline) ? rtpipeline : nullptr;
+	return pPipelinesMap.GetAtOrDefault(pipeline->GetRTSIndex());
 }
 
 deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline(const deoglPipeline *pipeline){
@@ -179,14 +172,14 @@ deoglPersistentRenderTaskPipeline *deoglPersistentRenderTask::AddPipeline(const 
 	pPipelines.Add(&rtpipeline->GetLLTask());
 	rtpipeline->SetParentTask(this);
 	rtpipeline->SetPipeline(pipeline);
-	pPipelinesMap.SetAt(pipeline, pipeline->GetRTSIndex(), rtpipeline);
+	pPipelinesMap.SetAt(pipeline->GetRTSIndex(), rtpipeline);
 	return rtpipeline;
 }
 
 void deoglPersistentRenderTask::RemovePipeline(deoglPersistentRenderTaskPipeline *pipeline){
 	DEASSERT_NOTNULL(pipeline)
 	
-	pPipelinesMap.Remove(pipeline->GetPipeline(), pipeline->GetPipeline()->GetRTSIndex());
+	pPipelinesMap.Remove(pipeline->GetPipeline()->GetRTSIndex());
 	pPipelines.Remove(&pipeline->GetLLTask());
 	pPool.ReturnPipeline(pipeline);
 }

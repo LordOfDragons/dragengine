@@ -105,23 +105,11 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithComponent(deoglRComponent *com
 	return NULL;
 #endif
 	
-	void *instance;
-	if(pElementInstanceMap.GetAt(component, component->GetUniqueKey(), &instance)){
-		return (deoglGIInstance*)instance;
-		
-	}else{
-		return NULL;
-	}
+	return pElementInstanceMap.GetAtOrDefault(component->GetUniqueKey());
 }
 
 deoglGIInstance *deoglGIInstances::GetInstanceWithDecal(deoglRDecal *decal) const{
-	void *instance;
-	if(pElementInstanceMap.GetAt(decal, decal->GetUniqueKey(), &instance)){
-		return (deoglGIInstance*)instance;
-		
-	}else{
-		return NULL;
-	}
+	return pElementInstanceMap.GetAtOrDefault(decal->GetUniqueKey());
 }
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
@@ -141,28 +129,28 @@ deoglGIInstance &deoglGIInstances::NextFreeSlot(){
 	return *instance;
 }
 
-void deoglGIInstances::RegisterElement(deoglRComponent *component, deoglGIInstance *instance){
-	RegisterElement(component, component->GetUniqueKey(), instance);
+void deoglGIInstances::RegisterElement(const deoglRComponent &component, deoglGIInstance *instance){
+	RegisterElement(component.GetUniqueKey(), instance);
 }
 
-void deoglGIInstances::RegisterElement(deoglRDecal *decal, deoglGIInstance *instance){
-	RegisterElement(decal, decal->GetUniqueKey(), instance);
+void deoglGIInstances::RegisterElement(const deoglRDecal &decal, deoglGIInstance *instance){
+	RegisterElement(decal.GetUniqueKey(), instance);
 }
 
-void deoglGIInstances::RegisterElement(void *element, unsigned int hash, deoglGIInstance *instance){
-	pElementInstanceMap.SetAt(element, hash, instance);
+void deoglGIInstances::RegisterElement(unsigned int uniqueKey, deoglGIInstance *instance){
+	pElementInstanceMap.SetAt(uniqueKey, instance);
 }
 
-void deoglGIInstances::UnregisterElement(deoglRComponent *component){
-	UnregisterElement(component, component->GetUniqueKey());
+void deoglGIInstances::UnregisterElement(const deoglRComponent &component){
+	UnregisterElement(component.GetUniqueKey());
 }
 
-void deoglGIInstances::UnregisterElement(deoglRDecal *decal){
-	UnregisterElement(decal, decal->GetUniqueKey());
+void deoglGIInstances::UnregisterElement(const deoglRDecal &decal){
+	UnregisterElement(decal.GetUniqueKey());
 }
 
-void deoglGIInstances::UnregisterElement(void *element, unsigned int hash){
-	pElementInstanceMap.Remove(element, hash);
+void deoglGIInstances::UnregisterElement(unsigned int uniqueKey){
+	pElementInstanceMap.Remove(uniqueKey);
 }
 
 

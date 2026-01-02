@@ -27,12 +27,14 @@
 
 #include "deoglRVideoPlayer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
 
 class deoglVideo;
 class deoglVideoDecodeThread;
+class deoglDSRenderableVideoFrame;
+class deoglCanvasVideoPlayer;
 
 class deVideoPlayer;
 class deGraphicOpenGl;
@@ -60,8 +62,8 @@ public:
 	
 	deoglRVideoPlayer::Ref pRVideoPlayer;
 	
-	decPointerSet pNotifyRenderables;
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglDSRenderableVideoFrame*> pNotifyRenderables;
+	decTOrderedSet<deoglCanvasVideoPlayer*> pNotifyCanvas;
 	
 	
 	
@@ -106,12 +108,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decTOrderedSet<deoglDSRenderableVideoFrame*> &GetNotifyRenderables(){ return pNotifyRenderables; }
+	inline const decTOrderedSet<deoglDSRenderableVideoFrame*> &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasVideoPlayer*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasVideoPlayer*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
 	
 	

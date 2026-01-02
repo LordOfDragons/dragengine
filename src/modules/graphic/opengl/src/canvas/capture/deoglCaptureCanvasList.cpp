@@ -40,7 +40,6 @@
 
 deoglCaptureCanvasList::deoglCaptureCanvasList(deGraphicOpenGl &ogl) :
 pOgl(ogl),
-pCaptureCanvas(false),
 pDirty(false){
 }
 
@@ -51,14 +50,6 @@ deoglCaptureCanvasList::~deoglCaptureCanvasList(){
 
 // Management
 ///////////////
-
-int deoglCaptureCanvasList::GetCount() const{
-	return pCaptureCanvas.GetCount();
-}
-
-deoglCaptureCanvas *deoglCaptureCanvasList::GetAt(int index) const{
-	return (deoglCaptureCanvas*)pCaptureCanvas.GetAt(index);
-}
 
 void deoglCaptureCanvasList::Add(deoglCaptureCanvas *captureCanvas){
 	pCaptureCanvas.Add(captureCanvas);
@@ -78,13 +69,10 @@ void deoglCaptureCanvasList::RemoveAll(){
 
 
 void deoglCaptureCanvasList::SyncToRender(){
-	const int count = pCaptureCanvas.GetCount();
-	int i;
-	
 	// sync to render
-	for(i=0; i<count; i++){
-		((deoglCaptureCanvas*)pCaptureCanvas.GetAt(i))->SyncToRender();
-	}
+	pCaptureCanvas.Visit([](deoglCaptureCanvas *captureCanvas){
+		captureCanvas->SyncToRender();
+	});
 	
 	// if dirty synchronize list of capture canvas with render thread. this happens only a few times
 	if(pDirty){
@@ -92,9 +80,9 @@ void deoglCaptureCanvasList::SyncToRender(){
 		
 		list.RemoveAll();
 		
-		for(i=0; i<count; i++){
-			list.Add(((deoglCaptureCanvas*)pCaptureCanvas.GetAt(i))->GetRCaptureCanvas());
-		}
+		pCaptureCanvas.Visit([&list](deoglCaptureCanvas *captureCanvas){
+			list.Add(captureCanvas->GetRCaptureCanvas());
+		});
 		
 		pDirty = false;
 	}

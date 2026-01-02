@@ -27,7 +27,7 @@
 
 #include "deoalAVideoPlayer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 #include <dragengine/systems/modules/audio/deBaseAudioVideoPlayer.h>
 
@@ -52,7 +52,7 @@ private:
 	bool pDirtyPlayPosition;
 	bool pRequiresSeeking;
 	
-	decPointerSet pSpeakers;
+	decTOrderedSet<deoalSpeaker*> pSpeakers;
 	
 	
 	

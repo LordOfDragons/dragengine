@@ -56,7 +56,7 @@ deoalATLeakTracker::~deoalATLeakTracker(){
 // Management
 ///////////////
 
-void deoalATLeakTracker::ReportLeaks(const char *name, const decPointerSet &tracker){
+void deoalATLeakTracker::ReportLeaks(const char *name, const decTSet<void*> &tracker){
 	deMutexGuard lock(pMutex);
 	
 	if(tracker.GetCount() == 0){
@@ -88,12 +88,12 @@ void deoalATLeakTracker::ReportLeaks(const char *name, const decPointerSet &trac
 
 
 #ifdef ENABLE_LEAK_TRACKING
-void deoalATLeakTracker::AddTracked(decPointerSet &list, void *object){
+void deoalATLeakTracker::AddTracked(decTSet<void*> &list, void *object){
 	deMutexGuard lock(pMutex);
 	list.Add(object);
 }
 
-void deoalATLeakTracker::RemoveTracked(decPointerSet &list, void *object) {
+void deoalATLeakTracker::RemoveTracked(decTSet<void*> &list, void *object) {
 	deMutexGuard lock(pMutex);
 	list.Remove(object);
 }

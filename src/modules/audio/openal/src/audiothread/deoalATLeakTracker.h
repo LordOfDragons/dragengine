@@ -25,7 +25,7 @@
 #ifndef _DEOALATLEAKTRACKER_H_
 #define _DEOALATLEAKTRACKER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoalAudioThread;
@@ -81,15 +81,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Report leaks. */
-	void ReportLeaks(const char *name, const decPointerSet &tracker);
+	void ReportLeaks(const char *name, const decTSet<void*> &tracker);
 	/*@}*/
 	
 	
 	
 #ifdef ENABLE_LEAK_TRACKING
 #define DECLARE_TRACKER(type) \
-private: decPointerSet p ## type; \
-public: inline decPointerSet &Get ## type(){ return p ## type; } \
+private: decTSet<void*> p ## type; \
+public: inline decTSet<void*> &Get ## type(){ return p ## type; } \
 public: inline void Add ## type(void *object){AddTracked(p ## type, object);} \
 public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object);}
 	DECLARE_TRACKER(Component)
@@ -103,8 +103,8 @@ public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object
 	DECLARE_TRACKER(VideoPlayer)
 	DECLARE_TRACKER(World)
 	
-	void AddTracked(decPointerSet &list, void *object);
-	void RemoveTracked(decPointerSet &list, void *object);
+	void AddTracked(decTSet<void*> &list, void *object);
+	void RemoveTracked(decTSet<void*> &list, void *object);
 #endif
 };
 

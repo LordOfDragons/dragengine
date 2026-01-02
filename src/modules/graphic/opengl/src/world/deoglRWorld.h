@@ -33,7 +33,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglEnvironmentMapList;
@@ -105,7 +105,7 @@ private:
 	deoglRenderPlan *pEnvMapRenderPlan;
 	bool pDirtyEnvMapLayout;
 	
-	decPointerSet pGIStates;
+	decTOrderedSet<deoglGIState*> pGIStates;
 	
 	deoglWorldOctree *pOctree;
 	deoglWorldCompute::Ref pCompute;
@@ -525,10 +525,10 @@ public:
 	const deoglGIState *ClosestGIState(const decDVector &position) const;
 	
 	/** Add GI State if absent. */
-	void AddGICascade(const deoglGIState *giState);
+	void AddGICascade(deoglGIState *giState);
 	
 	/** Remove GI State if present. */
-	void RemoveGICascade(const deoglGIState *giState);
+	void RemoveGICascade(deoglGIState *giState);
 	
 	/** Remove all GI states. */
 	void RemoveAllGICascades();

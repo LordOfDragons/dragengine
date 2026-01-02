@@ -142,19 +142,13 @@ decTLinkedList<deoglPersistentRenderTaskTexture>::Element *deoglPersistentRender
 
 deoglPersistentRenderTaskTexture * deoglPersistentRenderTaskPipeline::GetTextureWith(
 const deoglTexUnitsConfig *tuc) const{
-	if(!tuc){
-		DETHROW(deeInvalidParam);
-	}
-	
-	deoglPersistentRenderTaskTexture *texture;
-	return pTexturesMap.GetAt(tuc, tuc->GetUniqueKey(), (void**)&texture) ? texture : NULL;
+	DEASSERT_NOTNULL(tuc)
+	return pTexturesMap.GetAtOrDefault(tuc->GetUniqueKey());
 }
 
 deoglPersistentRenderTaskTexture *deoglPersistentRenderTaskPipeline::AddTexture(
 const deoglTexUnitsConfig *tuc){
-	if(!tuc){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(tuc)
 	
 	// commented out in the name of performance
 // 	if( pPipelinesMap.Has( tuc, tuc->GetUniqueKey() ) ){
@@ -165,16 +159,15 @@ const deoglTexUnitsConfig *tuc){
 	pTextures.Add(&texture->GetLLTexture());
 	texture->SetParentPipeline(this);
 	texture->SetTUC(tuc);
-	pTexturesMap.SetAt(tuc, tuc->GetUniqueKey(), texture);
+	pTexturesMap.SetAt(tuc->GetUniqueKey(), texture);
 	return texture;
 }
 
 void deoglPersistentRenderTaskPipeline::RemoveTexture(deoglPersistentRenderTaskTexture *texture){
-	if(!texture){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(texture)
+	DEASSERT_NOTNULL(texture->GetTUC())
 	
-	pTexturesMap.Remove(texture->GetTUC(), texture->GetTUC()->GetUniqueKey());
+	pTexturesMap.Remove(texture->GetTUC()->GetUniqueKey());
 	pTextures.Remove(&texture->GetLLTexture());
 	pPool.ReturnTexture(texture);
 }

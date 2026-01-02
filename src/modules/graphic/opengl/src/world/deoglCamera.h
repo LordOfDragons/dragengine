@@ -27,10 +27,12 @@
 
 #include "deoglRCamera.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 
 class deoglWorld;
+class deoglDSRenderableCamera;
+class deoglCanvasRenderWorld;
 
 class deGraphicOpenGl;
 class deCamera;
@@ -62,8 +64,8 @@ private:
 	
 	bool pEnableVR;
 	
-	decPointerSet pNotifyRenderables;
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglDSRenderableCamera*> pNotifyRenderables;
+	decTOrderedSet<deoglCanvasRenderWorld*> pNotifyCanvas;
 	
 	
 	
@@ -106,12 +108,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decTOrderedSet<deoglDSRenderableCamera*> &GetNotifyRenderables(){ return pNotifyRenderables; }
+	inline const decTOrderedSet<deoglDSRenderableCamera*> &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasRenderWorld*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasRenderWorld*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
 	
 	

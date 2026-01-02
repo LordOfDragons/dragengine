@@ -28,7 +28,6 @@
 #include "../desynBasics.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSynthesizerInstance.h>
 #include <dragengine/threading/deMutex.h>
 

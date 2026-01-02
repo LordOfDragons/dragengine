@@ -123,46 +123,35 @@ void deoglDynamicSkin::SyncToRender(){
 //////////////
 
 void deoglDynamicSkin::AddListener(deoglDynamicSkinListener *listener){
-	if(!listener){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(listener)
 	pListeners.Add(listener);
 }
 
 void deoglDynamicSkin::RemoveListener(deoglDynamicSkinListener *listener){
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
-
 void deoglDynamicSkin::NotifyDestroyed(){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinDestroyed();
-	}
+	pListeners.Visit([](deoglDynamicSkinListener *listener){
+		listener->DynamicSkinDestroyed();
+	});
 }
 
 void deoglDynamicSkin::NotifyRenderablesChanged(){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderablesChanged();
-	}
+	pListeners.Visit([](deoglDynamicSkinListener *listener){
+		listener->DynamicSkinRenderablesChanged();
+	});
 }
 
 void deoglDynamicSkin::NotifyRenderableChanged(deoglDSRenderable &renderable){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableChanged(renderable);
-	}
+	pListeners.Visit([&](deoglDynamicSkinListener *listener){
+		listener->DynamicSkinRenderableChanged(renderable);
+	});
 }
 
 void deoglDynamicSkin::NotifyRenderableRequiresSync(deoglDSRenderable &renderable){
-	const int count = pListeners.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableRequiresSync(renderable);
-	}
+	pListeners.Visit([&](deoglDynamicSkinListener *listener){
+		listener->DynamicSkinRenderableRequiresSync(renderable);
+	});
 }
 
 

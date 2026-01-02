@@ -63,10 +63,9 @@ deoglImage::~deoglImage(){
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the image and are notified only after switching to a new image. in this case they can
 	// not use the old pointer to remove themselves from the image
-	int i, count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasImage*)pNotifyCanvas.GetAt(i))->DropImage();
-	}
+	pNotifyCanvas.Visit([](deoglCanvasImage *canvas){
+		canvas->DropImage();
+	});
 }
 
 
@@ -544,8 +543,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 }
 
 void deoglImage::pRequiresSync(){
-	int i, count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasImage*)pNotifyCanvas.GetAt(i))->ImageRequiresSync();
-	}
+	pNotifyCanvas.Visit([](deoglCanvasImage *canvas){
+		canvas->ImageRequiresSync();
+	});
 }

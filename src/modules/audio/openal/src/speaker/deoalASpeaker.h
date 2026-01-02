@@ -31,7 +31,7 @@
 #include "../video/deoalAVideoPlayer.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
@@ -45,6 +45,7 @@ class deoalWorldOctree;
 class deoalEnvironment;
 class deoalSpeaker;
 class deoalSharedEffectSlot;
+class deoalASoundLevelMeter;
 
 
 
@@ -126,7 +127,7 @@ private:
 	deoalSharedEffectSlot *pSharedEffectSlot;
 	bool pDelayedDropSharedEffectSlot;
 	
-	decPointerSet pSoundLevelMeters;
+	decTOrderedSet<deoalASoundLevelMeter*> pSoundLevelMeters;
 	
 	bool pMicrophoneMarkedRemove;
 	bool pWorldMarkedRemove;
@@ -416,8 +417,8 @@ public:
 	
 	
 	/** Sound level meters tracking this speaker. */
-	inline decPointerSet &GetSoundLevelMeters(){ return pSoundLevelMeters; }
-	inline const decPointerSet &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
+	inline decTOrderedSet<deoalASoundLevelMeter*> &GetSoundLevelMeters(){ return pSoundLevelMeters; }
+	inline const decTOrderedSet<deoalASoundLevelMeter*> &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
 	
 	
 	

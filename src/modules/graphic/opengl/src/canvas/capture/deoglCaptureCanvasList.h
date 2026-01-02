@@ -25,7 +25,7 @@
 #ifndef _DEOGLCAPTURECANVASLIST_H_
 #define _DEOGLCAPTURECANVASLIST_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deGraphicOpenGl;
 class deoglCaptureCanvas;
@@ -38,7 +38,7 @@ class deoglCaptureCanvas;
 class deoglCaptureCanvasList{
 private:
 	deGraphicOpenGl &pOgl;
-	decPointerSet pCaptureCanvas;
+	decTOrderedSet<deoglCaptureCanvas*> pCaptureCanvas;
 	bool pDirty;
 	
 public:
@@ -55,11 +55,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of capture canvas. */
-	int GetCount() const;
-	
-	/** Capture canvas at index. */
-	deoglCaptureCanvas *GetAt(int index) const;
+	/** Capture canvas. */
+	inline const decTOrderedSet<deoglCaptureCanvas*> &GetCaptureCanvas() const{ return pCaptureCanvas; }
 	
 	/** Add capture canvas. */
 	void Add(deoglCaptureCanvas *captureCanvas);

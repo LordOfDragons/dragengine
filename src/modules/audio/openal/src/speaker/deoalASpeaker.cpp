@@ -208,15 +208,11 @@ void deoalASpeaker::SetGeometry(const decDVector &position, const decQuaternion 
 		pEnvironment->SetPosition(position);
 	}
 	
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalASoundLevelMeterSpeaker * const speaker =
-			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
-		if(speaker){
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		if(deoalASoundLevelMeterSpeaker *speaker = slm->GetSpeakerWith(this)){
 			speaker->SpeakerPositionChanged();
 		}
-	}
+	});
 	
 	pDirtyGeometry = true;
 }
@@ -234,15 +230,11 @@ void deoalASpeaker::SetLayerMask(const decLayerMask &layerMask){
 		pEnvironment->SetLayerMask(layerMask);
 	}
 	
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalASoundLevelMeterSpeaker * const speaker =
-			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
-		if(speaker){
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		if(deoalASoundLevelMeterSpeaker *speaker = slm->GetSpeakerWith(this)){
 			speaker->SpeakerLayerMaskChanged();
 		}
-	}
+	});
 }
 
 
@@ -648,15 +640,12 @@ void deoalASpeaker::SetRange(float range){
 		pEnvironment->SetRange(range);
 	}
 	
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalASoundLevelMeterSpeaker * const speaker =
-			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		deoalASoundLevelMeterSpeaker * const speaker = slm->GetSpeakerWith(this);
 		if(speaker){
 			speaker->SpeakerRangeChanged();
 		}
-	}
+	});
 }
 
 void deoalASpeaker::SetVolume(float volume){
@@ -1324,16 +1313,13 @@ void deoalASpeaker::pUpdateAttenuation(){
 		pEnvironment->SetLayerMask(pLayerMask);
 	}
 	
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalASoundLevelMeterSpeaker * const speaker =
-			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		deoalASoundLevelMeterSpeaker * const speaker = slm->GetSpeakerWith(this);
 		if(speaker){
 			speaker->SpeakerAttenuationChanged();
 			speaker->SpeakerLayerMaskChanged();
 		}
-	}
+	});
 	
 	pDirtyAttenuation = true;
 }
@@ -1825,24 +1811,16 @@ void deoalASpeaker::pUpdateEnvironmentEffectShared(){
 }
 
 
-
 void deoalASpeaker::pRemoveFromSoundLevelMeters(){
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->RemoveSpeakerIfPresent(this);
-	}
-	pSoundLevelMeters.RemoveAll();
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		slm->RemoveSpeakerIfPresent(this);
+	});
 }
 
 void deoalASpeaker::pDropEnvProbeOctreeNodeAllSLMs(){
-	const int count = pSoundLevelMeters.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->SpeakerDropEnvProbeOctreeNode(this);
-	}
+	pSoundLevelMeters.Visit([&](deoalASoundLevelMeter *slm){
+		slm->SpeakerDropEnvProbeOctreeNode(this);
+	});
 }
 
 bool deoalASpeaker::pUseCustomGain() const{

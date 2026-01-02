@@ -25,7 +25,7 @@
 #ifndef _DEDAINAVMESHBUILDER_H_
 #define _DEDAINAVMESHBUILDER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiNavMeshBuilderEdge;
 class dedaiNavMeshBuilderFace;
@@ -37,8 +37,8 @@ class dedaiNavMeshBuilderFace;
  */
 class dedaiNavMeshBuilder{
 private:
-	decPointerSet pEdges;
-	decPointerSet pFaces;
+	decTOrderedSet<dedaiNavMeshBuilderEdge*> pEdges;
+	decTOrderedSet<dedaiNavMeshBuilderFace*> pFaces;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -51,17 +51,14 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of edges. */
-	inline int GetEdgeCount() const{ return pEdges.GetCount(); }
-	/** Retrieves an edge. */
-	inline dedaiNavMeshBuilderEdge *GetEdgeAt(int index) const{ return (dedaiNavMeshBuilderEdge*)pEdges.GetAt(index); }
 	/** Retrieves the matching edge creating it if not existing. */
 	dedaiNavMeshBuilderEdge *GetEdgeWith(int vertex1, int vertex2);
 	
-	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaces.GetCount(); }
-	/** Retrieves an face. */
-	inline dedaiNavMeshBuilderFace *GetFaceAt(int index) const{ return (dedaiNavMeshBuilderFace*)pFaces.GetAt(index); }
+	/** Retrieves the edges. */
+	inline const decTOrderedSet<dedaiNavMeshBuilderEdge*> &GetEdges() const{ return pEdges; }
+	
+	/** Retrieves the faces. */
+	inline const decTOrderedSet<dedaiNavMeshBuilderFace*> &GetFaces() const{ return pFaces; }
 	/** Adds a new face. */
 	dedaiNavMeshBuilderFace *AddFace();
 	

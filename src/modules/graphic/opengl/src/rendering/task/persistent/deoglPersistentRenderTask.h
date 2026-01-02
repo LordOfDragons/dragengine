@@ -25,12 +25,12 @@
 #ifndef _DEOGLPERSISTENTRENDERTASK_H_
 #define _DEOGLPERSISTENTRENDERTASK_H_
 
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decTLinkedList.h>
-#include <dragengine/common/math/decMath.h>
-
 #include "../../../deoglBasics.h"
 #include "../../../shaders/paramblock/deoglShaderParameterBlockList.h"
+
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskInstance;
@@ -62,9 +62,9 @@ private:
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	decTLinkedList<deoglPersistentRenderTaskOwner> pOwners;
-	decPointerDictionaryExt pOwnersMap;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskOwner*> pOwnersMap;
 	decTLinkedList<deoglPersistentRenderTaskPipeline> pPipelines;
-	decPointerDictionaryExt pPipelinesMap;
+	decTDictionary<int,deoglPersistentRenderTaskPipeline*> pPipelinesMap;
 	
 	
 	
@@ -112,10 +112,10 @@ public:
 	decTLinkedList<deoglPersistentRenderTaskOwner>::Element *GetRootOwner() const;
 	
 	/** Get matching owner or NULL. */
-	deoglPersistentRenderTaskOwner *GetOwnerWith(deObject *owner, unsigned int hash) const;
+	deoglPersistentRenderTaskOwner *GetOwnerWith(unsigned int uniqueKey) const;
 	
 	/** Add owner. */
-	deoglPersistentRenderTaskOwner *AddOwner(deObject *owner, unsigned int hash);
+	deoglPersistentRenderTaskOwner *AddOwner(deObject *owner, unsigned int uniqueKey);
 	
 	/** Remove owner. */
 	void RemoveOwner(deoglPersistentRenderTaskOwner *owner);

@@ -66,11 +66,11 @@ deoalVideoPlayer::~deoalVideoPlayer(){
 ///////////////
 
 void deoalVideoPlayer::AddSpeaker(deoalSpeaker *speaker){
-	pSpeakers.AddIfAbsent(speaker);
+	pSpeakers.Add(speaker);
 }
 
 void deoalVideoPlayer::RemoveSpeaker(deoalSpeaker *speaker){
-	pSpeakers.RemoveIfPresent(speaker);
+	pSpeakers.Remove(speaker);
 }
 
 void deoalVideoPlayer::Synchronize(){
@@ -108,13 +108,10 @@ void deoalVideoPlayer::SourceChanged(){
 }
 
 void deoalVideoPlayer::LoopingChanged(){
-	const int count = pSpeakers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalSpeaker &speaker = *((deoalSpeaker*)pSpeakers.GetAt(i));
-		speaker.GetSpeaker().SetLooping(pVideoPlayer.GetLooping());
-		speaker.VideoPlayerRequiresSync();
-	}
+	pSpeakers.Visit([&](deoalSpeaker *speaker){
+		speaker->GetSpeaker().SetLooping(pVideoPlayer.GetLooping());
+		speaker->VideoPlayerRequiresSync();
+	});
 	
 	pDirtyParameters = true;
 }
@@ -129,67 +126,55 @@ void deoalVideoPlayer::PlayRangeChanged(){
 			to = (int)(pVideoPlayer.GetPlayTo() * sampleRate);
 		}
 		
-		int i;
-		for(i=0; i<count; i++){
-			deoalSpeaker &speaker = *((deoalSpeaker*)pSpeakers.GetAt(i));
-			speaker.GetSpeaker().SetPlayPosition(from, to);
-			speaker.VideoPlayerRequiresSync();
-			speaker.DirtyResetStreaming();
-		}
+		pSpeakers.Visit([&](deoalSpeaker *speaker){
+			speaker->GetSpeaker().SetPlayPosition(from, to);
+			speaker->VideoPlayerRequiresSync();
+			speaker->DirtyResetStreaming();
+		});
 	}
 	
 	pDirtyParameters = true;
 }
 
 void deoalVideoPlayer::PlaySpeedChanged(){
-	const int count = pSpeakers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalSpeaker &speaker = *((deoalSpeaker*)pSpeakers.GetAt(i));
-		speaker.GetSpeaker().SetPlaySpeed(pVideoPlayer.GetPlaySpeed());
-		speaker.VideoPlayerRequiresSync();
-	}
+	pSpeakers.Visit([&](deoalSpeaker *speaker){
+		speaker->GetSpeaker().SetPlaySpeed(pVideoPlayer.GetPlaySpeed());
+		speaker->VideoPlayerRequiresSync();
+	});
 	
 	pDirtyParameters = true;
 }
 
 void deoalVideoPlayer::PlayPositionChanged(bool seeking){
-	const int count = pSpeakers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalSpeaker &speaker = *((deoalSpeaker*)pSpeakers.GetAt(i));
-		speaker.VideoPlayerRequiresSync();
+	pSpeakers.Visit([&](deoalSpeaker *speaker){
+		speaker->VideoPlayerRequiresSync();
 		if(seeking){
-			speaker.DirtyResetStreaming();
+			speaker->DirtyResetStreaming();
 		}
-	}
+	});
 	
 	pDirtyPlayPosition = true;
 	pRequiresSeeking |= seeking;
 }
 
 void deoalVideoPlayer::PlayStateChanged(){
-	const int count = pSpeakers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoalSpeaker &speaker = *((deoalSpeaker*)pSpeakers.GetAt(i));
-		
+	pSpeakers.Visit([&](deoalSpeaker *speaker){
 		switch(pVideoPlayer.GetPlayState()){
 		case deVideoPlayer::epsPlaying:
-			speaker.GetSpeaker().SetPlayState(deSpeaker::epsPlaying);
+			speaker->GetSpeaker().SetPlayState(deSpeaker::epsPlaying);
 			break;
 			
 		case deVideoPlayer::epsPaused:
-			speaker.GetSpeaker().SetPlayState(deSpeaker::epsPaused);
+			speaker->GetSpeaker().SetPlayState(deSpeaker::epsPaused);
 			break;
 			
 		case deVideoPlayer::epsStopped:
-			speaker.GetSpeaker().SetPlayState(deSpeaker::epsStopped);
+			speaker->GetSpeaker().SetPlayState(deSpeaker::epsStopped);
 			break;
 		}
 		
-		speaker.VideoPlayerRequiresSync();
-	}
+		speaker->VideoPlayerRequiresSync();
+	});
 	
 	pDirtyParameters = true;
 }

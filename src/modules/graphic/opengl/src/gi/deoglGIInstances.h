@@ -26,7 +26,7 @@
 #define _DEOGLGIINSTANCES_H_
 
 #include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -58,7 +58,7 @@ private:
 	
 	decObjectList pInstances;
 	decPointerList pEmptyInstances;
-	decPointerDictionaryExt pElementInstanceMap;
+	decTDictionary<unsigned int,deoglGIInstance*> pElementInstanceMap;
 	
 	sBox *pDynamicBoxes;
 	int pDynamicBoxCount;
@@ -108,14 +108,14 @@ public:
 	deoglGIInstance &NextFreeSlot();
 	
 	/** Register instance element. */
-	void RegisterElement(deoglRComponent *component, deoglGIInstance *instance);
-	void RegisterElement(deoglRDecal *decal, deoglGIInstance *instance);
-	void RegisterElement(void *element, unsigned int hash, deoglGIInstance *instance);
+	void RegisterElement(const deoglRComponent &component, deoglGIInstance *instance);
+	void RegisterElement(const deoglRDecal &decal, deoglGIInstance *instance);
+	void RegisterElement(unsigned int uniqueKey, deoglGIInstance *instance);
 	
 	/** Unregister instance element. */
-	void UnregisterElement(deoglRComponent *component);
-	void UnregisterElement(deoglRDecal *decal);
-	void UnregisterElement(void *element, unsigned int hash);
+	void UnregisterElement(const deoglRComponent &component);
+	void UnregisterElement(const deoglRDecal &decal);
+	void UnregisterElement(unsigned int uniqueKey);
 	
 	
 	

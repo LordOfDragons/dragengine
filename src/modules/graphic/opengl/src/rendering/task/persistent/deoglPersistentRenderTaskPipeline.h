@@ -26,7 +26,7 @@
 #define _DEOGLPERSISTENTRENDERTASKPIPELINE_H_
 
 #include <dragengine/common/collection/decTLinkedList.h>
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decTDictionary.h>
 
 class deoglPersistentRenderTask;
 class deoglPersistentRenderTaskPool;
@@ -50,7 +50,7 @@ private:
 	int pSPBInstanceIndexBase;
 	int pDrawIDOffset;
 	decTLinkedList<deoglPersistentRenderTaskTexture> pTextures;
-	decPointerDictionaryExt pTexturesMap;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskTexture*> pTexturesMap;
 	
 	
 	

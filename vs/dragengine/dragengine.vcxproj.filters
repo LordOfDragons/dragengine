@@ -42,16 +42,10 @@
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerDictionaryExt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp">
@@ -1832,16 +1826,10 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerDictionaryExt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTDictionary.h">

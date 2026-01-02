@@ -1342,7 +1342,7 @@ int deoglRWorld::GetGICascadeCount() const{
 }
 
 const deoglGIState *deoglRWorld::GetGICascadeAt(int index) const{
-	return (const deoglGIState *)pGIStates.GetAt(index);
+	return pGIStates.GetAt(index);
 }
 
 const deoglGIState *deoglRWorld::ClosestGIState(const decDVector &position) const{
@@ -1352,7 +1352,7 @@ const deoglGIState *deoglRWorld::ClosestGIState(const decDVector &position) cons
 	int i, j;
 	
 	for(i=0; i<count; i++){
-		const deoglGIState * const giState = (const deoglGIState *)pGIStates.GetAt(i);
+		const deoglGIState * const giState = pGIStates.GetAt(i);
 		const int cascadeCount = giState->GetCascadeCount();
 		
 		double distance = (position - giState->GetCascadeAt(0).GetPosition()).Length();
@@ -1369,12 +1369,12 @@ const deoglGIState *deoglRWorld::ClosestGIState(const decDVector &position) cons
 	return bestGIState;
 }
 
-void deoglRWorld::AddGICascade(const deoglGIState *giState){
-	pGIStates.AddIfAbsent((void*)giState);
+void deoglRWorld::AddGICascade(deoglGIState *giState){
+	pGIStates.Add(giState);
 }
 
-void deoglRWorld::RemoveGICascade(const deoglGIState *giState){
-	if(!pGIStates.Has((void*)giState)){
+void deoglRWorld::RemoveGICascade(deoglGIState *giState){
+	if(!pGIStates.Has(giState)){
 		return;
 	}
 	
@@ -1384,11 +1384,11 @@ void deoglRWorld::RemoveGICascade(const deoglGIState *giState){
 		((deoglRSkyInstance*)pSkies.GetAt(i))->DropGIState(giState);
 	}
 	
-	pGIStates.RemoveIfPresent((void*)giState);
+	pGIStates.Remove(giState);
 }
 
 void deoglRWorld::RemoveAllGICascades(){
-	if(pGIStates.GetCount() == 0){
+	if(pGIStates.IsEmpty()){
 		return;
 	}
 	
@@ -1400,39 +1400,29 @@ void deoglRWorld::RemoveAllGICascades(){
 	
 	pGIStates.RemoveAll();
 }
-
 void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent *component){
-	const int count = pGIStates.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglGIState*)pGIStates.GetAt(i))->ComponentEnteredWorld(component);
-	}
+	pGIStates.Visit([&](deoglGIState *giState){
+		giState->ComponentEnteredWorld(component);
+	});
 }
 
 void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component){
-	const int count = pGIStates.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglGIState*)pGIStates.GetAt(i))->ComponentChangedLayerMask(component);
-	}
+	pGIStates.Visit([&](deoglGIState *giState){
+		giState->ComponentChangedLayerMask(component);
+	});
 }
 
 void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent *component){
-	const int count = pGIStates.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglGIState*)pGIStates.GetAt(i))->ComponentBecameVisible(component);
-	}
+	pGIStates.Visit([&](deoglGIState *giState){
+		giState->ComponentBecameVisible(component);
+	});
 }
 
 void deoglRWorld::GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component){
-	const int count = pGIStates.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglGIState*)pGIStates.GetAt(i))->ComponentChangedGIImportance(component);
-	}
+	pGIStates.Visit([&](deoglGIState *giState){
+		giState->ComponentChangedGIImportance(component);
+	});
 }
-
 
 
 // Private Functions

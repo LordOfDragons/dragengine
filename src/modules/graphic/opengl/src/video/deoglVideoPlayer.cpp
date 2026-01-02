@@ -74,18 +74,17 @@ deoglVideoPlayer::~deoglVideoPlayer(){
 		pDecodeThread->StopDecode();
 		delete pDecodeThread;
 	}
+	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
 	// case they can not use the old pointer to remove themselves from the dynamic skin
-	int i, count = pNotifyRenderables.GetCount();
-	for(i=0; i<count; i++){
-		((deoglDSRenderableVideoFrame*)pNotifyRenderables.GetAt(i))->DropVideoPlayer();
-	}
+	pNotifyRenderables.Visit([](deoglDSRenderableVideoFrame *r){
+		r->DropVideoPlayer();
+	});
 	
-	count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasVideoPlayer*)pNotifyCanvas.GetAt(i))->DropVideoPlayer();
-	}
+	pNotifyCanvas.Visit([](deoglCanvasVideoPlayer *c){
+		c->DropVideoPlayer();
+	});
 }
 
 
@@ -320,15 +319,12 @@ void deoglVideoPlayer::pPredictNextFrame(){
 			(int)(pVideoPlayer.GetPlayTo() * frameRate + 0.5f));
 	}
 }
-
 void deoglVideoPlayer::pRequiresSync(){
-	int i, count = pNotifyRenderables.GetCount();
-	for(i=0; i<count; i++){
-		((deoglDSRenderableVideoFrame*)pNotifyRenderables.GetAt(i))->VideoPlayerRequiresSync();
-	}
+	pNotifyRenderables.Visit([](deoglDSRenderableVideoFrame *r){
+		r->VideoPlayerRequiresSync();
+	});
 	
-	count = pNotifyCanvas.GetCount();
-	for(i=0; i<count; i++){
-		((deoglCanvasVideoPlayer*)pNotifyCanvas.GetAt(i))->VideoPlayerRequiresSync();
-	}
+	pNotifyCanvas.Visit([](deoglCanvasVideoPlayer *c){
+		c->VideoPlayerRequiresSync();
+	});
 }

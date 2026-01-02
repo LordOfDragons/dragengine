@@ -29,7 +29,7 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicDynamicSkin.h>
 #include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglDSRenderable;
 class deoglDynamicSkinListener;
@@ -52,7 +52,7 @@ public:
 	decPointerList pRenderables;
 	bool pDirtyRenderables;
 	
-	decPointerSet pListeners;
+	decTOrderedSet<deoglDynamicSkinListener*> pListeners;
 	
 	
 	

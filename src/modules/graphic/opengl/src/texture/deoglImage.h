@@ -28,9 +28,11 @@
 #include "deoglRImage.h"
 #include "pixelbuffer/deoglPixelBuffer.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicImage.h>
 #include <dragengine/threading/deMutex.h>
+
+class deoglCanvasImage;
 
 class deGraphicOpenGl;
 class deImage;
@@ -69,7 +71,7 @@ private:
 	deoglPixelBuffer::Ref pPixelBufferRImageTexture;
 	bool pDirtyTexture;
 	
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglCanvasImage*> pNotifyCanvas;
 	
 	
 	
@@ -103,8 +105,8 @@ public:
 	void MarkTextureDirty();
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasImage*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasImage*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	
 	
 	

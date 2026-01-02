@@ -745,7 +745,7 @@ void debpCollider::AttachmentAdded(int index, deColliderAttachment *attachment){
 	
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-		((debpCollider*)(((deCollider*)resource)->GetPeerPhysics()))->GetAttachedToList().Add(this);
+		dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics())->GetAttachedToList().Add(this);
 	}
 }
 
@@ -758,7 +758,7 @@ void debpCollider::AttachmentRemoved(int index, deColliderAttachment *attachment
 	
 	deResource * const resource = attachment->GetResource();
 	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-		debpCollider * const collider = (debpCollider*)(((deCollider*)resource)->GetPeerPhysics());
+		debpCollider * const collider = dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
 		if(collider){
 			collider->GetAttachedToList().Remove(this);
 		}
@@ -779,7 +779,7 @@ void debpCollider::AllAttachmentsRemoved(){
 		
 		deResource * const resource = pAttachments[pAttachmentCount]->GetAttachment()->GetResource();
 		if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
-			debpCollider * const collider = (debpCollider*)(((deCollider*)resource)->GetPeerPhysics());
+			debpCollider * const collider = dynamic_cast<debpCollider*>(dynamic_cast<deCollider*>(resource)->GetPeerPhysics());
 			if(collider){
 				collider->GetAttachedToList().Remove(this);
 			}
@@ -886,14 +886,9 @@ void debpCollider::pCleanUp(){
 		delete [] pAttachments;
 	}
 }
-
 void debpCollider::pRemoveFromAllTrackingTouchSensors(){
-	const int count = pTrackingTouchSensors.GetCount();
-	int i;
-	
-	for(i=0; i< count; i++){
-		((debpTouchSensor*)pTrackingTouchSensors.GetAt(i))->RemoveColliderImmediately(this);
-	}
-	
+	pTrackingTouchSensors.Visit([&](debpTouchSensor *touchSensor){
+		touchSensor->RemoveColliderImmediately(this);
+	});
 	pTrackingTouchSensors.RemoveAll();
 }

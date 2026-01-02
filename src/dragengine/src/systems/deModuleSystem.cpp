@@ -36,7 +36,6 @@
 #include "modules/service/deBaseServiceModule.h"
 #include "../deEngine.h"
 #include "../app/deOS.h"
-#include "../common/collection/decPointerSet.h"
 #include "../common/file/decPath.h"
 #include "../common/exceptions.h"
 #include "../filesystem/dePathList.h"

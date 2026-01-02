@@ -27,7 +27,7 @@
 
 #include "../../../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -51,7 +51,7 @@ private:
 	deoglPersistentRenderTaskTexture *pParentTexture;
 	const deoglVAO *pVAO;
 	decTLinkedList<deoglPersistentRenderTaskInstance> pInstances;
-	decPointerDictionaryExt pInstancesMap;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskInstance*> pInstancesMap;
 	
 	
 	

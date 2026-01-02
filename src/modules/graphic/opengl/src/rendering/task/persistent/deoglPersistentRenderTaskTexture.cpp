@@ -121,18 +121,12 @@ decTLinkedList<deoglPersistentRenderTaskVAO>::Element *deoglPersistentRenderTask
 }
 
 deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::GetVAOWith(const deoglVAO *vao) const{
-	if(!vao){
-		DETHROW(deeInvalidParam);
-	}
-	
-	deoglPersistentRenderTaskVAO *rtvao;
-	return pVAOsMap.GetAt(vao, vao->GetUniqueKey(), (void**)&rtvao) ? rtvao : NULL;
+	DEASSERT_NOTNULL(vao)
+	return pVAOsMap.GetAtOrDefault(vao->GetUniqueKey());
 }
 
 deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO(const deoglVAO *vao){
-	if(!vao){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vao)
 	
 	// commented out in the name of performance
 // 	if( pVAOsMap.Has( vao, vao->GetUniqueKey() ) ){
@@ -143,16 +137,15 @@ deoglPersistentRenderTaskVAO *deoglPersistentRenderTaskTexture::AddVAO(const deo
 	pVAOs.Add(&rtvao->GetLLTexture());
 	rtvao->SetParentTexture(this);
 	rtvao->SetVAO(vao);
-	pVAOsMap.SetAt(vao, vao->GetUniqueKey(), rtvao);
+	pVAOsMap.SetAt(vao->GetUniqueKey(), rtvao);
 	return rtvao;
 }
 
 void deoglPersistentRenderTaskTexture::RemoveVAO(deoglPersistentRenderTaskVAO *vao){
-	if(!vao){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vao)
+	DEASSERT_NOTNULL(vao->GetVAO())
 	
-	pVAOsMap.Remove(vao->GetVAO(), vao->GetVAO()->GetUniqueKey());
+	pVAOsMap.Remove(vao->GetVAO()->GetUniqueKey());
 	pVAOs.Remove(&vao->GetLLTexture());
 	pPool.ReturnVAO(vao);
 }

@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	deoglSharedSPBRTIGroupList * const pParent;
+	deTObjectReference<deoglSharedSPBRTIGroupList> pParent;
 	deoglSharedSPB &pSharedSPB;
 	int pTextureCount;
 	deoglRenderTaskSharedInstance *pRTSInstance;
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent list. */
-	inline deoglSharedSPBRTIGroupList &GetParent() const{ return *pParent; }
+	inline deoglSharedSPBRTIGroupList &GetParent() const{ return pParent; }
 	
 	/** Shared SPB. */
 	inline deoglSharedSPB &GetSharedSPB() const{ return pSharedSPB; }

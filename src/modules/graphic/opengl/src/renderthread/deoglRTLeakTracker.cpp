@@ -55,10 +55,10 @@ deoglRTLeakTracker::~deoglRTLeakTracker(){
 // Management
 ///////////////
 
-void deoglRTLeakTracker::ReportLeaks(const char *name, const decPointerSet &tracker){
+void deoglRTLeakTracker::ReportLeaks(const char *name, const decTSet<deObject*> &tracker){
 	pMutex.Lock();
 	
-	if(tracker.GetCount() > 0){
+	if(tracker.IsNotEmpty()){
 		try{
 			deoglRTLogger &logger = pRenderThread.GetLogger();
 			const int count = tracker.GetCount();
@@ -68,7 +68,7 @@ void deoglRTLeakTracker::ReportLeaks(const char *name, const decPointerSet &trac
 			
 			logger.LogInfoFormat("%i Leaks for %s", count, name);
 			for(i=0; i<count; i++){
-				line.AppendFormat(" %p(%i)", tracker.GetAt(i), ((deObject*)tracker.GetAt(i))->GetRefCount());
+				line.AppendFormat(" %p(%i)", tracker.GetAt(i), tracker.GetAt(i)->GetRefCount());
 				if(((i + 1) % entriesPerLine) == 0){
 					logger.LogInfo(line);
 					line.Empty();
@@ -91,7 +91,7 @@ void deoglRTLeakTracker::ReportLeaks(const char *name, const decPointerSet &trac
 
 
 #ifdef ENABLE_LEAK_TRACKING
-void deoglRTLeakTracker::AddTracked(decPointerSet &list, void *object){
+void deoglRTLeakTracker::AddTracked(decTSet<deObject*> &list, deObject *object){
 	pMutex.Lock();
 	
 	try{
@@ -105,7 +105,7 @@ void deoglRTLeakTracker::AddTracked(decPointerSet &list, void *object){
 	pMutex.Unlock();
 }
 
-void deoglRTLeakTracker::RemoveTracked(decPointerSet &list, void *object) {
+void deoglRTLeakTracker::RemoveTracked(decTSet<deObject*> &list, deObject *object) {
 	pMutex.Lock();
 	
 	try{

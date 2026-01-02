@@ -43,7 +43,7 @@ private:
 	decTLinkedList<deoglPersistentRenderTaskOwner>::Element pLLTask;
 	
 	void *pOwner;
-	unsigned int pHash;
+	unsigned int pUniqueKey;
 	bool pUpdateMarker;
 	
 	deoglRComponent *pComponent;
@@ -73,11 +73,11 @@ public:
 	/** Owner object or NULL. */
 	inline void *GetOwner() const{ return pOwner; }
 	
-	/** Hash. */
-	inline unsigned int GetHash() const{ return pHash; }
+	/** Unique key. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	/** Set owner object or NULL. */
-	void SetOwner(void *owner, unsigned int hash);
+	void SetOwner(void *owner, unsigned int uniqueKey);
 	
 	/** Update marker. */
 	inline bool GetUpdateMarker() const{ return pUpdateMarker; }

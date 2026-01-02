@@ -42,7 +42,7 @@
 deoglPersistentRenderTaskOwner::deoglPersistentRenderTaskOwner() :
 pLLTask(this),
 pOwner(NULL),
-pHash(0),
+pUniqueKey(0),
 pComponent(NULL){
 }
 
@@ -54,9 +54,9 @@ deoglPersistentRenderTaskOwner::~deoglPersistentRenderTaskOwner(){
 // Management
 ///////////////
 
-void deoglPersistentRenderTaskOwner::SetOwner(void *owner, unsigned int hash){
+void deoglPersistentRenderTaskOwner::SetOwner(void *owner, unsigned int uniqueKey){
 	pOwner = owner;
-	pHash = hash;
+	pUniqueKey = uniqueKey;
 }
 
 void deoglPersistentRenderTaskOwner::SetExtends(const decDVector &minExtend, const decDVector &maxExtend){

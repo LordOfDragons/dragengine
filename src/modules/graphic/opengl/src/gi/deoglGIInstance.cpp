@@ -307,7 +307,7 @@ void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
 	pInitParameters();
 	pDirtyTUCs = true;
 	
-	pInstances.RegisterElement(component, this);
+	pInstances.RegisterElement(*component, this);
 }
 
 void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
@@ -477,7 +477,7 @@ void deoglGIInstance::Clear(){
 	
 	if(pComponent){
 		try{
-			pInstances.UnregisterElement(pComponent);
+			pInstances.UnregisterElement(*pComponent);
 		}catch(const deException &e){
 			pComponent->GetRenderThread().GetLogger().LogException(e);
 		}
