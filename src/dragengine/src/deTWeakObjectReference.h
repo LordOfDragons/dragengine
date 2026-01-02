@@ -183,6 +183,11 @@ public:
 	inline deTWeakObjectReference &operator=(const deTWeakObjectReference<U> &reference){
 		return operator=(static_cast<T*>(reference.Pointer()));
 	}
+
+	/** \brief Test equality with object. */
+	inline bool operator==(T *object) const{
+		return Pointer() == object;
+	}
 	
 	/** \brief Test equality with object. */
 	inline bool operator==(const T *object) const{
@@ -199,7 +204,12 @@ public:
 	inline bool operator==(const deTWeakObjectReference<U> &reference) const{
 		return Pointer() == static_cast<T*>(reference.Pointer());
 	}
-	
+
+	/** \brief Test inequality with object. */
+	inline bool operator!=(T *object) const{
+		return Pointer() != object;
+	}
+
 	/** \brief Test inequality with object. */
 	inline bool operator!=(const T *object) const{
 		return Pointer() != object;
