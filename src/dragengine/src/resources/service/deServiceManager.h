@@ -30,11 +30,12 @@
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 #include "../../common/collection/decObjectList.h"
-#include "../../common/collection/decPointerOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/string/decStringSet.h"
 #include "../../threading/deMutex.h"
 
 class deEngine;
+class deBaseServiceModule;
 
 
 /**
@@ -46,7 +47,7 @@ private:
 	deMutex pMutex;
 	decObjectList pEventQueue;
 	deResourceList pServices;
-	decPointerOrderedSet pModules;
+	decTOrderedSet<deBaseServiceModule*> pModules;
 	bool pDirtyModules;
 	
 	
@@ -65,6 +66,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Service modules. */
+	inline const decTOrderedSet<deBaseServiceModule*> &GetModules() const{ return pModules; }
+	
 	/** \brief Number of service resource. */
 	int GetServiceCount() const;
 	

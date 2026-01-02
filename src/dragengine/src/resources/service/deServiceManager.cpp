@@ -245,23 +245,21 @@ void deServiceManager::pUpdateModuleList(){
 	
 	const deService *service = (const deService*)pServices.GetRoot();
 	while(service){
-		pModules.AddIfAbsent(service->GetServiceModule());
+		pModules.Add(service->GetServiceModule());
 		service = (const deService*)service->GetLLManagerNext();
 	}
 }
 
 void deServiceManager::pUpdateModules(){
-	const int count = pModules.GetCount();
-	if(count == 0){
+	if(pModules.IsEmpty()){
 		return;
 	}
 	
 	const float elapsed = GetEngine()->GetElapsedTime();
-	int i;
 	
-	for(i=0; i<count; i++){
-		((deBaseServiceModule*)pModules.GetAt(i))->FrameUpdate(elapsed);
-	}
+	pModules.Visit([&](deBaseServiceModule *module){
+		module->FrameUpdate(elapsed);
+	});
 }
 
 void deServiceManager::pProcessEvents(){

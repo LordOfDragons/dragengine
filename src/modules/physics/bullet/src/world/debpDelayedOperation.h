@@ -25,7 +25,7 @@
 #ifndef _DEBPDELAYEDOPERATION_H_
 #define _DEBPDELAYEDOPERATION_H_
 
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class btCollisionObject;
 class btCollisionShape;
@@ -53,11 +53,11 @@ class debpDelayedOperation{
 private:
 	debpCollisionWorld &pWorld;
 	int pLockCount;
-	decPointerOrderedSet pListAddRigidBody;
-	decPointerOrderedSet pListRemoveRigidBody;
-	decPointerOrderedSet pListAddCollisionObject;
-	decPointerOrderedSet pListRemoveCollisionObject;
-	decPointerOrderedSet pListClearFromBroadphase;
+	decTOrderedSet<btRigidBody*> pListAddRigidBody;
+	decTOrderedSet<btRigidBody*> pListRemoveRigidBody;
+	decTOrderedSet<btCollisionObject*> pListAddCollisionObject;
+	decTOrderedSet<btCollisionObject*> pListRemoveCollisionObject;
+	decTOrderedSet<btCollisionObject*> pListClearFromBroadphase;
 	btCollisionShape *pDummyShape;
 	debpCollisionObject *pDummyCollisionObject;
 	
@@ -145,6 +145,21 @@ public:
 	 * The pointer to the collision object is not held by the delayed operation object.
 	 */
 	void AddClearFromBroadphase(btCollisionObject *collisionObject);
+	
+	/** \brief Get list of rigid bodies to add. */
+	inline const decTOrderedSet<btRigidBody*> &GetListAddRigidBody() const{ return pListAddRigidBody; }
+	
+	/** \brief Get list of rigid bodies to remove. */
+	inline const decTOrderedSet<btRigidBody*> &GetListRemoveRigidBody() const{ return pListRemoveRigidBody; }
+	
+	/** \brief Get list of collision objects to add. */
+	inline const decTOrderedSet<btCollisionObject*> &GetListAddCollisionObject() const{ return pListAddCollisionObject; }
+	
+	/** \brief Get list of collision objects to remove. */
+	inline const decTOrderedSet<btCollisionObject*> &GetListRemoveCollisionObject() const{ return pListRemoveCollisionObject; }
+	
+	/** \brief Get list of collision objects to clear from broadphase. */
+	inline const decTOrderedSet<btCollisionObject*> &GetListClearFromBroadphase() const{ return pListClearFromBroadphase; }
 	/*@}*/
 	
 	

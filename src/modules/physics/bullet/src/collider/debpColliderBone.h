@@ -29,7 +29,7 @@
 #include "../debpCollisionObject.h"
 #include "../debpBulletShape.h"
 
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
@@ -80,7 +80,7 @@ private:
 	int pIndex;
 	int pParent;
 	
-	decPointerOrderedSet pConstraints;
+	decTOrderedSet<debpColliderConstraint*> pConstraints;
 	
 	debpShapeList pShapes;
 	
@@ -160,6 +160,9 @@ public:
 	void SetFromRigBone(const deRigBone &bone);
 	
 	
+	
+	/** Constraints. */
+	inline const decTOrderedSet<debpColliderConstraint*> &GetConstraints() const{ return pConstraints; }
 	
 	/** Number of constraints. */
 	int GetConstraintCount() const;

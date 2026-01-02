@@ -199,7 +199,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfGetSectorCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	rt->PushInt(hterrain.GetSectorCount());
+	rt->PushInt(hterrain.GetSectors().GetCount());
 }
 
 // public func bool hasSector( Point coordinates )
@@ -268,7 +268,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfRemoveSector::RunFunction(dsRunTime *rt, dsValue *myself){
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	hterrain.RemoveSector(hterrain.GetSectorAt(rt->GetValue(0)->GetInt()));
+	hterrain.RemoveSector(hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func void removeAllSectors()
@@ -291,7 +291,7 @@ void deClassHeightTerrain::nfGetHeightImage::RunFunction(dsRunTime *rt, dsValue 
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage(rt, hterrain.GetSectorAt(rt->GetValue(0)->GetInt())->GetHeightImage());
+	ds.GetClassImage()->PushImage(rt, hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt())->GetHeightImage());
 }
 
 // public func void setHeightImage( int sector, Image image )
@@ -305,7 +305,7 @@ void deClassHeightTerrain::nfSetHeightImage::RunFunction(dsRunTime *rt, dsValue 
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	hterrain.GetSectorAt(rt->GetValue(0)->GetInt())->SetHeightImage(
+	hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt())->SetHeightImage(
 		ds.GetClassImage()->GetImage(rt->GetValue(1)->GetRealObject()));
 }
 
@@ -320,7 +320,7 @@ void deClassHeightTerrain::nfSetVisibilityFromImage::RunFunction(dsRunTime *rt, 
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(1)->GetRealObject());
 	const int imageDim = hterrain.GetSectorResolution();
@@ -393,7 +393,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfGetTextureCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	rt->PushInt(hterrain.GetSectorAt(rt->GetValue(0)->GetInt())->GetTextureCount());
+	rt->PushInt(hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt())->GetTextures().GetCount());
 }
 
 // public func void addTexture( int sector )
@@ -408,7 +408,7 @@ void deClassHeightTerrain::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *mys
 	deHeightTerrainTexture *texture = nullptr;
 	try{
 		texture = new deHeightTerrainTexture;
-		hterrain.GetSectorAt(rt->GetValue(0)->GetInt())->AddTexture(texture);
+		hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt())->AddTexture(texture);
 		
 	}catch(...){
 		if(texture){
@@ -429,8 +429,8 @@ void deClassHeightTerrain::nfTextureGetSkin::RunFunction(dsRunTime *rt, dsValue 
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	ds.GetClassSkin()->PushSkin(rt, texture.GetSkin());
 }
 
@@ -446,8 +446,8 @@ void deClassHeightTerrain::nfTextureSetSkin::RunFunction(dsRunTime *rt, dsValue 
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	texture.SetSkin(ds.GetClassSkin()->GetSkin(rt->GetValue(2)->GetRealObject()));
 	hterrain.NotifySectorChanged(sector.GetIndex());
 }
@@ -463,8 +463,8 @@ void deClassHeightTerrain::nfTextureGetUVOffset::RunFunction(dsRunTime *rt, dsVa
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	
 	ds.GetClassVector2()->PushVector2(rt, texture.GetProjectionOffset());
 }
@@ -481,8 +481,8 @@ void deClassHeightTerrain::nfTextureSetUVOffset::RunFunction(dsRunTime *rt, dsVa
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	texture.SetProjectionOffset(ds.GetClassVector2()->GetVector2(rt->GetValue(2)->GetRealObject()));
 	hterrain.NotifySectorChanged(sector.GetIndex());
 }
@@ -498,8 +498,8 @@ void deClassHeightTerrain::nfTextureGetUVScaling::RunFunction(dsRunTime *rt, dsV
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	
 	ds.GetClassVector2()->PushVector2(rt, texture.GetProjectionScaling());
 }
@@ -516,8 +516,8 @@ void deClassHeightTerrain::nfTextureSetUVScaling::RunFunction(dsRunTime *rt, dsV
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	texture.SetProjectionScaling(ds.GetClassVector2()->GetVector2(rt->GetValue(2)->GetRealObject()));
 	hterrain.NotifySectorChanged(sector.GetIndex());
 }
@@ -531,8 +531,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassHeightTerrain::nfTextureGetUVRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushFloat(texture.GetProjectionRotation() * RAD2DEG);
 }
 
@@ -546,8 +546,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfTextureSetUVRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	texture.SetProjectionRotation(rt->GetValue(2)->GetFloat() * DEG2RAD);
 	hterrain.NotifySectorChanged(sector.GetIndex());
 }
@@ -563,8 +563,8 @@ void deClassHeightTerrain::nfTextureGetMask::RunFunction(dsRunTime *rt, dsValue 
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	ds.GetClassImage()->PushImage(rt, texture.GetMaskImage());
 }
 
@@ -580,8 +580,8 @@ void deClassHeightTerrain::nfTextureSetMask::RunFunction(dsRunTime *rt, dsValue 
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainTexture &texture = *sector.GetTextureAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainTexture &texture = *sector.GetTextures().GetAt(rt->GetValue(1)->GetInt());
 	texture.SetMaskImage(ds.GetClassImage()->GetImage(rt->GetValue(2)->GetRealObject()));
 	hterrain.NotifySectorChanged(sector.GetIndex());
 }
@@ -599,7 +599,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfGetDecalCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	rt->PushInt(sector.GetDecalCount());
 }
 
@@ -614,7 +614,7 @@ void deClassHeightTerrain::nfAddDecal::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	sector.AddDecal(ds.GetClassDecal()->GetDecal(rt->GetValue(1)->GetRealObject()));
 }
 
@@ -629,7 +629,7 @@ void deClassHeightTerrain::nfRemoveDecal::RunFunction(dsRunTime *rt, dsValue *my
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	const deScriptingDragonScript &ds = static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetDS();
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	sector.RemoveDecal(ds.GetClassDecal()->GetDecal(rt->GetValue(1)->GetRealObject()));
 }
 
@@ -641,7 +641,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfRemoveAllDecals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	sector.RemoveAllDecals();
 }
 
@@ -658,8 +658,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfGetNavSpaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	rt->PushInt(sector.GetNavSpaceCount());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	rt->PushInt(sector.GetNavSpaces().GetCount());
 }
 
 // public func void addNavSpace( int sector )
@@ -672,7 +672,7 @@ void deClassHeightTerrain::nfAddNavSpace::RunFunction(dsRunTime *rt, dsValue *my
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
 	try{
-		hterrain.GetSectorAt(rt->GetValue(0)->GetInt())->AddNavSpace(new deHeightTerrainNavSpace);
+		hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt())->AddNavSpace(new deHeightTerrainNavSpace);
 		
 	}catch(...){
 		DSTHROW(dueInvalidParam);
@@ -688,8 +688,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfRemoveNavSpaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	sector.RemoveNavSpace(sector.GetNavSpaceAt(rt->GetValue(1)->GetInt()));
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	sector.RemoveNavSpace(sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt()));
 }
 
 // public func void removeAllNavSpaces( int sector )
@@ -700,7 +700,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfRemoveAllNavSpaces::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	sector.RemoveAllNavSpaces();
 }
 
@@ -715,8 +715,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	
 	rt->PushValue(static_cast<deClassHeightTerrain*>(GetOwnerClass())->GetClassNavigationSpaceType()
 		->GetVariable(navspace.GetType())->GetStaticValue());
@@ -733,9 +733,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const int index = rt->GetValue(1)->GetInt();
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(index);
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(index);
 	
 	if(!rt->GetValue(2)->GetRealObject()){
 		DSTHROW(dueNullPointer);
@@ -756,8 +756,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetLayer::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetLayer());
 }
 
@@ -772,9 +772,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetLayer::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const int index = rt->GetValue(1)->GetInt();
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(index);
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(index);
 	
 	navspace.SetLayer(rt->GetValue(2)->GetInt());
 	sector.NotifyNavSpaceLayerChanged(index);
@@ -789,8 +789,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassHeightTerrain::nfNavSpaceGetSnapDistance::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushFloat(navspace.GetSnapDistance());
 }
 
@@ -804,9 +804,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfNavSpaceSetSnapDistance::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const int index = rt->GetValue(1)->GetInt();
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(index);
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(index);
 	
 	navspace.SetSnapDistance(rt->GetValue(2)->GetFloat());
 	sector.NotifyNavSpaceSnappingChanged(index);
@@ -821,8 +821,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassHeightTerrain::nfNavSpaceGetSnapAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushFloat(navspace.GetSnapAngle() * RAD2DEG);
 }
 
@@ -837,9 +837,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetSnapAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	const int index = rt->GetValue(1)->GetInt();
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(index);
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(index);
 	
 	navspace.SetSnapAngle(rt->GetValue(2)->GetFloat() * DEG2RAD);
 	sector.NotifyNavSpaceSnappingChanged(index);
@@ -856,8 +856,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetCornerCount());
 }
 
@@ -871,8 +871,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfNavSpaceSetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	navspace.SetCornerCount(rt->GetValue(2)->GetInt());
 }
 
@@ -886,8 +886,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetCornerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetCornerAt(rt->GetValue(2)->GetInt()));
 }
 
@@ -903,8 +903,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetCornerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	
 	const int corner = rt->GetValue(2)->GetInt();
 	const unsigned int navpoint = (unsigned int)rt->GetValue(3)->GetInt();
@@ -922,8 +922,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetEdgeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetEdgeCount());
 }
 
@@ -936,8 +936,8 @@ dsFunction(init.clsHT, "navspaceSetEdgeCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM
 }
 void deClassHeightTerrain::nfNavSpaceSetEdgeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	navspace.SetEdgeCount(rt->GetValue(2)->GetInt());
 }
 
@@ -951,8 +951,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceEdgeGetPoint1::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetPoint1());
 }
 
@@ -965,8 +965,8 @@ dsFunction(init.clsHT, "navspaceEdgeGetPoint2", DSFT_FUNCTION, DSTM_PUBLIC | DST
 }
 void deClassHeightTerrain::nfNavSpaceEdgeGetPoint2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetPoint2());
 }
 
@@ -980,8 +980,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceEdgeGetType1::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetType1());
 }
 
@@ -995,8 +995,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceEdgeGetType2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetEdgeAt(rt->GetValue(2)->GetInt()).GetType2());
 }
 
@@ -1015,8 +1015,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetEdgeAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	
 	const int edgeIndex = rt->GetValue(2)->GetInt();
 	const unsigned int point1 = (unsigned int)rt->GetValue(3)->GetInt();
@@ -1042,8 +1042,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceGetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetFaceCount());
 }
 
@@ -1057,8 +1057,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfNavSpaceSetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	navspace.SetFaceCount(rt->GetValue(2)->GetInt());
 }
 
@@ -1072,8 +1072,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceFaceGetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetFaceAt(rt->GetValue(2)->GetInt()).GetCornerCount());
 }
 
@@ -1087,8 +1087,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassHeightTerrain::nfNavSpaceFaceGetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	const deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	const deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	const deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	rt->PushInt(navspace.GetFaceAt(rt->GetValue(2)->GetInt()).GetType());
 }
 
@@ -1105,8 +1105,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassHeightTerrain::nfNavSpaceSetFaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
 	
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
-	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaceAt(rt->GetValue(1)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainNavSpace &navspace = *sector.GetNavSpaces().GetAt(rt->GetValue(1)->GetInt());
 	
 	const int faceIndex = rt->GetValue(2)->GetInt();
 	const unsigned short cornerCount = (unsigned short)rt->GetValue(3)->GetInt();
@@ -1126,7 +1126,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassHeightTerrain::nfNavSpaceLayoutChanged::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deHeightTerrain &hterrain = *(static_cast<sHTNatDat*>(p_GetNativeData(myself))->hterrain);
-	deHeightTerrainSector &sector = *hterrain.GetSectorAt(rt->GetValue(0)->GetInt());
+	deHeightTerrainSector &sector = *hterrain.GetSectors().GetAt(rt->GetValue(0)->GetInt());
 	sector.NotifyNavSpaceLayoutChanged(rt->GetValue(1)->GetInt());
 }
 

@@ -52,18 +52,15 @@ pHeightTerrain(heightTerrain),
 pSector(sector),
 pHeights(NULL)
 {
-	const int navSpaceCount = sector.GetNavSpaceCount();
-	int i;
-	
 	try{
 		pPosition.x = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().x;
 		pPosition.z = heightTerrain.GetHeightTerrain().GetSectorSize() * sector.GetSector().y;
 		
 		pUpdateHeights();
 		
-		for(i=0; i<navSpaceCount; i++){
-			NavSpaceAdded(sector.GetNavSpaceAt(i));
-		}
+		sector.GetNavSpaces().Visit([&](deHeightTerrainNavSpace *navspace){
+			NavSpaceAdded(navspace);
+		});
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -202,7 +202,7 @@ void meHeightTerrainNavSpace::SetSpaceType(deNavigationSpace::eSpaceTypes type){
 	if(pEngNavSpace){
 		pEngNavSpace->SetType(type);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceTypeChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
+		engHTSector.NotifyNavSpaceTypeChanged(engHTSector.GetNavSpaces().IndexOf(pEngNavSpace));
 	}
 	
 	InvalidatePathTest();
@@ -219,7 +219,7 @@ void meHeightTerrainNavSpace::SetLayer(int layer){
 	if(pEngNavSpace){
 		pEngNavSpace->SetLayer(layer);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceLayerChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
+		engHTSector.NotifyNavSpaceLayerChanged(engHTSector.GetNavSpaces().IndexOf(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
@@ -236,7 +236,7 @@ void meHeightTerrainNavSpace::SetSnapDistance(float distance){
 	if(pEngNavSpace){
 		pEngNavSpace->SetSnapDistance(distance);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
+		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.GetNavSpaces().IndexOf(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
@@ -253,7 +253,7 @@ void meHeightTerrainNavSpace::SetSnapAngle(float angle){
 	if(pEngNavSpace){
 		pEngNavSpace->SetSnapAngle(angle * DEG2RAD);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
+		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.GetNavSpaces().IndexOf(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
@@ -555,7 +555,7 @@ void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
 	});
 	
 	deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-	engHTSector.NotifyNavSpaceLayoutChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
+	engHTSector.NotifyNavSpaceLayoutChanged(engHTSector.GetNavSpaces().IndexOf(pEngNavSpace));
 	
 	InvalidatePathTest();
 	

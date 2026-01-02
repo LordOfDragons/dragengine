@@ -450,39 +450,34 @@ void deoglRHTSector::pSyncSector(const deHeightTerrainSector &sector){
 }
 
 void deoglRHTSector::pSyncTextures(const deHeightTerrainSector &sector){
-	const int count = sector.GetTextureCount();
-	int i;
-	
 	// determine if textures are valid and create them if not existing
 	pValidTextures = false;
 	
-	if(count > 0){
-		pSetTextureCount(count);
+	if(sector.GetTextures().IsNotEmpty()){
+		pSetTextureCount(sector.GetTextures().GetCount());
 		pValidTextures = true;
 	}
 	
 	// copy texture parameters for render thread part
-	for(i=0; i<pTextureCount; i++){
-		const deHeightTerrainTexture &t = *sector.GetTextureAt(i);
-		
+	sector.GetTextures().VisitIndexed([&](int i, deHeightTerrainTexture *t){
 		pTextures[i]->SetMatrix(
-			decTexMatrix::CreateScale(t.GetProjectionScaling().x, t.GetProjectionScaling().y)
-			* decTexMatrix::CreateTranslation( t.GetProjectionOffset().x, t.GetProjectionOffset().y )
-			* decTexMatrix::CreateRotation( t.GetProjectionRotation() ) );
-	}
+			decTexMatrix::CreateScale(t->GetProjectionScaling().x, t->GetProjectionScaling().y)
+			* decTexMatrix::CreateTranslation(t->GetProjectionOffset().x, t->GetProjectionOffset().y)
+			* decTexMatrix::CreateRotation(t->GetProjectionRotation()));
+	});
 	
 	// update skins if dirty
 	if(pValidTextures){
-		for(i=0; i<pTextureCount; i++){
-			const deSkin * const skin = sector.GetTextureAt(i)->GetSkin();
+		sector.GetTextures().VisitIndexed([&](int i, deHeightTerrainTexture *t){
+			const deSkin * const skin = t->GetSkin();
 			
 			if(skin){
 				pTextures[i]->SetSkin(((deoglSkin*)skin->GetPeerGraphic())->GetRSkin());
 				
 			}else{
-				pTextures[i]->SetSkin(NULL);
+				pTextures[i]->SetSkin(nullptr);
 			}
-		}
+		});
 	}
 	
 	// sync texture masks if dirty
@@ -507,7 +502,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 	}
 	
 	for(t=0; t<textureCount; t++){
-		deImage * const image = sector.GetTextureAt(t)->GetMaskImage();
+		deImage * const image = sector.GetTextures().GetAt(t)->GetMaskImage();
 		if(!image){
 			continue;
 		}

@@ -27,7 +27,7 @@
 
 #include "../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -95,17 +95,18 @@ private:
 	
 	deMutex pMutexAsyncResInit;
 	bool pHasAsyncResInitOperations;
-	decPointerOrderedSet pAsyncResInitSkinList;
-	decPointerOrderedSet pAsyncResInitFontList, pAsyncResInitFontSizeList;
+	decTOrderedSet<deoglRSkin*> pAsyncResInitSkinList;
+	decTOrderedSet<deoglRFont*> pAsyncResInitFontList;
+	decTOrderedSet<deoglRFontSize*> pAsyncResInitFontSizeList;
 
 	deMutex pMutexRecreateRes;
-	decPointerOrderedSet pRecreateSkinList;
+	decTOrderedSet<deoglRSkin*> pRecreateSkinList;
 	
 	deMutex pMutexInit;
 	bool pHasInitOperations;
-	decPointerOrderedSet pInitImageList;
-	decPointerOrderedSet pInitSkinList;
-	decPointerOrderedSet pInitModelList;
+	decTOrderedSet<deoglRImage*> pInitImageList;
+	decTOrderedSet<deoglRSkin*> pInitSkinList;
+	decTOrderedSet<deoglRModel*> pInitModelList;
 	
 	deMutex pMutexOGLObjects;
 	sOpenGLObject *pOGLObjects;
@@ -120,8 +121,8 @@ private:
 	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
-	decPointerOrderedSet pFileWriteList;
-	decPointerOrderedSet pSaveImageList;
+	decTOrderedSet<deoglDelayedFileWrite*> pFileWriteList;
+	decTOrderedSet<deoglDelayedSaveImage*> pSaveImageList;
 	
 	const deoglShaderProgram *pShaderGenConeMap;
 	const deoglShaderProgram *pShaderGenConeMapLayer;
@@ -180,7 +181,7 @@ public:
 	
 	
 	/** Async res init skin list (not thread-safe). */
-	inline const decPointerOrderedSet &GetAsyncResInitSkinList() const{ return pAsyncResInitSkinList; }
+	inline const decTOrderedSet<deoglRSkin*> &GetAsyncResInitSkinList() const{ return pAsyncResInitSkinList; }
 	
 	/** Add skin to async res initialize if not existing already (thread-safe). */
 	void AddAsyncResInitSkin(deoglRSkin *skin);
@@ -191,7 +192,7 @@ public:
 	
 	
 	/** Async res init font list (not thread-safe). */
-	inline const decPointerOrderedSet &GetAsyncResInitFontList() const{ return pAsyncResInitFontList; }
+	inline const decTOrderedSet<deoglRFont*> &GetAsyncResInitFontList() const{ return pAsyncResInitFontList; }
 	
 	/** Add font to async res initialize if not existing already (thread-safe). */
 	void AddAsyncResInitFont(deoglRFont *font);
@@ -202,7 +203,7 @@ public:
 	
 	
 	/** Async res init font size list (not thread-safe). */
-	inline const decPointerOrderedSet &GetAsyncResInitFontSizeList() const{ return pAsyncResInitFontSizeList; }
+	inline const decTOrderedSet<deoglRFontSize*> &GetAsyncResInitFontSizeList() const{ return pAsyncResInitFontSizeList; }
 	
 	/** Add font size to async res initialize if not existing already (thread-safe). */
 	void AddAsyncResInitFontSize(deoglRFontSize *size);
@@ -231,7 +232,7 @@ public:
 	
 	
 	/** Init image list (not thread-safe). */
-	inline const decPointerOrderedSet &GetInitImageList() const{ return pInitImageList; }
+	inline const decTOrderedSet<deoglRImage*> &GetInitImageList() const{ return pInitImageList; }
 	
 	/** Add image to initialize if not existing already (thread-safe). */
 	void AddInitImage(deoglRImage *image);
@@ -242,7 +243,7 @@ public:
 	
 	
 	/** Init skin list (not thread-safe). */
-	inline const decPointerOrderedSet &GetInitSkinList() const{ return pInitSkinList; }
+	inline const decTOrderedSet<deoglRSkin*> &GetInitSkinList() const{ return pInitSkinList; }
 	
 	/** Add skin to initialize if not existing already (thread-safe). */
 	void AddInitSkin(deoglRSkin *skin);
@@ -253,7 +254,7 @@ public:
 	
 	
 	/** Init model list (not thread-safe). */
-	inline const decPointerOrderedSet &GetInitModelList() const{ return pInitModelList; }
+	inline const decTOrderedSet<deoglRModel*> &GetInitModelList() const{ return pInitModelList; }
 	
 	/** Add model to initialize if not existing already (thread-safe). */
 	void AddInitModel(deoglRModel *model);
@@ -298,7 +299,7 @@ public:
 	
 	
 	/** File write list (not thread-safe). */
-	inline const decPointerOrderedSet &GetFileWriteList() const{ return pFileWriteList; }
+	inline const decTOrderedSet<deoglDelayedFileWrite*> &GetFileWriteList() const{ return pFileWriteList; }
 	
 	/** Add file write (thread-safe). */
 	void AddFileWrite(deoglDelayedFileWrite *fileWrite);
@@ -306,7 +307,7 @@ public:
 	
 	
 	/** Save image list (not thread-safe). */
-	inline const decPointerOrderedSet &GetSaveImageList() const{ return pSaveImageList; }
+	inline const decTOrderedSet<deoglDelayedSaveImage*> &GetSaveImageList() const{ return pSaveImageList; }
 	
 	/** Add save image (thread-safe). */
 	void AddSaveImage(deoglDelayedSaveImage *saveImage);

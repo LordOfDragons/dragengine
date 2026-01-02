@@ -145,7 +145,7 @@ void debpHeightTerrainShape::getAabb(const btTransform &trans, btVector3 &aabbMi
 void debpHeightTerrainShape::processRaycastAllTriangles(btTriangleRaycastCallback *callback,
 const btVector3 &raySource, const btVector3 &rayTarget){
 	// HACK: if there is no texture assigned to the height terrain ignore collisions
-	if(pSector->GetSector()->GetTextureCount() == 0){
+	if(pSector->GetSector()->GetTextures().IsEmpty()){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void debpHeightTerrainShape::processConvexcastAllTriangles(btTriangleConvexcastC
 const btVector3 &boxSource, const btVector3 &boxTarget, const btVector3 &boxMin, const btVector3 &boxMax){
 DEBUG_RESET_TIMERS;
 	// HACK: if there is no texture assigned to the height terrain ignore collisions
-	if(pSector->GetSector()->GetTextureCount() == 0){
+	if(pSector->GetSector()->GetTextures().IsEmpty()){
 		return;
 	}
 	
@@ -319,7 +319,7 @@ DEBUG_PRINT_TIMER("processConvexcastAllTriangles");
 void debpHeightTerrainShape::processAllTriangles(btTriangleCallback *callback, const btVector3 &aabbMin, const btVector3 &aabbMax) const{
 DEBUG_RESET_TIMERS;
 	// HACK: if there is no texture assigned to the height terrain ignore collisions
-	if(pSector->GetSector()->GetTextureCount() == 0){
+	if(pSector->GetSector()->GetTextures().IsEmpty()){
 		return;
 	}
 	

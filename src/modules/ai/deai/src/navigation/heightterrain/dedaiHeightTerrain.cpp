@@ -48,13 +48,10 @@ pDEAI(deai),
 pHeightTerrain(heightTerrain),
 pParentWorld(NULL)
 {
-	const int sectorCount = heightTerrain.GetSectorCount();
-	int i;
-	
 	try{
-		for(i=0; i<sectorCount; i++){
-			SectorAdded(heightTerrain.GetSectorAt(i));
-		}
+		heightTerrain.GetSectors().Visit([&](deHeightTerrainSector *sector){
+			SectorAdded(sector);
+		});
 		
 	}catch(const deException &){
 		pCleanUp();

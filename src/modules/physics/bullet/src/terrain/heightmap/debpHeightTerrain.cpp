@@ -46,8 +46,6 @@
 debpHeightTerrain::debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *heightTerrain){
 	if(!bullet || !heightTerrain) DETHROW(deeInvalidParam);
 	
-	int s, sectorCount = heightTerrain->GetSectorCount();
-	
 	pBullet = bullet;
 	pHeightTerrain = heightTerrain;
 	
@@ -58,9 +56,9 @@ debpHeightTerrain::debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *h
 	pSectorSize = 0;
 	
 	try{
-		for(s=0; s<sectorCount; s++){
-			SectorAdded(heightTerrain->GetSectorAt(s));
-		}
+		heightTerrain->GetSectors().Visit([&](deHeightTerrainSector *sector){
+			SectorAdded(sector);
+		});
 		
 	}catch(const deException &){
 		pCleanUp();

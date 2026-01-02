@@ -54,15 +54,12 @@ pOgl(ogl),
 pHeightTerrain(heightTerrain),
 pDirtySectors(true)
 {
-	const int sectorCount = heightTerrain.GetSectorCount();
-	int i;
-	
 	try{
 		pRHeightTerrain = deoglRHeightTerrain::Ref::New(ogl.GetRenderThread(), heightTerrain);
 		
-		for(i=0; i<sectorCount; i++){
-			SectorAdded(heightTerrain.GetSectorAt(i));
-		}
+		heightTerrain.GetSectors().Visit([&](deHeightTerrainSector *sector){
+			SectorAdded(sector);
+		});
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -124,13 +121,11 @@ void deoglHeightTerrain::ParametersChanged(){
 void deoglHeightTerrain::HeightChanged(const decPoint &fromSector,
 const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates){
 	const int imageDim = pHeightTerrain.GetSectorResolution();
-	const int count = pSectors.GetCount();
 	decPoint localFrom, localTo;
-	int i;
 	
-	for(i=0; i<count; i++){
+	pHeightTerrain.GetSectors().VisitIndexed([&](int i, deHeightTerrainSector *htsector){
 		deoglHTSector &sector = *((deoglHTSector*)pSectors.GetAt(i));
-		const decPoint &scoord = pHeightTerrain.GetSectorAt(i)->GetSector();
+		const decPoint &scoord = htsector->GetSector();
 		
 		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x && scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
 			if(fromSector.x == toSector.x){
@@ -188,7 +183,7 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 			
 			sector.HeightChanged(localFrom, localTo);
 		}
-	}
+	});
 }
 
 

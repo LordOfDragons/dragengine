@@ -259,15 +259,15 @@ void debpTouchSensor::ApplyChanges(){
 		// NOTE bullet ghost object uses only AABB for collecting overlapping object pairs.
 		//      this gives wrong result since touch sensors are support to provide exact
 		//      collision check not approximate ones. so we have to do this manually here
-		const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
-		const int count = ghostObject.getNumOverlappingObjects();
-		
-		int i, touchingCount = pTouchingColliders.GetCount();
-		for(i=0; i<touchingCount; i++){
-			((debpCollider*)pTouchingColliders.GetAt(i))->SetTouchSensorMarked(false);
-		}
-		
-		for(i=0; i<count; i++){
+	const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
+	const int count = ghostObject.getNumOverlappingObjects();
+	
+	pTouchingColliders.Visit([](debpCollider *collider){
+		collider->SetTouchSensorMarked(false);
+	});
+	
+	int i;
+	for(i=0; i<count; i++){
 			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject(i);
 			const debpCollisionObject &colObj = *((debpCollisionObject*)btColObj->getUserPointer());
 			
@@ -313,34 +313,31 @@ void debpTouchSensor::ApplyChanges(){
 			}
 		}
 		
-		// add all non-marked colliders to leaving list
-		for(i=pTouchingColliders.GetCount()-1; i>=0; i--){
-			debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(i);
-			if(collider->GetTouchSensorMarked()){
-				continue;
-			}
-			
+	// add all non-marked colliders to leaving list
+	pTouchingColliders.VisitReverse([&](debpCollider *collider){
+		if(!collider->GetTouchSensorMarked()){
 			pTouchingColliders.Remove(collider);
 			pLeavingColliders.Add(collider);
 		}
+	});
+	
+	// send a notification for all leaving colliders. if we have been removed from the
+	// parent world in the mean time pLeavingColliders is empty so no need to check
+	// if pParentWorld is NULL
+	while(pLeavingColliders.IsNotEmpty()){
+		const int index = pLeavingColliders.GetCount() - 1;
+		debpCollider * const collider = pLeavingColliders.GetAt(index);
+		pLeavingColliders.RemoveFrom(index);
+		collider->GetTrackingTouchSensors().Remove(this);
 		
-		// send a notification for all leaving colliders. if we have been removed from the
-		// parent world in the mean time pLeavingColliders is empty so no need to check
-		// if pParentWorld is NULL
-		while(pLeavingColliders.GetCount() > 0){
-			const int index = pLeavingColliders.GetCount() - 1;
-			debpCollider * const collider = (debpCollider*)pLeavingColliders.GetAt(index);
-			pLeavingColliders.RemoveFrom(index);
-			collider->GetTrackingTouchSensors().Remove(this);
-			
-			pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
-		}
-		
+		pTouchSensor.NotifyColliderLeft(&collider->GetCollider());
+	}
+	
 	}else{
 		// all colliders left the shape
 		while(pTouchingColliders.GetCount() > 0){
 			const int index = pTouchingColliders.GetCount() - 1;
-			debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(index);
+			debpCollider * const collider = pTouchingColliders.GetAt(index);
 			pTouchingColliders.RemoveFrom(index);
 			collider->GetTrackingTouchSensors().Remove(this);
 			
@@ -603,7 +600,7 @@ int debpTouchSensor::GetColliderCount(){
 }
 
 deCollider *debpTouchSensor::GetColliderAt(int collider){
-	return &((debpCollider*)pTouchingColliders.GetAt(collider))->GetCollider();
+	return &pTouchingColliders.GetAt(collider)->GetCollider();
 }
 
 
@@ -1102,7 +1099,7 @@ void debpTouchSensor::pClearTracking(){
 	// remove touching colliders
 	while(pTouchingColliders.GetCount() > 0){
 		const int index = pTouchingColliders.GetCount() - 1;
-		debpCollider * const collider = (debpCollider*)pTouchingColliders.GetAt(index);
+		debpCollider * const collider = pTouchingColliders.GetAt(index);
 		pTouchingColliders.RemoveFrom(index);
 		collider->GetTrackingTouchSensors().Remove(this);
 		
@@ -1112,7 +1109,7 @@ void debpTouchSensor::pClearTracking(){
 	// remove leaving colliders
 	while(pLeavingColliders.GetCount() > 0){
 		const int index = pLeavingColliders.GetCount() - 1;
-		debpCollider * const collider = (debpCollider*)pLeavingColliders.GetAt(index);
+		debpCollider * const collider = pLeavingColliders.GetAt(index);
 		pLeavingColliders.RemoveFrom(index);
 		collider->GetTrackingTouchSensors().Remove(this);
 		

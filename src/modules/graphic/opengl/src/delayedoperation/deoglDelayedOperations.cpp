@@ -126,26 +126,21 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 		return;
 	}
 	
-	int i, count;
-	
 	// async res initialize skins
-	count = pAsyncResInitSkinList.GetCount();
-	for(i=0; i<count; i++){
-		((deoglRSkin*)pAsyncResInitSkinList.GetAt(i))->FinalizeAsyncResLoading();
-	}
+	pAsyncResInitSkinList.Visit([](deoglRSkin *skin){
+		skin->FinalizeAsyncResLoading();
+	});
 	pAsyncResInitSkinList.RemoveAll();
 	
 	// async res initialize fonts
-	count = pAsyncResInitFontList.GetCount();
-	for(i=0; i<count; i++){
-		((deoglRFont*)pAsyncResInitFontList.GetAt(i))->FinalizeAsyncResLoading();
-	}
+	pAsyncResInitFontList.Visit([](deoglRFont *font){
+		font->FinalizeAsyncResLoading();
+	});
 	pAsyncResInitFontList.RemoveAll();
 
-	count = pAsyncResInitFontSizeList.GetCount();
-	for(i=0; i<count; i++){
-		((deoglRFontSize*)pAsyncResInitFontSizeList.GetAt(i))->FinalizeAsyncResLoading();
-	}
+	pAsyncResInitFontSizeList.Visit([](deoglRFontSize *size){
+		size->FinalizeAsyncResLoading();
+	});
 	pAsyncResInitFontSizeList.RemoveAll();
 
 	// finished
@@ -158,14 +153,14 @@ void deoglDelayedOperations::AddAsyncResInitSkin(deoglRSkin *skin){
 	DEASSERT_NOTNULL(skin)
 	
 	const deMutexGuard guard(pMutexAsyncResInit);
-	pAsyncResInitSkinList.AddIfAbsent(skin);
+	pAsyncResInitSkinList.Add(skin);
 	pHasAsyncResInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveAsyncResInitSkin(deoglRSkin *skin){
 	const deMutexGuard guard(pMutexAsyncResInit);
 	
-	pAsyncResInitSkinList.RemoveIfPresent(skin);
+	pAsyncResInitSkinList.Remove(skin);
 }
 
 
@@ -174,14 +169,14 @@ void deoglDelayedOperations::AddAsyncResInitFont(deoglRFont *font){
 	DEASSERT_NOTNULL(font)
 	
 	const deMutexGuard guard(pMutexAsyncResInit);
-	pAsyncResInitFontList.AddIfAbsent(font);
+	pAsyncResInitFontList.Add(font);
 	pHasAsyncResInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveAsyncResInitFont(deoglRFont *font){
 	deMutexGuard guard(pMutexAsyncResInit);
 	
-	pAsyncResInitFontList.RemoveIfPresent(font);
+	pAsyncResInitFontList.Remove(font);
 }
 
 
@@ -190,14 +185,14 @@ void deoglDelayedOperations::AddAsyncResInitFontSize(deoglRFontSize *size){
 	DEASSERT_NOTNULL(size)
 	
 	const deMutexGuard guard(pMutexAsyncResInit);
-	pAsyncResInitFontSizeList.AddIfAbsent(size);
+	pAsyncResInitFontSizeList.Add(size);
 	pHasAsyncResInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveAsyncResInitFontSize(deoglRFontSize *size){
 	deMutexGuard guard(pMutexAsyncResInit);
 	
-	pAsyncResInitFontSizeList.RemoveIfPresent(size);
+	pAsyncResInitFontSizeList.Remove(size);
 }
 
 
@@ -215,7 +210,7 @@ void deoglDelayedOperations::ProcessRecreateResOperations(){
 	//       be dropped here without doing anything to avoid segfaults (also on main thread).
 	//       since both actions happen on main thread no synchronization is needed.
 	while(pRecreateSkinList.GetCount() > 0){
-		deoglRSkin &skin = *((deoglRSkin*)pRecreateSkinList.GetAt(0));
+		deoglRSkin &skin = *pRecreateSkinList.First();
 		if(skin.GetOwnerSkin()){
 			pRenderThread.GetLogger().LogInfoFormat("DelayedOperations: Recreate skin: %s",
 				skin.GetFilename().GetString());
@@ -237,31 +232,27 @@ void deoglDelayedOperations::ProcessInitOperations(){
 		return;
 	}
 	
-	int i, count;
-	
 	// initialize images
-	count = pInitImageList.GetCount();
-	for(i=0; i<count; i++){
-		pProcessImage(*((deoglRImage*)pInitImageList.GetAt(i)));
-	}
+	pInitImageList.Visit([&](deoglRImage *image){
+		pProcessImage(*image);
+	});
 	pInitImageList.RemoveAll();
 	
 	// initialize skins
-	while(pInitSkinList.GetCount() > 0){
-		deoglRSkin &skin = *((deoglRSkin*)pInitSkinList.GetAt(0)); 
+	while(pInitSkinList.IsNotEmpty()){
+		deoglRSkin &skin = *pInitSkinList.First();
 		pProcessSkin(skin);
 		pInitSkinList.RemoveFrom(0);
 	}
 	
 	// initialize models
-	count = pInitModelList.GetCount();
-	for(i=0; i<count; i++){
-		pProcessModel(*((deoglRModel*)pInitModelList.GetAt(i)));
-	}
+	pInitModelList.Visit([&](deoglRModel *model){
+		pProcessModel(*model);
+	});
 	pInitModelList.RemoveAll();
 	
 	// finished
-	pHasInitOperations = pInitSkinList.GetCount() > 0;
+	pHasInitOperations = pInitSkinList.IsNotEmpty();
 }
 
 
@@ -270,13 +261,13 @@ void deoglDelayedOperations::AddInitImage(deoglRImage *image){
 	DEASSERT_NOTNULL(image)
 	
 	const deMutexGuard guard(pMutexInit);
-	pInitImageList.AddIfAbsent(image);
+	pInitImageList.Add(image);
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitImage(deoglRImage *image){
 	const deMutexGuard guard(pMutexInit);
-	pInitImageList.RemoveIfPresent(image);
+	pInitImageList.Remove(image);
 }
 
 
@@ -285,14 +276,14 @@ void deoglDelayedOperations::AddInitSkin(deoglRSkin *skin){
 	DEASSERT_NOTNULL(skin)
 	
 	const deMutexGuard guard(pMutexInit);
-	pInitSkinList.AddIfAbsent(skin);
+	pInitSkinList.Add(skin);
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitSkin(deoglRSkin *skin){
 	const deMutexGuard guard(pMutexInit);
 	
-	pInitSkinList.RemoveIfPresent(skin);
+	pInitSkinList.Remove(skin);
 }
 
 
@@ -301,14 +292,14 @@ void deoglDelayedOperations::AddInitModel(deoglRModel *model){
 	DEASSERT_NOTNULL(model)
 	
 	const deMutexGuard guard(pMutexInit);
-	pInitModelList.AddIfAbsent(model);
+	pInitModelList.Add(model);
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitModel(deoglRModel *model){
 	const deMutexGuard guard(pMutexInit);
 	
-	pInitModelList.RemoveIfPresent(model);
+	pInitModelList.Remove(model);
 }
 
 
@@ -429,7 +420,7 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 	
 	count = pFileWriteList.GetCount();
 	while(count > 0){
-		deoglDelayedFileWrite * const fileWrite = (deoglDelayedFileWrite*)pFileWriteList.GetAt(0);
+		deoglDelayedFileWrite * const fileWrite = pFileWriteList.First();
 		fileWrite->SaveFile(ogl.GetVFS());
 		pFileWriteList.RemoveFrom(0);
 		delete fileWrite;
@@ -438,7 +429,7 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 	
 	count = pSaveImageList.GetCount();
 	while(count > 0){
-		deoglDelayedSaveImage * const saveImage = (deoglDelayedSaveImage*)pSaveImageList.GetAt(0);
+		deoglDelayedSaveImage * const saveImage = pSaveImageList.First();
 		saveImage->SaveImage(ogl, ogl.GetVFS());
 		pSaveImageList.RemoveFrom(0);
 		delete saveImage;

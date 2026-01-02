@@ -72,15 +72,15 @@ debpDelayedOperation::~debpDelayedOperation(){
 	pListAddRigidBody.RemoveAll();
 	pListAddCollisionObject.RemoveAll();
 	
-	while(pListRemoveRigidBody.GetCount() > 0){
-		delete (btRigidBody*)pListRemoveRigidBody.GetAt(pListRemoveRigidBody.GetCount() - 1);
-		pListRemoveRigidBody.RemoveFrom(pListRemoveRigidBody.GetCount() - 1);
-	}
+	pListRemoveRigidBody.Visit([](btRigidBody *rb){
+		delete rb;
+	});
+	pListRemoveRigidBody.RemoveAll();
 	
-	while(pListRemoveCollisionObject.GetCount() > 0){
-		delete (btCollisionObject*)pListRemoveCollisionObject.GetAt(pListRemoveCollisionObject.GetCount() - 1);
-		pListRemoveCollisionObject.RemoveFrom(pListRemoveCollisionObject.GetCount() - 1);
-	}
+	pListRemoveCollisionObject.Visit([](btCollisionObject *co){
+		delete co;
+	});
+	pListRemoveCollisionObject.RemoveAll();
 	
 	if(pDummyCollisionObject){
 		delete pDummyCollisionObject;
@@ -120,7 +120,7 @@ void debpDelayedOperation::AddRigidBody(btRigidBody *rigidBody){
 			"operation in world %p but lock count is 0!", rigidBody, &pWorld);
 	}
 	
-	pListAddRigidBody.AddIfAbsent(rigidBody);
+	pListAddRigidBody.Add(rigidBody);
 }
 
 void debpDelayedOperation::RemoveRigidBody(btRigidBody *rigidBody){
@@ -130,7 +130,7 @@ void debpDelayedOperation::RemoveRigidBody(btRigidBody *rigidBody){
 	}
 // 	pWorld.GetWorld().GetBullet()->LogWarnFormat( "RemoveRigid %p world %p", rigidBody, &pWorld );
 	
-	pListClearFromBroadphase.RemoveIfPresent(rigidBody);
+	pListClearFromBroadphase.Remove(rigidBody);
 	
 	// if the rigid body is already marked to be added remove it from the list of rigid bodies to be added and delete it
 	if(pListAddRigidBody.Has(rigidBody)){
@@ -139,7 +139,7 @@ void debpDelayedOperation::RemoveRigidBody(btRigidBody *rigidBody){
 		
 	// otherwise add it to the list of rigid bodies to be removed
 	}else{
-		pListRemoveRigidBody.AddIfAbsent(rigidBody);
+		pListRemoveRigidBody.Add(rigidBody);
 		
 		// replace the collision shape with a temporary shape to avoid segmentation faults
 		rigidBody->setCollisionShape(pDummyShape);
@@ -158,7 +158,7 @@ void debpDelayedOperation::AddCollisionObject(btCollisionObject *collisionObject
 			"operation in world %p but lock count is 0!", collisionObject, &pWorld);
 	}
 	
-	pListAddCollisionObject.AddIfAbsent(collisionObject);
+	pListAddCollisionObject.Add(collisionObject);
 }
 
 void debpDelayedOperation::RemoveCollisionObject(btCollisionObject *collisionObject){
@@ -167,7 +167,7 @@ void debpDelayedOperation::RemoveCollisionObject(btCollisionObject *collisionObj
 			"operation in world %p but lock count is 0!", collisionObject, &pWorld);
 	}
 	
-	pListClearFromBroadphase.RemoveIfPresent(collisionObject);
+	pListClearFromBroadphase.Remove(collisionObject);
 	
 	// if the collision object is already marked to be added remove it from the list of objects to be added and delete it
 	if(pListAddCollisionObject.Has(collisionObject)){
@@ -176,7 +176,7 @@ void debpDelayedOperation::RemoveCollisionObject(btCollisionObject *collisionObj
 		
 	// otherwise add it to the list of objects to be removed
 	}else{
-		pListRemoveCollisionObject.AddIfAbsent(collisionObject);
+		pListRemoveCollisionObject.Add(collisionObject);
 		
 		// replace the collision shape with a temporary shape to avoid segmentation faults
 		collisionObject->setCollisionShape(pDummyShape);
@@ -195,7 +195,7 @@ void debpDelayedOperation::AddClearFromBroadphase(btCollisionObject *collisionOb
 			"operation in world %p but lock count is 0!", collisionObject, &pWorld);
 	}
 	
-	pListClearFromBroadphase.AddIfAbsent(collisionObject);
+	pListClearFromBroadphase.Add(collisionObject);
 }
 
 
@@ -212,67 +212,48 @@ void debpDelayedOperation::pApplyPendingOperations(){
 }
 
 void debpDelayedOperation::pClearFromBroadphase(){
-	const int count = pListClearFromBroadphase.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		btCollisionObject co = *((btCollisionObject*)pListClearFromBroadphase.GetAt(i));
+	pListClearFromBroadphase.Visit([&](btCollisionObject *co){
 		pWorld.getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(
-			co.getBroadphaseHandle(), pWorld.getDispatcher());
-	}
+			co->getBroadphaseHandle(), pWorld.getDispatcher());
+	});
 	
 	pListClearFromBroadphase.RemoveAll();
 }
 
 void debpDelayedOperation::pRemoveCollisionObjects(){
-	const int count = pListRemoveCollisionObject.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		btCollisionObject * const co = (btCollisionObject*)pListRemoveCollisionObject.GetAt(i);
+	pListRemoveCollisionObject.Visit([&](btCollisionObject *co){
 		pWorld.removeCollisionObject(co);
 		delete co;
-	}
+	});
 	
 	pListRemoveCollisionObject.RemoveAll();
 }
 
 void debpDelayedOperation::pRemoveRigidBodies(){
-	const int count = pListRemoveRigidBody.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		btRigidBody * const rigidBody = (btRigidBody*)pListRemoveRigidBody.GetAt(i);
+	pListRemoveRigidBody.Visit([&](btRigidBody *rigidBody){
 		pWorld.removeRigidBody(rigidBody);
 		delete rigidBody;
-	}
+	});
 	
 	pListRemoveRigidBody.RemoveAll();
 }
 
 void debpDelayedOperation::pAddRigidBodies(){
-	const int count = pListAddRigidBody.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pWorld.addRigidBody((btRigidBody*)pListAddRigidBody.GetAt(i));
-	}
+	pListAddRigidBody.Visit([&](btRigidBody *rigidBody){
+		pWorld.addRigidBody(rigidBody);
+	});
 	
 	pListAddRigidBody.RemoveAll();
 }
 
 void debpDelayedOperation::pAddCollisionObjects(){
-	const int count = pListAddCollisionObject.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
+	pListAddCollisionObject.Visit([&](btCollisionObject *co){
 		// btDiscreteDynamicsWorld overloads addCollisionObject with different
 		// default filter parameters in contrary to the base class version which
 		// breaks physics. set here explicitly the values used in the base version
 		// to get a consistent behavior
-		pWorld.addCollisionObject((btCollisionObject*)pListAddCollisionObject.GetAt(i),
-			btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::AllFilter);
-	}
+		pWorld.addCollisionObject(co, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::AllFilter);
+	});
 	
 	pListAddCollisionObject.RemoveAll();
 }

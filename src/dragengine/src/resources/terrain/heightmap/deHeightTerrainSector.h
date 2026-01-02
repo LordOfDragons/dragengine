@@ -25,7 +25,7 @@
 #ifndef _DEHEIGHTTERRAINSECTOR_H_
 #define _DEHEIGHTTERRAINSECTOR_H_
 
-#include "../../../common/collection/decPointerOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 #include "../../../common/math/decMath.h"
 #include "../../../resources/image/deImage.h"
 
@@ -59,8 +59,8 @@ private:
 	unsigned char *pVisibleFaces;
 	int pVFByteCount;
 	
-	decPointerOrderedSet pTextures;
-	decPointerOrderedSet pNavSpaces;
+	decTOrderedSet<deHeightTerrainTexture*> pTextures;
+	decTOrderedSet<deHeightTerrainNavSpace*> pNavSpaces;
 	
 	deDecal *pDecalRoot;
 	deDecal *pDecalTail;
@@ -131,17 +131,8 @@ public:
 	
 	/** \name Textures */
 	/*@{*/
-	/** \brief Number of textures. */
-	int GetTextureCount() const;
-	
-	/** \brief Texture at index. */
-	deHeightTerrainTexture *GetTextureAt(int index) const;
-	
-	/** \brief Index of texture or -1 if absent. */
-	int IndexOfTexture(deHeightTerrainTexture *texture) const;
-	
-	/** \brief Texture is present. */
-	bool HasTexture(deHeightTerrainTexture *texture) const;
+	/** \brief Textures. */
+	inline const decTOrderedSet<deHeightTerrainTexture*> &GetTextures() const{ return pTextures; }
 	
 	/** \brief Add texture. */
 	void AddTexture(deHeightTerrainTexture *texture);
@@ -185,17 +176,8 @@ public:
 	
 	/** \name Navigation spaces */
 	/*@{*/
-	/** \brief Number of navigation spaces. */
-	int GetNavSpaceCount() const;
-	
-	/** \brief Navigation space at index. */
-	deHeightTerrainNavSpace *GetNavSpaceAt(int index) const;
-	
-	/** \brief Index of navigation space or -1 if absent. */
-	int IndexOfNavSpace(deHeightTerrainNavSpace *navspace) const;
-	
-	/** \brief Navigation space is present. */
-	bool HasNavSpace(deHeightTerrainNavSpace *navspace) const;
+	/** \brief Navigation spaces. */
+	inline const decTOrderedSet<deHeightTerrainNavSpace*> &GetNavSpaces() const{ return pNavSpaces; }
 	
 	/** \brief Add navigation space. */
 	void AddNavSpace(deHeightTerrainNavSpace *navspace);

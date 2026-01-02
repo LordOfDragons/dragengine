@@ -28,8 +28,7 @@
 #include "../../deResource.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/utils/decCollisionFilter.h"
-#include "../../../common/collection/decPointerOrderedSet.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deHeightTerrainManager;
 class deHeightTerrainSector;
@@ -76,7 +75,7 @@ private:
 	float pBaseHeight;
 	float pHeightScaling;
 	
-	decPointerOrderedSet pSectors;
+	decTOrderedSet<deHeightTerrainSector*> pSectors;
 	decCollisionFilter pCollisionFilter;
 	
 	deBaseGraphicHeightTerrain *pPeerGraphic;
@@ -145,17 +144,11 @@ public:
 	
 	/** \name Sectors */
 	/*@{*/
-	/** \brief Number of sectors. */
-	int GetSectorCount() const;
-	
-	/** \brief Sector at the given index. */
-	deHeightTerrainSector *GetSectorAt(int index) const;
+	/** \brief Sectors. */
+	inline const decTOrderedSet<deHeightTerrainSector*> &GetSectors() const{ return pSectors; }
 	
 	/** \brief Sector with the given coordinates or NULL if not existing. */
 	deHeightTerrainSector *GetSectorWith(const decPoint &coordinates) const;
-	
-	/** \brief Index of sector or -1 if absent. */
-	int IndexOfSector(deHeightTerrainSector *sector) const;
 	
 	/** \brief Adds a sector to the world. */
 	void AddSector(deHeightTerrainSector *sector);

@@ -28,7 +28,7 @@
 #include "../shape/debpShapeList.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsTouchSensor.h>
 
@@ -62,8 +62,8 @@ private:
 	bool pDirtyExtends;
 	
 	debpShapeList pShape;
-	decPointerOrderedSet pTouchingColliders;
-	decPointerOrderedSet pLeavingColliders;
+	decTOrderedSet<debpCollider*> pTouchingColliders;
+	decTOrderedSet<debpCollider*> pLeavingColliders;
 	debpGhostObject *pGhostObject;
 	
 	deDebugDrawer::Ref pDebugDrawer;
@@ -100,12 +100,12 @@ public:
 	inline debpGhostObject *GetGhostObject() const{ return pGhostObject; }
 	
 	/** Retrieves the list of touching colliders. */
-	inline decPointerOrderedSet &GetTouchingColliders(){ return pTouchingColliders; }
-	inline const decPointerOrderedSet &GetTouchingColliders() const{ return pTouchingColliders; }
+	inline decTOrderedSet<debpCollider*> &GetTouchingColliders(){ return pTouchingColliders; }
+	inline const decTOrderedSet<debpCollider*> &GetTouchingColliders() const{ return pTouchingColliders; }
 	
 	/** Retrieves the list of leaving colliders. */
-	inline decPointerOrderedSet &GetLeavingColliders(){ return pLeavingColliders; }
-	inline const decPointerOrderedSet &GetLeavingColliders() const{ return pLeavingColliders; }
+	inline decTOrderedSet<debpCollider*> &GetLeavingColliders(){ return pLeavingColliders; }
+	inline const decTOrderedSet<debpCollider*> &GetLeavingColliders() const{ return pLeavingColliders; }
 	
 	
 	

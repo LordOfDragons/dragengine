@@ -577,7 +577,7 @@ bool debpCollisionDetection::ColliderHitsHeightTerrain(debpCollider *collider, d
 	if(!collider || !sector) DETHROW(deeInvalidParam);
 	
 	if(!sector->GetSector()->GetHeightImage()) return false;
-	if(sector->GetSector()->GetTextureCount() == 0) return false;
+	if(sector->GetSector()->GetTextures().IsEmpty()) return false;
 	
 	int x, z, sx, sz, ex, ez, base;
 	debpCollisionResult tresult;

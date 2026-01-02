@@ -314,7 +314,7 @@ void meHeightTerrainSector::NotifySectorChanged(){
 	if(pHeightTerrain && pEngSector){
 		deHeightTerrain * const engHT = pHeightTerrain->GetEngineHeightTerrain();
 		if(engHT){
-			engHT->NotifySectorChanged(engHT->IndexOfSector(pEngSector));
+			engHT->NotifySectorChanged(engHT->GetSectors().IndexOf(pEngSector));
 		}
 		pHeightTerrain->SetChanged(true);
 	}

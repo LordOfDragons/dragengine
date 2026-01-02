@@ -131,30 +131,10 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 // Sectors
 ////////////
 
-int deHeightTerrain::GetSectorCount() const{
-	return pSectors.GetCount();
-}
-
-deHeightTerrainSector *deHeightTerrain::GetSectorAt(int index) const{
-	return (deHeightTerrainSector*)pSectors.GetAt(index);
-}
-
 deHeightTerrainSector *deHeightTerrain::GetSectorWith(const decPoint &coordinates) const{
-	const int count = pSectors.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deHeightTerrainSector * const sector = (deHeightTerrainSector*)pSectors.GetAt(i);
-		if(sector->GetSector() == coordinates){
-			return sector;
-		}
-	}
-	
-	return NULL;
-}
-
-int deHeightTerrain::IndexOfSector(deHeightTerrainSector *sector) const{
-	return pSectors.IndexOf(sector);
+	return pSectors.FindOrDefault([&](deHeightTerrainSector *sector){
+		return sector->GetSector() == coordinates;
+	});
 }
 
 void deHeightTerrain::AddSector(deHeightTerrainSector *sector){
@@ -191,11 +171,9 @@ void deHeightTerrain::RemoveSector(deHeightTerrainSector *sector){
 	sector->SetParentHeightTerrain(NULL);
 	pSectors.RemoveFrom(index);
 	
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deHeightTerrainSector*)pSectors.GetAt(i))->SetIndex(i);
-	}
+	pSectors.VisitIndexed([](int i, deHeightTerrainSector *s){
+		s->SetIndex(i);
+	});
 	
 	try{
 		if(pPeerGraphic){
@@ -233,14 +211,11 @@ void deHeightTerrain::RemoveAllSectors(){
 		pPeerAI->AllSectorsRemoved();
 	}
 	
-	const int count = pSectors.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deHeightTerrainSector * const sector = (deHeightTerrainSector*)pSectors.GetAt(i);
+	pSectors.Visit([](deHeightTerrainSector *sector){
 		sector->SetIndex(-1);
-		sector->SetParentHeightTerrain(NULL);
+		sector->SetParentHeightTerrain(nullptr);
 		delete sector;
-	}
+	});
 	pSectors.RemoveAll();
 }
 

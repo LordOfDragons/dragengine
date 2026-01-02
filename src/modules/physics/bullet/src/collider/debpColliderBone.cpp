@@ -138,25 +138,18 @@ void debpColliderBone::RemoveConstraint(debpColliderConstraint *constraint){
 }
 
 void debpColliderBone::RemoveAllConstraints(){
-	const int count = pConstraints.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delete (debpColliderConstraint*)pConstraints.GetAt(i);
-	}
+	pConstraints.Visit([](debpColliderConstraint *each){
+		delete each;
+	});
 	pConstraints.RemoveAll();
 }
 
 
 
 bool debpColliderBone::RequiresAutoDirty() const{
-	const int count = pConstraints.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((debpColliderConstraint*)pConstraints.GetAt(i))->RequiresAutoDirty()){
-			return true;
-		}
-	}
-	return false;
+	return pConstraints.HasMatching([&](const debpColliderConstraint *each){
+		return each->RequiresAutoDirty();
+	});
 }
 
 
