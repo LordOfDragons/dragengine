@@ -27,7 +27,7 @@
 
 #include "../deoglBasics.h"
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeList.h>
 
@@ -54,7 +54,7 @@ private:
 	
 	decVector *pHullPoints;
 	int pHullPointCount;
-	decIntList pHullIndices;
+	decTList<int> pHullIndices;
 	bool pDirtyHulls;
 	
 	

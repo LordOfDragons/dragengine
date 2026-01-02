@@ -86,8 +86,7 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 	
 	for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
 		const deSkyControllerTarget &target = layer.GetTarget((deSkyLayer::eTargets)i);
-		const int linkCount = target.GetLinkCount();
-		if(linkCount > 0){
+		if(target.GetLinks().IsNotEmpty()){
 			pTargets[i] = new deoglRSkyControllerTarget(target);
 		}
 	}

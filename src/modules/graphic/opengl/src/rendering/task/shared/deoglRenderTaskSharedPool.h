@@ -27,7 +27,7 @@
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -53,7 +53,7 @@ private:
 	decPointerList pFreeTextures;
 	decPointerList pFreeVAOs;
 	decPointerList pFreeInstances;
-	decIntList pFreeSkinTextures;
+	decTList<int> pFreeSkinTextures;
 	
 	deMutex pMutexSkinTextures;
 	

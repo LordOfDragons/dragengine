@@ -30,7 +30,7 @@
 #include "component/dearComponentVPSState.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -173,7 +173,7 @@ void dearVPSStateList::UpdateMappings(const deAnimator &animator, const deCompon
 		}
 		
 	}else{
-		decIntList foundVPS;
+		decTList<int> foundVPS;
 		
 		for(i=0; i<vpsCount; i++){
 			const int modelIndex = model->IndexOfVertexPositionSetNamed(vpslist.GetAt(i));

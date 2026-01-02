@@ -27,7 +27,8 @@
 
 #include "desynSynthesizerCurve.h"
 
-class decIntList;
+#include <dragengine/common/collection/decTList.h>
+
 class desynSynthesizerInstance;
 class deSynthesizerLink;
 
@@ -51,7 +52,7 @@ public:
 	desynSynthesizerLink(const deSynthesizerLink &link);
 	
 	/** \brief Create synthesizer source. */
-	desynSynthesizerLink(const deSynthesizerLink &link, const decIntList &controllerMapping);
+	desynSynthesizerLink(const deSynthesizerLink &link, const decTList<int> &controllerMapping);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerLink();

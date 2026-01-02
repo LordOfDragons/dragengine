@@ -31,7 +31,7 @@
 #include "component/dearComponent.h"
 #include "component/dearComponentBoneState.h"
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -248,7 +248,7 @@ void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 		}
 		
 	}else{
-		decIntList foundBones;
+		decTList<int> foundBones;
 		
 		for(s=0; s<boneCount; s++){
 			boneIndex = rig->IndexOfBoneNamed(bones.GetAt(s));

@@ -30,7 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 

@@ -30,7 +30,7 @@
 #include "../deFileResource.h"
 #include "../image/deImage.h"
 #include "../../common/collection/decObjectList.h"
-#include "../../common/collection/decIntList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../threading/deMutex.h"
 
@@ -64,7 +64,7 @@ private:
 	decString pImagePath;
 	deImage::Ref pImage;
 	
-	decIntList pFixedSizes;
+	decTList<int> pFixedSizes;
 	decObjectList pSizes;
 	deMutex pMutex;
 	
@@ -181,8 +181,8 @@ public:
 	
 	
 	/** \brief List of fixed font sizes (line heights). */
-	inline decIntList &GetFixedSizes(){ return pFixedSizes; }
-	inline const decIntList &GetFixedSizes() const{ return pFixedSizes; }
+	inline decTList<int> &GetFixedSizes(){ return pFixedSizes; }
+	inline const decTList<int> &GetFixedSizes() const{ return pFixedSizes; }
 	
 	/**
 	 * \brief Fixed size best matching line height.

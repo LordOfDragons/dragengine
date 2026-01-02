@@ -41,7 +41,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -101,8 +100,8 @@ private:
 	decLayerMask pLayerMask;
 	int pGIImportance;
 	
-	decIntList pModelSkinMappings;
-	decIntList pModelRigMappings;
+	decTList<int> pModelSkinMappings;
+	decTList<int> pModelRigMappings;
 	deoglRModel::Ref pModel;
 	deoglRSkin::Ref pSkin;
 	deoglRDynamicSkin::Ref pDynamicSkin;
@@ -370,7 +369,7 @@ public:
 	
 	
 	/** Model skin to mappings. */
-	inline const decIntList &GetModelSkinMappings() const{ return pModelSkinMappings; }
+	inline const decTList<int> &GetModelSkinMappings() const{ return pModelSkinMappings; }
 	
 	/** Skin state. */
 	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }

@@ -30,7 +30,7 @@
 #include "desynSynthesizerController.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/synthesizer/deSynthesizerLink.h>
 
 
@@ -47,7 +47,7 @@ pRepeat(link.GetRepeat()),
 pCurve(link.GetCurve()){
 }
 
-desynSynthesizerLink::desynSynthesizerLink(const deSynthesizerLink &link, const decIntList &controllerMapping) :
+desynSynthesizerLink::desynSynthesizerLink(const deSynthesizerLink &link, const decTList<int> &controllerMapping) :
 pController(link.GetController()),
 pRepeat(link.GetRepeat()),
 pCurve(link.GetCurve())

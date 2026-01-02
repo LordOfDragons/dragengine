@@ -28,7 +28,7 @@
 #include "deoglROcclusionMesh.h"
 #include "../../deoglBasics.h"
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
@@ -49,7 +49,7 @@ public:
 	deoglROcclusionMesh::Ref pOcclusionMesh;
 	deoglRComponent *pComponent;
 	
-	decIntList pBoneMappings;
+	decTList<int> pBoneMappings;
 	
 	oglMatrix3x4 *pWeights;
 	int pWeightCount;

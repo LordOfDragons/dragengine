@@ -255,10 +255,10 @@ void deoglDebugDrawerShape::WriteVBOData(const deDebugDrawerShape &ddshape, oglV
 class deoglDebugDrawerShape_ProcessHull : public decShapeVisitor{
 	decVector **pHullPoints;
 	int *pHullPointCount;
-	decIntList &pHullIndices;
+	decTList<int> &pHullIndices;
 	
 public:
-	deoglDebugDrawerShape_ProcessHull(decVector **hullPoints, int *hullPointCount, decIntList &hullIndices) :
+	deoglDebugDrawerShape_ProcessHull(decVector **hullPoints, int *hullPointCount, decTList<int> &hullIndices) :
 	pHullPoints(hullPoints), pHullPointCount(hullPointCount), pHullIndices(hullIndices){
 	}
 	
@@ -275,7 +275,7 @@ public:
 		}
 		calculator.CalculateHull();
 		
-		const decIntList &indices = calculator.GetHullIndices();
+		const decTList<int> &indices = calculator.GetHullIndices();
 		if(indices.GetCount() < 3){
 			return;
 		}

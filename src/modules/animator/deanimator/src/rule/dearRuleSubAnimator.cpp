@@ -73,7 +73,7 @@
 /////////////////////////////////
 
 dearRuleSubAnimator::dearRuleSubAnimator(dearAnimatorInstance &instance, const dearAnimator &animator,
-	int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping) :
+	int firstLink, const deAnimatorRuleSubAnimator &rule, const decTList<int> &controllerMapping) :
 dearRule(instance, animator, firstLink, rule),
 pSubAnimator(rule),
 
@@ -307,7 +307,7 @@ void dearRuleSubAnimator::pCleanUp(){
 	}
 }
 
-void dearRuleSubAnimator::pCreateRules(const decIntList &controllerMapping){
+void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 	const deAnimator * const animator = pSubAnimator.GetSubAnimator();
 	if(!animator){
 		return;
@@ -324,7 +324,7 @@ void dearRuleSubAnimator::pCreateRules(const decIntList &controllerMapping){
 	// create sub controller mapping
 	const int controllerCount = animator->GetControllerCount();
 	const int connectionCount = pSubAnimator.GetConnectionCount();
-	decIntList subControllerMapping;
+	decTList<int> subControllerMapping;
 	
 	for(i=0; i<controllerCount; i++){
 		if(i < connectionCount){

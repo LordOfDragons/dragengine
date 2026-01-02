@@ -36,7 +36,6 @@ class fbxAnimationCurve;
 class fbxNode;
 
 class deAnimationMove;
-class decIntList;
 
 
 /**

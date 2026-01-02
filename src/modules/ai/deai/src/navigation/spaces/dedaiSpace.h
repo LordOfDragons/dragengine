@@ -25,7 +25,6 @@
 #ifndef _DEDAISPACE_H_
 #define _DEDAISPACE_H_
 
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>

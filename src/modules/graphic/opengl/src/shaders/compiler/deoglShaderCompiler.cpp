@@ -746,7 +746,7 @@ void deoglShaderCompiler::pAfterLinkShader(const deoglShaderProgram& program){
 		compiled.SetParameterCount(count);
 		
 		#ifdef USE_EXPLICIT_UNIFORM_LOCATIONS
-			const decIntList &parameterLocations = sources.GetParameterLocations();
+			const decTList<int> &parameterLocations = sources.GetParameterLocations();
 			
 			for(i=0; i<count; i++){
 				compiled.SetParameterAt(i, parameterLocations.GetAt(i));

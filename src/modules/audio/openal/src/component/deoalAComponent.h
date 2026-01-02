@@ -29,7 +29,7 @@
 #include "../skin/deoalASkin.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
@@ -61,9 +61,9 @@ private:
 	deoalAWorld *pParentWorld;
 	deoalWorldOctree *pOctreeNode;
 	
-	decIntList pModelTextureMappings;
-	decIntList pTextureSkinMappings;
-	decIntList pModelRigMappings;
+	decTList<int> pModelTextureMappings;
+	decTList<int> pTextureSkinMappings;
+	decTList<int> pModelRigMappings;
 	const decStringList *pTextureNames;
 	deoalAModel::Ref pModel;
 	deoalASkin::Ref pSkin;
@@ -171,13 +171,13 @@ public:
 	inline const decStringList *GetTextureNames() const{ return pTextureNames; }
 	
 	/** \brief Model to texture mappings. */
-	inline const decIntList &GetModelTextureMappings() const{ return pModelTextureMappings; }
+	inline const decTList<int> &GetModelTextureMappings() const{ return pModelTextureMappings; }
 	
 	/** \brief Texture to skin mappings. */
-	inline const decIntList &GetTextureSkinMappings() const{ return pTextureSkinMappings; }
+	inline const decTList<int> &GetTextureSkinMappings() const{ return pTextureSkinMappings; }
 	
 	/** \brief Model to rig mappings. */
-	inline const decIntList &GetModelRigMappings() const{ return pModelRigMappings; }
+	inline const decTList<int> &GetModelRigMappings() const{ return pModelRigMappings; }
 	
 	
 	

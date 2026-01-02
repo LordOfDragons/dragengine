@@ -30,7 +30,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 
@@ -42,7 +42,7 @@
 /////////////////////////////////
 
 dearLink::dearLink(dearAnimatorInstance &instance, const deAnimatorLink &link,
-	const decIntList &controllerMapping) :
+	const decTList<int> &controllerMapping) :
 pInstance(instance),
 pLink(link),
 pEvaluator(link.GetCurve()),

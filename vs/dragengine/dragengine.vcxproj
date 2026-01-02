@@ -471,7 +471,6 @@
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectDictionaryExt.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectLinkedList.cpp" />
@@ -1074,7 +1073,6 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions_safe.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionaryExt.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectLinkedList.h" />

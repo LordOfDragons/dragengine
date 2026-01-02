@@ -127,7 +127,7 @@ void deClassSkyTarget::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *mysel
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
 	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	rt->PushInt(target.GetLinkCount());
+	rt->PushInt(target.GetLinks().GetCount());
 }
 
 // public func int getLinkAt( int index )
@@ -140,7 +140,7 @@ void deClassSkyTarget::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
 	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	rt->PushInt(target.GetLinkAt(rt->GetValue(0)->GetInt()));
+	rt->PushInt(target.GetLinks().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func void addLink( int link )

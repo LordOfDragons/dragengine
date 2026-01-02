@@ -27,7 +27,6 @@
 
 #include <openvr/openvr.h>
 
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deVROpenVR;

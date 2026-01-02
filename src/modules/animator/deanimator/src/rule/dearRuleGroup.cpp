@@ -66,7 +66,7 @@
 /////////////////////////////////
 
 dearRuleGroup::dearRuleGroup(dearAnimatorInstance &instance, const dearAnimator &animator,
-	int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping) :
+	int firstLink, const deAnimatorRuleGroup &rule, const decTList<int> &controllerMapping) :
 dearRule(instance, animator, firstLink, rule),
 
 pGroup(rule),
@@ -409,7 +409,7 @@ void dearRuleGroup::pCleanUp(){
 	}
 }
 
-void dearRuleGroup::pCreateRules(int firstLink, const decIntList &controllerMapping){
+void dearRuleGroup::pCreateRules(int firstLink, const decTList<int> &controllerMapping){
 	const int ruleCount = pGroup.GetRuleCount();
 	if(ruleCount == 0){
 		return;

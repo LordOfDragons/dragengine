@@ -45,15 +45,18 @@ deoglRSkyControllerTarget::deoglRSkyControllerTarget(const deSkyControllerTarget
 pLinks(NULL),
 pLinkCount(0)
 {
-	const int linkCount = target.GetLinkCount();
-	if(linkCount == 0){
+	const decTList<int> &links = target.GetLinks();
+	const int linkCount = links.GetCount();
+	
+	if(links.IsEmpty()){
 		return;
 	}
 	
 	pLinks = new int[linkCount];
-	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
-		pLinks[pLinkCount] = target.GetLinkAt(pLinkCount);
-	}
+	
+	links.Visit([&](int link){
+		pLinks[pLinkCount++] = link;
+	});
 }
 
 deoglRSkyControllerTarget::~deoglRSkyControllerTarget(){

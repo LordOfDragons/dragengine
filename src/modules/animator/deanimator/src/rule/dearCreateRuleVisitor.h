@@ -25,9 +25,9 @@
 #ifndef _DEARCREATERULEVISITOR_H_
 #define _DEARCREATERULEVISITOR_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitor.h>
 
-class decIntList;
 class dearAnimator;
 class dearAnimatorInstance;
 class dearRule;
@@ -42,7 +42,7 @@ class dearCreateRuleVisitor : public deAnimatorRuleVisitor{
 private:
 	dearAnimatorInstance &pInstance;
 	const dearAnimator &pAnimator;
-	const decIntList &pControllerMapping;
+	const decTList<int> &pControllerMapping;
 	const int pFirstLink;
 	
 	dearRule *pCreatedRule;
@@ -50,9 +50,9 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create new visitor. */
+	/** Create visitor. */
 	dearCreateRuleVisitor(dearAnimatorInstance &instance, const dearAnimator &animator,
-		const decIntList &controllerMapping, int firstLink);
+		const decTList<int> &controllerMapping, int firstLink);
 	
 	/** Clean up object. */
 	virtual ~dearCreateRuleVisitor();

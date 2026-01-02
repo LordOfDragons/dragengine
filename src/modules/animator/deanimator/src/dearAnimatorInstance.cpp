@@ -660,7 +660,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 	
 	if(linkCount > 0){
 		const int controllerCount = pAnimatorInstance.GetControllerCount();
-		decIntList controllerMapping;
+		decTList<int> controllerMapping;
 		dearLink *link = nullptr;
 		int i;
 		
@@ -715,7 +715,7 @@ void dearAnimatorInstance::pUpdateRules(){
 		
 		if(ruleCount > 0){
 			const int controllerCount = pAnimatorInstance.GetControllerCount();
-			decIntList controllerMapping;
+			decTList<int> controllerMapping;
 			int i;
 			
 			for(i=0; i<controllerCount; i++){

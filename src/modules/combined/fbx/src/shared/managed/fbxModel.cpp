@@ -253,7 +253,7 @@ void fbxModel::BuildWeights(){
 	}
 	
 	for(i=0; i<pVertexCount; i++){
-		decIntList &weights = pVertices[i].weights;
+		decTList<int> &weights = pVertices[i].weights;
 		const int weightCount = weights.GetCount();
 		float weightSum = 0.0f;
 		
@@ -364,7 +364,7 @@ int fbxModel::pAddWeight(int bone, float weight){
 	return index;
 }
 
-int fbxModel::pAddWeightSet(const decIntList &weights){
+int fbxModel::pAddWeightSet(const decTList<int> &weights){
 	// find matching weight set
 	const int count = pWeightSetsFirstWeight.GetCount();
 	const int weightCount = weights.GetCount();

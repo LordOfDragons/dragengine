@@ -402,7 +402,7 @@ void igdeLoadSky::pReadTarget(const decXmlElementTag &root, deSkyLayer &layer){
 		const decString &tagName = tag->GetName();
 		if(tagName == "link"){
 			const int link = GetCDataInt(*tag);
-			if(!target->HasLink(link)){
+			if(!target->GetLinks().Has(link)){
 				target->AddLink(link);
 			}
 		}

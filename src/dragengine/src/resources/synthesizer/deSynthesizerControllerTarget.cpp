@@ -53,18 +53,6 @@ deSynthesizerControllerTarget::~deSynthesizerControllerTarget(){
 // Management
 ///////////////
 
-int deSynthesizerControllerTarget::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-int deSynthesizerControllerTarget::GetLinkAt(int index) const{
-	return pLinks.GetAt(index);
-}
-
-int deSynthesizerControllerTarget::IndexOfLink(int link) const{
-	return pLinks.IndexOf(link);
-}
-
 void deSynthesizerControllerTarget::AddLink(int link){
 	pLinks.Add(link);
 }

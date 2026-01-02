@@ -69,7 +69,7 @@
 ////////////////////////////
 
 dearCreateRuleVisitor::dearCreateRuleVisitor(dearAnimatorInstance &instance,
-const dearAnimator &animator, const decIntList &controllerMapping, int firstLink) :
+const dearAnimator &animator, const decTList<int> &controllerMapping, int firstLink) :
 pInstance(instance),
 pAnimator(animator),
 pControllerMapping(controllerMapping),

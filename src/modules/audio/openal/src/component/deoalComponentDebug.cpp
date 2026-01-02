@@ -150,7 +150,7 @@ void deoalComponentDebug::pUpdateDDFaces(){
 	const decColor colorEdge(color, alphaEdge);
 	
 	const deoalAModel &model = *pComponent.GetAudioModel()->GetAModel();
-	const decIntList &mappingTexture = acomponent.GetModelTextureMappings();
+	const decTList<int> &mappingTexture = acomponent.GetModelTextureMappings();
 	const int textureCount = model.GetTextureNames().GetCount();
 	const int faceCount = model.GetFaceCount();
 	int i, j;

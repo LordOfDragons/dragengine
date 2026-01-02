@@ -30,7 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -55,7 +55,7 @@ public:
 	
 private:
 	struct sVertex {
-		decIntList weights;
+		decTList<int> weights;
 		decVector position;
 		int weightSet;
 	};
@@ -79,10 +79,10 @@ private:
 	int pWeightCount;
 	int pWeightSize;
 	
-	decIntList pWeightSetWeights;
-	decIntList pWeightSetsFirstWeight;
-	decIntList pWeightSetsWeightsCount;
-	decIntList pWeightGroupsSetCount;
+	decTList<int> pWeightSetWeights;
+	decTList<int> pWeightSetsFirstWeight;
+	decTList<int> pWeightSetsWeightsCount;
+	decTList<int> pWeightGroupsSetCount;
 	
 	float pWeightMatchThreshold;
 	
@@ -160,10 +160,10 @@ public:
 	const deModelWeight &GetWeightAt(int index) const;
 	
 	/** Weight sets. */
-	inline const decIntList &GetWeightSetWeights() const{ return pWeightSetWeights; }
-	inline const decIntList &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
-	inline const decIntList &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
-	inline const decIntList &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
+	inline const decTList<int> &GetWeightSetWeights() const{ return pWeightSetWeights; }
+	inline const decTList<int> &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
+	inline const decTList<int> &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
+	inline const decTList<int> &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
 	
 	
 	
@@ -184,7 +184,7 @@ public:
 private:
 	int pAddVertexWeight(int bone, float weight);
 	int pAddWeight(int bone, float weight);
-	int pAddWeightSet(const decIntList &weights);
+	int pAddWeightSet(const decTList<int> &weights);
 };
 
 #endif

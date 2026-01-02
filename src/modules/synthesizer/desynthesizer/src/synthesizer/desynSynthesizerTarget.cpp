@@ -47,17 +47,16 @@ int firstLink, const deSynthesizerControllerTarget &target) :
 pLinks(NULL),
 pLinkCount(0)
 {
-	const int linkCount = target.GetLinkCount();
-	
-	if(linkCount == 0){
+	const decTList<int> &links = target.GetLinks();
+	if(links.IsEmpty()){
 		return;
 	}
 	
-	pLinks = new const desynSynthesizerLink*[linkCount];
+	pLinks = new const desynSynthesizerLink*[links.GetCount()];
 	
-	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
-		pLinks[pLinkCount] = &synthesizer.GetLinkAt(firstLink + target.GetLinkAt(pLinkCount));
-	}
+	links.Visit([&](int link){
+		pLinks[pLinkCount++] = &synthesizer.GetLinkAt(firstLink + link);
+	});
 }
 
 desynSynthesizerTarget::~desynSynthesizerTarget(){

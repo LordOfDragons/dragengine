@@ -25,7 +25,7 @@
 #ifndef _DESKYCONTROLLERTARGET_H_
 #define _DESKYCONTROLLERTARGET_H_
 
-#include "../../common/collection/decIntList.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -33,7 +33,7 @@
  */
 class DE_DLL_EXPORT deSkyControllerTarget{
 private:
-	decIntList pLinks;
+	decTList<int> pLinks;
 	
 	
 	
@@ -54,18 +54,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal
-	 * to GetLinkCount().
-	 */
-	int GetLinkAt(int index) const;
-	
-	/** \brief Link is present. */
-	bool HasLink(int link) const;
+	/** \brief Links. */
+	inline const decTList<int> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(int link);

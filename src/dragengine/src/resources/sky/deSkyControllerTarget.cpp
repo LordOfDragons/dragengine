@@ -53,18 +53,6 @@ deSkyControllerTarget::~deSkyControllerTarget(){
 // Management
 ///////////////
 
-int deSkyControllerTarget::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-int deSkyControllerTarget::GetLinkAt(int index) const{
-	return pLinks.GetAt(index);
-}
-
-bool deSkyControllerTarget::HasLink(int link) const{
-	return pLinks.Has(link);
-}
-
 void deSkyControllerTarget::AddLink(int link){
 	pLinks.Add(link);
 }

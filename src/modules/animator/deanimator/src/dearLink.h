@@ -27,9 +27,9 @@
 
 #include <dragengine/common/curve/decCurveBezierEvaluator.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class decIntList;
 class dearAnimatorInstance;
 class deAnimatorLink;
 class dearControllerStates;
@@ -54,7 +54,7 @@ public:
 	/*@{*/
 	/** Create link. */
 	dearLink(dearAnimatorInstance &instance, const deAnimatorLink &link,
-		const decIntList &controllerMapping);
+		const decTList<int> &controllerMapping);
 	
 	/** Clean up link. */
 	~dearLink();

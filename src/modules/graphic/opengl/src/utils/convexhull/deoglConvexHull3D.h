@@ -25,7 +25,7 @@
 #ifndef _DEOGLCONVEXHULL3D_H_
 #define _DEOGLCONVEXHULL3D_H_
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -38,7 +38,7 @@ private:
 	int pPointCount;
 	int pPointSize;
 	
-	decIntList pHullIndices;
+	decTList<int> pHullIndices;
 	
 	
 	
@@ -69,7 +69,7 @@ public:
 	void RemoveAllPoints();
 	
 	/** Convex hull indices in groups of 3 per face. */
-	inline const decIntList &GetHullIndices() const{ return pHullIndices; }
+	inline const decTList<int> &GetHullIndices() const{ return pHullIndices; }
 	
 	/** Calculate convex hull. */
 	void CalculateHull();

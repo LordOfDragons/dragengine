@@ -263,9 +263,9 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 void fbxModelModule::pLoadModelVertices(deModel &model, deModelLOD &lod,
 const fbxModel &loadModel, const fbxRig *loadRig){
 	// weight sets
-	const decIntList &wsWeights = loadModel.GetWeightSetWeights();
-	const decIntList &wsFirstWeight = loadModel.GetWeightSetsFirstWeight();
-	const decIntList &wgSetCount = loadModel.GetWeightGroupsSetCount();
+	const decTList<int> &wsWeights = loadModel.GetWeightSetWeights();
+	const decTList<int> &wsFirstWeight = loadModel.GetWeightSetsFirstWeight();
+	const decTList<int> &wgSetCount = loadModel.GetWeightGroupsSetCount();
 	const int wgCount = wgSetCount.GetCount();
 	int wsNextWeight = 0;
 	int wsSetIndex = 0;

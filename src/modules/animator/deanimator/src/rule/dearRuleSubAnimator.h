@@ -26,7 +26,7 @@
 #define _DEARRULESUBANIMATOR_H_
 
 #include "dearRule.h"
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dearAnimator;
 class deAnimatorRuleSubAnimator;
@@ -61,7 +61,7 @@ public:
 	/*@{*/
 	/** Create rule. */
 	dearRuleSubAnimator(dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping);
+		int firstLink, const deAnimatorRuleSubAnimator &rule, const decTList<int> &controllerMapping);
 	
 	/** Clean up animator. */
 	~dearRuleSubAnimator() override;
@@ -94,7 +94,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateRules(const decIntList &controllerMapping);
+	void pCreateRules(const decTList<int> &controllerMapping);
 };
 
 #endif
