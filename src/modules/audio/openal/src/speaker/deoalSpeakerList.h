@@ -25,7 +25,7 @@
 #ifndef _DEOALSPEAKERLIST_H_
 #define _DEOALSPEAKERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalASpeaker;
 
@@ -36,7 +36,7 @@ class deoalASpeaker;
  */
 class deoalSpeakerList{
 private:
-	decPointerList pSpeakers;
+	decTList<deoalASpeaker*> pSpeakers;
 	
 	
 	

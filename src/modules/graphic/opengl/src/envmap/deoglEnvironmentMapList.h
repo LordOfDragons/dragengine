@@ -25,7 +25,7 @@
 #ifndef _DEOGLENVIRONMENTMAPLIST_H_
 #define _DEOGLENVIRONMENTMAPLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglEnvironmentMap;
 
@@ -38,7 +38,7 @@ class deoglEnvironmentMap;
  */
 class deoglEnvironmentMapList{
 private:
-	decPointerList pEnvMaps;
+	decTList<deoglEnvironmentMap*> pEnvMaps;
 	
 	
 	

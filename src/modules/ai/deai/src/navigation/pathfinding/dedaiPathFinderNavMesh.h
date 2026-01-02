@@ -26,7 +26,7 @@
 #define _DEDAIPATHFINDERNAVMESH_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deDebugDrawerShape;
 class dedaiSpaceMeshFace;
@@ -48,9 +48,9 @@ private:
 	dedaiSpaceMeshFace *pStartFace;
 	dedaiSpaceMeshFace *pEndFace;
 	
-	decPointerList pListClosed;
-	decPointerList pListOpen;
-	decPointerList pPathFaces;
+	decTList<dedaiSpaceMeshFace*> pListClosed;
+	decTList<dedaiSpaceMeshFace*> pListOpen;
+	decTList<dedaiSpaceMeshFace*> pPathFaces;
 	
 	decDVector *pPathPoints;
 	int pPathPointCount;
@@ -91,14 +91,14 @@ public:
 	void FindPath();
 	
 	/** Retrieves the open list. */
-	inline decPointerList &GetListOpen(){ return pListOpen; }
-	inline const decPointerList &GetListOpen() const{ return pListOpen; }
+	inline decTList<dedaiSpaceMeshFace*> &GetListOpen(){ return pListOpen; }
+	inline const decTList<dedaiSpaceMeshFace*> &GetListOpen() const{ return pListOpen; }
 	/** Retrieves the closed list. */
-	inline decPointerList &GetListClosed(){ return pListClosed; }
-	inline const decPointerList &GetListClosed() const{ return pListClosed; }
+	inline decTList<dedaiSpaceMeshFace*> &GetListClosed(){ return pListClosed; }
+	inline const decTList<dedaiSpaceMeshFace*> &GetListClosed() const{ return pListClosed; }
 	/** Retrieves the faces path. */
-	inline decPointerList &GetPathFaces(){ return pPathFaces; }
-	inline const decPointerList &GetPathFaces() const{ return pPathFaces; }
+	inline decTList<dedaiSpaceMeshFace*> &GetPathFaces(){ return pPathFaces; }
+	inline const decTList<dedaiSpaceMeshFace*> &GetPathFaces() const{ return pPathFaces; }
 	
 	/** Retrieves the number of path points. */
 	inline int GetPathPointCount() const{ return pPathPointCount; }

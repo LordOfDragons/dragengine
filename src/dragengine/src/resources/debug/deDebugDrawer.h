@@ -26,7 +26,7 @@
 #define _DEDEBUGDRAWER_H_
 
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 #include "../deResource.h"
 
 class deDebugDrawerShape;
@@ -68,7 +68,7 @@ private:
 	bool pVisible;
 	bool pXRay;
 	
-	decPointerList pShapes;
+	decTList<deDebugDrawerShape*> pShapes;
 	
 	deBaseGraphicDebugDrawer *pPeerGraphic;
 	
@@ -134,6 +134,9 @@ public:
 	
 	/** \name Shape Management */
 	/*@{*/
+	/** \brief Shapes. */
+	inline const decTList<deDebugDrawerShape*> &GetShapes() const{ return pShapes; }
+	
 	/** \brief Count of shapes. */
 	int GetShapeCount() const;
 	

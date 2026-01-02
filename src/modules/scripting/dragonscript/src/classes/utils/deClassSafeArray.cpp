@@ -34,7 +34,7 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassBlock.h>
@@ -47,8 +47,8 @@ struct sSafeArrayIterator{
 };
 
 struct sSafeArrayNatDat{
-	decPointerList array;
-	decPointerList iterators;
+	decTList<dsValue*> array;
+	decTList<sSafeArrayIterator*> iterators;
 	
 	int IndexOf(const dsValue *value) const{
 		const dsRealObject * const object = value->GetRealObject();
@@ -56,7 +56,7 @@ struct sSafeArrayNatDat{
 		int i;
 		
 		for(i=0; i<count; i++){
-			if(static_cast<dsValue*>(array.GetAt(i))->GetRealObject() == object){
+			if(array.GetAt(i)->GetRealObject() == object){
 				return i;
 			}
 		}

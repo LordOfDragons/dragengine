@@ -27,7 +27,7 @@
 
 #include <eos_sdk.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
@@ -35,9 +35,12 @@
  * EOS SDK Service Module.
  */
 class deEosSdk : public deBaseServiceModule{
+public:
+	class cFrameUpdater;
+	
 private:
 	bool pSdkInited;
-	decPointerList pFrameUpdaters;
+	decTList<cFrameUpdater*> pFrameUpdaters;
 	
 	
 public:

@@ -25,7 +25,7 @@
 #ifndef _DEOGLRENDERTASKSHAREDPOOL_H_
 #define _DEOGLRENDERTASKSHAREDPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
@@ -48,11 +48,11 @@ private:
 	decObjectList pTextures;
 	decObjectList pVAOs;
 	decObjectList pInstances;
-	decPointerList pSkinTextures;
+	decTList<deoglSkinTexture*> pSkinTextures;
 	
-	decPointerList pFreeTextures;
-	decPointerList pFreeVAOs;
-	decPointerList pFreeInstances;
+	decTList<deoglRenderTaskSharedTexture*> pFreeTextures;
+	decTList<deoglRenderTaskSharedVAO*> pFreeVAOs;
+	decTList<deoglRenderTaskSharedInstance*> pFreeInstances;
 	decTList<int> pFreeSkinTextures;
 	
 	deMutex pMutexSkinTextures;

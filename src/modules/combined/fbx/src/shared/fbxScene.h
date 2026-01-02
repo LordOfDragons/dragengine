@@ -26,7 +26,7 @@
 #define _FBXSCENE_H_
 
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -37,6 +37,7 @@ class deBaseModule;
 class fbxNode;
 class fbxObjectMap;
 class fbxConnectionMap;
+class fbxConnection;
 
 
 /**
@@ -155,13 +156,13 @@ public:
 	/** First node matching name or NULL if absent. */
 	fbxNode *FirstNodeNamedOrNull(const char *name) const;
 	
-	/** Find all nodes matching name. */
-	void FindNodesNamed(decPointerList &list, const char *name) const;
+	/** All nodes with given name. */
+	void FindNodesNamed(decTList<fbxNode*> &list, const char *name) const;
 	
 	
 	
 	/** All connections containing ID either as source or target. */
-	void FindConnections(int64_t id, decPointerList &list) const;
+	void FindConnections(int64_t id, decTList<fbxConnection*> &list) const;
 	
 	/** Object with ID. */
 	fbxNode *NodeWithID(int64_t id) const;

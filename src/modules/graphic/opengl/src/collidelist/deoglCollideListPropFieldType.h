@@ -25,7 +25,7 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 #define _DEOGLCOLLIDELISTPROPFIELDTYPE_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideListPropField;
@@ -44,7 +44,7 @@ private:
 	
 	deoglRPropFieldType *pType;
 	
-	decPointerList pClusters;
+	decTList<deoglCollideListPropFieldCluster*> pClusters;
 	int pClusterCount;
 	
 	

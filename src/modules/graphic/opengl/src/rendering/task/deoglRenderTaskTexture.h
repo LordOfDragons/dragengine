@@ -27,7 +27,7 @@
 
 #include "../../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
@@ -41,7 +41,7 @@ class deoglRenderTaskTexture{
 private:
 	const deoglRenderTaskSharedTexture *pTexture;
 	
-	decPointerList pVAOs;
+	decTList<deoglRenderTaskVAO*> pVAOs;
 	int pVAOCount;
 	
 	deoglRenderTaskVAO **pHasVAO;

@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/animator/deBaseAnimatorAnimatorInstance.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 #include "dearBoneStateList.h"
@@ -82,7 +82,7 @@ private:
 	
 	dearControllerStates pControllerStates;
 	
-	decPointerList pLinks;
+	decTList<dearLink*> pLinks;
 	
 	dearRule **pRules;
 	int pRuleCount;

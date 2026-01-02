@@ -27,7 +27,7 @@
 
 #include "deoglHTSCluster.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHTViewSector;
@@ -66,7 +66,7 @@ private:
 	int pLodLevel;
 	eBorderTargets pBorderTargets[4];
 	
-	decPointerList pRTSInstances;
+	decTList<deoglRenderTaskSharedInstance*> pRTSInstances;
 	
 	
 	

@@ -30,7 +30,6 @@
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
 
 class decCollisionFilter;
 class deCollisionInfo;

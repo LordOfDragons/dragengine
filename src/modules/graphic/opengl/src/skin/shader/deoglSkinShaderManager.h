@@ -28,7 +28,7 @@
 #include "deoglSkinShader.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -83,7 +83,7 @@ private:
 	private:
 		deoglSkinShaderManager &pManager;
 		deoglSkinShader::Ref pShader;
-		decPointerList pListeners;
+		decTList<cGetShaderListener*> pListeners;
 		
 	public:
 		cPrepareShader(deoglSkinShaderManager &manager, const deoglSkinShader::Ref &shader);
@@ -103,7 +103,7 @@ private:
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
-	decPointerList pPrepareShaders;
+	decTList<cPrepareShader*> pPrepareShaders;
 	
 	
 public:

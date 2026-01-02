@@ -41,7 +41,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
@@ -126,24 +126,20 @@ void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 	
 	// find connections involving model node
 	const int64_t idModel = model->GetModelID();
-	decPointerList cons;
+	decTList<fbxConnection*> cons;
 	scene.FindConnections(idModel, cons);
 	
 	// add material nodes connected to model node
-	const int conCount = cons.GetCount();
-	int i;
-	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)cons.GetAt(i));
-		if(connection.GetTarget() != idModel){
-			continue;
+	cons.Visit([&](const fbxConnection *connection){
+		if(connection->GetTarget() != idModel){
+			return;
 		}
 		
-		fbxNode &node = *scene.NodeWithID(connection.OtherID(idModel));
+		fbxNode &node = *scene.NodeWithID(connection->OtherID(idModel));
 		if(node.GetName() == "Material"){
 			pLoadMaterial(skin, scene, fbxMaterial::Ref::New(scene, node));
 		}
-	}
+	});
 }
 
 void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMaterial &material){
@@ -209,30 +205,26 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 		
 		// find textures
 		const int64_t idMaterial = material.GetMaterialID();
-		decPointerList texConns;
+		decTList<fbxConnection*> texConns;
 		scene.FindConnections(idMaterial, texConns);
 		
 		fbxTexture::Ref fbxTexDiffuseColor, fbxTexSpecularColor, fbxTexShininess;
 		fbxTexture::Ref fbxTexEmissiveColor, fbxTexTransparencyFactor;
 		fbxTexture::Ref fbxTexBump;
 		
-		const int texConnCount = texConns.GetCount();
-		int i;
-		
-		for(i=0; i<texConnCount; i++){
-			const fbxConnection &connection = *((fbxConnection*)texConns.GetAt(i));
-			if(connection.GetTarget() != idMaterial){
-				continue;
+		texConns.Visit([&](const fbxConnection *connection){
+			if(connection->GetTarget() != idMaterial){
+				return;
 			}
 			
-			fbxNode &node = *scene.NodeWithID(connection.OtherID(idMaterial));
+			fbxNode &node = *scene.NodeWithID(connection->OtherID(idMaterial));
 			if(node.GetName() != "Texture"){
-				continue;
+				return;
 			}
 			
 // 			node.DebugPrintStructure( *this, "Texture:", true );
 			
-			const decString &mpname = connection.GetProperty();
+			const decString &mpname = connection->GetProperty();
 // 			LogInfoFormat( "texture map '%s'", mpname.GetString() );
 			
 			if(mpname == "DiffuseColor"){
@@ -253,7 +245,7 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 			}else if(mpname == "Bump" || mpname == "NormalMap"){
 				fbxTexBump = fbxTexture::Ref::New(scene, node);
 			}
-		}
+		});
 		
 		// add texture properties
 		if(fbxTexDiffuseColor){

@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHAREDVBOLISTLIST_H_
 #define _DEOGLSHAREDVBOLISTLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglVBOLayout;
 class deoglRenderThread;
@@ -43,7 +43,7 @@ public:
 	deoglRenderThread &pRenderThread;
 	int pMaxSize;
 	int pMaxIndexSize;
-	decPointerList pLists;
+	decTList<deoglSharedVBOList*> pLists;
 	
 	
 	

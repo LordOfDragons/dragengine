@@ -25,7 +25,7 @@
 #ifndef _DEOGLGIINSTANCES_H_
 #define _DEOGLGIINSTANCES_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
@@ -57,14 +57,14 @@ private:
 	deoglGIState &pGIState;
 	
 	decObjectList pInstances;
-	decPointerList pEmptyInstances;
+	decTList<deoglGIInstance*> pEmptyInstances;
 	decTDictionary<unsigned int,deoglGIInstance*> pElementInstanceMap;
 	
 	sBox *pDynamicBoxes;
 	int pDynamicBoxCount;
 	int pDynamicBoxSize;
 	
-	decPointerList pChangedInstances;
+	decTList<deoglGIInstance*> pChangedInstances;
 	
 	
 	

@@ -26,7 +26,7 @@
 #define _DEDAICONVEXFACELIST_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dedaiConvexFace;
 class decConvexVolume;
@@ -61,7 +61,7 @@ private:
 	int pVertexCount;
 	int pVertexSize;
 	
-	decPointerList pFaces;
+	decTList<dedaiConvexFace*> pFaces;
 	
 	
 	

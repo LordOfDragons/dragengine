@@ -72,16 +72,7 @@ void fbxObjectMap::Add(fbxNode *node){
 }
 
 fbxNode *fbxObjectMap::GetAt(int64_t id) const{
-	const decPointerList &objects = pBuckets[id % pBucketCount].objects;
-	const int count = objects.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		fbxNode * const node = (fbxNode*)objects.GetAt(i);
-		if(node->GetID() == id){
-			return node;
-		}
-	}
-	
-	return NULL;
+	return pBuckets[id % pBucketCount].objects.FindOrDefault([&](const fbxNode *node){
+		return node->GetID() == id;
+	});
 }

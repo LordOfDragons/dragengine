@@ -28,7 +28,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglTexUnitsConfig;
@@ -60,7 +60,7 @@ private:
 	int pRowsPerImage;
 	int pMaxMaterialCount;
 	
-	decPointerList pTUCs;
+	decTList<deoglTexUnitsConfig*> pTUCs;
 	
 	deoglTexture *pTexDiffuse;
 	deoglTexture *pTexReflectivity;

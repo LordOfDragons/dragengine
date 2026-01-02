@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class fbxConnection;
@@ -46,7 +46,7 @@ class fbxConnection;
 class fbxConnectionMap{
 private:
 	struct sBucket{
-		decPointerList connections;
+		decTList<fbxConnection*> connections;
 	};
 	
 	sBucket *pBucketsSource;
@@ -74,7 +74,7 @@ public:
 	void Add(fbxConnection *connection);
 	
 	/** \brief Add connections matching ID to list. */
-	void Get(int64_t id, decPointerList &list) const;
+	void Get(int64_t id, decTList<fbxConnection*> &list) const;
 	/*@}*/
 };
 

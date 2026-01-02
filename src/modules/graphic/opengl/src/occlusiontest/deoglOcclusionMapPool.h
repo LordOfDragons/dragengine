@@ -25,7 +25,7 @@
 #ifndef _DEOGLOCCLUSIONMAPPOOL_H_
 #define _DEOGLOCCLUSIONMAPPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglOcclusionMap;
@@ -38,7 +38,7 @@ class deoglOcclusionMapPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decPointerList pOcclusionMaps;
+	decTList<deoglOcclusionMap*> pOcclusionMaps;
 	
 	
 public:

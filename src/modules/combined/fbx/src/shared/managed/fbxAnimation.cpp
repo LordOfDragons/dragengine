@@ -50,17 +50,15 @@
 fbxAnimation::fbxAnimation(fbxScene &scene) :
 pScene(scene)
 {
-	decPointerList nodeStacks;
+	decTList<fbxNode*> nodeStacks;
 	scene.FindNodesNamed(nodeStacks, "AnimationStack");
 	
-	const int nodeStackCount = nodeStacks.GetCount();
-	int i;
-	
-	for(i=0; i<nodeStackCount; i++){
-		pMoves.Add(fbxAnimationMove::Ref::New(*this, *((fbxNode*)nodeStacks.GetAt(i))));
-	}
+	nodeStacks.Visit([&](fbxNode *node){
+		pMoves.Add(fbxAnimationMove::Ref::New(*this, *node));
+	});
 	
 	const int moveCount = pMoves.GetCount();
+	int i;
 	for(i=0; i<moveCount; i++){
 		GetMoveAt(i)->Prepare();
 	}

@@ -27,7 +27,7 @@
 
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 
 class deDebugDrawerShapeFace;
 
@@ -50,7 +50,7 @@ private:
 	
 	decShapeList pShapeList;
 	
-	decPointerList pFaces;
+	decTList<deDebugDrawerShapeFace*> pFaces;
 	
 	decColor pEdgeColor;
 	decColor pFillColor;
@@ -112,6 +112,9 @@ public:
 	
 	/** \name Volume Faces */
 	/*@{*/
+	/** \brief Faces. */
+	inline const decTList<deDebugDrawerShapeFace*> &GetFaces() const{ return pFaces; }
+	
 	/** \brief Number of volume faces. */
 	int GetFaceCount() const;
 	

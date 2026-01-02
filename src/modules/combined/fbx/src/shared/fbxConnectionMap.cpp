@@ -82,24 +82,19 @@ void fbxConnectionMap::Add(fbxConnection *connection){
 	}
 }
 
-void fbxConnectionMap::Get(int64_t id, decPointerList &list) const{
-	const decPointerList &consSource = pBucketsSource[id % pBucketCount].connections;
-	const decPointerList &consTarget = pBucketsTarget[id % pBucketCount].connections;
-	const int consSourceCount = consSource.GetCount();
-	const int consTargetCount = consTarget.GetCount();
-	int i;
+void fbxConnectionMap::Get(int64_t id, decTList<fbxConnection*> &list) const{
+	const decTList<fbxConnection*> &consSource = pBucketsSource[id % pBucketCount].connections;
+	const decTList<fbxConnection*> &consTarget = pBucketsTarget[id % pBucketCount].connections;
 	
-	for(i=0; i<consSourceCount; i++){
-		fbxConnection * const connection = (fbxConnection*)consSource.GetAt(i);
+	consSource.Visit([&](fbxConnection *connection){
 		if(connection->GetSource() == id){
 			list.Add(connection);
 		}
-	}
+	});
 	
-	for(i=0; i<consTargetCount; i++){
-		fbxConnection * const connection = (fbxConnection*)consTarget.GetAt(i);
+	consTarget.Visit([&](fbxConnection *connection){
 		if(connection->GetTarget() == id){
 			list.Add(connection);
 		}
-	}
+	});
 }

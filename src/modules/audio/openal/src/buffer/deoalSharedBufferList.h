@@ -25,7 +25,7 @@
 #ifndef _DEOALSHAREDBUFFERLIST_H_
 #define _DEOALSHAREDBUFFERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalSharedBuffer;
 
@@ -36,7 +36,7 @@ class deoalSharedBuffer;
  */
 class deoalSharedBufferList{
 private:
-	decPointerList pBuffers;
+	decTList<deoalSharedBuffer*> pBuffers;
 	
 	
 	

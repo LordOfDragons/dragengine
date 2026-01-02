@@ -28,8 +28,10 @@
 #include "../world/octree/deoalWOVInvalidateEnvProbes.h"
 #include "../audiothread/deoalATRayTracing.h"
 
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/utils/decLayerMask.h>
+#include <dragengine/deObject.h>
+
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoalAWorld;
 class deoalRTWorldBVH;
@@ -62,7 +64,7 @@ private:
 	double pReuseDistanceSquared;
 	unsigned int pLastUsedCounter;
 	int pMaxProbeCount;
-	decPointerList pProbes;
+	decTList<deoalEnvProbe*> pProbes;
 	
 	deoalWOVInvalidateEnvProbes pVisitorInvalidateEnvProbes;
 	

@@ -163,7 +163,7 @@ deoglRenderTaskSharedInstance &deoglRenderTaskSharedPool::GetInstanceAt(int inde
 }
 
 deoglSkinTexture *deoglRenderTaskSharedPool::GetSkinTextureAt(int index) const{
-	return (deoglSkinTexture*)pSkinTextures.GetAt(index);
+	return pSkinTextures.GetAt(index);
 }
 
 int deoglRenderTaskSharedPool::GetSkinTextureCount() const{

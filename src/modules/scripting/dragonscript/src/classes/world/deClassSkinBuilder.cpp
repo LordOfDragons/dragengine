@@ -44,7 +44,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinBuilder.h>
 #include <dragengine/resources/skin/deSkinManager.h>
@@ -71,7 +71,7 @@ class deClassSkinBuilder_Builder : public deSkinBuilder{
 	dsValue *pMyself;
 	deSkin *pSkin;
 	deSkinPropertyConstructed *pOpenConstructed;
-	decPointerList pOpenNodes;
+	decTList<deSkinPropertyNodeGroup*> pOpenNodes;
 	bool pNextNodeAsMask;
 	
 public:

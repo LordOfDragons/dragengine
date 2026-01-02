@@ -26,7 +26,7 @@
 #define _DEBPCOLLIDER_H_
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsCollider.h>
@@ -40,6 +40,7 @@ class debpColliderVolume;
 class debpCollisionWorld;
 class debpWorld;
 class debpTouchSensor;
+class debpCollisionTest;
 
 class deCollider;
 class deColliderCollisionTest;
@@ -81,7 +82,7 @@ private:
 	int pConstraintCount;
 	int pConstraintSize;
 	
-	decPointerList pCollisionTests;
+	decTList<debpColliderCollisionTest*> pCollisionTests;
 	
 	decTOrderedSet<debpCollider*> pAttachedToList;
 	decTOrderedSet<debpTouchSensor*> pTrackingTouchSensors;

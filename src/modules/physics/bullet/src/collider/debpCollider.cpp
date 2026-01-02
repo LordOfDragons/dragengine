@@ -848,7 +848,7 @@ void debpCollider::CollisionTestAdded(int index){
 }
 
 void debpCollider::CollisionTestRemoved(int index){
-	debpColliderCollisionTest * const cct = (debpColliderCollisionTest*)pCollisionTests.GetAt(index);
+	debpColliderCollisionTest * const cct = pCollisionTests.GetAt(index);
 	pCollisionTests.RemoveFrom(index);
 	delete cct;
 	

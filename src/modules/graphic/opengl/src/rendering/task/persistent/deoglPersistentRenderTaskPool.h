@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKPOOL_H_
 #define _DEOGLPERSISTENTRENDERTASKPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglPersistentRenderTaskSubInstance;
 class deoglPersistentRenderTaskInstance;
@@ -40,12 +40,12 @@ class deoglPersistentRenderTaskVAO;
  */
 class deoglPersistentRenderTaskPool{
 private:
-	decPointerList pOwners;
-	decPointerList pPipelines;
-	decPointerList pTextures;
-	decPointerList pVAOs;
-	decPointerList pInstances;
-	decPointerList pSubInstances;
+	decTList<deoglPersistentRenderTaskOwner*> pOwners;
+	decTList<deoglPersistentRenderTaskPipeline*> pPipelines;
+	decTList<deoglPersistentRenderTaskTexture*> pTextures;
+	decTList<deoglPersistentRenderTaskVAO*> pVAOs;
+	decTList<deoglPersistentRenderTaskInstance*> pInstances;
+	decTList<deoglPersistentRenderTaskSubInstance*> pSubInstances;
 	
 	
 	

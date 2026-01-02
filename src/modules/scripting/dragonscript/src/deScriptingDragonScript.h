@@ -26,7 +26,7 @@
 #define _DESCRIPTINGDRAGONSCRIPT_H_
 
 #include <libdscript/libdscript.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
@@ -490,7 +490,7 @@ private:
 	dedsColliderListenerClosest *pColliderListenerClosest;
 	dedsColliderListenerAdaptor *pColliderListenerAdaptor;
 	
-	decPointerList pDeleteValuesLaterList;
+	decTList<dsValue*> pDeleteValuesLaterList;
 	
 	// objects
 	dsValue *pGameObj;

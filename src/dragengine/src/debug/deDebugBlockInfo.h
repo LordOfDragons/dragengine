@@ -29,7 +29,7 @@
 #include "../resources/canvas/deCanvasText.h"
 #include "../resources/canvas/deCanvasPaint.h"
 #include "../resources/font/deFont.h"
-#include "../common/collection/decPointerList.h"
+#include "../common/collection/decTList.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
 
@@ -57,7 +57,7 @@ private:
 	
 	
 	deEngine &pEngine;
-	decPointerList pEntries;
+	decTList<sEntry*> pEntries;
 	deCanvasView::Ref pView;
 	deCanvasPaint::Ref pViewTitleBg;
 	deCanvasText::Ref pViewTitle;
@@ -122,6 +122,9 @@ public:
 	void SetTitleBgColor(const decColor &color);
 	
 	
+	
+	/** \brief Entries. */
+	inline const decTList<sEntry*> &GetEntries() const{ return pEntries; }
 	
 	/** \brief Number of entries. */
 	int GetEntryCount() const;

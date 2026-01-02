@@ -28,7 +28,7 @@
 #include "deoglSharedSPBRTIGroup.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglSharedSPB;
@@ -45,7 +45,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	decPointerList pGroups;
+	decTList<deoglSharedSPBRTIGroup*> pGroups;
 	
 	
 	

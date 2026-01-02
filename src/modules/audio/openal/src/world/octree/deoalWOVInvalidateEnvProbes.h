@@ -25,7 +25,7 @@
 #ifndef _DEOALWOVINVALIDATEENVPROBES_H_
 #define _DEOALWOVINVALIDATEENVPROBES_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -47,7 +47,7 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	decLayerMask pLayerMask;
-	decPointerList pRemoveEnvProbes;
+	decTList<deoalEnvProbe*> pRemoveEnvProbes;
 	
 	
 	

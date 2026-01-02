@@ -81,25 +81,22 @@ void fbxRigBone::Prepare(){
 		return;
 	}
 	
-	decPointerList connections;
+	decTList<fbxConnection*> connections;
 	pRig.GetScene().FindConnections(pNodeModelID, connections);
-	const int conCount = connections.GetCount();
-	int i;
 	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
-		if(connection.GetSource() != pNodeModelID || connection.GetTarget() == 0){
+	for(const auto &connection : connections){
+		if(connection->GetSource() != pNodeModelID || connection->GetTarget() == 0){
 			continue;
 		}
 		
-		fbxRigBone * const bone = pRig.GetBoneWithModelID(connection.GetTarget());
+		fbxRigBone * const bone = pRig.GetBoneWithModelID(connection->GetTarget());
 		if(bone){
 			pParent = bone;
 			break;
 		}
 		
 		// not a PoseBone which means it has to be the armature node
-		pNodeArmature = pRig.GetScene().NodeWithID(connection.GetTarget());
+		pNodeArmature = pRig.GetScene().NodeWithID(connection->GetTarget());
 		break;
 	}
 	

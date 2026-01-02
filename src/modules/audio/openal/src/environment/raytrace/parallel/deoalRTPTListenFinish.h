@@ -26,11 +26,11 @@
 #define _DEOALRTPTLISTENFINISH_H_
 
 #include "deoalRTParallelEnvProbe.h"
+#include "../deoalImpulseResponse.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
-class decPointerList;
 
 
 /**

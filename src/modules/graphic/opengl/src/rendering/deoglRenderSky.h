@@ -27,7 +27,7 @@
 
 #include "deoglRenderBase.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class deoglRSkyInstance;
@@ -56,7 +56,7 @@ private:
 	const deoglPipeline *pPipelineBody;
 	const deoglPipeline *pPipelineBodyStereo;
 	
-	decPointerList pSkyInstances;
+	decTList<deoglRSkyInstance*> pSkyInstances;
 	
 	
 	

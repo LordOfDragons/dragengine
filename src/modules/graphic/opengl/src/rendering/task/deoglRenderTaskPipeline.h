@@ -25,7 +25,7 @@
 #ifndef _DEOGLRENDERTASKPIPELINE_H_
 #define _DEOGLRENDERTASKPIPELINE_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglPipeline;
 class deoglRenderTaskSharedTexture;
@@ -40,7 +40,7 @@ class deoglRenderTaskPipeline{
 private:
 	const deoglPipeline *pPipeline;
 	
-	decPointerList pTextures;
+	decTList<deoglRenderTaskTexture*> pTextures;
 	int pTextureCount;
 	
 	deoglRenderTaskTexture **pHasTexture;

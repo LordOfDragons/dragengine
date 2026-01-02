@@ -30,7 +30,6 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
-class decPointerList;
 
 
 /**

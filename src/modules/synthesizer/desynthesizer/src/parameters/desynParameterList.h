@@ -25,7 +25,7 @@
 #ifndef _DESYNPARAMETERLIST_H_
 #define _DESYNPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class desynParameter;
 
@@ -36,7 +36,7 @@ class desynParameter;
  */
 class desynParameterList{
 private:
-	decPointerList pParameters;
+	decTList<desynParameter*> pParameters;
 	
 	
 	

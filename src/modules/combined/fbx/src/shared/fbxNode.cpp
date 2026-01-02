@@ -383,7 +383,7 @@ fbxNode *fbxNode::FirstNodeNamedOrNull(const char* name) const{
 	return NULL;
 }
 
-void fbxNode::FindNodesNamed(decPointerList &list, const char *name) const{
+void fbxNode::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
 	const int count = pNodes.GetCount();
 	int i;
 	

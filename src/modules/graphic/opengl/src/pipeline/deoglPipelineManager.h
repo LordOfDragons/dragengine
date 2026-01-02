@@ -26,10 +26,11 @@
 #define _DEOGLPIPELINEMANAGER_H_
 
 #include "deoglPipelineState.h"
+#include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -50,7 +51,7 @@ private:
 	deoglPipelineState pState;
 	decObjectList pPipelines;
 	
-	decPointerList pRTSPipelines;
+	decTList<deoglPipeline*> pRTSPipelines;
 	deMutex pMutex;
 	
 	

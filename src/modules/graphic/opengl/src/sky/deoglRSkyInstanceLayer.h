@@ -28,7 +28,7 @@
 #include "../light/pipeline/deoglLightPipelinesSky.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
@@ -75,7 +75,7 @@ private:
 	
 	deoglShadowCaster *pShadowCaster;
 	
-	decPointerList pGICascades;
+	decTList<deoglSkyLayerGICascade*> pGICascades;
 	
 	
 	

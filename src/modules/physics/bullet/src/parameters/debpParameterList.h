@@ -25,7 +25,7 @@
 #ifndef _DEBPPARAMETERLIST_H_
 #define _DEBPPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class debpParameter;
 
@@ -35,7 +35,8 @@ class debpParameter;
  * \brief Parameter list.
  */
 class debpParameterList{
-	decPointerList pParameters;
+private:
+	decTList<debpParameter*> pParameters;
 	
 	
 	

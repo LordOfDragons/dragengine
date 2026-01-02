@@ -31,7 +31,7 @@
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decString.h>
@@ -68,7 +68,7 @@ private:
 	private:
 		deoglShaderManager &pManager;
 		deoglShaderProgram::Ref pProgram;
-		decPointerList pListeners;
+		decTList<cGetProgramListener*> pListeners;
 		
 	public:
 		cCompileProgram(deoglShaderManager &manager, const deoglShaderProgram::Ref &program);
@@ -92,7 +92,7 @@ private:
 	decStringDictionary pIncludableSources;
 	decObjectList pPrograms, pProgramUnits;
 	
-	decPointerList pCompilePrograms;
+	decTList<cCompileProgram*> pCompilePrograms;
 	deMutex pMutexCompilePrograms, pMutexLogging;
 	deSemaphore pSemaphoreCompileFinished;
 	

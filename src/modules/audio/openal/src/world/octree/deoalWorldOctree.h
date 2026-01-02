@@ -27,7 +27,7 @@
 
 #include "../../utils/octree/deoalDOctree.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalASpeaker;
 class deoalAMicrophone;
@@ -44,11 +44,11 @@ class deoalDCollisionVolume;
  */
 class deoalWorldOctree : public deoalDOctree{
 private:
-	decPointerList pComponents;
-	decPointerList pSpeakers;
-	decPointerList pMicrophones;
-	decPointerList pEnvProbes;
-	decPointerList pSoundLevelMeters;
+	decTList<deoalAComponent*> pComponents;
+	decTList<deoalASpeaker*> pSpeakers;
+	decTList<deoalAMicrophone*> pMicrophones;
+	decTList<deoalEnvProbe*> pEnvProbes;
+	decTList<deoalASoundLevelMeter*> pSoundLevelMeters;
 	
 	
 	

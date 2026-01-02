@@ -25,7 +25,6 @@
 #ifndef _DEOALATDEBUG_H_
 #define _DEOALATDEBUG_H_
 
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>

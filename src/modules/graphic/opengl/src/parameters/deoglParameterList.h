@@ -25,8 +25,9 @@
 #ifndef _DEOGLPARAMETERLIST_H_
 #define _DEOGLPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
+class deoglShaderParameter;
 class deoglParameter;
 
 
@@ -36,7 +37,7 @@ class deoglParameter;
  */
 class deoglParameterList{
 private:
-	decPointerList pParameters;
+	decTList<deoglParameter*> pParameters;
 	
 	
 	

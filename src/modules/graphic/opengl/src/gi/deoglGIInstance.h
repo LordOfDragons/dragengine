@@ -32,7 +32,7 @@
 #include "../tbo/deoglDynamicTBOUInt32.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIInstances;
@@ -140,7 +140,7 @@ private:
 	int pIndexVertices;
 	bool pHasBVHNodes;
 	
-	decPointerList pTUCs;
+	decTList<deoglTexUnitsConfig*> pTUCs;
 	bool pDirtyTUCs;
 	deoglDynamicTBOBlock::Ref pBlockMaterial;
 	deoglDynamicTBOUInt32::Ref pTBOMaterial;

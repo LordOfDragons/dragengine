@@ -41,7 +41,7 @@
 #include "../../app/include_windows.h"
 #endif
 
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 
 class decBaseFileReader;
 
@@ -104,7 +104,7 @@ private:
 	#endif
 	
 	decStringList pPreloadLibraryPath;
-	decPointerList pPreloadedLibraries;
+	decTList<void*> pPreloadedLibraries;
 	
 	
 	

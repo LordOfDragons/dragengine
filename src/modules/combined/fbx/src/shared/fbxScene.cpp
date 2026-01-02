@@ -198,7 +198,7 @@ fbxNode *fbxScene::FirstNodeNamedOrNull(const char *name) const{
 	return pNodeObjects ? pNodeObjects->FirstNodeNamedOrNull(name) : NULL;
 }
 
-void fbxScene::FindNodesNamed(decPointerList &list, const char *name) const{
+void fbxScene::FindNodesNamed(decTList<fbxNode*> &list, const char *name) const{
 	if(pNodeObjects){
 		pNodeObjects->FindNodesNamed(list, name);
 	}
@@ -206,7 +206,7 @@ void fbxScene::FindNodesNamed(decPointerList &list, const char *name) const{
 
 
 
-void fbxScene::FindConnections(int64_t id, decPointerList &list) const{
+void fbxScene::FindConnections(int64_t id, decTList<fbxConnection*> &list) const{
 	if(pConnectionMap){
 		pConnectionMap->Get(id, list);
 	}

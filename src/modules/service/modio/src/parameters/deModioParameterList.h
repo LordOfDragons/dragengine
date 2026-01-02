@@ -25,7 +25,7 @@
 #ifndef _DEMODIOPARAMETERLIST_H_
 #define _DEMODIOPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deModioParameter;
 
@@ -35,7 +35,8 @@ class deModioParameter;
  */
 class deModioParameterList{
 private:
-	decPointerList pParameters;
+	decTList<deModioParameter*> pParameters;
+	
 	
 	
 public:

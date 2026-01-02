@@ -28,7 +28,7 @@
 #include "deoglLightShader.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -68,7 +68,7 @@ private:
 	private:
 		deoglLightShaderManager &pManager;
 		deoglLightShader::Ref pShader;
-		decPointerList pListeners;
+		decTList<cGetShaderListener*> pListeners;
 		
 	public:
 		cPrepareShader(deoglLightShaderManager &manager, const deoglLightShader::Ref &shader);
@@ -88,7 +88,7 @@ private:
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
-	decPointerList pPrepareShaders;
+	decTList<cPrepareShader*> pPrepareShaders;
 	
 	
 public:

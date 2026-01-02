@@ -31,7 +31,7 @@
 #include "../skin/deoglSkinTexture.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
 
 class deoglPFClusterGenerator;
@@ -57,7 +57,7 @@ private:
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
-	decPointerList pClusters;
+	decTList<deoglPropFieldCluster*> pClusters;
 	bool pClustersRequirePrepareForRender;
 	
 	decVector pMinExtend;

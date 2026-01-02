@@ -57,48 +57,46 @@ pTargetProperty(etpUnsupported),
 pRigBone(NULL)
 {
 	// find curves and model
-	decPointerList connections;
+	decTList<fbxConnection*> connections;
 	move.GetAnimation().GetScene().FindConnections(pNodeCurvesID, connections);
-	int i, conCount = connections.GetCount();
 	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
-		if(connection.GetTarget() == pNodeCurvesID){
-			fbxNode &node = *move.GetAnimation().GetScene().NodeWithID(connection.GetSource());
+	connections.Visit([&](const fbxConnection *connection){
+		if(connection->GetTarget() == pNodeCurvesID){
+			fbxNode &node = *move.GetAnimation().GetScene().NodeWithID(connection->GetSource());
 			if(node.GetName() == "AnimationCurve"){
-				if(connection.GetProperty() == "d|X"){
+				if(connection->GetProperty() == "d|X"){
 					pCurveX = fbxAnimationCurve::Ref::New(node);
 					
-				}else if(connection.GetProperty() == "d|Y"){
+				}else if(connection->GetProperty() == "d|Y"){
 					pCurveY = fbxAnimationCurve::Ref::New(node);
 					
-				}else if(connection.GetProperty() == "d|Z"){
+				}else if(connection->GetProperty() == "d|Z"){
 					pCurveZ = fbxAnimationCurve::Ref::New(node);
 				}
 			}
 			
 		}else{
-			fbxNode &node = *move.GetAnimation().GetScene().NodeWithID(connection.GetTarget());
+			fbxNode &node = *move.GetAnimation().GetScene().NodeWithID(connection->GetTarget());
 			if(node.GetName() == "Model"){
 				pNodeModel = &node;
 				pNodeModelID = node.GetID();
 				pBoneName = node.GetPropertyAt(1)->CastString().GetValue();
 				
-				if(connection.GetProperty() == "Lcl Translation"){
+				if(connection->GetProperty() == "Lcl Translation"){
 					pTargetProperty = etpPosition;
 					pDefaultValue = node.GetLocalTranslation();
 					
-				}else if(connection.GetProperty() == "Lcl Rotation"){
+				}else if(connection->GetProperty() == "Lcl Rotation"){
 					pTargetProperty = etpRotation;
 					pDefaultValue = node.GetLocalRotation();
 					
-				}else if(connection.GetProperty() == "Lcl Scaling"){
+				}else if(connection->GetProperty() == "Lcl Scaling"){
 					pTargetProperty = etpScale;
 					pDefaultValue = node.GetLocalScaling();
 				}
 			}
 		}
-	}
+	});
 	
 	pDefaultValue.x = nodeCurves.GetPropertyFloat("d|X", (float)pDefaultValue.x);
 	pDefaultValue.y = nodeCurves.GetPropertyFloat("d|Y", (float)pDefaultValue.y);

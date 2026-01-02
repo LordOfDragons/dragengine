@@ -27,8 +27,6 @@
 
 #include "deoglRenderBase.h"
 
-#include <dragengine/common/collection/decPointerList.h>
-
 class deoglRWorld;
 class deoglSharedVBOBlock;
 

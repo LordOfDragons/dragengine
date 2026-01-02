@@ -196,26 +196,22 @@ void fbxRig::DebugPrintStructure(deBaseModule &module, const decString &prefix, 
 //////////////////////
 
 void fbxRig::pAddRootBone(fbxScene &scene, fbxNode &nodeRoot){
-	decPointerList cons;
+	decTList<fbxConnection*> cons;
 	scene.FindConnections(nodeRoot.GetID(), cons);
 	
-	const int childCount = cons.GetCount();
-	int i;
-	
-	for(i=0; i<childCount; i++){
-		const fbxConnection &con = *(fbxConnection*)cons.GetAt(i);
-		if(con.GetTarget() != nodeRoot.GetID()){
-			continue;
+	cons.Visit([&](const fbxConnection *con){
+		if(con->GetTarget() != nodeRoot.GetID()){
+			return;
 		}
 		
-		fbxNode &nodeModel = *scene.NodeWithID(con.GetSource());
+		fbxNode &nodeModel = *scene.NodeWithID(con->GetSource());
 		if(nodeModel.GetName() != "Model"){
-			continue;
+			return;
 		}
 		
 		if(nodeModel.GetPropertyAt(2)->CastString().GetValue() != "LimbNode"
 		&& nodeModel.GetPropertyAt(2)->CastString().GetValue() != "Root"){
-			continue;
+			return;
 		}
 		
 		const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
@@ -226,5 +222,5 @@ void fbxRig::pAddRootBone(fbxScene &scene, fbxNode &nodeRoot){
 		}
 		
 		pAddRootBone(scene, nodeModel);
-	}
+	});
 }

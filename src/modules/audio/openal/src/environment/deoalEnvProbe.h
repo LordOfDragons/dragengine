@@ -31,7 +31,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalAMicrophone;
 class deoalAudioThread;
@@ -112,9 +112,9 @@ private:
 	float pAvgAbsorptionMedium;
 	float pAvgAbsorptionHigh;
 	
-	decPointerList pLevels;
+	decTList<deoalEnvProbeLevel*> pLevels;
 	
-	decPointerList pListeners;
+	decTList<deoalEnvProbeListener*> pListeners;
 	float pListenerRange;
 	unsigned short pListenerTracking;
 	

@@ -25,7 +25,7 @@
 #ifndef _DEOGLCOLLIDELISTHTSECTOR_H_
 #define _DEOGLCOLLIDELISTHTSECTOR_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglHTViewSector;
@@ -40,7 +40,7 @@ class deoglCollideListHTSector{
 private:
 	deoglHTViewSector *pSector;
 	
-	decPointerList pClusters;
+	decTList<deoglCollideListHTSCluster*> pClusters;
 	int pClusterCount;
 	
 	

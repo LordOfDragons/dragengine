@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHAREDVIDEOPLAYERLIST_H_
 #define _DEOGLSHAREDVIDEOPLAYERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deGraphicOpenGl;
 class deoglSharedVideoPlayer;
@@ -43,7 +43,7 @@ class deVideo;
 class deoglSharedVideoPlayerList{
 private:
 	deGraphicOpenGl &pOgl;
-	decPointerList pList;
+	decTList<deoglSharedVideoPlayer*> pList;
 	
 	
 	

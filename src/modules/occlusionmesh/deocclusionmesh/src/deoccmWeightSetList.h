@@ -25,7 +25,7 @@
 #ifndef _DEOCCMWEIGHTSETLIST_H_
 #define _DEOCCMWEIGHTSETLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoccmWeightSet;
 
@@ -37,7 +37,7 @@ class deoccmWeightSet;
  */
 class deoccmWeightSetList{
 private:
-	decPointerList pList;
+	decTList<deoccmWeightSet*> pList;
 	
 public:
 	/** @name Constructors and Destructors */

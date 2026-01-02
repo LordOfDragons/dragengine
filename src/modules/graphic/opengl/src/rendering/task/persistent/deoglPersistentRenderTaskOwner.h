@@ -25,7 +25,7 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKOWNER_H_
 #define _DEOGLPERSISTENTRENDERTASKOWNER_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -51,8 +51,8 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decPointerList pInstances;
-	decPointerList pSubInstances;
+	decTList<deoglPersistentRenderTaskInstance*> pInstances;
+	decTList<deoglPersistentRenderTaskSubInstance*> pSubInstances;
 	
 	
 	

@@ -67,37 +67,33 @@ pVertices(NULL),
 pVertexCount(0),
 pCulling(true)
 {
-	decPointerList consGeometry;
+	decTList<fbxConnection*> consGeometry;
 	scene.FindConnections(pGeometryID, consGeometry);
 	
-	const int conGeomCount = consGeometry.GetCount();
-	int i;
-	
-	for(i=0; i<conGeomCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)consGeometry.GetAt(i));
-		fbxNode * const node = scene.NodeWithID(connection.OtherID(pGeometryID));
+	consGeometry.Visit([&](const fbxConnection *connection){
+		fbxNode * const node = scene.NodeWithID(connection->OtherID(pGeometryID));
 		
 		if(node->GetName() == "Model"){
-			if(connection.GetSource() == pGeometryID
+			if(connection->GetSource() == pGeometryID
 			&& node->GetPropertyAt(2)->CastString().GetValue() == "Mesh"){
 				if(pNodeModel){
 					DETHROW_INFO(deeInvalidParam, "duplicate model");
 				}
 				pNodeModel = node;
-				pModelID = connection.GetTarget();
+				pModelID = connection->GetTarget();
 			}
 			
 		}else if(node->GetName() == "Deformer"){
-			if(connection.GetTarget() == pGeometryID
+			if(connection->GetTarget() == pGeometryID
 			&& node->GetPropertyAt(2)->CastString().GetValue() == "Skin"){
 				if(pNodeDeformer){
 					DETHROW_INFO(deeInvalidParam, "duplicate deformer");
 				}
 				pNodeDeformer = node;
-				pDeformerID = connection.GetSource();
+				pDeformerID = connection->GetSource();
 			}
 		}
-	}
+	});
 	
 	if(!pNodeModel){
 		DETHROW_INFO(deeInvalidParam, "model not found");
@@ -110,25 +106,24 @@ pCulling(true)
 	pMatrix = pMatrix.QuickMultiply(scene.GetTransformation());
 	
 	if(pNodeDeformer){
-		decPointerList consDeformer;
+		decTList<fbxConnection*> consDeformer;
 		scene.FindConnections(pDeformerID, consDeformer);
 		
-		const int conDeformCount = consDeformer.GetCount();
-		for(i=0; i<conDeformCount; i++){
-			const fbxConnection &connection = *((fbxConnection*)consDeformer.GetAt(i));
-			if(connection.GetTarget() != pDeformerID){
-				continue;
+		consDeformer.Visit([&](const fbxConnection *connection){
+			if(connection->GetTarget() != pDeformerID){
+				return;
 			}
 			
-			fbxNode &node = *scene.NodeWithID(connection.GetSource());
+			fbxNode &node = *scene.NodeWithID(connection->GetSource());
 			if(node.GetName() == "Deformer"
 			&& node.GetPropertyAt(2)->CastString().GetValue() == "Cluster"){
 				pClusters.Add(fbxModelCluster::Ref::New(*this, node));
 			}
-		}
+		});
 	}
 	
 	const int clusterCount = pClusters.GetCount();
+	int i;
 	for(i=0; i<clusterCount; i++){
 		GetClusterAt(i)->Prepare();
 	}
@@ -140,13 +135,13 @@ pCulling(true)
 	if(count > 0){
 		pVertices = new sVertex[count];
 		
-		int j;
-		for(i=0, j=0; i<count; i++, j+=3){
+		for(i=0; i<count; i++){
+			const int base = i * 3;
 			pVertices[i].weightSet = -1;
 			pVertices[i].position = pMatrix * decVector(
-				propVertices.GetValueAtAsFloat(j),
-				propVertices.GetValueAtAsFloat(j + 1),
-				propVertices.GetValueAtAsFloat(j + 2));
+				propVertices.GetValueAtAsFloat(base),
+				propVertices.GetValueAtAsFloat(base + 1),
+				propVertices.GetValueAtAsFloat(base + 2));
 		}
 		pVertexCount = count;
 	}
@@ -197,8 +192,8 @@ fbxModelCluster *fbxModel::GetClusterNamed(const char *name) const{
 
 void fbxModel::MatchClusters(const fbxRig &rig){
 	const int count = pClusters.GetCount();
-	decPointerList connections;
-	int i, j;
+	decTList<fbxConnection*> connections;
+	int i;
 	
 	for(i=0; i<count; i++){
 		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
@@ -206,15 +201,13 @@ void fbxModel::MatchClusters(const fbxRig &rig){
 		connections.RemoveAll();
 		
 		pScene.FindConnections(cluster.GetNodeClusterID(), connections);
-		const int conCount = connections.GetCount();
 		
-		for(j=0; j<conCount; j++){
-			const fbxConnection &connection = *((fbxConnection*)connections.GetAt(j));
-			if(connection.GetTarget() != cluster.GetNodeClusterID() || connection.GetSource() == 0){
+		for(const auto &connection : connections){
+			if(connection->GetTarget() != cluster.GetNodeClusterID() || connection->GetSource() == 0){
 				continue;
 			}
 			
-			cluster.SetRigBone(rig.GetBoneWithModelID(connection.GetSource()));
+			cluster.SetRigBone(rig.GetBoneWithModelID(connection->GetSource()));
 			if(cluster.GetRigBone()){
 				break;
 			}

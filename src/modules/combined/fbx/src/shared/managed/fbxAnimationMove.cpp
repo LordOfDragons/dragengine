@@ -57,17 +57,15 @@ pName(nodeStack.GetPropertyAt(1)->CastString().GetValue()),
 pFrameRate(25)
 {
 	// find layer
-	decPointerList connections;
+	decTList<fbxConnection*> connections;
 	animation.GetScene().FindConnections(pNodeStackID, connections);
-	int i, conCount = connections.GetCount();
 	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
-		if(connection.GetTarget() != pNodeStackID){
+	for(const auto &connection : connections){
+		if(connection->GetTarget() != pNodeStackID){
 			continue;
 		}
 		
-		pNodeLayer = animation.GetScene().NodeWithID(connection.GetSource());
+		pNodeLayer = animation.GetScene().NodeWithID(connection->GetSource());
 		pNodeLayerID = pNodeLayer->GetID();
 		break;
 	}
@@ -79,19 +77,17 @@ pFrameRate(25)
 	// find curve nodes
 	connections.RemoveAll();
 	animation.GetScene().FindConnections(pNodeLayerID, connections);
-	conCount = connections.GetCount();
 	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
-		if(connection.GetTarget() != pNodeLayerID){
-			continue;
+	connections.Visit([&](fbxConnection* connection){
+		if(connection->GetTarget() != pNodeLayerID){
+			return;
 		}
 		
-		fbxNode &node = *animation.GetScene().NodeWithID(connection.GetSource());
+		fbxNode &node = *animation.GetScene().NodeWithID(connection->GetSource());
 		if(node.GetName() == "AnimationCurveNode"){
 			pCurveNodes.Add(fbxAnimationMoveCurves::Ref::New(*this, node));
 		}
-	}
+	});
 }
 
 fbxAnimationMove::~fbxAnimationMove(){

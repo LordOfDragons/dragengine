@@ -25,7 +25,7 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELD_H_
 #define _DEOGLCOLLIDELISTPROPFIELD_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRPropField;
@@ -41,7 +41,7 @@ class deoglCollideListPropField{
 private:
 	deoglRPropField *pPropField;
 	
-	decPointerList pTypes;
+	decTList<deoglCollideListPropFieldType*> pTypes;
 	int pTypeCount;
 	
 	

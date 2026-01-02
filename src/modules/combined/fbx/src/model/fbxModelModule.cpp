@@ -42,7 +42,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
@@ -214,24 +214,20 @@ void fbxModelModule::pLoadModelBone(deModel &model, const fbxRigBone &rigBone){
 void fbxModelModule::pLoadModelTextures(deModel &model, const fbxModel &loadModel){
 	// find connections involving model node
 	const int64_t idModel = loadModel.GetModelID();
-	decPointerList cons;
+	decTList<fbxConnection*> cons;
 	loadModel.GetScene().FindConnections(idModel, cons);
 	
 	// add material nodes connected to model node
-	const int conCount = cons.GetCount();
-	int i;
-	
-	for(i=0; i<conCount; i++){
-		const fbxConnection &connection = *((fbxConnection*)cons.GetAt(i));
-		if(connection.GetTarget() != idModel){
-			continue;
+	cons.Visit([&](fbxConnection *connection){
+		if(connection->GetTarget() != idModel){
+			return;
 		}
 		
-		const fbxNode &node = *loadModel.GetScene().NodeWithID(connection.OtherID(idModel));
+		const fbxNode &node = *loadModel.GetScene().NodeWithID(connection->OtherID(idModel));
 		if(node.GetName() == "Material"){
 			pLoadModelTexture(model, loadModel, node);
 		}
-	}
+	});
 }
 
 void fbxModelModule::pLoadModelTexture(deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial){

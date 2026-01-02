@@ -25,7 +25,7 @@
 #ifndef _DEOGLRENDERTASKVAO_H_
 #define _DEOGLRENDERTASKVAO_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -44,7 +44,7 @@ class deoglRenderTaskVAO{
 private:
 	const deoglRenderTaskSharedVAO *pVAO;
 	
-	decPointerList pInstances;
+	decTList<deoglRenderTaskInstance*> pInstances;
 	int pInstanceCount;
 	
 	deoglRenderTaskInstance **pHasInstance;

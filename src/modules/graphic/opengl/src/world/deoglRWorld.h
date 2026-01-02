@@ -34,6 +34,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
 class deoglEnvironmentMapList;
@@ -115,10 +116,10 @@ private:
 	decTLinkedList<deoglRLight> pListPrepareForRenderLights;
 	decTLinkedList<deoglRPropField> pListPrepareForRenderPropFields;
 	
-	decPointerList pListPrepareRenderComponents;
-	decPointerList pListPrepareRenderBillboards;
-	decPointerList pListPrepareRenderLights;
-	decPointerList pListPrepareRenderPropFields;
+	decTList<deoglRComponent*> pListPrepareRenderComponents;
+	decTList<deoglRBillboard*> pListPrepareRenderBillboards;
+	decTList<deoglRLight*> pListPrepareRenderLights;
+	decTList<deoglRPropField*> pListPrepareRenderPropFields;
 	
 	
 	

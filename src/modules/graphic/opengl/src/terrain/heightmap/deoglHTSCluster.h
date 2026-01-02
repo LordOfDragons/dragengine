@@ -28,7 +28,6 @@
 #include "../../deoglBasics.h"
 #include "../../world/deoglWorldComputeElement.h"
 
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
 #define HTSC_MAX_LOD				4

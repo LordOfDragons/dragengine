@@ -27,7 +27,7 @@
 
 #include "../../utils/octree/deoalOctree.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalModelOctreeVisitor;
 class deoalModelFace;
@@ -44,7 +44,7 @@ class deoalCollisionTriangle;
  */
 class deoalModelOctree : public deoalOctree{
 private:
-	decPointerList pFaces;
+	decTList<deoalModelFace*> pFaces;
 	
 	
 	

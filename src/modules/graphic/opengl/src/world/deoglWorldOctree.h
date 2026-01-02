@@ -32,7 +32,7 @@
 #include "../particle/deoglParticleEmitterInstanceList.h"
 #include "../utils/octree/deoglDOctree.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglDCollisionVolume;
 class deoglRComponent;
@@ -54,9 +54,9 @@ private:
 	deoglEnvironmentMapList pEnvMaps;
 	deoglParticleEmitterInstanceList pParticleEmitters;
 	
-	decPointerList pComponents;
-	decPointerList pLights;
-	decPointerList pLumimeters;
+	decTList<deoglRComponent*> pComponents;
+	decTList<deoglRLight*> pLights;
+	decTList<deoglRLumimeter*> pLumimeters;
 	
 	int pCSChildCount;
 	int pCSLocalElementCount;

@@ -25,7 +25,7 @@
 #ifndef _DEOALPARAMETERLIST_H_
 #define _DEOALPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalParameter;
 
@@ -36,7 +36,7 @@ class deoalParameter;
  */
 class deoalParameterList{
 private:
-	decPointerList pParameters;
+	decTList<deoalParameter*> pParameters;
 	
 	
 	

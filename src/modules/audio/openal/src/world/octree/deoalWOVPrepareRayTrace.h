@@ -27,7 +27,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "deoalWorldOctreeVisitor.h"
 
@@ -53,7 +53,7 @@ private:
 	decLayerMask pLayerMask;
 	deoalRTWorldBVH *pRTWorldBVH;
 	
-	decPointerList pComponents;
+	decTList<deoalAComponent*> pComponents;
 	
 	
 	

@@ -34,7 +34,7 @@
 #include "../../terrain/heightmap/deoglHTView.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
@@ -169,14 +169,14 @@ private:
 	int pLightCount;
 	int pLightSize;
 	
-	decPointerList pSkyLights;
+	decTList<deoglRenderPlanSkyLight*> pSkyLights;
 	int pSkyLightCount;
 	
 	deoglRenderPlanMasked **pMaskedPlans;
 	int pMaskedPlanCount;
 	int pMaskedPlanSize;
 	
-	decPointerList pSkyInstances;
+	decTList<deoglRSkyInstance*> pSkyInstances;
 	decColor pSkyBgColor;
 	
 	deoglHTView::Ref pHTView;

@@ -26,7 +26,7 @@
 #define _DEDAIPATHFINDERNAVGRID_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dedaiSpaceGridVertex;
 class dedaiNavigator;
@@ -47,9 +47,9 @@ private:
 	dedaiSpaceGridVertex *pStartVertex;
 	dedaiSpaceGridVertex *pEndVertex;
 	
-	decPointerList pListClosed;
-	decPointerList pListOpen;
-	decPointerList pPathVertices;
+	decTList<dedaiSpaceGridVertex*> pListClosed;
+	decTList<dedaiSpaceGridVertex*> pListOpen;
+	decTList<dedaiSpaceGridVertex*> pPathVertices;
 	
 	decDVector *pPathPoints;
 	int pPathPointCount;
@@ -87,14 +87,14 @@ public:
 	void FindPath();
 	
 	/** Retrieves the open list. */
-	inline decPointerList &GetListOpen(){ return pListOpen; }
-	inline const decPointerList &GetListOpen() const{ return pListOpen; }
+	inline decTList<dedaiSpaceGridVertex*> &GetListOpen(){ return pListOpen; }
+	inline const decTList<dedaiSpaceGridVertex*> &GetListOpen() const{ return pListOpen; }
 	/** Retrieves the closed list. */
-	inline decPointerList &GetListClosed(){ return pListClosed; }
-	inline const decPointerList &GetListClosed() const{ return pListClosed; }
+	inline decTList<dedaiSpaceGridVertex*> &GetListClosed(){ return pListClosed; }
+	inline const decTList<dedaiSpaceGridVertex*> &GetListClosed() const{ return pListClosed; }
 	/** Retrieves the vertices path. */
-	inline decPointerList &GetPathVertices(){ return pPathVertices; }
-	inline const decPointerList &GetPathVertices() const{ return pPathVertices; }
+	inline decTList<dedaiSpaceGridVertex*> &GetPathVertices(){ return pPathVertices; }
+	inline const decTList<dedaiSpaceGridVertex*> &GetPathVertices() const{ return pPathVertices; }
 	
 	/** Retrieves the number of path points. */
 	inline int GetPathPointCount() const{ return pPathPointCount; }

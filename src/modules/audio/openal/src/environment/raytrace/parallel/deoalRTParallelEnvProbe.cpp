@@ -202,7 +202,7 @@ const deoalATRayTracing::sConfigSoundTracing &config){
 		refDist, rollOff, distanceOffset, world, rtWorldBVH, layerMask, config);
 	#if defined WOVRAYHITSELEMENT_DO_TIMING || defined RTWOVRAYHITSELEMENT_DO_TIMING \
 	|| defined RTWOVRAYHITSCLOSEST_DO_TIMING || defined RTWOVRAYBLOCKED_DO_TIMING
-	const decPointerList wovTimingTasks(pTasksWaitTraceSoundRays);
+	const decTList<deoalRTPTTraceSoundRays*> wovTimingTasks(pTasksWaitTraceSoundRays);
 	#endif
 	
 	const float elapsed = pTimer.GetElapsedTime();
@@ -332,7 +332,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	}
 	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
-	const decPointerList wovTimingTasks(pTasksWaitListen);
+	const decTList<deoalRTPTListen*> wovTimingTasks(pTasksWaitListen);
 	#endif
 	
 	const float elapsed = pTimer.GetElapsedTime();

@@ -27,7 +27,7 @@
 
 #include "../octree/deoalOctree.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalRayCacheRay;
 
@@ -38,7 +38,7 @@ class deoalRayCacheRay;
  */
 class deoalRayCacheOctree : public deoalOctree{
 private:
-	decPointerList pRays;
+	decTList<deoalRayCacheRay*> pRays;
 	
 	
 	

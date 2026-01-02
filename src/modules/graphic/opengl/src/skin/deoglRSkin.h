@@ -28,7 +28,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 

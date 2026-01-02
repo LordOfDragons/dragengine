@@ -48,11 +48,9 @@ pClusterCount(0){
 }
 
 deoglCollideListHTSector::~deoglCollideListHTSector(){
-	const int count = pClusters.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delete (deoglCollideListHTSCluster*)pClusters.GetAt(i);
-	}
+	pClusters.Visit([](deoglCollideListHTSCluster *cluster){
+		delete cluster;
+	});
 }
 
 
@@ -76,22 +74,21 @@ const decDVector &referencePosition){
 	int i;
 	
 	for(i=0; i<pClusterCount; i++){
-		((deoglCollideListHTSCluster*)pClusters.GetAt(i))->
-			StartOcclusionTest(occlusionTest, offset);
+		pClusters.GetAt(i)->StartOcclusionTest(occlusionTest, offset);
 	}
 }
 
 
 
 deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt(int index) const{
-	return *((deoglCollideListHTSCluster*)pClusters.GetAt(index));
+	return *pClusters.GetAt(index);
 }
 
 deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster(const decPoint &coordinates){
 	deoglCollideListHTSCluster *cluster = NULL;
 	
 	if(pClusterCount < pClusters.GetCount()){
-		cluster = (deoglCollideListHTSCluster*)pClusters.GetAt(pClusterCount);
+		cluster = pClusters.GetAt(pClusterCount);
 		
 	}else{
 		cluster = new deoglCollideListHTSCluster;
@@ -105,7 +102,7 @@ deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster(const decPoint 
 
 void deoglCollideListHTSector::RemoveAllClusters(){
 	while(pClusterCount > 0){
-		((deoglCollideListHTSCluster*)pClusters.GetAt(--pClusterCount))->Clear();
+		pClusters.GetAt(--pClusterCount)->Clear();
 	}
 }
 
@@ -119,7 +116,7 @@ void deoglCollideListHTSector::RemoveCulledClusters(){
 		}
 		
 		if(i != last){
-			void * const exchange = pClusters.GetAt(last);
+			deoglCollideListHTSCluster * const exchange = pClusters.GetAt(last);
 			pClusters.SetAt(last, pClusters.GetAt(i));
 			pClusters.SetAt(i, exchange);
 		}

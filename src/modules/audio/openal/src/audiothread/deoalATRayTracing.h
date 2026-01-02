@@ -25,8 +25,6 @@
 #ifndef _DEOALATRAYTRACING_H_
 #define _DEOALATRAYTRACING_H_
 
-#include <dragengine/common/collection/decPointerList.h>
-
 class deoalAudioThread;
 class deoalRayTraceConfig;
 

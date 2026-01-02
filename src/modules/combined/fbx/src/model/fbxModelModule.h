@@ -38,7 +38,6 @@ class fbxModel;
 
 class deCacheHelper;
 class deModelLOD;
-class decPointerList;
 
 
 /**

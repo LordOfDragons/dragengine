@@ -25,7 +25,7 @@
 #ifndef _DEOGLCOMPONENTLIST_H_
 #define _DEOGLCOMPONENTLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRComponent;
 
@@ -35,7 +35,7 @@ class deoglRComponent;
  */
 class deoglComponentList{
 private:
-	decPointerList pComponents;
+	decTList<deoglRComponent*> pComponents;
 	
 	
 	

@@ -26,8 +26,7 @@
 #define _DESKINPROPERTYNODEGROUP_H_
 
 #include "deSkinPropertyNode.h"
-
-#include "../../../../common/collection/decPointerList.h"
+#include "../../../../common/collection/decTList.h"
 
 
 /**
@@ -37,7 +36,7 @@
  */
 class DE_DLL_EXPORT deSkinPropertyNodeGroup : public deSkinPropertyNode{
 private:
-	decPointerList pNodes;
+	decTList<deSkinPropertyNode*> pNodes;
 	
 	
 	
@@ -55,7 +54,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of nodes. */
+	/** \brief Nodes. */
+	inline const decTList<deSkinPropertyNode*> &GetNodes() const{ return pNodes; }
+	
+	/** \brief Number of child nodes. */
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */

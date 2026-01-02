@@ -28,7 +28,7 @@
 #include "../debpBulletCompoundShape.h"
 #include "../debpBulletShape.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 #include <dragengine/common/math/decMath.h>
 

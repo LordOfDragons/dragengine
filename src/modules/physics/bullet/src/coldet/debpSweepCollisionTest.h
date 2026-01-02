@@ -29,7 +29,7 @@
 
 #include "LinearMath/btTransform.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 
@@ -81,7 +81,7 @@ public:
 	
 private:
 	debpCollisionDetection &pColDet;
-	decPointerList pShapeList;
+	decTList<cShape*> pShapeList;
 	decVector pScale;
 	
 	
@@ -99,7 +99,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of cShape pointers. */
-	inline const decPointerList &GetShapeList() const{ return pShapeList; }
+	inline const decTList<cShape*> &GetShapeList() const{ return pShapeList; }
 	
 	/** \brief Add a shape from a decShape. */
 	void AddShape(decShape &shape, const decVector &scale);

@@ -25,7 +25,7 @@
 #ifndef _DEOGLRENDERTASK_H_
 #define _DEOGLRENDERTASK_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -87,7 +87,7 @@ private:
 	GLuint pVBODrawIndirect;
 	//int pVBODrawIndirectSize;
 	
-	decPointerList pPipelines;
+	decTList<deoglRenderTaskPipeline*> pPipelines;
 	int pPipelineCount;
 	deoglRenderTaskPipeline **pHasPipeline;
 	int pHasPipelineCount;

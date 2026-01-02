@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class fbxNode;
@@ -40,7 +40,7 @@ class fbxNode;
 class fbxObjectMap{
 private:
 	struct sBucket{
-		decPointerList objects;
+		decTList<fbxNode*> objects;
 	};
 	
 	sBucket *pBuckets;

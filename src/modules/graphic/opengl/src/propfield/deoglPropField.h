@@ -28,7 +28,7 @@
 #include "deoglRPropField.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicPropField.h>
 
 class deoglPropFieldType;
@@ -49,7 +49,7 @@ private:
 	
 	deoglRPropField::Ref pRPropField;
 	
-	decPointerList pTypes;
+	decTList<deoglPropFieldType*> pTypes;
 	
 	int pLODLevel;
 	int pBestLOD;

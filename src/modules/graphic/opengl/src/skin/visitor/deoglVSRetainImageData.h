@@ -25,13 +25,14 @@
 #ifndef _DEOGLVSRETAINIMAGEDATA_H_
 #define _DEOGLVSRETAINIMAGEDATA_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitor.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 
 class deSkin;
 class deSkinProperty;
 class deImage;
+class deoglImage;
 
 
 
@@ -40,7 +41,7 @@ class deImage;
  */
 class deoglVSRetainImageData : public deSkinPropertyVisitor, deSkinPropertyNodeVisitor {
 public:
-	decPointerList pImages;
+	decTList<deoglImage*> pImages;
 	bool pForceLock;
 	
 	

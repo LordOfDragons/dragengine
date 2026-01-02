@@ -29,7 +29,7 @@
 #include <stdint.h>
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -165,7 +165,7 @@ public:
 	fbxNode *FirstNodeNamedOrNull(const char *name) const;
 	
 	/** \brief Find all nodes matching name. */
-	void FindNodesNamed(decPointerList &list, const char *name) const;
+	void FindNodesNamed(decTList<fbxNode*> &list, const char *name) const;
 	
 	/** \brief Names of all nodes. */
 	void GetNodeNames(decStringSet &list) const;

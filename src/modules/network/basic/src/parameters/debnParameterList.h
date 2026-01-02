@@ -25,7 +25,7 @@
 #ifndef _DEBNPARAMETERLIST_H_
 #define _DEBNPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class debnParameter;
 
@@ -35,7 +35,7 @@ class debnParameter;
  */
 class debnParameterList{
 private:
-	decPointerList pParameters;
+	decTList<debnParameter*> pParameters;
 	
 	
 	

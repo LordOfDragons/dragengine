@@ -25,7 +25,7 @@
 #ifndef _DESYNSHAREDBUFFERLIST_H_
 #define _DESYNSHAREDBUFFERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class desynSharedBuffer;
 
@@ -36,7 +36,7 @@ class desynSharedBuffer;
  */
 class desynSharedBufferList{
 private:
-	decPointerList pBuffers;
+	decTList<desynSharedBuffer*> pBuffers;
 	
 	
 	

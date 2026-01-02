@@ -25,7 +25,7 @@
 #ifndef _DEOGLOCCLUSIONTESTPOOL_H_
 #define _DEOGLOCCLUSIONTESTPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglOcclusionTest;
@@ -38,7 +38,7 @@ class deoglOcclusionTestPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decPointerList pOcclusionTests;
+	decTList<deoglOcclusionTest*> pOcclusionTests;
 	
 	
 public:

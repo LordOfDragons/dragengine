@@ -25,7 +25,7 @@
 #ifndef _DEOALWOVCOLLECTELEMENTS_H_
 #define _DEOALWOVCOLLECTELEMENTS_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../../world/octree/deoalWorldOctreeVisitor.h"
@@ -41,9 +41,12 @@ class deoalAComponent;
  */
 class deoalWOVCollectElements : public deoalWorldOctreeVisitor{
 private:
+	decDVector pPosition;
+	float pRange;
 	decDVector pBoxMin;
 	decDVector pBoxMax;
-	decPointerList pComponents;
+	
+	decTList<deoalAComponent*> pComponents;
 	
 	
 	

@@ -28,7 +28,7 @@
 #include "../deModuleSystem.h"
 #include "../../dragengine_configuration.h"
 #include "../../common/file/decPath.h"
-#include "../../common/collection/decPointerList.h"
+#include "../../common/collection/decTList.h"
 
 #ifdef OS_BEOS
 #include <kernel/image.h>
@@ -52,7 +52,7 @@ private:
 	#endif
 	
 	decStringList pPreloadLibraryPath;
-	decPointerList pPreloadedLibraries;
+	decTList<void*> pPreloadedLibraries;
 	
 	const deModuleSystem::FPRegisterInternalModule *pFunctionsPriority;
 	const deModuleSystem::FPRegisterInternalModule *pFunctions;

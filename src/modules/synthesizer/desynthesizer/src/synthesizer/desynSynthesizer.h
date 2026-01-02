@@ -28,7 +28,7 @@
 #include "../desynBasics.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerSynthesizer.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -48,7 +48,7 @@ private:
 	deDESynthesizer &pModule;
 	deSynthesizer &pSynthesizer;
 	
-	decPointerList pLinks;
+	decTList<desynSynthesizerLink*> pLinks;
 	
 	desynSynthesizerSource **pSources;
 	int pSourceCount;

@@ -27,7 +27,7 @@
 
 #include "deadArchiveDirectory.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/archive/deBaseArchiveContainer.h>
 #include <dragengine/threading/deMutex.h>
@@ -48,8 +48,8 @@ private:
 	decString pFilename;
 	deadArchiveDirectory::Ref pArchiveDirectory;
 	
-	decPointerList pContextsUnpack;
-	decPointerList pContextsUnpackFree;
+	decTList<deadContextUnpack*> pContextsUnpack;
+	decTList<deadContextUnpack*> pContextsUnpackFree;
 	deMutex pMutex;
 	
 	

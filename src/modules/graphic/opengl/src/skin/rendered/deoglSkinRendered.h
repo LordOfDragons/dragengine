@@ -26,7 +26,7 @@
 #define _DEOGLSKINRENDERED_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -51,7 +51,7 @@ private:
 	deoglRBillboard *pOwnerBillboard;
 	deoglRDecal *pOwnerDecal;
 	
-	decPointerList pTextures;
+	decTList<deoglSkinRenderedTexture*> pTextures;
 	
 	bool pDirty;
 	

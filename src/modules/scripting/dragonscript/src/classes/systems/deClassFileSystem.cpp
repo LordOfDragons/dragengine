@@ -443,11 +443,11 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 	// enumerate modules
 	const deModuleSystem &modsys = *clsFileSys.GetDS()->GetGameEngine()->GetModuleSystem();
 	const int moduleCount = modsys.GetModuleCount();
-	decPointerList modules;
+	decTList<deLoadableModule*> modules;
 	int i, j;
 	
 	for(i=0; i<moduleCount; i++){
-		const deLoadableModule * const module = modsys.GetModuleAt(i);
+		deLoadableModule * const module = modsys.GetModuleAt(i);
 		if(module->GetType() != moduleType || !module->GetEnabled()
 		|| module->GetErrorCode() != deLoadableModule::eecSuccess){
 			continue;
@@ -456,17 +456,17 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 		const decString &name = module->GetName();
 		const int foundCount = modules.GetCount();
 		for(j=0; j<foundCount; j++){
-			const deLoadableModule * const module2 = static_cast<const deLoadableModule*>(modules.GetAt(j));
+			const deLoadableModule * const module2 = modules.GetAt(j);
 			if(module2->GetName() == name){
 				if(modsys.CompareVersion(module->GetVersion(), module2->GetVersion()) > 0){
-					modules.SetAt(j, const_cast<void*>(static_cast<const void*>(module)));
+					modules.SetAt(j, module);
 				}
 				break;
 			}
 		}
 		
 		if(j == foundCount){
-			modules.Add(const_cast<void*>(static_cast<const void*>(module)));
+			modules.Add(module);
 		}
 	}
 	
@@ -483,7 +483,7 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 		// iterate
 		const int foundCount = modules.GetCount();
 		for(i=0; i<foundCount; i++){
-			const deLoadableModule &module = *static_cast<const deLoadableModule*>(modules.GetAt(i));
+			const deLoadableModule &module = *modules.GetAt(i);
 			
 			// create pattern array
 			rt->CreateObject(valuePatterns, sengine.GetClassArray(), 0);

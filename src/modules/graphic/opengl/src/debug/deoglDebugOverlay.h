@@ -27,10 +27,12 @@
 
 #include "deoglDebugOverlay.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deCanvasView;
 class deGraphicOpenGl;
+class deoglDebugOverlayImage;
+class deCanvas;
 
 
 /**
@@ -39,7 +41,7 @@ class deGraphicOpenGl;
 class deoglDebugOverlay{
 private:
 	deGraphicOpenGl &pOgl;
-	decPointerList pList1, pList2;
+	decTList<deCanvas*> pList1, pList2;
 	
 	
 	

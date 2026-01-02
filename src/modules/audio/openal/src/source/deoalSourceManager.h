@@ -26,7 +26,7 @@
 #define _DEOALSOURCEMANAGER_H_
 
 #include "../deoalBasics.h"
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class decUnicodeString;
 class deoalSource;
@@ -53,7 +53,7 @@ class deoalSourceManager{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	decPointerList pSources;
+	decTList<deoalSource*> pSources;
 	int pCountBound;
 	int pCountUnbound;
 	
