@@ -10,7 +10,7 @@
 
 // Type aliases
 typedef decTList<int> decTListInt;
-typedef decTList<decString> decTListString;
+typedef decStringList decTListString;
 typedef decTObjectList<decXmlElementTag> decTListXmlElementTag;
 
 

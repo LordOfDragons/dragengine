@@ -30,7 +30,7 @@
 
 #include <openvr/openvr.h>
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/camera/deCamera.h>
@@ -89,7 +89,7 @@ private:
 	deCamera::Ref pCamera;
 	
 	deovrDeviceManager pDevices;
-	decObjectDictionary pRenderModels;
+	decTObjectDictionary<deovrRenderModel> pRenderModels;
 	decObjectList pTextureMaps;
 	
 	vr::IVRSystem *pVRSystem;

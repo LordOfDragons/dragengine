@@ -24,7 +24,7 @@ void detHelperFunctions::Prepare(){
 }
 
 void detHelperFunctions::Run(){
-	// DEJoin with decTList<decString>
+	// DEJoin with decStringList
 	TestDEJoinStringListBasic();
 	TestDEJoinStringListEmpty();
 	TestDEJoinStringListSeparator();
@@ -46,13 +46,13 @@ const char *detHelperFunctions::GetTestName(){
 }
 
 
-// Test DEJoin with decTList<decString>
+// Test DEJoin with decStringList
 ///////////////////////////////////////
 
 void detHelperFunctions::TestDEJoinStringListBasic(){
 	SetSubTestNum(0);
 
-	decTList<decString> list;
+	decStringList list;
 	list.Add("hello");
 	list.Add("world");
 	list.Add("test");
@@ -64,7 +64,7 @@ void detHelperFunctions::TestDEJoinStringListBasic(){
 void detHelperFunctions::TestDEJoinStringListEmpty(){
 	SetSubTestNum(1);
 
-	decTList<decString> list;
+	decStringList list;
 
 	decString result = DEJoin(list, decString(" "));
 	ASSERT_EQUAL(result, "");
@@ -73,7 +73,7 @@ void detHelperFunctions::TestDEJoinStringListEmpty(){
 void detHelperFunctions::TestDEJoinStringListSeparator(){
 	SetSubTestNum(2);
 
-	decTList<decString> list;
+	decStringList list;
 	list.Add("a");
 	list.Add("b");
 	list.Add("c");
@@ -91,7 +91,7 @@ void detHelperFunctions::TestDEJoinStringListSeparator(){
 	ASSERT_EQUAL(result3, "a :: b :: c");
 
 	// Test with single element
-	decTList<decString> singleList;
+	decStringList singleList;
 	singleList.Add("only");
 	decString result4 = DEJoin(singleList, decString(" "));
 	ASSERT_EQUAL(result4, "only");
@@ -100,7 +100,7 @@ void detHelperFunctions::TestDEJoinStringListSeparator(){
 void detHelperFunctions::TestDEJoinStringListEmptyEntries(){
 	SetSubTestNum(3);
 
-	decTList<decString> list;
+	decStringList list;
 	list.Add("first");
 	list.Add("");
 	list.Add("second");
@@ -119,7 +119,7 @@ void detHelperFunctions::TestComparators(){
 	SetSubTestNum(6);
 	
 	{
-	decTList<decString> list;
+	decStringList list;
 	list.Add("banana");
 	list.Add("apple");
 	list.Add("cherry");
@@ -136,12 +136,12 @@ void detHelperFunctions::TestComparators(){
 	}
 
 	{
-	decTList<decString> list;
+	decStringList list;
 	list.Add("banana");
 	list.Add("apple");
 	list.Add("cherry");
 	
-	const decTList<decString> list2(list.GetSortedAscending());
+	const decStringList list2(list.GetSortedAscending());
 	ASSERT_EQUAL(list2.GetAt(0), "apple");
 	ASSERT_EQUAL(list2.GetAt(1), "banana");
 	ASSERT_EQUAL(list2.GetAt(2), "cherry");
@@ -150,7 +150,7 @@ void detHelperFunctions::TestComparators(){
 	ASSERT_EQUAL(list.GetAt(1), "apple");
 	ASSERT_EQUAL(list.GetAt(2), "cherry");
 	
-	const decTList<decString> list3(list.GetSortedDescending());
+	const decStringList list3(list.GetSortedDescending());
 	ASSERT_EQUAL(list3.GetAt(0), "cherry");
 	ASSERT_EQUAL(list3.GetAt(1), "banana");
 	ASSERT_EQUAL(list3.GetAt(2), "apple");
@@ -161,7 +161,7 @@ void detHelperFunctions::TestComparators(){
 	}
 
 	{
-	decTList<decString> list;
+	decStringList list;
 	list.Add("banana");
 	list.Add("apple");
 	list.Add("cherry");

@@ -38,7 +38,7 @@
 /**
  * \brief Helper function to join strings.
  * 
- * This is typically used with decTList<decString> or similar collection.
+ * This is typically used with decStringList or similar collection.
  */
 template<typename C>
 decString DEJoin(const C &collection, const decString &separator){

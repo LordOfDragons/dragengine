@@ -179,7 +179,7 @@ public:
 		
 		int i;
 		for(i=start; i<pCount; i++){
-			if(element == pElements[i]){
+			if(pElements[i] == element){
 				return i;
 			}
 		}
@@ -228,7 +228,7 @@ public:
 	bool Has(const TP &element) const{
 		int i;
 		for(i=0; i<pCount; i++){
-			if(element == pElements[i]){
+			if(pElements[i] == element){
 				return true;
 			}
 		}
@@ -303,7 +303,7 @@ public:
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		
-		if(element == pElements[index]){
+		if(pElements[index] == element){
 			return;
 		}
 		

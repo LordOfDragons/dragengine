@@ -90,7 +90,7 @@ public:
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decTList<decString> &list, int &selection);
+		const decStringList &list, int &selection);
 	
 	
 	

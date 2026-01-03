@@ -222,7 +222,7 @@ const char *text, decString &value){
 }
 
 bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
-const char *text, decString &value, const decTList<decString> &proposals){
+const char *text, decString &value, const decStringList &proposals){
 	DEASSERT_NOTNULL(owner)
 	
 	igdeEnvironment &environment = owner->GetEnvironment();
@@ -255,7 +255,7 @@ const char *text, decString &value, const decTList<decString> &proposals){
 }
 
 bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decTList<decString> &list, int &selection){
+const char *text, const decStringList &list, int &selection){
 	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
 }
 

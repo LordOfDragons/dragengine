@@ -93,17 +93,10 @@ pResource(object.pResource),
 pData(object.pData)
 {
 	if(deep){
-		const decStringList keys(object.pDictionary.GetKeys());
-		const int count = keys.GetCount();
-		int i;
-		
 		pDictionary.RemoveAll();
-		for(i=0; i<count; i++){
-			const decString &key = keys.GetAt(i);
-			const deServiceObject::Ref copy(deServiceObject::Ref::New(
-				*static_cast<deServiceObject*>(object.pDictionary.GetAt(key)), true));
-			pDictionary.SetAt(key, copy);
-		}
+		object.pDictionary.Visit([&](const decString &key, const deServiceObject::Ref &value){
+			pDictionary.SetAt(key, deServiceObject::Ref::New(*value, true));
+		});
 		
 	} else {
 		pDictionary = object.pDictionary;
@@ -192,8 +185,7 @@ deServiceObject::Ref deServiceObject::GetChildAt(int index) const{
 
 deServiceObject::Ref deServiceObject::GetChildAt(const char *key) const{
 	DEASSERT_TRUE(pValueType == evtDictionary)
-	deObject *value;
-	return Ref(pDictionary.GetAt(key, &value) ? (deServiceObject*)value : nullptr);
+	return pDictionary.GetAtOrDefault(key);
 }
 
 decStringList deServiceObject::GetChildrenKeys() const{
@@ -326,25 +318,15 @@ bool deServiceObject::operator==(const deServiceObject &other) const{
 			return !other.pData;
 		}
 		
-	case evtDictionary:{
+	case evtDictionary:
 		if(pDictionary.GetCount() != other.pDictionary.GetCount()){
 			return false;
 		}
 		
-		const decStringList keys(pDictionary.GetKeys());
-		const int count = keys.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			const decString &key = keys.GetAt(i);
-			const deServiceObject &so1 = *((deServiceObject*)pDictionary.GetAt(key));
-			const deServiceObject &so2 = *((deServiceObject*)other.pDictionary.GetAt(key));
-			if(so1 != so2){
-				return false;
-			}
-		}
-		return true;
-		}
+		return pDictionary.AllMatching([&](const decString &key, const deServiceObject::Ref &value){
+			const deServiceObject::Ref *otherValue;
+			return other.pDictionary.GetAt(key, otherValue) && *value == **otherValue;
+		});
 		
 	default:
 		return false;

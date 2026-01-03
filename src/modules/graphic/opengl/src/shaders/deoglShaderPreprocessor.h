@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHADERPREPROCESSOR_H_
 #define _DEOGLSHADERPREPROCESSOR_H_
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -85,7 +85,7 @@ private:
 	int pSourcesLen;
 	int pSourcesSize;
 	
-	decObjectDictionary pSymbolTable;
+	decTObjectDictionary<deoglShaderPreprocessorSymbol> pSymbolTable;
 	decStringSet pMacroSymbol;
 	const char *pInputNext;
 	const char *pInputFile;
@@ -166,6 +166,9 @@ public:
 	
 	/** \name Symbol Table */
 	/*@{*/
+	/** Symbol table. */
+	inline const decTObjectDictionary<deoglShaderPreprocessorSymbol> &GetSymbolTable() const{ return pSymbolTable; }
+	
 	/** Number of symbols. */
 	int GetSymbolCount() const;
 	

@@ -60,7 +60,7 @@ class deSound;
 class ceConversationActor : public deObject{
 public:
 	typedef deTObjectReference<ceConversationActor> Ref;
-	typedef decTDictionary<decString,int> ParameterMap;
+	typedef decTStringDictionary<int> ParameterMap;
 	typedef decTObjectOrderedSet<ceActorPose> PoseList;
 	
 	

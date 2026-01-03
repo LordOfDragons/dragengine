@@ -39,7 +39,7 @@ class ceLangPackEntry;
 class ceLangPack : public deObject{
 public:
 	typedef deTObjectReference<ceLangPack> Ref;
-	typedef decTDictionary<decString,decUnicodeString> EntryMap;
+	typedef decTStringDictionary<decUnicodeString> EntryMap;
 	
 	
 private:

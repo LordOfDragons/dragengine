@@ -29,7 +29,7 @@
 #include "deoglShaderProgramUnit.h"
 #include "compiler/deoglShaderCompileListener.h"
 
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringDictionary.h>
@@ -88,7 +88,8 @@ private:
 	
 	deoglShaderLanguage *pLanguage;
 	
-	decObjectDictionary pUnitSourceCodes, pSources;
+	decTObjectDictionary<deoglShaderUnitSourceCode> pUnitSourceCodes;
+	decTObjectDictionary<deoglShaderSources> pSources;
 	decStringDictionary pIncludableSources;
 	decObjectList pPrograms, pProgramUnits;
 	
@@ -131,6 +132,9 @@ public:
 	
 	/** \name Unit Source Codes */
 	/*@{*/
+	/** Unit source codes. */
+	inline const decTObjectDictionary<deoglShaderUnitSourceCode> &GetUnitSourceCodes() const{ return pUnitSourceCodes; }
+	
 	/** Count of shader unit source codes. */
 	int GetUnitSourceCodeCount() const;
 	
@@ -156,6 +160,9 @@ public:
 	
 	/** \name Sources */
 	/*@{*/
+	/** Sources. */
+	inline const decTObjectDictionary<deoglShaderSources> &GetSources() const{ return pSources; }
+	
 	/** Count of shader sources. */
 	int GetSourcesCount() const;
 	
@@ -164,9 +171,6 @@ public:
 	
 	/** Named shader sources or nullptr. */
 	const deoglShaderSources *GetSourcesNamed(const char *name);
-	
-	/** Shader sources as list for debugging. */
-	decObjectList GetSourcesAsList() const;
 	
 	/**
 	 * Scan shader directory for shader files and loads them.

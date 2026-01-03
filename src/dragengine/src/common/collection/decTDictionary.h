@@ -348,9 +348,12 @@ public:
 		pEntryCount = 0;
 	}
 	
+	/** \brief Keys list. */
+	using KeyList = decTList<K,KP>;
+	
 	/** \brief List of all keys in the dictionary. */
-	decTList<K> GetKeys() const{
-		decTList<K> keys(pEntryCount);
+	KeyList GetKeys() const{
+		KeyList keys(pEntryCount);
 		int i;
 		
 		for(i=0; i<pBucketCount; i++){
@@ -365,9 +368,12 @@ public:
 		return keys;
 	}
 	
+	/** \brief Value list. */
+	using ValueList = decTList<V,VP>;
+	
 	/** \brief List with all values in the dictionary. */
-	decTList<V> GetValues() const{
-		decTList<V> values(pEntryCount);
+	ValueList GetValues() const{
+		decTList<V,VP> values(pEntryCount);
 		int i;
 		
 		for(i=0; i<pBucketCount; i++){

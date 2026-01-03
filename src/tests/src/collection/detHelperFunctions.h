@@ -8,7 +8,7 @@
 // class detHelperFunctions
 class detHelperFunctions : public detCase {
 private:
-	// Test methods for DEJoin with decTList<decString>
+	// Test methods for DEJoin with decStringList
 	void TestDEJoinStringListBasic();
 	void TestDEJoinStringListEmpty();
 	void TestDEJoinStringListSeparator();

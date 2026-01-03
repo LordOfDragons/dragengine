@@ -259,7 +259,7 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetString(igdeWidget *owner, const char *title, const char *text,
-		decString &value, const decTList<decString> &proposals);
+		decString &value, const decStringList &proposals);
 	
 	/**
 	 * \brief Request string selection input from user.
@@ -269,7 +269,7 @@ public:
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decTList<decString> &list, int &selection);
+		const decStringList &list, int &selection);
 	
 	
 	

@@ -31,7 +31,7 @@
 #include "modio.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -66,7 +66,7 @@ private:
 	Modio::Portal pPortal;
 	bool pIsInitialized;
 	int pRequiresEventHandlingCount;
-	decObjectDictionary pResources;
+	decTObjectDictionary<deObject> pResources;
 	cInvalidator::Ref pInvalidator;
 	deVirtualFileSystem::Ref pVFS;
 	decStringList pBaseDirPathStr;

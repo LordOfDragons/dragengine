@@ -195,7 +195,7 @@ public:
 		
 		int i;
 		for(i=start; i<pCount; i++){
-			if(element == pElements[i]){
+			if(pElements[i] == element){
 				return i;
 			}
 		}
@@ -245,7 +245,7 @@ public:
 		int p;
 		
 		for(p=0; p<pCount; p++){
-			if(element == pElements[p]){
+			if(pElements[p] == element){
 				return true;
 			}
 		}
@@ -318,7 +318,7 @@ public:
 		int p;
 		
 		for(p=0; p<pCount; p++){
-			if(element == pElements[p]){
+			if(pElements[p] == element){
 				count++;
 			}
 		}

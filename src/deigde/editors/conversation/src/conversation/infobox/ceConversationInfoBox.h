@@ -59,7 +59,7 @@ private:
 	
 	decString pText;
 	
-	decTList<decString> pLayoutTexts;
+	decStringList pLayoutTexts;
 	decTList<int> pLayoutWidths;
 	
 	deCanvasView::Ref pCanvasView;

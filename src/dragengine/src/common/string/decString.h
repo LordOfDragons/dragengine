@@ -268,11 +268,11 @@ public:
 	decString GetReversed() const;
 	
 	/** \brief Split string. */
-	decTList<decString> Split(int character) const;
+	decTList<decString,const char*> Split(int character) const;
 	
 	/** \brief Split string on multiple characters. */
-	decTList<decString> Split(const char *characters) const;
-	decTList<decString> Split(const decString &characters) const;
+	decTList<decString,const char*> Split(const char *characters) const;
+	decTList<decString,const char*> Split(const decString &characters) const;
 	
 	/** \brief Replace all occurances of a character. */
 	void Replace(int replaceCharacter, int withCharacter);

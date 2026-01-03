@@ -1067,9 +1067,9 @@ decString decString::GetReversed() const{
 	return string;
 }
 
-decTList<decString> decString::Split(int character) const{
+decTList<decString,const char*> decString::Split(int character) const{
 	const int len = GetLength();
-	decTList<decString> list;
+	decTList<decString,const char*> list;
 	int i, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1093,14 +1093,14 @@ decTList<decString> decString::Split(int character) const{
 	return list;
 }
 
-decTList<decString> decString::Split(const char *characters) const{
+decTList<decString,const char*> decString::Split(const char *characters) const{
 	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int clen = (int)strlen(characters);
 	const int len = GetLength();
-	decTList<decString> list;
+	decTList<decString,const char*> list;
 	int i, j, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1132,7 +1132,7 @@ decTList<decString> decString::Split(const char *characters) const{
 	return list;
 }
 
-decTList<decString> decString::Split(const decString &characters) const{
+decTList<decString,const char*> decString::Split(const decString &characters) const{
 	return Split(characters.GetString());
 }
 

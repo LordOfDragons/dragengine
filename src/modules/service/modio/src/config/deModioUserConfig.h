@@ -43,7 +43,7 @@ class decBaseFileWriter;
 class deModioUserConfig : public deObject{
 public:
 	typedef deTObjectReference<deModioUserConfig> Ref;
-	typedef decTDictionary<decString,Modio::Rating> UserRatings;
+	typedef decTStringDictionary<Modio::Rating> UserRatings;
 	typedef decTSet<decString> DisabledMods;
 	
 	

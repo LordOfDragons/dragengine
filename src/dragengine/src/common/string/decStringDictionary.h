@@ -32,8 +32,8 @@
 /**
  * \brief Dictionary mapping string key to string value.
  */
-typedef decTDictionary<decString,decString> decStringDictionary;
+typedef decTDictionary<decString, decString, const char*, const char*> decStringDictionary;
 
-extern template class decTDictionary<decString,decString>;
+extern template class decTDictionary<decString, decString, const char*, const char*>;
 
 #endif

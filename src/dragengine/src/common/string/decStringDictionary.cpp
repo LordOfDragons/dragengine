@@ -24,4 +24,4 @@
 
 #include "decStringDictionary.h"
 
-template class decTDictionary<decString,decString>;
+template class decTDictionary<decString, decString, const char*, const char*>;

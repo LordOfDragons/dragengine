@@ -32,8 +32,8 @@
 /**
  * \brief List of strings.
  */
-typedef decTList<decString> decStringList;
+typedef decTList<decString,const char*> decStringList;
 
-extern template class decTList<decString>;
+extern template class decTList<decString,const char*>;
 
 #endif

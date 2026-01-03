@@ -211,7 +211,7 @@ const char *text, decString &value){
 }
 
 bool igdeNativeFoxCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decTList<decString> &list, int &selection){
+const char *text, const decStringList &list, int &selection){
 	if(!owner || !owner->GetNativeWidget() || !title || !text || list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}

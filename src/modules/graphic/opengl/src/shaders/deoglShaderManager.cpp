@@ -221,8 +221,7 @@ bool deoglShaderManager::HasUnitSourceCodeNamed(const char *name) const{
 }
 
 deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeNamed(const char *name) const{
-	deObject *o;
-	return pUnitSourceCodes.GetAt(name, &o) ? (deoglShaderUnitSourceCode*)o : nullptr;
+	return pUnitSourceCodes.GetAtOrDefault(name);
 }
 
 void deoglShaderManager::RemoveAllUnitSourceCodes(){
@@ -259,8 +258,7 @@ bool deoglShaderManager::HasSourcesNamed(const char *name) const{
 }
 
 const deoglShaderSources *deoglShaderManager::GetSourcesNamed(const char *name){
-	deObject *o;
-	return pSources.GetAt(name, &o) ? (const deoglShaderSources *)o : nullptr;
+	return pSources.GetAtOrDefault(name);
 }
 
 void deoglShaderManager::LoadSources(){
@@ -273,10 +271,6 @@ void deoglShaderManager::LoadSources(){
 		pRenderThread.GetLogger().LogInfoFormat("Loaded %i shaders.",
 			pSources.GetCount() - oldCount);
 	}
-}
-
-decObjectList deoglShaderManager::GetSourcesAsList() const{
-	return pSources.GetValues();
 }
 
 

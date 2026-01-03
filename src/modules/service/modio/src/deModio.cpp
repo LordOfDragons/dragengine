@@ -106,8 +106,7 @@ void deModio::SetModConfigs(const decObjectList &configs){
 }
 
 deModioUserConfig *deModio::GetUserConfigIfPresent(const decString &id) const{
-	deObject *user = nullptr;
-	return pUserConfigs.GetAt(id, &user) ? (deModioUserConfig*)user : nullptr;
+	return pUserConfigs.GetAtOrDefault(id);
 }
 
 deModioUserConfig &deModio::GetUserConfig(const decString &id){
@@ -343,12 +342,10 @@ void deModio::pSaveConfig(){
 			((deModioModConfig*)pModConfigs.GetAt(i))->WriteToFile(writer);
 		}
 		
-		const decObjectList users(pUserConfigs.GetValues());
-		count = users.GetCount();
-		writer->WriteInt(count);
-		for(i=0; i<count; i++){
-			((deModioUserConfig*)users.GetAt(i))->WriteToFile(writer);
-		}
+		writer->WriteInt(pUserConfigs.GetCount());
+		pUserConfigs.Visit([&](const decString&, const deModioUserConfig::Ref &user){
+			user->WriteToFile(writer);
+		});
 		
 		writer->WriteString8(pCurUserId);
 		

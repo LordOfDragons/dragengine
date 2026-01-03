@@ -24,4 +24,4 @@
 
 #include "decStringList.h"
 
-template class decTList<decString>;
+template class decTList<decString,const char*>;

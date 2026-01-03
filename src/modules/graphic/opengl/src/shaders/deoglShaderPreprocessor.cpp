@@ -273,9 +273,7 @@ bool deoglShaderPreprocessor::HasSymbolNamed(const char *name) const{
 }
 
 deoglShaderPreprocessorSymbol *deoglShaderPreprocessor::GetSymbolNamed(const char *name) const{
-	deObject *object = NULL;
-	(void)pSymbolTable.GetAt(name, &object);
-	return (deoglShaderPreprocessorSymbol*)object;
+	return pSymbolTable.GetAtOrDefault(name);
 }
 
 void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){

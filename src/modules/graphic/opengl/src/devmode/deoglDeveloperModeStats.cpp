@@ -244,14 +244,9 @@ void deoglDeveloperModeStats::CombinedTextures(const decUnicodeArgumentList &com
 }
 
 void deoglDeveloperModeStats::ShaderSources(const decUnicodeArgumentList &command, decUnicodeString &answer){
-	const decObjectList smsources(pRenderThread.GetShader().GetShaderManager().GetSourcesAsList());
-	int ss;
 	decString text;
 	
-	const int shaderSourcesCount = smsources.GetCount();
-	for(ss=0; ss<shaderSourcesCount; ss++){
-		const deoglShaderSources &sources = *(deoglShaderSources*)smsources.GetAt(ss);
-		
+	pRenderThread.GetShader().GetShaderManager().GetSources().Visit([&](const decString &, const deoglShaderSources &sources){
 		text.Format("- Shader Sources '%s' (shader file '%s'):\n", sources.GetName().GetString(), sources.GetFilename().GetString());
 		answer.AppendFromUTF8(text.GetString());
 		
@@ -269,7 +264,7 @@ void deoglDeveloperModeStats::ShaderSources(const decUnicodeArgumentList &comman
 			text.Format("   - Fragment Source Code = %s\n", sources.GetPathFragmentSourceCode().GetString());
 			answer.AppendFromUTF8(text.GetString());
 		}
-	}
+	});
 }
 
 void deoglDeveloperModeStats::ShaderPrograms(const decUnicodeArgumentList &command, decUnicodeString &answer){

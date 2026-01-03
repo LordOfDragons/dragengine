@@ -28,7 +28,7 @@
 #include <stdint.h>
 
 #include "../../common/collection/decObjectList.h"
-#include "../../common/collection/decObjectDictionary.h"
+#include "../../common/collection/decTDictionary.h"
 #include "../../common/file/decMemoryFile.h"
 #include "../../resources/deResource.h"
 
@@ -91,7 +91,7 @@ private:
 	deResource::Ref pResource;
 	decMemoryFile::Ref pData;
 	decObjectList pList;
-	decObjectDictionary pDictionary;
+	decTObjectDictionary<deServiceObject> pDictionary;
 	
 	
 	

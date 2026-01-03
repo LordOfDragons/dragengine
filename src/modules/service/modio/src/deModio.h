@@ -29,7 +29,7 @@
 #include "parameters/deModioParameterList.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
@@ -45,7 +45,7 @@ class deModio : public deBaseServiceModule{
 private:
 	int pRequiresEventHandlingCount;
 	deVirtualFileSystem::Ref pVFSMods;
-	decObjectDictionary pUserConfigs;
+	decTObjectDictionary<deModioUserConfig> pUserConfigs;
 	decObjectList pModConfigs, pActivateConfigs;
 	decString pCurUserId;
 	
@@ -79,8 +79,7 @@ public:
 	void SetModConfigs(const decObjectList &configs);
 	
 	/** User configurations (deModioUserConfig). */
-	inline decObjectDictionary &GetUserConfigs(){ return pUserConfigs; }
-	inline const decObjectDictionary &GetUserConfigs() const{ return pUserConfigs; }
+	inline const decTObjectDictionary<deModioUserConfig> &GetUserConfigs() const{ return pUserConfigs; }
 	
 	/** User configuration with ID or nullptr if not found. */
 	deModioUserConfig *GetUserConfigIfPresent(const decString &id) const;

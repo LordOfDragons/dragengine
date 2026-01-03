@@ -129,9 +129,9 @@ vr::IVRCompositor & deVROpenVR::GetVRCompositor() const{
 }
 
 deovrRenderModel *deVROpenVR::GetRenderModelNamed(const char *name){
-	deObject *findObject;
-	if(pRenderModels.GetAt(name, &findObject)){
-		return (deovrRenderModel*)findObject;
+	const deovrRenderModel::Ref *model = nullptr;
+	if(pRenderModels.GetAt(name, model)){
+		return model->Pointer();
 	}
 	
 	const deovrRenderModel::Ref renderModel(deovrRenderModel::Ref::New(*this, name));
