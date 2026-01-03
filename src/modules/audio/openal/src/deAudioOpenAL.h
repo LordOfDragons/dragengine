@@ -26,7 +26,6 @@
 #define _DEAUDIOOPENAL_H_
 
 #include <dragengine/systems/modules/audio/deBaseAudioModule.h>
-#include <dragengine/common/collection/decObjectSet.h>
 
 class deoalAudioThread;
 class deoalCommandExecuter;

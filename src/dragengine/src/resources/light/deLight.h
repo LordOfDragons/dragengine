@@ -29,7 +29,7 @@
 #include "../canvas/deCanvasView.h"
 #include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
-#include "../../common/collection/decObjectSet.h"
+#include "../../common/collection/decTSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"
 #include "../../common/utils/decLayerMask.h"
@@ -222,7 +222,7 @@ private:
 	
 	decLayerMask pLayerMask;
 	decLayerMask pLayerMaskShadow;
-	decObjectSet pShadowIgnoreComponents;
+	decTObjectSet<deComponent> pShadowIgnoreComponents;
 	
 	deBaseGraphicLight *pPeerGraphic;
 	
@@ -422,26 +422,14 @@ public:
 	
 	/** \name Shadow ignore components */
 	/*@{*/
-	/** \brief Number of components to ignore for shadow casting. */
-	int GetShadowIgnoreComponentCount() const;
-	
-	/**
-	 * \brief Component to ignore for shadow casting at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreComponentCount()-1.
-	 */
-	deComponent *GetShadowIgnoreComponentAt(int index) const;
-	
-	/** \brief Component to ignore for shadow casting is present. */
-	bool HasShadowIgnoreComponent(deComponent *component) const;
+	/** \brief Components to ignore for shadow casting. */
+	inline const decTObjectSet<deComponent> &GetShadowIgnoreComponents() const{ return pShadowIgnoreComponents; }
 	
 	/**
 	 * \brief Add component to ignore for shadow casting.
 	 * \throws deeInvalidParam \em component is present.
 	 */
-	void AddShadowIgnoreComponent(deComponent *component);
-	
-	/**
+	void AddShadowIgnoreComponent(deComponent *component);	/**
 	 * \brief Remove component to ignore for shadow casting.
 	 * \throws deeInvalidParam \em component is absent.
 	 */

@@ -138,12 +138,12 @@ public:
 	
 	virtual void VisitComponent(igdeWOSOComponent &component){
 		if(component.GetLightShadowIgnore()){
-			if(!pLight.HasShadowIgnoreComponent(component.GetComponent())){
+			if(!pLight.GetShadowIgnoreComponents().Has(component.GetComponent())){
 				pLight.AddShadowIgnoreComponent(component.GetComponent());
 			}
 			
 		}else{
-			if(pLight.HasShadowIgnoreComponent(component.GetComponent())){
+			if(pLight.GetShadowIgnoreComponents().Has(component.GetComponent())){
 				pLight.RemoveShadowIgnoreComponent(component.GetComponent());
 			}
 		}

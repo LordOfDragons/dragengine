@@ -28,7 +28,7 @@
 #include "deoalASoundLevelMeter.h"
 #include "../speaker/deoalSpeakerList.h"
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
@@ -61,7 +61,7 @@ private:
 	int pSpeakerCount;
 	int pSpeakerSize;
 	
-	decObjectSet pOldSpeakers;
+	decTObjectSet<deSpeaker> pOldSpeakers;
 	
 	decTLinkedList<deoalSoundLevelMeter>::Element pLLSyncWorld;
 	

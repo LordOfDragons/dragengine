@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/collection/decObjectSet.h"
+#include "../../common/collection/decTSet.h"
 #include "../../common/collection/decObjectOrderedSet.h"
 
 class deBasePhysicsCollider;
@@ -125,7 +125,7 @@ private:
 	decObjectOrderedSet pCollisionTests;
 	
 	decCollisionFilter pCollisionFilter;
-	decObjectSet pIgnoreColliders;
+	decTObjectSet<deCollider> pIgnoreColliders;
 	
 	deBasePhysicsCollider *pPeerPhysics;
 	deBaseScriptingCollider *pPeerScripting;
@@ -431,18 +431,8 @@ public:
 	
 	/** \name Ignore colliders */
 	/*@{*/
-	/** \brief Number of colliders to ignore. */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt(int index) const;
-	
-	/** \brief Collider to ignore is present. */
-	bool HasIgnoreCollider(deCollider *collider) const;
+	/** \brief Colliders to ignore. */
+	inline const decTObjectSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.

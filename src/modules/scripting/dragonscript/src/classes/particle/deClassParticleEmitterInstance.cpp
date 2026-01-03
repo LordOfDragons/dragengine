@@ -662,7 +662,7 @@ void deClassParticleEmitterInstance::nfGetIgnoreColliderCount::RunFunction(dsRun
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushInt(nd.instance->GetIgnoreColliderCount());
+	rt->PushInt(nd.instance->GetIgnoreColliders().GetCount());
 }
 
 // public func Collider getIgnoreColliderAt( int index )
@@ -678,7 +678,7 @@ void deClassParticleEmitterInstance::nfGetIgnoreColliderAt::RunFunction(dsRunTim
 	
 	const deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
-	ds.GetClassCollider()->PushCollider(rt, nd.instance->GetIgnoreColliderAt(index));
+	ds.GetClassCollider()->PushCollider(rt, nd.instance->GetIgnoreColliders().GetAt(index));
 }
 
 // public func bool hasIgnoreCollider( Collider collider )
@@ -695,7 +695,7 @@ void deClassParticleEmitterInstance::nfHasIgnoreCollider::RunFunction(dsRunTime 
 	const deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
-	rt->PushBool(nd.instance->HasIgnoreCollider(collider));
+	rt->PushBool(nd.instance->GetIgnoreColliders().Has(collider));
 }
 
 // public func void addIgnoreCollider( Collider collider )

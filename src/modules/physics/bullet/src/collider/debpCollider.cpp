@@ -284,15 +284,15 @@ void debpCollider::ClearRequiresUpdate(){
 bool debpCollider::Collides(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
 	return pCollider.GetCollisionFilter().Collides(engCollider.GetCollisionFilter())
-		&& !pCollider.HasIgnoreCollider(&engCollider)
-		&& !engCollider.HasIgnoreCollider(&pCollider);
+		&& !pCollider.GetIgnoreColliders().Has(&engCollider)
+		&& !engCollider.GetIgnoreColliders().Has(&pCollider);
 }
 
 bool debpCollider::CollidesNot(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
 	return pCollider.GetCollisionFilter().CollidesNot(engCollider.GetCollisionFilter())
-		|| pCollider.HasIgnoreCollider(&engCollider)
-		|| engCollider.HasIgnoreCollider(&pCollider);
+		|| pCollider.GetIgnoreColliders().Has(&engCollider)
+		|| engCollider.GetIgnoreColliders().Has(&pCollider);
 }
 
 void debpCollider::CreateBody(){

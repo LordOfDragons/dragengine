@@ -35,7 +35,7 @@
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -102,7 +102,7 @@ private:
 	decColor pColor;
 	decLayerMask pLayerMask;
 	decLayerMask pLayerMaskShadow;
-	decObjectSet pShadowIgnoreComponents;
+	decTObjectSet<deoglRComponent> pShadowIgnoreComponents;
 	
 	deoglRSkin::Ref pLightSkin;
 	deoglRCanvasView::Ref pLightCanvas;

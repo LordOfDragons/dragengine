@@ -30,7 +30,7 @@
 #include "../microphone/deoalAMicrophone.h"
 #include "../world/deoalAWorld.h"
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
@@ -115,7 +115,7 @@ private:
 	deoalAMicrophone::Ref pActiveMicrophone, pDeactiveMicrophone;
 	deoalAWorld::Ref pActiveWorld;
 	
-	decObjectSet pProcessOnceWorld; // audio thread
+	decTObjectSet<deoalAWorld> pProcessOnceWorld; // audio thread
 	
 	decTimer pTimerElapsed; // audio thread
 	float pElapsed; // audio thread

@@ -434,18 +434,6 @@ void deLight::SetCastShadows(bool castShadows){
 // Shadow ignore components
 /////////////////////////////
 
-int deLight::GetShadowIgnoreComponentCount() const{
-	return pShadowIgnoreComponents.GetCount();
-}
-
-deComponent *deLight::GetShadowIgnoreComponentAt(int index) const{
-	return (deComponent*)pShadowIgnoreComponents.GetAt(index);
-}
-
-bool deLight::HasShadowIgnoreComponent(deComponent *component) const{
-	return pShadowIgnoreComponents.Has(component);
-}
-
 void deLight::AddShadowIgnoreComponent(deComponent *component){
 	if(!component){
 		DETHROW(deeInvalidParam);

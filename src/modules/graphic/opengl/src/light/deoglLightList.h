@@ -25,7 +25,7 @@
 #ifndef _DEOGLLIGHTLIST_H_
 #define _DEOGLLIGHTLIST_H_
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 
 class deoglRLight;
 
@@ -40,7 +40,7 @@ class deoglRLight;
  */
 class deoglLightList{
 private:
-	decObjectSet pLights;
+	decTObjectSet<deoglRLight> pLights;
 	
 	
 	

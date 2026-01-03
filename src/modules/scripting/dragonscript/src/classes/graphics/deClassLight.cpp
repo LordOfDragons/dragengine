@@ -495,7 +495,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassLight::nfGetShadowIgnoreComponentCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	rt->PushInt(light.GetShadowIgnoreComponentCount());
+	rt->PushInt(light.GetShadowIgnoreComponents().GetCount());
 }
 
 // public func Component getShadowIgnoreComponentAt( int index )
@@ -510,7 +510,7 @@ void deClassLight::nfGetShadowIgnoreComponentAt::RunFunction(dsRunTime *rt, dsVa
 	
 	const int index = rt->GetValue(0)->GetInt();
 	
-	ds.GetClassComponent()->PushComponent(rt, light.GetShadowIgnoreComponentAt(index));
+	ds.GetClassComponent()->PushComponent(rt, light.GetShadowIgnoreComponents().GetAt(index));
 }
 
 // public func bool hasShadowIgnoreComponent( Component component )
@@ -529,7 +529,7 @@ void deClassLight::nfHasShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushBool(light.HasShadowIgnoreComponent(component));
+	rt->PushBool(light.GetShadowIgnoreComponents().Has(component));
 }
 
 // public func void addShadowIgnoreComponent( Component component )

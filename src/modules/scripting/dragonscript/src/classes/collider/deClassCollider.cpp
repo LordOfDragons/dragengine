@@ -1128,7 +1128,7 @@ void deClassCollider::nfGetIgnoreColliderCount::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushInt(nd.collider->GetIgnoreColliderCount());
+	rt->PushInt(nd.collider->GetIgnoreColliders().GetCount());
 }
 
 // public func Collider getIgnoreColliderAt( int index )
@@ -1145,7 +1145,7 @@ void deClassCollider::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsValue 
 	deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	clsCol.PushCollider(rt, nd.collider->GetIgnoreColliderAt(index));
+	clsCol.PushCollider(rt, nd.collider->GetIgnoreColliders().GetAt(index));
 }
 
 // public func bool hasIgnoreCollider( Collider collider )
@@ -1162,7 +1162,7 @@ void deClassCollider::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *m
 	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
-	rt->PushBool(nd.collider->HasIgnoreCollider(collider));
+	rt->PushBool(nd.collider->GetIgnoreColliders().Has(collider));
 }
 
 // public func void addIgnoreCollider( Collider collider )

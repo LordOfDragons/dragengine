@@ -513,18 +513,6 @@ void deCollider::NotifyConstraintChanged(int index){
 // Colliders to ignore
 ////////////////////////
 
-int deCollider::GetIgnoreColliderCount() const{
-	return pIgnoreColliders.GetCount();
-}
-
-deCollider *deCollider::GetIgnoreColliderAt(int index) const{
-	return (deCollider*)pIgnoreColliders.GetAt(index);
-}
-
-bool deCollider::HasIgnoreCollider(deCollider *collider) const{
-	return pIgnoreColliders.Has(collider);
-}
-
 void deCollider::AddIgnoreCollider(deCollider *collider){
 	pIgnoreColliders.Add(collider);
 	

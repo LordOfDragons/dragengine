@@ -625,13 +625,13 @@ void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
 	if(world != pActiveWorld){
 		if(pActiveWorld){
-			pProcessOnceWorld.AddIfAbsent(pActiveWorld);
+			pProcessOnceWorld.Add(pActiveWorld);
 		}
 		
 		pActiveWorld = world;
 		
 		if(world){
-			pProcessOnceWorld.RemoveIfPresent(world);
+			pProcessOnceWorld.Remove(world);
 		}
 	}
 }
@@ -861,8 +861,8 @@ void deoalAudioThread::pProcessAudio(){
 		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
 	}
 	
-	while(pProcessOnceWorld.GetCount() > 0){
-		deoalAWorld * const world = (deoalAWorld*)pProcessOnceWorld.GetAt(0);
+		while(pProcessOnceWorld.IsNotEmpty()){
+		deoalAWorld * const world = pProcessOnceWorld.First();
 		world->PrepareProcessAudio();
 		pProcessOnceWorld.Remove(world);
 	}

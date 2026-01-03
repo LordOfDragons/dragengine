@@ -360,16 +360,14 @@ void deoglRLight::RemoveAllShadowIgnoreComponents(){
 		return;
 	}
 	
-	const decObjectSet components(pShadowIgnoreComponents);
+	const decTObjectSet<deoglRComponent> components(pShadowIgnoreComponents);
 	
 	pShadowIgnoreComponents.RemoveAll();
 	
 	// test all components since they can now be potentially in shadow maps
-	const int count = components.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		TestComponent((deoglRComponent*)components.GetAt(i));
-	}
+	components.Visit([&](deoglRComponent *component){
+		TestComponent(component);
+	});
 }
 
 void deoglRLight::AddShadowIgnoreComponent(deoglRComponent *component){

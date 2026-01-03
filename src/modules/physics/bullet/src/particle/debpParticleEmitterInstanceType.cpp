@@ -1250,7 +1250,7 @@ public:
 		if(colObj.IsOwnerCollider()){
 			deCollider &collider = colObj.GetOwnerCollider()->GetCollider();
 			return pInstance.GetCollisionFilter().Collides(collider.GetCollisionFilter())
-				&& !pInstance.HasIgnoreCollider(&collider);
+				&& !pInstance.GetIgnoreColliders().Has(&collider);
 			
 		}else if(colObj.IsOwnerHTSector()){
 			return pInstance.GetCollisionFilter().Collides(colObj.GetOwnerHTSector()

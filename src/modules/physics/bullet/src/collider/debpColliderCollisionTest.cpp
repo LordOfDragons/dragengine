@@ -389,7 +389,7 @@ bool debpColliderCollisionTest::CanHitCollider(deCollider *owner, deCollider *co
 	}
 	
 	// no collision with ignore colliders in the parent collider
-	if(parentCollider->HasIgnoreCollider(collider)){
+	if(parentCollider->GetIgnoreColliders().Has(collider)){
 		return false;
 	}
 	

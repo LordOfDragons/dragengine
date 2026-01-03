@@ -27,7 +27,7 @@
 
 #include "deParticleEmitter.h"
 #include "../deResource.h"
-#include "../../common/collection/decObjectSet.h"
+#include "../../common/collection/decTSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/utils/decLayerMask.h"
@@ -79,7 +79,7 @@ private:
 	
 	decLayerMask pLayerMask;
 	decCollisionFilter pCollisionFilter;
-	decObjectSet pIgnoreColliders;
+	decTObjectSet<deCollider> pIgnoreColliders;
 	
 	deBaseGraphicParticleEmitterInstance *pPeerGraphic;
 	deBasePhysicsParticleEmitterInstance *pPeerPhysics;
@@ -244,24 +244,10 @@ public:
 	/** \name Ignore colliders */
 	/*@{*/
 	/**
-	 * \brief Number of colliders to ignore.
+	 * \brief Colliders to ignore.
 	 * \version 1.7
 	 */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \version 1.7
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt(int index) const;
-	
-	/**
-	 * \brief Collider to ignore is present.
-	 * \version 1.7
-	 */
-	bool HasIgnoreCollider(deCollider *collider) const;
+	inline const decTObjectSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.

@@ -361,20 +361,8 @@ void deParticleEmitterInstance::CollisionResponse(deCollisionInfo *collisionInfo
 
 
 
-// Colliders to ignore
-////////////////////////
-
-int deParticleEmitterInstance::GetIgnoreColliderCount() const{
-	return pIgnoreColliders.GetCount();
-}
-
-deCollider *deParticleEmitterInstance::GetIgnoreColliderAt(int index) const{
-	return (deCollider*)pIgnoreColliders.GetAt(index);
-}
-
-bool deParticleEmitterInstance::HasIgnoreCollider(deCollider *collider) const{
-	return pIgnoreColliders.Has(collider);
-}
+// Ignore colliders
+/////////////////////
 
 void deParticleEmitterInstance::AddIgnoreCollider(deCollider *collider){
 	pIgnoreColliders.Add(collider);

@@ -190,7 +190,7 @@ void gdeVAOLight::SelectedObjectChanged(){
 }
 
 void gdeVAOLight::ShadowIgnoreComponent(deComponent *component){
-	if(pLight && !pLight->HasShadowIgnoreComponent(component)){
+	if(pLight && !pLight->GetShadowIgnoreComponents().Has(component)){
 		pLight->AddShadowIgnoreComponent(component);
 	}
 }

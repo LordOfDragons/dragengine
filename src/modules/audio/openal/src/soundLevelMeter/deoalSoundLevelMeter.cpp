@@ -272,15 +272,13 @@ void deoalSoundLevelMeter::pUpdateAudibleSpeakers(){
 		AddSpeaker(&backlink->GetSpeaker(), speaker.GetVolume());
 	}
 	
-	// notify scripting module about leaving speakers
-	count = pOldSpeakers.GetCount();
-	for(i=0; i<count; i++){
-		deSpeaker * const engSpeaker = (deSpeaker*)pOldSpeakers.GetAt(i);
+		// notify scripting module about leaving speakers
+	pOldSpeakers.Visit([&](deSpeaker *engSpeaker){
 		const int index = pIndexOfSpeaker(engSpeaker);
 		if(index == -1){
 			pSoundLevelMeter.NotifySpeakerInaudible(engSpeaker);
 		}
-	}
+	});
 	
 	// notify scripting module about entering speakers
 	for(i=0; i<pSpeakerCount; i++){

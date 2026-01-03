@@ -59,7 +59,7 @@ int deoglLightList::GetCount() const{
 }
 
 deoglRLight *deoglLightList::GetAt(int index) const{
-	return (deoglRLight*)pLights.GetAt(index);
+	return pLights.GetAt(index);
 }
 
 bool deoglLightList::Has(deoglRLight *light) const{
@@ -71,9 +71,7 @@ void deoglLightList::Add(deoglRLight *light){
 }
 
 bool deoglLightList::AddIfMissing(deoglRLight *light){
-	const int count = pLights.GetCount();
-	pLights.AddIfAbsent(light);
-	return pLights.GetCount() > count;
+	return pLights.Add(light);
 }
 
 void deoglLightList::Remove(deoglRLight *light){
@@ -81,9 +79,7 @@ void deoglLightList::Remove(deoglRLight *light){
 }
 
 bool deoglLightList::RemoveIfExisting(deoglRLight *light){
-	const int count = pLights.GetCount();
-	pLights.RemoveIfPresent(light);
-	return pLights.GetCount() < count;
+	return pLights.Remove(light);
 }
 
 void deoglLightList::RemoveAll(){

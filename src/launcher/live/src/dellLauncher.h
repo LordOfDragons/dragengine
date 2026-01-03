@@ -27,7 +27,7 @@
 
 #include <delauncher/delLauncher.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -70,7 +70,7 @@ private:
 	decStringList pEnvParamsStore;
 	
 #ifdef OS_UNIX
-	decObjectSet pPreloadLibraries;
+	decTObjectSet<PreloadLibrary> pPreloadLibraries;
 #endif
 	
 	Launcher *pLauncher;

@@ -203,12 +203,10 @@ void deoglLight::SyncToRender(){
 		pRLight->SetLayerMaskShadow(pLight.GetLayerMaskShadow());
 		
 		pRLight->RemoveAllShadowIgnoreComponents();
-		const int ignoreCount = pLight.GetShadowIgnoreComponentCount();
-		int i;
-		for(i=0; i<ignoreCount; i++){
-			pRLight->AddShadowIgnoreComponent(((deoglComponent*)pLight.
-				GetShadowIgnoreComponentAt(i)->GetPeerGraphic())->GetRComponent());
-		}
+		pLight.GetShadowIgnoreComponents().Visit([&](deComponent *component){
+			pRLight->AddShadowIgnoreComponent(
+				dynamic_cast<deoglComponent*>(component->GetPeerGraphic())->GetRComponent());
+		});
 		
 		pDirtyShadowParameters = false;
 		if(pLight.GetHintMovement() != deLight::emhDynamic){
