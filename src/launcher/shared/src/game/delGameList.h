@@ -25,7 +25,7 @@
 #ifndef _DELGAMELIST_H_
 #define _DELGAMELIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGame;
 
@@ -37,7 +37,7 @@ class decUuid;
  */
 class DE_DLL_EXPORT delGameList{
 private:
-	decObjectList pGames;
+	decTObjectList<delGame> pGames;
 	
 public:
 	/** \name Constructors and Destructors */

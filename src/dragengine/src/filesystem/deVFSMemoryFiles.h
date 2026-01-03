@@ -27,7 +27,7 @@
 
 #include "deVFSContainer.h"
 #include "dePathList.h"
-#include "../common/collection/decObjectList.h"
+#include "../common/collection/decTList.h"
 
 class decMemoryFile;
 
@@ -49,7 +49,7 @@ public:
 	
 	
 private:
-	decObjectList pFiles;
+	decTObjectList<decMemoryFile> pFiles;
 	dePathList pDirectories;
 	bool pDirtyDirectories;
 	
@@ -172,20 +172,11 @@ public:
 	
 	/** \name Memory Files */
 	/*@{*/
-	/** \brief Number of memory files. */
-	int GetMemoryFileCount() const;
-	
-	/** \brief Memory file at position. */
-	decMemoryFile *GetMemoryFileAt(int index) const;
-	
-	/** \brief Index of memory file or -1 if absent. */
-	int IndexOfMemoryFile(decMemoryFile *memoryFile) const;
+	/** \brief Memory files. */
+	const decTObjectList<decMemoryFile> &GetMemoryFiles() const{ return pFiles; }
 	
 	/** \brief Index of memory file with path or -1 if absent. */
 	int IndexOfMemoryFileWith(const char *path) const;
-	
-	/** \brief Memory file is present. */
-	bool HasMemoryFile(decMemoryFile *memoryFile) const;
 	
 	/** \brief Memory file with path is present. */
 	bool HasMemoryFileWith(const char *path) const;

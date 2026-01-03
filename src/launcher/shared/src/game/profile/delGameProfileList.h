@@ -25,7 +25,7 @@
 #ifndef _DELGAMEPROFILELIST_H_
 #define _DELGAMEPROFILELIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGameProfile;
 class delLauncher;
@@ -36,7 +36,7 @@ class delLauncher;
  */
 class DE_DLL_EXPORT delGameProfileList{
 private:
-	decObjectList pProfiles;
+	decTObjectList<delGameProfile> pProfiles;
 	
 	
 	

@@ -27,7 +27,7 @@
 
 #include "deSynthesizerSource.h"
 
-#include "../../../common/collection/decObjectList.h"
+#include "../../../common/collection/decTList.h"
 
 class deSound;
 
@@ -53,7 +53,7 @@ public:
 	
 	
 private:
-	decObjectList pSounds;
+	decTObjectList<deSound> pSounds;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -85,11 +85,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of sound files. */
-	int GetSoundCount() const;
-	
-	/** \brief Sound at index. */
-	deSound *GetSoundAt(int index) const;
+	/** \brief Sounds. */
+	const decTObjectList<deSound> &GetSounds() const{ return pSounds; }
 	
 	/** \brief Add sound. */
 	void AddSound(deSound *sound);

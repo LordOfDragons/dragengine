@@ -27,7 +27,7 @@
 #include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -82,12 +82,12 @@ private:
 	bool pCastSolidShadow;
 	bool pCastTranspShadow;
 	
-	decObjectList pRenderables;
+	decTObjectList<deoglSkinRenderable> pRenderables;
 	int pVideoPlayerCount;
-	decObjectList pMapped;
-	decObjectList pCalculatedProperties;
-	decObjectList pConstructedProperties;
-	decObjectList pBones;
+	decTObjectList<deoglSkinMapped> pMapped;
+	decTObjectList<deoglSkinCalculatedProperty> pCalculatedProperties;
+	decTObjectList<deoglSkinConstructedProperty> pConstructedProperties;
+	decTObjectList<deoglSkinBone> pBones;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
 	bool pTexturePipelinesReady;

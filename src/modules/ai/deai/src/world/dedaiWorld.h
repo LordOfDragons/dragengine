@@ -25,7 +25,7 @@
 #ifndef _DEDAIWORLD_H_
 #define _DEDAIWORLD_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/systems/modules/ai/deBaseAIWorld.h>
@@ -50,7 +50,7 @@ private:
 	
 	dedaiHeightTerrain *pHeightTerrain;
 	
-	decObjectList pLayers;
+	decTObjectList<dedaiLayer> pLayers;
 	
 	unsigned int pDevModeUpdateTracker;
 	
@@ -82,6 +82,9 @@ public:
 	inline dedaiHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	
+	
+	/** \brief Layers. */
+	const decTObjectList<dedaiLayer> &GetLayers() const{ return pLayers; }
 	
 	/**
 	 * \brief Layer with layer number.

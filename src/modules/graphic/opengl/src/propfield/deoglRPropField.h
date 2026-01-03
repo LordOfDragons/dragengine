@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 
 #include "../deoglGL.h"
@@ -57,7 +57,7 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decObjectList pTypes;
+	decTObjectList<deoglRPropFieldType> pTypes;
 	bool pTypesRequirePrepareForRender;
 	
 	bool pWorldMarkedRemove;

@@ -125,7 +125,7 @@ Modio::FilterParams deMCFilterParams::FilterParams(const deServiceObject &so){
 	}
 	
 	value = so.GetChildAt("nameContains");
-	if(value && value->GetChildCount() > 0){
+	if(value && value->GetChildren().IsNotEmpty()){
 		filter.NameContains(deMCCommon::StringList(value));
 	}
 	

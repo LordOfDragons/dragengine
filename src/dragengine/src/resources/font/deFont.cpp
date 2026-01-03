@@ -317,7 +317,7 @@ int deFont::GetSizeCount(){
 
 deFontSize &deFont::GetSizeAt(int index){
 	const deMutexGuard guard(pMutex);
-	return ((cFontSize*)pSizes.GetAt(index))->GetSize();
+	return pSizes.GetAt(index)->GetSize();
 }
 
 deFontSize *deFont::GetSizeWith(int lineHeight){
@@ -475,13 +475,9 @@ void deFont::pCreateGlyphMap(){
 }
 
 deFontSize *deFont::pGetSizeWith(int lineHeight){
-	const int count = pSizes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const cFontSize &fs = *(cFontSize*)pSizes.GetAt(i);
-		if(fs.GetLineHeight() == lineHeight){
-			return fs.GetSize();
+	for(const auto &fs : pSizes){
+		if(fs->GetLineHeight() == lineHeight){
+			return fs->GetSize();
 		}
 	}
 	

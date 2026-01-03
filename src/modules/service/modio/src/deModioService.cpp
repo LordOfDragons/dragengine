@@ -859,14 +859,13 @@ public:
 	cHasModMatchingFilesSearch(bool recursive, const deServiceObject &soPatterns) :
 	pRecursive(recursive),
 	pPatterns(nullptr),
-	pPatternCount(soPatterns.GetChildCount()),
+	pPatternCount(soPatterns.GetChildren().GetCount()),
 	pMatched(false)
 	{
-		int i;
 		pPatterns = new decPath[pPatternCount];
-		for(i=0; i<pPatternCount; i++){
-			pPatterns[i].SetFromUnix(soPatterns.GetChildAt(i)->GetString());
-		}
+		soPatterns.GetChildren().VisitIndexed([&](int i, const deServiceObject &c){
+			pPatterns[i].SetFromUnix(c.GetString());
+		});
 	}
 	
 	~cHasModMatchingFilesSearch() override{
@@ -914,7 +913,7 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles(const deServiceObject &
 			decPath::CreatePathUnix("/"),
 			decPath::CreatePathNative(iter->second.GetPath().c_str()), true));
 		
-		const int count = soPatterns->GetChildCount();
+		const int count = soPatterns->GetChildren().GetCount();
 		if(count == 0){
 			return deServiceObject::NewBool(false);
 		}
@@ -937,16 +936,12 @@ deServiceObject::Ref deModioService::GetActiveMods(){
 	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
 	const deModioUserConfig &userConfig = pModule.GetUserConfig(pUserId);
 	const deServiceObject::Ref so(deServiceObject::NewList());
-	const decObjectList &modConfigs = pModule.GetActiveMods();
-	const int modCount = modConfigs.GetCount();
-	int i;
 	
-	for(i=0; i<modCount; i++){
-		const deModioModConfig &modConfig = *((deModioModConfig*)modConfigs.GetAt(i));
+	pModule.GetActiveMods().Visit([&](const deModioModConfig &modConfig){
 		iter = subscribed.find((Modio::ModID)deMCCommon::ID(modConfig.id));
 		DEASSERT_FALSE(iter == subscribed.cend())
 		so->AddChild(deMCModInfo::ModCollectionEntry(iter->second, userConfig));
-	}
+	});
 	
 	return so;
 }
@@ -1644,7 +1639,7 @@ void deModioService::pActivateMods(){
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> result(Modio::QueryUserSubscriptions());
 	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
 	deModioModConfig::Ref config;
-	decObjectList configs;
+	decTObjectList<deModioModConfig> configs;
 	
 	for(iter = result.cbegin(); iter != result.cend(); iter++){
 		const Modio::ModCollectionEntry &mod = iter->second;

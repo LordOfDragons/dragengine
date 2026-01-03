@@ -196,7 +196,7 @@ deClassSSChain::nfGetSoundCount::nfGetSoundCount(const sInitData &init) : dsFunc
 }
 void deClassSSChain::nfGetSoundCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
-	rt->PushInt(nd.source->GetSoundCount());
+	rt->PushInt(nd.source->GetSounds().GetCount());
 }
 
 // public func void addSound( Sound sound )
@@ -223,7 +223,7 @@ deClassSSChain::nfRemoveAllSounds::nfRemoveAllSounds(const sInitData &init) : ds
 void deClassSSChain::nfRemoveAllSounds::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	
-	if(nd.source->GetSoundCount() == 0){
+	if(nd.source->GetSounds().IsEmpty()){
 		return;
 	}
 	

@@ -29,7 +29,6 @@
 #include "deFontGlyph.h"
 #include "../deFileResource.h"
 #include "../image/deImage.h"
-#include "../../common/collection/decObjectList.h"
 #include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../threading/deMutex.h"
@@ -37,6 +36,7 @@
 class deFontManager;
 class deBaseGraphicFont;
 class decUnicodeString;
+class cFontSize;
 
 
 /**
@@ -65,7 +65,7 @@ private:
 	deImage::Ref pImage;
 	
 	decTList<int> pFixedSizes;
-	decObjectList pSizes;
+	decTObjectList<cFontSize> pSizes;
 	deMutex pMutex;
 	
 	deBaseGraphicFont *pPeerGraphic;

@@ -25,8 +25,7 @@
 #ifndef _DECLASSINPUTSYSTEM_H_
 #define _DECLASSINPUTSYSTEM_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-
+#include <dragengine/common/collection/decTList.h>
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
@@ -41,7 +40,7 @@ class deClassInputSystem : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	
-	decObjectList pCachedDevices;
+	decTObjectList<dedsInputDevice> pCachedDevices;
 	bool pCacheDirty;
 	dsClass *pClsInputEventKeyLocation;
 	

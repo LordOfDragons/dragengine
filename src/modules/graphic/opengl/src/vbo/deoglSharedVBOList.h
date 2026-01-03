@@ -29,7 +29,7 @@
 #include "deoglVBOLayout.h"
 #include "deoglSharedVBOBlock.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglSharedVBO;
@@ -51,7 +51,7 @@ public:
 	int pMaxPointCount;
 	int pMaxIndexSize;
 	int pMaxIndexCount;
-	decObjectList pVBOs;
+	decTObjectList<deoglSharedVBO> pVBOs;
 	
 public:
 	/** \name Constructors and Destructors */

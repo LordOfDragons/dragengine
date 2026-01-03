@@ -31,7 +31,7 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
 
@@ -55,7 +55,7 @@ private:
 	VkDescriptorPoolCreateInfo pPoolCreateInfo;
 	devkDescriptorSetLayout::Ref pLayout;
 	
-	decObjectList pPools;
+	decTObjectList<devkDescriptorPoolPool> pPools;
 	
 	
 	

@@ -135,7 +135,7 @@ delEngineModule *delEngineModuleList::GetNamedAtLeast(const char *name, const ch
 	return latestModule;
 }
 
-void delEngineModuleList::GetNamed(decObjectList &list, const char *name) const{
+void delEngineModuleList::GetNamed(decTObjectList<delEngineModule> &list, const char *name) const{
 	if(!name){
 		DETHROW_INFO(deeNullPointer, "name");
 	}

@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHADERPARAMETERBLOCKLIST_H_
 #define _DEOGLSHADERPARAMETERBLOCKLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglShaderParameterBlock;
 
@@ -36,7 +36,7 @@ class deoglShaderParameterBlock;
  */
 class deoglShaderParameterBlockList{
 private:
-	decObjectList pList;
+	decTObjectList<deoglShaderParameterBlock> pList;
 	
 	
 	

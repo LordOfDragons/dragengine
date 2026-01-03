@@ -25,7 +25,7 @@
 #ifndef _DELPATCHLIST_H_
 #define _DELPATCHLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delPatch;
 
@@ -37,7 +37,7 @@ class decUuid;
  */
 class DE_DLL_EXPORT delPatchList{
 private:
-	decObjectList pPatches;
+	decTObjectList<delPatch> pPatches;
 	
 	
 	

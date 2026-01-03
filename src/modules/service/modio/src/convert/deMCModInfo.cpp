@@ -35,14 +35,10 @@
 //////////////////////
 
 std::vector<Modio::ModID> deMCModInfo::ModIDList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	std::vector<Modio::ModID> list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.push_back((Modio::ModID)deMCCommon::ID(*so.GetChildAt(i)));
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		list.push_back((Modio::ModID)deMCCommon::ID(c));
+	});
 	return list;
 }
 

@@ -173,16 +173,6 @@ void deServiceObject::SetData(const decMemoryFile::Ref &value){
 
 
 
-int deServiceObject::GetChildCount() const{
-	DEASSERT_TRUE(pValueType == evtList || pValueType == evtDictionary)
-	return pValueType == evtDictionary ? pDictionary.GetCount() : pList.GetCount();
-}
-
-deServiceObject::Ref deServiceObject::GetChildAt(int index) const{
-	DEASSERT_TRUE(pValueType == evtList)
-	return Ref((deServiceObject*)pList.GetAt(index));
-}
-
 deServiceObject::Ref deServiceObject::GetChildAt(const char *key) const{
 	DEASSERT_TRUE(pValueType == evtDictionary)
 	return pDictionary.GetAtOrDefault(key);

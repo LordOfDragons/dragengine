@@ -25,7 +25,7 @@
 #ifndef _DELGPMODULELIST_H_
 #define _DELGPMODULELIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGPModule;
 
@@ -35,7 +35,7 @@ class delGPModule;
  */
 class DE_DLL_EXPORT delGPModuleList{
 private:
-	decObjectList pModules;
+	decTObjectList<delGPModule> pModules;
 	
 	
 	

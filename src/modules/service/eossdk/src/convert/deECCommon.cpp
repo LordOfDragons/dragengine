@@ -69,14 +69,10 @@ decString deECCommon::AccountIDToString(const EOS_EpicAccountId &id){
 }
 
 decStringList deECCommon::StringList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	decStringList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.Add(so.GetChildAt(i)->GetString());
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		list.Add(c.GetString());
+	});
 	return list;
 }
 

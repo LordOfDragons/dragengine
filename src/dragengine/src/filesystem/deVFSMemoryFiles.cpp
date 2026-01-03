@@ -77,7 +77,7 @@ decBaseFileReader::Ref deVFSMemoryFiles::OpenFileForReading(const decPath &path)
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	return decMemoryFileReader::Ref::New(static_cast<decMemoryFile*>(pFiles.GetAt(index)));
+	return decMemoryFileReader::Ref::New(pFiles.GetAt(index));
 }
 
 decBaseFileWriter::Ref deVFSMemoryFiles::OpenFileForWriting(const decPath &path){
@@ -126,7 +126,7 @@ void deVFSMemoryFiles::SearchFiles(const decPath &directory, deContainerFileSear
 	decPath pathFile;
 	
 	for(i=0; i<countFiles; i++){
-		const decMemoryFile &memoryFile = *((decMemoryFile*)pFiles.GetAt(i));
+		const decMemoryFile &memoryFile = *pFiles.GetAt(i);
 		if(!memoryFile.GetFilename().MatchesPattern(patternString)){
 			continue;
 		}
@@ -150,7 +150,7 @@ uint64_t deVFSMemoryFiles::GetFileSize(const decPath &path){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	return (uint64_t)((decMemoryFile*)pFiles.GetAt(index))->GetLength();
+	return (uint64_t)pFiles.GetAt(index)->GetLength();
 }
 
 TIME_SYSTEM deVFSMemoryFiles::GetFileModificationTime(const decPath &path){
@@ -159,7 +159,7 @@ TIME_SYSTEM deVFSMemoryFiles::GetFileModificationTime(const decPath &path){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	return ((decMemoryFile*)pFiles.GetAt(index))->GetModificationTime();
+	return pFiles.GetAt(index)->GetModificationTime();
 }
 
 
@@ -167,45 +167,10 @@ TIME_SYSTEM deVFSMemoryFiles::GetFileModificationTime(const decPath &path){
 // Memory Files
 /////////////////
 
-int deVFSMemoryFiles::GetMemoryFileCount() const{
-	return pFiles.GetCount();
-}
-
-decMemoryFile *deVFSMemoryFiles::GetMemoryFileAt(int index) const{
-	return (decMemoryFile*)pFiles.GetAt(index);
-}
-
-int deVFSMemoryFiles::IndexOfMemoryFile(decMemoryFile *memoryFile) const{
-	if(!memoryFile){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pFiles.IndexOf(memoryFile);
-}
-
 int deVFSMemoryFiles::IndexOfMemoryFileWith(const char *path) const{
-	if(!path){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const int count = pFiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((decMemoryFile*)pFiles.GetAt(i))->GetFilename() == path){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool deVFSMemoryFiles::HasMemoryFile(decMemoryFile *memoryFile) const{
-	if(!memoryFile){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pFiles.Has(memoryFile);
+	return pFiles.IndexOfMatching([&](const decMemoryFile &file){
+		return file.GetFilename() == path;
+	});
 }
 
 bool deVFSMemoryFiles::HasMemoryFileWith(const char *path) const{
@@ -213,16 +178,9 @@ bool deVFSMemoryFiles::HasMemoryFileWith(const char *path) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pFiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(((decMemoryFile*)pFiles.GetAt(i))->GetFilename() == path){
-			return true;
-		}
-	}
-	
-	return false;
+	return pFiles.HasMatching([&](const decMemoryFile &file){
+		return file.GetFilename() == path;
+	});
 }
 
 void deVFSMemoryFiles::AddMemoryFile(decMemoryFile *memoryFile){
@@ -258,17 +216,13 @@ void deVFSMemoryFiles::RemoveAllMemoryFiles(){
 void deVFSMemoryFiles::pRebuildDirectories(){
 	pDirectories.RemoveAll();
 	
-	const int count = pFiles.GetCount();
-	decPath path;
-	int i;
-	
-	for(i=0; i<count; i++){
-		path.SetFromUnix(((decMemoryFile*)pFiles.GetAt(i))->GetFilename());
+	pFiles.Visit([&](const decMemoryFile &file){
+		decPath path(decPath::CreatePathUnix(file.GetFilename()));
 		path.RemoveLastComponent();
 		
 		while(path.GetComponentCount() > 0){
 			pDirectories.AddIfAbsent(path);
 			path.RemoveLastComponent();
 		}
-	}
+	});
 }

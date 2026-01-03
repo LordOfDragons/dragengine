@@ -101,7 +101,7 @@ decStringSet deModio::GetSupportedServices(){
 	return names;
 }
 
-void deModio::SetModConfigs(const decObjectList &configs){
+void deModio::SetModConfigs(const decTObjectList<deModioModConfig> &configs){
 	pModConfigs = configs;
 }
 

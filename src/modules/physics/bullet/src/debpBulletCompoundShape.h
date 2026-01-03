@@ -27,7 +27,7 @@
 
 #include "debpBulletShape.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class btCompoundShape;
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	decObjectList pChildShapes;
+	decTObjectList<debpBulletShape> pChildShapes;
 	
 	
 	

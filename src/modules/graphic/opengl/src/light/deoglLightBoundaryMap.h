@@ -27,7 +27,7 @@
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglFramebuffer;
@@ -47,7 +47,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglTexture *pTextureMin, *pTextureMax;
-	decObjectList pFBOs;
+	decTObjectList<deoglFramebuffer> pFBOs;
 	
 	const deoglPixelBuffer::Ref pPixBufBoundaryMin, pPixBufBoundaryMax;
 	

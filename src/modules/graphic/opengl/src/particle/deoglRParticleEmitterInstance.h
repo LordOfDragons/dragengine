@@ -26,12 +26,14 @@
 #define _DEOGLRPARTICLEEMITTERINSTANCE_H_
 
 #include "deoglRParticleEmitter.h"
-#include "../deoglBasics.h"
 #include "../envmap/deoglEnvironmentMap.h"
+#include "../skin/deoglSkinTexture.h"
+#include "../vao/deoglVAO.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -40,6 +42,7 @@ class deoglRParticleEmitterInstanceType;
 class deoglVAO;
 class deoglRWorld;
 class deoglWorldOctree;
+class deoglEnvironmentMap;
 
 class deParticleEmitterInstance;
 
@@ -94,7 +97,7 @@ private:
 	decDVector pReferencePosition;
 	decLayerMask pLayerMask;
 	
-	decObjectList pTypes;
+	decTObjectList<deoglRParticleEmitterInstanceType> pTypes;
 	
 	sParticle *pParticles;
 	int pParticleCount;

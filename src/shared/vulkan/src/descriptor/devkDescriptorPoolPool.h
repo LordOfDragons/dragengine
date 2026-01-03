@@ -29,7 +29,7 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDescriptorPool;
 
@@ -48,7 +48,7 @@ private:
 	
 	VkDescriptorPool pPool;
 	
-	decObjectList pFreeSlots;
+	decTObjectList<devkDescriptorPoolSlot> pFreeSlots;
 	bool pOutOfMemory;
 	
 	

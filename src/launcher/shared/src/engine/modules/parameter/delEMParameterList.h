@@ -25,7 +25,7 @@
 #ifndef _DELEMPARAMETERLIST_H_
 #define _DELEMPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delEMParameter;
 
@@ -36,7 +36,7 @@ class delEMParameter;
  */
 class DE_DLL_EXPORT delEMParameterList{
 private:
-	decObjectList pParameters;
+	decTObjectList<delEMParameter> pParameters;
 	
 	
 	

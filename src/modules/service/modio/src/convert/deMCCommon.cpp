@@ -139,14 +139,10 @@ deServiceObject::Ref deMCCommon::ModTagList(const std::vector<Modio::ModTag> &li
 }
 
 std::vector<std::string> deMCCommon::StringList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	std::vector<std::string> list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.push_back(so.GetChildAt(i)->GetString().GetString());
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		list.push_back(c.GetString().GetString());
+	});
 	return list;
 }
 
@@ -193,13 +189,9 @@ std::string deMCCommon::StringOrEmpty(const deServiceObject &so, const char *key
 
 Modio::ProfileMaturity deMCCommon::ProfileMaturity(const deServiceObject &so){
 	Modio::ProfileMaturity profileMaturity;
-	const int count = so.GetChildCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		profileMaturity |= MaturityOption(so.GetChildAt(i));
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		profileMaturity |= MaturityOption(c);
+	});
 	return profileMaturity;
 }
 
@@ -326,14 +318,10 @@ decString deMCCommon::IDToString(std::int64_t id){
 }
 
 std::vector<std::int64_t> deMCCommon::IDList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	std::vector<std::int64_t> list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.push_back(ID(*so.GetChildAt(i)));
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		list.push_back(ID(c));
+	});
 	return list;
 }
 

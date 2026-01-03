@@ -25,7 +25,7 @@
 #ifndef _DEOGLOCCLUSIONMAP_H_
 #define _DEOGLOCCLUSIONMAP_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglFramebuffer;
@@ -43,7 +43,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglArrayTexture *pTexture;
-	decObjectList pFBOs;
+	decTObjectList<deoglFramebuffer> pFBOs;
 	
 	int pWidth, pHeight, pLayerCount, pLevelCount;
 	

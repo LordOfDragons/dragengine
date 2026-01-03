@@ -25,7 +25,7 @@
 #ifndef _DELENGINEMODULELIST_H_
 #define _DELENGINEMODULELIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 class delEngineModule;
@@ -37,7 +37,7 @@ class delEngineModule;
  */
 class DE_DLL_EXPORT delEngineModuleList{
 private:
-	decObjectList pModules;
+	decTObjectList<delEngineModule> pModules;
 	
 	
 	
@@ -67,11 +67,11 @@ public:
 	/** \brief Named module with version or nullptr if absent. */
 	delEngineModule *GetNamed(const char *name, const char *version) const;
 	
-	/** \brief Named module with at least version or nullptr if absent. */
+	/** Named module with at least version or nullptr if absent. */
 	delEngineModule *GetNamedAtLeast(const char *name, const char *version) const;
 	
-	/** \brief List of all versions of named module in undefined order. */
-	void GetNamed(decObjectList &list, const char *name) const;
+	/** List of all versions of named module in undefined order. */
+	void GetNamed(decTObjectList<delEngineModule> &list, const char *name) const;
 	
 	/** \brief List of all module names. */
 	void GetNames(decStringList &list) const;

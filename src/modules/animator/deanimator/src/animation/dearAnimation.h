@@ -26,7 +26,7 @@
 #define _DEARANIMATION_H_
 
 #include <dragengine/systems/modules/animator/deBaseAnimatorAnimation.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dearAnimationMove;
 class deDEAnimator;
@@ -43,7 +43,7 @@ private:
 	
 	deAnimation *pAnimation;
 	
-	decObjectList pMoves;
+	decTObjectList<dearAnimationMove> pMoves;
 	
 public:
 	/** \name Constructors and Destructors */

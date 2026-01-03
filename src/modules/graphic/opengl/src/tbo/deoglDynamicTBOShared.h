@@ -25,7 +25,7 @@
 #ifndef _DEOGLDYNAMICTBOSHARED_H_
 #define _DEOGLDYNAMICTBOSHARED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
 #include "../deoglBasics.h"
 #include "../tbo/deoglDynamicTBO.h"
@@ -48,7 +48,7 @@ public:
 	const deoglDynamicTBO::Ref pTBO2;
 	const int pStride;
 	const int pStride2;
-	decObjectList pBlocks;
+	decTObjectList<deoglDynamicTBOBlock> pBlocks;
 	int pUsedSize;
 	bool pDirty;
 	

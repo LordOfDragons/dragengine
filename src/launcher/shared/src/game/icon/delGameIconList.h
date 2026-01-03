@@ -25,7 +25,7 @@
 #ifndef _DELGAMEICONLIST_H_
 #define _DELGAMEICONLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGameIcon;
 
@@ -35,7 +35,7 @@ class delGameIcon;
  */
 class DE_DLL_EXPORT delGameIconList{
 private:
-	decObjectList pIcons;
+	decTObjectList<delGameIcon> pIcons;
 	
 	
 	

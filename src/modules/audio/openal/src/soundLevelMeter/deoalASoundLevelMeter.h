@@ -29,7 +29,7 @@
 #include "../world/octree/deoalWOVPrepareRayTrace.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
@@ -58,7 +58,7 @@ private:
 	float pAudibleDistance;
 	bool pEnabled;
 	
-	decObjectList pSpeakers;
+	decTObjectList<deoalASoundLevelMeterSpeaker> pSpeakers;
 	
 	deoalAWorld *pParentWorld;
 	deoalWorldOctree *pOctreeNode;

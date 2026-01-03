@@ -30,7 +30,7 @@
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
 
 class deoglSharedVBOList;
@@ -54,7 +54,7 @@ public:
 	GLuint pVBO;
 	GLuint pIBO;
 	deoglVAO *pVAO;
-	decObjectList pBlocks;
+	decTObjectList<deoglSharedVBOBlock> pBlocks;
 	int pSize;
 	int pUsedSize;
 	int pIndexSize;

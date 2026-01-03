@@ -53,14 +53,6 @@ deSynthesizerSourceChain::~deSynthesizerSourceChain(){
 // Management
 ///////////////
 
-int deSynthesizerSourceChain::GetSoundCount() const{
-	return pSounds.GetCount();
-}
-
-deSound *deSynthesizerSourceChain::GetSoundAt(int index) const{
-	return (deSound*)pSounds.GetAt(index);
-}
-
 void deSynthesizerSourceChain::AddSound(deSound *sound){
 	pSounds.Add(sound);
 }

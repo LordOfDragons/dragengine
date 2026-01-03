@@ -27,7 +27,7 @@
 
 #include "deoalEffectSlot.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class deoalASpeaker;
@@ -47,7 +47,7 @@ private:
 	
 	deoalEffectSlot::Ref pEffectSlot;
 	
-	decObjectList pSpeakers;
+	decTObjectList<deoalASpeaker> pSpeakers;
 	deoalASpeaker *pRefSpeaker;
 	
 	

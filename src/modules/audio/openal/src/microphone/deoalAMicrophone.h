@@ -30,7 +30,7 @@
 #include "../world/octree/deoalRTWorldBVH.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -42,6 +42,7 @@ class deoalWorldOctree;
 class deoalSoundRay;
 class deoalSoundRayList;
 class deoalEnvProbeList;
+class deoalASpeaker;
 
 class deDebugBlockInfo;
 class deDebugDrawer;
@@ -67,7 +68,7 @@ private:
 	float pSpeakerGain;
 	bool pEnableAuralization;
 	
-	decObjectList pSpeakers;
+	decTObjectList<deoalASpeaker> pSpeakers;
 	deoalSpeakerList pActiveSpeakers;
 	decObjectOrderedSet pInvalidateSpeakers;
 	

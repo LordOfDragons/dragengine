@@ -610,7 +610,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassColliderCollisionTest::nfGetHasCollision::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
-	rt->PushBool(collisionTest.GetCollisionInfoCount() > 0);
+	rt->PushBool(collisionTest.GetCollisionInfo().GetCount() > 0);
 }
 
 // public func int getCollisionCount()
@@ -620,7 +620,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassColliderCollisionTest::nfGetCollisionCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
-	rt->PushInt(collisionTest.GetCollisionInfoCount());
+	rt->PushInt(collisionTest.GetCollisionInfo().GetCount());
 }
 
 // public func CollisionInfo getCollisionAt( int index )
@@ -634,7 +634,7 @@ void deClassColliderCollisionTest::nfGetCollisionAt::RunFunction(dsRunTime *rt, 
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	ds.GetClassCollisionInfo()->PushInfo(rt, collisionTest.GetCollisionInfoAt(index));
+	ds.GetClassCollisionInfo()->PushInfo(rt, collisionTest.GetCollisionInfo().GetAt(index));
 }
 
 // public func void reset()
@@ -659,7 +659,7 @@ void deClassColliderCollisionTest::nfHitDistance::RunFunction(dsRunTime *rt, dsV
 	const int index = rt->GetValue(0)->GetInt();
 	
 	rt->PushFloat(collisionTest.GetDirection().Length()
-		* collisionTest.GetCollisionInfoAt( index )->GetDistance() );
+		* collisionTest.GetCollisionInfo().GetAt( index )->GetDistance() );
 }
 
 // public func Vector hitPointCollider( int index )
@@ -675,7 +675,7 @@ void deClassColliderCollisionTest::nfHitPointCollider::RunFunction(dsRunTime *rt
 	const int index = rt->GetValue(0)->GetInt();
 	decDVector hitPoint(nd.collisionTest->GetTestOrigin()
 		+ nd.collisionTest->GetTestDirection()
-			* ( double )nd.collisionTest->GetCollisionInfoAt( index )->GetDistance() );
+			* ( double )nd.collisionTest->GetCollisionInfo().GetAt( index )->GetDistance() );
 	
 	if(nd.parentCollider){
 		hitPoint = decDMatrix::CreateWorld(nd.parentCollider->GetPosition(),
@@ -699,7 +699,7 @@ void deClassColliderCollisionTest::nfHitPointWorld::RunFunction(dsRunTime *rt, d
 	
 	ds.GetClassDVector()->PushDVector(rt, nd.collisionTest->GetTestOrigin()
 		+ nd.collisionTest->GetTestDirection()
-			* ( double )nd.collisionTest->GetCollisionInfoAt( index )->GetDistance() );
+			* ( double )nd.collisionTest->GetCollisionInfo().GetAt( index )->GetDistance() );
 }
 
 // public func Vector hitNormalCollider( int index )
@@ -713,7 +713,7 @@ void deClassColliderCollisionTest::nfHitNormalCollider::RunFunction(dsRunTime *r
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	decVector normal(nd.collisionTest->GetCollisionInfoAt(index)->GetNormal());
+	decVector normal(nd.collisionTest->GetCollisionInfo().GetAt(index)->GetNormal());
 	
 	if(nd.parentCollider){
 		normal = decDMatrix::CreateWorld(nd.parentCollider->GetPosition(),
@@ -734,7 +734,7 @@ void deClassColliderCollisionTest::nfHitNormalWorld::RunFunction(dsRunTime *rt, 
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	ds.GetClassVector()->PushVector(rt, nd.collisionTest->GetCollisionInfoAt(index)->GetNormal());
+	ds.GetClassVector()->PushVector(rt, nd.collisionTest->GetCollisionInfo().GetAt(index)->GetNormal());
 }
 
 // public func Collider hitCollider( int index )
@@ -748,7 +748,7 @@ void deClassColliderCollisionTest::nfHitCollider::RunFunction(dsRunTime *rt, dsV
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	ds.GetClassCollider()->PushCollider(rt, collisionTest.GetCollisionInfoAt(index)->GetCollider());
+	ds.GetClassCollider()->PushCollider(rt, collisionTest.GetCollisionInfo().GetAt(index)->GetCollider());
 }
 
 // public func int hitBone( int index )
@@ -760,7 +760,7 @@ void deClassColliderCollisionTest::nfHitBone::RunFunction(dsRunTime *rt, dsValue
 	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
 	
 	const int index = rt->GetValue(0)->GetInt();
-	rt->PushInt(collisionTest.GetCollisionInfoAt(index)->GetBone());
+	rt->PushInt(collisionTest.GetCollisionInfo().GetAt(index)->GetBone());
 }
 
 

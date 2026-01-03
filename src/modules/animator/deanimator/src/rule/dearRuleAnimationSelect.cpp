@@ -126,7 +126,7 @@ DEBUG_RESET_TIMERS;
 		const int index = decMath::clamp(
 			(int)(pTargetSelect.GetValue(GetInstance(), 0.0f) * (float)countMoves),
 			0, countMoves - 1);
-		move = (const dearAnimationMove *)pMoves.GetAt(index);
+		move = pMoves.GetAt(index);
 	}
 	
 	float moveTime = 0.0f;

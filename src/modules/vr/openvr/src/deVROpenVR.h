@@ -31,7 +31,7 @@
 #include <openvr/openvr.h>
 
 #include <dragengine/common/collection/decTDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
@@ -90,7 +90,7 @@ private:
 	
 	deovrDeviceManager pDevices;
 	decTObjectDictionary<deovrRenderModel> pRenderModels;
-	decObjectList pTextureMaps;
+	decTObjectList<deovrTextureMap> pTextureMaps;
 	
 	vr::IVRSystem *pVRSystem;
 	vr::IVRInput *pVRInput;

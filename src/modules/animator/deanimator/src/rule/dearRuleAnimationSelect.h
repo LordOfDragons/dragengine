@@ -29,10 +29,11 @@
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dearAnimationState;
 class deAnimatorRuleAnimationSelect;
+class dearAnimationMove;
 
 
 
@@ -45,7 +46,7 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	decObjectList pMoves;
+	decTObjectList<dearAnimationMove> pMoves;
 	
 	dearControllerTarget pTargetMoveTime;
 	dearControllerTarget pTargetSelect;

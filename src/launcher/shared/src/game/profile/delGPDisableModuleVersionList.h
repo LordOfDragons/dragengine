@@ -25,7 +25,7 @@
 #ifndef _DELGPDISABLEMODULEVERSIONLIST_H_
 #define _DELGPDISABLEMODULEVERSIONLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGPDisableModuleVersion;
 
@@ -35,7 +35,7 @@ class delGPDisableModuleVersion;
  */
 class DE_DLL_EXPORT delGPDisableModuleVersionList{
 private:
-	decObjectList pList;
+	decTObjectList<delGPDisableModuleVersion> pList;
 	
 	
 	

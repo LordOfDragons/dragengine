@@ -28,7 +28,10 @@
 #include "deoglRHeightTerrain.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include "../../deoglBasics.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglWorld;
 class deoglHTSector;
@@ -48,7 +51,7 @@ private:
 	
 	deoglRHeightTerrain::Ref pRHeightTerrain;
 	
-	decObjectList pSectors;
+	decTObjectList<deoglHTSector> pSectors;
 	bool pDirtySectors;
 	
 public:

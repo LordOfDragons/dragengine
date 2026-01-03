@@ -25,7 +25,7 @@
 #ifndef _DELFILEFORMATLIST_H_
 #define _DELFILEFORMATLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delFileFormat;
 
@@ -35,7 +35,7 @@ class delFileFormat;
  */
 class DE_DLL_EXPORT delFileFormatList{
 private:
-	decObjectList pFormats;
+	decTObjectList<delFileFormat> pFormats;
 	
 	
 	

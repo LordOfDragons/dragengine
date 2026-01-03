@@ -502,7 +502,13 @@ void deClassServiceObject::nfGetChildCount::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushInt(nd.object->GetChildCount());
+	if(nd.object->IsList()){
+		rt->PushInt(nd.object->GetChildren().GetCount());
+	}else if(nd.object->IsDictionary()){
+		rt->PushInt(nd.object->GetChildrenKeys().GetCount());
+	}else{
+		rt->PushInt(0);
+	}
 }
 
 
@@ -562,7 +568,7 @@ void deClassServiceObject::nfGetChildAt::RunFunction(dsRunTime *rt, dsValue *mys
 	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	const int index = rt->GetValue(0)->GetInt();
 	
-	clsServiceObject.PushServiceObject(rt, nd.object->GetChildAt(index));
+	clsServiceObject.PushServiceObject(rt, nd.object->GetChildren().GetAt(index));
 }
 
 

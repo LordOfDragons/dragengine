@@ -31,14 +31,10 @@
 ///////////////////
 
 std::vector<Modio::UserID> deMCUser::UserIDList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	std::vector<Modio::UserID> list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.push_back((Modio::UserID)deMCCommon::ID(*so.GetChildAt(i)));
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject &c){
+		list.push_back((Modio::UserID)deMCCommon::ID(c));
+	});
 	return list;
 }
 

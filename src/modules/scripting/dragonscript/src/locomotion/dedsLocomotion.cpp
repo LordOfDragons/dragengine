@@ -848,8 +848,8 @@ void dedsLocomotion::UpdateTiltSingleCast(float elapsed){
 		return;
 	}
 	
-	if(pCCTTiltSingle->GetCollisionInfoCount() > 0){
-		const deCollisionInfo &info = *pCCTTiltSingle->GetCollisionInfoAt(0);
+	if(pCCTTiltSingle->GetCollisionInfo().GetCount() > 0){
+		const deCollisionInfo &info = *pCCTTiltSingle->GetCollisionInfo().GetAt(0);
 		
 		const decMatrix matrix(decMatrix::CreateFromQuaternion(pAICollider->GetOrientation().Conjugate()));
 		const decVector normal(matrix.TransformNormal(info.GetNormal()));
@@ -886,21 +886,21 @@ void dedsLocomotion::UpdateTiltWeightCast(float elapsed){
 	float heightBackLeft = originBackLeft - distBackLeft;
 	float heightBackRight = originBackRight - distBackRight;
 	
-	if(pCCTTiltFrontLeft->GetCollisionInfoCount() > 0){
+	if(pCCTTiltFrontLeft->GetCollisionInfo().IsNotEmpty()){
 		heightFrontLeft = originFrontLeft
-			- pCCTTiltFrontLeft->GetCollisionInfoAt(0)->GetDistance() * distFrontLeft;
+			- pCCTTiltFrontLeft->GetCollisionInfo().First()->GetDistance() * distFrontLeft;
 	}
-	if(pCCTTiltFrontRight->GetCollisionInfoCount() > 0){
+	if(pCCTTiltFrontRight->GetCollisionInfo().IsNotEmpty()){
 		heightFrontRight = originFrontRight
-			- pCCTTiltFrontRight->GetCollisionInfoAt(0)->GetDistance() * distFrontRight;
+			- pCCTTiltFrontRight->GetCollisionInfo().First()->GetDistance() * distFrontRight;
 	}
-	if(pCCTTiltBackLeft->GetCollisionInfoCount() > 0){
+	if(pCCTTiltBackLeft->GetCollisionInfo().IsNotEmpty()){
 		heightBackLeft = originBackLeft
-			- pCCTTiltBackLeft->GetCollisionInfoAt(0)->GetDistance() * distBackLeft;
+			- pCCTTiltBackLeft->GetCollisionInfo().First()->GetDistance() * distBackLeft;
 	}
-	if(pCCTTiltBackRight->GetCollisionInfoCount() > 0){
+	if(pCCTTiltBackRight->GetCollisionInfo().IsNotEmpty()){
 		heightBackRight = originBackRight
-			- pCCTTiltBackRight->GetCollisionInfoAt(0)->GetDistance() * distBackRight;
+			- pCCTTiltBackRight->GetCollisionInfo().First()->GetDistance() * distBackRight;
 	}
 	
 	// the spread calculation is not the best in the world since it assumes front and back have the same offset.

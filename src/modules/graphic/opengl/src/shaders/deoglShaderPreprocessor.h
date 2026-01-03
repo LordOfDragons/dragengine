@@ -26,7 +26,7 @@
 #define _DEOGLSHADERPREPROCESSOR_H_
 
 #include <dragengine/common/collection/decTDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 
 class deoglRenderThread;
@@ -94,7 +94,7 @@ private:
 	bool pOutputCode;
 	bool pOutputCodeCase;
 	bool pEndDirectiveBlock;
-	decObjectList pSourceLocations;
+	decTObjectList<deoglShaderSourceLocation> pSourceLocations;
 	int pLastMappedOutputLine;
 	
 	char *pResolveBuffer;
@@ -132,7 +132,7 @@ public:
 	
 	/** Resolve source location or NULL. */
 	const deoglShaderSourceLocation *ResolveSourceLocation(int line) const;
-	const deoglShaderSourceLocation *ResolveSourceLocation(const decObjectList &locations, int line) const;
+	const deoglShaderSourceLocation *ResolveSourceLocation(const decTObjectList<deoglShaderSourceLocation> &locations, int line) const;
 	/*@}*/
 	
 	
@@ -146,7 +146,7 @@ public:
 	inline int GetSourcesLength() const{ return pSourcesLen; }
 	
 	/** Source locations. */
-	inline const decObjectList &GetSourceLocations() const{ return pSourceLocations; }
+	inline const decTObjectList<deoglShaderSourceLocation> &GetSourceLocations() const{ return pSourceLocations; }
 	
 	/** Append to sources. */
 	void SourcesAppend(const char *text, bool mapLines);

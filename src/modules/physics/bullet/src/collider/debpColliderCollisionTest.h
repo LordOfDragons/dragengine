@@ -25,7 +25,7 @@
 #ifndef _DEBPCOLLIDERCOLLISIONTEST_H_
 #define _DEBPCOLLIDERCOLLISIONTEST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
@@ -42,7 +42,7 @@ private:
 	debpCollider &pParentCollider;
 	deColliderCollisionTest &pCollisionTest;
 	
-	decObjectList pCollisionInfo;
+	decTObjectList<deCollisionInfo> pCollisionInfo;
 	int pCollisionInfoCount;
 	bool pSortByDistance;
 	

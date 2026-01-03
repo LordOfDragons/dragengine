@@ -25,7 +25,6 @@
 #ifndef _DEOALDEBUGINFO_H_
 #define _DEOALDEBUGINFO_H_
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
@@ -73,10 +72,10 @@ private:
 	
 	deDebugBlockInfo *pDISpeakerAtPosition;
 	decTList<deDebugBlockInfo*> pDIClosestSpeakers;
-	decObjectList pDDClosestSpeakersDirect;
+	decTObjectList<deDebugDrawer> pDDClosestSpeakersDirect;
 	
 	int pModeVisAudSpeakers;
-	decObjectList pDDVisAudSpeakers;
+	decTObjectList<deDebugDrawer> pDDVisAudSpeakers;
 	
 	
 	

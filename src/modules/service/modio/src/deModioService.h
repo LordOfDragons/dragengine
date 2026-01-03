@@ -30,7 +30,7 @@
 #include "deModioPendingRequest.h"
 #include "modio.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -59,7 +59,7 @@ public:
 private:
 	deModio &pModule;
 	deService * const pService;
-	decObjectList pPendingRequests;
+	decTObjectList<deModioPendingRequest> pPendingRequests;
 	decString pApiKey;
 	uint64_t pGameId;
 	decString pUserId;

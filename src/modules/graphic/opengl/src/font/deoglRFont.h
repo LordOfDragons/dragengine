@@ -29,7 +29,7 @@
 #include "deoglRFontGlyphs.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 
@@ -47,7 +47,7 @@ private:
 	
 	deoglRFontGlyphs pGlyphs;
 	
-	decObjectList pSizes;
+	decTObjectList<deoglRFontSize> pSizes;
 	deMutex pMutex;
 	
 	

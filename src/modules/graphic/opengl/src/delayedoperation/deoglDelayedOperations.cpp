@@ -335,7 +335,7 @@ void deoglDelayedOperations::ProcessFreeOperations(bool /*deleteAll*/){
 	}
 	
 	while(true){
-		decObjectList list;
+		decTObjectList<deObject> list;
 		{
 		const deMutexGuard guard(pMutexReleaseObjects);
 		const int count = pReleaseObjects.GetCount();

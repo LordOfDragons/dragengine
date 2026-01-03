@@ -26,7 +26,7 @@
 #define _DEOGLRDYNAMICSKIN_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRDSRenderable;
 class deoglRenderThread;
@@ -40,7 +40,7 @@ class deoglRDynamicSkin : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pRenderables;
+	decTObjectList<deoglRDSRenderable> pRenderables;
 	
 	
 	

@@ -25,7 +25,7 @@
 #ifndef _DEOGLSKINSTATECNGROUP_H_
 #define _DEOGLSKINSTATECNGROUP_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "deoglSkinStateConstructedNode.h"
 
@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	decObjectList pNodes;
+	decTObjectList<deoglSkinStateConstructedNode> pNodes;
 	
 	
 	

@@ -85,7 +85,7 @@ int dearAnimation::GetMoveCount() const{
 }
 
 dearAnimationMove *dearAnimation::GetMoveAt(int index) const{
-	return (dearAnimationMove*)pMoves.GetAt(index);
+	return pMoves.GetAt(index);
 }
 
 dearAnimationMove *dearAnimation::GetMoveNamed(const char *name) const{
@@ -93,17 +93,9 @@ dearAnimationMove *dearAnimation::GetMoveNamed(const char *name) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pMoves.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dearAnimationMove * const move = (dearAnimationMove*)pMoves.GetAt(i);
-		if(move->GetName() == name){
-			return move;
-		}
-	}
-	
-	return NULL;
+	return pMoves.FindOrDefault([&](const dearAnimationMove &move){
+		return move.GetName() == name;
+	});
 }
 
 

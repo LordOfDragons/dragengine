@@ -149,16 +149,11 @@ void delGPDisableModuleVersionList::RemoveAll(){
 
 delGPDisableModuleVersionList &delGPDisableModuleVersionList::operator=(
 const delGPDisableModuleVersionList &other){
-	const decObjectList &otherList = other.pList;
-	const int count = otherList.GetCount();
-	int i;
-	
 	pList.RemoveAll();
 	
-	for(i=0; i<count; i++){
-		pList.Add(delGPDisableModuleVersion::Ref::New(
-			*((delGPDisableModuleVersion*)otherList.GetAt(i))));
-	}
+	other.pList.Visit([&](const delGPDisableModuleVersion &m){
+		pList.Add(delGPDisableModuleVersion::Ref::New(m));
+	});
 	
 	return *this;
 }

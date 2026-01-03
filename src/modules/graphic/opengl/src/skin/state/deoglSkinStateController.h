@@ -25,7 +25,7 @@
 #ifndef _DEOGLSKINSTATECONTROLLER_H_
 #define _DEOGLSKINSTATECONTROLLER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRSkin;
 class deoglSharedVideoPlayer;
@@ -45,7 +45,7 @@ private:
 	deoglSharedVideoPlayer **pSharedVideoPlayers;
 	int pSharedVideoPlayerCount;
 	
-	decObjectList pVideoPlayers;
+	decTObjectList<deVideoPlayer> pVideoPlayers;
 	
 	bool pHasCalculatedProperties;
 	bool pHasConstructedProperties;

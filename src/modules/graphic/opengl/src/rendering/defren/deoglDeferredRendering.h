@@ -29,7 +29,7 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../memory/consumption/deoglMemoryConsumptionDeferredRenderingUse.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
@@ -84,10 +84,10 @@ private:
 	deoglArrayTexture *pTextureTemporary3;
 	
 	deoglFramebuffer::Ref pFBOs[38];
-	decObjectList pFBOMipMapDepth1;
-	decObjectList pFBOMipMapDepth2;
-	decObjectList pFBOMipMapTemporary1;
-	decObjectList pFBOMipMapTemporary2;
+	decTObjectList<deoglFramebuffer> pFBOMipMapDepth1;
+	decTObjectList<deoglFramebuffer> pFBOMipMapDepth2;
+	decTObjectList<deoglFramebuffer> pFBOMipMapTemporary1;
+	decTObjectList<deoglFramebuffer> pFBOMipMapTemporary2;
 	int pFBOMipMapCount;
 	bool pModeDepth;
 	bool pModePostProcess;

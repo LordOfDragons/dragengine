@@ -26,8 +26,6 @@
 #define _DEOGLRENDERTASKSHAREDPOOL_H_
 
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -45,9 +43,9 @@ class deoglRenderTaskSharedPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pTextures;
-	decObjectList pVAOs;
-	decObjectList pInstances;
+	decTObjectList<deoglRenderTaskSharedTexture> pTextures;
+	decTObjectList<deoglRenderTaskSharedVAO> pVAOs;
+	decTObjectList<deoglRenderTaskSharedInstance> pInstances;
 	decTList<deoglSkinTexture*> pSkinTextures;
 	
 	decTList<deoglRenderTaskSharedTexture*> pFreeTextures;

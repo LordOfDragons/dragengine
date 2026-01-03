@@ -29,7 +29,7 @@
 
 #include <dragengine/logger/deLogger.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringDictionary.h>
 
 #ifdef OS_ANDROID
@@ -127,7 +127,7 @@ private:
 		decStringDictionary parameters;
 		explicit cModuleParamState(deLoadableModule *amodule);
 	};
-	decObjectList pModuleParamStates;
+	decTObjectList<cModuleParamState> pModuleParamStates;
 	
 #ifdef OS_ANDROID
 	deOSAndroid::sConfig pConfig;

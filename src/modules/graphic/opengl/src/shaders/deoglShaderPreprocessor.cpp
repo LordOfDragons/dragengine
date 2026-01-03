@@ -132,12 +132,12 @@ const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(
 }
 
 const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(
-const decObjectList &locations, int line) const{
+const decTObjectList<deoglShaderSourceLocation> &locations, int line) const{
 	const int count = locations.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deoglShaderSourceLocation * const location = (deoglShaderSourceLocation*)locations.GetAt(i);
+		const deoglShaderSourceLocation * const location = locations.GetAt(i);
 		if(location->GetOutputLine() == line){
 			return location;
 		}

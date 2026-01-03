@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderPlan;
 class deoglRenderThread;
@@ -74,7 +74,7 @@ private:
 	int pRenderableCount;
 	int pRenderableSize;
 	
-	decObjectList pVideoPlayers;
+	decTObjectList<deoglRVideoPlayer> pVideoPlayers;
 	
 	deoglSkinStateMapped *pMapped;
 	int pMappedCount;

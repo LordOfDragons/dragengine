@@ -640,7 +640,7 @@ void deClassVRSystem::pUpdateCachedDevices(){
 	}
 	
 	deBaseVRModule &module = *pDS.GetGameEngine()->GetVRSystem()->GetActiveModule();
-	const decObjectList oldDevices(pCachedDevices);
+	const decTObjectList<dedsInputDevice> oldDevices(pCachedDevices);
 	const int oldDeviceCount = oldDevices.GetCount();
 	const int count = module.GetDeviceCount();
 	dedsInputDevice::Ref device;
@@ -653,7 +653,7 @@ void deClassVRSystem::pUpdateCachedDevices(){
 		
 		dedsInputDevice *reuseDevice = nullptr;
 		for(j=0; j<oldDeviceCount; j++){
-			dedsInputDevice * const oldDevice = static_cast<dedsInputDevice*>(oldDevices.GetAt(j));
+			dedsInputDevice * const oldDevice = oldDevices.GetAt(j);
 			if(oldDevice->GetDevice()->GetID() == device->GetDevice()->GetID()){
 				reuseDevice = oldDevice;
 				break;

@@ -29,7 +29,7 @@
 
 #include <steam_api.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -50,7 +50,7 @@ public:
 private:
 	deSteamSdk &pModule;
 	deService * const pService;
-	decObjectList pPendingRequests;
+	decTObjectList<deSsdkPendingRequest> pPendingRequests;
 	decString pEncAppTicket;
 	
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;

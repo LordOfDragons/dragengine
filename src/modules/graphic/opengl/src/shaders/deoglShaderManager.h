@@ -30,10 +30,13 @@
 #include "compiler/deoglShaderCompileListener.h"
 
 #include <dragengine/common/collection/decTDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
+#include "../deoglBasics.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
@@ -91,7 +94,8 @@ private:
 	decTObjectDictionary<deoglShaderUnitSourceCode> pUnitSourceCodes;
 	decTObjectDictionary<deoglShaderSources> pSources;
 	decStringDictionary pIncludableSources;
-	decObjectList pPrograms, pProgramUnits;
+	decTObjectList<deoglShaderProgram> pPrograms;
+	decTObjectList<deoglShaderProgramUnit> pProgramUnits;
 	
 	decTList<cCompileProgram*> pCompilePrograms;
 	deMutex pMutexCompilePrograms, pMutexLogging;

@@ -29,7 +29,6 @@
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decObjectList.h>
 
 class delLoggerHistoryEntry;
 class delLoggerHistoryListener;

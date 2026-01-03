@@ -29,7 +29,6 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -49,7 +48,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	deoglPipelineState pState;
-	decObjectList pPipelines;
+	decTObjectList<deoglPipeline> pPipelines;
 	
 	decTList<deoglPipeline*> pRTSPipelines;
 	deMutex pMutex;

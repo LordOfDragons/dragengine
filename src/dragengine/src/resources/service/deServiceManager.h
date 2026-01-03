@@ -29,13 +29,14 @@
 #include "deServiceObject.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
-#include "../../common/collection/decObjectList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/collection/decTOrderedSet.h"
 #include "../../common/string/decStringSet.h"
 #include "../../threading/deMutex.h"
 
 class deEngine;
 class deBaseServiceModule;
+class cEvent;
 
 
 /**
@@ -45,7 +46,7 @@ class deBaseServiceModule;
 class DE_DLL_EXPORT deServiceManager : public deResourceManager{
 private:
 	deMutex pMutex;
-	decObjectList pEventQueue;
+	decTObjectList<cEvent> pEventQueue;
 	deResourceList pServices;
 	decTOrderedSet<deBaseServiceModule*> pModules;
 	bool pDirtyModules;

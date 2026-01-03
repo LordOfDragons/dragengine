@@ -25,9 +25,12 @@
 #ifndef _DEOGLGIINSTANCES_H_
 #define _DEOGLGIINSTANCES_H_
 
+#include "../deoglBasics.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;
@@ -56,7 +59,7 @@ public:
 private:
 	deoglGIState &pGIState;
 	
-	decObjectList pInstances;
+	decTObjectList<deoglGIInstance> pInstances;
 	decTList<deoglGIInstance*> pEmptyInstances;
 	decTDictionary<unsigned int,deoglGIInstance*> pElementInstanceMap;
 	

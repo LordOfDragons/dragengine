@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
@@ -107,15 +107,15 @@ private:
 	deoglRWorld &pWorld;
 	
 	deoglSPBlockSSBO::Ref pSSBOElements;
-	decObjectList pElements;
+	decTObjectList<deoglWorldComputeElement> pElements;
 	
-	decObjectList pUpdateElements;
+	decTObjectList<deoglWorldComputeElement> pUpdateElements;
 	int pFullUpdateLimit;
 	float pFullUpdateFactor;
 	int pUpdateElementCount;
 	bool pForceFullUpdate;
 	
-	decObjectList pUpdateElementGeometries;
+	decTObjectList<deoglWorldComputeElement> pUpdateElementGeometries;
 	int pFullUpdateGeometryLimit;
 	float pFullUpdateGeometryFactor;
 	int pUpdateElementGeometryCount;

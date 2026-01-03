@@ -29,7 +29,7 @@
 
 #include "deoglShaderParameterBlock.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -47,7 +47,7 @@ public:
 private:
 	const deoglRenderThread &pRenderThread;
 	deoglShaderParameterBlock *pInitialBlock;
-	decObjectList pBlocks;
+	decTObjectList<deoglShaderParameterBlock> pBlocks;
 	uint32_t pFrameCounter;
 	int pStartIndex;
 	int pNextIndex;

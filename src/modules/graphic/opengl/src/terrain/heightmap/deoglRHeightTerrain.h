@@ -28,7 +28,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/deObject.h>
 
@@ -56,7 +56,7 @@ private:
 	int pSectorResolution;
 	float pSectorSize;
 	
-	decObjectList pSectors;
+	decTObjectList<deoglRHTSector> pSectors;
 	bool pSectorsRequirePrepareForRender;
 	
 	decObjectOrderedSet pListeners;

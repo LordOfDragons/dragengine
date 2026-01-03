@@ -29,7 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
 class deoglREffect;
@@ -76,7 +76,7 @@ private:
 	
 	deoglRenderPlan *pPlan;
 	
-	decObjectList pEffects;
+	decTObjectList<deoglREffect> pEffects;
 	
 	bool pInitTexture;
 	

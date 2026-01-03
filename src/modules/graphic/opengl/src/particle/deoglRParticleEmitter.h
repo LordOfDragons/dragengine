@@ -25,8 +25,10 @@
 #ifndef _DEOGLRPARTICLEEMITTER_H_
 #define _DEOGLRPARTICLEEMITTER_H_
 
+#include "../deoglBasics.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
@@ -41,7 +43,7 @@ class deoglRParticleEmitter : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pTypes;
+	decTObjectList<deoglRParticleEmitterType> pTypes;
 	
 	deoglVBOLayout *pVBOLayoutShared;
 	deoglVBOLayout *pVBOLayoutLocal;

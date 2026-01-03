@@ -25,7 +25,7 @@
 #ifndef _DEVKSHADERMODULEMANAGER_H_
 #define _DEVKSHADERMODULEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
 class devkDevice;
@@ -39,7 +39,7 @@ class devkShaderModuleManager{
 private:
 	devkDevice &pDevice;
 	
-	decObjectList pSources;
+	decTObjectList<devkShaderModule> pSources;
 	
 	
 	

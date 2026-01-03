@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHAREDSPBLIST_H_
 #define _DEOGLSHAREDSPBLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
@@ -43,7 +43,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderParameterBlock::Ref pLayout;
 	int pSize;
-	decObjectList pSPBs;
+	decTObjectList<deoglSharedSPB> pSPBs;
 	
 	
 	

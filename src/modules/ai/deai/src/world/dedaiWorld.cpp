@@ -100,7 +100,7 @@ dedaiLayer *dedaiWorld::GetLayer(int layer){
 	int i;
 	
 	for(i=0; i<count; i++){
-		dedaiLayer * const objLayer = (dedaiLayer*)pLayers.GetAt(i);
+		dedaiLayer * const objLayer = pLayers.GetAt(i);
 		if(objLayer->GetLayer() == layer){
 			return objLayer;
 		}
@@ -126,11 +126,9 @@ void dedaiWorld::CheckDeveloperMode(){
 	
 	// invalidate blocking
 	if(trackerChanged && pDEAI.GetDeveloperMode().GetQuickDebug() >= 8 && pDEAI.GetDeveloperMode().GetQuickDebug() <= 10){
-		const int count = pLayers.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			((dedaiLayer*)pLayers.GetAt(i))->InvalidateBlocking();
-		}
+		pLayers.Visit([](dedaiLayer &layer){
+			layer.InvalidateBlocking();
+		});
 	}
 	
 	// height terrain navspace debug drawing

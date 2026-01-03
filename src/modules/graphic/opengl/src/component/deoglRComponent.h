@@ -41,7 +41,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/utils/decLayerMask.h>
@@ -118,7 +118,7 @@ private:
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBDoubleSided;
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBSingleSided;
 	
-	decObjectList pLODs;
+	decTObjectList<deoglRComponentLOD> pLODs;
 	float pLODErrorScaling;
 	bool pDirtyLODVBOs;
 	bool pDirtyLODRenderTaskConfigs;
@@ -151,12 +151,12 @@ private:
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	decObjectList pTextures;
+	decTObjectList<deoglRComponentTexture> pTextures;
 	bool pDirtyTextureTUCs;
 	bool pDirtyTextureParamBlocks;
 	int pOutlineTextureCount;
 	
-	decObjectList pDecals;
+	decTObjectList<deoglRDecal> pDecals;
 	bool pDirtyDecals;
 	bool pDirtyDecalsRenderRenderables;
 	

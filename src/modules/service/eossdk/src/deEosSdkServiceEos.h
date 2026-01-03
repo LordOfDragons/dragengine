@@ -36,7 +36,7 @@
 #include <eos_connect.h>
 #include <eos_ui.h>
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -55,7 +55,7 @@ public:
 private:
 	deEosSdk &pModule;
 	deService * const pService;
-	decObjectList pPendingRequests;
+	decTObjectList<deEosSdkPendingRequest> pPendingRequests;
 	decString pEncAppTicket;
 	
 	EOS_HPlatform pHandlePlatform;

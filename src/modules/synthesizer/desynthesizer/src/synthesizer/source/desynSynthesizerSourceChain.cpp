@@ -105,7 +105,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 		return;
 	}
 	
-	const int count = source.GetSoundCount();
+	const int count = source.GetSounds().GetCount();
 	if(count == 0){
 		SetSilent(true);
 		return;
@@ -116,7 +116,7 @@ pTargetPlay(synthesizer, firstLink, source.GetTargetPlay())
 	pSounds = new sSound[count];
 	
 	for(pSoundCount=0; pSoundCount<count; pSoundCount++){
-		const deSound * const engSound = source.GetSoundAt(pSoundCount);
+		const deSound * const engSound = source.GetSounds().GetAt(pSoundCount);
 		if(!engSound){
 			continue;
 		}

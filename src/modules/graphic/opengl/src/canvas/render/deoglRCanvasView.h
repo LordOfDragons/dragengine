@@ -28,7 +28,7 @@
 #include "deoglRCanvas.h"
 #include "../../target/deoglRenderTarget.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderPlanMasked;
 
@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	decObjectList pChildren;
+	decTObjectList<deoglRCanvas> pChildren;
 	unsigned int pPaintTracker;
 	deoglRenderTarget::Ref pRenderTarget;
 	bool pResizeRenderTarget;

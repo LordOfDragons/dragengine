@@ -183,18 +183,15 @@ void deServiceManager::QueueEventReceived(deService *service, const deServiceObj
 
 void deServiceManager::RemoveAllMatchingEvents(deService *service){
 	const deMutexGuard lock(pMutex);
-	const decObjectList events(pEventQueue);
-	const int count = events.GetCount();
-	int i;
+	const decTObjectList<cEvent> events(pEventQueue);
 	
 	pEventQueue.RemoveAll();
 	
-	for(i=0; i<count; i++){
-		cEvent * const event = (cEvent*)events.GetAt(i);
+	events.Visit([&](cEvent *event){
 		if(event->service != service){
 			pEventQueue.Add(event);
 		}
-	}
+	});
 }
 
 void deServiceManager::FrameUpdate(){
@@ -263,7 +260,7 @@ void deServiceManager::pUpdateModules(){
 }
 
 void deServiceManager::pProcessEvents(){
-	decObjectList events;
+	decTObjectList<cEvent> events;
 	{
 	const deMutexGuard lock(pMutex);
 	events = pEventQueue;
@@ -274,7 +271,7 @@ void deServiceManager::pProcessEvents(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cEvent &event = *((cEvent*)events.GetAt(i));
+		const cEvent &event = *events.GetAt(i);
 		switch(event.type){
 		case cEvent::eEvents::eeRequestResponse:
 			event.service->RequestResponse(event.id, event.data, event.finished);

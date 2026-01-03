@@ -25,7 +25,7 @@
 #ifndef _DEVKPIPELINEMANAGER_H_
 #define _DEVKPIPELINEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
 class devkPipeline;
@@ -40,7 +40,7 @@ class devkPipelineManager{
 private:
 	devkDevice &pDevice;
 	
-	decObjectList pLayouts;
+	decTObjectList<devkPipeline> pLayouts;
 	
 	
 	

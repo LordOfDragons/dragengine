@@ -26,7 +26,7 @@
 #define _DEOGLFRAMEBUFFERCUBE_H_
 
 #include "deoglFramebuffer.h"
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -40,7 +40,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	deoglFramebuffer::Ref pFBO;
-	decObjectList pFaceFBOs;
+	decTObjectList<deoglFramebuffer> pFaceFBOs;
 	
 	
 public:

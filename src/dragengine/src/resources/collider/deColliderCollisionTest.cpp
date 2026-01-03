@@ -127,14 +127,6 @@ void deColliderCollisionTest::SetEnabled(bool enabled){
 
 
 
-int deColliderCollisionTest::GetCollisionInfoCount() const{
-	return pCollisionInfo.GetCount();
-}
-
-deCollisionInfo *deColliderCollisionTest::GetCollisionInfoAt(int index) const{
-	return (deCollisionInfo*)pCollisionInfo.GetAt(index);
-}
-
 void deColliderCollisionTest::AddCollisionInfo(deCollisionInfo *info){
 	pCollisionInfo.Add(info);
 }

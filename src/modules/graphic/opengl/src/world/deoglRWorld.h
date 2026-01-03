@@ -32,7 +32,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTLinkedList.h>
@@ -86,13 +86,13 @@ private:
 	deoglRBillboard *pTailBillboard;
 	int pBillboardCount;
 	
-	decObjectList pSkies;
-	decObjectList pDebugDrawers;
-	decObjectList pEnvMapProbes;
-	decObjectList pLights;
-	decObjectList pLumimeters;
-	decObjectList pParticleEmitterInstances;
-	decObjectList pPropFields;
+	decTObjectList<deoglRSkyInstance> pSkies;
+	decTObjectList<deoglRDebugDrawer> pDebugDrawers;
+	decTObjectList<deoglREnvMapProbe> pEnvMapProbes;
+	decTObjectList<deoglRLight> pLights;
+	decTObjectList<deoglRLumimeter> pLumimeters;
+	decTObjectList<deoglRParticleEmitterInstance> pParticleEmitterInstances;
+	decTObjectList<deoglRPropField> pPropFields;
 	
 	decColor pAmbientLight;
 	bool pDisableLights;

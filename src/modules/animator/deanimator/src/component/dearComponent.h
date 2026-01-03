@@ -25,7 +25,6 @@
 #ifndef _DEARCOMPONENT_H_
 #define _DEARCOMPONENT_H_
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/animator/deBaseAnimatorComponent.h>
 

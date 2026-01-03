@@ -29,7 +29,9 @@
 #include "compiler/deoglShaderCompileUnitTask.h"
 #include "compiler/deoglShaderLoadTask.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
@@ -82,7 +84,9 @@ private:
 	deoglShaderCompilerThread **pCompilerThreads;
 	int pCompilerThreadCount;
 	
-	decObjectList pTasksPending, pUnitTasksPending, pLoadTasksPending;
+	decTObjectList<deoglShaderCompileTask> pTasksPending;
+	decTObjectList<deoglShaderCompileUnitTask> pUnitTasksPending;
+	decTObjectList<deoglShaderLoadTask> pLoadTasksPending;
 	int pCompilingTaskCount;
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;

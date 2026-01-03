@@ -25,8 +25,7 @@
 #ifndef _DECLASSVRSYSTEM_H_
 #define _DECLASSVRSYSTEM_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-
+#include <dragengine/common/collection/decTList.h>
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
@@ -42,7 +41,7 @@ private:
 	
 	dsClass *pClsVRFeatureSupportLevel;
 	
-	decObjectList pCachedDevices;
+	decTObjectList<dedsInputDevice> pCachedDevices;
 	bool pCacheDirty;
 	
 	

@@ -152,14 +152,11 @@ void deoglRWorld::SetSize(const decDVector &size){
 		component = component->GetLLWorldNext();
 	}
 	
-	const decObjectList envMapProbes(pEnvMapProbes);
-	const int envMapProbeCount = envMapProbes.GetCount();
-	for(i=0; i<envMapProbeCount; i++){
-		deoglREnvMapProbe &probe = *((deoglREnvMapProbe*)envMapProbes.GetAt(i));
-		if(probe.GetEnvironmentMap()){
-			probe.GetEnvironmentMap()->UpdateOctreePosition();
+	decTObjectList<deoglREnvMapProbe>(pEnvMapProbes).Visit([&](const deoglREnvMapProbe &p){
+		if(p.GetEnvironmentMap()){
+			p.GetEnvironmentMap()->UpdateOctreePosition();
 		}
-	}
+	});
 	
 	count = pLights.GetCount();
 	for(i=0; i<count; i++){

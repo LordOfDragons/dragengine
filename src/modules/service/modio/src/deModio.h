@@ -28,7 +28,7 @@
 #include "modio.h"
 #include "parameters/deModioParameterList.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -37,6 +37,7 @@
 class decBaseFileReader;
 class deModioUserConfig;
 class deMPLogLevel;
+class deModioModConfig;
 
 /**
  * Mod.io Service Module.
@@ -46,7 +47,7 @@ private:
 	int pRequiresEventHandlingCount;
 	deVirtualFileSystem::Ref pVFSMods;
 	decTObjectDictionary<deModioUserConfig> pUserConfigs;
-	decObjectList pModConfigs, pActivateConfigs;
+	decTObjectList<deModioModConfig> pModConfigs, pActivateConfigs;
 	decString pCurUserId;
 	
 	deModioParameterList pParameters;
@@ -75,8 +76,8 @@ public:
 	inline const deVirtualFileSystem::Ref &GetVFSMods() const{ return pVFSMods; }
 	
 	/** Mod configurations (deModioModConfig). */
-	inline const decObjectList &GetModConfigs() const{ return pModConfigs; }
-	void SetModConfigs(const decObjectList &configs);
+	inline const decTObjectList<deModioModConfig> &GetModConfigs() const{ return pModConfigs; }
+	void SetModConfigs(const decTObjectList<deModioModConfig> &configs);
 	
 	/** User configurations (deModioUserConfig). */
 	inline const decTObjectDictionary<deModioUserConfig> &GetUserConfigs() const{ return pUserConfigs; }
@@ -100,7 +101,7 @@ public:
 	void ActivateMods(const decString &userId);
 	
 	/** Active modifications (deModioUserConfig). */
-	inline const decObjectList &GetActiveMods() const{ return pActivateConfigs; }
+	inline const decTObjectList<deModioModConfig> &GetActiveMods() const{ return pActivateConfigs; }
 	
 	/** Log level module parameter. */
 	inline const deMPLogLevel &GetParamLogLevel() const{ return *pParamLogLevel; }

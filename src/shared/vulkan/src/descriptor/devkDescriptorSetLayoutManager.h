@@ -25,7 +25,7 @@
 #ifndef _DEVKDESCRIPTORSETLAYOUTMANAGER_H_
 #define _DEVKDESCRIPTORSETLAYOUTMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
 class devkDescriptorSetLayout;
@@ -39,7 +39,7 @@ class devkDescriptorSetLayoutManager{
 private:
 	devkDevice &pDevice;
 	
-	decObjectList pLayouts;
+	decTObjectList<devkDescriptorSetLayout> pLayouts;
 	
 	
 	

@@ -29,7 +29,7 @@
 #include "../component/deComponent.h"
 #include "../sensor/deTouchSensor.h"
 #include "../../deObject.h"
-#include "../../common/collection/decObjectList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/string/decString.h"
@@ -69,7 +69,7 @@ private:
 	bool pLocalDirection;
 	bool pEnabled;
 	
-	decObjectList pCollisionInfo;
+	decTObjectList<deCollisionInfo> pCollisionInfo;
 	decDVector pTestOrigin;
 	decQuaternion pTestOrientation;
 	decDVector pTestDirection;
@@ -172,15 +172,8 @@ public:
 	
 	
 	
-	/** \brief Number of collision information. */
-	int GetCollisionInfoCount() const;
-	
-	/**
-	 * \brief Get collision information at index.
-	 * 
-	 * \warning Do not change the content of this object. It is potentially shared.
-	 */
-	deCollisionInfo *GetCollisionInfoAt(int index) const;
+	/** \brief Collision information list. */
+	const decTObjectList<deCollisionInfo> &GetCollisionInfo() const{ return pCollisionInfo; }
 	
 	/** \brief Add collision information. */
 	void AddCollisionInfo(deCollisionInfo *info);

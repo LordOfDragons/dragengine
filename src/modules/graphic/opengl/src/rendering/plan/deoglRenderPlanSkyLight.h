@@ -36,7 +36,6 @@
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
 

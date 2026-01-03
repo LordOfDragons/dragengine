@@ -27,7 +27,7 @@
 
 #include <stdint.h>
 
-#include "../../common/collection/decObjectList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/collection/decTDictionary.h"
 #include "../../common/file/decMemoryFile.h"
 #include "../../resources/deResource.h"
@@ -90,7 +90,7 @@ private:
 	decString pString;
 	deResource::Ref pResource;
 	decMemoryFile::Ref pData;
-	decObjectList pList;
+	decTObjectList<deServiceObject> pList;
 	decTObjectDictionary<deServiceObject> pDictionary;
 	
 	
@@ -249,22 +249,19 @@ public:
 	inline bool IsDictionary() const{ return pValueType == evtDictionary; }
 	
 	/**
-	 * \brief Count of child objects.
-	 * \throws EInvalidParam Value type is not evtList or evtDictionary.
+	 * \brief List of all children objects.
+	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	int GetChildCount() const;
+	inline const decTObjectList<deServiceObject> &GetChildren() const{
+		DEASSERT_TRUE(pValueType == evtList)
+		return pList;
+	}
 	
 	/**
 	 * \brief List of all children keys.
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
 	decStringList GetChildrenKeys() const;
-	
-	/**
-	 * \brief Child object at index.
-	 * \throws EInvalidParam Value type is not evtList.
-	 */
-	deServiceObject::Ref GetChildAt(int index) const;
 	
 	/**
 	 * \brief Child object with key or nullptr if absent.

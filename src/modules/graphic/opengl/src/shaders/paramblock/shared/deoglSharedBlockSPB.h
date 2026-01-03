@@ -25,10 +25,11 @@
 #ifndef _DEOGLSHAREDBLOCKSPB_H_
 #define _DEOGLSHAREDBLOCKSPB_H_
 
-#include "../deoglShaderParameterBlock.h"
+#include "../../deoglShaderUnitSourceCode.h"
+#include "../deoglSPBlockSSBO.h"
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectList.h>
 
 class deoglSharedBlockSPBElement;
 class deoglShaderParameterBlock;
@@ -56,7 +57,7 @@ public:
 	
 private:
 	const deoglShaderParameterBlock::Ref pParameterBlock;
-	decObjectList pElements;
+	decTObjectList<deoglSharedBlockSPBElement> pElements;
 	decTList<deoglSharedBlockSPBElement*> pEmptyElements;
 	int pSize;
 	int pUsedElementCount;

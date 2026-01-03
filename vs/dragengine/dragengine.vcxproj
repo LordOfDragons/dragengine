@@ -471,7 +471,6 @@
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectOrderedSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier.cpp" />
@@ -1063,7 +1062,6 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions_safe.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTDictionary.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTLinkedList.h" />

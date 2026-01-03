@@ -200,7 +200,6 @@ void deSsdkServiceSteam::RequestCurrentStats(const decUniqueID &id){
 void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& request){
 	const deServiceObject::Ref response(deServiceObject::Ref::New());
 	deServiceObject::Ref soIn, soResp;
-	int i, count;
 	
 	response->SetStringChildAt("function", "getStats");
 	
@@ -210,9 +209,8 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 	
 	soIn = request.GetChildAt("stats");
 	if(soIn){
-		count = soIn->GetChildCount();
-		for(i=0; i<count; i++){
-			const decString &apiName = soIn->GetChildAt(i)->GetString();
+		soIn->GetChildren().Visit([&](const deServiceObject &c){
+			const decString &apiName = c.GetString();
 			int32 valueInt;
 			float valueFloat;
 			if(SteamUserStats()->GetStat(apiName, &valueInt)){
@@ -221,7 +219,7 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 			}else if(SteamUserStats()->GetStat(apiName, &valueFloat)){
 				soResp->SetFloatChildAt(apiName, valueFloat);
 			}
-		}
+		});
 	}
 	
 	// achievements
@@ -230,18 +228,16 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 	
 	soIn = request.GetChildAt("achievements");
 	if(soIn){
-		count = soIn->GetChildCount();
-		for(i=0; i<count; i++){
-			const decString &apiName = soIn->GetChildAt(i)->GetString();
+		soIn->GetChildren().Visit([&](const deServiceObject &c){
+			const decString &apiName = c.GetString();
 			bool achieved;
 			if(SteamUserStats()->GetAchievement(apiName, &achieved)){
 				soResp->SetBoolChildAt(apiName, achieved);
 			}
-		}
+		});
 	}
 	
-	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-		pService, id, response, true);
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(pService, id, response, true);
 }
 
 void deSsdkServiceSteam::ResetAllStats(const decUniqueID &id, const deServiceObject &request){

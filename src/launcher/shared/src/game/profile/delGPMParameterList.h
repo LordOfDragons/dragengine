@@ -25,7 +25,7 @@
 #ifndef _DELGPMPARAMETERLIST_H_
 #define _DELGPMPARAMETERLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class delGPMParameter;
 
@@ -35,7 +35,7 @@ class delGPMParameter;
  */
 class DE_DLL_EXPORT delGPMParameterList{
 private:
-	decObjectList pParameters;
+	decTObjectList<delGPMParameter> pParameters;
 	
 	
 	

@@ -27,7 +27,7 @@
 
 #include "../deoalBasics.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalEffectSlot;
 
@@ -40,7 +40,7 @@ class deoalEffectSlotManager{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	decObjectList pSlots;
+	decTObjectList<deoalEffectSlot> pSlots;
 	int pMaxCount;
 	
 public:

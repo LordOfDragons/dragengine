@@ -33,7 +33,7 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRComponent;
 class deoglShaderParameterBlock;
@@ -73,8 +73,8 @@ private:
 	int pRenderTaskFilters;
 	
 	deoglSharedSPBElement::Ref pSharedSPBElement;
-	decObjectList pSharedSPBRTIGroup;
-	decObjectList pSharedSPBRTIGroupShadow;
+	decTObjectList<deoglSharedSPBRTIGroup> pSharedSPBRTIGroup;
+	decTObjectList<deoglSharedSPBRTIGroup> pSharedSPBRTIGroupShadow;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;
