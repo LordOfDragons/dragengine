@@ -41,7 +41,7 @@ ceUCAASpeakMoveTbt2Translation::ceUCAASpeakMoveTbt2Translation(ceConversationTop
 pTopic(topic),
 pConversation(topic && topic->GetFile() ? topic->GetFile()->GetConversation() : nullptr),
 pActorSpeak(actorSpeak),
-pLangPack(pConversation ? pConversation->GetLanguagePack() : nullptr),
+pLangPack(pConversation ? pConversation->GetLanguagePack().Pointer() : nullptr),
 pTextBoxText(actorSpeak ? actorSpeak->GetTextBoxText() : decUnicodeString()),
 pOldEntryText(oldEntryText ? *oldEntryText : decUnicodeString()),
 pTranslationName(translationName),

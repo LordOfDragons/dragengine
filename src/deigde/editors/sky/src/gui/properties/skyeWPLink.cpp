@@ -408,7 +408,7 @@ void skyeWPLink::SetSky(skyeSky *sky){
 }
 
 skyeLink *skyeWPLink::GetLink() const{
-	return pSky ? pSky->GetActiveLink() : nullptr;
+	return pSky ? pSky->GetActiveLink().Pointer() : nullptr;
 }
 
 

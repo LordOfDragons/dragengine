@@ -1667,7 +1667,7 @@ decString ceWPConversation::GetImportConvo() const{
 
 
 ceGesture *ceWPConversation::GetGesture() const{
-	return pConversation ? pConversation->GetActiveGesture() : nullptr;
+	return pConversation ? pConversation->GetActiveGesture().Pointer() : nullptr;
 }
 
 void ceWPConversation::UpdateGestureList(){
@@ -1715,7 +1715,7 @@ void ceWPConversation::UpdateGesture(){
 
 
 ceFacePose *ceWPConversation::GetFacePose() const{
-	return pConversation ? pConversation->GetActiveFacePose() : nullptr;
+	return pConversation ? pConversation->GetActiveFacePose().Pointer() : nullptr;
 }
 
 void ceWPConversation::UpdateFacePoseList(){
@@ -1813,7 +1813,7 @@ void ceWPConversation::UpdateFPController(){
 
 
 ceCameraShot *ceWPConversation::GetCameraShot() const{
-	return pConversation ? pConversation->GetActiveCameraShot() : nullptr;
+	return pConversation ? pConversation->GetActiveCameraShot().Pointer() : nullptr;
 }
 
 void ceWPConversation::UpdateCameraShotList(){
@@ -1924,7 +1924,7 @@ void ceWPConversation::UpdateCameraShot(){
 
 
 ceTarget *ceWPConversation::GetTarget() const{
-	return pConversation ? pConversation->GetActiveTarget() : nullptr;
+	return pConversation ? pConversation->GetActiveTarget().Pointer() : nullptr;
 }
 
 void ceWPConversation::UpdateTargetList(){

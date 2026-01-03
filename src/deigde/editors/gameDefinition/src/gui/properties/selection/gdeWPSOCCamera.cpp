@@ -353,12 +353,12 @@ void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCCamera::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCCamera *gdeWPSOCCamera::GetCamera() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCCamera() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCCamera().Pointer() : nullptr;
 }
 
 

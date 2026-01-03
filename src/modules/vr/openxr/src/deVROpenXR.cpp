@@ -820,7 +820,7 @@ deModel *deVROpenXR::GetHiddenArea(eEye eye){
 		break;
 	}
 	
-	return hiddenMesh ? hiddenMesh->GetModel() : nullptr;
+	return hiddenMesh ? hiddenMesh->GetModel().Pointer() : nullptr;
 }
 
 deImage *deVROpenXR::GetDistortionMap(eEye){

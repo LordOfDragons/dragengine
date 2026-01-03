@@ -524,15 +524,15 @@ void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCBillboard::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCBillboard *gdeWPSOCBillboard::GetBillboard() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCBillboard() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCBillboard().Pointer() : nullptr;
 }
 
-const gdeOCBillboard::eProperties gdeWPSOCBillboard::GetPropertyName() const{
+gdeOCBillboard::eProperties gdeWPSOCBillboard::GetPropertyName() const{
 	return (gdeOCBillboard::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

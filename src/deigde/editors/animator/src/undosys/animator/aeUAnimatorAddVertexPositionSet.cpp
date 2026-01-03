@@ -45,7 +45,7 @@ pAnimator(animator)
 	
 	const decStringSet &sets = animator->GetListVertexPositionSets();
 	const deComponent * const engComponent = animator->GetEngineComponent();
-	const deModel * const engModel = engComponent ? engComponent->GetModel() : nullptr;
+	const deModel * const engModel = engComponent ? engComponent->GetModel().Pointer() : nullptr;
 	
 	if(engModel){
 		const int setCount = engModel->GetVertexPositionSetCount();

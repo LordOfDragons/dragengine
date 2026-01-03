@@ -459,7 +459,7 @@ void skyeWPController::SetSky(skyeSky *sky){
 }
 
 skyeController *skyeWPController::GetController() const{
-	return pSky ? pSky->GetActiveController() : nullptr;
+	return pSky ? pSky->GetActiveController().Pointer() : nullptr;
 }
 
 

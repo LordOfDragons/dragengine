@@ -526,19 +526,18 @@ void gdeWPSOCSpeaker::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCSpeaker::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCSpeaker *gdeWPSOCSpeaker::GetSpeaker() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCSpeaker() : nullptr;
+	return GetObjectClass() ? pGameDefinition->GetActiveOCSpeaker().Pointer() : nullptr;
 }
 
-const gdeOCSpeaker::eProperties gdeWPSOCSpeaker::GetPropertyName() const{
+gdeOCSpeaker::eProperties gdeWPSOCSpeaker::GetPropertyName() const{
 	return (gdeOCSpeaker::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
-const gdeOCSpeaker::eTriggers gdeWPSOCSpeaker::GetTriggerName() const{
+gdeOCSpeaker::eTriggers gdeWPSOCSpeaker::GetTriggerName() const{
 	return (gdeOCSpeaker::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 

@@ -1387,7 +1387,7 @@ void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSObjectClass::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeProperty *gdeWPSObjectClass::GetProperty() const{

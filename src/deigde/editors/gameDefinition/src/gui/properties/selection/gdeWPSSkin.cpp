@@ -256,7 +256,7 @@ void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeSkin *gdeWPSSkin::GetSkin() const{
-	return pGameDefinition ? pGameDefinition->GetActiveSkin() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveSkin().Pointer() : nullptr;
 }
 
 

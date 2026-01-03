@@ -102,7 +102,7 @@ public:
 	gdeOCNavigationSpace *GetNavigationSpace() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCNavigationSpace::eProperties GetPropertyName() const;
+	gdeOCNavigationSpace::eProperties GetPropertyName() const;
 	
 	
 	

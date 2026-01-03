@@ -118,10 +118,10 @@ public:
 	gdeOCLight *GetLight() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCLight::eProperties GetPropertyName() const;
+	gdeOCLight::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCLight::eTriggers GetTriggerName() const;
+	gdeOCLight::eTriggers GetTriggerName() const;
 	
 	
 	

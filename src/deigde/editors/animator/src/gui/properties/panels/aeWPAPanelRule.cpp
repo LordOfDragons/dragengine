@@ -1033,7 +1033,7 @@ void aeWPAPanelRule::UpdateModelVertexPositionSetList(){
 	
 	if(GetAnimator()){
 		const deComponent * const component = GetAnimator()->GetEngineComponent();
-		const deModel * const model = component ? component->GetModel() : nullptr;
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 		if(model){
 			const int count = model->GetVertexPositionSetCount();
 			int i;

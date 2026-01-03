@@ -282,7 +282,7 @@ void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 }
 
 gdeCategory *gdeWPSCategory::GetCategory() const{
-	return pGameDefinition ? pGameDefinition->GetActiveCategory() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveCategory().Pointer() : nullptr;
 }
 
 gdeUCategoryBase::eCategoryType gdeWPSCategory::GetCategoryType() const{

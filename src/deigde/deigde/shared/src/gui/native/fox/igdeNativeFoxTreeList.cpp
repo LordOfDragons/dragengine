@@ -503,7 +503,7 @@ long igdeNativeFoxTreeList::onListChanged(FXObject*, FXSelector, void*){
 	}
 	
 	igdeNativeFoxTreeItem * const nativeItem = (igdeNativeFoxTreeItem*)pTreeList->getCurrentItem();
-	igdeTreeItem * const selection = nativeItem ? nativeItem->GetOwner() : nullptr;
+	igdeTreeItem * const selection = nativeItem ? nativeItem->GetOwner().Pointer() : nullptr;
 	
 	try{
 		pOwner->SetSelection(selection);

@@ -777,7 +777,7 @@ void aeWPView::SetAnimator(aeAnimator *animator){
 }
 
 aeAttachment *aeWPView::GetAttachment() const{
-	return pAnimator ? pAnimator->GetActiveAttachment() : nullptr;
+	return pAnimator ? pAnimator->GetActiveAttachment().Pointer() : nullptr;
 }
 
 void aeWPView::SelectActiveAttachment(){

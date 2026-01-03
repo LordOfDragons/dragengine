@@ -807,12 +807,12 @@ void seWPTexture::OnSkinPathChanged(){
 }
 
 seTexture *seWPTexture::GetTexture() const{
-	return pSkin ? pSkin->GetActiveTexture() : nullptr;
+	return pSkin ? pSkin->GetActiveTexture().Pointer() : nullptr;
 }
 
 seProperty *seWPTexture::GetProperty() const{
 	seTexture * const texture = GetTexture();
-	return texture ? texture->GetActiveProperty() : nullptr;
+	return texture ? texture->GetActiveProperty().Pointer() : nullptr;
 }
 
 

@@ -429,15 +429,15 @@ void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCEnvMapProbe::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCEnvMapProbe *gdeWPSOCEnvMapProbe::GetEnvMapProbe() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCEnvMapProbe() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCEnvMapProbe().Pointer() : nullptr;
 }
 
-const gdeOCEnvMapProbe::eProperties gdeWPSOCEnvMapProbe::GetPropertyName() const{
+gdeOCEnvMapProbe::eProperties gdeWPSOCEnvMapProbe::GetPropertyName() const{
 	return (gdeOCEnvMapProbe::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

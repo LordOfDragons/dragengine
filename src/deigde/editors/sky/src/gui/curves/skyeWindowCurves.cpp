@@ -177,7 +177,7 @@ void skyeWindowCurves::SetSky(skyeSky *sky){
 
 
 skyeLink *skyeWindowCurves::GetLink() const{
-	return pSky ? pSky->GetActiveLink() : nullptr;
+	return pSky ? pSky->GetActiveLink().Pointer() : nullptr;
 }
 
 void skyeWindowCurves::UpdateLinkList(){

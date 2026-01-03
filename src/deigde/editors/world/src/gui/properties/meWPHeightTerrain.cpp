@@ -1683,7 +1683,7 @@ meHeightTerrainNavSpace *meWPHeightTerrain::GetActiveNavSpace() const{
 
 meHeightTerrainNavSpaceType *meWPHeightTerrain::GetActiveNavSpaceType() const{
 	const meHeightTerrainNavSpace * const navspace = GetActiveNavSpace();
-	return navspace ? navspace->GetActiveType() : nullptr;
+	return navspace ? navspace->GetActiveType().Pointer() : nullptr;
 }
 
 void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){

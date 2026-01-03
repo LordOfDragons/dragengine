@@ -416,7 +416,7 @@ void gdeWPSSky::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeSky *gdeWPSSky::GetSky() const{
-	return pGameDefinition ? pGameDefinition->GetActiveSky() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveSky().Pointer() : nullptr;
 }
 
 gdeSkyController *gdeWPSSky::GetController() const{

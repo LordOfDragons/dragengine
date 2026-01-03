@@ -101,7 +101,7 @@ public:
 	gdeOCNavigationBlocker *GetNavigationBlocker() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCNavigationBlocker::eProperties GetPropertyName() const;
+	gdeOCNavigationBlocker::eProperties GetPropertyName() const;
 	
 	
 	

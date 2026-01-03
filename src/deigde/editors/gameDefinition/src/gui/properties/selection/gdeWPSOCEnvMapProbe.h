@@ -100,7 +100,7 @@ public:
 	gdeOCEnvMapProbe *GetEnvMapProbe() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCEnvMapProbe::eProperties GetPropertyName() const;
+	gdeOCEnvMapProbe::eProperties GetPropertyName() const;
 	
 	
 	

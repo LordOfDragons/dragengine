@@ -470,7 +470,7 @@ void syneWPController::SetSynthesizer(syneSynthesizer *synthesizer){
 }
 
 syneController *syneWPController::GetController() const{
-	return pSynthesizer ? pSynthesizer->GetActiveController() : nullptr;
+	return pSynthesizer ? pSynthesizer->GetActiveController().Pointer() : nullptr;
 }
 
 void syneWPController::SelectActiveController(){

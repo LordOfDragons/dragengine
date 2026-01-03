@@ -443,7 +443,7 @@ void peeWPController::SetEmitter(peeEmitter *emitter){
 }
 
 peeController *peeWPController::GetController() const{
-	return pEmitter ? pEmitter->GetActiveController() : nullptr;
+	return pEmitter ? pEmitter->GetActiveController().Pointer() : nullptr;
 }
 
 

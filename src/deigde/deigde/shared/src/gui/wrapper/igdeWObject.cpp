@@ -702,7 +702,7 @@ deCollider *igdeWObject::GetCollider() const{
 }
 
 deComponent *igdeWObject::GetComponent() const{
-	return pColliderComponent ? pColliderComponent->GetComponent() : nullptr;
+	return pColliderComponent ? pColliderComponent->GetComponent().Pointer() : nullptr;
 }
 
 void igdeWObject::SetColliderUserPointer(void *userPointer){

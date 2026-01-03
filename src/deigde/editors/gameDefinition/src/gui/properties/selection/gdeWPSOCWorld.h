@@ -91,7 +91,7 @@ public:
 	gdeOCWorld *GetWorld() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCWorld::eProperties GetPropertyName() const;
+	gdeOCWorld::eProperties GetPropertyName() const;
 	
 	
 	/** \brief Update object class property list. */

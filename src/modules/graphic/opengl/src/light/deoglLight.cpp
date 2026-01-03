@@ -619,7 +619,7 @@ void deoglLight::pSyncSource(){
 	}
 	
 	// dynamic skin
-	pRLight->SetDynamicSkin(pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : nullptr);
+	pRLight->SetDynamicSkin(pDynamicSkin ? pDynamicSkin->GetRDynamicSkin().Pointer() : nullptr);
 	
 	if(pDynamicSkinRenderablesChanged){
 		pDynamicSkinRenderablesChanged = false;

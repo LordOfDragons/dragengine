@@ -326,7 +326,7 @@ void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversat
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
-	ceConversationTopic * const topic = file ? file->GetActiveTopic() : nullptr;
+	ceConversationTopic * const topic = file ? file->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -392,7 +392,7 @@ void ceWPTTreeModel::ContextMenuTopic(igdeMenuCascade &contextMenu){
 	}
 	
 	ceConversationFile * const file = pConversation->GetActiveFile();
-	ceConversationTopic * const topic = file ? file->GetActiveTopic() : nullptr;
+	ceConversationTopic * const topic = file ? file->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}

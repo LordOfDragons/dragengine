@@ -463,15 +463,15 @@ void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinitio
 
 
 gdeObjectClass *gdeWPSOCNavigationSpace::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCNavigationSpace *gdeWPSOCNavigationSpace::GetNavigationSpace() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCNavigationSpace() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCNavigationSpace().Pointer() : nullptr;
 }
 
-const gdeOCNavigationSpace::eProperties gdeWPSOCNavigationSpace::GetPropertyName() const{
+gdeOCNavigationSpace::eProperties gdeWPSOCNavigationSpace::GetPropertyName() const{
 	return (gdeOCNavigationSpace::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

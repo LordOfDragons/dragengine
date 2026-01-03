@@ -305,12 +305,12 @@ void syneWPEffect::SetSynthesizer(syneSynthesizer *synthesizer){
 }
 
 syneSource *syneWPEffect::GetSource() const{
-	return pSynthesizer ? pSynthesizer->GetActiveSource() : nullptr;
+	return pSynthesizer ? pSynthesizer->GetActiveSource().Pointer() : nullptr;
 }
 
 syneEffect *syneWPEffect::GetEffect() const{
 	syneSource * const source = GetSource();
-	return source ? source->GetActiveEffect() : nullptr;
+	return source ? source->GetActiveEffect().Pointer() : nullptr;
 }
 
 

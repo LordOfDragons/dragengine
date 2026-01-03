@@ -300,15 +300,14 @@ void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCWorld::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCWorld *gdeWPSOCWorld::GetWorld() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCWorld() : nullptr;
+	return GetObjectClass() ? pGameDefinition->GetActiveOCWorld().Pointer() : nullptr;
 }
 
-const gdeOCWorld::eProperties gdeWPSOCWorld::GetPropertyName() const{
+gdeOCWorld::eProperties gdeWPSOCWorld::GetPropertyName() const{
 	return (gdeOCWorld::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

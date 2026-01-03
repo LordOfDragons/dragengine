@@ -966,12 +966,12 @@ void ceWPTopic::SetConversation(ceConversation *conversation){
 
 
 ceConversationFile *ceWPTopic::GetFile() const{
-	return pConversation ? pConversation->GetActiveFile() : nullptr;
+	return pConversation ? pConversation->GetActiveFile().Pointer() : nullptr;
 }
 
 ceWPTTreeItemModel *ceWPTopic::GetActionTreeItem(){
 	ceWPTTreeItem * const item = (ceWPTTreeItem*)pTreeActions->GetSelection().Pointer();
-	return item ? item->GetModel() : nullptr;
+	return item ? item->GetModel().Pointer() : nullptr;
 }
 
 void ceWPTopic::UpdateFileList(){
@@ -1017,7 +1017,7 @@ void ceWPTopic::UpdateFile(){
 
 ceConversationTopic *ceWPTopic::GetTopic() const{
 	ceConversationFile * const file = GetFile();
-	return file ? file->GetActiveTopic() : nullptr;
+	return file ? file->GetActiveTopic().Pointer() : nullptr;
 }
 
 void ceWPTopic::UpdateTopicList(){

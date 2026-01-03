@@ -107,10 +107,10 @@ public:
 	gdeOCSpeaker *GetSpeaker() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCSpeaker::eProperties GetPropertyName() const;
+	gdeOCSpeaker::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCSpeaker::eTriggers GetTriggerName() const;
+	gdeOCSpeaker::eTriggers GetTriggerName() const;
 	
 	
 	

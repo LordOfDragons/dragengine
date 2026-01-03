@@ -156,7 +156,7 @@ public:
 	const decString &GetTextureProperty() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCComponent::eProperties GetPropertyName() const;
+	gdeOCComponent::eProperties GetPropertyName() const;
 	
 	/** \brief Active property key (in combo box). */
 	const decString &GetTexturePropertyKey() const;

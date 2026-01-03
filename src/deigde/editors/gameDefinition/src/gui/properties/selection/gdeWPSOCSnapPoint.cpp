@@ -262,12 +262,11 @@ void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCSnapPoint::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCSnapPoint *gdeWPSOCSnapPoint::GetSnapPoint() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCSnapPoint() : nullptr;
+	return GetObjectClass() ? pGameDefinition->GetActiveOCSnapPoint().Pointer() : nullptr;
 }
 
 

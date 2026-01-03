@@ -152,7 +152,7 @@ void igdeViewRenderWindow::RemoveCanvas(deCanvas *canvas){
 }
 
 deCanvasView *igdeViewRenderWindow::GetRenderWindowCanvas() const{
-	return pRenderWindow ? pRenderWindow->GetCanvasView() : nullptr;
+	return pRenderWindow ? pRenderWindow->GetCanvasView().Pointer() : nullptr;
 }
 
 deCanvasRenderWorld *igdeViewRenderWindow::GetCanvasRenderWorld() const{

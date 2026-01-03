@@ -2209,12 +2209,12 @@ void ceWPView::UpdateCamera(){
 
 
 ceConversationActor *ceWPView::GetActor() const{
-	return pConversation ? pConversation->GetActiveActor() : nullptr;
+	return pConversation ? pConversation->GetActiveActor().Pointer() : nullptr;
 }
 
 ceActorPose *ceWPView::GetActorPose() const{
 	const ceConversationActor * const actor = GetActor();
-	return actor ? actor->GetActivePose() : nullptr;
+	return actor ? actor->GetActivePose().Pointer() : nullptr;
 }
 
 ceActorController *ceWPView::GetActorPoseController() const{
@@ -2333,7 +2333,7 @@ void ceWPView::UpdateActors(){
 
 void ceWPView::UpdateActorPoses(){
 	ceConversationActor * const actor = GetActor();
-	ceActorPose *activePose = actor ? actor->GetActivePose() : nullptr;
+	ceActorPose *activePose = actor ? actor->GetActivePose().Pointer() : nullptr;
 	
 	pCBActorPose->RemoveAllItems();
 	
@@ -2527,7 +2527,7 @@ void ceWPView::UpdateActorParameters(){
 
 
 ceCoordSystem *ceWPView::GetCoordSys() const{
-	return pConversation ? pConversation->GetActiveCoordSystem() : nullptr;
+	return pConversation ? pConversation->GetActiveCoordSystem().Pointer() : nullptr;
 }
 
 void ceWPView::UpdateCoordSystems(){

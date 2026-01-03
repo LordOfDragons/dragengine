@@ -442,9 +442,9 @@ void deoalSpeaker::pSyncSource(){
 		pVideoPlayer->Synchronize();
 	}
 	
-	pASpeaker->SetSource(pSound ? pSound->GetASound() : nullptr,
-		pSynthesizer ? pSynthesizer->GetAInstance() : nullptr,
-		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer() : nullptr);
+	pASpeaker->SetSource(pSound ? pSound->GetASound().Pointer() : nullptr,
+		pSynthesizer ? pSynthesizer->GetAInstance().Pointer() : nullptr,
+		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer().Pointer() : nullptr);
 	
 	pDirtySoundDecoder = true;
 	

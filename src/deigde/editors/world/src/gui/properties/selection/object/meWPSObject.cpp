@@ -1698,7 +1698,7 @@ const decString &meWPSObject::GetActiveProperty() const{
 
 meObjectTexture *meWPSObject::GetActiveTexture() const{
 	meObject * const object = GetActiveObject();
-	return object ? object->GetActiveTexture() : nullptr;
+	return object ? object->GetActiveTexture().Pointer() : nullptr;
 }
 
 const decString &meWPSObject::GetActiveTexProperty() const{

@@ -221,7 +221,7 @@ void ceWDSVAPreview::OnResize(){
 void ceWDSVAPreview::OnActionChanged(){
 	if(pSpeaker){
 		ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-		pSpeaker->SetSound(action ? action->GetEngineSound() : nullptr);
+		pSpeaker->SetSound(action ? action->GetEngineSound().Pointer() : nullptr);
 	}
 	
 	InvalidatePreview();

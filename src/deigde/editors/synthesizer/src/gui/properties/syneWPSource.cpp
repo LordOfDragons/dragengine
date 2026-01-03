@@ -413,7 +413,7 @@ void syneWPSource::SetSynthesizer(syneSynthesizer *synthesizer){
 }
 
 syneSource *syneWPSource::GetSource() const{
-	return pSynthesizer ? pSynthesizer->GetActiveSource() : nullptr;
+	return pSynthesizer ? pSynthesizer->GetActiveSource().Pointer() : nullptr;
 }
 
 void syneWPSource::OnSynthesizerPathChanged(){

@@ -2602,8 +2602,8 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 	
 	if(count > 0){
 		const decDMatrix &posMatrix = GetMatrix();
-		const deRig * const rig = component ? component->GetRig() : nullptr;
-		const deModel * const model = component ? component->GetModel() : nullptr;
+		const deRig * const rig = component ? component->GetRig().Pointer() : nullptr;
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 		int i, j;
 		
 		// adjust all attachments

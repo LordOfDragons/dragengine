@@ -1023,12 +1023,12 @@ void skyeWPLayer::OnSkyPathChanged(){
 }
 
 skyeLayer *skyeWPLayer::GetLayer() const{
-	return pSky ? pSky->GetActiveLayer(): nullptr;
+	return pSky ? pSky->GetActiveLayer().Pointer(): nullptr;
 }
 
 skyeBody *skyeWPLayer::GetBody() const{
 	const skyeLayer * const layer = GetLayer();
-	return layer ? layer->GetActiveBody() : nullptr;
+	return layer ? layer->GetActiveBody().Pointer() : nullptr;
 }
 
 void skyeWPLayer::UpdateLayerList(){

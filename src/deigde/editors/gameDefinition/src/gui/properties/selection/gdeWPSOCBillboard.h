@@ -105,7 +105,7 @@ public:
 	gdeOCBillboard *GetBillboard() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCBillboard::eProperties GetPropertyName() const;
+	gdeOCBillboard::eProperties GetPropertyName() const;
 	
 	
 	

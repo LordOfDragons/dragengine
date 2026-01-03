@@ -47,7 +47,7 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet(aeRule *rule, con
 	
 	const decStringSet &sets = rule->GetListVertexPositionSets();
 	const deComponent * const engComponent = rule->GetAnimator()->GetEngineComponent();
-	const deModel * const engModel = engComponent ? engComponent->GetModel() : nullptr;
+	const deModel * const engModel = engComponent ? engComponent->GetModel().Pointer() : nullptr;
 	
 	if(engModel){
 		const int setCount = engModel->GetVertexPositionSetCount();

@@ -630,19 +630,19 @@ void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCForceField::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCForceField *gdeWPSOCForceField::GetForceField() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCForceField() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCForceField().Pointer() : nullptr;
 }
 
-const gdeOCForceField::eProperties gdeWPSOCForceField::GetPropertyName() const{
+gdeOCForceField::eProperties gdeWPSOCForceField::GetPropertyName() const{
 	return (gdeOCForceField::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
-const gdeOCForceField::eTriggers gdeWPSOCForceField::GetTriggerName() const{
+gdeOCForceField::eTriggers gdeWPSOCForceField::GetTriggerName() const{
 	return (gdeOCForceField::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 

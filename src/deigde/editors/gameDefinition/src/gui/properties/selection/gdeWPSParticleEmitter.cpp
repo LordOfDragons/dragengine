@@ -255,7 +255,7 @@ void gdeWPSParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition)
 
 
 gdeParticleEmitter *gdeWPSParticleEmitter::GetParticleEmitter() const{
-	return pGameDefinition ? pGameDefinition->GetActiveParticleEmitter() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveParticleEmitter().Pointer() : nullptr;
 }
 
 

@@ -211,7 +211,7 @@ void meWPSensors::UpdateSensors(){
 
 void meWPSensors::UpdateLumimeter(){
 	meWorld * const world = pWindowProperties.GetWindowMain().GetWorld();
-	meLumimeter * lumimeter = world ? world->GetLumimeter() : nullptr;
+	meLumimeter * lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 	
 	if(lumimeter){
 		pChkLMTrackCam->SetChecked(lumimeter->GetTrackCamera());

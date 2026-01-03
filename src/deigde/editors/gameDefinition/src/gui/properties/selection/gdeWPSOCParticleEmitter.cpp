@@ -434,19 +434,18 @@ void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinitio
 
 
 gdeObjectClass *gdeWPSOCParticleEmitter::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCParticleEmitter *gdeWPSOCParticleEmitter::GetParticleEmitter() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCParticleEmitter() : nullptr;
+	return GetObjectClass() ? pGameDefinition->GetActiveOCParticleEmitter().Pointer() : nullptr;
 }
 
-const gdeOCParticleEmitter::eProperties gdeWPSOCParticleEmitter::GetPropertyName() const{
+gdeOCParticleEmitter::eProperties gdeWPSOCParticleEmitter::GetPropertyName() const{
 	return (gdeOCParticleEmitter::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
-const gdeOCParticleEmitter::eTriggers gdeWPSOCParticleEmitter::GetTriggerName() const{
+gdeOCParticleEmitter::eTriggers gdeWPSOCParticleEmitter::GetTriggerName() const{
 	return (gdeOCParticleEmitter::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 

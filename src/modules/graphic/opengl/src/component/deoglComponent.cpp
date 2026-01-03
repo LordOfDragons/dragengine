@@ -1055,7 +1055,7 @@ void deoglComponent::pSyncSkin(){
 
 void deoglComponent::pSyncDynamicSkin(){
 	if(pDirtyDynamicSkin){
-		pRComponent->SetDynamicSkin(*this, pDynamicSkin ? pDynamicSkin->GetRDynamicSkin() : nullptr);
+		pRComponent->SetDynamicSkin(*this, pDynamicSkin ? pDynamicSkin->GetRDynamicSkin().Pointer() : nullptr);
 		pDirtyDynamicSkin = false;
 	}
 	

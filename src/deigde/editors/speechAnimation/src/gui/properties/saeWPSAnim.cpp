@@ -802,7 +802,7 @@ void saeWPSAnim::UpdateNeutralVertexPositionSetList(){
 	
 	if(pSAnimation){
 		const deComponent * const component = pSAnimation->GetEngineComponent();
-		const deModel * const model = component ? component->GetModel() : nullptr;
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 		
 		if(model){
 			const int count = model->GetVertexPositionSetCount();
@@ -923,7 +923,7 @@ void saeWPSAnim::UpdatePhonemeVertexPositionSetList(){
 	
 	if(pSAnimation){
 		const deComponent * const engComponent = pSAnimation->GetEngineComponent();
-		const deModel * const engModel = engComponent ? engComponent->GetModel() : nullptr;
+		const deModel * const engModel = engComponent ? engComponent->GetModel().Pointer() : nullptr;
 		
 		if(engModel){
 			const int count = engModel->GetVertexPositionSetCount();

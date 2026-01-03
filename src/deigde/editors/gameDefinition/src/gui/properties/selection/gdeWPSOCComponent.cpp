@@ -1165,17 +1165,17 @@ void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCComponent::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCComponent *gdeWPSOCComponent::GetComponent() const{
 	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCComponent() : nullptr;
+	return objectClass ? pGameDefinition->GetActiveOCComponent().Pointer() : nullptr;
 }
 
 gdeOCComponentTexture *gdeWPSOCComponent::GetTexture() const{
 	gdeOCComponent * const component = GetComponent();
-	return component ? component->GetActiveTexture() : nullptr;
+	return component ? component->GetActiveTexture().Pointer() : nullptr;
 }
 
 const decString &gdeWPSOCComponent::GetTextureProperty() const{
@@ -1184,7 +1184,7 @@ const decString &gdeWPSOCComponent::GetTextureProperty() const{
 	return texture ? texture->GetActiveProperty() : emptyString;
 }
 
-const gdeOCComponent::eProperties gdeWPSOCComponent::GetPropertyName() const{
+gdeOCComponent::eProperties gdeWPSOCComponent::GetPropertyName() const{
 	return (gdeOCComponent::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

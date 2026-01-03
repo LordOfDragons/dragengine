@@ -171,7 +171,7 @@ seViewConstructed::~seViewConstructed(){
 ///////////////
 
 seSkin *seViewConstructed::GetSkin() const{
-	return pViewNode ? pViewNode->GetSkin() : nullptr;
+	return pViewNode ? pViewNode->GetSkin().Pointer() : nullptr;
 }
 
 void seViewConstructed::SetSkin(seSkin *skin){

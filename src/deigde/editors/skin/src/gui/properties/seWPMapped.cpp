@@ -596,7 +596,7 @@ void seWPMapped::SetSkin(seSkin *skin){
 }
 
 seMapped *seWPMapped::GetMapped() const{
-	return pSkin ? pSkin->GetActiveMapped() : nullptr;
+	return pSkin ? pSkin->GetActiveMapped().Pointer() : nullptr;
 }
 
 void seWPMapped::UpdateMappedList(){

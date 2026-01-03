@@ -505,7 +505,7 @@ void dearAnimatorInstance::pUpdateMappings(){
 	}
 	
 	const deComponent * const component = pAnimatorInstance.GetComponent();
-	const deModel * const model = component ? component->GetModel() : nullptr;
+	const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 	const deAnimator &animator = pAnimator->GetAnimator();
 	const deRig * const rig = animator.GetRig();
 	

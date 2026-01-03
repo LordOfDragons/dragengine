@@ -467,15 +467,15 @@ void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinit
 
 
 gdeObjectClass *gdeWPSOCNavigationBlocker::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCNavigationBlocker *gdeWPSOCNavigationBlocker::GetNavigationBlocker() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCNavigationBlocker() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCNavigationBlocker().Pointer() : nullptr;
 }
 
-const gdeOCNavigationBlocker::eProperties gdeWPSOCNavigationBlocker::GetPropertyName() const{
+gdeOCNavigationBlocker::eProperties gdeWPSOCNavigationBlocker::GetPropertyName() const{
 	return (gdeOCNavigationBlocker::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 

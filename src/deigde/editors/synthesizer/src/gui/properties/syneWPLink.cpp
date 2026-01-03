@@ -345,7 +345,7 @@ void syneWPLink::SetSynthesizer(syneSynthesizer *synthesizer){
 }
 
 syneLink * syneWPLink::GetLink() const{
-	return pSynthesizer ? pSynthesizer->GetActiveLink() : nullptr;
+	return pSynthesizer ? pSynthesizer->GetActiveLink().Pointer() : nullptr;
 }
 
 void syneWPLink::SelectActiveLink(){

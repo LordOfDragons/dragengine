@@ -337,7 +337,7 @@ void projWindowMain::UpdateShowActionPath(){
 	path.AddComponent("testRun.log");
 	pActionShowLogs->SetPath(path.GetPathNative());
 	
-	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : nullptr;
+	const projProfile * const profile = pProject ? pProject->GetActiveProfile().Pointer() : nullptr;
 	if(profile){
 		path.SetFromNative(gameProject.GetDirectoryPath());
 		path.AddUnixPath(profile->GetDelgaPath());

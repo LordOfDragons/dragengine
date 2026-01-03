@@ -906,8 +906,8 @@ void reWPView::UpdateView(){
 }
 
 void reWPView::UpdateMoveList(){
-	const deAnimator * const engAnimator = pRig ? pRig->GetEngineAnimator() : nullptr;
-	const deAnimation * const animation = engAnimator ? engAnimator->GetAnimation() : nullptr;
+	const deAnimator * const engAnimator = pRig ? pRig->GetEngineAnimator().Pointer() : nullptr;
+	const deAnimation * const animation = engAnimator ? engAnimator->GetAnimation().Pointer() : nullptr;
 	
 	pCBAnimMoves->RemoveAllItems();
 	

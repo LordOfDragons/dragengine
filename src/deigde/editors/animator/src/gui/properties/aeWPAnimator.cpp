@@ -757,7 +757,7 @@ void aeWPAnimator::UpdateModelVertexPositionSetList(){
 	
 	if(pAnimator){
 		const deComponent * const component = pAnimator->GetEngineComponent();
-		const deModel * const model = component ? component->GetModel() : nullptr;
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 		
 		if(model){
 			const int count = model->GetVertexPositionSetCount();

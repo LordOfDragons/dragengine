@@ -100,10 +100,10 @@ public:
 	gdeOCParticleEmitter *GetParticleEmitter() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCParticleEmitter::eProperties GetPropertyName() const;
+	gdeOCParticleEmitter::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCParticleEmitter::eTriggers GetTriggerName() const;
+	gdeOCParticleEmitter::eTriggers GetTriggerName() const;
 	
 	
 	

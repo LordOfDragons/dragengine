@@ -462,7 +462,7 @@ void meObject::OnGameDefinitionChanged(){
 
 void meObject::OnActiveCameraChanged(){
 	const meCamera * const camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : nullptr;
-	pWObject->SetCamera(camera ? camera->GetEngineCamera() : nullptr);
+	pWObject->SetCamera(camera ? camera->GetEngineCamera().Pointer() : nullptr);
 	SetVisible(!camera || camera != pCamera);
 }
 

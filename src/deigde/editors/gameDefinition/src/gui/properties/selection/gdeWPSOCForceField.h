@@ -109,10 +109,10 @@ public:
 	gdeOCForceField *GetForceField() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCForceField::eProperties GetPropertyName() const;
+	gdeOCForceField::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCForceField::eTriggers GetTriggerName() const;
+	gdeOCForceField::eTriggers GetTriggerName() const;
 	
 	
 	

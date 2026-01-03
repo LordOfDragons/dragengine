@@ -716,19 +716,19 @@ void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
 
 
 gdeObjectClass *gdeWPSOCLight::GetObjectClass() const{
-	return pGameDefinition ? pGameDefinition->GetActiveObjectClass() : nullptr;
+	return pGameDefinition ? pGameDefinition->GetActiveObjectClass().Pointer() : nullptr;
 }
 
 gdeOCLight *gdeWPSOCLight::GetLight() const{
-	const gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? pGameDefinition->GetActiveOCLight() : nullptr;
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? pGameDefinition->GetActiveOCLight().Pointer() : nullptr;
 }
 
-const gdeOCLight::eProperties gdeWPSOCLight::GetPropertyName() const{
+gdeOCLight::eProperties gdeWPSOCLight::GetPropertyName() const{
 	return (gdeOCLight::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
-const gdeOCLight::eTriggers gdeWPSOCLight::GetTriggerName() const{
+gdeOCLight::eTriggers gdeWPSOCLight::GetTriggerName() const{
 	return (gdeOCLight::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 

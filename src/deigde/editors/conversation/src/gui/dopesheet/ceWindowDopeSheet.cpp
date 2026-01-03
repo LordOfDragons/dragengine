@@ -475,17 +475,17 @@ void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
 
 
 ceConversationFile *ceWindowDopeSheet::GetFile() const{
-	return pConversation ? pConversation->GetActiveFile() : nullptr;
+	return pConversation ? pConversation->GetActiveFile().Pointer() : nullptr;
 }
 
 ceConversationTopic *ceWindowDopeSheet::GetTopic() const{
 	ceConversationFile * const file = GetFile();
-	return file ? file->GetActiveTopic() : nullptr;
+	return file ? file->GetActiveTopic().Pointer() : nullptr;
 }
 
 ceConversationAction *ceWindowDopeSheet::GetAction() const{
 	ceConversationTopic * const topic = GetTopic();
-	return topic ? topic->GetActiveAction() : nullptr;
+	return topic ? topic->GetActiveAction().Pointer() : nullptr;
 }
 
 ceCAActorSpeak *ceWindowDopeSheet::GetActionASpeak() const{
@@ -495,7 +495,7 @@ ceCAActorSpeak *ceWindowDopeSheet::GetActionASpeak() const{
 }
 
 ceCameraShot *ceWindowDopeSheet::GetCameraShot() const{
-	return pConversation ? pConversation->GetActiveCameraShot() : nullptr;
+	return pConversation ? pConversation->GetActiveCameraShot().Pointer() : nullptr;
 }
 
 int ceWindowDopeSheet::GetScrollTime() const{

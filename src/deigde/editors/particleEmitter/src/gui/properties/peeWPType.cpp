@@ -964,7 +964,7 @@ void peeWPType::OnEmitterPathChanged(){
 }
 
 peeType *peeWPType::GetType() const{
-	return pEmitter ? pEmitter->GetActiveType() : nullptr;
+	return pEmitter ? pEmitter->GetActiveType().Pointer() : nullptr;
 }
 
 peeParameter *peeWPType::GetParameter() const{
