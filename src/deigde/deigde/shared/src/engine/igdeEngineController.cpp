@@ -219,7 +219,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
 			vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 			
-			if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
+			if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainers().GetCount() > 0){
 				decPath relPath(diskPath.RelativePath(sharePath, true));
 				relPath.SetPrefix("/");
 				vfs.AddContainer(deVFSRedirect::Ref::New(rootPath, relPath, vfsAssetLibraries, true));
@@ -620,21 +620,14 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 
 deLoadableModule *igdeEngineController::GetBestModuleForType(deModuleSystem::eModuleTypes moduleType) const{
 	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	const int count = modsys.GetModuleCount();
 	deLoadableModule *bestModule = nullptr;
-	int i;
 	
-	// for the time being we simply pick the first module which matches the type and is ready
-	// to be used. later on this has to be improved to use a matching metrics which tells
-	// how well a module matches a given set of feature requirements.
-	for(i=0; i<count; i++){
-		deLoadableModule * const module = modsys.GetModuleAt(i);
-		
+	modsys.GetModules().Visit([&](deLoadableModule * const &module){
 		if(module->GetType() != moduleType){
-			continue;
+			return;
 		}
 		if(module->GetErrorCode() != deLoadableModule::eecSuccess){
-			continue;
+			return;
 		}
 		
 		// no best module found. use this module
@@ -656,7 +649,6 @@ deLoadableModule *igdeEngineController::GetBestModuleForType(deModuleSystem::eMo
 		}else if(module->GetPriority() > bestModule->GetPriority() || bestModule->GetIsFallback()){
 			bestModule = module;
 		}
-	}
-	
+	});
 	return bestModule;
 }

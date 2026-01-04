@@ -122,8 +122,8 @@ void deoxrDPHTCHandInteraction::pAddDevice(bool left){
 	button->SetType(deInputDeviceButton::ebtTrigger);
 	button->SetDisplayText("Tri");
 	button->SetInputDeviceComponent(trigger);
-	button->SetFakeFromAxis(device->GetAxisAt(device->GetAxisCount() - 1));
-	button->SetIndex(device->GetButtonCount());
+	button->SetFakeFromAxis(device->GetAxes().GetAt(device->GetAxes().GetCount() - 1));
+	button->SetIndex(device->GetButtons().GetCount());
 	device->AddButton(button); // has to be button 0
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
@@ -135,8 +135,8 @@ void deoxrDPHTCHandInteraction::pAddDevice(bool left){
 	button->SetType(deInputDeviceButton::ebtTrigger);
 	button->SetDisplayText("Grip");
 	button->SetInputDeviceComponent(grip);
-	button->SetFakeFromAxis(device->GetAxisAt(device->GetAxisCount() - 1));
-	button->SetIndex(device->GetButtonCount());
+	button->SetFakeFromAxis(device->GetAxes().GetAt(device->GetAxes().GetCount() - 1));
+	button->SetIndex(device->GetButtons().GetCount());
 	device->AddButton(button);
 	
 	// gestures
@@ -152,7 +152,7 @@ void deoxrDPHTCHandInteraction::pAddDevice(bool left){
 	axis->SetName("Pinch");
 	axis->SetID("ghpinch");
 	axis->SetDisplayText("Pinch");
-	axis->SetIndex(device->GetAxisCount());
+	axis->SetIndex(device->GetAxes().GetCount());
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
@@ -165,7 +165,7 @@ void deoxrDPHTCHandInteraction::pAddDevice(bool left){
 	axis->SetName("Grasp");
 	axis->SetID("ghgrasp");
 	axis->SetDisplayText("Grasp");
-	axis->SetIndex(device->GetAxisCount());
+	axis->SetIndex(device->GetAxes().GetCount());
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	

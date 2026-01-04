@@ -141,10 +141,6 @@ void deoxrDevice::SetDisplayText(const char *text){
 
 
 
-int deoxrDevice::GetButtonCount() const{
-	return pButtons.GetCount();
-}
-
 void deoxrDevice::AddButton(deoxrDeviceButton *button){
 	DEASSERT_NOTNULL(button)
 	pButtons.Add(button);
@@ -183,43 +179,19 @@ deVROpenXR::eInputActions actionApproach, const char *name, const char *id, cons
 	pButtons.Add(button);
 }
 
-deoxrDeviceButton *deoxrDevice::GetButtonAt(int index) const{
-	return (deoxrDeviceButton*)pButtons.GetAt(index);
-}
-
 deoxrDeviceButton *deoxrDevice::GetButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoxrDeviceButton * const button = (deoxrDeviceButton*)pButtons.GetAt(i);
-		if(button->GetID() == id){
-			return button;
-		}
-	}
-	
-	return nullptr;
+	return pButtons.FindOrDefault([&](const deoxrDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int deoxrDevice::IndexOfButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const deoxrDeviceButton &button = *((deoxrDeviceButton*)pButtons.GetAt(i));
-		if(button.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const deoxrDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 
-
-int deoxrDevice::GetAxisCount() const{
-	return pAxes.GetCount();
-}
 
 void deoxrDevice::AddAxis(deoxrDeviceAxis *axis){
 	DEASSERT_NOTNULL(axis)
@@ -308,69 +280,32 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	}
 }
 
-deoxrDeviceAxis *deoxrDevice::GetAxisAt(int index) const{
-	return (deoxrDeviceAxis*)pAxes.GetAt(index);
-}
-
 deoxrDeviceAxis *deoxrDevice::GetAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		deoxrDeviceAxis * const axis = (deoxrDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetID() == id){
-			return axis;
-		}
-	}
-	
-	return nullptr;
+	return pAxes.FindOrDefault([&](const deoxrDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int deoxrDevice::IndexOfAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const deoxrDeviceAxis &axis = *((deoxrDeviceAxis*)pAxes.GetAt(i));
-		if(axis.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const deoxrDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 
-
-int deoxrDevice::GetFeedbackCount() const{
-	return pFeedbacks.GetCount();
-}
 
 void deoxrDevice::AddFeedback(deoxrDeviceFeedback *feedback){
 	DEASSERT_NOTNULL(feedback)
 	pFeedbacks.Add(feedback);
 }
 
-deoxrDeviceFeedback *deoxrDevice::GetFeedbackAt(int index) const{
-	return (deoxrDeviceFeedback*)pFeedbacks.GetAt(index);
-}
-
 int deoxrDevice::IndexOfFeedbackWithID(const char *id) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const deoxrDeviceFeedback &feedback = *((deoxrDeviceFeedback*)pFeedbacks.GetAt(i));
-		if(feedback.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pFeedbacks.IndexOfMatching([&](const deoxrDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
-
-int deoxrDevice::GetComponentCount() const{
-	return pComponents.GetCount();
-}
 
 void deoxrDevice::AddComponent(deoxrDeviceComponent *component){
 	DEASSERT_NOTNULL(component)
@@ -389,21 +324,10 @@ const char *name, const char *id, const char *displayText){
 	return component;
 }
 
-deoxrDeviceComponent *deoxrDevice::GetComponentAt(int index) const{
-	return (deoxrDeviceComponent*)pComponents.GetAt(index);
-}
-
 int deoxrDevice::IndexOfComponentWithID(const char *id) const{
-	const int count = pComponents.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const deoxrDeviceComponent &component = *((deoxrDeviceComponent*)pComponents.GetAt(i));
-		if(component.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pComponents.IndexOfMatching([&](const deoxrDeviceComponent &component){
+		return component.GetID() == id;
+	});
 }
 
 
@@ -436,7 +360,7 @@ void deoxrDevice::GetInfo(deInputDevice &info) const{
 	info.SetType(pType);
 	info.SetDisplayImage(pDisplayImage);
 	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
+		info.AddDisplayIcon(pDisplayIcons.GetAt(i));
 	}
 	info.SetDisplayText(pDisplayText);
 	
@@ -451,19 +375,19 @@ void deoxrDevice::GetInfo(deInputDevice &info) const{
 	const int buttonCount = pButtons.GetCount();
 	info.SetButtonCount(buttonCount);
 	for(i=0; i<buttonCount; i++){
-		((deoxrDeviceButton*)pButtons.GetAt(i))->GetInfo(info.GetButtonAt(i));
+		pButtons.GetAt(i)->GetInfo(info.GetButtons().GetAt(i));
 	}
 	
 	const int axisCount = pAxes.GetCount();
 	info.SetAxisCount(axisCount);
 	for(i=0; i<axisCount; i++){
-		((deoxrDeviceAxis*)pAxes.GetAt(i))->GetInfo(info.GetAxisAt(i));
+		pAxes.GetAt(i)->GetInfo(info.GetAxes().GetAt(i));
 	}
 	
 	const int feedbackCount = pFeedbacks.GetCount();
 	info.SetFeedbackCount(feedbackCount);
 	for(i=0; i<feedbackCount; i++){
-		((deoxrDeviceFeedback*)pFeedbacks.GetAt(i))->GetInfo(info.GetFeedbackAt(i));
+		pFeedbacks.GetAt(i)->GetInfo(info.GetFeedbacks().GetAt(i));
 	}
 
 	info.SetSupportsFaceEyeExpressions(pFaceTracker);
@@ -623,24 +547,19 @@ void deoxrDevice::TrackStates(){
 		pFaceTracker->Update();
 	}
 	
-	int i, count = pAxes.GetCount();
-	for(i=0; i<count; i++){
-		GetAxisAt(i)->TrackState();
-	}
+	pAxes.Visit([](deoxrDeviceAxis &axis){
+		axis.TrackState();
+	});
 	
-	count = pButtons.GetCount();
-	for(i=0; i<count; i++){
-		GetButtonAt(i)->TrackState();
-	}
+	pButtons.Visit([](deoxrDeviceButton &button){
+		button.TrackState();
+	});
 }
 
 void deoxrDevice::ResetStates(){
-	const int axisCount = pAxes.GetCount();
-	int i;
-	
-	for(i=0; i<axisCount; i++){
-		GetAxisAt(i)->ResetState();
-	}
+	pAxes.Visit([](deoxrDeviceAxis &axis){
+		axis.ResetState();
+	});
 }
 
 void deoxrDevice::GetDevicePose(deInputDevicePose &pose){

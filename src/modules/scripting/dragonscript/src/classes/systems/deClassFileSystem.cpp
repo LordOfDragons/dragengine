@@ -442,12 +442,12 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 	
 	// enumerate modules
 	const deModuleSystem &modsys = *clsFileSys.GetDS()->GetGameEngine()->GetModuleSystem();
-	const int moduleCount = modsys.GetModuleCount();
+	const int moduleCount = modsys.GetModules().GetCount();
 	decTList<deLoadableModule*> modules;
 	int i, j;
 	
 	for(i=0; i<moduleCount; i++){
-		deLoadableModule * const module = modsys.GetModuleAt(i);
+		deLoadableModule * const module = modsys.GetModules().GetAt(i);
 		if(module->GetType() != moduleType || !module->GetEnabled()
 		|| module->GetErrorCode() != deLoadableModule::eecSuccess){
 			continue;

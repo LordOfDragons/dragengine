@@ -1411,7 +1411,6 @@ void aeAnimator::pAnimCompChanged(){
 }
 
 void aeAnimator::pUpdateEngineControllers(){
-	deAnimatorController *engController = nullptr;
 	int i;
 	
 	// set all engine controller indices in our controllers to -1
@@ -1427,19 +1426,8 @@ void aeAnimator::pUpdateEngineControllers(){
 	pEngAnimator->RemoveAllControllers();
 	
 	// add an engine controller for each controller we have
-	try{
-		for(i=0; i<count; i++){
-			engController = new deAnimatorController;
-			pEngAnimator->AddController(engController);
-			engController = nullptr;
-		}
-		
-	}catch(const deException &){
-		if(engController){
-			delete engController;
-		}
-		
-		throw;
+	for(i=0; i<count; i++){
+		pEngAnimator->AddController(deAnimatorController::Ref::New());
 	}
 	
 	// assign the animator to the animator instance. this creates the controllers

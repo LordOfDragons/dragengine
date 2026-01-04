@@ -42,7 +42,7 @@ deLoggerChain::deLoggerChain(){
 }
 
 deLoggerChain::~deLoggerChain(){
-	pLoggerList.RemoveAll();
+	pLoggers.RemoveAll();
 }
 
 
@@ -53,7 +53,7 @@ deLoggerChain::~deLoggerChain(){
 int deLoggerChain::GetLoggerCount(){
 	int count;
 	pMutex.Lock();
-	count = pLoggerList.GetCount();
+	count = pLoggers.GetCount();
 	pMutex.Unlock();
 	return count;
 }
@@ -64,7 +64,7 @@ deLogger *deLoggerChain::GetLoggerAt(int index){
 	pMutex.Lock();
 	
 	try{
-		logger = (deLogger*)pLoggerList.GetAt(index);
+		logger = pLoggers.GetAt(index);
 		pMutex.Unlock();
 		
 	}catch(const deException &){
@@ -83,7 +83,7 @@ void deLoggerChain::AddLogger(deLogger *logger){
 	pMutex.Lock();
 	
 	try{
-		pLoggerList.Add(logger);
+		pLoggers.Add(logger);
 		pMutex.Unlock();
 		
 	}catch(const deException &){
@@ -96,7 +96,7 @@ void deLoggerChain::RemoveLogger(deLogger *logger){
 	pMutex.Lock();
 	
 	try{
-		pLoggerList.Remove(logger);
+		pLoggers.Remove(logger);
 		pMutex.Unlock();
 		
 	}catch(const deException &){
@@ -109,7 +109,7 @@ void deLoggerChain::RemoveAllLoggers(){
 	pMutex.Lock();
 	
 	try{
-		pLoggerList.RemoveAll();
+		pLoggers.RemoveAll();
 		pMutex.Unlock();
 		
 	}catch(const deException &){
@@ -128,10 +128,10 @@ void deLoggerChain::LogInfo(const char *source, const char *message){
 	pMutex.Lock();
 	
 	try{
-		const int count = pLoggerList.GetCount();
+		const int count = pLoggers.GetCount();
 		int i;
 		for(i=0; i<count; i++){
-			((deLogger*)pLoggerList.GetAt(i))->LogInfo(source, message);
+			pLoggers.GetAt(i)->LogInfo(source, message);
 		}
 		
 		pMutex.Unlock();
@@ -148,11 +148,11 @@ void deLoggerChain::LogWarn(const char *source, const char *message){
 	pMutex.Lock();
 	
 	try{
-		const int count = pLoggerList.GetCount();
+		const int count = pLoggers.GetCount();
 		int i;
 		
 		for(i=0; i<count; i++){
-			((deLogger*)pLoggerList.GetAt(i))->LogWarn(source, message);
+			pLoggers.GetAt(i)->LogWarn(source, message);
 		}
 		
 		pMutex.Unlock();
@@ -169,11 +169,11 @@ void deLoggerChain::LogError(const char *source, const char *message){
 	pMutex.Lock();
 	
 	try{
-		const int count = pLoggerList.GetCount();
+		const int count = pLoggers.GetCount();
 		int i;
 		
 		for(i=0; i<count; i++){
-			((deLogger*)pLoggerList.GetAt(i))->LogError(source, message);
+			pLoggers.GetAt(i)->LogError(source, message);
 		}
 		
 		pMutex.Unlock();

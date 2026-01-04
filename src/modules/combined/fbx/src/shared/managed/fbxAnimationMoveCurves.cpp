@@ -80,7 +80,7 @@ pRigBone(NULL)
 			if(node.GetName() == "Model"){
 				pNodeModel = &node;
 				pNodeModelID = node.GetID();
-				pBoneName = node.GetPropertyAt(1)->CastString().GetValue();
+				pBoneName = node.GetProperties().GetAt(1)->CastString().GetValue();
 				
 				if(connection->GetProperty() == "Lcl Translation"){
 					pTargetProperty = etpPosition;
@@ -137,7 +137,7 @@ void fbxAnimationMoveCurves::Prepare(){
 void fbxAnimationMoveCurves::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
 	static const char * const tpnames[4] = {"position", "rotation", "scale", "unsupported"};
 	module.LogInfoFormat("%sCurves '%s': bone='%s'(%p) targetProperty=%s, curves(%p %p %p)",
-		prefix.GetString(), pNodeModel->GetPropertyAt(1)->CastString().GetValue().GetString(),
+		prefix.GetString(), pNodeModel->GetProperties().GetAt(1)->CastString().GetValue().GetString(),
 		pBoneName.GetString(), pRigBone, tpnames[pTargetProperty], (deObject*)pCurveX,
 		(deObject*)pCurveY, (deObject*)pCurveZ);
 }

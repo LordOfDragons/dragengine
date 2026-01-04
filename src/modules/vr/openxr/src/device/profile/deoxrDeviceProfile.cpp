@@ -95,16 +95,13 @@ deoxrSession *deoxrDeviceProfile::pGetSession() const{
 void deoxrDeviceProfile::pHasHandDevices(deoxrDevice *deviceLeft, deoxrDevice *deviceRight,
 bool &hasLeft, bool &hasRight) const{
 	const deoxrDeviceManager &devices = GetInstance().GetOxr().GetDevices();
-	const int count = devices.GetCount();
-	int i;
 	
 	hasLeft = false;
 	hasRight = false;
 	
-	for(i=0; i<count; i++){
-		deoxrDevice * const device = devices.GetAt(i);
+	devices.GetDevices().Visit([&](deoxrDevice *device){
 		if(deviceLeft == device || deviceRight == device){
-			continue;
+			return;
 		}
 		
 		switch(device->GetType()){
@@ -119,7 +116,7 @@ bool &hasLeft, bool &hasRight) const{
 		default:
 			break;
 		}
-	}
+	});
 }
 
 bool deoxrDeviceProfile::pHasAnyHandDevice(deoxrDevice *deviceLeft, deoxrDevice *deviceRight) const{
@@ -196,7 +193,7 @@ const char *displayText){
 	component->SetName(name);
 	component->SetDisplayText(displayText);
 	component->SetType(type);
-	component->SetIndex(device.GetComponentCount());
+	component->SetIndex(device.GetComponents().GetCount());
 	device.AddComponent(component);
 	return component;
 }
@@ -215,7 +212,7 @@ void deoxrDeviceProfile::pAddAxisTrigger(deoxrDevice &device, deoxrDeviceCompone
 	axis->SetName("Trigger");
 	axis->SetID("trig");
 	axis->SetDisplayText("Tri");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	axis->SetFinger(0);
 	device.AddAxis(axis);
@@ -237,7 +234,7 @@ bool withTouch, bool withAproach){
 		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerNear));
 	}
 	button->SetFinger(0);
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -251,7 +248,7 @@ void deoxrDeviceProfile::pAddAxisTriggerForce(deoxrDevice &device, deoxrDeviceCo
 	axis->SetName("Trigger Force");
 	axis->SetID("trifo");
 	axis->SetDisplayText("TriF");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -266,7 +263,7 @@ void deoxrDeviceProfile::pAddAxisTriggerCurl(deoxrDevice &device, deoxrDeviceCom
 	axis->SetName("Trigger Curl");
 	axis->SetID("tricu");
 	axis->SetDisplayText("TriC");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -281,7 +278,7 @@ void deoxrDeviceProfile::pAddAxisTriggerSlide(deoxrDevice &device, deoxrDeviceCo
 	axis->SetName("Trigger Slide");
 	axis->SetID("trisl");
 	axis->SetDisplayText("TriS");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -306,7 +303,7 @@ void deoxrDeviceProfile::pAddAxesTrackpad(deoxrDevice &device, deoxrDeviceCompon
 		text.Format("tp%s", idAxis[i]);
 		axis->SetID(text);
 		axis->SetDisplayText("Pad");
-		axis->SetIndex(device.GetAxisCount());
+		axis->SetIndex(device.GetAxes().GetCount());
 		axis->SetDeadZone(axis->GetResolution());
 		axis->SetInputDeviceComponent(component);
 		device.AddAxis(axis);
@@ -327,7 +324,7 @@ deoxrDeviceComponent *component, bool withPress, bool withTouch){
 	if(withTouch){
 		button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaTrackpadTouch));
 	}
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -351,7 +348,7 @@ void deoxrDeviceProfile::pAddAxesJoystick(deoxrDevice &device, deoxrDeviceCompon
 		text.Format("js%s", idAxis[i]);
 		axis->SetID(text);
 		axis->SetDisplayText("Joy");
-		axis->SetIndex(device.GetAxisCount());
+		axis->SetIndex(device.GetAxes().GetCount());
 		axis->SetDeadZone(axis->GetResolution());
 		axis->SetInputDeviceComponent(component);
 		device.AddAxis(axis);
@@ -372,7 +369,7 @@ deoxrDeviceComponent *component, bool withPress, bool withTouch){
 	if(withTouch){
 		button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaJoystickTouch));
 	}
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -395,7 +392,7 @@ bool withPress, bool withApproach){
 	if(withApproach){
 		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestNear));
 	}
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -409,7 +406,7 @@ void deoxrDeviceProfile::pAddAxesThumbrestPress(deoxrDevice &device, deoxrDevice
 	axis->SetName("Thumbrest Press");
 	axis->SetID("trestpr");
 	axis->SetDisplayText("ThRPr");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -428,7 +425,7 @@ void deoxrDeviceProfile::pAddAxisGripGrab(deoxrDevice &device, deoxrDeviceCompon
 	axis->SetName("Grab");
 	axis->SetID("gg");
 	axis->SetDisplayText("Grab");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -443,7 +440,7 @@ void deoxrDeviceProfile::pAddAxisGripSqueeze(deoxrDevice &device, deoxrDeviceCom
 	axis->SetName("Squeeze");
 	axis->SetID("gs");
 	axis->SetDisplayText("Squ");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -458,7 +455,7 @@ void deoxrDeviceProfile::pAddAxisGripPinch(deoxrDevice &device, deoxrDeviceCompo
 	axis->SetName("Pinch");
 	axis->SetID("gp");
 	axis->SetDisplayText("Pin");
-	axis->SetIndex(device.GetAxisCount());
+	axis->SetIndex(device.GetAxes().GetCount());
 	axis->SetInputDeviceComponent(component);
 	device.AddAxis(axis);
 }
@@ -474,7 +471,7 @@ void deoxrDeviceProfile::pAddButtonGrip(deoxrDevice &device, deoxrDeviceComponen
 	if(withTouch){
 		button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaGripTouch));
 	}
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -524,7 +521,7 @@ eButtonLabel label, bool withTouch){
 		break;
 	}
 	
-	button->SetIndex(device.GetButtonCount());
+	button->SetIndex(device.GetButtons().GetCount());
 	device.AddButton(button);
 }
 
@@ -681,7 +678,7 @@ bool withInputSimulation){
 		axis->SetName(bendData[i].name);
 		axis->SetID(bendData[i].id);
 		axis->SetDisplayText(bendData[i].displayText);
-		axis->SetIndex(device.GetAxisCount());
+		axis->SetIndex(device.GetAxes().GetCount());
 		axis->SetFinger(i);
 		axis->SetInputDeviceComponent(componentHand);
 		device.AddAxis(axis);
@@ -702,7 +699,7 @@ bool withInputSimulation){
 		axis->SetName(bendSpread[i].name);
 		axis->SetID(bendSpread[i].id);
 		axis->SetDisplayText(bendSpread[i].displayText);
-		axis->SetIndex(device.GetAxisCount());
+		axis->SetIndex(device.GetAxes().GetCount());
 		axis->SetFinger(i);
 		axis->SetInputDeviceComponent(componentHand);
 		device.AddAxis(axis);
@@ -726,7 +723,7 @@ bool withInputSimulation){
 			axis->SetID(tfiData[i].id);
 			axis->SetDisplayText(tfiData[i].displayText);
 			axis->SetFinger(i);
-			axis->SetIndex(device.GetAxisCount());
+			axis->SetIndex(device.GetAxes().GetCount());
 			axis->SetInputDeviceComponent(componentHand);
 			device.AddAxis(axis);
 			
@@ -737,7 +734,7 @@ bool withInputSimulation){
 			button->SetID(tfiData[i].id);
 			button->SetDisplayText(tfiData[i].displayText);
 			button->SetFinger(i);
-			button->SetIndex(device.GetButtonCount());
+			button->SetIndex(device.GetButtons().GetCount());
 			button->SetInputDeviceComponent(componentHand);
 			device.AddButton(button);
 		}

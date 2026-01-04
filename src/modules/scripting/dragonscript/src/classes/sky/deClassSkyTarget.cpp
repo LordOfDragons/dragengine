@@ -125,7 +125,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyTarget::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
+	const deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	rt->PushInt(target.GetLinks().GetCount());
 }
@@ -138,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyTarget::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
+	const deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	rt->PushInt(target.GetLinks().GetAt(rt->GetValue(0)->GetInt()));
 }
@@ -151,7 +151,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkyTarget::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
+	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.AddLink(rt->GetValue(0)->GetInt());
 }
@@ -164,7 +164,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkyTarget::nfRemoveLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
+	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.RemoveLink(rt->GetValue(0)->GetInt());
 }
@@ -176,7 +176,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkyTarget::nfRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
+	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.RemoveAllLinks();
 }
@@ -263,7 +263,7 @@ void deClassSkyTarget::CreateClassMembers(dsEngine *engine){
 
 void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky *sky, int layer,
 deSkyLayer::eTargets target){
-	if(!rt || !sky || layer < 0 || layer >= sky->GetLayerCount()
+	if(!rt || !sky || layer < 0 || layer >= sky->GetLayers().GetCount()
 	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
 		DSTHROW(dueInvalidParam);
 	}

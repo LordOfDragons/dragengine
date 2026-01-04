@@ -101,7 +101,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassParticleEmitter::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	rt->PushInt(emitter.GetControllerCount());
+	rt->PushInt(emitter.GetControllers().GetCount());
 }
 
 // public func void setControllerCount( int count )
@@ -113,23 +113,18 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitter::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter *emitter = static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter;
 	int count = rt->GetValue(0)->GetInt();
-	deParticleEmitterController *controller = NULL;
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
 	
-	while(emitter->GetControllerCount() > count){
-		emitter->RemoveController(emitter->GetControllerAt(emitter->GetControllerCount() - 1));
+	while(emitter->GetControllers().GetCount() > count){
+		emitter->RemoveController(emitter->GetControllers().Last());
 	}
 	
 	try{
-		while(emitter->GetControllerCount() < count){
-			controller = new deParticleEmitterController;
-			if(!controller) DSTHROW(dueOutOfMemory);
-			emitter->AddController(controller);
-			controller = NULL;
+		while(emitter->GetControllers().GetCount() < count){
+			emitter->AddController(deParticleEmitterController::Ref::New());
 		}
 	}catch(...){
-		if(controller) delete controller;
 		throw;
 	}
 }
@@ -147,7 +142,7 @@ void deClassParticleEmitter::nfGetControllerAt::RunFunction(dsRunTime *rt, dsVal
 	
 	if(index < 0){
 		ds.GetClassParticleEmitterController()->PushController(rt, emitter,
-			emitter->GetControllerCount() + index);
+			emitter->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassParticleEmitterController()->PushController(rt, emitter, index);
@@ -237,7 +232,7 @@ deClassParticleEmitter::nfGetTypeCount::nfGetTypeCount(const sInitData &init) : 
 void deClassParticleEmitter::nfGetTypeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	
-	rt->PushInt(emitter.GetTypeCount());
+	rt->PushInt(emitter.GetTypes().GetCount());
 }
 
 // public func void setTypeCount( int count )
@@ -248,7 +243,12 @@ deClassParticleEmitter::nfSetTypeCount::nfSetTypeCount(const sInitData &init) : 
 void deClassParticleEmitter::nfSetTypeCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	
-	emitter.SetTypeCount(rt->GetValue(0)->GetInt());
+	const int count = rt->GetValue(0)->GetInt();
+	
+	emitter.RemoveAllTypes();
+	for(int i=0; i<count; i++){
+		emitter.AddType(deParticleEmitterType::Ref::New());
+	}
 }
 
 // public func Skin getTypeSkin( int type )
@@ -260,7 +260,7 @@ void deClassParticleEmitter::nfGetTypeSkin::RunFunction(dsRunTime *rt, dsValue *
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	ds.GetClassSkin()->PushSkin(rt, type.GetSkin());
 }
@@ -275,7 +275,7 @@ void deClassParticleEmitter::nfSetTypeSkin::RunFunction(dsRunTime *rt, dsValue *
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetSkin(ds.GetClassSkin()->GetSkin(rt->GetValue(1)->GetRealObject()));
 }
@@ -289,7 +289,7 @@ void deClassParticleEmitter::nfGetTypeModel::RunFunction(dsRunTime *rt, dsValue 
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	ds.GetClassModel()->PushModel(rt, type.GetModel());
 }
@@ -304,7 +304,7 @@ void deClassParticleEmitter::nfSetTypeModel::RunFunction(dsRunTime *rt, dsValue 
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetModel(ds.GetClassModel()->GetModel(rt->GetValue(1)->GetRealObject()));
 }
@@ -318,7 +318,7 @@ void deClassParticleEmitter::nfGetTypeModelSkin::RunFunction(dsRunTime *rt, dsVa
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	ds.GetClassSkin()->PushSkin(rt, type.GetModelSkin());
 }
@@ -333,7 +333,7 @@ void deClassParticleEmitter::nfSetTypeModelSkin::RunFunction(dsRunTime *rt, dsVa
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetModelSkin(ds.GetClassSkin()->GetSkin(rt->GetValue(1)->GetRealObject()));
 }
@@ -345,7 +345,7 @@ deClassParticleEmitter::nfGetTypeCastFrom::nfGetTypeCastFrom(const sInitData &in
 }
 void deClassParticleEmitter::nfGetTypeCastFrom::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushValue(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetClassParticleEmitterCastFrom()
 		->GetVariable(type.GetCastFrom())->GetStaticValue());
@@ -363,7 +363,7 @@ void deClassParticleEmitter::nfSetTypeCastFrom::RunFunction(dsRunTime *rt, dsVal
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetCastFrom((deParticleEmitterType::eCastFrom)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -377,7 +377,7 @@ deClassParticleEmitter::nfGetTypeSimulationType::nfGetTypeSimulationType(const s
 }
 void deClassParticleEmitter::nfGetTypeSimulationType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushValue(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetClassParticleEmitterSimulation()
 		->GetVariable(type.GetSimulationType())->GetStaticValue());
@@ -395,7 +395,7 @@ void deClassParticleEmitter::nfSetTypeSimulationType::RunFunction(dsRunTime *rt,
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetSimulationType((deParticleEmitterType::eSimulationTypes)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -409,7 +409,7 @@ deClassParticleEmitter::nfGetTypeIntervalAsDistance::nfGetTypeIntervalAsDistance
 }
 void deClassParticleEmitter::nfGetTypeIntervalAsDistance::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushBool(type.GetIntervalAsDistance());
 }
@@ -422,7 +422,7 @@ deClassParticleEmitter::nfSetTypeIntervalAsDistance::nfSetTypeIntervalAsDistance
 }
 void deClassParticleEmitter::nfSetTypeIntervalAsDistance::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetIntervalAsDistance(rt->GetValue(1)->GetBool());
 }
@@ -434,7 +434,7 @@ deClassParticleEmitter::nfGetTypePhysicsSize::nfGetTypePhysicsSize(const sInitDa
 }
 void deClassParticleEmitter::nfGetTypePhysicsSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushFloat(type.GetPhysicsSize());
 }
@@ -447,7 +447,7 @@ deClassParticleEmitter::nfSetTypePhysicsSize::nfSetTypePhysicsSize(const sInitDa
 }
 void deClassParticleEmitter::nfSetTypePhysicsSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetPhysicsSize(rt->GetValue(1)->GetFloat());
 }
@@ -461,7 +461,7 @@ void deClassParticleEmitter::nfGetTypeTrailEmitter::RunFunction(dsRunTime *rt, d
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deClassParticleEmitter *clsPE = static_cast<deClassParticleEmitter*>(GetOwnerClass());
 	
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	clsPE->PushParticleEmitter(rt, type.GetTrailEmitter());
 }
@@ -476,7 +476,7 @@ void deClassParticleEmitter::nfSetTypeTrailEmitter::RunFunction(dsRunTime *rt, d
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	const deClassParticleEmitter *clsPE = static_cast<deClassParticleEmitter*>(GetOwnerClass());
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetTrailEmitter(clsPE->GetParticleEmitter(rt->GetValue(1)->GetRealObject()));
 }
@@ -493,7 +493,7 @@ void deClassParticleEmitter::nfGetTypeTrailController::RunFunction(dsRunTime *rt
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	const deParticleEmitterType::eEmitControllers controller = (deParticleEmitterType::eEmitControllers)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
@@ -514,7 +514,7 @@ void deClassParticleEmitter::nfSetTypeTrailController::RunFunction(dsRunTime *rt
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	const deParticleEmitterType::eEmitControllers controller = (deParticleEmitterType::eEmitControllers)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
@@ -530,7 +530,7 @@ deClassParticleEmitter::nfGetTypeCollisionResponse::nfGetTypeCollisionResponse(c
 }
 void deClassParticleEmitter::nfGetTypeCollisionResponse::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushValue(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetClassParticleCollisionResponse()
 		->GetVariable(type.GetCollisionResponse())->GetStaticValue());
@@ -548,7 +548,7 @@ void deClassParticleEmitter::nfSetTypeCollisionResponse::RunFunction(dsRunTime *
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetCollisionResponse((deParticleEmitterType::eCollisionResponses)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -564,7 +564,7 @@ void deClassParticleEmitter::nfGetTypeCollisionEmitter::RunFunction(dsRunTime *r
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	deClassParticleEmitter *clsPE = static_cast<deClassParticleEmitter*>(GetOwnerClass());
 	
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	clsPE->PushParticleEmitter(rt, type.GetCollisionEmitter());
 }
@@ -579,7 +579,7 @@ void deClassParticleEmitter::nfSetTypeCollisionEmitter::RunFunction(dsRunTime *r
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
 	const deClassParticleEmitter *clsPE = static_cast<deClassParticleEmitter*>(GetOwnerClass());
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetCollisionEmitter(clsPE->GetParticleEmitter(rt->GetValue(1)->GetRealObject()));
 }
@@ -591,7 +591,7 @@ deClassParticleEmitter::nfGetTypeEmitMinImpulse::nfGetTypeEmitMinImpulse(const s
 }
 void deClassParticleEmitter::nfGetTypeEmitMinImpulse::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	rt->PushFloat(type.GetEmitMinImpulse());
 }
@@ -604,7 +604,7 @@ deClassParticleEmitter::nfSetTypeEmitMinImpulse::nfSetTypeEmitMinImpulse(const s
 }
 void deClassParticleEmitter::nfSetTypeEmitMinImpulse::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	type.SetEmitMinImpulse(rt->GetValue(1)->GetFloat());
 }
@@ -621,7 +621,7 @@ void deClassParticleEmitter::nfGetTypeEmitController::RunFunction(dsRunTime *rt,
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	const deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	const deParticleEmitterType::eEmitControllers controller = (deParticleEmitterType::eEmitControllers)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
@@ -642,7 +642,7 @@ void deClassParticleEmitter::nfSetTypeEmitController::RunFunction(dsRunTime *rt,
 	}
 	
 	deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	deParticleEmitterType &type = emitter.GetTypeAt(rt->GetValue(0)->GetInt());
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	const deParticleEmitterType::eEmitControllers controller = (deParticleEmitterType::eEmitControllers)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
@@ -669,7 +669,7 @@ void deClassParticleEmitter::nfSetTypeParameterValue::RunFunction(dsRunTime *rt,
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	const float value = rt->GetValue(2)->GetFloat();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -694,7 +694,7 @@ void deClassParticleEmitter::nfSetTypeParameterSpread::RunFunction(dsRunTime *rt
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	const float value = rt->GetValue(2)->GetFloat();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -719,7 +719,7 @@ void deClassParticleEmitter::nfSetTypeParameterControllerValue::RunFunction(dsRu
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	const int controller = rt->GetValue(2)->GetInt();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -745,7 +745,7 @@ void deClassParticleEmitter::nfSetTypeParameterCurveValue::RunFunction(dsRunTime
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	dsRealObject *objCurve = rt->GetValue(2)->GetRealObject();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -775,7 +775,7 @@ void deClassParticleEmitter::nfSetTypeParameterControllerSpread::RunFunction(dsR
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	const int controller = rt->GetValue(2)->GetInt();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -801,7 +801,7 @@ void deClassParticleEmitter::nfSetTypeParameterCurveSpread::RunFunction(dsRunTim
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	dsRealObject *objCurve = rt->GetValue(2)->GetRealObject();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -832,7 +832,7 @@ void deClassParticleEmitter::nfSetTypeParameterCurveProgress::RunFunction(dsRunT
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	dsRealObject *objCurve = rt->GetValue(2)->GetRealObject();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
@@ -863,7 +863,7 @@ void deClassParticleEmitter::nfSetTypeParameterCurveBeam::RunFunction(dsRunTime 
 	const int typeIndex = rt->GetValue(0)->GetInt();
 	dsRealObject *objCurve = rt->GetValue(2)->GetRealObject();
 	
-	deParticleEmitterType &type = emitter.GetTypeAt(typeIndex);
+	deParticleEmitterType &type = emitter.GetTypes().GetAt(typeIndex);
 	deParticleEmitterParameter &parameter = type.GetParameter((deParticleEmitterType::eParameters)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );

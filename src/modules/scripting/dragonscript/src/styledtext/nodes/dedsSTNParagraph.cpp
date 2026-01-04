@@ -45,22 +45,6 @@ dedsSTNParagraph::~dedsSTNParagraph(){
 // Management
 ///////////////
 
-int dedsSTNParagraph::GetNodeCount() const{
-	return pNodes.GetCount();
-}
-
-dedsStyledTextNode* dedsSTNParagraph::GetNodeAt(int index) const{
-	return static_cast<dedsStyledTextNode*>(pNodes.GetAt(index));
-}
-
-int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode *node) const{
-	return pNodes.IndexOf(node);
-}
-
-bool dedsSTNParagraph::HasNode(dedsStyledTextNode *node) const{
-	return pNodes.Has(node);
-}
-
 void dedsSTNParagraph::AddNode(dedsStyledTextNode *node){
 	pNodes.Add(node);
 }

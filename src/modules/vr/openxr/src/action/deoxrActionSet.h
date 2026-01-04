@@ -29,7 +29,7 @@
 #include "../deoxrBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
@@ -50,7 +50,7 @@ private:
 	const decString pName;
 	const decString pLocalizedName;
 	XrActionSet pActionSet;
-	decObjectOrderedSet pActions;
+	decTObjectOrderedSet<deoxrAction> pActions;
 	
 	
 	
@@ -83,11 +83,8 @@ public:
 	/** ActionSet. */
 	inline XrActionSet GetActionSet() const{ return pActionSet; }
 	
-	/** Count of actions. */
-	int GetActionCount() const;
-	
-	/** Action at index. */
-	deoxrAction *GetActionAt(int index) const;
+	/** Actions. */
+	inline const decTObjectOrderedSet<deoxrAction> &GetActions() const{ return pActions; }
 	
 	/** Named action or nullptr. */
 	deoxrAction *GetActionNamed(const char *name) const;

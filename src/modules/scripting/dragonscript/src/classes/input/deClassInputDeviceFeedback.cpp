@@ -114,7 +114,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDeviceFeedback::nfGetID::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
 	rt->PushString(feedback.GetID());
 }
@@ -126,7 +126,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDeviceFeedback::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
 	rt->PushString(feedback.GetName());
 }
@@ -138,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceFeedbackType){
 }
 void deClassInputDeviceFeedback::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
 	rt->PushValue((static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetClassInputDeviceFeedbackType()
 		->GetVariable(feedback.GetType())->GetStaticValue());
@@ -151,7 +151,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDeviceFeedback::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
 	rt->PushString(feedback.GetComponent());
 }
@@ -163,7 +163,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassInputDeviceFeedback::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, feedback.GetDisplayImage());
@@ -176,8 +176,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDeviceFeedback::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
-	rt->PushInt(feedback.GetDisplayIconCount());
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
+	rt->PushInt(feedback.GetDisplayIcons().GetCount());
 }
 
 // public func Image getDisplayIconAt( int index )
@@ -188,10 +188,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassInputDeviceFeedback::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassImage()->PushImage(rt, feedback.GetDisplayIconAt(rt->GetValue(0)->GetInt()));
+	ds.GetClassImage()->PushImage(rt, feedback.GetDisplayIcons().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func Image getLargestDisplayIconX( int maxWidth )
@@ -202,16 +202,16 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassInputDeviceFeedback::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
-	const int count = feedback.GetDisplayIconCount();
+	const int count = feedback.GetDisplayIcons().GetCount();
 	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = nullptr;
 	int bestWidth = 0;
 	int i;
 	
 	for(i=0; i<count; i++){
-		deImage * const icon = feedback.GetDisplayIconAt(i);
+		deImage * const icon = feedback.GetDisplayIcons().GetAt(i);
 		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
@@ -229,16 +229,16 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassInputDeviceFeedback::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceFeedback*>(GetOwnerClass()))->GetDS();
-	const int count = feedback.GetDisplayIconCount();
+	const int count = feedback.GetDisplayIcons().GetCount();
 	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = nullptr;
 	int bestHeight = 0;
 	int i;
 	
 	for(i=0; i<count; i++){
-		deImage * const icon = feedback.GetDisplayIconAt(i);
+		deImage * const icon = feedback.GetDisplayIcons().GetAt(i);
 		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
@@ -255,7 +255,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDeviceFeedback::nfGetDisplayText::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDFeedbackNatDat &nd = *static_cast<const sIDFeedbackNatDat*>(p_GetNativeData(myself));
-	const deInputDeviceFeedback &axis = nd.device->GetDevice()->GetFeedbackAt(nd.feedbackIndex);
+	const deInputDeviceFeedback &axis = nd.device->GetDevice()->GetFeedbacks().GetAt(nd.feedbackIndex);
 	
 	rt->PushString(axis.GetDisplayText());
 }
@@ -422,7 +422,7 @@ void deClassInputDeviceFeedback::CreateClassMembers(dsEngine *engine){
 }
 
 void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index){
-	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetFeedbackCount()){
+	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetFeedbacks().GetCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

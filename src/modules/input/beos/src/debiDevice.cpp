@@ -115,14 +115,6 @@ void debiDevice::SetDisplayText(const char *text){
 
 
 
-int debiDevice::GetButtonCount() const{
-	return pButtons.GetCount();
-}
-
-debiDeviceButton *debiDevice::GetButtonAt(int index) const{
-	return (debiDeviceButton*)pButtons.GetAt(index);
-}
-
 debiDeviceButton *debiDevice::GetButtonWithID(const char *id) const{
 	const int count = pButtons.GetCount();
 	int i;
@@ -165,14 +157,6 @@ void debiDevice::AddButton(debiDeviceButton *button){
 }
 
 
-
-int debiDevice::GetAxisCount() const{
-	return pAxes.GetCount();
-}
-
-debiDeviceAxis *debiDevice::GetAxisAt(int index) const{
-	return (debiDeviceAxis*)pAxes.GetAt(index);
-}
 
 debiDeviceAxis *debiDevice::GetAxisWithID(const char *id) const{
 	const int count = pAxes.GetCount();
@@ -230,25 +214,23 @@ void debiDevice::GetInfo(deInputDevice &info) const{
 	info.SetName(pName);
 	info.SetType(pType);
 	info.SetDisplayImage(pDisplayImage);
-	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
-	}
+	pDisplayIcons.Visit([&](deImage *icon){
+		info.AddDisplayIcon(icon);
+	});
 	info.SetDisplayText(pDisplayText);
 	
 	info.SetDisplayModel(NULL);
 	info.SetDisplaySkin(NULL);
 	
-	const int buttonCount = pButtons.GetCount();
-	info.SetButtonCount(buttonCount);
-	for(i=0; i<buttonCount; i++){
-		((debiDeviceButton*)pButtons.GetAt(i))->GetInfo(info.GetButtonAt(i));
-	}
+	info.SetButtonCount(pButtons.GetCount());
+	pButtons.VisitIndexed([&](int i, const debiDeviceButton &button){
+		button.GetInfo(info.GetButtons().GetAt(i));
+	});
 	
-	const int axisCount = pAxes.GetCount();
-	info.SetAxisCount(axisCount);
-	for(i=0; i<axisCount; i++){
-		((debiDeviceAxis*)pAxes.GetAt(i))->GetInfo(info.GetAxisAt(i));
-	}
+	info.SetAxisCount(pAxes.GetCount());
+	pAxes.VisitIndexed([&](int i, const debiDeviceAxis &axis){
+		axis.GetInfo(info.GetAxes().GetAt(i));
+	});
 }
 
 void debiDevice::Update(){
@@ -261,9 +243,7 @@ void debiDevice::SendDirtyAxisEvents(){
 	
 	pDirtyAxesValues = false;
 	
-	const int axisCount = pAxes.GetCount();
-	int i;
-	for(i=0; i<axisCount; i++){
-		((debiDeviceAxis*)pAxes.GetAt(i))->SendEvents(*this);
-	}
+	pAxes.Visit([&](debiDeviceAxis &axis){
+		axis.SendEvents(*this);
+	});
 }

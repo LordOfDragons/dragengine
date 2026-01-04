@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 
 #include <dragengine/deObject.h>
@@ -56,8 +56,8 @@ public:
 	
 private:
 	decString pName;
-	decObjectOrderedSet pProperties;
-	decObjectOrderedSet pNodes;
+	decTObjectOrderedSet<fbxProperty> pProperties;
+	decTObjectOrderedSet<fbxNode> pNodes;
 	fbxNode *pNodeProperties70;
 	int64_t pID;
 	
@@ -100,11 +100,8 @@ public:
 	
 	
 	
-	/** \brief Count of properties. */
-	int GetPropertyCount() const;
-	
-	/** \brief Property at index. */
-	fbxProperty *GetPropertyAt(int index) const;
+	/** \brief Properties. */
+	inline const decTObjectOrderedSet<fbxProperty> &GetProperties() const{ return pProperties; }
 	
 	/** \brief Get named object property value. */
 	bool GetPropertyBoolIf(const char *name, bool &value) const;
@@ -149,11 +146,8 @@ public:
 	
 	
 	
-	/** \brief Count of nodes. */
-	int GetNodeCount() const;
-	
-	/** \brief Node at index. */
-	fbxNode *GetNodeAt(int index) const;
+	/** \brief Nodes. */
+	inline const decTObjectOrderedSet<fbxNode> &GetNodes() const{ return pNodes; }
 	
 	/** \brief Add node. */
 	void AddNode(fbxNode *node);

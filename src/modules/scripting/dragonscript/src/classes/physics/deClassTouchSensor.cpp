@@ -285,7 +285,7 @@ deClassTouchSensor::nfGetIgnoreColliderCount::nfGetIgnoreColliderCount(const sIn
 void deClassTouchSensor::nfGetIgnoreColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deTouchSensor &touchSensor = static_cast<sTSNatDat*>(p_GetNativeData(myself))->touchSensor;
 	
-	rt->PushInt(touchSensor.GetIgnoreColliderCount());
+	rt->PushInt(touchSensor.GetIgnoreColliders().GetCount());
 }
 
 // public func Collider getIgnoreColliderAt( int index )
@@ -298,7 +298,7 @@ void deClassTouchSensor::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsVal
 	const deScriptingDragonScript &ds = *((static_cast<deClassTouchSensor*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	ds.GetClassCollider()->PushCollider(rt, touchSensor.GetIgnoreColliderAt(index));
+	ds.GetClassCollider()->PushCollider(rt, touchSensor.GetIgnoreColliders().GetAt(index));
 }
 
 // public func bool hasIgnoreCollider( Collider collider )
@@ -311,7 +311,7 @@ void deClassTouchSensor::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue
 	const deScriptingDragonScript &ds = *((static_cast<deClassTouchSensor*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
-	rt->PushBool(touchSensor.HasIgnoreCollider(collider));
+	rt->PushBool(touchSensor.GetIgnoreColliders().Has(collider));
 }
 
 // public func void addIgnoreCollider( Collider collider )

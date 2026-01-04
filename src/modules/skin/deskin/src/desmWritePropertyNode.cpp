@@ -158,7 +158,7 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 		pWriter.WriteOpeningTagStart("mapped");
 		pWriter.WriteAttributeString("name", mapped[i].name);
 		pWriter.WriteOpeningTagEnd(false, false);
-		pWriter.WriteTextString(pSkin.GetMappedAt(index)->GetName());
+		pWriter.WriteTextString(pSkin.GetMapped().GetAt(index)->GetName());
 		pWriter.WriteClosingTag("mapped", false);
 	}
 }
@@ -272,7 +272,7 @@ void desmWritePropertyNode::VisitShape(deSkinPropertyNodeShape &node){
 		pWriter.WriteOpeningTagStart("shapeMapped");
 		pWriter.WriteAttributeString("name", mapped[i].name);
 		pWriter.WriteOpeningTagEnd(false, false);
-		pWriter.WriteTextString(pSkin.GetMappedAt(index)->GetName());
+		pWriter.WriteTextString(pSkin.GetMapped().GetAt(index)->GetName());
 		pWriter.WriteClosingTag("shapeMapped", false);
 	}
 	
@@ -318,7 +318,7 @@ void desmWritePropertyNode::VisitText(deSkinPropertyNodeText &node){
 		pWriter.WriteOpeningTagStart("textMapped");
 		pWriter.WriteAttributeString("name", mapped[i].name);
 		pWriter.WriteOpeningTagEnd(false, false);
-		pWriter.WriteTextString(pSkin.GetMappedAt(index)->GetName());
+		pWriter.WriteTextString(pSkin.GetMapped().GetAt(index)->GetName());
 		pWriter.WriteClosingTag("textMapped", false);
 	}
 	

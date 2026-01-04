@@ -41,14 +41,6 @@
 
 deInputDevice::deInputDevice() :
 pType(edtGeneric),
-pButtons(NULL),
-pButtonCount(0),
-pAxes(NULL),
-pAxisCount(0),
-pFeedbacks(NULL),
-pFeedbackCount(0),
-pComponents(nullptr),
-pComponentCount(0),
 pBoneConfiguration(ebcNone),
 pSupportsFaceEyeExpressions(false),
 pSupportsFaceMouthExpressions(false),
@@ -88,13 +80,7 @@ void deInputDevice::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
-int deInputDevice::GetDisplayIconCount() const{
-	return pDisplayIcons.GetCount();
-}
 
-deImage::Ref deInputDevice::GetDisplayIconAt(int index) const{
-	return deImage::Ref((deImage*)pDisplayIcons.GetAt(index));
-}
 
 void deInputDevice::AddDisplayIcon(deImage *image){
 	DEASSERT_NOTNULL(image)
@@ -151,37 +137,13 @@ void deInputDevice::SetVRSkin(deSkin *skin){
 ////////////
 
 void deInputDevice::SetButtonCount(int count){
-	if(pButtons){
-		delete [] pButtons;
-		pButtons = NULL;
-		pButtonCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pButtons = new deInputDeviceButton[count];
-	pButtonCount = count;
-}
-
-deInputDeviceButton &deInputDevice::GetButtonAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pButtonCount)
-	return pButtons[index];
+	pButtons = decTList<deInputDeviceButton>(count, deInputDeviceButton());
 }
 
 int deInputDevice::IndexOfButtonWithID(const char *id) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for(i=0; i<pButtonCount; i++){
-		if(pButtons[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const deInputDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 
@@ -190,37 +152,13 @@ int deInputDevice::IndexOfButtonWithID(const char *id) const{
 /////////
 
 void deInputDevice::SetAxisCount(int count){
-	if(pAxes){
-		delete [] pAxes;
-		pAxes = NULL;
-		pAxisCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pAxes = new deInputDeviceAxis[count];
-	pAxisCount = count;
-}
-
-deInputDeviceAxis &deInputDevice::GetAxisAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pAxisCount)
-	return pAxes[index];
+	pAxes = decTList<deInputDeviceAxis>(count, deInputDeviceAxis());
 }
 
 int deInputDevice::IndexOfAxisWithID(const char *id) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for(i=0; i<pAxisCount; i++){
-		if(pAxes[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const deInputDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 
@@ -229,37 +167,13 @@ int deInputDevice::IndexOfAxisWithID(const char *id) const{
 //////////////
 
 void deInputDevice::SetFeedbackCount(int count){
-	if(pFeedbacks){
-		delete [] pFeedbacks;
-		pFeedbacks = NULL;
-		pFeedbackCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pFeedbacks = new deInputDeviceFeedback[count];
-	pFeedbackCount = count;
-}
-
-deInputDeviceFeedback &deInputDevice::GetFeedbackAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pFeedbackCount)
-	return pFeedbacks[index];
+	pFeedbacks = decTList<deInputDeviceFeedback>(count, deInputDeviceFeedback());
 }
 
 int deInputDevice::IndexOfFeedbackWithID(const char *id) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for(i=0; i<pFeedbackCount; i++){
-		if(pFeedbacks[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pFeedbacks.IndexOfMatching([&](const deInputDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
@@ -268,37 +182,13 @@ int deInputDevice::IndexOfFeedbackWithID(const char *id) const{
 //////////////
 
 void deInputDevice::SetComponentCount(int count){
-	if(pComponents){
-		delete [] pComponents;
-		pComponents = NULL;
-		pComponentCount = 0;
-	}
-	
-	if(count == 0){
-		return;
-	}
-	
-	pComponents = new deInputDeviceComponent[count];
-	pComponentCount = count;
-}
-
-deInputDeviceComponent &deInputDevice::GetComponentAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pComponentCount)
-	return pComponents[index];
+	pComponents = decTList<deInputDeviceComponent>(count, deInputDeviceComponent());
 }
 
 int deInputDevice::IndexOfComponentWithID(const char *id) const{
-	DEASSERT_NOTNULL(id)
-	
-	int i;
-	for(i=0; i<pComponentCount; i++){
-		if(pComponents[i].GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pComponents.IndexOfMatching([&](const deInputDeviceComponent &component){
+		return component.GetID() == id;
+	});
 }
 
 
@@ -307,16 +197,4 @@ int deInputDevice::IndexOfComponentWithID(const char *id) const{
 /////////////////////
 
 void deInputDevice::pCleanUp(){
-	if(pComponents){
-		delete [] pComponents;
-	}
-	if(pFeedbacks){
-		delete [] pFeedbacks;
-	}
-	if(pAxes){
-		delete [] pAxes;
-	}
-	if(pButtons){
-		delete [] pButtons;
-	}
 }

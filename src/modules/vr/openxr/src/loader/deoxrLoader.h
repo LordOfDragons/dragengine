@@ -42,7 +42,7 @@
 #include <dragengine/app/include_windows.h>
 #endif
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -72,7 +72,7 @@ private:
 	HMODULE pLibHandle;
 	#endif
 	
-	decObjectOrderedSet pApiLayers;
+	decTObjectOrderedSet<deoxrApiLayer> pApiLayers;
 	
 	
 	

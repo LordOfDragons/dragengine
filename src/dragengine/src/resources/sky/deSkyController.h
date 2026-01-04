@@ -25,6 +25,7 @@
 #ifndef _DESKYCONTROLLER_H_
 #define _DESKYCONTROLLER_H_
 
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -38,7 +39,12 @@
  * value matching your setup. The controller takes care of transforming the current
  * value into the proper 0 to 1 range required for sounds to work with.
  */
-class DE_DLL_EXPORT deSkyController{
+class DE_DLL_EXPORT deSkyController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkyController> Ref;
+	
+	
 private:
 	decString pName;
 	float pMinValue;
@@ -58,8 +64,14 @@ public:
 	/** \brief Create copy of controller. */
 	deSkyController(const deSkyController &controller);
 	
-	/** \brief Clean up animator. */
-	~deSkyController();
+protected:
+	/**
+	 * \brief Clean up controller.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyController() override;
 	/*@}*/
 	
 	

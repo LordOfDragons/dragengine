@@ -137,7 +137,7 @@ void skyeController::SetCurrentValue(float value){
 	pCurValue = value;
 	
 	if(pSky && pSky->GetEngineSkyInstance()){
-		pSky->GetEngineSkyInstance()->GetControllerAt(pIndex).SetCurrentValue(pCurValue);
+		pSky->GetEngineSkyInstance()->GetControllers().GetAt(pIndex)->SetCurrentValue(pCurValue);
 		pSky->GetEngineSkyInstance()->NotifyControllerChangedAt(pIndex);
 	}
 	

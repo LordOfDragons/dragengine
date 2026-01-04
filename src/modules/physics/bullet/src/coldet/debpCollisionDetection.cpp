@@ -1359,12 +1359,12 @@ const decDVector &p2, const decDVector &p3, debpCollisionResult &result){
 	if(collider->IsVolume()){
 		debpColliderVolume *bpcolvol = (debpColliderVolume*)collider;
 		const debpShapeList &shapes = bpcolvol->GetShapes();
-		int s, shapeCount = shapes.GetShapeCount();
+		int s, shapeCount = shapes.GetShapes().GetCount();
 		
 		collider->UpdateShapes();
 		
 		for(s=0; s<shapeCount; s++){
-			if(shapes.GetShapeAt(s)->GetCollisionVolume()->TriangleHitsVolume(&collisionTriangle)){
+			if(shapes.GetShapes().GetAt(s)->GetCollisionVolume()->TriangleHitsVolume(&collisionTriangle)){
 				result.shape1 = s;
 				result.bone1 = -1;
 				return true;
@@ -1395,10 +1395,10 @@ const decDVector &p1, const decDVector &p2, const decDVector &p3, debpCollisionR
 	if(collider->IsVolume()){
 		debpColliderVolume *bpcolvol = (debpColliderVolume*)collider;
 		const debpShapeList &shapes = bpcolvol->GetShapes();
-		int s, shapeCount = shapes.GetShapeCount();
+		int s, shapeCount = shapes.GetShapes().GetCount();
 		
 		for(s=0; s<shapeCount; s++){
-			distance = shapes.GetShapeAt(s)->GetCollisionVolume()->VolumeMoveHitsVolume(&collisionTriangle, displacement, &normal);
+			distance = shapes.GetShapes().GetAt(s)->GetCollisionVolume()->VolumeMoveHitsVolume(&collisionTriangle, displacement, &normal);
 			
 			// distances nearly 1 are considered no collision
 			if(distance >= 0.99999f) continue;
@@ -1460,12 +1460,12 @@ const debpComponent &component, int face, debpCollisionResult &result){
 		if(collider->IsVolume()){
 			debpColliderVolume &bpcolvol = *((debpColliderVolume*)collider);
 			const debpShapeList &shapes = bpcolvol.GetShapes();
-			int s, shapeCount = shapes.GetShapeCount();
+			int s, shapeCount = shapes.GetShapes().GetCount();
 			
 			bpcolvol.UpdateShapes();
 			
 			for(s=0; s<shapeCount; s++){
-				distance = (float)shapes.GetShapeAt(s)->GetCollisionVolume()->VolumeMoveHitsVolume(&collisionTriangle, displacement, &hitNormal);
+				distance = (float)shapes.GetShapes().GetAt(s)->GetCollisionVolume()->VolumeMoveHitsVolume(&collisionTriangle, displacement, &hitNormal);
 				
 				// distances nearly 1 are considered no collision
 				if(distance >= 0.99999f) continue;
@@ -1534,7 +1534,7 @@ void debpCollisionDetection::GetColliderMoveBoundingBox(debpCollider &collider, 
 bool debpCollisionDetection::RayHitsColliderVolume(const decDVector &origin, const decDVector &direction,
 debpColliderVolume &collider, debpCollisionResult &result){
 	debpShapeList &shapes = collider.GetShapes();
-	int s, shapeCount = shapes.GetShapeCount();
+	int s, shapeCount = shapes.GetShapes().GetCount();
 	double hitDist = 0.0;
 	decDVector hitNormal;
 	int hitShape = -1;
@@ -1543,7 +1543,7 @@ debpColliderVolume &collider, debpCollisionResult &result){
 	collider.UpdateShapes();
 	
 	for(s=0; s<shapeCount; s++){
-		debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
+		debpDCollisionVolume &collisionVolume = *shapes.GetShapes().GetAt(s)->GetCollisionVolume();
 		
 		if(collisionVolume.RayHitsVolume(origin, direction, distance)){
 			if(hitShape == -1 || distance < hitDist){
@@ -1655,12 +1655,12 @@ debpColliderComponent &collider, debpCollisionResult &result){
 		
 	}else if(testMode == debpColliderComponent::etmRigShape){
 		debpShapeList &shapes = collider.GetRigShapes();
-		shapeCount = shapes.GetShapeCount();
+		shapeCount = shapes.GetShapes().GetCount();
 		
 		collider.UpdateShapes();
 		
 		for(s=0; s<shapeCount; s++){
-			debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
+			debpDCollisionVolume &collisionVolume = *shapes.GetShapes().GetAt(s)->GetCollisionVolume();
 			
 			if(collisionVolume.RayHitsVolume(origin, direction, distance)){
 				if(!hasHit || distance < hitDist){
@@ -1685,10 +1685,10 @@ debpColliderComponent &collider, debpCollisionResult &result){
 			}
 			
 			debpShapeList &shapes = bpbone->GetShapes();
-			shapeCount = shapes.GetShapeCount();
+			shapeCount = shapes.GetShapes().GetCount();
 			
 			for(s=0; s<shapeCount; s++){
-				debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
+				debpDCollisionVolume &collisionVolume = *shapes.GetShapes().GetAt(s)->GetCollisionVolume();
 				
 				if(collisionVolume.RayHitsVolume(origin, direction, distance)){
 					if(!hasHit || distance < hitDist){
@@ -1737,12 +1737,12 @@ debpColliderRig &collider, debpCollisionResult &result){
 	// determine how to test for collision
 	if(testMode == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes = collider.GetRigShapes();
-		shapeCount = shapes.GetShapeCount();
+		shapeCount = shapes.GetShapes().GetCount();
 		
 		collider.UpdateShapes();
 		
 		for(s=0; s<shapeCount; s++){
-			debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
+			debpDCollisionVolume &collisionVolume = *shapes.GetShapes().GetAt(s)->GetCollisionVolume();
 			
 			if(collisionVolume.RayHitsVolume(origin, direction, distance)){
 				if(!hasHit || distance < hitDist){
@@ -1768,10 +1768,10 @@ debpColliderRig &collider, debpCollisionResult &result){
 			}
 			
 			const debpShapeList &shapes = bpbone->GetShapes();
-			shapeCount = shapes.GetShapeCount();
+			shapeCount = shapes.GetShapes().GetCount();
 			
 			for(s=0; s<shapeCount; s++){
-				debpDCollisionVolume &collisionVolume = *shapes.GetShapeAt(s)->GetCollisionVolume();
+				debpDCollisionVolume &collisionVolume = *shapes.GetShapes().GetAt(s)->GetCollisionVolume();
 				
 				if(collisionVolume.RayHitsVolume(origin, direction, distance)){
 					if(!hasHit || distance < hitDist){
@@ -1803,13 +1803,13 @@ bool debpCollisionDetection::ShapeHitsColliderVolume(debpShape &shape,
 debpColliderVolume &collider, debpCollisionResult &result){
 	debpDCollisionVolume &collisionVolume = *shape.GetCollisionVolume();
 	const debpShapeList &shapes = collider.GetShapes();
-	int s, shapeCount = shapes.GetShapeCount();
+	int s, shapeCount = shapes.GetShapes().GetCount();
 	debpShape *cvshape;
 	
 	collider.UpdateShapes();
 	
 	for(s=0; s<shapeCount; s++){
-		cvshape = shapes.GetShapeAt(s);
+		cvshape = shapes.GetShapes().GetAt(s);
 		
 		if(collisionVolume.VolumeHitsVolume(cvshape->GetCollisionVolume())){
 			result.bone2 = -1;
@@ -1935,12 +1935,12 @@ bool debpCollisionDetection::ShapeHitsColliderComponent(debpShape &shape, debpCo
 		
 	}else if(testMode == debpColliderComponent::etmRigShape){
 		debpShapeList &shapes = collider.GetRigShapes();
-		int s, shapeCount = shapes.GetShapeCount();
+		int s, shapeCount = shapes.GetShapes().GetCount();
 		
 		collider.UpdateShapes();
 		
 		for(s=0; s<shapeCount; s++){
-			if(collisionVolume.VolumeHitsVolume(shapes.GetShapeAt(s)->GetCollisionVolume())){
+			if(collisionVolume.VolumeHitsVolume(shapes.GetShapes().GetAt(s)->GetCollisionVolume())){
 				result.bone2 = -1;
 				result.face = -1;
 				result.shape2 = s;
@@ -1961,10 +1961,10 @@ bool debpCollisionDetection::ShapeHitsColliderComponent(debpShape &shape, debpCo
 			}
 			
 			const debpShapeList &shapes = cbone->GetShapes();
-			shapeCount = shapes.GetShapeCount();
+			shapeCount = shapes.GetShapes().GetCount();
 			
 			for(s=0; s<shapeCount; s++){
-				if(collisionVolume.VolumeHitsVolume(shapes.GetShapeAt(s)->GetCollisionVolume())){
+				if(collisionVolume.VolumeHitsVolume(shapes.GetShapes().GetAt(s)->GetCollisionVolume())){
 					result.shape2 = -1;
 					result.face = -1;
 					result.bone2 = b;
@@ -1987,12 +1987,12 @@ bool debpCollisionDetection::ShapeHitsColliderRig(debpShape &shape, debpCollider
 	// determine how to test for collision
 	if(testMode == debpColliderComponent::etmRigShape){
 		debpShapeList &shapes = collider.GetRigShapes();
-		int s, shapeCount = shapes.GetShapeCount();
+		int s, shapeCount = shapes.GetShapes().GetCount();
 		
 		collider.UpdateShapes();
 		
 		for(s=0; s<shapeCount; s++){
-			if(collisionVolume.VolumeHitsVolume(shapes.GetShapeAt(s)->GetCollisionVolume())){
+			if(collisionVolume.VolumeHitsVolume(shapes.GetShapes().GetAt(s)->GetCollisionVolume())){
 				result.bone2 = -1;
 				result.face = -1;
 				result.shape2 = s;
@@ -2012,10 +2012,10 @@ bool debpCollisionDetection::ShapeHitsColliderRig(debpShape &shape, debpCollider
 			
 			if(cbone){
 				const debpShapeList &shapes = cbone->GetShapes();
-				shapeCount = shapes.GetShapeCount();
+				shapeCount = shapes.GetShapes().GetCount();
 				
 				for(s=0; s<shapeCount; s++){
-					if(collisionVolume.VolumeHitsVolume(shapes.GetShapeAt(s)->GetCollisionVolume())){
+					if(collisionVolume.VolumeHitsVolume(shapes.GetShapes().GetAt(s)->GetCollisionVolume())){
 						result.shape2 = -1;
 						result.face = -1;
 						result.bone2 = b;
@@ -2036,8 +2036,8 @@ bool debpCollisionDetection::ColliderVolumeHitsColliderVolume(debpColliderVolume
 debpColliderVolume &collider2, debpCollisionResult &result){
 	debpShapeList &shapes1 = collider1.GetShapes();
 	debpShapeList &shapes2 = collider2.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
-	int s2, shapeCount2 = shapes2.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
+	int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 	debpDCollisionVolume *collisionVolume;
 	debpShape *shape1, *shape2;
 	
@@ -2045,11 +2045,11 @@ debpColliderVolume &collider2, debpCollisionResult &result){
 	collider2.UpdateShapes();
 	
 	for(s1=0; s1<shapeCount1; s1++){
-		shape1 = shapes1.GetShapeAt(s1);
+		shape1 = shapes1.GetShapes().GetAt(s1);
 		collisionVolume = shape1->GetCollisionVolume();
 		
 		for(s2=0; s2<shapeCount2; s2++){
-			shape2 = shapes2.GetShapeAt(s2);
+			shape2 = shapes2.GetShapes().GetAt(s2);
 			
 			if(collisionVolume->VolumeHitsVolume(shape2->GetCollisionVolume())){
 				result.shape1 = s1;
@@ -2070,7 +2070,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 	
 	debpComponent &component = *collider2.GetLinkedComponent();
 	const debpShapeList &shapes1 = collider1.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 	int testMode = collider2.GetTestMode();
 	
 	// test against triangles directly
@@ -2130,7 +2130,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		collider1.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			if(colvol1.BoxHitsVolume(&colbox)){
@@ -2162,17 +2162,17 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 	// test against rig shapes
 	}else if(testMode == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes2 = collider2.GetRigShapes();
-		int s2, shapeCount2 = shapes2.GetShapeCount();
+		int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 		
 		collider1.UpdateShapes();
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(s2=0; s2<shapeCount2; s2++){
-				if(colvol1.VolumeHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume())){
+				if(colvol1.VolumeHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume())){
 					result.shape1 = s1;
 					result.shape2 = s2;
 					result.face = -1;
@@ -2197,15 +2197,15 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(b=0; b<boneCount; b++){
 				const debpShapeList &shapes2 = bones2.GetBonePhysicsAt(b).GetShapes();
-				shapeCount2 = shapes2.GetShapeCount();
+				shapeCount2 = shapes2.GetShapes().GetCount();
 				
 				for(s2=0; s2<shapeCount2; s2++){
-					if(colvol1.VolumeHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume())){
+					if(colvol1.VolumeHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume())){
 						result.shape1 = s1;
 						result.shape2 = s2;
 						result.face = -1;
@@ -2224,23 +2224,23 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 bool debpCollisionDetection::ColliderVolumeHitsColliderRig(debpColliderVolume &collider1,
 debpColliderRig &collider2, debpCollisionResult &result){
 	const debpShapeList &shapes1 = collider1.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 	int testMode = collider2.GetTestMode();
 	
 	// test against rig shapes
 	if(testMode == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes2 = collider2.GetRigShapes();
-		int s2, shapeCount2 = shapes2.GetShapeCount();
+		int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 		
 		collider1.UpdateShapes();
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(s2=0; s2<shapeCount2; s2++){
-				if(colvol1.VolumeHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume())){
+				if(colvol1.VolumeHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume())){
 					result.shape1 = s1;
 					result.shape2 = s2;
 					result.face = -1;
@@ -2265,16 +2265,16 @@ debpColliderRig &collider2, debpCollisionResult &result){
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(b=0; b<boneCount; b++){
 				debpColliderBone &colbone = bones2.GetBonePhysicsAt(b);
 				const debpShapeList &shapes2 = colbone.GetShapes();
-				shapeCount2 = shapes2.GetShapeCount();
+				shapeCount2 = shapes2.GetShapes().GetCount();
 				
 				for(s2=0; s2<shapeCount2; s2++){
-					if(colvol1.VolumeHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume())){
+					if(colvol1.VolumeHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume())){
 						result.shape1 = s1;
 						result.shape2 = s2;
 						result.face = -1;
@@ -2310,8 +2310,8 @@ bool debpCollisionDetection::ColliderVolumeMoveHitsColliderVolume(debpColliderVo
 debpColliderVolume &collider2, debpCollisionResult &result){
 	debpShapeList &shapes1 = collider1.GetShapes();
 	debpShapeList &shapes2 = collider2.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
-	int s2, shapeCount2 = shapes2.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
+	int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 	debpDCollisionVolume *collisionVolume;
 	debpShape *shape1, *shape2;
 	bool hasHit = false;
@@ -2324,11 +2324,11 @@ debpColliderVolume &collider2, debpCollisionResult &result){
 	decDVector reldisp = displacement - collider2.GetPredictedDisplacement();
 	
 	for(s1=0; s1<shapeCount1; s1++){
-		shape1 = shapes1.GetShapeAt(s1);
+		shape1 = shapes1.GetShapes().GetAt(s1);
 		collisionVolume = shape1->GetCollisionVolume();
 		
 		for(s2=0; s2<shapeCount2; s2++){
-			shape2 = shapes2.GetShapeAt(s2);
+			shape2 = shapes2.GetShapes().GetAt(s2);
 			
 			distance = collisionVolume->VolumeMoveHitsVolume(shape2->GetCollisionVolume(), reldisp, &normal);
 			
@@ -2359,7 +2359,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 	const deColliderComponent &engCollider2 = collider2.GetColliderComponent();
 	deComponent &engComponent = *engCollider2.GetComponent();
 	const debpShapeList &shapes1 = collider1.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 	int testMode = collider2.GetTestMode();
 	decDVector hitNormal;
 	bool hasHit = false;
@@ -2425,7 +2425,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 		collider1.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol = *shape1.GetCollisionVolume();
 			
 			distance = colvol.VolumeMoveHitsVolume(&colBox, reldisp, NULL);
@@ -2463,17 +2463,17 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 		
 	}else if(testMode == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes2 = collider2.GetRigShapes();
-		int s2, shapeCount2 = shapes2.GetShapeCount();
+		int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 		
 		collider1.UpdateShapes();
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(s2=0; s2<shapeCount2; s2++){
-				distance = (float)colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+				distance = (float)colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 				
 				if(distance > 0.99999f) continue;
 				if(displacement * hitNormal >= -1e-6) continue;
@@ -2500,7 +2500,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(b=0; b<boneCount; b++){
@@ -2508,10 +2508,10 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 				
 				if(colbone){
 					const debpShapeList &shapes2 = colbone->GetShapes();
-					shapeCount2 = shapes2.GetShapeCount();
+					shapeCount2 = shapes2.GetShapes().GetCount();
 					
 					for(s2=0; s2<shapeCount2; s2++){
-						distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+						distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 						
 						if(distance > 0.99999f) continue;
 						if(displacement * hitNormal >= -1e-6) continue;
@@ -2545,7 +2545,7 @@ const decDVector &displacement, debpColliderComponent &collider2, debpCollisionR
 bool debpCollisionDetection::ColliderVolumeMoveHitsColliderRig(debpColliderVolume &collider1, const decDVector &displacement,
 debpColliderRig &collider2, debpCollisionResult &result){
 	const debpShapeList &shapes1 = collider1.GetShapes();
-	int s1, shapeCount1 = shapes1.GetShapeCount();
+	int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 	int testMode = collider2.GetTestMode();
 	decDVector hitNormal;
 	bool hasHit = false;
@@ -2555,17 +2555,17 @@ debpColliderRig &collider2, debpCollisionResult &result){
 	
 	if(testMode == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes2 = collider2.GetRigShapes();
-		int s2, shapeCount2 = shapes2.GetShapeCount();
+		int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 		
 		collider1.UpdateShapes();
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(s2=0; s2<shapeCount2; s2++){
-				distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+				distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 				
 				if(distance > 0.99999f) continue;
 				if(displacement * hitNormal >= -1e-6) continue;
@@ -2592,7 +2592,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 		collider2.UpdateShapes();
 		
 		for(s1=0; s1<shapeCount1; s1++){
-			const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+			const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 			debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 			
 			for(b=0; b<boneCount; b++){
@@ -2600,10 +2600,10 @@ debpColliderRig &collider2, debpCollisionResult &result){
 				
 				if(colbone){
 					const debpShapeList &shapes2 = colbone->GetShapes();
-					shapeCount2 = shapes2.GetShapeCount();
+					shapeCount2 = shapes2.GetShapes().GetCount();
 					
 					for(s2=0; s2<shapeCount2; s2++){
-						distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+						distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 						
 						if(distance > 0.99999f) continue;
 						if(displacement * hitNormal >= -1e-6) continue;
@@ -2640,7 +2640,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 		const deColliderComponent &engCollider2 = collider2.GetColliderComponent();
 		deComponent &engComponent = *engCollider2.GetComponent();
 		const debpShapeList &shapes1 = collider1.GetRigShapes();
-		int s1, shapeCount1 = shapes1.GetShapeCount();
+		int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 		int testMode = collider2.GetTestMode();
 		decDVector hitNormal;
 		bool hasHit = false;
@@ -2711,7 +2711,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 			collider1.UpdateShapes();
 			
 			for(s1=0; s1<shapeCount1; s1++){
-				const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+				const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 				debpDCollisionVolume &colvol = *shape1.GetCollisionVolume();
 				
 				distance = colvol.VolumeMoveHitsVolume(&colBox, reldisp, NULL);
@@ -2749,17 +2749,17 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 			
 		}else if(testMode == debpColliderComponent::etmRigShape){
 			const debpShapeList &shapes2 = collider2.GetRigShapes();
-			int s2, shapeCount2 = shapes2.GetShapeCount();
+			int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 			
 			collider1.UpdateShapes();
 			collider2.UpdateShapes();
 			
 			for(s1=0; s1<shapeCount1; s1++){
-				const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+				const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 				debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 				
 				for(s2=0; s2<shapeCount2; s2++){
-					distance = (float)colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+					distance = (float)colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 					
 					if(distance > 0.99999f) continue;
 					if(displacement * hitNormal >= -1e-6) continue;
@@ -2786,7 +2786,7 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 			collider2.UpdateShapes();
 			
 			for(s1=0; s1<shapeCount1; s1++){
-				const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+				const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 				debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 				
 				for(b=0; b<boneCount; b++){
@@ -2794,10 +2794,10 @@ debpColliderComponent &collider2, debpCollisionResult &result){
 					
 					if(colbone){
 						const debpShapeList &shapes2 = colbone->GetShapes();
-						shapeCount2 = shapes2.GetShapeCount();
+						shapeCount2 = shapes2.GetShapes().GetCount();
 						
 						for(s2=0; s2<shapeCount2; s2++){
-							distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+							distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 							
 							if(distance > 0.99999f) continue;
 							if(displacement * hitNormal >= -1e-6) continue;
@@ -2842,7 +2842,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 	// test rig shapes against collider component
 	if(collider1.GetTestMode() == debpColliderComponent::etmRigShape){
 		const debpShapeList &shapes1 = collider1.GetRigShapes();
-		int s1, shapeCount1 = shapes1.GetShapeCount();
+		int s1, shapeCount1 = shapes1.GetShapes().GetCount();
 		int testMode = collider2.GetTestMode();
 		decDVector hitNormal;
 		bool hasHit = false;
@@ -2852,17 +2852,17 @@ debpColliderRig &collider2, debpCollisionResult &result){
 		
 		if(testMode == debpColliderComponent::etmRigShape){
 			const debpShapeList &shapes2 = collider2.GetRigShapes();
-			int s2, shapeCount2 = shapes2.GetShapeCount();
+			int s2, shapeCount2 = shapes2.GetShapes().GetCount();
 			
 			collider1.UpdateShapes();
 			collider2.UpdateShapes();
 			
 			for(s1=0; s1<shapeCount1; s1++){
-				const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+				const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 				debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 				
 				for(s2=0; s2<shapeCount2; s2++){
-					distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+					distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 					
 					if(distance > 0.99999f) continue;
 					if(displacement * hitNormal >= -1e-6) continue;
@@ -2889,7 +2889,7 @@ debpColliderRig &collider2, debpCollisionResult &result){
 			collider2.UpdateShapes();
 			
 			for(s1=0; s1<shapeCount1; s1++){
-				const debpShape &shape1 = *shapes1.GetShapeAt(s1);
+				const debpShape &shape1 = *shapes1.GetShapes().GetAt(s1);
 				debpDCollisionVolume &colvol1 = *shape1.GetCollisionVolume();
 				
 				for(b=0; b<boneCount; b++){
@@ -2897,10 +2897,10 @@ debpColliderRig &collider2, debpCollisionResult &result){
 					
 					if(colbone){
 						const debpShapeList &shapes2 = colbone->GetShapes();
-						shapeCount2 = shapes2.GetShapeCount();
+						shapeCount2 = shapes2.GetShapes().GetCount();
 						
 						for(s2=0; s2<shapeCount2; s2++){
-							distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapeAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
+							distance = colvol1.VolumeMoveHitsVolume(shapes2.GetShapes().GetAt(s2)->GetCollisionVolume(), reldisp, &hitNormal);
 							
 							if(distance > 0.99999f) continue;
 							if(displacement * hitNormal >= -1e-6) continue;

@@ -25,7 +25,7 @@
 #ifndef _DEXSIDEVICEMANAGER_H_
 #define _DEXSIDEVICEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deMacOSInput;
 class demoiDevice;
@@ -41,7 +41,7 @@ class demoiDeviceManager{
 private:
 	deMacOSInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<demoiDevice> pDevices;
 	
 	demoiDeviceMouse *pMouse;
 	demoiDeviceKeyboard *pKeyboard;
@@ -67,11 +67,8 @@ public:
 	
 	
 	
-	/** \brief Number of devices. */
-	int GetCount() const;
-	
-	/** \brief Device at index. */
-	demoiDevice *GetAt(int index) const;
+	/** \brief Devices. */
+	inline const decTObjectOrderedSet<demoiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** \brief Device with identifier or \em NULL if absent. */
 	demoiDevice *GetWithID(const char *id);

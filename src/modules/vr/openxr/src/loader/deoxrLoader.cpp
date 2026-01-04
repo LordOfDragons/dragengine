@@ -252,7 +252,7 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 	
 	for(i=0; i<count; i++){
 		decPath path(decPath::CreatePathUnix(directories.GetAt(i)));
-		if(path.GetComponentCount() > 0 && path.GetComponentAt(0) == "~"){
+		if(path.GetComponents().IsNotEmpty() && path.GetComponents().First() == "~"){
 			path.RemoveComponentFrom(0);
 			path = home + path;
 		}
@@ -361,10 +361,10 @@ void deoxrLoader::pFindApiLayers(){
 	class cLoadApiLayer : public deContainerFileSearch{
 		deVROpenXR &pOxr;
 		const decPath pBasePath;
-		decObjectOrderedSet &pApiLayers;
+		decTObjectOrderedSet<deoxrApiLayer> &pApiLayers;
 		
 	public:
-		cLoadApiLayer(deVROpenXR &oxr, const decPath &basePath, decObjectOrderedSet &apiLayers) :
+		cLoadApiLayer(deVROpenXR &oxr, const decPath &basePath, decTObjectOrderedSet<deoxrApiLayer> &apiLayers) :
 			pOxr(oxr), pBasePath(basePath), pApiLayers(apiLayers){}
 		
 		void Add(const char *name, deVFSContainer::eFileTypes type){
@@ -411,7 +411,7 @@ void deoxrLoader::pFindApiLayers(){
 	
 	for(i=0; i<count; i++){
 		decPath path(decPath::CreatePathUnix(directories.GetAt(i)));
-		if(path.GetComponentCount() > 0 && path.GetComponentAt(0) == "~"){
+		if(path.GetComponents().IsNotEmpty() && path.GetComponents().First() == "~"){
 			path.RemoveComponentFrom(0);
 			path = home + path;
 		}

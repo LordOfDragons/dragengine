@@ -656,7 +656,7 @@ void reRigConstraint::NotifyAllConstraintChanged(){
 void reRigConstraint::NotifyEngineConstraintChanged(){
 	if(pRig && pEngConstraint){
 		deColliderComponent &engSimCollider = *pRig->GetEngineSimulationCollider();
-		engSimCollider.NotifyConstraintChanged(engSimCollider.IndexOfConstraint(pEngConstraint));
+		engSimCollider.NotifyConstraintChanged(engSimCollider.GetConstraints().IndexOf(pEngConstraint));
 	}
 }
 

@@ -80,40 +80,16 @@ void dewiDeviceManager::UpdateDeviceList(){
 
 
 
-int dewiDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-dewiDevice *dewiDeviceManager::GetAt(int index) const{
-	return (dewiDevice*)pDevices.GetAt(index);
-}
-
 dewiDevice *dewiDeviceManager::GetWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return device;
-		}
-	}
-	
-	return NULL;
+	pDevices.FindOrDefault([&](const dewiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int dewiDeviceManager::IndexOfWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const dewiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 dewiDeviceWinRTController *dewiDeviceManager::GetWithController(wrgi::RawGameController const &controller) const{
@@ -121,7 +97,7 @@ dewiDeviceWinRTController *dewiDeviceManager::GetWithController(wrgi::RawGameCon
 	int i;
 
 	for(i=0; i<count; i++){
-		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
+		dewiDevice * const device = pDevices.GetAt(i);
 		if(device->GetSource() != dewiDevice::esWinRTController){
 			continue;
 		}
@@ -137,14 +113,10 @@ dewiDeviceWinRTController *dewiDeviceManager::GetWithController(wrgi::RawGameCon
 
 
 void dewiDeviceManager::LogDevices() const{
-	const int count = pDevices.GetCount();
-	int i;
-	
 	pModule.LogInfo("Input Devices:");
-	
-	for(i=0; i<count; i++){
-		LogDevice(*((dewiDevice*)pDevices.GetAt(i)));
-	}
+	pDevices.Visit([&](const dewiDevice &d){
+		LogDevice(d);
+	});
 }
 
 void dewiDeviceManager::LogDevice(const dewiDevice &device) const{
@@ -184,13 +156,9 @@ void dewiDeviceManager::LogDevice(const dewiDevice &device) const{
 
 void dewiDeviceManager::Update(){
 	pProcessAddRemoveDevices();
-
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((dewiDevice*)pDevices.GetAt(i))->Update();
-	}
+	pDevices.Visit([&](dewiDevice &device){
+		device.Update();
+	});
 }
 
 

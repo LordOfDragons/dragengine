@@ -26,7 +26,7 @@
 #define _DECXMLCONTAINER_H_
 
 #include "decXmlElement.h"
-#include "../collection/decObjectOrderedSet.h"
+#include "../collection/decTOrderedSet.h"
 
 
 /**
@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pElements;
+	decTObjectOrderedSet<decXmlElement> pElements;
 	
 	
 	

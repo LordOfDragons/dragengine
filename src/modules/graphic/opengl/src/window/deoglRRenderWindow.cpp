@@ -28,6 +28,7 @@
 
 #include "deoglRRenderWindow.h"
 #include "../deGraphicOpenGl.h"
+#include "../canvas/capture/deoglCaptureCanvas.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
@@ -732,13 +733,9 @@ void deoglRRenderWindow::Render(){
 }
 
 void deoglRRenderWindow::Capture(){
-	decObjectOrderedSet &list = pRenderThread.GetRCaptureCanvasList();
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoglRCaptureCanvas*)list.GetAt(i))->CaptureRenderWindow(*this);
-	}
+	pRenderThread.GetRCaptureCanvasList().Visit([&](deoglRCaptureCanvas &cc){
+		cc.CaptureRenderWindow(*this);
+	});
 }
 
 void deoglRRenderWindow::CenterOnScreen(){

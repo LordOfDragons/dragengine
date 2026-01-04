@@ -28,6 +28,7 @@
 #include "deParticleEmitter.h"
 #include "../deResource.h"
 #include "../../common/collection/decTSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/utils/decLayerMask.h"
@@ -70,12 +71,8 @@ private:
 	
 	float pBurstTime;
 	
-	deParticleEmitterController *pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deParticleEmitterInstanceType *pTypes;
-	int pTypeCount;
+	decTObjectOrderedSet<deParticleEmitterController> pControllers;
+	decTObjectOrderedSet<deParticleEmitterInstanceType> pTypes;
 	
 	decLayerMask pLayerMask;
 	decCollisionFilter pCollisionFilter;
@@ -192,16 +189,8 @@ public:
 	
 	
 	
-	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetControllerCount().
-	 */
-	deParticleEmitterController &GetControllerAt(int index);
-	const deParticleEmitterController &GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deParticleEmitterController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of named controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;
@@ -211,12 +200,8 @@ public:
 	
 	
 	
-	/** \brief Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
-	
-	/** \brief Type at the given index. */
-	deParticleEmitterInstanceType &GetTypeAt(int index);
-	const deParticleEmitterInstanceType &GetTypeAt(int index) const;
+	/** \brief Types. */
+	inline const decTObjectOrderedSet<deParticleEmitterInstanceType> &GetTypes() const{ return pTypes; }
 	
 	/** \brief Notifies the peers that the type at the given index changed. */
 	void NotifyTypeChangedAt(int type);

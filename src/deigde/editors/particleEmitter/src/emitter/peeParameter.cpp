@@ -67,7 +67,7 @@ void peeParameter::SetValue(float value){
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+			deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 			
 			engType.GetParameter(pIndex).SetValue(value);
 			engEmitter.NotifyTypeChangedAt(pType.GetIndex());
@@ -83,7 +83,7 @@ void peeParameter::SetSpread(float spread){
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+			deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 			
 			engType.GetParameter(pIndex).SetSpread(spread);
 			engEmitter.NotifyTypeChangedAt(pType.GetIndex());
@@ -98,7 +98,7 @@ void peeParameter::SetControllerValue(peeController *controller){
 		pControllerValue = controller;
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+			deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 			
 			engType.GetParameter(pIndex).SetControllerValue(
 				pType.GetEmitter()->GetControllers().IndexOf(controller));
@@ -114,7 +114,7 @@ void peeParameter::SetCurveValue(const decCurveBezier &curve){
 	
 	if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 		deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-		deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+		deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 		
 		engType.GetParameter(pIndex).GetCurveValue() = curve;
 		engEmitter.NotifyTypeChangedAt(pType.GetIndex());
@@ -128,7 +128,7 @@ void peeParameter::SetControllerSpread(peeController *controller){
 		pControllerSpread = controller;
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+			deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 			
 			engType.GetParameter(pIndex).SetControllerSpread(
 				pType.GetEmitter()->GetControllers().IndexOf(controller));
@@ -144,7 +144,7 @@ void peeParameter::SetCurveSpread(const decCurveBezier &curve){
 	
 	if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 		deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-		deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+		deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 		
 		engType.GetParameter(pIndex).GetCurveSpread() = curve;
 		engEmitter.NotifyTypeChangedAt(pType.GetIndex());
@@ -158,7 +158,7 @@ void peeParameter::SetCurveProgress(const decCurveBezier &curve){
 	
 	if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 		deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-		deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+		deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 		
 		engType.GetParameter(pIndex).GetCurveProgress() = curve;
 		engEmitter.NotifyTypeChangedAt(pType.GetIndex());
@@ -172,7 +172,7 @@ void peeParameter::SetCurveBeam(const decCurveBezier &curve){
 	
 	if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 		deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
-		deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
+		deParticleEmitterType &engType = engEmitter.GetTypes().GetAt(pType.GetIndex());
 		
 		engType.GetParameter(pIndex).GetCurveBeam() = curve;
 		engEmitter.NotifyTypeChangedAt(pType.GetIndex());

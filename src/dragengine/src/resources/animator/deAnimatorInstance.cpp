@@ -53,11 +53,8 @@ pBlendFactor(1.0f),
 pEnableRetargeting(true),
 pProtectDynamicBones(false),
 
-pControllers(NULL),
-pControllerCount(0),
-pControllerSize(0),
-
 pPeerAnimator(NULL){
+
 }
 
 deAnimatorInstance::~deAnimatorInstance(){
@@ -74,37 +71,37 @@ void deAnimatorInstance::SetAnimator(deAnimator *animator, bool keepValues){
 		return;
 	}
 	
-	if(keepValues && pAnimator && animator && pControllerCount > 0 && animator->GetControllerCount() > 0){
+	const int oldCount = pControllers.GetCount();
+	if(keepValues && pAnimator && animator && oldCount > 0 && animator->GetControllers().GetCount() > 0){
 		// NOTE the guard is required to keep the controller name alive during transfering.
 		//      we can not use pControllers names since they are destroyed during
 		//      pUpdateControllers(). instead controller names from guarded animator is used
 		const deAnimator::Ref guard(pAnimator);
-		const int count = pControllerCount;
 		struct sControllerValue{
 			const char *name;
 			float value;
 			decVector vector;
-		} * const transfer = new sControllerValue[count];
+		} * const transfer = new sControllerValue[oldCount];
 		int i;
 		
 		try{
-			for(i=0; i<count; i++){
-				transfer[i].name = pAnimator->GetControllerAt(i)->GetName();
-				transfer[i].value = pControllers[i].GetCurrentValue();
-				transfer[i].vector = pControllers[i].GetVector();
+			for(i=0; i<oldCount; i++){
+				transfer[i].name = pAnimator->GetControllers().GetAt(i)->GetName();
+				transfer[i].value = pControllers.GetAt(i)->GetCurrentValue();
+				transfer[i].vector = pControllers.GetAt(i)->GetVector();
 			}
 			
 			pAnimator = animator;
 			pUpdateControllers();
 			
-			for(i=0; i<count; i++){
+			for(i=0; i<oldCount; i++){
 				const int index = IndexOfControllerNamed(transfer[i].name);
 				if(index == -1){
 					continue;
 				}
 				
-				pControllers[index].SetCurrentValue(transfer[i].value);
-				pControllers[index].SetVector(transfer[i].vector);
+				pControllers.GetAt(index)->SetCurrentValue(transfer[i].value);
+				pControllers.GetAt(index)->SetVector(transfer[i].vector);
 			}
 			
 			delete [] transfer;
@@ -206,26 +203,10 @@ void deAnimatorInstance::SetProtectDynamicBones(bool protectDynamicBones){
 	}
 }
 
-
-
-deAnimatorController &deAnimatorInstance::GetControllerAt(int index){
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
-const deAnimatorController &deAnimatorInstance::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
 int deAnimatorInstance::IndexOfControllerNamed(const char *name) const{
-	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].GetName() == name){
+	const int count = pControllers.GetCount();
+	for(int i=0; i<count; i++){
+		if(pControllers.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}
@@ -233,7 +214,7 @@ int deAnimatorInstance::IndexOfControllerNamed(const char *name) const{
 }
 
 void deAnimatorInstance::NotifyControllerChangedAt(int index){
-	if(index < 0 || index >= pControllerCount){
+	if(index < 0 || index >= pControllers.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -293,30 +274,16 @@ void deAnimatorInstance::pCleanUp(){
 		delete pPeerAnimator;
 		pPeerAnimator = NULL;
 	}
-	
-	if(pControllers){
-		delete [] pControllers;
-	}
 }
 
 void deAnimatorInstance::pUpdateControllers(){
+	pControllers.RemoveAll();
+	
 	if(!pAnimator){
-		pControllerCount = 0;
 		return;
 	}
 	
-	const int controllerCount = pAnimator->GetControllerCount();
-	
-	if(controllerCount > pControllerSize){
-		deAnimatorController * const newArray = new deAnimatorController[controllerCount];
-		
-		delete [] pControllers;
-		pControllers = newArray;
-		
-		pControllerSize = controllerCount;
-	}
-	
-	for(pControllerCount=0; pControllerCount<controllerCount; pControllerCount++){
-		pControllers[pControllerCount] = *pAnimator->GetControllerAt(pControllerCount);
-	}
+	pAnimator->GetControllers().Visit([&](const deAnimatorController &c){
+		pControllers.Add(deAnimatorController::Ref::New(c));
+	});
 }

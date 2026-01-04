@@ -220,16 +220,16 @@ void desmWriteProperty::VisitMapped(deSkinPropertyMapped &property){
 	pWriter.WriteOpeningTagEnd();
 	
 	if(property.GetRed() != -1){
-		pWriter.WriteDataTagString("mappedRed", pSkin.GetMappedAt(property.GetRed())->GetName());
+		pWriter.WriteDataTagString("mappedRed", pSkin.GetMapped().GetAt(property.GetRed())->GetName());
 	}
 	if(property.GetGreen() != -1){
-		pWriter.WriteDataTagString("mappedGreen", pSkin.GetMappedAt(property.GetGreen())->GetName());
+		pWriter.WriteDataTagString("mappedGreen", pSkin.GetMapped().GetAt(property.GetGreen())->GetName());
 	}
 	if(property.GetBlue() != -1){
-		pWriter.WriteDataTagString("mappedBlue", pSkin.GetMappedAt(property.GetBlue())->GetName());
+		pWriter.WriteDataTagString("mappedBlue", pSkin.GetMapped().GetAt(property.GetBlue())->GetName());
 	}
 	if(property.GetAlpha() != -1){
-		pWriter.WriteDataTagString("mappedAlpha", pSkin.GetMappedAt(property.GetAlpha())->GetName());
+		pWriter.WriteDataTagString("mappedAlpha", pSkin.GetMapped().GetAt(property.GetAlpha())->GetName());
 	}
 	
 	pWriter.WriteClosingTag("mapped");

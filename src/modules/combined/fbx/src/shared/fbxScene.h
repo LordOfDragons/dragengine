@@ -27,7 +27,7 @@
 
 
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -100,7 +100,7 @@ private:
 	fbxNode *pNodeObjects;
 	fbxNode *pNodeConnections;
 	fbxObjectMap *pObjectMap;
-	decObjectOrderedSet pConnections;
+	decTObjectOrderedSet<fbxConnection> pConnections;
 	fbxConnectionMap *pConnectionMap;
 	
 	decMatrix pTransformation;

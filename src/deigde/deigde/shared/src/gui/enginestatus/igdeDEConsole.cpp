@@ -100,18 +100,13 @@ igdeDEConsole::~igdeDEConsole(){
 
 // Management
 ///////////////
-
 void igdeDEConsole::UpdateModulesList(){
-	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
-	const int count = moduleSystem.GetModuleCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deLoadableModule * const module = moduleSystem.GetModuleAt(i);
-		if(!pCBModule->HasItem(module->GetName())){
-			pCBModule->AddItem(module->GetName());
+	deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
+	moduleSystem.GetModules().Visit([&](const deLoadableModule &module){
+		if(!pCBModule->HasItem(module.GetName())){
+			pCBModule->AddItem(module.GetName());
 		}
-	}
+	});
 	pCBModule->SortItems();
 }
 

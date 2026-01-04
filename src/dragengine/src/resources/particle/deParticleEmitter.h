@@ -29,6 +29,7 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deParticleEmitterManager;
 class deParticleEmitterController;
@@ -115,12 +116,8 @@ public:
 	
 	
 private:
-	deParticleEmitterController **pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deParticleEmitterType *pTypes;
-	int pTypeCount;
+	decTObjectOrderedSet<deParticleEmitterController> pControllers;
+	decTObjectOrderedSet<deParticleEmitterType> pTypes;
 	
 	bool pEmitBurst;
 	float pBurstLifetime;
@@ -165,15 +162,17 @@ public:
 	/** \brief Set if particles are emit as burst (particle count curve) or continuous (interval curve). */
 	void SetEmitBurst(bool emitBurst);
 	
-	/** \brief Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	/** \brief Types. */
+	inline const decTObjectOrderedSet<deParticleEmitterType> &GetTypes() const{ return pTypes; }
 	
-	/** \brief Set number of types. */
-	void SetTypeCount(int count);
+	/** \brief Add type. */
+	void AddType(deParticleEmitterType *type);
 	
-	/** \brief Type at the given index. */
-	deParticleEmitterType &GetTypeAt(int index);
-	const deParticleEmitterType &GetTypeAt(int index) const;
+	/** \brief Remove type. */
+	void RemoveType(deParticleEmitterType *type);
+	
+	/** \brief Remove all types. */
+	void RemoveAllTypes();
 	
 	/** \brief Notifies that the type at the given index changed. */
 	void NotifyTypeChangedAt(int type);
@@ -189,20 +188,11 @@ public:
 	
 	/** \name Controller Management */
 	/*@{*/
-	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** \brief Controller at index. */
-	deParticleEmitterController *GetControllerAt(int index) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController(deParticleEmitterController *controller) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deParticleEmitterController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed(const char *controller) const;
-	
-	/** \brief Controller is present. */
-	bool HasController(deParticleEmitterController *controller) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Add controller. */
 	void AddController(deParticleEmitterController *controller);

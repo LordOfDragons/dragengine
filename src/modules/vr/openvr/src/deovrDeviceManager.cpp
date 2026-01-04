@@ -108,68 +108,28 @@ void deovrDeviceManager::InitDevices(){
 	}
 }
 
-int deovrDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-deovrDevice *deovrDeviceManager::GetAt(int index) const{
-	return (deovrDevice*)pDevices.GetAt(index);
-}
-
 deovrDevice *deovrDeviceManager::GetWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deovrDevice * const device = (deovrDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return device;
-		}
-	}
-	
-	return nullptr;
+	return pDevices.FindOrDefault([&](const deovrDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 deovrDevice *deovrDeviceManager::GetWithIndex(vr::TrackedDeviceIndex_t index) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deovrDevice * const device = (deovrDevice*)pDevices.GetAt(i);
-		if(device->GetDeviceIndex() == index){
-			return device;
-		}
-	}
-	
-	return nullptr;
+	return pDevices.FindOrDefault([&](const deovrDevice &device){
+		return device.GetDeviceIndex() == index;
+	});
 }
 
 int deovrDeviceManager::IndexOfWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deovrDevice * const device = (deovrDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const deovrDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int deovrDeviceManager::IndexOfWithIndex(vr::TrackedDeviceIndex_t index) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deovrDevice * const device = (deovrDevice*)pDevices.GetAt(i);
-		if(device->GetDeviceIndex() == index){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const deovrDevice &device){
+		return device.GetDeviceIndex() == index;
+	});
 }
 
 void deovrDeviceManager::Add(vr::TrackedDeviceIndex_t index){

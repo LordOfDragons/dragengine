@@ -75,12 +75,12 @@ void dedsLControllerMapping::Apply(const dedsLocomotion &locomotion, float elaps
 		return;
 	}
 	
-	const int controllerCount = pAnimatorInstance->GetControllerCount();
+	const int controllerCount = pAnimatorInstance->GetControllers().GetCount();
 	if(pController < 0 || pController >= controllerCount){
 		return;
 	}
 	
-	deAnimatorController &controller = pAnimatorInstance->GetControllerAt(pController);
+	deAnimatorController &controller = pAnimatorInstance->GetControllers().GetAt(pController);
 	
 	switch(pAttribute){
 	case eaElapsedTime:
@@ -169,12 +169,12 @@ void dedsLControllerMapping::ApplyPost(const dedsLocomotion &locomotion, float e
 		return;
 	}
 	
-	const int controllerCount = pAnimatorInstance->GetControllerCount();
+	const int controllerCount = pAnimatorInstance->GetControllers().GetCount();
 	if(pController < 0 || pController >= controllerCount){
 		return;
 	}
 	
-	deAnimatorController &controller = pAnimatorInstance->GetControllerAt(pController);
+	deAnimatorController &controller = pAnimatorInstance->GetControllers().GetAt(pController);
 	
 	switch(pAttribute){
 	case eaTiltOffset:

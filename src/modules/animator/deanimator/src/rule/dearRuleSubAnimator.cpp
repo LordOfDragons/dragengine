@@ -313,7 +313,7 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 		return;
 	}
 	
-	const int ruleCount = animator->GetRuleCount();
+	const int ruleCount = animator->GetRules().GetCount();
 	if(ruleCount == 0){
 		return;
 	}
@@ -322,7 +322,7 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 	int i;
 	
 	// create sub controller mapping
-	const int controllerCount = animator->GetControllerCount();
+	const int controllerCount = animator->GetControllers().GetCount();
 	const int connectionCount = pSubAnimator.GetConnectionCount();
 	decTList<int> subControllerMapping;
 	
@@ -343,7 +343,7 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 	}
 	
 	// add sub links
-	const int linkCount = animator->GetLinkCount();
+	const int linkCount = animator->GetLinks().GetCount();
 	const int firstLink = instance.GetLinkCount();
 	
 	if(linkCount > 0){
@@ -351,7 +351,7 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 		
 		try{
 			for(i=0; i<linkCount; i++){
-				link = new dearLink(instance, *animator->GetLinkAt(i), subControllerMapping);
+				link = new dearLink(instance, *animator->GetLinks().GetAt(i), subControllerMapping);
 				instance.AddLink(link);
 				link = nullptr;
 			}
@@ -371,7 +371,7 @@ void dearRuleSubAnimator::pCreateRules(const decTList<int> &controllerMapping){
 	pRules = new dearRule*[ruleCount];
 	
 	for(i=0; i<ruleCount; i++){
-		pRules[pRuleCount] = visitor.CreateRuleFrom(*animator->GetRuleAt(i));
+		pRules[pRuleCount] = visitor.CreateRuleFrom(*animator->GetRules().GetAt(i));
 		if(pRules[pRuleCount]){
 			pRuleCount++;
 		}

@@ -77,14 +77,6 @@ void deainpDeviceManager::UpdateDeviceList(){
 
 
 
-int deainpDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-deainpDevice *deainpDeviceManager::GetAt(int index) const{
-	return (deainpDevice*)pDevices.GetAt(index);
-}
-
 deainpDevice *deainpDeviceManager::GetWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;

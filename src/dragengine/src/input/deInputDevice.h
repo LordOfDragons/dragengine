@@ -26,7 +26,8 @@
 #define _INPUTDEVICE_H_
 
 #include "../deObject.h"
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTList.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
 #include "../resources/image/deImage.h"
@@ -377,34 +378,22 @@ private:
 	deImage::Ref pDisplayImage;
 	
 	/** \brief List of small icons of different size for use in binding displays. */
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	
 	/** \brief Text to display centered across display image or icon. */
 	decString pDisplayText;
 	
 	/** \brief Buttons. */
-	deInputDeviceButton *pButtons;
-	
-	/** \brief Number of buttons. */
-	int pButtonCount;
+	decTList<deInputDeviceButton> pButtons;
 	
 	/** \brief Axes. */
-	deInputDeviceAxis *pAxes;
-	
-	/** \brief Number of axes. */
-	int pAxisCount;
+	decTList<deInputDeviceAxis> pAxes;
 	
 	/** \brief Feedbacks. */
-	deInputDeviceFeedback *pFeedbacks;
-	
-	/** \brief Number of feedbacks. */
-	int pFeedbackCount;
+	decTList<deInputDeviceFeedback> pFeedbacks;
 	
 	/** \brief Components. */
-	deInputDeviceComponent *pComponents;
-	
-	/** \brief Number of components. */
-	int pComponentCount;
+	decTList<deInputDeviceComponent> pComponents;
 	
 	/** \brief Bone configuration. */
 	eBoneConfigurations pBoneConfiguration;
@@ -511,16 +500,6 @@ public:
 	 */
 	void SetDisplayImage(deImage *image);
 	
-	/** \brief Count of icons representing the device in bindings. */
-	int GetDisplayIconCount() const;
-	
-	/**
-	 * \brief Icon at index representing the device in bindings.
-	 * 
-	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
-	 */
-	deImage::Ref GetDisplayIconAt(int index) const;
-	
 	/**
 	 * \brief Add icon representing the device in bindings.
 	 * 
@@ -533,6 +512,9 @@ public:
 	
 	/** \brief Set text to display centered across display image or icon. */
 	void SetDisplayText(const char *text);
+	
+	/** Display icons list. */
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/**
 	 * \brief Bone configuration.
@@ -643,8 +625,9 @@ public:
 	
 	/** \name Buttons */
 	/*@{*/
-	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
+	/** \brief Buttons. */
+	inline decTList<deInputDeviceButton> &GetButtons(){ return pButtons; }
+	inline const decTList<deInputDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/**
 	 * \brief Set number of buttons.
@@ -652,9 +635,6 @@ public:
 	 * Resets all buttons to default values.
 	 */
 	void SetButtonCount(int count);
-	
-	/** \brief Button at index. */
-	deInputDeviceButton &GetButtonAt(int index) const;
 	
 	/** \brief Index of button with identifier or -1 if not found. */
 	int IndexOfButtonWithID(const char *id) const;
@@ -664,8 +644,9 @@ public:
 	
 	/** \name Axes */
 	/*@{*/
-	/** \brief Number of axes. */
-	inline int GetAxisCount() const{ return pAxisCount; }
+	/** \brief Axes. */
+	inline decTList<deInputDeviceAxis> &GetAxes(){ return pAxes; }
+	inline const decTList<deInputDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/**
 	 * \brief Set number of axes.
@@ -673,9 +654,6 @@ public:
 	 * Resets all axes to default values.
 	 */
 	void SetAxisCount(int count);
-	
-	/** \brief Axis at index. */
-	deInputDeviceAxis &GetAxisAt(int index) const;
 	
 	/** \brief Index of axis with identifier or -1 if not found. */
 	int IndexOfAxisWithID(const char *id) const;
@@ -685,8 +663,9 @@ public:
 	
 	/** \name Feedbacks */
 	/*@{*/
-	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{ return pFeedbackCount; }
+	/** \brief Feedbacks. */
+	inline decTList<deInputDeviceFeedback> &GetFeedbacks(){ return pFeedbacks; }
+	inline const decTList<deInputDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/**
 	 * \brief Set number of feedbacks.
@@ -694,9 +673,6 @@ public:
 	 * Resets all feedbacks to default values.
 	 */
 	void SetFeedbackCount(int count);
-	
-	/** \brief Feedback at index. */
-	deInputDeviceFeedback &GetFeedbackAt(int index) const;
 	
 	/** \brief Index of feedback with identifier or -1 if not found. */
 	int IndexOfFeedbackWithID(const char *id) const;
@@ -707,10 +683,11 @@ public:
 	/** \name Components */
 	/*@{*/
 	/**
-	 * \brief Number of components.
+	 * \brief Components.
 	 * \version 1.6
 	 */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline decTList<deInputDeviceComponent> &GetComponents(){ return pComponents; }
+	inline const decTList<deInputDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/**
 	 * \brief Set number of components.
@@ -719,12 +696,6 @@ public:
 	 * Resets all components to default values.
 	 */
 	void SetComponentCount(int count);
-	
-	/**
-	 * \brief Component at index.
-	 * \version 1.6
-	 */
-	deInputDeviceComponent &GetComponentAt(int index) const;
 	
 	/**
 	 * \brief Index of component with identifier or -1 if not found.

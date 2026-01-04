@@ -25,6 +25,7 @@
 #ifndef _DESKYLAYER_H_
 #define _DESKYLAYER_H_
 
+#include "../../deObject.h"
 #include "deSkyControllerTarget.h"
 #include "../skin/deSkin.h"
 #include "../../common/math/decMath.h"
@@ -108,8 +109,11 @@ class deSkyLayerBody;
  * Therefor all images for all bodies inside the same layer have to be stored in
  * the same skin.
  */
-class DE_DLL_EXPORT deSkyLayer{
+class DE_DLL_EXPORT deSkyLayer : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkyLayer> Ref;
+	
 	/** \brief Targets. */
 	enum eTargets{
 		etOffsetX,
@@ -164,12 +168,18 @@ public:
 	/** \brief Create sky layer. */
 	deSkyLayer();
 	
-	/** \brief Clean up sky layer. */
-	~deSkyLayer();
+protected:
+	/**
+	 * \brief Clean up sky layer.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyLayer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Relative offset of layer center. */

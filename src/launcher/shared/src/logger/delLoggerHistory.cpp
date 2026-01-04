@@ -183,7 +183,7 @@ void delLoggerHistory::RemoveListener(delLoggerHistoryListener *listener){
 	}
 	
 	const deMutexGuard guard(pMutex);
-	pListeners.RemoveIfPresent(listener);
+	pListeners.Remove(listener);
 }
 
 void delLoggerHistory::NotifyMessageAdded(const delLoggerHistoryEntry &entry){

@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/sensor/deTouchSensor.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -64,7 +64,7 @@ private:
 	dsValue *pColliderListener;
 	bool pHasColliderListener;
 	
-	decObjectOrderedSet pListIgnoreColliders;
+	decTObjectOrderedSet<deCollider> pListIgnoreColliders;
 	
 	bool pHasCollision;
 	float pHitDistance;
@@ -123,8 +123,8 @@ public:
 	void SetColliderListener(dsRealObject *object);
 	
 	/** \brief List of colliders to ignore. */
-	inline decObjectOrderedSet &GetListIgnoreColliders(){ return pListIgnoreColliders; }
-	inline const decObjectOrderedSet &GetListIgnoreColliders() const{ return pListIgnoreColliders; }
+	inline decTObjectOrderedSet<deCollider> &GetListIgnoreColliders(){ return pListIgnoreColliders; }
+	inline const decTObjectOrderedSet<deCollider> &GetListIgnoreColliders() const{ return pListIgnoreColliders; }
 	
 	
 	

@@ -104,9 +104,6 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		return;
 	}
 	
-	deAnimatorController *engController = nullptr;
-	deAnimatorLink *engLink = nullptr;
-	deAnimatorRule::Ref engRule;
 	aeAnimator::Ref animator;
 	int i;
 	
@@ -130,7 +127,7 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		for(i=0; i<controllerCount; i++){
 			const aeController &controller = *animator->GetControllers().GetAt(i);
 			
-			engController = new deAnimatorController;
+			const deAnimatorController::Ref engController(deAnimatorController::Ref::New());
 			engController->SetName(controller.GetName());
 			engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
 			engController->SetCurrentValue(controller.GetCurrentValue());
@@ -139,14 +136,13 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 			engController->SetVector(controller.GetVector());
 			
 			pEngAnimator->AddController(engController);
-			engController = nullptr;
 		}
 		
 		// add links
 		for(i=0; i<linkCount; i++){
 			const aeLink &link = *animator->GetLinks().GetAt(i);
 			
-			engLink = new deAnimatorLink;
+			const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
 			
 			if(link.GetController()){
 				engLink->SetController(animator->GetControllers().IndexOf(link.GetController()));
@@ -155,25 +151,15 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 			engLink->SetRepeat(link.GetRepeat());
 			
 			pEngAnimator->AddLink(engLink);
-			engLink = nullptr;
 		}
 		
 		// add rules
 		for(i=0; i<ruleCount; i++){
-			engRule = animator->GetRules().GetAt(i)->CreateEngineRule();
-			pEngAnimator->AddRule(engRule);
-			engRule = nullptr;
+			pEngAnimator->AddRule(animator->GetRules().GetAt(i)->CreateEngineRule());
 		}
 		
-		// free the loaded animator as it is no more needed
 	}catch(const deException &e){
 		pEngine->GetLogger()->LogException("Animator Editor", e);
-		if(engLink){
-			delete engLink;
-		}
-		if(engController){
-			delete engController;
-		}
 		pEngAnimator = nullptr;
 	}
 	
@@ -191,46 +177,30 @@ void aeSubAnimator::ClearAnimator(){
 }
 
 void aeSubAnimator::AddController(const char *name, float minimum, float maximum, bool clamp){
-	deAnimatorController *engController = nullptr;
-	
 	pEngAnimatorInstance->SetAnimator(nullptr);
 	
-	try{
-		engController = new deAnimatorController;
-		engController->SetName(name);
-		engController->SetValueRange(minimum, maximum);
-		engController->SetFrozen(false);
-		engController->SetClamp(clamp);
-		
-		pEngAnimator->AddController(engController);
-		
-	}catch(const deException &){
-		if(engController) delete engController;
-		throw;
-	}
+	const deAnimatorController::Ref engController(deAnimatorController::Ref::New());
+	engController->SetName(name);
+	engController->SetValueRange(minimum, maximum);
+	engController->SetFrozen(false);
+	engController->SetClamp(clamp);
+	
+	pEngAnimator->AddController(engController);
 	
 	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 }
 
 void aeSubAnimator::SetControllerValue(int controller, float value){
-	pEngAnimatorInstance->GetControllerAt(controller).SetCurrentValue(value);
+	pEngAnimatorInstance->GetControllers().GetAt(controller)->SetCurrentValue(value);
 	pEngAnimatorInstance->NotifyControllerChangedAt(controller);
 }
 
 void aeSubAnimator::AddLink(int controller, const decCurveBezier &curve){
-	deAnimatorLink *engLink = nullptr;
+	const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
+	engLink->SetController(controller);
+	engLink->SetCurve(curve);
 	
-	try{
-		engLink = new deAnimatorLink;
-		engLink->SetController(controller);
-		engLink->SetCurve(curve);
-		
-		pEngAnimator->AddLink(engLink);
-		
-	}catch(const deException &){
-		if(engLink) delete engLink;
-		throw;
-	}
+	pEngAnimator->AddLink(engLink);
 }
 
 void aeSubAnimator::AddRuleSS(){
@@ -258,12 +228,12 @@ const char *solverBone, int linkBlendFactor){
 }
 
 void aeSubAnimator::AddBoneToRule(int rule, const char *bone){
-	pEngAnimator->GetRuleAt(rule)->GetListBones().Add(bone);
+	pEngAnimator->GetRules().GetAt(rule)->GetListBones().Add(bone);
 	pEngAnimator->NotifyRulesChanged();
 }
 
 void aeSubAnimator::EnableRule(int rule, bool enable){
-	pEngAnimator->GetRuleAt(rule)->SetEnabled(enable);
+	pEngAnimator->GetRules().GetAt(rule)->SetEnabled(enable);
 	pEngAnimator->NotifyRulesChanged();
 }
 
@@ -298,22 +268,18 @@ void aeSubAnimator::SetComponentAndAnimation(deComponent *component, deAnimation
 }
 
 void aeSubAnimator::CopyControllers(deAnimatorInstance &instance){
-	const int count = pEngAnimatorInstance->GetControllerCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deAnimatorController &to = pEngAnimatorInstance->GetControllerAt(i);
-		const int index = instance.IndexOfControllerNamed(to.GetName());
+	pEngAnimatorInstance->GetControllers().VisitIndexed([&](int i, deAnimatorController &c){
+		const int index = instance.IndexOfControllerNamed(c.GetName());
 		if(index == -1){
-			continue;
+			return;
 		}
 		
-		const deAnimatorController &from = instance.GetControllerAt(index);
-		to.SetValueRange(from.GetMinimumValue(), from.GetMaximumValue());
-		to.SetCurrentValue(from.GetCurrentValue());
-		to.SetVector(from.GetVector());
+		const deAnimatorController &from = instance.GetControllers().GetAt(index);
+		c.SetValueRange(from.GetMinimumValue(), from.GetMaximumValue());
+		c.SetCurrentValue(from.GetCurrentValue());
+		c.SetVector(from.GetVector());
 		pEngAnimatorInstance->NotifyControllerChangedAt(i);
-	}
+	});
 }
 
 void aeSubAnimator::Apply(){

@@ -32,7 +32,7 @@
 #include <openvr/openvr.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDeviceButton.h>
@@ -78,16 +78,16 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
 	deovrRenderModel::Ref pRenderModel;
 	deovrTextureMap::Ref pTextureMap;
 	
-	decObjectOrderedSet pButtons;
-	decObjectOrderedSet pAxes;
-	decObjectOrderedSet pFeedbacks;
-	decObjectOrderedSet pComponents;
+	decTObjectOrderedSet<deovrDeviceButton> pButtons;
+	decTObjectOrderedSet<deovrDeviceAxis> pAxes;
+	decTObjectOrderedSet<deovrDeviceFeedback> pFeedbacks;
+	decTObjectOrderedSet<deovrDeviceComponent> pComponents;
 	
 	vr::VRControllerState_t pState;
 	vr::InputPoseActionData_t pDevicePoseData;
@@ -174,7 +174,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -205,14 +205,11 @@ public:
 	
 	
 	
-	/** Number of buttons. */
-	int GetButtonCount() const;
+	/** Buttons. */
+	inline const decTObjectOrderedSet<deovrDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** Add button. */
 	void AddButton(deovrDeviceButton *button);
-	
-	/** Button at index. */
-	deovrDeviceButton *GetButtonAt(int index) const;
 	
 	/** Button with identifier or nullptr if absent. */
 	deovrDeviceButton *GetButtonWithID(const char *id) const;
@@ -222,14 +219,11 @@ public:
 	
 	
 	
-	/** Number of axiss. */
-	int GetAxisCount() const;
+	/** Axes. */
+	inline const decTObjectOrderedSet<deovrDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** Add axis. */
 	void AddAxis(deovrDeviceAxis *axis);
-	
-	/** Axis at index. */
-	deovrDeviceAxis *GetAxisAt(int index) const;
 	
 	/** Axis with identifier or nullptr if absent. */
 	deovrDeviceAxis *GetAxisWithID(const char *id) const;
@@ -239,28 +233,21 @@ public:
 	
 	
 	
-	/** Number of feedbacks. */
-	int GetFeedbackCount() const;
+	/** Feedbacks. */
+	inline const decTObjectOrderedSet<deovrDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** Add feedback. */
 	void AddFeedback(deovrDeviceFeedback *feedback);
-	
-	/** Feedback at index. */
-	deovrDeviceFeedback *GetFeedbackAt(int index) const;
 	
 	/** Index of feedback with identifier or -1 if absent. */
 	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
-	
-	/** Number of components. */
-	int GetComponentCount() const;
+	/** Components. */
+	inline const decTObjectOrderedSet<deovrDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/** Add component. */
 	void AddComponent(deovrDeviceComponent *component);
-	
-	/** Component at index. */
-	deovrDeviceComponent *GetComponentAt(int index) const;
 	
 	/** Index of component with identifier or -1 if absent. */
 	int IndexOfComponentWithID(const char *id) const;

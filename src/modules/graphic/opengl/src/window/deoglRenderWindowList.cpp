@@ -71,7 +71,7 @@ void deoglRenderWindowList::RemoveAll(){
 void deoglRenderWindowList::SyncToRender(){
 	// if dirty synchronize list of windows with render thread. this happens only a few times
 	if(pDirty){
-		decObjectOrderedSet &list = pOgl.GetRenderThread().GetRRenderWindowList();
+		decTObjectOrderedSet<deoglRRenderWindow> &list = pOgl.GetRenderThread().GetRRenderWindowList();
 		
 		list.RemoveAll();
 		

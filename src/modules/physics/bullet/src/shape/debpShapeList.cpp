@@ -50,14 +50,6 @@ debpShapeList::~debpShapeList(){
 // Management
 ///////////////
 
-int debpShapeList::GetShapeCount() const{
-	return pShapes.GetCount();
-}
-
-debpShape *debpShapeList::GetShapeAt(int index) const{
-	return (debpShape*)pShapes.GetAt(index);
-}
-
 void debpShapeList::AddShape(debpShape *shape){
 	if(!shape){
 		DETHROW(deeInvalidParam);
@@ -76,9 +68,7 @@ void debpShapeList::UpdateWithMatrix(const decDMatrix& transformation){
 }
 
 void debpShapeList::UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
-	const int count = pShapes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((debpShape*)pShapes.GetAt(i))->UpdateWithMatrix(transformation, scale);
-	}
+	pShapes.Visit([&](debpShape &shape){
+		shape.UpdateWithMatrix(transformation, scale);
+	});
 }

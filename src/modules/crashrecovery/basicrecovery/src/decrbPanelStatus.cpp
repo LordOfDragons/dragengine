@@ -126,8 +126,8 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	header->appendItem("Loaded", NULL, 80, NULL, false);
 	header->appendItem("Status", NULL, 150, NULL, false);
 	
-	for(i=0; i<modSys->GetModuleCount(); i++){
-		pAddModule(modSys->GetModuleAt(i));
+	for(i=0; i<modSys->GetModules().GetCount(); i++){
+		pAddModule(modSys->GetModules().GetAt(i));
 	}
 	pListModules->sortItems();
 }

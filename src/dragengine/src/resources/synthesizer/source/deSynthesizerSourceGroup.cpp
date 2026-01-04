@@ -53,22 +53,6 @@ deSynthesizerSourceGroup::~deSynthesizerSourceGroup(){
 // Management
 ///////////////
 
-int deSynthesizerSourceGroup::GetSourceCount() const{
-	return pSources.GetCount();
-}
-
-deSynthesizerSource *deSynthesizerSourceGroup::GetSourceAt(int index) const{
-	return (deSynthesizerSource*)pSources.GetAt(index);
-}
-
-int deSynthesizerSourceGroup::IndexOfSource(deSynthesizerSource *source) const{
-	return pSources.IndexOf(source);
-}
-
-bool deSynthesizerSourceGroup::HasSource(deSynthesizerSource *source) const{
-	return pSources.Has(source);
-}
-
 void deSynthesizerSourceGroup::AddSource(deSynthesizerSource *source){
 	if(!source){
 		DETHROW(deeInvalidParam);

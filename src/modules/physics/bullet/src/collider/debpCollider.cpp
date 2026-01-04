@@ -108,15 +108,13 @@ pCollider(collider)
 			AttachmentAdded(i, pCollider.GetAttachmentAt(i));
 		}
 		
-		count = pCollider.GetConstraintCount();
-		for(i=0; i<count; i++){
-			ConstraintAdded(i, pCollider.GetConstraintAt(i));
-		}
+		pCollider.GetConstraints().VisitIndexed([&](int i, deColliderConstraint *c){
+			ConstraintAdded(i, c);
+		});
 		
-		count = pCollider.GetCollisionTestCount();
-		for(i=0; i<count; i++){
+		pCollider.GetCollisionTests().VisitIndexed([&](int i, deColliderCollisionTest*){
 			CollisionTestAdded(i);
-		}
+		});
 		
 		CollisionFilterChanged();
 		
@@ -843,7 +841,7 @@ void debpCollider::CollisionTestEnabledChanged(int index){
 }
 
 void debpCollider::CollisionTestAdded(int index){
-	pCollisionTests.Add(new debpColliderCollisionTest(*this, *pCollider.GetCollisionTestAt(index)));
+	pCollisionTests.Add(new debpColliderCollisionTest(*this, pCollider.GetCollisionTests().GetAt(index)));
 	RegisterPPCProcessing();
 }
 

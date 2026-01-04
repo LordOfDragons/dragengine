@@ -1225,7 +1225,7 @@ const aeRuleSubAnimator &rule){
 		writer.WriteOpeningTagStart("connection");
 		writer.WriteAttributeInt("controller", animator.GetControllers().IndexOf(controller));
 		writer.WriteOpeningTagEnd(false, false);
-		writer.WriteTextString(rule.GetSubAnimator()->GetControllerAt(i)->GetName());
+		writer.WriteTextString(rule.GetSubAnimator()->GetControllers().GetAt(i)->GetName());
 		writer.WriteClosingTag("connection", false);
 	});
 	

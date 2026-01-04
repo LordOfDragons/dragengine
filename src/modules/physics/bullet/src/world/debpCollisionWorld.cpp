@@ -141,7 +141,7 @@ public:
 					const debpColliderComponent &colcomp = *collider->CastToComponent();
 					printf("processCollision component collider %p(%f,%f,%f) mode=%i rigshapes=%i\n", &colcomp,
 						colcomp.GetPosition().x, colcomp.GetPosition().y, colcomp.GetPosition().z,
-						colcomp.GetTestMode(), colcomp.GetRigShapes().GetShapeCount());
+						colcomp.GetTestMode(), colcomp.GetRigShapes().GetShapes().GetCount());
 				}else{
 					printf("processCollision rigged collider %p\n", collider->CastToRigged());
 				}

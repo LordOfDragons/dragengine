@@ -128,14 +128,14 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 		return;
 	}
 	
-	const int count = childSynthesizer->GetSourceCount();
+	const int count = childSynthesizer->GetSources().GetCount();
 	if(count == 0){
 		SetSilent(true);
 		return;
 	}
 	
 	// create controller mapping
-	const int controllerCount = childSynthesizer->GetControllerCount();
+	const int controllerCount = childSynthesizer->GetControllers().GetCount();
 	const int connectionCount = source.GetConnectionCount();
 	decTList<int> controllerMapping;
 	int i;
@@ -156,7 +156,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 	}
 	
 	// add sub links
-	const int linkCount = childSynthesizer->GetLinkCount();
+	const int linkCount = childSynthesizer->GetLinks().GetCount();
 	const int childFirstLink = synthesizer.GetLinkCount();
 	
 	if(linkCount > 0){
@@ -164,7 +164,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 		
 		try{
 			for(i=0; i<linkCount; i++){
-				link = new desynSynthesizerLink(*childSynthesizer->GetLinkAt(i), controllerMapping);
+				link = new desynSynthesizerLink(*childSynthesizer->GetLinks().GetAt(i), controllerMapping);
 				synthesizer.AddLink(link);
 				link = NULL;
 			}
@@ -186,7 +186,7 @@ int firstLink, const deSynthesizerSourceSynthesizer &source){
 		createSource.Reset();
 		
 		try{
-			childSynthesizer->GetSourceAt(pSourceCount)->Visit(createSource);
+			childSynthesizer->GetSources().GetAt(pSourceCount)->Visit(createSource);
 			pSources[pSourceCount] = createSource.GetSource();
 			
 		}catch(const deException &){

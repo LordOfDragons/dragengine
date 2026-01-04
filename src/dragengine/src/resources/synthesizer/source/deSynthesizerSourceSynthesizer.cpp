@@ -80,7 +80,7 @@ void deSynthesizerSourceSynthesizer::UpdateConnectionCount(){
 		return;
 	}
 	
-	const int controllerCount = pSynthesizer->GetControllerCount();
+	const int controllerCount = pSynthesizer->GetControllers().GetCount();
 	if(controllerCount == 0){
 		return;
 	}

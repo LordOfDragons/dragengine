@@ -53,7 +53,7 @@ pNodeStack(nodeStack),
 pNodeStackID(nodeStack.GetID()),
 pNodeLayer(NULL),
 pNodeLayerID(0),
-pName(nodeStack.GetPropertyAt(1)->CastString().GetValue()),
+pName(nodeStack.GetProperties().GetAt(1)->CastString().GetValue()),
 pFrameRate(25)
 {
 	// find layer
@@ -102,21 +102,10 @@ void fbxAnimationMove::SetName(const char *name){
 	pName = name;
 }
 
-int fbxAnimationMove::GetCurvesCount() const{
-	return pCurveNodes.GetCount();
-}
-
-fbxAnimationMoveCurves *fbxAnimationMove::GetCurvesAt(int index) const{
-	return (fbxAnimationMoveCurves*)pCurveNodes.GetAt(index);
-}
-
 void fbxAnimationMove::MatchRig(const fbxRig &rig){
-	const int count = pCurveNodes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		fbxAnimationMoveCurves &curves = *((fbxAnimationMoveCurves*)pCurveNodes.GetAt(i));
+	pCurveNodes.Visit([&](fbxAnimationMoveCurves &curves){
 		curves.SetRigBone(rig.GetBoneNamed(curves.GetBoneName()));
-	}
+	});
 }
 
 void fbxAnimationMove::SetFrameRate(int frameRate){
@@ -138,12 +127,9 @@ float fbxAnimationMove::QuantizeTime(float time) const{
 
 
 void fbxAnimationMove::Prepare(){
-	const int count = pCurveNodes.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		GetCurvesAt(i)->Prepare();
-	}
+	pCurveNodes.Visit([&](fbxAnimationMoveCurves &curves){
+		curves.Prepare();
+	});
 }
 
 
@@ -155,10 +141,8 @@ void fbxAnimationMove::DebugPrintStructure(deBaseModule &module, const decString
 		return;
 	}
 	
-	const int curvesCount = pCurveNodes.GetCount();
 	const decString childPrefix(prefix + "  ");
-	int i;
-	for(i=0; i<curvesCount; i++){
-		GetCurvesAt(i)->DebugPrintStructure(module, childPrefix, true);
-	}
+	pCurveNodes.Visit([&](const fbxAnimationMoveCurves &curves){
+		curves.DebugPrintStructure(module, childPrefix, true);
+	});
 }

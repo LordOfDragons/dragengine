@@ -328,7 +328,8 @@ void debpParticleEmitterInstance::ControllerChanged(int controller){
 		int t;
 		
 		for(t=0; t<pTypeCount; t++){
-			const deParticleEmitterParameter &parameter = emitter->GetTypeAt(pTypes[t].GetType()).GetParameter(deParticleEmitterType::epInterval);
+			const deParticleEmitterParameter &parameter = emitter->GetTypes().
+				GetAt(pTypes[t].GetType())->GetParameter(deParticleEmitterType::epInterval);
 			
 			if(parameter.GetControllerValue() > -1 || parameter.GetControllerSpread() > -1){
 				pTypes[t].UpdateCastIntervals();
@@ -379,7 +380,7 @@ void debpParticleEmitterInstance::pUpdateTypes(){
 	}
 	pTypeCount = 0;
 	
-	const int typeCount = pInstance->GetTypeCount();
+	const int typeCount = pInstance->GetTypes().GetCount();
 	if(typeCount == 0){
 		return;
 	}

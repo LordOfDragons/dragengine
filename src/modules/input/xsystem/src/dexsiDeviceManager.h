@@ -31,7 +31,7 @@
 #include "dexsiDeviceCoreKeyboard.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decTimer.h>
 
@@ -50,7 +50,7 @@ public:
 private:
 	deXSystemInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<dexsiDevice> pDevices;
 	
 	dexsiDeviceCoreMouse::Ref pX11CoreMouse;
 	dexsiDeviceCoreKeyboard::Ref pX11CoreKeyboard;
@@ -90,11 +90,8 @@ public:
 	
 	
 	
-	/** Number of devices. */
-	int GetCount() const;
-	
-	/** Device at index. */
-	dexsiDevice *GetAt(int index) const;
+	/** Devices. */
+	inline const decTObjectOrderedSet<dexsiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** Device with identifier or \em NULL if absent. */
 	dexsiDevice *GetWithID(const char *id);

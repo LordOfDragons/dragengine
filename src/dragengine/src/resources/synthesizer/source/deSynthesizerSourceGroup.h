@@ -26,7 +26,7 @@
 #define _DESYNTHESIZERGROUPGROUP_H_
 
 #include "deSynthesizerSource.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -66,7 +66,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pSources;
+	decTObjectOrderedSet<deSynthesizerSource> pSources;
 	
 	eApplicationTypes pApplicationType;
 	
@@ -95,17 +95,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of sources. */
-	int GetSourceCount() const;
-	
-	/** \brief Source at index. */
-	deSynthesizerSource *GetSourceAt(int index) const;
-	
-	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource(deSynthesizerSource *source) const;
-	
-	/** \brief Source is present. */
-	bool HasSource(deSynthesizerSource *source) const;
+	/** \brief Sources. */
+	inline const decTObjectOrderedSet<deSynthesizerSource> &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(deSynthesizerSource *source);

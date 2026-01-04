@@ -29,6 +29,7 @@
 #include "deParticleEmitter.h"
 #include "../model/deModel.h"
 #include "../skin/deSkin.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/string/decString.h"
@@ -51,8 +52,15 @@
  * particle bounces off the surface if it is not set to be destroyed. Values in between blend
  * linear between these two directions. The default value is 0 hence along the collision normal.
  */
-class DE_DLL_EXPORT deParticleEmitterType{
+class DE_DLL_EXPORT deParticleEmitterType : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitterType> Ref;
+	
+	/** \brief Particle emitter type list. */
+	typedef decTObjectOrderedSet<deParticleEmitterType> List;
+	
+	
 	/** \brief Particle parameters. */
 	enum eParameters{
 		epTimeToLive,
@@ -166,12 +174,16 @@ public:
 	/** \brief Create particle emitter type. */
 	deParticleEmitterType();
 	
+	/** \brief Create copy of particle emitter type. */
+	deParticleEmitterType(const deParticleEmitterType &other);
+	
+protected:
 	/** \brief Clean up particle emitter type. */
-	~deParticleEmitterType();
+	~deParticleEmitterType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */

@@ -380,12 +380,12 @@ void decrbPanelModuleStatus::UpdateModuleStatus(){
 void decrbPanelModuleStatus::UpdateModulesList(){
 	deEngine *engine = pWndMain->GetEngine();
 	deModuleSystem *modSys = engine->GetModuleSystem();
-	int i, count = modSys->GetModuleCount();
+	int i, count = modSys->GetModules().GetCount();
 	deLoadableModule *loadedModule;
 	FXString text;
 	
 	for(i=0; i<count; i++){
-		loadedModule = modSys->GetModuleAt(i);
+		loadedModule = modSys->GetModules().GetAt(i);
 		text.format("%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString());
 		pCBModule->appendItem(text, loadedModule);
 	}

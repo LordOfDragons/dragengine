@@ -76,11 +76,11 @@ void deoglCaptureCanvasList::SyncToRender(){
 	
 	// if dirty synchronize list of capture canvas with render thread. this happens only a few times
 	if(pDirty){
-		decObjectOrderedSet &list = pOgl.GetRenderThread().GetRCaptureCanvasList();
+		decTObjectOrderedSet<deoglRCaptureCanvas> &list = pOgl.GetRenderThread().GetRCaptureCanvasList();
 		
 		list.RemoveAll();
 		
-		pCaptureCanvas.Visit([&list](deoglCaptureCanvas *captureCanvas){
+		pCaptureCanvas.Visit([&](const deoglCaptureCanvas *captureCanvas){
 			list.Add(captureCanvas->GetRCaptureCanvas());
 		});
 		

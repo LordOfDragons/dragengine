@@ -261,17 +261,12 @@ void igdeDEParameters::UpdateParametersList(){
 }
 
 void igdeDEParameters::UpdateModulesList(){
-	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
-	const int count = moduleSystem.GetModuleCount();
-	int i;
-	
 	pCBModule->RemoveAllItems();
-	for(i=0; i<count; i++){
-		deLoadableModule * const loadableModule = moduleSystem.GetModuleAt(i);
-		if(!pCBModule->HasItem(loadableModule->GetName())){
-			pCBModule->AddItem(loadableModule->GetName());
+	GetEngine()->GetModuleSystem()->GetModules().Visit([&](const deLoadableModule &loadableModule){
+		if(!pCBModule->HasItem(loadableModule.GetName())){
+			pCBModule->AddItem(loadableModule.GetName());
 		}
-	}
+	});
 	pCBModule->SortItems();
 }
 

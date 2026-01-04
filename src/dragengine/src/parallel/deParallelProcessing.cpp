@@ -155,15 +155,11 @@ void deParallelProcessing::Pause(){
 		// if threads are still running notify modules to break through problematic situations
 		if(i < pThreadCount){
 			deModuleSystem &moduleSystem = *pEngine.GetModuleSystem();
-			const int count = moduleSystem.GetModuleCount();
-			int j;
-			
-			for(j=0; j<count; j++){
-				deLoadableModule &loadableModule = *moduleSystem.GetModuleAt(j);
+			moduleSystem.GetModules().Visit([&](const deLoadableModule &loadableModule){
 				if(loadableModule.IsLoaded() && loadableModule.GetModule()){
 					loadableModule.GetModule()->PauseParallelProcessingUpdate();
 				}
-			}
+			});
 			
 		// if no threads are running but there are pending tasks run one pending task
 		}else if(pProcessOneTaskDirect(true)){

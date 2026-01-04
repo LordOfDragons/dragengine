@@ -27,11 +27,10 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiHeightTerrain;
 class dedaiHeightTerrainNavSpace;
-class dedaiSpace;
 
 class deHeightTerrainSector;
 
@@ -53,7 +52,7 @@ private:
 	decDVector pPosition;
 	float *pHeights;
 	
-	decObjectOrderedSet pNavSpaces;
+	decTObjectOrderedSet<dedaiHeightTerrainNavSpace> pNavSpaces;
 	
 	
 	
@@ -92,11 +91,8 @@ public:
 	
 	/** \name Navigation spaces */
 	/*@{*/
-	/** \brief Number of navigation spaces. */
-	int GetNavSpaceCount() const;
-	
-	/** \brief Navigation space at index. */
-	dedaiHeightTerrainNavSpace *GetNavSpaceAt(int index) const;
+	/** \brief Navigation spaces. */
+	inline const decTObjectOrderedSet<dedaiHeightTerrainNavSpace> &GetNavSpaces() const{ return pNavSpaces; }
 	/*@}*/
 	
 	

@@ -45,16 +45,6 @@
 
 deSky::deSky(deSkyManager *manager) :
 deResource(manager),
-
-pControllers(NULL),
-pControllerCount(0),
-
-pLinks(NULL),
-pLinkCount(0),
-
-pLayers(NULL),
-pLayerCount(0),
-
 pPeerGraphic(NULL){
 }
 
@@ -62,16 +52,6 @@ deSky::~deSky(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
-	}
-	
-	if(pLayers){
-		delete [] pLayers;
-	}
-	if(pLinks){
-		delete [] pLinks;
-	}
-	if(pControllers){
-		delete [] pControllers;
 	}
 }
 
@@ -91,29 +71,19 @@ void deSky::SetControllerCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pControllers){
-		delete [] pControllers;
-		pControllers = NULL;
-		pControllerCount = 0;
-	}
+	pControllers.RemoveAll();
 	
-	if(count > 0){
-		pControllers = new deSkyController[count];
-		pControllerCount = count;
+	int i;
+	for(i=0; i<count; i++){
+		pControllers.Add(deSkyController::Ref::New());
 	}
-}
-
-deSkyController &deSky::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
 }
 
 int deSky::IndexOfControllerNamed(const char *name) const{
+	const int count = pControllers.GetCount();
 	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].GetName() == name){
+	for(i=0; i<count; i++){
+		if(pControllers.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}
@@ -128,23 +98,12 @@ void deSky::SetLinkCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pLinks){
-		delete [] pLinks;
-		pLinks = NULL;
-		pLinkCount = 0;
-	}
+	pLinks.RemoveAll();
 	
-	if(count > 0){
-		pLinks = new deSkyLink[count];
-		pLinkCount = count;
+	int i;
+	for(i=0; i<count; i++){
+		pLinks.Add(deSkyLink::Ref::New());
 	}
-}
-
-deSkyLink &deSky::GetLinkAt(int index) const{
-	if(index < 0 || index >= pLinkCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pLinks[index];
 }
 
 
@@ -154,23 +113,12 @@ void deSky::SetLayerCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(pLayers){
-		delete [] pLayers;
-		pLayers = NULL;
-		pLayerCount = 0;
-	}
+	pLayers.RemoveAll();
 	
-	if(count > 0){
-		pLayers = new deSkyLayer[count];
-		pLayerCount = count;
+	int i;
+	for(i=0; i<count; i++){
+		pLayers.Add(deSkyLayer::Ref::New());
 	}
-}
-
-deSkyLayer &deSky::GetLayerAt(int index) const{
-	if(index < 0 || index >= pLayerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pLayers[index];
 }
 
 

@@ -27,6 +27,7 @@
 
 #include <stdarg.h>
 #include "../deObject.h"
+#include "../common/collection/decTOrderedSet.h"
 
 class deException;
 
@@ -45,6 +46,9 @@ class DE_DLL_EXPORT deLogger : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deLogger> Ref;
+	
+	/** \brief Logger list. */
+	typedef decTObjectOrderedSet<deLogger> List;
 	
 	
 public:

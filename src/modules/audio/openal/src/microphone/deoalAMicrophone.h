@@ -31,7 +31,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -70,7 +70,7 @@ private:
 	
 	decTObjectList<deoalASpeaker> pSpeakers;
 	deoalSpeakerList pActiveSpeakers;
-	decObjectOrderedSet pInvalidateSpeakers;
+	decTObjectOrderedSet<deoalASpeaker> pInvalidateSpeakers;
 	
 	deoalAWorld *pParentWorld;
 	deoalWorldOctree *pOctreeNode;

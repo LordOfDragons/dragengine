@@ -163,7 +163,7 @@ void dedsVRPlaceholder::pCreateWorld(){
 	sky->SetBgColor(decColor(0.0f, 0.5f, 1.0f));
 	sky->SetLayerCount(1);
 	
-	deSkyLayer &skyLayer = sky->GetLayerAt(0);
+	deSkyLayer &skyLayer = sky->GetLayers().First();
 	skyLayer.SetAmbientIntensity(1.0f);
 	skyLayer.SetLightIntensity(0.0f);
 	

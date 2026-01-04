@@ -171,13 +171,13 @@ void igdeLoadSky::pReadSky(const decXmlElementTag &root, const char *basePath, d
 			sky.SetBgColor(color);
 			
 		}else if(tagName == "controller"){
-			pReadController(*tag, sky.GetControllerAt(controllerIndex++));
+			pReadController(*tag, sky.GetControllers().GetAt(controllerIndex++));
 			
 		}else if(tagName == "link"){
-			pReadLink(*tag, sky.GetLinkAt(linkIndex++));
+			pReadLink(*tag, sky.GetLinks().GetAt(linkIndex++));
 			
 		}else if(tagName == "layer"){
-			pReadLayer(*tag, sky, sky.GetLayerAt(layerIndex++), basePath);
+			pReadLayer(*tag, sky, sky.GetLayers().GetAt(layerIndex++), basePath);
 		}
 	}
 }

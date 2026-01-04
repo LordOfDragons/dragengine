@@ -28,7 +28,7 @@
 #include "deoxrDeviceProfile.h"
 #include "../../extension/xdev/XR_MNDX_xdev_space.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 
 
@@ -57,7 +57,7 @@ private:
 		~Device() override;
 	};
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<Device> pDevices;
 	decTimer pTimerCheckAttached;
 	float pTimeoutCheckAttached;
 	uint64_t pCurGeneration;
@@ -97,8 +97,8 @@ public:
 	
 private:
 	Device *pFindDeviceById(XrXDevIdMNDX id) const;
-	Device *pFindDeviceById(const decObjectOrderedSet &list, XrXDevIdMNDX id) const;
-	Device *pFindDeviceBySerial(const decObjectOrderedSet &list, const char *serial) const;
+	Device *pFindDeviceById(const decTObjectOrderedSet<Device> &list, XrXDevIdMNDX id) const;
+	Device *pFindDeviceBySerial(const decTObjectOrderedSet<Device> &list, const char *serial) const;
 	
 	decString pSanitizedSerial(const decString &serial) const;
 	void pAddDeviceTracker(XrXDevListMNDX list, const Device::Ref &device);

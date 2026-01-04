@@ -45,11 +45,11 @@ pNodeCurve(nodeCurve),
 pPropertyTime(nullptr),
 pPropertyValue(nullptr){
 	const fbxNode &nodeTime = *nodeCurve.FirstNodeNamed("KeyTime");
-	pPropertyTime = nodeTime.GetPropertyAt(0);
+	pPropertyTime = nodeTime.GetProperties().GetAt(0);
 	
 	const fbxNode * const nodeValueTime = nodeCurve.FirstNodeNamed("KeyValueFloat");
 	if(nodeValueTime){
-		pPropertyValue = nodeValueTime->GetPropertyAt(0);
+		pPropertyValue = nodeValueTime->GetProperties().GetAt(0);
 	}
 	
 	if(!pPropertyValue){

@@ -25,7 +25,7 @@
 #ifndef _DEOGLDEBUGINFORMATIONLIST_H_
 #define _DEOGLDEBUGINFORMATIONLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglDebugInformation;
 
@@ -36,7 +36,7 @@ class deoglDebugInformation;
  */
 class deoglDebugInformationList{
 private:
-	decObjectOrderedSet pChildren;
+	decTObjectOrderedSet<deoglDebugInformation> pChildren;
 	
 	
 	

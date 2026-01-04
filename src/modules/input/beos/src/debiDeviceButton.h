@@ -26,7 +26,7 @@
 #define _DEBIDEVICEBUTTON_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/image/deImage.h>
@@ -48,7 +48,7 @@ private:
 	bool pPressed;
 	
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pBICode;
@@ -105,7 +105,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
 	void SetDisplayImages(const char *name);

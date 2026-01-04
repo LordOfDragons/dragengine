@@ -107,8 +107,7 @@ void dewiDevice::SetDisplayImages(const char *name){
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		icon = imageManager.LoadImage(vfs, filename, "/");
-		pDisplayIcons.Add((deImage*)icon);
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
@@ -118,10 +117,6 @@ void dewiDevice::SetDisplayText(const char *text){
 
 
 
-int dewiDevice::GetButtonCount() const{
-	return pButtons.GetCount();
-}
-
 void dewiDevice::AddButton(dewiDeviceButton *button){
 	if(!button){
 		DETHROW(deeNullPointer);
@@ -129,67 +124,31 @@ void dewiDevice::AddButton(dewiDeviceButton *button){
 	pButtons.Add(button);
 }
 
-dewiDeviceButton *dewiDevice::GetButtonAt(int index) const{
-	return (dewiDeviceButton*)pButtons.GetAt(index);
-}
-
 dewiDeviceButton *dewiDevice::GetButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceButton * const button = (dewiDeviceButton*)pButtons.GetAt(i);
-		if(button->GetID() == id){
-			return button;
-		}
-	}
-	
-	return NULL;
+	return pButtons.FindOrDefault([&](const dewiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 dewiDeviceButton *dewiDevice::GetButtonWithWICode(int code) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceButton * const button = (dewiDeviceButton*)pButtons.GetAt(i);
-		if(button->GetWICode() == code){
-			return button;
-		}
-	}
-	
-	return NULL;
+	return pButtons.FindOrDefault([&](const dewiDeviceButton &button){
+		return button.GetWICode() == code;
+	});
 }
 
 int dewiDevice::IndexOfButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceButton &button = *((dewiDeviceButton*)pButtons.GetAt(i));
-		if(button.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const dewiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int dewiDevice::IndexOfButtonWithWICode(int code) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceButton &button = *((dewiDeviceButton*)pButtons.GetAt(i));
-		if(button.GetWICode() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const dewiDeviceButton &button){
+		return button.GetWICode() == code;
+	});
 }
 
 
-
-int dewiDevice::GetAxisCount() const{
-	return pAxes.GetCount();
-}
 
 void dewiDevice::AddAxis(dewiDeviceAxis *axis){
 	if(!axis){
@@ -198,67 +157,31 @@ void dewiDevice::AddAxis(dewiDeviceAxis *axis){
 	pAxes.Add(axis);
 }
 
-dewiDeviceAxis *dewiDevice::GetAxisAt(int index) const{
-	return (dewiDeviceAxis*)pAxes.GetAt(index);
-}
-
 dewiDeviceAxis *dewiDevice::GetAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceAxis * const axis = (dewiDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetID() == id){
-			return axis;
-		}
-	}
-	
-	return NULL;
+	return pAxes.FindOrDefault([&](const dewiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 dewiDeviceAxis *dewiDevice::GetAxisWithWICode(int code) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceAxis * const axis = (dewiDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetWICode() == code){
-			return axis;
-		}
-	}
-	
-	return NULL;
+	return pAxes.FindOrDefault([&](const dewiDeviceAxis &axis){
+		return axis.GetWICode() == code;
+	});
 }
 
 int dewiDevice::IndexOfAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceAxis &axis = *((dewiDeviceAxis*)pAxes.GetAt(i));
-		if(axis.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const dewiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int dewiDevice::IndexOfAxisWithWICode(int code) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceAxis &axis = *((dewiDeviceAxis*)pAxes.GetAt(i));
-		if(axis.GetWICode() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const dewiDeviceAxis &axis){
+		return axis.GetWICode() == code;
+	});
 }
 
 
-
-int dewiDevice::GetFeedbackCount() const{
-	return pFeedbacks.GetCount();
-}
 
 void dewiDevice::AddFeedback(dewiDeviceFeedback *feedback){
 	if(!feedback){
@@ -267,34 +190,16 @@ void dewiDevice::AddFeedback(dewiDeviceFeedback *feedback){
 	pFeedbacks.Add(feedback);
 }
 
-dewiDeviceFeedback *dewiDevice::GetFeedbackAt(int index) const{
-	return (dewiDeviceFeedback*)pFeedbacks.GetAt(index);
-}
-
 dewiDeviceFeedback *dewiDevice::GetFeedbackWithID(const char *id) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceFeedback * const feedback = (dewiDeviceFeedback*)pFeedbacks.GetAt(i);
-		if(feedback->GetID() == id){
-			return feedback;
-		}
-	}
-	
-	return NULL;
+	return pFeedbacks.FindOrDefault([&](const dewiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 int dewiDevice::IndexOfFeedbackWithID(const char *id) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dewiDeviceFeedback * const feedback = (dewiDeviceFeedback*)pFeedbacks.GetAt(i);
-		if(feedback->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pFeedbacks.IndexOfMatching([&](const dewiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
@@ -312,31 +217,28 @@ void dewiDevice::GetInfo(deInputDevice &info) const{
 	info.SetName(pName);
 	info.SetType(pType);
 	info.SetDisplayImage(pDisplayImage);
-	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
-	}
+	pDisplayIcons.Visit([&](deImage *icon){
+		info.AddDisplayIcon(icon);
+	});
 	info.SetDisplayText(pDisplayText);
 	
-	info.SetDisplayModel(NULL);
-	info.SetDisplaySkin(NULL);
+	info.SetDisplayModel(nullptr);
+	info.SetDisplaySkin(nullptr);
 	
-	const int buttonCount = pButtons.GetCount();
-	info.SetButtonCount(buttonCount);
-	for(i=0; i<buttonCount; i++){
-		((dewiDeviceButton*)pButtons.GetAt(i))->GetInfo(info.GetButtonAt(i));
-	}
+	info.SetButtonCount(pButtons.GetCount());
+	pButtons.VisitIndexed([&](int i, const dewiDeviceButton &button){
+		button.GetInfo(info.GetButtons().GetAt(i));
+	});
 	
-	const int axisCount = pAxes.GetCount();
-	info.SetAxisCount(axisCount);
-	for(i=0; i<axisCount; i++){
-		((dewiDeviceAxis*)pAxes.GetAt(i))->GetInfo(info.GetAxisAt(i));
-	}
+	info.SetAxisCount(pAxes.GetCount());
+	pAxes.VisitIndexed([&](int i, const dewiDeviceAxis &axis){
+		axis.GetInfo(info.GetAxes().GetAt(i));
+	});
 	
-	const int feedbackCount = pFeedbacks.GetCount();
-	info.SetFeedbackCount(feedbackCount);
-	for(i=0; i<feedbackCount; i++){
-		((dewiDeviceFeedback*)pFeedbacks.GetAt(i))->GetInfo(info.GetFeedbackAt(i));
-	}
+	info.SetFeedbackCount(pFeedbacks.GetCount());
+	pFeedbacks.VisitIndexed([&](int i, const dewiDeviceFeedback &feedback){
+		feedback.GetInfo(info.GetFeedbacks().GetAt(i));
+	});
 }
 
 void dewiDevice::Update(){
@@ -349,9 +251,7 @@ void dewiDevice::SendDirtyAxisEvents(){
 	
 	pDirtyAxesValues = false;
 	
-	const int axisCount = pAxes.GetCount();
-	int i;
-	for(i=0; i<axisCount; i++){
-		((dewiDeviceAxis*)pAxes.GetAt(i))->SendEvents(*this);
-	}
+	pAxes.Visit([&](dewiDeviceAxis &axis){
+		axis.SendEvents(*this);
+	});
 }

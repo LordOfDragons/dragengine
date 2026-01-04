@@ -728,7 +728,7 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 		
 		if(tag->GetName() == "red"){
 			// deprecated
-			index = skin.GetMappedCount();
+			index = skin.GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = pParseMapped(*tag, name);
 			if(mapped->GetCurve().GetPointCount() > 0){
@@ -738,7 +738,7 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 			
 		}else if(tag->GetName() == "green"){
 			// deprecated
-			index = skin.GetMappedCount();
+			index = skin.GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = pParseMapped(*tag, name);
 			if(mapped->GetCurve().GetPointCount() > 0){
@@ -748,7 +748,7 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 			
 		}else if(tag->GetName() == "blue"){
 			// deprecated
-			index = skin.GetMappedCount();
+			index = skin.GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = pParseMapped(*tag, name);
 			if(mapped->GetCurve().GetPointCount() > 0){
@@ -758,7 +758,7 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 			
 		}else if(tag->GetName() == "alpha"){
 			// deprecated
-			index = skin.GetMappedCount();
+			index = skin.GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = pParseMapped(*tag, name);
 			if(mapped->GetCurve().GetPointCount() > 0){
@@ -1476,16 +1476,14 @@ void deSkinModule::pReadVector2(const decXmlElementTag &tag, decVector2 &vector)
 
 
 void deSkinModule::pWriteSkin(decXmlWriter &writer, const deSkin &skin){
-	int i;
-	
 	writer.WriteOpeningTag("skin");
 	
-	const int mappedCount = skin.GetMappedCount();
-	for(i=0; i<mappedCount; i++){
-		pWriteMapped(writer, *skin.GetMappedAt(i));
-	}
+	skin.GetMapped().Visit([&](const deSkinMapped &mapped){
+		pWriteMapped(writer, mapped);
+	});
 	
 	const int textureCount = skin.GetTextureCount();
+	int i;
 	for(i=0; i<textureCount; i++){
 		pWriteTexture(writer, skin, *skin.GetTextureAt(i));
 	}

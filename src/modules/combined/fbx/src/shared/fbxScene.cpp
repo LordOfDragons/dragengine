@@ -241,7 +241,7 @@ decVector2 fbxScene::ConvUVFbxToDe(const decVector2 &uv){
 
 fbxScene::eMappingInformationType fbxScene::ConvMappingInformationType(const fbxNode &node){
 	const decString &string = node.FirstNodeNamed("MappingInformationType")->
-		GetPropertyAt(0)->CastString().GetValue();
+		GetProperties().First()->CastString().GetValue();
 	
 	if(string == "AllSame"){
 		return emitAllSame;
@@ -262,7 +262,7 @@ fbxScene::eMappingInformationType fbxScene::ConvMappingInformationType(const fbx
 
 fbxScene::eReferenceInformationType fbxScene::ConvReferenceInformationType(const fbxNode &node){
 	const decString &string = node.FirstNodeNamed("ReferenceInformationType")->
-		GetPropertyAt(0)->CastString().GetValue();
+		GetProperties().First()->CastString().GetValue();
 	
 	if(string == "Direct"){
 		return eritDirect;
@@ -306,7 +306,7 @@ fbxScene::eRotationOrder fbxScene::ConvRotationOrder(int value){
 }
 
 fbxScene::eWeightMode fbxScene::ConvWeightMode(const fbxNode &node){
-	const decString &string = node.FirstNodeNamed("Mode")->GetPropertyAt(0)->CastString().GetValue();
+	const decString &string = node.FirstNodeNamed("Mode")->GetProperties().GetAt(0)->CastString().GetValue();
 	
 	if(string == "Total1"){
 		return ewmTotal1;
@@ -437,43 +437,43 @@ void fbxScene::Prepare(deBaseModule &module){
 	
 	pNodeObjects = pNode->FirstNodeNamed("Objects");
 	if(pNodeObjects){
-		const int count = pNodeObjects->GetNodeCount();
+		const int count = pNodeObjects->GetNodes().GetCount();
 		if(count > 0){
 			pObjectMap = new fbxObjectMap(count);
 			
 			int i;
 			for(i=0; i<count; i++){
-				pObjectMap->Add(pNodeObjects->GetNodeAt(i));
+				pObjectMap->Add(pNodeObjects->GetNodes().GetAt(i));
 			}
 		}
 	}
 	
 	pNodeConnections = pNode->FirstNodeNamed("Connections");
-	const int count = pNodeConnections->GetNodeCount();
+	const int count = pNodeConnections->GetNodes().GetCount();
 	fbxConnection::Ref connection;
 	int i;
 	
 	pConnectionMap = new fbxConnectionMap(count);
 	
 	for(i=0; i<count; i++){
-		fbxNode &nodeConnection = *pNodeConnections->GetNodeAt(i);
+		fbxNode &nodeConnection = *pNodeConnections->GetNodes().GetAt(i);
 		if(nodeConnection.GetName() != "C"){
 			DETHROW_INFO(deeInvalidFileFormat, "node inside 'Connections' is not named 'C'");
 		}
 		
-		const decString &type = nodeConnection.GetPropertyAt(0)->CastString().GetValue();
+		const decString &type = nodeConnection.GetProperties().GetAt(0)->CastString().GetValue();
 		if(type == "OO"){
 			connection = fbxConnection::Ref::New(
-				nodeConnection.GetPropertyAt(1)->GetValueAsLong(),
-				nodeConnection.GetPropertyAt(2)->GetValueAsLong());
+				nodeConnection.GetProperties().GetAt(1)->GetValueAsLong(),
+				nodeConnection.GetProperties().GetAt(2)->GetValueAsLong());
 			pConnections.Add(connection);
 			pConnectionMap->Add(connection);
 			
 		}else if(type == "OP"){
 			connection = fbxConnection::Ref::New(
-				nodeConnection.GetPropertyAt(1)->GetValueAsLong(),
-				nodeConnection.GetPropertyAt(2)->GetValueAsLong(),
-				nodeConnection.GetPropertyAt(3)->CastString().GetValue());
+				nodeConnection.GetProperties().GetAt(1)->GetValueAsLong(),
+				nodeConnection.GetProperties().GetAt(2)->GetValueAsLong(),
+				nodeConnection.GetProperties().GetAt(3)->CastString().GetValue());
 			pConnections.Add(connection);
 			pConnectionMap->Add(connection);
 		}

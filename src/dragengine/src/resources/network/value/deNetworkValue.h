@@ -28,6 +28,7 @@
 class deNetworkValueVisitor;
 
 #include "../../../deObject.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -46,6 +47,9 @@ class DE_DLL_EXPORT deNetworkValue : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNetworkValue> Ref;
+	
+	/** \brief Value list. */
+	typedef decTObjectOrderedSet<deNetworkValue> List;
 	
 	
 public:

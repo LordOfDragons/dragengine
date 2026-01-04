@@ -25,6 +25,7 @@
 #ifndef _DEPARTICLEEMITTERCONTROLLER_H_
 #define _DEPARTICLEEMITTERCONTROLLER_H_
 
+#include "../../deObject.h"
 #include "../../common/string/decString.h"
 
 
@@ -41,7 +42,12 @@
  * controller is frozen the current value can be changed. This is useful to prevent a controller
  * from changing without having to change all code path to account for the frozen state.
  */
-class DE_DLL_EXPORT deParticleEmitterController{
+class DE_DLL_EXPORT deParticleEmitterController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitterController> Ref;
+	
+	
 private:
 	decString pName;
 	float pLower;
@@ -56,14 +62,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create controller with range 0 to 1 and the value 0. */
-	deParticleEmitterController(const char *name = "Controller");
+	explicit deParticleEmitterController(const char *name = "Controller");
 	
-	/** \brief Clean up controller. */
-	~deParticleEmitterController();
+protected:
+	/**
+	 * \brief Clean up controller.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deParticleEmitterController() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

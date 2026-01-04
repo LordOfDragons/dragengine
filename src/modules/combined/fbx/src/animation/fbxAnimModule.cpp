@@ -132,31 +132,25 @@ void fbxAnimModule::pLoadAnimation(deAnimation &animation, fbxScene &scene){
 	
 	//loadAnimation->DebugPrintStructure( *this, "", true );
 	
-	const int boneCount = loadRig->GetBoneCount();
-	deAnimationBone *bone = NULL;
-	int i;
-	for(i=0; i<boneCount; i++){
-		bone = new deAnimationBone;
-		bone->SetName(loadRig->GetBoneAt(i)->GetName());
+	loadRig->GetBones().Visit([&](const fbxRigBone &rb){
+		deAnimationBone * const bone = new deAnimationBone;
+		bone->SetName(rb.GetName());
 		animation.AddBone(bone);
-	}
+	});
 	
 	pLoadMoves(animation, *loadAnimation);
 }
 
 void fbxAnimModule::pLoadMoves(deAnimation &animation, const fbxAnimation &loadAnimation){
-	const int moveCount = loadAnimation.GetMoveCount();
-	deAnimationMove *move = NULL;
-	int i;
+	deAnimationMove *move = nullptr;
 	
 	try{
-		for(i=0; i<moveCount; i++){
-			const fbxAnimationMove &loadMove = *loadAnimation.GetMoveAt(i);
+		loadAnimation.GetMoves().Visit([&](const fbxAnimationMove &m){
 			move = new deAnimationMove;
-			pLoadMove(animation, *move, loadMove);
+			pLoadMove(animation, *move, m);
 			animation.AddMove(move);
 			move = NULL;
-		}
+		});
 		
 	}catch(const deException &){
 		if(move){
@@ -169,11 +163,9 @@ void fbxAnimModule::pLoadMoves(deAnimation &animation, const fbxAnimation &loadA
 void fbxAnimModule::pLoadMove(deAnimation &animation, deAnimationMove &move,
 const fbxAnimationMove &loadMove){
 	//const decMatrix &sceneTransform = loadMove.GetAnimation().GetScene().GetTransformation();
-	const int countCurves = loadMove.GetCurvesCount();
-	int i, j, k;
-	
 	move.SetName(loadMove.GetName());
 	
+	int i, j, k;
 	const int boneCount = animation.GetBoneCount();
 	for(i=0; i<boneCount; i++){
 		move.AddKeyframeList(new deAnimationKeyframeList);
@@ -181,17 +173,14 @@ const fbxAnimationMove &loadMove){
 	
 	int playtime = 0;
 	
-	for(i=0; i<countCurves; i++){
-		const fbxAnimationMoveCurves &moveCurves = *loadMove.GetCurvesAt(i);
-		if(!moveCurves.GetRigBone()
-		|| moveCurves.GetTargetProperty() == fbxAnimationMoveCurves::etpUnsupported){
-			continue;
+	loadMove.GetCurveNodes().Visit([&](const fbxAnimationMoveCurves &c){
+		if(!c.GetRigBone() || c.GetTargetProperty() == fbxAnimationMoveCurves::etpUnsupported){
+			return;
 		}
 		
-		const fbxAnimationCurve * const curves[3] = {
-			moveCurves.GetCurveX(), moveCurves.GetCurveY(), moveCurves.GetCurveZ()};
+		const fbxAnimationCurve * const curves[3] = {c.GetCurveX(), c.GetCurveY(), c.GetCurveZ()};
 		if(!curves[0] && !curves[1] && !curves[2]){
-			continue;
+			return;
 		}
 		
 		int lastTime = 0;
@@ -207,22 +196,22 @@ const fbxAnimationMove &loadMove){
 			}
 		}
 		
-		deAnimationKeyframeList &kflist = *move.GetKeyframeList(moveCurves.GetRigBone()->GetIndex());
+		deAnimationKeyframeList &kflist = *move.GetKeyframeList(c.GetRigBone()->GetIndex());
 		for(j=0; j<=lastTime; j++){
 			kflist.AddKeyframe(new deAnimationKeyframe);
 		}
 		
 		playtime = decMath::max(playtime, lastTime);
 		
-		const decMatrix &animMatrix = moveCurves.GetRigBone()->GetAnimMatrix();
-		const fbxScene::eRotationOrder rotationOrder = moveCurves.GetRigBone()->GetRotationOrder();
+		const decMatrix &animMatrix = c.GetRigBone()->GetAnimMatrix();
+		const fbxScene::eRotationOrder rotationOrder = c.GetRigBone()->GetRotationOrder();
 		
 		fbxAnimationEvaluateCurve evaluators[3] = {
-			{loadMove, curves[0], moveCurves.GetDefaultValue().x},
-			{loadMove, curves[1], moveCurves.GetDefaultValue().y},
-			{loadMove, curves[2], moveCurves.GetDefaultValue().z} };
+			{loadMove, curves[0], c.GetDefaultValue().x},
+			{loadMove, curves[1], c.GetDefaultValue().y},
+			{loadMove, curves[2], c.GetDefaultValue().z} };
 		
-		switch(moveCurves.GetTargetProperty()){
+		switch(c.GetTargetProperty()){
 		case fbxAnimationMoveCurves::etpPosition:
 			for(k=0; k<=lastTime; k++){
 				deAnimationKeyframe &kf = *kflist.GetKeyframe(k);
@@ -262,7 +251,7 @@ const fbxAnimationMove &loadMove){
 		default:
 			break;
 		}
-	}
+	});
 	
 	move.SetPlaytime(loadMove.FrameToTime(playtime));
 }

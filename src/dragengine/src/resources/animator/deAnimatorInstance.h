@@ -31,6 +31,7 @@
 #include "../animation/deAnimation.h"
 #include "../component/deComponent.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deBaseScriptingCollider;
 class deTouchSensor;
@@ -80,9 +81,7 @@ private:
 	bool pEnableRetargeting;
 	bool pProtectDynamicBones;
 	
-	deAnimatorController *pControllers;
-	int pControllerCount;
-	int pControllerSize;
+	decTObjectOrderedSet<deAnimatorController> pControllers;
 	
 	deBaseAnimatorAnimatorInstance *pPeerAnimator;
 	
@@ -167,15 +166,9 @@ public:
 	
 	
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetControllerCount().
-	 */
-	deAnimatorController &GetControllerAt(int index);
-	const deAnimatorController &GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deAnimatorController> &GetControllers() const{ return pControllers; }
+
 	
 	/** \brief Index of named controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;

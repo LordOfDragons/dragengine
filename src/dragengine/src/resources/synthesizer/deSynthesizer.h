@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deRig;
 class deSynthesizerSource;
@@ -51,9 +51,9 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pControllers;
-	decObjectOrderedSet pLinks;
-	decObjectOrderedSet pSources;
+	decTObjectOrderedSet<deSynthesizerController> pControllers;
+	decTObjectOrderedSet<deSynthesizerLink> pLinks;
+	decTObjectOrderedSet<deSynthesizerSource> pSources;
 	
 	int pChannelCount;
 	int pSampleRate;
@@ -114,23 +114,11 @@ public:
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetControllerCount().
-	 */
-	deSynthesizerController *GetControllerAt(int index) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController(deSynthesizerController *controller) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSynthesizerController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;
-	
-	/** \brief Controller is present. */
-	bool HasController(deSynthesizerController *controller) const;
 	
 	/** \brief Add controller. */
 	void AddController(deSynthesizerController *controller);
@@ -152,20 +140,8 @@ public:
 	
 	/** \name Links */
 	/*@{*/
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetLinkCount().
-	 */
-	deSynthesizerLink *GetLinkAt(int index) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink(deSynthesizerLink *link) const;
-	
-	/** \brief Link is present. */
-	bool HasLink(deSynthesizerLink *link) const;
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deSynthesizerLink> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(deSynthesizerLink *link);
@@ -187,20 +163,8 @@ public:
 	
 	/** \name Sources */
 	/*@{*/
-	/** \brief Number of sources. */
-	int GetSourceCount() const;
-	
-	/**
-	 * \brief Source at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetSourceCount().
-	 */
-	deSynthesizerSource *GetSourceAt(int index) const;
-	
-	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource(deSynthesizerSource *source) const;
-	
-	/** \brief Source is present. */
-	bool HasSource(deSynthesizerSource *source) const;
+	/** \brief Sources. */
+	inline const decTObjectOrderedSet<deSynthesizerSource> &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
 	void AddSource(deSynthesizerSource *source);

@@ -141,7 +141,7 @@ void debpParticleEmitter::pCleanUp(){
 }
 
 void debpParticleEmitter::pUpdateTypes(){
-	const int typeCount = pEmitter->GetTypeCount();
+	const int typeCount = pEmitter->GetTypes().GetCount();
 	
 	if(pTypes){
 		delete [] pTypes;

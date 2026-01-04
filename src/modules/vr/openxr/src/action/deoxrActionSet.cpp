@@ -76,26 +76,10 @@ deoxrActionSet::~deoxrActionSet(){
 // Management
 ///////////////
 
-int deoxrActionSet::GetActionCount() const{
-	return pActions.GetCount();
-}
-
-deoxrAction *deoxrActionSet::GetActionAt(int index) const{
-	return (deoxrAction*)pActions.GetAt(index);
-}
-
 deoxrAction *deoxrActionSet::GetActionNamed(const char *name) const{
-	const int count = pActions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoxrAction * const action = (deoxrAction*)pActions.GetAt(i);
-		if(action->GetName() == name){
-			return action;
-		}
-	}
-	
-	return nullptr;
+	return pActions.FindOrDefault([&](const deoxrAction &action){
+		return action.GetName() == name;
+	});
 }
 
 deoxrAction *deoxrActionSet::AddAction(deoxrAction::eType type,

@@ -28,7 +28,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRCamera;
@@ -114,10 +114,10 @@ private:
 	int pOGLObjectSize;
 	
 	deMutex pMutexCameras;
-	decObjectOrderedSet pCleanUpCameraList;
+	decTObjectOrderedSet<deoglRCamera> pCleanUpCameraList;
 	
 	deMutex pMutexReleaseObjects;
-	decObjectOrderedSet pReleaseObjects;
+	decTObjectOrderedSet<deObject> pReleaseObjects;
 	
 	deMutex pMutexSynchronize;
 	bool pHasSynchronizeOperations;
@@ -315,7 +315,7 @@ public:
 	
 	
 	/** Clean up camera list (not thread-safe). */
-	inline const decObjectOrderedSet &GetCleanUpCameraList() const{ return pCleanUpCameraList; }
+	inline const decTObjectOrderedSet<deoglRCamera> &GetCleanUpCameraList() const{ return pCleanUpCameraList; }
 	
 	/** Add clean up camera (thread-safe). */
 	void AddCleanUpCamera(deoglRCamera *camera);
@@ -323,7 +323,7 @@ public:
 	
 	
 	/** Release objects list (not thread-safe). */
-	inline const decObjectOrderedSet &GetReleaseObjects() const{ return pReleaseObjects; }
+	inline const decTObjectOrderedSet<deObject> &GetReleaseObjects() const{ return pReleaseObjects; }
 	
 	/** Add release object (thread-safe). */
 	void AddReleaseObject(deObject *object);

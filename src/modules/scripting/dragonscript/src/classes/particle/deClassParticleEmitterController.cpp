@@ -129,8 +129,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 void deClassParticleEmitterController::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushString(controller.GetName());
 }
@@ -144,8 +144,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	controller.SetName(rt->GetValue(0)->GetString());
 	
@@ -162,8 +162,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassParticleEmitterController::nfGetLower::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushFloat(controller.GetLower());
 }
@@ -176,8 +176,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassParticleEmitterController::nfGetUpper::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushFloat(controller.GetUpper());
 }
@@ -192,8 +192,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetRange::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const float lower = rt->GetValue(0)->GetFloat();
 	const float upper = rt->GetValue(1)->GetFloat();
 	
@@ -212,8 +212,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassParticleEmitterController::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushFloat(controller.GetValue());
 }
@@ -227,8 +227,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const float value = rt->GetValue(0)->GetFloat();
 	
 	controller.SetValue(value);
@@ -246,8 +246,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassParticleEmitterController::nfGetRelativeValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushFloat(decMath::linearStep(controller.GetValue(), controller.GetLower(), controller.GetUpper()));
 }
@@ -261,8 +261,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetRelativeValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const float value = rt->GetValue(0)->GetFloat();
 	
 	controller.SetValue(decMath::linearStep(value, 0.0f, 1.0f, controller.GetLower(), controller.GetUpper()));
@@ -280,8 +280,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 void deClassParticleEmitterController::nfGetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushBool(controller.GetFrozen());
 }
@@ -295,8 +295,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const bool frozen = rt->GetValue(0)->GetBool();
 	
 	controller.SetFrozen(frozen);
@@ -314,8 +314,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 void deClassParticleEmitterController::nfGetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushBool(controller.GetClamp());
 }
@@ -329,8 +329,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const bool clamp = rt->GetValue(0)->GetBool();
 	
 	controller.SetClamp(clamp);
@@ -351,8 +351,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfIncrement::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	const float amount = rt->GetValue(0)->GetFloat();
 	
 	controller.SetValue(controller.GetValue() + amount);
@@ -370,8 +370,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetToLower::RunFunction(dsRunTime*, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	controller.SetValue(controller.GetLower());
 	
@@ -388,8 +388,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetToUpper::RunFunction(dsRunTime*, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	controller.SetValue(controller.GetUpper());
 	
@@ -406,8 +406,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfReverse::RunFunction(dsRunTime*, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	controller.SetValue(controller.GetUpper() - controller.GetValue());
 	
@@ -425,8 +425,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetValueFrom::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
 	if(!valFrom->GetRealObject()){
@@ -435,8 +435,8 @@ void deClassParticleEmitterController::nfSetValueFrom::RunFunction(dsRunTime *rt
 	
 	const sParticleEmitterCtrlNatDat &ndFrom = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(valFrom));
 	deParticleEmitterController &controllerFrom = ndFrom.emitter
-		? *nd.emitter->GetControllerAt(ndFrom.index)
-		: nd.instance->GetControllerAt(ndFrom.index);
+		? *nd.emitter->GetControllers().GetAt(ndFrom.index)
+		: nd.instance->GetControllers().GetAt(ndFrom.index);
 	
 	controller.SetValue(controllerFrom.GetValue());
 	
@@ -454,8 +454,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassParticleEmitterController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	dsValue * const valFrom = rt->GetValue(0);
 	if(!valFrom->GetRealObject()){
@@ -464,8 +464,8 @@ void deClassParticleEmitterController::nfSetAllFrom::RunFunction(dsRunTime *rt, 
 	
 	const sParticleEmitterCtrlNatDat &ndFrom = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(valFrom));
 	deParticleEmitterController &controllerFrom = ndFrom.emitter
-		? *nd.emitter->GetControllerAt(ndFrom.index)
-		: nd.instance->GetControllerAt(ndFrom.index);
+		? *nd.emitter->GetControllers().GetAt(ndFrom.index)
+		: nd.instance->GetControllers().GetAt(ndFrom.index);
 	
 	controller.SetFrozen(false);
 	controller.SetRange(controllerFrom.GetLower(), controllerFrom.GetUpper());
@@ -486,8 +486,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 void deClassParticleEmitterController::nfIsAtLower::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushBool(controller.GetValue() <= controller.GetLower() + FLOAT_SAFE_EPSILON);
 }
@@ -500,8 +500,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 void deClassParticleEmitterController::nfIsAtUpper::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
 	const deParticleEmitterController &controller = nd.emitter
-		? *nd.emitter->GetControllerAt(nd.index)
-		: nd.instance->GetControllerAt(nd.index);
+		? *nd.emitter->GetControllers().GetAt(nd.index)
+		: nd.instance->GetControllers().GetAt(nd.index);
 	
 	rt->PushBool(controller.GetValue() >= controller.GetUpper() - FLOAT_SAFE_EPSILON);
 }
@@ -617,7 +617,7 @@ deParticleEmitterInstance *&instance, int &index) const{
 }
 
 void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter *emitter, int index){
-	if(!rt || !emitter || index < 0 || index >= emitter->GetControllerCount()){
+	if(!rt || !emitter || index < 0 || index >= emitter->GetControllers().GetCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	
@@ -629,7 +629,7 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 }
 
 void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index){
-	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
+	if(!rt || !instance || index < 0 || index >= instance->GetControllers().GetCount()){
 		DSTHROW(dueInvalidParam);
 	}
 	

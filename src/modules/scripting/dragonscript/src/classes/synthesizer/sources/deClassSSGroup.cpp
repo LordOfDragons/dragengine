@@ -248,7 +248,7 @@ deClassSSGroup::nfRemoveAllSources::nfRemoveAllSources(const sInitData &init) : 
 void deClassSSGroup::nfRemoveAllSources::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
-	if(nd.source->GetSourceCount() == 0){
+	if(nd.source->GetSources().IsEmpty()){
 		return;
 	}
 	

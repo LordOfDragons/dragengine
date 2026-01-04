@@ -123,13 +123,10 @@ void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *f
 	pLSGameProject->Save(project, decDiskFileWriter::Ref::New(filename, false));
 }
 
-
-
 void igdeLoadSaveSystem::UpdatePatternLists(){
 	const deEngine &engine = *pWindowMain->GetEngine();
 	const deModuleSystem &modSys = *engine.GetModuleSystem();
-	const int moduleCount = modSys.GetModuleCount();
-	int i, j, k;
+	int i;
 	
 	// reset the file pattern lists
 	for(i=0; i<FilePatternListCount; i++){
@@ -142,28 +139,25 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	decString showAllFormat[FPL_MAPPING_COUNT];
 	decString showAllDefaultExtension[FPL_MAPPING_COUNT];
 	
-	for(i=0; i<FPL_MAPPING_COUNT; i++){
-		for(j=0; j<moduleCount; j++){
-			const deLoadableModule &loadableModule = *modSys.GetModuleAt(j);
-			
+	// iterate modules via Visitor and collect patterns per mapping
+	modSys.GetModules().Visit([&](const deLoadableModule &loadableModule){
+		for(i=0; i<FPL_MAPPING_COUNT; i++){
 			if(loadableModule.GetType() == vFPLMappings[i].moduleType){
 				const decStringList &patternList = loadableModule.GetPatternList();
-				const int patternCount = patternList.GetCount();
-				
-				for(k=0; k<patternCount; k++){
+				patternList.Visit([&](const decString &p){
 					if(!showAllFormat[i].IsEmpty()){
 						showAllFormat[i].AppendCharacter(',');
 					}
 					showAllFormat[i].AppendCharacter('*');
-					showAllFormat[i].Append(patternList.GetAt(k));
-				}
+					showAllFormat[i].Append(p);
+				});
 				
 				if(showAllDefaultExtension[i].IsEmpty() && !loadableModule.GetNoSaving()){
 					showAllDefaultExtension[i] = loadableModule.GetDefaultExtension();
 				}
 			}
 		}
-	}
+	});
 	
 	for(i=0; i<FPL_MAPPING_COUNT; i++){
 		pAddPattern(pFPLOpen[vFPLMappings[i].list], "All formats",
@@ -172,9 +166,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	
 	// fill the file pattern lists. these are added to both load and save lists
 	for(i=0; i<FPL_MAPPING_COUNT; i++){
-		for(j=0; j<moduleCount; j++){
-			const deLoadableModule &loadableModule = *modSys.GetModuleAt(j);
-			
+		modSys.GetModules().Visit([&](const deLoadableModule &loadableModule){
 			if(loadableModule.GetType() == vFPLMappings[i].moduleType){
 				pAddPattern(pFPLOpen[vFPLMappings[i].list], loadableModule);
 				
@@ -182,7 +174,7 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 					pAddPattern(pFPLSave[vFPLMappings[i].list], loadableModule);
 				}
 			}
-		}
+		});
 	}
 	
 	// some lists are special for the time being

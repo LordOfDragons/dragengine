@@ -100,14 +100,6 @@ void deSynthesizerSource::SetMaxPanning(float panning){
 // Effects
 ////////////
 
-int deSynthesizerSource::GetEffectCount() const{
-	return pEffects.GetCount();
-}
-
-deSynthesizerEffect *deSynthesizerSource::GetEffectAt(int index) const{
-	return (deSynthesizerEffect*)pEffects.GetAt(index);
-}
-
 void deSynthesizerSource::AddEffect(deSynthesizerEffect *effect){
 	if(!effect){
 		DETHROW(deeInvalidParam);

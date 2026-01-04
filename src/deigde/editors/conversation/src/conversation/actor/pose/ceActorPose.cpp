@@ -137,10 +137,7 @@ void ceActorPose::pLoadAnimator(){
 	}
 	
 	// update controller name list
-	const int count = animator->GetControllerCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pControllerNames.Add(animator->GetControllerAt(i)->GetName());
-	}
+	animator->GetControllers().Visit([&](const deAnimatorController &c){
+		pControllerNames.Add(c.GetName());
+	});
 }

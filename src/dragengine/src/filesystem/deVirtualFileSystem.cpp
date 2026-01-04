@@ -451,22 +451,6 @@ TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime(const decPath &path) co
 // Containers
 ///////////////
 
-int deVirtualFileSystem::GetContainerCount() const{
-	return pContainers.GetCount();
-}
-
-deVFSContainer *deVirtualFileSystem::GetContainerAt(int index) const{
-	return (deVFSContainer*)pContainers.GetAt(index);
-}
-
-int deVirtualFileSystem::IndexOfContainer(deVFSContainer *container) const{
-	return pContainers.IndexOf(container);
-}
-
-bool deVirtualFileSystem::HasContainer(deVFSContainer *container) const{
-	return pContainers.Has(container);
-}
-
 void deVirtualFileSystem::AddContainer(deVFSContainer *container){
 	DEASSERT_NOTNULL(container)
 	pContainers.Add(container);

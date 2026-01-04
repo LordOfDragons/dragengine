@@ -104,7 +104,7 @@ void debpParticleEmitterType::SetParamFactorAngVelo(float factor){
 
 
 void debpParticleEmitterType::UpdateType(){
-	const deParticleEmitterType &type = pEmitter->GetTypeAt(pType);
+	const deParticleEmitterType &type = pEmitter->GetTypes().GetAt(pType);
 	
 	deModel *model;
 	deSkin *skin;
@@ -137,7 +137,7 @@ void debpParticleEmitterType::UpdateType(){
 
 
 void debpParticleEmitterType::UpdateParameters(){
-	const deParticleEmitterType &type = pEmitter->GetTypeAt(pType);
+	const deParticleEmitterType &type = pEmitter->GetTypes().GetAt(pType);
 	
 	// create array if not existing yet. the array contain the sample values for
 	// 11 parameter curves sampled at 256 positions. this is enough since the
@@ -212,12 +212,12 @@ int curve, deParticleEmitterType::eParameters parameter) const{
 
 float debpParticleEmitterType::EvaluateValueParameter(const deParticleEmitterInstance &instance,
 int curve, deParticleEmitterType::eParameters parameter) const{
-	const deParticleEmitterParameter &engParameter = pEmitter->GetTypeAt(pType).GetParameter(parameter);
+	const deParticleEmitterParameter &engParameter = pEmitter->GetTypes().GetAt(pType)->GetParameter(parameter);
 	const int controllerIndex = engParameter.GetControllerValue();
 	float value = engParameter.GetValue();
 	
-	if(controllerIndex >= 0 && controllerIndex < pEmitter->GetControllerCount()){
-		const deParticleEmitterController &controller = instance.GetControllerAt(controllerIndex);
+	if(controllerIndex >= 0 && controllerIndex < pEmitter->GetControllers().GetCount()){
+		const deParticleEmitterController &controller = instance.GetControllers().GetAt(controllerIndex);
 		const float lower = controller.GetLower();
 		const float range = controller.GetUpper() - lower;
 		float curveValue = 0.0f;
@@ -245,12 +245,12 @@ int curve, deParticleEmitterType::eParameters parameter) const{
 
 float debpParticleEmitterType::EvaluateSpreadParameter(const deParticleEmitterInstance &instance,
 int curve, deParticleEmitterType::eParameters parameter) const{
-	const deParticleEmitterParameter &engParameter = pEmitter->GetTypeAt(pType).GetParameter(parameter);
+	const deParticleEmitterParameter &engParameter = pEmitter->GetTypes().GetAt(pType)->GetParameter(parameter);
 	const int controllerIndex = engParameter.GetControllerSpread();
 	float spread = engParameter.GetSpread();
 	
-	if(controllerIndex >= 0 && controllerIndex < pEmitter->GetControllerCount()){
-		const deParticleEmitterController &controller = instance.GetControllerAt(controllerIndex);
+	if(controllerIndex >= 0 && controllerIndex < pEmitter->GetControllers().GetCount()){
+		const deParticleEmitterController &controller = instance.GetControllers().GetAt(controllerIndex);
 		const float lower = controller.GetLower();
 		const float range = controller.GetUpper() - lower;
 		float curveValue = 0.0f;

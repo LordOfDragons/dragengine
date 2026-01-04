@@ -67,28 +67,23 @@ reLoadSaveSystem::~reLoadSaveSystem(){
 // Management
 ///////////////
 
-void reLoadSaveSystem::UpdateLSRigs()
-{
+void reLoadSaveSystem::UpdateLSRigs(){
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	deModuleSystem *modSys = engine->GetModuleSystem();
-	int m, moduleCount = modSys->GetModuleCount();
 	
 	pLSRigs.RemoveAll();
 	
 	// add a new load save rig for each rig module found in the engine that is also
 	// running and usable therefore
-	for(m=0; m<moduleCount; m++){
-		const deLoadableModule &loadableModule = *modSys->GetModuleAt(m);
-		
+	engine->GetModuleSystem()->GetModules().Visit([&](const deLoadableModule &loadableModule){
 		if(loadableModule.GetType() != deModuleSystem::emtRig){
-			continue;
+			return;
 		}
 		if(!loadableModule.IsLoaded()){
-			continue;
+			return;
 		}
 		
 		pLSRigs.Add(reLSRig::Ref::New((deBaseRigModule*)loadableModule.GetModule()));
-	}
+	});
 }
 
 reRig::Ref reLoadSaveSystem::LoadRig(const char *filename){

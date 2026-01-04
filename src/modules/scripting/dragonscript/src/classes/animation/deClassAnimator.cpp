@@ -145,7 +145,7 @@ deClassAnimator::nfGetControllerCount::nfGetControllerCount(const sInitData &ini
 }
 void deClassAnimator::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	rt->PushInt(animator->GetControllerCount());
+	rt->PushInt(animator->GetControllers().GetCount());
 }
 
 // public func void setControllerCount( int count )
@@ -160,19 +160,18 @@ void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
 	
-	while(animator->GetControllerCount() > count){
-		animator->RemoveController(animator->GetControllerAt(animator->GetControllerCount() - 1));
+	while(animator->GetControllers().GetCount() > count){
+		animator->RemoveController(animator->GetControllers().Last());
 	}
 	
 	try{
-		while(animator->GetControllerCount() < count){
+		while(animator->GetControllers().GetCount() < count){
 			controller = new deAnimatorController;
 			if(!controller) DSTHROW(dueOutOfMemory);
 			animator->AddController(controller);
 			controller = NULL;
 		}
 	}catch(...){
-		if(controller) delete controller;
 		throw;
 	}
 }
@@ -189,7 +188,7 @@ void deClassAnimator::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *mys
 	
 	if(index < 0){
 		ds.GetClassAnimatorController()->PushController(rt, animator,
-			animator->GetControllerCount() + index);
+			animator->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassAnimatorController()->PushController(rt, animator, index);
@@ -233,7 +232,7 @@ deClassAnimator::nfGetLinkCount::nfGetLinkCount(const sInitData &init) : dsFunct
 void deClassAnimator::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	
-	rt->PushInt(animator->GetLinkCount());
+	rt->PushInt(animator->GetLinks().GetCount());
 }
 
 // public func int addLink( int controller )
@@ -255,11 +254,10 @@ void deClassAnimator::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 		animator->AddLink(link);
 		
 	}catch(...){
-		if(link) delete link;
 		throw;
 	}
 	
-	rt->PushInt(animator->GetLinkCount() - 1);
+	rt->PushInt(animator->GetLinks().GetCount() - 1);
 }
 
 // public func void removeAllLinks()
@@ -282,7 +280,7 @@ void deClassAnimator::nfSetLinkController::RunFunction(dsRunTime *rt, dsValue *m
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	
 	int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink *link = animator->GetLinkAt(index);
+	deAnimatorLink *link = animator->GetLinks().GetAt(index);
 	
 	link->SetController(rt->GetValue(1)->GetInt());
 	
@@ -303,7 +301,7 @@ void deClassAnimator::nfSetLinkCurve::RunFunction(dsRunTime *rt, dsValue *myself
 	const int index = rt->GetValue(0)->GetInt();
 	const decCurveBezier &curve = ds.GetClassCurveBezier()->GetCurve(rt->GetValue(1)->GetRealObject());
 	
-	animator.GetLinkAt(index)->SetCurve(curve);
+	animator.GetLinks().GetAt(index)->SetCurve(curve);
 	
 	animator.NotifyLinkChangedAt(index);
 }
@@ -318,7 +316,7 @@ void deClassAnimator::nfSetLinkRepeat::RunFunction(dsRunTime *rt, dsValue *mysel
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetRepeat(rt->GetValue(1)->GetInt());
 	
@@ -335,7 +333,7 @@ void deClassAnimator::nfSetLinkBone::RunFunction(dsRunTime *rt, dsValue *myself)
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetBone(rt->GetValue(1)->GetString());
 	
@@ -352,7 +350,7 @@ void deClassAnimator::nfSetLinkBoneParameter::RunFunction(dsRunTime *rt, dsValue
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetBoneParameter((deAnimatorLink::eBoneParameter)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -372,7 +370,7 @@ void deClassAnimator::nfSetLinkBoneValueRange::RunFunction(dsRunTime *rt, dsValu
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetBoneValueRange(rt->GetValue(1)->GetFloat(), rt->GetValue(2)->GetFloat());
 	
@@ -390,7 +388,7 @@ void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction(dsRunTime *rt
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetBoneValueRange(rt->GetValue(1)->GetFloat() * DEG2RAD, rt->GetValue(2)->GetFloat() * DEG2RAD);
 	
@@ -407,7 +405,7 @@ void deClassAnimator::nfSetLinkVertexPositionSet::RunFunction(dsRunTime *rt, dsV
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetVertexPositionSet(rt->GetValue(1)->GetString());
 	
@@ -425,7 +423,7 @@ void deClassAnimator::nfSetLinkVertexPositionSetValueRange::RunFunction(dsRunTim
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deAnimatorLink &link = *animator.GetLinkAt(index);
+	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
 	
 	link.SetVertexPositionSetValueRange(rt->GetValue(1)->GetFloat(), rt->GetValue(2)->GetFloat());
 	
@@ -442,7 +440,7 @@ void deClassAnimator::nfSetLinkWrapY::RunFunction(dsRunTime *rt, dsValue *myself
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
-	animator.GetLinkAt(index)->SetWrapY(rt->GetValue(1)->GetBool());
+	animator.GetLinks().GetAt(index)->SetWrapY(rt->GetValue(1)->GetBool());
 	
 	animator.NotifyLinkChangedAt(index);
 }
@@ -455,7 +453,7 @@ deClassAnimator::nfGetRuleCount::nfGetRuleCount(const sInitData &init) : dsFunct
 }
 void deClassAnimator::nfGetRuleCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	rt->PushInt(animator->GetRuleCount());
+	rt->PushInt(animator->GetRules().GetCount());
 }
 
 // public func void addRule( AnimatorRule rule )
@@ -489,7 +487,7 @@ void deClassAnimator::nfGetRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
 	const int position = rt->GetValue(0)->GetInt();
-	deAnimatorRule * const rule = animator->GetRuleAt(position);
+	deAnimatorRule * const rule = animator->GetRules().GetAt(position);
 	
 	clsArR.PushRule(rt, animator, rule);
 }
@@ -503,7 +501,7 @@ deClassAnimator::nfRemoveRuleAt::nfRemoveRuleAt(const sInitData &init) : dsFunct
 void deClassAnimator::nfRemoveRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	
-	animator->RemoveRule(animator->GetRuleAt(rt->GetValue(0)->GetInt()));
+	animator->RemoveRule(animator->GetRules().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func void removeAllRules()

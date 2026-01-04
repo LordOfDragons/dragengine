@@ -515,7 +515,7 @@ void peeType::pLoadSkin(){
 	}
 	
 	if(pEmitter && pEmitter->GetEngineEmitter()){
-		pEmitter->GetEngineEmitter()->GetTypeAt(pIndex).SetSkin(pEngSkin);
+		pEmitter->GetEngineEmitter()->GetTypes().GetAt(pIndex)->SetSkin(pEngSkin);
 	}
 }
 

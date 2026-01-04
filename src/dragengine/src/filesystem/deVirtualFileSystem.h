@@ -27,7 +27,6 @@
 
 #include "deVFSContainer.h"
 #include "../deObject.h"
-#include "../common/collection/decObjectOrderedSet.h"
 #include "../common/file/decBaseFileReader.h"
 #include "../common/file/decBaseFileWriter.h"
 
@@ -62,7 +61,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pContainers;
+	deVFSContainer::List pContainers;
 	
 	
 	
@@ -156,17 +155,8 @@ public:
 	
 	/** \name Containers */
 	/*@{*/
-	/** \brief Number of containers. */
-	int GetContainerCount() const;
-	
-	/** \brief Container at position. */
-	deVFSContainer *GetContainerAt(int index) const;
-	
-	/** \brief Index of container or -1 if absent. */
-	int IndexOfContainer(deVFSContainer *container) const;
-	
-	/** \brief Container is present. */
-	bool HasContainer(deVFSContainer *container) const;
+	/** \brief Containers. */
+	inline const deVFSContainer::List &GetContainers() const{ return pContainers; }
 	
 	/**
 	 * \brief Add container.

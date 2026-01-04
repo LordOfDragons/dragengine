@@ -55,7 +55,7 @@ private:
 	deInputDeviceAxis::eAxisTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMinimum;
@@ -127,7 +127,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
 	void SetDisplayImages(const char *name);

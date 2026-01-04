@@ -27,7 +27,7 @@
 
 #include "dedsParameter.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -35,7 +35,7 @@
  */
 class dedsParameterList{
 private:
-	decObjectOrderedSet pParameters;
+	decTObjectOrderedSet<dedsParameter> pParameters;
 	
 	
 public:

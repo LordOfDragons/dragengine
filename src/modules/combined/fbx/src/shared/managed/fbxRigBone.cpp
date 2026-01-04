@@ -52,7 +52,7 @@ pNodeModel(nodeModel),
 pNodeArmature(NULL),
 pNodeModelID(nodeModel.GetID()),
 pIndex(0),
-pName(nodeModel.GetPropertyAt(1)->CastString().GetValue()),
+pName(nodeModel.GetProperties().GetAt(1)->CastString().GetValue()),
 pParent(NULL),
 pDirty(true),
 pRotationOrder(fbxScene::ConvRotationOrder(nodeModel.GetPropertyInt("RotationOrder", 0))){

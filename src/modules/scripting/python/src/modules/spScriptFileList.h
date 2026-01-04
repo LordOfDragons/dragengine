@@ -25,7 +25,7 @@
 #ifndef _SPSCRIPTFILELIST_H_
 #define _SPSCRIPTFILELIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include "../spCommon.h"
 
@@ -40,7 +40,7 @@ class ScriptingPython;
 class spScriptFileList{
 private:
 	ScriptingPython *pSP;
-	decObjectOrderedSet pFiles;
+	decTObjectOrderedSet<deadArchiveFile> pFiles;
 	
 public:
 	/** \name Constructors and Destructors */

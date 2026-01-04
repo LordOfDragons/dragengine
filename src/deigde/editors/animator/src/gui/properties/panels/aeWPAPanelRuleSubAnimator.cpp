@@ -332,14 +332,14 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 	
 	if(rule && rule->GetSubAnimator()){
 		const deAnimator &subAnimator = *rule->GetSubAnimator();
-		const int nameCount = subAnimator.GetControllerCount();
+		const int nameCount = subAnimator.GetControllers().GetCount();
 		const int count = rule->GetConnections().GetCount();
 		decString text;
 		int i;
 		
 		for(i=0; i<count; i++){
 			if(i < nameCount){
-				text.Format("%d: %s", i, subAnimator.GetControllerAt(i)->GetName().GetString());
+				text.Format("%d: %s", i, subAnimator.GetControllers().GetAt(i)->GetName().GetString());
 				
 			}else{
 				text.Format("%d: < invalid >", i);

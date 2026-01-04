@@ -714,7 +714,7 @@ void deoglRDecal::RemoveListener(deoglDecalListener *listener){
 void deoglRDecal::NotifyGeometryChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglDecalListener*)pListeners.GetAt(pListenerIndex))->GeometryChanged(*this);
+		pListeners.GetAt(pListenerIndex)->GeometryChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -722,7 +722,7 @@ void deoglRDecal::NotifyGeometryChanged(){
 void deoglRDecal::NotifyDecalDestroyed(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglDecalListener*)pListeners.GetAt(pListenerIndex))->DecalDestroyed(*this);
+		pListeners.GetAt(pListenerIndex)->DecalDestroyed(*this);
 		pListenerIndex++;
 	}
 }
@@ -734,7 +734,7 @@ void deoglRDecal::NotifyTextureChanged(){
 	
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglDecalListener*)pListeners.GetAt(pListenerIndex))->TextureChanged(*this);
+		pListeners.GetAt(pListenerIndex)->TextureChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -743,7 +743,7 @@ void deoglRDecal::NotifyTextureChanged(){
 void deoglRDecal::NotifyTUCChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglDecalListener*)pListeners.GetAt(pListenerIndex))->TUCChanged(*this);
+		pListeners.GetAt(pListenerIndex)->TUCChanged(*this);
 		pListenerIndex++;
 	}
 }

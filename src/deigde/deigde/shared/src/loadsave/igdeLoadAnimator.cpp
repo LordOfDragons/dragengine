@@ -179,135 +179,117 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 
 void igdeLoadAnimator::pReadController(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimatorController *controller = nullptr;
 	int e;
 	
-	try{
-		controller = new deAnimatorController;
+	const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
+	
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		if(strcmp(tag->GetName(), "name") == 0){
+			controller->SetName(GetCDataString(*tag));
 			
-			if(strcmp(tag->GetName(), "name") == 0){
-				controller->SetName(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "clamp") == 0){
-				controller->SetClamp(GetCDataBool(*tag));
-				
-			}else if(strcmp(tag->GetName(), "frozen") == 0){
-				controller->SetFrozen(GetCDataBool(*tag));
-				
-			}else if(strcmp(tag->GetName(), "limits") == 0){
-				controller->SetValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
-				
-			}else if(strcmp(tag->GetName(), "value") == 0){
-				controller->SetCurrentValue(GetCDataFloat(*tag));
-				
-			}else if(strcmp(tag->GetName(), "vector") == 0){
-				decVector vector;
-				ReadVector(*tag, vector);
-				controller->SetVector(vector);
-			}
+		}else if(strcmp(tag->GetName(), "clamp") == 0){
+			controller->SetClamp(GetCDataBool(*tag));
+			
+		}else if(strcmp(tag->GetName(), "frozen") == 0){
+			controller->SetFrozen(GetCDataBool(*tag));
+			
+		}else if(strcmp(tag->GetName(), "limits") == 0){
+			controller->SetValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
+			
+		}else if(strcmp(tag->GetName(), "value") == 0){
+			controller->SetCurrentValue(GetCDataFloat(*tag));
+			
+		}else if(strcmp(tag->GetName(), "vector") == 0){
+			decVector vector;
+			ReadVector(*tag, vector);
+			controller->SetVector(vector);
 		}
-		
-		animator.AddController(controller);
-		
-	}catch(const deException &){
-		if(controller){
-			delete controller;
-		}
-		throw;
 	}
+	
+	animator.AddController(controller);
 }
 
 void igdeLoadAnimator::pReadLink(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimatorLink *link = nullptr;
 	int e;
 	
-	try{
-		link = new deAnimatorLink;
+	const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
+	
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
+		if(tag->GetName() == "controller"){
+			link->SetController(GetCDataInt(*tag));
+			
+		}else if(tag->GetName() == "curve"){
+			decCurveBezier curve;
+			ReadCurveBezier(*tag, curve);
+			link->SetCurve(curve);
+			
+		}else if(tag->GetName() == "repeat"){
+			link->SetRepeat(GetCDataInt(*tag));
+			
+		}else if(tag->GetName() == "bone"){
+			link->SetBone(GetCDataString(*tag));
+			
+		}else if(tag->GetName() == "boneParameter"){
+			const char * const name = GetCDataString(*tag);
+			
+			if(strcmp(name, "positionX") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpPositionX);
+				
+			}else if(strcmp(name, "positionY") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpPositionY);
+				
+			}else if(strcmp(name, "positionZ") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpPositionZ);
+				
+			}else if(strcmp(name, "rotationX") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpRotationX);
+				
+			}else if(strcmp(name, "rotationY") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpRotationY);
+				
+			}else if(strcmp(name, "rotationZ") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpRotationZ);
+				
+			}else if(strcmp(name, "scaleX") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpScaleX);
+				
+			}else if(strcmp(name, "scaleY") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpScaleY);
+				
+			}else if(strcmp(name, "scaleZ") == 0){
+				link->SetBoneParameter(deAnimatorLink::ebpScaleZ);
+				
+			}else{
+				LogErrorUnknownValue(*tag, name);
 			}
 			
-			if(tag->GetName() == "controller"){
-				link->SetController(GetCDataInt(*tag));
-				
-			}else if(tag->GetName() == "curve"){
-				decCurveBezier curve;
-				ReadCurveBezier(*tag, curve);
-				link->SetCurve(curve);
-				
-			}else if(tag->GetName() == "repeat"){
-				link->SetRepeat(GetCDataInt(*tag));
-				
-			}else if(tag->GetName() == "bone"){
-				link->SetBone(GetCDataString(*tag));
-				
-			}else if(tag->GetName() == "boneParameter"){
-				const char * const name = GetCDataString(*tag);
-				
-				if(strcmp(name, "positionX") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpPositionX);
-					
-				}else if(strcmp(name, "positionY") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpPositionY);
-					
-				}else if(strcmp(name, "positionZ") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpPositionZ);
-					
-				}else if(strcmp(name, "rotationX") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpRotationX);
-					
-				}else if(strcmp(name, "rotationY") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpRotationY);
-					
-				}else if(strcmp(name, "rotationZ") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpRotationZ);
-					
-				}else if(strcmp(name, "scaleX") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpScaleX);
-					
-				}else if(strcmp(name, "scaleY") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpScaleY);
-					
-				}else if(strcmp(name, "scaleZ") == 0){
-					link->SetBoneParameter(deAnimatorLink::ebpScaleZ);
-					
-				}else{
-					LogErrorUnknownValue(*tag, name);
-				}
-				
-			}else if(tag->GetName() == "boneLimits"){
-				link->SetBoneValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
-				
-			}else if(tag->GetName() == "vertexPositionSet"){
-				link->SetVertexPositionSet(GetCDataString(*tag));
-				
-			}else if(tag->GetName() == "vertexPositionSetLimits"){
-				link->SetVertexPositionSetValueRange(
-					GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
-				
-			}else if(tag->GetName() == "wrapY"){
-				link->SetWrapY(GetCDataBool(*tag));
-			}
+		}else if(tag->GetName() == "boneLimits"){
+			link->SetBoneValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
+			
+		}else if(tag->GetName() == "vertexPositionSet"){
+			link->SetVertexPositionSet(GetCDataString(*tag));
+			
+		}else if(tag->GetName() == "vertexPositionSetLimits"){
+			link->SetVertexPositionSetValueRange(
+				GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
+			
+		}else if(tag->GetName() == "wrapY"){
+			link->SetWrapY(GetCDataBool(*tag));
 		}
-		
-		animator.AddLink(link);
-		
-	}catch(const deException &){
-		if(link){
-			delete link;
-		}
-		throw;
 	}
+	
+	animator.AddLink(link);
 }
 
 deAnimatorRule::Ref igdeLoadAnimator::pReadRule(const decXmlElementTag &root,

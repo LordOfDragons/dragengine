@@ -28,7 +28,7 @@
 #include "dewiInclude.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceFeedback.h>
 #include <dragengine/resources/image/deImage.h>
@@ -50,7 +50,7 @@ private:
 	deInputDeviceFeedback::eFeedbackTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMaximum;
@@ -112,7 +112,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
 	void SetDisplayImages(const char *name);

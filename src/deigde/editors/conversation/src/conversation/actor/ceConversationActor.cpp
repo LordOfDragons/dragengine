@@ -796,7 +796,7 @@ void ceConversationActor::pUpdateAnimatorInstance(float elapsed){
 			return;
 		}
 		
-		deAnimatorController &animatorController = pEngAnimatorInstance->GetControllerAt(index);
+		deAnimatorController &animatorController = pEngAnimatorInstance->GetControllers().GetAt(index);
 		
 		switch(poseController.GetUpdateType()){
 		case ceActorController::eutConstant:
@@ -896,18 +896,18 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 	
 	// update the gesture animator instance if there is an actor animator instance
 	if(engAnimator){
-		const int poseControllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int poseControllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		int i;
 		
 		// copy actor pose controller values to the respective gesture controllers if existing
 		for(i=0; i<poseControllerCount; i++){
-			const deAnimatorController &controllerPose = pEngAnimatorInstance->GetControllerAt(i);
+			const deAnimatorController &controllerPose = pEngAnimatorInstance->GetControllers().GetAt(i);
 			const int index = pEngGestureAnimatorInstance->IndexOfControllerNamed(controllerPose.GetName());
 			if(index == -1){
 				continue;
 			}
 			
-			deAnimatorController &controllerGesture = pEngGestureAnimatorInstance->GetControllerAt(index);
+			deAnimatorController &controllerGesture = pEngGestureAnimatorInstance->GetControllers().GetAt(index);
 			controllerGesture.SetCurrentValue(controllerPose.GetCurrentValue());
 			controllerGesture.SetVector(controllerPose.GetVector());
 			pEngGestureAnimatorInstance->NotifyControllerChangedAt(index);
@@ -922,55 +922,54 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 		
 		if(resetAnimation){
 			if(indexControllerProgress != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerProgress).SetValueRange(startTime, endTime);
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerProgress).SetCurrentValue(startTime);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerProgress)->SetValueRange(startTime, endTime);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerProgress)->SetCurrentValue(startTime);
 			}
 			if(indexControllerPlayback != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerPlayback).SetCurrentValue(
-					pEngGestureAnimatorInstance->GetControllerAt(indexControllerPlayback).GetMinimumValue());
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerPlayback)->SetCurrentValue(
+					pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerPlayback)->GetMinimumValue());
 			}
 			if(indexControllerVariation != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerVariation)
-					.SetCurrentValue(decMath::random(0.0f, 1.0f));
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerVariation)->SetCurrentValue(decMath::random(0.0f, 1.0f));
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerVariation);
 			}
 			
 			pEngGestureAnimatorInstance->CaptureStateInto(0);
 			
 			if(indexControllerProgress != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerProgress).SetCurrentValue(pPlayGestureElapsed);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerProgress)->SetCurrentValue(pPlayGestureElapsed);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerProgress);
 			}
 			if(indexControllerPlayback != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerPlayback).SetCurrentValue(pPlayGestureElapsed - startTime);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerPlayback)->SetCurrentValue(pPlayGestureElapsed - startTime);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerPlayback);
 			}
 			if(indexControllerFadeIn != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeIn).SetCurrentValue(pPlayGestureElapsed);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeIn)->SetCurrentValue(pPlayGestureElapsed);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerFadeIn);
 			}
 			if(indexControllerFadeOut != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeOut).SetCurrentValue(pPlayGestureElapsed
-					- (endTime - pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeOut).GetMaximumValue()));
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeOut)->SetCurrentValue(pPlayGestureElapsed
+					- (endTime - pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeOut)->GetMaximumValue()));
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerFadeOut);
 			}
 			
 		}else{
 			if(indexControllerProgress != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerProgress).IncrementCurrentValue(elapsed);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerProgress)->IncrementCurrentValue(elapsed);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerProgress);
 			}
 			if(indexControllerPlayback != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerPlayback).IncrementCurrentValue(elapsed);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerPlayback)->IncrementCurrentValue(elapsed);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerPlayback);
 			}
 			if(indexControllerFadeIn != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeIn).IncrementCurrentValue(elapsed);
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeIn)->IncrementCurrentValue(elapsed);
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerFadeIn);
 			}
 			if(indexControllerFadeOut != -1){
-				pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeOut).SetCurrentValue(pPlayGestureElapsed
-					- (endTime - pEngGestureAnimatorInstance->GetControllerAt(indexControllerFadeOut).GetMaximumValue()));
+				pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeOut)->SetCurrentValue(pPlayGestureElapsed
+					- (endTime - pEngGestureAnimatorInstance->GetControllers().GetAt(indexControllerFadeOut)->GetMaximumValue()));
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt(indexControllerFadeOut);
 			}
 		}
@@ -1039,10 +1038,10 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 	// (if existing) multiplied by the second blend factor are added. this way a proper
 	// blending can be achieved no matter which combination of face poses (as well as
 	// the lack thereof) is in effect
-	const int controllerCount = pEngFacePoseAnimatorInstance->GetControllerCount();
+	const int controllerCount = pEngFacePoseAnimatorInstance->GetControllers().GetCount();
 	int i;
 	for(i=0; i<controllerCount; i++){
-		pEngFacePoseAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
+		pEngFacePoseAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 	}
 	
 	if(pPlayLastFacePose){
@@ -1050,13 +1049,13 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 			if(c.GetControllerIndex() == -1){
 				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(c.GetController());
 				if(controller != -1){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(c.GetValue() * blendFactor1);
+					pEngFacePoseAnimatorInstance->GetControllers().GetAt(controller)->SetCurrentValue(c.GetValue() * blendFactor1);
 				}
 				
 			}else{
 				const int controller = c.GetControllerIndex();
-				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount()){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).SetCurrentValue(c.GetValue() * blendFactor1);
+				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllers().GetCount()){
+					pEngFacePoseAnimatorInstance->GetControllers().GetAt(controller)->SetCurrentValue(c.GetValue() * blendFactor1);
 				}
 			}
 		});
@@ -1067,13 +1066,13 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 			if(c.GetControllerIndex() == -1){
 				const int controller = pEngFacePoseAnimatorInstance->IndexOfControllerNamed(c.GetController());
 				if(controller != -1){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(c.GetValue() * blendFactor2);
+					pEngFacePoseAnimatorInstance->GetControllers().GetAt(controller)->IncrementCurrentValue(c.GetValue() * blendFactor2);
 				}
 				
 			}else{
 				const int controller = c.GetControllerIndex();
-				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllerCount()){
-					pEngFacePoseAnimatorInstance->GetControllerAt(controller).IncrementCurrentValue(c.GetValue() * blendFactor2);
+				if(controller >= 0 && controller < pEngFacePoseAnimatorInstance->GetControllers().GetCount()){
+					pEngFacePoseAnimatorInstance->GetControllers().GetAt(controller)->IncrementCurrentValue(c.GetValue() * blendFactor2);
 				}
 			}
 		});
@@ -1094,7 +1093,7 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 	
 	const int indexControllerBlink = pEngGestureAnimatorInstance->IndexOfControllerNamed(pNameGestureBlink);
 	if(indexControllerBlink != -1){
-		pEngFacePoseAnimatorInstance->GetControllerAt(indexControllerBlink).SetCurrentValue(pBlinkElapsed);
+		pEngFacePoseAnimatorInstance->GetControllers().GetAt(indexControllerBlink)->SetCurrentValue(pBlinkElapsed);
 		pEngFacePoseAnimatorInstance->NotifyControllerChangedAt(indexControllerBlink);
 	}
 	// end of hack
@@ -1351,14 +1350,14 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 	SetEyesUpDown(eyesUpDown);
 	
 	// set the controllers and apply the animator
-	const int controllerCount = pEngEyesAnimatorInstance->GetControllerCount();
+	const int controllerCount = pEngEyesAnimatorInstance->GetControllers().GetCount();
 	
 	if(controllerCount >= 1){
-		pEngEyesAnimatorInstance->GetControllerAt(0).SetCurrentValue(pEyesLeftRight);
+		pEngEyesAnimatorInstance->GetControllers().GetAt(0)->SetCurrentValue(pEyesLeftRight);
 		pEngEyesAnimatorInstance->NotifyControllerChangedAt(0);
 	}
 	if(controllerCount >= 2){
-		pEngEyesAnimatorInstance->GetControllerAt(1).SetCurrentValue(pEyesUpDown);
+		pEngEyesAnimatorInstance->GetControllers().GetAt(1)->SetCurrentValue(pEyesUpDown);
 		pEngEyesAnimatorInstance->NotifyControllerChangedAt(1);
 	}
 }

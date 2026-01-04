@@ -184,18 +184,6 @@ deCollider *deTouchSensor::GetColliderAt(int collider) const{
 // Colliders to ignore
 ////////////////////////
 
-int deTouchSensor::GetIgnoreColliderCount() const{
-	return pIgnoreColliders.GetCount();
-}
-
-deCollider *deTouchSensor::GetIgnoreColliderAt(int index) const{
-	return (deCollider*)pIgnoreColliders.GetAt(index);
-}
-
-bool deTouchSensor::HasIgnoreCollider(deCollider *collider) const{
-	return pIgnoreColliders.Has(collider);
-}
-
 void deTouchSensor::AddIgnoreCollider(deCollider *collider){
 	pIgnoreColliders.Add(collider);
 	

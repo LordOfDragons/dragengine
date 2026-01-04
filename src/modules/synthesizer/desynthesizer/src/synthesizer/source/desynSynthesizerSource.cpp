@@ -373,7 +373,7 @@ int samples, float curveOffset, float curveFactor){
 
 void desynSynthesizerSource::pCreateEffects(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSource &source){
-	const int count = source.GetEffectCount();
+	const int count = source.GetEffects().GetCount();
 	if(count == 0){
 		return;
 	}
@@ -385,7 +385,7 @@ int firstLink, const deSynthesizerSource &source){
 		createEffect.Reset();
 		
 		try{
-			source.GetEffectAt(pEffectCount)->Visit(createEffect);
+			source.GetEffects().GetAt(pEffectCount)->Visit(createEffect);
 			pEffects[pEffectCount] = createEffect.GetEffect();
 			
 			if(!pEffects[pEffectCount]->GetDisabled()){

@@ -126,8 +126,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	// otherwise try loading the animator
 	deAnimatorRuleSubAnimator *rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
 	deEngine *engine = parentAnimator->GetEngine();
-	deAnimatorController *engController = nullptr;
-	deAnimatorLink *engLink = nullptr;
 	aeAnimator::Ref animator;
 	
 	// try to load the animator
@@ -148,7 +146,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			
 			// add controllers
 			animator->GetControllers().Visit([&](const aeController &controller){
-				engController = new deAnimatorController;
+				const deAnimatorController::Ref engController(deAnimatorController::Ref::New());
 				engController->SetName(controller.GetName());
 				engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
 				engController->SetCurrentValue(controller.GetCurrentValue());
@@ -157,12 +155,11 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engController->SetVector(controller.GetVector());
 				
 				pSubAnimator->AddController(engController);
-				engController = nullptr;
 			});
 			
 			// add links
 			animator->GetLinks().Visit([&](const aeLink &link){
-				engLink = new deAnimatorLink;
+				const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
 				
 				if(link.GetController()){
 					engLink->SetController(animator->GetControllers().IndexOf(link.GetController()));
@@ -181,7 +178,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 					link.GetVertexPositionSetMinimum(), link.GetVertexPositionSetMaximum());
 				
 				pSubAnimator->AddLink(engLink);
-				engLink = nullptr;
 			});
 			
 			// add rules
@@ -192,17 +188,11 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			// free the loaded animator as it is no more needed
 		}catch(const deException &e){
 			parentAnimator->GetLogger()->LogException("Animator Editor", e);
-			if(engLink){
-				delete engLink;
-			}
-			if(engController){
-				delete engController;
-			}
 		}
 	}
 	
 	if(pSubAnimator && autoConnections){
-		while(pConnections.GetCount() < pSubAnimator->GetControllerCount()){
+		while(pConnections.GetCount() < pSubAnimator->GetControllers().GetCount()){
 			pConnections.Add(nullptr);
 		}
 	}
@@ -373,7 +363,7 @@ void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) cons
 			const aeController::List &controllers = GetAnimator()->GetControllers();
 			int i;
 			for(i=0; i<pConnections.GetCount(); i++){
-				const decString &name = pSubAnimator->GetControllerAt(i)->GetName();
+				const decString &name = pSubAnimator->GetControllers().GetAt(i)->GetName();
 				rule.SetConnectionAt(i, controllers.IndexOfMatching([&](const aeController &c){
 					return c.GetName() == name;
 				}));

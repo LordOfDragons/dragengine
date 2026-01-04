@@ -33,7 +33,6 @@
 #include "../occlusionmesh/deOcclusionMesh.h"
 #include "../animator/deAnimator.h"
 #include "../../parallel/deParallelTask.h"
-#include "../../common/collection/decObjectOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/string/decString.h"

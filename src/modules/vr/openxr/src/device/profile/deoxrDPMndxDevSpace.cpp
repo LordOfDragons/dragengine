@@ -121,7 +121,7 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 		xdevs = new XrXDevIdMNDX[count];
 		OXR_CHECK(instance.xrEnumerateXDevsMNDX(list, count, &count, xdevs));
 		
-		const decObjectOrderedSet oldDevices(pDevices);
+		const decTObjectOrderedSet<Device> oldDevices(pDevices);
 		pDevices.RemoveAll();
 		
 		oxr.LogInfoFormat("XDevSpace: %d devices:", (int)count);
@@ -183,33 +183,17 @@ deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceById(XrXDevIdMNDX i
 }
 
 deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceById(
-const decObjectOrderedSet & list, XrXDevIdMNDX id) const{
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		Device * const device = (Device*)list.GetAt(i);
-		if(device->id == id){
-			return device;
-		}
-	}
-	
-	return nullptr;
+const decTObjectOrderedSet<Device> & list, XrXDevIdMNDX id) const{
+	return list.FindOrDefault([&](const Device &device){
+		return device.id == id;
+	});
 }
 
 deoxrDPMndxDevSpace::Device *deoxrDPMndxDevSpace::pFindDeviceBySerial(
-const decObjectOrderedSet &list, const char *serial) const{
-	const int count = list.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		Device * const device = (Device*)list.GetAt(i);
-		if(device->serial == serial){
-			return device;
-		}
-	}
-	
-	return nullptr;
+const decTObjectOrderedSet<Device> &list, const char *serial) const{
+	return list.FindOrDefault([&](const Device &device){
+		return device.serial == serial;
+	});
 }
 
 decString deoxrDPMndxDevSpace::pSanitizedSerial(const decString &serial) const{

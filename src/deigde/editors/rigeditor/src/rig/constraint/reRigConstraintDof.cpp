@@ -259,6 +259,7 @@ void reRigConstraintDof::NotifyEngineConstraintChanged(){
 	}
 	
 	deColliderComponent &engSimCollider = *pRigConstraint.GetRig()->GetEngineSimulationCollider();
-	engSimCollider.NotifyConstraintChanged(engSimCollider.IndexOfConstraint(pRigConstraint.GetEngineConstraint()));
+	engSimCollider.NotifyConstraintChanged(
+		engSimCollider.GetConstraints().IndexOf(pRigConstraint.GetEngineConstraint()));
 	pRigConstraint.InvalidatePositions();
 }

@@ -258,7 +258,7 @@ void deoglParticleEmitterInstance::pCleanUp(){
 }
 
 void deoglParticleEmitterInstance::pUpdateTypes(){
-	const int typeCount = pInstance.GetTypeCount();
+	const int typeCount = pInstance.GetTypes().GetCount();
 	
 	if(pTypes){
 		int i;

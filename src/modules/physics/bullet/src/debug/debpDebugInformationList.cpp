@@ -67,7 +67,9 @@ void debpDebugInformationList::Remove(debpDebugInformation *child){
 }
 
 void debpDebugInformationList::RemoveIfPresent(debpDebugInformation *child){
-	pChildren.RemoveIfPresent(child);
+	if(pChildren.Has(child)){
+		pChildren.Remove(child);
+	}
 }
 
 void debpDebugInformationList::RemoveAll(){

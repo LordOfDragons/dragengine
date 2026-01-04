@@ -30,6 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/file/decMemoryFile.h>
 
 #ifdef OS_BEOS
 #include <MessageQueue.h>
@@ -44,7 +45,7 @@ class delEngineModule;
 class delEngineModuleList;
 class delLauncher;
 class delGPModuleList;
-class decObjectOrderedSet;
+
 
 
 /**
@@ -284,7 +285,7 @@ public:
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
 	virtual void ReadDelgaFiles(const char *delgaFile, const decStringList &filenames,
-		decObjectOrderedSet &filesContent) = 0;
+		decTObjectOrderedSet<decMemoryFile> &filesContent) = 0;
 	
 #ifdef OS_BEOS
 	/**
@@ -310,7 +311,7 @@ public:
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
 	virtual void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
-		const decStringList &filenames, decObjectOrderedSet &filesContent);
+		const decStringList &filenames, decTObjectOrderedSet<deObject> &filesContent);
 	
 	/**
 	 * \brief Add DELGA file to virtual file system as root container.

@@ -319,47 +319,38 @@ void peeEmitter::FreeEmitter(){
 }
 
 void peeEmitter::RebuildEmitter(){
-	deParticleEmitterController *engController = nullptr;
-	const int controllerCount = pControllers.GetCount();
-	const int typeCount = pTypes.GetCount();
-	int i;
-	
 	FreeEmitter();
 	
-	for(i=0; i<controllerCount; i++){
-		pControllers.GetAt(i)->SetEngineControllerIndex(i);
-	}
-	for(i=0; i<typeCount; i++){
-		pTypes.GetAt(i)->SetIndex(i);
-	}
+	pControllers.VisitIndexed([&](int i, peeController &controller){
+		controller.SetEngineControllerIndex(i);
+	});
+	pTypes.VisitIndexed([&](int i, peeType &type){
+		type.SetIndex(i);
+	});
 	
 	pBurstTimer = 0.0f;
 	
 	try{
 		pEngEmitter = GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
 		
-		for(i=0; i<controllerCount; i++){
-			engController = new deParticleEmitterController;
-			pControllers.GetAt(i)->UpdateEngineController(*engController);
+		pControllers.Visit([&](peeController &controller){
+			const deParticleEmitterController::Ref engController(deParticleEmitterController::Ref::New());
+			controller.UpdateEngineController(engController);
 			pEngEmitter->AddController(engController);
-			engController = nullptr;
-		}
+		});
 		
 		pEngEmitter->SetBurstLifetime(pBurstLifetime);
 		pEngEmitter->SetEmitBurst(pEmitBurst);
 		
-		pEngEmitter->SetTypeCount(typeCount);
-		for(i=0; i<typeCount; i++){
-			pTypes.GetAt(i)->UpdateEngineType(pEngEmitter->GetTypeAt(i));
-			pEngEmitter->NotifyTypeChangedAt(i);
-		}
+		pTypes.Visit([&](peeType &type){
+			const deParticleEmitterType::Ref engType(deParticleEmitterType::Ref::New());
+			type.UpdateEngineType(engType);
+			pEngEmitter->AddType(engType);
+		});
 		
 		pEngEmitterInstance->SetEmitter(pEngEmitter);
 		
 	}catch(const deException &e){
-		if(engController){
-			delete engController;
-		}
 		e.PrintError();
 		FreeEmitter();
 		return;

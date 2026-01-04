@@ -573,7 +573,7 @@ void dearAnimatorInstance::pUpdateAnimator(){
 	
 	if(pAnimator){
 		pAnimatorUpdateTracker = pAnimator->GetUpdateTracker();
-		pControllerStates.SetStateCount(pAnimator->GetAnimator().GetControllerCount());
+		pControllerStates.SetStateCount(pAnimator->GetAnimator().GetControllers().GetCount());
 		
 	}else{
 		pAnimatorUpdateTracker = 0;
@@ -656,10 +656,10 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 	}
 	
 	const deAnimator &animator = pAnimator->GetAnimator();
-	const int linkCount = animator.GetLinkCount();
+	const int linkCount = animator.GetLinks().GetCount();
 	
 	if(linkCount > 0){
-		const int controllerCount = pAnimatorInstance.GetControllerCount();
+		const int controllerCount = pAnimatorInstance.GetControllers().GetCount();
 		decTList<int> controllerMapping;
 		dearLink *link = nullptr;
 		int i;
@@ -670,7 +670,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 			}
 			
 			for(i=0; i<linkCount; i++){
-				link = new dearLink(*this, *animator.GetLinkAt(i), controllerMapping);
+				link = new dearLink(*this, *animator.GetLinks().GetAt(i), controllerMapping);
 				AddLink(link);
 				link = nullptr;
 			}
@@ -708,13 +708,11 @@ void dearAnimatorInstance::pUpdateRules(){
 	pDropRules();
 	
 	if(pAnimator){
-		const deAnimator &animator = pAnimator->GetAnimator();
-		const int ruleCount = animator.GetRuleCount();
-		
 		pAddAnimatorLinks();
 		
-		if(ruleCount > 0){
-			const int controllerCount = pAnimatorInstance.GetControllerCount();
+		const deAnimator &animator = pAnimator->GetAnimator();
+		if(animator.GetRules().IsNotEmpty()){
+			const int controllerCount = pAnimatorInstance.GetControllers().GetCount();
 			decTList<int> controllerMapping;
 			int i;
 			
@@ -724,15 +722,14 @@ void dearAnimatorInstance::pUpdateRules(){
 			
 			dearCreateRuleVisitor visitor(*this, *pAnimator, controllerMapping, 0);
 			
-			pRules = new dearRule*[ruleCount];
+			pRules = new dearRule*[animator.GetRules().GetCount()];
 			
-			for(i=0; i<ruleCount; i++){
-				pRules[pRuleCount] = visitor.CreateRuleFrom(*animator.GetRuleAt(i));
-				
+			animator.GetRules().Visit([&](deAnimatorRule &r){
+				pRules[pRuleCount] = visitor.CreateRuleFrom(r);
 				if(pRules[pRuleCount]){
 					pRuleCount++;
 				}
-			}
+			});
 		}
 	}
 	
@@ -758,7 +755,7 @@ void dearAnimatorInstance::pUpdateControllerStates(){
 	int i;
 	
 	for(i=0; i<stateCount; i++){
-		const deAnimatorController &controller = pAnimatorInstance.GetControllerAt(i);
+		const deAnimatorController &controller = pAnimatorInstance.GetControllers().GetAt(i);
 		
 		const float minValue = controller.GetMinimumValue();
 		const float range = controller.GetMaximumValue() - minValue;

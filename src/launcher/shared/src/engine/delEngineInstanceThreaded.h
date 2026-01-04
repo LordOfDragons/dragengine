@@ -331,7 +331,7 @@ public:
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
 	void ReadDelgaFiles(const char *delgaFile, const decStringList &filenames,
-		decObjectOrderedSet &filesContent) override;
+		decTObjectOrderedSet<decMemoryFile> &filesContent) override;
 	/*@}*/
 };
 

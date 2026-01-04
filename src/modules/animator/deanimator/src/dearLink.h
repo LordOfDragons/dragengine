@@ -31,7 +31,6 @@
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 class dearAnimatorInstance;
-class deAnimatorLink;
 class dearControllerStates;
 
 
@@ -41,7 +40,7 @@ class dearControllerStates;
 class dearLink{
 private:
 	const dearAnimatorInstance &pInstance;
-	deAnimatorLink pLink;
+	deAnimatorLink::Ref pLink;
 	const decCurveBezierEvaluator pEvaluator;
 	int pBoneIndex;
 	int pVPSIndex;
@@ -65,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator link. */
-	inline const deAnimatorLink &GetLink() const{ return pLink; }
+	inline const deAnimatorLink::Ref &GetLink() const{ return pLink; }
 	
 	/** Link has valid controller. */
 	bool HasController() const;

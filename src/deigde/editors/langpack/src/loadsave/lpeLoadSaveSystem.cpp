@@ -72,26 +72,22 @@ lpeLoadSaveSystem::~lpeLoadSaveSystem(){
 
 // Management
 ///////////////
-
 void lpeLoadSaveSystem::UpdateLSLangPacks(){
 	deEngine *engine = pWindowMain->GetEngineController().GetEngine();
-	deModuleSystem *modSys = engine->GetModuleSystem();
-	int m, moduleCount = modSys->GetModuleCount();
-	deLoadableModule *loadableModule;
 	
 	pLSLangPacks.RemoveAll();
 	
-	// add a new load save langpack for each langpack module found in the engine that is also
-	// running and usable therefore
-	for(m=0; m<moduleCount; m++){
-		loadableModule = modSys->GetModuleAt(m);
-		
-		if(loadableModule->GetType() != deModuleSystem::emtLanguagePack) continue;
-		if(!loadableModule->IsLoaded()) continue;
+	engine->GetModuleSystem()->GetModules().Visit([&](const deLoadableModule &loadableModule){
+		if(loadableModule.GetType() != deModuleSystem::emtLanguagePack){
+			return;
+		}
+		if(!loadableModule.IsLoaded()){
+			return;
+		}
 		
 		pLSLangPacks.Add(lpeLoadSaveLangPack::Ref::New(
-			(deBaseLanguagePackModule*)loadableModule->GetModule()));
-	}
+			(deBaseLanguagePackModule*)loadableModule.GetModule()));
+	});
 }
 
 

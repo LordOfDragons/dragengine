@@ -245,14 +245,6 @@ int deModuleSystem::GetLoadedModuleCountFor(eModuleTypes type) const{
 	return count;
 }
 
-int deModuleSystem::GetModuleCount() const{
-	return pModules.GetCount();
-}
-
-deLoadableModule *deModuleSystem::GetModuleAt(int index) const{
-	return (deLoadableModule*)pModules.GetAt(index);
-}
-
 deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
 	if(!name){
 		DETHROW(deeInvalidParam);

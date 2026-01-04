@@ -29,7 +29,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -68,7 +68,7 @@ private:
 	int64_t pGeometryID;
 	int64_t pModelID;
 	int64_t pDeformerID;
-	decObjectOrderedSet pClusters;
+	decTObjectOrderedSet<fbxModelCluster> pClusters;
 	decMatrix pMatrix;
 	
 	deModelWeight *pVertexWeights;
@@ -132,11 +132,8 @@ public:
 	
 	
 	
-	/** Count of clusters. */
-	int GetClusterCount() const;
-	
-	/** Cluster at index. */
-	fbxModelCluster *GetClusterAt(int index) const;
+	/** Clusters. */
+	inline const decTObjectOrderedSet<fbxModelCluster> &GetClusters() const{ return pClusters; }
 	
 	/** Named cluster or NULL if absent. */
 	fbxModelCluster *GetClusterNamed(const char *name) const;

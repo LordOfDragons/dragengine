@@ -67,7 +67,9 @@ void deoglDebugInformationList::Remove(deoglDebugInformation *child){
 }
 
 void deoglDebugInformationList::RemoveIfPresent(deoglDebugInformation *child){
-	pChildren.RemoveIfPresent(child);
+	if(pChildren.Has(child)){
+		pChildren.Remove(child);
+	}
 }
 
 void deoglDebugInformationList::RemoveAll(){

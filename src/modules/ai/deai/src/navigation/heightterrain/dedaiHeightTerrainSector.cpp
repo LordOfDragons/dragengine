@@ -82,32 +82,18 @@ dedaiHeightTerrainSector::~dedaiHeightTerrainSector(){
 // Navigation spaces
 //////////////////////
 
-int dedaiHeightTerrainSector::GetNavSpaceCount() const{
-	return pNavSpaces.GetCount();
-}
-
-dedaiHeightTerrainNavSpace *dedaiHeightTerrainSector::GetNavSpaceAt(int index) const{
-	return (dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(index);
-}
-
 
 
 // Notifications
 //////////////////
 
 void dedaiHeightTerrainSector::ParentWorldChanged(){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
-	for(i=0; i<navSpaceCount; i++){
-		((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->ParentWorldChanged();
-	}
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.ParentWorldChanged();
+	});
 }
 
 void dedaiHeightTerrainSector::SectorChanged(){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
 	if(pHeights){
 		delete [] pHeights;
 		pHeights = NULL;
@@ -117,20 +103,17 @@ void dedaiHeightTerrainSector::SectorChanged(){
 	
 	const int imageSize = pHeightTerrain.GetHeightTerrain().GetSectorResolution();
 	const decPoint to(imageSize - 1, imageSize - 1);
-	for(i=0; i<navSpaceCount; i++){
-		((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->HeightChanged(decPoint(), to);
-	}
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.HeightChanged(decPoint(), to);
+	});
 }
 
 void dedaiHeightTerrainSector::HeightChanged(const decPoint &from, const decPoint &to){
-	const int navSpaceCount = pNavSpaces.GetCount();
-	int i;
-	
 	pUpdateHeights();
 	
-	for(i=0; i<navSpaceCount; i++){
-		((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(i))->HeightChanged(from, to);
-	}
+	pNavSpaces.Visit([&](dedaiHeightTerrainNavSpace &n){
+		n.HeightChanged(from, to);
+	});
 }
 
 
@@ -148,19 +131,19 @@ void dedaiHeightTerrainSector::AllNavSpacesRemoved(){
 }
 
 void dedaiHeightTerrainSector::NavSpaceLayerChanged(int index){
-	((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(index))->LayerChanged();
+	pNavSpaces.GetAt(index)->LayerChanged();
 }
 
 void dedaiHeightTerrainSector::NavSpaceTypeChanged(int index){
-	((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(index))->TypeChanged();
+	pNavSpaces.GetAt(index)->TypeChanged();
 }
 
 void dedaiHeightTerrainSector::NavSpaceSnappingChanged(int index){
-	((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(index))->SnappingChanged();
+	pNavSpaces.GetAt(index)->SnappingChanged();
 }
 
 void dedaiHeightTerrainSector::NavSpaceLayoutChanged(int index){
-	((dedaiHeightTerrainNavSpace*)pNavSpaces.GetAt(index))->LayoutChanged();
+	pNavSpaces.GetAt(index)->LayoutChanged();
 }
 
 

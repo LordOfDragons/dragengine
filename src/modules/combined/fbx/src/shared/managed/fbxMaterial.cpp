@@ -48,8 +48,8 @@
 fbxMaterial::fbxMaterial(fbxScene &scene, fbxNode &nodeMaterial) :
 pScene(scene),
 pNodeMaterial(nodeMaterial),
-pMaterialID(nodeMaterial.GetPropertyAt(0)->CastLong().GetValue()),
-pName(nodeMaterial.GetPropertyAt(1)->CastString().GetValue())
+pMaterialID(nodeMaterial.GetProperties().GetAt(0)->CastLong().GetValue()),
+pName(nodeMaterial.GetProperties().GetAt(1)->CastString().GetValue())
 {
 }
 

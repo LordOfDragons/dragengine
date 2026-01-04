@@ -112,7 +112,7 @@ void deoglParticleEmitter::ControllerChanged(int controller){
 }
 
 void deoglParticleEmitter::TypeCountChanged(){
-	const int typeCount = pParticleEmitter.GetTypeCount();
+	const int typeCount = pParticleEmitter.GetTypes().GetCount();
 	
 	if(pTypes){
 		while(pTypeCount > 0){
@@ -127,7 +127,7 @@ void deoglParticleEmitter::TypeCountChanged(){
 	if(typeCount > 0){
 		pTypes = new deoglParticleEmitterType*[typeCount];
 		for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
-			pTypes[pTypeCount] = new deoglParticleEmitterType(*this, pParticleEmitter.GetTypeAt(pTypeCount));
+			pTypes[pTypeCount] = new deoglParticleEmitterType(*this, pParticleEmitter.GetTypes().GetAt(pTypeCount));
 		}
 	}
 	

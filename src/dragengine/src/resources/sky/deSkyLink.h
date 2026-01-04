@@ -25,6 +25,7 @@
 #ifndef _DESKYLINK_H_
 #define _DESKYLINK_H_
 
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 
@@ -41,7 +42,12 @@
  * Links controller value to layer targets. Maps controller values using a bezier curve.
  * Using repeat values larger than 1 the curve is repeated along the Y axis.
  */
-class DE_DLL_EXPORT deSkyLink{
+class DE_DLL_EXPORT deSkyLink : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkyLink> Ref;
+	
+	
 private:
 	int pController;
 	decCurveBezier pCurve;
@@ -58,8 +64,14 @@ public:
 	/** \brief Create copy of link. */
 	deSkyLink(const deSkyLink &copy);
 	
-	/** \brief Clean up link. */
-	~deSkyLink();
+protected:
+	/**
+	 * \brief Clean up link.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyLink() override;
 	/*@}*/
 	
 	

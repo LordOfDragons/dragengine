@@ -48,6 +48,16 @@ pClamp(true),
 pFrozen(false){
 }
 
+deAnimatorController::deAnimatorController(const deAnimatorController &copy) :
+pName(copy.pName),
+pMinValue(copy.pMinValue),
+pMaxValue(copy.pMaxValue),
+pCurValue(copy.pCurValue),
+pClamp(copy.pClamp),
+pFrozen(copy.pFrozen),
+pVector(copy.pVector){
+}
+
 deAnimatorController::~deAnimatorController(){
 }
 

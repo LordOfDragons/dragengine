@@ -45,6 +45,7 @@
 #include "../deoglBasics.h"
 #include "../debug/deoglDebugTraceGroup.h"
 #include "../canvas/deoglCanvasView.h"
+#include "../canvas/capture/deoglCaptureCanvas.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -2323,12 +2324,9 @@ void deoglRenderThread::pVREndFrame(){
 }
 
 void deoglRenderThread::pCaptureCanvas(){
-	const int count = pRCaptureCanvasList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoglRCaptureCanvas*)pRCaptureCanvasList.GetAt(i))->CapturePending();
-	}
+	pRCaptureCanvasList.Visit([&](deoglRCaptureCanvas &cc){
+		cc.CapturePending();
+	});
 }
 
 void deoglRenderThread::pEndFrame(){

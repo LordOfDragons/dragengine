@@ -31,7 +31,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -54,7 +54,7 @@ public:
 private:
 	fbxScene &pScene;
 	const fbxNode::Ref pNodePose;
-	decObjectOrderedSet pBones;
+	decTObjectOrderedSet<fbxRigBone> pBones;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
 	
@@ -84,11 +84,8 @@ public:
 	
 	
 	
-	/** \brief Count of bones. */
-	int GetBoneCount() const;
-	
-	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt(int index) const;
+	/** \briet Bones. */
+	inline const decTObjectOrderedSet<fbxRigBone> &GetBones() const{ return pBones; }
 	
 	/** \brief Named bone or NULL if absent. */
 	fbxRigBone *GetBoneNamed(const char *name) const;

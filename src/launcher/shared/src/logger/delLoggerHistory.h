@@ -28,7 +28,7 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/threading/deMutex.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class delLoggerHistoryEntry;
 class delLoggerHistoryListener;
@@ -49,7 +49,7 @@ private:
 	int pEntryCount;
 	int pEntryOffset;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<delLoggerHistoryListener> pListeners;
 	
 	bool pLogInfo;
 	bool pLogWarn;

@@ -29,13 +29,14 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/deObject.h>
 
 class deoglRWorld;
 class deoglRHTSector;
 class deoglRenderThread;
 class deoglHeightTerrainListener;
+class deoglHTSectorListener;
 
 class deHeightTerrain;
 
@@ -59,7 +60,7 @@ private:
 	decTObjectList<deoglRHTSector> pSectors;
 	bool pSectorsRequirePrepareForRender;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglHeightTerrainListener> pListeners;
 	int pListenerIndex;
 	
 	

@@ -27,7 +27,7 @@
 
 #include "deoxrDeviceProfile.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 
 
@@ -67,8 +67,8 @@ private:
 		virtual ~RoleAction();
 	};
 	
-	decObjectOrderedSet pTrackers;
-	decObjectOrderedSet pRoleActions;
+	decTObjectOrderedSet<Tracker> pTrackers;
+	decTObjectOrderedSet<RoleAction> pRoleActions;
 	decTimer pTimerCheckAttached;
 	float pTimeoutCheckAttached;
 	

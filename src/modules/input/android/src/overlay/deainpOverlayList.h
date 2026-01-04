@@ -25,7 +25,7 @@
 #ifndef _DEAINPOVERLAYLIST_H_
 #define _DEAINPOVERLAYLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deainpOverlay;
 
@@ -36,7 +36,7 @@ class deainpOverlay;
  */
 class deainpOverlayList{
 private:
-	decObjectOrderedSet pOverlays;
+	decTObjectOrderedSet<deainpOverlay> pOverlays;
 	
 public:
 	/** \name Constructors and Destructors */

@@ -99,7 +99,7 @@ void syneController::SetEngineControllerIndex(int index){
 	}
 	
 	deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-	deSynthesizerController &controller = *instance.GetControllerAt(index);
+	deSynthesizerController &controller = *instance.GetControllers().GetAt(index);
 	
 	controller.SetValueRange(pMinValue, pMaxValue);
 	controller.SetClamp(pClamp);
@@ -139,7 +139,7 @@ void syneController::SetMinimumValue(float value){
 	
 	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
+		deSynthesizerController &controller = *instance.GetControllers().GetAt(pEngControllerIndex);
 		
 		controller.SetValueRange(pMinValue, pMaxValue);
 		
@@ -166,7 +166,7 @@ void syneController::SetMaximumValue(float value){
 	
 	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
+		deSynthesizerController &controller = *instance.GetControllers().GetAt(pEngControllerIndex);
 		
 		controller.SetValueRange(pMinValue, pMaxValue);
 		
@@ -187,7 +187,7 @@ void syneController::SetClamp(bool clamp){
 	
 	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
+		deSynthesizerController &controller = *instance.GetControllers().GetAt(pEngControllerIndex);
 		
 		controller.SetClamp(clamp);
 		
@@ -208,7 +208,7 @@ void syneController::SetCurve(const decCurveBezier &curve){
 	
 	if(pEngControllerIndex != -1){
 		deSynthesizerInstance &instance = *pSynthesizer->GetEngineSynthesizerInstance();
-		deSynthesizerController &controller = *instance.GetControllerAt(pEngControllerIndex);
+		deSynthesizerController &controller = *instance.GetControllers().GetAt(pEngControllerIndex);
 		
 		controller.SetCurve(curve);
 		

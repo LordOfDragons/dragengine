@@ -25,6 +25,7 @@
 #ifndef _DEANIMATORLINK_H_
 #define _DEANIMATORLINK_H_
 
+#include "../../deObject.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/string/decString.h"
 
@@ -59,8 +60,11 @@
  * If controller is -1 a vertex position set name can be set. This will use
  * the vertex position set weight as input.
  */
-class DE_DLL_EXPORT deAnimatorLink{
+class DE_DLL_EXPORT deAnimatorLink : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorLink> Ref;
+	
 	/**
 	 * \brief Bone parameter to use.
 	 * \version 1.6
@@ -119,10 +123,19 @@ public:
 	
 	/** \brief Create copy of link. */
 	deAnimatorLink(const deAnimatorLink &copy);
-	
-	/** \brief Clean up link. */
-	~deAnimatorLink();
 	/*@}*/
+	
+	
+
+protected:
+	/** \brief Clean up link. */
+	~deAnimatorLink() override;
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
 	
 	
 	

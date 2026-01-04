@@ -224,7 +224,7 @@ void desynSynthesizerInstance::pPrepare(){
 		int i;
 		for(i=0; i<pControllerCount; i++){
 			if(pControllers[i].GetDirty()){
-				pControllers[i].Update(*pSynthesizerInstance.GetControllerAt(i));
+				pControllers[i].Update(*pSynthesizerInstance.GetControllers().GetAt(i));
 			}
 		}
 		pDirtyControllers = false;
@@ -284,7 +284,7 @@ void desynSynthesizerInstance::pClearControllers(){
 void desynSynthesizerInstance::pCreateControllers(){
 	pClearControllers();
 	
-	const int count = pSynthesizerInstance.GetControllerCount();
+	const int count = pSynthesizerInstance.GetControllers().GetCount();
 	if(count == 0){
 		return;
 	}
@@ -292,7 +292,7 @@ void desynSynthesizerInstance::pCreateControllers(){
 	pControllers = new desynSynthesizerController[count];
 	
 	for(pControllerCount=0; pControllerCount<count; pControllerCount++){
-		pControllers[pControllerCount].Update(*pSynthesizerInstance.GetControllerAt(pControllerCount));
+		pControllers[pControllerCount].Update(*pSynthesizerInstance.GetControllers().GetAt(pControllerCount));
 	}
 	
 	pDirtyControllers = false;

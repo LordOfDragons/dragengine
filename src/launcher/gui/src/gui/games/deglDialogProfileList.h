@@ -31,7 +31,7 @@
 #include <delauncher/game/delGameList.h>
 #include <delauncher/game/profile/delGameProfile.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 class deglDialogProfileListParameter;
@@ -158,7 +158,7 @@ private:
 	deglWindowMain *pWindowMain;
 	bool pSystemsValid;
 	
-	decObjectOrderedSet pProfiles;
+	decTObjectOrderedSet<cEditProfile> pProfiles;
 	
 	FXList *pListProfiles;
 	FXButton *pBtnProfAdd;
@@ -181,7 +181,7 @@ private:
 	
 	FXIconList *pListMPModules;
 	FXMatrix *pFrameMPParameters;
-	decObjectOrderedSet pMPParameters;
+	decTObjectOrderedSet<deglDialogProfileListParameter> pMPParameters;
 	FXText *pTextMPParameterInfo;
 	deModuleParameter::eCategory pMPParameterCategory;
 	static bool pAllowExpertMode;

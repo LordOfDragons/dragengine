@@ -2002,7 +2002,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
 		vfs->AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 		
-		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
+		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainers().GetCount() > 0){
 			decPath relPath(diskPath.RelativePath(sharePath, true));
 			relPath.SetPrefix("/");
 			vfs->AddContainer(deVFSRedirect::Ref::New(rootPath, relPath, vfsAssetLibraries, true));

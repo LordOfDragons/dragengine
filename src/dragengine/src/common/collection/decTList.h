@@ -68,6 +68,21 @@ public:
 		}
 	}
 	
+	/**
+	 * \brief Create a new list with an initial count of elements all set to element.
+	 * \throws deeInvalidParam \em count is less than 0.
+	 */
+	decTList(int count, const T &element) : pElements(nullptr), pCount(0), pSize(0){
+		DEASSERT_TRUE(count >= 0)
+		
+		if(count > 0){
+			pElements = new T[count];
+			pSize = count;
+			std::fill_n(pElements, count, element);
+			pCount = count;
+		}
+	}
+	
 	/** \brief Create a copy of a list. */
 	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
 		if(list.pCount == 0){

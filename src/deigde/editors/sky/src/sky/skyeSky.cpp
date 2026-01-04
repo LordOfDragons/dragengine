@@ -188,7 +188,7 @@ void skyeSky::RebuildEngineSky(){
 		
 		for(i=0; i<controllerCount; i++){
 			const skyeController &sourceController = *pControllers.GetAt(i);
-			deSkyController &destController = pEngSky->GetControllerAt(i);
+			deSkyController &destController = pEngSky->GetControllers().GetAt(i);
 			
 			destController.SetValueRange(sourceController.GetMinimumValue(),
 				sourceController.GetMaximumValue());
@@ -203,7 +203,7 @@ void skyeSky::RebuildEngineSky(){
 		
 		for(i=0; i<linkCount; i++){
 			const skyeLink &sourceLink = *pLinks.GetAt(i);
-			deSkyLink &destLink = pEngSky->GetLinkAt(i);
+			deSkyLink &destLink = pEngSky->GetLinks().GetAt(i);
 			
 			destLink.SetController(sourceLink.GetController()
 				? sourceLink.GetController()->GetIndex() : -1);
@@ -217,7 +217,7 @@ void skyeSky::RebuildEngineSky(){
 		
 		for(i=0; i<layerCount; i++){
 			const skyeLayer &sourceLayer = *pLayers.GetAt(i);
-			deSkyLayer &destLayer = pEngSky->GetLayerAt(i);
+			deSkyLayer &destLayer = pEngSky->GetLayers().GetAt(i);
 			
 			destLayer.SetOffset(sourceLayer.GetOffset());
 			destLayer.SetOrientation(sourceLayer.GetOrientation() * DEG2RAD);

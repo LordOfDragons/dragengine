@@ -26,7 +26,7 @@
 #define _DELOGGERCHAIN_H_
 
 #include "deLogger.h"
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../threading/deMutex.h"
 
 
@@ -46,7 +46,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pLoggerList;
+	deLogger::List pLoggers;
 	deMutex pMutex;
 	
 	

@@ -30,7 +30,7 @@
 #include "../rig/deRig.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringSet.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deAnimatorRule;
 class deAnimatorLink;
@@ -62,15 +62,9 @@ private:
 	deRig::Ref pRig;
 	deAnimation::Ref pAnimation;
 	
-	deAnimatorController **pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deAnimatorLink **pLinks;
-	int pLinkCount;
-	int pLinkSize;
-	
-	decObjectOrderedSet pRules;
+	decTObjectOrderedSet<deAnimatorController> pControllers;
+	decTObjectOrderedSet<deAnimatorLink> pLinks;
+	decTObjectOrderedSet<deAnimatorRule> pRules;
 	
 	decStringSet pListBones;
 	decStringSet pListVertexPositionSets;
@@ -129,20 +123,11 @@ public:
 	
 	/** \name Controller Management */
 	/*@{*/
-	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** \brief Controller at index. */
-	deAnimatorController *GetControllerAt(int index) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController(deAnimatorController *controller) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deAnimatorController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of named controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *controller) const;
-	
-	/** \brief Controller is present. */
-	bool HasController(deAnimatorController *controller) const;
 	
 	/** \brief Add controller. */
 	void AddController(deAnimatorController *controller);
@@ -161,17 +146,8 @@ public:
 	
 	/** \name Link Management */
 	/*@{*/
-	/** \brief Count of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
-	
-	/** \brief Link at index. */
-	deAnimatorLink *GetLinkAt(int index) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink(deAnimatorLink *link) const;
-	
-	/** \brief Link is present. */
-	bool HasLink(deAnimatorLink *link) const;
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deAnimatorLink> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
 	void AddLink(deAnimatorLink *link);
@@ -190,17 +166,8 @@ public:
 	
 	/** \name Rule Management */
 	/*@{*/
-	/** \brief Count of rules. */
-	int GetRuleCount() const;
-	
-	/** \brief Rule at index. */
-	deAnimatorRule *GetRuleAt(int index) const;
-	
-	/** \brief Index of rule or -1 if absent. */
-	int IndexOfRule(deAnimatorRule *rule) const;
-	
-	/** \brief Rule is present. */
-	bool HasRule(deAnimatorRule *rule) const;
+	/** \brief Rules. */
+	inline const decTObjectOrderedSet<deAnimatorRule> &GetRules() const{ return pRules; }
 	
 	/** \brief Add rule. */
 	void AddRule(deAnimatorRule *rule);

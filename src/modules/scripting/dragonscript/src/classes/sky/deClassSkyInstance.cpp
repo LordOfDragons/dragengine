@@ -189,7 +189,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassSkyInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSkyInstance &instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
 	
-	rt->PushInt(instance.GetControllerCount());
+	rt->PushInt(instance.GetControllers().GetCount());
 }
 
 // public func SkyController getControllerAt( int index )
@@ -205,7 +205,7 @@ void deClassSkyInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *
 	
 	if(index < 0){
 		ds.GetClassSkyController()->PushController(rt, instance,
-			instance->GetControllerCount() + index);
+			instance->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassSkyController()->PushController(rt, instance, index);

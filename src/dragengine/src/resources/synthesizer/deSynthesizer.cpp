@@ -137,18 +137,6 @@ void deSynthesizer::SetSampleCount(int sampleCount){
 // Controllers
 ////////////////
 
-int deSynthesizer::GetControllerCount() const{
-	return pControllers.GetCount();
-}
-
-deSynthesizerController *deSynthesizer::GetControllerAt(int index) const{
-	return (deSynthesizerController*)pControllers.GetAt(index);
-}
-
-int deSynthesizer::IndexOfController(deSynthesizerController *controller) const{
-	return pControllers.IndexOf(controller);
-}
-
 int deSynthesizer::IndexOfControllerNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
@@ -160,10 +148,6 @@ int deSynthesizer::IndexOfControllerNamed(const char *name) const{
 	}
 	
 	return -1;
-}
-
-bool deSynthesizer::HasController(deSynthesizerController *controller) const{
-	return pControllers.Has(controller);
 }
 
 void deSynthesizer::AddController(deSynthesizerController *controller){
@@ -205,22 +189,6 @@ void deSynthesizer::NotifyControllersChanged(){
 // Links
 //////////
 
-int deSynthesizer::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-deSynthesizerLink *deSynthesizer::GetLinkAt(int index) const{
-	return (deSynthesizerLink*)pLinks.GetAt(index);
-}
-
-int deSynthesizer::IndexOfLink(deSynthesizerLink *link) const{
-	return pLinks.IndexOf(link);
-}
-
-bool deSynthesizer::HasLink(deSynthesizerLink *link) const{
-	return pLinks.Has(link);
-}
-
 void deSynthesizer::AddLink(deSynthesizerLink *link){
 	if(!link){
 		DETHROW(deeInvalidParam);
@@ -259,22 +227,6 @@ void deSynthesizer::NotifyLinksChanged(){
 
 // Sources
 ////////////
-
-int deSynthesizer::GetSourceCount() const{
-	return pSources.GetCount();
-}
-
-deSynthesizerSource *deSynthesizer::GetSourceAt(int index) const{
-	return (deSynthesizerSource*)pSources.GetAt(index);
-}
-
-int deSynthesizer::IndexOfSource(deSynthesizerSource *source) const{
-	return pSources.IndexOf(source);
-}
-
-bool deSynthesizer::HasSource(deSynthesizerSource *source) const{
-	return pSources.Has(source);
-}
 
 void deSynthesizer::AddSource(deSynthesizerSource *source){
 	if(!source){

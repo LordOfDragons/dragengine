@@ -925,7 +925,7 @@ deClassCollider::nfGetConstraintCount::nfGetConstraintCount(const sInitData &ini
 }
 void deClassCollider::nfGetConstraintCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deCollider &collider = *(static_cast<sColNatDat*>(p_GetNativeData(myself))->collider);
-	rt->PushInt(collider.GetConstraintCount());
+	rt->PushInt(collider.GetConstraints().GetCount());
 }
 
 // public func void addConstraint( ColliderConstraint constraint )
@@ -993,7 +993,7 @@ void deClassCollider::nfIndexOfConstraint::RunFunction(dsRunTime *rt, dsValue *m
 	if(constraint){
 		constraint = clsCollider.FindConstraint(*nd.collider, *constraint);
 		if(constraint){
-			index = nd.collider->IndexOfConstraint(constraint);
+			index = nd.collider->GetConstraints().IndexOf(constraint);
 		}
 	}
 	
@@ -1014,7 +1014,7 @@ void deClassCollider::nfGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	const deColliderConstraint * const workConstraint =
-		nd.collider->GetConstraintAt(rt->GetValue(0)->GetInt());
+		nd.collider->GetConstraints().GetAt(rt->GetValue(0)->GetInt());
 	
 	try{
 		ds.GetClassColliderConstraint()->PushConstraint(rt, deColliderConstraint::Ref::New(*workConstraint));
@@ -1040,7 +1040,7 @@ void deClassCollider::nfSetConstraintAt::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deColliderConstraint &constraint = *nd.collider->GetConstraintAt(index);
+	deColliderConstraint &constraint = *nd.collider->GetConstraints().GetAt(index);
 	
 	const deColliderConstraint * const workConstraint =
 		ds.GetClassColliderConstraint()->GetConstraint(rt->GetValue(1)->GetRealObject());
@@ -1097,7 +1097,7 @@ void deClassCollider::nfRemoveConstraintFrom::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd.collider->RemoveConstraint(nd.collider->GetConstraintAt(rt->GetValue(0)->GetInt()));
+	nd.collider->RemoveConstraint(nd.collider->GetConstraints().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func void removeAllConstraints()
@@ -1226,7 +1226,7 @@ void deClassCollider::nfGetCollisionTestCount::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushInt(nd.collider->GetCollisionTestCount());
+	rt->PushInt(nd.collider->GetCollisionTests().GetCount());
 }
 
 // public func ColliderCollisionTest getCollisionTestAt( int index )
@@ -1245,7 +1245,7 @@ void deClassCollider::nfGetCollisionTestAt::RunFunction(dsRunTime *rt, dsValue *
 	
 	const int index = rt->GetValue(0)->GetInt();
 	ds.GetClassColliderCollisionTest()->PushCollisionTest(rt,
-		nd.collider->GetCollisionTestAt(index), nd.collider);
+		nd.collider->GetCollisionTests().GetAt(index), nd.collider);
 }
 
 // public func void addCollisionTest( ColliderCollisionTest collisionTest )
@@ -2386,25 +2386,17 @@ decDMatrix deClassCollider::GetResourceMatrix(const deResource &resource){
 
 decVector deClassCollider::GetResourceScale(const deResource &resource){
 	switch(resource.GetResourceManager()->GetResourceType()){
-	case deResourceManager::ertCollider:{
-		const deCollider &collider = static_cast<const deCollider&>(resource);
-		return collider.GetScale();
-		};
+	case deResourceManager::ertCollider:
+		return static_cast<const deCollider&>(resource).GetScale();
 		
-	case deResourceManager::ertComponent:{
-		const deComponent &component = static_cast<const deComponent&>(resource);
-		return component.GetScaling();
-		};
+	case deResourceManager::ertComponent:
+		return static_cast<const deComponent&>(resource).GetScaling();
 		
-	case deResourceManager::ertDebugDrawer:{
-		const deDebugDrawer &debugDrawer = static_cast<const deDebugDrawer&>(resource);
-		return debugDrawer.GetScale();
-		};
+	case deResourceManager::ertDebugDrawer:
+		return static_cast<const deDebugDrawer&>(resource).GetScale();
 		
-	case deResourceManager::ertNavigationBlocker:{
-		const deNavigationBlocker &navigationBlocker = static_cast<const deNavigationBlocker&>(resource);
-		return navigationBlocker.GetScaling();
-		};
+	case deResourceManager::ertNavigationBlocker:
+		return static_cast<const deNavigationBlocker&>(resource).GetScaling();
 		
 	default:
 		return decVector(1.0, 1.0, 1.0);
@@ -2626,17 +2618,9 @@ void deClassCollider::AttachRelativeMovement(deCollider &collider, deResource *r
 
 deColliderConstraint *deClassCollider::FindConstraint(const deCollider &collider,
 const deColliderConstraint &constraint) const{
-	const int count = collider.GetConstraintCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deColliderConstraint * const checkConstraint = collider.GetConstraintAt(i);
-		if(checkConstraint->GetTargetCollider() == constraint.GetTargetCollider()
-		&& checkConstraint->GetTargetBone() == constraint.GetTargetBone()
-		&& checkConstraint->GetBone() == constraint.GetBone()){
-			return checkConstraint;
-		}
-	}
-	
-	return nullptr;
+	return collider.GetConstraints().FindOrDefault([&](const deColliderConstraint &c){
+		return c.GetTargetCollider() == constraint.GetTargetCollider()
+			&& c.GetTargetBone() == constraint.GetTargetBone()
+			&& c.GetBone() == constraint.GetBone();
+	});
 }

@@ -334,21 +334,15 @@ void delEngineInstanceDirect::LoadModules(){
 	
 	pEngine->LoadModules();
 }
-
 void delEngineInstanceDirect::GetInternalModules(delEngineModuleList &list){
 	GetLauncher().GetLogger()->LogInfo(GetLauncher().GetLogSource(), "Processing GetInternalModules");
 	DEASSERT_NOTNULL(pEngine)
 	
-	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	const int count = modsys.GetModuleCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deLoadableModule &mod = *modsys.GetModuleAt(i);
+	pEngine->GetModuleSystem()->GetModules().Visit([&](deLoadableModule &mod){
 		if(mod.IsInternalModule()){
 			list.Add(delEngineModule::Ref::New(*mod.CastToInternalModule()));
 		}
-	}
+	});
 }
 
 int delEngineInstanceDirect::GetModuleStatus(const char *moduleName, const char *moduleVersion){
@@ -950,7 +944,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 }
 
 void delEngineInstanceDirect::ReadDelgaFiles(const char *delgaFile,
-const decStringList &filenames, decObjectOrderedSet &filesContent){
+const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent){
 	DEASSERT_NOTNULL(delgaFile)
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
@@ -1043,7 +1037,7 @@ const char *delgaFile, decStringList &list){
 }
 
 void delEngineInstanceDirect::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
-const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent){
+const char *delgaFile, const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent){
 	DEASSERT_NOTNULL(delgaFile)
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),

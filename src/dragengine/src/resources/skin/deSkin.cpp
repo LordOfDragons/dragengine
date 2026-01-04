@@ -104,20 +104,12 @@ int deSkin::IndexOfTextureNamed(const char *name) const{
 // Mapped Values
 //////////////////
 
-int deSkin::GetMappedCount() const{
-	return pMapped.GetCount();
-}
-
-deSkinMapped *deSkin::GetMappedAt(int index) const{
-	return (deSkinMapped *)pMapped.GetAt(index);
-}
-
 deSkinMapped *deSkin::GetMappedNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		deSkinMapped * const mapped = (deSkinMapped *)pMapped.GetAt(i);
+		deSkinMapped * const mapped = pMapped.GetAt(i);
 		if(mapped->GetName() == name){
 			return mapped;
 		}
@@ -126,16 +118,12 @@ deSkinMapped *deSkin::GetMappedNamed(const char *name) const{
 	return nullptr;
 }
 
-int deSkin::IndexOfMapped(deSkinMapped *mapped) const{
-	return pMapped.IndexOf(mapped);
-}
-
 int deSkin::IndexOfMappedNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deSkinMapped *)pMapped.GetAt(i))->GetName() == name){
+		if(pMapped.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}
@@ -143,16 +131,12 @@ int deSkin::IndexOfMappedNamed(const char *name) const{
 	return -1;
 }
 
-bool deSkin::HasMapped(deSkinMapped *mapped) const{
-	return pMapped.Has(mapped);
-}
-
 bool deSkin::HasMappedNamed(const char *name) const{
 	const int count = pMapped.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((deSkinMapped *)pMapped.GetAt(i))->GetName() == name){
+		if(pMapped.GetAt(i)->GetName() == name){
 			return true;
 		}
 	}
@@ -162,7 +146,7 @@ bool deSkin::HasMappedNamed(const char *name) const{
 
 void deSkin::AddMapped(deSkinMapped *mapped){
 	DEASSERT_NOTNULL(mapped)
-	DEASSERT_FALSE(HasMapped(mapped))
+	DEASSERT_FALSE(pMapped.Has(mapped))
 	
 	pMapped.Add(mapped);
 }

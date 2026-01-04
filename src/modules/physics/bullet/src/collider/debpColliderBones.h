@@ -27,8 +27,9 @@
 
 #include "../debpCollisionObject.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/collider/deColliderConstraint.h>
 
 class debpColliderBone;
 class debpCollider;
@@ -68,7 +69,7 @@ private:
 	float pRigMass;
 	float pRigInvMass;
 	
-	decObjectOrderedSet pConstraints;
+	decTObjectOrderedSet<deColliderConstraint> pConstraints;
 	
 	
 	

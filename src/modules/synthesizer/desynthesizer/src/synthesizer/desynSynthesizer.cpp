@@ -218,14 +218,14 @@ void desynSynthesizer::pClearLinks(){
 void desynSynthesizer::pCreateLinks(){
 	pClearLinks();
 	
-	const int count = pSynthesizer.GetLinkCount();
+	const int count = pSynthesizer.GetLinks().GetCount();
 	if(count == 0){
 		return;
 	}
 	
 	int i;
 	for(i=0; i<count; i++){
-		pLinks.Add(new desynSynthesizerLink(*pSynthesizer.GetLinkAt(i)));
+		pLinks.Add(new desynSynthesizerLink(*pSynthesizer.GetLinks().GetAt(i)));
 	}
 }
 
@@ -233,7 +233,7 @@ void desynSynthesizer::pCreateSources(){
 	pSilent = true;
 	pStateDataSize = 0;
 	
-	const int count = pSynthesizer.GetSourceCount();
+	const int count = pSynthesizer.GetSources().GetCount();
 	if(count == 0){
 		return;
 	}
@@ -245,7 +245,7 @@ void desynSynthesizer::pCreateSources(){
 		createSource.Reset();
 		
 		try{
-			pSynthesizer.GetSourceAt(pSourceCount)->Visit(createSource);
+			pSynthesizer.GetSources().GetAt(pSourceCount)->Visit(createSource);
 			pSources[pSourceCount] = createSource.GetSource();
 			
 			if(!pSources[pSourceCount]->GetSilent()){

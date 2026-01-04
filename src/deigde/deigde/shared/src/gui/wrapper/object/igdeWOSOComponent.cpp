@@ -452,7 +452,7 @@ void igdeWOSOComponent::Update(float elapsed){
 	
 	if(pAnimator){
 		if(pPlaybackControllerIndex != -1){
-			pAnimator->GetControllerAt(pPlaybackControllerIndex).IncrementCurrentValue(elapsed);
+			pAnimator->GetControllers().GetAt(pPlaybackControllerIndex)->IncrementCurrentValue(elapsed);
 			pAnimator->NotifyControllerChangedAt(pPlaybackControllerIndex);
 		}
 		pAnimator->Apply();
@@ -477,8 +477,8 @@ void igdeWOSOComponent::ResetPhysics(){
 		
 		if(pAnimator){
 			if(pPlaybackControllerIndex != -1){
-				pAnimator->GetControllerAt(pPlaybackControllerIndex).SetCurrentValue(
-					pAnimator->GetControllerAt(pPlaybackControllerIndex).GetMinimumValue());
+				pAnimator->GetControllers().GetAt(pPlaybackControllerIndex)->SetCurrentValue(
+					pAnimator->GetControllers().GetAt(pPlaybackControllerIndex)->GetMinimumValue());
 			}
 			pAnimator->Apply();
 		}
@@ -842,26 +842,20 @@ void igdeWOSOComponent::pUpdateComponent(){
 				animator->SetAnimation(animation);
 				animator->SetRig(rig);
 				
-				deAnimatorController *controller = nullptr;
-				deAnimatorLink *link = nullptr;
-				
 				try{
-					controller = new deAnimatorController;
+					const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
 					controller->SetName(playbackController);
 					controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
 					controller->SetClamp(false);
 					animator->AddController(controller);
 					
 				}catch(const deException &e){
-					if(controller){
-						delete controller;
-					}
 					animator = nullptr;
 					GetLogger().LogException("DEIGDE", e);
 				}
 				
 				try{
-					link = new deAnimatorLink;
+					const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
 					link->SetController(0);
 					
 					decCurveBezier curve;
@@ -870,9 +864,6 @@ void igdeWOSOComponent::pUpdateComponent(){
 					animator->AddLink(link);
 					
 				}catch(const deException &e){
-					if(link){
-						delete link;
-					}
 					animator = nullptr;
 					GetLogger().LogException("DEIGDE", e);
 				}

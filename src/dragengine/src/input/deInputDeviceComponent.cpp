@@ -70,13 +70,6 @@ void deInputDeviceComponent::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
-int deInputDeviceComponent::GetDisplayIconCount() const{
-	return pDisplayIcons.GetCount();
-}
-
-deImage *deInputDeviceComponent::GetDisplayIconAt(int index) const{
-	return (deImage*)pDisplayIcons.GetAt(index);
-}
 
 void deInputDeviceComponent::AddDisplayIcon(deImage *image){
 	if(!image){

@@ -66,25 +66,21 @@ feLoadSaveSystem::~feLoadSaveSystem(){
 
 // Management
 ///////////////
-
 void feLoadSaveSystem::UpdateLSFonts(){
 	deEngine *engine = pWndMain->GetEngine();
-	deModuleSystem *modSys = engine->GetModuleSystem();
-	int m, moduleCount = modSys->GetModuleCount();
-	deLoadableModule *loadableModule;
 	
 	pLSFonts.RemoveAll();
 	
-	// add a new load save font for each font module found in the engine that is also
-	// running and usable therefore
-	for(m=0; m<moduleCount; m++){
-		loadableModule = modSys->GetModuleAt(m);
+	engine->GetModuleSystem()->GetModules().Visit([&](const deLoadableModule &loadableModule){
+		if(loadableModule.GetType() != deModuleSystem::emtFont){
+			return;
+		}
+		if(!loadableModule.IsLoaded()){
+			return;
+		}
 		
-		if(loadableModule->GetType() != deModuleSystem::emtFont) continue;
-		if(!loadableModule->IsLoaded()) continue;
-		
-		pLSFonts.Add(feLoadSaveFont::Ref::New((deBaseFontModule*)loadableModule->GetModule()));
-	}
+		pLSFonts.Add(feLoadSaveFont::Ref::New((deBaseFontModule*)loadableModule.GetModule()));
+	});
 }
 
 

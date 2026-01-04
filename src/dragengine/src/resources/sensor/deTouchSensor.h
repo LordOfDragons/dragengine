@@ -29,7 +29,7 @@
 #include "../../common/shape/decShapeList.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deTouchSensorManager;
 class deBasePhysicsTouchSensor;
@@ -74,7 +74,7 @@ private:
 	decVector pDirection;
 	
 	decCollisionFilter pCollisionFilter;
-	decObjectOrderedSet pIgnoreColliders;
+	decTObjectOrderedSet<deCollider> pIgnoreColliders;
 	
 	bool pTrackEnterLeave;
 	bool pEnabled;
@@ -178,18 +178,8 @@ public:
 	
 	/** \name Ignore colliders */
 	/*@{*/
-	/** \brief Number of colliders to ignore. */
-	int GetIgnoreColliderCount() const;
-	
-	/**
-	 * \brief Collider to ignore at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
-	 */
-	deCollider *GetIgnoreColliderAt(int index) const;
-	
-	/** \brief Collider to ignore is present. */
-	bool HasIgnoreCollider(deCollider *collider) const;
+	/** \brief Ignore colliders. */
+	inline const decTObjectOrderedSet<deCollider> &GetIgnoreColliders() const{ return pIgnoreColliders; }
 	
 	/**
 	 * \brief Add collider to ignore.

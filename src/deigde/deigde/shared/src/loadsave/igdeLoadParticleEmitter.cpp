@@ -210,17 +210,6 @@ deParticleEmitter &particleEmitter){
 	const int count = root.GetElementCount();
 	int i;
 	
-	int typeCount = 0;
-	for(i=0; i<count; i++){
-		const decXmlElementTag * const tag = root.GetElementIfTag(i);
-		if(tag && tag->GetName() == "type"){
-			typeCount++;
-		}
-	}
-	particleEmitter.SetTypeCount(typeCount);
-	
-	int nextTypeIndex = 0;
-	
 	for(i=0; i<count; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
 		if(!tag){
@@ -237,7 +226,9 @@ deParticleEmitter &particleEmitter){
 			particleEmitter.SetEmitBurst(GetCDataBool(*tag));
 			
 		}else if(strcmp(tag->GetName(), "type") == 0){
-			pReadType(*tag, basePath, particleEmitter, particleEmitter.GetTypeAt(nextTypeIndex++));
+			const deParticleEmitterType::Ref type(deParticleEmitterType::Ref::New());
+			pReadType(*tag, basePath, particleEmitter, type);
+			particleEmitter.AddType(type);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
@@ -247,49 +238,43 @@ deParticleEmitter &particleEmitter){
 
 void igdeLoadParticleEmitter::pReadController(const decXmlElementTag &root,
 deParticleEmitter &particleEmitter){
-	deParticleEmitterController * const controller = new deParticleEmitterController;
+	const deParticleEmitterController::Ref controller(deParticleEmitterController::Ref::New());
 	const int count = root.GetElementCount();
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			if(strcmp(tag->GetName(), "name") == 0){
-				controller->SetName(GetCDataString(*tag));
-				
-			}else if(strcmp(tag->GetName(), "clamp") == 0){
-				controller->SetClamp(GetCDataBool(*tag));
-				
-			}else if(strcmp(tag->GetName(), "frozen") == 0){
-				controller->SetFrozen(GetCDataBool(*tag));
-				
-			}else if(strcmp(tag->GetName(), "lower") == 0){ // deprecated
-				controller->SetRange(GetCDataFloat(*tag), controller->GetUpper());
-				
-			}else if(strcmp(tag->GetName(), "upper") == 0){ // deprecated
-				controller->SetRange(controller->GetLower(), GetCDataFloat(*tag));
-				
-			}else if(strcmp(tag->GetName(), "limits") == 0){
-				controller->SetRange(GetAttributeFloat(*tag, "lower"), GetAttributeFloat(*tag, "upper"));
-				
-			}else if(strcmp(tag->GetName(), "linkToTime") == 0){
-				// editor only parameter
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
 		}
 		
-		particleEmitter.AddController(controller);
-		
-	}catch(const deException &){
-		delete controller;
-		throw;
+		if(strcmp(tag->GetName(), "name") == 0){
+			controller->SetName(GetCDataString(*tag));
+			
+		}else if(strcmp(tag->GetName(), "clamp") == 0){
+			controller->SetClamp(GetCDataBool(*tag));
+			
+		}else if(strcmp(tag->GetName(), "frozen") == 0){
+			controller->SetFrozen(GetCDataBool(*tag));
+			
+		}else if(strcmp(tag->GetName(), "lower") == 0){ // deprecated
+			controller->SetRange(GetCDataFloat(*tag), controller->GetUpper());
+			
+		}else if(strcmp(tag->GetName(), "upper") == 0){ // deprecated
+			controller->SetRange(controller->GetLower(), GetCDataFloat(*tag));
+			
+		}else if(strcmp(tag->GetName(), "limits") == 0){
+			controller->SetRange(GetAttributeFloat(*tag, "lower"), GetAttributeFloat(*tag, "upper"));
+			
+		}else if(strcmp(tag->GetName(), "linkToTime") == 0){
+			// editor only parameter
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
 	}
+	
+	particleEmitter.AddController(controller);
 }
 
 void igdeLoadParticleEmitter::pReadType(const decXmlElementTag &root, const char *basePath,

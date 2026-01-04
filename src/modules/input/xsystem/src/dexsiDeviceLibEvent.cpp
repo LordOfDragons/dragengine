@@ -609,14 +609,14 @@ void dexsiDeviceLibEvent::Update(){
 			case EV_REL:
 				if(pEvdevMapRelAxis && ev.code >= 0 && ev.code < REL_MAX
 				&& pEvdevMapRelAxis[ev.code] != -1){
-					GetAxisAt(pEvdevMapRelAxis[ev.code])->EvdevProcessEvent(*this, ev);
+					GetAxes().GetAt(pEvdevMapRelAxis[ev.code])->EvdevProcessEvent(*this, ev);
 				}
 				break;
 				
 			case EV_ABS:
 				if(pEvdevMapAbsAxis && ev.code >= 0 && ev.code < ABS_MAX
 				&& pEvdevMapAbsAxis[ev.code] != -1){
-					GetAxisAt(pEvdevMapAbsAxis[ev.code])->EvdevProcessEvent(*this, ev);
+					GetAxes().GetAt(pEvdevMapAbsAxis[ev.code])->EvdevProcessEvent(*this, ev);
 				}
 				break;
 				
@@ -627,17 +627,17 @@ void dexsiDeviceLibEvent::Update(){
 					
 					switch(ev.value){
 					case 0: // release
-						GetButtonAt(code)->SetPressed(false);
+						GetButtons().GetAt(code)->SetPressed(false);
 						module.AddButtonReleased(deviceIndex, code, ev.time);
 						break;
 						
 					case 1: // press
-						GetButtonAt(code)->SetPressed(true);
+						GetButtons().GetAt(code)->SetPressed(true);
 						module.AddButtonPressed(deviceIndex, code, ev.time);
 						break;
 						
 					case 2: // auto-repeat (or auto-fire)
-						GetButtonAt(code)->SetPressed(true);
+						GetButtons().GetAt(code)->SetPressed(true);
 						module.AddButtonReleased(deviceIndex, code, ev.time);
 						module.AddButtonPressed(deviceIndex, code, ev.time);
 						break;

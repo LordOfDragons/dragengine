@@ -316,7 +316,7 @@ void desynSynthesizerSourceGroup::pCreateSources(desynSynthesizer &synthesizer,
 int firstLink, const deSynthesizerSourceGroup &source){
 	pClearSources();
 	
-	const int count = source.GetSourceCount();
+	const int count = source.GetSources().GetCount();
 	if(count == 0){
 		SetSilent(true);
 		return;
@@ -330,7 +330,7 @@ int firstLink, const deSynthesizerSourceGroup &source){
 		createSource.Reset();
 		
 		try{
-			source.GetSourceAt(pSourceCount)->Visit(createSource);
+			source.GetSources().GetAt(pSourceCount)->Visit(createSource);
 			pSources[pSourceCount] = createSource.GetSource();
 			
 		}catch(const deException &){

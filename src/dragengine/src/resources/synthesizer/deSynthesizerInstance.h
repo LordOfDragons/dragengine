@@ -28,7 +28,7 @@
 #include "deSynthesizer.h"
 #include "source/deSynthesizerSource.h"
 #include "../deResource.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deSynthesizerInstanceManager;
 class deSynthesizerController;
@@ -77,7 +77,7 @@ public:
 private:
 	deSynthesizer::Ref pSynthesizer;
 	
-	decObjectOrderedSet pControllers;
+	decTObjectOrderedSet<deSynthesizerController> pControllers;
 	
 	int pSampleCount;
 	
@@ -123,14 +123,8 @@ public:
 	
 	
 	
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0 or greater or equal than GetControllerCount().
-	 */
-	deSynthesizerController *GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSynthesizerController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;

@@ -107,14 +107,6 @@ void deSynthesizerInstance::SetSampleCount(int sampleCount){
 
 
 
-int deSynthesizerInstance::GetControllerCount() const{
-	return pControllers.GetCount();
-}
-
-deSynthesizerController *deSynthesizerInstance::GetControllerAt(int index) const{
-	return (deSynthesizerController*)pControllers.GetAt(index);
-}
-
 int deSynthesizerInstance::IndexOfControllerNamed(const char *name) const{
 	const int count = pControllers.GetCount();
 	int i;
@@ -206,10 +198,7 @@ void deSynthesizerInstance::pUpdateControllers(){
 		return;
 	}
 	
-	const int controllerCount = pSynthesizer->GetControllerCount();
-	int i;
-	
-	for(i=0; i<controllerCount; i++){
-		pControllers.Add(deSynthesizerController::Ref::New(*pSynthesizer->GetControllerAt(i)));
-	}
+	pSynthesizer->GetControllers().Visit([&](const deSynthesizerController &controller){
+		pControllers.Add(deSynthesizerController::Ref::New(controller));
+	});
 }

@@ -75,7 +75,7 @@ pCulling(true)
 		
 		if(node->GetName() == "Model"){
 			if(connection->GetSource() == pGeometryID
-			&& node->GetPropertyAt(2)->CastString().GetValue() == "Mesh"){
+			&& node->GetProperties().GetAt(2)->CastString().GetValue() == "Mesh"){
 				if(pNodeModel){
 					DETHROW_INFO(deeInvalidParam, "duplicate model");
 				}
@@ -85,7 +85,7 @@ pCulling(true)
 			
 		}else if(node->GetName() == "Deformer"){
 			if(connection->GetTarget() == pGeometryID
-			&& node->GetPropertyAt(2)->CastString().GetValue() == "Skin"){
+			&& node->GetProperties().GetAt(2)->CastString().GetValue() == "Skin"){
 				if(pNodeDeformer){
 					DETHROW_INFO(deeInvalidParam, "duplicate deformer");
 				}
@@ -116,25 +116,24 @@ pCulling(true)
 			
 			fbxNode &node = *scene.NodeWithID(connection->GetSource());
 			if(node.GetName() == "Deformer"
-			&& node.GetPropertyAt(2)->CastString().GetValue() == "Cluster"){
+			&& node.GetProperties().GetAt(2)->CastString().GetValue() == "Cluster"){
 				pClusters.Add(fbxModelCluster::Ref::New(*this, node));
 			}
 		});
 	}
 	
-	const int clusterCount = pClusters.GetCount();
-	int i;
-	for(i=0; i<clusterCount; i++){
-		GetClusterAt(i)->Prepare();
-	}
+	pClusters.Visit([&](fbxModelCluster &cluster){
+		cluster.Prepare();
+	});
 	
 	// create vertices
-	const fbxProperty &propVertices = *nodeGeometry.FirstNodeNamed("Vertices")->GetPropertyAt(0);
+	const fbxProperty &propVertices = *nodeGeometry.FirstNodeNamed("Vertices")->GetProperties().GetAt(0);
 	const int count = propVertices.GetValueCount() / 3;
 	
 	if(count > 0){
 		pVertices = new sVertex[count];
 		
+		int i;
 		for(i=0; i<count; i++){
 			const int base = i * 3;
 			pVertices[i].weightSet = -1;
@@ -149,7 +148,7 @@ pCulling(true)
 	// properties
 	const fbxNode * const nodeCulling = pNodeModel->FirstNodeNamedOrNull("Culling");
 	if(nodeCulling){
-		pCulling = nodeCulling->GetPropertyAt(0)->CastString().GetValue() != "CullingOff";
+		pCulling = nodeCulling->GetProperties().GetAt(0)->CastString().GetValue() != "CullingOff";
 	}
 }
 
@@ -169,14 +168,6 @@ fbxModel::~fbxModel(){
 
 // Management
 ///////////////
-
-int fbxModel::GetClusterCount() const{
-	return pClusters.GetCount();
-}
-
-fbxModelCluster *fbxModel::GetClusterAt(int index) const{
-	return (fbxModelCluster*)pClusters.GetAt(index);
-}
 
 fbxModelCluster *fbxModel::GetClusterNamed(const char *name) const{
 	const int count = pClusters.GetCount();
@@ -233,8 +224,8 @@ void fbxModel::BuildWeights(){
 			continue; // rig affects nobody
 		}
 		
-		const fbxProperty &propIndex = *nodeIndex->GetPropertyAt(0);
-		const fbxProperty &propWeight = *nodeWeight->GetPropertyAt(0);
+		const fbxProperty &propIndex = *nodeIndex->GetProperties().GetAt(0);
+		const fbxProperty &propWeight = *nodeWeight->GetProperties().GetAt(0);
 		const int entryCount = propIndex.GetValueCount();
 		const int bone = cluster.GetRigBone()->GetIndex();
 		
@@ -295,15 +286,12 @@ const deModelWeight &fbxModel::GetWeightAt(int index) const{
 
 
 void fbxModel::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
-	const int count = pClusters.GetCount();
-	int i;
-	
 	module.LogInfoFormat("%sModel", prefix.GetString());
 	
 	const decString childPrefix(prefix + "  ");
-	for(i=0; i<count; i++){
-		GetClusterAt(i)->DebugPrintStructure(module, childPrefix, verbose);
-	}
+	pClusters.Visit([&](fbxModelCluster &cluster){
+		cluster.DebugPrintStructure(module, childPrefix, verbose);
+	});
 }
 
 

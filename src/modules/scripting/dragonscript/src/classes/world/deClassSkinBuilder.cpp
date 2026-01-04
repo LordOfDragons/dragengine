@@ -550,7 +550,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		property->SetRenderable(renderable);
 		
 		if(redCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = deSkinMapped::Ref::New(name);
 			mapped->GetCurve() = redCurve;
@@ -563,7 +563,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(greenCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = deSkinMapped::Ref::New(name);
 			mapped->GetCurve() = greenCurve;
@@ -576,7 +576,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(blueCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = deSkinMapped::Ref::New(name);
 			mapped->GetCurve() = blueCurve;
@@ -589,7 +589,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(alphaCurve.GetPointCount() > 0){
-			const int index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMapped().GetCount();
 			name.Format("#generated%d", index);
 			mapped = deSkinMapped::Ref::New(name);
 			mapped->GetCurve() = alphaCurve;
@@ -630,7 +630,7 @@ void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const int mappedCount = builder->GetSkin()->GetMappedCount();
+	const int mappedCount = builder->GetSkin()->GetMapped().GetCount();
 	
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();

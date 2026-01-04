@@ -428,12 +428,12 @@ void deVROpenXR::CenterPlayspace(){
 ////////////
 
 int deVROpenXR::GetDeviceCount(){
-	return pDevices.GetCount();
+	return pDevices.GetDevices().GetCount();
 }
 
 deInputDevice::Ref deVROpenXR::GetDeviceAt(int index){
 	deInputDevice::Ref device(deInputDevice::Ref::New());
-	pDevices.GetAt(index)->GetInfo(device);
+	pDevices.GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -443,60 +443,60 @@ int deVROpenXR::IndexOfDeviceWithID(const char *id){
 
 
 int deVROpenXR::IndexOfButtonWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices.GetDevices().GetAt(device)->IndexOfButtonWithID(id);
 }
 
 int deVROpenXR::IndexOfAxisWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices.GetDevices().GetAt(device)->IndexOfAxisWithID(id);
 }
 
 int deVROpenXR::IndexOfFeedbackWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfFeedbackWithID(id);
+	return pDevices.GetDevices().GetAt(device)->IndexOfFeedbackWithID(id);
 }
 
 int deVROpenXR::IndexOfComponentWithID(int device, const char *id){
-	return pDevices.GetAt(device)->IndexOfComponentWithID(id);
+	return pDevices.GetDevices().GetAt(device)->IndexOfComponentWithID(id);
 }
 
 bool deVROpenXR::GetButtonPressed(int device, int button){
-	return pDevices.GetAt(device)->GetButtonAt(button)->GetPressed();
+	return pDevices.GetDevices().GetAt(device)->GetButtons().GetAt(button)->GetPressed();
 }
 
 bool deVROpenXR::GetButtonTouched(int device, int button){
-	return pDevices.GetAt(device)->GetButtonAt(button)->GetTouched();
+	return pDevices.GetDevices().GetAt(device)->GetButtons().GetAt(button)->GetTouched();
 }
 
 bool deVROpenXR::GetButtonNear(int device, int button){
-	return pDevices.GetAt(device)->GetButtonAt(button)->GetNear();
+	return pDevices.GetDevices().GetAt(device)->GetButtons().GetAt(button)->GetNear();
 }
 
 float deVROpenXR::GetAxisValue(int device, int axis){
-	return pDevices.GetAt(device)->GetAxisAt(axis)->GetValue();
+	return pDevices.GetDevices().GetAt(device)->GetAxes().GetAt(axis)->GetValue();
 }
 
 float deVROpenXR::GetFeedbackValue(int device, int feedback){
-	return pDevices.GetAt(device)->GetFeedbackAt(feedback)->GetValue();
+	return pDevices.GetDevices().GetAt(device)->GetFeedbacks().GetAt(feedback)->GetValue();
 }
 
 void deVROpenXR::SetFeedbackValue(int device, int feedback, float value){
-	pDevices.GetAt(device)->GetFeedbackAt(feedback)->SetValue(value);
+	pDevices.GetDevices().GetAt(device)->GetFeedbacks().GetAt(feedback)->SetValue(value);
 }
 
 void deVROpenXR::GetDevicePose(int device, deInputDevicePose &pose){
-	pDevices.GetAt(device)->GetDevicePose(pose);
+	pDevices.GetDevices().GetAt(device)->GetDevicePose(pose);
 }
 
 void deVROpenXR::GetDeviceBonePose(int device, int bone, bool withController, deInputDevicePose &pose){
 	// with controller not yet supported
 	(void)withController;
-	deoxrHandTracker * const handTracker = pDevices.GetAt(device)->GetHandTracker();
+	deoxrHandTracker * const handTracker = pDevices.GetDevices().GetAt(device)->GetHandTracker();
 	if(handTracker){
 		pose = handTracker->GetPoseBoneAt(bone);
 	}
 }
 
 float deVROpenXR::GetDeviceFaceExpression(int device, int expression){
-	deoxrFaceTracker * const faceTracker = pDevices.GetAt(device)->GetFaceTracker();
+	deoxrFaceTracker * const faceTracker = pDevices.GetDevices().GetAt(device)->GetFaceTracker();
 	if(faceTracker){
 		return faceTracker->GetFaceExpressionAt(expression);
 	}
@@ -1032,16 +1032,14 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddPoseAction("pose_right2", "Pose Right 2");
 	
 	// allow device profiles to add actions
-	const int count = pDeviceProfiles.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pDeviceProfiles.GetAt(i)->CreateActions(pActionSet);
-	}
+	pDeviceProfiles.GetProfiles().Visit([&](deoxrDeviceProfile &profile){
+		profile.CreateActions(pActionSet);
+	});
 	
 	// store actions for quick retrieval
-	for(i=0; i<InputActionCount; i++){
-		pActions[i] = pActionSet->GetActionAt(i);
-	}
+	pActionSet->GetActions().VisitIndexed([&](int i, deoxrAction *action){
+		pActions[i] = action;
+	});
 }
 
 void deVROpenXR::pDestroyActionSet(){
@@ -1083,16 +1081,11 @@ void deVROpenXR::pCreateDeviceProfiles(){
 }
 
 void deVROpenXR::pSuggestBindings(){
-	const int count = pDeviceProfiles.GetCount();
-	int i;
-	
 	if(pLogLevel == LogLevel::debug){
 		LogInfo("Suggesting bindings for device profiles.");
 	}
 	
-	for(i=0; i<count; i++){
-		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt(i);
-		
+	pDeviceProfiles.GetProfiles().Visit([&](deoxrDeviceProfile &profile){
 		if(pLogLevel == LogLevel::debug){
 			LogInfoFormat("Suggest bindings for device profile '%s':", profile.GetName().GetString());
 		}
@@ -1105,7 +1098,7 @@ void deVROpenXR::pSuggestBindings(){
 			LogWarnFormat("Device profile '%s' failed suggesting bindings. "
 				"Ignoring device profile", profile.GetPath().GetName().GetString());
 		}
-	}
+	});
 	
 	if(pLogLevel == LogLevel::debug){
 		LogInfo("Done suggesting bindings for device profiles.");

@@ -28,6 +28,7 @@
 #include "deSky.h"
 #include "../deResource.h"
 #include "../../common/utils/decLayerMask.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deSkyInstanceManager;
 class deSkyController;
@@ -52,8 +53,7 @@ private:
 	deSky::Ref pSky;
 	int pOrder;
 	
-	deSkyController *pControllers;
-	int pControllerCount;
+	decTObjectOrderedSet<deSkyController> pControllers;
 	
 	decLayerMask pLayerMask;
 	float pPassthroughTransparency;
@@ -98,15 +98,8 @@ public:
 	
 	
 	
-	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0 or greater or equal
-	 * than GetControllerCount().
-	 */
-	deSkyController &GetControllerAt(int index) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSkyController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of named controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;

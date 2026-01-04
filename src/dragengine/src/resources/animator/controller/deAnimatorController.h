@@ -25,6 +25,7 @@
 #ifndef _DEANIMATORCONTROLLER_H_
 #define _DEANIMATORCONTROLLER_H_
 
+#include "../../../deObject.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
 
@@ -49,7 +50,12 @@
  * useful for certain specialized rules which need a position or even
  * orientations to do their work.
  */
-class DE_DLL_EXPORT deAnimatorController{
+class DE_DLL_EXPORT deAnimatorController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorController> Ref;
+	
+	
 private:
 	decString pName;
 	float pMinValue;
@@ -67,12 +73,21 @@ public:
 	/** \brief Create unnamed animator controller with range 0 to 1 and value 0. */
 	deAnimatorController();
 	
-	/** \brief Clean up animator. */
-	~deAnimatorController();
+	/** \brief Create copy of animator controller. */
+	deAnimatorController(const deAnimatorController &copy);
+	
+protected:
+	/**
+	 * \brief Clean up animator controller.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deAnimatorController() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

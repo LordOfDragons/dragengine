@@ -356,13 +356,13 @@ void debpColliderComponent::UpdateExtends(){
 		}break;
 		
 	case etmRigShape:{
-		const int shapeCount = pRigShapes.GetShapeCount();
+		const int shapeCount = pRigShapes.GetShapes().GetCount();
 		debpDCollisionBox colBox;
 		bool hasExtend = false;
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			pRigShapes.GetShapeAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetShapes().GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(hasExtend){
 				minExtend.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
@@ -998,7 +998,7 @@ void debpColliderComponent::UpdateShapes(){
 void debpColliderComponent::UpdateShapesWithMatrix(const decDMatrix &transformation){
 	pDirtyShapes = true;
 	
-	if(pRigShapes.GetShapeCount() > 0){
+	if(pRigShapes.GetShapes().IsNotEmpty()){
 		if(pHasRigOffset){
 			pRigShapes.UpdateWithMatrix(decDMatrix::CreateTranslation(-pRigOffset)
 				.QuickMultiply(GetInverseMatrix()).QuickMultiply(transformation));
@@ -1036,13 +1036,13 @@ void debpColliderComponent::UpdateShapeExtends(){
 		}break;
 		
 	case etmRigShape:{
-		const int shapeCount = pRigShapes.GetShapeCount();
+		const int shapeCount = pRigShapes.GetShapes().GetCount();
 		debpDCollisionBox colBox;
 		bool hasExtend = false;
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			pRigShapes.GetShapeAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			pRigShapes.GetShapes().GetAt(i)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(hasExtend){
 				minExtend.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());
@@ -1991,11 +1991,11 @@ bool debpColliderComponent::PointInside(const decDVector &point){
 		
 		UpdateShapes();
 		
-		const int shapeCount = pRigShapes.GetShapeCount();
+		const int shapeCount = pRigShapes.GetShapes().GetCount();
 		int i;
 		
 		for(i=0; i<shapeCount; i++){
-			const debpShape &shape = *pRigShapes.GetShapeAt(i);
+			const debpShape &shape = *pRigShapes.GetShapes().GetAt(i);
 			if(shape.GetCollisionVolume()->IsPointInside(point)){
 				return true;
 			}

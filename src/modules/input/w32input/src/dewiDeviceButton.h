@@ -28,7 +28,7 @@
 #include "dewiInclude.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputDeviceButton.h>
@@ -55,7 +55,7 @@ private:
 	bool pPressed;
 	
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pWICode;
@@ -117,7 +117,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);

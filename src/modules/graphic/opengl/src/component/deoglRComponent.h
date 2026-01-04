@@ -42,7 +42,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
@@ -50,6 +50,7 @@
 
 class deoglComponent;
 class deoglComponentListener;
+class deoglRComponentListener;
 class deoglDynamicOcclusionMesh;
 class deoglRCamera;
 class deoglRComponentLOD;
@@ -179,7 +180,7 @@ private:
 	
 	unsigned int pUniqueKey;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglComponentListener> pListeners;
 	int pListenerIndex;
 	
 	deoglEnvironmentMap::Ref pRenderEnvMap;

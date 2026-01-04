@@ -51,40 +51,16 @@ deadArchiveDirectory::~deadArchiveDirectory(){
 // Directories
 ///////////////
 
-int deadArchiveDirectory::GetDirectoryCount() const{
-	return pDirectories.GetCount();
-}
-
-deadArchiveDirectory *deadArchiveDirectory::GetDirectoryAt(int index) const{
-	return (deadArchiveDirectory*)pDirectories.GetAt(index);
-}
-
 bool deadArchiveDirectory::HasDirectoryNamed(const char *filename) const{
-	const int count = pDirectories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deadArchiveDirectory * const directory = (deadArchiveDirectory*)pDirectories.GetAt(i);
-		if(directory->GetFilename() == filename){
-			return true;
-		}
-	}
-	
-	return false;
+	return pDirectories.HasMatching([&](const deadArchiveDirectory &dir){
+		return dir.GetFilename() == filename;
+	});
 }
 
 deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed(const char *filename) const{
-	const int count = pDirectories.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deadArchiveDirectory * const directory = (deadArchiveDirectory*)pDirectories.GetAt(i);
-		if(directory->GetFilename() == filename){
-			return directory;
-		}
-	}
-	
-	return nullptr;
+	return pDirectories.FindOrDefault([&](const deadArchiveDirectory &dir){
+		return dir.GetFilename() == filename;
+	});
 }
 
 deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *filename){
@@ -139,40 +115,16 @@ void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
 // Files
 //////////
 
-int deadArchiveDirectory::GetFileCount() const{
-	return pFiles.GetCount();
-}
-
-deadArchiveFile *deadArchiveDirectory::GetFileAt(int index) const{
-	return (deadArchiveFile*)pFiles.GetAt(index);
-}
-
 bool deadArchiveDirectory::HasFileNamed(const char *filename) const{
-	const int count = pFiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deadArchiveFile * const file = (deadArchiveFile*)pFiles.GetAt(i);
-		if(file->GetFilename() == filename){
-			return true;
-		}
-	}
-	
-	return false;
+	return pFiles.HasMatching([&](const deadArchiveFile &file){
+		return file.GetFilename() == filename;
+	});
 }
 
 deadArchiveFile *deadArchiveDirectory::GetFileNamed(const char *filename) const{
-	const int count = pFiles.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deadArchiveFile * const file = (deadArchiveFile*)pFiles.GetAt(i);
-		if(file->GetFilename() == filename){
-			return file;
-		}
-	}
-	
-	return nullptr;
+	return pFiles.FindOrDefault([&](const deadArchiveFile &file){
+		return file.GetFilename() == filename;
+	});
 }
 
 deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{

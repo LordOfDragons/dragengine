@@ -25,7 +25,7 @@
 #ifndef _DEBPDEBUGINFORMATIONLIST_H_
 #define _DEBPDEBUGINFORMATIONLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class debpDebugInformation;
 
@@ -36,7 +36,7 @@ class debpDebugInformation;
  */
 class debpDebugInformationList{
 private:
-	decObjectOrderedSet pChildren;
+	decTObjectOrderedSet<debpDebugInformation> pChildren;
 	
 	
 	

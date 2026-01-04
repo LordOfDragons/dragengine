@@ -160,48 +160,37 @@ pDirtyRig(true)
 {
 	deEngine * const engine = GetEngine();
 	
-	deAnimatorController *amController = nullptr;
-	deAnimatorRuleAnimation::Ref amRuleAnim;
-	deAnimatorRuleStateManipulator::Ref amRuleRestPose;
-	deAnimatorRuleStateSnapshot::Ref amRuleStateSnapshot;
-	deAnimatorLink *engLink = nullptr;
-	
 	try{
 		SetFilePath("new.derig");
 		
 		// create animator
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
-		amController = new deAnimatorController;
+		const deAnimatorController::Ref amController(deAnimatorController::Ref::New());
 		amController->SetClamp(true);
 		pEngAnimator->AddController(amController);
-		amController = nullptr;
 		
-		engLink = new deAnimatorLink;
+		const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
 		engLink->SetController(0);
 		pEngAnimator->AddLink(engLink);
-		engLink = nullptr;
 		
-		amRuleStateSnapshot = deAnimatorRuleStateSnapshot::Ref::New();
+		const deAnimatorRuleStateSnapshot::Ref amRuleStateSnapshot(deAnimatorRuleStateSnapshot::Ref::New());
 		amRuleStateSnapshot->SetUseLastState(true);
 		pEngAnimator->AddRule(amRuleStateSnapshot);
-		amRuleStateSnapshot = nullptr;
 		
-		amRuleAnim = deAnimatorRuleAnimation::Ref::New();
+		const deAnimatorRuleAnimation::Ref amRuleAnim(deAnimatorRuleAnimation::Ref::New());
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
 		amRuleAnim->SetEnabled(!pUseRestPose);
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim = nullptr;
 		
-		amRuleRestPose = deAnimatorRuleStateManipulator::Ref::New();
+		const deAnimatorRuleStateManipulator::Ref amRuleRestPose(deAnimatorRuleStateManipulator::Ref::New());
 		amRuleRestPose->SetEnabled(true);
 		amRuleRestPose->SetEnablePosition(true);
 		amRuleRestPose->SetEnableRotation(true);
 		amRuleRestPose->SetEnabled(pUseRestPose);
 		pEngAnimator->AddRule(amRuleRestPose);
 		pEngAnimatorRestPose = amRuleRestPose;
-		amRuleRestPose = nullptr;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
@@ -250,12 +239,6 @@ pDirtyRig(true)
 		pSelectionConstraints = new reSelectionConstraints(this);
 		
 	}catch(const deException &){
-		if(engLink){
-			delete engLink;
-		}
-		if(amController){
-			delete amController;
-		}
 		pCleanUp();
 		throw;
 	}
@@ -457,7 +440,7 @@ void reRig::SetPlaybackMove(bool playbackMove){
 	if(playbackMove != pPlaybackMove){
 		pPlaybackMove = playbackMove;
 		
-		pEngAnimatorInstance->GetControllerAt(0).SetClamp(!playbackMove);
+		pEngAnimatorInstance->GetControllers().First()->SetClamp(!playbackMove);
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 		
 		NotifyViewChanged();
@@ -516,7 +499,7 @@ void reRig::UpdateWorld(float elapsed){
 	
 	// update the animation
 	if(pPlaybackMove){
-		pEngAnimatorInstance->GetControllerAt(0).IncrementCurrentValue(elapsed);
+		pEngAnimatorInstance->GetControllers().First()->IncrementCurrentValue(elapsed);
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 	}
 	
@@ -1080,7 +1063,7 @@ void reRig::RemoveConstraint(reRigConstraint *constraint){
 	constraint->SetRig(nullptr);
 	
 	deColliderConstraint *engConstraint = constraint->GetEngineConstraint();
-	if(engConstraint && pEngSimCollider->HasConstraint(engConstraint)){
+	if(engConstraint && pEngSimCollider->GetConstraints().Has(engConstraint)){
 		pEngSimCollider->RemoveConstraint(engConstraint);
 	}
 	constraint->SetEngineConstraint(nullptr);
@@ -1091,7 +1074,7 @@ void reRig::RemoveConstraint(reRigConstraint *constraint){
 void reRig::RemoveAllConstraints(){
 	pConstraints.Visit([&](reRigConstraint *constraint){
 		deColliderConstraint *engConstraint = constraint->GetEngineConstraint();
-		if(engConstraint && pEngSimCollider->HasConstraint(engConstraint)){
+		if(engConstraint && pEngSimCollider->GetConstraints().Has(engConstraint)){
 			pEngSimCollider->RemoveConstraint(engConstraint);
 		}
 		constraint->SetEngineConstraint(nullptr);
@@ -1586,12 +1569,12 @@ void reRig::pUpdateAnimatorMove(){
 	// if there is a move get the playtime and adjust the controller
 	pPlayTime = move ? move->GetPlaytime() : 0.0f;
 	
-	pEngAnimatorInstance->GetControllerAt(0).SetValueRange(0.0f, pPlayTime);
+	pEngAnimatorInstance->GetControllers().First()->SetValueRange(0.0f, pPlayTime);
 	pEngAnimatorInstance->NotifyControllerChangedAt(0);
 }
 
 void reRig::pUpdateAnimatorTime(){
-	pEngAnimatorInstance->GetControllerAt(0).SetCurrentValue(pMoveTime);
+	pEngAnimatorInstance->GetControllers().First()->SetCurrentValue(pMoveTime);
 	pEngAnimatorInstance->NotifyControllerChangedAt(0);
 }
 

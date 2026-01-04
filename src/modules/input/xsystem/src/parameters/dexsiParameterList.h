@@ -27,7 +27,7 @@
 
 #include "dexsiParameter.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -35,7 +35,7 @@
  */
 class dexsiParameterList{
 private:
-	decObjectOrderedSet pParameters;
+	decTObjectOrderedSet<dexsiParameter> pParameters;
 	
 	
 public:

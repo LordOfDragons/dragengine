@@ -71,40 +71,16 @@ void deoxrDeviceManager::Clear(){
 
 
 
-int deoxrDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-deoxrDevice *deoxrDeviceManager::GetAt(int index) const{
-	return (deoxrDevice*)pDevices.GetAt(index);
-}
-
 deoxrDevice *deoxrDeviceManager::GetWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoxrDevice * const device = (deoxrDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return device;
-		}
-	}
-	
-	return nullptr;
+	return pDevices.FindOrDefault([&](const deoxrDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int deoxrDeviceManager::IndexOfWithID(const char *id) const{
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoxrDevice * const device = (deoxrDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const deoxrDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 void deoxrDeviceManager::Add(deoxrDevice *device){
@@ -116,8 +92,8 @@ void deoxrDeviceManager::Add(deoxrDevice *device){
 	pDevices.Add(device);
 	
 	pOxr.LogInfoFormat("Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
-		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
-		device->GetButtonCount(), device->GetFeedbackCount());
+		device->GetID().GetString(), device->GetType(), device->GetAxes().GetCount(),
+		device->GetButtons().GetCount(), device->GetFeedbacks().GetCount());
 	LogDevice(*device);
 	
 	pNotifyAttachedDetached = true;
@@ -133,21 +109,17 @@ void deoxrDeviceManager::Remove(deoxrDevice *device){
 	
 	pDevices.RemoveFrom(index);
 	
-	const int count = pDevices.GetCount();
-	int i;
-	for(i=index; i<count; i++){
-		GetAt(i)->SetIndex(i);
-	}
+	pDevices.VisitIndexed([&](int index, deoxrDevice &device){
+		device.SetIndex(index);
+	});
 	
 	pNotifyAttachedDetached = true;
 }
 
 void deoxrDeviceManager::TrackDeviceStates(){
-	const int count = pDevices.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		GetAt(i)->TrackStates();
-	}
+	pDevices.Visit([](deoxrDevice &device){
+		device.TrackStates();
+	});
 }
 
 void deoxrDeviceManager::CheckNotifyAttachedDetached(){
@@ -165,91 +137,72 @@ void deoxrDeviceManager::CheckNotifyAttachedDetached(){
 }
 
 void deoxrDeviceManager::ReferenceSpaceChanged(){
-	const int count = pDevices.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		GetAt(i)->ReferenceSpaceChanged();
-	}
+	pDevices.Visit([](deoxrDevice &device){
+		device.ReferenceSpaceChanged();
+	});
 }
 
 
 
 void deoxrDeviceManager::LogDevices(){
-	const int count = pDevices.GetCount();
-	int i, j;
-	
 	pOxr.LogInfo("Input Devices:");
 	
-	for(i=0; i<count; i++){
-		const deoxrDevice &device = *((deoxrDevice*)pDevices.GetAt(i));
+	pDevices.Visit([&](const deoxrDevice &device){
 		pOxr.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetType());
 		
-		const int componentCount = device.GetComponentCount();
-		if(componentCount > 0){
+		if(device.GetComponents().IsNotEmpty()){
 			pOxr.LogInfo("  Components:");
-			for(j=0; j<componentCount; j++){
-				const deoxrDeviceComponent &component = *device.GetComponentAt(j);
+			device.GetComponents().Visit([&](const deoxrDeviceComponent &component){
 				pOxr.LogInfoFormat("    - '%s' (%s)", component.GetName().GetString(),
 					component.GetID().GetString());
-			}
+			});
 		}
 		
-		const int axisCount = device.GetAxisCount();
-		if(axisCount > 0){
+		if(device.GetAxes().IsNotEmpty()){
 			pOxr.LogInfo("  Axes:");
-			for(j=0; j<axisCount; j++){
-				const deoxrDeviceAxis &axis = *device.GetAxisAt(j);
+			device.GetAxes().Visit([&](const deoxrDeviceAxis &axis){
 				pOxr.LogInfoFormat("    - '%s' (%s) [%s]", axis.GetName().GetString(),
 					axis.GetID().GetString(), axis.GetInputDeviceComponent()
 						? axis.GetInputDeviceComponent()->GetID().GetString() : "");
-			}
+			});
 		}
 		
-		const int buttonCount = device.GetButtonCount();
-		if(buttonCount > 0){
+		if(device.GetButtons().IsNotEmpty()){
 			pOxr.LogInfo("  Buttons:");
-			for(j=0; j<buttonCount; j++){
-				const deoxrDeviceButton &button = *device.GetButtonAt(j);
+			device.GetButtons().VisitIndexed([&](int i, const deoxrDeviceButton &button){
 				pOxr.LogInfoFormat("    - '%s' (%s) [%s] => %d",
 					button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
-						? button.GetInputDeviceComponent()->GetID().GetString() : "", j);
-			}
+						? button.GetInputDeviceComponent()->GetID().GetString() : "", i);
+			});
 		}
-	}
+	});
 }
 
 void deoxrDeviceManager::LogDevice(const deoxrDevice &device){
 	pOxr.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
 		device.GetID().GetString(), device.GetType());
 	
-	const int componentCount = device.GetComponentCount();
-	int i;
-	if(componentCount > 0){
+	if(device.GetComponents().IsNotEmpty()){
 		pOxr.LogInfo("  Components:");
-		for(i=0; i<componentCount; i++){
-			const deoxrDeviceComponent &component = *device.GetComponentAt(i);
+		device.GetComponents().Visit([&](const deoxrDeviceComponent &component){
 			pOxr.LogInfoFormat("    - '%s' (%s)", component.GetName().GetString(),
 				component.GetID().GetString());
-		}
+		});
 	}
 	
-	const int axisCount = device.GetAxisCount();
-	if(axisCount > 0){
+	if(device.GetAxes().IsNotEmpty()){
 		pOxr.LogInfo("  Axes:");
-		for(i=0; i<axisCount; i++){
-			const deoxrDeviceAxis &axis = *device.GetAxisAt(i);
+		device.GetAxes().Visit([&](const deoxrDeviceAxis &axis){
 			pOxr.LogInfoFormat("    - '%s' (%s) [%s]", axis.GetName().GetString(),
 				axis.GetID().GetString(), axis.GetInputDeviceComponent()
 					? axis.GetInputDeviceComponent()->GetID().GetString() : "");
-		}
+		});
 	}
 	
-	const int buttonCount = device.GetButtonCount();
-	if(buttonCount > 0){
+	if(device.GetButtons().IsNotEmpty()){
 		pOxr.LogInfo("  Buttons:");
-		for(i=0; i<buttonCount; i++){
-			const deoxrDeviceButton &button = *device.GetButtonAt(i);
+		device.GetButtons().VisitIndexed([&](int i, const deoxrDeviceButton &button){
 			pOxr.LogInfoFormat("    - '%s' (%s) [%s]%s%s => %d",
 				button.GetName().GetString(),
 				button.GetID().GetString(),
@@ -258,7 +211,7 @@ void deoxrDeviceManager::LogDevice(const deoxrDevice &device){
 				button.GetActionTouch() ? " {touchable}" : "",
 				button.GetActionNear() ? " {near}" : "",
 				i);
-		}
+		});
 	}
 }
 

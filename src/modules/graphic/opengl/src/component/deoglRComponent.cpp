@@ -1588,7 +1588,7 @@ void deoglRComponent::RemoveListener(deoglComponentListener *listener){
 void deoglRComponent::NotifyBoundariesChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->BoundariesChanged(*this);
+		pListeners.GetAt(pListenerIndex)->BoundariesChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1596,7 +1596,7 @@ void deoglRComponent::NotifyBoundariesChanged(){
 void deoglRComponent::NotifyComponentDestroyed(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ComponentDestroyed(*this);
+		pListeners.GetAt(pListenerIndex)->ComponentDestroyed(*this);
 		pListenerIndex++;
 	}
 }
@@ -1605,7 +1605,7 @@ void deoglRComponent::NotifyParentWorldChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
 		try{ // temp hack
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ParentWorldChanged(*this);
+		pListeners.GetAt(pListenerIndex)->ParentWorldChanged(*this);
 		}catch(const deException &e){ // temp hack
 			pRenderThread.GetLogger().LogException(e);
 		}
@@ -1616,7 +1616,7 @@ void deoglRComponent::NotifyParentWorldChanged(){
 void deoglRComponent::NotifyLayerMaskChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->LayerMaskChanged(*this);
+		pListeners.GetAt(pListenerIndex)->LayerMaskChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1624,7 +1624,7 @@ void deoglRComponent::NotifyLayerMaskChanged(){
 void deoglRComponent::NotifyRenderStaticChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->RenderStaticChanged(*this);
+		pListeners.GetAt(pListenerIndex)->RenderStaticChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1632,7 +1632,7 @@ void deoglRComponent::NotifyRenderStaticChanged(){
 void deoglRComponent::NotifyOcclusionMeshChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->OcclusionMeshChanged(*this);
+		pListeners.GetAt(pListenerIndex)->OcclusionMeshChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1644,7 +1644,7 @@ void deoglRComponent::NotifyTexturesChanged(){
 	
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->TexturesChanged(*this);
+		pListeners.GetAt(pListenerIndex)->TexturesChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1652,7 +1652,7 @@ void deoglRComponent::NotifyTexturesChanged(){
 void deoglRComponent::NotifyTUCChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->TUCChanged(*this);
+		pListeners.GetAt(pListenerIndex)->TUCChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1660,7 +1660,7 @@ void deoglRComponent::NotifyTUCChanged(){
 void deoglRComponent::NotifyMovementHintChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->MovementHintChanged(*this);
+		pListeners.GetAt(pListenerIndex)->MovementHintChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1668,7 +1668,7 @@ void deoglRComponent::NotifyMovementHintChanged(){
 void deoglRComponent::NotifyGIImportanceChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->GIImportanceChanged(*this);
+		pListeners.GetAt(pListenerIndex)->GIImportanceChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1695,7 +1695,7 @@ void deoglRComponent::NotifySkiesUpdateStatic(){
 void deoglRComponent::NotifyVisibilityChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->VisibilityChanged(*this);
+		pListeners.GetAt(pListenerIndex)->VisibilityChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1703,7 +1703,7 @@ void deoglRComponent::NotifyVisibilityChanged(){
 void deoglRComponent::NotifyModelChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ModelChanged(*this);
+		pListeners.GetAt(pListenerIndex)->ModelChanged(*this);
 		pListenerIndex++;
 	}
 }

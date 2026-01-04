@@ -75,13 +75,6 @@ void deInputDeviceAxis::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
-int deInputDeviceAxis::GetDisplayIconCount() const{
-	return pDisplayIcons.GetCount();
-}
-
-deImage *deInputDeviceAxis::GetDisplayIconAt(int index) const{
-	return (deImage*)pDisplayIcons.GetAt(index);
-}
 
 void deInputDeviceAxis::AddDisplayIcon(deImage *image){
 	if(!image){

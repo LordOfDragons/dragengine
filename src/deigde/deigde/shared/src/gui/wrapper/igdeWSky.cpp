@@ -104,15 +104,15 @@ void igdeWSky::SetWorld(deWorld *world){
 }
 
 int igdeWSky::GetControllerCount() const{
-	return pEngSkyInstance->GetControllerCount();
+	return pEngSkyInstance->GetControllers().GetCount();
 }
 
 const deSkyController &igdeWSky::GetControllerAt(int index) const{
-	return pEngSkyInstance->GetControllerAt(index);
+	return pEngSkyInstance->GetControllers().GetAt(index);
 }
 
 void igdeWSky::SetControllerValue(int index, float value){
-	pEngSkyInstance->GetControllerAt(index).SetCurrentValue(value);
+	pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(value);
 	pEngSkyInstance->NotifyControllerChangedAt(index);
 }
 
@@ -131,11 +131,11 @@ void igdeWSky::SetSky(deSky *sky){
 	
 	pMaxLightIntensity = 0.0f;
 	if(sky){
-		const int countLayers = sky->GetLayerCount();
+		const int countLayers = sky->GetLayers().GetCount();
 		int i;
 		
 		for(i=0; i<countLayers; i++){
-			const deSkyLayer &layer = sky->GetLayerAt(i);
+			const deSkyLayer &layer = sky->GetLayers().GetAt(i);
 			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
 		}
 	}
@@ -199,19 +199,19 @@ void igdeWSky::OnGameDefinitionChanged(){
 	decStringList names;
 	int i;
 	if(pEngSkyInstance){
-		const int count = pEngSkyInstance->GetControllerCount();
+		const int count = pEngSkyInstance->GetControllers().GetCount();
 		for(i=0; i<count; i++){
-			names.Add(pEngSkyInstance->GetControllerAt(i).GetName());
+			names.Add(pEngSkyInstance->GetControllers().GetAt(i)->GetName());
 		}
 	}
 	
 	float *values = nullptr;
 	if(pEngSkyInstance){
-		const int count = pEngSkyInstance->GetControllerCount();
+		const int count = pEngSkyInstance->GetControllers().GetCount();
 		if(count > 0){
 			values = new float[count];
 			for(i=0; i<count; i++){
-				values[i] = pEngSkyInstance->GetControllerAt(i).GetCurrentValue();
+				values[i] = pEngSkyInstance->GetControllers().GetAt(i)->GetCurrentValue();
 			}
 		}
 	}
@@ -224,7 +224,7 @@ void igdeWSky::OnGameDefinitionChanged(){
 			for(i=0; i<count; i++){
 				const int index = names.IndexOf(names.GetAt(i));
 				if(index != -1){
-					pEngSkyInstance->GetControllerAt(index).SetCurrentValue(values[i]);
+					pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(values[i]);
 					pEngSkyInstance->NotifyControllerChangedAt(index);
 				}
 			}

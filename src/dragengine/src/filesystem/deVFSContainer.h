@@ -29,6 +29,7 @@
 
 #include "dePathList.h"
 #include "../deObject.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/file/decPath.h"
 #include "../common/file/decBaseFileReader.h"
 #include "../common/file/decBaseFileWriter.h"
@@ -59,6 +60,9 @@ class DE_DLL_EXPORT deVFSContainer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVFSContainer> Ref;
+	
+	/** \brief Container list. */
+	typedef decTObjectOrderedSet<deVFSContainer> List;
 	
 	
 public:

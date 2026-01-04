@@ -1041,11 +1041,11 @@ bool debpColliderBones::PointInside(const decDVector &point){
 	int i;
 	for(i=0; i<pBonePhysicsCount; i++){
 		const debpShapeList &shapes = pBonesPhysics[i]->GetShapes();
-		const int shapeCount = shapes.GetShapeCount();
+		const int shapeCount = shapes.GetShapes().GetCount();
 		int j;
 		
 		for(j=0; j<shapeCount; j++){
-			const debpShape &shape = *shapes.GetShapeAt(j);
+			const debpShape &shape = *shapes.GetShapes().GetAt(j);
 			if(shape.GetCollisionVolume()->IsPointInside(point)){
 				return true;
 			}
@@ -1062,14 +1062,14 @@ void debpColliderBones::CalcShapeExtends(decDVector &minExtend, decDVector &maxE
 	
 	for(i=0; i<pBonePhysicsCount; i++){
 		const debpShapeList &shapes = pBonesPhysics[i]->GetShapes();
-		if(shapes.GetShapeCount() == 0){
+		if(shapes.GetShapes().GetCount() == 0){
 			continue;
 		}
 		
-		const int shapeCount = shapes.GetShapeCount();
+		const int shapeCount = shapes.GetShapes().GetCount();
 		
 		for(j=0; j<shapeCount; j++){
-			shapes.GetShapeAt(j)->GetCollisionVolume()->GetEnclosingBox(&colBox);
+			shapes.GetShapes().GetAt(j)->GetCollisionVolume()->GetEnclosingBox(&colBox);
 			
 			if(hasExtend){
 				minExtend.SetSmallest(colBox.GetCenter() - colBox.GetHalfSize());

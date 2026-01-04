@@ -156,23 +156,18 @@ void ceLoadSaveSystem::SaveCTGS(const char *filename, const ceConversation &conv
 }
 
 
-
 void ceLoadSaveSystem::UpdateLSLangPacks(){
 	const deEngine &engine = *pWindowMain.GetEngineController().GetEngine();
 	const deModuleSystem &modsys = *engine.GetModuleSystem();
-	const int count = modsys.GetModuleCount();
-	int i;
 	
 	pLSLangPacks.RemoveAll();
 	
-	for(i=0; i<count; i++){
-		const deLoadableModule &lmodule = *modsys.GetModuleAt(i);
-		
+	modsys.GetModules().Visit([&](const deLoadableModule &lmodule){
 		if(lmodule.GetType() == deModuleSystem::emtLanguagePack && lmodule.IsLoaded()){
 			pLSLangPacks.Add(ceLoadSaveLangPack::Ref::New(
 				*((deBaseLanguagePackModule*)lmodule.GetModule())));
 		}
-	}
+	});
 }
 
 ceLangPack::Ref ceLoadSaveSystem::LoadLangPack(const char *filename){

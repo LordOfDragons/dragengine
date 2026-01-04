@@ -129,24 +129,21 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 	*/
 	// scene.DebugPrintStructure( *this, true );
 	
-	const int boneCount = loadRig->GetBoneCount();
 	deRigBone *rigBone = nullptr;
-	int i;
 	
 	try{
-		for(i=0; i<boneCount; i++){
-			const fbxRigBone &loadBone = *loadRig->GetBoneAt(i);
-			rigBone = new deRigBone(loadBone.GetName());
+		loadRig->GetBones().Visit([&](const fbxRigBone &b){
+			rigBone = new deRigBone(b.GetName());
 			
-			rigBone->SetPosition(loadBone.GetPosition());
-			rigBone->SetRotation(loadBone.GetOrientation().GetEulerAngles());
-			if(loadBone.GetParent()){
-				rigBone->SetParent(loadBone.GetParent()->GetIndex());
+			rigBone->SetPosition(b.GetPosition());
+			rigBone->SetRotation(b.GetOrientation().GetEulerAngles());
+			if(b.GetParent()){
+				rigBone->SetParent(b.GetParent()->GetIndex());
 			}
 			
 			rig.AddBone(rigBone);
 			rigBone = nullptr;
-		}
+		});
 		
 	}catch(const deException &){
 		if(rigBone){

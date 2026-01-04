@@ -28,7 +28,7 @@
 #include "unzip.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decDateTime.h>
@@ -55,8 +55,8 @@ private:
 	deArchiveDelga &pModule;
 	
 	decString pFilename;
-	decObjectOrderedSet pDirectories;
-	decObjectOrderedSet pFiles;
+	decTObjectOrderedSet<deadArchiveDirectory> pDirectories;
+	decTObjectOrderedSet<deadArchiveFile> pFiles;
 	
 	
 	
@@ -82,11 +82,8 @@ public:
 	
 	/** \name Directories */
 	/*@{*/
-	/** \brief Number of directories. */
-	int GetDirectoryCount() const;
-	
-	/** \brief Directory at index. */
-	deadArchiveDirectory *GetDirectoryAt(int index) const;
+	/** \brief Directories. */
+	inline const decTObjectOrderedSet<deadArchiveDirectory> &GetDirectories() const{ return pDirectories; }
 	
 	/** \brief Directory with filename is present. */
 	bool HasDirectoryNamed(const char *filename) const;
@@ -108,11 +105,8 @@ public:
 	
 	/** \name Files */
 	/*@{*/
-	/** \brief Number of files. */
-	int GetFileCount() const;
-	
-	/** \brief File at index. */
-	deadArchiveFile *GetFileAt(int index) const;
+	/** \brief Files. */
+	inline const decTObjectOrderedSet<deadArchiveFile> &GetFiles() const{ return pFiles; }
 	
 	/** \brief File with filename is present. */
 	bool HasFileNamed(const char *filename) const;

@@ -28,7 +28,7 @@
 #include "debiDeviceMouse.h"
 #include "debiDeviceKeyboard.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deBeOSInput;
 class debiDevice;
@@ -42,7 +42,7 @@ class debiDeviceManager{
 private:
 	deBeOSInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<debiDevice> pDevices;
 	
 	debiDeviceMouse::Ref pMouse;
 	debiDeviceKeyboard::Ref pKeyboard;
@@ -68,11 +68,8 @@ public:
 	
 	
 	
-	/** \brief Number of devices. */
-	int GetCount() const;
-	
-	/** \brief Device at index. */
-	debiDevice *GetAt(int index) const;
+	/** \brief Devices. */
+	inline const decTObjectOrderedSet<debiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** \brief Device with identifier or \em NULL if absent. */
 	debiDevice *GetWithID(const char *id);

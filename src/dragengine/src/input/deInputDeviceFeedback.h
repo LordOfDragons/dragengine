@@ -26,7 +26,7 @@
 #define _INPUTDEVICEFEEDBACK_H_
 
 #include "../common/string/decString.h"
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../resources/image/deImage.h"
 
 
@@ -76,7 +76,7 @@ private:
 	deImage::Ref pDisplayImage;
 	
 	/** \brief List of small icons of different size for use in binding displays. */
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	
 	/** \brief Text to display centered across display image or icon. */
 	decString pDisplayText;
@@ -156,15 +156,8 @@ public:
 	 */
 	void SetDisplayImage(deImage *image);
 	
-	/** \brief Count of icons representing the feedback in bindings. */
-	int GetDisplayIconCount() const;
-	
-	/**
-	 * \brief Icon at index representing the feedback in bindings.
-	 * 
-	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
-	 */
-	deImage *GetDisplayIconAt(int index) const;
+	/** Display icons list. */
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/**
 	 * \brief Add icon representing the feedback in bindings.

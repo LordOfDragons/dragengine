@@ -90,7 +90,7 @@ void syneControllerTarget::UpdateEngineTarget(const syneSynthesizer &synthesizer
 			return;
 		}
 		
-		const int indexLink = engSynthesizer->IndexOfLink(engLink);
+		const int indexLink = engSynthesizer->GetLinks().IndexOf(engLink);
 		if(indexLink == -1){
 			return;
 		}

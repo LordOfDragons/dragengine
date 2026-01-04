@@ -184,12 +184,9 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 }
 
 void fbxModelModule::pLoadModelBones(deModel &model, const fbxRig &rig){
-	const int boneCount = rig.GetBoneCount();
-	int i;
-	
-	for(i=0; i<boneCount; i++){
-		pLoadModelBone(model, *rig.GetBoneAt(i));
-	}
+	rig.GetBones().Visit([&](const fbxRigBone &bone){
+		pLoadModelBone(model, bone);
+	});
 }
 
 void fbxModelModule::pLoadModelBone(deModel &model, const fbxRigBone &rigBone){
@@ -231,7 +228,7 @@ void fbxModelModule::pLoadModelTextures(deModel &model, const fbxModel &loadMode
 }
 
 void fbxModelModule::pLoadModelTexture(deModel &model, const fbxModel &loadModel, const fbxNode &nodeMaterial){
-	const decString &name = nodeMaterial.GetPropertyAt(1)->CastString().GetValue();
+	const decString &name = nodeMaterial.GetProperties().GetAt(1)->CastString().GetValue();
 	const int width = 1024;
 	const int height = 1024;
 	
@@ -308,11 +305,11 @@ void fbxModelModule::pLoadModelFaces(deModel &model, deModelLOD &lod,
 const fbxModel &loadModel, const fbxRig *loadRig){
 	const fbxNode &nodeGeometry = loadModel.GetNodeGeometry();
 	const fbxProperty &propPolygonVertexIndex =
-		*nodeGeometry.FirstNodeNamed( "PolygonVertexIndex" )->GetPropertyAt( 0 );
+		*nodeGeometry.FirstNodeNamed( "PolygonVertexIndex" )->GetProperties().First();
 	
 	const fbxNode * const nodeLayerMaterials = nodeGeometry.FirstNodeNamedOrNull("LayerElementMaterial");
 	const fbxProperty * const propMaterials = nodeLayerMaterials ?
-		nodeLayerMaterials->FirstNodeNamed("Materials")->GetPropertyAt(0) : NULL;
+		nodeLayerMaterials->FirstNodeNamed("Materials")->GetProperties().First().Pointer() : nullptr;
 	bool allSameMaterial = true;
 	if(nodeLayerMaterials){
 		const fbxScene::eMappingInformationType matMit = fbxScene::ConvMappingInformationType(*nodeLayerMaterials);
@@ -331,11 +328,11 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 	
 	const fbxNode * const nodeLayerNormals = nodeGeometry.FirstNodeNamedOrNull("LayerElementNormal");
 	const fbxProperty * const propNormals = nodeLayerNormals ?
-		nodeLayerNormals->FirstNodeNamed("Normals")->GetPropertyAt(0) : NULL;
+		nodeLayerNormals->FirstNodeNamed("Normals")->GetProperties().First().Pointer() : nullptr;
 	
 	const fbxNode * const nodeLayerTangets = nodeGeometry.FirstNodeNamedOrNull("LayerElementTangent");
 	const fbxProperty * const propTangents = nodeLayerTangets ?
-		nodeLayerTangets->FirstNodeNamed("Tangents")->GetPropertyAt(0) : NULL;
+		nodeLayerTangets->FirstNodeNamed("Tangents")->GetProperties().First().Pointer() : nullptr;
 	
 	const fbxNode * const nodeLayerUVs = nodeGeometry.FirstNodeNamedOrNull("LayerElementUV");
 	fbxScene::eMappingInformationType uvMit = fbxScene::emitByVertex;
@@ -355,9 +352,9 @@ const fbxModel &loadModel, const fbxRig *loadRig){
 		}
 		
 		uvRit = fbxScene::ConvReferenceInformationType(*nodeLayerUVs);
-		propUV = nodeLayerUVs->FirstNodeNamed("UV")->GetPropertyAt(0);
+		propUV = nodeLayerUVs->FirstNodeNamed("UV")->GetProperties().GetAt(0);
 		if(uvRit == fbxScene::eritIndexToDirect){
-			propUVIndex = nodeLayerUVs->FirstNodeNamed("UVIndex")->GetPropertyAt(0);
+			propUVIndex = nodeLayerUVs->FirstNodeNamed("UVIndex")->GetProperties().GetAt(0);
 		}
 	}
 	

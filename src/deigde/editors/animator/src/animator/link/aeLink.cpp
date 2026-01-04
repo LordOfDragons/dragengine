@@ -98,19 +98,9 @@ void aeLink::SetAnimator(aeAnimator *animator){
 	pAnimator = animator;
 	
 	if(animator){
-		deAnimatorLink *link = nullptr;
-		
-		try{
-			link = new deAnimatorLink;
-			animator->GetEngineAnimator()->AddLink(link);
-			pEngLink = link;
-			
-		}catch(const deException &){
-			if(link){
-				delete link;
-			}
-			throw;
-		}
+		const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
+		animator->GetEngineAnimator()->AddLink(link);
+		pEngLink = link;
 		
 		UpdateController();
 		
@@ -330,7 +320,7 @@ void aeLink::NotifyLinkChanged(){
 	if(pEngLink && pAnimator){
 		deAnimator *engAnimator = pAnimator->GetEngineAnimator();
 		
-		engAnimator->NotifyLinkChangedAt(engAnimator->IndexOfLink(pEngLink));
+		engAnimator->NotifyLinkChangedAt(engAnimator->GetLinks().IndexOf(pEngLink));
 	}
 }
 

@@ -171,16 +171,12 @@ void deadContainer::SearchFiles(const decPath &directory, deContainerFileSearch 
 		return;
 	}
 	
-	const int directoryCount = adir->GetDirectoryCount();
-	const int fileCount = adir->GetFileCount();
-	int i;
-	
-	for(i=0; i<directoryCount; i++){
-		searcher.Add(adir->GetDirectoryAt(i)->GetFilename(), deVFSContainer::eftDirectory);
-	}
-	for(i=0; i<fileCount; i++){
-		searcher.Add(adir->GetFileAt(i)->GetFilename(), deVFSContainer::eftRegularFile);
-	}
+	adir->GetDirectories().Visit([&](const deadArchiveDirectory &d){
+		searcher.Add(d.GetFilename(), deVFSContainer::eftDirectory);
+	});
+	adir->GetFiles().Visit([&](const deadArchiveFile &f){
+		searcher.Add(f.GetFilename(), deVFSContainer::eftRegularFile);
+	});
 }
 
 deVFSContainer::eFileTypes deadContainer::GetFileType(const decPath &path){

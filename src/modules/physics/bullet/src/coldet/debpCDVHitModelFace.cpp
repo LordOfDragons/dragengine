@@ -128,10 +128,10 @@ void debpCDVHitModelFace::VisitNode(debpDOctree *node, int intersection){
 			
 		}else if(pColliderVolume){
 			const debpShapeList &shapes = pColliderVolume->GetShapes();
-			int s, shapeCount = shapes.GetShapeCount();
+			int s, shapeCount = shapes.GetShapes().GetCount();
 			
 			for(s=0; s<shapeCount; s++){
-				debpShape &shape = *shapes.GetShapeAt(s);
+				debpShape &shape = *shapes.GetShapes().GetAt(s);
 				
 				for(f=0; f<faceCount; f++){
 					faceIndex = rnode.GetFaceAt(f);

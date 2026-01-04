@@ -152,7 +152,7 @@ void peeController::SetValue(float value){
 	
 	if(pEmitter && pEmitter->GetEngineEmitter()){
 		deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
+		deParticleEmitterController &engController = engEmitterInstance.GetControllers().GetAt(pEngControllerIndex);
 		
 		engController.SetValue(pValue);
 		engEmitterInstance.NotifyControllerChangedAt(pEngControllerIndex);
@@ -173,7 +173,7 @@ void peeController::SetFrozen(bool frozen){
 		
 		if(pEmitter && pEmitter->GetEngineEmitter()){
 			deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
+			deParticleEmitterController &engController = engEmitterInstance.GetControllers().GetAt(pEngControllerIndex);
 			
 			engController.SetFrozen(pFrozen);
 			engController.SetRange(pLower, pUpper);
@@ -194,7 +194,7 @@ void peeController::SetClamp(bool clamp){
 		
 		if(pEmitter && pEmitter->GetEngineEmitter()){
 			deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
+			deParticleEmitterController &engController = engEmitterInstance.GetControllers().GetAt(pEngControllerIndex);
 			
 			engController.SetClamp(pClamp);
 			
@@ -269,7 +269,7 @@ float peeController::pCheckValue(float value){
 void peeController::pUpdateRange(){
 	if(pEmitter && pEmitter->GetEngineEmitter()){
 		deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
+		deParticleEmitterController &engController = engEmitterInstance.GetControllers().GetAt(pEngControllerIndex);
 		
 		engController.SetRange(pLower, pUpper);
 		engController.SetValue(pValue);

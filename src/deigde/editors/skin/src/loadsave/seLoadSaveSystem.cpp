@@ -90,24 +90,21 @@ void seLoadSaveSystem::RemoveAllLSSkins(){
 
 void seLoadSaveSystem::UpdateLSSkins(){
 	deModuleSystem &modSys = *pWindowMain.GetEngineController().GetEngine()->GetModuleSystem();
-	int m, moduleCount = modSys.GetModuleCount();
 	
 	RemoveAllLSSkins();
 	
 	// add a new load save skin for each skin module found in the engine that is also
 	// running and usable therefore
-	for(m=0; m<moduleCount; m++){
-		deLoadableModule &loadableModule = *modSys.GetModuleAt(m);
-		
+	modSys.GetModules().Visit([&](const deLoadableModule &loadableModule){
 		if(loadableModule.GetType() != deModuleSystem::emtSkin){
-			continue;
+			return;
 		}
 		if(!loadableModule.IsLoaded()){
-			continue;
+			return;
 		}
 		
 		AddLSSkin(seLoadSaveSkin::Ref::New((deBaseSkinModule*)loadableModule.GetModule()));
-	}
+	});
 }
 
 

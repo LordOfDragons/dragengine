@@ -102,7 +102,7 @@ void deAnimatorRuleSubAnimator::UpdateConnectionCount(){
 		return;
 	}
 	
-	int controllerCount = pSubAnimator->GetControllerCount();
+	int controllerCount = pSubAnimator->GetControllers().GetCount();
 	if(controllerCount == 0){
 		return;
 	}
@@ -134,7 +134,7 @@ void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animato
 	
 	int i;
 	for(i=0; i<pConnectionCount; i++){
-		pConnections[i] = animator.IndexOfControllerNamed(pSubAnimator->GetControllerAt(i)->GetName());
+		pConnections[i] = animator.IndexOfControllerNamed(pSubAnimator->GetControllers().GetAt(i)->GetName());
 	}
 }
 

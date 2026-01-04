@@ -170,7 +170,7 @@ void deoglRHeightTerrain::RemoveListener(deoglHeightTerrainListener *listener){
 void deoglRHeightTerrain::NotifyHeightTerrainDestroyed(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglHeightTerrainListener*)pListeners.GetAt(pListenerIndex))->HeightTerrainDestroyed(*this);
+		pListeners.GetAt(pListenerIndex)->HeightTerrainDestroyed(*this);
 		pListenerIndex++;
 	}
 }
@@ -178,7 +178,7 @@ void deoglRHeightTerrain::NotifyHeightTerrainDestroyed(){
 void deoglRHeightTerrain::NotifySectorsChanged(){
 	pListenerIndex = 0;
 	while(pListenerIndex < pListeners.GetCount()){
-		((deoglHeightTerrainListener*)pListeners.GetAt(pListenerIndex))->SectorsChanged(*this);
+		pListeners.GetAt(pListenerIndex)->SectorsChanged(*this);
 		pListenerIndex++;
 	}
 }

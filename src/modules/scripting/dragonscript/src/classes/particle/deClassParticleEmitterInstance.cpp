@@ -299,7 +299,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassParticleEmitterInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
-	rt->PushInt(instance.GetControllerCount());
+	rt->PushInt(instance.GetControllers().GetCount());
 }
 
 // public func ParticleEmitterController getControllerAt( int index )
@@ -315,7 +315,7 @@ void deClassParticleEmitterInstance::nfGetControllerAt::RunFunction(dsRunTime *r
 	
 	if(index < 0){
 		ds.GetClassParticleEmitterController()->PushController(rt, instance,
-			instance->GetControllerCount() + index);
+			instance->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassParticleEmitterController()->PushController(rt, instance, index);
@@ -374,18 +374,18 @@ void deClassParticleEmitterInstance::nfCopyControllerStates::RunFunction(dsRunTi
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() < count){
-		count = instance.GetControllerCount();
+	if(instance.GetControllers().GetCount() < count){
+		count = instance.GetControllers().GetCount();
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deParticleEmitterController &sourceController = sourceInstance->GetControllerAt(i);
-		deParticleEmitterController &controller = instance.GetControllerAt(i);
+		const deParticleEmitterController &sourceController = sourceInstance->GetControllers().GetAt(i);
+		deParticleEmitterController &controller = instance.GetControllers().GetAt(i);
 		
 		controller.SetValue(sourceController.GetValue());
 		
@@ -420,18 +420,18 @@ void deClassParticleEmitterInstance::nfCopyControllerStates2::RunFunction(dsRunT
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() - offset < count){
-		count = instance.GetControllerCount() - offset;
+	if(instance.GetControllers().GetCount() - offset < count){
+		count = instance.GetControllers().GetCount() - offset;
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deParticleEmitterController &sourceController = sourceInstance->GetControllerAt(i);
-		deParticleEmitterController &controller = instance.GetControllerAt(offset + i);
+		const deParticleEmitterController &sourceController = sourceInstance->GetControllers().GetAt(i);
+		deParticleEmitterController &controller = instance.GetControllers().GetAt(offset + i);
 		
 		controller.SetValue(sourceController.GetValue());
 		
@@ -454,17 +454,17 @@ void deClassParticleEmitterInstance::nfCopyNamedControllerStates::RunFunction(ds
 		DSTHROW(dueNullPointer);
 	}
 	
-	const int count = sourceInstance->GetControllerCount();
+	const int count = sourceInstance->GetControllers().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deParticleEmitterController &sourceController = sourceInstance->GetControllerAt(i);
+		const deParticleEmitterController &sourceController = sourceInstance->GetControllers().GetAt(i);
 		const int index = instance.IndexOfControllerNamed(sourceController.GetName());
 		if(index == -1){
 			continue;
 		}
 		
-		deParticleEmitterController &controller = instance.GetControllerAt(index);
+		deParticleEmitterController &controller = instance.GetControllers().GetAt(index);
 		
 		controller.SetValue(sourceController.GetValue());
 		
@@ -537,7 +537,7 @@ void deClassParticleEmitterInstance::nfGetTypeComponent::RunFunction(dsRunTime *
 	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
-	const deParticleEmitterInstanceType &type = instance.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterInstanceType &type = instance.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	ds.GetClassComponent()->PushComponent(rt, type.GetComponent());
 }
@@ -553,7 +553,7 @@ void deClassParticleEmitterInstance::nfSetTypeComponent::RunFunction(dsRunTime *
 	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deParticleEmitterInstanceType &type = instance.GetTypeAt(index);
+	deParticleEmitterInstanceType &type = instance.GetTypes().GetAt(index);
 	
 	type.SetComponent(ds.GetClassComponent()->GetComponent(rt->GetValue(1)->GetRealObject()));
 	instance.NotifyTypeChangedAt(index);
@@ -568,7 +568,7 @@ void deClassParticleEmitterInstance::nfGetTypeDynamicSkin::RunFunction(dsRunTime
 	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
-	const deParticleEmitterInstanceType &type = instance.GetTypeAt(rt->GetValue(0)->GetInt());
+	const deParticleEmitterInstanceType &type = instance.GetTypes().GetAt(rt->GetValue(0)->GetInt());
 	
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, type.GetDynamicSkin());
 }
@@ -584,7 +584,7 @@ void deClassParticleEmitterInstance::nfSetTypeDynamicSkin::RunFunction(dsRunTime
 	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deParticleEmitterInstanceType &type = instance.GetTypeAt(index);
+	deParticleEmitterInstanceType &type = instance.GetTypes().GetAt(index);
 	
 	type.SetDynamicSkin(ds.GetClassDynamicSkin()->GetDynamicSkin(rt->GetValue(1)->GetRealObject()));
 	instance.NotifyTypeChangedAt(index);

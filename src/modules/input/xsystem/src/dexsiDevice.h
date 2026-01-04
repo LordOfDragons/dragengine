@@ -28,7 +28,7 @@
 #include "dexsiXInclude.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/resources/image/deImage.h>
@@ -101,15 +101,15 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pXi2Id;
 	eXDeviceTypes pXDeviceType;
 	
-	decObjectOrderedSet pButtons;
-	decObjectOrderedSet pAxes;
-	decObjectOrderedSet pFeedbacks;
+	decTObjectOrderedSet<dexsiDeviceButton> pButtons;
+	decTObjectOrderedSet<dexsiDeviceAxis> pAxes;
+	decTObjectOrderedSet<dexsiDeviceFeedback> pFeedbacks;
 	
 	int pX11FirstKeyCode;
 	int pX11KeyCodeCount;
@@ -177,7 +177,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -190,14 +190,11 @@ public:
 	
 	
 	
-	/** Number of buttons. */
-	int GetButtonCount() const;
+	/** Buttons. */
+	inline const decTObjectOrderedSet<dexsiDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** Add button. */
 	void AddButton(dexsiDeviceButton *button);
-	
-	/** Button at index. */
-	dexsiDeviceButton *GetButtonAt(int index) const;
 	
 	/** Button with identifier or \em NULL if absent. */
 	dexsiDeviceButton *GetButtonWithID(const char *id) const;
@@ -213,14 +210,11 @@ public:
 	
 	
 	
-	/** Number of axiss. */
-	int GetAxisCount() const;
+	/** Axis. */
+	inline const decTObjectOrderedSet<dexsiDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** Add axis. */
 	void AddAxis(dexsiDeviceAxis *axis);
-	
-	/** Axis at index. */
-	dexsiDeviceAxis *GetAxisAt(int index) const;
 	
 	/** Axis with identifier or \em NULL if absent. */
 	dexsiDeviceAxis *GetAxisWithID(const char *id) const;
@@ -236,14 +230,11 @@ public:
 	
 	
 	
-	/** Number of feedbacks. */
-	int GetFeedbackCount() const;
+	/** Feedback. */
+	inline const decTObjectOrderedSet<dexsiDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** Add feedback. */
 	void AddFeedback(dexsiDeviceFeedback *feedback);
-	
-	/** Feedback at index. */
-	dexsiDeviceFeedback *GetFeedbackAt(int index) const;
 	
 	/** Feedback with identifier or \em NULL if absent. */
 	dexsiDeviceFeedback *GetFeedbackWithID(const char *id) const;

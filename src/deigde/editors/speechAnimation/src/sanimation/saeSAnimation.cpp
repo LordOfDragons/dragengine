@@ -288,11 +288,11 @@ void saeSAnimation::RebuildAnimator(){
 			const decString &moveName = phoneme.GetMoveName();
 			
 			// add a controller for the new viseme
-			const int controllerIndex = pEngAnimator->GetControllerCount();
+			const int controllerIndex = pEngAnimator->GetControllers().GetCount();
 			pEngAnimator->AddController(new deAnimatorController);
 			
 			// add a link for the new viseme
-			const int linkIndex = pEngAnimator->GetLinkCount();
+			const int linkIndex = pEngAnimator->GetLinks().GetCount();
 			
 			deAnimatorLink * const engLink = new deAnimatorLink;
 			engLink->SetController(controllerIndex);
@@ -346,7 +346,7 @@ void saeSAnimation::Update(float elapsed){
 	
 	switch(pDisplayMode){
 	case edmPhoneme:{
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		int i;
 		
 		if(pActivePhoneme){
@@ -354,10 +354,10 @@ void saeSAnimation::Update(float elapsed){
 			
 			for(i=0; i<controllerCount; i++){
 				if(i == controllerIndex){
-					pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(1.0f);
+					pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f);
 					
 				}else{
-					pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
+					pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 				}
 				
 				pEngAnimatorInstance->NotifyControllerChangedAt(i);
@@ -365,7 +365,7 @@ void saeSAnimation::Update(float elapsed){
 			
 		}else{
 			for(i=0; i<controllerCount; i++){
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 				pEngAnimatorInstance->NotifyControllerChangedAt(i);
 			}
 		}
@@ -377,7 +377,7 @@ void saeSAnimation::Update(float elapsed){
 		}
 		
 		const float talkSpeed = 1.0f;
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		const decUnicodeString &phonetics = pActiveWord->GetPhonetics();
 		const int phoneticsLen = phonetics.GetLength();
 		const float wordGapTime = 2.0f * talkSpeed;
@@ -462,13 +462,13 @@ void saeSAnimation::Update(float elapsed){
 		// update the controllers
 		for(i=0; i<controllerCount; i++){
 			if(i == controller1){
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(blendFactor);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(blendFactor);
 				
 			}else if(i == controller2){
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(1.0f - blendFactor);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f - blendFactor);
 				
 			}else{
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 			}
 			
 			pEngAnimatorInstance->NotifyControllerChangedAt(i);

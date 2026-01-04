@@ -606,23 +606,22 @@ void delEngineProcess::CommandGetInternalModules(){
 	}
 	
 	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	const int count = modsys.GetModuleCount();
-	int i, foundCount = 0;
+	int foundCount = 0;
 	
-	for(i=0; i<count; i++){
-		deLoadableModule &mod = *modsys.GetModuleAt(i);
+	// count internal modules
+	modsys.GetModules().Visit([&](deLoadableModule &mod){
 		if(mod.IsInternalModule()){
-			foundCount++;
+			++foundCount;
 		}
-	}
+	});
 	
 	WriteUCharToPipe(ercSuccess);
 	WriteUShortToPipe(foundCount);
 	
-	for(i=0; i<count; i++){
-		const deLoadableModule &mod = *modsys.GetModuleAt(i);
+	// write internal module info
+	modsys.GetModules().Visit([&](deLoadableModule &mod){
 		if(!mod.IsInternalModule()){
-			continue;
+			return;
 		}
 		
 		WriteUCharToPipe((int)mod.GetType());
@@ -634,7 +633,7 @@ void delEngineProcess::CommandGetInternalModules(){
 		WriteString16ToPipe(DEJoin(mod.GetPatternList(), ","));
 		WriteUShortToPipe(mod.GetPriority());
 		WriteUCharToPipe(mod.GetIsFallback() ? 1 : 0);
-	}
+	});
 }
 
 void delEngineProcess::CommandGetModuleParamList(){
@@ -1581,7 +1580,7 @@ void delEngineProcess::CommandDelgaReadFiles(){
 		return;
 	}
 	
-	decObjectOrderedSet filesContent;
+	decTObjectOrderedSet<decMemoryFile> filesContent;
 	decStringList filenames;
 	decString delgaFilename;
 	
@@ -1627,16 +1626,14 @@ void delEngineProcess::CommandDelgaReadFiles(){
 			filesContent.Add(content);
 		}
 		
-		// send back result
-		WriteUCharToPipe(ercSuccess);
-		WriteUCharToPipe(fileCount);
-		for(i=0; i<fileCount; i++){
-			const decMemoryFile &content = *((decMemoryFile*)filesContent.GetAt(i));
-			WriteIntToPipe(content.GetLength());
-			WriteToPipe(content.GetPointer(), content.GetLength());
-		}
-		
-	}catch(const deException &e){
+	// send back result
+	WriteUCharToPipe(ercSuccess);
+	WriteUCharToPipe(fileCount);
+	for(i=0; i<fileCount; i++){
+		const decMemoryFile &content = *filesContent.GetAt(i).Pointer();
+		WriteIntToPipe(content.GetLength());
+		WriteToPipe(content.GetPointer(), content.GetLength());
+	}	}catch(const deException &e){
 		pLogger->LogErrorFormat(pLogSource, "EngineProcess.CommandDelgaFiles "
 			" failed with exception (delgaFilename=%s):", delgaFilename.GetString());
 		pLogger->LogException(pLogSource, e);

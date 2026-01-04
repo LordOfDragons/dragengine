@@ -119,11 +119,11 @@ decrbPanelConsole::~decrbPanelConsole(){
 void decrbPanelConsole::UpdateModulesList(){
 	deEngine *engine = pWndMain->GetEngine();
 	deModuleSystem *modSys = engine->GetModuleSystem();
-	int i, count = modSys->GetModuleCount();
+	int i, count = modSys->GetModules().GetCount();
 	deLoadableModule *loadableModule;
 	
 	for(i=0; i<count; i++){
-		loadableModule = modSys->GetModuleAt(i);
+		loadableModule = modSys->GetModules().GetAt(i);
 		if(pCBModule->findItem(loadableModule->GetName().GetString()) == -1){
 			pCBModule->appendItem(loadableModule->GetName().GetString());
 		}

@@ -240,7 +240,7 @@ void deoglRParticleEmitterInstance::UpdateExtends(const deParticleEmitterInstanc
 	int t, p;
 	
 	for(t=0; t<typeCount; t++){
-		const deParticleEmitterInstanceType &type = instance.GetTypeAt(t);
+		const deParticleEmitterInstanceType &type = instance.GetTypes().GetAt(t);
 		const deParticleEmitterInstanceType::sParticle * const particles = type.GetParticleArray();
 		const int particleCount = type.GetParticleCount();
 		
@@ -357,7 +357,7 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 		for(t=0; t<typeCount; t++){
 			deoglRParticleEmitterInstanceType &itype = *((deoglRParticleEmitterInstanceType*)pTypes.GetAt(t));
 			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt(t);
-			const int typeParticleCount = instance.GetTypeAt(t).GetParticleCount();
+			const int typeParticleCount = instance.GetTypes().GetAt(t)->GetParticleCount();
 			
 			itype.SetFirstParticle(particleCount);
 			itype.SetParticleCount(typeParticleCount);
@@ -474,7 +474,8 @@ void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInsta
 			// shared vbo data.
 			if(typeParticleCount > 0){
 				memcpy(pSharedVBOData + DEPE_SPARTICLE_SIZE * firstParticle,
-					instance.GetTypeAt(t).GetParticleArray(), DEPE_SPARTICLE_SIZE * typeParticleCount);
+					instance.GetTypes().GetAt(t)->GetParticleArray(),
+					DEPE_SPARTICLE_SIZE * typeParticleCount);
 			}
 		}
 	}

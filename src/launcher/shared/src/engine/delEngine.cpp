@@ -552,10 +552,10 @@ void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filen
 				decStringList readFilenames;
 				readFilenames.Add(icon.GetPath());
 				
-				decObjectOrderedSet filesContent;
+				decTObjectOrderedSet<decMemoryFile> filesContent;
 				instance.ReadDelgaFiles(filename, readFilenames, filesContent);
 				
-				icon.SetContent((decMemoryFile*)filesContent.GetAt(0));
+				icon.SetContent(filesContent.First());
 				
 			}catch(const deException &e){
 				pLauncher.GetLogger()->LogErrorFormat(pLauncher.GetLogSource(),
@@ -666,7 +666,7 @@ const deVFSContainer::Ref &container, const char *filename, delGameList &list){
 				decStringList readFilenames;
 				readFilenames.Add(icon.GetPath());
 				
-				decObjectOrderedSet filesContent;
+				decTObjectOrderedSet<deObject> filesContent;
 				instance.ReadDelgaFilesVfs(container, filename, readFilenames, filesContent);
 				
 				icon.SetContent((decMemoryFile*)filesContent.GetAt(0));

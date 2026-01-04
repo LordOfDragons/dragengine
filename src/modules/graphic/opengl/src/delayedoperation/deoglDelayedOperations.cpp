@@ -460,7 +460,7 @@ void deoglDelayedOperations::AddSaveImage(deoglDelayedSaveImage *saveImage){
 void deoglDelayedOperations::AddCleanUpCamera(deoglRCamera *camera){
 	if(camera){
 		const deMutexGuard guard(pMutexCameras);
-		pCleanUpCameraList.AddIfAbsent(camera);
+		pCleanUpCameraList.Add(camera);
 	}
 }
 

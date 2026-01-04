@@ -90,7 +90,7 @@ void aeControllerTarget::UpdateEngineTarget(aeAnimator *animator, deAnimatorCont
 			deAnimatorLink * const engLink = ((aeLink*)pLinks.GetAt(i))->GetEngineLink();
 			
 			if(engLink){
-				const int indexLink = engAnimator->IndexOfLink(engLink);
+				const int indexLink = engAnimator->GetLinks().IndexOf(engLink);
 				
 				if(indexLink != -1){
 					target.AddLink(indexLink);

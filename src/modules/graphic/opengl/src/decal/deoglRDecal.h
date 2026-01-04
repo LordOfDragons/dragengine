@@ -36,7 +36,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
@@ -124,7 +124,7 @@ private:
 	
 	unsigned int pUniqueKey;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglDecalListener> pListeners;
 	int pListenerIndex;
 	
 	

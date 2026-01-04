@@ -127,7 +127,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassSky::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
 	
-	rt->PushInt(sky.GetControllerCount());
+	rt->PushInt(sky.GetControllers().GetCount());
 }
 
 // public func void setControllerCount( int count )
@@ -154,7 +154,7 @@ void deClassSky::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
-		ds.GetClassSkyController()->PushController(rt, sky, sky->GetControllerCount() + index);
+		ds.GetClassSkyController()->PushController(rt, sky, sky->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassSkyController()->PushController(rt, sky, index);
@@ -201,7 +201,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassSky::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
 	
-	rt->PushInt(sky.GetLinkCount());
+	rt->PushInt(sky.GetLinks().GetCount());
 }
 
 // public func void setLinkCount( int count )
@@ -240,7 +240,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassSky::nfGetLayerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
 	
-	rt->PushInt(sky.GetLayerCount());
+	rt->PushInt(sky.GetLayers().GetCount());
 }
 
 // public func void setLayerCount( int count )

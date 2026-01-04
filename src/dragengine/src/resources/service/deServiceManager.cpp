@@ -100,28 +100,24 @@ void deServiceManager::ReleaseLeakingResources(){
 }
 
 
-
 decStringSet deServiceManager::GetAllSupportedSerices() const{
 	const deModuleSystem &modsys = *GetEngine()->GetModuleSystem();
-	const int count = modsys.GetModuleCount();
 	decStringSet names;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const deLoadableModule &loadmod = *modsys.GetModuleAt(i);
+	modsys.GetModules().Visit([&](const deLoadableModule &loadmod){
 		if(loadmod.GetType() != deModuleSystem::emtService){
-			continue;
+			return;
 		}
 		if(!loadmod.IsLoaded()){
-			continue;
+			return;
 		}
 		if(!loadmod.GetModule()){
-			continue;
+			return;
 		}
 		
 		deBaseServiceModule &srvmod = *((deBaseServiceModule*)loadmod.GetModule());
 		names += srvmod.GetSupportedServices();
-	}
+	});
 	
 	return names;
 }
@@ -131,24 +127,21 @@ deService::Ref deServiceManager::CreateService(const char *name, const deService
 	
 	deEngine * const engine = GetEngine();
 	const deModuleSystem &modsys = *engine->GetModuleSystem();
-	const int count = modsys.GetModuleCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		const deLoadableModule &loadmod = *modsys.GetModuleAt(i);
-		if(loadmod.GetType() != deModuleSystem::emtService){
+	for(const auto &loadmod : modsys.GetModules()){
+		if(loadmod->GetType() != deModuleSystem::emtService){
 			continue;
 		}
-		if(!loadmod.IsLoaded()){
+		if(!loadmod->IsLoaded()){
 			continue;
 		}
-		if(!loadmod.GetModule()){
+		if(!loadmod->GetModule()){
 			continue;
 		}
 		
-		const deService::Ref service(deService::Ref::New(this, name));
+		const deService::Ref service = deService::Ref::New(this, name);
 		
-		deBaseServiceModule * const srvmod = (deBaseServiceModule*)loadmod.GetModule();
+		deBaseServiceModule * const srvmod = (deBaseServiceModule*)loadmod->GetModule();
 		deBaseServiceService * const peer = srvmod->CreateService(service, name, data);
 		if(!peer){
 			continue;

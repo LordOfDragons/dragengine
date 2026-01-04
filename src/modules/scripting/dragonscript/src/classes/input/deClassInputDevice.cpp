@@ -189,7 +189,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
-	rt->PushInt(device.GetDevice()->GetDisplayIconCount());
+	rt->PushInt(device.GetDevice()->GetDisplayIcons().GetCount());
 }
 
 // public func Image getDisplayIconAt( int index )
@@ -202,7 +202,7 @@ void deClassInputDevice::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue 
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
-	ds.GetClassImage()->PushImage(rt, device.GetDevice()->GetDisplayIconAt(rt->GetValue(0)->GetInt()));
+	ds.GetClassImage()->PushImage(rt, device.GetDevice()->GetDisplayIcons().GetAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func Image getLargestDisplayIconX( int maxWidth )
@@ -214,14 +214,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDevice::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
-	const int count = device.GetDevice()->GetDisplayIconCount();
+	const int count = device.GetDevice()->GetDisplayIcons().GetCount();
 	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestWidth = 0;
 	int i;
 	
 	for(i=0; i<count; i++){
-		deImage * const icon = device.GetDevice()->GetDisplayIconAt(i);
+		deImage * const icon = device.GetDevice()->GetDisplayIcons().GetAt(i);
 		if(icon->GetWidth() <= maxWidth && (!bestIcon || icon->GetWidth() >= bestWidth)){
 			bestIcon = icon;
 			bestWidth = icon->GetWidth();
@@ -240,14 +240,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDevice::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
-	const int count = device.GetDevice()->GetDisplayIconCount();
+	const int count = device.GetDevice()->GetDisplayIcons().GetCount();
 	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
 	int bestHeight = 0;
 	int i;
 	
 	for(i=0; i<count; i++){
-		deImage * const icon = device.GetDevice()->GetDisplayIconAt(i);
+		deImage * const icon = device.GetDevice()->GetDisplayIcons().GetAt(i);
 		if(icon->GetHeight() <= maxHeight && (!bestIcon || icon->GetHeight() >= bestHeight)){
 			bestIcon = icon;
 			bestHeight = icon->GetHeight();
@@ -277,7 +277,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetAxisCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
-	rt->PushInt(device.GetDevice()->GetAxisCount());
+	rt->PushInt(device.GetDevice()->GetAxes().GetCount());
 }
 
 // public func InputDeviceAxis getAxisAt( int index )
@@ -303,7 +303,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetButtonCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
-	rt->PushInt(device.GetDevice()->GetButtonCount());
+	rt->PushInt(device.GetDevice()->GetButtons().GetCount());
 }
 
 // public func InputDeviceButton getButtonAt( int index )
@@ -330,7 +330,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 void deClassInputDevice::nfGetFeedbackCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
-	rt->PushInt(device.GetDevice()->GetFeedbackCount());
+	rt->PushInt(device.GetDevice()->GetFeedbacks().GetCount());
 }
 
 // public func InputDeviceFeedback getFeedbackAt( int index )
@@ -357,7 +357,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 void deClassInputDevice::nfGetComponentCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
-	rt->PushInt(device.GetDevice()->GetComponentCount());
+	rt->PushInt(device.GetDevice()->GetComponents().GetCount());
 }
 
 // public func InputDeviceComponent getComponentAt( int index )

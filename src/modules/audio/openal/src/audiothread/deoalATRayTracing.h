@@ -54,7 +54,7 @@ private:
 	deoalRayTraceConfig *pConfigTraceSoundRays;
 	deoalRayTraceConfig *pConfigRoomEstimate;
 	deoalRayTraceConfig *pConfigTraceSoundRaysSensor;
-// 	decPointerList pProbeConfigs;
+// 	decTList<void*> pProbeConfigs;
 	
 	sConfigSoundTracing pConfigSoundTracingMicrophone;
 	sConfigSoundTracing pConfigSoundTracingMetering;

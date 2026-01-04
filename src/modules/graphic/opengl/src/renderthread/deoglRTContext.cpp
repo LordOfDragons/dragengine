@@ -732,7 +732,7 @@ LRESULT deoglRTContext::ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wPa
 			rect.bottom -= inverseRect.bottom;
 		}
 		
-		const decObjectOrderedSet &windows = pRenderThread.GetRRenderWindowList();
+		const decTObjectOrderedSet<deoglRRenderWindow> &windows = pRenderThread.GetRRenderWindowList();
 		const int count = windows.GetCount();
 		const int height = rect.right - rect.left;
 		const int width = rect.bottom - rect.top;
@@ -801,7 +801,7 @@ void deoglRTContext::ProcessEventLoop(){
 			break;
 			
 		case ConfigureNotify:{
-			const decObjectOrderedSet &windows = pRenderThread.GetRRenderWindowList();
+			const decTObjectOrderedSet<deoglRRenderWindow> &windows = pRenderThread.GetRRenderWindowList();
 			const int count = windows.GetCount();
 			int i;
 			for(i=0; i<count; i++){

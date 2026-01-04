@@ -27,7 +27,7 @@
 
 #include "deoxrParameter.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -35,7 +35,7 @@
  */
 class deoxrParameterList{
 private:
-	decObjectOrderedSet pParameters;
+	decTObjectOrderedSet<deoxrParameter> pParameters;
 	
 	
 public:

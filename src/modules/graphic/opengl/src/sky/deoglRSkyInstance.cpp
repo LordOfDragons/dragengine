@@ -138,7 +138,7 @@ float deoglRSkyInstance::GetControllerStateAt(int index) const{
 }
 
 void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
-	const int count = instance.GetControllerCount();
+	const int count = instance.GetControllers().GetCount();
 	
 	if(count != pControllerStateCount){
 		if(pControllerStates){
@@ -155,7 +155,7 @@ void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 	
 	int i;
 	for(i=0; i<count; i++){
-		const deSkyController &controller = instance.GetControllerAt(i);
+		const deSkyController &controller = instance.GetControllers().GetAt(i);
 		const float minimum = controller.GetMinimumValue();
 		const float range = controller.GetMaximumValue() - minimum;
 		

@@ -140,7 +140,7 @@ void deoxrDPHandInteraction::pAddDevice(bool left){
 	axis->SetName("Pinch");
 	axis->SetID("ghpinch");
 	axis->SetDisplayText("Pinch");
-	axis->SetIndex(device->GetAxisCount());
+	axis->SetIndex(device->GetAxes().GetCount());
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
@@ -153,7 +153,7 @@ void deoxrDPHandInteraction::pAddDevice(bool left){
 	axis->SetName("Aim");
 	axis->SetID("ghaim");
 	axis->SetDisplayText("Aim");
-	axis->SetIndex(device->GetAxisCount());
+	axis->SetIndex(device->GetAxes().GetCount());
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
@@ -166,7 +166,7 @@ void deoxrDPHandInteraction::pAddDevice(bool left){
 	axis->SetName("Grasp");
 	axis->SetID("ghgrasp");
 	axis->SetDisplayText("Grasp");
-	axis->SetIndex(device->GetAxisCount());
+	axis->SetIndex(device->GetAxes().GetCount());
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	

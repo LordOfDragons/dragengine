@@ -28,7 +28,7 @@
 #include "../foxtoolkit.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 

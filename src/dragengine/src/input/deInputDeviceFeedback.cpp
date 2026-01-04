@@ -75,13 +75,6 @@ void deInputDeviceFeedback::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
-int deInputDeviceFeedback::GetDisplayIconCount() const{
-	return pDisplayIcons.GetCount();
-}
-
-deImage *deInputDeviceFeedback::GetDisplayIconAt(int index) const{
-	return (deImage*)pDisplayIcons.GetAt(index);
-}
 
 void deInputDeviceFeedback::AddDisplayIcon(deImage *image){
 	if(!image){

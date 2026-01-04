@@ -451,23 +451,6 @@ void deCollider::ApplyTorque(const decVector &torque){
 // Constraints
 ////////////////
 
-int deCollider::GetConstraintCount() const{
-	return pConstraints.GetCount();
-}
-
-deColliderConstraint *deCollider::GetConstraintAt(int index) const{
-	return (deColliderConstraint*)pConstraints.GetAt(index);
-}
-
-int deCollider::IndexOfConstraint(deColliderConstraint *constraint) const{
-	return pConstraints.IndexOf(constraint);
-}
-
-bool deCollider::HasConstraint(deColliderConstraint *constraint) const{
-	DEASSERT_NOTNULL(constraint)
-	return pConstraints.Has(constraint);
-}
-
 void deCollider::AddConstraint(deColliderConstraint *constraint){
 	pConstraints.Add(constraint);
 	
@@ -541,22 +524,6 @@ void deCollider::RemoveAllIgnoreColliders(){
 
 // Post physics collision tests
 /////////////////////////////////
-
-int deCollider::GetCollisionTestCount() const{
-	return pCollisionTests.GetCount();
-}
-
-deColliderCollisionTest *deCollider::GetCollisionTestAt(int index) const{
-	return (deColliderCollisionTest*)pCollisionTests.GetAt(index);
-}
-
-int deCollider::IndexOfCollisionTest(deColliderCollisionTest *collisionTest) const{
-	return pCollisionTests.IndexOf(collisionTest);
-}
-
-bool deCollider::HasCollisionTest(deColliderCollisionTest *collisionTest) const{
-	return pCollisionTests.Has(collisionTest);
-}
 
 void deCollider::AddCollisionTest(deColliderCollisionTest *collisionTest){
 	pCollisionTests.Add(collisionTest);

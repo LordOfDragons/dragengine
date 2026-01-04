@@ -26,7 +26,7 @@
 #define _DEDAIHEIGHTTERRAIN_H_
 
 #include <dragengine/systems/modules/ai/deBaseAIHeightTerrain.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class dedaiWorld;
 class deDEAIModule;
@@ -44,7 +44,7 @@ private:
 	deDEAIModule &pDEAI;
 	const deHeightTerrain &pHeightTerrain;
 	
-	decObjectOrderedSet pSectors;
+	decTObjectOrderedSet<dedaiHeightTerrainSector> pSectors;
 	dedaiWorld *pParentWorld;
 	
 	
@@ -82,11 +82,8 @@ public:
 	
 	/** \name Sectors */
 	/*@{*/
-	/** \brief Count of sectors. */
-	int GetSectorCount() const;
-	
-	/** \brief Sector at index. */
-	dedaiHeightTerrainSector *GetSectorAt(int index) const;
+	/** \brief Sectors. */
+	inline const decTObjectOrderedSet<dedaiHeightTerrainSector> &GetSectors() const{ return pSectors; }
 	/*@}*/
 	
 	

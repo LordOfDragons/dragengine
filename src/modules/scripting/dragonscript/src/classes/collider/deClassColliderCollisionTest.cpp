@@ -258,7 +258,7 @@ void deClassColliderCollisionTest::nfSetTouchSensor::RunFunction(dsRunTime *rt, 
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -294,7 +294,7 @@ void deClassColliderCollisionTest::nfSetCollider::RunFunction(dsRunTime *rt, dsV
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -328,7 +328,7 @@ void deClassColliderCollisionTest::nfSetCollisionFilter::RunFunction(dsRunTime *
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -364,7 +364,7 @@ void deClassColliderCollisionTest::nfSetComponent::RunFunction(dsRunTime *rt, ds
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -396,7 +396,7 @@ void deClassColliderCollisionTest::nfSetBone::RunFunction(dsRunTime *rt, dsValue
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -430,7 +430,7 @@ void deClassColliderCollisionTest::nfSetOrigin::RunFunction(dsRunTime *rt, dsVal
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -464,7 +464,7 @@ void deClassColliderCollisionTest::nfSetOrientation::RunFunction(dsRunTime *rt, 
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -498,7 +498,7 @@ void deClassColliderCollisionTest::nfSetDirection::RunFunction(dsRunTime *rt, ds
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -530,7 +530,7 @@ void deClassColliderCollisionTest::nfSetLocalDirection::RunFunction(dsRunTime *r
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 
@@ -562,7 +562,7 @@ void deClassColliderCollisionTest::nfSetEnabled::RunFunction(dsRunTime *rt, dsVa
 	
 	if(nd.parentCollider){
 		nd.parentCollider->NotifyCollisionTestEnableChanged(
-			nd.parentCollider->IndexOfCollisionTest(nd.collisionTest));
+			nd.parentCollider->GetCollisionTests().IndexOf(nd.collisionTest));
 	}
 }
 

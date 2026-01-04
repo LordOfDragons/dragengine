@@ -190,7 +190,7 @@ deoalASpeaker *deoalAMicrophone::GetSpeakerAt(int index) const{
 void deoalAMicrophone::AddSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
-	pInvalidateSpeakers.RemoveIfPresent(speaker);
+	pInvalidateSpeakers.Remove(speaker);
 	pSpeakers.Add(speaker);
 	
 	speaker->SetPositionless(true);
@@ -503,7 +503,7 @@ void deoalAMicrophone::ProcessDeactivate(){
 
 void deoalAMicrophone::InvalidateSpeaker(deoalASpeaker *speaker){
 	pActiveSpeakers.RemoveIfExisting(speaker);
-	pInvalidateSpeakers.AddIfAbsent(speaker);
+	pInvalidateSpeakers.Add(speaker);
 }
 
 

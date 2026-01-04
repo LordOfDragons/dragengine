@@ -194,12 +194,12 @@ void deXSystemInput::CleanUp(){
 ////////////
 
 int deXSystemInput::GetDeviceCount(){
-	return pDevices->GetCount();
+	return pDevices->GetDevices().GetCount();
 }
 
 deInputDevice::Ref deXSystemInput::GetDeviceAt(int index){
 	const deInputDevice::Ref device(deInputDevice::Ref::New());
-	pDevices->GetAt(index)->GetInfo(device);
+	pDevices->GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -208,31 +208,31 @@ int deXSystemInput::IndexOfDeviceWithID(const char *id){
 }
 
 int deXSystemInput::IndexOfButtonWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfButtonWithID(id);
 }
 
 int deXSystemInput::IndexOfAxisWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfAxisWithID(id);
 }
 
 int deXSystemInput::IndexOfFeedbackWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfFeedbackWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfFeedbackWithID(id);
 }
 
 bool deXSystemInput::GetButtonPressed(int device, int button){
-	return pDevices->GetAt(device)->GetButtonAt(button)->GetPressed();
+	return pDevices->GetDevices().GetAt(device)->GetButtons().GetAt(button)->GetPressed();
 }
 
 float deXSystemInput::GetAxisValue(int device, int axis){
-	return pDevices->GetAt(device)->GetAxisAt(axis)->GetValue();
+	return pDevices->GetDevices().GetAt(device)->GetAxes().GetAt(axis)->GetValue();
 }
 
 float deXSystemInput::GetFeedbackValue(int device, int feedback){
-	return pDevices->GetAt(device)->GetFeedbackAt(feedback)->GetValue();
+	return pDevices->GetDevices().GetAt(device)->GetFeedbacks().GetAt(feedback)->GetValue();
 }
 
 void deXSystemInput::SetFeedbackValue(int device, int feedback, float value){
-	pDevices->GetAt(device)->GetFeedbackAt(feedback)->SetValue(value);
+	pDevices->GetDevices().GetAt(device)->GetFeedbacks().GetAt(feedback)->SetValue(value);
 }
 
 int deXSystemInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode){
@@ -240,14 +240,14 @@ int deXSystemInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes ke
 		return -1;
 	}
 	
-	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtonCount();
+	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtons().GetCount();
 	int bestPriority = 10;
 	int bestButton = -1;
 	int i;
 	
 	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = *rdevice.GetButtonAt(i);
+		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
 		
 		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
 			bestButton = i;
@@ -272,12 +272,12 @@ deInputEvent::eKeyLocation location){
 		return -1;
 	}
 	
-	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtonCount();
+	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtons().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = *rdevice.GetButtonAt(i);
+		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
 		if(button.GetKeyCode() == keyCode && button.GetKeyLocation() == location){
 			return i;
 		}
@@ -301,12 +301,12 @@ deInputEvent::eKeyLocation location){
 		return -1;
 	}
 	
-	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtonCount();
+	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtons().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = *rdevice.GetButtonAt(i);
+		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
 		if(button.GetX11Code() == x11code && button.GetKeyLocation() == location){
 			return i;
 		}
@@ -366,7 +366,7 @@ void deXSystemInput::EventLoop(XEvent &event){
 		eventTime.tv_sec = (time_t)(event.xkey.time / 1000);
 		eventTime.tv_usec = (suseconds_t)((event.xkey.time % 1000) * 1000);
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt(key.button);
+		dexsiDeviceButton &deviceButton = pDevices->GetPrimaryKeyboard()->GetButtons().GetAt(key.button);
 		deviceButton.SetPressed(true);
 		
 		pAddKeyPress(pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
@@ -392,7 +392,7 @@ void deXSystemInput::EventLoop(XEvent &event){
 		eventTime.tv_sec = (time_t)(event.xkey.time / 1000);
 		eventTime.tv_usec = (suseconds_t)((event.xkey.time % 1000) * 1000);
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt(key.button);
+		dexsiDeviceButton &deviceButton = pDevices->GetPrimaryKeyboard()->GetButtons().GetAt(key.button);
 		deviceButton.SetPressed(false);
 		
 		pAddKeyRelease(pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
@@ -408,43 +408,43 @@ void deXSystemInput::EventLoop(XEvent &event){
 		
 		switch(event.xbutton.button){
 		case 1:  // left mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcLeft)->SetPressed(true);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcLeft)->SetPressed(true);
 			pAddMousePress(device, deInputEvent::embcLeft, modifiers, eventTime);
 			break;
 			
 		case 2:  // middle mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcMiddle)->SetPressed(true);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcMiddle)->SetPressed(true);
 			pAddMousePress(device, deInputEvent::embcMiddle, modifiers, eventTime);
 			break;
 			
 		case 3:  // right mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcRight)->SetPressed(true);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcRight)->SetPressed(true);
 			pAddMousePress(device, deInputEvent::embcRight, modifiers, eventTime);
 			break;
 			
 		case 4:  // wheel up. X11 sends one event for each raster turn
-			pDevices->GetPrimaryMouse()->GetAxisAt(2)->IncrementWheelChange(1, modifiers, eventTime);
+			pDevices->GetPrimaryMouse()->GetAxes().GetAt(2)->IncrementWheelChange(1, modifiers, eventTime);
 			pDevices->GetPrimaryMouse()->SetDirtyAxesValues(true);
 			break;
 			
 		case 5:  // wheel down. X11 sends one event for each raster turn
-			pDevices->GetPrimaryMouse()->GetAxisAt(2)->IncrementWheelChange(-1, modifiers, eventTime);
+			pDevices->GetPrimaryMouse()->GetAxes().GetAt(2)->IncrementWheelChange(-1, modifiers, eventTime);
 			pDevices->GetPrimaryMouse()->SetDirtyAxesValues(true);
 			break;
 			
 		case 6:  // wheel right. X11 sends one event for each raster turn
-			pDevices->GetPrimaryMouse()->GetAxisAt(3)->IncrementWheelChange(1, modifiers, eventTime);
+			pDevices->GetPrimaryMouse()->GetAxes().GetAt(3)->IncrementWheelChange(1, modifiers, eventTime);
 			pDevices->GetPrimaryMouse()->SetDirtyAxesValues(true);
 			break;
 			
 		case 7:  // wheel left. X11 sends one event for each raster turn
-			pDevices->GetPrimaryMouse()->GetAxisAt(3)->IncrementWheelChange(-1, modifiers, eventTime);
+			pDevices->GetPrimaryMouse()->GetAxes().GetAt(3)->IncrementWheelChange(-1, modifiers, eventTime);
 			pDevices->GetPrimaryMouse()->SetDirtyAxesValues(true);
 			break;
 			
 		case 8:  // browse backward
 		case 9:  // browse forward
-			pDevices->GetPrimaryMouse()->GetButtonAt(event.xbutton.button - 5)->SetPressed(true);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(event.xbutton.button - 5)->SetPressed(true);
 			pAddMousePress(device, event.xbutton.button - 5, modifiers, eventTime);
 			break;
 		}
@@ -459,17 +459,17 @@ void deXSystemInput::EventLoop(XEvent &event){
 		
 		switch(event.xbutton.button){
 		case 1:  // left mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcLeft)->SetPressed(false);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcLeft)->SetPressed(false);
 			pAddMouseRelease(device, deInputEvent::embcLeft, modifiers, eventTime);
 			break;
 			
 		case 2:  // middle mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcMiddle)->SetPressed(false);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcMiddle)->SetPressed(false);
 			pAddMouseRelease(device, deInputEvent::embcMiddle, modifiers, eventTime);
 			break;
 			
 		case 3:  // right mouse button
-			pDevices->GetPrimaryMouse()->GetButtonAt(deInputEvent::embcRight)->SetPressed(false);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(deInputEvent::embcRight)->SetPressed(false);
 			pAddMouseRelease(device, deInputEvent::embcRight, modifiers, eventTime);
 			break;
 			
@@ -481,7 +481,7 @@ void deXSystemInput::EventLoop(XEvent &event){
 			
 		case 8:  // browse backward
 		case 9:  // browse forward
-			pDevices->GetPrimaryMouse()->GetButtonAt(event.xbutton.button - 5)->SetPressed(false);
+			pDevices->GetPrimaryMouse()->GetButtons().GetAt(event.xbutton.button - 5)->SetPressed(false);
 			pAddMouseRelease(device, event.xbutton.button - 5, modifiers, eventTime);
 			break;
 		}

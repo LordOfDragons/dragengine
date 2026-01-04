@@ -80,14 +80,6 @@ void debiDeviceManager::UpdateDeviceList(){
 
 
 
-int debiDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-debiDevice *debiDeviceManager::GetAt(int index) const{
-	return (debiDevice*)pDevices.GetAt(index);
-}
-
 debiDevice *debiDeviceManager::GetWithID(const char *id){
 	const int count = pDevices.GetCount();
 	int i;

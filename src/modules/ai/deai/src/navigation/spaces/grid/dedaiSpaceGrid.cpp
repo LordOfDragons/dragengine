@@ -354,13 +354,13 @@ void dedaiSpaceGrid::LinkToOtherGrids(){
 		// height terrain navspaces
 		const dedaiHeightTerrain * const heightTerrain = pSpace.GetParentWorld()->GetHeightTerrain();
 		if(heightTerrain){
-			const int sectorCount = heightTerrain->GetSectorCount();
+			const int sectorCount = heightTerrain->GetSectors().GetCount();
 			
 			for(i=0; i<sectorCount; i++){
-				dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-				const int navSpaceCount = sector.GetNavSpaceCount();
+				dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+				const int navSpaceCount = sector.GetNavSpaces().GetCount();
 				for(j=0; j<navSpaceCount; j++){
-					dedaiHeightTerrainNavSpace * const navspace = sector.GetNavSpaceAt(j);
+					dedaiHeightTerrainNavSpace * const navspace = sector.GetNavSpaces().GetAt(j);
 					if(navspace == pSpace.GetOwnerHTNavSpace()){
 						continue;
 					}

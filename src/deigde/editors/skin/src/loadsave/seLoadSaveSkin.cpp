@@ -125,7 +125,6 @@ const igdeTextureProperty::List &knownPropertyList){
 	deEngine *engine = pModule->GetGameEngine();
 	int p, propertyCount;
 	int t, textureCount;
-	int i;
 	
 	deSkinBuilder builder;
 	
@@ -133,10 +132,7 @@ const igdeTextureProperty::List &knownPropertyList){
 	pModule->LoadSkin(*file, *engSkin);
 	
 	// mapped
-	const int mappedCount = engSkin->GetMappedCount();
-	for(i=0; i<mappedCount; i++){
-		const deSkinMapped &engMapped = *engSkin->GetMappedAt(i);
-		
+	engSkin->GetMapped().Visit([&](const deSkinMapped &engMapped){
 		const seMapped::Ref mapped(seMapped::Ref::New(engMapped.GetName()));
 		
 		mapped->SetCurve(engMapped.GetCurve());
@@ -151,7 +147,7 @@ const igdeTextureProperty::List &knownPropertyList){
 		mapped->SetRenderableComponent(engMapped.GetRenderableComponent());
 		
 		skin->AddMapped(mapped);
-	}
+	});
 	
 	const seMapped::List &listMapped = skin->GetMapped();
 	

@@ -25,7 +25,7 @@
 #ifndef _DEMODULESYSTEM_H_
 #define _DEMODULESYSTEM_H_
 
-#include "../common/collection/decObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/file/decPath.h"
 #include "../filesystem/deVirtualFileSystem.h"
 
@@ -158,9 +158,13 @@ public:
 	
 	
 	
+public:
+	/** \brief Loadable module list type. */
+	typedef decTObjectOrderedSet<deLoadableModule> ModuleList;
+	
 private:
 	deEngine *pEngine;
-	decObjectOrderedSet pModules;
+	ModuleList pModules;
 	deInternalModulesLibrary *pInternalModulesLibrary;
 	deVirtualFileSystem::Ref pVFSAssetLibraries;
 	
@@ -190,17 +194,14 @@ public:
 	
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Count of modules. */
-	int GetModuleCount() const;
+	/** \brief Modules. */
+	inline const ModuleList &GetModules() const{ return pModules; }
 	
 	/** \brief Count of modules of a given type. */
 	int GetModuleCountFor(eModuleTypes type) const;
 	
 	/** \brief Count of loaded modules of a given type. */
 	int GetLoadedModuleCountFor(eModuleTypes type) const;
-	
-	/** \brief Module at the given index. */
-	deLoadableModule *GetModuleAt(int index) const;
 	
 	/** \brief Highest version module with the given name or NULL if not found. */
 	deLoadableModule *GetModuleNamed(const char *name) const;

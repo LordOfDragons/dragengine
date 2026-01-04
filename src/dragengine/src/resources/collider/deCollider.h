@@ -29,15 +29,15 @@
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/collection/decTSet.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deBasePhysicsCollider;
 class deBaseScriptingCollider;
 class deColliderAttachment;
-class deColliderCollisionTest;
 class deColliderConstraint;
 class deColliderManager;
 class deColliderVisitor;
+class deColliderCollisionTest;
 class deWorld;
 
 
@@ -120,9 +120,8 @@ private:
 	int pAttachmentCount;
 	int pAttachmentSize;
 	
-	decObjectOrderedSet pConstraints;
-	
-	decObjectOrderedSet pCollisionTests;
+	decTObjectOrderedSet<deColliderConstraint> pConstraints;
+	decTObjectOrderedSet<deColliderCollisionTest> pCollisionTests;
 	
 	decCollisionFilter pCollisionFilter;
 	decTObjectSet<deCollider> pIgnoreColliders;
@@ -392,20 +391,8 @@ public:
 	
 	/** \name Constraints */
 	/*@{*/
-	/** \brief Number of constraints. */
-	int GetConstraintCount() const;
-	
-	/**
-	 * \brief Constraint at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetConstraintCount().
-	 */
-	deColliderConstraint *GetConstraintAt(int index) const;
-	
-	/** \brief Index of constraint or -1 if absent. */
-	int IndexOfConstraint(deColliderConstraint *constraint) const;
-	
-	/** \brief Constraint is present. */
-	bool HasConstraint(deColliderConstraint *constraint) const;
+	/** \brief Constaints. */
+	inline const decTObjectOrderedSet<deColliderConstraint> &GetConstraints() const{ return pConstraints; }
 	
 	/** \brief Add constraint. */
 	void AddConstraint(deColliderConstraint *constraint);
@@ -454,25 +441,8 @@ public:
 	
 	/** \name Post physics collision tests */
 	/*@{*/
-	/** \brief Number of post physics collision tests. */
-	int GetCollisionTestCount() const;
-	
-	/**
-	 * \brief Post physics collision test at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetCollisionTestCount()-1.
-	 */
-	deColliderCollisionTest *GetCollisionTestAt(int index) const;
-	
-	/**
-	 * \brief Index of post physics collision test or -1 if not found.
-	 */
-	int IndexOfCollisionTest(deColliderCollisionTest *collisionTest) const;
-	
-	/**
-	 * \brief Post physics collision test is present.
-	 */
-	bool HasCollisionTest(deColliderCollisionTest *collisionTest) const;
+	/** \brief Collision tests. */
+	inline const decTObjectOrderedSet<deColliderCollisionTest> &GetCollisionTests() const{ return pCollisionTests; }
 	
 	/** \brief Adds post physics collision test. */
 	void AddCollisionTest(deColliderCollisionTest *collisionTest);

@@ -25,13 +25,13 @@
 #ifndef _DENETWORKSTATE_H_
 #define _DENETWORKSTATE_H_
 
+#include "value/deNetworkValue.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 
 class deNetworkStateManager;
-class deNetworkValue;
 class deBaseNetworkState;
 class deBaseScriptingNetworkState;
 class deWorld;
@@ -51,7 +51,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pValues;
+	deNetworkValue::List pValues;
 	bool pReadOnly;
 	
 	deBaseNetworkState *pPeerNetwork;

@@ -413,21 +413,13 @@ void igdeDialogProjectSettings::UpdateSharedGameDef(){
 
 // Private Functions
 //////////////////////
-
 void igdeDialogProjectSettings::pInitScriptModules(){
-	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
-	const int engModuleCount = moduleSystem.GetModuleCount();
-	int i;
-	
-	for(i=0; i<engModuleCount; i++){
-		const deLoadableModule &module = *moduleSystem.GetModuleAt(i);
-		
+	GetEngine()->GetModuleSystem()->GetModules().Visit([&](const deLoadableModule &module){
 		if(module.GetType() != deModuleSystem::emtScript || module.GetName() == "IGDEScript"){
-			continue;
+			return;
 		}
-		
 		pCBScriptModule->AddItem(module.GetName());
-	}
+	});
 	
 	pCBScriptModule->SortItems();
 	

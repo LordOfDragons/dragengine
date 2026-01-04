@@ -102,14 +102,14 @@ void deoglRSky::RebuildLinks(const deSky &sky){
 		pLinks = NULL;
 	}
 	
-	const int linkCount = sky.GetLinkCount();
+	const int linkCount = sky.GetLinks().GetCount();
 	if(linkCount == 0){
 		return;
 	}
 	
 	pLinks = new deoglRSkyLink*[linkCount];
 	for(pLinkCount=0; pLinkCount<linkCount; pLinkCount++){
-		pLinks[pLinkCount] = new deoglRSkyLink(sky.GetLinkAt(pLinkCount));
+		pLinks[pLinkCount] = new deoglRSkyLink(sky.GetLinks().GetAt(pLinkCount));
 	}
 }
 
@@ -131,13 +131,13 @@ void deoglRSky::RebuildLayers(const deSky &sky){
 		pLayers = NULL;
 	}
 	
-	const int layerCount = sky.GetLayerCount();
+	const int layerCount = sky.GetLayers().GetCount();
 	if(layerCount == 0){
 		return;
 	}
 	
 	pLayers = new deoglRSkyLayer*[layerCount];
 	for(pLayerCount=0; pLayerCount<layerCount; pLayerCount++){
-		pLayers[pLayerCount] = new deoglRSkyLayer(sky.GetLayerAt(pLayerCount));
+		pLayers[pLayerCount] = new deoglRSkyLayer(sky.GetLayers().GetAt(pLayerCount));
 	}
 }

@@ -355,7 +355,7 @@ void deBaseModule::pCreateVFS(){
 	}
 	
 	// asset libraries
-	if(vfsAssetLibraries->GetContainerCount() > 0){
+	if(vfsAssetLibraries->GetContainers().IsNotEmpty()){
 		pathRedirect.SetFromUnix("/modules");
 		pathRedirect.AddUnixPath(typeDirectory);
 		pathRedirect.AddUnixPath(directoryName);

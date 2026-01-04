@@ -175,6 +175,16 @@ public:
 	/** \brief Collision information list. */
 	const decTObjectList<deCollisionInfo> &GetCollisionInfo() const{ return pCollisionInfo; }
 	
+	/** \brief Number of collision information. */
+	int GetCollisionInfoCount() const;
+	
+	/**
+	 * \brief Get collision information at index.
+	 * 
+	 * \warning Do not change the content of this object. It is potentially shared.
+	 */
+	deCollisionInfo *GetCollisionInfoAt(int index) const;
+	
 	/** \brief Add collision information. */
 	void AddCollisionInfo(deCollisionInfo *info);
 	

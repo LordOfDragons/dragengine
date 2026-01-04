@@ -33,7 +33,7 @@
 #include <winrt/Windows.Gaming.Input.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
 class deWindowsInput;
@@ -55,7 +55,7 @@ public:
 private:
 	deWindowsInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<dewiDevice> pDevices;
 	
 	dewiDeviceMouse::Ref pMouse;
 	dewiDeviceKeyboard::Ref pKeyboard;
@@ -87,11 +87,8 @@ public:
 	
 	
 	
-	/** Count of devices. */
-	int GetCount() const;
-	
-	/** Device at index. */
-	dewiDevice *GetAt(int index) const;
+	/** Devices. */
+	inline const decTObjectOrderedSet<dewiDevice> &GetDevices() const{ return pDevices; }
 	
 	/** Device with identifier or \em NULL if absent. */
 	dewiDevice *GetWithID(const char *id) const;

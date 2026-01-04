@@ -25,7 +25,7 @@
 #ifndef _DEOXRDEVICEMANAGER_H_
 #define _DEOXRDEVICEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deVROpenXR;
 class deoxrDevice;
@@ -39,7 +39,7 @@ class deoxrDeviceManager{
 private:
 	deVROpenXR &pOxr;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<deoxrDevice> pDevices;
 	bool pNotifyAttachedDetached;
 	
 	
@@ -63,11 +63,8 @@ public:
 	
 	
 	
-	/** Number of devices. */
-	int GetCount() const;
-	
-	/** Device at index. */
-	deoxrDevice *GetAt(int index) const;
+	/** Devices. */
+	inline const decTObjectOrderedSet<deoxrDevice> &GetDevices() const{ return pDevices; }
 	
 	/** Device with identifier or nullptr if absent. */
 	deoxrDevice *GetWithID(const char *id) const;

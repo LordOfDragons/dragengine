@@ -26,7 +26,7 @@
 #define _DEANIMATORRULEGROUP_H_
 
 #include "deAnimatorRule.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -74,7 +74,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pRules;
+	decTObjectOrderedSet<deAnimatorRule> pRules;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;

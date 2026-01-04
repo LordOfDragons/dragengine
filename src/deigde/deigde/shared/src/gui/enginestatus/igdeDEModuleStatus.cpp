@@ -362,17 +362,14 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		pEditLibHash->SetEnabled(false);
 	}
 }
-
 void igdeDEModuleStatus::UpdateModulesList(){
 	const deModuleSystem &moduleSystem = *GetEngine()->GetModuleSystem();
-	const int count = moduleSystem.GetModuleCount();
-	decString text;
-	int i;
 	
-	for(i=0; i<count; i++){
-		deLoadableModule * const loadedModule = moduleSystem.GetModuleAt(i);
+	moduleSystem.GetModules().Visit([&](deLoadableModule *loadedModule){
+		decString text;
 		text.Format("%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString());
 		pCBModule->AddItem(text.GetString(), nullptr, loadedModule);
-	}
+	});
+	
 	pCBModule->SortItems();
 }

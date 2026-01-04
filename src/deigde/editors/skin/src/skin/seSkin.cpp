@@ -103,10 +103,6 @@ pPreviewMode(epmModel)
 {
 	deEngine * const engine = GetEngine();
 	
-	deAnimatorController *amController = nullptr;
-	deAnimatorRuleAnimation::Ref amRuleAnim;
-	deAnimatorLink *engLink = nullptr;
-	
 	pEngWorld = nullptr;
 	pCamera = nullptr;
 	
@@ -137,24 +133,19 @@ pPreviewMode(epmModel)
 		// create animator
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
-		amController = new deAnimatorController;
+		const deAnimatorController::Ref amController(deAnimatorController::Ref::New());
 		amController->SetClamp(false);
 		pEngAnimator->AddController(amController);
-		amController = nullptr;
 		
-		engLink = new deAnimatorLink;
+		const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
 		engLink->SetController(0);
 		pEngAnimator->AddLink(engLink);
-		engLink = nullptr;
 		
-		amRuleAnim = deAnimatorRuleAnimation::Ref::New();
+		const deAnimatorRuleAnimation::Ref amRuleAnim(deAnimatorRuleAnimation::Ref::New());
 		amRuleAnim->SetEnabled(true);
-		
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
-		
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim = nullptr;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
@@ -204,12 +195,6 @@ pPreviewMode(epmModel)
 		pDynamicSkin = new seDynamicSkin(this);
 		
 	}catch(const deException &){
-		if(engLink){
-			delete engLink;
-		}
-		if(amController){
-			delete amController;
-		}
 		pCleanUp();
 		throw;
 	}
@@ -321,7 +306,7 @@ void seSkin::SetMoveTime(float moveTime){
 	
 	pMoveTime = moveTime;
 	
-	pEngAnimatorInstance->GetControllerAt(0).SetCurrentValue(pMoveTime);
+	pEngAnimatorInstance->GetControllers().First()->SetCurrentValue(pMoveTime);
 	pEngAnimatorInstance->NotifyControllerChangedAt(0);
 	
 	NotifyViewChanged();
@@ -334,7 +319,7 @@ void seSkin::SetPlayback(bool playback){
 	
 	pPlayback = playback;
 	
-	pEngAnimatorInstance->GetControllerAt(0).SetFrozen(!playback);
+	pEngAnimatorInstance->GetControllers().First()->SetFrozen(!playback);
 	
 	NotifyViewChanged();
 }
@@ -394,8 +379,8 @@ void seSkin::Update(float elapsed){
 	
 	pEnvObject->Update(elapsed);
 	
-	if(!pEngAnimatorInstance->GetControllerAt(0).GetFrozen()){
-		pEngAnimatorInstance->GetControllerAt(0).IncrementCurrentValue(elapsed);
+	if(!pEngAnimatorInstance->GetControllers().First()->GetFrozen()){
+		pEngAnimatorInstance->GetControllers().First()->IncrementCurrentValue(elapsed);
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 	}
 	
@@ -1032,7 +1017,7 @@ void seSkin::pUpdateAnimatorMove(){
 	}
 	
 	if(move){
-		pEngAnimatorInstance->GetControllerAt(0).SetValueRange(0.0f, move->GetPlaytime());
+		pEngAnimatorInstance->GetControllers().First()->SetValueRange(0.0f, move->GetPlaytime());
 		pEngAnimatorInstance->NotifyControllerChangedAt(0);
 	}
 }

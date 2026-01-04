@@ -57,11 +57,9 @@ pScene(scene)
 		pMoves.Add(fbxAnimationMove::Ref::New(*this, *node));
 	});
 	
-	const int moveCount = pMoves.GetCount();
-	int i;
-	for(i=0; i<moveCount; i++){
-		GetMoveAt(i)->Prepare();
-	}
+	pMoves.Visit([&](fbxAnimationMove &move){
+		move.Prepare();
+	});
 }
 
 fbxAnimation::~fbxAnimation(){
@@ -72,33 +70,16 @@ fbxAnimation::~fbxAnimation(){
 // Management
 ///////////////
 
-int fbxAnimation::GetMoveCount() const{
-	return pMoves.GetCount();
-}
-
-fbxAnimationMove *fbxAnimation::GetMoveAt(int index) const{
-	return (fbxAnimationMove*)pMoves.GetAt(index);
-}
-
 fbxAnimationMove *fbxAnimation::GetMoveNamed(const char *name) const{
-	const int count = pMoves.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		fbxAnimationMove * const move = (fbxAnimationMove*)pMoves.GetAt(i);
-		if(move->GetName() == name){
-			return move;
-		}
-	}
-	return NULL;
+	return pMoves.FindOrDefault([&](const fbxAnimationMove &move){
+		return move.GetName() == name;
+	});
 }
 
 void fbxAnimation::MatchRig(const fbxRig &rig){
-	const int count = pMoves.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((fbxAnimationMove*)pMoves.GetAt(i))->MatchRig(rig);
-	}
+	pMoves.Visit([&](fbxAnimationMove &move){
+		move.MatchRig(rig);
+	});
 }
 
 float fbxAnimation::ConvTime(int64_t time){
@@ -109,15 +90,12 @@ float fbxAnimation::ConvTime(int64_t time){
 
 
 void fbxAnimation::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
-	const int count = pMoves.GetCount();
-	int i;
-	
 	module.LogInfoFormat("%sAnimation", prefix.GetString());
 	
 	const decString childPrefix(prefix + "  ");
-	for(i=0; i<count; i++){
-		GetMoveAt(i)->DebugPrintStructure(module, childPrefix, verbose);
-	}
+	pMoves.Visit([&](const fbxAnimationMove &move){
+		move.DebugPrintStructure(module, childPrefix, verbose);
+	});
 }
 
 

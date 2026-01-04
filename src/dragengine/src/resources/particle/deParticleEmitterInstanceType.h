@@ -27,14 +27,21 @@
 
 #include "../component/deComponent.h"
 #include "../skin/dynamic/deDynamicSkin.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/math/decMath.h"
 
 
 /**
  * \brief Particle Emitter Instance Type.
  */
-class DE_DLL_EXPORT deParticleEmitterInstanceType{
+class DE_DLL_EXPORT deParticleEmitterInstanceType : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitterInstanceType> Ref;
+	
+	/** \brief Particle emitter instance type list. */
+	typedef decTObjectOrderedSet<deParticleEmitterInstanceType> List;
+	
 	struct DE_DLL_EXPORT sParticle{// sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
 		float lifetime; // unsigned char possible (1 frame accuracy for 5s particle at 60Hz)
 		float positionX; // short possible (~1m accuracy on 50m)
@@ -77,12 +84,13 @@ public:
 	/** \brief Create new particle emitter instance type. */
 	deParticleEmitterInstanceType();
 	
+protected:
 	/** \brief Clean up particle emitter instance type. */
-	~deParticleEmitterInstanceType();
+	~deParticleEmitterInstanceType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component used for casting or NULL. */

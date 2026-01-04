@@ -46,9 +46,6 @@ deSkyInstance::deSkyInstance(deSkyInstanceManager *manager) :
 deResource(manager),
 pOrder(0),
 
-pControllers(nullptr),
-pControllerCount(0),
-
 pPassthroughTransparency(0.0f),
 
 pPeerGraphic(nullptr),
@@ -63,10 +60,6 @@ deSkyInstance::~deSkyInstance(){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
 	}
-	
-	if(pControllers){
-		delete [] pControllers;
-	}
 }
 
 
@@ -79,25 +72,14 @@ void deSkyInstance::SetSky(deSky *sky){
 		return;
 	}
 	
-	if(pControllers){
-		delete [] pControllers;
-		pControllers = NULL;
-		pControllerCount = 0;
-	}
+	pControllers.RemoveAll();
 	
 	pSky = sky;
 	
 	if(sky){
-		const int controllerCount = sky->GetControllerCount();
-		if(controllerCount > 0){
-			pControllers = new deSkyController[controllerCount];
-			
-			int i;
-			for(i=0; i<controllerCount; i++){
-				pControllers[i] = sky->GetControllerAt(i);
-			}
-			pControllerCount = controllerCount;
-		}
+		sky->GetControllers().Visit([&](const deSkyController &c){
+			pControllers.Add(deSkyController::Ref::New(c));
+		});
 	}
 	
 	if(pPeerGraphic){
@@ -119,17 +101,11 @@ void deSkyInstance::SetOrder(int order){
 
 
 
-deSkyController &deSkyInstance::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
 int deSkyInstance::IndexOfControllerNamed(const char *name) const{
+	const int count = pControllers.GetCount();
 	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].GetName() == name){
+	for(i=0; i<count; i++){
+		if(pControllers.GetAt(i)->GetName() == name){
 			return i;
 		}
 	}
@@ -137,7 +113,7 @@ int deSkyInstance::IndexOfControllerNamed(const char *name) const{
 }
 
 void deSkyInstance::NotifyControllerChangedAt(int index){
-	if(index < 0 || index >= pControllerCount){
+	if(index < 0 || index >= pControllers.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -133,13 +133,13 @@ void dedaiWorld::CheckDeveloperMode(){
 	
 	// height terrain navspace debug drawing
 	if(pHeightTerrain){
-		const int sectorCount = pHeightTerrain->GetSectorCount();
+		const int sectorCount = pHeightTerrain->GetSectors().GetCount();
 		int i, j;
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *pHeightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *pHeightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				sector.GetNavSpaceAt(j)->GetSpace()->UpdateDDSSpace();
+				sector.GetNavSpaces().GetAt(j)->GetSpace()->UpdateDDSSpace();
 			}
 		}
 	}

@@ -28,7 +28,7 @@
 #include "deainpDeviceMouse.h"
 #include "deainpDeviceKeyboard.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deAndroidInput;
 class deainpDevice;
@@ -42,7 +42,7 @@ class deainpDeviceManager{
 private:
 	deAndroidInput &pModule;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<deainpDevice> pDevices;
 	
 	deainpDeviceMouse::Ref pMouse;
 	deainpDeviceKeyboard::Ref pKeyboard;
@@ -68,11 +68,8 @@ public:
 	
 	
 	
-	/** \brief Number of devices. */
-	int GetCount() const;
-	
-	/** \brief Device at index. */
-	deainpDevice *GetAt(int index) const;
+	/** \brief Devices. */
+	inline const decTObjectOrderedSet<deainpDevice> &GetDevices() const{ return pDevices; }
 	
 	/** \brief Device with identifier or \em NULL if absent. */
 	deainpDevice *GetWithID(const char *id) const;

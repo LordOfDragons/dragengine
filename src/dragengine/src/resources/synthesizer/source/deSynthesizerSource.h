@@ -27,7 +27,7 @@
 
 #include "../deSynthesizerControllerTarget.h"
 #include "../../../deObject.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deSynthesizer;
 class deSynthesizerEffect;
@@ -70,7 +70,7 @@ private:
 	deSynthesizerControllerTarget pTargetVolume;
 	deSynthesizerControllerTarget pTargetPanning;
 	
-	decObjectOrderedSet pEffects;
+	decTObjectOrderedSet<deSynthesizerEffect> pEffects;
 	
 	
 	
@@ -169,11 +169,8 @@ public:
 	
 	/** \name Effects */
 	/*@{*/
-	/** \brief Number of effects. */
-	int GetEffectCount() const;
-	
-	/** \brief Effect at index. */
-	deSynthesizerEffect *GetEffectAt(int index) const;
+	/** \brief Effects. */
+	inline const decTObjectOrderedSet<deSynthesizerEffect> &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
 	void AddEffect(deSynthesizerEffect *effect);

@@ -88,14 +88,6 @@ void dedaiHeightTerrain::SetParentWorld(dedaiWorld *world){
 // Sectors
 ////////////
 
-int dedaiHeightTerrain::GetSectorCount() const{
-	return pSectors.GetCount();
-}
-
-dedaiHeightTerrainSector *dedaiHeightTerrain::GetSectorAt(int index) const{
-	return (dedaiHeightTerrainSector*)pSectors.GetAt(index);
-}
-
 
 
 // Notifications

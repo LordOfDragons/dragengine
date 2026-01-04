@@ -168,7 +168,7 @@ deClassSynthesizer::nfGetControllerCount::nfGetControllerCount(const sInitData &
 }
 void deClassSynthesizer::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSynthesizer *synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
-	rt->PushInt(synthesizer->GetControllerCount());
+	rt->PushInt(synthesizer->GetControllers().GetCount());
 }
 
 // public func void setControllerCount( int count )
@@ -182,11 +182,11 @@ void deClassSynthesizer::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValu
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
 	
-	while(synthesizer->GetControllerCount() > count){
-		synthesizer->RemoveController(synthesizer->GetControllerAt(synthesizer->GetControllerCount() - 1));
+	while(synthesizer->GetControllers().GetCount() > count){
+		synthesizer->RemoveController(synthesizer->GetControllers().Last());
 	}
 	
-	while(synthesizer->GetControllerCount() < count){
+	while(synthesizer->GetControllers().GetCount() < count){
 		synthesizer->AddController(deSynthesizerController::Ref::New());
 	}
 }
@@ -203,7 +203,7 @@ void deClassSynthesizer::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *
 	
 	if(index < 0){
 		ds.GetClassSynthesizerController()->PushController(rt, synthesizer,
-			synthesizer->GetControllerCount() + index);
+			synthesizer->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassSynthesizerController()->PushController(rt, synthesizer, index);
@@ -248,7 +248,7 @@ deClassSynthesizer::nfGetLinkCount::nfGetLinkCount(const sInitData &init) : dsFu
 }
 void deClassSynthesizer::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
-	rt->PushInt(synthesizer.GetLinkCount());
+	rt->PushInt(synthesizer.GetLinks().GetCount());
 }
 
 // public func int addLink( int controller )
@@ -263,7 +263,7 @@ void deClassSynthesizer::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	link->SetController(rt->GetValue(0)->GetInt());
 	synthesizer.AddLink(link);
 	
-	rt->PushInt(synthesizer.GetLinkCount() - 1);
+	rt->PushInt(synthesizer.GetLinks().GetCount() - 1);
 }
 
 // public func void removeAllLinks()
@@ -285,7 +285,7 @@ void deClassSynthesizer::nfLinkSetController::RunFunction(dsRunTime *rt, dsValue
 	deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deSynthesizerLink &link = *synthesizer.GetLinkAt(index);
+	deSynthesizerLink &link = *synthesizer.GetLinks().GetAt(index);
 	
 	link.SetController(rt->GetValue(1)->GetInt());
 	
@@ -302,7 +302,7 @@ void deClassSynthesizer::nfLinkSetRepeat::RunFunction(dsRunTime *rt, dsValue *my
 	deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deSynthesizerLink &link = *synthesizer.GetLinkAt(index);
+	deSynthesizerLink &link = *synthesizer.GetLinks().GetAt(index);
 	
 	link.SetRepeat(rt->GetValue(1)->GetInt());
 	
@@ -320,7 +320,7 @@ void deClassSynthesizer::nfLinkSetCurve::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizer*>(GetOwnerClass()))->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
-	deSynthesizerLink &link = *synthesizer.GetLinkAt(index);
+	deSynthesizerLink &link = *synthesizer.GetLinks().GetAt(index);
 	const decCurveBezier &curve = ds.GetClassCurveBezier()->GetCurve(rt->GetValue(1)->GetRealObject());
 	
 	link.GetCurve() = curve;
@@ -336,7 +336,7 @@ deClassSynthesizer::nfGetSourceCount::nfGetSourceCount(const sInitData &init) : 
 }
 void deClassSynthesizer::nfGetSourceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
-	rt->PushInt(synthesizer.GetSourceCount());
+	rt->PushInt(synthesizer.GetSources().GetCount());
 }
 
 // public func void addSource( SynthesizerSource source )
@@ -372,7 +372,7 @@ void deClassSynthesizer::nfGetSourceAt::RunFunction(dsRunTime *rt, dsValue *myse
 	
 	const int position = rt->GetValue(0)->GetInt();
 	
-	clsSynS.PushSource(rt, &synthesizer, synthesizer.GetSourceAt(position));
+	clsSynS.PushSource(rt, &synthesizer, synthesizer.GetSources().GetAt(position));
 }
 
 // public func void removeAllSources()

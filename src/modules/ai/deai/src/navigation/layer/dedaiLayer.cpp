@@ -106,14 +106,14 @@ dedaiSpaceGridVertex *dedaiLayer::GetGridVertexClosestTo(const decDVector &posit
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this){
 					continue;
 				}
@@ -178,14 +178,14 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo(const decDVector &position,
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this){
 					continue;
 				}
@@ -260,14 +260,14 @@ float radius, decDVector &nearestPoint, float &nearestLambda){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this){
 					continue;
 				}
@@ -343,14 +343,14 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint(const decDVector &point, 
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this){
 					continue;
 				}
@@ -527,14 +527,14 @@ void dedaiLayer::InvalidateBlocking(){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this){
 					space.InvalidateBlocking();
 				}
@@ -571,14 +571,14 @@ void dedaiLayer::InvalidateBlocking(deNavigationSpace::eSpaceTypes type){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this && space.GetType() == type){
 					space.InvalidateBlocking();
 				}
@@ -616,14 +616,14 @@ const decDVector &boxMin, const decDVector &boxMax){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this || space.GetType() != type){
 					continue;
 				}
@@ -675,14 +675,14 @@ void dedaiLayer::InvalidateLinks(){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this){
 					space.ClearLinks();
 				}
@@ -719,14 +719,14 @@ void dedaiLayer::InvalidateLinks(deNavigationSpace::eSpaceTypes type){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this && space.GetType() == type){
 					space.ClearLinks();
 				}
@@ -764,14 +764,14 @@ const decDVector &boxMin, const decDVector &boxMax){
 	// height terrain navspaces
 	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() != this || space.GetType() != type){
 					continue;
 				}
@@ -842,14 +842,14 @@ void dedaiLayer::pUpdateCostTable(){
 void dedaiLayer::pNavSpacesPrepare(){
 	dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this){
 					space.Prepare();
 				}
@@ -883,14 +883,14 @@ void dedaiLayer::pNavSpacesPrepare(){
 void dedaiLayer::pNavSpacesPrepareLinks(){
 	dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
 	if(heightTerrain){
-		const int sectorCount = heightTerrain->GetSectorCount();
+		const int sectorCount = heightTerrain->GetSectors().GetCount();
 		int i, j;
 		
 		for(i=0; i<sectorCount; i++){
-			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt(i);
-			const int navSpaceCount = sector.GetNavSpaceCount();
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
 			for(j=0; j<navSpaceCount; j++){
-				dedaiSpace &space = *sector.GetNavSpaceAt(j)->GetSpace();
+				dedaiSpace &space = *sector.GetNavSpaces().GetAt(j)->GetSpace();
 				if(space.GetLayer() == this){
 					space.PrepareLinks();
 				}

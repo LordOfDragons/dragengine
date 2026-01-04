@@ -49,10 +49,7 @@
 ////////////////////////////
 
 deParticleEmitterInstance::deParticleEmitterInstance(deParticleEmitterInstanceManager *manager) :
-deResource(manager),
-pControllers(NULL),
-pControllerCount(0),
-pControllerSize(0)
+deResource(manager)
 {
 	pEnableCasting = false;
 	pRemoveAfterLastParticleDied = false;
@@ -60,9 +57,6 @@ pControllerSize(0)
 	pWarmUpTime = 0.0f;
 	pBurstTime = 0.0f;
 	pLayerMask.SetBit(0);
-	
-	pTypes = NULL;
-	pTypeCount = 0;
 	
 	pPeerGraphic = NULL;
 	pPeerPhysics = NULL;
@@ -85,13 +79,6 @@ deParticleEmitterInstance::~deParticleEmitterInstance(){
 	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
-	}
-	
-	if(pTypes){
-		delete [] pTypes;
-	}
-	if(pControllers){
-		delete [] pControllers;
 	}
 }
 
@@ -235,32 +222,14 @@ void deParticleEmitterInstance::SetCollisionFilter(const decCollisionFilter &col
 
 
 
-deParticleEmitterController &deParticleEmitterInstance::GetControllerAt(int index){
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
-const deParticleEmitterController &deParticleEmitterInstance::GetControllerAt(int index) const{
-	if(index < 0 || index >= pControllerCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pControllers[index];
-}
-
 int deParticleEmitterInstance::IndexOfControllerNamed(const char *name) const{
-	int i;
-	for(i=0; i<pControllerCount; i++){
-		if(pControllers[i].GetName() == name){
-			return i;
-		}
-	}
-	return -1;
+	return pControllers.IndexOfMatching([&](const deParticleEmitterController &controller){
+		return controller.GetName() == name;
+	});
 }
 
 void deParticleEmitterInstance::NotifyControllerChangedAt(int index){
-	if(index < 0 || index >= pControllerCount){
+	if(index < 0 || index >= pControllers.GetCount()){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -274,26 +243,9 @@ void deParticleEmitterInstance::NotifyControllerChangedAt(int index){
 
 
 
-deParticleEmitterInstanceType &deParticleEmitterInstance::GetTypeAt(int index){
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pTypes[index];
-}
-
-const deParticleEmitterInstanceType &deParticleEmitterInstance::GetTypeAt(int index) const{
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pTypes[index];
-}
-
 void deParticleEmitterInstance::NotifyTypeChangedAt(int index){
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pTypes.GetCount())
 	
 	if(pPeerGraphic){
 		pPeerGraphic->TypeChanged(index);
@@ -304,9 +256,8 @@ void deParticleEmitterInstance::NotifyTypeChangedAt(int index){
 }
 
 void deParticleEmitterInstance::NotifyTypeParticlesChangedAt(int index){
-	if(index < 0 || index >= pTypeCount){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pTypes.GetCount())
 	
 	if(pPeerGraphic){
 		pPeerGraphic->TypeParticlesChanged(index);
@@ -446,43 +397,23 @@ void deParticleEmitterInstance::SetLLWorldNext(deParticleEmitterInstance *instan
 /////////////////////
 
 void deParticleEmitterInstance::pUpdateControllers(){
+	pControllers.RemoveAll();
+	
 	if(!pEmitter){
-		pControllerCount = 0;
 		return;
 	}
 	
-	const int controllerCount = pEmitter->GetControllerCount();
-	
-	if(controllerCount > pControllerSize){
-		deParticleEmitterController * const newArray = new deParticleEmitterController[controllerCount];
-		
-		delete [] pControllers;
-		pControllers = newArray;
-		
-		pControllerSize = controllerCount;
-	}
-	
-	for(pControllerCount=0; pControllerCount<controllerCount; pControllerCount++){
-		pControllers[pControllerCount] = *pEmitter->GetControllerAt(pControllerCount);
-	}
+	pEmitter->GetControllers().Visit([&](deParticleEmitterController &controller){
+		pControllers.Add(deParticleEmitterController::Ref::New(controller));
+	});
 }
 
 void deParticleEmitterInstance::pUpdateTypes(){
+	pTypes.RemoveAll();
+	
 	if(pEmitter){
-		const int typeCount = pEmitter->GetTypeCount();
-		deParticleEmitterInstanceType *newArray = new deParticleEmitterInstanceType[typeCount];
-		
-		if(pTypes){
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeCount = typeCount;
-		
-	}else{
-		if(pTypes){
-			delete [] pTypes;
-		}
-		pTypes = NULL;
-		pTypeCount = 0;
+		pEmitter->GetTypes().Visit([&](deParticleEmitterType&){
+			pTypes.Add(deParticleEmitterInstanceType::Ref::New());
+		});
 	}
 }

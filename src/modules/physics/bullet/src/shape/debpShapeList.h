@@ -25,7 +25,7 @@
 #ifndef _DEBPSHAPELIST_H_
 #define _DEBPSHAPELIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
 class debpShape;
@@ -37,7 +37,7 @@ class debpShape;
  */
 class debpShapeList{
 private:
-	decObjectOrderedSet pShapes;
+	decTObjectOrderedSet<debpShape> pShapes;
 	
 	
 	
@@ -55,11 +55,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of shapes. */
-	int GetShapeCount() const;
-	
-	/** \brief Shape at index. */
-	debpShape *GetShapeAt(int index) const;
+	/** \brief Shapes. */
+	inline const decTObjectOrderedSet<debpShape>& GetShapes() const{ return pShapes; }
 	
 	/** \brief Add shape. */
 	void AddShape(debpShape *shape);

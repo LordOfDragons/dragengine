@@ -217,7 +217,6 @@ void projTestRunEngine::ActivateModules(){
 void projTestRunEngine::ActivateModule(deModuleSystem::eModuleTypes type,
 const char *name, const char *version){
 	deModuleSystem &moduleSystem = *pEngine->GetModuleSystem();
-	const int count = moduleSystem.GetModuleCount();
 	deLoadableModule *module = nullptr;
 	int i;
 	
@@ -231,17 +230,15 @@ const char *name, const char *version){
 		
 	}else{
 		// find best module
-		for(i=0; i<count; i++){
-			deLoadableModule * const module2 = moduleSystem.GetModuleAt(i);
-			
+		moduleSystem.GetModules().Visit([&](deLoadableModule *module2){
 			if(!module2->IsLoaded() || !module2->GetEnabled()){
-				continue;
+				return;
 			}
 			if(module2->GetType() != type){
-				continue;
+				return;
 			}
 			if(module2->GetErrorCode() != deLoadableModule::eecSuccess){
-				continue;
+				return;
 			}
 			
 			// no best module found. use this module
@@ -263,7 +260,7 @@ const char *name, const char *version){
 			}else if(module2->GetPriority() > module->GetPriority() || module->GetIsFallback()){
 				module = module2;
 			}
-		}
+		});
 	}
 	
 	if(!module){

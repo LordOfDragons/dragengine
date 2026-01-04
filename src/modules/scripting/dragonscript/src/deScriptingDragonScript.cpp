@@ -1934,7 +1934,7 @@ void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
 	}
 	
 	deVirtualFileSystem &vfs = *GetGameEngine()->GetVirtualFileSystem();
-	if(vfs.HasContainer(pVFSContainerHideScriptDirectory)){
+	if(vfs.GetContainers().Has(pVFSContainerHideScriptDirectory)){
 		vfs.RemoveContainer(pVFSContainerHideScriptDirectory);
 	}
 	pVFSContainerHideScriptDirectory = nullptr;

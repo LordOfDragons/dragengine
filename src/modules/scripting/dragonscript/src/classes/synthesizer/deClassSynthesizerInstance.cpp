@@ -133,7 +133,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassSynthesizerInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
 	
-	rt->PushInt(instance.GetControllerCount());
+	rt->PushInt(instance.GetControllers().GetCount());
 }
 
 // public func SynthesizerController getControllerAt( int index )
@@ -149,7 +149,7 @@ void deClassSynthesizerInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, d
 	
 	if(index < 0){
 		ds.GetClassSynthesizerController()->PushController(rt, instance,
-			instance->GetControllerCount() + index);
+			instance->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassSynthesizerController()->PushController(rt, instance, index);
@@ -209,17 +209,17 @@ void deClassSynthesizerInstance::nfCopyControllerStates::RunFunction(dsRunTime *
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() < count){
-		count = instance.GetControllerCount();
+	if(instance.GetControllers().GetCount() < count){
+		count = instance.GetControllers().GetCount();
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		instance.GetControllerAt(i)->SetCurve(sourceInstance->GetControllerAt(i)->GetCurve());
+		instance.GetControllers().GetAt(i)->SetCurve(sourceInstance->GetControllers().GetAt(i)->GetCurve());
 		instance.NotifyControllerChangedAt(i);
 	}
 }
@@ -251,17 +251,17 @@ void deClassSynthesizerInstance::nfCopyControllerStates2::RunFunction(dsRunTime 
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() - offset < count){
-		count = instance.GetControllerCount() - offset;
+	if(instance.GetControllers().GetCount() - offset < count){
+		count = instance.GetControllers().GetCount() - offset;
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		instance.GetControllerAt(offset + i)->SetCurve(sourceInstance->GetControllerAt(i)->GetCurve());
+		instance.GetControllers().GetAt(offset + i)->SetCurve(sourceInstance->GetControllers().GetAt(i)->GetCurve());
 		instance.NotifyControllerChangedAt(i);
 	}
 }
@@ -281,17 +281,17 @@ void deClassSynthesizerInstance::nfCopyNamedControllerStates::RunFunction(dsRunT
 		DSTHROW(dueNullPointer);
 	}
 	
-	const int count = sourceInstance->GetControllerCount();
+	const int count = sourceInstance->GetControllers().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deSynthesizerController &sourceController = *sourceInstance->GetControllerAt(i);
+		const deSynthesizerController &sourceController = *sourceInstance->GetControllers().GetAt(i);
 		const int index = instance.IndexOfControllerNamed(sourceController.GetName());
 		if(index == -1){
 			continue;
 		}
 		
-		instance.GetControllerAt(index)->SetCurve(sourceController.GetCurve());
+		instance.GetControllers().GetAt(index)->SetCurve(sourceController.GetCurve());
 		instance.NotifyControllerChangedAt(index);
 	}
 }

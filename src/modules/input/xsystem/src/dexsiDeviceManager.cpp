@@ -86,40 +86,16 @@ void dexsiDeviceManager::UpdateDeviceList(){
 
 
 
-int dexsiDeviceManager::GetCount() const{
-	return pDevices.GetCount();
-}
-
-dexsiDevice *dexsiDeviceManager::GetAt(int index) const{
-	return (dexsiDevice*)pDevices.GetAt(index);
-}
-
 dexsiDevice *dexsiDeviceManager::GetWithID(const char *id){
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dexsiDevice * const device = (dexsiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return device;
-		}
-	}
-	
-	return NULL;
+	return pDevices.FindOrDefault([&](const dexsiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int dexsiDeviceManager::IndexOfWithID(const char *id){
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dexsiDevice * const device = (dexsiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const dexsiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 
@@ -128,52 +104,43 @@ void dexsiDeviceManager::Update(){
 	pUpdateDelayProbeDevices();
 	pUpdateWatchEvdev();
 	
-	const int deviceCount = pDevices.GetCount();
-	int i;
-	for(i=0; i<deviceCount; i++){
-		((dexsiDevice*)pDevices.GetAt(i))->Update();
-	}
+	pDevices.Visit([](dexsiDevice &device){
+		device.Update();
+	});
 }
 
 void dexsiDeviceManager::LogDevices(){
 	pModule.LogInfo("Input Devices:");
 	
-	const int count = pDevices.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		LogDevice(*((dexsiDevice*)pDevices.GetAt(i)));
-	}
+	pDevices.Visit([&](dexsiDevice &device){
+		LogDevice(device);
+	});
 }
 
 void dexsiDeviceManager::LogDevice(const dexsiDevice &device){
 	pModule.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
 		device.GetID().GetString(), device.GetType());
 	
-	const int axisCount = device.GetAxisCount();
-	int i;
-	if(axisCount > 0){
+	if(device.GetAxes().IsNotEmpty()){
 		pModule.LogInfo("  Axes:");
-		for(i=0; i<axisCount; i++){
-			const dexsiDeviceAxis &axis = *device.GetAxisAt(i);
+		device.GetAxes().Visit([&](const dexsiDeviceAxis &axis){
 			pModule.LogInfoFormat("    - '%s' (%s)[%d] %d .. %d [%d %d]",
 				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetType(),
 				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat());
-		}
+		});
 	}
 	
-	const int buttonCount = device.GetButtonCount();
-	if(buttonCount > 0){
+	if(device.GetButtons().IsNotEmpty()){
 		if(device.GetType() == deInputDevice::edtKeyboard){
-			pModule.LogInfoFormat("  Keys: %d", buttonCount);
+			pModule.LogInfoFormat("  Keys: %d", device.GetButtons().GetCount());
 			
 		}else{
 			pModule.LogInfo("  Buttons:");
-			for(i=0; i<buttonCount; i++){
-				const dexsiDeviceButton &button = *device.GetButtonAt(i);
+			device.GetButtons().VisitIndexed([&](int i, const dexsiDeviceButton &button){
 				pModule.LogInfoFormat("    - '%s' (%s)[%d] %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
 					button.GetType(), button.GetEvdevCode(), i);
-			}
+			});
 		}
 	}
 }
@@ -427,7 +394,7 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 				
 				// devices without buttons and axes are not interesting to us. this weeds out
 				// non-input devices like audio devices
-				if(device->GetButtonCount() == 0 && device->GetAxisCount() == 0){
+				if(device->GetButtons().IsEmpty() && device->GetAxes().IsEmpty()){
 					continue;
 				}
 				

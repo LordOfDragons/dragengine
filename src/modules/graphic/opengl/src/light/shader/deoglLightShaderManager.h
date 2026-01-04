@@ -27,13 +27,14 @@
 
 #include "deoglLightShader.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
 class deoglLightShaderConfig;
 class deoglShaderUnitSourceCode;
+class deoglSkinShader;
 
 
 
@@ -85,7 +86,7 @@ private:
 	
 	
 	deoglRenderThread &pRenderThread;
-	decObjectOrderedSet pShaderList;
+	decTObjectOrderedSet<deoglLightShader> pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
 	decTList<cPrepareShader*> pPrepareShaders;

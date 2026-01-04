@@ -182,6 +182,7 @@ void reTemporaryConstraint::SetAngularUpperLimits(const decVector &upperLimits){
 
 void reTemporaryConstraint::pNotifyConstraintChanged(){
 	if(pEngSimCollider && pEngConstraint){
-		pEngSimCollider->NotifyConstraintChanged(pEngSimCollider->IndexOfConstraint(pEngConstraint));
+		pEngSimCollider->NotifyConstraintChanged(
+			pEngSimCollider->GetConstraints().IndexOf(pEngConstraint));
 	}
 }

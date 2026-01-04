@@ -26,7 +26,7 @@
 #define _DEBIDEVICE_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/resources/image/deImage.h>
@@ -68,11 +68,11 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
 	decString pDisplayText;
 	
-	decObjectOrderedSet pButtons;
-	decObjectOrderedSet pAxes;
+	decTObjectOrderedSet<debiDeviceButton> pButtons;
+	decTObjectOrderedSet<debiDeviceAxis> pAxes;
 	
 	bool pDirtyAxesValues;
 	
@@ -138,7 +138,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -151,11 +151,8 @@ public:
 	
 	
 	
-	/** \brief Number of buttons. */
-	int GetButtonCount() const;
-	
-	/** \brief Button at index. */
-	debiDeviceButton *GetButtonAt(int index) const;
+	/** \brief Buttons. */
+	inline const decTObjectOrderedSet<debiDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** \brief Button with identifier or \em NULL if absent. */
 	debiDeviceButton *GetButtonWithID(const char *id) const;
@@ -171,11 +168,8 @@ public:
 	
 	
 	
-	/** \brief Number of axiss. */
-	int GetAxisCount() const;
-	
-	/** \brief Axis at index. */
-	debiDeviceAxis *GetAxisAt(int index) const;
+	/** \brief Axes. */
+	inline const decTObjectOrderedSet<debiDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
 	debiDeviceAxis *GetAxisWithID(const char *id) const;

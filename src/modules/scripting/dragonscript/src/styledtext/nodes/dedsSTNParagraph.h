@@ -27,7 +27,7 @@
 
 #include "dedsStyledTextNode.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pNodes;
+	decTObjectOrderedSet<dedsStyledTextNode> pNodes;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -53,14 +53,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the number of child nodes. */
-	int GetNodeCount() const;
-	/** Retrieves the child node at the given index. */
-	dedsStyledTextNode *GetNodeAt(int index) const;
-	/** Retrieves the index of a child node or -1 if not found. */
-	int IndexOfNode(dedsStyledTextNode *node) const;
-	/** Determines if a child node exists in the container. */
-	bool HasNode(dedsStyledTextNode *node) const;
+	/** Nodes. */
+	inline const decTObjectOrderedSet<dedsStyledTextNode>& GetNodes() const{ return pNodes; }
+	
 	/** Adds a child node. */
 	void AddNode(dedsStyledTextNode *node);
 	/** Removes a child node. */

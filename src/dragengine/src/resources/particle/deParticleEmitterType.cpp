@@ -96,6 +96,35 @@ pSquaredVelocities(false)
 	}
 }
 
+deParticleEmitterType::deParticleEmitterType(const deParticleEmitterType &other) :
+deObject(other),
+pSkin(other.pSkin),
+pModel(other.pModel),
+pModelSkin(other.pModelSkin),
+pCastFrom(other.pCastFrom),
+pSimulationType(other.pSimulationType),
+pIntervalAsDistance(other.pIntervalAsDistance),
+pTrailEmitter(other.pTrailEmitter),
+pPhysicsSize(other.pPhysicsSize),
+pCollisionResponse(other.pCollisionResponse),
+pCollisionEmitter(other.pCollisionEmitter),
+pEmitMinImpulse(other.pEmitMinImpulse),
+pMaxLinearVelocity(other.pMaxLinearVelocity),
+pMaxAngularVelocity(other.pMaxAngularVelocity),
+pSquaredVelocities(other.pSquaredVelocities)
+{
+	int i;
+	for(i=0; i<=epBeamEnd; i++){
+		pParameters[i] = other.pParameters[i];
+	}
+	for(i=0; i<=eecAngularVelocity; i++){
+		pTrailControllers[i] = other.pTrailControllers[i];
+	}
+	for(i=0; i<=eecAngularVelocity; i++){
+		pEmitControllers[i] = other.pEmitControllers[i];
+	}
+}
+
 deParticleEmitterType::~deParticleEmitterType(){
 }
 

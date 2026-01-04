@@ -298,7 +298,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 void deClassAnimatorInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
 	
-	rt->PushInt(instance.GetControllerCount());
+	rt->PushInt(instance.GetControllers().GetCount());
 }
 
 // public func AnimatorController getControllerAt( int index )
@@ -314,7 +314,7 @@ void deClassAnimatorInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsVa
 	
 	if(index < 0){
 		ds.GetClassAnimatorController()->PushController(rt, instance,
-			instance->GetControllerCount() + index);
+			instance->GetControllers().GetCount() + index);
 		
 	}else{
 		ds.GetClassAnimatorController()->PushController(rt, instance, index);
@@ -373,18 +373,18 @@ void deClassAnimatorInstance::nfCopyControllerStates::RunFunction(dsRunTime *rt,
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() < count){
-		count = instance.GetControllerCount();
+	if(instance.GetControllers().GetCount() < count){
+		count = instance.GetControllers().GetCount();
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deAnimatorController &sourceController = sourceInstance->GetControllerAt(i);
-		deAnimatorController &controller = instance.GetControllerAt(i);
+		const deAnimatorController &sourceController = sourceInstance->GetControllers().GetAt(i);
+		deAnimatorController &controller = instance.GetControllers().GetAt(i);
 		
 		controller.SetCurrentValue(sourceController.GetCurrentValue());
 		controller.SetVector(sourceController.GetVector());
@@ -420,18 +420,18 @@ void deClassAnimatorInstance::nfCopyControllerStates2::RunFunction(dsRunTime *rt
 		DSTHROW(dueNullPointer);
 	}
 	
-	if(sourceInstance->GetControllerCount() < count){
-		count = sourceInstance->GetControllerCount();
+	if(sourceInstance->GetControllers().GetCount() < count){
+		count = sourceInstance->GetControllers().GetCount();
 	}
-	if(instance.GetControllerCount() - offset < count){
-		count = instance.GetControllerCount() - offset;
+	if(instance.GetControllers().GetCount() - offset < count){
+		count = instance.GetControllers().GetCount() - offset;
 	}
 	
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deAnimatorController &sourceController = sourceInstance->GetControllerAt(i);
-		deAnimatorController &controller = instance.GetControllerAt(offset + i);
+		const deAnimatorController &sourceController = sourceInstance->GetControllers().GetAt(i);
+		deAnimatorController &controller = instance.GetControllers().GetAt(offset + i);
 		
 		controller.SetCurrentValue(sourceController.GetCurrentValue());
 		controller.SetVector(sourceController.GetVector());
@@ -455,17 +455,17 @@ void deClassAnimatorInstance::nfCopyNamedControllerStates::RunFunction(dsRunTime
 		DSTHROW(dueNullPointer);
 	}
 	
-	const int count = sourceInstance->GetControllerCount();
+	const int count = sourceInstance->GetControllers().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		const deAnimatorController &sourceController = sourceInstance->GetControllerAt(i);
+		const deAnimatorController &sourceController = sourceInstance->GetControllers().GetAt(i);
 		const int index = instance.IndexOfControllerNamed(sourceController.GetName());
 		if(index == -1){
 			continue;
 		}
 		
-		deAnimatorController &controller = instance.GetControllerAt(index);
+		deAnimatorController &controller = instance.GetControllers().GetAt(index);
 		
 		controller.SetCurrentValue(sourceController.GetCurrentValue());
 		controller.SetVector(sourceController.GetVector());

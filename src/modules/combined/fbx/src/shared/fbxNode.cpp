@@ -93,20 +93,10 @@ void fbxNode::SetName(const char *name){
 
 
 
-int fbxNode::GetPropertyCount() const{
-	return pProperties.GetCount();
-}
-
-fbxProperty *fbxNode::GetPropertyAt(int index) const{
-	return (fbxProperty*)pProperties.GetAt(index);
-}
-
-
-
 bool fbxNode::GetPropertyBoolIf(const char *name, bool &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->GetValueAsBool();
+		value = node->pProperties.GetAt(4)->GetValueAsBool();
 		return true;
 		
 	}else{
@@ -117,7 +107,7 @@ bool fbxNode::GetPropertyBoolIf(const char *name, bool &value) const{
 bool fbxNode::GetPropertyIntIf(const char *name, int &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->GetValueAsInt();
+		value = node->pProperties.GetAt(4)->GetValueAsInt();
 		return true;
 		
 	}else{
@@ -128,7 +118,7 @@ bool fbxNode::GetPropertyIntIf(const char *name, int &value) const{
 bool fbxNode::GetPropertyLongIf(const char *name, int64_t &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->GetValueAsLong();
+		value = node->pProperties.GetAt(4)->GetValueAsLong();
 		return true;
 		
 	}else{
@@ -139,7 +129,7 @@ bool fbxNode::GetPropertyLongIf(const char *name, int64_t &value) const{
 bool fbxNode::GetPropertyFloatIf(const char *name, float &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->GetValueAsFloat();
+		value = node->pProperties.GetAt(4)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -150,7 +140,7 @@ bool fbxNode::GetPropertyFloatIf(const char *name, float &value) const{
 bool fbxNode::GetPropertyDoubleIf(const char *name, double &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->GetValueAsDouble();
+		value = node->pProperties.GetAt(4)->GetValueAsDouble();
 		return true;
 		
 	}else{
@@ -161,7 +151,7 @@ bool fbxNode::GetPropertyDoubleIf(const char *name, double &value) const{
 bool fbxNode::GetPropertyStringIf(const char *name, decString &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value = node->GetPropertyAt(4)->CastString().GetValue();
+		value = node->pProperties.GetAt(4)->CastString().GetValue();
 		return true;
 		
 	}else{
@@ -172,9 +162,9 @@ bool fbxNode::GetPropertyStringIf(const char *name, decString &value) const{
 bool fbxNode::GetPropertyVectorIf(const char *name, decVector &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value.x = node->GetPropertyAt(4)->GetValueAsFloat();
-		value.y = node->GetPropertyAt(5)->GetValueAsFloat();
-		value.z = node->GetPropertyAt(6)->GetValueAsFloat();
+		value.x = node->pProperties.GetAt(4)->GetValueAsFloat();
+		value.y = node->pProperties.GetAt(5)->GetValueAsFloat();
+		value.z = node->pProperties.GetAt(6)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -185,9 +175,9 @@ bool fbxNode::GetPropertyVectorIf(const char *name, decVector &value) const{
 bool fbxNode::GetPropertyColorIf(const char *name, decColor &value) const{
 	const fbxNode * const node = pProp70Named(name);
 	if(node){
-		value.r = node->GetPropertyAt(4)->GetValueAsFloat();
-		value.g = node->GetPropertyAt(5)->GetValueAsFloat();
-		value.b = node->GetPropertyAt(6)->GetValueAsFloat();
+		value.r = node->pProperties.GetAt(4)->GetValueAsFloat();
+		value.g = node->pProperties.GetAt(5)->GetValueAsFloat();
+		value.b = node->pProperties.GetAt(6)->GetValueAsFloat();
 		return true;
 		
 	}else{
@@ -202,7 +192,7 @@ bool fbxNode::GetPropertyBool(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->GetValueAsBool();
+	return node->pProperties.GetAt(4)->GetValueAsBool();
 }
 
 int fbxNode::GetPropertyInt(const char *name) const{
@@ -210,7 +200,7 @@ int fbxNode::GetPropertyInt(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->GetValueAsInt();
+	return node->pProperties.GetAt(4)->GetValueAsInt();
 }
 
 int64_t fbxNode::GetPropertyLong(const char *name) const{
@@ -218,7 +208,7 @@ int64_t fbxNode::GetPropertyLong(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->GetValueAsLong();
+	return node->pProperties.GetAt(4)->GetValueAsLong();
 }
 
 float fbxNode::GetPropertyFloat(const char *name) const{
@@ -226,7 +216,7 @@ float fbxNode::GetPropertyFloat(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->GetValueAsFloat();
+	return node->pProperties.GetAt(4)->GetValueAsFloat();
 }
 
 double fbxNode::GetPropertyDouble(const char *name) const{
@@ -234,7 +224,7 @@ double fbxNode::GetPropertyDouble(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->GetValueAsDouble();
+	return node->pProperties.GetAt(4)->GetValueAsDouble();
 }
 
 const decString &fbxNode::GetPropertyString(const char *name) const{
@@ -242,7 +232,7 @@ const decString &fbxNode::GetPropertyString(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return node->GetPropertyAt(4)->CastString().GetValue();
+	return node->pProperties.GetAt(4)->CastString().GetValue();
 }
 
 decVector fbxNode::GetPropertyVector(const char *name) const{
@@ -250,9 +240,9 @@ decVector fbxNode::GetPropertyVector(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return decVector(node->GetPropertyAt(4)->GetValueAsFloat(),
-		node->GetPropertyAt(5)->GetValueAsFloat(),
-		node->GetPropertyAt(6)->GetValueAsFloat());
+	return decVector(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat());
 }
 
 decColor fbxNode::GetPropertyColor(const char *name) const{
@@ -260,55 +250,55 @@ decColor fbxNode::GetPropertyColor(const char *name) const{
 	if(!node){
 		DETHROW_INFO(deeInvalidParam, decString("named property not found: ") + name);
 	}
-	return decColor(node->GetPropertyAt(4)->GetValueAsFloat(),
-		node->GetPropertyAt(5)->GetValueAsFloat(),
-		node->GetPropertyAt(6)->GetValueAsFloat());
+	return decColor(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat());
 }
 
 
 
 bool fbxNode::GetPropertyBool(const char *name, bool defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->GetValueAsBool() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->GetValueAsBool() : defaultValue;
 }
 
 int fbxNode::GetPropertyInt(const char *name, int defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->GetValueAsInt() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->GetValueAsInt() : defaultValue;
 }
 
 int64_t fbxNode::GetPropertyLong(const char *name, int64_t defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->GetValueAsLong() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->GetValueAsLong() : defaultValue;
 }
 
 float fbxNode::GetPropertyFloat(const char *name, float defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->GetValueAsFloat() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->GetValueAsFloat() : defaultValue;
 }
 
 double fbxNode::GetPropertyDouble(const char *name, double defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->GetValueAsDouble() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->GetValueAsDouble() : defaultValue;
 }
 
 const decString &fbxNode::GetPropertyString(const char *name, const decString &defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? node->GetPropertyAt(4)->CastString().GetValue() : defaultValue;
+	return node ? node->pProperties.GetAt(4)->CastString().GetValue() : defaultValue;
 }
 
 decVector fbxNode::GetPropertyVector(const char *name, const decVector &defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? decVector(node->GetPropertyAt(4)->GetValueAsFloat(),
-		node->GetPropertyAt(5)->GetValueAsFloat(),
-		node->GetPropertyAt(6)->GetValueAsFloat()) : defaultValue;
+	return node ? decVector(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat()) : defaultValue;
 }
 
 decColor fbxNode::GetPropertyColor(const char *name, const decColor &defaultValue) const{
 	const fbxNode * const node = pProp70Named(name);
-	return node ? decColor(node->GetPropertyAt(4)->GetValueAsFloat(),
-		node->GetPropertyAt(5)->GetValueAsFloat(),
-		node->GetPropertyAt(6)->GetValueAsFloat()) : defaultValue;
+	return node ? decColor(node->pProperties.GetAt(4)->GetValueAsFloat(),
+		node->pProperties.GetAt(5)->GetValueAsFloat(),
+		node->pProperties.GetAt(6)->GetValueAsFloat()) : defaultValue;
 }
 
 
@@ -345,14 +335,6 @@ void fbxNode::SetID(int64_t id){
 }
 
 
-
-int fbxNode::GetNodeCount() const{
-	return pNodes.GetCount();
-}
-
-fbxNode *fbxNode::GetNodeAt(int index) const{
-	return (fbxNode*)pNodes.GetAt(index);
-}
 
 void fbxNode::AddNode(fbxNode *node){
 	pNodes.Add(node);
@@ -411,18 +393,18 @@ void fbxNode::Prepare(deBaseModule &module){
 	int i;
 	
 	for(i=0; i<nodeCount; i++){
-		GetNodeAt(i)->Prepare(module);
+		pNodes.GetAt(i)->Prepare(module);
 	}
 	
 	pNodeProperties70 = FirstNodeNamedOrNull("Properties70");
 	if(pNodeProperties70){
-		const int count = pNodeProperties70->GetNodeCount();
+		const int count = pNodeProperties70->GetNodes().GetCount();
 		for(i=0; i<count; i++){
-			const fbxNode &node = *pNodeProperties70->GetNodeAt(i);
+			const fbxNode &node = *pNodeProperties70->pNodes.GetAt(i);
 			if(node.GetName() != "P"){
 				DETHROW_INFO(deeInvalidFileFormat, "properties70: entry is not named 'P'");
 			}
-			if(node.GetPropertyCount() < 4 /*5*/){
+			if(node.GetProperties().GetCount() < 4 /*5*/){
 				DETHROW_INFO(deeInvalidFileFormat, "properties70: entry has less than 4 properties");
 			}
 		}
@@ -444,23 +426,23 @@ void fbxNode::DebugPrintStructure(deBaseModule &module, const decString &prefix,
 		module.LogInfoFormat("%sNode (%s):", prefix.GetString(), pName.GetString());
 		
 		for(i=0; i<propertyCount; i++){
-			GetPropertyAt(i)->DebugPrintStructure(module, childPrefix);
+			pProperties.GetAt(i)->DebugPrintStructure(module, childPrefix);
 		}
 		
 		for(i=0; i<nodeCount; i++){
-			GetNodeAt(i)->DebugPrintStructure(module, childPrefix, true);
+			pNodes.GetAt(i)->DebugPrintStructure(module, childPrefix, true);
 		}
 		
 	}else{
 		decStringList properties;
 		for(i=0; i<propertyCount; i++){
-			properties.Add(GetPropertyAt(i)->DebugTypeName());
+			properties.Add(pProperties.GetAt(i)->DebugTypeName());
 		}
 		module.LogInfoFormat("%sNode (%s): %s", prefix.GetString(),
 			pName.GetString(), DEJoin(properties, ", ").GetString());
 		
 		for(i=0; i<nodeCount; i++){
-			GetNodeAt(i)->DebugPrintStructure(module, childPrefix, false);
+			pNodes.GetAt(i)->DebugPrintStructure(module, childPrefix, false);
 		}
 	}
 }
@@ -547,12 +529,12 @@ fbxNode *fbxNode::pProp70Named(const char* name) const{
 		return NULL;
 	}
 	
-	const int count = pNodeProperties70->GetNodeCount();
+	const int count = pNodeProperties70->GetNodes().GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		fbxNode * const node = pNodeProperties70->GetNodeAt(i);
-		if(node->GetPropertyAt(0)->CastString().GetValue() == name){
+		fbxNode * const node = pNodeProperties70->pNodes.GetAt(i);
+		if(node->pProperties.GetAt(0)->CastString().GetValue() == name){
 			return node;
 		}
 	}

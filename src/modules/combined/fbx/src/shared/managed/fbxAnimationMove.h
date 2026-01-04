@@ -56,7 +56,7 @@ private:
 	int64_t pNodeStackID;
 	fbxNode *pNodeLayer;
 	int64_t pNodeLayerID;
-	decObjectOrderedSet pCurveNodes;
+	decTObjectOrderedSet<fbxAnimationMoveCurves> pCurveNodes;
 	
 	decString pName;
 	int pFrameRate;
@@ -102,11 +102,8 @@ public:
 	
 	
 	
-	/** \brief Count of curve nodes. */
-	int GetCurvesCount() const;
-	
-	/** \brief Curves at index. */
-	fbxAnimationMoveCurves *GetCurvesAt(int index) const;
+	/** \brief Curves. */
+	inline const decTObjectOrderedSet<fbxAnimationMoveCurves> &GetCurveNodes() const{ return pCurveNodes; }
 	
 	/** \brief Match curves against rig. */
 	void MatchRig(const fbxRig &rig);

@@ -115,13 +115,13 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
 	const int textureCount = skin.GetTextureCount();
-	const int mappedCount = skin.GetMappedCount();
+	const int mappedCount = skin.GetMapped().GetCount();
 	int i;
 	
 	try{
 		// created mapped
 		for(i=0; i<mappedCount; i++){
-			const deSkinMapped &mapped = *skin.GetMappedAt(i);
+			const deSkinMapped &mapped = *skin.GetMapped().GetAt(i);
 			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::New(mapped));
 			
 			if(mapped.GetInputType() == deSkinMapped::eitRenderable && !mapped.GetRenderable().IsEmpty()){

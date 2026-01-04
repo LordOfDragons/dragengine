@@ -27,6 +27,7 @@
 
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deBaseGraphicSky;
 class deSkyLayer;
@@ -59,14 +60,9 @@ public:
 private:
 	decColor pBgColor;
 	
-	deSkyController *pControllers;
-	int pControllerCount;
-	
-	deSkyLink *pLinks;
-	int pLinkCount;
-	
-	deSkyLayer *pLayers;
-	int pLayerCount;
+	decTObjectOrderedSet<deSkyController> pControllers;
+	decTObjectOrderedSet<deSkyLink> pLinks;
+	decTObjectOrderedSet<deSkyLayer> pLayers;
 	
 	deBaseGraphicSky *pPeerGraphic;
 	
@@ -104,8 +100,8 @@ public:
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSkyController> &GetControllers() const{ return pControllers; }
 	
 	/**
 	 * \brief Set number of controllers.
@@ -114,20 +110,16 @@ public:
 	 */
 	void SetControllerCount(int count);
 	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetControllerCount().
-	 */
-	deSkyController &GetControllerAt(int index) const;
-	
 	/** \brief Index of named controller or -1 if absent. */
 	int IndexOfControllerNamed(const char *name) const;
+	/*@}*/
 	
 	
 	
-	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	/** \name Links */
+	/*@{*/
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deSkyLink> &GetLinks() const{ return pLinks; }
 	
 	/**
 	 * \brief Set number of links.
@@ -135,18 +127,14 @@ public:
 	 * Sets all links to default vaules.
 	 */
 	void SetLinkCount(int count);
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetLinkCount().
-	 */
-	deSkyLink &GetLinkAt(int index) const;
+	/*@}*/
 	
 	
 	
-	/** \brief Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	/** \name Layers */
+	/*@{*/
+	/** \brief Layers. */
+	inline const decTObjectOrderedSet<deSkyLayer> &GetLayers() const{ return pLayers; }
 	
 	/**
 	 * \brief Set number of layers.
@@ -154,13 +142,6 @@ public:
 	 * Sets all links to default vaules.
 	 */
 	void SetLayerCount(int count);
-	
-	/**
-	 * \brief Layer at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetLayerCount().
-	 */
-	deSkyLayer &GetLayerAt(int index) const;
 	
 	
 	

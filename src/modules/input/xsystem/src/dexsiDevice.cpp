@@ -195,147 +195,67 @@ void dexsiDevice::SetDisplayText(const char *text){
 
 
 
-int dexsiDevice::GetButtonCount() const{
-	return pButtons.GetCount();
-}
-
 void dexsiDevice::AddButton(dexsiDeviceButton *button){
 	DEASSERT_NOTNULL(button)
 	pButtons.Add(button);
 }
 
-dexsiDeviceButton *dexsiDevice::GetButtonAt(int index) const{
-	return (dexsiDeviceButton*)pButtons.GetAt(index);
-}
-
 dexsiDeviceButton *dexsiDevice::GetButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dexsiDeviceButton * const button = (dexsiDeviceButton*)pButtons.GetAt(i);
-		if(button->GetID() == id){
-			return button;
-		}
-	}
-	
-	return NULL;
+	return pButtons.FindOrDefault([&](const dexsiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 dexsiDeviceButton *dexsiDevice::GetButtonWithX11Code(int code) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		dexsiDeviceButton * const button = (dexsiDeviceButton*)pButtons.GetAt(i);
-		if(button->GetX11Code() == code){
-			return button;
-		}
-	}
-	
-	return NULL;
+	return pButtons.FindOrDefault([&](const dexsiDeviceButton &button){
+		return button.GetX11Code() == code;
+	});
 }
 
 int dexsiDevice::IndexOfButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = *((dexsiDeviceButton*)pButtons.GetAt(i));
-		if(button.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int dexsiDevice::IndexOfButtonWithX11Code(int code) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = *((dexsiDeviceButton*)pButtons.GetAt(i));
-		if(button.GetX11Code() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pButtons.IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetX11Code() == code;
+	});
 }
 
 
-
-int dexsiDevice::GetAxisCount() const{
-	return pAxes.GetCount();
-}
 
 void dexsiDevice::AddAxis(dexsiDeviceAxis *axis){
 	DEASSERT_NOTNULL(axis)
 	pAxes.Add(axis);
 }
 
-dexsiDeviceAxis *dexsiDevice::GetAxisAt(int index) const{
-	return (dexsiDeviceAxis*)pAxes.GetAt(index);
-}
-
 dexsiDeviceAxis *dexsiDevice::GetAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dexsiDeviceAxis * const axis = (dexsiDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetID() == id){
-			return axis;
-		}
-	}
-	
-	return NULL;
+	return pAxes.FindOrDefault([&](const dexsiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 dexsiDeviceAxis *dexsiDevice::GetAxisWithX11Code(int code) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dexsiDeviceAxis * const axis = (dexsiDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetX11Code() == code){
-			return axis;
-		}
-	}
-	
-	return NULL;
+	return pAxes.FindOrDefault([&](const dexsiDeviceAxis &axis){
+		return axis.GetX11Code() == code;
+	});
 }
 
 int dexsiDevice::IndexOfAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const dexsiDeviceAxis &axis = *((dexsiDeviceAxis*)pAxes.GetAt(i));
-		if(axis.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const dexsiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int dexsiDevice::IndexOfAxisWithX11Code(int code) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const dexsiDeviceAxis &axis = *((dexsiDeviceAxis*)pAxes.GetAt(i));
-		if(axis.GetX11Code() == code){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pAxes.IndexOfMatching([&](const dexsiDeviceAxis &axis){
+		return axis.GetX11Code() == code;
+	});
 }
 
 
-
-int dexsiDevice::GetFeedbackCount() const{
-	return pFeedbacks.GetCount();
-}
 
 void dexsiDevice::AddFeedback(dexsiDeviceFeedback *feedback){
 	if(!feedback){
@@ -344,34 +264,16 @@ void dexsiDevice::AddFeedback(dexsiDeviceFeedback *feedback){
 	pFeedbacks.Add(feedback);
 }
 
-dexsiDeviceFeedback *dexsiDevice::GetFeedbackAt(int index) const{
-	return (dexsiDeviceFeedback*)pFeedbacks.GetAt(index);
-}
-
 dexsiDeviceFeedback *dexsiDevice::GetFeedbackWithID(const char *id) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		dexsiDeviceFeedback * const feedback = (dexsiDeviceFeedback*)pFeedbacks.GetAt(i);
-		if(feedback->GetID() == id){
-			return feedback;
-		}
-	}
-	
-	return NULL;
+	return pFeedbacks.FindOrDefault([&](const dexsiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 int dexsiDevice::IndexOfFeedbackWithID(const char *id) const{
-	const int count = pFeedbacks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const dexsiDeviceFeedback &feedback = *((dexsiDeviceFeedback*)pFeedbacks.GetAt(i));
-		if(feedback.GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pFeedbacks.IndexOfMatching([&](const dexsiDeviceFeedback &feedback){
+		return feedback.GetID() == id;
+	});
 }
 
 
@@ -424,37 +326,32 @@ void dexsiDevice::SetDirtyAxesValues(bool dirty){
 
 
 void dexsiDevice::GetInfo(deInputDevice &info) const{
-	int i;
-	
 	info.SetID(pID);
 	info.SetName(pName);
 	info.SetType(pType);
 	info.SetDisplayImage(pDisplayImage);
-	for(i=0; i<pDisplayIcons.GetCount(); i++){
-		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
-	}
+	pDisplayIcons.Visit([&](deImage *icon){
+		info.AddDisplayIcon(icon);
+	});
 	info.SetDisplayText(pDisplayText);
 	
 	info.SetDisplayModel(nullptr);
 	info.SetDisplaySkin(nullptr);
 	
-	const int buttonCount = pButtons.GetCount();
-	info.SetButtonCount(buttonCount);
-	for(i=0; i<buttonCount; i++){
-		((dexsiDeviceButton*)pButtons.GetAt(i))->GetInfo(info.GetButtonAt(i));
-	}
+	info.SetButtonCount(pButtons.GetCount());
+	pButtons.VisitIndexed([&](int i, const dexsiDeviceButton &button){
+		button.GetInfo(info.GetButtons().GetAt(i));
+	});
 	
-	const int axisCount = pAxes.GetCount();
-	info.SetAxisCount(axisCount);
-	for(i=0; i<axisCount; i++){
-		((dexsiDeviceAxis*)pAxes.GetAt(i))->GetInfo(info.GetAxisAt(i));
-	}
+	info.SetAxisCount(pAxes.GetCount());
+	pAxes.VisitIndexed([&](int i, const dexsiDeviceAxis &axis){
+		axis.GetInfo(info.GetAxes().GetAt(i));
+	});
 	
-	const int feedbackCount = pFeedbacks.GetCount();
-	info.SetFeedbackCount(feedbackCount);
-	for(i=0; i<feedbackCount; i++){
-		((dexsiDeviceFeedback*)pFeedbacks.GetAt(i))->GetInfo(info.GetFeedbackAt(i));
-	}
+	info.SetFeedbackCount(pFeedbacks.GetCount());
+	pFeedbacks.VisitIndexed([&](int i, const dexsiDeviceFeedback &feedback){
+		feedback.GetInfo(info.GetFeedbacks().GetAt(i));
+	});
 }
 
 void dexsiDevice::Update(){
@@ -467,11 +364,9 @@ void dexsiDevice::SendDirtyAxisEvents(){
 	
 	pDirtyAxesValues = false;
 	
-	const int axisCount = pAxes.GetCount();
-	int i;
-	for(i=0; i<axisCount; i++){
-		((dexsiDeviceAxis*)pAxes.GetAt(i))->SendEvents(*this);
-	}
+	pAxes.Visit([&](dexsiDeviceAxis &axis){
+		axis.SendEvents(*this);
+	});
 }
 
 

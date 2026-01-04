@@ -1324,7 +1324,7 @@ void delEngineInstanceThreaded::ReadDelgaPatchDefs(const char *delgaFile, decStr
 
 
 void delEngineInstanceThreaded::ReadDelgaFiles(const char *delgaFile,
-const decStringList &filenames, decObjectOrderedSet &filesContent){
+const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccReadDelgaFiles (delgaFile=%s) to process %i", delgaFile, (int)pProcessID);
 	

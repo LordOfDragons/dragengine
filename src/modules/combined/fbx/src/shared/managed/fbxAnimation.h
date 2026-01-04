@@ -29,7 +29,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -54,7 +54,7 @@ public:
 	
 private:
 	fbxScene &pScene;
-	decObjectOrderedSet pMoves;
+	decTObjectOrderedSet<fbxAnimationMove> pMoves;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animation. */
-	fbxAnimation(fbxScene &scene);
+	explicit fbxAnimation(fbxScene &scene);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -79,11 +79,8 @@ public:
 	
 	
 	
-	/** \brief Count of moves. */
-	int GetMoveCount() const;
-	
-	/** \brief Move at index. */
-	fbxAnimationMove *GetMoveAt(int index) const;
+	/** \brief Moves. */
+	inline const decTObjectOrderedSet<fbxAnimationMove> &GetMoves() const{ return pMoves; }
 	
 	/** \brief Named move or NULL if absent. */
 	fbxAnimationMove *GetMoveNamed(const char *name) const;

@@ -232,7 +232,7 @@ void deClassCollisionTester::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsV
 		DSTHROW(dueNullPointer);
 	}
 	
-	collisionTester.GetListIgnoreColliders().AddIfAbsent(collider);
+	collisionTester.GetListIgnoreColliders().Add(collider);
 }
 
 // public func void removeIgnoreCollider( Collider collider )
@@ -249,7 +249,7 @@ void deClassCollisionTester::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, 
 		DSTHROW(dueNullPointer);
 	}
 	
-	collisionTester.GetListIgnoreColliders().RemoveIfPresent(collider);
+	collisionTester.GetListIgnoreColliders().Remove(collider);
 }
 
 // public func void removeAllIgnoreColliders()

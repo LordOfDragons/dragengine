@@ -127,8 +127,8 @@ void gdeVAOComponent::Update(float elapsed){
 		return;
 	}
 	
-	if(pPlayback && pAnimator->GetControllerCount() > 0){
-		pAnimator->GetControllerAt(0).IncrementCurrentValue(elapsed);
+	if(pPlayback && pAnimator->GetControllers().IsNotEmpty()){
+		pAnimator->GetControllers().First()->IncrementCurrentValue(elapsed);
 	}
 	
 	pAnimator->Apply();
@@ -474,25 +474,19 @@ void gdeVAOComponent::pCreateAnimator(){
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		animator->SetAnimation(animation);
 		
-		deAnimatorController *controller = nullptr;
-		deAnimatorLink *link = nullptr;
-		
 		try{
-			controller = new deAnimatorController;
+			const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
 			controller->SetName(pOCComponent->GetPlaybackController());
 			controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
 			animator->AddController(controller);
 			
 		}catch(const deException &e){
-			if(controller){
-				delete controller;
-			}
 			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}
 		
 		try{
-			link = new deAnimatorLink;
+			const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
 			link->SetController(0);
 			
 			decCurveBezier curve;
@@ -501,9 +495,6 @@ void gdeVAOComponent::pCreateAnimator(){
 			animator->AddLink(link);
 			
 		}catch(const deException &e){
-			if(link){
-				delete link;
-			}
 			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}

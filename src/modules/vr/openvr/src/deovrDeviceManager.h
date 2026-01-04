@@ -27,7 +27,7 @@
 
 #include <openvr/openvr.h>
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deVROpenVR;
 class deovrDevice;
@@ -43,7 +43,7 @@ class deovrDeviceManager{
 private:
 	deVROpenVR &pOvr;
 	
-	decObjectOrderedSet pDevices;
+	decTObjectOrderedSet<deovrDevice> pDevices;
 	
 	vr::TrackedDevicePose_t pDevicePoses[vr::k_unMaxTrackedDeviceCount];
 	
@@ -71,11 +71,8 @@ public:
 	
 	
 	
-	/** Number of devices. */
-	int GetCount() const;
-	
-	/** Device at index. */
-	deovrDevice *GetAt(int index) const;
+	/** Devices. */
+	inline const decTObjectOrderedSet<deovrDevice> &GetDevices() const{ return pDevices; }
 	
 	/** Device with identifier or nullptr if absent. */
 	deovrDevice *GetWithID(const char *id) const;

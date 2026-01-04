@@ -38,7 +38,7 @@
 	#include <devkDevice.h>
 #endif	
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deMutex.h>
@@ -57,6 +57,7 @@ class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
 class deoglRRenderWindow;
+class deoglRCaptureCanvas;
 class deoglShadowMapper;
 class deoglTriangleSorter;
 class deoglPersistentRenderTaskPool;
@@ -116,8 +117,8 @@ private:
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
 	deoglMemoryManager pMemoryManager;
-	decObjectOrderedSet pRRenderWindowList;
-	decObjectOrderedSet pRCaptureCanvasList;
+	decTObjectOrderedSet<deoglRRenderWindow> pRRenderWindowList;
+	decTObjectOrderedSet<deoglRCaptureCanvas> pRCaptureCanvasList;
 	deoglRCanvasView::Ref pCanvasInputOverlay;
 	deoglRCanvasView::Ref pCanvasDebugOverlay;
 	deoglRCanvasView::Ref pCanvasOverlay;
@@ -272,10 +273,10 @@ public:
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
 	/** Render render window list. */
-	inline decObjectOrderedSet &GetRRenderWindowList(){ return pRRenderWindowList; }
+	inline decTObjectOrderedSet<deoglRRenderWindow> &GetRRenderWindowList(){ return pRRenderWindowList; }
 	
 	/** Rendr capture canvas list. */
-	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
+	inline decTObjectOrderedSet<deoglRCaptureCanvas> &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
 	/** Input overlay canvas view or nullptr. */
 	inline const deoglRCanvasView::Ref &GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }

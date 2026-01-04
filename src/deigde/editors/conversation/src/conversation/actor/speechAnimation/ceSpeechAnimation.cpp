@@ -155,13 +155,13 @@ void ceSpeechAnimation::CreateAnimator(){
 		const decString &moveName = phoneme.GetMoveName();
 		
 		// add a controller for the new viseme
-		const int controllerIndex = pEngAnimator->GetControllerCount();
+		const int controllerIndex = pEngAnimator->GetControllers().GetCount();
 		deAnimatorController * const controller = new deAnimatorController;
 		controller->SetName(moveName);
 		pEngAnimator->AddController(controller);
 		
 		// add a link for the new viseme
-		const int linkIndex = pEngAnimator->GetLinkCount();
+		const int linkIndex = pEngAnimator->GetLinks().GetCount();
 		deAnimatorLink * const engLink = new deAnimatorLink;
 		engLink->SetController(controllerIndex);
 		pEngAnimator->AddLink(engLink);
@@ -197,7 +197,7 @@ void ceSpeechAnimation::CreateAnimator(){
 
 void ceSpeechAnimation::Update(float elapsed){
 	if(pSpeaking){
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		const float wordGapTime = 2.0f;
 		const float windUpTime = 0.1f;
 		float blendFactor = 1.0f;
@@ -289,13 +289,13 @@ void ceSpeechAnimation::Update(float elapsed){
 		
 		for(i=0; i<controllerCount; i++){
 			if(i == controller1){
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(blendFactor);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(blendFactor);
 				
 			}else if(i == controller2){
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(1.0f - blendFactor);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f - blendFactor);
 				
 			}else{
-				pEngAnimatorInstance->GetControllerAt(i).SetCurrentValue(0.0f);
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 			}
 			
 			pEngAnimatorInstance->NotifyControllerChangedAt(i);

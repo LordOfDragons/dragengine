@@ -33,7 +33,7 @@
 #include "../action/deoxrAction.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDeviceButton.h>
@@ -84,10 +84,13 @@ private:
 	int pNameNumber;
 	decString pID, pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
-	decObjectOrderedSet pButtons, pAxes, pFeedbacks, pComponents;
+	decTObjectOrderedSet<deoxrDeviceButton> pButtons;
+	decTObjectOrderedSet<deoxrDeviceAxis> pAxes;
+	decTObjectOrderedSet<deoxrDeviceFeedback> pFeedbacks;
+	decTObjectOrderedSet<deoxrDeviceComponent> pComponents;
 	
 	deInputDevicePose pPoseDevice;
 	
@@ -184,7 +187,7 @@ public:
 	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
 	void SetDisplayImages(const char *name);
@@ -205,8 +208,8 @@ public:
 	
 	
 	
-	/** Number of buttons. */
-	int GetButtonCount() const;
+	/** Buttons. */
+	inline const decTObjectOrderedSet<deoxrDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** Add button. */
 	void AddButton(deoxrDeviceButton *button);
@@ -222,9 +225,6 @@ public:
 		deVROpenXR::eInputActions actionNear, const char *name, const char *id,
 		const char *displayText);
 	
-	/** Button at index. */
-	deoxrDeviceButton *GetButtonAt(int index) const;
-	
 	/** Button with identifier or nullptr if absent. */
 	deoxrDeviceButton *GetButtonWithID(const char *id) const;
 	
@@ -233,8 +233,8 @@ public:
 	
 	
 	
-	/** Number of axiss. */
-	int GetAxisCount() const;
+	/** Axes. */
+	inline const decTObjectOrderedSet<deoxrDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** Add axis. */
 	void AddAxis(deoxrDeviceAxis *axis);
@@ -256,9 +256,6 @@ public:
 	void AddAxesTrackpad(deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
 		const char *name, const char *id, const char *displayText);
 	
-	/** Axis at index. */
-	deoxrDeviceAxis *GetAxisAt(int index) const;
-	
 	/** Axis with identifier or nullptr if absent. */
 	deoxrDeviceAxis *GetAxisWithID(const char *id) const;
 	
@@ -267,22 +264,19 @@ public:
 	
 	
 	
-	/** Number of feedbacks. */
-	int GetFeedbackCount() const;
+	/** Feedbacks. */
+	inline const decTObjectOrderedSet<deoxrDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** Add feedback. */
 	void AddFeedback(deoxrDeviceFeedback *feedback);
-	
-	/** Feedback at index. */
-	deoxrDeviceFeedback *GetFeedbackAt(int index) const;
 	
 	/** Index of feedback with identifier or -1 if absent. */
 	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
 	
-	/** Number of components. */
-	int GetComponentCount() const;
+	/** Components. */
+	inline const decTObjectOrderedSet<deoxrDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/** Add component. */
 	void AddComponent(deoxrDeviceComponent *component);
@@ -290,9 +284,6 @@ public:
 	/** Add component. */
 	deoxrDeviceComponent *AddComponent(deInputDeviceComponent::eComponentTypes type,
 		const char *name, const char *id, const char *displayText);
-	
-	/** Component at index. */
-	deoxrDeviceComponent *GetComponentAt(int index) const;
 	
 	/** Index of component with identifier or -1 if absent. */
 	int IndexOfComponentWithID(const char *id) const;
