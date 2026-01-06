@@ -2977,7 +2977,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 					continue;
 				}
 				
-				const int targetIndex = rule->GetSubAnimator()->IndexOfControllerNamed(target);
+				const int targetIndex = rule->GetSubAnimator()->GetControllers().IndexOfNamed(target);
 				if(targetIndex == -1){
 					continue;
 				}

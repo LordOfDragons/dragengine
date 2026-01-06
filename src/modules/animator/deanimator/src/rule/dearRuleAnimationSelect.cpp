@@ -253,6 +253,6 @@ void dearRuleAnimationSelect::pUpdateMoves(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		pMoves.Add(animation->GetMoveNamed(moves.GetAt(i)));
+		pMoves.Add(animation->GetMoves().FindNamed(moves.GetAt(i)));
 	}
 }

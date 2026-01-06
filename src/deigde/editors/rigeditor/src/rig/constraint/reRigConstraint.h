@@ -94,10 +94,8 @@ private:
 	bool pDirtyPositions;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigConstraint> Ref;
-	
-	typedef decTObjectOrderedSet<reRigConstraint> List;
+	using Ref = deTObjectReference<reRigConstraint>;
+	using List = decTObjectOrderedSet<reRigConstraint>;
 	
 	
 	/** \name Constructors and Destructors */

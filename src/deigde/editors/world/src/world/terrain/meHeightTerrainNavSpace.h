@@ -74,8 +74,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<meHeightTerrainNavSpace> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainNavSpace> List;
+	using Ref = deTObjectReference<meHeightTerrainNavSpace>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meHeightTerrainNavSpace>,meHeightTerrainNavSpace>;
 	
 	
 	/** \name Constructors and Destructors */
@@ -205,15 +205,6 @@ public:
 	/*@{*/
 	/** Types. */
 	inline const meHeightTerrainNavSpaceType::List &GetTypes() const{ return pTypes; }
-	
-	/** Named type or \em nullptr if absent. */
-	meHeightTerrainNavSpaceType *GetTypeNamed(const char *name) const;
-	
-	/** Named type is present. */
-	bool HasTypeNamed(const char *name) const;
-	
-	/** Index of named type or -1 if absent. */
-	int IndexOfTypeNamed(const char *name) const;
 	
 	/** Add type. */
 	void AddType(meHeightTerrainNavSpaceType *type);

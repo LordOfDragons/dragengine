@@ -25,6 +25,7 @@
 #ifndef _IGDEGDCLASSMANAGER_H_
 #define _IGDEGDCLASSMANAGER_H_
 
+#include "igdeGDClass.h"
 #include "../igdeTagManager.h"
 #include "../igdeGDCategory.h"
 
@@ -32,7 +33,6 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
-class igdeGDClass;
 class igdeGDVisitor;
 class deLogger;
 
@@ -46,12 +46,8 @@ class deLogger;
  * information useful searching for the right class to use.
  */
 class DE_DLL_EXPORT igdeGDClassManager{
-public:
-	typedef decTObjectOrderedSet<igdeGDClass> ClassesList;
-	
-	
 private:
-	ClassesList pClasses;
+	igdeGDClass::List pClasses;
 	
 	igdeGDCategory::Ref pCategories;
 	
@@ -81,16 +77,7 @@ public:
 	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
 	/** \brief Classes list. */
-	inline const ClassesList &GetClasses() const{ return pClasses; }
-	
-	/** \brief Determines if a class with the given name exists. */
-	bool HasNamed(const char *name) const;
-	
-	/** \brief Index of the class with the given name or -1 if not found. */
-	int IndexOfNamed(const char *name) const;
-	
-	/** \brief Game class with the given name or nullptr if not found. */
-	igdeGDClass *GetNamed(const char *name) const;
+	inline const igdeGDClass::List &GetClasses() const{ return pClasses; }
 	
 	/** \brief Adds a new game class. */
 	void Add(igdeGDClass *gdClass);

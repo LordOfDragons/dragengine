@@ -33,6 +33,30 @@
 
 
 
+// Class igdeGDCategory::List
+///////////////////////////////
+
+igdeGDCategory *igdeGDCategory::List::FindWithPath(const decPath &path) const{
+	igdeGDCategory *category = nullptr;
+	
+	for(const auto &component : path.GetComponents()){
+		if(category){
+			category = category->pCategories.FindNamed(component);
+			
+		}else{
+			category = FindNamed(component);
+		}
+		
+		if(!category){
+			break;
+		}
+	}
+	
+	return category;
+}
+
+
+
 // Class igdeGDCategory
 /////////////////////////
 
@@ -102,64 +126,8 @@ igdeGDCategory *igdeGDCategory::AutoCategorize(const decString &path) const{
 // Children Categories
 ////////////////////////
 
-bool igdeGDCategory::HasCategory(igdeGDCategory *category) const{
-	return pCategories.Has(category);
-}
-
-bool igdeGDCategory::HasCategoryNamed(const char *name) const{
-	return IndexOfCategoryNamed(name) != -1;
-}
-
-int igdeGDCategory::IndexOfCategory(igdeGDCategory *category) const{
-	return pCategories.IndexOf(category);
-}
-
-int igdeGDCategory::IndexOfCategoryNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	return pCategories.IndexOfMatching([&](const igdeGDCategory &c){
-		return c.GetName() == name;
-	});
-}
-
-igdeGDCategory *igdeGDCategory::GetCategoryNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	
-	igdeGDCategory *result = nullptr;
-	pCategories.HasMatching([&](igdeGDCategory *c){
-		if(c->GetName() == name){
-			result = c;
-			return true;
-		}
-		return false;
-	});
-	return result;
-}
-
-igdeGDCategory *igdeGDCategory::GetCategoryWithPath(const decPath &path) const{
-	const int count = path.GetComponentCount();
-	igdeGDCategory *category = nullptr;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(category){
-			category = category->GetCategoryNamed(path.GetComponentAt(i));
-			
-		}else{
-			category = GetCategoryNamed(path.GetComponentAt(i));
-		}
-		
-		if(!category){
-			break;
-		}
-	}
-	
-	return category;
-}
-
 void igdeGDCategory::AddCategory(igdeGDCategory *category){
-	if(!category || HasCategoryNamed(category->GetName())){
+	if(!category || pCategories.HasNamed(category->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pCategories.Add(category);
@@ -190,7 +158,7 @@ void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
 	pHidden = category.GetHidden();
 	
 	category.GetCategories().Visit([&](const igdeGDCategory &childCategory){
-		igdeGDCategory *matchingCategory = GetCategoryNamed(childCategory.GetName());
+		igdeGDCategory *matchingCategory = pCategories.FindNamed(childCategory.GetName());
 		
 		if(!matchingCategory){
 			const igdeGDCategory::Ref newCategory(igdeGDCategory::Ref::New(childCategory.GetName()));

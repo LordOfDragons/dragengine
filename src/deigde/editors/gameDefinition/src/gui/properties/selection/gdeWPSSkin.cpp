@@ -85,9 +85,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetSkins().HasMatching([&](const gdeSkin &s){
-			return s.GetPath() == editPath->GetPath();
-		})){
+		if(pPanel.GetGameDefinition()->GetSkins().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change skin emitter path",
 				"A skin emitter with this path exists already.");
 			editPath->SetPath(skin->GetPath());
@@ -170,8 +168,7 @@ public:
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
-		gdeCategory * const category = gameDefinition.GetCategoriesSkin()
-			.GetWithPath(skin->GetCategory());
+		gdeCategory * const category = gameDefinition.GetCategoriesSkin().FindWithPath(skin->GetCategory());
 		if(!category){
 			return;
 		}
@@ -267,7 +264,7 @@ void gdeWPSSkin::UpdateCategoryList(){
 	pCBCategory->RemoveAllItems();
 	
 	if(pGameDefinition){
-		const gdeCategoryList &categories = pGameDefinition->GetCategoriesSkin();
+		const gdeCategory::List &categories = pGameDefinition->GetCategoriesSkin();
 		if(categories.GetCount() > 0){
 			UpdateCategoryList(categories, "");
 		}
@@ -280,7 +277,7 @@ void gdeWPSSkin::UpdateCategoryList(){
 	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
-void gdeWPSSkin::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
+void gdeWPSSkin::UpdateCategoryList(const gdeCategory::List &list, const char *prefix){
 	const int count = list.GetCount();
 	decString text;
 	int i;

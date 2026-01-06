@@ -92,7 +92,7 @@ void meASubclassAsEClass::OnAction(){
 		return;
 	}
 	
-	if(gamedefinition.GetClassManager()->HasNamed(classname)){
+	if(gamedefinition.GetClassManager()->GetClasses().HasNamed(classname)){
 		igdeCommonDialogs::Error(&pWindow, dialogTitle, "Object class exists already");
 		return;
 	}

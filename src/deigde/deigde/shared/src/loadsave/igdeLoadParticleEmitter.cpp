@@ -377,7 +377,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type){
 			}
 			if(type.GetTrailEmitter()){
 				type.SetTrailController(controller, type.GetTrailEmitter()->
-					IndexOfControllerNamed(GetCDataString(*tag)));
+					GetControllers().IndexOfNamed(GetCDataString(*tag)));
 			}
 			
 		}else if(strcmp(tag->GetName(), "physicsSize") == 0){
@@ -428,7 +428,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type){
 			}
 			if(type.GetCollisionEmitter()){
 				type.SetEmitController(controller, type.GetCollisionEmitter()->
-					IndexOfControllerNamed(GetCDataString(*tag)));
+					GetControllers().IndexOfNamed(GetCDataString(*tag)));
 			}
 			
 		}else if(strcmp(tag->GetName(), "parameter") == 0){

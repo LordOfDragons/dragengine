@@ -289,9 +289,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetSkin()->GetMapped().HasMatching([&value, mapped](const seMapped &m){
-			return m.GetName() == value;
-		})){
+		if(pPanel.GetSkin()->GetMapped().HasNamed(value)){
 			igdeCommonDialogs::Error(&pPanel, "Set Mapped Name", "Mapped name exists already");
 			textField->SetText(mapped->GetName());
 			return;

@@ -26,6 +26,7 @@
 #define _CEACTORCONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -37,7 +38,9 @@
 class ceActorController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceActorController> Ref;
+	using Ref = deTObjectReference<ceActorController>;
+	
+	using List = decTObjectOrderedSet<ceActorController>;
 	
 	
 public:

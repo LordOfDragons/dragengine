@@ -390,9 +390,9 @@ void peeType::UpdateEngineType(deParticleEmitterType &type){
 	};
 	for(i=0; i<4; i++){
 		type.SetTrailController(controllers[i], type.GetTrailEmitter()
-			? type.GetTrailEmitter()->IndexOfControllerNamed(pTrailControllers[i]) : -1);
+			? type.GetTrailEmitter()->GetControllers().IndexOfNamed(pTrailControllers[i]) : -1);
 		type.SetEmitController(controllers[i], type.GetCollisionEmitter()
-			? type.GetCollisionEmitter()->IndexOfControllerNamed(pEmitControllers[i]) : -1);
+			? type.GetCollisionEmitter()->GetControllers().IndexOfNamed(pEmitControllers[i]) : -1);
 	}
 	
 	const deParticleEmitterType::eParameters parameters[31] = {

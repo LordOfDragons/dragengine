@@ -70,12 +70,6 @@ fbxAnimation::~fbxAnimation(){
 // Management
 ///////////////
 
-fbxAnimationMove *fbxAnimation::GetMoveNamed(const char *name) const{
-	return pMoves.FindOrDefault([&](const fbxAnimationMove &move){
-		return move.GetName() == name;
-	});
-}
-
 void fbxAnimation::MatchRig(const fbxRig &rig){
 	pMoves.Visit([&](fbxAnimationMove &move){
 		move.MatchRig(rig);

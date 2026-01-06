@@ -40,10 +40,10 @@
 class gdeProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeProperty> Ref;
+	using Ref = deTObjectReference<gdeProperty>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeProperty> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<gdeProperty>,gdeProperty>;
 	
 	
 	/** \brief Property type. */

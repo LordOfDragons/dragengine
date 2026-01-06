@@ -50,12 +50,12 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeSkin> Ref;
-
+	using Ref = deTObjectReference<gdeSkin>;
+	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeSkin> List;
-
-
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<gdeSkin>,gdeSkin>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin. */

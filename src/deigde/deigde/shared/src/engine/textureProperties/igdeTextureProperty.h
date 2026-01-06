@@ -39,9 +39,10 @@
  */
 class DE_DLL_EXPORT igdeTextureProperty : public deObject{
 public:
-	typedef deTObjectReference<igdeTextureProperty> Ref;
+	using Ref = deTObjectReference<igdeTextureProperty>;
 	
-	typedef decTObjectOrderedSet<igdeTextureProperty> List;
+	/** \brief List of properties. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTextureProperty>,igdeTextureProperty>;
 	
 	/** \brief Value types. */
 	enum ePropertyTypes{

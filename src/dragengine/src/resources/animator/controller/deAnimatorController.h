@@ -26,6 +26,7 @@
 #define _DEANIMATORCONTROLLER_H_
 
 #include "../../../deObject.h"
+#include "../../../common/collection/decTOrderedSet.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
 
@@ -53,7 +54,10 @@
 class DE_DLL_EXPORT deAnimatorController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorController> Ref;
+	using Ref = deTObjectReference<deAnimatorController>;
+	
+	/** \brief List of controllers. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deAnimatorController>,deAnimatorController>;
 	
 	
 private:

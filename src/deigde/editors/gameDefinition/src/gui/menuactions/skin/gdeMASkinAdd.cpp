@@ -70,9 +70,7 @@ igdeUndo::Ref gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 		return {};
 	}
 	
-	if(gameDefinition.GetSkins().HasMatching([&](const gdeSkin &skin){
-		return skin.GetPath() == filename;
-	})){
+	if(gameDefinition.GetSkins().HasWithPath(filename)){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Skin", "Skin with path exists already.");
 		return {};
 	}

@@ -91,9 +91,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetSkies().HasMatching([&](const gdeSky &s){
-			return s.GetPath() == editPath->GetPath();
-		})){
+		if(pPanel.GetGameDefinition()->GetSkies().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change sky emitter path",
 				"A sky emitter with this path exists already.");
 			editPath->SetPath(sky->GetPath());
@@ -161,9 +159,7 @@ public:
 		decString name("Controller");
 		
 		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Controller", "Name:", name)){
-			if(list.HasMatching([&](const gdeSkyController &c){
-				return c.GetName() == name;
-			})){
+			if(list.HasNamed(name)){
 				igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Add Controller", "Controller exists already.");
 				continue;
 			}
@@ -249,9 +245,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetSky()->GetControllers().HasMatching([&](const gdeSkyController &c){
-			return c.GetName() == textField->GetText();
-		})){
+		if(pPanel.GetSky()->GetControllers().HasNamed(textField->GetText())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename controller",
 				"A controller with this name exists already.");
 			textField->SetText(controller->GetName());
@@ -318,8 +312,7 @@ public:
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
-		gdeCategory * const category = gameDefinition.GetCategoriesSky()
-			.GetWithPath(sky->GetCategory());
+		gdeCategory * const category = gameDefinition.GetCategoriesSky().FindWithPath(sky->GetCategory());
 		if(!category){
 			return;
 		}
@@ -426,10 +419,7 @@ gdeSkyController *gdeWPSSky::GetController() const{
 	}
 	
 	const decString &name = pCBController->GetSelectedItem()->GetText();
-	return pCBController->GetSelectedItem()
-		? sky->GetControllers().FindOrDefault([&](const gdeSkyController &c){
-			return c.GetName() == name;
-		}) : nullptr;
+	return pCBController->GetSelectedItem() ? sky->GetControllers().FindNamed(name) : nullptr;
 }
 
 
@@ -440,7 +430,7 @@ void gdeWPSSky::UpdateCategoryList(){
 	pCBCategory->RemoveAllItems();
 	
 	if(pGameDefinition){
-		const gdeCategoryList &categories = pGameDefinition->GetCategoriesSky();
+		const gdeCategory::List &categories = pGameDefinition->GetCategoriesSky();
 		if(categories.GetCount() > 0){
 			UpdateCategoryList(categories, "");
 		}
@@ -453,7 +443,7 @@ void gdeWPSSky::UpdateCategoryList(){
 	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
-void gdeWPSSky::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
+void gdeWPSSky::UpdateCategoryList(const gdeCategory::List &list, const char *prefix){
 	const int count = list.GetCount();
 	decString text;
 	int i;
@@ -515,10 +505,7 @@ void gdeWPSSky::UpdateController(){
 		pCBController->SortItems();
 		
 		if(!selectedController && pCBController->GetItems().IsNotEmpty()){
-			const decString &name = pCBController->GetItems().First()->GetText();
-			selectedController = controllers.FindOrDefault([&](const gdeSkyController &c){
-				return c.GetName() == name;
-			});
+			selectedController = controllers.FindNamed(pCBController->GetItems().First()->GetText());
 		}
 	}
 	

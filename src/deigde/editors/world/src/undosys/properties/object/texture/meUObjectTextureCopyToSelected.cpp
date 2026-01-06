@@ -52,7 +52,7 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(
 		DEASSERT_NOTNULL(object->GetWorld())
 		
 		const meUndoDataObjectTexture::Ref udata(meUndoDataObjectTexture::Ref::New(object));
-		udata->SetOldTexture(object->GetTextureNamed(textureName));
+		udata->SetOldTexture(object->GetTextures().FindNamed(textureName));
 		if(udata->GetOldTexture() != texture){
 			pList.Add(udata);
 		}

@@ -39,6 +39,16 @@
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
+// Class fbxRigBone::List
+///////////////////////////
+
+fbxRigBone *fbxRigBone::List::FindWithModelID(int64_t id) const{
+	return this->FindOrDefault([&](fbxRigBone &bone){
+		return bone.GetNodeModelID() == id;
+	});
+}
+
+
 // Class fbxRigBone
 /////////////////////
 
@@ -89,7 +99,7 @@ void fbxRigBone::Prepare(){
 			continue;
 		}
 		
-		fbxRigBone * const bone = pRig.GetBoneWithModelID(connection->GetTarget());
+		fbxRigBone * const bone = pRig.GetBones().FindWithModelID(connection->GetTarget());
 		if(bone){
 			pParent = bone;
 			break;

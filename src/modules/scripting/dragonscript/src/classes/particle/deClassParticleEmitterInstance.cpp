@@ -331,7 +331,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPEController){
 void deClassParticleEmitterInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitterInstance * const instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	const deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
-	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
+	const int index = instance->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
 		rt->PushObject(NULL, ds.GetClassParticleEmitterController());
@@ -349,7 +349,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassParticleEmitterInstance::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitterInstance * const instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
-	rt->PushInt(instance->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
+	rt->PushInt(instance->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString()));
 }
 
 // public func void copyControllerStates( ParticleEmitterInstance instance, int count )
@@ -459,7 +459,7 @@ void deClassParticleEmitterInstance::nfCopyNamedControllerStates::RunFunction(ds
 	
 	for(i=0; i<count; i++){
 		const deParticleEmitterController &sourceController = sourceInstance->GetControllers().GetAt(i);
-		const int index = instance.IndexOfControllerNamed(sourceController.GetName());
+		const int index = instance.GetControllers().IndexOfNamed(sourceController.GetName());
 		if(index == -1){
 			continue;
 		}

@@ -161,7 +161,7 @@ void ceTarget::GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSy
 	//coordinateSystem = decMatrix::CreateTranslation( pPosition )
 	//	* decMatrix::CreateRotation( pOrientation * DEG2RAD );
 	
-	const ceConversationActorList &actorList = playback.GetConversation().GetActorList();
+	const ceConversationActor::List &actorList = playback.GetConversation().GetActorList();
 	
 	// coordinate system
 	if(!pCoordSystem.IsEmpty()){

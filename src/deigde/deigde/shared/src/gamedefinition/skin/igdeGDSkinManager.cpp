@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDSkinManager::igdeGDSkinManager(){
-	pCategories = igdeGDCategory::Ref::New("Skins");
+igdeGDSkinManager::igdeGDSkinManager() :
+pCategories(igdeGDCategory::Ref::New("Skins")){
 }
 
 igdeGDSkinManager::~igdeGDSkinManager(){
@@ -57,70 +57,8 @@ igdeGDSkinManager::~igdeGDSkinManager(){
 // Management
 ///////////////
 
-bool igdeGDSkinManager::HasSkinWithPath(const char *path) const{
-	return IndexOfSkinWithPath(path) != -1;
-}
-
-bool igdeGDSkinManager::HasSkinWithName(const char *name) const{
-	return IndexOfSkinWithName(name) != -1;
-}
-
-bool igdeGDSkinManager::HasSkinWithPathOrName(const char *path, const char *name) const{
-	return IndexOfSkinWithPathOrName(path, name) != -1;
-}
-
-int igdeGDSkinManager::IndexOfSkinWithPath(const char *path) const{
-	DEASSERT_NOTNULL(path)
-	return pSkins.IndexOfMatching([&](const igdeGDSkin &skin){
-		return skin.GetPath() == path;
-	});
-}
-
-int igdeGDSkinManager::IndexOfSkinWithName(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	return pSkins.IndexOfMatching([&](const igdeGDSkin &skin){
-		return skin.GetName() == name;
-	});
-}
-
-int igdeGDSkinManager::IndexOfSkinWithPathOrName(const char *path, const char *name) const{
-	DEASSERT_NOTNULL(path)
-	DEASSERT_NOTNULL(name)
-	return pSkins.IndexOfMatching([&](const igdeGDSkin &skin){
-		return skin.GetPath() == path || skin.GetName() == name;
-	});
-}
-
-igdeGDSkin *igdeGDSkinManager::GetSkinWithPath(const char *path) const{
-	if(!path){
-		DETHROW(deeInvalidParam);
-	}
-	igdeGDSkin *result = nullptr;
-	pSkins.HasMatching([&](igdeGDSkin *skin){
-		if(skin->GetPath() == path){
-			result = skin;
-			return true;
-		}
-		return false;
-	});
-	return result;
-}
-
-igdeGDSkin *igdeGDSkinManager::GetSkinWithName(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	igdeGDSkin *result = nullptr;
-	pSkins.HasMatching([&](igdeGDSkin *skin){
-		if(skin->GetName() == name){
-			result = skin;
-			return true;
-		}
-		return false;
-	});
-	return result;
-}
-
 void igdeGDSkinManager::AddSkin(igdeGDSkin *skin){
-	if(!skin || HasSkinWithPathOrName(skin->GetPath(), skin->GetName())){
+	if(!skin || pSkins.HasWithPathOrName(skin->GetPath(), skin->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pSkins.Add(skin);
@@ -174,9 +112,9 @@ void igdeGDSkinManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStr
 
 void igdeGDSkinManager::UpdateWith(const igdeGDSkinManager &skinManager){
 	skinManager.GetSkins().Visit([&](const igdeGDSkin &otherSkin){
-		igdeGDSkin *skinCheck = GetSkinWithPath(otherSkin.GetPath());
+		igdeGDSkin *skinCheck = pSkins.FindWithPath(otherSkin.GetPath());
 		if(!skinCheck){
-			skinCheck = GetSkinWithName(otherSkin.GetName());
+			skinCheck = pSkins.FindNamed(otherSkin.GetName());
 		}
 		
 		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::New(otherSkin));
@@ -196,7 +134,7 @@ void igdeGDSkinManager::UpdateWith(const igdeGDSkinManager &skinManager){
 
 void igdeGDSkinManager::UpdateWithFound(const igdeGDSkinManager &skinManager){
 	skinManager.GetSkins().Visit([&](const igdeGDSkin &foundSkin){
-		if(GetSkinWithPath(foundSkin.GetPath())){
+		if(pSkins.FindWithPath(foundSkin.GetPath())){
 			return;
 		}
 		
@@ -228,7 +166,7 @@ public:
 		}
 		
 		const decString fullPath(path.GetPathUnix());
-		if(pOwner.HasSkinWithPath(fullPath)){
+		if(pOwner.GetSkins().HasWithPath(fullPath)){
 			return true;
 		}
 		

@@ -42,9 +42,8 @@ class igdeEnvironment;
  */
 class ceActorPose : public deObject{
 public:
-	typedef deTObjectReference<ceActorPose> Ref;
-	typedef decTObjectOrderedSet<ceActorGesture> GestureList;
-	typedef decTObjectOrderedSet<ceActorController> ControllerList;
+	using Ref = deTObjectReference<ceActorPose>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceActorPose>,ceActorPose>;
 	
 	
 private:
@@ -54,8 +53,8 @@ private:
 	decString pName;
 	decString pPathAnimator;
 	
-	ControllerList pControllers;
-	GestureList pGestures;
+	ceActorController::List pControllers;
+	ceActorGesture::List pGestures;
 	
 	decStringList pControllerNames;
 	
@@ -101,12 +100,12 @@ public:
 	void SetPathAnimator(const char *path);
 	
 	/** Controllers. */
-	inline ControllerList &GetControllers(){ return pControllers; }
-	inline const ControllerList &GetControllers() const{ return pControllers; }
+	inline ceActorController::List &GetControllers(){ return pControllers; }
+	inline const ceActorController::List &GetControllers() const{ return pControllers; }
 	
 	/** Gestures. */
-	inline GestureList &GetGestures(){ return pGestures; }
-	inline const GestureList &GetGestures() const{ return pGestures; }
+	inline ceActorGesture::List &GetGestures(){ return pGestures; }
+	inline const ceActorGesture::List &GetGestures() const{ return pGestures; }
 	
 	/** Controller names. */
 	inline const decStringList &GetControllerNames() const{ return pControllerNames; }

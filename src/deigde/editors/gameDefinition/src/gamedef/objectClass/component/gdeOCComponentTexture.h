@@ -51,19 +51,19 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCComponentTexture> Ref;
-
+	using Ref = deTObjectReference<gdeOCComponentTexture>;
+	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeOCComponentTexture> List;
-
-
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<gdeOCComponentTexture>,gdeOCComponentTexture>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object class component texture. */
 	gdeOCComponentTexture();
 	
 	/** \brief Create object class component texture. */
-	gdeOCComponentTexture(const char *name);
+	explicit gdeOCComponentTexture(const char *name);
 	
 	/** \brief Create copy of object class component texture. */
 	gdeOCComponentTexture(const gdeOCComponentTexture &texture);

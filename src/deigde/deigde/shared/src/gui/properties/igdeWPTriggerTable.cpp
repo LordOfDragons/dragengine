@@ -178,7 +178,7 @@ public:
 			? pPanel.GetSelectedTarget()->GetName().GetString() : "Target");
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
-			if(list->HasNamed(name)){
+			if(list->GetTargets().HasNamed(name)){
 				igdeCommonDialogs::Information(&pPanel, "Add Target",
 					"A target with this name exists already.");
 				continue;

@@ -81,7 +81,7 @@ void meWPSObjectListener::ObjectSelectionChanged(meWorld *world){
 		decStringList names;
 		object->GetTextureNameList(names);
 		names.SortAscending();
-		object->SetActiveTexture(object->GetTextureNamed(names.GetAt(0)));
+		object->SetActiveTexture(object->GetTextures().FindNamed(names.First()));
 		// the above call has already caused an update so no need to do it again
 		return;
 	}
@@ -167,7 +167,7 @@ void meWPSObjectListener::ObjectTextureCountChanged(meWorld*, meObject *object){
 		decStringList names;
 		object->GetTextureNameList(names);
 		names.SortAscending();
-		object->SetActiveTexture(object->GetTextureNamed(names.GetAt(0)));
+		object->SetActiveTexture(object->GetTextures().FindNamed(names.First()));
 		// the above call has already caused an update so no need to do it again
 		return;
 	}

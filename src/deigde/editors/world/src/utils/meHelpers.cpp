@@ -222,14 +222,10 @@ void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object, c
 	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent(object->GetGDClass());
 	const igdeGDCCTexture *gdctexture = nullptr;
 	if(gdcomponent){
-		gdctexture = gdcomponent->GetTextureList().FindOrDefault([&](const igdeGDCCTexture &t){
-			return t.GetName() == textureName;
-		});
+		gdctexture = gdcomponent->GetTextureList().FindNamed(textureName);
 	}
 	if(!gdctexture && object->GetGDClass()){
-		gdctexture = object->GetGDClass()->GetComponentTextures().FindOrDefault([&](const igdeGDCCTexture &t){
-			return t.GetName() == textureName;
-		});
+		gdctexture = object->GetGDClass()->GetComponentTextures().FindNamed(textureName);
 	}
 	meHelpers::CreateTexture(texture, object, textureName, gdctexture);
 }

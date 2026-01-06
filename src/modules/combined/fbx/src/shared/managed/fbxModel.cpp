@@ -198,7 +198,7 @@ void fbxModel::MatchClusters(const fbxRig &rig){
 				continue;
 			}
 			
-			cluster.SetRigBone(rig.GetBoneWithModelID(connection->GetSource()));
+			cluster.SetRigBone(rig.GetBones().FindWithModelID(connection->GetSource()));
 			if(cluster.GetRigBone()){
 				break;
 			}

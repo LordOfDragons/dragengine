@@ -44,10 +44,8 @@ class deEngine;
  */
 class seTexture : public deObject{
 public:
-	typedef deTObjectReference<seTexture> Ref;
-	
-	/** \brief List type. */
-	typedef decTOrderedSet<deTObjectReference<seTexture>, seTexture*> List;
+	using Ref = deTObjectReference<seTexture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seTexture>,seTexture>;
 	
 	
 private:

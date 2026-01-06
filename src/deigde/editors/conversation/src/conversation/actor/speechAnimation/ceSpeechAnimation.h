@@ -115,8 +115,8 @@ public:
 	inline const ceSAPhoneme::Map &GetPhonemes() const{ return pPhonemes; }
 	
 	/** Word list. */
-	inline ceSAWord::List &GetWordList(){ return pWords; }
-	inline const ceSAWord::List &GetWordList() const{ return pWords; }
+	inline ceSAWord::List &GetWords(){ return pWords; }
+	inline const ceSAWord::List &GetWords() const{ return pWords; }
 	
 	/** Remove all speak phonemes. */
 	void RemoveAllSpeakPhonemes();

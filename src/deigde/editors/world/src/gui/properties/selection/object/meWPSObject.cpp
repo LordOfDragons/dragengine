@@ -744,7 +744,8 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetActiveObject() && !pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
+		SetEnabled(pPanel.GetActiveObject()
+			&& !pPanel.GetActiveObject()->GetTextures().HasNamed(pTextureName));
 	}
 };
 
@@ -761,7 +762,8 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetActiveObject() && pPanel.GetActiveObject()->HasTextureNamed(pTextureName));
+		SetEnabled(pPanel.GetActiveObject()
+			&& pPanel.GetActiveObject()->GetTextures().HasNamed(pTextureName));
 	}
 };
 
@@ -835,7 +837,7 @@ public:
 	igdeUndo::Ref OnAction(meObject *object) override{
 		decString name;
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Texture", "Name:", name)){
-			if(object->HasTextureNamed(name)){
+			if(object->GetTextures().HasNamed(name)){
 				igdeCommonDialogs::Error(&pPanel, "Add Texture", "Texture name exists already");
 				continue;
 			}
@@ -877,7 +879,7 @@ public:
 			int i;
 			
 			for(i=0; i<count; i++){
-				if(!object->HasTextureNamed(textureNames.GetAt(i))){
+				if(!object->GetTextures().HasNamed(textureNames.GetAt(i))){
 					enabled = true;
 					break;
 				}
@@ -939,7 +941,7 @@ public:
 			int i;
 			
 			for(i=0; i<count; i++){
-				if(object->HasTextureNamed(textureNames.GetAt(i))){
+				if(object->GetTextures().HasNamed(textureNames.GetAt(i))){
 					enabled = true;
 					break;
 				}
@@ -1018,7 +1020,7 @@ public:
 		int i;
 		
 		for(i=0; i<count; i++){
-			const igdeGDClass * const gdclass = clsmgr.GetNamed(attachBehaviors.GetAt(i));
+			const igdeGDClass * const gdclass = clsmgr.GetClasses().FindNamed(attachBehaviors.GetAt(i));
 			if(!gdclass){
 				continue;
 			}
@@ -1047,7 +1049,7 @@ public:
 				int i;
 				
 				for(i=0; i<attachBehaviorCount; i++){
-					const igdeGDClass * const gdclass = classManager.GetNamed(attachBehaviors.GetAt(i));
+					const igdeGDClass * const gdclass = classManager.GetClasses().FindNamed(attachBehaviors.GetAt(i));
 					if(gdclass){
 						gdclass->AddPropertyNames(keys, true);
 					}
@@ -2053,9 +2055,7 @@ void meWPSObject::UpdateIdentifierLists(){
 	if(!property.IsEmpty()){
 		const igdeGDProperty * const gdProperty = pEditProperties->GetGDProperty(property);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindOrDefault([&](const meIDGroup &g){
-				return g.GetName() == gdProperty->GetIdentifierGroup();
-			});
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
 			if(idgroup){
 				idgroup->GetIDList().Visit([&](const decString &id){
 					identifiers.Add(id);
@@ -2071,9 +2071,7 @@ void meWPSObject::UpdateIdentifierLists(){
 	if(!texProperty.IsEmpty()){
 		const igdeGDProperty * const gdProperty = pEditProperties->GetGDProperty(texProperty);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindOrDefault([&](const meIDGroup &g){
-				return g.GetName() == gdProperty->GetIdentifierGroup();
-			});
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
 			if(idgroup){
 				idgroup->GetIDList().Visit([&](const decString &id){
 					identifiers.Add(id);

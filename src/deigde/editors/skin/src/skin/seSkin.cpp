@@ -411,9 +411,7 @@ void seSkin::AssignTextureSkins(){
 	
 	for(i=0; i<textureCount; i++){
 		const decString &name = engModel.GetTextureAt(i)->GetName();
-		seTexture * const texture = GetTextures().FindOrDefault([&](const seTexture &t){
-			return t.GetName() == name;
-		});
+		seTexture * const texture = GetTextures().FindNamed(name);
 		deComponentTexture &engComponentTexture = pEngComponent->GetTextureAt(i);
 		
 		if(texture){

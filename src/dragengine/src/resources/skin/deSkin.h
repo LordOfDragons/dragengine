@@ -25,12 +25,12 @@
 #ifndef _DESKIN_H_
 #define _DESKIN_H_
 
+#include "deSkinMapped.h"
 #include "../deFileResource.h"
 #include "../../common/collection/decTOrderedSet.h"
 
 class deSkinTexture;
 class deSkinManager;
-class deSkinMapped;
 
 class deBaseGraphicSkin;
 class deBaseAudioSkin;
@@ -62,7 +62,7 @@ private:
 	deSkinTexture **pTextures;
 	int pTextureCount, pTextureSize;
 	
-	decTObjectOrderedSet<deSkinMapped> pMapped;
+	deSkinMapped::List pMapped;
 	
 	deBaseGraphicSkin *pPeerGraphic;
 	deBaseAudioSkin *pPeerAudio;
@@ -110,16 +110,7 @@ public:
 	/** \name Mapped Values */
 	/*@{*/
 	/** \brief Mapped. */
-	inline const decTObjectOrderedSet<deSkinMapped> &GetMapped() const{ return pMapped; }
-	
-	/** \brief Named mapped value or nullptr. */
-	deSkinMapped *GetMappedNamed(const char *name) const;
-	
-	/** \brief Index of named mapped value or -1 if absent. */
-	int IndexOfMappedNamed(const char *name) const;
-	
-	/** \brief Named mapped value is present. */
-	bool HasMappedNamed(const char *name) const;
+	inline const deSkinMapped::List &GetMapped() const{ return pMapped; }
 	
 	/** \brief Add mapped value. */
 	void AddMapped(deSkinMapped *mapped);

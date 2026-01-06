@@ -429,7 +429,7 @@ public:
 			return {};
 		}
 		
-		igdeGDClass *gdClass = pPanel.GetGameDefinition()->GetClassManager()->GetNamed(pPanel.GetProp()->GetObjectClass());
+		igdeGDClass *gdClass = pPanel.GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(pPanel.GetProp()->GetObjectClass());
 		if(igdeDialogBrowserObjectClass::SelectObjectClass(&pPanel, gdClass)){
 			pPanel.GetProp()->SetObjectClass(gdClass->GetName());
 		}
@@ -2277,7 +2277,7 @@ void ceWPView::UpdateActors(){
 	
 	// actor list
 	if(pConversation){
-		const ceConversationActorList &list = pConversation->GetActorList();
+		const ceConversationActor::List &list = pConversation->GetActorList();
 		pSpinActor->SetRange(0, decMath::max(list.GetCount() - 1, 0));
 		pSpinActor->SetValue(actor ? list.IndexOf(actor) : 0);
 		
@@ -2527,7 +2527,7 @@ ceCoordSystem *ceWPView::GetCoordSys() const{
 
 void ceWPView::UpdateCoordSystems(){
 	if(pConversation){
-		const ceCoordSystemList &coordSystemList = pConversation->GetCoordSystemList();
+		const ceCoordSystem::List &coordSystemList = pConversation->GetCoordSystemList();
 		pSpinCoordSys->SetRange(0, decMath::max(coordSystemList.GetCount() - 1, 0));
 		
 		ceCoordSystem * const coordsys = pConversation->GetActiveCoordSystem();

@@ -269,9 +269,7 @@ void igdeGDClass::SetPathEClass(const decString &pathEClass){
 void igdeGDClass::GetDeepComponentTextures(igdeGDCCTexture::List &list) const{
 	pComponentTextures.Visit([&](const igdeGDCCTexture &t){
 		const decString &name = t.GetName();
-		if(!list.HasMatching([&name](const igdeGDCCTexture &t2){
-			return t2.GetName() == name;
-		})){
+		if(!list.HasNamed(name)){
 			list.Add(igdeGDCCTexture::Ref::New(t));
 		}
 	});
@@ -307,9 +305,7 @@ void igdeGDClass::SetPropertyValues(const decStringDictionary &values){
 
 igdeGDProperty *igdeGDClass::GetPropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty::Ref property(gdclass->pListProperties.FindOrDefault([&](const igdeGDProperty &p){
-		return p.GetName() == name;
-	}));
+	igdeGDProperty::Ref property(gdclass->pListProperties.FindNamed(name));
 	if(property){
 		return property;
 	}
@@ -344,9 +340,7 @@ bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) co
 		return true;
 	}
 	
-	const igdeGDProperty::Ref property(pListProperties.FindOrDefault([&](const igdeGDProperty &p){
-		return p.GetName() == name;
-	}));
+	const igdeGDProperty::Ref property(pListProperties.FindNamed(name));
 	if(property){
 		value = property->GetDefaultValue();
 		return true;
@@ -413,9 +407,7 @@ void igdeGDClass::RemoveAllTextureProperties(){
 
 igdeGDProperty *igdeGDClass::GetTexturePropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty::Ref property(gdclass->pTextureProperties.FindOrDefault([&](const igdeGDProperty &p){
-		return p.GetName() == name;
-	}));
+	igdeGDProperty::Ref property(gdclass->pTextureProperties.FindNamed(name));
 	if(property){
 		return property;
 	}
@@ -445,9 +437,7 @@ bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &va
 		DETHROW(deeInvalidParam);
 	}
 	
-	const igdeGDProperty::Ref property(pTextureProperties.FindOrDefault([&](const igdeGDProperty &p){
-		return p.GetName() == name;
-	}));
+	const igdeGDProperty::Ref property(pTextureProperties.FindNamed(name));
 	if(property){
 		value = property->GetDefaultValue();
 		return true;

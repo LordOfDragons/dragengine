@@ -25,6 +25,9 @@
 #ifndef _GDEWPSSKIN_H_
 #define _GDEWPSSKIN_H_
 
+#include "gdeWPSSkinListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -34,11 +37,8 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-#include "../../../gamedef/gdeGameDefinition.h"
 class gdeSkin;
-class gdeCategoryList;
 class gdeWindowProperties;
-#include "gdeWPSSkinListener.h"
 
 
 
@@ -97,7 +97,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList(const gdeCategoryList &list, const char *prefix);
+	void UpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 	
 	
 	

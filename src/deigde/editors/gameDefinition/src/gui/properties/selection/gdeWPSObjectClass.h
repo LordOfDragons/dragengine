@@ -25,8 +25,10 @@
 #ifndef _GDEWPSOBJECTCLASS_H_
 #define _GDEWPSOBJECTCLASS_H_
 
+#include "gdeWPSObjectClassListener.h"
 #include "../gdeWPTagList.h"
 #include "../gdeWPPropertyList.h"
+#include "../../../gamedef/gdeGameDefinition.h"
 
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
@@ -45,14 +47,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeFilePattern;
-#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeProperty;
 class gdeOCComponentTexture;
 class gdeOCInherit;
-class gdeCategoryList;
 class gdeWindowProperties;
-#include "gdeWPSObjectClassListener.h"
 
 
 /**
@@ -256,7 +255,7 @@ public:
 	
 private:
 	/** \brief Update category list. */
-	void pUpdateCategoryList(const gdeCategoryList &list, const char *prefix);
+	void pUpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 };
 
 #endif

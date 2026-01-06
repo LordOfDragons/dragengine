@@ -252,7 +252,7 @@ void deSkinModule::pParseSkin(const decXmlElementTag &root, deSkin &skin){
 				}else if(tag->GetName() == "mapped"){
 					const deSkinMapped::Ref mapped(pParseMapped(*tag));
 					
-					if(skin.HasMappedNamed(mapped->GetName())){
+					if(skin.GetMapped().HasNamed(mapped->GetName())){
 						LogErrorFormat("mapped(%i:%i): Duplicate mapped!",
 							tag->GetLineNumber(), tag->GetPositionNumber());
 						DETHROW(deeInvalidParam);
@@ -769,25 +769,25 @@ void deSkinModule::pParsePropertyMapped(const decXmlElementTag &root, deSkin &sk
 		}else if(tag->GetName() == "mappedRed"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				property.SetRed(skin.IndexOfMappedNamed(cdata->GetData()));
+				property.SetRed(skin.GetMapped().IndexOfNamed(cdata->GetData()));
 			}
 			
 		}else if(tag->GetName() == "mappedGreen"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				property.SetGreen(skin.IndexOfMappedNamed(cdata->GetData()));
+				property.SetGreen(skin.GetMapped().IndexOfNamed(cdata->GetData()));
 			}
 			
 		}else if(tag->GetName() == "mappedBlue"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				property.SetBlue(skin.IndexOfMappedNamed(cdata->GetData()));
+				property.SetBlue(skin.GetMapped().IndexOfNamed(cdata->GetData()));
 			}
 			
 		}else if(tag->GetName() == "mappedAlpha"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
-				property.SetAlpha(skin.IndexOfMappedNamed(cdata->GetData()));
+				property.SetAlpha(skin.GetMapped().IndexOfNamed(cdata->GetData()));
 			}
 			
 		}else{
@@ -1080,7 +1080,7 @@ const deSkin &skin, deSkinPropertyNode &node){
 			return true;
 		}
 		
-		const int index = skin.IndexOfMappedNamed(cdata->GetData());
+		const int index = skin.GetMapped().IndexOfNamed(cdata->GetData());
 		const char * const name = pGetAttributeString(tag, "name");
 		
 		if(strcmp(name, "positionX") == 0){
@@ -1297,7 +1297,7 @@ const deSkin &skin, deSkinPropertyNodeShape &shape){
 				return;
 			}
 			
-			const int index = skin.IndexOfMappedNamed(cdata->GetData());
+			const int index = skin.GetMapped().IndexOfNamed(cdata->GetData());
 			const char * const name = pGetAttributeString(*tag, "name");
 			
 			if(strcmp(name, "fillColorR") == 0){
@@ -1395,7 +1395,7 @@ const deSkin &skin, deSkinPropertyNodeText &text){
 				return;
 			}
 			
-			const int index = skin.IndexOfMappedNamed(cdata->GetData());
+			const int index = skin.GetMapped().IndexOfNamed(cdata->GetData());
 			const char * const name = pGetAttributeString(*tag, "name");
 			
 			if(strcmp(name, "fontSize") == 0){

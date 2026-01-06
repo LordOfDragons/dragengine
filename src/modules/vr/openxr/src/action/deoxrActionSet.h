@@ -50,7 +50,7 @@ private:
 	const decString pName;
 	const decString pLocalizedName;
 	XrActionSet pActionSet;
-	decTObjectOrderedSet<deoxrAction> pActions;
+	deoxrAction::List pActions;
 	
 	
 	
@@ -84,10 +84,7 @@ public:
 	inline XrActionSet GetActionSet() const{ return pActionSet; }
 	
 	/** Actions. */
-	inline const decTObjectOrderedSet<deoxrAction> &GetActions() const{ return pActions; }
-	
-	/** Named action or nullptr. */
-	deoxrAction *GetActionNamed(const char *name) const;
+	inline const deoxrAction::List &GetActions() const{ return pActions; }
 	
 	/** Add action. */
 	void AddAction(deoxrAction *action);

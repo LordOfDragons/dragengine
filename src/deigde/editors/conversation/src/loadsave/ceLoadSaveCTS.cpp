@@ -109,13 +109,13 @@ void ceLoadSaveCTS::pWriteCTS(decXmlWriter &writer, const ceConversation &conver
 	
 	writer.WriteOpeningTag("conversationTestSetup", false, true);
 	
-	const ceConversationActorList &actorList = conversation.GetActorList();
+	const ceConversationActor::List &actorList = conversation.GetActorList();
 	const int actorCount = actorList.GetCount();
 	for(i=0; i<actorCount; i++){
 		pLSSys->GetLSCTA()->WriteActor(writer, *actorList.GetAt(i), "actor");
 	}
 	
-	const ceCoordSystemList &coordSystemList = conversation.GetCoordSystemList();
+	const ceCoordSystem::List &coordSystemList = conversation.GetCoordSystemList();
 	const int coordSystemCount = coordSystemList.GetCount();
 	for(i=0; i<coordSystemCount; i++){
 		pWriteCoordSystem(writer, *coordSystemList.GetAt(i));

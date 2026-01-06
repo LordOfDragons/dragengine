@@ -41,8 +41,8 @@ class deParticleEmitterController;
  */
 class peeController : public deObject{
 public:
-	/** \brief List type. */
-	typedef decTObjectOrderedSet<peeController> List;
+	using Ref = deTObjectReference<peeController>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<peeController>,peeController>;
 	
 private:
 	peeEmitter *pEmitter;
@@ -60,10 +60,6 @@ private:
 	bool pActive;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeController> Ref;
-
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new controller. */

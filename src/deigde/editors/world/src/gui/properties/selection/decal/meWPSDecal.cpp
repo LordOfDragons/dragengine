@@ -366,9 +366,7 @@ public:
 	
 	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		return pPanel.GetWorld() ? pPanel.GetWorld()->GetGameDefinition()->
-			GetListDecalProperties().FindOrDefault([&](const igdeGDProperty &p){
-				return p.GetName() == key;
-			}) : nullptr;
+			GetListDecalProperties().FindNamed(key) : nullptr;
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
@@ -703,9 +701,7 @@ void meWPSDecal::UpdateIdentifierLists(){
 	if(pWorld && !property.IsEmpty()){
 		const igdeGDProperty * const gdProperty = pEditProperties->GetGDProperty(property);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindOrDefault([&](const meIDGroup &group){
-				return group.GetName() == gdProperty->GetIdentifierGroup();
-			});
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
 			if(idgroup){
 				const decStringList &list = idgroup->GetIDList();
 				const int count = list.GetCount();

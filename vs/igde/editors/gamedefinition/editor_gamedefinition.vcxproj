@@ -286,7 +286,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategory.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategoryList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePattern.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinitionListener.cpp" />
@@ -824,7 +823,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategory.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\category\gdeCategoryList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\filepattern\gdeFilePattern.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\gdeGameDefinitionListener.h" />

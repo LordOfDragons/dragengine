@@ -704,9 +704,7 @@ public:
 	igdeUndo::Ref OnAction(seSkin *skin) override{
 		decString name("Mapped");
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Mapped", "Name:", name)){
-			if(skin->GetMapped().HasMatching([&name](const seMapped &m){
-				return m.GetName() == name;
-			})){
+			if(skin->GetMapped().HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindow, "Add Mapped", "A mapped with this name exists already.");
 				
 			}else{
@@ -781,9 +779,7 @@ public:
 		}
 		
 		const decString name(dialog->GetTextureName());
-		if(skin->GetTextures().HasMatching([&name](const seTexture &t){
-			return t.GetName() == name;
-		})){
+		if(skin->GetTextures().HasNamed(name)){
 			igdeCommonDialogs::Error(&pWindow, "Add Texture", "A texture with this name exists already.");
 			return {};
 		}
@@ -845,10 +841,7 @@ public:
 				return {};
 			}
 			
-			const decString &name = names.GetAt(selection);
-			importTexture = importTextures.FindOrDefault([&name](const seTexture &t){
-				return t.GetName() == name;
-			});
+			importTexture = importTextures.FindNamed(names.GetAt(selection));
 		}
 		
 		// determine the relative path change between the imported skin and the active skin
@@ -1003,9 +996,7 @@ public:
 		if(customName.IsEmpty()){
 			const decStringSet selection(dialog->GetSelectedPropertyNames());
 			selection.Visit([&](const decString &name){
-				if(propertyList.HasMatching([&name](const seProperty &p){
-					return p.GetName() == name;
-				})){
+				if(propertyList.HasNamed(name)){
 					return;
 				}
 				
@@ -1014,9 +1005,7 @@ public:
 				addPropertyList.Add(property);
 			});
 			
-		}else if(!propertyList.HasMatching([&customName](const seProperty &p){
-			return p.GetName() == customName;
-		})){
+		}else if(!propertyList.HasNamed(customName)){
 			property = seProperty::Ref::New(pWindow.GetEngine(), customName);
 			property->InitDefaults(knownPropertyList);
 			addPropertyList.Add(property);

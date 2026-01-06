@@ -843,9 +843,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag
 void gdeLoadSaveGameDefinition::pReadObjectClassComponentTexture(
 const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component){
 	const char * const name = GetAttributeString(root, "name");
-	if(component.GetTextures().HasMatching([&](const gdeOCComponentTexture &tex){
-		return tex.GetName() == name;
-	})){
+	if(component.GetTextures().HasNamed(name)){
 		LogErrorGenericProblemValue(root, name, "A texture with this name exists already.");
 	}
 	
@@ -1819,9 +1817,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassWorld(const decXmlElementTag &ro
 
 void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &root, gdeObjectClass &objectClass){
 	const char * const name = GetAttributeString(root, "name");
-	if(objectClass.GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
-		return t.GetName() == name;
-	})){
+	if(objectClass.GetTextures().HasNamed(name)){
 		LogErrorGenericProblemValue(root, name, "A texture with this name exists already.");
 	}
 	
@@ -2112,7 +2108,7 @@ void gdeLoadSaveGameDefinition::pReadCategories(const decXmlElementTag &root, gd
 }
 
 void gdeLoadSaveGameDefinition::pReadCategories(const decXmlElementTag &root,
-gdeCategoryList *list, gdeCategory *parent){
+gdeCategory::List *list, gdeCategory *parent){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -2134,7 +2130,7 @@ gdeCategoryList *list, gdeCategory *parent){
 }
 
 void gdeLoadSaveGameDefinition::pReadCategory(const decXmlElementTag &root,
-gdeCategoryList *list, gdeCategory *parent){
+gdeCategory::List *list, gdeCategory *parent){
 	decString categoryName;
 	int i;
 	
@@ -2148,16 +2144,12 @@ gdeCategoryList *list, gdeCategory *parent){
 			categoryName = GetCDataString(*tag);
 			
 			if(list){
-				if(list->HasMatching([&categoryName](const gdeCategory &c){
-					return c.GetName() == categoryName;
-				})){
+				if(list->HasNamed(categoryName)){
 					LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 				}
 				
 			}else{
-				if(parent->GetCategories().HasMatching([&categoryName](const gdeCategory &c){
-					return c.GetName() == categoryName;
-				})){
+				if(parent->GetCategories().HasNamed(categoryName)){
 					LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 				}
 			}
@@ -3563,7 +3555,7 @@ const decStringSet &tags, const char *tagName){
 }
 
 void gdeLoadSaveGameDefinition::pWriteCategories(decXmlWriter &writer,
-const gdeCategoryList &categories, const char *name){
+const gdeCategory::List &categories, const char *name){
 	const int categoryCount = categories.GetCount();
 	if(categoryCount == 0){
 		return;
@@ -3598,7 +3590,7 @@ void gdeLoadSaveGameDefinition::pWriteCategory(decXmlWriter &writer, const gdeCa
 		writer.WriteDataTagBool("hidden", category.GetHidden());
 	}
 	
-	const gdeCategoryList &categories = category.GetCategories();
+	const gdeCategory::List &categories = category.GetCategories();
 	const int categoryCount = categories.GetCount();
 	for(i=0; i<categoryCount; i++){
 		pWriteCategory(writer, *categories.GetAt(i));

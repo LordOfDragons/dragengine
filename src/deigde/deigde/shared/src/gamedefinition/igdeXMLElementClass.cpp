@@ -130,7 +130,7 @@ public:
 		
 		pClass = pOwner.LoadElementClass(pReader, path.GetPathUnix());
 		
-		if(pClasses.HasNamed(pClass->GetName())){
+		if(pClasses.GetClasses().HasNamed(pClass->GetName())){
 			pLogger.LogInfoFormat(pLoggerSource, "Ignore duplicate element class '%s'",
 				pClass->GetName().GetString());
 			

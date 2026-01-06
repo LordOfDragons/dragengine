@@ -338,7 +338,7 @@ void igdeCreateProject::pSharedGameDefContentReplace(){
 	decStringList tokens, values;
 	pCreateProjectReplacements(tokens, values);
 	
-	pGameDef->SetID(pReplaceTokens(pGameDef->GetID(), tokens, values));
+	pGameDef->SetId(pReplaceTokens(pGameDef->GetId(), tokens, values));
 	pGameDef->SetDescription(pReplaceTokens(pGameDef->GetDescription(), tokens, values));
 	
 	pXmlEscapeValues(values);
@@ -382,9 +382,7 @@ void igdeCreateProject::pStoreBaseGameDefs(){
 	const igdeGameDefinition::List &sgdl = pWindowMain.GetSharedGameDefinitions();
 	pBaseGameDefs.Visit([&](const decString &id){
 		pProject->GetBaseGameDefinitionIDList().Add(id);
-		pProject->GetBaseGameDefinitionList().Add(sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
-			return gd.GetID() == id;
-		}));
+		pProject->GetBaseGameDefinitionList().Add(sgdl.FindWithId(id));
 	});
 }
 

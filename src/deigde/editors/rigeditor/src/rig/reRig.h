@@ -416,16 +416,12 @@ public:
 	/** List of bones. */
 	inline const reRigBone::List &GetBones() const{ return pBones; }
 	
-	/** Retrieves the bone with the given name or nullptr if not found. */
-	reRigBone *GetBoneNamed(const char *name) const;
-	/** Retrieves the bone with the given collider or nullptr if not found. */
-	reRigBone *GetBoneWith(deColliderVolume *collider) const;
-	/** Retrieves the bone with the given order or nullptr if not found. */
-	reRigBone *GetBoneWithOrder(int order) const;
 	/** Adds a new bone. */
 	void AddBone(reRigBone *bone);
+	
 	/** Removes the given bone. */
 	void RemoveBone(reRigBone *bone);
+	
 	/** Removes all bones. */
 	void RemoveAllBones();
 	

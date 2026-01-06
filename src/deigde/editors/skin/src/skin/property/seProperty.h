@@ -51,10 +51,8 @@ class deSkinPropertyNodeGroup;
  */
 class seProperty : public deObject{
 public:
-	typedef deTObjectReference<seProperty> Ref;
-	
-	/** \brief List type. */
-	typedef decTObjectOrderedSet<seProperty> List;
+	using Ref = deTObjectReference<seProperty>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seProperty>,seProperty>;
 	
 	
 	/** \brief Value types. */

@@ -424,9 +424,7 @@ void ceConversation::AllTargets(ceTarget::List &list) const{
 
 void ceConversation::AddCameraShot(ceCameraShot *cameraShot){
 	DEASSERT_NOTNULL(cameraShot)
-	DEASSERT_FALSE(pCameraShots.HasMatching([&](const ceCameraShot &c){
-		return c.GetName() == cameraShot->GetName();
-	}))
+	DEASSERT_FALSE(pCameraShots.HasNamed(cameraShot->GetName()))
 	DEASSERT_NULL(cameraShot->GetConversation())
 	
 	pCameraShots.Add(cameraShot);
@@ -479,13 +477,13 @@ ceCameraShot *ceConversation::GetCameraShotNamed(const char *name) const{
 	return cameraShot;
 }
 
-ceConversation::CameraShotList ceConversation::GetAllCameraShots() const{
-	CameraShotList list;
+ceCameraShot::List ceConversation::GetAllCameraShots() const{
+	ceCameraShot::List list;
 	GetAllCameraShots(list);
 	return list;
 }
 
-void ceConversation::GetAllCameraShots(CameraShotList &list) const{
+void ceConversation::GetAllCameraShots(ceCameraShot::List &list) const{
 	list += pCameraShots;
 	pImportedConversations.VisitReverse([&](const ceConversation &c){
 		c.GetAllCameraShots(list);
@@ -499,9 +497,7 @@ void ceConversation::GetAllCameraShots(CameraShotList &list) const{
 
 void ceConversation::AddGesture(ceGesture *gesture){
 	DEASSERT_NOTNULL(gesture)
-	DEASSERT_FALSE(pGestures.HasMatching([&](const ceGesture &g){
-		return g.GetName() == gesture->GetName();
-	}))
+	DEASSERT_FALSE(pGestures.HasNamed(gesture->GetName()))
 	DEASSERT_NULL(gesture->GetConversation())
 	
 	pGestures.Add(gesture);
@@ -574,9 +570,7 @@ void ceConversation::AllGestures(ceGesture::List &list) const{
 
 void ceConversation::AddFacePose(ceFacePose *facePose){
 	DEASSERT_NOTNULL(facePose)
-	DEASSERT_FALSE(pFacePoses.HasMatching([&](const ceFacePose &f){
-		return f.GetName() == facePose->GetName();
-	}))
+	DEASSERT_FALSE(pFacePoses.HasNamed(facePose->GetName()))
 	DEASSERT_NULL(facePose->GetConversation())
 	
 	pFacePoses.Add(facePose);

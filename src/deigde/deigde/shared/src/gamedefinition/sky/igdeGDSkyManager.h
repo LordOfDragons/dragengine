@@ -41,7 +41,7 @@ class decPath;
  */
 class DE_DLL_EXPORT igdeGDSkyManager{
 private:
-	igdeGDSky::List pSkyList;
+	igdeGDSky::List pSkies;
 	igdeGDCategory::Ref pCategories;
 	decString pDefaultPath;
 	decStringList pAutoFindPath;
@@ -63,10 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky list. */
-	inline const igdeGDSky::List &GetSkyList() const{ return pSkyList; }
-	
-	/** \brief Game sky with path or nullptr if absent. */
-	igdeGDSky *GetSkyWithPath(const char *path) const;
+	inline const igdeGDSky::List &GetSkies() const{ return pSkies; }
 	
 	/** \brief Add sky. */
 	void AddSky(igdeGDSky *sky);

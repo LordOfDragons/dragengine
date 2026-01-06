@@ -186,7 +186,7 @@ public:
 		if(name == bone->GetName()){
 			return {};
 		}
-		if(rig->GetBoneNamed(name)){
+		if(rig->GetBones().HasNamed(name)){
 			igdeCommonDialogs::ErrorFormat(&pPanel, "Invalid Bone Name",
 				"There exists already a bone named %s.", name.GetString());
 			return {};

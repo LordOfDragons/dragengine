@@ -753,9 +753,7 @@ public:
 		if(!igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
 			return {};
 		}
-		if(animator->GetControllers().HasMatching([&name](const aeController &c){
-			return c.GetName() == name;
-		})){
+		if(animator->GetControllers().HasNamed(name)){
 			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
 			return {};
 		}
@@ -778,9 +776,7 @@ public:
 			return {};
 		}
 		
-		if(animator->GetControllers().HasMatching([&name](const aeController &c){
-			return c.GetName() == name;
-		})){
+		if(animator->GetControllers().HasNamed(name)){
 			igdeCommonDialogs::Error(&pWindow, "Add Controller", "Name exists already");
 			return {};
 		}

@@ -187,7 +187,7 @@ public:
 			return;
 		}
 		
-		meObjectTexture *texture = object->GetTextureNamed(pName);
+		meObjectTexture *texture = object->GetTextures().FindNamed(pName);
 		const decString &newskin = gdskin->GetPath();
 		igdeUndo::Ref undo;
 		
@@ -733,7 +733,7 @@ void meWPBrowser::UpdateCategoryList(){
 	UpdateCategoryListWith(categories);
 	pTreeCategories->SortAllItems();
 	if(!selection.IsEmpty()){
-		SelectCategory(categories->GetCategoryWithPath(decPath::CreatePathNative(selection)));
+		SelectCategory(categories->GetCategories().FindWithPath(decPath::CreatePathNative(selection)));
 	}
 }
 
@@ -1026,15 +1026,15 @@ void meWPBrowser::OnGameDefinitionChanged(){
 	if(!selection.IsEmpty() && GetGameDefinition()){
 		switch(GetPreviewItemType()){
 		case epitObjectClass:
-			pListItems->SetSelectionWithData(GetGameDefinition()->GetClassManager()->GetNamed(selection));
+			pListItems->SetSelectionWithData(GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(selection));
 			break;
 			
 		case epitSkin:
-			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkinManager()->GetSkinWithPath(selection));
+			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkinManager()->GetSkins().FindWithPath(selection));
 			break;
 			
 		case epitSky:
-			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkyManager()->GetSkyWithPath(selection));
+			pListItems->SetSelectionWithData(GetGameDefinition()->GetSkyManager()->GetSkies().FindWithPath(selection));
 			break;
 		}
 	}
@@ -1058,7 +1058,7 @@ void meWPBrowser::SelectObjectClass(igdeGDClass *gdclass){
 	}
 	
 	igdeGDCategory * const category = gameDefinition->GetClassManager()->GetCategories()
-		->GetCategoryWithPath(decPath::CreatePathUnix(gdclass->GetCategory()));
+		->GetCategories().FindWithPath(decPath::CreatePathUnix(gdclass->GetCategory()));
 	
 	// select category
 	SetPreviewItemType(epitObjectClass);
@@ -1080,7 +1080,7 @@ void meWPBrowser::SelectSkin(igdeGDSkin *gdskin){
 	}
 	
 	igdeGDCategory * const category = gameDefinition->GetSkinManager()->GetCategories()
-		->GetCategoryWithPath(decPath::CreatePathUnix(gdskin->GetCategory()));
+		->GetCategories().FindWithPath(decPath::CreatePathUnix(gdskin->GetCategory()));
 	
 	// select category
 	SetPreviewItemType(epitSkin);
@@ -1102,7 +1102,7 @@ void meWPBrowser::SelectSky(igdeGDSky *gdsky){
 	}
 	
 	igdeGDCategory * const category = gameDefinition->GetSkyManager()->GetCategories()
-		->GetCategoryWithPath(decPath::CreatePathUnix(gdsky->GetCategory()));
+		->GetCategories().FindWithPath(decPath::CreatePathUnix(gdsky->GetCategory()));
 	
 	// select category
 	SetPreviewItemType(epitSky);

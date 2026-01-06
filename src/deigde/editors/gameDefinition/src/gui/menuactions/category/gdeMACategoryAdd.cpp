@@ -99,11 +99,11 @@ igdeUndo::Ref gdeMACategoryAdd::OnAction(gdeGameDefinition &gameDefinition){
 
 
 igdeUndo::Ref gdeMACategoryAdd::AddCategory(gdeGameDefinition &gameDefinition,
-gdeCategory *parent, const gdeCategoryList &list, gdeUCategoryBase::eCategoryType categoryType) const{
+gdeCategory *parent, const gdeCategory::List &list, gdeUCategoryBase::eCategoryType categoryType) const{
 	decString name("Category");
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Add Category", "Name:", name)){
-		if(list.GetNamed(name)){
+		if(list.FindNamed(name)){
 			igdeCommonDialogs::Error(&pWindowMain, "Add Category", "Category exists already.");
 			continue;
 		}

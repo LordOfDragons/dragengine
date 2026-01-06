@@ -129,9 +129,7 @@ void igdeDialogTexturePropertyList::UpdatePropertyList(){
 		});
 		
 		pListProperties->SortItems();
-	}, tpl.FindOrDefault([](const igdeTextureProperty &p){
-		return p.GetName() == "color";
-	}));
+	}, tpl.FindNamed("color"));
 	
 	UpdateProperty();
 }

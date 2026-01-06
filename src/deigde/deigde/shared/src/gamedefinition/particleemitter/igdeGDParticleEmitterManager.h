@@ -39,7 +39,7 @@ class igdeGameDefinition;
  */
 class DE_DLL_EXPORT igdeGDParticleEmitterManager{
 private:
-	igdeGDParticleEmitter::List pEmitterList;
+	igdeGDParticleEmitter::List pEmitters;
 	igdeGDCategory::Ref pCategories;
 	decString pDefaultPath;
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter list. */
-	inline const igdeGDParticleEmitter::List &GetEmitterList() const{ return pEmitterList; }
+	inline const igdeGDParticleEmitter::List &GetEmitters() const{ return pEmitters; }
 	
 	/** \brief Add emitter. */
 	void AddEmitter(igdeGDParticleEmitter *emitter);

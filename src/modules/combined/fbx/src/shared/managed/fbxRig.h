@@ -25,7 +25,7 @@
 #ifndef _FBXRIG_H_
 #define _FBXRIG_H_
 
-
+#include "fbxRigBone.h"
 #include "../fbxNode.h"
 
 #include <stdint.h>
@@ -37,7 +37,6 @@
 
 
 class fbxScene;
-class fbxRigBone;
 
 class deBaseModule;
 
@@ -54,7 +53,7 @@ public:
 private:
 	fbxScene &pScene;
 	const fbxNode::Ref pNodePose;
-	decTObjectOrderedSet<fbxRigBone> pBones;
+	fbxRigBone::List pBones;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
 	
@@ -85,13 +84,7 @@ public:
 	
 	
 	/** \briet Bones. */
-	inline const decTObjectOrderedSet<fbxRigBone> &GetBones() const{ return pBones; }
-	
-	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed(const char *name) const;
-	
-	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID(int64_t id) const;
+	inline const fbxRigBone::List &GetBones() const{ return pBones; }
 	
 	
 	

@@ -547,9 +547,7 @@ public:
 				return;
 			}
 			
-			if(list.HasMatching([&](const projProfile &profile){
-				return profile.GetName() == name;
-			})){
+			if(list.HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindow, "Add Profile",
 					"A profile with this name exists already.");
 				
@@ -646,9 +644,7 @@ public:
 				return;
 			}
 			
-			if(list.HasMatching([&](const projProfile &p){
-				return p.GetName() == name;
-			})){
+			if(list.HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindow, "Duplicate Profile",
 					"A profile with this name exists already.");
 				
@@ -888,9 +884,7 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
-			profile = pProject->GetProfiles().FindOrDefault([&](const projProfile &p){
-				return p.GetName() == arg;
-			});
+			profile = pProject->GetProfiles().FindNamed(arg);
 			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());
@@ -939,9 +933,7 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 			DETHROW_INFO(deeInvalidParam, message);
 			
 		}else if(!profile){
-			profile = pProject->GetProfiles().FindOrDefault([&](const projProfile &p){
-				return p.GetName() == arg;
-			});
+			profile = pProject->GetProfiles().FindNamed(arg);
 			if(!profile){
 				decString message;
 				message.Format("Unknown profile '%s'", arg.GetString());

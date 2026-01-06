@@ -50,12 +50,12 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCCTexture> Ref;
+	using Ref = deTObjectReference<igdeGDCCTexture>;
 	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<igdeGDCCTexture> List;
-
-
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCCTexture>,igdeGDCCTexture>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture definition. */

@@ -101,9 +101,7 @@ void seDynamicSkin::Update(float elapsed){
 ////////////////
 
 void seDynamicSkin::AddRenderable(seDynamicSkinRenderable *renderable){
-	if(!renderable || pRenderables.HasMatching([&](const seDynamicSkinRenderable &r){
-		return r.GetName() == renderable->GetName();
-	})){
+	if(!renderable || pRenderables.HasNamed(renderable->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

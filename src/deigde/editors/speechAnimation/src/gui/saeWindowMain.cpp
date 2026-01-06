@@ -556,9 +556,7 @@ public:
 				continue;
 			}
 			
-			if(wordList.HasMatching([name](const saeWord &w){
-				return w.GetName() == name;
-			})){
+			if(wordList.HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindow, "Add Word", "A word with this name exists already.");
 				continue;
 			}
@@ -603,9 +601,7 @@ public:
 						"word where each word is of the form 'word phonetics'.");
 				}
 				
-				if(wordList.HasMatching([parts](const saeWord &w){
-					return w.GetName() == parts.First();
-				})){
+				if(wordList.HasNamed(parts.First())){
 					igdeCommonDialogs::ErrorFormat(&pWindow, "Add Words", "A word with name '%s' "
 						"exists already.", parts.First().GetString());
 					addWordsList.RemoveAll();

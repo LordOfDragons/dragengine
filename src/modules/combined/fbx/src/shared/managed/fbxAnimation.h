@@ -25,8 +25,7 @@
 #ifndef _FBXANIMATION_H_
 #define _FBXANIMATION_H_
 
-
-#include <stdint.h>
+#include "fbxAnimationMove.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -38,7 +37,6 @@
 class fbxNode;
 class fbxScene;
 class fbxRig;
-class fbxAnimationMove;
 
 class deBaseModule;
 
@@ -54,7 +52,7 @@ public:
 	
 private:
 	fbxScene &pScene;
-	decTObjectOrderedSet<fbxAnimationMove> pMoves;
+	fbxAnimationMove::List pMoves;
 	
 	
 	
@@ -80,10 +78,7 @@ public:
 	
 	
 	/** \brief Moves. */
-	inline const decTObjectOrderedSet<fbxAnimationMove> &GetMoves() const{ return pMoves; }
-	
-	/** \brief Named move or NULL if absent. */
-	fbxAnimationMove *GetMoveNamed(const char *name) const;
+	inline const fbxAnimationMove::List &GetMoves() const{ return pMoves; }
 	
 	/** \brief Match moves against rig. */
 	void MatchRig(const fbxRig &rig);

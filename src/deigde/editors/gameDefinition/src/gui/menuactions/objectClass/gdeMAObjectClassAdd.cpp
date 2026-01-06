@@ -63,9 +63,7 @@ igdeUndo::Ref gdeMAObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
 	decString name("Object Class");
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Add Object Class", "Name:", name)){
-		if(list.HasMatching([&](const gdeObjectClass &o){
-			return o.GetName() == name;
-		})){
+		if(list.HasNamed(name)){
 			igdeCommonDialogs::Error(&pWindowMain, "Add Object Class", "Object Class exists already.");
 			continue;
 		}

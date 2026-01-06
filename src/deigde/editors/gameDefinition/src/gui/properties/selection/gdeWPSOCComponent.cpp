@@ -693,9 +693,7 @@ public:
 					return {};
 				}
 				
-				if(component->GetTextures().HasMatching([&](const gdeOCComponentTexture::Ref &t){
-					return t->GetName() == name;
-				})){
+				if(component->GetTextures().HasNamed(name)){
 					igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
 					
 				}else{
@@ -716,9 +714,7 @@ public:
 	
 	void Update() override{
 		const gdeOCComponent * const component = pPanel.GetComponent();
-		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
-			return t.GetName() == pTextureName;
-		})));
+		SetEnabled(component && (pTextureName.IsEmpty() || !component->GetTextures().HasNamed(pTextureName)));
 	}
 };
 
@@ -778,9 +774,7 @@ public:
 			return {};
 		}
 		
-		if(component->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
-			return t.GetName() == textField.GetText();
-		})){
+		if(component->GetTextures().HasNamed(textField.GetText())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
 			textField.SetText(texture->GetName());
 			return {};

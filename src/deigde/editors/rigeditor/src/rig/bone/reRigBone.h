@@ -39,7 +39,6 @@
 
 class reRig;
 class reRigShape;
-class reRigConstraint;
 class deCollider;
 class igdeWCoordSysArrows;
 class deEngine;
@@ -51,9 +50,8 @@ class deEngine;
  */
 class reRigBone : public deObject{
 public:
-	typedef deTObjectReference<reRigBone> Ref;
-	typedef decTObjectOrderedSet<reRigBone> List;
-	typedef decTOrderedSet<deTObjectReference<reRigConstraint>, reRigConstraint*> ConstraintList;
+	using Ref = deTObjectReference<reRigBone>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<reRigBone>,reRigBone>;
 	
 	
 private:
@@ -87,7 +85,7 @@ private:
 	bool pIKLocked[3];
 	
 	reRigShape::List pShapes;
-	ConstraintList pConstraints;
+	reRigConstraint::List pConstraints;
 	
 	bool pSelected;
 	bool pActive;
@@ -273,7 +271,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Constraints. */
-	inline const ConstraintList &GetConstraints() const{ return pConstraints; }
+	inline const reRigConstraint::List &GetConstraints() const{ return pConstraints; }
 	
 	/** \brief Retrieves the constraint with the given collider or nullptr if not found. */
 	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;

@@ -30,6 +30,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -47,7 +48,16 @@ class deBaseModule;
 class fbxRigBone : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRigBone> Ref;
+	using Ref = deTObjectReference<fbxRigBone>;
+	
+	/** \brief List of rig bones. */
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<fbxRigBone>,fbxRigBone>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<fbxRigBone>,fbxRigBone>::decTCollectionQueryByName;
+		
+		/** \brief Find bone by model ID or nullptr if absent. */
+		fbxRigBone *FindWithModelID(int64_t id) const;
+	};
 	
 	
 private:

@@ -248,9 +248,7 @@ public:
 			return {};
 		}
 		
-		if(project->GetProfiles().HasMatching([&](const projProfile &p){
-			return p.GetName() == name;
-		})){
+		if(project->GetProfiles().HasNamed(name)){
 			igdeCommonDialogs::Error(&pPanel, "Rename profile",
 				"A profile with this name exists already.");
 			textField->SetText(profile->GetName());

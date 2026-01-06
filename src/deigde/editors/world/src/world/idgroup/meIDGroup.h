@@ -37,8 +37,8 @@
  */
 class meIDGroup : public deObject{
 public:
-	typedef deTObjectReference<meIDGroup> Ref;
-	typedef decTObjectOrderedSet<meIDGroup> List;
+	using Ref = deTObjectReference<meIDGroup>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meIDGroup>,meIDGroup>;
 	
 	
 private:

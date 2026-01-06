@@ -1993,7 +1993,7 @@ void ceWPConversation::UpdateActorIDLists(){
 	pCBTargetActorID->RemoveAllItems();
 	
 	if(pConversation){
-		const ceConversationActorList &list = pConversation->GetActorList();
+		const ceConversationActor::List &list = pConversation->GetActorList();
 		const int count = list.GetCount();
 		int i;
 		

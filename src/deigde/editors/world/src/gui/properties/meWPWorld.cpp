@@ -210,9 +210,7 @@ public:
 	
 	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meWorld * const world = pPanel.GetWorld();
-		return world ? world->GetGameDefinition()->GetListWorldProperties().FindOrDefault([&](const igdeGDProperty &p){
-			return p.GetName() == key;
-		}) : nullptr;
+		return world ? world->GetGameDefinition()->GetListWorldProperties().FindNamed(key) : nullptr;
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
@@ -918,9 +916,7 @@ void meWPWorld::UpdateIdentifierLists(){
 	if(pWorld && !property.IsEmpty()){
 		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty(property);
 		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindOrDefault([&](const meIDGroup &g){
-				return g.GetName() == gdProperty->GetIdentifierGroup();
-			});
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
 			if(idgroup){
 				idgroup->GetIDList().Visit([&](const decString &id){
 					identifiers.Add(id);

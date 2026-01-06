@@ -43,8 +43,8 @@ class deDebugDrawerShape;
  */
 class meHeightTerrainNavSpaceType : public deObject{
 public:
-	typedef deTObjectReference<meHeightTerrainNavSpaceType> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainNavSpaceType> List;
+	using Ref = deTObjectReference<meHeightTerrainNavSpaceType>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meHeightTerrainNavSpaceType>,meHeightTerrainNavSpaceType>;
 	
 	
 private:

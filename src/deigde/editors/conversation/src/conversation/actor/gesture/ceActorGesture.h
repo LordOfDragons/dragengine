@@ -26,11 +26,11 @@
 #define _CEACTORGESTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
-class igdeEnvironment;
 #include <dragengine/resources/animator/deAnimator.h>
 
+class igdeEnvironment;
 
 
 /**
@@ -48,9 +48,11 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceActorGesture> Ref;
-
-
+	using Ref = deTObjectReference<ceActorGesture>;
+	
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceActorGesture>,ceActorGesture>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create actor gesture. */

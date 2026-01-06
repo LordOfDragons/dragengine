@@ -579,9 +579,7 @@ void gdeObjectClass::SetIsAttachableBehavior(bool isAttachableBehavior){
 
 bool gdeObjectClass::DeepGetNamedProperty(const char *name, const gdeObjectClass* &objectClass,
 const gdeProperty* &property) const{
-	property = pProperties.FindOrDefault([&](const gdeProperty::Ref &p){
-		return p->GetName() == name;
-	});
+	property = pProperties.FindNamed(name);
 	if(property){
 		objectClass = this;
 		return true;
@@ -622,9 +620,7 @@ bool gdeObjectClass::NamedPropertyDefaultValue(const char *name, decString &valu
 		return true;
 	}
 	
-	const gdeProperty * const property = pProperties.FindOrDefault([&](const gdeProperty::Ref &p){
-		return p->GetName() == name;
-	});
+	const gdeProperty * const property = pProperties.FindNamed(name);
 	if(property){
 		value = property->GetDefaultValue();
 		return true;

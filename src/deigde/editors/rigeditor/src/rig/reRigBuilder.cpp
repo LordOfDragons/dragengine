@@ -88,7 +88,9 @@ void reRigBuilder::BuildRig(deRig *engRig){
 		const int boneCount = pRig->GetBones().GetCount();
 		int i;
 		for(i=0; i<boneCount; i++){
-			BuildRigBone(engRig, pRig->GetBoneWithOrder(i));
+			BuildRigBone(engRig, pRig->GetBones().FindOrDefault([&](const reRigBone &b){
+				return b.GetOrder() == i;
+			}));
 		}
 		
 		// add shapes

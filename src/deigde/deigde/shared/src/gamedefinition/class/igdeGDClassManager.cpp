@@ -62,24 +62,8 @@ igdeGDClassManager::~igdeGDClassManager(){
 // Management
 ///////////////
 
-bool igdeGDClassManager::HasNamed(const char *name) const{
-	return IndexOfNamed(name) != -1;
-}
-
-int igdeGDClassManager::IndexOfNamed(const char *name) const{
-	return pClasses.IndexOfMatching([&](const igdeGDClass &c){
-		return c.GetName() == name;
-	});
-}
-
-igdeGDClass *igdeGDClassManager::GetNamed(const char *name) const{
-	return pClasses.FindOrDefault([&](const igdeGDClass &c){
-		return c.GetName() == name;
-	});
-}
-
 void igdeGDClassManager::Add(igdeGDClass *gdClass){
-	if(!gdClass || HasNamed(gdClass->GetName())){
+	if(!gdClass || pClasses.HasNamed(gdClass->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pClasses.Add(gdClass);
@@ -153,7 +137,7 @@ void igdeGDClassManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decSt
 void igdeGDClassManager::UpdateWith(const igdeGDClassManager &classManager){
 	classManager.pClasses.Visit([&](const igdeGDClass &c){
 		igdeGDClass::Ref gdclass(igdeGDClass::Ref::New(c));
-		igdeGDClass * const gdclassCheck = GetNamed(gdclass->GetName());
+		igdeGDClass * const gdclassCheck = pClasses.FindNamed(gdclass->GetName());
 		if(gdclassCheck){
 			Remove(gdclassCheck);
 		}
@@ -183,7 +167,7 @@ static bool fFindFirstComponent(const igdeGDClass &gdclass, decString &prefix, i
 }
 
 void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &classManager){
-	ClassesList pendingClasses(classManager.pClasses), retryClasses;
+	igdeGDClass::List pendingClasses(classManager.pClasses), retryClasses;
 	igdeCodecPropertyString codec;
 	decString propertyValue;
 	bool detectRetry = true;
@@ -194,7 +178,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 			basePath.RemoveLastComponent();
 			const decString basePathStr(basePath.GetPathUnix());
 			
-			igdeGDClass * const gdclassExisting = GetNamed(eclass->GetName());
+			igdeGDClass * const gdclassExisting = pClasses.FindNamed(eclass->GetName());
 			igdeGDClass::Ref gdclass;
 			bool reused = false;
 			
@@ -212,9 +196,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				igdeGDCCTexture::List &compTextures = gdclassExisting->GetComponentTextures();
 				eclassCompTextures.Visit([&](igdeGDCCTexture *texture){
 					const decString &textureName = texture->GetName();
-					igdeGDCCTexture * const existingTexture = compTextures.FindOrDefault([&](const igdeGDCCTexture &t){
-						return t.GetName() == textureName;
-					});
+					igdeGDCCTexture * const existingTexture = compTextures.FindNamed(textureName);
 					if(existingTexture){
 						compTextures.Remove(existingTexture);
 					}
@@ -229,23 +211,13 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				gdclass->ResolveInheritClasses(*this);
 				
 				if(detectRetry){
-					if(gdclass->GetInheritClasses().HasMatching([&](const igdeGDClassInherit &inherit){
-						if(inherit.GetClass()){
-							return false;
+					for(const auto &inherit : gdclass->GetInheritClasses()){
+						if(!inherit->GetClass() && pendingClasses.HasNamed(inherit->GetName())){
+							// XML element depends on another XML element not processed yet.
+							// postpone processing until the required class is ready
+							retryClasses.Add(eclass);
+							return;
 						}
-						
-						const decString &cname = inherit.GetName();
-						return pendingClasses.HasMatching([&](const igdeGDClass &c){
-							if(c.GetName() == cname){
-								// XML element depends on another XML element not processed yet.
-								// postpone processing until the required class is ready
-								retryClasses.Add(eclass);
-								return true;
-							}
-							return false;
-						});
-					})){
-						return;
 					}
 				}
 				

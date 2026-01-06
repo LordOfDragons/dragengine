@@ -515,10 +515,7 @@ public:
 			return {};
 		}
 		
-		const saeWord::List &wordList = sanimation->GetWords();
-		if(wordList.HasMatching([&](const saeWord &w){
-			return w.GetName() == name;
-		})){
+		if(sanimation->GetWords().HasNamed(name)){
 			ResetTextField(*textField, *word, "There exists already a Word with this name");
 			return {};
 		}

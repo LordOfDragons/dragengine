@@ -92,7 +92,7 @@ void igdeGameDefinition::SetFilename(const char *filename){
 	pFilename = filename;
 }
 
-void igdeGameDefinition::SetID(const char *id){
+void igdeGameDefinition::SetId(const char *id){
 	pID = id;
 }
 
@@ -268,7 +268,7 @@ void igdeGameDefinition::FindSkies(deVirtualFileSystem &vfs, igdeGDSkyManager &f
 		}
 	}
 	logger.LogInfoFormat("IGDE", "Find Skies done: %.1fs (%d found)",
-		timer.GetElapsedTime(), found.GetSkyList().GetCount());
+		timer.GetElapsedTime(), found.GetSkies().GetCount());
 }
 
 

@@ -222,12 +222,6 @@ void deParticleEmitterInstance::SetCollisionFilter(const decCollisionFilter &col
 
 
 
-int deParticleEmitterInstance::IndexOfControllerNamed(const char *name) const{
-	return pControllers.IndexOfMatching([&](const deParticleEmitterController &controller){
-		return controller.GetName() == name;
-	});
-}
-
 void deParticleEmitterInstance::NotifyControllerChangedAt(int index){
 	if(index < 0 || index >= pControllers.GetCount()){
 		DETHROW(deeInvalidParam);

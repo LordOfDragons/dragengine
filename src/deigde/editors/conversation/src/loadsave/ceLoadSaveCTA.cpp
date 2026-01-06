@@ -192,8 +192,7 @@ void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor 
 			cePlaybackCommand::Ref command;
 			
 			try{
-				command = cePlaybackCommand::Ref::New(GetCDataString(*tag),
-					GetAttributeBool(*tag, "value"));
+				command = cePlaybackCommand::Ref::New(GetCDataString(*tag), GetAttributeBool(*tag, "value"));
 				actor.GetCommands().Add(command);
 			}catch(const deException &){
 				throw;
@@ -203,10 +202,7 @@ void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor 
 			actor.GetParameters().SetAt(GetAttributeString(*tag, "name"), GetCDataInt(*tag));
 			
 		}else if(tagName == "activePose"){
-			const decString &name = GetCDataString(*tag);
-			actor.SetActivePose(actor.GetPoses().FindOrDefault([&](const ceActorPose &p){
-				return p.GetName() == name;
-			}));
+			actor.SetActivePose(actor.GetPoses().FindNamed(GetCDataString(*tag)));
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

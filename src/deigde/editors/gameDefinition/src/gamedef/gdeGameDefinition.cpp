@@ -323,7 +323,7 @@ void gdeGameDefinition::SetDefaultSky(const char *sky){
 
 
 const gdeCategory *gdeGameDefinition::FindCategoryObjectClass(const char *path) const{
-	const gdeCategory *category = pCategoriesObjectClass.GetWithPath(path);
+	const gdeCategory *category = pCategoriesObjectClass.FindWithPath(path);
 	if(category){
 		return category;
 	}
@@ -657,9 +657,7 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 }
 
 const gdeObjectClass *gdeGameDefinition::FindObjectClass(const char *name) const{
-	const gdeObjectClass *objectClass = pObjectClasses.FindOrDefault([&](const gdeObjectClass &oc){
-		return oc.GetName() == name;
-	});
+	const gdeObjectClass *objectClass = pObjectClasses.FindNamed(name);
 	if(objectClass){
 		return objectClass;
 	}

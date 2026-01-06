@@ -162,15 +162,15 @@ public:
 			return;
 		}
 		
-		pListPathGameDefBase.AddItem(sharedGameDef->GetID());
-		pListPathGameDefBase.SetSelection(pListPathGameDefBase.IndexOfItem(sharedGameDef->GetID()));
+		pListPathGameDefBase.AddItem(sharedGameDef->GetId());
+		pListPathGameDefBase.SetSelection(pListPathGameDefBase.IndexOfItem(sharedGameDef->GetId()));
 		
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
 	void Update() override{
 		SetEnabled(pDialog.GetSelectedSharedGameDef()
-			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
+			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetId()));
 	}
 };
 
@@ -512,7 +512,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDefs(){
 		if(!scriptModule.IsEmpty()){
 			pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
 				if(gd->GetScriptModule() == scriptModule){
-					pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
+					pCBSharedGameDefs->AddItem(gd->GetId(), nullptr, gd);
 				}
 			});
 			

@@ -218,6 +218,6 @@ void dearRuleAnimation::pUpdateMove(){
 	
 	const dearAnimation * const animation = GetUseAnimation();
 	if(animation){
-		pMove = animation->GetMoveNamed(pAnimation.GetMoveName());
+		pMove = animation->GetMoves().FindNamed(pAnimation.GetMoveName());
 	}
 }

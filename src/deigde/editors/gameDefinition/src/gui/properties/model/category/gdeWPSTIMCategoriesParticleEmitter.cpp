@@ -85,7 +85,7 @@ gdeCategory* category, bool deep) const{
 
 
 void gdeWPSTIMCategoriesParticleEmitter::CategoriesChanged(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesParticleEmitter();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesParticleEmitter();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -122,7 +122,7 @@ void gdeWPSTIMCategoriesParticleEmitter::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoriesParticleEmitter::OnAddedToTree(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesParticleEmitter();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesParticleEmitter();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

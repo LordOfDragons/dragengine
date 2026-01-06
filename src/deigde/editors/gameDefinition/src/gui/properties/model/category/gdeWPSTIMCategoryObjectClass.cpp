@@ -81,7 +81,7 @@ gdeCategory* category, bool deep) const{
 
 
 void gdeWPSTIMCategoryObjectClass::CategoriesChanged(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -118,7 +118,7 @@ void gdeWPSTIMCategoryObjectClass::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoryObjectClass::OnAddedToTree(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

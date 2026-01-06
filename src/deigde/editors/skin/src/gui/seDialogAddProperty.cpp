@@ -183,9 +183,7 @@ void seDialogAddProperty::pInitPropertyList(){
 	environment.GetTexturePropertyList().Visit([&](const igdeTextureProperty &property){
 		const decString &propertyName = property.GetName();
 		
-		if(propList.HasMatching([&](const seProperty &p){
-			return p.GetName() == propertyName;
-		})){
+		if(propList.HasNamed(propertyName)){
 			pListProperties->AddItem(propertyName, iconUsed);
 			
 		}else{

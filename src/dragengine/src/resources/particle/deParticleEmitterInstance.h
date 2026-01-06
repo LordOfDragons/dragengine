@@ -26,6 +26,7 @@
 #define _DEPARTICLEEMITTERINSTANCE_H_
 
 #include "deParticleEmitter.h"
+#include "deParticleEmitterController.h"
 #include "../deResource.h"
 #include "../../common/collection/decTSet.h"
 #include "../../common/collection/decTOrderedSet.h"
@@ -39,7 +40,6 @@ class deCollider;
 class deCollisionInfo;
 class deParticleEmitterInstanceType;
 class deParticleEmitterInstanceManager;
-class deParticleEmitterController;
 class deBaseGraphicParticleEmitterInstance;
 class deBasePhysicsParticleEmitterInstance;
 class deBaseScriptingParticleEmitterInstance;
@@ -71,7 +71,7 @@ private:
 	
 	float pBurstTime;
 	
-	decTObjectOrderedSet<deParticleEmitterController> pControllers;
+	deParticleEmitterController::List pControllers;
 	decTObjectOrderedSet<deParticleEmitterInstanceType> pTypes;
 	
 	decLayerMask pLayerMask;
@@ -190,10 +190,7 @@ public:
 	
 	
 	/** \brief Controllers. */
-	inline const decTObjectOrderedSet<deParticleEmitterController> &GetControllers() const{ return pControllers; }
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed(const char *name) const;
+	inline const deParticleEmitterController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Notify peer controller changed. */
 	void NotifyControllerChangedAt(int index);

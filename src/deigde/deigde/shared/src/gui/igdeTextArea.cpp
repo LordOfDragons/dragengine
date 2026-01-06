@@ -142,20 +142,8 @@ void igdeTextArea::SetDescription(const char *description){
 
 
 
-igdeTextStyle *igdeTextArea::GetStyleNamed(const char *name) const{
-	return pStyles.FindOrDefault([&](const igdeTextStyle &style){
-		return style.GetName() == name;
-	});
-}
-
-int igdeTextArea::IndexOfStyleNamed(const char *name) const{
-	return pStyles.IndexOfMatching([&](const igdeTextStyle &style){
-		return style.GetName() == name;
-	});
-}
-
 void igdeTextArea::AddStyle(igdeTextStyle *style){
-	if(!style || GetStyleNamed(style->GetName())){
+	if(!style || pStyles.HasNamed(style->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

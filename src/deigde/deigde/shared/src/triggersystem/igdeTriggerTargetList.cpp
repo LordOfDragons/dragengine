@@ -50,16 +50,8 @@ igdeTriggerTargetList::~igdeTriggerTargetList(){
 // Management
 ///////////////
 
-igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	
-	return pTargets.FindOrDefault([&](const igdeTriggerTarget &t){
-		return t.GetName() == name;
-	});
-}
-
 igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
-	igdeTriggerTarget * const findTarget = GetNamed(name);
+	igdeTriggerTarget * const findTarget = pTargets.FindNamed(name);
 	if(findTarget){
 		return findTarget;
 	}
@@ -69,17 +61,9 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name)
 	return target;
 }
 
-bool igdeTriggerTargetList::HasNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	
-	return pTargets.HasMatching([&](const igdeTriggerTarget &t){
-		return t.GetName() == name;
-	});
-}
-
 void igdeTriggerTargetList::Add(igdeTriggerTarget *target){
 	DEASSERT_NOTNULL(target)
-	DEASSERT_FALSE(HasNamed(target->GetName()))
+	DEASSERT_FALSE(pTargets.HasNamed(target->GetName()))
 	
 	pTargets.Add(target);
 }

@@ -89,7 +89,7 @@ pNodePose(nodePose)
 				const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodePoseBone, nodeModel));
 				bone->SetIndex(pBones.GetCount());
 				
-				if(!GetBoneNamed(bone->GetName())){
+				if(!pBones.HasNamed(bone->GetName())){
 					pBones.Add(bone);
 				}
 				
@@ -97,7 +97,7 @@ pNodePose(nodePose)
 				const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
 				bone->SetIndex(pBones.GetCount());
 				
-				if(!GetBoneNamed(bone->GetName())){
+				if(!pBones.HasNamed(bone->GetName())){
 					pBones.Add(bone);
 				}
 				
@@ -121,7 +121,7 @@ pNodePose(nodePose)
 			const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
 			bone->SetIndex(pBones.GetCount());
 			
-			if(!GetBoneNamed(bone->GetName())){
+			if(!pBones.HasNamed(bone->GetName())){
 				pBones.Add(bone);
 			}
 			
@@ -142,20 +142,6 @@ fbxRig::~fbxRig(){
 
 // Management
 ///////////////
-
-fbxRigBone *fbxRig::GetBoneNamed(const char *name) const{
-	return pBones.FindOrDefault([&](fbxRigBone &bone){
-		return bone.GetName() == name;
-	});
-}
-
-fbxRigBone *fbxRig::GetBoneWithModelID(int64_t id) const{
-	return pBones.FindOrDefault([&](fbxRigBone &bone){
-		return bone.GetNodeModelID() == id;
-	});
-}
-
-
 
 void fbxRig::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
 	module.LogInfoFormat("%sRig:", prefix.GetString());
@@ -193,7 +179,7 @@ void fbxRig::pAddRootBone(fbxScene &scene, fbxNode &nodeRoot){
 		const fbxRigBone::Ref bone(fbxRigBone::Ref::New(*this, nodeModel, nodeModel));
 		bone->SetIndex(pBones.GetCount());
 		
-		if(!GetBoneNamed(bone->GetName())){
+		if(!pBones.HasNamed(bone->GetName())){
 			pBones.Add(bone);
 		}
 		

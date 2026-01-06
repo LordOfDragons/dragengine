@@ -80,7 +80,7 @@ gdeWPSTIMCategorySkin *gdeWPSTIMCategorySkin::GetChildWith(gdeCategory* category
 
 
 void gdeWPSTIMCategorySkin::CategoriesChanged(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -117,7 +117,7 @@ void gdeWPSTIMCategorySkin::CategoriesChanged(){
 
 
 void gdeWPSTIMCategorySkin::OnAddedToTree(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

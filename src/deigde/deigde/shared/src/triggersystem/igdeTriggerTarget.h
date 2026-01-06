@@ -39,10 +39,10 @@ class igdeTriggerListener;
 class DE_DLL_EXPORT igdeTriggerTarget : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTriggerTarget> Ref;
+	using Ref = deTObjectReference<igdeTriggerTarget>;
 	
 	/** \brief List of targets. */
-	typedef decTObjectOrderedSet<igdeTriggerTarget> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTriggerTarget>,igdeTriggerTarget>;
 	
 	
 private:

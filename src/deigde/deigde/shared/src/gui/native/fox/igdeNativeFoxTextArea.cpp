@@ -190,7 +190,7 @@ void igdeNativeFoxTextArea::ApplyStyles(){
 			return;
 		}
 		
-		const int style = pOwner->IndexOfStyleNamed(styleName);
+		const int style = pOwner->GetStyles().IndexOfNamed(styleName);
 		if(style == -1){
 			return;
 		}

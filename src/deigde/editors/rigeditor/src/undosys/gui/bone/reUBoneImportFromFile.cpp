@@ -56,7 +56,7 @@ reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
 	SetShortInfo("Import Bones");
 	
 	rig->GetSelectionBones()->GetBones().Visit([&](reRigBone *bone){
-		reRigBone * const importBone = importedRig->GetBoneNamed(bone->GetName());
+		reRigBone * const importBone = importedRig->GetBones().FindNamed(bone->GetName());
 		
 		if(importBone){
 			const cBone::Ref ubone(cBone::Ref::New());
@@ -174,7 +174,8 @@ void reUBoneImportFromFile::Redo(){
 				constraint->Scale(pScale);
 				
 				if(constraint->GetConstraintBone()){
-					constraint->SetConstraintBone(pRig->GetBoneNamed(constraint->GetConstraintBone()->GetName()));
+					constraint->SetConstraintBone(pRig->GetBones().FindNamed(
+						constraint->GetConstraintBone()->GetName()));
 				}
 				
 				bone.AddConstraint(constraint);

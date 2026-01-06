@@ -176,9 +176,7 @@ void seDialogAddTexture::pUpdateModelTextureList(){
 		for(i=0; i<count; i++){
 			const decString &modelTextureName = engModel->GetTextureAt(i)->GetName();
 			
-			if(list.HasMatching([&](const seTexture &t){
-				return t.GetName() == modelTextureName;
-			})){
+			if(list.HasNamed(modelTextureName)){
 				pListModelTextureNames->AddItem(modelTextureName, iconUsed);
 				
 			}else{

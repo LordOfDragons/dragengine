@@ -283,9 +283,7 @@ void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimatio
 	}*/
 	word->SetName(GetAttributeString(root, "name"));
 	
-	if(sanimation.GetWords().HasMatching([&](const saeWord &w){
-		return w.GetName() == word->GetName();
-	})){
+	if(sanimation.GetWords().HasNamed(word->GetName())){
 		LogErrorGenericProblemValue(root, word->GetName(), "Duplicate Word");
 	}
 	

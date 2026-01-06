@@ -68,8 +68,8 @@ private:
 	
 	
 public:
-	typedef deTObjectReference<projTRProfile> Ref;
-	typedef decTObjectOrderedSet<projTRProfile> List;
+	using Ref = deTObjectReference<projTRProfile>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<projTRProfile>,projTRProfile>;
 	
 	
 	/** \name Constructors and Destructors */

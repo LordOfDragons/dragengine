@@ -1981,14 +1981,12 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 			continue;
 		}
 		
-		if(gameDefinition->GetID().IsEmpty()){
+		if(gameDefinition->GetId().IsEmpty()){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has empty identifier, skipped");
 			continue;
 		}
 		
-		if(pSharedGameDefinitions.HasMatching([&](const igdeGameDefinition &gd){
-			return gd.GetID() == gameDefinition->GetID();
-		})){
+		if(pSharedGameDefinitions.HasWithId(gameDefinition->GetId())){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has has duplicate identifier, skipped");
 			continue;
 		}
@@ -2296,5 +2294,5 @@ void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 		});
 	});
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Find Skies done: %.1fs (%d found)",
-		timer.GetElapsedTime(), gdskies.GetSkyList().GetCount());
+		timer.GetElapsedTime(), gdskies.GetSkies().GetCount());
 }

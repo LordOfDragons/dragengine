@@ -25,9 +25,8 @@
 #ifndef _GDECATEGORY_H_
 #define _GDECATEGORY_H_
 
-#include "gdeCategoryList.h"
-
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringSet.h>
 
 
@@ -36,12 +35,21 @@
  */
 class gdeCategory : public deObject{
 public:
-	typedef deTObjectReference<gdeCategory> Ref;
+	using Ref = deTObjectReference<gdeCategory>;
+	
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<gdeCategory>,gdeCategory>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<gdeCategory>,gdeCategory>::decTCollectionQueryByName;
+		
+		/** \brief Category with path or \em NULL if absent. */
+		gdeCategory *FindWithPath(const char *path) const;
+	};
+	
 	
 private:
 	decString pName;
 	decString pDescription;
-	gdeCategoryList pCategories;
+	List pCategories;
 	gdeCategory *pParent;
 	decStringSet pAutoCategorizePattern;
 	bool pHidden;
@@ -105,7 +113,7 @@ public:
 	
 	
 	/** \brief Sub categories. */
-	inline const gdeCategoryList &GetCategories() const{ return pCategories; }
+	inline const List &GetCategories() const{ return pCategories; }
 	
 	/** \brief Add category. */
 	void AddCategory(gdeCategory *category);

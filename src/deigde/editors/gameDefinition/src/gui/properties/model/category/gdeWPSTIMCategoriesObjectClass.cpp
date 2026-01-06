@@ -86,7 +86,7 @@ gdeCategory* category, bool deep) const{
 
 
 void gdeWPSTIMCategoriesObjectClass::CategoriesChanged(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesObjectClass();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesObjectClass();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -123,7 +123,7 @@ void gdeWPSTIMCategoriesObjectClass::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoriesObjectClass::OnAddedToTree(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesObjectClass();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesObjectClass();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

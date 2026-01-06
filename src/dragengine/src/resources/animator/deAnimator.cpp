@@ -100,12 +100,6 @@ void deAnimator::NotifyVertexPositionSetsChanged(){
 // Controller Management
 //////////////////////////
 
-int deAnimator::IndexOfControllerNamed(const char *name) const{
-	return pControllers.IndexOfMatching([&](const deAnimatorController &controller){
-		return controller.GetName() == name;
-	});
-}
-
 void deAnimator::AddController(deAnimatorController *controller){
 	DEASSERT_NOTNULL(controller)
 	pControllers.AddOrThrow(controller);

@@ -137,7 +137,7 @@ void ceWDSLaneWord::FillIDList(decStringList &list){
 		return;
 	}
 	
-	const ceConversationActorList &actorList = GetWindow().GetConversation()->GetActorList();
+	const ceConversationActor::List &actorList = GetWindow().GetConversation()->GetActorList();
 	ceSpeechAnimation *speechAnimation = nullptr;
 	
 	ceConversationActor *actor = actorList.GetWithIDOrAliasID(action->GetActor());
@@ -148,7 +148,7 @@ void ceWDSLaneWord::FillIDList(decStringList &list){
 		return;
 	}
 	
-	speechAnimation->GetWordList().Visit([&](const ceSAWord::Ref &w){
+	speechAnimation->GetWords().Visit([&](const ceSAWord::Ref &w){
 		list.Add(w->GetName());
 	});
 }

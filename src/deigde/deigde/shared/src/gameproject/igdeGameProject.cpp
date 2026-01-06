@@ -145,7 +145,7 @@ void igdeGameProject::MergeGameDefinitions(){
 	merged->UpdateWith(*pProjectGameDefinition);
 	
 	merged->SetFilename(pProjectGameDefinition->GetFilename());
-	merged->SetID(pProjectGameDefinition->GetID());
+	merged->SetId(pProjectGameDefinition->GetId());
 	merged->SetDescription(pProjectGameDefinition->GetDescription());
 	merged->SetBasePath(pProjectGameDefinition->GetBasePath());
 	

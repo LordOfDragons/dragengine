@@ -70,9 +70,7 @@ igdeUndo::Ref gdeMASkyAdd::OnAction(gdeGameDefinition &gameDefinition){
 		return {};
 	}
 	
-	if(gameDefinition.GetSkies().HasMatching([&](const gdeSky &sky){
-		return sky.GetPath() == filename;
-	})){
+	if(gameDefinition.GetSkies().HasWithPath(filename)){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Sky", "Sky with path exists already.");
 		return {};
 	}

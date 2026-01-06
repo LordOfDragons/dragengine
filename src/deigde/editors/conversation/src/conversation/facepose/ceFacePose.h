@@ -46,10 +46,10 @@ private:
 	ceControllerValue::List pControllers;
 	
 public:
-	typedef deTObjectReference<ceFacePose> Ref;
-	typedef decTObjectOrderedSet<ceFacePose> List;
-
-
+	using Ref = deTObjectReference<ceFacePose>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceFacePose>,ceFacePose>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new face pose. */

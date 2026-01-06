@@ -26,11 +26,8 @@
 #define _GDEMACATEGORYADD_H_
 
 #include "../../gdeBaseAction.h"
+#include "../../../gamedef/category/gdeCategory.h"
 #include "../../../undosys/category/gdeUCategoryBase.h"
-
-
-class gdeCategory;
-class gdeCategoryList;
 
 
 /**
@@ -57,7 +54,7 @@ public:
 	
 	/** \brief Add category. */
 	igdeUndo::Ref AddCategory(gdeGameDefinition &gameDefinition,
-		gdeCategory *parent, const gdeCategoryList &list,
+		gdeCategory *parent, const gdeCategory::List &list,
 		gdeUCategoryBase::eCategoryType categoryType) const;
 	/*@}*/
 };

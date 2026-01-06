@@ -70,9 +70,7 @@ igdeUndo::Ref gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinitio
 		return {};
 	}
 	
-	if(gameDefinition.GetParticleEmitters().HasMatching([&](const gdeParticleEmitter &pe){
-		return pe.GetPath() == filename;
-	})){
+	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
 		igdeCommonDialogs::Information(&pWindowMain, "Add Particle Emitter",
 			"Particle emitter with path exists already.");
 		return {};

@@ -70,9 +70,6 @@
     <ClCompile Include="..\..\..\..\src\gamedef\category\gdeCategory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\gamedef\category\gdeCategoryList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\gamedef\filepattern\gdeFilePattern.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1678,9 +1675,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\gamedef\category\gdeCategory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\gamedef\category\gdeCategoryList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\gamedef\filepattern\gdeFilePattern.h">

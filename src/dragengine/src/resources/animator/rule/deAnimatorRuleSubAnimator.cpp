@@ -134,7 +134,8 @@ void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animato
 	
 	int i;
 	for(i=0; i<pConnectionCount; i++){
-		pConnections[i] = animator.IndexOfControllerNamed(pSubAnimator->GetControllers().GetAt(i)->GetName());
+		pConnections[i] = animator.GetControllers().IndexOfNamed(
+			pSubAnimator->GetControllers().GetAt(i)->GetName());
 	}
 }
 

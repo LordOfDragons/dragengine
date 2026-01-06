@@ -182,7 +182,7 @@ void cePlayback::ResetCamera(){
 		*/
 		
 	}else if(pActors.GetCount() > 1){
-		const ceConversationActorList &list = pConversation.GetActorList();
+		const ceConversationActor::List &list = pConversation.GetActorList();
 		ceConversationActor &actor1 = *list.GetAt(0);
 		ceConversationActor &actor2 = *list.GetAt(1);
 		float distance = (actor1.GetPosition() - actor2.GetPosition()).Length();
@@ -289,7 +289,7 @@ void cePlayback::UpdateCamera(float elapsed){
 		}
 		
 		const ceCameraShot &cameraShot = *pConversation.GetActiveCameraShot();
-		const ceConversationActorList &list = pConversation.GetActorList();
+		const ceConversationActor::List &list = pConversation.GetActorList();
 		
 		if(pActors.GetCount() == 1){
 			pCamera->SetCoordSys1Actor(*list.GetAt(0));
@@ -537,7 +537,7 @@ void cePlayback::pProcessActions(float elapsed){
 	if(action){
 		// check for waiting conditions
 		if(pActiveActionStack->GetActionWaiting()){
-			const ceConversationActorList &actorList = pConversation.GetActorList();
+			const ceConversationActor::List &actorList = pConversation.GetActorList();
 			
 			if(action->GetWaitForActor()){
 				const bool useActorWait = !action->GetWaitSpeakOnly();

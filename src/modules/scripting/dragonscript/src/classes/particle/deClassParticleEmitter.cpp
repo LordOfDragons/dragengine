@@ -158,7 +158,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPEController){
 void deClassParticleEmitter::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitter * const emitter = static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter;
 	const deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitter*>(GetOwnerClass())->GetDS());
-	const int index = emitter->IndexOfControllerNamed(rt->GetValue(0)->GetString());
+	const int index = emitter->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
 		rt->PushObject(NULL, ds.GetClassParticleEmitterController());
@@ -176,7 +176,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassParticleEmitter::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitter &emitter = *(static_cast<sPENatDat*>(p_GetNativeData(myself))->emitter);
-	rt->PushInt(emitter.IndexOfControllerNamed(rt->GetValue(0)->GetString()));
+	rt->PushInt(emitter.GetControllers().IndexOfNamed(rt->GetValue(0)->GetString()));
 }
 
 

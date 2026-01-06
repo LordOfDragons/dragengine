@@ -43,10 +43,10 @@
 class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDProperty> Ref;
+	using Ref = deTObjectReference<igdeGDProperty>;
 	
 	/** \brief List of properties. */
-	typedef decTObjectOrderedSet<igdeGDProperty> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDProperty>,igdeGDProperty>;
 	
 	
 	/** \brief Property type. */

@@ -434,7 +434,7 @@ bool meObject::IsGhost() const{
 
 void meObject::OnGameDefinitionChanged(){
 	igdeGDClass * const classDef = pEnvironment->GetGameProject()->
-		GetGameDefinition()->GetClassManager()->GetNamed(pClassName);
+		GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(pClassName);
 	
 	if(pWObject->GetGDClass() != classDef){
 		pWObject->SetGDClass(classDef); // can trigger WOAsyncFinished in the future
@@ -1097,27 +1097,9 @@ void meObject::Update(float elapsed){
 // Textures
 /////////////
 
-meObjectTexture *meObject::GetTextureNamed(const char *name) const{
-	return pTextures.FindOrDefault([&](const meObjectTexture &t){
-		return t.GetName() == name;
-	});
-}
-
-bool meObject::HasTextureNamed(const char *name) const{
-	return pTextures.HasMatching([&](const meObjectTexture &t){
-		return t.GetName() == name;
-	});
-}
-
-int meObject::IndexOfTextureNamed(const char *name) const{
-	return pTextures.IndexOfMatching([&](const meObjectTexture &t){
-		return t.GetName() == name;
-	});
-}
-
 void meObject::AddTexture(meObjectTexture *texture){
 	DEASSERT_NOTNULL(texture)
-	DEASSERT_FALSE(HasTextureNamed(texture->GetName()))
+	DEASSERT_FALSE(pTextures.HasNamed(texture->GetName()))
 	
 	pTextures.AddOrThrow(texture);
 	texture->SetObject(this);
@@ -1200,7 +1182,7 @@ void meObject::UpdateComponentTextures(){
 	for(i=0; i<textureCount; i++){
 		deComponentTexture &componentTexture = component->GetTextureAt(i);
 		const decString &textureName = engModel->GetTextureAt(i)->GetName();
-		meObjectTexture * const texture = GetTextureNamed(textureName);
+		meObjectTexture * const texture = pTextures.FindNamed(textureName);
 		
 		const cWOTexture &wotexture = *((cWOTexture*)pWOTextures.GetAt(i));
 		deSkin *useSkin = wotexture.skin;
@@ -2280,9 +2262,7 @@ void meObject::pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &p
 		
 		// printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
 		// 	gdProperty.GetIdentifierGroup().GetString() );
-		meIDGroup *group = groupList.FindOrDefault([&](const meIDGroup &g){
-			return g.GetName() == p->GetIdentifierGroup();
-		});
+		meIDGroup *group = groupList.FindNamed(p->GetIdentifierGroup());
 		if(!group){
 			const meIDGroup::Ref newGroup(meIDGroup::Ref::New(p->GetIdentifierGroup()));
 			groupList.Add(newGroup);
@@ -2302,9 +2282,7 @@ void meObject::pUpdateIDGroupList(const igdeGDClass &gdclass, const decString &p
 		
 		//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
 		//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
-		meIDGroup *group = groupList.FindOrDefault([&](const meIDGroup &g){
-			return g.GetName() == p->GetIdentifierGroup();
-		});
+		meIDGroup *group = groupList.FindNamed(p->GetIdentifierGroup());
 		if(!group){
 			const meIDGroup::Ref newGroup(meIDGroup::Ref::New(p->GetIdentifierGroup()));
 			groupList.Add(newGroup);

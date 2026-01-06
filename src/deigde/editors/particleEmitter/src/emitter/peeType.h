@@ -47,12 +47,12 @@ class deEngine;
 class peeType : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<peeType> Ref;
+	using Ref = deTObjectReference<peeType>;
 	
 	/** \brief List type. */
-	typedef decTObjectOrderedSet<peeType> List;
-
-
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<peeType>,peeType>;
+	
+	
 private:
 	peeEmitter *pEmitter;
 	deEngine *pEngine;

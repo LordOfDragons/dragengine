@@ -260,9 +260,7 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 	if(!profile->GetIdentifier()){
 		LogErrorGenericProblem(root, "Profile requires valid identifier");
 	}
-	if(project.GetProfiles().HasMatching([&](const projProfile &p){
-		return p.GetName() == profile->GetName();
-	})){
+	if(project.GetProfiles().HasNamed(profile->GetName())){
 		LogErrorGenericProblem(root, "Duplicate profile name");
 	}
 	

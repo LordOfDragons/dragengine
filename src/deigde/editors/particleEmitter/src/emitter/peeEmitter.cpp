@@ -448,9 +448,7 @@ void peeEmitter::SetActiveController(peeController *controller){
 
 void peeEmitter::AddType(peeType *type){
 	DEASSERT_NOTNULL(type)
-	DEASSERT_FALSE(pTypes.HasMatching([&](const peeType *each){
-		return each->GetName() == type->GetName();
-	}))
+	DEASSERT_FALSE(pTypes.HasNamed(type->GetName()))
 	
 	FreeEmitter();
 	
@@ -465,9 +463,7 @@ void peeEmitter::AddType(peeType *type){
 
 void peeEmitter::InsertTypeAt(peeType *type, int index){
 	DEASSERT_NOTNULL(type)
-	DEASSERT_FALSE(pTypes.HasMatching([&](const peeType *each){
-		return each->GetName() == type->GetName();
-	}))
+	DEASSERT_FALSE(pTypes.HasNamed(type->GetName()))
 	
 	FreeEmitter();
 	

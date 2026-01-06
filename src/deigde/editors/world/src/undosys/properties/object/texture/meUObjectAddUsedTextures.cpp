@@ -63,14 +63,11 @@ meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
 	
 	decStringList modelTextureNames;
 	object->GetModelTextureNameList(modelTextureNames);
-	const int count = modelTextureNames.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(!object->HasTextureNamed(modelTextureNames.GetAt(i).GetString())){
-			pTextureNameList.Add(modelTextureNames.GetAt(i));
+	modelTextureNames.Visit([&](const decString &name){
+		if(!object->GetTextures().HasNamed(name)){
+			pTextureNameList.Add(name);
 		}
-	}
+	});
 	
 	pObject = object;
 }
@@ -106,14 +103,10 @@ void meUObjectAddUsedTextures::Redo(){
 		pTextureNameList.Visit([&](const decString &name){
 			igdeGDCCTexture *gdctex = nullptr;
 			if(gdctexlist){
-				gdctex = gdctexlist->FindOrDefault([&](const igdeGDCCTexture &t){
-					return t.GetName() == name;
-				});
+				gdctex = gdctexlist->FindNamed(name);
 			}
 			if(!gdctex && gdccomptex){
-				gdctex = gdccomptex->FindOrDefault([&](const igdeGDCCTexture &t){
-					return t.GetName() == name;
-				});
+				gdctex = gdccomptex->FindNamed(name);
 			}
 			
 			meObjectTexture::Ref texture;

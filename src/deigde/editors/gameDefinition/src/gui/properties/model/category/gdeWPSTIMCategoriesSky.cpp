@@ -84,7 +84,7 @@ gdeWPSTIMCategorySky *gdeWPSTIMCategoriesSky::GetChildWith(gdeCategory* category
 
 
 void gdeWPSTIMCategoriesSky::CategoriesChanged(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSky();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesSky();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -121,7 +121,7 @@ void gdeWPSTIMCategoriesSky::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoriesSky::OnAddedToTree(){
-	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSky();
+	const gdeCategory::List &list = GetGameDefinition().GetCategoriesSky();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

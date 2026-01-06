@@ -25,6 +25,9 @@
 #ifndef _GDEWPSPARTICLEEMITTER_H_
 #define _GDEWPSPARTICLEEMITTER_H_
 
+#include "gdeWPSParticleEmitterListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
@@ -33,11 +36,8 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-#include "../../../gamedef/gdeGameDefinition.h"
 class gdeParticleEmitter;
-class gdeCategoryList;
 class gdeWindowProperties;
-#include "gdeWPSParticleEmitterListener.h"
 
 
 
@@ -96,7 +96,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList(const gdeCategoryList &list, const char *prefix);
+	void UpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 	
 	
 	

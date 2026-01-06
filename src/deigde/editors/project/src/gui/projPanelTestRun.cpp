@@ -426,9 +426,7 @@ void projPanelTestRun::Start(){
 	
 	projTRProfile *launchProfile = nullptr;
 	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
-		launchProfile = pTestRunner->GetLauncherProfiles().FindOrDefault([&](const projTRProfile &p){
-			return p.GetName() == pProject->GetActiveLaunchProfile();
-		});
+		launchProfile = pTestRunner->GetLauncherProfiles().FindNamed(pProject->GetActiveLaunchProfile());
 	}
 	
 	try{
@@ -648,9 +646,8 @@ void projPanelTestRun::SelectLauncherProfile(){
 	}
 	
 	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
-		pCBLaunchProfile->SetSelectionWithData(pTestRunner->GetLauncherProfiles().FindOrDefault([&](const projTRProfile &p){
-			return p.GetName() == pProject->GetActiveLaunchProfile();
-		}));
+		pCBLaunchProfile->SetSelectionWithData(pTestRunner->GetLauncherProfiles().
+			FindNamed(pProject->GetActiveLaunchProfile()));
 		
 	}else{
 		pCBLaunchProfile->SetSelectionWithData(nullptr);

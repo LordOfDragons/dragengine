@@ -69,7 +69,7 @@ void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticle
 		return;
 	}
 	
-	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
+	igdeGDCategory * const category = GetRootCategory()->GetCategories().FindWithPath(
 		decPath::CreatePathUnix(gdParticleEmitter->GetCategory()));
 	
 	SelectCategory(category);
@@ -97,9 +97,7 @@ igdeGDParticleEmitter* &particleEmitter, const char *title){
 
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter, const char *title){
 	const igdeGDParticleEmitterManager &particleEmitterManager = owner->GetGameDefinition()->GetParticleEmitterManager();
-	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().FindOrDefault([&](const igdeGDParticleEmitter &s){
-		return s.GetPath() == particleEmitter;
-	});
+	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitters().FindWithPath(particleEmitter);
 	if(SelectParticleEmitter(owner, gdParticleEmitter, title)){
 		particleEmitter = gdParticleEmitter->GetPath();
 		return true;

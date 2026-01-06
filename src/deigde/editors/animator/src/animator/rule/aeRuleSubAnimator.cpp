@@ -364,9 +364,7 @@ void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) cons
 			int i;
 			for(i=0; i<pConnections.GetCount(); i++){
 				const decString &name = pSubAnimator->GetControllers().GetAt(i)->GetName();
-				rule.SetConnectionAt(i, controllers.IndexOfMatching([&](const aeController &c){
-					return c.GetName() == name;
-				}));
+				rule.SetConnectionAt(i, controllers.IndexOfNamed(name));
 			}
 			
 		}else{

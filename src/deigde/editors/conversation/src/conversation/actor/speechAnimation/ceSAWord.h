@@ -41,14 +41,14 @@ private:
 	decUnicodeString pPhonetics;
 	
 public:
-	typedef deTObjectReference<ceSAWord> Ref;
-	typedef decTObjectOrderedSet<ceSAWord> List;
+	using Ref = deTObjectReference<ceSAWord>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceSAWord>,ceSAWord>;
 
 
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new word. */
-	ceSAWord(const char *name);
+	explicit ceSAWord(const char *name);
 	/** Cleans up the word. */
 protected:
 	virtual ~ceSAWord();

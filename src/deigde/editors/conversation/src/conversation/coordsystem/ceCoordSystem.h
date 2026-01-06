@@ -26,6 +26,7 @@
 #define _CECOORDSYSTEM_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -46,10 +47,17 @@ private:
 	decVector pOrientation;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceCoordSystem> Ref;
-
-
+	using Ref = deTObjectReference<ceCoordSystem>;
+	
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<ceCoordSystem>,ceCoordSystem>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<ceCoordSystem>,ceCoordSystem>::decTCollectionQueryByName;
+		
+		/** \brief Retrieves the coordinate system with the given id or alias id or nullptr if not found. */
+		ceCoordSystem *GetWithIDOrAliasID(const char *id) const;
+	};
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new coordinate system. */

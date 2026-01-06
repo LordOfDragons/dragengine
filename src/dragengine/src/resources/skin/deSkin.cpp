@@ -104,24 +104,6 @@ int deSkin::IndexOfTextureNamed(const char *name) const{
 // Mapped Values
 //////////////////
 
-deSkinMapped *deSkin::GetMappedNamed(const char *name) const{
-	return pMapped.FindOrDefault([&](const deSkinMapped &mapped){
-		return mapped.GetName() == name;
-	});
-}
-
-int deSkin::IndexOfMappedNamed(const char *name) const{
-	return pMapped.IndexOfMatching([&](const deSkinMapped &mapped){
-		return mapped.GetName() == name;
-	});
-}
-
-bool deSkin::HasMappedNamed(const char *name) const{
-	return pMapped.HasMatching([&](const deSkinMapped &mapped){
-		return mapped.GetName() == name;
-	});
-}
-
 void deSkin::AddMapped(deSkinMapped *mapped){
 	DEASSERT_NOTNULL(mapped)
 	pMapped.AddOrThrow(mapped);

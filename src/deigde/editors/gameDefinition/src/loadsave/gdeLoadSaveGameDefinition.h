@@ -127,8 +127,8 @@ private:
 	void pReadSkin(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
 	void pReadSky(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
 	void pReadCategories(const decXmlElementTag &root, gdeGameDefinition &gameDefinition);
-	void pReadCategories(const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent);
-	void pReadCategory(const decXmlElementTag &root, gdeCategoryList *list, gdeCategory *parent);
+	void pReadCategories(const decXmlElementTag &root, gdeCategory::List *list, gdeCategory *parent);
+	void pReadCategory(const decXmlElementTag &root, gdeCategory::List *list, gdeCategory *parent);
 	
 	void pWriteGameDefinition(decXmlWriter &writer, const gdeGameDefinition &gameDefinition);
 	void pWriteObjectClass(decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
@@ -154,7 +154,7 @@ private:
 	void pWriteSky(decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSky &sky);
 	void pWriteParticleEmitter(decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
 		const gdeParticleEmitter &particleEmitter);
-	void pWriteCategories(decXmlWriter &writer, const gdeCategoryList &categories, const char *name);
+	void pWriteCategories(decXmlWriter &writer, const gdeCategory::List &categories, const char *name);
 	void pWriteCategory(decXmlWriter &writer, const gdeCategory &category);
 	void pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties, const char *tagName);
 	void pWriteProperties(decXmlWriter &writer, const gdeProperty::List &properties, const char *tagName);

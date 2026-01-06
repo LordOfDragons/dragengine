@@ -26,6 +26,7 @@
 #define _DESKINPMAPPED_H_
 
 #include "../../deObject.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
@@ -56,7 +57,10 @@
 class DE_DLL_EXPORT deSkinMapped : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkinMapped> Ref;
+	using Ref = deTObjectReference<deSkinMapped>;
+	
+	/** \brief List of mapped. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deSkinMapped>,deSkinMapped>;
 	
 	
 	/** \brief Input types. */

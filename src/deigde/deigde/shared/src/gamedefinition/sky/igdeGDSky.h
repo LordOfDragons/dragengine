@@ -25,13 +25,12 @@
 #ifndef _IGDEGDSKY_H_
 #define _IGDEGDSKY_H_
 
+#include "igdeGDSkyController.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
-
-class igdeGDSkyController;
-
 
 
 /**
@@ -41,13 +40,10 @@ class DE_DLL_EXPORT igdeGDSky : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDSky> Ref;
+	using Ref = deTObjectReference<igdeGDSky>;
 	
 	/** \brief List of skies. */
-	typedef decTObjectOrderedSet<igdeGDSky> List;
-	
-	/** \brief List of controllers. */
-	typedef decTObjectOrderedSet<igdeGDSkyController> ControllersList;
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<igdeGDSky>,igdeGDSky>;
 	
 	
 private:
@@ -56,7 +52,7 @@ private:
 	decString pDescription;
 	decString pCategory;
 	
-	ControllersList pControllers;
+	igdeGDSkyController::List pControllers;
 	
 	deImage::Ref pPreviewImage;
 	
@@ -117,7 +113,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	inline const ControllersList &GetControllers() const{ return pControllers; }
+	inline const igdeGDSkyController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(igdeGDSkyController *controller);

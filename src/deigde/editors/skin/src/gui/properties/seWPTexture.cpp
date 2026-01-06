@@ -292,9 +292,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetSkin()->GetTextures().HasMatching([&value, texture](const seTexture &t){
-			return t.GetName() == value;
-		})){
+		if(pPanel.GetSkin()->GetTextures().HasNamed(value)){
 			igdeCommonDialogs::Error(&pPanel, "Set Texture Name", "Texture name exists already");
 			textField->SetText(texture->GetName());
 			return;

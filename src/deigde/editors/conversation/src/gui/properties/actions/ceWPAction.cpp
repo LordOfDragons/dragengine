@@ -233,7 +233,7 @@ void ceWPAction::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 	combobox.RemoveAllItems();
 	
 	if(conversation){
-		const ceConversationActorList &list = conversation->GetActorList();
+		const ceConversationActor::List &list = conversation->GetActorList();
 		const int count = list.GetCount();
 		int i;
 		
@@ -264,7 +264,7 @@ void ceWPAction::UpdateComboBoxWithConvoCoordSysIDList(igdeComboBox &combobox){
 	combobox.RemoveAllItems();
 	
 	if(conversation){
-		const ceCoordSystemList &list = conversation->GetCoordSystemList();
+		const ceCoordSystem::List &list = conversation->GetCoordSystemList();
 		const int count = list.GetCount();
 		int i;
 		

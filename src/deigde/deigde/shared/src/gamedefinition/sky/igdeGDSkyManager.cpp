@@ -58,23 +58,17 @@ igdeGDSkyManager::~igdeGDSkyManager(){
 // Management
 ///////////////
 
-igdeGDSky *igdeGDSkyManager::GetSkyWithPath(const char * path) const{
-	return pSkyList.FindOrDefault([&](const igdeGDSky &s){
-		return s.GetPath() == path;
-	});
-}
-
 void igdeGDSkyManager::AddSky(igdeGDSky *sky){
 	DEASSERT_NOTNULL(sky)
-	pSkyList.AddOrThrow(sky);
+	pSkies.AddOrThrow(sky);
 }
 
 void igdeGDSkyManager::RemoveSky(igdeGDSky *sky){
-	pSkyList.RemoveOrThrow(sky);
+	pSkies.RemoveOrThrow(sky);
 }
 
 void igdeGDSkyManager::RemoveAllSkies(){
-	pSkyList.RemoveAll();
+	pSkies.RemoveAll();
 }
 
 
@@ -93,7 +87,7 @@ void igdeGDSkyManager::VisitSkiesMatchingCategory(igdeGDVisitor &visitor, const 
 	}
 	const decString strPathCat(pathCat.GetPathUnix());
 	
-	pSkyList.Visit([&](igdeGDSky *sky){
+	pSkies.Visit([&](igdeGDSky *sky){
 		if(sky->GetCategory() == strPathCat){
 			visitor.VisitSky(sky);
 		}
@@ -107,7 +101,7 @@ void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStri
 	
 	const decString realFilter(filter.GetLower());
 	
-	pSkyList.Visit([&](igdeGDSky *sky){
+	pSkies.Visit([&](igdeGDSky *sky){
 		if(sky->GetName().GetLower().FindString(realFilter) != -1
 		|| sky->GetPath().GetLower().FindString(realFilter) != -1){
 			visitor.VisitSky(sky);
@@ -118,11 +112,9 @@ void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStri
 
 
 void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
-	manager.GetSkyList().Visit([&](const igdeGDSky &sky){
+	manager.GetSkies().Visit([&](const igdeGDSky &sky){
 		const igdeGDSky::Ref skyCopy(igdeGDSky::Ref::New(sky));
-		igdeGDSky * const check = pSkyList.FindOrDefault([&](const igdeGDSky &s){
-			return s.GetPath() == skyCopy->GetPath();
-		});
+		igdeGDSky * const check = pSkies.FindWithPath(skyCopy->GetPath());
 		if(check){
 			RemoveSky(check);
 		}
@@ -138,11 +130,8 @@ void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 }
 
 void igdeGDSkyManager::UpdateWithFound(const igdeGDSkyManager &skyManager){
-	skyManager.GetSkyList().Visit([&](const igdeGDSky &foundSky){
-		const igdeGDSky::Ref skyCheck(pSkyList.FindOrDefault([&](const igdeGDSky &s){
-			return s.GetPath() == foundSky.GetPath();
-		}));
-		if(skyCheck){
+	skyManager.GetSkies().Visit([&](const igdeGDSky &foundSky){
+		if(pSkies.HasWithPath(foundSky.GetPath())){
 			return;
 		}
 		
@@ -174,9 +163,7 @@ public:
 		}
 		
 		const decString fullPath(path.GetPathUnix());
-		const bool hasPath = pOwner.GetSkyList().HasMatching([&](const igdeGDSky &s){
-			return s.GetPath() == fullPath;
-		});
+		const bool hasPath = pOwner.GetSkies().HasWithPath(fullPath);
 		if(hasPath){
 			return true;
 		}

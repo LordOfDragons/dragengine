@@ -283,7 +283,7 @@ void dearRuleAnimationDifference::pUpdateMove(){
 	
 	const dearAnimation * const animation = GetUseAnimation();
 	if(animation){
-		pMove1 = animation->GetMoveNamed(pAnimationDifference.GetLeadingMoveName());
-		pMove2 = animation->GetMoveNamed(pAnimationDifference.GetReferenceMoveName());
+		pMove1 = animation->GetMoves().FindNamed(pAnimationDifference.GetLeadingMoveName());
+		pMove2 = animation->GetMoves().FindNamed(pAnimationDifference.GetReferenceMoveName());
 	}
 }

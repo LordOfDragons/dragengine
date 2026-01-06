@@ -55,14 +55,8 @@ public:
 	/** \brief Targets. */
 	inline const igdeTriggerTarget::List &GetTargets() const{ return pTargets; }
 	
-	/** \brief Named target or nullptr if absent. */
-	igdeTriggerTarget *GetNamed(const char *name) const;
-	
 	/** \brief Named target adding it if absent. */
 	igdeTriggerTarget *GetNamedAddIfMissing(const char *name);
-	
-	/** \brief Named target is present. */
-	bool HasNamed(const char *name) const;
 	
 	/** \brief Add target throwing exception if present. */
 	void Add(igdeTriggerTarget *target);

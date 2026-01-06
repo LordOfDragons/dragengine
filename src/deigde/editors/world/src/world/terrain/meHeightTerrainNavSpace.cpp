@@ -379,27 +379,9 @@ void meHeightTerrainNavSpace::SetActive(bool active){
 // Types
 //////////
 
-meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed(const char *name) const{
-	return pTypes.FindOrDefault([&](const meHeightTerrainNavSpaceType &t) {
-		return t.GetName() == name;
-	});
-}
-
-bool meHeightTerrainNavSpace::HasTypeNamed(const char *name) const{
-	return pTypes.HasMatching([&](const meHeightTerrainNavSpaceType &t){
-		return t.GetName() == name;
-	});
-}
-
-int meHeightTerrainNavSpace::IndexOfTypeNamed(const char *name) const{
-	return pTypes.IndexOfMatching([&](const meHeightTerrainNavSpaceType &t){
-		return t.GetName() == name;
-	});
-}
-
 void meHeightTerrainNavSpace::AddType(meHeightTerrainNavSpaceType *type){
 	DEASSERT_NOTNULL(type);
-	DEASSERT_FALSE(HasTypeNamed(type->GetName()));
+	DEASSERT_FALSE(pTypes.HasNamed(type->GetName()));
 	
 	pTypes.Add(type);
 	type->SetNavSpace(this);

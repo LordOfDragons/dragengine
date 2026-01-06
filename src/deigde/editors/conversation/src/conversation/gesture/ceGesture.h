@@ -94,8 +94,8 @@ value during every frame update without having to worry about anything.
  */
 class ceGesture : public deObject{
 public:
-	typedef deTObjectReference<ceGesture> Ref;
-	typedef decTObjectOrderedSet<ceGesture> List;
+	using Ref = deTObjectReference<ceGesture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceGesture>,ceGesture>;
 	
 	
 private:

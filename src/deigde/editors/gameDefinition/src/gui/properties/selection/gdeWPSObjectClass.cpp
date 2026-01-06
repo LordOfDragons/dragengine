@@ -692,9 +692,7 @@ public:
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
-		gdeObjectClass * const ioc = gameDefinition.GetObjectClasses().FindOrDefault([&](gdeObjectClass &oc){
-			return oc.GetName() == inherit->GetName();
-		});
+		gdeObjectClass * const ioc = gameDefinition.GetObjectClasses().FindNamed(inherit->GetName());
 		if(ioc){
 			gameDefinition.SetActiveObjectClass(ioc);
 			gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
@@ -727,7 +725,7 @@ public:
 	igdeUndo::Ref OnActionObjectClass(gdeObjectClass *objectClass) override{
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
 		gdeCategory * const category = gameDefinition.GetCategoriesObjectClass()
-			.GetWithPath(objectClass->GetCategory());
+			.FindWithPath(objectClass->GetCategory());
 		if(category){
 			gameDefinition.SetActiveCategory(category);
 			gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryObjectClass);
@@ -1001,9 +999,7 @@ public:
 					return {};
 				}
 				
-				if(objectClass->GetTextures().HasMatching([&](const gdeOCComponentTexture &tex){
-					return tex.GetName() == name;
-				})){
+				if(objectClass->GetTextures().HasNamed(name)){
 					igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already.");
 					
 				}else{
@@ -1024,9 +1020,7 @@ public:
 	
 	void Update() override{
 		const gdeObjectClass * const objectClass = pPanel.GetObjectClass();
-		SetEnabled(objectClass && (pTextureName.IsEmpty() || !objectClass->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
-			return t.GetName() == pTextureName;
-		})));
+		SetEnabled(objectClass && (pTextureName.IsEmpty() || !objectClass->GetTextures().HasNamed(pTextureName)));
 	}
 };
 
@@ -1069,9 +1063,7 @@ public:
 			return {};
 		}
 		
-		if(objectClass->GetTextures().HasMatching([&](const gdeOCComponentTexture &t){
-			return t.GetName() == textField.GetText();
-		})){
+		if(objectClass->GetTextures().HasNamed(textField.GetText())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already.");
 			textField.SetText(texture->GetName());
 			return {};
@@ -1441,7 +1433,7 @@ void gdeWPSObjectClass::UpdateCategoryList(){
 	pCBCategory->RemoveAllItems();
 	
 	if(pGameDefinition){
-		const gdeCategoryList &categories = pGameDefinition->GetCategoriesObjectClass();
+		const gdeCategory::List &categories = pGameDefinition->GetCategoriesObjectClass();
 		if(categories.GetCount() > 0){
 			pUpdateCategoryList(categories, "");
 		}
@@ -1758,7 +1750,7 @@ void gdeWPSObjectClass::UpdateTexture(){
 // Private Functions
 //////////////////////
 
-void gdeWPSObjectClass::pUpdateCategoryList(const gdeCategoryList &list, const char *prefix){
+void gdeWPSObjectClass::pUpdateCategoryList(const gdeCategory::List &list, const char *prefix){
 	const int count = list.GetCount();
 	decString text;
 	int i;

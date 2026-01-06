@@ -25,6 +25,7 @@
 #ifndef _DEANIMATOR_H_
 #define _DEANIMATOR_H_
 
+#include "controller/deAnimatorController.h"
 #include "../deResource.h"
 #include "../animation/deAnimation.h"
 #include "../rig/deRig.h"
@@ -35,7 +36,6 @@
 class deAnimatorRule;
 class deAnimatorLink;
 class deAnimatorManager;
-class deAnimatorController;
 class deBaseAnimatorAnimator;
 
 
@@ -62,7 +62,7 @@ private:
 	deRig::Ref pRig;
 	deAnimation::Ref pAnimation;
 	
-	decTObjectOrderedSet<deAnimatorController> pControllers;
+	deAnimatorController::List pControllers;
 	decTObjectOrderedSet<deAnimatorLink> pLinks;
 	decTObjectOrderedSet<deAnimatorRule> pRules;
 	
@@ -124,10 +124,7 @@ public:
 	/** \name Controller Management */
 	/*@{*/
 	/** \brief Controllers. */
-	inline const decTObjectOrderedSet<deAnimatorController> &GetControllers() const{ return pControllers; }
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed(const char *controller) const;
+	inline const deAnimatorController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(deAnimatorController *controller);

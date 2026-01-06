@@ -234,9 +234,7 @@ public:
 		}
 		
 		seDynamicSkin &dynamicSkin = pPanel.GetSkin()->GetDynamicSkin();
-		if(dynamicSkin.GetRenderables().HasMatching([&name](const seDynamicSkinRenderable &r){
-			return r.GetName() == name;
-		})){
+		if(dynamicSkin.GetRenderables().HasNamed(name)){
 			igdeCommonDialogs::Error(&pPanel, "Add Renderable", "A renderable with this name exists already.");
 			return;
 		}
@@ -294,9 +292,7 @@ public:
 			return;
 		}
 		
-		if(skin->GetDynamicSkin().GetRenderables().HasMatching([&textField, &renderable](const seDynamicSkinRenderable &r){
-			return r.GetName() == textField.GetText();
-		})){
+		if(skin->GetDynamicSkin().GetRenderables().HasNamed(textField.GetText())){
 			igdeCommonDialogs::Error(&pPanel, "Rename Renderable", "A renderable with this name exists already.");
 			textField.SetText(renderable->GetName());
 			

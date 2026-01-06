@@ -98,9 +98,7 @@ public:
 		}
 		
 		lpeLangPack &langpack = *pView.GetLangPack();
-		if(langpack.GetEntries().HasMatching([&](const lpeLangPackEntry &e){
-			return e.GetName() == name;
-		})){
+		if(langpack.GetEntries().HasNamed(name)){
 			igdeCommonDialogs::ErrorFormat(&pView, "Set Entry Identifier",
 				"There exists already an entry with name '%s'", name.GetString());
 			textField->SetText(entry->GetName());
@@ -370,9 +368,7 @@ void lpeViewLangPack::UpdateEntries(){
 				igdeIcon * const icon = GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning);
 				
 				pRefLangPack->GetEntries().Visit([&](lpeLangPackEntry *e){
-					if(list.HasMatching([&](lpeLangPackEntry *e2){
-						return e2->GetName() == e->GetName();
-					})){
+					if(list.HasNamed(e->GetName())){
 						return;
 					}
 					
@@ -466,9 +462,7 @@ void lpeViewLangPack::UpdateActiveEntry(){
 			
 			const lpeLangPackEntry *refEntry = nullptr;
 			if(pRefLangPack){
-				refEntry = pRefLangPack->GetEntries().FindOrDefault([&](const lpeLangPackEntry &e2){
-					return e2.GetName() == entry->GetName();
-				});
+				refEntry = pRefLangPack->GetEntries().FindNamed(entry->GetName());
 			}
 			
 			pEditRefText->SetText(refEntry ? refEntry->GetText().ToUTF8() : decString());

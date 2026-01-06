@@ -103,9 +103,7 @@ void aeUPasteRule::Redo(){
 			// in the animator can be potentially modified
 			aeController * const controller = link->GetController();
 			if(controller && !controllers.Has(controller)){
-				aeController * const sameNameController = controllers.FindOrDefault([&](const aeController &c){
-					return c.GetName() == controller->GetName();
-				});
+				aeController * const sameNameController = controllers.FindNamed(controller->GetName());
 				
 				if(sameNameController){
 					link->SetController(sameNameController, false);

@@ -82,7 +82,7 @@ gdeCategory* category, bool deep) const{
 
 
 void gdeWPSTIMCategoryParticleEmitter::CategoriesChanged(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -119,7 +119,7 @@ void gdeWPSTIMCategoryParticleEmitter::CategoriesChanged(){
 
 
 void gdeWPSTIMCategoryParticleEmitter::OnAddedToTree(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

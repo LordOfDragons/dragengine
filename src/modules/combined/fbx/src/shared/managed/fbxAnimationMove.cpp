@@ -104,7 +104,7 @@ void fbxAnimationMove::SetName(const char *name){
 
 void fbxAnimationMove::MatchRig(const fbxRig &rig){
 	pCurveNodes.Visit([&](fbxAnimationMoveCurves &curves){
-		curves.SetRigBone(rig.GetBoneNamed(curves.GetBoneName()));
+		curves.SetRigBone(rig.GetBones().FindNamed(curves.GetBoneName()));
 	});
 }
 

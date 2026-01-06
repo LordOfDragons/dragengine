@@ -59,9 +59,23 @@ class deSound;
  */
 class ceConversationActor : public deObject{
 public:
-	typedef deTObjectReference<ceConversationActor> Ref;
-	typedef decTStringDictionary<int> ParameterMap;
-	typedef decTObjectOrderedSet<ceActorPose> PoseList;
+	using Ref = deTObjectReference<ceConversationActor>;
+	
+	class List : public decTObjectOrderedSet<ceConversationActor>{
+	public:
+		using decTObjectOrderedSet<ceConversationActor>::decTObjectOrderedSet;
+		
+		/** \brief Retrieves the actor with the given alias id or NULL if not found. */
+		ceConversationActor *GetWithAliasID(const char *id) const;
+		
+		/** \brief Retrieves the actor with the given id or alias id or NULL if not found. */
+		ceConversationActor *GetWithIDOrAliasID(const char *id) const;
+		
+		/** \brief Retrieves the index of the actor with the given id or alias id or -1 if not found. */
+		int IndexWithIDOrAliasID(const char *id) const;
+	};
+	
+	using ParameterMap = decTStringDictionary<int>;
 	
 	
 private:
@@ -134,7 +148,7 @@ private:
 	
 	ceSpeechAnimation::Ref pSpeechAnimation;
 	
-	PoseList pPoses;
+	ceActorPose::List pPoses;
 	ceActorPose::Ref pActivePose;
 	
 	float pHeadLeftRight;
@@ -272,8 +286,8 @@ public:
 	inline const ceSpeechAnimation::Ref &GetSpeechAnimation() const{ return pSpeechAnimation; }
 	
 	/** \brief Poses. */
-	inline PoseList &GetPoses(){ return pPoses; }
-	inline const PoseList &GetPoses() const{ return pPoses; }
+	inline ceActorPose::List &GetPoses(){ return pPoses; }
+	inline const ceActorPose::List &GetPoses() const{ return pPoses; }
 	
 	/** \brief Active pose or \em nullptr. */
 	inline const ceActorPose::Ref &GetActivePose() const{ return pActivePose; }

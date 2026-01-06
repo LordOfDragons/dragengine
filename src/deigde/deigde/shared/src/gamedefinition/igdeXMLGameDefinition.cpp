@@ -152,7 +152,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "identifier"){
-			gamedef.SetID(GetCDataString(*tag));
+			gamedef.SetId(GetCDataString(*tag));
 			
 		}else if(tagName == "description"){
 			gamedef.SetDescription(ReadMultilineString(*tag));
@@ -702,10 +702,7 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 	int e;
 	
 	texture->SetName(GetAttributeString(root, "name"));
-	const decString &componentTextureName = texture->GetName();
-	if(gdccomponent.GetTextureList().HasMatching([&](const igdeGDCCTexture &t){
-		return t.GetName() == componentTextureName;
-	})){
+	if(gdccomponent.GetTextureList().HasNamed(texture->GetName())){
 		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
 	}
 	
@@ -1667,11 +1664,8 @@ void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igd
 	int i;
 	
 	texture->SetName(GetAttributeString(root, "name"));
-	const decString &textureName = texture->GetName();
-	if(gdclass.GetComponentTextures().HasMatching([&](const igdeGDCCTexture &t){
-		return t.GetName() == textureName;
-	})){
-		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
+	if(gdclass.GetComponentTextures().HasNamed(texture->GetName())){
+		LogWarnGenericProblemValue(root, texture->GetName(), "A texture with this name exists already.");
 	}
 	
 	for(i=0; i<elementCount; i++){
@@ -1974,15 +1968,10 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		LogErrorMissingTag(root, "name");
 	}
 	
-	if(manager.GetEmitterList().HasMatching([&](const igdeGDParticleEmitter &em){
-		return em.GetPath() == path;
-	})){
+	if(manager.GetEmitters().HasWithPath(path)){
 		LogErrorGenericProblemValue(root, path, "A particle emitter with this path exists already.");
 	}
-	
-	if(manager.GetEmitterList().HasMatching([&](const igdeGDParticleEmitter &em){
-		return em.GetName() == name;
-	})){
+	if(manager.GetEmitters().HasNamed(name)){
 		LogErrorGenericProblemValue(root, name, "A particle emitter with this name exists already.");
 	}
 	
@@ -2044,10 +2033,10 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 		LogErrorMissingTag(root, "name");
 	}
 	
-	if(skinManager.HasSkinWithPath(strPath)){
+	if(skinManager.GetSkins().HasWithPath(strPath)){
 		LogErrorGenericProblemValue(root, strPath, "A skin with this path exists already.");
 	}
-	if(skinManager.HasSkinWithName(strName)){
+	if(skinManager.GetSkins().HasNamed(strName)){
 		LogErrorGenericProblemValue(root, strName, "A skin with this name exists already.");
 	}
 	
@@ -2110,14 +2099,10 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		LogErrorMissingTag(root, "name");
 	}
 	
-	if(skyManager.GetSkyList().HasMatching([&](const igdeGDSky &s){
-		return s.GetPath() == strPath;
-	})){
+	if(skyManager.GetSkies().HasWithPath(strPath)){
 		LogErrorGenericProblemValue(root, strPath, "A sky with this path exists already.");
 	}
-	if(skyManager.GetSkyList().HasMatching([&](const igdeGDSky &s){
-		return s.GetName() == strName;
-	})){
+	if(skyManager.GetSkies().HasNamed(strName)){
 		LogErrorGenericProblemValue(root, strName, "A sky with this name exists already.");
 	}
 	
@@ -2221,7 +2206,7 @@ void igdeXMLGameDefinition::pParseCategory(const decXmlElementTag &root, igdeGDC
 			}
 			
 			const char * const categoryName = GetCDataString(*tag);
-			if(parent->HasCategoryNamed(categoryName)){
+			if(parent->GetCategories().HasNamed(categoryName)){
 				LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 			}
 			

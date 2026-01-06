@@ -80,7 +80,7 @@ gdeWPSTIMCategorySky *gdeWPSTIMCategorySky::GetChildWith(gdeCategory* category, 
 
 
 void gdeWPSTIMCategorySky::CategoriesChanged(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
@@ -117,7 +117,7 @@ void gdeWPSTIMCategorySky::CategoriesChanged(){
 
 
 void gdeWPSTIMCategorySky::OnAddedToTree(){
-	const gdeCategoryList &list = GetCategory()->GetCategories();
+	const gdeCategory::List &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;

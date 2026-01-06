@@ -290,7 +290,7 @@ void igdeWObject::SetGDClass(igdeGDClass *gdClass){
 }
 
 void igdeWObject::SetGDClassName(const char *gdClassName){
-	SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetNamed(gdClassName));
+	SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(gdClassName));
 }
 
 void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){

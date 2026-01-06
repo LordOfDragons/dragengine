@@ -298,12 +298,8 @@ void gdeVAOComponent::pCreateComponentTextures(){
 	
 	for(i=0; i<textureCount; i++){
 		const decString &textureName = model.GetTextureAt(i)->GetName();
-		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().FindOrDefault([&](const gdeOCComponentTexture &t){
-			return t.GetName() == textureName;
-		});
-		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().FindOrDefault([&](const gdeOCComponentTexture &t){
-			return t.GetName() == textureName;
-		});
+		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().FindNamed(textureName);
+		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().FindNamed(textureName);
 		
 		pUpdateComponentTexture(objectClassTexture ? objectClassTexture : componentTexture,
 			pComponent->GetTextureAt(i), i);

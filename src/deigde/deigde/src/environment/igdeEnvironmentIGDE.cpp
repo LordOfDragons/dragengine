@@ -95,9 +95,7 @@ igdeGameDefinition *igdeEnvironmentIGDE::GetGameDefinition(){
 }
 
 igdeGameDefinition *igdeEnvironmentIGDE::GetSharedGameDefinition(const char *id){
-	return pWindowMain->GetSharedGameDefinitions().FindOrDefault([id](const igdeGameDefinition::Ref &gd){
-		return gd->GetID() == id;
-	});
+	return pWindowMain->GetSharedGameDefinitions().FindWithId(id);
 }
 
 igdeGDPreviewManager *igdeEnvironmentIGDE::GetGDPreviewManager(){

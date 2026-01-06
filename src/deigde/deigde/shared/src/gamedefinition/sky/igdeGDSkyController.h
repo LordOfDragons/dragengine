@@ -26,6 +26,7 @@
 #define _IGDEGDSKYCONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -42,9 +43,12 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDSkyController> Ref;
-
-
+	using Ref = deTObjectReference<igdeGDSkyController>;
+	
+	/** \brief List of controllers. */
+	using List = decTObjectOrderedSet<igdeGDSkyController>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky controller. */

@@ -278,9 +278,8 @@ void gdeWPSTIMObjectClass::SubObjectsChanged(){
 
 bool gdeWPSTIMObjectClass::IsValid() const{
 	// category is valid
-	const gdeCategoryList &categories = GetGameDefinition().GetCategoriesObjectClass();
-	if(!pObjectClass->GetCategory().IsEmpty() &&
-	!categories.GetWithPath(pObjectClass->GetCategory())){
+	const gdeCategory::List &categories = GetGameDefinition().GetCategoriesObjectClass();
+	if(!pObjectClass->GetCategory().IsEmpty() && !categories.FindWithPath(pObjectClass->GetCategory())){
 		return false;
 	}
 	

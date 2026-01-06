@@ -26,13 +26,13 @@
 #define _DEPARTICLEEMITTER_H_
 
 #include "deParticleEmitterParameter.h"
+#include "deParticleEmitterController.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/collection/decTOrderedSet.h"
 
 class deParticleEmitterManager;
-class deParticleEmitterController;
 class deParticleEmitterType;
 
 class deBaseGraphicParticleEmitter;
@@ -116,7 +116,7 @@ public:
 	
 	
 private:
-	decTObjectOrderedSet<deParticleEmitterController> pControllers;
+	deParticleEmitterController::List pControllers;
 	decTObjectOrderedSet<deParticleEmitterType> pTypes;
 	
 	bool pEmitBurst;
@@ -189,10 +189,7 @@ public:
 	/** \name Controller Management */
 	/*@{*/
 	/** \brief Controllers. */
-	inline const decTObjectOrderedSet<deParticleEmitterController> &GetControllers() const{ return pControllers; }
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed(const char *name) const;
+	inline const deParticleEmitterController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
 	void AddController(deParticleEmitterController *controller);

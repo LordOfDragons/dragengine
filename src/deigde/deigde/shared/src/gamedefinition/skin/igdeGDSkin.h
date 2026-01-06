@@ -46,7 +46,10 @@
 class DE_DLL_EXPORT igdeGDSkin : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDSkin> Ref;
+	using Ref = deTObjectReference<igdeGDSkin>;
+	
+	/** \brief List of skins. */
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<igdeGDSkin>,igdeGDSkin>;
 	
 	
 private:

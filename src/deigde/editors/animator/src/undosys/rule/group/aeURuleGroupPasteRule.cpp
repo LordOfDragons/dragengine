@@ -104,9 +104,7 @@ void aeURuleGroupPasteRule::Redo(){
 			linkList.Visit([&](aeLink *link){
 				if(!animator->GetLinks().Has(link)){
 					aeController * const controller = link->GetController();
-					if(controller && !animator->GetControllers().HasMatching([&](const aeController &c){
-						return c.GetName() == controller->GetName();
-					})){
+					if(controller && !animator->GetControllers().HasNamed(controller->GetName())){
 						pRemoveControllerList.Add(controller);
 						animator->AddController(controller);
 					}

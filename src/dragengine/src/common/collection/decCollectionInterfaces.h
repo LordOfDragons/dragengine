@@ -125,6 +125,148 @@ public:
 };
 
 
+/** \brief Template function bundle for classes supporting queries using GetName(). */
+template<typename Base, typename T>
+class decTCollectionQueryByName : public Base{
+public:
+	using Base::Base;
+	
+	/** \brief Create copy of collection. */
+	explicit decTCollectionQueryByName(const Base &base) : Base(base){}
+	
+	/** \brief Move collection. */
+	decTCollectionQueryByName(Base &&base) : Base(base){}
+	
+	/** \brief One or more elements match name. */
+	inline bool HasNamed(const char *name) const{
+		return this->HasMatching([&](const T &e){
+			return e.GetName() == name;
+		});
+	}
+	
+	/** \brief Index of first element matching name or -1 if absent. */
+	inline int IndexOfNamed(const char *name) const{
+		return this->IndexOfMatching([&](const T &e){
+			return e.GetName() == name;
+		});
+	}
+	
+	/** \brief First element matching name or nullptr if absent. */
+	inline T *FindNamed(const char *name) const{
+		return this->FindOrDefault([&](const T &e){
+			return e.GetName() == name;
+		});
+	}
+};
+
+
+/** \brief Template function bundle for classes supporting queries using GetPath(). */
+template<typename Base, typename T>
+class decTCollectionQueryByPath : public Base{
+public:
+	using Base::Base;
+	
+	/** \brief Create copy of collection. */
+	explicit decTCollectionQueryByPath(const Base &base) : Base(base){}
+	
+	/** \brief Move collection. */
+	decTCollectionQueryByPath(Base &&base) : Base(base){}
+	
+	/** \brief One or more elements match path. */
+	inline bool HasWithPath(const char *path) const{
+		return this->HasMatching([&](const T &e){
+			return e.GetPath() == path;
+		});
+	}
+	
+	/** \brief Index of first element matching path or -1 if absent. */
+	inline int IndexOfWithPath(const char *path) const{
+		return this->IndexOfMatching([&](const T &e){
+			return e.GetPath() == path;
+		});
+	}
+	
+	/** \brief First element matching path or nullptr if absent. */
+	inline T *FindWithPath(const char *path) const{
+		return this->FindOrDefault([&](const T &e){
+			return e.GetPath() == path;
+		});
+	}
+};
+
+
+/** \brief Template function bundle for classes supporting queries using GetPath() and GetName(). */
+template<typename Base, typename T>
+class decTCollectionQueryByPathOrName : public decTCollectionQueryByPath<decTCollectionQueryByName<Base,T>,T>{
+	using BaseType = decTCollectionQueryByPath<decTCollectionQueryByName<Base,T>,T>;
+	
+public:
+	using BaseType::decTCollectionQueryByPath;
+	
+	/** \brief Create copy of collection. */
+	explicit decTCollectionQueryByPathOrName(const BaseType &base) : BaseType(base){}
+	
+	/** \brief Move collection. */
+	decTCollectionQueryByPathOrName(BaseType &&base) : BaseType(base){}
+	
+	/** \brief One or more elements match path or name. */
+	inline bool HasWithPathOrName(const char *path, const char *name) const{
+		return this->HasMatching([&](const T &e){
+			return e.GetPath() == path || e.GetName() == name;
+		});
+	}
+	
+	/** \brief Index of first element matching path or name or -1 if absent. */
+	inline int IndexOfWithPathOrName(const char *path, const char *name) const{
+		return this->IndexOfMatching([&](const T &e){
+			return e.GetPath() == path || e.GetName() == name;
+		});
+	}
+	
+	/** \brief First element matching path or name or nullptr if absent. */
+	inline T *FindWithPathOrName(const char *path, const char *name) const{
+		return this->FindOrDefault([&](const T &e){
+			return e.GetPath() == path || e.GetName() == name;
+		});
+	}
+};
+
+
+/** \brief Template function bundle for classes supporting queries using GetId(). */
+template<typename Base, typename T>
+class decTCollectionQueryById : public Base{
+public:
+	using Base::Base;
+	
+	/** \brief Create copy of collection. */
+	explicit decTCollectionQueryById(const Base &base) : Base(base){}
+	
+	/** \brief Move collection. */
+	decTCollectionQueryById(Base &&base) : Base(base){}
+	
+	/** \brief One or more elements match identifier. */
+	inline bool HasWithId(const char *id) const{
+		return this->HasMatching([&](const T &e){
+			return e.GetId() == id;
+		});
+	}
+	
+	/** \brief Index of first element matching identifier or -1 if absent. */
+	inline int IndexOfWithId(const char *id) const{
+		return this->IndexOfMatching([&](const T &e){
+			return e.GetId() == id;
+		});
+	}
+	
+	/** \brief First element matching identifier or nullptr if absent. */
+	inline T *FindWithId(const char *id) const{
+		return this->FindOrDefault([&](const T &e){
+			return e.GetId() == id;
+		});
+	}
+};
+
+
 class deObject;
 
 /** \brief Object comparator. */

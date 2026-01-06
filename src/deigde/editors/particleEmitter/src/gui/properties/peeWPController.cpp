@@ -226,9 +226,7 @@ public:
 		const peeController::Ref controller = peeController::Ref::New();
 		decString name(controller->GetName());
 		int number = 2;
-		while(emitter->GetControllers().HasMatching([&](const peeController *each){
-			return each->GetName() == name;
-		})){
+		while(emitter->GetControllers().HasNamed(name)){
 			name.Format("Controller #%d", number++);
 		}
 		controller->SetName(name);

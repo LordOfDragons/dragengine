@@ -56,13 +56,10 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<syneController> Ref;
+	using Ref = deTObjectReference<syneController>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<syneController>,syneController>;
 	
-	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<syneController> List;
-
-
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create controller. */

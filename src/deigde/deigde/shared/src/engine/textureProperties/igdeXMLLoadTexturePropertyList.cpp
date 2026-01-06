@@ -109,10 +109,8 @@ igdeTextureProperty::List &list){
 	
 	const igdeTextureProperty::Ref property(igdeTextureProperty::Ref::New(GetAttributeString(root, "name")));
 	
-	if(list.HasMatching([&](const igdeTextureProperty &p){
-		return p.GetName() == property->GetName();
-	})){
-		LogWarnGenericProblemValue(root, property->GetName().GetString(), "Duplicate property definition");
+	if(list.HasNamed(property->GetName())){
+		LogWarnGenericProblemValue(root, property->GetName(), "Duplicate property definition");
 		return;
 	}
 	

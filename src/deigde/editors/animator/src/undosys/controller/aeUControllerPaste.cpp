@@ -74,9 +74,7 @@ void aeUControllerPaste::Redo(){
 	pControllerList.VisitIndexed([&](int i, aeController *controller){
 		decString name(controller->GetName());
 		int number = 2;
-		while(controllers.HasMatching([&](aeController *c){
-			return c->GetName() == name;
-		})){
+		while(controllers.HasNamed(name)){
 			name.Format("%s #%d", controller->GetName().GetString(), number++);
 		}
 		controller->SetName(name);

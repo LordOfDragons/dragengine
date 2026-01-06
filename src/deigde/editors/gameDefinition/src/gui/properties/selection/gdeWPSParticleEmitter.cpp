@@ -85,9 +85,7 @@ public:
 			return;
 		}
 		
-		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasMatching([&](const gdeParticleEmitter &pe){
-			return pe.GetPath() == editPath->GetPath();
-		})){
+		if(pPanel.GetGameDefinition()->GetParticleEmitters().HasWithPath(editPath->GetPath())){
 			igdeCommonDialogs::Information(pPanel.GetParentWindow(), "Change particle emitter path",
 				"A particle emitter with this path exists already.");
 			editPath->SetPath(particleEmitter->GetPath());
@@ -170,8 +168,8 @@ public:
 		}
 		
 		gdeGameDefinition &gameDefinition = *pPanel.GetGameDefinition();
-		gdeCategory * const category = gameDefinition.GetCategoriesParticleEmitter()
-			.GetWithPath(particleEmitter->GetCategory());
+		gdeCategory * const category = gameDefinition.GetCategoriesParticleEmitter().
+			FindWithPath(particleEmitter->GetCategory());
 		if(!category){
 			return;
 		}
@@ -266,7 +264,7 @@ void gdeWPSParticleEmitter::UpdateCategoryList(){
 	pCBCategory->RemoveAllItems();
 	
 	if(pGameDefinition){
-		const gdeCategoryList &categories = pGameDefinition->GetCategoriesParticleEmitter();
+		const gdeCategory::List &categories = pGameDefinition->GetCategoriesParticleEmitter();
 		if(categories.GetCount() > 0){
 			UpdateCategoryList(categories, "");
 		}
@@ -279,7 +277,7 @@ void gdeWPSParticleEmitter::UpdateCategoryList(){
 	pCBCategory->SetInvalidValue(!pCBCategory->GetText().IsEmpty() && !pCBCategory->GetSelectedItem());
 }
 
-void gdeWPSParticleEmitter::UpdateCategoryList(const gdeCategoryList &list, const char *prefix){
+void gdeWPSParticleEmitter::UpdateCategoryList(const gdeCategory::List &list, const char *prefix){
 	const int count = list.GetCount();
 	decString text;
 	int i;

@@ -199,9 +199,7 @@ void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnima
 	try{
 		word = ceSAWord::Ref::New(GetAttributeString(root, "name"));
 		
-		if(sanimation.GetWordList().HasMatching([&](const ceSAWord::Ref &w){
-			return w->GetName() == word->GetName();
-		})){
+		if(sanimation.GetWords().HasNamed(word->GetName())){
 			LogErrorGenericProblemValue(root, word->GetName(), "Duplicate Word");
 		}
 		
@@ -215,7 +213,7 @@ void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnima
 			}
 		}
 		
-		sanimation.GetWordList().Add(word);
+		sanimation.GetWords().Add(word);
 		
 	}catch(const deException &){
 		throw;

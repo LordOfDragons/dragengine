@@ -108,15 +108,15 @@ public:
 			return;
 		}
 		
-		pListPathGameDefBase.AddItem(sharedGameDef->GetID());
-		pListPathGameDefBase.SetSelection(pListPathGameDefBase.IndexOfItem(sharedGameDef->GetID()));
+		pListPathGameDefBase.AddItem(sharedGameDef->GetId());
+		pListPathGameDefBase.SetSelection(pListPathGameDefBase.IndexOfItem(sharedGameDef->GetId()));
 		
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
 	void Update() override{
 		SetEnabled(pDialog.GetSelectedSharedGameDef()
-			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
+			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetId()));
 	}
 };
 
@@ -345,9 +345,7 @@ bool igdeDialogProjectSettings::Accept(){
 		for(i=0; i<baseGameDefCount; i++){
 			const decString &id = pListPathGameDefBase->GetItems().GetAt(i)->GetText();
 			project.GetBaseGameDefinitionIDList().Add(id);
-			project.GetBaseGameDefinitionList().Add(sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
-				return gd.GetID() == id;
-			}));
+			project.GetBaseGameDefinitionList().Add(sgdl.FindWithId(id));
 		}
 		
 		pBaseGameDefsChanged = true; // TODO check first if this is required
@@ -387,7 +385,7 @@ void igdeDialogProjectSettings::UpdateSharedGameDefs(){
 		
 		pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
 			if(gd->GetScriptModule() == scriptModule){
-				pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
+				pCBSharedGameDefs->AddItem(gd->GetId(), nullptr, gd);
 			}
 		});
 		

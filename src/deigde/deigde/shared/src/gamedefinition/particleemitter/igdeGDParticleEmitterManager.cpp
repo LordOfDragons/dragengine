@@ -57,15 +57,15 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 
 void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
 	DEASSERT_NOTNULL(emitter)
-	pEmitterList.AddOrThrow(emitter);
+	pEmitters.AddOrThrow(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter *emitter){
-	pEmitterList.RemoveOrThrow(emitter);
+	pEmitters.RemoveOrThrow(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveAllEmitters(){
-	pEmitterList.RemoveAll();
+	pEmitters.RemoveAll();
 }
 
 void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
@@ -75,11 +75,9 @@ void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
 
 
 void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager){
-	particleEmitterManager.GetEmitterList().Visit([&](const igdeGDParticleEmitter &emitter){
+	particleEmitterManager.GetEmitters().Visit([&](const igdeGDParticleEmitter &emitter){
 		const igdeGDParticleEmitter::Ref emitterCopy(igdeGDParticleEmitter::Ref::New(emitter));
-		igdeGDParticleEmitter * const check = pEmitterList.FindOrDefault([&](const igdeGDParticleEmitter &e){
-			return e.GetPath() == emitterCopy->GetPath();
-		});
+		igdeGDParticleEmitter * const check = pEmitters.FindWithPath(emitterCopy->GetPath());
 		if(check){
 			RemoveEmitter(check);
 		}

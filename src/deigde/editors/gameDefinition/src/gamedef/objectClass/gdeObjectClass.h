@@ -58,10 +58,10 @@ class gdeGameDefinition;
 class gdeObjectClass : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeObjectClass> Ref;
+	using Ref = deTObjectReference<gdeObjectClass>;
 
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeObjectClass> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<gdeObjectClass>,gdeObjectClass>;
 	
 	
 	/** Scale modes. */

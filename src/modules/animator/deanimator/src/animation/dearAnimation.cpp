@@ -80,26 +80,6 @@ dearAnimation::~dearAnimation(){
 
 
 
-int dearAnimation::GetMoveCount() const{
-	return pMoves.GetCount();
-}
-
-dearAnimationMove *dearAnimation::GetMoveAt(int index) const{
-	return pMoves.GetAt(index);
-}
-
-dearAnimationMove *dearAnimation::GetMoveNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pMoves.FindOrDefault([&](const dearAnimationMove &move){
-		return move.GetName() == name;
-	});
-}
-
-
-
 // Private functions
 //////////////////////
 

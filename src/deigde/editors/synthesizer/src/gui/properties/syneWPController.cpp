@@ -161,9 +161,7 @@ public:
 			return {};
 		}
 		
-		if(pPanel.GetSynthesizer()->GetControllers().HasMatching([&](const syneController &c){
-			return c.GetName() == text;
-		})){
+		if(pPanel.GetSynthesizer()->GetControllers().HasNamed(text)){
 			igdeCommonDialogs::Error(&pPanel, "Invalid Value", "Duplicate controller name");
 			textField->SetText(controller->GetName());
 			return {};

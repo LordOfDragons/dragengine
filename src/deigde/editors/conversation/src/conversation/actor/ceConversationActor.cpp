@@ -84,6 +84,31 @@
 #define LOGSOURCE "Conversation Editor"
 
 
+// Class ceConversationActor::List
+////////////////////////////////////
+
+ceConversationActor *ceConversationActor::List::GetWithAliasID(const char *id) const{
+	DEASSERT_NOTNULL(id)
+	return FindOrDefault([&](const ceConversationActor &a){
+		return !a.GetAliasID().IsEmpty() && a.GetAliasID() == id;
+	});
+}
+
+ceConversationActor *ceConversationActor::List::GetWithIDOrAliasID(const char *id) const{
+	DEASSERT_NOTNULL(id)
+	return FindOrDefault([&](const ceConversationActor &a){
+		return a.GetID() == id || (!a.GetAliasID().IsEmpty() && a.GetAliasID() == id);
+	});
+}
+
+int ceConversationActor::List::IndexWithIDOrAliasID(const char *id) const{
+	DEASSERT_NOTNULL(id)
+	return IndexOfMatching([&](const ceConversationActor &a){
+		return a.GetID() == id || (!a.GetAliasID().IsEmpty() && a.GetAliasID() == id);
+	});
+}
+
+
 
 // Class ceConversationActor
 ////////////////////////
@@ -866,10 +891,8 @@ void ceConversationActor::pUpdatePlayGesture(float elapsed){
 				break;
 			}
 			
-			ceActorGesture * const actorGesture = pActivePose->GetGestures().
-				FindOrDefault([&](const ceActorGesture &g){
-					return g.GetName() == pPlayGestures.GetAt(pPlayGesturePos)->gesture->GetAnimator();
-				});
+			ceActorGesture * const actorGesture = pActivePose->GetGestures().FindNamed(
+				pPlayGestures.GetAt(pPlayGesturePos)->gesture->GetAnimator());
 			
 			if(!actorGesture){
 				break;

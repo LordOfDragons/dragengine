@@ -308,15 +308,6 @@ public:
 	/** Textures. */
 	inline const meHeightTerrainTexture::List &GetTextures() const{ return pTextures; }
 	
-	/** Retrieves the texture with the given name of nullptr if not found. */
-	meHeightTerrainTexture *GetTextureNamed(const char *name) const;
-	
-	/** Determines if a texture with the given name exists. */
-	bool HasTextureNamed(const char *name) const;
-	
-	/** Retrieves the index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed(const char *name) const;
-	
 	/** Adds a texture. */
 	void AddTexture(meHeightTerrainTexture *texture);
 	
@@ -397,15 +388,6 @@ public:
 	/*@{*/
 	/** Navigation spaces. */
 	inline const meHeightTerrainNavSpace::List &GetNavSpaces() const{ return pNavSpaces; }
-	
-	/** Named navigation space or \em nullptr if absent. */
-	meHeightTerrainNavSpace *GetNavSpaceNamed(const char *name) const;
-	
-	/** Named navigation space is present. */
-	bool HasNavSpaceNamed(const char *name) const;
-	
-	/** Index of named navigation space or -1 if absent. */
-	int IndexOfNavSpaceNamed(const char *name) const;
 	
 	/** Add navigation space. */
 	void AddNavSpace(meHeightTerrainNavSpace *navspace);

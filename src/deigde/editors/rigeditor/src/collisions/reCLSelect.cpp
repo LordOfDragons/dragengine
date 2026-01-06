@@ -275,7 +275,9 @@ void reCLSelect::ColliderChanged(deCollider *owner){
 //////////////////////
 
 reRigBone *reCLSelect::pGetBoneFromCollider(deColliderVolume *collider) const{
-	return pRig.GetBoneWith(collider);
+	return pRig.GetBones().FindOrDefault([&](const reRigBone &b){
+		return b.GetCollider() == collider;
+	});
 }
 
 reRigShape *reCLSelect::pGetShapeFromCollider(deColliderVolume *collider) const{

@@ -272,7 +272,8 @@ const ceCConditionGameCommand &condition){
 
 bool cePlaybackEvaluateCondition::EvaluateTrigger(ceConversation &conversation,
 const ceCConditionTrigger &condition){
-	igdeTriggerTarget * const target = conversation.GetPlayback()->GetTriggerTable().GetNamed(condition.GetTrigger());
+	igdeTriggerTarget * const target = conversation.GetPlayback()->GetTriggerTable().
+		GetTargets().FindNamed(condition.GetTrigger());
 	
 	switch(condition.GetTestMode()){
 	case ceCConditionTrigger::etmFired:

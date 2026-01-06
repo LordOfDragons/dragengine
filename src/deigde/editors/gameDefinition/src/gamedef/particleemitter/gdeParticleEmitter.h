@@ -49,12 +49,12 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeParticleEmitter> Ref;
-
+	using Ref = deTObjectReference<gdeParticleEmitter>;
+	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeParticleEmitter> List;
-
-
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<gdeParticleEmitter>,gdeParticleEmitter>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create particle emitter. */

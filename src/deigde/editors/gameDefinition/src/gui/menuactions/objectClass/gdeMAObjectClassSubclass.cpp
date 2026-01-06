@@ -74,9 +74,7 @@ igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefiniti
 	decString name(objectClass->GetName());
 	
 	while(igdeCommonDialogs::GetString(&pWindowMain, "Subclass Object Class", "Name:", name)){
-		if(list.HasMatching([&](const gdeObjectClass &oc){
-			return oc.GetName() == name;
-		})){
+		if(list.HasNamed(name)){
 			igdeCommonDialogs::Error(&pWindowMain, "Subclass Object Class", "Object Class exists already.");
 			continue;
 		}

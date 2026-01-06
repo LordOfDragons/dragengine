@@ -166,11 +166,11 @@ private:
 	decString pDefaultSkin;
 	decString pDefaultSky;
 	
-	gdeCategoryList pCategoriesObjectClass;
+	gdeCategory::List pCategoriesObjectClass;
 	decStringSet pObjectClassCategoryNameList;
-	gdeCategoryList pCategoriesSkin;
-	gdeCategoryList pCategoriesSky;
-	gdeCategoryList pCategoriesParticleEmitter;
+	gdeCategory::List pCategoriesSkin;
+	gdeCategory::List pCategoriesSky;
+	gdeCategory::List pCategoriesParticleEmitter;
 	gdeCategory::Ref pActiveCategory;
 	
 	decStringSet pUsedTagsObjectClass;
@@ -331,8 +331,8 @@ public:
 	
 	
 	/** Object class categories. */
-	inline gdeCategoryList &GetCategoriesObjectClass(){ return pCategoriesObjectClass; }
-	inline const gdeCategoryList &GetCategoriesObjectClass() const{ return pCategoriesObjectClass; }
+	inline gdeCategory::List &GetCategoriesObjectClass(){ return pCategoriesObjectClass; }
+	inline const gdeCategory::List &GetCategoriesObjectClass() const{ return pCategoriesObjectClass; }
 	
 	/** Find object class category with path or nullptr if absent. */
 	const gdeCategory *FindCategoryObjectClass(const char *path) const;
@@ -341,16 +341,16 @@ public:
 	const decStringSet &GetObjectClassCategoryNameList();
 	
 	/** Skin categories. */
-	inline gdeCategoryList &GetCategoriesSkin(){ return pCategoriesSkin; }
-	inline const gdeCategoryList &GetCategoriesSkin() const{ return pCategoriesSkin; }
+	inline gdeCategory::List &GetCategoriesSkin(){ return pCategoriesSkin; }
+	inline const gdeCategory::List &GetCategoriesSkin() const{ return pCategoriesSkin; }
 	
 	/** Sky categories. */
-	inline gdeCategoryList &GetCategoriesSky(){ return pCategoriesSky; }
-	inline const gdeCategoryList &GetCategoriesSky() const{ return pCategoriesSky; }
+	inline gdeCategory::List &GetCategoriesSky(){ return pCategoriesSky; }
+	inline const gdeCategory::List &GetCategoriesSky() const{ return pCategoriesSky; }
 	
 	/** Particle emitter categories. */
-	inline gdeCategoryList &GetCategoriesParticleEmitter(){ return pCategoriesParticleEmitter; }
-	inline const gdeCategoryList &GetCategoriesParticleEmitter() const{ return pCategoriesParticleEmitter; }
+	inline gdeCategory::List &GetCategoriesParticleEmitter(){ return pCategoriesParticleEmitter; }
+	inline const gdeCategory::List &GetCategoriesParticleEmitter() const{ return pCategoriesParticleEmitter; }
 	
 	/** Active category or nullptr if not set. */
 	inline const gdeCategory::Ref &GetActiveCategory() const{ return pActiveCategory; }

@@ -27,6 +27,27 @@
 #include <dragengine/common/exceptions.h>
 
 
+// Class gdeCategory::List
+////////////////////////////
+
+gdeCategory *gdeCategory::List::FindWithPath(const char *path) const{
+	const decStringList components(decString(path).Split('/'));
+	if(components.IsEmpty()){
+		return nullptr;
+	}
+	
+	gdeCategory * const root = FindNamed(components.First());
+	if(components.GetCount() == 1){
+		return root;
+	}
+	
+	return components.Inject(root, [&](gdeCategory *cat, const decString &comp){
+		return cat ? cat->GetCategories().FindNamed(comp) : nullptr;
+	}, 1);
+
+}
+
+
 // Class gdeCategory
 //////////////////////
 

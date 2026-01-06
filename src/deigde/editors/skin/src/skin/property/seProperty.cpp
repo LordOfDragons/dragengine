@@ -412,9 +412,7 @@ void seProperty::UpdateResources(){
 }
 
 void seProperty::InitDefaults(const igdeTextureProperty::List &knownPropertyList){
-	const igdeTextureProperty * const knownProperty = knownPropertyList.FindOrDefault([&](const igdeTextureProperty &p){
-		return p.GetName() == pName;
-	});
+	const igdeTextureProperty * const knownProperty = knownPropertyList.FindNamed(pName);
 	if(!knownProperty){
 		return;
 	}

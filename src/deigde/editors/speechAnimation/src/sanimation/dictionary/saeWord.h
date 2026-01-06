@@ -47,13 +47,10 @@ private:
 	bool pActive;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeWord> Ref;
-
-	/** \brief List of objects. */
-	typedef decTOrderedSet<deTObjectReference<saeWord>, saeWord*> List;
-
-
+	using Ref = deTObjectReference<saeWord>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<saeWord>,saeWord>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create word. */

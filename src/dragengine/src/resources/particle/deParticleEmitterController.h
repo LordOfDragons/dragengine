@@ -26,6 +26,7 @@
 #define _DEPARTICLEEMITTERCONTROLLER_H_
 
 #include "../../deObject.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/string/decString.h"
 
 
@@ -45,7 +46,10 @@
 class DE_DLL_EXPORT deParticleEmitterController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitterController> Ref;
+	using Ref = deTObjectReference<deParticleEmitterController>;
+	
+	/** \brief List of controllers. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deParticleEmitterController>,deParticleEmitterController>;
 	
 	
 private:

@@ -55,12 +55,12 @@ private:
 	
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeSky> Ref;
-
+	using Ref = deTObjectReference<gdeSky>;
+	
 	/** \brief Type holding list. */
-	typedef decTObjectOrderedSet<gdeSky> List;
-
-
+	using List = decTCollectionQueryByPathOrName<decTObjectOrderedSet<gdeSky>,gdeSky>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky. */

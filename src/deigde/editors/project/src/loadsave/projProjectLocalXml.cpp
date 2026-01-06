@@ -132,9 +132,7 @@ projProject &project){
 	const projProfile::List &profiles = project.GetProfiles();
 	
 	if(!activeProfile.IsEmpty()){
-		project.SetActiveProfile(profiles.FindOrDefault([&](const projProfile &p){
-			return p.GetName() == activeProfile;
-		}));
+		project.SetActiveProfile(profiles.FindNamed(activeProfile));
 	}
 	
 	if(!project.GetActiveProfile() && profiles.IsNotEmpty()){

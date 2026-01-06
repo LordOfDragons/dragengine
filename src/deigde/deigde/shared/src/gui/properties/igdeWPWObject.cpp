@@ -112,7 +112,7 @@ public:
 		igdeWObject &object = *pPanel.GetObject();
 		igdeGDClass * const oldGDClass = object.GetGDClass();
 		igdeGDClass * const newGDClass = pPanel.GetEnvironment().GetGameProject()->
-			GetGameDefinition()->GetClassManager()->GetNamed(textField->GetText());
+			GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(textField->GetText());
 		if(newGDClass == oldGDClass){
 			return;
 		}

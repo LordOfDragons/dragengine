@@ -235,9 +235,7 @@ const gdeObjectClass &objectClass, gdeOCComponentTexture::List &list){
 	
 	for(i=0; i<textureCount; i++){
 		gdeOCComponentTexture * const texture = textures.GetAt(i);
-		if(!list.HasMatching([&](const gdeOCComponentTexture &t){
-			return t.GetName() == texture->GetName();
-		})){
+		if(!list.HasNamed(texture->GetName())){
 			list.Add(texture);
 		}
 	}
@@ -250,9 +248,7 @@ const gdeObjectClass &objectClass, gdeOCComponentTexture::List &list){
 		const int textureCount2 = textures2.GetCount();
 		for(i=0; i<textureCount2; i++){
 			gdeOCComponentTexture * const texture = textures2.GetAt(i);
-			if(!list.HasMatching([&](const gdeOCComponentTexture &t){
-				return t.GetName() == texture->GetName();
-			})){
+			if(!list.HasNamed(texture->GetName())){
 				list.Add(texture);
 			}
 		}

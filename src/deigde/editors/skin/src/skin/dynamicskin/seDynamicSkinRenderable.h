@@ -43,12 +43,9 @@ class deEngine;
  * \brief Dynamic Skin Renderable.
  */
 class seDynamicSkinRenderable : public deObject{
-	public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seDynamicSkinRenderable> Ref;
-	
-	/** \brief List type. */
-	typedef decTObjectOrderedSet<seDynamicSkinRenderable> List;
+public:
+	using Ref = deTObjectReference<seDynamicSkinRenderable>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seDynamicSkinRenderable>,seDynamicSkinRenderable>;
 	
 	
 	/** Renderable types. */

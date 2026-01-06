@@ -25,14 +25,14 @@
 #ifndef _FBXANIMATIONMOVE_H_
 #define _FBXANIMATIONMOVE_H_
 
-
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
-
+class fbxRig;
 class fbxAnimation;
 class fbxAnimationMoveCurves;
 class fbxNode;
@@ -47,7 +47,10 @@ class deBaseModule;
 class fbxAnimationMove : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimationMove> Ref;
+	using Ref = deTObjectReference<fbxAnimationMove>;
+	
+	/** \brief List of animation move nodes. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<fbxAnimationMove>,fbxAnimationMove>;
 	
 	
 private:

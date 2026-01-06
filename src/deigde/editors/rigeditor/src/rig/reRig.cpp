@@ -903,25 +903,6 @@ void reRig::UpdateFromSimulation(){
 
 // Bones
 //////////
-reRigBone *reRig::GetBoneNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	return pBones.FindOrDefault([name](const reRigBone &b){
-		return b.GetName() == name;
-	});
-}
-
-reRigBone *reRig::GetBoneWith(deColliderVolume *collider) const{
-	DEASSERT_NOTNULL(collider)
-	return pBones.FindOrDefault([&](const reRigBone &b){
-		return b.GetCollider() == collider;
-	});
-}
-
-reRigBone *reRig::GetBoneWithOrder(int order) const{
-	return pBones.FindOrDefault([&](const reRigBone &b){
-		return b.GetOrder() == order;
-	});
-}
 
 void reRig::AddBone(reRigBone *bone){
 	DEASSERT_NOTNULL(bone)

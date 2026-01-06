@@ -203,7 +203,7 @@ deClassAnimator::nfGetControllerNamed::nfGetControllerNamed(const sInitData &ini
 void deClassAnimator::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	const deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
-	const int index = animator->IndexOfControllerNamed(rt->GetValue(0)->GetString());
+	const int index = animator->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
 		rt->PushObject(NULL, ds.GetClassAnimatorController());
@@ -220,7 +220,7 @@ deClassAnimator::nfIndexOfControllerNamed::nfIndexOfControllerNamed(const sInitD
 }
 void deClassAnimator::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	rt->PushInt(animator->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
+	rt->PushInt(animator->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString()));
 }
 
 

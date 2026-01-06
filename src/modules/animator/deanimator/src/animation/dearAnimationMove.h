@@ -26,6 +26,7 @@
 #define _DEARANIMATIONMOVE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deAnimationMove;
@@ -49,14 +50,14 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dearAnimationMove> Ref;
-
-
+	using Ref = deTObjectReference<dearAnimationMove>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<dearAnimationMove>,dearAnimationMove>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animation move. */
-	dearAnimationMove(const deAnimationMove &move);
+	explicit dearAnimationMove(const deAnimationMove &move);
 	
 protected:
 	/** Clean up the animation move. */

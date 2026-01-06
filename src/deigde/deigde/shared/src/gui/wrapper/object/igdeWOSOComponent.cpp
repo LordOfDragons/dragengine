@@ -955,13 +955,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 	for(i=0; i<textureCount; i++){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt(i);
 		const decString name = model.GetTextureAt(i)->GetName();
-		const igdeGDCCTexture *gdctexture = textures.FindOrDefault([&](const igdeGDCCTexture &t){
-			return t.GetName() == name;
-		});
+		const igdeGDCCTexture *gdctexture = textures.FindNamed(name);
 		if(!gdctexture){
-			gdctexture = pGDComponent.GetTextureList().FindOrDefault([&](const igdeGDCCTexture &t){
-				return t.GetName() == name;
-			});
+			gdctexture = pGDComponent.GetTextureList().FindNamed(name);
 		}
 		
 		deDynamicSkin::Ref gdctDynamicSkin;

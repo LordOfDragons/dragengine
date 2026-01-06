@@ -45,8 +45,8 @@ class deHeightTerrainTexture;
  */
 class meHeightTerrainTexture : public deObject{
 public:
-	typedef deTObjectReference<meHeightTerrainTexture> Ref;
-	typedef decTObjectOrderedSet<meHeightTerrainTexture> List;
+	using Ref = deTObjectReference<meHeightTerrainTexture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meHeightTerrainTexture>,meHeightTerrainTexture>;
 	
 	
 private:

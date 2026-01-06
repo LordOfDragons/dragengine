@@ -114,11 +114,16 @@ scons -h
 8. **Memory Management**:
    - Classes required to be reference counted have to subclass directly or indirectly `deObject` or `deThreadSafeObject`
       - Destructors must be protected or private to prevent direct deletion
-   - Use `A::Ref` typedef smart pointers for reference counted class instances
-      - If class is missing public `Ref` typedef add it in a public section
+   - Use `A::Ref` smart pointers for reference counted class instances
+      - If class is missing public `Ref` using add it in a public section (`using Ref = deTObjectReference<A>;`)
    - For functions creating new reference counted objects, return `A::Ref` smart pointers
    - Create reference counted objects using `A::Ref::New(...)`
    - A reference counted object of type `B::Ref` is automatically casted to `A::Ref` if `B` is a subclass of `A`
+   - For collections of reference counted objects use `decTObjectOrderedSet` with `using List = decTObjectOrderedSet<A>;`
+   - If class supports `GetName()` use as type `decTCollectionQueryByName<decTObjectOrderedSet<A>,A>` for `using List`
+   - If class supports `GetPath()` use as type `decTCollectionQueryByPath<decTObjectOrderedSet<A>,A>` for `using List`
+   - If class supports `GetName()` and `GetPath()` use as type `decTCollectionQueryByPathAndName<decTObjectOrderedSet<A>,A>` for `using List`
+   - If class supports `GetId()` use as type `decTCollectionQueryById<decTObjectOrderedSet<A>,A>` for `using List`
 
 9. **Member Ordering**:
    - First public declarations like typedefs, enums, inner classes or constants

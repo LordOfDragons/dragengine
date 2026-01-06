@@ -265,9 +265,7 @@ public:
 		if(controller->GetName() == value){
 			return {};
 		}
-		if(animator->GetControllers().HasMatching([&](aeController *other){
-			return other->GetName() == value;
-		})){
+		if(animator->GetControllers().HasNamed(value)){
 			igdeCommonDialogs::Error(&pPanel, "Set Controller Name", "Duplicate Controller Name");
 			textField->SetText(controller->GetName());
 			return {};

@@ -28,6 +28,7 @@
 #include "../deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deoxrActionSet;
@@ -38,8 +39,8 @@ class deoxrActionSet;
  */
 class deoxrAction : public deObject{
 public:
-	/** Reference. */
-	typedef deTObjectReference<deoxrAction> Ref;
+	using Ref = deTObjectReference<deoxrAction>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deoxrAction>,deoxrAction>;
 	
 	
 	/** Type. */

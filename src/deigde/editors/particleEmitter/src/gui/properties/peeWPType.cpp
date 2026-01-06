@@ -292,9 +292,7 @@ public:
 		decString name("Type");
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Type", "Name:", name)){
-			if(emitter->GetTypes().HasMatching([&name](const peeType &t){
-				return t.GetName() == name;
-			})){
+			if(emitter->GetTypes().HasNamed(name)){
 				igdeCommonDialogs::Error(&pPanel, "Add Type", "A type with this name exists already.");
 				continue;
 			}
@@ -340,9 +338,7 @@ public:
 			if(name == type->GetName()){
 				break;
 				
-			}else if(emitter->GetTypes().HasMatching([name](const peeType &t){
-				return t.GetName() == name;
-			})){
+			}else if(emitter->GetTypes().HasNamed(name)){
 				igdeCommonDialogs::Error(&pPanel, "Rename Type", "A type with this name exists already.");
 				
 			}else{

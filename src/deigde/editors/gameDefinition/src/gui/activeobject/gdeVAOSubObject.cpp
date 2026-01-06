@@ -194,9 +194,7 @@ const char *gdeVAOSubObject::pPropertyValue(const decString &name) const{
 	}
 	
 	// find in properties
-	const gdeProperty * const property = objectClass.GetProperties().FindOrDefault([&](const gdeProperty &p){
-		return p.GetName() == realName;
-	});
+	const gdeProperty * const property = objectClass.GetProperties().FindNamed(realName);
 	if(property){
 		return property->GetDefaultValue();
 	}

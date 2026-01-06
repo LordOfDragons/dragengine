@@ -44,8 +44,8 @@ class deAnimatorController;
  */
 class aeController : public deObject{
 public:
-	typedef deTObjectReference<aeController> Ref;
-	typedef decTObjectOrderedSet<aeController> List;
+	using Ref = deTObjectReference<aeController>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<aeController>,aeController>;
 	
 	
 	enum eVectorSimulation{

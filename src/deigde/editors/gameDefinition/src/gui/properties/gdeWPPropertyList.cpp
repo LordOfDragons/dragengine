@@ -129,9 +129,7 @@ public:
 		decString name("Property");
 		
 		while(igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Add Property", "Name:", name)){
-			if(list.HasMatching([&](const gdeProperty *property){
-				return property->GetName() == name;
-			})){
+			if(list.HasNamed(name)){
 				igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Add Property", "Name exists already.");
 				continue;
 			}
@@ -253,9 +251,7 @@ public:
 		const gdeProperty::List &list = *pPanel.GetPropertyList();
 		decString name(clip->GetProperty()->GetName());
 		
-		while(list.HasMatching([&](const gdeProperty *property){
-			return property->GetName() == name;
-		})){
+		while(list.HasNamed(name)){
 			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Paste Property", "Name exists already.");
 			if(!igdeCommonDialogs::GetString(pPanel.GetParentWindow(), "Paste Property", "Name:", name)){
 				return;
@@ -389,9 +385,7 @@ public:
 			return {};
 		}
 		
-		if(pPanel.GetPropertyList()->HasMatching([&](const gdeProperty *other){
-			return other->GetName() == name;
-		})){
+		if(pPanel.GetPropertyList()->HasNamed(name)){
 			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Rename property", "Name exists already.");
 			textField->SetText(property->GetName());
 			return {};

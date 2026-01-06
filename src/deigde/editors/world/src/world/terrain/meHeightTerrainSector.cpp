@@ -784,26 +784,8 @@ void meHeightTerrainSector::LoadVisibilityFromImage(){
 // Textures
 /////////////
 
-meHeightTerrainTexture *meHeightTerrainSector::GetTextureNamed(const char *name) const{
-	return pTextures.FindOrDefault([&](const meHeightTerrainTexture &t){
-		return t.GetName() == name;
-	});
-}
-
-bool meHeightTerrainSector::HasTextureNamed(const char *name) const{
-	return pTextures.HasMatching([&](const meHeightTerrainTexture &t){
-		return t.GetName() == name;
-	});
-}
-
-int meHeightTerrainSector::IndexOfTextureNamed(const char *name) const{
-	return pTextures.IndexOfMatching([&](const meHeightTerrainTexture &t){
-		return t.GetName() == name;
-	});
-}
-
 void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
-	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
+	if(!texture || pTextures.HasNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	deHeightTerrainTexture *engTexture = nullptr;
 	pTextures.Add(texture);
@@ -1132,26 +1114,8 @@ void meHeightTerrainSector::SetPFCacheSaved(bool saved){
 // Navigation spaces
 //////////////////////
 
-meHeightTerrainNavSpace *meHeightTerrainSector::GetNavSpaceNamed(const char *name) const{
-	return pNavSpaces.FindOrDefault([&](const meHeightTerrainNavSpace &n){
-		return n.GetName() == name;
-	});
-}
-
-bool meHeightTerrainSector::HasNavSpaceNamed(const char *name) const{
-	return pNavSpaces.HasMatching([&](const meHeightTerrainNavSpace &n){
-		return n.GetName() == name;
-	});
-}
-
-int meHeightTerrainSector::IndexOfNavSpaceNamed(const char *name) const{
-	return pNavSpaces.IndexOfMatching([&](const meHeightTerrainNavSpace &n){
-		return n.GetName() == name;
-	});
-}
-
 void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
-	if(!navspace || HasNavSpaceNamed(navspace->GetName())){
+	if(!navspace || pNavSpaces.HasNamed(navspace->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	

@@ -69,7 +69,7 @@ void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){
 		return;
 	}
 	
-	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
+	igdeGDCategory * const category = GetRootCategory()->GetCategories().FindWithPath(
 		decPath::CreatePathUnix(gdSkin->GetCategory()));
 	
 	SelectCategory(category);
@@ -96,7 +96,7 @@ bool igdeDialogBrowserSkin::SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, con
 
 bool igdeDialogBrowserSkin::SelectSkin(igdeWidget *owner, decString &skin, const char *title){
 	const igdeGDSkinManager &skinManager = *owner->GetGameDefinition()->GetSkinManager();
-	igdeGDSkin *gdSkin = skinManager.GetSkinWithPath(skin);
+	igdeGDSkin *gdSkin = skinManager.GetSkins().FindWithPath(skin);
 	if(SelectSkin(owner, gdSkin, title)){
 		skin = gdSkin->GetPath();
 		return true;

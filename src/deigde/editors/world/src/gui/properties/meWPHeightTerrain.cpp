@@ -484,7 +484,7 @@ public:
 		
 		decString name("texture");
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Texture", "Enter the name of the new texture", name)){
-			if(sector->HasTextureNamed(name)){
+			if(sector->GetTextures().HasNamed(name)){
 				igdeCommonDialogs::Error(&pPanel, "Invalid Texture Name", "A texture with this name exists already.");
 				continue;
 			}
@@ -637,7 +637,7 @@ public:
 			decString name("navspace");
 			while(igdeCommonDialogs::GetString(&pPanel, "Add Navigation Space",
 			"Enter the name of the new navigation space", name)){
-				if(sector->HasNavSpaceNamed(name)){
+				if(sector->GetNavSpaces().HasNamed(name)){
 					igdeCommonDialogs::Error(&pPanel, "Invalid Navigation Space Name",
 						"A navigation space with this name exists already.");
 					continue;
@@ -756,7 +756,7 @@ public:
 		decString name("type");
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Navigation Space Type",
 		"Enter the name of the new navigation space type", name)){
-			if(navspace->HasTypeNamed(name)){
+			if(navspace->GetTypes().HasNamed(name)){
 				igdeCommonDialogs::Error(&pPanel, "Invalid Navigation Space Type Name",
 					"A navigation space type with this name exists already.");
 				continue;
@@ -799,7 +799,7 @@ public:
 		if(!type || textField->GetText() == type->GetName()){
 			return {};
 		}
-		if(pPanel.GetActiveNavSpace()->HasTypeNamed(textField->GetText())){
+		if(pPanel.GetActiveNavSpace()->GetTypes().HasNamed(textField->GetText())){
 			igdeCommonDialogs::Error(&pPanel, "Invalid Name", "A navigation space type with this name exists already.");
 			pPanel.UpdateNavSpaceType();
 			return {};

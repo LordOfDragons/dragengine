@@ -124,9 +124,7 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	// locate base game definitions
 	const igdeGameDefinition::List &sgdl = windowMain.GetSharedGameDefinitions();
 	project->GetBaseGameDefinitionIDList().Visit([&](const decString &id){
-		igdeGameDefinition * const bgd = sgdl.FindOrDefault([&](const igdeGameDefinition &gd){
-			return gd.GetID() == id;
-		});
+		igdeGameDefinition * const bgd = sgdl.FindWithId(id);
 		if(bgd){
 			project->GetBaseGameDefinitionList().Add(bgd);
 			

@@ -26,12 +26,12 @@
 #define _CECAMERASHOT_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 class ceConversation;
-
 
 
 /**
@@ -41,6 +41,8 @@ class ceCameraShot : public deObject{
 	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCameraShot> Ref;
+	
+	typedef decTCollectionQueryByName<decTObjectOrderedSet<ceCameraShot>,ceCameraShot> List;
 	
 	
 	/** Camera shot parameters. */

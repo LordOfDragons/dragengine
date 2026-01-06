@@ -581,9 +581,7 @@ public:
 		const syneController::List &list = synthesizer->GetControllers();
 		decString name("Controller");
 		int number = 2;
-		while(list.HasMatching([&name](const syneController::Ref &c){
-			return c->GetName() == name;
-		})){
+		while(list.HasNamed(name)){
 			name.Format("Controller #%d", number++);
 		}
 		

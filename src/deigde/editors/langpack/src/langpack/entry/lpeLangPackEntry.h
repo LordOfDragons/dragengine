@@ -39,8 +39,8 @@ class lpeLangPack;
  */
 class lpeLangPackEntry : public deObject{
 public:
-	typedef deTObjectReference<lpeLangPackEntry> Ref;
-	typedef decTObjectOrderedSet<lpeLangPackEntry> List;
+	using Ref = deTObjectReference<lpeLangPackEntry>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<lpeLangPackEntry>,lpeLangPackEntry>;
 	
 	
 private:

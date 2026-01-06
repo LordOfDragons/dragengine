@@ -69,7 +69,7 @@ void igdeDialogBrowserObjectClass::SetSelectedObjectClass(igdeGDClass *gdClass){
 		return;
 	}
 	
-	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
+	igdeGDCategory * const category = GetRootCategory()->GetCategories().FindWithPath(
 		decPath::CreatePathUnix(gdClass->GetCategory()));
 	
 	SelectCategory(category);
@@ -96,7 +96,7 @@ bool igdeDialogBrowserObjectClass::SelectObjectClass(igdeWidget *owner, igdeGDCl
 
 bool igdeDialogBrowserObjectClass::SelectObjectClass(igdeWidget *owner, decString &objectClass, const char *title){
 	const igdeGDClassManager &classManager = *owner->GetGameDefinition()->GetClassManager();
-	igdeGDClass *gdClass = classManager.GetNamed(objectClass);
+	igdeGDClass *gdClass = classManager.GetClasses().FindNamed(objectClass);
 	if(SelectObjectClass(owner, gdClass, title)){
 		objectClass = gdClass->GetName();
 		return true;

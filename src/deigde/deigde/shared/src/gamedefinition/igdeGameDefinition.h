@@ -53,10 +53,10 @@ class deVirtualFileSystem;
 class DE_DLL_EXPORT igdeGameDefinition : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGameDefinition> Ref;
+	using Ref = deTObjectReference<igdeGameDefinition>;
 	
 	/** \brief Type holding list of objects. */
-	typedef decTObjectOrderedSet<igdeGameDefinition> List;
+	using List = decTCollectionQueryById<decTObjectOrderedSet<igdeGameDefinition>,igdeGameDefinition>;
 	
 	
 private:
@@ -113,10 +113,10 @@ public:
 	void SetFilename(const char *filename);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetId() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID(const char *id);
+	void SetId(const char *id);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }

@@ -69,7 +69,7 @@ void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
 		return;
 	}
 	
-	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
+	igdeGDCategory * const category = GetRootCategory()->GetCategories().FindWithPath(
 		decPath::CreatePathUnix(gdSky->GetCategory()));
 	
 	SelectCategory(category);
@@ -96,9 +96,7 @@ bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const c
 
 bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, decString &sky, const char *title){
 	const igdeGDSkyManager &skyManager = *owner->GetGameDefinition()->GetSkyManager();
-	igdeGDSky *gdSky = skyManager.GetSkyList().FindOrDefault([&](const igdeGDSky &s){
-		return s.GetPath() == sky;
-	});
+	igdeGDSky *gdSky = skyManager.GetSkies().FindWithPath(sky);
 	if(SelectSky(owner, gdSky, title)){
 		sky = gdSky->GetPath();
 		return true;

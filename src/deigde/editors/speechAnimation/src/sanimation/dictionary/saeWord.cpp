@@ -84,14 +84,12 @@ void saeWord::SetSAnimation(saeSAnimation *sanimation){
 
 
 void saeWord::SetName(const char *name){
-	if(pName.Equals(name)){
+	if(pName == name){
 		return;
 	}
 	
 	if(pSAnimation){
-		DEASSERT_FALSE(pSAnimation->GetWords().HasMatching([&](const saeWord &w){
-			return w.GetName() == name;
-		}))
+		DEASSERT_FALSE(pSAnimation->GetWords().HasNamed(name))
 	}
 	
 	pName = name;

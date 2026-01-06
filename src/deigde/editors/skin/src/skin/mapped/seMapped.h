@@ -39,10 +39,8 @@ class seSkin;
  */
 class seMapped : public deObject{
 public:
-	typedef deTObjectReference<seMapped> Ref;
-	
-	/** \brief List type. */
-	typedef decTObjectOrderedSet<seMapped> List;
+	using Ref = deTObjectReference<seMapped>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seMapped>,seMapped>;
 	
 	
 private:

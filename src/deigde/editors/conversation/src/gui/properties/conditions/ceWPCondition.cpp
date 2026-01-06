@@ -70,7 +70,7 @@ void ceWPCondition::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 	combobox.RemoveAllItems();
 	
 	if(conversation){
-		const ceConversationActorList &list = conversation->GetActorList();
+		const ceConversationActor::List &list = conversation->GetActorList();
 		const int count = list.GetCount();
 		int i;
 		

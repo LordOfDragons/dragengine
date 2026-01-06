@@ -285,7 +285,7 @@ void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName,
 	const dearAnimation * const animation = GetUseAnimation();
 	dearAnimationMove *move = nullptr;
 	if(animation){
-		move = animation->GetMoveNamed(moveName);
+		move = animation->GetMoves().FindNamed(moveName);
 	}
 	
 	if(move){

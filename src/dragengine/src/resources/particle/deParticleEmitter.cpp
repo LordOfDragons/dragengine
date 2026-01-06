@@ -167,12 +167,6 @@ void deParticleEmitter::SetGraphicModuleSimulates(bool graphicModuleSimulates){
 // Controller Management
 //////////////////////////
 
-int deParticleEmitter::IndexOfControllerNamed(const char *name) const{
-	return pControllers.IndexOfMatching([&](const deParticleEmitterController &c){
-		return c.GetName() == name;
-	});
-}
-
 void deParticleEmitter::AddController(deParticleEmitterController *controller){
 	DEASSERT_NOTNULL(controller)
 	pControllers.AddOrThrow(controller);

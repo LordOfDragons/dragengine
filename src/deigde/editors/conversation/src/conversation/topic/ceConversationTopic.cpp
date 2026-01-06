@@ -132,7 +132,7 @@ decStringSet &missingWords) const{
 	}
 	
 	const ceConversation &conversation = *pFile->GetConversation();
-	const ceConversationActorList &actorList = conversation.GetActorList();
+	const ceConversationActor::List &actorList = conversation.GetActorList();
 	
 	actions.Visit([&](const ceConversationAction &a){
 		switch(a.GetType()){
@@ -147,7 +147,7 @@ decStringSet &missingWords) const{
 				break;
 			}
 			
-			const ceSAWord::List &saWordList = conversationActor->GetSpeechAnimation()->GetWordList();
+			const ceSAWord::List &saWordList = conversationActor->GetSpeechAnimation()->GetWords();
 			
 			speak.GetWords().Visit([&](const ceStrip &s){
 				const decString &word = s.GetID();

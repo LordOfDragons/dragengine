@@ -43,8 +43,8 @@ class igdeEnvironment;
  */
 class meObjectTexture : public deObject{
 public:
-	typedef deTObjectReference<meObjectTexture> Ref;
-	typedef decTObjectOrderedSet<meObjectTexture> List;
+	using Ref = deTObjectReference<meObjectTexture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meObjectTexture>,meObjectTexture>;
 	
 	
 private:

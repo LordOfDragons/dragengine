@@ -129,12 +129,6 @@ public:
 	/** \brief Styles. */
 	const igdeTextStyle::List &GetStyles() const{ return pStyles; }
 	
-	/** \brief Get named style or nullptr if absent. */
-	igdeTextStyle *GetStyleNamed(const char *name) const;
-	
-	/** \brief Index of named style or -1 if absent. */
-	int IndexOfStyleNamed(const char *name) const;
-	
 	/** \brief Add style. */
 	void AddStyle(igdeTextStyle *style);
 	

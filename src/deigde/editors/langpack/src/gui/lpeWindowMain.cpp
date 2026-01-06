@@ -487,9 +487,7 @@ public:
 			? langpack->GetEntrySelection().GetActive()->GetName() : decString("Entry"));
 		
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Entry", "Identifier:", name)){
-			if(langpack->GetEntries().HasMatching([&](const lpeLangPackEntry &e){
-				return e.GetName() == name;
-			})){
+			if(langpack->GetEntries().HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindow, "Add Entry",
 					"There exists already an entry with this name");
 				continue;
@@ -502,9 +500,7 @@ public:
 			const lpeLangPack * const refLangPack = pWindow.GetReferenceLangPack();
 			lpeLangPackEntry *refEntry = nullptr;
 			if(refLangPack){
-				refEntry = refLangPack->GetEntries().FindOrDefault([&](const lpeLangPackEntry &e){
-					return e.GetName() == name;
-				});
+				refEntry = refLangPack->GetEntries().FindNamed(name);
 			}
 			
 			undo = lpeULangPackEntryAdd::Ref::New(langpack, entry, refEntry);

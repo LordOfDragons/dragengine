@@ -45,16 +45,22 @@ class DE_DLL_EXPORT igdeGDCategory : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCategory> Ref;
+	using Ref = deTObjectReference<igdeGDCategory>;
 	
 	/** \brief List of categories. */
-	typedef decTObjectOrderedSet<igdeGDCategory> CategoriesList;
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>::decTCollectionQueryByName;
+		
+		/** \brief Category by path or nullptr if absent. */
+		igdeGDCategory *FindWithPath(const decPath &path) const;
+	};
 	
 	
 private:
 	decString pName;
 	decString pDescription;
-	CategoriesList pCategories;
+	List pCategories;
 	decStringSet pAutoCategorizePattern;
 	bool pHidden;
 	
@@ -66,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create category. */
-	igdeGDCategory(const char *name);
+	explicit igdeGDCategory(const char *name);
 	
 	
 	
@@ -129,25 +135,7 @@ public:
 	/** \name Children Categories */
 	/*@{*/
 	/** \brief Categories. */
-	inline const CategoriesList &GetCategories() const{ return pCategories; }
-	
-	/** \brief Category is present. */
-	bool HasCategory(igdeGDCategory *category) const;
-	
-	/** \brief Named category is present. */
-	bool HasCategoryNamed(const char *name) const;
-	
-	/** \brief Index of category or -1 if absent. */
-	int IndexOfCategory(igdeGDCategory *category) const;
-	
-	/** \brief Index of named category or -1 if absent. */
-	int IndexOfCategoryNamed(const char *name) const;
-	
-	/** \brief Named category or nullptr if absent. */
-	igdeGDCategory *GetCategoryNamed(const char *name) const;
-	
-	/** \brief Category by path or nullptr if absent. */
-	igdeGDCategory *GetCategoryWithPath(const decPath &path) const;
+	inline const List &GetCategories() const{ return pCategories; }
 	
 	/** \brief Add category. */
 	void AddCategory(igdeGDCategory *category);

@@ -26,7 +26,6 @@
 #define _CECONVERSATION_H_
 
 #include "actor/ceConversationActor.h"
-#include "actor/ceConversationActorList.h"
 #include "camerashot/ceCameraShot.h"
 #include "file/ceConversationFile.h"
 #include "facepose/ceFacePose.h"
@@ -34,7 +33,6 @@
 #include "target/ceTarget.h"
 #include "textbox/ceTextBox.h"
 #include "coordsystem/ceCoordSystem.h"
-#include "coordsystem/ceCoordSystemList.h"
 #include "infobox/ceConversationInfoBox.h"
 #include "prop/ceProp.h"
 #include "playerChoiceBox/cePlayerChoiceBox.h"
@@ -73,7 +71,6 @@ class ceConversation : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<ceConversation> Ref;
 	typedef decTObjectOrderedSet<ceConversation> List;
-	typedef decTObjectOrderedSet<ceCameraShot> CameraShotList;
 	
 	
 	/** Paste snippet dialog parameters. */
@@ -124,7 +121,7 @@ private:
 	ceTarget::List pTargets;
 	ceTarget::Ref pActiveTarget;
 	
-	CameraShotList pCameraShots;
+	ceCameraShot::List pCameraShots;
 	ceCameraShot::Ref pActiveCameraShot;
 	
 	ceGesture::List pGestures;
@@ -137,10 +134,10 @@ private:
 	ceConversationFile::List pFiles;
 	ceConversationFile::Ref pActiveFile;
 	
-	ceConversationActorList pActors;
+	ceConversationActor::List pActors;
 	ceConversationActor::Ref pActiveActor;
 	
-	ceCoordSystemList pCoordSystems;
+	ceCoordSystem::List pCoordSystems;
 	ceCoordSystem::Ref pActiveCoordSystem;
 	
 	ceProp::List pProps;
@@ -301,7 +298,7 @@ public:
 	/** \name Camera Shots */
 	/*@{*/
 	/** Retrieves the camera shot list read-only. */
-	inline const CameraShotList &GetCameraShotList() const{ return pCameraShots; }
+	inline const ceCameraShot::List &GetCameraShotList() const{ return pCameraShots; }
 	
 	/** Adds a camera shot. */
 	void AddCameraShot(ceCameraShot *cameraShot);
@@ -322,8 +319,8 @@ public:
 	ceCameraShot *GetCameraShotNamed(const char *name) const;
 	
 	/** All camera shots including imported conversations. */
-	CameraShotList GetAllCameraShots() const;
-	void GetAllCameraShots(CameraShotList &list) const;
+	ceCameraShot::List GetAllCameraShots() const;
+	void GetAllCameraShots(ceCameraShot::List &list) const;
 	/*@}*/
 	
 	
@@ -432,7 +429,7 @@ public:
 	/** \name Actors */
 	/*@{*/
 	/** Retrieves the actor list read-only. */
-	inline const ceConversationActorList &GetActorList() const{ return pActors; }
+	inline const ceConversationActor::List &GetActorList() const{ return pActors; }
 	/** Adds a new actor. */
 	void AddActor(ceConversationActor *actor);
 	/** Removes a actor. */
@@ -452,7 +449,7 @@ public:
 	/** \name Coordinate Systems */
 	/*@{*/
 	/** Retrieves the coordinate system list read-only. */
-	inline const ceCoordSystemList &GetCoordSystemList() const{ return pCoordSystems; }
+	inline const ceCoordSystem::List &GetCoordSystemList() const{ return pCoordSystems; }
 	/** Adds a new coordinate system. */
 	void AddCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes a coordinate system. */

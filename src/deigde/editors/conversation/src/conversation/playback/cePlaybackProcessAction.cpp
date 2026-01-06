@@ -206,7 +206,7 @@ void cePlaybackProcessAction::ProcessCameraShot(ceConversation &conversation, co
 		}
 		
 		// set the coordinate system (temporary solution)
-		const ceConversationActorList &list = conversation.GetActorList();
+		const ceConversationActor::List &list = conversation.GetActorList();
 		
 		if(actorCount == 1){
 			camera.SetCoordSys1Actor(*list.GetAt(0));
@@ -350,9 +350,7 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 					saWord = nullptr;
 					
 				}else{
-					saWord = speechAnimation.GetWordList().FindOrDefault([&](const ceSAWord::Ref &w){
-						return w->GetName() == word.GetID();
-					});
+					saWord = speechAnimation.GetWords().FindNamed(word.GetID());
 				}
 				
 				if(saWord){

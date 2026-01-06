@@ -73,17 +73,13 @@ igdeUndo::Ref gdeMAObjectClassPaste::OnAction(gdeGameDefinition &gameDefinition)
 	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
 	decString name(clipObjectClass.GetObjectClass()->GetName());
 	
-	if(list.HasMatching([&](const gdeObjectClass &oc){
-		return oc.GetName() == name;
-	})){
+	if(list.HasNamed(name)){
 		while(true){
 			if(!igdeCommonDialogs::GetString(&pWindowMain, "Paste Object Class", "Name:", name)){
 				return {};
 			}
 			
-			if(list.HasMatching([&](const gdeObjectClass &oc){
-				return oc.GetName() == name;
-			})){
+			if(list.HasNamed(name)){
 				igdeCommonDialogs::Error(&pWindowMain, "Paste Object Class", "Object Class exists already.");
 				
 			}else{

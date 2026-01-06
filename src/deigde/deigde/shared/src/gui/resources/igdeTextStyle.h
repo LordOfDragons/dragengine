@@ -39,10 +39,10 @@ class DE_DLL_EXPORT igdeTextStyle : public deObject{
 
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeTextStyle> Ref;
+	using Ref = deTObjectReference<igdeTextStyle>;
 	
 	/** \brief Text style list. */
-	typedef decTObjectOrderedSet<igdeTextStyle> List;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTextStyle>,igdeTextStyle>;
 	
 	
 private:
@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text style. */
-	igdeTextStyle(const char *name);
+	explicit igdeTextStyle(const char *name);
 	
 	/** \brief Create copy of text style. */
 	igdeTextStyle(const char *name, const igdeTextStyle &textStyle);

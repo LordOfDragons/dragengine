@@ -40,9 +40,20 @@
 #define LOGSOURCE "Conversation Editor"
 
 
+// Class ceCoordSystem::List
+//////////////////////////////
+
+ceCoordSystem *ceCoordSystem::List::GetWithIDOrAliasID(const char *id) const{
+	DEASSERT_NOTNULL(id)
+	return FindOrDefault([&](const ceCoordSystem &c){
+		return c.GetID() == id || (!c.GetAliasID().IsEmpty() && c.GetAliasID() == id);
+	});
+}
+
+
 
 // Class ceCoordSystem
-////////////////////////////////////
+////////////////////////
 
 // Constructor, destructor
 ////////////////////////////

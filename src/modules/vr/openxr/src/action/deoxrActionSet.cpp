@@ -76,31 +76,25 @@ deoxrActionSet::~deoxrActionSet(){
 // Management
 ///////////////
 
-deoxrAction *deoxrActionSet::GetActionNamed(const char *name) const{
-	return pActions.FindOrDefault([&](const deoxrAction &action){
-		return action.GetName() == name;
-	});
+void deoxrActionSet::AddAction(deoxrAction *action){
+	DEASSERT_NOTNULL(action)
+	DEASSERT_FALSE(pActions.HasNamed(action->GetName()))
+	
+	pActions.Add(action);
 }
 
 deoxrAction *deoxrActionSet::AddAction(deoxrAction::eType type,
 const char *name, const char *localizedName){
-	if(GetActionNamed(name)){
-		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
-	}
-	
 	const deoxrAction::Ref action(deoxrAction::Ref::New(*this, type, name, localizedName));
-	pActions.Add(action);
+	AddAction(action);
 	return action;
 }
 
 deoxrAction *deoxrActionSet::AddAction(deoxrAction::eType type, const char *name,
 const char *localizedName, const XrPath *subactionPath, int subactionPathCount){
-	if(GetActionNamed(name)){
-		DETHROW_INFO(deeInvalidParam, decString("duplicate action: ") + name);
-	}
-	
-	const deoxrAction::Ref action(deoxrAction::Ref::New(*this, type, name, localizedName, subactionPath, subactionPathCount));
-	pActions.Add(action);
+	const deoxrAction::Ref action(deoxrAction::Ref::New(*this,
+		type, name, localizedName, subactionPath, subactionPathCount));
+	AddAction(action);
 	return action;
 }
 

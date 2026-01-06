@@ -25,6 +25,9 @@
 #ifndef _GDEWPSSKY_H_
 #define _GDEWPSSKY_H_
 
+#include "gdeWPSSkyListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -37,12 +40,9 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-#include "../../../gamedef/gdeGameDefinition.h"
 class gdeSky;
 class gdeSkyController;
-class gdeCategoryList;
 class gdeWindowProperties;
-#include "gdeWPSSkyListener.h"
 
 
 
@@ -120,7 +120,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList(const gdeCategoryList &list, const char *prefix);
+	void UpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 	
 	
 	

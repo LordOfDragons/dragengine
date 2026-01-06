@@ -64,10 +64,14 @@ class igdeGDClassManager;
 class DE_DLL_EXPORT igdeGDClass : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDClass> Ref;
+	using Ref = deTObjectReference<igdeGDClass>;
 	
-	typedef decTList<int> IndexList;
-	typedef decTObjectOrderedSet<igdeGDClassInherit> InheritClassesList;
+	using IndexList = decTList<int>;
+	
+	using InheritClassesList = decTObjectOrderedSet<igdeGDClassInherit>;
+	
+	/** \brief List of classes. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDClass>,igdeGDClass>;
 	
 	
 	/** \brief Scale modes. */
