@@ -79,6 +79,26 @@ FXIMPLEMENT(igdeNativeFoxListBox, FXVerticalFrame,
 #define MASK_FLAGS_LIST (LIST_SINGLESELECT | LIST_BROWSESELECT | LIST_MULTIPLESELECT | LIST_AUTOSELECT)
 
 
+// class igdeNativeFoxListBoxItem
+///////////////////////////////////
+
+class igdeNativeFoxListBoxItem : public FXListItem{
+	FXDECLARE(igdeNativeFoxListBoxItem)
+	
+protected:
+	igdeNativeFoxListBoxItem() = default;
+	
+public:
+	igdeNativeFoxListBoxItem(const FXString &text, FXIcon *ic = nullptr, FXptr ptr = nullptr) :
+	FXListItem(text, ic, ptr){}
+	
+	inline FXint getX() const{ return x; }
+	inline FXint getY() const{ return y; }
+};
+
+FXIMPLEMENT(igdeNativeFoxListBoxItem, FXListItem, nullptr, 0)
+
+
 // class igdeNativeFoxListBox
 ///////////////////////////////
 
@@ -161,8 +181,8 @@ void igdeNativeFoxListBox::BuildList(){
 	
 	for(i=0; i<count; i++){
 		const igdeListItem &item = *pOwner->GetItems().GetAt(i);
-		pListBox->appendItem(item.GetText().GetString(),
-			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
+		pListBox->appendItem(new igdeNativeFoxListBoxItem(item.GetText().GetString(),
+			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr));
 	}
 	
 	UpdateSelection();
@@ -194,7 +214,7 @@ void igdeNativeFoxListBox::UpdateStyles(){
 void igdeNativeFoxListBox::UpdateSelection(){
 	pListBox->setCurrentItem(pOwner->GetSelection());
 	if(pListBox->getCurrentItem() != -1){
-		pListBox->makeItemVisible(pListBox->getCurrentItem());
+		MakeItemVisible(pListBox->getCurrentItem());
 	}
 	
 	if(pOwner->GetSelectionMode() == igdeListBox::esmMultiple){
@@ -223,14 +243,25 @@ void igdeNativeFoxListBox::Focus(){
 	pListBox->setFocus();
 }
 
+decPoint igdeNativeFoxListBox::GetContentPosition() const{
+	return decPoint(-pListBox->getContentX(), -pListBox->getContentY());
+}
+
+void igdeNativeFoxListBox::SetContentPosition(const decPoint &position){
+	pListBox->layout();
+	pListBox->setPosition(-position.x, -position.y);
+}
+
 void igdeNativeFoxListBox::MakeItemVisible(int index){
-	pListBox->makeItemVisible(index);
+	if(!pListBox->isItemVisible(index)){
+		pListBox->makeItemVisible(index);
+	}
 }
 
 void igdeNativeFoxListBox::InsertItem(int index){
 	const igdeListItem &item = *pOwner->GetItems().GetAt(index);
-	pListBox->insertItem(index, item.GetText().GetString(),
-		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
+	pListBox->insertItem(index, new igdeNativeFoxListBoxItem(item.GetText().GetString(),
+		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr));
 }
 
 void igdeNativeFoxListBox::RemoveItem(int index){

@@ -115,7 +115,7 @@ void mePropField::SetWorldChanged(){
 void mePropField::AddType(mePropFieldType *type){
 	DEASSERT_NOTNULL(type)
 	
-	pTypes.Add(type);
+	pTypes.AddOrThrow(type);
 	type->SetPropField(this);
 	SetWorldChanged();
 	
@@ -139,7 +139,7 @@ void mePropField::AddType(mePropFieldType *type){
 
 void mePropField::RemoveType(mePropFieldType *type){
 	const mePropFieldType::Ref guard(type);
-	pTypes.Remove(type);
+	pTypes.RemoveOrThrow(type);
 	
 	if(pEngPF && type->GetEnginePFType()){
 		pEngPF->RemoveType(type->GetEnginePFType());
@@ -150,6 +150,10 @@ void mePropField::RemoveType(mePropFieldType *type){
 }
 
 void mePropField::RemoveAllTypes(){
+	if(pTypes.IsEmpty()){
+		return;
+	}
+	
 	pTypes.RemoveAll();
 	pEngPF->RemoveAllTypes();
 	SetWorldChanged();

@@ -41,20 +41,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks(aeRule *rule,
-aeControllerTarget *target, const aeLink::List &links) :
-
-pTarget(nullptr),
-pLinks(links)
+aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target) :
+pTarget(nullptr)
 {
 	DEASSERT_NOTNULL(rule)
 	DEASSERT_NOTNULL(target)
-	DEASSERT_TRUE(links.IsNotEmpty())
+	DEASSERT_TRUE(target->GetLinks().IsNotEmpty())
 	
 	SetShortInfo("Rule Target Remove All Links");
 	
 	pRule = rule;
 	pTarget = target;
+	pLinks = target->GetLinks();
 }
 
 aeURuleTargetRemoveAllLinks::~aeURuleTargetRemoveAllLinks(){

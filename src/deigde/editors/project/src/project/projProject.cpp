@@ -128,7 +128,9 @@ void projProject::SetPathCapture(const char *path){
 /////////////
 
 void projProject::AddProfile(projProfile *profile){
-	pProfiles.Add(profile);
+	DEASSERT_NOTNULL(profile)
+	pProfiles.AddOrThrow(profile);
+	
 	profile->SetProject(this);
 	NotifyProfileStructureChanged();
 	
@@ -138,38 +140,27 @@ void projProject::AddProfile(projProfile *profile){
 }
 
 void projProject::RemoveProfile(projProfile *profile){
-	if(!profile || profile->GetProject() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const projProfile::Ref guard(profile);
+	pProfiles.RemoveOrThrow(profile);
 	
 	if(profile == pActiveProfile){
-		if(pProfiles.GetCount() == 1){
-			SetActiveProfile(nullptr);
-			
-		}else{
-			if(pProfiles.GetAt(0) == profile){
-				SetActiveProfile(pProfiles.GetAt(1));
-				
-			}else{
-				SetActiveProfile(pProfiles.GetAt(0));
-			}
-		}
+		pActiveProfile = nullptr;
 	}
 	
 	profile->SetProject(nullptr);
-	pProfiles.Remove(profile);
 	NotifyProfileStructureChanged();
 }
 
 void projProject::RemoveAllProfiles(){
-	const int count = pProfiles.GetCount();
-	int i;
-	
-	SetActiveProfile(nullptr);
-	
-	for(i=0; i<count; i++){
-		pProfiles.GetAt(i)->SetProject(nullptr);
+	if(pProfiles.IsEmpty()){
+		return;
 	}
+	
+	pActiveProfile = nullptr;
+	
+	pProfiles.Visit([](projProfile &p){
+		p.SetProject(nullptr);
+	});
 	pProfiles.RemoveAll();
 	NotifyProfileStructureChanged();
 }

@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	lpeLangPack::Ref pLangPack;
+	lpeLangPack *pLangPack;
 	
 	decString pOldIdentifier;
 	decString pNewIdentifier;

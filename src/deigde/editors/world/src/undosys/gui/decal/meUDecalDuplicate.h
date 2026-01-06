@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	meUndoDataDecal::List pDecals;
 	

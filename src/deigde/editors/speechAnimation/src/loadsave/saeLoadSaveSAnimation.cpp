@@ -120,7 +120,7 @@ void saeLoadSaveSAnimation::pWriteSAnimation(decXmlWriter &writer, const saeSAni
 		pWritePhoneme(writer, p);
 	});
 	
-	sanimation.GetWordList().Visit([&](const saeWord &w){
+	sanimation.GetWords().Visit([&](const saeWord &w){
 		pWriteWord(writer, w);
 	});
 	
@@ -283,7 +283,7 @@ void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimatio
 	}*/
 	word->SetName(GetAttributeString(root, "name"));
 	
-	if(sanimation.GetWordList().HasMatching([&](const saeWord &w){
+	if(sanimation.GetWords().HasMatching([&](const saeWord &w){
 		return w.GetName() == word->GetName();
 	})){
 		LogErrorGenericProblemValue(root, word->GetName(), "Duplicate Word");

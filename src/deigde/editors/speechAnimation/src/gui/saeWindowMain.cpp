@@ -547,7 +547,7 @@ public:
 		"Add word", deInputEvent::ekcA){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
-		const saeWord::List &wordList = sanimation->GetWordList();
+		const saeWord::List &wordList = sanimation->GetWords();
 		decString name;
 		
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Word", "Name:", name)){
@@ -582,7 +582,7 @@ public:
 		"Add words from text list", deInputEvent::ekcL){}
 	
 	igdeUndo::Ref OnAction(saeSAnimation *sanimation) override{
-		const saeWord::List &wordList = sanimation->GetWordList();
+		const saeWord::List &wordList = sanimation->GetWords();
 		decString input;
 		
 		while(igdeCommonDialogs::GetMultilineString(&pWindow,

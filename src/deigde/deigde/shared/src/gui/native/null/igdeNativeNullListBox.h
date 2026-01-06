@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLLISTBOX_H_
 #define _IGDENATIVENULLLISTBOX_H_
 
+#include <dragengine/common/math/decMath.h>
+
 class igdeListBox;
 
 
@@ -61,6 +63,8 @@ public:
 	virtual void UpdateSelection();
 	virtual void Focus();
 	virtual void MakeItemVisible(int index);
+	virtual decPoint GetContentPosition() const;
+	virtual void SetContentPosition(const decPoint &position);
 	virtual void InsertItem(int index);
 	virtual void RemoveItem(int index);
 	virtual void RemoveAllItems();

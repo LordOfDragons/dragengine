@@ -362,28 +362,21 @@ void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 }
 
 void aeWPAPanelRuleSubAnimator::UpdateControllerList(){
-	aeController * const selection = GetCBConnectionController();
-	pPreventUpdate = true;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	void * const selection = GetCBConnectionController();
 	
-	try{
-		pCBConnectionController->RemoveAllItems();
-		pCBConnectionController->AddItem("< not assigned >", nullptr);
-		
-		if(GetAnimator()){
-			decString text;
-			GetAnimator()->GetControllers().VisitIndexed([&](int i, aeController *controller){
-				text.Format("%d: %s", i, controller->GetName().GetString());
-				pCBConnectionController->AddItem(text, nullptr, controller);
-			});
-		}
-		
-		pCBConnectionController->SetSelectionWithData(selection);
-		pPreventUpdate = false;
-		
-	}catch(const deException &){
-		pPreventUpdate = false;
-		throw;
+	pCBConnectionController->RemoveAllItems();
+	pCBConnectionController->AddItem("< not assigned >", nullptr);
+	
+	if(GetAnimator()){
+		decString text;
+		GetAnimator()->GetControllers().VisitIndexed([&](int i, aeController *controller){
+			text.Format("%d: %s", i, controller->GetName().GetString());
+			pCBConnectionController->AddItem(text, nullptr, controller);
+		});
 	}
+	
+	pCBConnectionController->SetSelectionWithData(selection);
 }
 
 void aeWPAPanelRuleSubAnimator::UpdateRule(){

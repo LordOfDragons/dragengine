@@ -127,13 +127,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of elements. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{
+		return pCount;
+	}
 	
 	/** \brief Set is empty. */
-	inline bool IsEmpty() const{ return pCount == 0; }
+	inline bool IsEmpty() const{
+		return pCount == 0;
+	}
 	
 	/** \brief Set is not empty. */
-	inline bool IsNotEmpty() const{ return pCount > 0; }
+	inline bool IsNotEmpty() const{
+		return pCount > 0;
+	}
 	
 	/**
 	 * \brief Element at index.
@@ -144,24 +150,6 @@ public:
 		DEASSERT_TRUE(index < pCount)
 		
 		return pElements[index];
-	}
-	
-	/**
-	 * \brief First element.
-	 * \throws deeInvalidParam if set is empty.
-	 */
-	const T &First() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[0];
-	}
-	
-	/**
-	 * \brief Last element.
-	 * \throws deeInvalidParam if set is empty.
-	 */
-	const T &Last() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[pCount - 1];
 	}
 	
 	/** \brief Determine if element exists in the set. */
@@ -277,6 +265,42 @@ public:
 	}
 	
 	/**
+	 * \brief Add element or throw if already present.
+	 * \throws deeInvalidParam \em element is present in the set.
+	 */
+	inline void AddOrThrow(const TP &element){
+		DEASSERT_TRUE(Add(element))
+	}
+	
+	/** \brief Add all elements from another collection not present in set. */
+	template<typename InputIt>
+	void AddAll(InputIt first, InputIt last){
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
+	/** \brief Add all elements from another collection or throw if any element is present. */
+	template<typename InputIt>
+	void AddAllOrThrow(InputIt first, InputIt last){
+		for(; first != last; ++first){
+			AddOrThrow(*first);
+		}
+	}
+	
+	/** \brief Add all elements from another collection not present in set. */
+	template<typename C>
+	inline void AddAll(const C &collection){
+		AddAll(collection.cbegin(), collection.cend());
+	}
+	
+	/** \brief Add all elements from another collection or throw if any element is present. */
+	template<typename C>
+	inline void AddAllOrThrow(const C &collection){
+		AddAllOrThrow(collection.cbegin(), collection.cend());
+	}
+	
+	/**
 	 * \brief Remove element if present in the set.
 	 * \returns true removed or false if absent.
 	 */
@@ -291,6 +315,14 @@ public:
 		}
 		pElements[--pCount] = T();
 		return true;
+	}
+	
+	/**
+	 * \brief Remove element or throw if absent from the set.
+	 * \throws deeInvalidParam \em element is not present in the set.
+	 */
+	inline void RemoveOrThrow(const TP &element){
+		DEASSERT_TRUE(Remove(element))
 	}
 	
 	/** \brief Remove all elements. */

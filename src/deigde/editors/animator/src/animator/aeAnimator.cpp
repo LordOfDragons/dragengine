@@ -443,14 +443,17 @@ void aeAnimator::SetPathAttachmentConfig(const char *path){
 ////////////////
 
 void aeAnimator::AddController(aeController *controller){
-	pControllers.Add(controller);
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
+	
 	controller->SetAnimator(this);
 	NotifyControllerStructureChanged();
 }
 
 void aeAnimator::InsertControllerAt(aeController *controller, int index){
-	pControllers.Insert(controller, index);
+	pControllers.InsertOrThrow(controller, index);
 	controller->SetAnimator(this);
+	
 	pUpdateLinks();
 	NotifyControllerStructureChanged();
 }
@@ -462,26 +465,14 @@ void aeAnimator::MoveControllerTo(aeController *controller, int index){
 }
 
 void aeAnimator::RemoveController(aeController *controller){
-	if(!pControllers.Has(controller)){
-		DETHROW(deeInvalidParam);
-	}
+	const aeController::Ref guard(controller);
+	pControllers.RemoveOrThrow(controller);
 	
 	if(pActiveController == controller){
-		if(pControllers.GetCount() > 1){
-			if(pControllers.GetAt(0) == controller){
-				SetActiveController(pControllers.GetAt(1));
-				
-			}else{
-				SetActiveController(pControllers.GetAt(0));
-			}
-			
-		}else{
-			SetActiveController(nullptr);
-		}
+		pActiveController = nullptr;
 	}
 	
 	controller->SetAnimator(nullptr);
-	pControllers.Remove(controller);
 	
 	pUpdateLinks();
 	NotifyControllerStructureChanged();
@@ -517,35 +508,28 @@ void aeAnimator::ResetControllers(){
 		pControllers.GetAt(i)->ResetValue();
 	}
 }
-
 void aeAnimator::ResetControllersWith(int locomotionAttribute){
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(pControllers.GetAt(i)->GetLocomotionAttribute() == locomotionAttribute){
-			pControllers.GetAt(i)->ResetValue();
+	pControllers.Visit([&](aeController &controller){
+		if(controller.GetLocomotionAttribute() == locomotionAttribute){
+			controller.ResetValue();
 		}
-	}
+	});
 }
 
 void aeAnimator::InverseControllersWith(int locomotionAttribute){
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(pControllers.GetAt(i)->GetLocomotionAttribute() == locomotionAttribute){
-			pControllers.GetAt(i)->InverseValue();
+	pControllers.Visit([&](aeController &controller){
+		if(controller.GetLocomotionAttribute() == locomotionAttribute){
+			controller.InverseValue();
 		}
-	}
+	});
 }
 
 void aeAnimator::IncrementControllersWith(int locomotionAttribute, float incrementBy){
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(pControllers.GetAt(i)->GetLocomotionAttribute() == locomotionAttribute){
-			pControllers.GetAt(i)->IncrementCurrentValue(incrementBy);
+	pControllers.Visit([&](aeController &controller){
+		if(controller.GetLocomotionAttribute() == locomotionAttribute){
+			controller.IncrementCurrentValue(incrementBy);
 		}
-	}
+	});
 }
 
 
@@ -554,38 +538,31 @@ void aeAnimator::IncrementControllersWith(int locomotionAttribute, float increme
 //////////
 
 void aeAnimator::AddLink(aeLink *link){
-	pLinks.Add(link);
+	pLinks.AddOrThrow(link);
+	
 	link->SetAnimator(this);
 	NotifyLinkStructureChanged();
 }
 
 void aeAnimator::RemoveLink(aeLink *link){
-	if(!pLinks.Has(link)){
-		DETHROW(deeInvalidParam);
-	}
+	const aeLink::Ref guard(link);
+	pLinks.RemoveOrThrow(link);
 	
 	if(pActiveLink == link){
-		if(pLinks.GetCount() > 1){
-			if(pLinks.GetAt(0) == link){
-				SetActiveLink(pLinks.GetAt(1));
-				
-			}else{
-				SetActiveLink(pLinks.GetAt(0));
-			}
-			
-		}else{
-			SetActiveLink(nullptr);
-		}
+		pActiveLink = nullptr;
 	}
 	
 	link->SetAnimator(nullptr);
-	pLinks.Remove(link);
 	
 	RebuildRules();
 	NotifyLinkStructureChanged();
 }
 
 void aeAnimator::RemoveAllLinks(){
+	if(pLinks.IsEmpty()){
+		return;
+	}
+	
 	SetActiveLink(nullptr);
 	
 	const int ruleCount = pRules.GetCount();
@@ -630,15 +607,17 @@ int aeAnimator::CountLinkUsage(aeLink *link) const{
 //////////
 
 void aeAnimator::AddRule(aeRule *rule){
-	pRules.Add(rule);
+	pRules.AddOrThrow(rule);
+	
 	rule->SetAnimator(this);
 	RebuildRules();
 	NotifyRuleStructureChanged();
 }
 
 void aeAnimator::InsertRuleAt(aeRule *rule, int index){
-	pRules.Insert(rule, index);
+	pRules.InsertOrThrow(rule, index);
 	rule->SetAnimator(this);
+	
 	RebuildRules();
 	NotifyRuleStructureChanged();
 }
@@ -650,18 +629,13 @@ void aeAnimator::MoveRuleTo(aeRule *rule, int index){
 }
 
 void aeAnimator::RemoveRule(aeRule *rule){
-	if(!pRules.Has(rule)){
-		DETHROW(deeInvalidParam);
-	}
+	const int index = pRules.IndexOf(rule);
+	const aeRule::Ref guard(rule);
+	pRules.RemoveOrThrow(rule);
 	
 	if(pActiveRule == rule){
-		if(pRules.GetCount() > 1){
-			if(pRules.GetAt(0) == rule){
-				SetActiveRule(pRules.GetAt(1));
-				
-			}else{
-				SetActiveRule(pRules.GetAt(0));
-			}
+		if(pRules.IsNotEmpty()){
+			SetActiveRule(pRules.GetAt(decMath::min(index, pRules.GetCount() - 1)));
 			
 		}else{
 			SetActiveRule(nullptr);
@@ -669,13 +643,16 @@ void aeAnimator::RemoveRule(aeRule *rule){
 	}
 	
 	rule->SetAnimator(nullptr);
-	pRules.Remove(rule);
 	
 	RebuildRules();
 	NotifyRuleStructureChanged();
 }
 
 void aeAnimator::RemoveAllRules(){
+	if(pRules.IsEmpty()){
+		return;
+	}
+	
 	SetActiveRule(nullptr);
 	
 	const int count = pRules.GetCount();
@@ -699,12 +676,9 @@ void aeAnimator::SetActiveRule(aeRule *rule){
 }
 
 void aeAnimator::RebuildRules(){
-	const int count = pRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetEngineRule(nullptr);
-	}
+	pRules.Visit([](aeRule &r){
+		r.SetEngineRule(nullptr);
+	});
 	
 	if(!pEngAnimator){
 		return;
@@ -718,11 +692,11 @@ void aeAnimator::RebuildRules(){
 		pEngAnimator->AddRule(engRule);
 	}
 	
-	for(i=0; i<count; i++){
-		const deAnimatorRule::Ref engRule(pRules.GetAt(i)->CreateEngineRule());
+	pRules.Visit([&](aeRule &rule){
+		const deAnimatorRule::Ref engRule(rule.CreateEngineRule());
 		pEngAnimator->AddRule(engRule);
-		pRules.GetAt(i)->SetEngineRule(engRule);
-	}
+		rule.SetEngineRule(engRule);
+	});
 }
 
 
@@ -858,7 +832,7 @@ aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 }
 
 void aeAnimator::AddAttachment(aeAttachment *attachment){
-	pAttachments.Add(attachment);
+	pAttachments.AddOrThrow(attachment);
 	attachment->SetAnimator(this);
 	
 	NotifyAttachmentStructureChanged();
@@ -866,12 +840,21 @@ void aeAnimator::AddAttachment(aeAttachment *attachment){
 
 void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	const aeAttachment::Ref guard(attachment);
-	pAttachments.Remove(attachment);
+	pAttachments.RemoveOrThrow(attachment);
 	attachment->SetAnimator(nullptr);
+	
+	if(pActiveAttachment == attachment){
+		pActiveAttachment = nullptr;
+	}
+	
 	NotifyAttachmentStructureChanged();
 }
 
 void aeAnimator::RemoveAllAttachments(){
+	if(pAttachments.IsEmpty()){
+		return;
+	}
+	
 	SetActiveAttachment(nullptr);
 	
 	pAttachments.Visit([](aeAttachment *attachment){

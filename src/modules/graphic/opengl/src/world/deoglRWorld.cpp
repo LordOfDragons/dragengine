@@ -1375,11 +1375,9 @@ void deoglRWorld::RemoveGICascade(deoglGIState *giState){
 		return;
 	}
 	
-	const int skyCount = pSkies.GetCount();
-	int i;
-	for(i=0; i<skyCount; i++){
-		((deoglRSkyInstance*)pSkies.GetAt(i))->DropGIState(giState);
-	}
+	pSkies.Visit([&](deoglRSkyInstance &sky){
+		sky.DropGIState(giState);
+	});
 	
 	pGIStates.Remove(giState);
 }

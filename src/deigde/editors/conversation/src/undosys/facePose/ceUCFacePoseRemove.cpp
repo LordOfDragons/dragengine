@@ -47,7 +47,6 @@ ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose *facePose){
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = nullptr;
-	pFacePose = nullptr;
 	
 	SetShortInfo("Remove Face Pose");
 	

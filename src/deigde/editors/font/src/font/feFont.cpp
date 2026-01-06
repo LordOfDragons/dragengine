@@ -182,28 +182,34 @@ void feFont::Rebuild(){
 
 void feFont::AddGlyph(feFontGlyph *glyph){
 	DEASSERT_NOTNULL(glyph)
-	pGlyphs.Add(glyph);
+	pGlyphs.AddOrThrow(glyph);
+	
 	glyph->SetParentFont(this);
 	NotifyGlyphStructureChanged();
 }
 
 void feFont::RemoveGlyph(feFontGlyph *glyph){
 	const feFontGlyph::Ref guard(glyph);
-	pGlyphs.Remove(glyph);
+	pGlyphs.RemoveOrThrow(glyph);
+	
 	glyph->SetParentFont(nullptr);
 	NotifyGlyphStructureChanged();
 }
 
 void feFont::RemoveGlyphWithCode(int code) {
-	RemoveGlyph(pGlyphs.FindOrDefault([&](feFontGlyph *g){
-		return g->GetCode() == code;
-	}));
+	feFontGlyph * const glyph = pGlyphs.FindOrDefault([&](const feFontGlyph &g){
+		return g.GetCode() == code;
+	});
+	if(glyph){
+		RemoveGlyph(glyph);
+	}
 }
 
 void feFont::RemoveAllGlyphs(){
 	if(pGlyphs.IsEmpty()){
 		return;
 	}
+	
 	pGlyphs.Visit([&](feFontGlyph &g){
 		g.SetParentFont(nullptr);
 	});

@@ -196,7 +196,7 @@ void meHeightTerrainNavSpaceType::UpdateHeights(){
 void meHeightTerrainNavSpaceType::AddFace(meHeightTerrainNavSpaceFace *face){
 	DEASSERT_NOTNULL(face)
 	
-	pFaces.Add(face);
+	pFaces.AddOrThrow(face);
 	face->SetType(this);
 	
 	if(pNavSpace){
@@ -213,7 +213,8 @@ void meHeightTerrainNavSpaceType::AddFace(meHeightTerrainNavSpaceFace *face){
 
 void meHeightTerrainNavSpaceType::RemoveFace(meHeightTerrainNavSpaceFace *face){
 	const meHeightTerrainNavSpaceFace::Ref guard(face);
-	pFaces.Remove(face);
+	pFaces.RemoveOrThrow(face);
+	
 	face->SetType(nullptr);
 	
 	if(pNavSpace){

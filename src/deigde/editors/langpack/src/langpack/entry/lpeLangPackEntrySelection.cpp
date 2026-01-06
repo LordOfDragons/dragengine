@@ -54,20 +54,27 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
 	DEASSERT_NOTNULL(entry)
 	
+	if(!pSelection.Add(entry)){
+		return;
+	}
+	
 	entry->SetSelected(true);
 	
-	if(!pSelection.Has(entry)){
-		pSelection.Add(entry);
+	if(!pActive){
+		SetActive(entry);
 	}
 }
 
 void lpeLangPackEntrySelection::Remove(lpeLangPackEntry *entry){
-	DEASSERT_NOTNULL(entry)
+	const lpeLangPackEntry::Ref guard(entry);
+	if(!pSelection.Remove(entry)){
+		return;
+	}
 	
 	entry->SetSelected(false);
 	
-	if(pSelection.Has(entry)){
-		pSelection.Remove(entry);
+	if(pActive == entry){
+		ActivateNext();
 	}
 }
 

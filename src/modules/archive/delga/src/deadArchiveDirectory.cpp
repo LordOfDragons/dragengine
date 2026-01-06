@@ -97,17 +97,11 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 }
 
 void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
-	if(!directory){
-		DETHROW(deeInvalidParam);
-	}
-	if(HasDirectoryNamed(directory->GetFilename())){
-		DETHROW(deeInvalidParam);
-	}
-	if(HasFileNamed(directory->GetFilename())){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(directory)
+	DEASSERT_FALSE(HasDirectoryNamed(directory->GetFilename()))
+	DEASSERT_FALSE(HasFileNamed(directory->GetFilename()))
 	
-	pDirectories.Add(directory);
+	pDirectories.AddOrThrow(directory);
 }
 
 
@@ -150,15 +144,9 @@ deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 }
 
 void deadArchiveDirectory::AddFile(deadArchiveFile *file){
-	if(!file){
-		DETHROW(deeInvalidParam);
-	}
-	if(HasDirectoryNamed(file->GetFilename())){
-		DETHROW(deeInvalidParam);
-	}
-	if(HasFileNamed(file->GetFilename())){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(file)
+	DEASSERT_FALSE(HasDirectoryNamed(file->GetFilename()))
+	DEASSERT_FALSE(HasFileNamed(file->GetFilename()))
 	
-	pFiles.Add(file);
+	pFiles.AddOrThrow(file);
 }

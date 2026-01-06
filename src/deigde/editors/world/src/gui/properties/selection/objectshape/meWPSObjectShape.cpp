@@ -241,7 +241,7 @@ void meWPSObjectShape::SetWorld(meWorld *world){
 
 
 meObject *meWPSObjectShape::GetActiveObject() const{
-	return pWorld ? pWorld->GetSelectionObject().GetActive() : nullptr;
+	return pWorld ? pWorld->GetSelectionObject().GetActive().Pointer() : nullptr;
 }
 
 const decString &meWPSObjectShape::GetActiveProperty() const{

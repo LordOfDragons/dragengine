@@ -102,9 +102,8 @@ void gdeCategory::AddCategory(gdeCategory *category){
 }
 
 void gdeCategory::RemoveCategory(gdeCategory *category){
-	const gdeCategory:: Ref guard(category);
-	pCategories.Remove(category);
-	
+	const gdeCategory::Ref guard(category);
+	pCategories.RemoveOrThrow(category);
 	category->SetParent(nullptr);
 }
 

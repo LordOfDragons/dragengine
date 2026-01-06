@@ -101,31 +101,33 @@ void deAnimator::NotifyVertexPositionSetsChanged(){
 //////////////////////////
 
 int deAnimator::IndexOfControllerNamed(const char *name) const{
-	const int count = pControllers.GetCount();
-	for(int i=0; i<count; i++){
-		if(pControllers.GetAt(i)->GetName() == name){
-			return i;
-		}
-	}
-	return -1;
+	return pControllers.IndexOfMatching([&](const deAnimatorController &controller){
+		return controller.GetName() == name;
+	});
 }
 
 void deAnimator::AddController(deAnimatorController *controller){
-	if(!controller) DETHROW(deeInvalidParam);
-	pControllers.Add(controller);
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
+	
 	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
 	}
 }
 
 void deAnimator::RemoveController(deAnimatorController *controller){
-	pControllers.Remove(controller);
+	pControllers.RemoveOrThrow(controller);
+	
 	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
 	}
 }
 
 void deAnimator::RemoveAllControllers(){
+	if(pControllers.IsEmpty()){
+		return;
+	}
+	
 	pControllers.RemoveAll();
 	if(pPeerAnimator){
 		pPeerAnimator->ControllerCountChanged();
@@ -145,19 +147,32 @@ void deAnimator::NotifyControllerChangedAt(int index){
 ////////////////////
 
 void deAnimator::AddLink(deAnimatorLink *link){
-	if(!link) DETHROW(deeInvalidParam);
-	pLinks.Add(link);
-	if(pPeerAnimator) pPeerAnimator->LinksChanged();
+	DEASSERT_NOTNULL(link)
+	pLinks.AddOrThrow(link);
+	
+	if(pPeerAnimator){
+		pPeerAnimator->LinksChanged();
+	}
 }
 
 void deAnimator::RemoveLink(deAnimatorLink *link){
-	pLinks.Remove(link);
-	if(pPeerAnimator) pPeerAnimator->LinksChanged();
+	pLinks.RemoveOrThrow(link);
+	
+	if(pPeerAnimator){
+		pPeerAnimator->LinksChanged();
+	}
 }
 
 void deAnimator::RemoveAllLinks(){
+	if(pLinks.IsEmpty()){
+		return;
+	}
+	
 	pLinks.RemoveAll();
-	if(pPeerAnimator) pPeerAnimator->LinksChanged();
+	
+	if(pPeerAnimator){
+		pPeerAnimator->LinksChanged();
+	}
 }
 
 void deAnimator::NotifyLinkChangedAt(int index){
@@ -171,11 +186,8 @@ void deAnimator::NotifyLinkChangedAt(int index){
 ////////////////////
 
 void deAnimator::AddRule(deAnimatorRule *rule){
-	if(!rule){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pRules.Add(rule);
+	DEASSERT_NOTNULL(rule)
+	pRules.AddOrThrow(rule);
 	
 	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();
@@ -183,7 +195,7 @@ void deAnimator::AddRule(deAnimatorRule *rule){
 }
 
 void deAnimator::RemoveRule(deAnimatorRule *rule){
-	pRules.Remove(rule);
+	pRules.RemoveOrThrow(rule);
 	
 	if(pPeerAnimator){
 		pPeerAnimator->RulesChanged();

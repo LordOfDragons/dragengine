@@ -392,7 +392,8 @@ void detTOrderedSet::TestIntInsert(){
 	ASSERT_EQUAL(set.GetAt(3), 30);
 	
 	// Try to insert duplicate - should fail
-	ASSERT_DOES_FAIL(set.Insert(10, 0));
+	ASSERT_FALSE(set.Insert(10, 0));
+	ASSERT_DOES_FAIL(set.InsertOrThrow(10, 0));
 }
 
 void detTOrderedSet::TestIntMove(){

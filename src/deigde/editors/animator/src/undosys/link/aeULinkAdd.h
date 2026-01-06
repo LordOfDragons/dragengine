@@ -46,7 +46,7 @@ public:
 	
 	
 private:
-	aeAnimator::Ref pAnimator;
+	aeAnimator *pAnimator;
 	aeLink::Ref pLink;
 	
 public:

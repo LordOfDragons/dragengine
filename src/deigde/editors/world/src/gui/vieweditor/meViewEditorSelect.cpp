@@ -269,7 +269,7 @@ public:
 		switch(elementMode){
 		case meWorldGuiParameters::eemObject:
 			if(entry.GetObject()){
-				const meObject &object = *entry.GetObject();
+				const meObject &object = entry.GetObject();
 				text.Format("%s%s (%s): %.1f m",
 					object.GetActive() ? "[A] " : object.GetSelected() ? "[S] " : "",
 					object.GetClassName().GetString(),
@@ -282,7 +282,7 @@ public:
 			
 		case meWorldGuiParameters::eemObjectShape:
 			if(entry.GetObjectShape()){
-				const meObjectShape &shape = *entry.GetObjectShape();
+				const meObjectShape &shape = entry.GetObjectShape();
 				text.Format("%sShape: %.1f m",
 					shape.GetActive() ? "[A] " : shape.GetSelected() ? "[S] " : "",
 					entry.GetDistance() * rayDistance);
@@ -293,7 +293,7 @@ public:
 			
 		case meWorldGuiParameters::eemDecal:
 			if(entry.GetDecal()){
-				const meDecal &decal = *entry.GetDecal();
+				const meDecal &decal = entry.GetDecal();
 				
 				decString path(decal.GetSkinPath());
 				if(path.GetLength() > 50){
@@ -310,7 +310,7 @@ public:
 			
 		case meWorldGuiParameters::eemNavSpace:
 			if(entry.GetNavigationSpace()){
-				const meNavigationSpace &navspace = *entry.GetNavigationSpace();
+				const meNavigationSpace &navspace = entry.GetNavigationSpace();
 				text.Format("%sNavSpace: %.1f m",
 					navspace.GetActive() ? "[A] " : navspace.GetSelected() ? "[S] " : "",
 					entry.GetDistance() * rayDistance);

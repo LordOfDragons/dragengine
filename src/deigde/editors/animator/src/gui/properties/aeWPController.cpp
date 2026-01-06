@@ -310,7 +310,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		const deAnimation * const animation = animator->GetEngineAnimator()
-			? animator->GetEngineAnimator()->GetAnimation() : nullptr;
+			? animator->GetEngineAnimator()->GetAnimation().Pointer() : nullptr;
 		decStringList names;
 		int selection = 0;
 		
@@ -625,22 +625,17 @@ void aeWPController::SelectActiveController(){
 }
 
 void aeWPController::UpdateControllerList(){
-	aeController * const selection = GetController();
-	
-	pListController->RemoveAllItems();
-	
-	if(pAnimator){
-		decString text;
-		pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
-			text.Format("%d: %s", i, controller->GetName().GetString());
-			pListController->AddItem(text, nullptr, controller);
-		});
-	}
-	
-	pListController->SetSelectionWithData(selection);
-	if(!pListController->GetSelectedItem() && pListController->GetItems().IsNotEmpty()){
-		pListController->SetSelection(0);
-	}
+	pListController->UpdateRestoreSelection([&](){
+		pListController->RemoveAllItems();
+		
+		if(pAnimator){
+			decString text;
+			pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
+				text.Format("%d: %s", i, controller->GetName().GetString());
+				pListController->AddItem(text, nullptr, controller);
+			});
+		}
+	}, 0);
 	
 	UpdateController();
 }

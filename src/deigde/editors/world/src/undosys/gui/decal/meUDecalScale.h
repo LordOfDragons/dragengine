@@ -40,7 +40,7 @@ public:
 	typedef deTObjectReference<meUDecalScale> Ref;
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	meUndoDataDecal::List pDecals;
 	

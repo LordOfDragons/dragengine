@@ -719,21 +719,16 @@ void aeWPLink::SelectActiveLink(){
 }
 
 void aeWPLink::UpdateLinkList(){
-	aeLink * const selection = GetLink();
-	
-	pListLink->RemoveAllItems();
-	
-	if(pAnimator){
-		pAnimator->GetLinks().Visit([&](aeLink *link){
-			pListLink->AddItem(link->GetName(), nullptr, link);
-		});
-		pListLink->SortItems();
-	}
-	
-	pListLink->SetSelectionWithData(selection);
-	if(!pListLink->GetSelectedItem() && pListLink->GetItems().IsNotEmpty()){
-		pListLink->SetSelection(0);
-	}
+	pListLink->UpdateRestoreSelection([&](){
+		pListLink->RemoveAllItems();
+		
+		if(pAnimator){
+			pAnimator->GetLinks().Visit([&](aeLink *link){
+				pListLink->AddItem(link->GetName(), nullptr, link);
+			});
+			pListLink->SortItems();
+		}
+	}, 0);
 	
 	UpdateLink();
 }
@@ -844,27 +839,19 @@ void aeWPLink::UpdateModelVertexPositionSetList(){
 }
 
 void aeWPLink::UpdateControllerList(){
-	aeController * const selection = pCBController->GetSelectedItem()
-		? (aeController*)pCBController->GetSelectedItem()->GetData() : nullptr;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	void * const selection = pCBController->GetSelectedItemData();
 	
-	pPreventUpdate = true;
-	try{
-		pCBController->RemoveAllItems();
-		pCBController->AddItem("< No Controller >", nullptr, nullptr);
-		
-		if(pAnimator){
-			decString text;
-			pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
-				text.Format("%d: %s", i, controller->GetName().GetString());
-				pCBController->AddItem(text, nullptr, controller);
-			});
-		}
-		
-		pCBController->SetSelectionWithData(selection);
-		pPreventUpdate = false;
-		
-	}catch(const deException &){
-		pPreventUpdate = false;
-		throw;
+	pCBController->RemoveAllItems();
+	pCBController->AddItem("< No Controller >", nullptr, nullptr);
+	
+	if(pAnimator){
+		decString text;
+		pAnimator->GetControllers().VisitIndexed([&](int i, aeController *controller){
+			text.Format("%d: %s", i, controller->GetName().GetString());
+			pCBController->AddItem(text, nullptr, controller);
+		});
 	}
+	
+	pCBController->SetSelectionWithData(selection);
 }

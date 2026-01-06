@@ -793,7 +793,7 @@ void aeWPView::UpdateBoneList(){
 	
 	if(pAnimator){
 		const deRig * const engRig = pAnimator->GetEngineComponent()
-			? pAnimator->GetEngineComponent()->GetRig() : nullptr;
+			? pAnimator->GetEngineComponent()->GetRig().Pointer() : nullptr;
 		if(engRig){
 			const int count = engRig->GetBoneCount();
 			int i;
@@ -900,19 +900,18 @@ void aeWPView::UpdatePlayback(){
 }
 
 void aeWPView::UpdateAttachmentList(){
-	aeAttachment * const selection = GetAttachment();
-	
-	pCBAttachments->RemoveAllItems();
-	
-	if(pAnimator){
-		pAnimator->GetAttachments().Visit([&](aeAttachment *attachment){
-			pCBAttachments->AddItem(attachment->GetName(), nullptr, attachment);
-		});
+	pCBAttachments->UpdateRestoreSelection([&](){
+		pCBAttachments->RemoveAllItems();
 		
-		pCBAttachments->SortItems();
-	}
+		if(pAnimator){
+			pAnimator->GetAttachments().Visit([&](aeAttachment *attachment){
+				pCBAttachments->AddItem(attachment->GetName(), nullptr, attachment);
+			});
+			
+			pCBAttachments->SortItems();
+		}
+	}, 0);
 	
-	pCBAttachments->SetSelectionWithData(selection);
 	UpdateAttachment();
 }
 

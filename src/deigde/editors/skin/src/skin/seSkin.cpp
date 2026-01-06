@@ -451,7 +451,9 @@ void seSkin::UpdateResources(){
 ///////////
 
 void seSkin::AddMapped(seMapped *mapped){
-	pMapped.Add(mapped);
+	DEASSERT_NOTNULL(mapped)
+	pMapped.AddOrThrow(mapped);
+	
 	mapped->SetSkin(this);
 	NotifyMappedStructureChanged();
 	
@@ -461,30 +463,22 @@ void seSkin::AddMapped(seMapped *mapped){
 }
 
 void seSkin::RemoveMapped(seMapped *mapped){
-	DEASSERT_NOTNULL(mapped)
-	DEASSERT_TRUE(mapped->GetSkin() == this)
+	const seMapped::Ref guard(mapped);
+	pMapped.RemoveOrThrow(mapped);
 	
-	if(mapped->GetActive()){
-		if(pMapped.GetCount() > 1){
-			seMapped *activeMapped = pMapped.GetAt(0);
-			
-			if(activeMapped == mapped){
-				activeMapped = pMapped.GetAt(1);
-			}
-			
-			SetActiveMapped(activeMapped);
-			
-		}else{
-			SetActiveMapped(nullptr);
-		}
+	if(pActiveMapped == mapped){
+		pActiveMapped = nullptr;
 	}
 	
 	mapped->SetSkin(nullptr);
-	pMapped.Remove(mapped);
 	NotifyMappedStructureChanged();
 }
 
 void seSkin::RemoveAllMapped(){
+	if(pMapped.IsEmpty()){
+		return;
+	}
+	
 	SetActiveMapped(nullptr);
 	
 	pMapped.Visit([](seMapped &m){
@@ -522,7 +516,9 @@ void seSkin::SetActiveMapped(seMapped *mapped){
 /////////////
 
 void seSkin::AddTexture(seTexture *texture){
-	pTextures.Add(texture);
+	DEASSERT_NOTNULL(texture)
+	pTextures.AddOrThrow(texture);
+	
 	texture->SetSkin(this);
 	NotifyTextureStructureChanged();
 	
@@ -532,29 +528,22 @@ void seSkin::AddTexture(seTexture *texture){
 }
 
 void seSkin::RemoveTexture(seTexture *texture){
-	if(!texture || texture->GetSkin() != this) DETHROW(deeInvalidParam);
+	const seTexture::Ref guard(texture);
+	pTextures.RemoveOrThrow(texture);
 	
-	if(texture->GetActive()){
-		if(pTextures.GetCount() > 1){
-			seTexture *activeTexture = pTextures.First();
-			
-			if(activeTexture == texture){
-				activeTexture = pTextures.GetAt(1);
-			}
-			
-			SetActiveTexture(activeTexture);
-			
-		}else{
-			SetActiveTexture(nullptr);
-		}
+	if(pActiveTexture == texture){
+		pActiveTexture = nullptr;
 	}
 	
 	texture->SetSkin(nullptr);
-	pTextures.Remove(texture);
 	NotifyTextureStructureChanged();
 }
 
 void seSkin::RemoveAllTextures(){
+	if(pTextures.IsEmpty()){
+		return;
+	}
+	
 	SetActiveTexture(nullptr);
 	
 	pTextures.Visit([](seTexture &t){

@@ -328,25 +328,25 @@ void syneWPEffect::UpdateLinkList(){
 }
 
 void syneWPEffect::UpdateEffectList(){
-	const syneSource * const source = GetSource();
-	syneEffect * const selection = GetEffect();
+	pListEffect->UpdateRestoreSelection([&](){
+		const syneSource * const source = GetSource();
+		
+		pListEffect->RemoveAllItems();
+		
+		if(source){
+			source->GetEffects().Visit([&](syneEffect *effect){
+				switch(effect->GetType()){
+				case deSynthesizerEffectVisitorIdentify::eetStretch:
+					pListEffect->AddItem("Time/Pitch Stretch", nullptr, effect);
+					break;
+					
+				default:
+					pListEffect->AddItem("??", nullptr, effect);
+				}
+			});
+		}
+	}, 0);
 	
-	pListEffect->RemoveAllItems();
-	
-	if(source){
-		source->GetEffects().Visit([&](syneEffect *effect){
-			switch(effect->GetType()){
-			case deSynthesizerEffectVisitorIdentify::eetStretch:
-				pListEffect->AddItem("Time/Pitch Stretch", nullptr, effect);
-				break;
-				
-			default:
-				DETHROW(deeInvalidParam);
-			}
-		});
-	}
-	
-	pListEffect->SetSelectionWithData(selection);
 	ShowActiveEffectPanel();
 	UpdateEffect();
 }

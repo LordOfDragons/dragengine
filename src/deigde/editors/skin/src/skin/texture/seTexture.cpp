@@ -210,7 +210,9 @@ void seTexture::UpdateResources(){
 ///////////////
 
 void seTexture::AddProperty(seProperty *property){
-	pProperties.Add(property);
+	DEASSERT_NOTNULL(property)
+	pProperties.AddOrThrow(property);
+	
 	property->SetTexture(this);
 	
 	InvalidateEngineSkin();
@@ -224,27 +226,14 @@ void seTexture::AddProperty(seProperty *property){
 }
 
 void seTexture::RemoveProperty(seProperty *property){
-	if(!property || property->GetTexture() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const seProperty::Ref guard(property);
+	pProperties.RemoveOrThrow(property);
 	
-	if(property->GetActive()){
-		if(pProperties.GetCount() > 1){
-			seProperty *activeProperty = pProperties.First();
-			
-			if(activeProperty == property){
-				activeProperty = pProperties.GetAt(1);
-			}
-			
-			SetActiveProperty(activeProperty);
-			
-		}else{
-			SetActiveProperty(nullptr);
-		}
+	if(pActiveProperty == property){
+		pActiveProperty = nullptr;
 	}
 	
 	property->SetTexture(nullptr);
-	pProperties.Remove(property);
 	
 	InvalidateEngineSkin();
 	if(pSkin){
@@ -253,6 +242,10 @@ void seTexture::RemoveProperty(seProperty *property){
 }
 
 void seTexture::RemoveAllProperties(){
+	if(pProperties.IsEmpty()){
+		return;
+	}
+	
 	SetActiveProperty(nullptr);
 	
 	pProperties.Visit([](seProperty &p){

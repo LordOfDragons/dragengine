@@ -353,22 +353,17 @@ void syneWPLink::SelectActiveLink(){
 }
 
 void syneWPLink::UpdateLinkList(){
-	const syneLink::Ref selection(GetLink());
-	
-	pListLink->RemoveAllItems();
-	
-	if(pSynthesizer){
-		pSynthesizer->GetLinks().Visit([&](syneLink *link){
-			pListLink->AddItem(link->GetName(), nullptr, link);
-		});
-	}
-	
-	pListLink->SortItems();
-	
-	pListLink->SetSelectionWithData(selection);
-	if(!pListLink->GetSelectedItem() && pListLink->GetItems().IsNotEmpty()){
-		pListLink->SetSelection(0);
-	}
+	pListLink->UpdateRestoreSelection([&](){
+		pListLink->RemoveAllItems();
+		
+		if(pSynthesizer){
+			pSynthesizer->GetLinks().Visit([&](syneLink *link){
+				pListLink->AddItem(link->GetName(), nullptr, link);
+			});
+			
+			pListLink->SortItems();
+		}
+	}, 0);
 }
 
 void syneWPLink::UpdateLink(){
@@ -395,29 +390,19 @@ void syneWPLink::UpdateLink(){
 }
 
 void syneWPLink::UpdateControllerList(){
-	syneController * const selection = pCBController->GetSelectedItem()
-		? (syneController*)pCBController->GetSelectedItem()->GetData() : nullptr;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	void * const selection = pCBController->GetSelectedItemData();
 	
-	pPreventUpdate = true; // required since changing list causes text changes
+	pCBController->RemoveAllItems();
+	pCBController->AddItem("< No Controller >", nullptr);
 	
-	try{
-		pCBController->RemoveAllItems();
-		pCBController->AddItem("< No Controller >", nullptr);
-		
-		if(pSynthesizer){
-			pSynthesizer->GetControllers().Visit([&](syneController *controller){
-				pCBController->AddItem(controller->GetName(), nullptr, controller);
-			});
-		}
+	if(pSynthesizer){
+		pSynthesizer->GetControllers().Visit([&](syneController *controller){
+			pCBController->AddItem(controller->GetName(), nullptr, controller);
+		});
 		
 		pCBController->SortItems();
-		
-		pCBController->SetSelectionWithData(selection);
-		
-	}catch(const deException &){
-		pPreventUpdate = false;
-		throw;
 	}
 	
-	pPreventUpdate = false;
+	pCBController->SetSelectionWithData(selection);
 }

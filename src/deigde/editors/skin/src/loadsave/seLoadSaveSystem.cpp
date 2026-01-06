@@ -76,12 +76,11 @@ seLoadSaveSkin *seLoadSaveSystem::GetLSSkinMatching(const char *filename){
 }
 
 void seLoadSaveSystem::AddLSSkin(seLoadSaveSkin *lsSkin){
-	DEASSERT_FALSE(pLSSkins.Has(lsSkin))
-	pLSSkins.Add(lsSkin);
+	pLSSkins.AddOrThrow(lsSkin);
 }
 
 void seLoadSaveSystem::RemoveLSSkin(seLoadSaveSkin *lsSkin){
-	pLSSkins.Remove(lsSkin);
+	pLSSkins.RemoveOrThrow(lsSkin);
 }
 
 void seLoadSaveSystem::RemoveAllLSSkins(){

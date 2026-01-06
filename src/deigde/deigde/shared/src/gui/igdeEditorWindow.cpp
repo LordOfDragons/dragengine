@@ -134,10 +134,8 @@ void igdeEditorWindow::DisplayException(const deException &exception){
 /////////////////
 
 void igdeEditorWindow::AddSharedMenu(igdeMenuCascade *menu){
-	if(!menu){
-		DETHROW(deeInvalidParam);
-	}
-	pSharedMenus.Add(menu);
+	DEASSERT_NOTNULL(menu)
+	pSharedMenus.AddOrThrow(menu);
 	
 	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedMenusChanged();
@@ -145,7 +143,7 @@ void igdeEditorWindow::AddSharedMenu(igdeMenuCascade *menu){
 }
 
 void igdeEditorWindow::RemoveSharedMenu(igdeMenuCascade *menu){
-	pSharedMenus.Remove(menu);
+	pSharedMenus.RemoveOrThrow(menu);
 	
 	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedMenusChanged();
@@ -153,6 +151,10 @@ void igdeEditorWindow::RemoveSharedMenu(igdeMenuCascade *menu){
 }
 
 void igdeEditorWindow::RemoveAllSharedMenus(){
+	if(pSharedMenus.IsEmpty()){
+		return;
+	}
+	
 	pSharedMenus.RemoveAll();
 	
 	if(pActiveModule){
@@ -166,10 +168,9 @@ void igdeEditorWindow::RemoveAllSharedMenus(){
 ////////////////////
 
 void igdeEditorWindow::AddSharedToolBar(igdeToolBar *toolbar){
-	if(!toolbar){
-		DETHROW(deeInvalidParam);
-	}
-	pSharedToolBars.Add(toolbar);
+	DEASSERT_NOTNULL(toolbar)
+	
+	pSharedToolBars.AddOrThrow(toolbar);
 	
 	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedToolBarsChanged();
@@ -177,7 +178,7 @@ void igdeEditorWindow::AddSharedToolBar(igdeToolBar *toolbar){
 }
 
 void igdeEditorWindow::RemoveSharedToolBar(igdeToolBar *toolbar){
-	pSharedToolBars.Remove(toolbar);
+	pSharedToolBars.RemoveOrThrow(toolbar);
 	
 	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedToolBarsChanged();
@@ -185,6 +186,10 @@ void igdeEditorWindow::RemoveSharedToolBar(igdeToolBar *toolbar){
 }
 
 void igdeEditorWindow::RemoveAllSharedToolBars(){
+	if(pSharedToolBars.IsEmpty()){
+		return;
+	}
+	
 	pSharedToolBars.RemoveAll();
 	
 	if(pActiveModule){
@@ -199,12 +204,11 @@ void igdeEditorWindow::RemoveAllSharedToolBars(){
 
 void igdeEditorWindow::AddUpdateAction(igdeAction *action){
 	DEASSERT_NOTNULL(action)
-	
-	pUpdateActions.Add(action);
+	pUpdateActions.AddOrThrow(action);
 }
 
 void igdeEditorWindow::RemoveUpdateAction(igdeAction *action){
-	pUpdateActions.Remove(action);
+	pUpdateActions.RemoveOrThrow(action);
 }
 
 void igdeEditorWindow::RemoveAllUpdateActions(){

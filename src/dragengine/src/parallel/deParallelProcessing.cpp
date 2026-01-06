@@ -309,7 +309,7 @@ void deParallelProcessing::AddTaskAsync(deParallelTask *task){
 	
 	const deMutexGuard lock(pMutexTasks);
 	
-	pTasks.Add(task); // strong reference held until task leaves parallel task system
+	pTasks.AddOrThrow(task); // strong reference held until task leaves parallel task system
 	
 	task->Reset(); // mark not cancelled and not finished. collides with SetFinished()
 	

@@ -51,15 +51,15 @@ int deainpOverlayList::GetCount() const{
 }
 
 deainpOverlay *deainpOverlayList::GetAt(int index) const{
-	return (deainpOverlay*)pOverlays.GetAt(index);
+	return pOverlays.GetAt(index);
 }
 
 void deainpOverlayList::Add(deainpOverlay *overlay){
-	pOverlays.Add(overlay);
+	pOverlays.AddOrThrow(overlay);
 }
 
 void deainpOverlayList::Remove(deainpOverlay *overlay){
-	pOverlays.Remove(overlay);
+	pOverlays.RemoveOrThrow(overlay);
 }
 
 void deainpOverlayList::RemoveAll(){

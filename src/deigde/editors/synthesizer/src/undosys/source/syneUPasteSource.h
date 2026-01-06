@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	syneSynthesizer::Ref pSynthesizer;
+	syneSynthesizer *pSynthesizer;
 	syneSource::List pSources;
 	syneLink::List pRemoveLinkList;
 	syneController::List pRemoveControllerList;

@@ -25,10 +25,11 @@
 #ifndef _PEEUPARAMETERSETCONTROLLERVALUE_H_
 #define _PEEUPARAMETERSETCONTROLLERVALUE_H_
 
-#include <deigde/undo/igdeUndo.h>
-
 #include "../../emitter/peeType.h"
 #include "../../emitter/peeController.h"
+
+#include <deigde/undo/igdeUndo.h>
+
 class peeParameter;
 
 
@@ -45,8 +46,7 @@ private:
 	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	peeController::Ref pOldController;
-	peeController::Ref pNewController;
+	peeController::Ref pOldController, pNewController;
 	
 	
 	

@@ -437,9 +437,8 @@ void meWorld::ClearScalingOfNonScaledElements(){
 
 void meWorld::AddObject(meObject *object){
 	DEASSERT_NOTNULL(object)
-	DEASSERT_FALSE(pObjects.Has(object))
 	
-	pObjects.Add(object);
+	pObjects.AddOrThrow(object);
 	object->SetWorld(this);
 	
 	pObjectIDMap.SetAt(object->GetID().ToHexString(), object);
@@ -448,27 +447,23 @@ void meWorld::AddObject(meObject *object){
 }
 
 void meWorld::RemoveObject(meObject *object){
-	DEASSERT_NOTNULL(object)
-	DEASSERT_TRUE(pObjects.Has(object))
+	const meObject::Ref guard(object);
+	pObjects.RemoveOrThrow(object);
 	
 	pObjectIDMap.Remove(object->GetID().ToHexString());
-	
 	object->SetWorld(nullptr);
-	pObjects.Remove(object);
 	
 	SetChanged(true);
 }
 
 void meWorld::RemoveAllObjects(){
-	const int count = pObjects.GetCount();
-	if(count == 0){
+	if(pObjects.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		pObjects.GetAt(i)->SetWorld(nullptr);
-	}
+	pObjects.Visit([](meObject &o){
+		o.SetWorld(nullptr);
+	});
 	
 	pObjects.RemoveAll();
 	pObjectIDMap.RemoveAll();
@@ -510,32 +505,28 @@ meObject *meWorld::GetObjectWithID(const char *hexID) const{
 
 void meWorld::AddDecal(meDecal *decal){
 	DEASSERT_NOTNULL(decal)
-	DEASSERT_FALSE(pDecals.Has(decal))
 	
-	pDecals.Add(decal);
+	pDecals.AddOrThrow(decal);
 	decal->SetWorld(this);
 	SetChanged(true);
 }
 
 void meWorld::RemoveDecal(meDecal *decal){
-	DEASSERT_NOTNULL(decal)
-	DEASSERT_TRUE(pDecals.Has(decal))
+	const meDecal::Ref guard(decal);
+	pDecals.RemoveOrThrow(decal);
 	
 	decal->SetWorld(nullptr);
-	pDecals.Remove(decal);
 	SetChanged(true);
 }
 
 void meWorld::RemoveAllDecals(){
-	const int count = pDecals.GetCount();
-	if(count == 0){
+	if(pDecals.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for(i=0; i<count; i++){
-		pDecals.GetAt(i)->SetWorld(nullptr);
-	}
+	pDecals.Visit([](meDecal &d){
+		d.SetWorld(nullptr);
+	});
 	
 	pDecals.RemoveAll();
 	
@@ -549,19 +540,17 @@ void meWorld::RemoveAllDecals(){
 
 void meWorld::AddNavSpace(meNavigationSpace *navspace){
 	DEASSERT_NOTNULL(navspace)
-	DEASSERT_FALSE(pNavSpaces.Has(navspace))
 	
-	pNavSpaces.Add(navspace);
+	pNavSpaces.AddOrThrow(navspace);
 	navspace->SetWorld(this);
 	SetChanged(true);
 }
 
 void meWorld::RemoveNavSpace(meNavigationSpace *navspace){
-	DEASSERT_NOTNULL(navspace)
-	DEASSERT_TRUE(pNavSpaces.Has(navspace))
+	const meNavigationSpace::Ref guard(navspace);
+	pNavSpaces.RemoveOrThrow(navspace);
 	
 	navspace->SetWorld(nullptr);
-	pNavSpaces.Remove(navspace);
 	SetChanged(true);
 }
 

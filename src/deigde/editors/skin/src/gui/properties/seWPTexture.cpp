@@ -818,18 +818,17 @@ seProperty *seWPTexture::GetProperty() const{
 
 
 void seWPTexture::UpdateTextureList(){
-	seTexture * const selection = GetTexture();
+	pListTexture->UpdateRestoreSelection([&](){
+		pListTexture->RemoveAllItems();
+		
+		if(pSkin){
+			pSkin->GetTextures().Visit([&](seTexture *texture){
+				pListTexture->AddItem(texture->GetName(), nullptr, texture);
+			});
+			pListTexture->SortItems();
+		}
+	}, 0);
 	
-	pListTexture->RemoveAllItems();
-	
-	if(pSkin){
-		pSkin->GetTextures().Visit([&](seTexture *texture){
-			pListTexture->AddItem(texture->GetName(), nullptr, texture);
-		});
-		pListTexture->SortItems();
-	}
-	
-	pListTexture->SetSelectionWithData(selection);
 	UpdateTexture();
 }
 
@@ -874,20 +873,20 @@ void seWPTexture::UpdatePreviewParameters(){
 }
 
 void seWPTexture::UpdatePropertyList(){
-	const seTexture * const texture = GetTexture();
-	seProperty * const selection = GetProperty();
-	
-	pListProperty->RemoveAllItems();
-	
-	if(texture){
-		texture->GetProperties().Visit([&](seProperty *property){
-			pListProperty->AddItem(property->GetName(), 0, property);
-		});
+	pListProperty->UpdateRestoreSelection([&](){
+		const seTexture * const texture = GetTexture();
 		
-		pListProperty->SortItems();
-	}
+		pListProperty->RemoveAllItems();
+		
+		if(texture){
+			texture->GetProperties().Visit([&](seProperty *property){
+				pListProperty->AddItem(property->GetName(), 0, property);
+			});
+			
+			pListProperty->SortItems();
+		}
+	}, 0);
 	
-	pListProperty->SetSelectionWithData(selection);
 	ShowPropertyPanel();
 	UpdateProperty();
 }
@@ -1085,10 +1084,9 @@ void seWPTexture::UpdatePropertyMappedComponent(){
 }
 
 void seWPTexture::UpdatePropertyMappedTargetList(){
-	seMapped * const selection = pCBPvtMappedTarget->GetSelectedItem() ?
-		(seMapped*)pCBPvtMappedTarget->GetSelectedItem()->GetData() : nullptr;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdateMappedTarget);
+	void * const selection = pCBPvtMappedTarget->GetSelectedItemData();
 	
-	pPreventUpdateMappedTarget = true;
 	pCBPvtMappedTarget->RemoveAllItems();
 	
 	if(pSkin){
@@ -1100,5 +1098,4 @@ void seWPTexture::UpdatePropertyMappedTargetList(){
 	
 	pCBPvtMappedTarget->InsertItem(0, "< None >", nullptr, nullptr);
 	pCBPvtMappedTarget->SetSelectionWithData(selection);
-	pPreventUpdateMappedTarget = false;
 }

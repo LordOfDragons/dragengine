@@ -978,7 +978,7 @@ void meObject::AddLink(meObjectLink *link){
 
 void meObject::RemoveLink(meObjectLink *link){
 	const meObjectLink::Ref guard(link);
-	DEASSERT_TRUE(pLinks.Remove(link))
+	pLinks.RemoveOrThrow(link);
 	link->SetWorld(nullptr);
 }
 
@@ -1119,7 +1119,7 @@ void meObject::AddTexture(meObjectTexture *texture){
 	DEASSERT_NOTNULL(texture)
 	DEASSERT_FALSE(HasTextureNamed(texture->GetName()))
 	
-	pTextures.Add(texture);
+	pTextures.AddOrThrow(texture);
 	texture->SetObject(this);
 	
 	pUpdateComponent();
@@ -1132,12 +1132,12 @@ void meObject::AddTexture(meObjectTexture *texture){
 
 void meObject::RemoveTexture(meObjectTexture *texture){
 	const meObjectTexture::Ref guard(texture);
+	pTextures.RemoveOrThrow(texture);
 	
-	if(texture == pActiveTexture){
-		SetActiveTexture(nullptr);
+	if(pActiveTexture == texture){
+		pActiveTexture = nullptr;
 	}
 	
-	DEASSERT_TRUE(pTextures.Remove(texture))
 	texture->SetObject(nullptr);
 	pWObject->ResetComponentTextures();
 	pUpdateComponent();
@@ -1149,6 +1149,10 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 }
 
 void meObject::RemoveAllTextures(){
+	if(pTextures.IsEmpty()){
+		return;
+	}
+	
 	SetActiveTexture(nullptr);
 	
 	pTextures.Visit([](meObjectTexture &t){
@@ -1557,7 +1561,7 @@ void meObject::SetActiveAttachBehavior(int attachBehavior){
 void meObject::AddDecal(meDecal *decal){
 	DEASSERT_FALSE(pDecals.Has(decal))
 	
-	pDecals.Add(decal);
+	pDecals.AddOrThrow(decal);
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
@@ -1569,7 +1573,7 @@ void meObject::AddDecal(meDecal *decal){
 void meObject::InsertDecalAt(meDecal *decal, int index){
 	DEASSERT_FALSE(pDecals.Has(decal))
 	
-	pDecals.Insert(decal, index);
+	pDecals.InsertOrThrow(decal, index);
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
@@ -1580,8 +1584,8 @@ void meObject::InsertDecalAt(meDecal *decal, int index){
 
 void meObject::RemoveDecal(meDecal *decal){
 	const meDecal::Ref guard(decal);
+	pDecals.RemoveOrThrow(decal);
 	
-	DEASSERT_TRUE(pDecals.Remove(decal))
 	decal->SetWorld(nullptr);
 	decal->SetParentObject(nullptr);
 	
@@ -1591,6 +1595,10 @@ void meObject::RemoveDecal(meDecal *decal){
 }
 
 void meObject::RemoveAllDecals(){
+	if(pDecals.IsEmpty()){
+		return;
+	}
+	
 	pDecals.Visit([](meDecal &d){
 		d.SetWorld(nullptr);
 		d.SetParentObject(nullptr);

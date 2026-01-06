@@ -37,7 +37,7 @@
  */
 class projUProjectSetPathCapture : public igdeUndo{
 private:
-	projProject::Ref pProject;
+	projProject *pProject;
 	
 	decString pOldValue;
 	decString pNewValue;

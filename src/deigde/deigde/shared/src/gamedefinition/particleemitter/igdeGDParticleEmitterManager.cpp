@@ -56,14 +56,12 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 ///////////////
 
 void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
-	if(!emitter){
-		DETHROW(deeInvalidParam);
-	}
-	pEmitterList.Add(emitter);
+	DEASSERT_NOTNULL(emitter)
+	pEmitterList.AddOrThrow(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter *emitter){
-	pEmitterList.Remove(emitter);
+	pEmitterList.RemoveOrThrow(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveAllEmitters(){

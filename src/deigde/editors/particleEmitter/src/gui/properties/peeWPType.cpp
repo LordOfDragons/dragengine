@@ -990,26 +990,19 @@ void peeWPType::UpdateEmitter(){
 }
 
 void peeWPType::UpdateTypeList(){
-	peeType * const activeType = GetType();
-	
-	pCBType->RemoveAllItems();
-	
-	if(pEmitter){
-		pEmitter->GetTypes().Visit([&](peeType *t){
-			pCBType->AddItem(t->GetName(), nullptr, t);
-		});
-	}
-	
-	pCBType->SortItems();
-	
-	if(activeType){
-		pCBType->SetSelectionWithData(activeType);
+	pCBType->UpdateRestoreSelection([&](){
+		pCBType->RemoveAllItems();
 		
-	}else if(pCBType->GetItems().IsNotEmpty()){
-		pEmitter->SetActiveType((peeType*)pCBType->GetItems().First()->GetData());
-	}
+		if(pEmitter){
+			pEmitter->GetTypes().Visit([&](peeType *t){
+				pCBType->AddItem(t->GetName(), nullptr, t);
+			});
+			
+			pCBType->SortItems();
+		}
+	}, 0);
 	
-	UpdateType();  // can be duplicate but required to not skip it in certain situations
+	UpdateType();
 }
 
 void peeWPType::SelectActiveType(){

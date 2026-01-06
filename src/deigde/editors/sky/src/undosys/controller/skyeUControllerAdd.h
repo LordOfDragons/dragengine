@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	skyeSky::Ref pSky;
+	skyeSky *pSky;
 	skyeController::Ref pController;
 	
 	

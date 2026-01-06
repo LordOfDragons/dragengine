@@ -33,7 +33,7 @@
 
 // predefinitions
 #include "../../../../world/meWorld.h"
-class meHeightTerrainSector;
+#include "../../../../world/terrain/meHeightTerrainSector.h"
 #include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
-	meHeightTerrainSector *pSector;
+	meWorld *pWorld;
+	meHeightTerrainSector::Ref pSector;
 	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldOffset;

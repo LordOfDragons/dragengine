@@ -72,7 +72,7 @@ ceUCAASpeakGestureRemove::~ceUCAASpeakGestureRemove(){
 ///////////////
 
 void ceUCAASpeakGestureRemove::Undo(){
-	pActorSpeak->GetGestures().Insert(pGesture, pIndex);
+	pActorSpeak->GetGestures().InsertOrThrow(pGesture, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 

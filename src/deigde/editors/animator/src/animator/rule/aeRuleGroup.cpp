@@ -92,7 +92,7 @@ aeRuleGroup::~aeRuleGroup(){
 ///////////////
 
 void aeRuleGroup::AddRule(aeRule *rule){
-	pRules.Add(rule);
+	pRules.AddOrThrow(rule);
 	
 	aeAnimator * const animator = GetAnimator();
 	
@@ -106,10 +106,9 @@ void aeRuleGroup::AddRule(aeRule *rule){
 }
 
 void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
-	pRules.Insert(rule, index);
+	pRules.InsertOrThrow(rule, index);
 	
 	aeAnimator * const animator = GetAnimator();
-	
 	rule->SetParentGroup(this);
 	rule->SetAnimator(animator);
 	
@@ -130,31 +129,23 @@ void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
 }
 
 void aeRuleGroup::RemoveRule(aeRule *rule){
-	if(!pRules.Has(rule)){
-		DETHROW(deeInvalidParam);
-	}
+	const aeRule::Ref guard(rule);
+	const int index = pRules.IndexOf(rule);
+	pRules.RemoveOrThrow(rule);
 	
 	aeAnimator * const animator = GetAnimator();
 	
 	if(animator && rule == animator->GetActiveRule()){
-		const int index = pRules.IndexOf(rule);
-		const int ruleCount = pRules.GetCount();
-		
-		if(ruleCount == 1){
-			animator->SetActiveRule(this);
-			
-		}else if(index < ruleCount - 1){
-			animator->SetActiveRule(pRules.GetAt(index + 1));
+		if(pRules.IsNotEmpty()){
+			animator->SetActiveRule(pRules.GetAt(decMath::min(index, pRules.GetCount() - 1)));
 			
 		}else{
-			animator->SetActiveRule(pRules.GetAt(index - 1));
+			animator->SetActiveRule(this);
 		}
 	}
 	
 	rule->SetParentGroup(nullptr);
 	rule->SetAnimator(nullptr);
-	
-	pRules.Remove(rule);
 	
 	if(animator){
 		animator->RebuildRules();
@@ -163,8 +154,9 @@ void aeRuleGroup::RemoveRule(aeRule *rule){
 }
 
 void aeRuleGroup::RemoveAllRules(){
-	const int count = pRules.GetCount();
-	int i;
+	if(pRules.IsEmpty()){
+		return;
+	}
 	
 	aeAnimator * const animator = GetAnimator();
 	
@@ -172,11 +164,10 @@ void aeRuleGroup::RemoveAllRules(){
 		animator->SetActiveRule(this);
 	}
 	
-	for(i=0; i<count; i++){
-		aeRule * const rule = pRules.GetAt(i);
-		rule->SetParentGroup(nullptr);
-		rule->SetAnimator(nullptr);
-	}
+	pRules.Visit([&](aeRule &rule){
+		rule.SetParentGroup(nullptr);
+		rule.SetAnimator(nullptr);
+	});
 	
 	pRules.RemoveAll();
 	

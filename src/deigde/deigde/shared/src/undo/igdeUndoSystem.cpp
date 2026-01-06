@@ -67,9 +67,8 @@ igdeUndo *igdeUndoSystem::GetTop() const{
 }
 
 void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){
-	if(!undo){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(undo)
+	DEASSERT_FALSE(pUndos.Has(undo))
 	
 	if(pMaxUndos == 0){
 		return;
@@ -133,7 +132,7 @@ void igdeUndoSystem::Undo(){
 		return;
 	}
 	
-	igdeUndo &undo = *((igdeUndo*)pUndos.GetAt(pUndos.GetCount() - 1 - pRedoCount));
+	igdeUndo &undo = pUndos.GetAt(pUndos.GetCount() - 1 - pRedoCount);
 	
 	// undo the given action. the undo action is responsible to do its work alike that in
 	// the case of an exception the system is still in a working state but not necessary
@@ -157,7 +156,7 @@ void igdeUndoSystem::Redo(){
 		return;
 	}
 	
-	igdeUndo &undo = *((igdeUndo*)pUndos.GetAt(pUndos.GetCount() - pRedoCount));
+	igdeUndo &undo = pUndos.GetAt(pUndos.GetCount() - pRedoCount);
 	
 	// redo the given action. the redo action is responsible to do its work alike that in the
 	// case of an exception the system is still in a working state but not necessary in a

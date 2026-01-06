@@ -42,7 +42,7 @@ public:
 	typedef deTObjectReference<meUDecalMove> Ref;
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	meUndoDataDecal::List pDecals;
 	

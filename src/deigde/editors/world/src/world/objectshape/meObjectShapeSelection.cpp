@@ -56,15 +56,28 @@ meObjectShapeSelection::~meObjectShapeSelection(){
 void meObjectShapeSelection::Add(meObjectShape *objectShape){
 	DEASSERT_NOTNULL(objectShape)
 	
+	if(!pSelection.Add(objectShape)){
+		return;
+	}
+	
 	objectShape->SetSelected(true);
-	pSelection.Add(objectShape);
+	
+	if(!pActive){
+		SetActive(objectShape);
+	}
 }
 
 void meObjectShapeSelection::Remove(meObjectShape *objectShape){
-	DEASSERT_NOTNULL(objectShape)
+	const meObjectShape::Ref guard(objectShape);
+	if(!pSelection.Remove(objectShape)){
+		return;
+	}
 	
 	objectShape->SetSelected(false);
-	pSelection.Remove(objectShape);
+	
+	if(objectShape == pActive){
+		ActivateNext();
+	}
 }
 
 void meObjectShapeSelection::RemoveAll(){

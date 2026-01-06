@@ -300,11 +300,9 @@ void skyeSky::SetBgColor(const decColor &color){
 ////////////////
 
 void skyeSky::AddController(skyeController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
 	
-	pControllers.Add(controller);
 	controller->SetSky(this);
 	controller->SetIndex(pControllers.GetCount() - 1);
 	
@@ -316,18 +314,14 @@ void skyeSky::AddController(skyeController *controller){
 }
 
 void skyeSky::InsertControllerAt(skyeController *controller, int index){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(controller)
 	
-	pControllers.Insert(controller, index);
+	pControllers.InsertOrThrow(controller, index);
 	controller->SetSky(this);
 	
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetIndex(i);
-	}
+	pControllers.VisitIndexed([](int i, skyeController &c){
+		c.SetIndex(i);
+	});
 	
 	NotifyControllerStructureChanged();
 	
@@ -339,56 +333,40 @@ void skyeSky::InsertControllerAt(skyeController *controller, int index){
 void skyeSky::MoveControllerTo(skyeController *controller, int index){
 	pControllers.Move(controller, index);
 	
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetIndex(i);
-	}
+	pControllers.VisitIndexed([](int i, skyeController &c){
+		c.SetIndex(i);
+	});
 	
 	NotifyControllerStructureChanged();
 }
 
 void skyeSky::RemoveController(skyeController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
+	const skyeController::Ref guard(controller);
+	pControllers.RemoveOrThrow(controller);
 	
-	if(controller->GetActive()){
-		int controllerCount = pControllers.GetCount();
-		int controllerIndex = controller->GetIndex();
-		
-		if(controllerIndex < controllerCount - 1){
-			SetActiveController(pControllers.GetAt(controllerIndex + 1));
-			
-		}else if(controllerIndex > 0){
-			SetActiveController(pControllers.GetAt(controllerIndex - 1));
-			
-		}else{
-			SetActiveController(nullptr);
-		}
+	if(pActiveController == controller){
+		pActiveController = nullptr;
 	}
 	
 	controller->SetSky(nullptr);
-	pControllers.Remove(controller);
 	
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetIndex(i);
-	}
+	pControllers.VisitIndexed([](int i, skyeController &c){
+		c.SetIndex(i);
+	});
 	
 	NotifyControllerStructureChanged();
 }
 
 void skyeSky::RemoveAllControllers(){
-	const int controllerCount = pControllers.GetCount();
-	int i;
+	if(pControllers.IsEmpty()){
+		return;
+	}
 	
 	SetActiveController(nullptr);
 	
-	for(i=0; i<controllerCount; i++){
-		pControllers.GetAt(i)->SetSky(nullptr);
-	}
+	pControllers.Visit([](skyeController &c){
+		c.SetSky(nullptr);
+	});
 	pControllers.RemoveAll();
 	
 	NotifyControllerStructureChanged();
@@ -439,11 +417,10 @@ int skyeSky::CountControllerUsage(skyeController *controller) const{
 //////////
 
 void skyeSky::AddLink(skyeLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(link)
+	DEASSERT_NULL(link->GetSky())
 	
-	pLinks.Add(link);
+	pLinks.AddOrThrow(link);
 	link->SetSky(this);
 	link->SetIndex(pLinks.GetCount() - 1);
 	
@@ -455,46 +432,32 @@ void skyeSky::AddLink(skyeLink *link){
 }
 
 void skyeSky::RemoveLink(skyeLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
+	const skyeLink::Ref guard(link);
+	pLinks.RemoveOrThrow(link);
 	
-	if(link->GetActive()){
-		int controllerCount = pLinks.GetCount();
-		int controllerIndex = link->GetIndex();
-		
-		if(controllerIndex < controllerCount - 1){
-			SetActiveLink(pLinks.GetAt(controllerIndex + 1));
-			
-		}else if(controllerIndex > 0){
-			SetActiveLink(pLinks.GetAt(controllerIndex - 1));
-			
-		}else{
-			SetActiveLink(nullptr);
-		}
+	if(pActiveLink == link){
+		pActiveLink = nullptr;
 	}
 	
 	link->SetSky(nullptr);
-	pLinks.Remove(link);
 	
-	const int count = pLinks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->SetIndex(i);
-	}
+	pLinks.VisitIndexed([](int i, skyeLink &l){
+		l.SetIndex(i);
+	});
 	
 	NotifyLinkStructureChanged();
 }
 
 void skyeSky::RemoveAllLinks(){
-	const int linkCount = pLinks.GetCount();
-	int i;
+	if(pLinks.IsEmpty()){
+		return;
+	}
 	
 	SetActiveLink(nullptr);
 	
-	for(i=0; i<linkCount; i++){
-		pLinks.GetAt(i)->SetSky(nullptr);
-	}
+	pLinks.Visit([](skyeLink &l){
+		l.SetSky(nullptr);
+	});
 	pLinks.RemoveAll();
 	
 	NotifyLinkStructureChanged();
@@ -541,11 +504,10 @@ int skyeSky::CountLinkUsage(skyeLink *link) const{
 ///////////
 
 void skyeSky::AddLayer(skyeLayer *layer){
-	if(!layer){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(layer)
+	DEASSERT_NULL(layer->GetSky())
 	
-	pLayers.Add(layer);
+	pLayers.AddOrThrow(layer);
 	layer->SetSky(this);
 	
 	NotifyLayerStructureChanged();
@@ -556,11 +518,10 @@ void skyeSky::AddLayer(skyeLayer *layer){
 }
 
 void skyeSky::InsertLayerAt(skyeLayer *layer, int index){
-	if(!layer){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(layer)
+	DEASSERT_NULL(layer->GetSky())
 	
-	pLayers.Insert(layer, index);
+	pLayers.InsertOrThrow(layer, index);
 	layer->SetSky(this);
 	
 	NotifyLayerStructureChanged();
@@ -576,40 +537,28 @@ void skyeSky::MoveLayerTo(skyeLayer *layer, int index){
 }
 
 void skyeSky::RemoveLayer(skyeLayer *layer){
-	if(!layer){
-		DETHROW(deeInvalidParam);
-	}
+	const skyeLayer::Ref guard(layer);
+	pLayers.RemoveOrThrow(layer);
 	
-	if(layer->GetActive()){
-		int layerCount = pLayers.GetCount();
-		int layerIndex = pLayers.IndexOf(layer);
-		
-		if(layerIndex < layerCount - 1){
-			SetActiveLayer(pLayers.GetAt(layerIndex + 1));
-			
-		}else if(layerIndex > 0){
-			SetActiveLayer(pLayers.GetAt(layerIndex - 1));
-			
-		}else{
-			SetActiveLayer(nullptr);
-		}
+	if(pActiveLayer == layer){
+		pActiveLayer = nullptr;
 	}
 	
 	layer->SetSky(nullptr);
-	pLayers.Remove(layer);
 	
 	NotifyLayerStructureChanged();
 }
 
 void skyeSky::RemoveAllLayers(){
-	const int layerCount = pLayers.GetCount();
-	int i;
+	if(pLayers.IsEmpty()){
+		return;
+	}
 	
 	SetActiveLayer(nullptr);
 	
-	for(i=0; i<layerCount; i++){
-		pLayers.GetAt(i)->SetSky(nullptr);
-	}
+	pLayers.Visit([](skyeLayer &l){
+		l.SetSky(nullptr);
+	});
 	pLayers.RemoveAll();
 	
 	NotifyLayerStructureChanged();

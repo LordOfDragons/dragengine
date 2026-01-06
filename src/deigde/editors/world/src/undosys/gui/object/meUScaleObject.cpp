@@ -59,7 +59,7 @@ meUScaleObject::~meUScaleObject(){
 /////////////////////////////
 
 void meUScaleObject::Undo(){
-	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUScaleObject::Redo(){

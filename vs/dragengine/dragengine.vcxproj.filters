@@ -1805,16 +1805,10 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTNamedOrderedSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTOrderedSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTUniqueOrderedSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h">

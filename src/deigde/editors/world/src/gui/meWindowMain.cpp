@@ -400,7 +400,7 @@ void meWindowMain::SetUse3DCursor(bool useIt){
 
 
 void meWindowMain::RotateActiveObjectBy(const decVector &rotation){
-	meObject * const object = pWorld ? pWorld->GetSelectionObject().GetActive() : nullptr;
+	meObject * const object = pWorld ? pWorld->GetSelectionObject().GetActive().Pointer() : nullptr;
 	if(!object){
 		return;
 	}

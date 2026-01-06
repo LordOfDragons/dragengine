@@ -157,30 +157,27 @@ void aeRuleMirror::SetEnableVertexPositionSet(bool enable){
 
 void aeRuleMirror::AddMatchName(aeRuleMirror::MatchName *matchName){
 	DEASSERT_NOTNULL(matchName)
-	DEASSERT_FALSE(pMatchNames.Has(matchName))
 	
-	pMatchNames.Add(matchName);
+	pMatchNames.AddOrThrow(matchName);
 	pUpdateMatchNames();
 }
 
 void aeRuleMirror::InsertMatchName(MatchName *matchName, int index){
 	DEASSERT_NOTNULL(matchName)
-	DEASSERT_FALSE(pMatchNames.Has(matchName))
 	
-	pMatchNames.Insert(matchName, index);
+	pMatchNames.InsertOrThrow(matchName, index);
 	pUpdateMatchNames();
 }
 
 void aeRuleMirror::SetMatchNameAt(int index, MatchName *matchName){
 	DEASSERT_NOTNULL(matchName)
-	DEASSERT_FALSE(pMatchNames.Has(matchName))
 	
-	pMatchNames.SetAt(index, matchName);
+	pMatchNames.SetAtOrThrow(index, matchName);
 	pUpdateMatchNames();
 }
 
 void aeRuleMirror::RemoveMatchName(MatchName *matchName){
-	pMatchNames.Remove(matchName);
+	pMatchNames.RemoveOrThrow(matchName);
 	pUpdateMatchNames();
 }
 

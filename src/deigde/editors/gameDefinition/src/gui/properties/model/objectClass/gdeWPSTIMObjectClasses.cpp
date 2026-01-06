@@ -28,6 +28,7 @@
 
 #include "gdeWPSTIMObjectClass.h"
 #include "gdeWPSTIMObjectClasses.h"
+#include "../gdeWPSTreeModel.h"
 #include "../../../gdeWindowMain.h"
 #include "../../../../gamedef/gdeGameDefinition.h"
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
@@ -75,12 +76,25 @@ gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith(gdeObjectClass *objec
 }
 
 void gdeWPSTIMObjectClasses::StructureChanged(){
+	/*
+	igdeTreeItem *selection = GetTree().GetTreeList().GetSelection();
+	while(selection && selection->GetParent() != this){
+		selection = selection->GetParent();
+	}
+	if(selection){
+		selection = selection->GetNext() ? selection->GetNext() : selection->GetPrevious();
+		if(!selection){
+			selection = this;
+		}
+	}
+	*/
+	
 	const gdeObjectClass::List &list = GetGameDefinition().GetObjectClasses();
 	const int count = list.GetCount();
 	igdeTreeItem::Ref item;
 	int i;
 	
-	// update existing and add new categories
+	// update existing and add new classes
 	for(i=0; i<count; i++){
 		gdeObjectClass * const objectClass = list.GetAt(i);
 		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith(objectClass);
@@ -91,7 +105,7 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 		}
 	}
 	
-	// remove no more existing categories
+	// remove no more existing classes
 	igdeTreeItem *child = GetFirstChild();
 	while(child){
 		gdeWPSTIMObjectClass * const modelObjectClass = (gdeWPSTIMObjectClass*)child;
@@ -107,6 +121,13 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 	
 	// validate
 	ValidateObjectClassName();
+	
+	// update selection
+	/*
+	if(selection){
+		GetTree().GetTreeList().SetSelection(selection);
+	}
+	*/
 }
 
 void gdeWPSTIMObjectClasses::ValidateObjectClassName(){

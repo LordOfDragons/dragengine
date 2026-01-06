@@ -372,7 +372,7 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 	igdeTreeItem *child = item ? item->GetFirstChild() : (igdeTreeItem*)pFirstChild;
 	igdeTreeItem::List items;
 	while(child){
-		items.Add(child);
+		items.AddOrThrow(child);
 		child = child->GetNext();
 	}
 	

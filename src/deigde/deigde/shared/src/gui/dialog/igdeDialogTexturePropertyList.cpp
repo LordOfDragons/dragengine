@@ -119,21 +119,19 @@ igdeDialogTexturePropertyList::~igdeDialogTexturePropertyList(){
 ///////////////
 
 void igdeDialogTexturePropertyList::UpdatePropertyList(){
-	igdeTextureProperty *selection = nullptr;
+	const igdeTextureProperty::List &tpl = GetEnvironment().GetTexturePropertyList();
 	
-	pListProperties->RemoveAllItems();
-	
-	GetEnvironment().GetTexturePropertyList().Visit([&](igdeTextureProperty *property){
-		pListProperties->AddItem(property->GetName(), nullptr, property);
-		if(property->GetName() == "color"){
-			selection = property;
-		}
-	});
-	
-	pListProperties->SortItems();
-	if(selection){
-		pListProperties->SetSelectionWithData(selection);
-	}
+	pListProperties->UpdateRestoreSelectionData([&](){
+		pListProperties->RemoveAllItems();
+		
+		tpl.Visit([&](igdeTextureProperty *p){
+			pListProperties->AddItem(p->GetName(), nullptr, p);
+		});
+		
+		pListProperties->SortItems();
+	}, tpl.FindOrDefault([](const igdeTextureProperty &p){
+		return p.GetName() == "color";
+	}));
 	
 	UpdateProperty();
 }

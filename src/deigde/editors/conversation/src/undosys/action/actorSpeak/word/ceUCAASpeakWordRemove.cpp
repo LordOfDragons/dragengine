@@ -72,7 +72,7 @@ ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
 ///////////////
 
 void ceUCAASpeakWordRemove::Undo(){
-	pActorSpeak->GetWords().Insert(pWord, pIndex);
+	pActorSpeak->GetWords().InsertOrThrow(pWord, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 

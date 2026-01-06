@@ -212,7 +212,7 @@ bool deoglLoaderThread::AddTask(const deoglLoaderThreadTask::Ref &task){
 	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AddTask %p", task);
 	#endif
 	
-	pTasks.Add(task);
+	pTasks.AddOrThrow(task);
 	pSemaphore.Signal();
 	return true;
 }

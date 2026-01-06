@@ -47,7 +47,6 @@ ceUCGestureRemove::ceUCGestureRemove(ceGesture *gesture){
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = nullptr;
-	pGesture = nullptr;
 	
 	SetShortInfo("Remove Gesture");
 	

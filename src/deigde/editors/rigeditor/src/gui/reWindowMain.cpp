@@ -1151,15 +1151,13 @@ public:
 		"Scale Mass", nullptr, "Scale total mass of the selected bones", deInputEvent::ekcS){}
 	
 	virtual igdeUndo::Ref OnActionBone(reRig *rig, reRigBone *bone){
-		const reSelectionBones &selection = *rig->GetSelectionBones();
-		reRigBone::List list;
 		float oldMass = 0.0f;
-		
-		selection.GetBones().Visit([&](reRigBone *b){
+		const reRigBone::List list = rig->GetSelectionBones()->GetBones().Collect([&](reRigBone *b){
 			if(b->GetShapes().IsNotEmpty()){
 				oldMass += b->GetMass();
-				list.Add(b);
+				return true;
 			}
+			return false;
 		});
 		
 		if(list.IsEmpty()){

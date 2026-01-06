@@ -137,10 +137,10 @@ private:
 	ceConversationFile::List pFiles;
 	ceConversationFile::Ref pActiveFile;
 	
-	ceConversationActorList pActorList;
+	ceConversationActorList pActors;
 	ceConversationActor::Ref pActiveActor;
 	
-	ceCoordSystemList pCoordSystemList;
+	ceCoordSystemList pCoordSystems;
 	ceCoordSystem::Ref pActiveCoordSystem;
 	
 	ceProp::List pProps;
@@ -432,7 +432,7 @@ public:
 	/** \name Actors */
 	/*@{*/
 	/** Retrieves the actor list read-only. */
-	inline const ceConversationActorList &GetActorList() const{ return pActorList; }
+	inline const ceConversationActorList &GetActorList() const{ return pActors; }
 	/** Adds a new actor. */
 	void AddActor(ceConversationActor *actor);
 	/** Removes a actor. */
@@ -452,7 +452,7 @@ public:
 	/** \name Coordinate Systems */
 	/*@{*/
 	/** Retrieves the coordinate system list read-only. */
-	inline const ceCoordSystemList &GetCoordSystemList() const{ return pCoordSystemList; }
+	inline const ceCoordSystemList &GetCoordSystemList() const{ return pCoordSystems; }
 	/** Adds a new coordinate system. */
 	void AddCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes a coordinate system. */

@@ -276,13 +276,11 @@ bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
 }
 
 igdeNVLink::Ref igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
-	if(!CanLink(source, target)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(CanLink(source, target))
 	
 	const igdeNVLink::Ref link(igdeNVLink::Ref::New(source, target));
 	link->SetOwnerBoard(this);
-	pLinks.Add((igdeNVLink*)link);
+	pLinks.Add(link);
 	
 	source->AddLink(link);
 	target->AddLink(link);
@@ -294,7 +292,7 @@ igdeNVLink::Ref igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
 
 void igdeNVBoard::RemoveLink(igdeNVLink *link){
 	DEASSERT_NOTNULL(link);
-	DEASSERT_TRUE(pLinks.Has(link));
+	DEASSERT_TRUE(pLinks.Has(link))
 	
 	link->GetTarget()->RemoveLink(link);
 	link->GetSource()->RemoveLink(link);
@@ -305,7 +303,7 @@ void igdeNVBoard::RemoveLink(igdeNVLink *link){
 }
 
 void igdeNVBoard::RemoveAllLinks(){
-	if(pLinks.GetCount() == 0){
+	if(pLinks.IsEmpty()){
 		return;
 	}
 	

@@ -153,17 +153,20 @@ bool igdeNVSlot::HasLink(igdeNVLink *link) const{
 
 void igdeNVSlot::AddLink(igdeNVLink *link){
 	DEASSERT_NOTNULL(link)
-	
-	pLinks.Add(link);
+	pLinks.AddOrThrow(link);
 	OnLinksChanged();
 }
 
 void igdeNVSlot::RemoveLink(igdeNVLink *link){
-	pLinks.Remove(link);
+	pLinks.RemoveOrThrow(link);
 	OnLinksChanged();
 }
 
 void igdeNVSlot::RemoveAllLinks(){
+	if(pLinks.IsEmpty()){
+		return;
+	}
+	
 	pLinks.RemoveAll();
 	OnLinksChanged();
 }

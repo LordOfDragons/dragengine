@@ -77,7 +77,7 @@ private:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	
 	decTObjectList<cBone> pBones;
 	int pBoneCount;

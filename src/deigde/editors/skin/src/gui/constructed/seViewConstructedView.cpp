@@ -627,7 +627,8 @@ decPoint seViewConstructedView::GetContentSize() const{
 
 
 seProperty *seViewConstructedView::GetActiveProperty() const{
-	return pSkin && pSkin->GetActiveTexture() ? pSkin->GetActiveTexture()->GetActiveProperty() : nullptr;
+	return pSkin && pSkin->GetActiveTexture()
+		? pSkin->GetActiveTexture()->GetActiveProperty().Pointer() : nullptr;
 }
 
 sePropertyNode *seViewConstructedView::GetActiveNode() const{

@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	saeSAnimation::Ref pSAnimation;
+	saeSAnimation *pSAnimation;
 	
 	decString pOldPath;
 	decString pNewPath;

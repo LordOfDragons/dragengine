@@ -91,10 +91,8 @@ deNetworkValue *deNetworkState::GetValueAt(int index) const{
 }
 
 void deNetworkState::AddValue(deNetworkValue *value){
-	if(!value){
-		DETHROW(deeInvalidParam);
-	}
-	pValues.Add(value);
+	DEASSERT_NOTNULL(value)
+	pValues.AddOrThrow(value);
 	
 	if(pPeerNetwork){
 		pPeerNetwork->ValueAdded(pValues.GetCount() - 1, value);

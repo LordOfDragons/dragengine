@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	reRigBone::Ref pBone;
 	reRigConstraint::Ref pConstraint;
 	

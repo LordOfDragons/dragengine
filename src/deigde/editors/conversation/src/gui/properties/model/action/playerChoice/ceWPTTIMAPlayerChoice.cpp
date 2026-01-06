@@ -129,7 +129,7 @@ void ceWPTTIMAPlayerChoice::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceCAPlayerChoice &playerChoice = *GetActionPlayerChoice();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}

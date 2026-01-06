@@ -515,7 +515,7 @@ public:
 			return {};
 		}
 		
-		const saeWord::List &wordList = sanimation->GetWordList();
+		const saeWord::List &wordList = sanimation->GetWords();
 		if(wordList.HasMatching([&](const saeWord &w){
 			return w.GetName() == name;
 		})){
@@ -838,19 +838,21 @@ saePhoneme *saeWPSAnim::GetActivePhoneme() const{
 }
 
 void saeWPSAnim::UpdatePhonemeList(){
-	pCBPhoneme->RemoveAllItems();
-	
-	if(pSAnimation){
-		pSAnimation->GetPhonemes().Visit([&](saePhoneme *p){
-			decUnicodeString text(p->GetIPA());
-			text.AppendFormat(" (0x%.4x): %s", p->GetIPA(), p->GetSampleText().GetString());
-			pCBPhoneme->AddItem(text.ToUTF8(), nullptr, p);
-		});
+	pCBPhoneme->UpdateRestoreSelection([&](){
+		pCBPhoneme->RemoveAllItems();
 		
-		pCBPhoneme->SortItems();
-	}
+		if(pSAnimation){
+			pSAnimation->GetPhonemes().Visit([&](saePhoneme *p){
+				decUnicodeString text(p->GetIPA());
+				text.AppendFormat(" (0x%.4x): %s", p->GetIPA(), p->GetSampleText().GetString());
+				pCBPhoneme->AddItem(text.ToUTF8(), nullptr, p);
+			});
+			
+			pCBPhoneme->SortItems();
+		}
+	}, 0);
 	
-	SelectActivePhoneme();
+	UpdatePhoneme();
 }
 
 void saeWPSAnim::SelectActivePhoneme(){
@@ -956,23 +958,21 @@ saeWord *saeWPSAnim::GetActiveWord() const{
 }
 
 void saeWPSAnim::UpdateWordList(){
-	saeWord * const selection = GetActiveWord();
+	pCBWord->UpdateRestoreSelection([&](){
+		pCBWord->RemoveAllItems();
+		
+		if(pSAnimation){
+			pSAnimation->GetWords().Visit([&](saeWord *word){
+				pCBWord->AddItem(word->GetName(), nullptr, word);
+			});
+			pCBWord->SortItems();
+		}
+		
+		pCBWord->StoreFilterItems();
+		pCBWord->FilterItems();
+	}, 0);
 	
-	pCBWord->RemoveAllItems();
-	
-	if(pSAnimation){
-		pSAnimation->GetWordList().Visit([&](saeWord *word){
-			pCBWord->AddItem(word->GetName(), nullptr, word);
-		});
-		pCBWord->SortItems();
-	}
-	
-	pCBWord->StoreFilterItems();
-	pCBWord->FilterItems();
-	
-	if(pSAnimation){
-		pSAnimation->SetActiveWord(selection);
-	}
+	UpdateWord();
 }
 
 void saeWPSAnim::SelectActiveWord(){

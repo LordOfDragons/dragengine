@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	saeSAnimation::Ref pSAnimation;
+	saeSAnimation *pSAnimation;
 	saeWord::List pWords;
 	
 	

@@ -120,7 +120,7 @@ void debpDelayedOperation::AddRigidBody(btRigidBody *rigidBody){
 			"operation in world %p but lock count is 0!", rigidBody, &pWorld);
 	}
 	
-	pListAddRigidBody.Add(rigidBody);
+	pListAddRigidBody.AddOrThrow(rigidBody);
 }
 
 void debpDelayedOperation::RemoveRigidBody(btRigidBody *rigidBody){
@@ -133,13 +133,12 @@ void debpDelayedOperation::RemoveRigidBody(btRigidBody *rigidBody){
 	pListClearFromBroadphase.Remove(rigidBody);
 	
 	// if the rigid body is already marked to be added remove it from the list of rigid bodies to be added and delete it
-	if(pListAddRigidBody.Has(rigidBody)){
-		pListAddRigidBody.Remove(rigidBody);
+	if(pListAddRigidBody.Remove(rigidBody)){
 		delete rigidBody;
 		
 	// otherwise add it to the list of rigid bodies to be removed
 	}else{
-		pListRemoveRigidBody.Add(rigidBody);
+		pListRemoveRigidBody.AddOrThrow(rigidBody);
 		
 		// replace the collision shape with a temporary shape to avoid segmentation faults
 		rigidBody->setCollisionShape(pDummyShape);
@@ -158,7 +157,7 @@ void debpDelayedOperation::AddCollisionObject(btCollisionObject *collisionObject
 			"operation in world %p but lock count is 0!", collisionObject, &pWorld);
 	}
 	
-	pListAddCollisionObject.Add(collisionObject);
+	pListAddCollisionObject.AddOrThrow(collisionObject);
 }
 
 void debpDelayedOperation::RemoveCollisionObject(btCollisionObject *collisionObject){
@@ -170,13 +169,12 @@ void debpDelayedOperation::RemoveCollisionObject(btCollisionObject *collisionObj
 	pListClearFromBroadphase.Remove(collisionObject);
 	
 	// if the collision object is already marked to be added remove it from the list of objects to be added and delete it
-	if(pListAddCollisionObject.Has(collisionObject)){
-		pListAddCollisionObject.Remove(collisionObject);
+	if(pListAddCollisionObject.Remove(collisionObject)){
 		delete collisionObject;
 		
 	// otherwise add it to the list of objects to be removed
 	}else{
-		pListRemoveCollisionObject.Add(collisionObject);
+		pListRemoveCollisionObject.AddOrThrow(collisionObject);
 		
 		// replace the collision shape with a temporary shape to avoid segmentation faults
 		collisionObject->setCollisionShape(pDummyShape);
@@ -195,7 +193,7 @@ void debpDelayedOperation::AddClearFromBroadphase(btCollisionObject *collisionOb
 			"operation in world %p but lock count is 0!", collisionObject, &pWorld);
 	}
 	
-	pListClearFromBroadphase.Add(collisionObject);
+	pListClearFromBroadphase.AddOrThrow(collisionObject);
 }
 
 

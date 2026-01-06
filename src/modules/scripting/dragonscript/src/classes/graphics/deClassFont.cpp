@@ -435,7 +435,7 @@ void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
 }
 
 deFont *deClassFont::GetFont(dsRealObject *object) const{
-	return object ? static_cast<sFntNatDat*>(p_GetNativeData(object->GetBuffer()))->font : nullptr;
+	return object ? static_cast<sFntNatDat*>(p_GetNativeData(object->GetBuffer()))->font.Pointer() : nullptr;
 }
 
 int deClassFont::GetFontSize(dsRealObject *object) const{

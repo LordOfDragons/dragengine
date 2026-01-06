@@ -31,7 +31,7 @@
 
 // predefinitions
 #include "../../../world/meWorld.h"
-class meHeightTerrain;
+#include "../../../world/terrain/meHeightTerrain.h"
 
 
 
@@ -46,8 +46,8 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
-	meHeightTerrain *pHeightTerrain;
+	meWorld *pWorld;
+	meHeightTerrain::Ref pHeightTerrain;
 	
 	float pOldHeightScaling;
 	float pNewHeightScaling;

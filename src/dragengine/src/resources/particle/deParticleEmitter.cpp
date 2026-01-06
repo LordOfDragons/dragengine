@@ -102,7 +102,7 @@ void deParticleEmitter::SetEmitBurst(bool emitBurst){
 
 void deParticleEmitter::AddType(deParticleEmitterType *type){
 	DEASSERT_NOTNULL(type)
-	DEASSERT_TRUE(pTypes.Add(type))
+	pTypes.AddOrThrow(type);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->TypeCountChanged();
@@ -113,7 +113,7 @@ void deParticleEmitter::AddType(deParticleEmitterType *type){
 }
 
 void deParticleEmitter::RemoveType(deParticleEmitterType *type){
-	DEASSERT_TRUE(pTypes.Remove(type))
+	pTypes.RemoveOrThrow(type);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->TypeCountChanged();
@@ -175,7 +175,7 @@ int deParticleEmitter::IndexOfControllerNamed(const char *name) const{
 
 void deParticleEmitter::AddController(deParticleEmitterController *controller){
 	DEASSERT_NOTNULL(controller)
-	DEASSERT_TRUE(pControllers.Add(controller))
+	pControllers.AddOrThrow(controller);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->ControllerCountChanged();
@@ -186,7 +186,7 @@ void deParticleEmitter::AddController(deParticleEmitterController *controller){
 }
 
 void deParticleEmitter::RemoveController(deParticleEmitterController *controller){
-	DEASSERT_TRUE(pControllers.Remove(controller))
+	pControllers.RemoveOrThrow(controller);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->ControllerCountChanged();

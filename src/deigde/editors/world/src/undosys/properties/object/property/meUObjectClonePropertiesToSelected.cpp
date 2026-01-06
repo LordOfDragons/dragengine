@@ -50,7 +50,7 @@ const meObject::List &list, const decStringDictionary &properties){
 	list.Visit([&](meObject *object){
 		DEASSERT_NOTNULL(object->GetWorld())
 		
-		const meUndoDataObjectProperty:: Ref udata(meUndoDataObjectProperty::Ref::New(object));
+		const meUndoDataObjectProperty::Ref udata(meUndoDataObjectProperty::Ref::New(object));
 		udata->GetOldProperties() = object->GetProperties();
 		
 		pList.Add(udata);

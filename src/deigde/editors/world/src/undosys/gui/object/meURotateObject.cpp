@@ -56,7 +56,7 @@ meURotateObject::~meURotateObject(){
 /////////////////////////////
 
 void meURotateObject::Undo(){
-	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meURotateObject::Redo(){

@@ -101,14 +101,12 @@ void deSynthesizerSource::SetMaxPanning(float panning){
 ////////////
 
 void deSynthesizerSource::AddEffect(deSynthesizerEffect *effect){
-	if(!effect){
-		DETHROW(deeInvalidParam);
-	}
-	pEffects.Add(effect);
+	DEASSERT_NOTNULL(effect)
+	pEffects.AddOrThrow(effect);
 }
 
 void deSynthesizerSource::RemoveEffect(deSynthesizerEffect *effect){
-	pEffects.Remove(effect);
+	pEffects.RemoveOrThrow(effect);
 }
 
 void deSynthesizerSource::RemoveAllEffects(){

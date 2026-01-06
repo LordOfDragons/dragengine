@@ -26,6 +26,7 @@
 #define _IGDECOMBOBOX_H_
 
 #include <stddef.h>
+#include <functional>
 
 #include "igdeWidget.h"
 #include "event/igdeComboBoxListener.h"
@@ -228,6 +229,10 @@ public:
 	 * Short-cut for calling SetSelection(IndexOfItemWithRefData(refData)).
 	 */
 	void SetSelectionWithRefData(const deObject::Ref &refData);
+	
+	/** \brief Update items with restoring selection as good as possible. */
+	void UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection = -1);
+	void UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection = nullptr);
 	
 	
 	

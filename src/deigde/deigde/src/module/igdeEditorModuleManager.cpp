@@ -249,14 +249,11 @@ void igdeEditorModuleManager::ChangeModuleRecentUsedPosition(igdeEditorModuleDef
 }
 
 void igdeEditorModuleManager::ResetRecentUsedPosition(){
-	const int count = pModules.GetCount();
-	int i;
-	
 	pRecentlyUsed.RemoveAll();
 	
-	for(i=0; i<count; i++){
-		pRecentlyUsed.Add((igdeEditorModuleDefinition*)pModules.GetAt(i));
-	}
+	pModules.Visit([&](igdeEditorModuleDefinition *module){
+		pRecentlyUsed.Add(module);
+	});
 }
 
 

@@ -64,7 +64,7 @@ public:
 	
 	void OnAction() override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetTrackCamera(!lumimeter->GetTrackCamera());
 		}
@@ -80,7 +80,7 @@ public:
 	
 	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetPosition(editDVector->GetDVector());
 		}
@@ -97,7 +97,7 @@ public:
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetDirection(editVector->GetVector());
 		}
@@ -114,7 +114,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetConeInnerAngle(textField->GetFloat());
 		}
@@ -130,7 +130,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetConeOuterAngle(textField->GetFloat());
 		}
@@ -146,7 +146,7 @@ public:
 	
 	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : nullptr;
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 		if(lumimeter){
 			lumimeter->SetConeExponent(textField->GetFloat());
 		}

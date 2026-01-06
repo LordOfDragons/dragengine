@@ -38,7 +38,7 @@
  */
 class projUProfileAdd : public igdeUndo{
 private:
-	projProject::Ref pProject;
+	projProject *pProject;
 	projProfile::Ref pProfile;
 	
 	

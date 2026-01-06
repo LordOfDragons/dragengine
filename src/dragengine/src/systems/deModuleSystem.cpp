@@ -330,9 +330,7 @@ deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) con
 }
 
 void deModuleSystem::AddModule(deLoadableModule *module){
-	if(!module){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(module)
 	if(GetModuleNamed(module->GetName(), module->GetVersion())){
 		DETHROW(deeInvalidParam);
 	}

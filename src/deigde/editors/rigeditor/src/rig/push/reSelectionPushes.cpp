@@ -58,9 +58,10 @@ int reSelectionPushes::IndexOfPushWith(deColliderVolume *collider) const{
 }
 
 void reSelectionPushes::AddPush(reRigPush *push){
-	DEASSERT_FALSE(pPushes.Has(push))
+	if(!pPushes.Add(push)){
+		return;
+	}
 	
-	pPushes.Add(push);
 	push->SetSelected(true);
 	
 	pRig->NotifyPushSelectedChanged(push);
@@ -72,7 +73,10 @@ void reSelectionPushes::AddPush(reRigPush *push){
 
 void reSelectionPushes::RemovePush(reRigPush *push){
 	const reRigPush::Ref guard(push);
-	pPushes.Remove(push);
+	if(pPushes.Remove(push)){
+		return;
+	}
+	
 	push->SetSelected(false);
 	
 	if(push == pActivePush){
@@ -88,6 +92,10 @@ void reSelectionPushes::RemovePush(reRigPush *push){
 }
 
 void reSelectionPushes::RemoveAllPushes(){
+	if(pPushes.IsEmpty()){
+		return;
+	}
+	
 	SetActivePush(nullptr);
 	
 	pRig->NotifyAllPushesDeselected();
@@ -128,7 +136,7 @@ void reSelectionPushes::Reset(){
 	RemoveAllPushes();
 }
 void reSelectionPushes::AddVisiblePushesTo(reRigPush::List &list) const{
-	pPushes.Visit([&list](reRigPush *p){
+	pPushes.Visit([&](reRigPush *p){
 		if(p->IsVisible()){
 			list.Add(p);
 		}

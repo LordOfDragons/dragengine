@@ -63,7 +63,7 @@ void igdeContainer::AddChild(igdeWidget *child){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add(child);
+	pChildren.AddOrThrow(child);
 	child->SetParent(this);
 	if(GetNativeContainer()){
 		child->CreateNativeWidget();

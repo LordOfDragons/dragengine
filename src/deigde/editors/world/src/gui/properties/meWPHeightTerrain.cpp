@@ -1135,8 +1135,7 @@ public:
 	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, meWorld*) override{
 		meHTVegetationLayer * const vlayer = pPanel.GetVLayer();
 		if(vlayer){
-			const igdeListItem * const selection = comboBox->GetSelectedItem();
-			vlayer->SetActiveVariation(selection ? (meHTVVariation*)selection->GetData() : nullptr);
+			vlayer->SetActiveVariation(static_cast<meHTVVariation*>(comboBox->GetSelectedItemData()));
 		}
 		return {};
 	}
@@ -1423,7 +1422,7 @@ pWindowProperties(windowProperties)
 	helper.GroupBox(content, groupBox, "Height Terrain:");
 	
 	igdeFilePattern::List filePatterns;
-	filePatterns.Add(new igdeFilePattern(
+	filePatterns.Add(igdeFilePattern::Ref::New(
 		"Drag[en]gine Height Terrain", "*.deterrain", ".deterrain"));
 	helper.EditPath(groupBox, "Height Terrain:", "File to save height terrain to",
 		filePatterns, pEditPathHTerrain, cEditPathHT::Ref::New(*this));
@@ -1513,7 +1512,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnClearVegetation, cActionClearVegetation::Ref::New(*this));
 	
 	filePatterns.RemoveAll();
-	filePatterns.Add(new igdeFilePattern(
+	filePatterns.Add(igdeFilePattern::Ref::New(
 		"Drag[en]gine Prop Field Cache", "*.depfc", ".depfc"));
 	helper.EditPath(groupBox, "Skin:", "Skin to use for the texture.",
 		filePatterns, pEditPathPFCache, cPathPathPFCache::Ref::New(*this));
@@ -1678,7 +1677,7 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 }
 
 meHeightTerrainNavSpace *meWPHeightTerrain::GetActiveNavSpace() const{
-	return GetSector() ? GetSector()->GetActiveNavSpace() : nullptr;
+	return GetSector() ? GetSector()->GetActiveNavSpace().Pointer() : nullptr;
 }
 
 meHeightTerrainNavSpaceType *meWPHeightTerrain::GetActiveNavSpaceType() const{
@@ -1752,23 +1751,19 @@ void meWPHeightTerrain::UpdateSector(){
 }
 
 void meWPHeightTerrain::UpdateTextureList(){
-	meHeightTerrainSector * const sector = GetSector();
-	meHeightTerrainTexture *selection = GetTexture();
-	
-	pCBTexture->RemoveAllItems();
-	
-	if(sector){
-		sector->GetTextures().Visit([&](meHeightTerrainTexture *texture){
-			pCBTexture->AddItem(texture->GetName(), nullptr, texture);
-		});
-	}
-	
-	pCBTexture->SortItems();
-	
-	if(!selection && sector && sector->GetTextures().GetCount() > 0){
-		selection = sector->GetTextures().GetAt(0);
-	}
-	pCBTexture->SetSelectionWithData(selection);
+	pCBTexture->UpdateRestoreSelection([&](){
+		meHeightTerrainSector * const sector = GetSector();
+		
+		pCBTexture->RemoveAllItems();
+		
+		if(sector){
+			sector->GetTextures().Visit([&](meHeightTerrainTexture *texture){
+				pCBTexture->AddItem(texture->GetName(), nullptr, texture);
+			});
+			
+			pCBTexture->SortItems();
+		}
+	}, 0);
 }
 
 void meWPHeightTerrain::UpdateTexture(){
@@ -1792,17 +1787,18 @@ void meWPHeightTerrain::UpdateTexture(){
 }
 
 void meWPHeightTerrain::UpdateNavSpaceList(){
-	pCBNavSpace->RemoveAllItems();
-	
-	meHeightTerrainSector * const sector = GetSector();
-	if(sector){
-		sector->GetNavSpaces().Visit([&](meHeightTerrainNavSpace *navspace){
-			pCBNavSpace->AddItem(navspace->GetName(), nullptr, navspace);
-		});
-	}
-	
-	pCBNavSpace->SortItems();
-	SelectActiveNavSpace();
+	pCBNavSpace->UpdateRestoreSelection([&](){
+		pCBNavSpace->RemoveAllItems();
+		
+		meHeightTerrainSector * const sector = GetSector();
+		if(sector){
+			sector->GetNavSpaces().Visit([&](meHeightTerrainNavSpace *navspace){
+				pCBNavSpace->AddItem(navspace->GetName(), nullptr, navspace);
+			});
+		}
+		
+		pCBNavSpace->SortItems();
+	}, 0);
 }
 
 void meWPHeightTerrain::SelectActiveNavSpace(){
@@ -1828,18 +1824,19 @@ void meWPHeightTerrain::UpdateNavSpace(){
 }
 
 void meWPHeightTerrain::UpdateNavSpaceTypeList(){
-	const meHeightTerrainNavSpace * const navspace = GetActiveNavSpace();
-	
-	pCBNavSpaceType->RemoveAllItems();
-	
-	if(navspace){
-		navspace->GetTypes().Visit([&](meHeightTerrainNavSpaceType *type){
-			pCBNavSpaceType->AddItem(type->GetName(), nullptr, type);
-		});
-	}
-	
-	pCBNavSpaceType->SortItems();
-	SelectActiveNavSpaceType();
+	pCBNavSpaceType->UpdateRestoreSelection([&](){
+		const meHeightTerrainNavSpace * const navspace = GetActiveNavSpace();
+		
+		pCBNavSpaceType->RemoveAllItems();
+		
+		if(navspace){
+			navspace->GetTypes().Visit([&](meHeightTerrainNavSpaceType *type){
+				pCBNavSpaceType->AddItem(type->GetName(), nullptr, type);
+			});
+			
+			pCBNavSpaceType->SortItems();
+		}
+	}, 0);
 }
 
 void meWPHeightTerrain::SelectActiveNavSpaceType(){
@@ -1861,48 +1858,34 @@ void meWPHeightTerrain::UpdateNavSpaceType(){
 }
 
 void meWPHeightTerrain::UpdateVLayerList(){
-	meHTVegetationLayer *selection = pVLayer;
-	
-	pCBVLayer->RemoveAllItems();
-	
-	if(pWorld){
-		pWorld->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int i, meHTVegetationLayer *vlayer){
-			decString text;
-			text.Format("%d: %s", i + 1, vlayer->GetName().GetString());
-			pCBVLayer->AddItem(text, nullptr, vlayer);
-		});
-	}
-	
-	pCBVLayer->SortItems();
-	
-	if(!selection && pWorld && pWorld->GetHeightTerrain()->GetVLayers().IsNotEmpty()){
-		selection = pWorld->GetHeightTerrain()->GetVLayers().First();
-	}
-	pCBVLayer->SetSelectionWithData(selection);
+	pCBVLayer->UpdateRestoreSelection([&](){
+		pCBVLayer->RemoveAllItems();
+		
+		if(pWorld){
+			pWorld->GetHeightTerrain()->GetVLayers().VisitIndexed([&](int i, meHTVegetationLayer *vlayer){
+				decString text;
+				text.Format("%d: %s", i + 1, vlayer->GetName().GetString());
+				pCBVLayer->AddItem(text, nullptr, vlayer);
+			});
+		}
+	}, 0);
 }
 
 void meWPHeightTerrain::UpdateVLayer(){
 }
 
 void meWPHeightTerrain::UpdateVVariationList(){
-	meHTVVariation *selection = pVVariation;
-	
-	pCBVVariation->RemoveAllItems();
-	
-	if(pVLayer){
-		pVLayer->GetVariations().VisitIndexed([&](int i, meHTVVariation *variation){
-			decString text;
-			text.Format("Variation %d", i);
-			pCBVVariation->AddItem(text, nullptr, variation);
-		});
-	}
-	
-	pCBVVariation->SortItems();
-	
-	if(!selection && pVLayer && pVLayer->GetVariations().IsNotEmpty()){
-		selection = pVLayer->GetVariations().First();
-	}
-	pCBVVariation->SetSelectionWithData(selection);
+	pCBVVariation->UpdateRestoreSelection([&](){
+		pCBVVariation->RemoveAllItems();
+		
+		if(pVLayer){
+			pVLayer->GetVariations().VisitIndexed([&](int i, meHTVVariation *variation){
+				decString text;
+				text.Format("Variation %d", i);
+				pCBVVariation->AddItem(text, nullptr, variation);
+			});
+		}
+	}, 0);
 }
 
 void meWPHeightTerrain::UpdateVVariation(){

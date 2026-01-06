@@ -25,10 +25,11 @@
 #ifndef _CEUCCSHOTREMOVE_H_
 #define _CEUCCSHOTREMOVE_H_
 
+#include "../../conversation/camerashot/ceCameraShot.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceCameraShot;
 
 
 
@@ -42,7 +43,7 @@ public:
 	
 private:
 	ceConversation *pConversation;
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \name Constructors and Destructors */

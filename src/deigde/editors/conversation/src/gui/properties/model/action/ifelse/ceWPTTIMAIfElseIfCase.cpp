@@ -132,7 +132,7 @@ void ceWPTTIMAIfElseIfCase::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceCAIfElse &ifElse = *modelIfElse->GetActionIfElse();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}

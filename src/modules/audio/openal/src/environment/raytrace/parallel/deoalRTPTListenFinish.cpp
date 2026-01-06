@@ -68,16 +68,11 @@ deoalRTPTListenFinish::~deoalRTPTListenFinish(){
 ///////////////
 
 void deoalRTPTListenFinish::AddDependencies(const decTOrderedSet<deoalRTPTListen*> &tasks){
-	const int count = tasks.GetCount();
-	int i;
-	
 	pTasks.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		deoalRTPTListen * const task = tasks.GetAt(i);
+	tasks.Visit([&](deoalRTPTListen *task){
 		AddDependsOn(task);
 		pTasks.Add(task);
-	}
+	});
 }
 
 void deoalRTPTListenFinish::SetProbes(const deoalEnvProbe *source, const deoalEnvProbe *listen){

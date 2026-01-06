@@ -73,7 +73,7 @@ ceUCCLogicRemove::~ceUCCLogicRemove(){
 ///////////////
 
 void ceUCCLogicRemove::Undo(){
-	pLogic->GetConditions().Insert(pCondition, pIndex);
+	pLogic->GetConditions().InsertOrThrow(pCondition, pIndex);
 	pTopic->NotifyConditionStructureChanged(pAction);
 	
 	pTopic->SetActive(pAction, pCondition);

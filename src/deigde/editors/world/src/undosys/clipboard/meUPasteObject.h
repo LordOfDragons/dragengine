@@ -49,7 +49,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	meObject::List pObjects;
 	decTList<int> pAttachedToIndexList;
 	

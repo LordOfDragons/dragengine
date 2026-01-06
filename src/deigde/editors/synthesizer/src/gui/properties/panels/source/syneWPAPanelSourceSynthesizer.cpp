@@ -256,37 +256,22 @@ int syneWPAPanelSourceSynthesizer::GetCBControllerTarget() const{
 }
 
 void syneWPAPanelSourceSynthesizer::UpdateControllerList(){
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
 	const syneSynthesizer * const synthesizer = GetSynthesizer();
-	syneController * const selection = pCBConController->GetSelectedItem()
-		? (syneController*)pCBConController->GetSelectedItem()->GetData() : nullptr;
+	void * const selection = pCBConController->GetSelectedItemData();
 	
-	pPreventUpdate = true; // required since changing list causes text changes
+	pCBConController->RemoveAllItems();
+	pCBConController->AddItem("< No Controller >", nullptr);
 	
-	try{
-		pCBConController->RemoveAllItems();
-		pCBConController->AddItem("< No Controller >", nullptr);
-		
-		if(synthesizer){
-			const syneController::List &list = synthesizer->GetControllers();
-			const int count = list.GetCount();
-			int i;
-			
-			for(i=0; i<count; i++){
-				syneController * const controller = list.GetAt(i);
-				pCBConController->AddItem(controller->GetName(), nullptr, controller);
-			}
-		}
+	if(synthesizer){
+		synthesizer->GetControllers().Visit([&](syneController *controller){
+			pCBConController->AddItem(controller->GetName(), nullptr, controller);
+		});
 		
 		pCBConController->SortItems();
-		
-		pCBConController->SetSelectionWithData(selection);
-		
-	}catch(const deException &){
-		pPreventUpdate = false;
-		throw;
 	}
 	
-	pPreventUpdate = false;
+	pCBConController->SetSelectionWithData(selection);
 }
 
 void syneWPAPanelSourceSynthesizer::UpdateSource(){

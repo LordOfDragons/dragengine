@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	reRigPush::Ref pPush;
 	
 	

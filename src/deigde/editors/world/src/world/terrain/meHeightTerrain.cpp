@@ -417,7 +417,7 @@ void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pSectors.Add(sector);
+	pSectors.AddOrThrow(sector);
 	
 	sector->SetHeightTerrain(this);
 	
@@ -430,12 +430,12 @@ void meHeightTerrain::AddSector(meHeightTerrainSector *sector){
 
 void meHeightTerrain::RemoveSector(meHeightTerrainSector *sector){
 	const meHeightTerrainSector::Ref guard(sector);
+	pSectors.RemoveOrThrow(sector);
 	
 	if(pActiveSector == sector){
 		pActiveSector = nullptr;
 	}
 	
-	pSectors.Remove(sector);
 	sector->SetHeightTerrain(nullptr);
 	
 	if(pSectors.IsNotEmpty()){
@@ -446,6 +446,10 @@ void meHeightTerrain::RemoveSector(meHeightTerrainSector *sector){
 }
 
 void meHeightTerrain::RemoveAllSectors(){
+	if(pSectors.IsEmpty()){
+		return;
+	}
+	
 	SetActiveSector(nullptr);
 	
 	pSectors.Visit([&](meHeightTerrainSector &s){
@@ -482,7 +486,7 @@ void meHeightTerrain::SetActiveSector(meHeightTerrainSector *sector){
 void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
 	DEASSERT_NOTNULL(vlayer)
 	
-	pVLayers.Add(vlayer);
+	pVLayers.AddOrThrow(vlayer);
 	vlayer->SetHeightTerrain(this);
 	
 	SetChanged(true);
@@ -498,7 +502,7 @@ void meHeightTerrain::AddVLayer(meHTVegetationLayer *vlayer){
 void meHeightTerrain::InsertVLayer(int before, meHTVegetationLayer *vlayer){
 	DEASSERT_NOTNULL(vlayer)
 	
-	pVLayers.Insert(vlayer, before);
+	pVLayers.InsertOrThrow(vlayer, before);
 	vlayer->SetHeightTerrain(this);
 	
 	SetChanged(true);
@@ -520,12 +524,12 @@ void meHeightTerrain::MoveVLayer(meHTVegetationLayer *vlayer, int moveTo){
 
 void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
 	const meHTVegetationLayer::Ref guard(vlayer);
+	pVLayers.RemoveOrThrow(vlayer);
 	
-	if(vlayer == pActiveVLayer){
-		SetActiveVLayer(nullptr);
+	if(pActiveVLayer == vlayer){
+		pActiveVLayer = nullptr;
 	}
 	
-	pVLayers.Remove(vlayer);
 	vlayer->SetHeightTerrain(nullptr);
 	
 	SetChanged(true);
@@ -534,6 +538,10 @@ void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
 }
 
 void meHeightTerrain::RemoveAllVLayers(){
+	if(pVLayers.IsEmpty()){
+		return;
+	}
+	
 	SetActiveVLayer(nullptr);
 	
 	pVLayers.Visit([](meHTVegetationLayer &vlayer){

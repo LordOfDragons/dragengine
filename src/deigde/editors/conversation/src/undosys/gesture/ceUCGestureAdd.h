@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	ceConversation::Ref pConversation;
+	ceConversation *pConversation;
 	ceGesture::Ref pGesture;
 	
 public:

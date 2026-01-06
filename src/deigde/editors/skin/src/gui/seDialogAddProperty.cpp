@@ -148,7 +148,8 @@ void seDialogAddProperty::SetSelectedPropertyNames(const decStringSet &list){
 	pListProperties->DeselectAllItems();
 	
 	if(list.IsNotEmpty()){
-		pListProperties->SetSelection(pListProperties->IndexOfItem(list.First()));
+		pListProperties->SetSelection(pListProperties->IndexOfItem(
+			decStringList(list).GetSortedAscending().First()));
 		
 	}else{
 		pListProperties->SetSelection(-1);

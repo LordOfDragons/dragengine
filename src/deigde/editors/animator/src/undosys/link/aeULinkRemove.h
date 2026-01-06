@@ -48,7 +48,7 @@ private:
 		aeControllerTarget::Ref target;
 	};
 	
-	aeAnimator::Ref pAnimator;
+	aeAnimator *pAnimator;
 	aeLink::Ref pLink;
 	
 	sTarget *pTargets;

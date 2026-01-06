@@ -1124,8 +1124,8 @@ void deoglRenderCanvas::pCleanUp(){
 	dops.DeleteOpenGLBuffer(pVBOShapes);
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
-	dilist.RemoveIfPresent(pDebugInfoCanvas);
-	dilist.RemoveIfPresent(pDebugInfoPlanPrepare);
+	dilist.Remove(pDebugInfoCanvas);
+	dilist.Remove(pDebugInfoPlanPrepare);
 }
 
 void deoglRenderCanvas::pCreateShapesVAO(){

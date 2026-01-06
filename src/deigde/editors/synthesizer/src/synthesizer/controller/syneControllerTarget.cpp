@@ -60,14 +60,12 @@ syneControllerTarget::~syneControllerTarget(){
 ///////////////
 
 void syneControllerTarget::AddLink(syneLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
-	pLinks.Add(link);
+	DEASSERT_NOTNULL(link)
+	pLinks.AddOrThrow(link);
 }
 
 void syneControllerTarget::RemoveLink(syneLink *link){
-	pLinks.Remove(link);
+	pLinks.RemoveOrThrow(link);
 }
 
 void syneControllerTarget::RemoveAllLinks(){

@@ -47,8 +47,7 @@ private:
 	gdeObjectClass::Ref pObjectClass;
 	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
-	decVector pOldValue;
-	decVector pNewValue;
+	decVector pOldValue, pNewValue;
 	
 	
 	

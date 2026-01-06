@@ -76,6 +76,6 @@ void ceUCAASpeakHeadLAAdd::Undo(){
 }
 
 void ceUCAASpeakHeadLAAdd::Redo(){
-	pActorSpeak->GetHeadLookAts().Insert(pHeadLA, pIndex);
+	pActorSpeak->GetHeadLookAts().InsertOrThrow(pHeadLA, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

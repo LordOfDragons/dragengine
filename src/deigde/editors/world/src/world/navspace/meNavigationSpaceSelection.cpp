@@ -54,15 +54,28 @@ meNavigationSpaceSelection::~meNavigationSpaceSelection(){
 void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
 	DEASSERT_NOTNULL(navspaces)
 	
+	if(!pSelection.Add(navspaces)){
+		return;
+	}
+	
 	navspaces->SetSelected(true);
-	pSelection.Add(navspaces);
+	
+	if(!pActive){
+		SetActive(navspaces);
+	}
 }
 
 void meNavigationSpaceSelection::Remove(meNavigationSpace *navspaces){
-	DEASSERT_NOTNULL(navspaces)
+	const meNavigationSpace::Ref guard(navspaces);
+	if(!pSelection.Remove(navspaces)){
+		return;
+	}
 	
 	navspaces->SetSelected(false);
-	pSelection.Remove(navspaces);
+	
+	if(navspaces == pActive){
+		ActivateNext();
+	}
 }
 
 void meNavigationSpaceSelection::RemoveAll(){

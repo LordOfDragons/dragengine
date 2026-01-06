@@ -45,7 +45,7 @@ public:
 	typedef deTObjectReference<meUObjectDropToGround> Ref;
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	meUndoDataObject::List pObjects;
 	

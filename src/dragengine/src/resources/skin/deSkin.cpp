@@ -105,50 +105,26 @@ int deSkin::IndexOfTextureNamed(const char *name) const{
 //////////////////
 
 deSkinMapped *deSkin::GetMappedNamed(const char *name) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deSkinMapped * const mapped = pMapped.GetAt(i);
-		if(mapped->GetName() == name){
-			return mapped;
-		}
-	}
-	
-	return nullptr;
+	return pMapped.FindOrDefault([&](const deSkinMapped &mapped){
+		return mapped.GetName() == name;
+	});
 }
 
 int deSkin::IndexOfMappedNamed(const char *name) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pMapped.GetAt(i)->GetName() == name){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pMapped.IndexOfMatching([&](const deSkinMapped &mapped){
+		return mapped.GetName() == name;
+	});
 }
 
 bool deSkin::HasMappedNamed(const char *name) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(pMapped.GetAt(i)->GetName() == name){
-			return true;
-		}
-	}
-	
-	return false;
+	return pMapped.HasMatching([&](const deSkinMapped &mapped){
+		return mapped.GetName() == name;
+	});
 }
 
 void deSkin::AddMapped(deSkinMapped *mapped){
 	DEASSERT_NOTNULL(mapped)
-	DEASSERT_FALSE(pMapped.Has(mapped))
-	
-	pMapped.Add(mapped);
+	pMapped.AddOrThrow(mapped);
 }
 
 

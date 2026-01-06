@@ -142,10 +142,9 @@ void deHeightTerrain::AddSector(deHeightTerrainSector *sector){
 		DETHROW(deeInvalidParam);
 	}
 	
-	const int index = pSectors.GetCount();
-	pSectors.Add(sector);
+	pSectors.AddOrThrow(sector);
 	sector->SetParentHeightTerrain(this);
-	sector->SetIndex(index);
+	sector->SetIndex(pSectors.GetCount() - 1);
 	
 	if(pPeerGraphic){
 		pPeerGraphic->SectorAdded(sector);

@@ -26,6 +26,7 @@
 #define _IGDEICONLISTBOX_H_
 
 #include <stddef.h>
+#include <functional>
 
 #include "igdeWidget.h"
 #include "event/igdeIconListBoxListener.h"
@@ -227,6 +228,9 @@ public:
 	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;
 	
+	/** \brief Selected item data or nullptr. */
+	void *GetSelectedItemData() const;
+	
 	/** \brief Selected item is not -1. */
 	inline bool HasSelection() const{ return pSelection != -1; }
 	
@@ -251,6 +255,10 @@ public:
 	
 	/** \brief Deselect all items. */
 	void DeselectAllItems();
+	
+	/** \brief Update items with restoring selection as good as possible. */
+	void UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection = -1);
+	void UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection = nullptr);
 	
 	
 	
@@ -277,11 +285,11 @@ public:
 	
 	
 	
-	/** \brief Ensure item is visible. */
-	virtual void EnsureItemVisible(int index);
+	/** \brief Make item is visible. */
+	virtual void MakeItemVisible(int index);
 	
-	/** \brief Ensure selected item is visible if selection is present. */
-	void EnsureSelectedItemVisible();
+	/** \brief Make selected item is visible if selection is present. */
+	void MakeSelectedItemVisible();
 	
 	/** \brief Show context menu at position. */
 	void ShowContextMenu(const decPoint &position);

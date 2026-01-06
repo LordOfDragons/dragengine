@@ -83,6 +83,44 @@ public:
 	}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *view){
+		if(pUndo){
+			OnCurveChanging(view);
+			pUndo = nullptr;
+			return;
+		}
+		
+		peeType * const type = pPanel.GetType();
+		peeParameter * const parameter = pPanel.GetParameter();
+		if(!type || !parameter){
+			return;
+		}
+		
+		switch(pPanel.GetCurve()){
+		case peeWindowCurves::ecValue:
+			if(parameter->GetCurveValue() == view->GetCurve()){
+				return;
+			}
+			break;
+			
+		case peeWindowCurves::ecSpread:
+			if(parameter->GetCurveSpread() == view->GetCurve()){
+				return;
+			}
+			break;
+			
+		case peeWindowCurves::ecBeam:
+			if(parameter->GetCurveBeam() == view->GetCurve()){
+				return;
+			}
+			break;
+			
+		case peeWindowCurves::ecProgress:
+			if(parameter->GetCurveProgress() == view->GetCurve()){
+				return;
+			}
+			break;
+		}
+		
 		OnCurveChanging(view);
 		pUndo = nullptr;
 	}

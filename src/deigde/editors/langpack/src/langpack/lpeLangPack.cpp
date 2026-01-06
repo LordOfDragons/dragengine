@@ -102,29 +102,34 @@ void lpeLangPack::SetMissingText(const decUnicodeString &missingText){
 /////////////
 
 void lpeLangPack::AddEntry(lpeLangPackEntry *entry){
-	pEntries.Add(entry);
+	DEASSERT_NOTNULL(entry)
+	pEntries.AddOrThrow(entry);
+	
 	entry->SetLangPack(this);
 	NotifyEntryStructureChanged();
 }
 
 
 void lpeLangPack::RemoveEntry(lpeLangPackEntry *entry){
-	if(!entry || entry->GetLangPack() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const lpeLangPackEntry::Ref guard(entry);
+	pEntries.RemoveOrThrow(entry);
+	
+	pEntrySelection.Remove(entry);
 	
 	entry->SetLangPack(nullptr);
-	pEntries.Remove(entry);
 	NotifyEntryStructureChanged();
 }
 
 void lpeLangPack::RemoveAllEntries(){
-	const int count = pEntries.GetCount();
-	int i;
-	
-	for(i =0; i <count; i++){
-		pEntries.GetAt(i)->SetLangPack(nullptr);
+	if(pEntries.IsEmpty()){
+		return;
 	}
+	
+	pEntrySelection.RemoveAll();
+	
+	pEntries.Visit([&](lpeLangPackEntry &e){
+		e.SetLangPack(nullptr);
+	});
 	pEntries.RemoveAll();
 	NotifyEntryStructureChanged();
 }

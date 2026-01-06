@@ -58,38 +58,35 @@ bool decXmlContainer::IsEmpty() const{
 }
 
 decXmlElement *decXmlContainer::GetElementAt(int index) const{
-	return (decXmlElement*)pElements.GetAt(index);
+	return pElements.GetAt(index);
 }
 
 void decXmlContainer::AddElement(decXmlElement *element){
 	DEASSERT_NOTNULL(element)
+	DEASSERT_NULL(element->GetParent())
 	
-	pElements.Add(element);
+	pElements.AddOrThrow(element);
 	element->SetParent(this);
 }
 
 void decXmlContainer::InsertElement(decXmlElement *element, int beforeIndex){
 	DEASSERT_NOTNULL(element)
+	DEASSERT_NULL(element->GetParent())
 	
-	pElements.Insert(element, beforeIndex);
+	pElements.InsertOrThrow(element, beforeIndex);
 	element->SetParent(this);
 }
 
 void decXmlContainer::RemoveElement(decXmlElement *element){
-	if(!pElements.Has(element)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	element->SetParent(NULL);
-	pElements.Remove(element);
+	const decXmlElement::Ref guard(element);
+	pElements.RemoveOrThrow(element);
+	element->SetParent(nullptr);
 }
 
 void decXmlContainer::RemoveAllElements(){
-	const int count = pElements.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((decXmlElement*)pElements.GetAt(i))->SetParent(NULL);
-	}
+	pElements.Visit([](decXmlElement &element){
+		element.SetParent(nullptr);
+	});
 	pElements.RemoveAll();
 }
 
@@ -102,11 +99,9 @@ bool decXmlContainer::HasElement(decXmlElement *element){
 }
 
 void decXmlContainer::VisitElements(decXmlVisitor &visitor){
-	const int count = pElements.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((decXmlElement*)pElements.GetAt(i))->Visit(visitor);
-	}
+	pElements.Visit([&](decXmlElement &element){
+		element.Visit(visitor);
+	});
 }
 
 

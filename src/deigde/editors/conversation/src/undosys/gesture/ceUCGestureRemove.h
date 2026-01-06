@@ -25,10 +25,11 @@
 #ifndef _CEUCGESTUREREMOVE_H_
 #define _CEUCGESTUREREMOVE_H_
 
+#include "../../conversation/gesture/ceGesture.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceGesture;
 
 
 
@@ -42,7 +43,7 @@ public:
 	
 private:
 	ceConversation *pConversation;
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 public:
 	/** \name Constructors and Destructors */

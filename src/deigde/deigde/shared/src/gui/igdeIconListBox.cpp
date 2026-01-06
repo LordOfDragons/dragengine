@@ -161,7 +161,7 @@ void igdeIconListBox::AddItem(igdeListItem *item){
 	if(!item){
 		DETHROW(deeInvalidParam);
 	}
-	pItems.Add(item);
+	pItems.AddOrThrow(item);
 	OnItemAdded(pItems.GetCount() - 1);
 	
 	if(pItems.GetCount() == 1){
@@ -200,7 +200,7 @@ void igdeIconListBox::InsertItem(int index, igdeListItem *item){
 	
 	igdeListItem * const selection = GetSelectedItem();
 	
-	pItems.Insert(item, index);
+	pItems.InsertOrThrow(item, index);
 	
 	if(selection){
 		pSelection = pItems.IndexOf(selection);
@@ -327,12 +327,21 @@ void igdeIconListBox::SetSelectionMode(eSelectionMode mode){
 }
 
 igdeListItem *igdeIconListBox::GetSelectedItem() const{
-	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection).Pointer() : nullptr;
+}
+
+void *igdeIconListBox::GetSelectedItemData() const{
+	igdeListItem * const item = GetSelectedItem();
+	return item ? item->GetData() : nullptr;
 }
 
 void igdeIconListBox::SetSelection(int selection){
 	if(selection < -1 || selection >= pItems.GetCount()){
 		DETHROW(deeInvalidParam);
+	}
+	
+	if(pSelectionMode == esmSingle && pItems.IsNotEmpty()){
+		selection = decMath::max(selection, 0);
 	}
 	
 	if(selection == pSelection){
@@ -342,6 +351,10 @@ void igdeIconListBox::SetSelection(int selection){
 	pSelection = selection;
 	OnSelectionChanged();
 	NotifySelectionChanged();
+	
+	if(pSelection != -1){
+		MakeItemVisible(pSelection);
+	}
 }
 
 void igdeIconListBox::SetSelectionWithData(void *data){
@@ -421,6 +434,63 @@ void igdeIconListBox::DeselectAllItems(){
 		OnSelectionChanged();
 	}
 }
+
+void igdeIconListBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
+	decPoint cpos;
+	igdeNativeIconListBox * const native = static_cast<igdeNativeIconListBox*>(GetNativeWidget());
+	if(native){
+		cpos = native->GetContentPosition();
+	}
+	
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1 && defaultSelection != -1){
+			index = decMath::min(defaultSelection, pItems.GetCount() - 1);
+		}
+	}
+	
+	if(native){
+		native->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
+void igdeIconListBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
+	decPoint cpos;
+	igdeNativeIconListBox * const native = static_cast<igdeNativeIconListBox*>(GetNativeWidget());
+	if(native){
+		cpos = native->GetContentPosition();
+	}
+	
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1){
+			index = IndexOfItemWithData(defaultSelection);
+		}
+	}
+	
+	if(native){
+		native->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
+
+
 void igdeIconListBox::NotifyItemSelected(int index){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeIconListBoxListener &l){
@@ -442,21 +512,18 @@ bool igdeIconListBox::HasHeader(igdeListHeader *header) const{
 }
 
 void igdeIconListBox::AddHeader(igdeListHeader *header){
-	if(!header || pHeaders.Has(header)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pHeaders.Add(header);
+	DEASSERT_NOTNULL(header)
+	pHeaders.AddOrThrow(header);
 	OnHeaderChanged();
 }
 
 void igdeIconListBox::RemoveHeader(igdeListHeader *header){
-	pHeaders.Remove(header);
+	pHeaders.RemoveOrThrow(header);
 	OnHeaderChanged();
 }
 
 void igdeIconListBox::RemoveAllHeaders(){
-	if(pHeaders.GetCount() == 0){
+	if(pHeaders.IsEmpty()){
 		return;
 	}
 	
@@ -480,7 +547,7 @@ void igdeIconListBox::NotifyHeaderClicked(int index){
 
 
 
-void igdeIconListBox::EnsureItemVisible(int index){
+void igdeIconListBox::MakeItemVisible(int index){
 	if(!GetNativeWidget()){
 		return;
 	}
@@ -488,9 +555,9 @@ void igdeIconListBox::EnsureItemVisible(int index){
 	((igdeNativeIconListBox*)GetNativeWidget())->MakeItemVisible(index);
 }
 
-void igdeIconListBox::EnsureSelectedItemVisible(){
+void igdeIconListBox::MakeSelectedItemVisible(){
 	if(pSelection != -1){
-		EnsureItemVisible(pSelection);
+		MakeItemVisible(pSelection);
 	}
 }
 

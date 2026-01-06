@@ -359,6 +359,7 @@ pWindowProperties(windowProperties)
 	helper.GroupBoxFlow(content, groupBox, "Links:");
 	
 	helper.ListBox(groupBox, 8, "Links", pListLinks, cListLinks::Ref::New(*this));
+	pListLinks->SetDefaultSorter();
 	
 	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
 	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
@@ -414,30 +415,20 @@ skyeLink *skyeWPLink::GetLink() const{
 
 
 void skyeWPLink::UpdateLinkList(){
-	const skyeLink::Ref selection(GetLink());
-	
-	pListLinks->RemoveAllItems();
-	
-	if(pSky){
-		pSky->GetLinks().Visit([this](skyeLink *link){
-			pListLinks->AddItem(link->GetName().GetString(), nullptr, link);
-		});
-		pListLinks->SortItems();
-	}
-	
-	if(selection){
-		pListLinks->SetSelectionWithData(selection);
-	}
+	pListLinks->UpdateRestoreSelection([&](){
+		pListLinks->RemoveAllItems();
+		
+		if(pSky){
+			pSky->GetLinks().Visit([&](skyeLink *link){
+				pListLinks->AddItem(link->GetName(), nullptr, link);
+			});
+			pListLinks->SortItems();
+		}
+	}, 0);
 }
 
 void skyeWPLink::SelectActiveLink(){
-	const int selection = pListLinks->IndexOfItemWithData(GetLink());
-	
-	pListLinks->SetSelection(selection);
-	if(selection != -1){
-		pListLinks->MakeItemVisible(selection);
-	}
-	
+	pListLinks->SetSelection(pListLinks->IndexOfItemWithData(GetLink()));
 	UpdateLink();
 }
 

@@ -151,11 +151,8 @@ int deSynthesizer::IndexOfControllerNamed(const char *name) const{
 }
 
 void deSynthesizer::AddController(deSynthesizerController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pControllers.Add(controller);
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
@@ -163,7 +160,7 @@ void deSynthesizer::AddController(deSynthesizerController *controller){
 }
 
 void deSynthesizer::RemoveController(deSynthesizerController *controller){
-	pControllers.Remove(controller);
+	pControllers.RemoveOrThrow(controller);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ControllersChanged();
@@ -171,6 +168,10 @@ void deSynthesizer::RemoveController(deSynthesizerController *controller){
 }
 
 void deSynthesizer::RemoveAllControllers(){
+	if(pControllers.IsEmpty()){
+		return;
+	}
+	
 	pControllers.RemoveAll();
 	
 	if(pPeerSynthesizer){
@@ -190,11 +191,8 @@ void deSynthesizer::NotifyControllersChanged(){
 //////////
 
 void deSynthesizer::AddLink(deSynthesizerLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pLinks.Add(link);
+	DEASSERT_NOTNULL(link)
+	pLinks.AddOrThrow(link);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
@@ -202,7 +200,7 @@ void deSynthesizer::AddLink(deSynthesizerLink *link){
 }
 
 void deSynthesizer::RemoveLink(deSynthesizerLink *link){
-	pLinks.Remove(link);
+	pLinks.RemoveOrThrow(link);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->LinksChanged();
@@ -210,6 +208,10 @@ void deSynthesizer::RemoveLink(deSynthesizerLink *link){
 }
 
 void deSynthesizer::RemoveAllLinks(){
+	if(pLinks.IsEmpty()){
+		return;
+	}
+	
 	pLinks.RemoveAll();
 	
 	if(pPeerSynthesizer){
@@ -229,11 +231,8 @@ void deSynthesizer::NotifyLinksChanged(){
 ////////////
 
 void deSynthesizer::AddSource(deSynthesizerSource *source){
-	if(!source){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pSources.Add(source);
+	DEASSERT_NOTNULL(source)
+	pSources.AddOrThrow(source);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();
@@ -241,7 +240,7 @@ void deSynthesizer::AddSource(deSynthesizerSource *source){
 }
 
 void deSynthesizer::RemoveSource(deSynthesizerSource *source){
-	pSources.Remove(source);
+	pSources.RemoveOrThrow(source);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->SourcesChanged();

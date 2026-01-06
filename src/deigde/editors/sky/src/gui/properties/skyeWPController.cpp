@@ -465,22 +465,23 @@ skyeController *skyeWPController::GetController() const{
 
 
 void skyeWPController::UpdateControllerList(){
-	pListController->RemoveAllItems();
+	pListController->UpdateRestoreSelection([&](){
+		pListController->RemoveAllItems();
+		
+		if(pSky){
+			pSky->GetControllers().VisitIndexed([&](int i, skyeController *controller){
+				decString text;
+				text.Format("%i: %s", i, controller->GetName().GetString());
+				pListController->AddItem(text, nullptr, controller);
+			});
+		}
+	}, 0);
 	
-	if(pSky){
-		pSky->GetControllers().VisitIndexed([&](int i, skyeController *controller){
-			decString text;
-			text.Format("%i: %s", i, controller->GetName().GetString());
-			pListController->AddItem(text, nullptr, controller);
-		});
-	}
-	
-	SelectActiveController();
+	UpdateController();
 }
 
 void skyeWPController::SelectActiveController(){
 	pListController->SetSelectionWithData(GetController());
-	pListController->MakeSelectionVisible();
 	UpdateController();
 }
 

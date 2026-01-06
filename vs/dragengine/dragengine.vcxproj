@@ -1064,10 +1064,8 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTDictionary.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTLinkedList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTList.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTNamedOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decTSet.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decTUniqueOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.h" />

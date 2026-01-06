@@ -100,7 +100,7 @@ void ceUCActionPaste::pInsertActions(ceConversationAction::List &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		list.Insert(pActions.GetAt(i), pIndex + i);
+		list.InsertOrThrow(pActions.GetAt(i), pIndex + i);
 	}
 }
 
@@ -132,5 +132,5 @@ const ceConversationAction::List &list) const{
 	index = list.IndexOf(pActions.First());
 	DEASSERT_TRUE(index != -1)
 	
-	return index > 0 ? list.GetAt(index - 1) : nullptr;
+	return index > 0 ? list.GetAt(index - 1).Pointer() : nullptr;
 }

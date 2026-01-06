@@ -767,55 +767,51 @@ void meWPBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem *pare
 }
 
 void meWPBrowser::UpdateItemList(){
-	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : nullptr;
-	
-	pListItems->RemoveAllItems();
-	
-	if(gameDefinition){
-		igdeGDAddToListVisitor visitor(GetEnvironment(), pListItems, GetPreviewIconSize());
+	pListItems->UpdateRestoreSelection([&](){
+		const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 		
-		switch(pSelectionMode){
-		case esmCategory:
-			switch(GetPreviewItemType()){
-			case epitObjectClass:
-				gameDefinition->GetClassManager()->VisitClassesMatchingCategory(visitor, GetSelectedCategory());
-				break;
-				
-			case epitSkin:
-				gameDefinition->GetSkinManager()->VisitSkinsMatchingCategory(visitor, GetSelectedCategory());
-				break;
-				
-			case epitSky:
-				gameDefinition->GetSkyManager()->VisitSkiesMatchingCategory(visitor, GetSelectedCategory());
-				break;
-			}
-			break;
+		pListItems->RemoveAllItems();
+		
+		if(gameDefinition){
+			igdeGDAddToListVisitor visitor(GetEnvironment(), pListItems, GetPreviewIconSize());
 			
-		case esmFilter:
-			switch(GetPreviewItemType()){
-			case epitObjectClass:
-				gameDefinition->GetClassManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
+			switch(pSelectionMode){
+			case esmCategory:
+				switch(GetPreviewItemType()){
+				case epitObjectClass:
+					gameDefinition->GetClassManager()->VisitClassesMatchingCategory(visitor, GetSelectedCategory());
+					break;
+					
+				case epitSkin:
+					gameDefinition->GetSkinManager()->VisitSkinsMatchingCategory(visitor, GetSelectedCategory());
+					break;
+					
+				case epitSky:
+					gameDefinition->GetSkyManager()->VisitSkiesMatchingCategory(visitor, GetSelectedCategory());
+					break;
+				}
 				break;
 				
-			case epitSkin:
-				gameDefinition->GetSkinManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
-				break;
-				
-			case epitSky:
-				gameDefinition->GetSkyManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
+			case esmFilter:
+				switch(GetPreviewItemType()){
+				case epitObjectClass:
+					gameDefinition->GetClassManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
+					break;
+					
+				case epitSkin:
+					gameDefinition->GetSkinManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
+					break;
+					
+				case epitSky:
+					gameDefinition->GetSkyManager()->VisitMatchingFilter(visitor, pEditFilter->GetText());
+					break;
+				}
 				break;
 			}
-			break;
 		}
-	}
-	
-	pListItems->SortItems();
-	
-	pListItems->SetSelectionWithData(selection);
-	if(!pListItems->GetSelectedItem() && pListItems->GetItems().IsNotEmpty()){
-		pListItems->SetSelection(0);
-	}
+		
+		pListItems->SortItems();
+	}, 0);
 }
 
 void meWPBrowser::RebuildPISelectedItem(){

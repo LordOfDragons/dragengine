@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	skyeSky::Ref pSky;
+	skyeSky *pSky;
 	skyeLink::Ref pLink;
 	
 	

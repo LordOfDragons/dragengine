@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	
 	
 	

@@ -1416,7 +1416,6 @@ void gdeWPSOCComponent::UpdateTextureProperties(){
 
 void gdeWPSOCComponent::SelectActiveTextureProperty(){
 	pTextureListProperties->SetSelection(pTextureListProperties->IndexOfItem(GetTextureProperty()));
-	pTextureListProperties->EnsureSelectedItemVisible();
 }
 
 void gdeWPSOCComponent::SetEngineModelPath(const char *path){

@@ -221,10 +221,8 @@ void igdeGDClass::SetInheritSubObjects(int filter){
 
 
 void igdeGDClass::AddInheritClass(igdeGDClassInherit *inheritClass){
-	if(!inheritClass){
-		DETHROW(deeInvalidParam);
-	}
-	pInheritClasses.Add(inheritClass);
+	DEASSERT_NOTNULL(inheritClass)
+	pInheritClasses.AddOrThrow(inheritClass);
 }
 
 void igdeGDClass::ResolveInheritClasses(const igdeGDClassManager &classManager){
@@ -291,11 +289,12 @@ void igdeGDClass::GetDeepComponentTextures(igdeGDCCTexture::List &list) const{
 ///////////////
 
 void igdeGDClass::AddProperty(igdeGDProperty *property){
-	pListProperties.Add(property);
+	DEASSERT_NOTNULL(property)
+	pListProperties.AddOrThrow(property);
 }
 
 void igdeGDClass::RemoveProperty(igdeGDProperty *property){
-	pListProperties.Remove(property);
+	pListProperties.RemoveOrThrow(property);
 }
 
 void igdeGDClass::RemoveAllProperties(){
@@ -400,11 +399,12 @@ void igdeGDClass::SetTextureProperties(const igdeGDProperty::List &properties){
 }
 
 void igdeGDClass::AddTextureProperty(igdeGDProperty *property){
-	pTextureProperties.Add(property);
+	DEASSERT_NOTNULL(property)
+	pTextureProperties.AddOrThrow(property);
 }
 
 void igdeGDClass::RemoveTextureProperty(igdeGDProperty *property){
-	pTextureProperties.Remove(property);
+	pTextureProperties.RemoveOrThrow(property);
 }
 
 void igdeGDClass::RemoveAllTextureProperties(){
@@ -498,11 +498,12 @@ void igdeGDClass::AddTexturePropertyNames(decStringSet &set, bool inherited) con
 ///////////////
 
 void igdeGDClass::AddComponent(igdeGDCComponent *component){
-	pListComponents.Add(component);
+	DEASSERT_NOTNULL(component)
+	pListComponents.AddOrThrow(component);
 }
 
 void igdeGDClass::RemoveComponent(igdeGDCComponent *component){
-	pListComponents.Remove(component);
+	pListComponents.RemoveOrThrow(component);
 }
 
 void igdeGDClass::RemoveAllComponents(){
@@ -547,11 +548,12 @@ const igdeGDClass::IndexList igdeGDClass::GetComponentIndicesWithLinkedProperty(
 ///////////
 
 void igdeGDClass::AddLight(igdeGDCLight *light){
-	pListLights.Add(light);
+	DEASSERT_NOTNULL(light)
+	pListLights.AddOrThrow(light);
 }
 
 void igdeGDClass::RemoveLight(igdeGDCLight *light){
-	pListLights.Remove(light);
+	pListLights.RemoveOrThrow(light);
 	// notify;
 }
 
@@ -598,11 +600,12 @@ const igdeGDClass::IndexList igdeGDClass::GetLightIndicesWithLinkedProperty(cons
 ///////////
 
 void igdeGDClass::AddBillboard(igdeGDCBillboard *billboard){
-	pListBillboards.Add(billboard);
+	DEASSERT_NOTNULL(billboard)
+	pListBillboards.AddOrThrow(billboard);
 }
 
 void igdeGDClass::RemoveBillboard(igdeGDCBillboard *billboard){
-	pListBillboards.Remove(billboard);
+	pListBillboards.RemoveOrThrow(billboard);
 	// notify;
 }
 
@@ -649,11 +652,12 @@ const igdeGDClass::IndexList igdeGDClass::GetBillboardIndicesWithLinkedProperty(
 /////////////
 
 void igdeGDClass::AddSpeaker(igdeGDCSpeaker *speaker){
-	pListSpeakers.Add(speaker);
+	DEASSERT_NOTNULL(speaker)
+	pListSpeakers.AddOrThrow(speaker);
 }
 
 void igdeGDClass::RemoveSpeaker(igdeGDCSpeaker *speaker){
-	pListSpeakers.Remove(speaker);
+	pListSpeakers.RemoveOrThrow(speaker);
 }
 
 void igdeGDClass::RemoveAllSpeakers(){
@@ -698,11 +702,12 @@ const igdeGDClass::IndexList igdeGDClass::GetSpeakerIndicesWithLinkedProperty(co
 //////////////////////
 
 void igdeGDClass::AddNavigationSpace(igdeGDCNavigationSpace *navSpace){
-	pListNavigationSpaces.Add(navSpace);
+	DEASSERT_NOTNULL(navSpace)
+	pListNavigationSpaces.AddOrThrow(navSpace);
 }
 
 void igdeGDClass::RemoveNavigationSpace(igdeGDCNavigationSpace *navSpace){
-	pListNavigationSpaces.Remove(navSpace);
+	pListNavigationSpaces.RemoveOrThrow(navSpace);
 }
 
 void igdeGDClass::RemoveAllNavigationSpaces(){
@@ -747,11 +752,12 @@ const igdeGDClass::IndexList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty(c
 //////////////////////
 
 void igdeGDClass::AddNavigationBlocker(igdeGDCNavigationBlocker *blocker){
-	pListNavigationBlockers.Add(blocker);
+	DEASSERT_NOTNULL(blocker)
+	pListNavigationBlockers.AddOrThrow(blocker);
 }
 
 void igdeGDClass::RemoveNavigationBlocker(igdeGDCNavigationBlocker *blocker){
-	pListNavigationBlockers.Remove(blocker);
+	pListNavigationBlockers.RemoveOrThrow(blocker);
 }
 
 void igdeGDClass::RemoveAllNavigationBlockers(){
@@ -796,11 +802,12 @@ const igdeGDClass::IndexList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty
 ///////////
 
 void igdeGDClass::AddWorld(igdeGDCWorld *world){
-	pListWorlds.Add(world);
+	DEASSERT_NOTNULL(world)
+	pListWorlds.AddOrThrow(world);
 }
 
 void igdeGDClass::RemoveWorld(igdeGDCWorld *world){
-	pListWorlds.Remove(world);
+	pListWorlds.RemoveOrThrow(world);
 }
 
 void igdeGDClass::RemoveAllWorlds(){
@@ -846,11 +853,12 @@ const igdeGDClass::IndexList igdeGDClass::GetWorldIndicesWithLinkedProperty(cons
 ////////////
 
 void igdeGDClass::AddSnapPoint(igdeGDCSnapPoint *snappoint){
-	pSnapPoints.Add(snappoint);
+	DEASSERT_NOTNULL(snappoint)
+	pSnapPoints.AddOrThrow(snappoint);
 }
 
 void igdeGDClass::RemoveSnapPoint(igdeGDCSnapPoint *snappoint){
-	pSnapPoints.Remove(snappoint);
+	pSnapPoints.RemoveOrThrow(snappoint);
 }
 
 void igdeGDClass::RemoveAllSnapPoints(){
@@ -863,11 +871,12 @@ void igdeGDClass::RemoveAllSnapPoints(){
 //////////////////////
 
 void igdeGDClass::AddParticleEmitter(igdeGDCParticleEmitter *emitter){
-	pListParticleEmitters.Add(emitter);
+	DEASSERT_NOTNULL(emitter)
+	pListParticleEmitters.AddOrThrow(emitter);
 }
 
 void igdeGDClass::RemoveParticleEmitter(igdeGDCParticleEmitter *emitter){
-	pListParticleEmitters.Remove(emitter);
+	pListParticleEmitters.RemoveOrThrow(emitter);
 	// notify;
 }
 
@@ -882,11 +891,12 @@ void igdeGDClass::RemoveAllParticleEmitters(){
 /////////////////
 
 void igdeGDClass::AddForceField(igdeGDCForceField *field){
-	pListForceFields.Add(field);
+	DEASSERT_NOTNULL(field)
+	pListForceFields.AddOrThrow(field);
 }
 
 void igdeGDClass::RemoveForceField(igdeGDCForceField *field){
-	pListForceFields.Remove(field);
+	pListForceFields.RemoveOrThrow(field);
 	// notify;
 }
 
@@ -901,11 +911,12 @@ void igdeGDClass::RemoveAllForceFields(){
 ///////////////////////////
 
 void igdeGDClass::AddEnvironmentMapProbe(igdeGDCEnvMapProbe *probe){
-	pListEnvMapProbes.Add(probe);
+	DEASSERT_NOTNULL(probe)
+	pListEnvMapProbes.AddOrThrow(probe);
 }
 
 void igdeGDClass::RemoveEnvironmentMapProbe(igdeGDCEnvMapProbe *probe){
-	pListEnvMapProbes.Remove(probe);
+	pListEnvMapProbes.RemoveOrThrow(probe);
 	// notify;
 }
 
@@ -967,29 +978,22 @@ void igdeGDClass::pCleanUp(){
 		delete pCamera;
 	}
 }
-
 void igdeGDClass::pAddPropertyNames(decStringSet &set, const decString &prefix) const{
-	const int propertyCount = pListProperties.GetCount();
-	int i;
-	for(i=0; i<propertyCount; i++){
-		set.Add(prefix + pListProperties.GetAt(i)->GetName());
-	}
+	pListProperties.Visit([&](const igdeGDProperty &p){
+		set.Add(prefix + p.GetName());
+	});
 	
-	const int inheritCount = pInheritClasses.GetCount();
-	for(i=0; i<inheritCount; i++){
-		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){
 			inherit.GetClass()->pAddPropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
-	}
+	});
 }
 
 void igdeGDClass::pAddTexturePropertyNames(decStringSet &set, const decString &prefix) const{
-	const int propertyCount = pTextureProperties.GetCount();
-	int i;
-	for(i=0; i<propertyCount; i++){
-		set.Add(prefix + pTextureProperties.GetAt(i)->GetName());
-	}
+	pTextureProperties.Visit([&](const igdeGDProperty &p){
+		set.Add(prefix + p.GetName());
+	});
 	
 	pInheritClasses.Visit([&](const igdeGDClassInherit &inherit){
 		if(inherit.GetClass()){

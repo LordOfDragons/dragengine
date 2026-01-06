@@ -177,21 +177,17 @@ int igdeTriggerExpressionComponent::IndexOfChild(igdeTriggerExpressionComponent 
 }
 
 void igdeTriggerExpressionComponent::AddChild(igdeTriggerExpressionComponent *child){
-	if(!child){
-		DETHROW(deeInvalidParam);
-	}
-	pChildren.Add(child);
+	DEASSERT_NOTNULL(child)
+	pChildren.AddOrThrow(child);
 }
 
 void igdeTriggerExpressionComponent::InsertChild(igdeTriggerExpressionComponent *child, int index){
-	if(!child){
-		DETHROW(deeInvalidParam);
-	}
-	pChildren.Insert(child, index);
+	DEASSERT_NOTNULL(child)
+	pChildren.InsertOrThrow(child, index);
 }
 
 void igdeTriggerExpressionComponent::RemoveChild(igdeTriggerExpressionComponent *child){
-	pChildren.Remove(child);
+	pChildren.RemoveOrThrow(child);
 }
 
 void igdeTriggerExpressionComponent::RemoveAllChildren(){

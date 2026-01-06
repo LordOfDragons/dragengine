@@ -80,7 +80,7 @@ void ceUCActionAdd::Undo(){
 }
 
 void ceUCActionAdd::Redo(){
-	pTopic->GetActions().Insert(pAction, pIndex);
+	pTopic->GetActions().InsertOrThrow(pAction, pIndex);
 	pTopic->NotifyActionStructureChanged(nullptr);
 	
 	pTopic->SetActive(pAction, nullptr);

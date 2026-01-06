@@ -205,10 +205,8 @@ int igdeComboBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
 }
 
 void igdeComboBox::AddItem(igdeListItem *item){
-	if(!item){
-		DETHROW(deeInvalidParam);
-	}
-	pItems.Add(item);
+	DEASSERT_NOTNULL(item)
+	pItems.AddOrThrow(item);
 	OnItemAdded(pItems.GetCount() - 1);
 	
 	if(!pEditable && pItems.GetCount() == 1){
@@ -234,7 +232,7 @@ void igdeComboBox::InsertItem(int index, igdeListItem *item){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pItems.Insert(item, index);
+	pItems.InsertOrThrow(item, index);
 	if(pSelection >= index){
 		pSelection++;
 	}
@@ -379,7 +377,7 @@ void igdeComboBox::SortItems(){
 
 
 igdeListItem *igdeComboBox::GetSelectedItem() const{
-	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection).Pointer() : nullptr;
 }
 
 void *igdeComboBox::GetSelectedItemData() const{
@@ -419,6 +417,40 @@ void igdeComboBox::SetSelectionWithData(void *data){
 
 void igdeComboBox::SetSelectionWithRefData(const deObject::Ref &refData){
 	SetSelection(IndexOfItemWithRefData(refData));
+}
+
+void igdeComboBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1 && defaultSelection != -1){
+			index = decMath::min(defaultSelection, pItems.GetCount() - 1);
+		}
+	}
+	
+	SetSelection(index);
+}
+
+void igdeComboBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1){
+			index = IndexOfItemWithData(defaultSelection);
+		}
+	}
+	
+	SetSelection(index);
 }
 
 

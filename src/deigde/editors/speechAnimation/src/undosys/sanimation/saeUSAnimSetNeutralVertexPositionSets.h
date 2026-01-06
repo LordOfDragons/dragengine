@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	saeSAnimation::Ref pSAnimation;
+	saeSAnimation *pSAnimation;
 	
 	decStringSet pOldSets;
 	decStringSet pNewSets;

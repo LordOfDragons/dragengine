@@ -240,7 +240,7 @@ void deoglRenderWorldInfo::DevModeDebugInfoChanged(){
 
 void deoglRenderWorldInfo::pCleanUp(){
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
-	dilist.RemoveIfPresent(infoWorld);
-	dilist.RemoveIfPresent(infoSolidGeometryDetails);
-	dilist.RemoveIfPresent(infoTransparentDetails);
+	dilist.Remove(infoWorld);
+	dilist.Remove(infoSolidGeometryDetails);
+	dilist.Remove(infoTransparentDetails);
 }

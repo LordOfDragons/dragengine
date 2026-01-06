@@ -336,23 +336,18 @@ void syneWPAPanelEffect::UpdateControllerList(){
 }
 
 void syneWPAPanelEffect::UpdateLinkList(){
-	syneLink * const selection = pCBLinks->GetSelectedItem() ? (syneLink*)pCBLinks->GetSelectedItem()->GetData() : nullptr;
+	void * const selection = pCBLinks->GetSelectedItemData();
 	
 	pCBLinks->RemoveAllItems();
 	
 	const syneSynthesizer * const synthesizer = GetSynthesizer();
 	if(synthesizer){
-		const syneLink::List &list = synthesizer->GetLinks();
-		const int count = list.GetCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			syneLink * const link = list.GetAt(i);
+		synthesizer->GetLinks().Visit([&](syneLink *link){
 			pCBLinks->AddItem(link->GetName(), nullptr, link);
-		}
+		});
+		
+		pCBLinks->SortItems();
 	}
-	
-	pCBLinks->SortItems();
 	
 	pCBLinks->SetSelectionWithData(selection);
 }

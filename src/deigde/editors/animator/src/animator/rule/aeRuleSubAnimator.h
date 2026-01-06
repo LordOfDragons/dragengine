@@ -28,6 +28,7 @@
 #include "aeRule.h"
 #include "../controller/aeController.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 
 class aeLoadSaveSystem;
@@ -42,6 +43,8 @@ class aeRuleSubAnimator : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleSubAnimator> Ref;
 	
+	typedef decTObjectList<aeController> ConnectionList;
+	
 	
 private:
 	decString pPathSubAnimator;
@@ -52,7 +55,7 @@ private:
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	aeController::List pConnections;
+	ConnectionList pConnections;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -79,7 +82,7 @@ public:
 	void LoadSubAnimator();
 	
 	/** Connections. */
-	inline const aeController::List &GetConnections() const{ return pConnections; }
+	inline const ConnectionList &GetConnections() const{ return pConnections; }
 	
 	/** Set controller for target controller or \em nullptr. */
 	void SetControllerAt(int position, aeController *controller);

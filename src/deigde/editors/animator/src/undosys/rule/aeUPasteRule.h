@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	aeAnimator::Ref pAnimator;
+	aeAnimator *pAnimator;
 	aeRule::List pRuleList;
 	aeLink::List pRemoveLinkList;
 	aeController::List pRemoveControllerList;

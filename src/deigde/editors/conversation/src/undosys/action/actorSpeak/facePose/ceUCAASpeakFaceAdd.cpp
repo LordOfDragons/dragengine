@@ -76,6 +76,6 @@ void ceUCAASpeakFaceAdd::Undo(){
 }
 
 void ceUCAASpeakFaceAdd::Redo(){
-	pActorSpeak->GetFacePoses().Insert(pFacePose, pIndex);
+	pActorSpeak->GetFacePoses().InsertOrThrow(pFacePose, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

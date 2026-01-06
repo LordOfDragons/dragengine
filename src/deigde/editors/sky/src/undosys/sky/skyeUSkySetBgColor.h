@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	skyeSky::Ref pSky;
+	skyeSky *pSky;
 	
 	decColor pOldColor;
 	decColor pNewColor;

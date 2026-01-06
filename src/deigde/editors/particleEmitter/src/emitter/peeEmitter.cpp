@@ -366,11 +366,6 @@ void peeEmitter::AddController(peeController *controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
-	if(pControllers.HasMatching([&](const peeController *each){
-		return each->GetName() == controller->GetName();
-	})){
-		DETHROW(deeInvalidParam);
-	}
 	
 	pControllers.Add(controller);
 	controller->SetEmitter(this);
@@ -383,11 +378,6 @@ void peeEmitter::AddController(peeController *controller){
 
 void peeEmitter::InsertControllerAt(peeController *controller, int index){
 	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
-	if(pControllers.HasMatching([&](const peeController *each){
-		return each->GetName() == controller->GetName();
-	})){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -406,36 +396,27 @@ void peeEmitter::MoveControllerTo(peeController *controller, int index){
 }
 
 void peeEmitter::RemoveController(peeController *controller){
-	if(!controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
+	const peeController::Ref guard(controller);
+	pControllers.RemoveOrThrow(controller);
 	
-	if(controller->GetActive()){
-		if(pControllers.GetCount() == 1){
-			SetActiveController(nullptr);
-			
-		}else{
-			if(pControllers.GetAt(0) == controller){
-				SetActiveController(pControllers.GetAt(1));
-				
-			}else{
-				SetActiveController(pControllers.GetAt(0));
-			}
-		}
+	if(pActiveController == controller){
+		pActiveController = nullptr;
 	}
 	
 	controller->SetEmitter(nullptr);
-	pControllers.Remove(controller);
 	NotifyControllerStructureChanged();
 }
 
 void peeEmitter::RemoveAllControllers(){
-	const int count = pControllers.GetCount();
-	int i;
+	if(pControllers.IsEmpty()){
+		return;
+	}
 	
 	SetActiveController(nullptr);
 	
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetEmitter(nullptr);
-	}
+	pControllers.Visit([](peeController &c){
+		c.SetEmitter(nullptr);
+	});
 	pControllers.RemoveAll();
 	NotifyControllerStructureChanged();
 }
@@ -466,14 +447,10 @@ void peeEmitter::SetActiveController(peeController *controller){
 //////////
 
 void peeEmitter::AddType(peeType *type){
-	if(!type){
-		DETHROW(deeInvalidParam);
-	}
-	if(pTypes.HasMatching([&](const peeType *each){
+	DEASSERT_NOTNULL(type)
+	DEASSERT_FALSE(pTypes.HasMatching([&](const peeType *each){
 		return each->GetName() == type->GetName();
-	})){
-		DETHROW(deeInvalidParam);
-	}
+	}))
 	
 	FreeEmitter();
 	
@@ -487,14 +464,10 @@ void peeEmitter::AddType(peeType *type){
 }
 
 void peeEmitter::InsertTypeAt(peeType *type, int index){
-	if(!type){
-		DETHROW(deeInvalidParam);
-	}
-	if(pTypes.HasMatching([&](const peeType *each){
+	DEASSERT_NOTNULL(type)
+	DEASSERT_FALSE(pTypes.HasMatching([&](const peeType *each){
 		return each->GetName() == type->GetName();
-	})){
-		DETHROW(deeInvalidParam);
-	}
+	}))
 	
 	FreeEmitter();
 	
@@ -508,47 +481,36 @@ void peeEmitter::InsertTypeAt(peeType *type, int index){
 }
 
 void peeEmitter::MoveTypeTo(peeType *type, int index){
-	FreeEmitter();
 	pTypes.Move(type, index);
+	FreeEmitter();
 	NotifyTypeStructureChanged();
 }
 
 void peeEmitter::RemoveType(peeType *type){
-	if(!type || type->GetEmitter() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const peeType::Ref guard(type);
+	pTypes.RemoveOrThrow(type);
 	
 	FreeEmitter();
 	
-	if(type->GetActive()){
-		if(pTypes.GetCount() == 1){
-			SetActiveType(nullptr);
-			
-		}else{
-			if(pTypes.GetAt(0) == type){
-				SetActiveType(pTypes.GetAt(1));
-				
-			}else{
-				SetActiveType(pTypes.GetAt(0));
-			}
-		}
+	if(pActiveType == type){
+		pActiveType = nullptr;
 	}
 	
 	type->SetEmitter(nullptr);
-	pTypes.Remove(type);
 	NotifyTypeStructureChanged();
 }
 
 void peeEmitter::RemoveAllTypes(){
-	const int count = pTypes.GetCount();
-	int i;
+	if(pTypes.IsEmpty()){
+		return;
+	}
 	
 	FreeEmitter();
 	SetActiveType(nullptr);
 	
-	for(i=0; i<count; i++){
-		pTypes.GetAt(i)->SetEmitter(nullptr);
-	}
+	pTypes.Visit([](peeType &t){
+		t.SetEmitter(nullptr);
+	});
 	pTypes.RemoveAll();
 	NotifyTypeStructureChanged();
 }

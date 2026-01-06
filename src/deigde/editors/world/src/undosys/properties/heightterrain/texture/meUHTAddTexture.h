@@ -26,13 +26,11 @@
 #ifndef _MEUHTADDTEXTURE_H_
 #define _MEUHTADDTEXTURE_H_
 
-// includes
-#include <deigde/undo/igdeUndo.h>
-
-// predefinitions
 #include "../../../../world/meWorld.h"
-class meHeightTerrainSector;
+#include "../../../../world/terrain/meHeightTerrainSector.h"
 #include "../../../../world/terrain/meHeightTerrainTexture.h"
+
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -47,8 +45,8 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
-	meHeightTerrainSector *pSector;
+	meWorld *pWorld;
+	meHeightTerrainSector::Ref pSector;
 	meHeightTerrainTexture::Ref pTexture;
 	
 public:

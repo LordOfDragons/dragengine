@@ -250,7 +250,7 @@ void meHeightTerrainPFLayer::RebuildInstances(){
 
 void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 	DEASSERT_NOTNULL(type)
-	pTypes.Add(type);
+	pTypes.AddOrThrow(type);
 	type->SetPFLayer(this);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -262,7 +262,8 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 
 void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 	const meHeightTerrainPFType::Ref guard(type);
-	pTypes.Remove(type);
+	pTypes.RemoveOrThrow(type);
+	
 	type->SetPFLayer(nullptr);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -273,6 +274,10 @@ void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 }
 
 void meHeightTerrainPFLayer::RemoveAllTypes(){
+	if(pTypes.IsEmpty()){
+		return;
+	}
+	
 	pTypes.Visit([](meHeightTerrainPFType &type){
 		type.SetPFLayer(nullptr);
 	});

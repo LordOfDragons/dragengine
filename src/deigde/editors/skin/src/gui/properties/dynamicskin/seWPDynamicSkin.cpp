@@ -559,25 +559,24 @@ void seWPDynamicSkin::SetSkin(seSkin *skin){
 }
 
 seDynamicSkinRenderable *seWPDynamicSkin::GetRenderable() const{
-	return pSkin ? pSkin->GetDynamicSkin().GetActiveRenderable() : nullptr;
+	return pSkin ? pSkin->GetDynamicSkin().GetActiveRenderable().Pointer() : nullptr;
 }
 
 
 
 void seWPDynamicSkin::UpdateRenderableList(){
-	seDynamicSkinRenderable * const selection = GetRenderable();
-	
-	pListRenderable->RemoveAllItems();
-	
-	if(pSkin){
-		pSkin->GetDynamicSkin().GetRenderables().Visit([&](seDynamicSkinRenderable *renderable){
-			pListRenderable->AddItem(renderable->GetName(), nullptr, renderable);
-		});
+	pListRenderable->UpdateRestoreSelection([&](){
+		pListRenderable->RemoveAllItems();
 		
-		pListRenderable->SortItems();
-	}
+		if(pSkin){
+			pSkin->GetDynamicSkin().GetRenderables().Visit([&](seDynamicSkinRenderable *renderable){
+				pListRenderable->AddItem(renderable->GetName(), nullptr, renderable);
+			});
+			
+			pListRenderable->SortItems();
+		}
+	}, 0);
 	
-	pListRenderable->SetSelectionWithData(selection);
 	ShowValuePanel();
 	UpdateRenderable();
 }

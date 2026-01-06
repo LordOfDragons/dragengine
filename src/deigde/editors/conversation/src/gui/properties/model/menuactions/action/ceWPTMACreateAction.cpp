@@ -114,32 +114,14 @@ ceConversationAction::Ref ceWPTMACreateAction::CreateAction(){
 		return ceCATrigger::Ref::New();
 		
 	case ceConversationAction::eatIfElse:{
-		ceCAIfElse::Ref ifElse;
-		ceCAIfElseCase::Ref ifCase;
-		
-		try{
-			ifElse = ceCAIfElse::Ref::New();
-			ifCase = ceCAIfElseCase::Ref::New();
-			ifElse->GetCases().Add(ifCase);
-		}catch(const deException &){
-			throw;
-		}
-		
+		const ceCAIfElse::Ref ifElse(ceCAIfElse::Ref::New());
+		ifElse->GetCases().Add(ceCAIfElseCase::Ref::New());
 		return ifElse;
 		}
 		
 	case ceConversationAction::eatPlayerChoice:{
-		ceCAPlayerChoice::Ref playerChoice;
-		ceCAPlayerChoiceOption::Ref option;
-		
-		try{
-			playerChoice = ceCAPlayerChoice::Ref::New();
-			option = ceCAPlayerChoiceOption::Ref::New();
-			playerChoice->GetOptions().Add(option);
-		}catch(const deException &){
-			throw;
-		}
-		
+		const ceCAPlayerChoice::Ref playerChoice(ceCAPlayerChoice::Ref::New());
+		playerChoice->GetOptions().Add(ceCAPlayerChoiceOption::Ref::New());
 		return playerChoice;
 		}
 		

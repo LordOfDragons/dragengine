@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	
 	reRigBone::Ref pOldBone;
 	reRigBone::Ref pNewBone;

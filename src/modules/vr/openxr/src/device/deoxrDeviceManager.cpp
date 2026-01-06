@@ -84,12 +84,10 @@ int deoxrDeviceManager::IndexOfWithID(const char *id) const{
 }
 
 void deoxrDeviceManager::Add(deoxrDevice *device){
-	if(!device){
-		DETHROW_INFO(deeNullPointer, "device");
-	}
+	DEASSERT_NOTNULL(device)
 	
+	pDevices.AddOrThrow(device);
 	device->SetIndex(pDevices.GetCount());
-	pDevices.Add(device);
 	
 	pOxr.LogInfoFormat("Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
 		device->GetID().GetString(), device->GetType(), device->GetAxes().GetCount(),
@@ -101,16 +99,14 @@ void deoxrDeviceManager::Add(deoxrDevice *device){
 
 void deoxrDeviceManager::Remove(deoxrDevice *device){
 	const int index = pDevices.IndexOf(device);
-	if(index == -1){
-		DETHROW_INFO(deeInvalidParam, "device not in list");
-	}
+	DEASSERT_TRUE(index != -1)
 	
 	pOxr.LogInfoFormat("Input Device Removed: id='%s'", device->GetID().GetString());
 	
 	pDevices.RemoveFrom(index);
 	
-	pDevices.VisitIndexed([&](int index, deoxrDevice &device){
-		device.SetIndex(index);
+	pDevices.VisitIndexed([&](int i, deoxrDevice &d){
+		d.SetIndex(i);
 	});
 	
 	pNotifyAttachedDetached = true;

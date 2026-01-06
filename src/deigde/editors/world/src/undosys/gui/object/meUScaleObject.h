@@ -39,7 +39,7 @@ public:
 	typedef deTObjectReference<meUScaleObject> Ref;
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	meUndoDataObject::List pObjects;
 	
 public:

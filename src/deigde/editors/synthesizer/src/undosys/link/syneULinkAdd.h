@@ -43,7 +43,7 @@ public:
 public:
 	
 private:
-	syneSynthesizer::Ref pSynthesizer;
+	syneSynthesizer *pSynthesizer;
 	syneLink::Ref pLink;
 	
 	

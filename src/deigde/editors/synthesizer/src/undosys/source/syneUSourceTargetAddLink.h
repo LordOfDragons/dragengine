@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
+#include "../../synthesizer/controller/syneControllerTarget.h"
 #include "../../synthesizer/source/syneSource.h"
 #include "../../synthesizer/link/syneLink.h"
-class syneControllerTarget;
 
 
 
@@ -43,7 +43,7 @@ public:
 	
 private:
 	syneSource::Ref pSource;
-	syneControllerTarget *pTarget;
+	syneControllerTarget::Ref pTarget;
 	
 	syneLink::Ref pLink;
 	

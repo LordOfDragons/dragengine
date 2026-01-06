@@ -416,25 +416,14 @@ void meHeightTerrainNavSpace::AddType(meHeightTerrainNavSpaceType *type){
 }
 
 void meHeightTerrainNavSpace::RemoveType(meHeightTerrainNavSpaceType *type){
-	if(!pTypes.Has(type)){
-		DETHROW(deeInvalidParam);
-	}
+	const meHeightTerrainNavSpaceType::Ref guard(type);
+	pTypes.RemoveOrThrow(type);
 	
-	if(type == pActiveType){
-		if(pTypes.GetCount() == 1){
-			SetActiveType(nullptr);
-			
-		}else if(pTypes.GetAt(0) == type){
-			SetActiveType((meHeightTerrainNavSpaceType*)pTypes.GetAt(1));
-			
-		}else{
-			SetActiveType((meHeightTerrainNavSpaceType*)pTypes.GetAt(0));
-		}
+	if(pActiveType == type){
+		pActiveType = nullptr;
 	}
 	
 	type->SetNavSpace(nullptr);
-	
-	pTypes.Remove(type);
 	
 	pUpdateDDTypeFaces();
 	UpdateNavSpaceFaces();
@@ -443,6 +432,10 @@ void meHeightTerrainNavSpace::RemoveType(meHeightTerrainNavSpaceType *type){
 }
 
 void meHeightTerrainNavSpace::RemoveAllTypes(){
+	if(pTypes.IsEmpty()){
+		return;
+	}
+	
 	SetActiveType(nullptr);
 	
 	pTypes.Visit([](meHeightTerrainNavSpaceType &t){

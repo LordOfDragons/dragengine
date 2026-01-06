@@ -127,13 +127,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Count of elements. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{
+		return pCount;
+	}
 	
 	/** \brief List is empty. */
-	inline bool IsEmpty() const{ return pCount == 0; }
+	inline bool IsEmpty() const{
+		return pCount == 0;
+	}
 	
 	/** \brief List is not empty. */
-	inline bool IsNotEmpty() const{ return pCount > 0; }
+	inline bool IsNotEmpty() const{
+		return pCount > 0;
+	}
 	
 	/**
 	 * \brief Element at index.
@@ -150,22 +156,20 @@ public:
 	 * \brief First element.
 	 * \throws deeInvalidParam if list is empty.
 	 */
-	const T &First() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[0];
+	inline const T &First() const{
+		return GetAt(0);
 	}
 	
 	/**
 	 * \brief Last element.
 	 * \throws deeInvalidParam if list is empty.
 	 */
-	const T &Last() const{
-		DEASSERT_TRUE(pCount > 0)
-		return pElements[pCount - 1];
+	inline const T &Last() const{
+		return GetAt(pCount - 1);
 	}
 	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
-	int IndexOf(const TP &element) const{
+	inline int IndexOf(const TP &element) const{
 		return IndexOf(element, 0);
 	}
 	
@@ -296,19 +300,29 @@ public:
 	
 	/**
 	 * \brief Set element at index.
-	 * \throws deeInvalidParam \em element is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 * \returns true if set or false if element is already present.
 	 */
-	void SetAt(int index, const TP &element){
+	bool SetAt(int index, const TP &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		
 		if(pElements[index] == element){
-			return;
+			return false;
 		}
 		
 		DEASSERT_FALSE(Has(element))
 		pElements[index] = element;
+		return true;
+	}
+	
+	/**
+	 * \brief Set element at index or throw if already present.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 * \throws deeInvalidParam \em element is present in the set.
+	 */
+	inline void SetAtOrThrow(int index, const TP &element){
+		DEASSERT_TRUE(SetAt(index, element))
 	}
 	
 	/**
@@ -339,12 +353,51 @@ public:
 	}
 	
 	/**
-	 * \brief Insert element.
+	 * \brief Add element or throw if already present.
 	 * \throws deeInvalidParam \em element is present in the set.
-	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert(const TP &element, int index){
-		DEASSERT_FALSE(Has(element))
+	inline void AddOrThrow(const TP &element){
+		DEASSERT_TRUE(Add(element))
+	}
+	
+	/** \brief Add all elements from another collection not present in set. */
+	template<typename InputIt>
+	void AddAll(InputIt first, InputIt last){
+		for(; first != last; ++first){
+			Add(*first);
+		}
+	}
+	
+	/** \brief Add all elements from another collection or throw if any element is present. */
+	template<typename InputIt>
+	void AddAllOrThrow(InputIt first, InputIt last){
+		for(; first != last; ++first){
+			AddOrThrow(*first);
+		}
+	}
+	
+	/** \brief Add all elements from another collection not present in set. */
+	template<typename C>
+	inline void AddAll(const C &collection){
+		AddAll(collection.cbegin(), collection.cend());
+	}
+	
+	/** \brief Add all elements from another collection or throw if any element is present. */
+	template<typename C>
+	inline void AddAllOrThrow(const C &collection){
+		AddAllOrThrow(collection.cbegin(), collection.cend());
+	}
+	
+	/**
+	 * \brief Insert element.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 * \returns true if added or false if already present.
+	 */
+	bool Insert(const TP &element, int index){
+		if(Has(element)){
+			return false;
+		}
+		
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
 		
@@ -368,13 +421,50 @@ public:
 		}
 		pElements[index] = element;
 		pCount++;
+		return true;
+	}
+	
+	/**
+	 * \brief Insert element or throw if already present.
+	 * \throws deeInvalidParam \em element is present in the set.
+	 */
+	inline void InsertOrThrow(const TP &element, int index){
+		DEASSERT_TRUE(Insert(element, index))
+	}
+	
+	/** \brief Insert all elements from another collection not present in set. */
+	template<typename InputIt>
+	void InsertAll(InputIt first, InputIt last, int index){
+		for(; first != last; ++first){
+			Insert(*first, index++);
+		}
+	}
+	
+	/** \brief Insert all elements from another collection or throw if any element is present. */
+	template<typename InputIt>
+	void InsertAllOrThrow(InputIt first, InputIt last, int index){
+		for(; first != last; ++first){
+			InsertOrThrow(*first, index++);
+		}
+	}
+	
+	/** \brief Insert all elements from another collection not present in set. */
+	template<typename C>
+	inline void InsertAll(const C &collection, int index){
+		AddAll(collection.cbegin(), collection.cend(), index);
+	}
+	
+	/** \brief Insert all elements from another collection or throw if any element is present. */
+	template<typename C>
+	inline void InsertAllOrThrow(const C &collection, int index){
+		InsertAllOrThrow(collection.cbegin(), collection.cend(), index);
 	}
 	
 	/**
 	 * \brief Move element.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move(const TP &element, int to){
+	inline void Move(const TP &element, int to){
 		MoveIndex(IndexOf(element), to);
 	}
 	
@@ -422,6 +512,14 @@ public:
 		}else{
 			return false;
 		}
+	}
+	
+	/**
+	 * \brief Remove element or throw if absent from the set.
+	 * \throws deeInvalidParam \em element is not present in the set.
+	 */
+	inline void RemoveOrThrow(const TP &element){
+		DEASSERT_TRUE(Remove(element))
 	}
 	
 	/**
@@ -1490,11 +1588,7 @@ public:
 		return !Equals(set);
 	}
 	
-	/**
-	 * \brief New set containing all elements of this set followed by all elements of another set.
-	 * 
-	 * Duplicates are not added twice.
-	 */
+	/** \brief New set containing all elements of this set followed by all elements of another set if absent. */
 	decTOrderedSet<T,TP> operator+(const decTOrderedSet<T,TP> &set) const{
 		decTOrderedSet<T,TP> nset(pCount + set.pCount);
 		int i;
@@ -1566,7 +1660,7 @@ public:
 		return *this;
 	}
 	
-	/** \brief Append elements of set to this set. */
+	/** \brief Append elements of set to this set if absent. */
 	decTOrderedSet<T,TP> &operator+=(const decTOrderedSet<T,TP> &set){
 		if(set.pCount > 0){
 			int count = pCount + set.pCount;

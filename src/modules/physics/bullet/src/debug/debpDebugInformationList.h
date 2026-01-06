@@ -66,9 +66,6 @@ public:
 	/** \brief Remove child. */
 	void Remove(debpDebugInformation *child);
 	
-	/** \brief Remove child if present. */
-	void RemoveIfPresent(debpDebugInformation *child);
-	
 	/** \brief Remove all children. */
 	void RemoveAll();
 	/*@}*/

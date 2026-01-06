@@ -280,7 +280,7 @@ void igdeNativeFoxIconListBox::RemoveItem(int index){
 void igdeNativeFoxIconListBox::UpdateSelection(){
 	pListBox->setCurrentItem(pOwner->GetSelection());
 	if(pListBox->getCurrentItem() != -1){
-		pListBox->makeItemVisible(pListBox->getCurrentItem());
+		MakeItemVisible(pListBox->getCurrentItem());
 	}
 	
 	if(pOwner->GetSelectionMode() == igdeIconListBox::esmMultiple){
@@ -346,14 +346,23 @@ void igdeNativeFoxIconListBox::Focus(){
 }
 
 void igdeNativeFoxIconListBox::MakeItemVisible(int index){
-	pListBox->makeItemVisible(index);
+	if(!pListBox->isItemVisible(index)){
+		pListBox->makeItemVisible(index);
+	}
 }
 
 void igdeNativeFoxIconListBox::RemoveAllItems(){
 	pListBox->clearItems();
 }
 
+decPoint igdeNativeFoxIconListBox::GetContentPosition() const{
+	return decPoint(-pListBox->getContentX(), -pListBox->getContentY());
+}
 
+void igdeNativeFoxIconListBox::SetContentPosition(const decPoint &position){
+	pListBox->layout();
+	pListBox->setPosition(-position.x, -position.y);
+}
 
 int igdeNativeFoxIconListBox::IconListBoxFlagsBorder(const igdeIconListBox &){
 	return FRAME_SUNKEN;

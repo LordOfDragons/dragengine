@@ -76,6 +76,6 @@ void ceUCAASpeakBodyLAAdd::Undo(){
 }
 
 void ceUCAASpeakBodyLAAdd::Redo(){
-	pActorSpeak->GetBodyLookAts().Insert(pBodyLA, pIndex);
+	pActorSpeak->GetBodyLookAts().InsertOrThrow(pBodyLA, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

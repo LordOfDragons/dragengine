@@ -80,17 +80,17 @@ public:
 
 class cViewCurve : public igdeViewCurveBezierListener{
 	skyeWindowCurves &pPanel;
-	igdeUndo::Ref &pUndo;
+	skyeULinkSetCurve::Ref &pUndo;
 public:
 	typedef deTObjectReference<cViewCurve> Ref;
-	cViewCurve(skyeWindowCurves &panel, igdeUndo::Ref &undo) :
+	cViewCurve(skyeWindowCurves &panel, skyeULinkSetCurve::Ref &undo) :
 	pPanel(panel),
 	pUndo(undo){
 	}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
 		if(pUndo){
-			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
+			pUndo->SetNewCurve(viewCurveBezier->GetCurve());
 			
 		}else if(!pPanel.GetLink() || pPanel.GetLink()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
@@ -105,7 +105,7 @@ public:
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
 		if(pUndo){
-			((skyeULinkSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
+			pUndo->SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
@@ -181,22 +181,21 @@ skyeLink *skyeWindowCurves::GetLink() const{
 }
 
 void skyeWindowCurves::UpdateLinkList(){
-	pListLinks->RemoveAllItems();
-	
-	if(pSky){
-		pSky->GetLinks().Visit([&](skyeLink *link){
-			pListLinks->AddItem(link->GetName(), nullptr, link);
-		});
+	pListLinks->UpdateRestoreSelection([&](){
+		pListLinks->RemoveAllItems();
 		
-		pListLinks->SortItems();
-	}
-	
-	SelectActiveLink();
+		if(pSky){
+			pSky->GetLinks().Visit([&](skyeLink *link){
+				pListLinks->AddItem(link->GetName(), nullptr, link);
+			});
+			
+			pListLinks->SortItems();
+		}
+	}, 0);
 }
 
 void skyeWindowCurves::SelectActiveLink(){
 	pListLinks->SetSelectionWithData(GetLink());
-	pListLinks->MakeSelectionVisible();
 	UpdateCurve();
 }
 

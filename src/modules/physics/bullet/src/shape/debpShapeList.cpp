@@ -51,10 +51,8 @@ debpShapeList::~debpShapeList(){
 ///////////////
 
 void debpShapeList::AddShape(debpShape *shape){
-	if(!shape){
-		DETHROW(deeInvalidParam);
-	}
-	pShapes.Add(shape);
+	DEASSERT_NOTNULL(shape)
+	pShapes.AddOrThrow(shape);
 }
 
 void debpShapeList::RemoveAllShapes(){

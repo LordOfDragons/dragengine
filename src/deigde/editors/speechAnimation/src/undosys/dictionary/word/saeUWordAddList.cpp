@@ -51,7 +51,7 @@ pWords(words)
 	const int count = words.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(sanimation->GetWordList().Has(words.GetAt(i))){
+		if(sanimation->GetWords().Has(words.GetAt(i))){
 			DETHROW(deeInvalidParam);
 		}
 	}

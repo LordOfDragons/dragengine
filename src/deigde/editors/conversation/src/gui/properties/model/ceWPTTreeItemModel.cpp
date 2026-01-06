@@ -116,7 +116,7 @@ void ceWPTTreeItemModel::AddChild(ceWPTTreeItemModel *child){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add(child);
+	pChildren.AddOrThrow(child);
 	child->SetParent(this);
 	
 	if(pTreeItem){
@@ -130,7 +130,7 @@ void ceWPTTreeItemModel::InsertChild(ceWPTTreeItemModel *child, int position){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Insert(child, position);
+	pChildren.InsertOrThrow(child, position);
 	child->SetParent(this);
 	
 	if(pTreeItem){

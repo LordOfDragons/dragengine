@@ -232,12 +232,9 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition(const decXmlElementTag &root
 }
 
 void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdeProperty::List &propertyList){
-	const gdeProperty::Ref objRef(gdeProperty::Ref::New(GetAttributeString(root, "name")));
-	gdeProperty &property = (gdeProperty&)(deObject&)objRef;
-	
+	const gdeProperty::Ref property(gdeProperty::Ref::New(GetAttributeString(root, "name")));
 	pReadProperty(root, property);
-	
-	propertyList.Add(&property);
+	propertyList.Add(property);
 }
 
 void gdeLoadSaveGameDefinition::pReadProperty(const decXmlElementTag &root, gdeProperty &property){
@@ -1828,10 +1825,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &
 		LogErrorGenericProblemValue(root, name, "A texture with this name exists already.");
 	}
 	
-	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::New(name));
+	const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::New(name));
 	const int elementCount = root.GetElementCount();
 	int i;
-	gdeOCComponentTexture &texture = (gdeOCComponentTexture&)(deObject&)objRef;
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1842,32 +1838,32 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture(const decXmlElementTag &
 		const decString tagName(tag->GetName());
 		
 		if(tagName == "skin"){
-			texture.SetPathSkin(GetCDataString(*tag));
+			texture->SetPathSkin(GetCDataString(*tag));
 			
 		}else if(tagName == "offset"){
 			decVector2 offset;
 			ReadVector2(*tag, offset);
-			texture.SetOffset(offset);
+			texture->SetOffset(offset);
 			
 		}else if(tagName == "scale"){
 			decVector2 scale(1.0f, 1.0f);
 			ReadVector2(*tag, scale);
-			texture.SetScale(scale);
+			texture->SetScale(scale);
 			
 		}else if(tagName == "rotate"){
-			texture.SetRotation(GetCDataFloat(*tag) * DEG2RAD);
+			texture->SetRotation(GetCDataFloat(*tag) * DEG2RAD);
 			
 		}else if(tagName == "tint"){
 			decColor color(1.0f, 1.0f, 1.0f);
 			ReadColor(*tag, color);
-			texture.SetColorTint(color);
+			texture->SetColorTint(color);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
 	
-	objectClass.GetTextures().Add(&texture);
+	objectClass.GetTextures().Add(texture);
 }
 
 void gdeLoadSaveGameDefinition::pReadCustomFilePatternList(

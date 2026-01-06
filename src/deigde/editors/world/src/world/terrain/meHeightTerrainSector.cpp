@@ -833,12 +833,11 @@ void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 
 void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 	const meHeightTerrainTexture::Ref guard(texture);
+	pTextures.RemoveOrThrow(texture);
 	
-	if(texture == pActiveTexture){
-		SetActiveTexture(nullptr);
+	if(pActiveTexture == texture){
+		pActiveTexture = nullptr;
 	}
-	
-	pTextures.Remove(texture);
 	
 	if(texture->GetEngineTexture()){
 		if(pEngSector){
@@ -858,6 +857,10 @@ void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 }
 
 void meHeightTerrainSector::RemoveAllTextures(){
+	if(pTextures.IsEmpty()){
+		return;
+	}
+	
 	SetActiveTexture(nullptr);
 	
 	pTextures.Visit([&](meHeightTerrainTexture &t){
@@ -956,7 +959,7 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 	DEASSERT_NOTNULL(pflayer)
 	
-	pPFLayers.Add(pflayer);
+	pPFLayers.AddOrThrow(pflayer);
 	pflayer->SetHTSector(this);
 	
 	if(pHeightTerrain){
@@ -971,12 +974,12 @@ void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 
 void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
 	const meHeightTerrainPFLayer::Ref guard(pflayer);
+	pPFLayers.RemoveOrThrow(pflayer);
 	
-	if(pflayer == pActivePFLayer){
-		SetActivePFLayer(nullptr);
+	if(pActivePFLayer == pflayer){
+		pActivePFLayer = nullptr;
 	}
 	
-	pPFLayers.Remove(pflayer);
 	pflayer->SetHTSector(nullptr);
 	
 	if(pHeightTerrain){
@@ -986,6 +989,10 @@ void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
 }
 
 void meHeightTerrainSector::RemoveAllPFLayers(){
+	if(pPFLayers.IsEmpty()){
+		return;
+	}
+	
 	SetActivePFLayer(nullptr);
 	
 	pPFLayers.Visit([&](meHeightTerrainPFLayer &l){
@@ -1178,12 +1185,11 @@ void meHeightTerrainSector::AddNavSpace(meHeightTerrainNavSpace *navspace){
 
 void meHeightTerrainSector::RemoveNavSpace(meHeightTerrainNavSpace *navspace){
 	const meHeightTerrainNavSpace::Ref guard(navspace);
+	pNavSpaces.RemoveOrThrow(navspace);
 	
-	if(navspace == pActiveNavSpace){
-		SetActiveNavSpace(nullptr);
+	if(pActiveNavSpace == navspace){
+		pActiveNavSpace	= nullptr;
 	}
-	
-	pNavSpaces.Remove(navspace);
 	
 	if(navspace->GetEngineNavSpace()){
 		pEngSector->RemoveNavSpace(navspace->GetEngineNavSpace());
@@ -1201,6 +1207,10 @@ void meHeightTerrainSector::RemoveNavSpace(meHeightTerrainNavSpace *navspace){
 }
 
 void meHeightTerrainSector::RemoveAllNavSpaces(){
+	if(pNavSpaces.IsEmpty()){
+		return;
+	}
+	
 	SetActiveNavSpace(nullptr);
 	
 	if(pHeightTerrain){

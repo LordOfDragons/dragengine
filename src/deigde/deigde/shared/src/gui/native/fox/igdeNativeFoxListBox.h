@@ -93,6 +93,8 @@ public:
 	virtual void UpdateStyles();
 	virtual void UpdateSelection();
 	virtual void Focus();
+	virtual decPoint GetContentPosition() const;
+	virtual void SetContentPosition(const decPoint &position);
 	virtual void MakeItemVisible(int index);
 	virtual void InsertItem(int index);
 	virtual void RemoveItem(int index);

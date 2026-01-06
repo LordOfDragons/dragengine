@@ -132,9 +132,9 @@ igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
 pWrapper(igdeWObject::Ref::New(environment)){
 }
 
-void igdeWOSOWorld::ChildObject::AddTexture(const ChildObjectTexture::Ref &texture){
+void igdeWOSOWorld::ChildObject::AddTexture(ChildObjectTexture *texture){
 	DEASSERT_NOTNULL(texture)
-	pTextures.Add(texture);
+	pTextures.AddOrThrow(texture);
 }
 
 
@@ -434,13 +434,14 @@ void igdeWOSOWorld::Visit(igdeWOSOVisitor &visitor){
 }
 
 
-void igdeWOSOWorld::AddChildObject(const ChildObject::Ref &object){
+void igdeWOSOWorld::AddChildObject(ChildObject *object){
 	DEASSERT_NOTNULL(object)
+	
+	pChildObjects.AddOrThrow(object);
 	
 	igdeWObject &wo = object->GetWrapper();
 	wo.SetAsyncLoadFinished(&pChildAsyncFinished);
 	wo.SetWorld(GetWrapper().GetWorld());
-	pChildObjects.Add(object);
 }
 
 void igdeWOSOWorld::RemoveAllChildObjects(){

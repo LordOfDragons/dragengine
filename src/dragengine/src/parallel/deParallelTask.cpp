@@ -88,12 +88,8 @@ void deParallelTask::SetFinished(){
 }
 
 void deParallelTask::AddDependsOn(deParallelTask *task){
-	if(!task || task == this){
-		DETHROW(deeInvalidParam);
-	}
-	if(task->pDependsOn.Has(this)){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(task)
+	DEASSERT_FALSE(task == this)
 	
 	pDependsOn.Add(task);
 	task->GetDependedOnBy().Add(this);
@@ -103,9 +99,8 @@ void deParallelTask::AddDependsOn(deParallelTask *task){
 }
 
 void deParallelTask::RemoveDependsOn(deParallelTask *task){
-	if(!task || task == this){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(task)
+	DEASSERT_FALSE(task == this)
 	
 	task->GetDependedOnBy().Remove(this);
 	pDependsOn.Remove(task);
@@ -114,14 +109,14 @@ void deParallelTask::RemoveDependsOn(deParallelTask *task){
 }
 
 void deParallelTask::RemoveAllDependsOn(){
-	if(pDependsOn.GetCount() == 0){
+	if(pDependsOn.IsEmpty()){
 		return;
 	}
 	
 	const deParallelTask::Ref guard(this);
 	
-	while(pDependsOn.GetCount() > 0){
-		deParallelTask * const task = pDependsOn.GetAt(0);
+	while(pDependsOn.IsNotEmpty()){
+		deParallelTask * const task = pDependsOn.First();
 		task->GetDependedOnBy().Remove(this);
 		pDependsOn.Remove(task);
 		

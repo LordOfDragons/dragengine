@@ -452,7 +452,8 @@ void deCollider::ApplyTorque(const decVector &torque){
 ////////////////
 
 void deCollider::AddConstraint(deColliderConstraint *constraint){
-	pConstraints.Add(constraint);
+	DEASSERT_NOTNULL(constraint)
+	pConstraints.AddOrThrow(constraint);
 	
 	if(pPeerPhysics){
 		pPeerPhysics->ConstraintAdded(pConstraints.GetCount() - 1, constraint);
@@ -471,7 +472,7 @@ void deCollider::RemoveConstraint(deColliderConstraint *constraint){
 }
 
 void deCollider::RemoveAllConstraints(){
-	if(pConstraints.GetCount() == 0){
+	if(pConstraints.IsEmpty()){
 		return;
 	}
 	
@@ -526,7 +527,8 @@ void deCollider::RemoveAllIgnoreColliders(){
 /////////////////////////////////
 
 void deCollider::AddCollisionTest(deColliderCollisionTest *collisionTest){
-	pCollisionTests.Add(collisionTest);
+	DEASSERT_NOTNULL(collisionTest)
+	pCollisionTests.AddOrThrow(collisionTest);
 	
 	if(pPeerPhysics){
 		pPeerPhysics->CollisionTestAdded(pCollisionTests.GetCount() - 1);
@@ -535,10 +537,9 @@ void deCollider::AddCollisionTest(deColliderCollisionTest *collisionTest){
 
 void deCollider::RemoveCollisionTest(deColliderCollisionTest *collisionTest){
 	const int index = pCollisionTests.IndexOf(collisionTest);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	pCollisionTests.Remove(collisionTest);
+	DEASSERT_TRUE(index != -1)
+	
+	pCollisionTests.RemoveFrom(index);
 	
 	if(pPeerPhysics){
 		pPeerPhysics->CollisionTestRemoved(index);

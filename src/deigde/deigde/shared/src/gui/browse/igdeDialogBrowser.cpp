@@ -305,18 +305,13 @@ void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem
 }
 
 void igdeDialogBrowser::UpdateItemList(){
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : nullptr;
-	
-	pListItems->RemoveAllItems();
-	
-	igdeGDAddToListVisitor visitor(GetEnvironment(), pListItems, GetPreviewIconSize());
-	AddItemsToList(visitor);
-	pListItems->SortItems();
-	
-	pListItems->SetSelectionWithData(selection);
-	if(!pListItems->GetSelectedItem() && pListItems->GetItems().IsNotEmpty()){
-		pListItems->SetSelection(0);
-	}
+	pListItems->UpdateRestoreSelection([&]{
+		pListItems->RemoveAllItems();
+		
+		igdeGDAddToListVisitor visitor(GetEnvironment(), pListItems, GetPreviewIconSize());
+		AddItemsToList(visitor);
+		pListItems->SortItems();
+	}, 0);
 }
 
 void igdeDialogBrowser::RebuildPISelectedItem(){

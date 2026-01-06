@@ -111,20 +111,10 @@ void ceConversationFile::AddTopic(ceConversationTopic *topic){
 
 void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
 	const ceConversationTopic::Ref guard(topic);
-	pTopics.Remove(topic);
+	pTopics.RemoveOrThrow(topic);
 	
 	if(topic == pActiveTopic){
-		if(pTopics.GetCount() == 1){
-			SetActiveTopic(nullptr);
-			
-		}else{
-			if(pTopics.First() == topic){
-				SetActiveTopic(pTopics.GetAt(1));
-				
-			}else{
-				SetActiveTopic(pTopics.First());
-			}
-		}
+		pActiveTopic = nullptr;
 	}
 	
 	topic->SetFile(nullptr);
@@ -135,6 +125,10 @@ void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
 }
 
 void ceConversationFile::RemoveAllTopics(){
+	if(pTopics.IsEmpty()){
+		return;
+	}
+	
 	SetActiveTopic(nullptr);
 	
 	pTopics.Visit([&](ceConversationTopic &t){

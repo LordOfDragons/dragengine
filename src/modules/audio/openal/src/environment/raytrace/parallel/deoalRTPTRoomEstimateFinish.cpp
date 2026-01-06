@@ -83,16 +83,11 @@ deoalRTPTRoomEstimateFinish::~deoalRTPTRoomEstimateFinish(){
 ///////////////
 
 void deoalRTPTRoomEstimateFinish::AddDependencies(const decTOrderedSet<deoalRTPTRoomEstimate*> &tasks){
-	const int count = tasks.GetCount();
-	int i;
-	
 	pTasks.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		deoalRTPTRoomEstimate * const task = tasks.GetAt(i);
+	tasks.Visit([&](deoalRTPTRoomEstimate *task){
 		AddDependsOn(task);
 		pTasks.Add(task);
-	}
+	});
 }
 
 void deoalRTPTRoomEstimateFinish::SetRange(float range){

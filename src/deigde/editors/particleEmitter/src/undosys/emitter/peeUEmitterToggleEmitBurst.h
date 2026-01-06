@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	peeEmitter::Ref pEmitter;
+	peeEmitter *pEmitter;
 	
 	
 	

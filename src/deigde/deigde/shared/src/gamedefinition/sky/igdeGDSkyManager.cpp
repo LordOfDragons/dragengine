@@ -65,14 +65,12 @@ igdeGDSky *igdeGDSkyManager::GetSkyWithPath(const char * path) const{
 }
 
 void igdeGDSkyManager::AddSky(igdeGDSky *sky){
-	if(!sky){
-		DETHROW(deeInvalidParam);
-	}
-	pSkyList.Add(sky);
+	DEASSERT_NOTNULL(sky)
+	pSkyList.AddOrThrow(sky);
 }
 
 void igdeGDSkyManager::RemoveSky(igdeGDSky *sky){
-	pSkyList.Remove(sky);
+	pSkyList.RemoveOrThrow(sky);
 }
 
 void igdeGDSkyManager::RemoveAllSkies(){

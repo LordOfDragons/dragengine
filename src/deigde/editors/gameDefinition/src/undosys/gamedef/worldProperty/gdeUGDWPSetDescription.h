@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	gdeGameDefinition::Ref pGameDefinition;
+	gdeGameDefinition *pGameDefinition;
 	gdeProperty::Ref pProperty;
 	
 	decString pOldValue;

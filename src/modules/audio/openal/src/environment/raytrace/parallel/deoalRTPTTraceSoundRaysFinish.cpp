@@ -79,9 +79,9 @@ deoalRTPTTraceSoundRaysFinish::~deoalRTPTTraceSoundRaysFinish(){
 void deoalRTPTTraceSoundRaysFinish::AddDependencies(
 const decTOrderedSet<deoalRTPTTraceSoundRays*> &tasks){
 	pTasks.RemoveAll();
-	tasks.Visit([this](deoalRTPTTraceSoundRays * const t){
-		AddDependsOn(t);
-		pTasks.Add(t);
+	tasks.Visit([&](deoalRTPTTraceSoundRays * const task){
+		AddDependsOn(task);
+		pTasks.Add(task);
 	});
 }
 

@@ -26,6 +26,7 @@
 #define _IGDELISTBOX_H_
 
 #include <stddef.h>
+#include <functional>
 
 #include "igdeWidget.h"
 #include "event/igdeListBoxListener.h"
@@ -249,6 +250,10 @@ public:
 	
 	/** \brief Show context menu at position. */
 	void ShowContextMenu(const decPoint &position);
+	
+	/** \brief Update items with restoring selection as good as possible. */
+	void UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection = -1);
+	void UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection = nullptr);
 	
 	
 	

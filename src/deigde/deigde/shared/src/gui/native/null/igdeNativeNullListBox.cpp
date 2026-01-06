@@ -70,6 +70,13 @@ void igdeNativeNullListBox::Focus(){
 void igdeNativeNullListBox::MakeItemVisible(int){
 }
 
+decPoint igdeNativeNullListBox::GetContentPosition() const{
+	return {};
+}
+
+void igdeNativeNullListBox::SetContentPosition(const decPoint&){
+}
+
 void igdeNativeNullListBox::InsertItem(int){
 }
 

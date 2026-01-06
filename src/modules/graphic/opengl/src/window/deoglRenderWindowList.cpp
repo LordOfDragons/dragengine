@@ -52,16 +52,20 @@ deoglRenderWindowList::~deoglRenderWindowList(){
 ///////////////
 
 void deoglRenderWindowList::Add(deoglRenderWindow *window){
-	pWindows.Add(window);
+	pWindows.AddOrThrow(window);
 	pDirty = true;
 }
 
 void deoglRenderWindowList::Remove(deoglRenderWindow *window){
-	pWindows.Remove(window);
+	pWindows.RemoveOrThrow(window);
 	pDirty = true;
 }
 
 void deoglRenderWindowList::RemoveAll(){
+	if(pWindows.IsEmpty()){
+		return;
+	}
+	
 	pWindows.RemoveAll();
 	pDirty = true;
 }
@@ -74,8 +78,7 @@ void deoglRenderWindowList::SyncToRender(){
 		decTObjectOrderedSet<deoglRRenderWindow> &list = pOgl.GetRenderThread().GetRRenderWindowList();
 		
 		list.RemoveAll();
-		
-		pWindows.Visit([&list](deoglRenderWindow *window){
+		pWindows.Visit([&](deoglRenderWindow *window){
 			list.Add(window->GetRRenderWindow());
 		});
 		

@@ -54,14 +54,12 @@ deSynthesizerSourceGroup::~deSynthesizerSourceGroup(){
 ///////////////
 
 void deSynthesizerSourceGroup::AddSource(deSynthesizerSource *source){
-	if(!source){
-		DETHROW(deeInvalidParam);
-	}
-	pSources.Add(source);
+	DEASSERT_NOTNULL(source)
+	pSources.AddOrThrow(source);
 }
 
 void deSynthesizerSourceGroup::RemoveSource(deSynthesizerSource *source){
-	pSources.Remove(source);
+	pSources.RemoveOrThrow(source);
 }
 
 void deSynthesizerSourceGroup::RemoveAllSources(){

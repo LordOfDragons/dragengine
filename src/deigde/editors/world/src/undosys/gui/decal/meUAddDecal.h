@@ -48,7 +48,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	meDecal::Ref pDecal;
 	
 public:

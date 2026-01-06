@@ -61,9 +61,10 @@ int reSelectionBones::IndexOfBoneWith(deColliderVolume *collider) const{
 }
 
 void reSelectionBones::AddBone(reRigBone *bone){
-	DEASSERT_FALSE(pBones.Has(bone))
+	if(!pBones.Add(bone)){
+		return;
+	}
 	
-	pBones.Add(bone);
 	bone->SetSelected(true);
 	
 	pRig->NotifyBoneSelectedChanged(bone);
@@ -75,7 +76,10 @@ void reSelectionBones::AddBone(reRigBone *bone){
 
 void reSelectionBones::RemoveBone(reRigBone *bone){
 	const reRigBone::Ref guard(bone);
-	pBones.Remove(bone);
+	if(!pBones.Remove(bone)){
+		return;
+	}
+	
 	bone->SetSelected(false);
 	
 	if(bone == pActiveBone){
@@ -91,6 +95,10 @@ void reSelectionBones::RemoveBone(reRigBone *bone){
 }
 
 void reSelectionBones::RemoveAllBones(){
+	if(pBones.IsEmpty()){
+		return;
+	}
+	
 	SetActiveBone(nullptr);
 	
 	pRig->NotifyAllBonesDeselected();

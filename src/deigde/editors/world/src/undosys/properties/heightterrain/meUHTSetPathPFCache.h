@@ -33,7 +33,7 @@
 
 // predefinitions
 #include "../../../world/meWorld.h"
-class meHeightTerrainSector;
+#include "../../../world/terrain/meHeightTerrainSector.h"
 
 
 
@@ -48,8 +48,8 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
-	meHeightTerrainSector *pSector;
+	meWorld *pWorld;
+	meHeightTerrainSector::Ref pSector;
 	
 	decString pOldPath;
 	decString pNewPath;

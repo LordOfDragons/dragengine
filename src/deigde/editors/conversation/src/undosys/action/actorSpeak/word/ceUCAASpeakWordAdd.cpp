@@ -76,6 +76,6 @@ void ceUCAASpeakWordAdd::Undo(){
 }
 
 void ceUCAASpeakWordAdd::Redo(){
-	pActorSpeak->GetWords().Insert(pWord, pIndex);
+	pActorSpeak->GetWords().InsertOrThrow(pWord, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

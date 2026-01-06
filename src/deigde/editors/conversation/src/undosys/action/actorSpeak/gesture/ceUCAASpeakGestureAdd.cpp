@@ -76,6 +76,6 @@ void ceUCAASpeakGestureAdd::Undo(){
 }
 
 void ceUCAASpeakGestureAdd::Redo(){
-	pActorSpeak->GetGestures().Insert(pGesture, pIndex);
+	pActorSpeak->GetGestures().InsertOrThrow(pGesture, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

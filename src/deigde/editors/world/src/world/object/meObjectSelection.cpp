@@ -50,15 +50,28 @@ meObjectSelection::~meObjectSelection(){
 void meObjectSelection::Add(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
+	if(!pSelection.Add(object)){
+		return;
+	}
+	
 	object->SetSelected(true);
-	pSelection.Add(object);
+	
+	if(!pActive){
+		SetActive(object);
+	}
 }
 
 void meObjectSelection::Remove(meObject *object){
-	DEASSERT_NOTNULL(object)
+	const meObject::Ref guard(object);
+	if(!pSelection.Remove(object)){
+		return;
+	}
 	
 	object->SetSelected(false);
-	pSelection.Remove(object);
+	
+	if(object == pActive){
+		ActivateNext();
+	}
 }
 
 void meObjectSelection::RemoveAll(){

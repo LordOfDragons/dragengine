@@ -95,46 +95,43 @@ void sePropertyNodeGroup::SetActiveGroup(bool active){
 
 
 void sePropertyNodeGroup::AddNode(sePropertyNode *node){
-	if(!node || node->GetProperty()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(node)
+	DEASSERT_NULL(node->GetProperty())
 	
-	pNodes.Add(node);
+	pNodes.AddOrThrow(node);
 	node->SetParent(this);
 	
 	NotifyStructreChanged();
 }
 
 void sePropertyNodeGroup::InsertNode(int index, sePropertyNode *node){
-	if(!node || node->GetProperty()){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(node)
+	DEASSERT_NULL(node->GetProperty())
 	
-	pNodes.Insert(node, index);
+	pNodes.InsertOrThrow(node, index);
 	node->SetParent(this);
 	
 	NotifyStructreChanged();
 }
 
 void sePropertyNodeGroup::RemoveNode(sePropertyNode *node){
-	seProperty * const property = GetProperty();
-	if(property){
-		if(property->GetNodeSelection().GetActive() == node){
-			property->GetNodeSelection().SetActive(nullptr);
-		}
-	}
+	const sePropertyNode::Ref guard(node);
+	pNodes.RemoveOrThrow(node);
 	
-	if(!pNodes.Has(node)){
-		DETHROW(deeInvalidParam);
+	seProperty * const property = GetProperty();
+	if(property && property->GetNodeSelection().GetActive() == node){
+		property->GetNodeSelection().SetActive(nullptr);
 	}
 	
 	node->SetParent(nullptr);
-	pNodes.Remove(node);
-	
 	NotifyStructreChanged();
 }
 
 void sePropertyNodeGroup::RemoveAllNodes(){
+	if(pNodes.IsEmpty()){
+		return;
+	}
+	
 	seProperty * const property = GetProperty();
 	pNodes.Visit([&](sePropertyNode *node){
 		if(property && property->GetNodeSelection().GetActive() == node){

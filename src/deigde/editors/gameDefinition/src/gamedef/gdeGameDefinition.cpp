@@ -585,7 +585,9 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 ///////////////////
 
 void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
-	pObjectClasses.Add(objectClass);
+	DEASSERT_NOTNULL(objectClass)
+	pObjectClasses.AddOrThrow(objectClass);
+	
 	objectClass->SetGameDefinition(this);
 	
 	pClassNameList.RemoveAll();
@@ -598,9 +600,8 @@ void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
 }
 
 void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
-	if(!objectClass || objectClass->GetGameDefinition() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const gdeObjectClass::Ref guard(objectClass);
+	pObjectClasses.RemoveOrThrow(objectClass);
 	
 	if(objectClass == pActiveObjectClass){
 		SetActiveOCBillboard(nullptr);
@@ -616,21 +617,10 @@ void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
 		SetActiveOCSpeaker(nullptr);
 		SetActiveOCWorld(nullptr);
 		
-		if(pObjectClasses.GetCount() == 1){
-			SetActiveObjectClass(nullptr);
-			
-		}else{
-			if(pObjectClasses.GetAt(0) == objectClass){
-				SetActiveObjectClass(pObjectClasses.GetAt(1));
-				
-			}else{
-				SetActiveObjectClass(pObjectClasses.GetAt(0));
-			}
-		}
+		pActiveObjectClass = nullptr;
 	}
 	
 	objectClass->SetGameDefinition(nullptr);
-	pObjectClasses.Remove(objectClass);
 	
 	pClassNameList.RemoveAll();
 	
@@ -638,8 +628,9 @@ void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
 }
 
 void gdeGameDefinition::RemoveAllObjectClasses(){
-	const int count = pObjectClasses.GetCount();
-	int i;
+	if(pObjectClasses.IsEmpty()){
+		return;
+	}
 	
 	SetActiveOCSpeaker(nullptr);
 	SetActiveOCSnapPoint(nullptr);
@@ -655,9 +646,9 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 	SetActiveOCWorld(nullptr);
 	SetActiveObjectClass(nullptr);
 	
-	for(i=0; i<count; i++){
-		pObjectClasses.GetAt(i)->SetGameDefinition(nullptr);
-	}
+	pObjectClasses.Visit([](gdeObjectClass &c){
+		c.SetGameDefinition(nullptr);
+	});
 	pObjectClasses.RemoveAll();
 	
 	pClassNameList.RemoveAll();
@@ -673,11 +664,8 @@ const gdeObjectClass *gdeGameDefinition::FindObjectClass(const char *name) const
 		return objectClass;
 	}
 	
-	const int count = pBaseGameDefinitions.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		objectClass = ((const gdeGameDefinition *)pBaseGameDefinitions.GetAt(i))->FindObjectClass(name);
+	for(const auto &gd : pBaseGameDefinitions){
+		objectClass = gd->FindObjectClass(name);
 		if(objectClass){
 			return objectClass;
 		}
@@ -687,19 +675,17 @@ const gdeObjectClass *gdeGameDefinition::FindObjectClass(const char *name) const
 }
 
 const decStringSet &gdeGameDefinition::GetClassNameList(){
-	if(pClassNameList.GetCount() > 0){
+	if(pClassNameList.IsNotEmpty()){
 		return pClassNameList;
 	}
 	
-	int i, count = pObjectClasses.GetCount();
-	for(i=0; i<count; i++){
-		pClassNameList.Add(pObjectClasses.GetAt(i)->GetName());
-	}
+	pObjectClasses.Visit([&](const gdeObjectClass &oc){
+		pClassNameList.Add(oc.GetName());
+	});
 	
-	count = pBaseGameDefinitions.GetCount();
-	for(i=0; i<count; i++){
-		pClassNameList += ((gdeGameDefinition*)pBaseGameDefinitions.GetAt(i))->GetClassNameList();
-	}
+	pBaseGameDefinitions.Visit([&](gdeGameDefinition &gd){
+		pClassNameList += gd.GetClassNameList();
+	});
 	
 	return pClassNameList;
 }
@@ -893,7 +879,9 @@ void gdeGameDefinition::SetActiveOCWorld(gdeOCWorld *world){
 /////////////////////
 
 void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
-	pParticleEmitters.Add(particleEmitter);
+	DEASSERT_NOTNULL(particleEmitter)
+	pParticleEmitters.AddOrThrow(particleEmitter);
+	
 	particleEmitter->SetGameDefinition(this);
 	NotifyParticleEmitterStructureChanged();
 	
@@ -903,38 +891,27 @@ void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
 }
 
 void gdeGameDefinition::RemoveParticleEmitter(gdeParticleEmitter *particleEmitter){
-	if(!particleEmitter || particleEmitter->GetGameDefinition() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const gdeParticleEmitter::Ref guard(particleEmitter);
+	pParticleEmitters.RemoveOrThrow(particleEmitter);
 	
 	if(particleEmitter == pActiveParticleEmitter){
-		if(pParticleEmitters.GetCount() == 1){
-			SetActiveParticleEmitter(nullptr);
-			
-		}else{
-			if(pParticleEmitters.GetAt(0) == particleEmitter){
-				SetActiveParticleEmitter(pParticleEmitters.GetAt(1));
-				
-			}else{
-				SetActiveParticleEmitter(pParticleEmitters.GetAt(0));
-			}
-		}
+		pActiveParticleEmitter = nullptr;
 	}
 	
 	particleEmitter->SetGameDefinition(nullptr);
-	pParticleEmitters.Remove(particleEmitter);
 	NotifyParticleEmitterStructureChanged();
 }
 
 void gdeGameDefinition::RemoveAllParticleEmitters(){
-	const int count = pParticleEmitters.GetCount();
-	int i;
+	if(pParticleEmitters.IsEmpty()){
+		return;
+	}
 	
 	SetActiveParticleEmitter(nullptr);
 	
-	for(i=0; i<count; i++){
-		pParticleEmitters.GetAt(i)->SetGameDefinition(nullptr);
-	}
+	pParticleEmitters.Visit([](gdeParticleEmitter &pe){
+		pe.SetGameDefinition(nullptr);
+	});
 	pParticleEmitters.RemoveAll();
 	NotifyParticleEmitterStructureChanged();
 }
@@ -957,7 +934,9 @@ void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmi
 //////////
 
 void gdeGameDefinition::AddSkin(gdeSkin *skin){
-	pSkins.Add(skin);
+	DEASSERT_NOTNULL(skin)
+	pSkins.AddOrThrow(skin);
+	
 	skin->SetGameDefinition(this);
 	NotifySkinStructureChanged();
 	
@@ -967,38 +946,27 @@ void gdeGameDefinition::AddSkin(gdeSkin *skin){
 }
 
 void gdeGameDefinition::RemoveSkin(gdeSkin *skin){
-	if(!skin || skin->GetGameDefinition() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const gdeSkin::Ref guard(skin);
+	pSkins.RemoveOrThrow(skin);
 	
 	if(skin == pActiveSkin){
-		if(pSkins.GetCount() == 1){
-			SetActiveSkin(nullptr);
-			
-		}else{
-			if(pSkins.GetAt(0) == skin){
-				SetActiveSkin(pSkins.GetAt(1));
-				
-			}else{
-				SetActiveSkin(pSkins.GetAt(0));
-			}
-		}
+		pActiveSkin = nullptr;
 	}
 	
 	skin->SetGameDefinition(nullptr);
-	pSkins.Remove(skin);
 	NotifySkinStructureChanged();
 }
 
 void gdeGameDefinition::RemoveAllSkins(){
-	const int count = pSkins.GetCount();
-	int i;
+	if(pSkins.IsEmpty()){
+		return;
+	}
 	
 	SetActiveSkin(nullptr);
 	
-	for(i=0; i<count; i++){
-		pSkins.GetAt(i)->SetGameDefinition(nullptr);
-	}
+	pSkins.Visit([](gdeSkin &s){
+		s.SetGameDefinition(nullptr);
+	});
 	pSkins.RemoveAll();
 	NotifySkinStructureChanged();
 }
@@ -1021,7 +989,9 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 //////////
 
 void gdeGameDefinition::AddSky(gdeSky *sky){
-	pSkies.Add(sky);
+	DEASSERT_NULL(sky)
+	pSkies.AddOrThrow(sky);
+	
 	sky->SetGameDefinition(this);
 	NotifySkyStructureChanged();
 	
@@ -1031,38 +1001,27 @@ void gdeGameDefinition::AddSky(gdeSky *sky){
 }
 
 void gdeGameDefinition::RemoveSky(gdeSky *sky){
-	if(!sky || sky->GetGameDefinition() != this){
-		DETHROW(deeInvalidParam);
-	}
+	const gdeSky::Ref guard(sky);
+	pSkies.RemoveOrThrow(sky);
 	
 	if(sky == pActiveSky){
-		if(pSkies.GetCount() == 1){
-			SetActiveSky(nullptr);
-			
-		}else{
-			if(pSkies.GetAt(0) == sky){
-				SetActiveSky(pSkies.GetAt(1));
-				
-			}else{
-				SetActiveSky(pSkies.GetAt(0));
-			}
-		}
+		pActiveSky = nullptr;
 	}
 	
 	sky->SetGameDefinition(nullptr);
-	pSkies.Remove(sky);
 	NotifySkyStructureChanged();
 }
 
 void gdeGameDefinition::RemoveAllSkies(){
-	const int count = pSkies.GetCount();
-	int i;
+	if(pSkies.IsEmpty()){
+		return;
+	}
 	
 	SetActiveSky(nullptr);
 	
-	for(i=0; i<count; i++){
-		pSkies.GetAt(i)->SetGameDefinition(nullptr);
-	}
+	pSkies.Visit([](gdeSky &s){
+		s.SetGameDefinition(nullptr);
+	});
 	pSkies.RemoveAll();
 	NotifySkyStructureChanged();
 }

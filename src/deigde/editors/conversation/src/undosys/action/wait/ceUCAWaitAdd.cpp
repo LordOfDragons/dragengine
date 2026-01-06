@@ -81,7 +81,7 @@ void ceUCAWaitAdd::Undo(){
 }
 
 void ceUCAWaitAdd::Redo(){
-	pWait->GetActions().Insert(pAction, pIndex);
+	pWait->GetActions().InsertOrThrow(pAction, pIndex);
 	pTopic->NotifyActionStructureChanged(pWait);
 	
 	pTopic->SetActive(pAction, nullptr);

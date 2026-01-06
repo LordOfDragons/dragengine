@@ -47,7 +47,6 @@ ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = nullptr;
-	pTarget = nullptr;
 	
 	SetShortInfo("Remove Target");
 	

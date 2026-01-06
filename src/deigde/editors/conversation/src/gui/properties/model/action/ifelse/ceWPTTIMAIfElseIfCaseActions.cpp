@@ -116,7 +116,7 @@ void ceWPTTIMAIfElseIfCaseActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -169,7 +169,7 @@ void ceWPTTIMAIfElseIfCaseActions::ContextMenuAction(igdeMenuCascade &contextMen
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}

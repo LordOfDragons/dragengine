@@ -375,7 +375,7 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 }
 
 deAnimation *deClassAnimation::GetAnimation(dsRealObject *object) const{
-	return object ? static_cast<sAnimNatDat*>(p_GetNativeData(object->GetBuffer()))->anim : nullptr;
+	return object ? static_cast<sAnimNatDat*>(p_GetNativeData(object->GetBuffer()))->anim.Pointer() : nullptr;
 }
 
 void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){

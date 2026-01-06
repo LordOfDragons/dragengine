@@ -115,7 +115,7 @@ private:
 	deoalAMicrophone::Ref pActiveMicrophone, pDeactiveMicrophone;
 	deoalAWorld::Ref pActiveWorld;
 	
-	decTObjectSet<deoalAWorld> pProcessOnceWorld; // audio thread
+	decTObjectOrderedSet<deoalAWorld> pProcessOnceWorld; // audio thread
 	
 	decTimer pTimerElapsed; // audio thread
 	float pElapsed; // audio thread

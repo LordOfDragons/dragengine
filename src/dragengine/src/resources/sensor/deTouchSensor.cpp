@@ -185,7 +185,9 @@ deCollider *deTouchSensor::GetColliderAt(int collider) const{
 ////////////////////////
 
 void deTouchSensor::AddIgnoreCollider(deCollider *collider){
-	pIgnoreColliders.Add(collider);
+	if(!pIgnoreColliders.Add(collider)){
+		return;
+	}
 	
 	if(pPeerPhysics){
 		pPeerPhysics->IgnoreCollidersChanged();
@@ -193,7 +195,9 @@ void deTouchSensor::AddIgnoreCollider(deCollider *collider){
 }
 
 void deTouchSensor::RemoveIgnoreCollider(deCollider *collider){
-	pIgnoreColliders.Remove(collider);
+	if(!pIgnoreColliders.Remove(collider)){
+		return;
+	}
 	
 	if(pPeerPhysics){
 		pPeerPhysics->IgnoreCollidersChanged();
@@ -201,6 +205,10 @@ void deTouchSensor::RemoveIgnoreCollider(deCollider *collider){
 }
 
 void deTouchSensor::RemoveAllIgnoreColliders(){
+	if(pIgnoreColliders.IsEmpty()){
+		return;
+	}
+	
 	pIgnoreColliders.RemoveAll();
 	
 	if(pPeerPhysics){

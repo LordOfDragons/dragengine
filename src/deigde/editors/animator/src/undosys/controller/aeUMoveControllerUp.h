@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	aeAnimator::Ref pAnimator;
+	aeAnimator *pAnimator;
 	aeController::Ref pController;
 	int pIndex;
 	

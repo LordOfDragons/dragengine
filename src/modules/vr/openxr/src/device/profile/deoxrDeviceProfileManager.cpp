@@ -47,10 +47,8 @@ deoxrDeviceProfileManager::~deoxrDeviceProfileManager(){
 ///////////////
 
 void deoxrDeviceProfileManager::Add(deoxrDeviceProfile *profile){
-	if(!profile){
-		DETHROW_INFO(deeNullPointer, "profile");
-	}
-	pProfiles.Add(profile);
+	DEASSERT_NOTNULL(profile)
+	pProfiles.AddOrThrow(profile);
 }
 
 void deoxrDeviceProfileManager::RemoveAll(){

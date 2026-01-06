@@ -728,5 +728,5 @@ void projTaskDistribute::pWriteGameXmlRequiredFormats(decXmlWriter &writer){
 }
 
 projTaskDistribute::cProcessDirectory *projTaskDistribute::GetProcessDirectory(){
-	return pStackDirectories.IsNotEmpty() ? pStackDirectories.Last() : nullptr;
+	return pStackDirectories.IsNotEmpty() ? pStackDirectories.Last().Pointer() : nullptr;
 }

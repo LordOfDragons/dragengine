@@ -447,8 +447,6 @@ bool reRigBone::CanHaveParent(reRigBone *bone){
 //////////
 
 reRigShape *reRigBone::GetShapeWith(deColliderVolume *collider) const{
-	DEASSERT_NOTNULL(collider)
-	
 	return pShapes.FindOrDefault([&](reRigShape *shape){
 		return shape->GetCollider() == collider;
 	});
@@ -456,8 +454,8 @@ reRigShape *reRigBone::GetShapeWith(deColliderVolume *collider) const{
 
 void reRigBone::AddShape(reRigShape *shape){
 	DEASSERT_NOTNULL(shape)
+	pShapes.AddOrThrow(shape);
 	
-	pShapes.Add(shape);
 	shape->SetRig(pRig);
 	shape->SetRigBone(this);
 	
@@ -468,8 +466,8 @@ void reRigBone::AddShape(reRigShape *shape){
 
 void reRigBone::RemoveShape(reRigShape *shape){
 	const reRigShape::Ref guard(shape);
+	pShapes.RemoveOrThrow(shape);
 	
-	pShapes.Remove(shape);
 	shape->SetRigBone(nullptr);
 	shape->SetRig(nullptr);
 	
@@ -479,6 +477,10 @@ void reRigBone::RemoveShape(reRigShape *shape){
 }
 
 void reRigBone::RemoveAllShapes(){
+	if(pShapes.IsEmpty()){
+		return;
+	}
+	
 	pShapes.Visit([&](reRigShape &s){
 		s.SetRigBone(nullptr);
 		s.SetRig(nullptr);
@@ -593,9 +595,9 @@ reRigConstraint *reRigBone::GetConstraintWith(deColliderVolume *collider) const{
 }
 
 void reRigBone::AddConstraint(reRigConstraint *constraint){
-	DEASSERT_FALSE(pConstraints.Has(constraint))
+	DEASSERT_NOTNULL(constraint)
+	pConstraints.AddOrThrow(constraint);
 	
-	pConstraints.Add(constraint);
 	constraint->SetRig(pRig);
 	constraint->SetRigBone(this);
 	
@@ -605,7 +607,8 @@ void reRigBone::AddConstraint(reRigConstraint *constraint){
 }
 
 void reRigBone::RemoveConstraint(reRigConstraint *constraint){
-	DEASSERT_FALSE(pConstraints.Has(constraint))
+	const reRigConstraint::Ref guard(constraint);
+	pConstraints.RemoveOrThrow(constraint);
 	
 	constraint->SetRigBone(nullptr);
 	constraint->SetRig(nullptr);
@@ -617,6 +620,10 @@ void reRigBone::RemoveConstraint(reRigConstraint *constraint){
 }
 
 void reRigBone::RemoveAllConstraints(){
+	if(pConstraints.IsEmpty()){
+		return;
+	}
+	
 	pConstraints.Visit([&](reRigConstraint &c){
 		c.SetRigBone(nullptr);
 		c.SetRig(nullptr);

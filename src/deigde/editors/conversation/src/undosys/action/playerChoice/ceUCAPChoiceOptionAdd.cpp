@@ -75,6 +75,6 @@ void ceUCAPChoiceOptionAdd::Undo(){
 }
 
 void ceUCAPChoiceOptionAdd::Redo(){
-	pPlayerChoice->GetOptions().Insert(pOption, pIndex);
+	pPlayerChoice->GetOptions().InsertOrThrow(pOption, pIndex);
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

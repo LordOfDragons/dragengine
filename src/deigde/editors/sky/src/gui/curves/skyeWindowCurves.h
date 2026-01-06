@@ -27,6 +27,7 @@
 
 #include "skyeWindowCurvesListener.h"
 #include "../../sky/skyeSky.h"
+#include "../../undosys/link/skyeULinkSetCurve.h"
 
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
@@ -53,7 +54,7 @@ private:
 	igdeViewCurveBezier::Ref pEditCurve;
 	igdeListBox::Ref pListLinks;
 	
-	igdeUndo::Ref pUndoSetCurve;
+	skyeULinkSetCurve::Ref pUndoSetCurve;
 	
 	
 	

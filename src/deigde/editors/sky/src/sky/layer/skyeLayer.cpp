@@ -270,11 +270,10 @@ void skyeLayer::UpdateRelativeResources(){
 ///////////
 
 void skyeLayer::AddBody(skyeBody *body){
-	if(!body){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(body)
+	DEASSERT_NULL(body->GetLayer())
 	
-	pBodies.Add(body);
+	pBodies.AddOrThrow(body);
 	body->SetLayer(this);
 	
 	if(pSky){
@@ -287,11 +286,10 @@ void skyeLayer::AddBody(skyeBody *body){
 }
 
 void skyeLayer::InsertBodyAt(skyeBody *body, int index){
-	if(!body){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(body)
+	DEASSERT_NULL(body->GetLayer())
 	
-	pBodies.Insert(body, index);
+	pBodies.InsertOrThrow(body, index);
 	body->SetLayer(this);
 	
 	if(pSky){
@@ -312,27 +310,14 @@ void skyeLayer::MoveBodyTo(skyeBody *body, int index){
 }
 
 void skyeLayer::RemoveBody(skyeBody *body){
-	if(!pBodies.Has(body)){
-		DETHROW(deeInvalidParam);
-	}
+	const skyeBody::Ref guard(body);
+	pBodies.RemoveOrThrow(body);
 	
-	if(body->GetActive()){
-		const int count = pBodies.GetCount();
-		const int index = pBodies.IndexOf(body);
-		
-		if(index < count - 1){
-			SetActiveBody(pBodies.GetAt(index + 1));
-			
-		}else if(index > 0){
-			SetActiveBody(pBodies.GetAt(index - 1));
-			
-		}else{
-			SetActiveBody(nullptr);
-		}
+	if(pActiveBody == body){
+		pActiveBody = nullptr;
 	}
 	
 	body->SetLayer(nullptr);
-	pBodies.Remove(body);
 	
 	if(pSky){
 		pSky->NotifyBodyStructureChanged(this);
@@ -340,14 +325,15 @@ void skyeLayer::RemoveBody(skyeBody *body){
 }
 
 void skyeLayer::RemoveAllBodies(){
-	const int count = pBodies.GetCount();
-	int i;
+	if(pBodies.IsEmpty()){
+		return;
+	}
 	
 	SetActiveBody(nullptr);
 	
-	for(i=0; i<count; i++){
-		pBodies.GetAt(i)->SetLayer(nullptr);
-	}
+	pBodies.Visit([](skyeBody &b){
+		b.SetLayer(nullptr);
+	});
 	pBodies.RemoveAll();
 	
 	if(pSky){

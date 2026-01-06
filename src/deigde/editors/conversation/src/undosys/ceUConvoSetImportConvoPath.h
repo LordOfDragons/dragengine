@@ -45,8 +45,7 @@ public:
 private:
 	ceLoadSaveSystem &pLSSystem;
 	ceConversation *pConversation;
-	decStringList pOldValue;
-	decStringList pNewValue;
+	decStringList pOldValue, pNewValue;
 	
 	
 	

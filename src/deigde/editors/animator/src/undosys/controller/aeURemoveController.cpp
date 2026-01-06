@@ -52,11 +52,8 @@ pIndex(-1)
 	pIndex = animator->GetControllers().IndexOf(controller);
 	DEASSERT_TRUE(pIndex != -1)
 	
-	const aeLink::List &links = animator->GetLinks();
-	links.Visit([&](aeLink *link){
-		if(link->GetController() == controller){
-			pLinksUsingController.Add(link);
-		}
+	pLinksUsingController = animator->GetLinks().Collect([&](const aeLink &link){
+		return link.GetController() == controller;
 	});
 	
 	pAnimator = animator;

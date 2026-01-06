@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	
 	decVector pOldCMP;
 	decVector pNewCmp;

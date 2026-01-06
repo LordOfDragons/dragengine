@@ -924,7 +924,9 @@ reRigBone *reRig::GetBoneWithOrder(int order) const{
 }
 
 void reRig::AddBone(reRigBone *bone){
-	pBones.Add(bone);
+	DEASSERT_NOTNULL(bone)
+	pBones.AddOrThrow(bone);
+	
 	bone->SetRig(this);
 	
 	ReorderBones();
@@ -935,7 +937,7 @@ void reRig::AddBone(reRigBone *bone){
 
 void reRig::RemoveBone(reRigBone *bone){
 	const reRigBone::Ref guard(bone);
-	pBones.Remove(bone);
+	pBones.RemoveOrThrow(bone);
 	
 	bone->SetRig(nullptr);
 	ReorderBones();
@@ -945,6 +947,10 @@ void reRig::RemoveBone(reRigBone *bone){
 }
 
 void reRig::RemoveAllBones(){
+	if(pBones.IsEmpty()){
+		return;
+	}
+	
 	pBones.Visit([](reRigBone *bone){
 		bone->SetRig(nullptr);
 	});
@@ -1012,7 +1018,9 @@ reRigShape *reRig::GetShapeWith(deColliderVolume *collider) const{
 }
 
 void reRig::AddShape(reRigShape *shape){
-	pShapes.Add(shape);
+	DEASSERT_NOTNULL(shape)
+	pShapes.AddOrThrow(shape);
+	
 	shape->SetRig(this);
 	
 	NotifyShapeCountChanged();
@@ -1020,12 +1028,17 @@ void reRig::AddShape(reRigShape *shape){
 
 void reRig::RemoveShape(reRigShape *shape){
 	const reRigShape::Ref guard(shape);
-	pShapes.Remove(shape);
+	pShapes.RemoveOrThrow(shape);
+	
 	shape->SetRig(nullptr);
 	NotifyShapeCountChanged();
 }
 
 void reRig::RemoveAllShapes(){
+	if(pShapes.IsEmpty()){
+		return;
+	}
+	
 	pShapes.Visit([](reRigShape *shape){
 		shape->SetRig(nullptr);
 	});
@@ -1046,7 +1059,9 @@ reRigConstraint *reRig::GetConstraintWith(deColliderVolume *collider) const{
 }
 
 void reRig::AddConstraint(reRigConstraint *constraint){
-	pConstraints.Add(constraint);
+	DEASSERT_NOTNULL(constraint)
+	pConstraints.AddOrThrow(constraint);
+	
 	constraint->SetRig(this);
 	
 	NotifyConstraintCountChanged();
@@ -1058,8 +1073,8 @@ void reRig::AddConstraint(reRigConstraint *constraint){
 
 void reRig::RemoveConstraint(reRigConstraint *constraint){
 	const reRigConstraint::Ref guard(constraint);
+	pConstraints.RemoveOrThrow(constraint);
 	
-	pConstraints.Remove(constraint);
 	constraint->SetRig(nullptr);
 	
 	deColliderConstraint *engConstraint = constraint->GetEngineConstraint();
@@ -1072,6 +1087,10 @@ void reRig::RemoveConstraint(reRigConstraint *constraint){
 }
 
 void reRig::RemoveAllConstraints(){
+	if(pConstraints.IsEmpty()){
+		return;
+	}
+	
 	pConstraints.Visit([&](reRigConstraint *constraint){
 		deColliderConstraint *engConstraint = constraint->GetEngineConstraint();
 		if(engConstraint && pEngSimCollider->GetConstraints().Has(engConstraint)){
@@ -1098,7 +1117,9 @@ reRigPush *reRig::GetPushWith(deColliderVolume *collider) const{
 }
 
 void reRig::AddPush(reRigPush *push){
-	pPushes.Add(push);
+	DEASSERT_NOTNULL(push)
+	pPushes.AddOrThrow(push);
+	
 	push->SetRig(this);
 	
 	NotifyPushCountChanged();
@@ -1106,12 +1127,17 @@ void reRig::AddPush(reRigPush *push){
 
 void reRig::RemovePush(reRigPush *push){
 	const reRigPush::Ref guard(push);
-	pPushes.Remove(push);
+	pPushes.RemoveOrThrow(push);
+	
 	push->SetRig(nullptr);
 	NotifyPushCountChanged();
 }
 
 void reRig::RemoveAllPushes(){
+	if(pPushes.IsEmpty()){
+		return;
+	}
+	
 	pPushes.Visit([](reRigPush *push){
 		push->SetRig(nullptr);
 	});

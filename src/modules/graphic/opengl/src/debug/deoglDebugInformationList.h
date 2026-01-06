@@ -66,9 +66,6 @@ public:
 	/** Remove child. */
 	void Remove(deoglDebugInformation *child);
 	
-	/** Remove child if present. */
-	void RemoveIfPresent(deoglDebugInformation *child);
-	
 	/** Remove all children. */
 	void RemoveAll();
 	/*@}*/

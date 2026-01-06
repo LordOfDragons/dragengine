@@ -1688,7 +1688,7 @@ void meWPSObject::SetWorld(meWorld *world){
 
 
 meObject *meWPSObject::GetActiveObject() const{
-	return pWorld ? pWorld->GetSelectionObject().GetActive() : nullptr;
+	return pWorld ? pWorld->GetSelectionObject().GetActive().Pointer() : nullptr;
 }
 
 const decString &meWPSObject::GetActiveProperty() const{
@@ -1974,26 +1974,23 @@ void meWPSObject::SelectActiveTexture(){
 }
 
 void meWPSObject::UpdateTextureList(){
-	meObjectTexture * const texture = GetActiveTexture();
-	const meObject * const object = GetActiveObject();
-	
-	pCBTexture->RemoveAllItems();
-	
-	if(object){
-		const int count = object->GetTextures().GetCount();
-		int i;
+	pCBTexture->UpdateRestoreSelection([&](){
+		const meObject * const object = GetActiveObject();
 		
-		for(i=0; i<count; i++){
-			meObjectTexture * const texture2 = object->GetTextures().GetAt(i);
-			pCBTexture->AddItem(texture2->GetName(), nullptr, texture2);
+		pCBTexture->RemoveAllItems();
+		
+		if(object){
+			const int count = object->GetTextures().GetCount();
+			int i;
+			
+			for(i=0; i<count; i++){
+				meObjectTexture * const texture2 = object->GetTextures().GetAt(i);
+				pCBTexture->AddItem(texture2->GetName(), nullptr, texture2);
+			}
+			
+			pCBTexture->SortItems();
 		}
-		
-		pCBTexture->SortItems();
-	}
-	
-	if(texture){
-		pCBTexture->SetSelectionWithData(texture);
-	}
+	}, 0);
 }
 
 void meWPSObject::UpdateTextureEnabled(){

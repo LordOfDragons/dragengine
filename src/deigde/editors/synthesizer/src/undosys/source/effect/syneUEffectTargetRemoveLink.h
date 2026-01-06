@@ -25,11 +25,11 @@
 #ifndef _SYNEUEFFECTTARGETREMOVELINK_H_
 #define _SYNEUEFFECTTARGETREMOVELINK_H_
 
-#include <deigde/undo/igdeUndo.h>
-
+#include "../../../synthesizer/controller/syneControllerTarget.h"
 #include "../../../synthesizer/effect/syneEffect.h"
 #include "../../../synthesizer/link/syneLink.h"
-class syneControllerTarget;
+
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -43,7 +43,7 @@ public:
 	
 private:
 	syneEffect::Ref pEffect;
-	syneControllerTarget *pTarget;
+	syneControllerTarget::Ref pTarget;
 	
 	syneLink::Ref pLink;
 	

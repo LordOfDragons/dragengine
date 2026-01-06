@@ -223,7 +223,16 @@ public:
 		"Add a controller to the end of the list."){}
 	
 	igdeUndo::Ref OnAction(peeEmitter *emitter) override{
-		return peeUControllerAdd::Ref::New(emitter, peeController::Ref::New());
+		const peeController::Ref controller = peeController::Ref::New();
+		decString name(controller->GetName());
+		int number = 2;
+		while(emitter->GetControllers().HasMatching([&](const peeController *each){
+			return each->GetName() == name;
+		})){
+			name.Format("Controller #%d", number++);
+		}
+		controller->SetName(name);
+		return peeUControllerAdd::Ref::New(emitter, controller);
 	}
 };
 
@@ -449,27 +458,23 @@ peeController *peeWPController::GetController() const{
 
 
 void peeWPController::UpdateControllerList(){
-	pListController->RemoveAllItems();
-	
-	if(pEmitter){
-		const peeController::List &controllers = pEmitter->GetControllers();
-		const int controllerCount = controllers.GetCount();
-		decString text;
-		int i;
+	pListController->UpdateRestoreSelection([&](){
+		pListController->RemoveAllItems();
 		
-		for(i=0; i<controllerCount; i++){
-			peeController * const controller = controllers.GetAt(i);
-			text.Format("%i: %s", i, controller->GetName().GetString());
-			pListController->AddItem(text, nullptr, controller);
+		if(pEmitter){
+			pEmitter->GetControllers().VisitIndexed([&](int i, peeController *c){
+				decString text;
+				text.Format("%i: %s", i, c->GetName().GetString());
+				pListController->AddItem(text, nullptr, c);
+			});
 		}
-	}
+	}, 0);
 	
-	SelectActiveController();
+	UpdateController();
 }
 
 void peeWPController::SelectActiveController(){
 	pListController->SetSelectionWithData(GetController());
-	pListController->MakeSelectionVisible();
 	UpdateController();
 }
 

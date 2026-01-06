@@ -760,25 +760,20 @@ void meWPView::UpdateView(){
 }
 
 void meWPView::UpdateCameraList(){
-	meCamera * const selectedCamera = (meCamera*)pCBCameraObjects->GetSelectedItemData();
-	
-	pCBCameraObjects->RemoveAllItems();
-	
-	if(pWorld){
-		pWorld->GetObjects().Visit([&](const meObject &object){
-			meCamera * const camera = object.GetCamera();
-			if(camera){
-				pCBCameraObjects->AddItem(camera->GetName(), nullptr, camera);
-			}
-		});
-	}
-	
-	pCBCameraObjects->SortItems();
-	
-	pCBCameraObjects->SetSelectionWithData(selectedCamera);
-	if(!pCBCameraObjects->GetSelectedItem() && pCBCameraObjects->GetItems().IsNotEmpty()){
-		pCBCameraObjects->SetSelection(0);
-	}
+	pCBCameraObjects->UpdateRestoreSelection([&](){
+		pCBCameraObjects->RemoveAllItems();
+		
+		if(pWorld){
+			pWorld->GetObjects().Visit([&](const meObject &object){
+				meCamera * const camera = object.GetCamera();
+				if(camera){
+					pCBCameraObjects->AddItem(camera->GetName(), nullptr, camera);
+				}
+			});
+			
+			pCBCameraObjects->SortItems();
+		}
+	}, 0);
 	
 	UpdateCamera();
 }

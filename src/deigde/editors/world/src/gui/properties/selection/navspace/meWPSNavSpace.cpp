@@ -244,7 +244,7 @@ void meWPSNavSpace::SetWorld(meWorld *world){
 
 
 meNavigationSpace *meWPSNavSpace::GetNavigationSpace() const{
-	return pWorld ? pWorld->GetSelectionNavigationSpace().GetActive() : nullptr;
+	return pWorld ? pWorld->GetSelectionNavigationSpace().GetActive().Pointer() : nullptr;
 }
 
 void meWPSNavSpace::UpdateSelection(){

@@ -58,7 +58,7 @@ meUMoveObject::~meUMoveObject(){
 /////////////////////////////
 
 void meUMoveObject::Undo(){
-	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUMoveObject::Redo(){

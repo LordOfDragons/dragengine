@@ -421,7 +421,7 @@ void seWPView::UpdateView(){
 }
 
 void seWPView::UpdateMoveList(){
-	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : nullptr;
+	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator().Pointer() : nullptr;
 	const decString selection(pCBAnimMoves->GetText());
 	
 	pPreventUpdate = true;

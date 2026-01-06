@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	syneSynthesizer::Ref pSynthesizer;
+	syneSynthesizer *pSynthesizer;
 	
 	int pOldSampleCount;
 	int pNewSampleCount;

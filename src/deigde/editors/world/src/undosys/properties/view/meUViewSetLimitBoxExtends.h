@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	decVector pOldMin, pNewMin, pOldMax, pNewMax;
 	
 	

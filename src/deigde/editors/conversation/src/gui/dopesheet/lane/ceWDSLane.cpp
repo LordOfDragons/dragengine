@@ -876,7 +876,7 @@ void ceWDSLane::OnContextMenu(igdeMenuCascade &menu, const decPoint &position){
 	igdeUIHelper &helper = pWindow.GetEnvironment().GetUIHelper();
 	
 	const int index = GetStripAt(position.x);
-	ceStrip * const strip = index != -1 ? GetStripList().GetAt(index) : nullptr;
+	ceStrip * const strip = index != -1 ? GetStripList().GetAt(index).Pointer() : nullptr;
 	const int indexInsert = GetInsertStripAt(position.x);
 	
 	helper.MenuCommand(menu, cActionStripAdd::Ref::New(*this, indexInsert));

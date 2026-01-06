@@ -75,6 +75,6 @@ void ceUCAIfElseCaseAdd::Undo(){
 }
 
 void ceUCAIfElseCaseAdd::Redo(){
-	pIfElse->GetCases().Insert(pCase, pIndex);
+	pIfElse->GetCases().InsertOrThrow(pCase, pIndex);
 	pTopic->NotifyActionStructureChanged(pIfElse);
 }

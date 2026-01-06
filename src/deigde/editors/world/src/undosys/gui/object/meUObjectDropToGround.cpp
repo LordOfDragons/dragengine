@@ -90,7 +90,7 @@ void meUObjectDropToGround::SetAlign(bool align){
 
 
 void meUObjectDropToGround::Undo(){
-	meUndoDataObject::RestoreOldGeometry(pObjects, pWorld);
+	meUndoDataObject::RestoreOldGeometry(pObjects, *pWorld);
 }
 
 void meUObjectDropToGround::Redo(){

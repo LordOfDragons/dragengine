@@ -480,29 +480,19 @@ void syneWPController::SelectActiveController(){
 
 
 void syneWPController::UpdateControllerList(){
-	const syneController::Ref selection(GetController());
-	
-	pListController->RemoveAllItems();
-	
-	if(pSynthesizer){
-		const syneController::List &list = pSynthesizer->GetControllers();
-		const int count = list.GetCount();
-		decString text;
-		int i;
+	pListController->UpdateRestoreSelection([&](){
+		pListController->RemoveAllItems();
 		
-		for(i=0; i<count; i++){
-			syneController * const controller = list.GetAt(i);
-			text.Format("%d: %s", i, controller->GetName().GetString());
-			pListController->AddItem(text, nullptr, controller);
+		if(pSynthesizer){
+			pSynthesizer->GetControllers().VisitIndexed([&](int i, syneController *controller){
+				decString text;
+				text.Format("%d: %s", i, controller->GetName().GetString());
+				pListController->AddItem(text, nullptr, controller);
+			});
+			
+			pListController->SortItems();
 		}
-		
-		pListController->SortItems();
-	}
-	
-	pListController->SetSelectionWithData(selection);
-	if(!pListController->GetSelectedItem() && pListController->GetItems().IsNotEmpty()){
-		pListController->SetSelection(0);
-	}
+	}, 0);
 	
 	UpdateController();
 }

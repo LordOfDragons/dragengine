@@ -408,7 +408,8 @@ void syneSource::SetActiveEffect(syneEffect *effect){
 }
 
 void syneSource::AddEffect(syneEffect *effect){
-	pEffects.Add(effect);
+	DEASSERT_NOTNULL(effect)
+	pEffects.AddOrThrow(effect);
 	
 	effect->SetParentSource(this);
 	
@@ -424,7 +425,7 @@ void syneSource::AddEffect(syneEffect *effect){
 }
 
 void syneSource::InsertEffectAt(syneEffect *effect, int index){
-	pEffects.Insert(effect, index);
+	pEffects.InsertOrThrow(effect, index);
 	
 	effect->SetParentSource(this);
 	
@@ -451,25 +452,19 @@ void syneSource::MoveEffectTo(syneEffect *effect, int index){
 
 void syneSource::RemoveEffect(syneEffect *effect){
 	const int index = pEffects.IndexOf(effect);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const syneEffect::Ref guard(effect);
+	pEffects.RemoveOrThrow(effect);
 	
-	if(effect == pActiveEffect){
-		if(pEffects.GetCount() == 1){
-			SetActiveEffect(nullptr);
-			
-		}else if(index < pEffects.GetCount() - 1){
-			SetActiveEffect(pEffects.GetAt(index + 1));
+	if(pActiveEffect == effect){
+		if(pEffects.IsNotEmpty()){
+			SetActiveEffect(pEffects.GetAt(decMath::min(index, pEffects.GetCount() - 1)));
 			
 		}else{
-			SetActiveEffect(pEffects.GetAt(index - 1));
+			SetActiveEffect(nullptr);
 		}
 	}
 	
 	effect->SetParentSource(nullptr);
-	
-	pEffects.Remove(effect);
 	
 	syneSynthesizer * const synthesizer = GetSynthesizer();
 	if(synthesizer){
@@ -479,6 +474,10 @@ void syneSource::RemoveEffect(syneEffect *effect){
 }
 
 void syneSource::RemoveAllEffects(){
+	if(pEffects.IsEmpty()){
+		return;
+	}
+	
 	SetActiveEffect(nullptr);
 	
 	pEffects.Visit([&](syneEffect &effect){

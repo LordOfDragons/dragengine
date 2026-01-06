@@ -72,7 +72,7 @@ ceUCAASpeakBodyLARemove::~ceUCAASpeakBodyLARemove(){
 ///////////////
 
 void ceUCAASpeakBodyLARemove::Undo(){
-	pActorSpeak->GetBodyLookAts().Insert(pBodyLA, pIndex);
+	pActorSpeak->GetBodyLookAts().InsertOrThrow(pBodyLA, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }
 

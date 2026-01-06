@@ -125,7 +125,7 @@ void ceWPTTreeModel::AddChild(ceWPTTreeItemModel *child){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add(child);
+	pChildren.AddOrThrow(child);
 	child->SetTree(this);
 	
 	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New(pTreeList));
@@ -138,7 +138,7 @@ void ceWPTTreeModel::InsertChild(ceWPTTreeItemModel *child, int position){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Insert(child, position);
+	pChildren.InsertOrThrow(child, position);
 	child->SetTree(this);
 	
 	igdeTreeItem *beforeItem = nullptr;

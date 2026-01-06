@@ -262,14 +262,6 @@ void detTSet::TestIntAlgorithms(){
 	ASSERT_TRUE(setA.Equals(setB));
 	setB.Add(3);
 	ASSERT_FALSE(setA.Equals(setB));
-
-	// First and Last methods
-	decTSetInt set4;
-	set4.Add(10);
-	set4.Add(20);
-	set4.Add(30);
-	ASSERT_EQUAL(set4.First(), 10);
-	ASSERT_EQUAL(set4.Last(), 30);
 }
 
 

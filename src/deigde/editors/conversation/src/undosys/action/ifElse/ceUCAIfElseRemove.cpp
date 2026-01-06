@@ -87,10 +87,10 @@ ceUCAIfElseRemove::~ceUCAIfElseRemove(){
 
 void ceUCAIfElseRemove::Undo(){
 	if(pCase){
-		pCase->GetActions().Insert(pAction, pIndex);
+		pCase->GetActions().InsertOrThrow(pAction, pIndex);
 		
 	}else{
-		pIfElse->GetElseActions().Insert(pAction, pIndex);
+		pIfElse->GetElseActions().InsertOrThrow(pAction, pIndex);
 	}
 	
 	pTopic->NotifyActionStructureChanged(pIfElse);

@@ -269,14 +269,15 @@ void syneSynthesizer::SetVolume(float volume){
 ////////////////
 
 void syneSynthesizer::AddController(syneController *controller){
-	pControllers.Add(controller);
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
 	controller->SetSynthesizer(this);
 	
 	NotifyControllerStructureChanged();
 }
 
 void syneSynthesizer::InsertControllerAt(syneController *controller, int index){
-	pControllers.Insert(controller, index);
+	pControllers.InsertOrThrow(controller, index);
 	controller->SetSynthesizer(this);
 	
 	pUpdateLinks();
@@ -291,38 +292,29 @@ void syneSynthesizer::MoveControllerTo(syneController *controller, int index){
 }
 
 void syneSynthesizer::RemoveController(syneController *controller){
-	const int index = pControllers.IndexOf(controller);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const syneController::Ref guard(controller);
+	pControllers.RemoveOrThrow(controller);
 	
-	if(controller == pActiveController){
-		if(pControllers.GetCount() == 1){
-			SetActiveController(nullptr);
-			
-		}else if(index < pControllers.GetCount() - 1){
-			SetActiveController(pControllers.GetAt(index + 1));
-			
-		}else{
-			SetActiveController(pControllers.GetAt(index - 1));
-		}
+	if(pActiveController == controller){
+		pActiveController = nullptr;
 	}
 	
 	controller->SetSynthesizer(nullptr);
-	pControllers.Remove(controller);
 	
 	pUpdateLinks();
 	NotifyControllerStructureChanged();
 }
 
 void syneSynthesizer::RemoveAllControllers(){
+	if(pControllers.IsEmpty()){
+		return;
+	}
+	
 	SetActiveController(nullptr);
 	
-	const int count = pControllers.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pControllers.GetAt(i)->SetSynthesizer(nullptr);
-	}
+	pControllers.Visit([&](syneController &c){
+		c.SetSynthesizer(nullptr);
+	});
 	pControllers.RemoveAll();
 	
 	pUpdateLinks();
@@ -344,13 +336,14 @@ void syneSynthesizer::SetActiveController(syneController *controller){
 //////////
 
 void syneSynthesizer::AddLink(syneLink *link){
-	pLinks.Add(link);
+	DEASSERT_NOTNULL(link)
+	pLinks.AddOrThrow(link);
 	link->SetSynthesizer(this);
 	NotifyLinkStructureChanged();
 }
 
 void syneSynthesizer::InsertLinkAt(syneLink *link, int index){
-	pLinks.Insert(link, index);
+	pLinks.InsertOrThrow(link, index);
 	link->SetSynthesizer(this);
 	
 	RebuildSources();
@@ -364,30 +357,22 @@ void syneSynthesizer::MoveLinkTo(syneLink *link, int index){
 }
 
 void syneSynthesizer::RemoveLink(syneLink *link){
-	const int index = pLinks.IndexOf(link);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const syneLink::Ref guard(link);
+	pLinks.RemoveOrThrow(link);
 	
-	if(link == pActiveLink){
-		if(pLinks.GetCount() == 1){
-			SetActiveLink(nullptr);
-			
-		}else if(index < pLinks.GetCount() - 1){
-			SetActiveLink(pLinks.GetAt(index + 1));
-			
-		}else{
-			SetActiveLink(pLinks.GetAt(index - 1));
-		}
+	if(pActiveLink == link){
+		pActiveLink = nullptr;
 	}
-	
-	pLinks.Remove(link);
 	
 	RebuildSources();
 	NotifyLinkStructureChanged();
 }
 
 void syneSynthesizer::RemoveAllLinks(){
+	if(pLinks.IsEmpty()){
+		return;
+	}
+	
 	SetActiveLink(nullptr);
 	
 	pLinks.Visit([](syneLink &link){
@@ -424,7 +409,8 @@ int syneSynthesizer::CountLinkUsage(syneLink *link) const{
 ////////////
 
 void syneSynthesizer::AddSource(syneSource *source){
-	pSources.Add(source);
+	DEASSERT_NOTNULL(source)
+	pSources.AddOrThrow(source);
 	source->SetSynthesizer(this);
 	
 	RebuildSources();
@@ -433,7 +419,7 @@ void syneSynthesizer::AddSource(syneSource *source){
 }
 
 void syneSynthesizer::InsertSourceAt(syneSource *source, int index){
-	pSources.Insert(source, index);
+	pSources.InsertOrThrow(source, index);
 	source->SetSynthesizer(this);
 	
 	RebuildSources();
@@ -449,37 +435,34 @@ void syneSynthesizer::MoveSourceTo(syneSource *source, int index){
 
 void syneSynthesizer::RemoveSource(syneSource *source){
 	const int index = pSources.IndexOf(source);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
+	const syneSource::Ref guard(source);
+	pSources.RemoveOrThrow(source);
 	
 	if(source == pActiveSource){
-		if(pSources.GetCount() == 1){
-			SetActiveSource(nullptr);
-			
-		}else if(index < pSources.GetCount() - 1){
-			SetActiveSource(pSources.GetAt(index + 1));
+		if(pSources.IsNotEmpty()){
+			SetActiveSource(pSources.GetAt(decMath::min(index, pSources.GetCount() - 1)));
 			
 		}else{
-			SetActiveSource(pSources.GetAt(index - 1));
+			SetActiveSource(nullptr);
 		}
 	}
 	
 	source->SetSynthesizer(nullptr);
-	pSources.Remove(source);
 	
 	RebuildSources();
 	NotifySourceStructureChanged();
 }
 
 void syneSynthesizer::RemoveAllSources(){
+	if(pSources.IsEmpty()){
+		return;
+	}
+	
 	SetActiveSource(nullptr);
 	
-	const int count = pSources.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pSources.GetAt(i)->SetSynthesizer(nullptr);
-	}
+	pSources.Visit([](syneSource &s){
+		s.SetSynthesizer(nullptr);
+	});
 	pSources.RemoveAll();
 	
 	RebuildSources();

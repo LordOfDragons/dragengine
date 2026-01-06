@@ -101,7 +101,7 @@ void ceWPTTIMAWaitActions::OnContextMenu(igdeMenuCascade &contextMenu){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}
@@ -148,7 +148,7 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 	ceWindowMain &windowMain = GetWindowMain();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : nullptr;
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
 	if(!topic){
 		return;
 	}

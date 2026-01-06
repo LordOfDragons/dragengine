@@ -59,7 +59,7 @@ private:
 	
 	
 private:
-	reRig::Ref pRig;
+	reRig *pRig;
 	
 	float pNewMass;
 	

@@ -72,7 +72,8 @@ syneSourceGroup::~syneSourceGroup(){
 ///////////////
 
 void syneSourceGroup::AddSource(syneSource *source){
-	pSources.Add(source);
+	DEASSERT_NOTNULL(source)
+	pSources.AddOrThrow(source);
 	
 	syneSynthesizer * const synthesizer = GetSynthesizer();
 	
@@ -86,7 +87,7 @@ void syneSourceGroup::AddSource(syneSource *source){
 }
 
 void syneSourceGroup::InsertSourceAt(syneSource *source, int index){
-	pSources.Insert(source, index);
+	pSources.InsertOrThrow(source, index);
 	
 	syneSynthesizer * const synthesizer = GetSynthesizer();
 	
@@ -110,31 +111,23 @@ void syneSourceGroup::MoveSourceTo(syneSource *source, int index){
 }
 
 void syneSourceGroup::RemoveSource(syneSource *source){
-	if(!pSources.Has(source)){
-		DETHROW(deeInvalidParam);
-	}
+	const int index = pSources.IndexOf(source);
+	const syneSource::Ref guard(source);
+	pSources.RemoveOrThrow(source);
 	
 	syneSynthesizer * const synthesizer = GetSynthesizer();
 	
-	if(synthesizer && source == synthesizer->GetActiveSource()){
-		const int index = pSources.IndexOf(source);
-		const int sourceCount = pSources.GetCount();
-		
-		if(sourceCount == 1){
-			synthesizer->SetActiveSource(this);
-			
-		}else if(index < sourceCount - 1){
-			synthesizer->SetActiveSource(pSources.GetAt(index + 1));
+	if(synthesizer && synthesizer->GetActiveSource() == source){
+		if(pSources.IsNotEmpty()){
+			synthesizer->SetActiveSource(pSources.GetAt(decMath::min(index, pSources.GetCount() - 1)));
 			
 		}else{
-			synthesizer->SetActiveSource(pSources.GetAt(index - 1));
+			synthesizer->SetActiveSource(this);
 		}
 	}
 	
 	source->SetParentGroup(nullptr);
 	source->SetSynthesizer(nullptr);
-	
-	pSources.Remove(source);
 	
 	if(synthesizer){
 		synthesizer->RebuildSources();
@@ -143,8 +136,9 @@ void syneSourceGroup::RemoveSource(syneSource *source){
 }
 
 void syneSourceGroup::RemoveAllSources(){
-	const int count = pSources.GetCount();
-	int i;
+	if(pSources.IsEmpty()){
+		return;
+	}
 	
 	syneSynthesizer * const synthesizer = GetSynthesizer();
 	
@@ -152,11 +146,10 @@ void syneSourceGroup::RemoveAllSources(){
 		synthesizer->SetActiveSource(this);
 	}
 	
-	for(i=0; i<count; i++){
-		syneSource * const source = pSources.GetAt(i);
-		source->SetParentGroup(nullptr);
-		source->SetSynthesizer(nullptr);
-	}
+	pSources.Visit([&](syneSource &s){
+		s.SetParentGroup(nullptr);
+		s.SetSynthesizer(nullptr);
+	});
 	
 	pSources.RemoveAll();
 	

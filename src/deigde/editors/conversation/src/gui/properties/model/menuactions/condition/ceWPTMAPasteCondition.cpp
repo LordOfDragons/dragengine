@@ -77,10 +77,8 @@ void ceWPTMAPasteCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationCondition::Ref condition(cdata->GetConditions().GetAt(0)->CreateCopy());
-	
 	ceConversationCondition::List conditions;
-	conditions.Add(condition);
+	conditions.Add(cdata->GetConditions().First()->CreateCopy());
 	
 	pConversation->GetUndoSystem()->Add(CreateUndo(conditions));
 }

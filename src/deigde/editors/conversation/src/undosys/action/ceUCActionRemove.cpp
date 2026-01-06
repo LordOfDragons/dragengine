@@ -64,7 +64,7 @@ ceUCActionRemove::~ceUCActionRemove(){
 ///////////////
 
 void ceUCActionRemove::Undo(){
-	pTopic->GetActions().Insert(pAction, pIndex);
+	pTopic->GetActions().InsertOrThrow(pAction, pIndex);
 	pTopic->NotifyActionStructureChanged(nullptr);
 	
 	pTopic->SetActive(pAction, nullptr);

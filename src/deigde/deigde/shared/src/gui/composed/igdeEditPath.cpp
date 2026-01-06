@@ -554,19 +554,17 @@ int igdeEditPath::GetSelectPathActionCount() const{
 }
 
 igdeAction *igdeEditPath::GetSelectPathActionAt(int index) const{
-	return (igdeAction*)pSelectPathActions.GetAt(index);
+	return pSelectPathActions.GetAt(index);
 }
 
 void igdeEditPath::AddSelectPathAction(igdeAction *action){
-	if(!action){
-		DETHROW(deeInvalidParam);
-	}
-	pSelectPathActions.Add(action);
+	DEASSERT_NOTNULL(action)
+	pSelectPathActions.AddOrThrow(action);
 	pActionButton->Update();
 }
 
 void igdeEditPath::RemoveSelectPathAction(igdeAction *action){
-	pSelectPathActions.Remove(action);
+	pSelectPathActions.RemoveOrThrow(action);
 	pActionButton->Update();
 }
 

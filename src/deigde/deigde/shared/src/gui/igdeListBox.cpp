@@ -162,7 +162,7 @@ void igdeListBox::AddItem(igdeListItem *item){
 	if(!item){
 		DETHROW(deeInvalidParam);
 	}
-	pItems.Add(item);
+	pItems.AddOrThrow(item);
 	OnItemAdded(pItems.GetCount() - 1);
 	
 	if(pItems.GetCount() == 1){
@@ -196,7 +196,7 @@ void igdeListBox::InsertItem(int index, igdeListItem *item){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pItems.Insert(item, index);
+	pItems.InsertOrThrow(item, index);
 	if(pSelection >= index){
 		pSelection++;
 	}
@@ -341,7 +341,7 @@ void igdeListBox::SetSelectionMode(eSelectionMode mode){
 }
 
 igdeListItem *igdeListBox::GetSelectedItem() const{
-	return pSelection != -1 ? pItems.GetAt(pSelection) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection).Pointer() : nullptr;
 }
 
 void *igdeListBox::GetSelectedItemData() const{
@@ -359,6 +359,10 @@ void igdeListBox::SetSelection(int selection){
 		DETHROW(deeInvalidParam);
 	}
 	
+	if(pSelectionMode == esmSingle && pItems.IsNotEmpty()){
+		selection = decMath::max(selection, 0);
+	}
+	
 	if(selection == pSelection){
 		return;
 	}
@@ -366,6 +370,10 @@ void igdeListBox::SetSelection(int selection){
 	pSelection = selection;
 	OnSelectionChanged();
 	NotifySelectionChanged();
+	
+	if(pSelection != -1){
+		MakeItemVisible(pSelection);
+	}
 }
 
 void igdeListBox::SetSelectionWithData(void *data){
@@ -480,6 +488,61 @@ void igdeListBox::ShowContextMenu(const decPoint &position){
 		menu->Popup(*this, position);
 	}
 }
+
+void igdeListBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
+	decPoint cpos;
+	igdeNativeListBox * const native = static_cast<igdeNativeListBox*>(GetNativeWidget());
+	if(native){
+		cpos = native->GetContentPosition();
+	}
+	
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1 && defaultSelection != -1){
+			index = decMath::min(defaultSelection, pItems.GetCount() - 1);
+		}
+	}
+	
+	if(native){
+		native->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
+void igdeListBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
+	decPoint cpos;
+	igdeNativeListBox * const native = static_cast<igdeNativeListBox*>(GetNativeWidget());
+	if(native){
+		cpos = native->GetContentPosition();
+	}
+	
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1){
+			index = IndexOfItemWithData(defaultSelection);
+		}
+	}
+	
+	if(native){
+		native->SetContentPosition(cpos);
+	}
+	
+	SetSelection(index);
+}
+
 
 
 

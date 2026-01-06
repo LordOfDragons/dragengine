@@ -109,7 +109,7 @@ public:
 		inline const decTObjectOrderedSet<ChildObjectTexture> &GetTextures() const{ return pTextures; }
 		
 		/** \brief Add texture. */
-		void AddTexture(const ChildObjectTexture::Ref &texture);
+		void AddTexture(ChildObjectTexture *texture);
 		
 	protected:
 		~ChildObject() override = default;
@@ -234,7 +234,7 @@ public:
 	inline const decTObjectOrderedSet<ChildObject> &GetChildObjects() const{ return pChildObjects; }
 	
 	/** \brief Add child object. */
-	void AddChildObject(const ChildObject::Ref &object);
+	void AddChildObject(ChildObject *object);
 	
 	/** \brief Remove all child objects. */
 	void RemoveAllChildObjects();

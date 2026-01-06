@@ -41,8 +41,7 @@ public:
 	
 private:
 	feFont *pFont;
-	int pOldHeight;
-	int pNewHeight;
+	int pOldHeight, pNewHeight;
 	
 	
 	

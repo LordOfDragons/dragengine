@@ -788,8 +788,7 @@ public:
 			return {};
 		}
 		
-		const seTexture::Ref texture(seTexture::Ref::New(pWindow.GetEngine(), name));
-		return seUTextureAdd::Ref::New(skin, texture);
+		return seUTextureAdd::Ref::New(skin, seTexture::Ref::New(pWindow.GetEngine(), name));
 	}
 };
 

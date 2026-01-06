@@ -587,7 +587,7 @@ void meWPSDecal::SetWorld(meWorld *world){
 
 
 meDecal *meWPSDecal::GetActiveDecal() const{
-	return pWorld ? pWorld->GetSelectionDecal().GetActive() : nullptr;
+	return pWorld ? pWorld->GetSelectionDecal().GetActive().Pointer() : nullptr;
 }
 
 const decString &meWPSDecal::GetActiveProperty() const{

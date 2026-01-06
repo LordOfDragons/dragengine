@@ -169,7 +169,9 @@ public:
 		const cePlaybackActionStack &stack = playback.GetMainActionStack();
 		
 		// action user has to advance himself
-		ceConversationAction * const action = stack.HasNextAction() ? stack.GetTop().GetNextAction() : nullptr;
+		ceConversationAction * const action = stack.HasNextAction()
+			? stack.GetTop().GetNextAction().Pointer() : nullptr;
+		
 		if(action){
 			switch(action->GetType()){
 			case ceConversationAction::eatActorCommand:

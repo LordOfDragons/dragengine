@@ -25,9 +25,10 @@
 #ifndef _PEEUPARAMETERSETSPREAD_H_
 #define _PEEUPARAMETERSETSPREAD_H_
 
+#include "../../emitter/peeType.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -44,8 +45,7 @@ private:
 	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	float pOldSpread;
-	float pNewSpread;
+	float pOldSpread, pNewSpread;
 	
 	
 	

@@ -114,7 +114,7 @@ int debpColliderBone::GetConstraintCount() const{
 }
 
 debpColliderConstraint *debpColliderBone::GetConstraintAt(int index) const{
-	return (debpColliderConstraint*)pConstraints.GetAt(index);
+	return pConstraints.GetAt(index);
 }
 
 int debpColliderBone::IndexOfConstraint(debpColliderConstraint *constraint) const{
@@ -126,14 +126,12 @@ bool debpColliderBone::HasConstraint(debpColliderConstraint *constraint) const{
 }
 
 void debpColliderBone::AddConstraint(debpColliderConstraint *constraint){
-	if(!constraint){
-		DETHROW(deeInvalidParam);
-	}
-	pConstraints.Add(constraint);
+	DEASSERT_NOTNULL(constraint)
+	pConstraints.AddOrThrow(constraint);
 }
 
 void debpColliderBone::RemoveConstraint(debpColliderConstraint *constraint){
-	pConstraints.Remove(constraint);
+	pConstraints.RemoveOrThrow(constraint);
 	delete constraint;
 }
 

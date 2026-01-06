@@ -339,57 +339,59 @@ lpeLangPackEntry *lpeViewLangPack::GetActiveEntry() const{
 
 
 void lpeViewLangPack::UpdateEntries(){
-	preventUpdate = true;
-	pListEntries->RemoveAllItems();
-	
-	if(pLangPack){
-		const lpeLangPackEntry::List &list = pLangPack->GetEntries();
-		const decString filter(pEditFilter->GetText().GetLower());
+	pListEntries->UpdateRestoreSelection([&](){
+		const igdeUIHelper::EnableBoolGuard pu(preventUpdate);
+		pListEntries->RemoveAllItems();
 		
-		list.Visit([&](lpeLangPackEntry *e){
-			if(filter.IsEmpty() || e->GetName().GetLower().FindString(filter) != -1){
-			//if( filter.IsEmpty() || entry->GetName().MatchesPattern( filter ) ){
-				decStringList details;
-				details.Add(e->GetText().ToUTF8());
-				
-				const lpeLangPackEntry::Ref *refEntry = nullptr;
-				if(pRefLangPack){
-					pRefLangPack->GetEntries().Find([&](lpeLangPackEntry *e2){
-						return e2->GetName() == e->GetName();
-					}, refEntry);
-				}
-				
-				details.Add(refEntry ? (*refEntry)->GetText().ToUTF8().GetString() : "");
-				
-				pListEntries->AddItem(e->GetName(), details, nullptr, e);
-			}
-		});
-		
-		if(pRefLangPack){
-			igdeIcon * const icon = GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning);
+		if(pLangPack){
+			const lpeLangPackEntry::List &list = pLangPack->GetEntries();
+			const decString filter(pEditFilter->GetText().GetLower());
 			
-			pRefLangPack->GetEntries().Visit([&](lpeLangPackEntry *e){
-				if(list.HasMatching([&](lpeLangPackEntry *e2){
-					return e2->GetName() == e->GetName();
-				})){
-					return;
-				}
-				
+			list.Visit([&](lpeLangPackEntry *e){
 				if(filter.IsEmpty() || e->GetName().GetLower().FindString(filter) != -1){
-				//if( filter.IsEmpty() || refEntry->GetName().MatchesPattern( filter ) ){
+				//if( filter.IsEmpty() || entry->GetName().MatchesPattern( filter ) ){
 					decStringList details;
-					details.Add("");
 					details.Add(e->GetText().ToUTF8());
 					
-					pListEntries->AddItem(e->GetName(), details, icon, e);
+					const lpeLangPackEntry::Ref *refEntry = nullptr;
+					if(pRefLangPack){
+						pRefLangPack->GetEntries().Find([&](lpeLangPackEntry *e2){
+							return e2->GetName() == e->GetName();
+						}, refEntry);
+					}
+					
+					details.Add(refEntry ? (*refEntry)->GetText().ToUTF8().GetString() : "");
+					
+					pListEntries->AddItem(e->GetName(), details, nullptr, e);
 				}
 			});
+			
+			if(pRefLangPack){
+				igdeIcon * const icon = GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning);
+				
+				pRefLangPack->GetEntries().Visit([&](lpeLangPackEntry *e){
+					if(list.HasMatching([&](lpeLangPackEntry *e2){
+						return e2->GetName() == e->GetName();
+					})){
+						return;
+					}
+					
+					if(filter.IsEmpty() || e->GetName().GetLower().FindString(filter) != -1){
+					//if( filter.IsEmpty() || refEntry->GetName().MatchesPattern( filter ) ){
+						decStringList details;
+						details.Add("");
+						details.Add(e->GetText().ToUTF8());
+						
+						pListEntries->AddItem(e->GetName(), details, icon, e);
+					}
+				});
+			}
 		}
-	}
+		
+		SortEntries();
+	}, 0);
 	
-	SortEntries();
 	UpdateEntrySelection();
-	preventUpdate = false;
 	SelectActiveEntry();
 }
 
@@ -399,7 +401,6 @@ void lpeViewLangPack::SortEntries() {
 
 void lpeViewLangPack::SelectActiveEntry(){
 	pListEntries->SetSelectionWithData(GetActiveEntry());
-	pListEntries->EnsureSelectedItemVisible();
 	UpdateActiveEntry();
 }
 
@@ -493,19 +494,15 @@ void lpeViewLangPack::UpdateEntrySelection(){
 		return;
 	}
 	
-	igdeIconListBox &list = pListEntries;
-	const int count = list.GetItems().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const lpeLangPackEntry &entry = *((lpeLangPackEntry*)list.GetItems().GetAt(i)->GetData());
+	pListEntries->GetItems().VisitIndexed([&](int i, const igdeListItem &item){
+		const lpeLangPackEntry &entry = *static_cast<lpeLangPackEntry*>(item.GetData());
 		if(entry.GetSelected()){
-			list.SelectItem(i);
+			pListEntries->SelectItem(i);
 			
 		}else{
-			list.DeselectItem(i);
+			pListEntries->DeselectItem(i);
 		}
-	}
+	});
 }
 
 void lpeViewLangPack::UpdateEntry(lpeLangPackEntry *entry){

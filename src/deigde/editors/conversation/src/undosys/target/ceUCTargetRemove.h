@@ -25,10 +25,11 @@
 #ifndef _CEUCTARGETREMOVE_H_
 #define _CEUCTARGETREMOVE_H_
 
+#include "../../conversation/target/ceTarget.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceTarget;
 
 
 
@@ -42,7 +43,7 @@ public:
 	
 private:
 	ceConversation *pConversation;
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 public:
 	/** \name Constructors and Destructors */

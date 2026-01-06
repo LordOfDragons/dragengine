@@ -57,15 +57,33 @@ meDecalSelection::~meDecalSelection(){
 void meDecalSelection::Add(meDecal *object){
 	DEASSERT_NOTNULL(object)
 	
+	if(!pSelection.Add(object)){
+		return;
+	}
+	
 	object->SetSelected(true);
-	pSelection.Add(object);
+	
+	if(!pActive){
+		SetActive(object);
+	}
 }
 
 void meDecalSelection::Remove(meDecal *object){
-	DEASSERT_NOTNULL(object)
+	const meDecal::Ref guard(object);
+	if(!pSelection.Remove(object)){
+		return;
+	}
 	
 	object->SetSelected(false);
-	pSelection.Remove(object);
+	
+	if(pActive == object){
+		if(pSelection.IsNotEmpty()){
+			SetActive(pSelection.First());
+			
+		}else{
+			SetActive(nullptr);
+		}
+	}
 }
 
 void meDecalSelection::RemoveAll(){

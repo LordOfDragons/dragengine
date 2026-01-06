@@ -57,9 +57,10 @@ int reSelectionShapes::IndexOfShapeWith(deColliderVolume *collider) const{
 }
 
 void reSelectionShapes::AddShape(reRigShape *shape){
-	if(pShapes.Has(shape)) DETHROW(deeInvalidParam);
+	if(!pShapes.Add(shape)){
+		return;
+	}
 	
-	pShapes.Add(shape);
 	shape->SetSelected(true);
 	
 	pRig->NotifyShapeSelectedChanged(shape);
@@ -70,10 +71,11 @@ void reSelectionShapes::AddShape(reRigShape *shape){
 }
 
 void reSelectionShapes::RemoveShape(reRigShape *shape){
-	const int index = pShapes.IndexOf(shape);
-	if(index == -1) DETHROW(deeInvalidParam);
+	const reRigShape::Ref guard(shape);
+	if(!pShapes.Remove(shape)){
+		return;
+	}
 	
-	pShapes.RemoveFrom(index);
 	shape->SetSelected(false);
 	
 	if(shape == pActiveShape){
@@ -89,6 +91,10 @@ void reSelectionShapes::RemoveShape(reRigShape *shape){
 }
 
 void reSelectionShapes::RemoveAllShapes(){
+	if(pShapes.IsEmpty()){
+		return;
+	}
+	
 	SetActiveShape(nullptr);
 	
 	pRig->NotifyAllShapesDeselected();
@@ -129,7 +135,7 @@ void reSelectionShapes::Reset(){
 	RemoveAllShapes();
 }
 void reSelectionShapes::AddVisibleShapesTo(reRigShape::List &list) const{
-	pShapes.Visit([&list](reRigShape *shape){
+	pShapes.Visit([&](reRigShape *shape){
 		if(shape->IsVisible()){
 			list.Add(shape);
 		}

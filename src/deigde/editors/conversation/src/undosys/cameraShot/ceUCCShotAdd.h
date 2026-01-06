@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	ceConversation::Ref pConversation;
+	ceConversation *pConversation;
 	ceCameraShot::Ref pCameraShot;
 	
 public:

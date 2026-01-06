@@ -50,12 +50,9 @@ pPathRename(file.pPathRename),
 pPattern(file.pPattern),
 pDirectory(file.pDirectory)
 {
-	const int count = file.pReplacements.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pReplacements.Add(new igdeTemplateReplace(*file.pReplacements.GetAt(i)));
-	}
+	file.pReplacements.Visit([&](const igdeTemplateReplace &replacement){
+		pReplacements.Add(igdeTemplateReplace::Ref::New(replacement));
+	});
 }
 
 igdeTemplateFile::~igdeTemplateFile(){

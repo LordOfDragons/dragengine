@@ -321,11 +321,9 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref clip;
 		ceConversationFile::List list;
 		list.Add(file);
-		clip = ceClipboardDataFile::Ref::New(list);
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(clip);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(ceClipboardDataFile::Ref::New(list));
 	}
 	
 	void Update() override{
@@ -624,11 +622,9 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref clip;
 		ceConversationTopic::List list;
 		list.Add(topic);
-		clip = ceClipboardDataTopic::Ref::New(list);
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(clip);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(ceClipboardDataTopic::Ref::New(list));
 	}
 	
 	void Update() override{
@@ -975,26 +971,22 @@ ceWPTTreeItemModel *ceWPTopic::GetActionTreeItem(){
 }
 
 void ceWPTopic::UpdateFileList(){
-	ceConversationFile * const file = GetFile();
-	
-	pCBFile->RemoveAllItems();
-	
-	if(pConversation){
-		pConversation->GetFiles().Visit([&](ceConversationFile *f){
-			pCBFile->AddItem(f->GetID(), nullptr, f);
-		});
+	pCBFile->UpdateRestoreSelection([&](){
+		pCBFile->RemoveAllItems();
 		
-		pCBFile->SortItems();
-		pCBFile->StoreFilterItems();
-	}
+		if(pConversation){
+			pConversation->GetFiles().Visit([&](ceConversationFile *f){
+				pCBFile->AddItem(f->GetID(), nullptr, f);
+			});
+			
+			pCBFile->SortItems();
+			pCBFile->StoreFilterItems();
+		}
+	}, 0);
 	
 	SelectActiveFile();
 	
 	pPanelASnippet->UpdateFileList();
-	
-	if(file){
-		pConversation->SetActiveFile(file);
-	}
 }
 
 void ceWPTopic::SelectActiveFile(){
@@ -1021,26 +1013,23 @@ ceConversationTopic *ceWPTopic::GetTopic() const{
 }
 
 void ceWPTopic::UpdateTopicList(){
-	ceConversationTopic * const topic = GetTopic();
-	ceConversationFile * const file = GetFile();
-	
-	pCBTopic->RemoveAllItems();
-	
-	if(file){
-		file->GetTopics().Visit([&](ceConversationTopic *t){
-			pCBTopic->AddItem(t->GetID(), nullptr, t);
-		});
-		pCBTopic->SortItems();
-		pCBTopic->StoreFilterItems();
-	}
+	pCBTopic->UpdateRestoreSelection([&](){
+		ceConversationFile * const file = GetFile();
+		
+		pCBTopic->RemoveAllItems();
+		
+		if(file){
+			file->GetTopics().Visit([&](ceConversationTopic *t){
+				pCBTopic->AddItem(t->GetID(), nullptr, t);
+			});
+			pCBTopic->SortItems();
+			pCBTopic->StoreFilterItems();
+		}
+	}, 0);
 	
 	SelectActiveTopic();
 	
 	pPanelASnippet->UpdateTopicList();
-	
-	if(file && topic){
-		file->SetActiveTopic(topic);
-	}
 }
 
 void ceWPTopic::SelectActiveTopic(){

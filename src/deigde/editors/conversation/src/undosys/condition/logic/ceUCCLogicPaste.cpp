@@ -118,5 +118,5 @@ ceConversationCondition *ceUCCLogicPaste::ActivateConditionAfterRemove() const{
 	index = pLogic->GetConditions().IndexOf(pConditions.First());
 	DEASSERT_TRUE(index != -1)
 	
-	return index > 0 ? pLogic->GetConditions().GetAt(index - 1) : nullptr;
+	return index > 0 ? pLogic->GetConditions().GetAt(index - 1).Pointer() : nullptr;
 }

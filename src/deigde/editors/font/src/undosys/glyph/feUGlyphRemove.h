@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	feFont::Ref pFont;
+	feFont *pFont;
 	feFontGlyph::Ref pGlyph;
 	
 	

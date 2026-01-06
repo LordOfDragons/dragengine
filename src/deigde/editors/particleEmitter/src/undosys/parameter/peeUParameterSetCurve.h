@@ -25,11 +25,12 @@
 #ifndef _PEEUPARAMETERSETCURVE_H_
 #define _PEEUPARAMETERSETCURVE_H_
 
+#include "../../emitter/peeType.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -46,8 +47,7 @@ protected:
 	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	decCurveBezier pOldCurve;
-	decCurveBezier pNewCurve;
+	decCurveBezier pOldCurve, pNewCurve;
 	
 	
 	

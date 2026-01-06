@@ -505,26 +505,20 @@ void igdeDialogNewGameProject::UpdateBaseGameDefButtons(){
 }
 
 void igdeDialogNewGameProject::UpdateSharedGameDefs(){
-	igdeGameDefinition * const selection = GetSelectedSharedGameDef();
-	
-	pCBSharedGameDefs->RemoveAllItems();
-	
-	const decString &scriptModule = pCBScriptModule->GetText();
-	if(scriptModule.IsEmpty()){
-		return;
-	}
-	
-	pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
-		if(gd->GetScriptModule() == scriptModule){
-			pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
+	pCBSharedGameDefs->UpdateRestoreSelection([&]{
+		pCBSharedGameDefs->RemoveAllItems();
+		
+		const decString &scriptModule = pCBScriptModule->GetText();
+		if(!scriptModule.IsEmpty()){
+			pWindowMain.GetSharedGameDefinitions().Visit([&](igdeGameDefinition *gd){
+				if(gd->GetScriptModule() == scriptModule){
+					pCBSharedGameDefs->AddItem(gd->GetID(), nullptr, gd);
+				}
+			});
+			
+			pCBSharedGameDefs->SortItems();
 		}
-	});
-	
-	pCBSharedGameDefs->SortItems();
-	pCBSharedGameDefs->SetSelectionWithData(selection);
-	if(!pCBSharedGameDefs->GetSelectedItem() && pCBSharedGameDefs->GetItems().IsNotEmpty()){
-		pCBSharedGameDefs->SetSelection(0);
-	}
+	}, 0);
 }
 
 void igdeDialogNewGameProject::UpdateSharedGameDef(){

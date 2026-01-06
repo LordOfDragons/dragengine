@@ -55,16 +55,13 @@ sePropertyNodeSelection::~sePropertyNodeSelection(){
 ///////////////
 
 void sePropertyNodeSelection::Add(sePropertyNode *node){
-	if(!node){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(node)
 	
-	if(pSelection.Has(node)){
+	if(!pSelection.Add(node)){
 		return;
 	}
 	
 	node->SetSelected(true);
-	pSelection.Add(node);
 	NotifyNodeSelectionChanged();
 	
 	if(!pActive){
@@ -73,23 +70,14 @@ void sePropertyNodeSelection::Add(sePropertyNode *node){
 }
 
 void sePropertyNodeSelection::Remove(sePropertyNode *node){
-	if(!node){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(!pSelection.Has(node)){
+	const sePropertyNode::Ref guard(node);
+	if(!pSelection.Remove(node)){
 		return;
 	}
 	
 	if(pActive == node){
-		if(pSelection.GetCount() > 1){
-			const int index = pSelection.IndexOf(node);
-			if(index == pSelection.GetCount() - 1){
-				SetActive(pSelection.GetAt(index - 1));
-				
-			}else{
-				SetActive(pSelection.GetAt(index + 1));
-			}
+		if(pSelection.IsNotEmpty()){
+			SetActive(pSelection.First());
 			
 		}else{
 			SetActive(nullptr);
@@ -97,7 +85,6 @@ void sePropertyNodeSelection::Remove(sePropertyNode *node){
 	}
 	
 	node->SetSelected(false);
-	pSelection.Remove(node);
 	NotifyNodeSelectionChanged();
 }
 

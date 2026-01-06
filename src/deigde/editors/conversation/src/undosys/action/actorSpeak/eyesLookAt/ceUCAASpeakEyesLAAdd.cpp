@@ -76,6 +76,6 @@ void ceUCAASpeakEyesLAAdd::Undo(){
 }
 
 void ceUCAASpeakEyesLAAdd::Redo(){
-	pActorSpeak->GetEyesLookAts().Insert(pEyesLA, pIndex);
+	pActorSpeak->GetEyesLookAts().InsertOrThrow(pEyesLA, pIndex);
 	pTopic->NotifyActionChanged(pActorSpeak);
 }

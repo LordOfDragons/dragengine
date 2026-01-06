@@ -58,14 +58,12 @@ skyeControllerTarget::~skyeControllerTarget(){
 ///////////////
 
 void skyeControllerTarget::AddLink(skyeLink *link){
-	if(!link){
-		DETHROW(deeInvalidParam);
-	}
-	pLinks.Add(link);
+	DEASSERT_NOTNULL(link)
+	pLinks.AddOrThrow(link);
 }
 
 void skyeControllerTarget::RemoveLink(skyeLink *link){
-	pLinks.Remove(link);
+	pLinks.RemoveOrThrow(link);
 }
 
 void skyeControllerTarget::RemoveAllLinks(){

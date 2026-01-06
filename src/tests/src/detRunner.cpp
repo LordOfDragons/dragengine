@@ -4,7 +4,6 @@
 #include "detRunner.h"
 #include "detCase.h"
 #include "collection/detTOrderedSet.h"
-#include "collection/detTNamedOrderedSet.h"
 #include "collection/detTList.h"
 #include "collection/detTSet.h"
 #include "collection/detTDictionary.h"
@@ -185,7 +184,6 @@ detRunner::detRunner(){
 	pAddTest(new detUnicodeStringList);
 	pAddTest(new detUnicodeLineBuffer);
 	pAddTest(new detTOrderedSet);
-	pAddTest(new detTNamedOrderedSet);
 	pAddTest(new detTList);
 	pAddTest(new detTSet);
 	pAddTest(new detTDictionary);

@@ -1671,22 +1671,18 @@ ceGesture *ceWPConversation::GetGesture() const{
 }
 
 void ceWPConversation::UpdateGestureList(){
-	ceGesture * const selection = GetGesture();
-	
-	pCBGesture->RemoveAllItems();
-	
-	if(pConversation){
-		pConversation->GetGestures().Visit([&](ceGesture *g){
-			pCBGesture->AddItem(g->GetName(), nullptr, g);
-		});
+	pCBGesture->UpdateRestoreSelection([&](){
+		pCBGesture->RemoveAllItems();
 		
-		pCBGesture->SortItems();
-		pCBGesture->StoreFilterItems();
-	}
-	
-	if(pConversation){
-		pConversation->SetActiveGesture(selection);
-	}
+		if(pConversation){
+			pConversation->GetGestures().Visit([&](ceGesture *g){
+				pCBGesture->AddItem(g->GetName(), nullptr, g);
+			});
+			
+			pCBGesture->SortItems();
+			pCBGesture->StoreFilterItems();
+		}
+	}, 0);
 }
 
 void ceWPConversation::SelectActiveGesture(){
@@ -1719,22 +1715,18 @@ ceFacePose *ceWPConversation::GetFacePose() const{
 }
 
 void ceWPConversation::UpdateFacePoseList(){
-	ceFacePose * const selection = GetFacePose();
-	
-	pCBFacePose->RemoveAllItems();
-	
-	if(pConversation){
-		pConversation->GetFacePoseList().Visit([&](ceFacePose *f){
-			pCBFacePose->AddItem(f->GetName(), nullptr, f);
-		});
+	pCBFacePose->UpdateRestoreSelection([&](){
+		pCBFacePose->RemoveAllItems();
 		
-		pCBFacePose->SortItems();
-		pCBFacePose->StoreFilterItems();
-	}
-	
-	if(pConversation){
-		pConversation->SetActiveFacePose(selection);
-	}
+		if(pConversation){
+			pConversation->GetFacePoseList().Visit([&](ceFacePose *f){
+				pCBFacePose->AddItem(f->GetName(), nullptr, f);
+			});
+			
+			pCBFacePose->SortItems();
+			pCBFacePose->StoreFilterItems();
+		}
+	}, 0);
 }
 
 void ceWPConversation::SelectActiveFacePose(){
@@ -1817,22 +1809,18 @@ ceCameraShot *ceWPConversation::GetCameraShot() const{
 }
 
 void ceWPConversation::UpdateCameraShotList(){
-	ceCameraShot * const selection = GetCameraShot();
-	
-	pCBCameraShot->RemoveAllItems();
-	
-	if(pConversation){
-		pConversation->GetCameraShotList().Visit([&](ceCameraShot *c){
-			pCBCameraShot->AddItem(c->GetName(), nullptr, c);
-		});
+	pCBCameraShot->UpdateRestoreSelection([&](){
+		pCBCameraShot->RemoveAllItems();
 		
-		pCBCameraShot->SortItems();
-		pCBCameraShot->StoreFilterItems();
-	}
-	
-	if(pConversation){
-		pConversation->SetActiveCameraShot(selection);
-	}
+		if(pConversation){
+			pConversation->GetCameraShotList().Visit([&](ceCameraShot *c){
+				pCBCameraShot->AddItem(c->GetName(), nullptr, c);
+			});
+			
+			pCBCameraShot->SortItems();
+			pCBCameraShot->StoreFilterItems();
+		}
+	}, 0);
 }
 
 void ceWPConversation::SelectActiveCameraShot(){
@@ -1928,21 +1916,17 @@ ceTarget *ceWPConversation::GetTarget() const{
 }
 
 void ceWPConversation::UpdateTargetList(){
-	ceTarget * const selection = GetTarget();
-	
-	pCBTarget->RemoveAllItems();
-	
-	if(pConversation){
-		pConversation->GetTargets().Visit([&](ceTarget *t){
-			pCBTarget->AddItem(t->GetName(), nullptr, t);
-		});
-		pCBTarget->SortItems();
-		pCBTarget->StoreFilterItems();
-	}
-	
-	if(pConversation){
-		pConversation->SetActiveTarget(selection);
-	}
+	pCBTarget->UpdateRestoreSelection([&](){
+		pCBTarget->RemoveAllItems();
+		
+		if(pConversation){
+			pConversation->GetTargets().Visit([&](ceTarget *t){
+				pCBTarget->AddItem(t->GetName(), nullptr, t);
+			});
+			pCBTarget->SortItems();
+			pCBTarget->StoreFilterItems();
+		}
+	}, 0);
 	
 	// update lists containing targets
 	const decString selCShotCamera(pCBCameraShotCameraTarget->GetText());

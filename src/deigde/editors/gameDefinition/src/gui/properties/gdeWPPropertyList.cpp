@@ -1087,27 +1087,18 @@ void gdeWPPropertyList::UpdatePropertyIdentifierList(){
 }
 
 void gdeWPPropertyList::UpdateCustomPatternList(){
-	const gdeProperty * const property = GetProperty();
-	
-	if(property){
-		gdeFilePattern * const selection = pCBCustomPattern->GetSelectedItem()
-			? (gdeFilePattern*)pCBCustomPattern->GetSelectedItem()->GetData() : nullptr;
-		
-		const gdeFilePattern::List &list = property->GetCustomPathPattern();
-		const int count = list.GetCount();
-		int i;
+	pCBCustomPattern->UpdateRestoreSelection([&](){
+		const gdeProperty * const property = GetProperty();
 		
 		pCBCustomPattern->RemoveAllItems();
-		for(i=0; i<count; i++){
-			gdeFilePattern * const pattern = list.GetAt(i);
-			pCBCustomPattern->AddItem(pattern->GetName(), nullptr, pattern);
+		
+		if(property){
+			property->GetCustomPathPattern().Visit([&](gdeFilePattern *pattern){
+				pCBCustomPattern->AddItem(pattern->GetName(), nullptr, pattern);
+			});
+			pCBCustomPattern->SortItems();
 		}
-		pCBCustomPattern->SortItems();
-		pCBCustomPattern->SetSelectionWithData(selection);
-		
-	}else{
-		pCBCustomPattern->RemoveAllItems();
-	}
+	}, 0);
 	
 	UpdateCustomPattern();
 }

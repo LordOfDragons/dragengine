@@ -106,6 +106,9 @@ public:
 	/** \brief Update after changing trigger target list outside widget. */
 	void UpdateTable();
 	
+	/** \brief Update target in list if present. */
+	void UpdateTarget(igdeTriggerTarget *target);
+	
 	/** \brief Actions. */
 	inline const igdeAction::Ref &GetActionToggle() const{ return pActionToggle; }
 	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
@@ -136,6 +139,12 @@ public:
 	
 	/** \brief Action has been destroyed. */
 	virtual void OnDestroyed(igdeAction *action);
+	
+	/** \brief List box. */
+	inline const igdeListBox::Ref &GetListBox() const{ return pListTriggerTable; }
+	
+	/** \brief Trigger table filter text field. */
+	inline const igdeTextField::Ref &GetTextFieldFilter() const{ return pEditTriggerTableFilter; }
 	/*@}*/
 	
 	

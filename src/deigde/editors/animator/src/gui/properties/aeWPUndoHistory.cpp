@@ -55,17 +55,17 @@ aeWPUndoHistory::~aeWPUndoHistory(){
 ///////////////
 
 void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
-	if(animator == pWorld){
+	if(animator == pAnimator){
 		return;
 	}
 	
 	SetUndoSystem(nullptr);
 	
-	if(pWorld){
-		pWorld->RemoveNotifier(pListener);
+	if(pAnimator){
+		pAnimator->RemoveNotifier(pListener);
 	}
 	
-	pWorld = animator;
+	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);

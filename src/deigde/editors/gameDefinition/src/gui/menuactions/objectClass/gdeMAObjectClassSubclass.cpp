@@ -92,10 +92,9 @@ igdeUndo::Ref gdeMAObjectClassSubclass::OnAction(gdeGameDefinition &gameDefiniti
 		soc.SetPartialHideTags(objectClass->GetPartialHideTags());
 		soc.SetScaleMode(objectClass->GetScaleMode());
 		
-		const gdeOCInherit::Ref objRefInherit(gdeOCInherit::Ref::New(objectClass->GetName()));
-		gdeOCInherit& inherit = (gdeOCInherit&)(deObject&)objRefInherit;
-		inherit.SetPropertyPrefix(objectClass->GetDefaultInheritPropertyPrefix());
-		soc.GetInherits().Add(&inherit);
+		const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::New(objectClass->GetName()));
+		inherit->SetPropertyPrefix(objectClass->GetDefaultInheritPropertyPrefix());
+		soc.GetInherits().Add(inherit);
 		
 		return gdeUAddObjectClass::Ref::New(&gameDefinition, &soc);
 	}

@@ -73,6 +73,8 @@ public:
 	virtual void Focus();
 	virtual void MakeItemVisible(int index);
 	virtual void RemoveAllItems();
+	virtual decPoint GetContentPosition() const;
+	virtual void SetContentPosition(const decPoint &position);
 	/*@}*/
 };
 

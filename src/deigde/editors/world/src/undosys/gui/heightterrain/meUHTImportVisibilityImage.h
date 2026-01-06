@@ -51,7 +51,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	meHeightTerrainSector::Ref pSector;
 	
 	meBitArray *pOldVis;

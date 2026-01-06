@@ -96,13 +96,11 @@ void dexsiDeviceButton::SetDisplayImages(const char *name){
 	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
-	deImage::Ref icon;
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		icon = imageManager.LoadImage(vfs, filename, "/");
-		pDisplayIcons.Add((deImage*)icon);
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 

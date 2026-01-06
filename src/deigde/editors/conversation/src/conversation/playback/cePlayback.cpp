@@ -140,7 +140,7 @@ void cePlayback::SetAutoAdvanceCommands(bool autoAdvance){
 }
 
 void cePlayback::AddSideActionStack(const cePlaybackActionStack::Ref &stack){
-	pSideActionStacks.Add(stack);
+	pSideActionStacks.AddOrThrow(stack);
 	const cePlaybackActionStack::Ref restoreStack(pActiveActionStack);
 	pActiveActionStack = stack;
 	pProcessActions(0.0f);

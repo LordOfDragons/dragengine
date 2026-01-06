@@ -339,7 +339,7 @@ void aeWPAPanelRuleStateSnapshot::UpdateAnimMoveList(){
 	
 	if(GetAnimator()){
 		const deAnimation * const engAnimation = GetAnimator()->GetEngineAnimator()
-			? GetAnimator()->GetEngineAnimator()->GetAnimation() : nullptr;
+			? GetAnimator()->GetEngineAnimator()->GetAnimation().Pointer() : nullptr;
 		if(engAnimation){
 			const int count = engAnimation->GetMoveCount();
 			int i;

@@ -146,10 +146,8 @@ void gdeSky::SetTags(const decStringSet &tags){
 ////////////////
 
 void gdeSky::AddController(gdeSkyController *controller){
-	if(!controller){
-		DETHROW(deeInvalidParam);
-	}
-	pControllers.Add(controller);
+	DEASSERT_NOTNULL(controller)
+	pControllers.AddOrThrow(controller);
 	
 	if(pGameDefinition){
 		pGameDefinition->NotifySkyControllerStructureChanged(this);
@@ -157,7 +155,7 @@ void gdeSky::AddController(gdeSkyController *controller){
 }
 
 void gdeSky::RemoveController(gdeSkyController *controller){
-	pControllers.Remove(controller);
+	pControllers.RemoveOrThrow(controller);
 	
 	if(pGameDefinition){
 		pGameDefinition->NotifySkyControllerStructureChanged(this);
@@ -165,10 +163,19 @@ void gdeSky::RemoveController(gdeSkyController *controller){
 }
 
 void gdeSky::RemoveAllControllers(){
+	if(pControllers.IsEmpty()){
+		return;
+	}
+	
 	pControllers.RemoveAll();
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyControllerStructureChanged(this);
+	}
 }
 
 void gdeSky::NotifyControllerChanged(gdeSkyController *controller){
+	DEASSERT_NOTNULL(controller)
+	
 	if(pGameDefinition){
 		pGameDefinition->NotifySkyControllerChanged(this, controller);
 	}

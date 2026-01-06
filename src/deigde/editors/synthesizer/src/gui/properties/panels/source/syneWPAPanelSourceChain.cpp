@@ -366,15 +366,11 @@ void syneWPAPanelSourceChain::UpdateSoundList(){
 	pListSounds->RemoveAllItems();
 	
 	if(source){
-		const decStringList &list = source->GetPathSounds();
-		const int count = list.GetCount();
-		decString text;
-		int i;
-		
-		for(i=0; i<count; i++){
-			text.Format("%d: %s", i, list.GetAt(i).GetString());
+		source->GetPathSounds().VisitIndexed([&](int i, const decString &p){
+			decString text;
+			text.Format("%d: %s", i, p.GetString());
 			pListSounds->AddItem(text);
-		}
+		});
 	}
 	
 	if(pListSounds->GetItems().IsNotEmpty()){
@@ -403,7 +399,8 @@ void syneWPAPanelSourceChain::UpdateSound(){
 void syneWPAPanelSourceChain::UpdateSoundInfo(){
 	const syneSourceChain * const source = (const syneSourceChain*)GetSource();
 	const int selection = pListSounds->GetSelection();
-	const deSound * const sound = source && selection != -1 ? source->GetSounds().GetAt(selection) : nullptr;
+	const deSound * const sound = source && selection != -1
+		? source->GetSounds().GetAt(selection).Pointer() : nullptr;
 	
 	if(sound){
 		decString text, description;

@@ -52,16 +52,20 @@ deoglCaptureCanvasList::~deoglCaptureCanvasList(){
 ///////////////
 
 void deoglCaptureCanvasList::Add(deoglCaptureCanvas *captureCanvas){
-	pCaptureCanvas.Add(captureCanvas);
+	pCaptureCanvas.AddOrThrow(captureCanvas);
 	pDirty = true;
 }
 
 void deoglCaptureCanvasList::Remove(deoglCaptureCanvas *captureCanvas){
-	pCaptureCanvas.Remove(captureCanvas);
+	pCaptureCanvas.RemoveOrThrow(captureCanvas);
 	pDirty = true;
 }
 
 void deoglCaptureCanvasList::RemoveAll(){
+	if(pCaptureCanvas.IsEmpty()){
+		return;
+	}
+	
 	pCaptureCanvas.RemoveAll();
 	pDirty = true;
 }
@@ -79,7 +83,6 @@ void deoglCaptureCanvasList::SyncToRender(){
 		decTObjectOrderedSet<deoglRCaptureCanvas> &list = pOgl.GetRenderThread().GetRCaptureCanvasList();
 		
 		list.RemoveAll();
-		
 		pCaptureCanvas.Visit([&](const deoglCaptureCanvas *captureCanvas){
 			list.Add(captureCanvas->GetRCaptureCanvas());
 		});

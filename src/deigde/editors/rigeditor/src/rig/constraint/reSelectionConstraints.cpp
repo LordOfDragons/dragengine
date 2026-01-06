@@ -58,9 +58,10 @@ int reSelectionConstraints::IndexOfConstraintWith(deColliderVolume *collider) co
 }
 
 void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
-	DEASSERT_FALSE(pConstraints.Has(constraint))
+	if(!pConstraints.Add(constraint)){
+		return;
+	}
 	
-	pConstraints.Add(constraint);
 	constraint->SetSelected(true);
 	
 	pRig->NotifyConstraintSelectedChanged(constraint);
@@ -72,7 +73,10 @@ void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
 
 void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
 	const reRigConstraint::Ref guard(constraint);
-	pConstraints.Remove(constraint);
+	if(!pConstraints.Remove(constraint)){
+		return;
+	}
+	
 	constraint->SetSelected(false);
 	
 	if(constraint == pActiveConstraint){
@@ -88,6 +92,10 @@ void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
 }
 
 void reSelectionConstraints::RemoveAllConstraints(){
+	if(pConstraints.IsEmpty()){
+		return;
+	}
+	
 	SetActiveConstraint(nullptr);
 	
 	pRig->NotifyAllConstraintsDeselected();
@@ -128,7 +136,7 @@ void reSelectionConstraints::Reset(){
 	RemoveAllConstraints();
 }
 void reSelectionConstraints::AddVisibleConstraintsTo(reRigConstraint::List &list) const{
-	pConstraints.Visit([&list](reRigConstraint *c){
+	pConstraints.Visit([&](reRigConstraint *c){
 		if(c->IsVisible()){
 			list.Add(c);
 		}

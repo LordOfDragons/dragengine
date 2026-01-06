@@ -425,8 +425,7 @@ public:
 	
 	igdeUndo::Ref OnAction(meWorld *world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
-		if(type){
-			world->GetPathFindTest()->GetTypeList().Remove(type);
+		if(type && world->GetPathFindTest()->GetTypeList().Remove(type)){
 			world->GetPathFindTest()->NotifyTypesChanged();
 		}
 		return {};
@@ -835,19 +834,17 @@ mePathFindTestType *meWPWorld::GetActivePathFindTestType() const{
 }
 
 void meWPWorld::UpdatePathFindTestTypeList(){
-	mePathFindTestType * const selection = GetActivePathFindTestType();
-	
-	pCBPFTType->RemoveAllItems();
-	
-	if(pWorld){
-		pWorld->GetPathFindTest()->GetTypeList().Visit([&](mePathFindTestType *type){
-			decString text;
-			text.Format("%d: %s", type->GetTypeNumber(), type->GetName().GetString());
-			pCBPFTType->AddItem(text, nullptr, type);
-		});
-	}
-	
-	pCBPFTType->SetSelectionWithData(selection);
+	pCBPFTType->UpdateRestoreSelection([&](){
+		pCBPFTType->RemoveAllItems();
+		
+		if(pWorld){
+			pWorld->GetPathFindTest()->GetTypeList().Visit([&](mePathFindTestType *type){
+				decString text;
+				text.Format("%d: %s", type->GetTypeNumber(), type->GetName().GetString());
+				pCBPFTType->AddItem(text, nullptr, type);
+			});
+		}
+	}, 0);
 	
 	UpdatePathFindTestType();
 }

@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	gdeGameDefinition::Ref pGameDefinition;
+	gdeGameDefinition *pGameDefinition;
 	gdeSky::Ref pSky;
 	
 	

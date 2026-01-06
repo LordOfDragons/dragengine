@@ -69,7 +69,7 @@ ceUCAPChoiceOptionRemove::~ceUCAPChoiceOptionRemove(){
 ///////////////
 
 void ceUCAPChoiceOptionRemove::Undo(){
-	pPlayerChoice->GetOptions().Insert(pOption, pIndex);
+	pPlayerChoice->GetOptions().InsertOrThrow(pOption, pIndex);
 	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 

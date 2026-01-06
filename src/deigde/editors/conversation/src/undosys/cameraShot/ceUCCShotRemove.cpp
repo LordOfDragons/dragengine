@@ -47,7 +47,6 @@ ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = nullptr;
-	pCameraShot = nullptr;
 	
 	SetShortInfo("Remove Camera Shot");
 	

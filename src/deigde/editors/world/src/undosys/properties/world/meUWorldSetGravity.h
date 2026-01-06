@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	decVector pOldValue;
 	decVector pNewValue;

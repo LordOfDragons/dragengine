@@ -557,12 +557,12 @@ bool dexsiDeviceManager::pEvdevDisappeared(const decString &path){
 	int i;
 	
 	for(i=0; i<count; i++){
-		dexsiDevice * const device = ((dexsiDevice*)pDevices.GetAt(i));
+		dexsiDevice * const device = pDevices.GetAt(i);
 		if(device->GetSource() != dexsiDevice::esLibevdev){
 			continue;
 		}
 		
-		const dexsiDeviceLibEvent &evd = *(dexsiDeviceLibEvent*)device;
+		const dexsiDeviceLibEvent &evd = *dynamic_cast<dexsiDeviceLibEvent*>(device);
 		if(evd.GetEvdevPath() != path){
 			continue;
 		}

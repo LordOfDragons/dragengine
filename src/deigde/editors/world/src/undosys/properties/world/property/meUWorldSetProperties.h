@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	meWorld::Ref pWorld;
+	meWorld *pWorld;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

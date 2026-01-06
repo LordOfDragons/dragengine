@@ -89,7 +89,7 @@ void saeWord::SetName(const char *name){
 	}
 	
 	if(pSAnimation){
-		DEASSERT_FALSE(pSAnimation->GetWordList().HasMatching([&](const saeWord &w){
+		DEASSERT_FALSE(pSAnimation->GetWords().HasMatching([&](const saeWord &w){
 			return w.GetName() == name;
 		}))
 	}

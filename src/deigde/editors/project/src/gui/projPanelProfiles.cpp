@@ -726,6 +726,7 @@ pWindowMain(windowMain)
 	AddChild(scroll, eaSide);
 	
 	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, cListProfile::Ref::New(*this));
+	pListProfiles->SetDefaultSorter();
 	helper.Button(sidePanel, windowMain.GetActionProfileAdd());
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
@@ -930,24 +931,23 @@ projProfile *projPanelProfiles::GetActiveProfile() const{
 
 void projPanelProfiles::SelectActiveProfile(){
 	pListProfiles->SetSelection(pListProfiles->IndexOfItemWithData(GetActiveProfile()));
-	if(pListProfiles->GetSelection() != -1){
-		pListProfiles->MakeItemVisible(pListProfiles->GetSelection());
-	}
 	UpdateProfile();
 }
 
 void projPanelProfiles::UpdateProfiles(){
-	pListProfiles->RemoveAllItems();
-	
-	if(pProject){
-		pProject->GetProfiles().Visit([&](projProfile *profile){
-			pListProfiles->AddItem(profile->GetName(), nullptr, profile);
-		});
+	pListProfiles->UpdateRestoreSelection([&](){
+		pListProfiles->RemoveAllItems();
 		
-		pListProfiles->SortItems();
-	}
+		if(pProject){
+			pProject->GetProfiles().Visit([&](projProfile *profile){
+				pListProfiles->AddItem(profile->GetName(), nullptr, profile);
+			});
+			
+			pListProfiles->SortItems();
+		}
+	}, 0);
 	
-	SelectActiveProfile();
+	UpdateProfile();
 }
 
 void projPanelProfiles::UpdateProfile(){

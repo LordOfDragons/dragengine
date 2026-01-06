@@ -121,6 +121,7 @@ public:
 			target->Fire();
 		}
 		
+		pPanel.UpdateTarget(target);
 		pPanel.OnAction();
 	}
 	
@@ -146,6 +147,7 @@ public:
 		}
 		
 		list->RemoveAll();
+		pPanel.UpdateTable();
 		pPanel.OnAction();
 	}
 	
@@ -172,16 +174,20 @@ public:
 			return;
 		}
 		
-		decString name("Target");
+		decString name(pPanel.GetSelectedTarget()
+			? pPanel.GetSelectedTarget()->GetName().GetString() : "Target");
+		
 		while(igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
 			if(list->HasNamed(name)){
-				igdeCommonDialogs::Information(&pPanel, "Add Target", "A target with this name exists already.");
+				igdeCommonDialogs::Information(&pPanel, "Add Target",
+					"A target with this name exists already.");
 				continue;
 			}
 			
 			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::New(name));
 			list->Add(target);
 			
+			pPanel.UpdateTable();
 			pPanel.SelectTarget(target);
 			pPanel.OnAction();
 			return;
@@ -212,6 +218,7 @@ public:
 		}
 		
 		list->Remove(target);
+		pPanel.UpdateTable();
 		pPanel.OnAction();
 	}
 	
@@ -237,6 +244,7 @@ public:
 		}
 		
 		target->Fire();
+		pPanel.UpdateTarget(target);
 		pPanel.OnAction();
 	}
 	
@@ -262,6 +270,7 @@ public:
 		}
 		
 		target->Reset();
+		pPanel.UpdateTarget(target);
 		pPanel.OnAction();
 	}
 	
@@ -287,6 +296,7 @@ public:
 		}
 		
 		target->FullReset();
+		pPanel.UpdateTarget(target);
 		pPanel.OnAction();
 	}
 	
@@ -350,31 +360,46 @@ void igdeWPTriggerTable::SelectTarget(igdeTriggerTarget *target){
 }
 
 void igdeWPTriggerTable::UpdateTable(){
-	const decString filter(pEditTriggerTableFilter->GetText().GetLower());
-	igdeTriggerTarget *selectedTarget = GetSelectedTarget();
-	const bool hasFilter = !filter.IsEmpty();
-	
-	pListTriggerTable->RemoveAllItems();
-	
-	if(pTriggerTargetList){
-		pTriggerTargetList->GetTargets().Visit([&](igdeTriggerTarget *t){
-			if(hasFilter && t->GetName().GetLower().FindString(filter) == -1){
-				return;
-			}
+	pListTriggerTable->UpdateRestoreSelection([&](){
+		const decString filter(pEditTriggerTableFilter->GetText().GetLower());
+		const bool hasFilter = !filter.IsEmpty();
+		
+		pListTriggerTable->RemoveAllItems();
+		
+		if(pTriggerTargetList){
+			pTriggerTargetList->GetTargets().Visit([&](igdeTriggerTarget *t){
+				if(hasFilter && t->GetName().GetLower().FindString(filter) == -1){
+					return;
+				}
+				
+				decString text;
+				text.Format("%s (%s)", t->GetName().GetString(),
+					t->GetHasFired() ? "has fired" : "never fired");
+				pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
+			});
 			
-			decString text;
-			text.Format("%s (%s)", t->GetName().GetString(),
-				t->GetHasFired() ? "has fired" : "never fired");
-			pListTriggerTable->AddItem(text, t->GetFired() ? pIconFired : pIconNotFired, t);
-		});
+			pListTriggerTable->SortItems();
+		}
+	});
+}
+
+void igdeWPTriggerTable::UpdateTarget(igdeTriggerTarget *target){
+	int index = pListTriggerTable->IndexOfItemWithData(target);
+	if(index == -1){
+		return;
 	}
 	
-	pListTriggerTable->SortItems();
+	decString text;
+	text.Format("%s (%s)", target->GetName().GetString(),
+		target->GetHasFired() ? "has fired" : "never fired");
 	
-	pListTriggerTable->SetSelectionWithData(selectedTarget);
-	if(!pListTriggerTable->GetSelectedItem() && pListTriggerTable->GetItems().IsNotEmpty()){
-		pListTriggerTable->SetSelection(0);
+	igdeListItem &item = pListTriggerTable->GetItems().GetAt(index);
+	if(item.GetText() == text){
+		return;
 	}
+	
+	item.SetText(text);
+	pListTriggerTable->ItemChangedAt(index);
 }
 
 

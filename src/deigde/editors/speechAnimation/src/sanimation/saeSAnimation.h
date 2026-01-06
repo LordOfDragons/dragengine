@@ -81,10 +81,10 @@ private:
 	decString pNeutralMoveName;
 	decStringSet pNeutralVertexPositionSets;
 	
-	saePhoneme::List pPhonemeList;
+	saePhoneme::List pPhonemes;
 	saePhoneme::Ref pActivePhoneme;
 	
-	saeWord::List pWordList;
+	saeWord::List pWords;
 	saeWord::Ref pActiveWord;
 	
 	eDisplayModes pDisplayMode;
@@ -174,7 +174,7 @@ public:
 	/** \name Phonemes */
 	/*@{*/
 	/** Retrieves the phoneme list read-only. */
-	inline const saePhoneme::List &GetPhonemes() const{ return pPhonemeList; }
+	inline const saePhoneme::List &GetPhonemes() const{ return pPhonemes; }
 	/** Adds a new phoneme. */
 	void AddPhoneme(saePhoneme *phoneme);
 	/** Removes a phoneme. */
@@ -192,7 +192,7 @@ public:
 	/** \name Words */
 	/*@{*/
 	/** Retrieves the word list read-only. */
-	inline const saeWord::List &GetWordList() const{ return pWordList; }
+	inline const saeWord::List &GetWords() const{ return pWords; }
 	/** Adds a new word. */
 	void AddWord(saeWord *word);
 	/** Removes a word. */

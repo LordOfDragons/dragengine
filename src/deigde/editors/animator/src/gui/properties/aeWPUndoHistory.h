@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	aeAnimator::Ref pWorld;
+	aeAnimator::Ref pAnimator;
 	aeWPUndoHistoryListener::Ref pListener;
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline const aeAnimator::Ref &GetAnimator() const{ return pWorld; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

@@ -181,12 +181,10 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy mapped"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
-		igdeClipboardData::Ref data;
 		seMapped::List list;
 		list.Add(mapped);
-		data = seClipboardDataMapped::Ref::New(list);
 		
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(data);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(seClipboardDataMapped::Ref::New(list));
 		return {};
 	}
 };
@@ -198,12 +196,10 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut mapped"){}
 	
 	igdeUndo::Ref OnActionMapped(seSkin*, seMapped *mapped) override{
-		igdeClipboardData::Ref data;
 		seMapped::List list;
 		list.Add(mapped);
-		data = seClipboardDataMapped::Ref::New(list);
 		
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(data);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(seClipboardDataMapped::Ref::New(list));
 		
 		const seUMappedRemove::Ref undo(seUMappedRemove::Ref::New(mapped));
 		
@@ -600,19 +596,18 @@ seMapped *seWPMapped::GetMapped() const{
 }
 
 void seWPMapped::UpdateMappedList(){
-	seMapped * const selection = GetMapped();
-	
-	pListMapped->RemoveAllItems();
-	
-	if(pSkin){
-		pSkin->GetMapped().Visit([&](seMapped *mapped){
-			pListMapped->AddItem(mapped->GetName(), nullptr, mapped);
-		});
+	pListMapped->UpdateRestoreSelection([&](){
+		pListMapped->RemoveAllItems();
 		
-		pListMapped->SortItems();
-	}
+		if(pSkin){
+			pSkin->GetMapped().Visit([&](seMapped *mapped){
+				pListMapped->AddItem(mapped->GetName(), nullptr, mapped);
+			});
+			
+			pListMapped->SortItems();
+		}
+	}, 0);
 	
-	pListMapped->SetSelectionWithData(selection);
 	UpdateMapped();
 }
 

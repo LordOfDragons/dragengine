@@ -51,15 +51,9 @@ pAnimator(nullptr)
 	
 	SetShortInfo("Remove unused links");
 	
-	const int count = animator->GetLinks().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		aeLink * const link = animator->GetLinks().GetAt(i);
-		if(animator->CountLinkUsage(link) == 0){
-			pLinks.Add(link);
-		}
-	}
+	pLinks = animator->GetLinks().Collect([&](aeLink *link){
+		return animator->CountLinkUsage(link) == 0;
+	});
 	
 	pAnimator = animator;
 }
@@ -71,21 +65,14 @@ aeULinkRemoveUnused::~aeULinkRemoveUnused(){
 
 // Management
 ///////////////
-
 void aeULinkRemoveUnused::Undo(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pAnimator->AddLink(pLinks.GetAt(i));
-	}
+	pLinks.Visit([&](aeLink *link){
+		pAnimator->AddLink(link);
+	});
 }
 
 void aeULinkRemoveUnused::Redo(){
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pAnimator->RemoveLink(pLinks.GetAt(i));
-	}
+	pLinks.Visit([&](aeLink *link){
+		pAnimator->RemoveLink(link);
+	});
 }

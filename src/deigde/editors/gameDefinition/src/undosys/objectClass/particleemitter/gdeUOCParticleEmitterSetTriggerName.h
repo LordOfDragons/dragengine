@@ -47,8 +47,7 @@ private:
 	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eTriggers pTrigger;
-	decString pOldValue;
-	decString pNewValue;
+	decString pOldValue, pNewValue;
 	
 	
 	

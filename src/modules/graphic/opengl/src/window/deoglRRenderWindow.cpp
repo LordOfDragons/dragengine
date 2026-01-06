@@ -656,7 +656,7 @@ void deoglRRenderWindow::Render(){
 	
 	// prepare canvas
 	deoglRCanvas * const debugOverlayCanvas = !pRenderThread.GetVRCamera()
-		? pRenderThread.GetCanvasDebugOverlay() : nullptr;
+		? pRenderThread.GetCanvasDebugOverlay().Pointer() : nullptr;
 	
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
 	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();

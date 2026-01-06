@@ -252,7 +252,8 @@ void deHeightTerrainSector::SetAllFacesVisible(bool visible){
 /////////////
 
 void deHeightTerrainSector::AddTexture(deHeightTerrainTexture *texture){
-	DEASSERT_TRUE(pTextures.Add(texture))
+	DEASSERT_NOTNULL(texture)
+	pTextures.AddOrThrow(texture);
 	
 	if(pParentHeightTerrain){
 		pParentHeightTerrain->NotifySectorChanged(pIndex);
@@ -260,7 +261,7 @@ void deHeightTerrainSector::AddTexture(deHeightTerrainTexture *texture){
 }
 
 void deHeightTerrainSector::RemoveTexture(deHeightTerrainTexture *texture){
-	pTextures.RemoveFrom(pTextures.IndexOf(texture));
+	pTextures.RemoveOrThrow(texture);
 	delete texture;
 	
 	if(pParentHeightTerrain){
@@ -378,7 +379,8 @@ void deHeightTerrainSector::RemoveAllDecals(){
 //////////////////////
 
 void deHeightTerrainSector::AddNavSpace(deHeightTerrainNavSpace *navspace){
-	DEASSERT_TRUE(pNavSpaces.Add(navspace))
+	DEASSERT_NOTNULL(navspace)
+	pNavSpaces.AddOrThrow(navspace);
 	
 	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
 		pParentHeightTerrain->GetPeerAI()->NavSpaceAdded(pIndex, navspace);
@@ -387,6 +389,7 @@ void deHeightTerrainSector::AddNavSpace(deHeightTerrainNavSpace *navspace){
 
 void deHeightTerrainSector::RemoveNavSpace(deHeightTerrainNavSpace *navspace){
 	const int index = pNavSpaces.IndexOf(navspace);
+	DEASSERT_TRUE(index != -1)
 	
 	pNavSpaces.RemoveFrom(index);
 	
@@ -398,6 +401,10 @@ void deHeightTerrainSector::RemoveNavSpace(deHeightTerrainNavSpace *navspace){
 }
 
 void deHeightTerrainSector::RemoveAllNavSpaces(){
+	if(pNavSpaces.IsEmpty()){
+		return;
+	}
+	
 	pNavSpaces.Visit([](deHeightTerrainNavSpace *navspace){
 		delete navspace;
 	});

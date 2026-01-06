@@ -97,4 +97,11 @@ void igdeNativeNullIconListBox::MakeItemVisible(int){
 void igdeNativeNullIconListBox::RemoveAllItems(){
 }
 
+decPoint igdeNativeNullIconListBox::GetContentPosition() const{
+	return {};
+}
+
+void igdeNativeNullIconListBox::SetContentPosition(const decPoint&){
+}
+
 #endif

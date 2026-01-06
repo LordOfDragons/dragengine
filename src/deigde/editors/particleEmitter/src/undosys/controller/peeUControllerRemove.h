@@ -41,7 +41,7 @@ public:
 	
 	
 private:
-	peeEmitter::Ref pEmitter;
+	peeEmitter *pEmitter;
 	peeController::Ref pController;
 	int pIndex;
 	

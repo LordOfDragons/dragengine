@@ -939,6 +939,6 @@ void deoglRenderLight::pCleanUp(){
 	}
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();
-	dilist.RemoveIfPresent(pDebugInfoSolid);
-	dilist.RemoveIfPresent(pDebugInfoTransparent);
+	dilist.Remove(pDebugInfoSolid);
+	dilist.Remove(pDebugInfoTransparent);
 }

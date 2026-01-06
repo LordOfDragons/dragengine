@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	syneSynthesizer::Ref pSynthesizer;
+	syneSynthesizer *pSynthesizer;
 	syneSource::Ref pSource;
 	int pIndex;
 	

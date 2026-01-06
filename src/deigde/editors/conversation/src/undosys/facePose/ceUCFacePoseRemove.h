@@ -25,10 +25,11 @@
 #ifndef _CEUCFACEPOSEREMOVE_H_
 #define _CEUCFACEPOSEREMOVE_H_
 
+#include "../../conversation/facepose/ceFacePose.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceFacePose;
 
 
 
@@ -42,7 +43,7 @@ public:
 	
 private:
 	ceConversation *pConversation;
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 public:
 	/** \name Constructors and Destructors */

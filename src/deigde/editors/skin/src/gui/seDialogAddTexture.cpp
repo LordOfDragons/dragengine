@@ -109,9 +109,10 @@ pWindowMain(windowMain)
 		env, "Enter texture name or choose from model textures."));
 	
 	
-	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5);
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5);
 	
-	helper.ListBox(content, 5, "Textures names in model", pListModelTextureNames, cListTextureNames::Ref::New(*this));
+	helper.ListBox(content, 5, "Textures names in model", pListModelTextureNames,
+		cListTextureNames::Ref::New(*this));
 	pListModelTextureNames->SetDefaultSorter();
 	
 	formLine = igdeContainerForm::Ref::New(env);

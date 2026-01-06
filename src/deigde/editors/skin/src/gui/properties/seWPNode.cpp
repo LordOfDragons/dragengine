@@ -758,7 +758,7 @@ public:
 		}
 		
 		const int type = pPanel.GetSelectedMappedType();
-		seMapped * const curMapped = type != -1 ? node->GetMappedFor(type) : nullptr;
+		seMapped * const curMapped = type != -1 ? node->GetMappedFor(type).Pointer() : nullptr;
 		seMapped * const newMapped = (seMapped*)comboBox->GetSelectedItem()->GetData();
 		if(newMapped == curMapped){
 			return;
@@ -950,7 +950,7 @@ seProperty *seWPNode::GetProperty() const{
 
 sePropertyNode *seWPNode::GetNode() const{
 	seProperty * const property = GetProperty();
-	return property ? property->GetNodeSelection().GetActive() : nullptr;
+	return property ? property->GetNodeSelection().GetActive().Pointer() : nullptr;
 }
 
 int seWPNode::GetSelectedMappedType() const{
@@ -1267,10 +1267,9 @@ void seWPNode::UpdateMappedTypeList(){
 }
 
 void seWPNode::UpdateMappedTargetList(){
-	seMapped * const selection = pCBMappedTarget->GetSelectedItem()
-		? (seMapped*)pCBMappedTarget->GetSelectedItem() : nullptr;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	void * const selection = pCBMappedTarget->GetSelectedItemData();
 	
-	pPreventUpdate = true;
 	pCBMappedTarget->RemoveAllItems();
 	
 	if(pSkin){
@@ -1282,7 +1281,6 @@ void seWPNode::UpdateMappedTargetList(){
 	
 	pCBMappedTarget->InsertItem(0, "< None >", nullptr, nullptr);
 	pCBMappedTarget->SetSelectionWithData(selection);
-	pPreventUpdate = false;
 }
 
 

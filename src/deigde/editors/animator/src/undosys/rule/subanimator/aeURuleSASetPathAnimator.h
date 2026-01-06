@@ -45,7 +45,7 @@ private:
 	
 	decString pOldPath, pNewPath;
 	
-	aeController::List pOldConnections;
+	aeRuleSubAnimator::ConnectionList pOldConnections;
 	
 	
 	

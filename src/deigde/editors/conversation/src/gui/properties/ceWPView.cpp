@@ -2228,20 +2228,22 @@ ceActorGesture *ceWPView::GetActorGesture() const{
 }
 
 ceProp *ceWPView::GetProp() const{
-	return pConversation ? pConversation->GetActiveProp() : nullptr;
+	return pConversation ? pConversation->GetActiveProp().Pointer() : nullptr;
 }
 
 void ceWPView::UpdatePropList(){
-	pCBProps->RemoveAllItems();
+	pCBProps->UpdateRestoreSelection([&](){
+		pCBProps->RemoveAllItems();
+		
+		if(pConversation){
+			pConversation->GetProps().Visit([&](ceProp *prop){
+				pCBProps->AddItem(prop->GetName(), nullptr, prop);
+			});
+			
+			pCBProps->SortItems();
+		}
+	}, 0);
 	
-	if(pConversation){
-		pConversation->GetProps().Visit([&](ceProp *prop){
-			pCBProps->AddItem(prop->GetName(), nullptr, prop);
-		});
-	}
-	
-	pCBProps->SortItems();
-	pCBProps->SetSelectionWithData(GetProp());
 	UpdateProp();
 }
 
@@ -2271,13 +2273,13 @@ void ceWPView::UpdateProp(){
 }
 
 void ceWPView::UpdateActors(){
-	const ceConversationActor * const actor = GetActor();
+	ceConversationActor * const actor = GetActor();
 	
 	// actor list
 	if(pConversation){
 		const ceConversationActorList &list = pConversation->GetActorList();
 		pSpinActor->SetRange(0, decMath::max(list.GetCount() - 1, 0));
-		pSpinActor->SetValue(actor ? list.IndexOf((ceConversationActor*)actor) : 0);
+		pSpinActor->SetValue(actor ? list.IndexOf(actor) : 0);
 		
 	}else{
 		pSpinActor->SetRange(0, 0);
@@ -2421,28 +2423,26 @@ void ceWPView::UpdateActorGesture(){
 }
 
 void ceWPView::UpdateActorControllers(){
-	const ceActorPose * const pose = GetActorPose();
-	ceActorController * const selection = pCBActorPoseController->GetSelectedItem()
-		? (ceActorController*)pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
-	
-	pCBActorPoseController->RemoveAllItems();
-	
-	if(pose){
-		pose->GetControllers().Visit([&](ceActorController *c){
-			pCBActorPoseController->AddItem(c->GetName(), nullptr, c);
-		});
-		pCBActorPoseController->SetSelectionWithData(selection);
-	}
-	
-	pCBActorPoseController->SetEnabled(pose);
+	pCBActorPoseController->UpdateRestoreSelection([&](){
+		const ceActorPose * const pose = GetActorPose();
+		
+		pCBActorPoseController->RemoveAllItems();
+		
+		if(pose){
+			pose->GetControllers().Visit([&](ceActorController *c){
+				pCBActorPoseController->AddItem(c->GetName(), nullptr, c);
+			});
+		}
+		
+		pCBActorPoseController->SetEnabled(pose);
+	}, 0);
 	
 	UpdateActorController();
 }
 
 void ceWPView::UpdateActorController(){
 	const ceActorPose * const pose = GetActorPose();
-	const ceActorController * const controller = pCBActorPoseController->GetSelectedItem()
-		? (ceActorController*)pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
+	const ceActorController * const controller = GetActorPoseController();
 	
 	if(pose && controller){
 		pCBActorPoseControllerUpdateType->SetSelectionWithData(
@@ -2468,26 +2468,21 @@ void ceWPView::SelectActorPoseController(ceActorController *controller){
 }
 
 void ceWPView::UpdateActorCommands(){
-	const ceConversationActor * const actor = GetActor();
-	cePlaybackCommand * const selection = pListActorCommands->GetSelectedItem()
-		? (cePlaybackCommand*)pListActorCommands->GetSelectedItem()->GetData() : nullptr;
-	
-	pListActorCommands->RemoveAllItems();
-	
-	if(actor){
-		igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
-		igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
-		actor->GetCommands().Visit([&](cePlaybackCommand *c){
-			pListActorCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
-		});
-	}
-	
-	pListActorCommands->SortItems();
-	
-	pListActorCommands->SetSelectionWithData(selection);
-	if(!pListActorCommands->GetSelectedItem() && pListActorCommands->GetItems().IsNotEmpty()){
-		pListActorCommands->SetSelection(0);
-	}
+	pListActorCommands->UpdateRestoreSelection([&](){
+		const ceConversationActor * const actor = GetActor();
+		
+		pListActorCommands->RemoveAllItems();
+		
+		if(actor){
+			igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
+			igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
+			actor->GetCommands().Visit([&](cePlaybackCommand *c){
+				pListActorCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
+			});
+			
+			pListActorCommands->SortItems();
+		}
+	}, 0);
 }
 
 void ceWPView::UpdateActorParameters(){
@@ -2567,7 +2562,7 @@ void ceWPView::UpdateCoordSystems(){
 
 
 void ceWPView::UpdatePlaybackFileList(){
-	ceConversationFile * const selectedFile = GetSelectedPlaybackFile();
+	void * const selection = GetSelectedPlaybackFile();
 	pCBPlaybackFile->RemoveAllItems();
 	
 	if(pConversation){
@@ -2579,7 +2574,7 @@ void ceWPView::UpdatePlaybackFileList(){
 		pCBPlaybackFile->StoreFilterItems();
 	}
 	
-	pCBPlaybackFile->SetSelectionWithData(selectedFile);
+	pCBPlaybackFile->SetSelectionWithData(selection);
 }
 
 ceConversationFile *ceWPView::GetSelectedPlaybackFile() const{
@@ -2589,7 +2584,7 @@ ceConversationFile *ceWPView::GetSelectedPlaybackFile() const{
 
 void ceWPView::UpdatePlaybackTopicList(){
 	ceConversationFile * const selectedFile = GetSelectedPlaybackFile();
-	ceConversationTopic * const selectedTopic = GetSelectedPlaybackTopic();
+	void * const selection = GetSelectedPlaybackTopic();
 	
 	pCBPlaybackTopic->RemoveAllItems();
 	
@@ -2601,7 +2596,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 		pCBPlaybackTopic->StoreFilterItems();
 	}
 	
-	pCBPlaybackTopic->SetSelectionWithData(selectedTopic);
+	pCBPlaybackTopic->SetSelectionWithData(selection);
 }
 
 ceConversationTopic *ceWPView::GetSelectedPlaybackTopic() const{
@@ -2626,25 +2621,19 @@ void ceWPView::UpdatePlayback(){
 }
 
 void ceWPView::UpdatePlaybackCommands(){
-	cePlaybackCommand * const selectedEntry = pListPlaybackCommands->GetSelectedItem()
-		? (cePlaybackCommand*)pListPlaybackCommands->GetSelectedItem()->GetData() : nullptr;
-	
-	pListPlaybackCommands->RemoveAllItems();
-	
-	if(pConversation){
-		igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
-		igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
-		pConversation->GetPlayback()->GetCommands().Visit([&](cePlaybackCommand *c){
-			pListPlaybackCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
-		});
-	}
-	
-	pListPlaybackCommands->SortItems();
-	
-	pListPlaybackCommands->SetSelectionWithData(selectedEntry);
-	if(!pListPlaybackCommands->GetSelectedItem() && pListPlaybackCommands->GetItems().IsNotEmpty()){
-		pListPlaybackCommands->SetSelection(0);
-	}
+	pListPlaybackCommands->UpdateRestoreSelection([&](){
+		pListPlaybackCommands->RemoveAllItems();
+		
+		if(pConversation){
+			igdeIcon * const iconTrue = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
+			igdeIcon * const iconFalse = GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
+			pConversation->GetPlayback()->GetCommands().Visit([&](cePlaybackCommand *c){
+				pListPlaybackCommands->AddItem(c->GetCommand(), c->GetValue() ? iconTrue : iconFalse, c);
+			});
+			
+			pListPlaybackCommands->SortItems();
+		}
+	}, 0);
 }
 
 void ceWPView::UpdatePlaybackVariables(){

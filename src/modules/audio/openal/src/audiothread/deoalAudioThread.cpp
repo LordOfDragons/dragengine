@@ -861,7 +861,7 @@ void deoalAudioThread::pProcessAudio(){
 		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
 	}
 	
-		while(pProcessOnceWorld.IsNotEmpty()){
+	while(pProcessOnceWorld.IsNotEmpty()){
 		deoalAWorld * const world = pProcessOnceWorld.First();
 		world->PrepareProcessAudio();
 		pProcessOnceWorld.Remove(world);

@@ -797,17 +797,8 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
 		aeControllerTarget * const target = pPanel.GetTarget();
-		if(!target || target->GetLinks().IsEmpty()){
-			return {};
-		}
-		
-		const int count = target->GetLinks().GetCount();
-		aeLink::List list;
-		int i;
-		for(i=0; i<count; i++){
-			list.Add(target->GetLinks().GetAt(i));
-		}
-		return aeURuleTargetRemoveAllLinks::Ref::New(rule, target, list);
+		return target && target->GetLinks().IsNotEmpty()
+			? aeURuleTargetRemoveAllLinks::Ref::New(rule, target) : igdeUndo::Ref();
 	}
 	
 	void Update(const aeAnimator &, const aeRule &) override{
@@ -989,7 +980,7 @@ void aeWPAPanelRule::UpdateControllerList(){
 }
 
 void aeWPAPanelRule::UpdateLinkList(){
-	aeLink * const selection = GetCBLinkSelection();
+	void * const selection = GetCBLinkSelection();
 	
 	pCBLinks->RemoveAllItems();
 	

@@ -63,7 +63,7 @@ int deAnimatorRuleGroup::GetRuleCount() const{
 }
 
 deAnimatorRule *deAnimatorRuleGroup::GetRuleAt(int index) const{
-	return (deAnimatorRule*)pRules.GetAt(index);
+	return pRules.GetAt(index);
 }
 
 int deAnimatorRuleGroup::IndexOfRule(deAnimatorRule *rule) const{
@@ -76,11 +76,11 @@ bool deAnimatorRuleGroup::HasRule(deAnimatorRule *rule) const{
 
 void deAnimatorRuleGroup::AddRule(deAnimatorRule *rule){
 	DEASSERT_NOTNULL(rule)
-	pRules.Add(rule);
+	pRules.AddOrThrow(rule);
 }
 
 void deAnimatorRuleGroup::RemoveRule(deAnimatorRule *rule){
-	pRules.Remove(rule);
+	pRules.RemoveOrThrow(rule);
 }
 
 void deAnimatorRuleGroup::RemoveAllRules(){

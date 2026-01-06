@@ -1032,28 +1032,21 @@ skyeBody *skyeWPLayer::GetBody() const{
 }
 
 void skyeWPLayer::UpdateLayerList(){
-	pListLayer->RemoveAllItems();
-	
-	if(pSky){
-		pSky->GetLayers().VisitIndexed([&](int i, skyeLayer *layer){
-			decString text;
-			text.Format("%d: %s", i, layer->GetName().GetString());
-			pListLayer->AddItem(text, nullptr, layer);
-		});
-	}
-	
-	SelectActiveLayer();
+	pListLayer->UpdateRestoreSelection([&](){
+		pListLayer->RemoveAllItems();
+		
+		if(pSky){
+			pSky->GetLayers().VisitIndexed([&](int i, skyeLayer *layer){
+				decString text;
+				text.Format("%d: %s", i, layer->GetName().GetString());
+				pListLayer->AddItem(text, nullptr, layer);
+			});
+		}
+	}, 0);
 }
 
 void skyeWPLayer::SelectActiveLayer(){
-	skyeLayer * const layer = GetLayer();
-	const int selection = pListLayer->IndexOfItemWithData(layer);
-	
-	pListLayer->SetSelection(selection);
-	if(selection != -1){
-		pListLayer->MakeItemVisible(selection);
-	}
-	
+	pListLayer->SetSelection(pListLayer->IndexOfItemWithData(GetLayer()));
 	UpdateLayer();
 }
 
