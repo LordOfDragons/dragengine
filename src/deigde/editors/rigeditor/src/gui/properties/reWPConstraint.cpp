@@ -186,7 +186,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigConstraint *constraint) = 0;
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 
@@ -198,7 +198,7 @@ public:
 	cComboTarget(reWPConstraint &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint){
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint){
 		if(pPreventUpdate){
 			return {};
 		}

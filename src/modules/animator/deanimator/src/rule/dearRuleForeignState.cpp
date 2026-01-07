@@ -132,7 +132,7 @@ DEBUG_RESET_TIMERS;
 	decMatrix matrix;
 	
 	if(pForeignBone != -1){
-		dearBoneState &boneState = *stalist.GetStateAt(pForeignBone);
+		dearBoneState &boneState = stalist.GetStateAt(pForeignBone);
 		
 		switch(pSourceCoordFrame){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
@@ -192,7 +192,7 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
+		dearBoneState &boneState = stalist.GetStateAt(animatorBone);
 		
 		switch(pDestCoordFrame){
 		case deAnimatorRuleForeignState::ecfBoneLocal:

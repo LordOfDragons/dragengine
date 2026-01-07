@@ -72,6 +72,9 @@ private:
 		decString name;
 		float minimum;
 		float maximum;
+		
+	protected:
+		~cController() override = default;
 	};
 	
 	

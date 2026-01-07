@@ -63,12 +63,13 @@ public:
 	/** Create new render sky. */
 	deoglRSky(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render sky. */
 	~deoglRSky();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

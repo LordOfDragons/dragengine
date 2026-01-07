@@ -107,12 +107,13 @@ public:
 	/** Create render component lod. */
 	deoglRComponentLOD(deoglRComponent &component, int lodIndex);
 	
+protected:
 	/** Clean up render component lod. */
 	virtual ~deoglRComponentLOD();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Parent component. */

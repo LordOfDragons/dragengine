@@ -502,7 +502,7 @@ void deoalAMicrophone::ProcessDeactivate(){
 }
 
 void deoalAMicrophone::InvalidateSpeaker(deoalASpeaker *speaker){
-	pActiveSpeakers.RemoveIfExisting(speaker);
+	pActiveSpeakers.Remove(speaker);
 	pInvalidateSpeakers.Add(speaker);
 }
 

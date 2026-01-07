@@ -27,11 +27,13 @@
 
 #include <iterator>
 #include <cstddef>
+#include <utility>
 
 #include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
 #include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
+#include "../../deTUniqueReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
@@ -173,11 +175,32 @@ public:
 		return IndexOf(element, 0);
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	IndexOf(const T &element) const{
+		return IndexOf(element, 0);
+	}
+	
 	/**
 	 * \brief Index of the first occurance of an element or -1 if not found.
 	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount().
 	 */
 	int IndexOf(const TP &element, int start) const{
+		DEASSERT_TRUE(start >= 0)
+		DEASSERT_TRUE(start <= pCount)
+		
+		int i;
+		for(i=start; i<pCount; i++){
+			if(pElements[i] == element){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	IndexOf(const T &element, int start) const{
 		DEASSERT_TRUE(start >= 0)
 		DEASSERT_TRUE(start <= pCount)
 		
@@ -230,6 +253,18 @@ public:
 	
 	/** \brief Determine if element exists in the list. */
 	bool Has(const TP &element) const{
+		int i;
+		for(i=0; i<pCount; i++){
+			if(pElements[i] == element){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Has(const T &element) const{
 		int i;
 		for(i=0; i<pCount; i++){
 			if(pElements[i] == element){
@@ -316,12 +351,33 @@ public:
 		return true;
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	SetAt(int index, const T &element){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index < pCount)
+		
+		if(pElements[index] == element){
+			return false;
+		}
+		
+		DEASSERT_FALSE(Has(element))
+		pElements[index] = element;
+		return true;
+	}
+	
 	/**
 	 * \brief Set element at index or throw if already present.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 * \throws deeInvalidParam \em element is present in the set.
 	 */
 	inline void SetAtOrThrow(int index, const TP &element){
+		DEASSERT_TRUE(SetAt(index, element))
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	SetAtOrThrow(int index, const T &element){
 		DEASSERT_TRUE(SetAt(index, element))
 	}
 	
@@ -340,7 +396,32 @@ public:
 			if(pElements){
 				int i;
 				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
+					newArray[i] = std::move(pElements[i]);
+				}
+				delete [] pElements;
+			}
+			pElements = newArray;
+			pSize = newSize;
+		}
+		
+		pElements[pCount++] = element;
+		return true;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Add(const T &element){
+		if(Has(element)){
+			return false;
+		}
+		
+		if(pCount == pSize){
+			int newSize = pSize * 3 / 2 + 1;
+			T * const newArray = new T[newSize];
+			if(pElements){
+				int i;
+				for(i=0; i<pSize; i++){
+					newArray[i] = std::move(pElements[i]);
 				}
 				delete [] pElements;
 			}
@@ -357,6 +438,12 @@ public:
 	 * \throws deeInvalidParam \em element is present in the set.
 	 */
 	inline void AddOrThrow(const TP &element){
+		DEASSERT_TRUE(Add(element))
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	AddOrThrow(const T &element){
 		DEASSERT_TRUE(Add(element))
 	}
 	
@@ -407,7 +494,7 @@ public:
 			if(pElements){
 				int i;
 				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
+					newArray[i] = std::move(pElements[i]);
 				}
 				delete [] pElements;
 			}
@@ -417,7 +504,40 @@ public:
 		
 		int i;
 		for(i=pCount; i>index; i--){
-			pElements[i] = pElements[i - 1];
+			pElements[i] = std::move(pElements[i - 1]);
+		}
+		pElements[index] = element;
+		pCount++;
+		return true;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Insert(const T &element, int index){
+		if(Has(element)){
+			return false;
+		}
+		
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index <= pCount)
+		
+		if(pCount == pSize){
+			int newSize = pSize * 3 / 2 + 1;
+			T * const newArray = new T[newSize];
+			if(pElements){
+				int i;
+				for(i=0; i<pSize; i++){
+					newArray[i] = std::move(pElements[i]);
+				}
+				delete [] pElements;
+			}
+			pElements = newArray;
+			pSize = newSize;
+		}
+		
+		int i;
+		for(i=pCount; i>index; i--){
+			pElements[i] = std::move(pElements[i - 1]);
 		}
 		pElements[index] = element;
 		pCount++;
@@ -429,6 +549,12 @@ public:
 	 * \throws deeInvalidParam \em element is present in the set.
 	 */
 	inline void InsertOrThrow(const TP &element, int index){
+		DEASSERT_TRUE(Insert(element, index))
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	InsertOrThrow(const T &element, int index){
 		DEASSERT_TRUE(Insert(element, index))
 	}
 	
@@ -468,6 +594,12 @@ public:
 		MoveIndex(IndexOf(element), to);
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	Move(const T &element, int to){
+		MoveIndex(IndexOf(element), to);
+	}
+	
 	/**
 	 * \brief Move element.
 	 * \throws deeInvalidParam from is less than 0 or larger than GetCount() - 1.
@@ -482,21 +614,21 @@ public:
 		DEASSERT_TRUE(to >= 0)
 		DEASSERT_TRUE(to < pCount)
 		
-		const T tempElement(pElements[from]);
+		T tempElement = std::move(pElements[from]);
 		int i;
 		
 		if(to < from){
 			for(i=from; i>to; i--){
-				pElements[i] = pElements[i - 1];
+				pElements[i] = std::move(pElements[i - 1]);
 			}
 			
 		}else if(to > from){
 			for(i=from; i<to; i++){
-				pElements[i] = pElements[i + 1];
+				pElements[i] = std::move(pElements[i + 1]);
 			}
 		}
 		
-		pElements[to] = tempElement;
+		pElements[to] = std::move(tempElement);
 	}
 	
 	/**
@@ -504,6 +636,19 @@ public:
 	 * \returns true if removed or false if absent.
 	 */
 	bool Remove(const TP &element){
+		const int position = IndexOf(element);
+		if(position != -1){
+			RemoveFrom(position);
+			return true;
+			
+		}else{
+			return false;
+		}
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Remove(const T &element){
 		const int position = IndexOf(element);
 		if(position != -1){
 			RemoveFrom(position);
@@ -522,6 +667,12 @@ public:
 		DEASSERT_TRUE(Remove(element))
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	RemoveOrThrow(const T &element){
+		DEASSERT_TRUE(Remove(element))
+	}
+	
 	/**
 	 * \brief Remove element from index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
@@ -532,7 +683,7 @@ public:
 		
 		int i;
 		for(i=index+1; i<pCount; i++){
-			pElements[i - 1] = pElements[i];
+			pElements[i - 1] = std::move(pElements[i]);
 		}
 		pElements[--pCount] = T();
 	}

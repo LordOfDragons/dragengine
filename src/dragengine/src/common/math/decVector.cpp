@@ -283,6 +283,14 @@ decVector &decVector::operator=(const decVector &v){
 	return *this;
 }
 
+bool decVector::operator==(const decVector &v) const{
+	return IsEqualTo(v);
+}
+
+bool decVector::operator!=(const decVector &v) const{
+	return !IsEqualTo(v);
+}
+
 decVector &decVector::operator+=(const decVector &v){
 	x += v.x;
 	y += v.y;

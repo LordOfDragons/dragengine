@@ -63,12 +63,13 @@ public:
 	 */
 	deainpOverlay(deAndroidInput &androidInput);
 	
+protected:
 	/** \brief Clean up overlay. */
 	virtual ~deainpOverlay();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Input module. */

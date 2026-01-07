@@ -44,12 +44,13 @@ public:
 	/** Create component listener. */
 	deoglComponentListener();
 	
+protected:
 	/** Clean up component listener. */
 	virtual ~deoglComponentListener();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** Component has been destroyed. */

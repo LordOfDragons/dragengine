@@ -284,9 +284,7 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 	deLogger &logger = *pLauncher.GetLogger();
 	const int length = value.GetLength();
 	decString moduleName, parameterName, parameterValue;
-	delGPMParameter *parameter;
 	int separator1, separator2;
-	delGPModule *module;
 	
 	for(separator1=0; separator1<length; separator1++){
 		if(value[separator1] == ':'){
@@ -318,20 +316,18 @@ bool declRunGame::ParseModuleParameter(const decString &value){
 		pModuleParameters = new delGPModuleList;
 	}
 	
-	module = pModuleParameters->GetNamed(moduleName);
+	delGPModule::Ref module(pModuleParameters->GetNamed(moduleName));
 	if(!module){
-		module = new delGPModule;
+		module = delGPModule::Ref::New();
 		module->SetName(moduleName);
 		pModuleParameters->Add(module);
 	}
 	
-	delGPMParameterList &parameterList = module->GetParameters();
-	
-	parameter = parameterList.GetNamed(parameterName);
+	delGPMParameter::Ref parameter(module->GetParameters().GetNamed(parameterName));
 	if(!parameter){
-		parameter = new delGPMParameter;
+		parameter = delGPMParameter::Ref::New();
 		parameter->SetName(parameterName);
-		parameterList.Add(parameter);
+		module->GetParameters().Add(parameter);
 	}
 	
 	parameter->SetValue(parameterValue);

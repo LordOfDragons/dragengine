@@ -57,6 +57,8 @@ private:
 		float newMass = 0.0f;
 		
 		cBone() = default;
+	protected:
+		~cBone() override = default;
 	};
 	
 	

@@ -69,10 +69,13 @@ public:
 	/*@{*/
 	/** Creates a new shared vbo. */
 	deoglSharedVBO(deoglSharedVBOList *parentList, int size, int indexSize);
+	
+protected:
 	/** Cleans up the shared vbo. */
 	virtual ~deoglSharedVBO();
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent list. */

@@ -47,18 +47,16 @@ dearBoneState::dearBoneState(){
 	pIndex = 0;
 	pRigIndex = -1;
 	pParentState = NULL;
-	pChildStates = NULL;
-	pChildStateCount = 0;
-	pChildStateSize = 0;
 	pScale.Set(1.0f, 1.0f, 1.0f);
 	pProtect = false;
 	pDirty = true;
 }
 
+dearBoneState::dearBoneState(const dearBoneState &other){
+	*this = other;
+}
+
 dearBoneState::~dearBoneState(){
-	if(pChildStates){
-		delete [] pChildStates;
-	}
 }
 
 
@@ -145,11 +143,9 @@ void dearBoneState::SetDirty(bool dirty){
 	pDirty = dirty;
 	
 	if(dirty){
-		int i;
-		
-		for(i=0; i<pChildStateCount; i++){
-			pChildStates[i]->SetDirty(true);
-		}
+		pChildStates.Visit([](dearBoneState *cs){
+			cs->SetDirty(true);
+		});
 	}
 }
 
@@ -362,38 +358,40 @@ bool enablePosition, bool enableOrientation, bool enableScale){
 // Child states
 /////////////////
 
-dearBoneState *dearBoneState::GetChildStateAt(int index) const{
-	if(index < 0 || index >= pChildStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pChildStates[index];
-}
-
 void dearBoneState::AddChildState(dearBoneState *boneState){
-	if(!boneState){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pChildStateCount == pChildStateSize){
-		const int newSize = pChildStateSize * 3 / 2 + 1;
-		dearBoneState ** const newArray = new dearBoneState*[newSize];
-		
-		if(pChildStates){
-			int i;
-			for(i=0; i<pChildStateSize; i++){
-				newArray[i] = pChildStates[i];
-			}
-			delete [] pChildStates;
-		}
-		pChildStates = newArray;
-		pChildStateSize = newSize;
-	}
-	
-	pChildStates[pChildStateCount] = boneState;
-	pChildStateCount++;
+	DEASSERT_NOTNULL(boneState)
+	pChildStates.Add(boneState);
 }
 
 void dearBoneState::RemoveAllChildStates(){
-	pChildStateCount = 0;
+	pChildStates.RemoveAll();
+}
+
+
+// Operators
+//////////////
+
+dearBoneState &dearBoneState::operator=(const dearBoneState &other){
+	if(this == &other){
+		return *this;
+	}
+	
+	pRigBone = other.pRigBone;
+	pRigBoneName = other.pRigBoneName;
+	pIndex = other.pIndex;
+	pRigIndex = other.pRigIndex;
+	pParentState = other.pParentState;
+	pChildStates = other.pChildStates;
+	pPosition = other.pPosition;
+	pOrientation = other.pOrientation;
+	pScale = other.pScale;
+	pRigLocalMatrix = other.pRigLocalMatrix;
+	pInvRigLocalMatrix = other.pInvRigLocalMatrix;
+	pLocalMatrix = other.pLocalMatrix;
+	pInvLocalMatrix = other.pInvLocalMatrix;
+	pGlobalMatrix = other.pGlobalMatrix;
+	pInvGlobalMatrix = other.pInvGlobalMatrix;
+	pProtect = other.pProtect;
+	pDirty = other.pDirty;
+	return *this;
 }

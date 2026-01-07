@@ -103,7 +103,6 @@ debiDevice(module)
 		debiDeviceButton::Ref sharedButton(debiDeviceButton::Ref::NewWith(module));
 		sharedButton->SetDisplayImages("key");
 		
-		deObjectReference refButton;
 		int buttonIndex = 0;
 		const char *keyCharBegin;
 		char keyCharUtf8[5];
@@ -375,20 +374,19 @@ debiDevice(module)
 				string.SetAt(0, toupper(string.GetAt(0)));
 			}
 			
-			refButton.TakeOver(new debiDeviceButton(module));
-			debiDeviceButton &button = (debiDeviceButton&)(deObject&)refButton;
-			AddButton(&button);
+			debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+			AddButton(button);
 			
-			button.SetName(string);
+			button->SetName(string);
 			string.Format("k%d", i);
-			button.SetID(string);
-			button.SetBICode(i);
-			button.SetBIChar(reprChar);
-			button.SetKeyCode(engKeyCode);
-			button.SetMatchPriority(matchPriority);
+			button->SetID(string);
+			button->SetBICode(i);
+			button->SetBIChar(reprChar);
+			button->SetKeyCode(engKeyCode);
+			button->SetMatchPriority(matchPriority);
 			
-			button.SetDisplayImages(sharedButton);
-			button.SetDisplayText(button.GetName());
+			button->SetDisplayImages(sharedButton);
+			button->SetDisplayText(button->GetName());
 			
 			buttonIndex++;
 		}

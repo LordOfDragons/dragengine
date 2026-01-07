@@ -50,6 +50,8 @@ private:
 		decString oldskin, newskin;
 		
 		cDecal() = default;
+	protected:
+		~cDecal() override = default;
 	};
 	
 private:

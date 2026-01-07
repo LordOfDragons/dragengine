@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new animation move keyframe list. */
-	dearAnimationKeyframeList(const deAnimationKeyframeList &list);
+	explicit dearAnimationKeyframeList(const deAnimationKeyframeList &list);
 	/** Cleans up the animation move keyframe list. */
 	~dearAnimationKeyframeList();
 	/*@}*/

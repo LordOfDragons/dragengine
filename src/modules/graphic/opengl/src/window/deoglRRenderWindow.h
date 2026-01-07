@@ -158,12 +158,13 @@ public:
 	/** Create render render target. */
 	deoglRRenderWindow(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render render target. */
 	virtual ~deoglRRenderWindow();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

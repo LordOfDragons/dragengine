@@ -49,9 +49,12 @@ public:
 	/** Create module. */
 	deSsdkPendingRequest(const deServiceObject::Ref &data = {});
 	
+protected:
 	/** Delete module. */
 	~deSsdkPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

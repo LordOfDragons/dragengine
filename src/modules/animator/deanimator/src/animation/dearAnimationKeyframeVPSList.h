@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create keyframe list. */
-	dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSetList &list);
+	explicit dearAnimationKeyframeVPSList(const deAnimationKeyframeVertexPositionSetList &list);
 	
 	/** Clean up keyframe list. */
 	~dearAnimationKeyframeVPSList();

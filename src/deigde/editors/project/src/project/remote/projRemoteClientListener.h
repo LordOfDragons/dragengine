@@ -43,9 +43,13 @@ public:
 	/*@{*/
 	/** \brief Create listener. */
 	projRemoteClientListener();
+	
+protected:
+	~projRemoteClientListener() override = default;
 	/*@}*/
 	
 	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Parameters changed. */

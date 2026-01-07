@@ -219,7 +219,7 @@ DEBUG_PRINT_TIMER("Update Bone States Directly");
 					continue;
 				}
 				
-				pStateList->GetStateAt(animatorBone)->SetFrom(*stalist.GetStateAt(animatorBone));
+				pStateList->GetStateAt(animatorBone).SetFrom(stalist.GetStateAt(animatorBone));
 			}
 			
 			const int vpsCount = GetVPSMappingCount();
@@ -244,8 +244,8 @@ DEBUG_PRINT_TIMER("Apply Rules");
 					continue;
 				}
 				
-				stalist.GetStateAt(animatorBone)->BlendWith(
-					*pStateList->GetStateAt( animatorBone ), blendMode, blendFactor,
+				stalist.GetStateAt(animatorBone).BlendWith(
+					pStateList->GetStateAt(animatorBone), blendMode, blendFactor,
 					pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
@@ -267,7 +267,7 @@ DEBUG_PRINT_TIMER("Apply Temporary State");
 		for(i =0; i <boneCount; i++){
 			const int animatorBone = GetBoneMappingFor(i);
 			if(animatorBone != -1){
-				stalist.GetStateAt(animatorBone)->BlendWithDefault(blendMode,
+				stalist.GetStateAt(animatorBone).BlendWithDefault(blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 		}

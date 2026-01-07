@@ -25,7 +25,6 @@
 #ifndef _DEOALRTPTENVPROBEFIRSTFULL_H_
 #define _DEOALRTPTENVPROBEFIRSTFULL_H_
 
-#include "../deoalSoundRayInteractionList.h"
 #include "../deoalRayTraceResult.h"
 #include "../visitors/deoalWOVRayHitsElement.h"
 

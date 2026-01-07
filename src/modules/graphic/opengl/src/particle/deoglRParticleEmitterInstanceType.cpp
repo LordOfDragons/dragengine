@@ -205,7 +205,7 @@ const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
 				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockDepth = new deoglSPBlockUBO(*pEmitterInstance.GetRenderThread()
+				pParamBlockDepth = deoglSPBlockUBO::Ref::New(*pEmitterInstance.GetRenderThread()
 					.GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/

@@ -97,12 +97,13 @@ public:
 	/** Create render camera. */
 	deoglRCamera(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render camera. */
 	virtual ~deoglRCamera();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

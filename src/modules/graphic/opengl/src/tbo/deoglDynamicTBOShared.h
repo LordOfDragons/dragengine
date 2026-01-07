@@ -60,12 +60,13 @@ public:
 	/** Create shared dynamic TBO. */
 	deoglDynamicTBOShared(deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1);
 	
+protected:
 	/** Cleans up shared dynamic TBO. */
 	virtual ~deoglDynamicTBOShared();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** TBO. */

@@ -95,12 +95,13 @@ public:
 	/** Create render type. */
 	deoglRParticleEmitterType(deoglRParticleEmitter &emitter);
 	
+protected:
 	/** Clean up render type. */
 	virtual ~deoglRParticleEmitterType();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Particle emitter. */

@@ -124,10 +124,13 @@ public:
 	/*@{*/
 	/** Creates a new environment map. */
 	deoglEnvironmentMap(deoglRenderThread &renderThread);
+	
+protected:
 	/** Cleans up the environment map. */
 	virtual ~deoglEnvironmentMap();
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL if there is none. */

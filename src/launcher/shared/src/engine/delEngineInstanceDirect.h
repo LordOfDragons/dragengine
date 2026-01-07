@@ -126,6 +126,8 @@ private:
 		deLoadableModule *module;
 		decStringDictionary parameters;
 		explicit cModuleParamState(deLoadableModule *amodule);
+	protected:
+		~cModuleParamState() override = default;
 	};
 	decTObjectList<cModuleParamState> pModuleParamStates;
 	

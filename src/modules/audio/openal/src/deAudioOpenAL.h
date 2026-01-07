@@ -25,13 +25,14 @@
 #ifndef _DEAUDIOOPENAL_H_
 #define _DEAUDIOOPENAL_H_
 
+#include "parameters/deoalParameter.h"
+
 #include <dragengine/systems/modules/audio/deBaseAudioModule.h>
 
 class deoalAudioThread;
 class deoalCommandExecuter;
 class deoalConfiguration;
 class deoalDevMode;
-class deoalParameterList;
 class deoalMicrophone;
 class deoalWorld;
 
@@ -46,7 +47,7 @@ private:
 	
 	deoalConfiguration *pConfiguration;
 	deoalCommandExecuter *pCommandExecuter;
-	deoalParameterList *pParameters;
+	deoalParameter::List pParameters;
 	
 	deoalDevMode *pDevMode;
 	

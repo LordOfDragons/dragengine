@@ -33,7 +33,7 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 // predefinitions
-#include "../../sky/layer/seSkyLayer.h"
+#include "../../sky/layer/skyeLayer.h"
 class seProperty;
 
 
@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	seSkyLayer::Ref pLayer;
+	skyeLayer::Ref pLayer;
 	seProperty *pProperty;
 	
 	decCurveBezier pOldCurve;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetCurve(seSkyLayer *layer, seProperty *property);
+	seUPropertySetCurve(skyeLayer *layer, seProperty *property);
 	/** \brief Clean up undo. */
 protected:
 	virtual ~seUPropertySetCurve();

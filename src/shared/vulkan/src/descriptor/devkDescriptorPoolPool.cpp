@@ -110,7 +110,7 @@ devkDescriptorPoolSlot::Ref devkDescriptorPoolPool::Get(){
 	}
 	
 	// create slot for set and return it. caller holds reference
-	return devkDescriptorPoolSlot::Ref(new devkDescriptorPoolSlot(*this, set));
+	return devkDescriptorPoolSlot::Ref::New(*this, set);
 }
 
 void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){

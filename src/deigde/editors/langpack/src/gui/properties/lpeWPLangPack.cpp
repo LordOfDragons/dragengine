@@ -176,7 +176,7 @@ public:
 lpeWPLangPack::lpeWPLangPack(lpeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(new lpeWPLangPackListener(*this))
+pListener(lpeWPLangPackListener::Ref::New(*this))
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;

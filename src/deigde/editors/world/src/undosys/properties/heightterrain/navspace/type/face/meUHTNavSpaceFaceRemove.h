@@ -54,6 +54,8 @@ private:
 		meHeightTerrainNavSpaceFace::Ref face;
 		
 		cFace() = default;
+	protected:
+		~cFace() override = default;
 	};
 	
 	cFace::List pFaces;

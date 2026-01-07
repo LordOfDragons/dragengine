@@ -129,12 +129,13 @@ public:
 	/** Create render world. */
 	deoglRWorld(deoglRenderThread &renderThread, const decDVector &size);
 	
+protected:
 	/** Clean up render camera. */
 	virtual ~deoglRWorld();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

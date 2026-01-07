@@ -181,12 +181,13 @@ public:
 	/** Create render light. */
 	deoglRLight(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render light. */
 	virtual ~deoglRLight();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

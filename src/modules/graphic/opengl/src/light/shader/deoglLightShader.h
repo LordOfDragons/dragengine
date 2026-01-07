@@ -181,12 +181,14 @@ public:
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglLightShader(deoglRenderThread &renderThread, const deoglLightShaderConfig &config);
+	
+protected:
 	/** Cleans up the skin shader. */
 	virtual ~deoglLightShader();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

@@ -37,6 +37,7 @@
 #include "gdeVAOSnapPoint.h"
 #include "gdeVAOSpeaker.h"
 #include "gdeVAOWorld.h"
+#include "gdeViewActiveObjectListener.h"
 
 #include "../../gamedef/gdeGameDefinition.h"
 #include "../../gamedef/objectClass/gdeObjectClass.h"
@@ -53,7 +54,6 @@
 #include <dragengine/resources/sky/deSkyInstance.h>
 
 class gdeWindowMain;
-class gdeViewActiveObjectListener;
 
 class gdeOCBillboard;
 class gdeOCComponent;
@@ -88,7 +88,7 @@ public:
 	
 private:
 	gdeWindowMain &pWindowMain;
-	gdeViewActiveObjectListener *pListener;
+	gdeViewActiveObjectListener::Ref pListener;
 	
 	gdeGameDefinition::Ref pGameDefinition;
 	

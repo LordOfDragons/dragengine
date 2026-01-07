@@ -208,12 +208,13 @@ public:
 	/** Create render component. */
 	deoglRComponent(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render component. */
 	virtual ~deoglRComponent();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

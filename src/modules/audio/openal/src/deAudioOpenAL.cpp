@@ -34,7 +34,6 @@
 #include "configuration/deoalLSConfiguration.h"
 #include "devmode/deoalDevMode.h"
 #include "parameters/deoalParameter.h"
-#include "parameters/deoalParameterList.h"
 #include "parameters/deoalPEnableEFX.h"
 #include "parameters/deoalPAuralizationMode.h"
 #include "parameters/deoalPAuralizationQuality.h"
@@ -100,7 +99,6 @@ pAudioThread(NULL),
 
 pConfiguration(NULL),
 pCommandExecuter(NULL),
-pParameters(NULL),
 
 pDevMode(NULL),
 
@@ -110,12 +108,11 @@ pActiveMicrophone(NULL)
 		pCommandExecuter = new deoalCommandExecuter(*this);
 		pConfiguration = new deoalConfiguration;
 		
-		pParameters = new deoalParameterList;
-		pParameters->AddParameter(new deoalPEnableEFX(*this));
-		pParameters->AddParameter(new deoalPAuralizationMode(*this));
-		pParameters->AddParameter(new deoalPAuralizationQuality(*this));
-		pParameters->AddParameter(new deoalPMaxEnvSlots(*this));
-		pParameters->AddParameter(new deoalPLogLevel(*this));
+		pParameters.Add(deTObjectReference<deoalPEnableEFX>::New(*this));
+		pParameters.Add(deTObjectReference<deoalPAuralizationMode>::New(*this));
+		pParameters.Add(deTObjectReference<deoalPAuralizationQuality>::New(*this));
+		pParameters.Add(deTObjectReference<deoalPMaxEnvSlots>::New(*this));
+		pParameters.Add(deTObjectReference<deoalPLogLevel>::New(*this));
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -131,9 +128,6 @@ deAudioOpenAL::~deAudioOpenAL(){
 	}
 	if(pCommandExecuter){
 		delete pCommandExecuter;
-	}
-	if(pParameters){
-		delete pParameters;
 	}
 }
 
@@ -323,23 +317,23 @@ void deAudioOpenAL::TexturePropertyMapChanged(){
 ///////////////
 
 int deAudioOpenAL::GetParameterCount() const{
-	return pParameters->GetParameterCount();
+	return pParameters.GetCount();
 }
 
 void deAudioOpenAL::GetParameterInfo(int index, deModuleParameter &info) const{
-	info = pParameters->GetParameterAt(index);
+	info = pParameters.GetAt(index);
 }
 
 int deAudioOpenAL::IndexOfParameterNamed(const char *name) const{
-	return pParameters->IndexOfParameterNamed(name);
+	return pParameters.IndexOfNamed(name);
 }
 
 decString deAudioOpenAL::GetParameterValue(const char *name) const{
-	return pParameters->GetParameterNamed(name).GetParameterValue();
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
 void deAudioOpenAL::SetParameterValue(const char *name, const char *value){
-	pParameters->GetParameterNamed(name).SetParameterValue(value);
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 void deAudioOpenAL::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){

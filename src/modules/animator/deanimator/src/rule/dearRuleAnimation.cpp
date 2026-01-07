@@ -126,7 +126,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// determine animation state
-		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
+		dearBoneState &boneState = stalist.GetStateAt(animatorBone);
 		const int animationBone = pMapAnimationBones.GetAt(i);
 		
 		if(animationBone == -1){

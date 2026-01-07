@@ -48,9 +48,12 @@ public:
 	/** Create module. */
 	deModioPendingRequest(const deServiceObject::Ref &data = {});
 	
+protected:
 	/** Delete module. */
 	~deModioPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

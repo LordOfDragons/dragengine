@@ -122,7 +122,7 @@ private:
 	int pIndex;
 	bool pUpdateRequired;
 	bool pUpdateGeometriesRequired;
-	deoglSharedBlockSPBElement::Ref pSPBGeometries;
+	deoglSharedBlockSPBElement::Lease pSPBGeometries;
 	
 	
 	
@@ -221,8 +221,8 @@ public:
 	void SetUpdateGeometriesRequired(bool updateRequired);
 	
 	/** Shader parameter block for geometries. For use by deoglWorldCompute only. */
-	inline deoglSharedBlockSPBElement::Ref &GetSPBGeometries(){ return pSPBGeometries; }
-	inline const deoglSharedBlockSPBElement::Ref &GetSPBGeometries() const{ return pSPBGeometries; }
+	inline deoglSharedBlockSPBElement::Lease &GetSPBGeometries(){ return pSPBGeometries; }
+	inline const deoglSharedBlockSPBElement::Lease &GetSPBGeometries() const{ return pSPBGeometries; }
 	/*@}*/
 };
 

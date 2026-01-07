@@ -34,6 +34,8 @@
  */
 class seUPNGroupNodesTop : public seUPNGroupMoveNodes{
 public:
+	using Ref = deTObjectReference<seUPNGroupNodesTop>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

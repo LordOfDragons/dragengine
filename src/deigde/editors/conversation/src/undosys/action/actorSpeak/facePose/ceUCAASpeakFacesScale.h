@@ -34,6 +34,8 @@
  */
 class ceUCAASpeakFacesScale : public ceUCAASpeakStripsScale{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakFacesScale>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

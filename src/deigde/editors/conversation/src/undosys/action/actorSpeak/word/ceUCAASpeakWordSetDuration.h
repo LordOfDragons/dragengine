@@ -34,6 +34,8 @@
  */
 class ceUCAASpeakWordSetDuration : public ceUCAASpeakStripSetDuration{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakWordSetDuration>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

@@ -56,6 +56,8 @@ private:
 		float shearing = 0.0f;
 		
 		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
 	sePropertyNodeGroup::Ref pParentGroup;

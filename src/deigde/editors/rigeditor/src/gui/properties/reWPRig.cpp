@@ -160,7 +160,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig) = 0;
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig) = 0;
 };
 
 
@@ -170,7 +170,7 @@ public:
 	typedef deTObjectReference<cComboRootBone> Ref;
 	cComboRootBone(reWPRig &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig){
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *bone = nullptr;
 		if(selection){
@@ -179,7 +179,7 @@ public:
 		if(bone == rig->GetRootBone()){
 			return {};
 		}
-		return new reURigSetRootBone(rig, bone);
+		return reURigSetRootBone::Ref::New(rig, bone);
 	}
 };
 

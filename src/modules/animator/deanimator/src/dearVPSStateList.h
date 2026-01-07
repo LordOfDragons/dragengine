@@ -25,6 +25,7 @@
 #ifndef _DEARVPSSTATELIST_H_
 #define _DEARVPSSTATELIST_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
@@ -37,9 +38,7 @@ class deAnimator;
 /** VPS State List. */
 class dearVPSStateList{
 private:
-	dearVPSState *pStates;
-	int pStateCount;
-	int pStateSize;
+	decTList<dearVPSState> pStates;
 	
 	
 	
@@ -58,13 +57,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of states. */
-	inline int GetStateCount() const{ return pStateCount; }
+	inline int GetStateCount() const{ return pStates.GetCount(); }
 	
 	/** Set count of states. */
 	void SetStateCount(int count);
 	
 	/** State at index. */
-	dearVPSState &GetStateAt(int index) const;
+	dearVPSState &GetStateAt(int index);
+	const dearVPSState &GetStateAt(int index) const;
 	
 	/** Index of named state or -1. */
 	int IndexOfStateNamed(const char *name) const;

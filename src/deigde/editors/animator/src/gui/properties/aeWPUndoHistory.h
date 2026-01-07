@@ -25,10 +25,10 @@
 #ifndef _MEWPUNDOHISTORY_H_
 #define _MEWPUNDOHISTORY_H_
 
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
-
 #include "../../animator/aeAnimator.h"
 #include "aeWPUndoHistoryListener.h"
+
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 

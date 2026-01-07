@@ -102,12 +102,13 @@ public:
 	/** Create render skin. */
 	deoglRSkin(deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin);
 	
+protected:
 	/** Clean up render skin. */
 	virtual ~deoglRSkin();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

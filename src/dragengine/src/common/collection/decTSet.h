@@ -27,10 +27,12 @@
 
 #include <iterator>
 #include <cstddef>
+#include <utility>
 
 #include "decCollectionInterfaces.h"
 #include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
+#include "../../deTUniqueReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
@@ -165,6 +167,20 @@ public:
 		return false;
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Has(const T &element) const{
+		int p;
+		
+		for(p=0; p<pCount; p++){
+			if(pElements[p] == element){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * \brief One or more elements match condition.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
@@ -237,11 +253,27 @@ public:
 		return -1;
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	IndexOf(const T &element) const{
+		int p;
+		
+		for(p=0; p<pCount; p++){
+			if(pElements[p] == element){
+				return p;
+			}
+		}
+		
+		return -1;
+	}
+	
 	/**
 	 * \brief Add element if absent from the set.
 	 * \returns true if added or false if already present.
 	 */
-	bool Add(const TP &element){
+	template<typename U = T>
+	typename std::enable_if<std::is_assignable<U&, const TP&>::value, bool>::type
+	Add(const TP &element){
 		if(Has(element)){
 			return false;
 		}
@@ -252,7 +284,32 @@ public:
 			if(pElements){
 				int i;
 				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
+					newArray[i] = std::move(pElements[i]);
+				}
+				delete [] pElements;
+			}
+			pElements = newArray;
+			pSize = newSize;
+		}
+		
+		pElements[pCount++] = element;
+		return true;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Add(const T &element){
+		if(Has(element)){
+			return false;
+		}
+		
+		if(pCount == pSize){
+			int newSize = pSize * 3 / 2 + 1;
+			T * const newArray = new T[newSize];
+			if(pElements){
+				int i;
+				for(i=0; i<pSize; i++){
+					newArray[i] = std::move(pElements[i]);
 				}
 				delete [] pElements;
 			}
@@ -268,7 +325,13 @@ public:
 	 * \brief Add element or throw if already present.
 	 * \throws deeInvalidParam \em element is present in the set.
 	 */
-	inline void AddOrThrow(const TP &element){
+	void AddOrThrow(const TP &element){
+		DEASSERT_TRUE(Add(element))
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	AddOrThrow(const T &element){
 		DEASSERT_TRUE(Add(element))
 	}
 	
@@ -311,7 +374,22 @@ public:
 		}
 		
 		if(position < pCount - 1){
-			pElements[position] = pElements[pCount - 1];
+			pElements[position] = std::move(pElements[pCount - 1]);
+		}
+		pElements[--pCount] = T();
+		return true;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Remove(const T &element){
+		const int position = IndexOf(element);
+		if(position == -1){
+			return false;
+		}
+		
+		if(position < pCount - 1){
+			pElements[position] = std::move(pElements[pCount - 1]);
 		}
 		pElements[--pCount] = T();
 		return true;
@@ -322,6 +400,12 @@ public:
 	 * \throws deeInvalidParam \em element is not present in the set.
 	 */
 	inline void RemoveOrThrow(const TP &element){
+		DEASSERT_TRUE(Remove(element))
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	RemoveOrThrow(const T &element){
 		DEASSERT_TRUE(Remove(element))
 	}
 	
@@ -752,7 +836,7 @@ public:
 /**
  * \brief Object set template class.
  * 
- * All objects including nullptr are allowed. Objects can be included more than once in the set.
+ * All objects including nullptr are allowed. Objects can be included only once in the set.
  * 
  * This template uses deTObjectReference.
  */
@@ -762,7 +846,7 @@ using decTObjectSet = decTSet<deTObjectReference<T>, T*>;
 /**
  * \brief Thread safe object set template class.
  * 
- * All objects including nullptr are allowed. Objects can be included more than once in the set.
+ * All objects including nullptr are allowed. Objects can be included only once in the set.
  * 
  * This template uses deTThreadSafeObjectReference to get thread safe assignment of
  * object references. This does not make the set itself thread safe though.

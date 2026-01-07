@@ -25,6 +25,8 @@
 #ifndef _DEDAICONVEXFACE_H_
 #define _DEDAICONVEXFACE_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class dedaiConvexFaceList;
@@ -41,10 +43,12 @@ class dedaiConvexFaceList;
  * prevent having to create subclasses faces for this common task a marker
  * value is included which can be set to an integer value.
  */
-class dedaiConvexFace{
+class dedaiConvexFace : public deObject{
+public:
+	using Ref = deTObjectReference<dedaiConvexFace>;
+	
 private:
-	int *pVertices;
-	int pVertexCount;
+	decTList<int> pVertices;
 	decVector pNormal;
 	int pMarker;
 	
@@ -59,12 +63,16 @@ public:
 	/** \brief Create copy of convex face. */
 	dedaiConvexFace(const dedaiConvexFace &face);
 	
+	/** \brief Create copy of convex face. */
+	explicit dedaiConvexFace(int marker);
+	
+protected:
 	/** \brief Clean up convex face. */
 	virtual ~dedaiConvexFace();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Face normal. */
@@ -82,7 +90,7 @@ public:
 	
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Vertex at index. */
 	int GetVertexAt(int index) const;

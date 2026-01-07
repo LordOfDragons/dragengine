@@ -26,7 +26,7 @@
 #define _DEOALENVPROBE_H_
 
 #include "raytrace/deoalSoundRayList.h"
-#include "raytrace/deoalSoundRayInteractionList.h"
+#include "raytrace/deoalSoundRayInteraction.h"
 #include "../audiothread/deoalATRayTracing.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -91,7 +91,7 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	deoalSoundRayList pSoundRayList;
-	deoalSoundRayInteractionList pSRIList;
+	deoalSoundRayInteraction::List pSRIList;
 	int pRayCount;
 	float pRayOpeningAngle;
 	
@@ -192,8 +192,8 @@ public:
 	inline const deoalSoundRayList &GetSoundRayList() const{ return pSoundRayList; }
 	
 	/** \brief First reflection sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRIList(){ return pSRIList; }
-	inline const deoalSoundRayInteractionList &GetSRIList() const{ return pSRIList; }
+	inline deoalSoundRayInteraction::List &GetSRIList(){ return pSRIList; }
+	inline const deoalSoundRayInteraction::List &GetSRIList() const{ return pSRIList; }
 	
 	/** \brief Number of rays used to calculate probe. */
 	inline int GetRayCount() const{ return pRayCount; }

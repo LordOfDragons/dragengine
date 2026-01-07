@@ -26,7 +26,6 @@
 #include "igdeDialogNewGameProject.h"
 #include "igdeDialogProjectSettings.h"
 #include "igdeDialogStartUp.h"
-#include "igdeTaskSyncGameDefinition.h"
 #include "igdeSharedFontList.h"
 #include "../engine/igdeScriptModule.h"
 #include "../environment/igdeEnvironmentIGDE.h"
@@ -496,9 +495,7 @@ pFPSFrames(0),
 pFPSRate(1),
 
 pPauseUpdating(false),
-pFirstEngineRun(true),
-
-pTaskSyncGameDefinition(nullptr)
+pFirstEngineRun(true)
 {
 	pEnvironmentIGDE.SetWindowMain(this);
 	
@@ -987,7 +984,7 @@ void igdeWindowMain::UpdateRecentProjectMenu(){
 }
 
 bool igdeWindowMain::IsSyncGameDefTaskRunning() const{
-	return pTaskSyncGameDefinition != nullptr;
+	return pTaskSyncGameDefinition.IsNotNull();
 }
 
 
@@ -1005,12 +1002,7 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 		DisplayException(e);
 	}
 	
-	if(pTaskSyncGameDefinition){
-		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = nullptr;
-	}
-	
-	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
+	pTaskSyncGameDefinition = igdeTaskSyncGameDefinition::Ref::New(*this);
 	pTaskSyncGameDefinition->SetReloadXMLElementClasses(true);
 	
 	if(!pTimerSyncProject){
@@ -1273,12 +1265,7 @@ void igdeWindowMain::OnFrameUpdate(){
 }
 
 void igdeWindowMain::OnProjectGameDefinitionChanged(){
-	if(pTaskSyncGameDefinition){
-		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = nullptr;
-	}
-	
-	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
+	pTaskSyncGameDefinition = igdeTaskSyncGameDefinition::Ref::New(*this);
 	
 	if(!pTimerSyncProject){
 		pTimerSyncProject = cTimerSyncProject::Ref::New(*this);

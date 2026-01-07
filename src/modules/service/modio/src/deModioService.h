@@ -53,6 +53,8 @@ public:
 		bool invalidated;
 		typedef deTObjectReference<cInvalidator> Ref;
 		cInvalidator();
+	protected:
+		~cInvalidator() override = default;
 	};
 	
 	

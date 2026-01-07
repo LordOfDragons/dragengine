@@ -102,7 +102,7 @@ float dearLink::GetValue(float defaultValue) const{
 		value = pInstance.GetControllerStates().GetValueAt(pLink->GetController());
 		
 	}else if(pBoneIndex != -1){
-		const dearBoneState &state = *pInstance.GetBoneStateList().GetStateAt(pBoneIndex);
+		const dearBoneState &state = pInstance.GetBoneStateList().GetStateAt(pBoneIndex);
 		
 		switch(pLink->GetBoneParameter()){
 		case deAnimatorLink::ebpPositionX:

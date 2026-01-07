@@ -137,7 +137,7 @@ DEBUG_RESET_TIMERS;
 	
 	params.hasSolverBone = pUseSolverBone && pSolverBone != -1;
 	if(params.hasSolverBone){
-		dearBoneState &boneState = *stalist.GetStateAt(pSolverBone);
+		dearBoneState &boneState = stalist.GetStateAt(pSolverBone);
 		boneState.UpdateMatrices();
 		
 		params.goalPosition = boneState.GetGlobalMatrix() * params.goalPosition;
@@ -204,8 +204,8 @@ void dearRuleInverseKinematic::pUpdateChain(){
 		
 		// a valid chain requires two valid bones which are not identic
 		if(bone1 != -1 && bone2 != -1 && bone1 != bone2){
-			const dearBoneState * const boneState1 = stalist.GetStateAt(bone1);
-			const dearBoneState * const boneState2 = stalist.GetStateAt(bone2);
+			const dearBoneState * const boneState1 = &stalist.GetStateAt(bone1);
+			const dearBoneState * const boneState2 = &stalist.GetStateAt(bone2);
 			
 			// check if a valid chain can be build with bone1 as root
 			const dearBoneState *parent = boneState2->GetParentState();
@@ -308,7 +308,7 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 	int i;
 	
 	for(i=0; i<pChainCount; i++){
-		const deRigBone * const rigBone = stateList.GetStateAt(pChain[i].GetBoneStateIndex())->GetRigBone();
+		const deRigBone * const rigBone = stateList.GetStateAt(pChain[i].GetBoneStateIndex()).GetRigBone();
 		
 		if(rigBone){
 			const decVector &lowerLimits = rigBone->GetIKLimitsLower();
@@ -437,7 +437,7 @@ float range, const decVector &center){
 	decVector reachCenter(center);
 	
 	if(pReachBone != -1){
-		dearBoneState &boneState = *stalist.GetStateAt(pReachBone);
+		dearBoneState &boneState = stalist.GetStateAt(pReachBone);
 		boneState.UpdateMatrices();
 		reachCenter = boneState.GetGlobalMatrix() * reachCenter;
 	}
@@ -471,7 +471,7 @@ void dearRuleInverseKinematic::pInitWorkingStates(dearBoneStateList &stalist, co
 	int i;
 	
 	for(i=0; i<pChainCount; i++){
-		dearBoneState &boneState = *stalist.GetStateAt(pChain[i].GetBoneStateIndex());
+		dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
 		boneState.UpdateMatrices();
 		pChain[i].SetGlobalMatrix(boneState.GetGlobalMatrix());
 		pChain[i].SetInverseGlobalMatrix(boneState.GetInverseGlobalMatrix());
@@ -479,7 +479,7 @@ void dearRuleInverseKinematic::pInitWorkingStates(dearBoneStateList &stalist, co
 	
 	if(params.hasIKLimits){
 		for(i=0; i<pChainCount; i++){
-			dearBoneState &boneState = *stalist.GetStateAt(pChain[i].GetBoneStateIndex());
+			dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
 			// boneState.UpdateFromGlobalMatrix();
 			
 			pChain[i].SetRigLocalRotation(boneState.GetRigLocalMatrix().ToQuaternion());
@@ -513,7 +513,7 @@ void dearRuleInverseKinematic::pSolveSingleBone(dearBoneStateList &stalist, cons
 	
 	// set position and orientation to the bone from the ik settings.
 	// the position is only set if there is no parent bone.
-	dearBoneState &boneState = *stalist.GetStateAt(pChain[0].GetBoneStateIndex());
+	dearBoneState &boneState = stalist.GetStateAt(pChain[0].GetBoneStateIndex());
 	decMatrix goalMatrix;
 	
 	boneState.UpdateMatrices();
@@ -563,7 +563,7 @@ void dearRuleInverseKinematic::pSolveCCD(dearBoneStateList &stalist, const sPara
 	
 	decQuaternion baseRot, baseInverseRot;
 	if(params.hasIKLimits){
-		const dearBoneState &boneState = *stalist.GetStateAt(pChain[0].GetBoneStateIndex());
+		const dearBoneState &boneState = stalist.GetStateAt(pChain[0].GetBoneStateIndex());
 		
 		baseRot = pChain[0].GetRigLocalRotation();
 		if(boneState.GetParentState()){
@@ -700,7 +700,7 @@ void dearRuleInverseKinematic::pSolveFabrik(dearBoneStateList &stalist, const sP
 	
 	decQuaternion baseRot, baseInverseRot;
 	if(params.hasIKLimits){
-		const dearBoneState &boneState = *stalist.GetStateAt(pChain[0].GetBoneStateIndex());
+		const dearBoneState &boneState = stalist.GetStateAt(pChain[0].GetBoneStateIndex());
 		
 		baseRot = pChain[0].GetRigLocalRotation();
 		if(boneState.GetParentState()){
@@ -1099,7 +1099,7 @@ dearBoneStateList &stalist, const sParameters &params){
 	for(i=0; i<pChainCount; i++){
 		const decMatrix &globalMatrix = pChain[i].GetGlobalMatrix();
 		
-		dearBoneState &boneState = *stalist.GetStateAt(pChain[i].GetBoneStateIndex());
+		dearBoneState &boneState = stalist.GetStateAt(pChain[i].GetBoneStateIndex());
 		pChain[i].SetInverseGlobalMatrix(globalMatrix.QuickInvert());
 		
 		if(i == 0){

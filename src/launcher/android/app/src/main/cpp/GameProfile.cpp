@@ -155,7 +155,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     int i;
     for(i=0; i<disObjVersCount; i++){
         jobject objVer = objDisModVers.GetAt(i);
-        auto * const ver = new delGPDisableModuleVersion;
+        const delGPDisableModuleVersion::Ref ver(delGPDisableModuleVersion::Ref::New());
         ver->SetName(pFldModVerName.Get(objVer));
         ver->SetVersion(pFldModVerVersion.Get(objVer));
         profile.GetDisableModuleVersions().Add(ver);
@@ -165,7 +165,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     const int modCount = objMods.GetCount();
     for(i=0; i<modCount; i++) {
         jobject objMod = objMods.GetAt(i);
-        auto * const mod = new delGPModule;
+        const delGPModule::Ref mod(delGPModule::Ref::New());
         mod->SetName(pFldModuleName.Get(objMod));
 
         JniObjectArray objParams(pEnv, pFldModuleParameters.Get(objMod));
@@ -173,7 +173,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
         int j;
         for(j=0; j<paramCount; j++){
             jobject objParam = objParams.GetAt(j);
-            auto * const param = new delGPMParameter;
+            const delGPMParameter::Ref param(delGPMParameter::Ref::New());
             param->SetName(pFldParamName.Get(objParam));
             param->SetValue(pFldParamValue.Get(objParam));
             mod->GetParameters().Add(param);
@@ -206,7 +206,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileRelease(
 JNIEnv *env, jobject thiz, jlong pprofile){
-    ((delGameProfile*)pprofile)->FreeReference();
+    static_cast<delGameProfile*>(pprofile)->FreeReference();
 }
 
 extern "C"
@@ -215,7 +215,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetConf
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
         return GameProfileConfig(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -229,7 +229,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileSetConf
 JNIEnv *env, jobject thiz, jlong pprofile, jobject pconfig) {
     JniHelpers h(env);
     try {
-        GameProfileConfig(env).Store(pconfig, *((delGameProfile*)pprofile));
+        GameProfileConfig(env).Store(pconfig, *static_cast<delGameProfile*>(pprofile));
     }catch(const deException &e){
         h.throwException(e);
     }
@@ -241,7 +241,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetStat
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
         return GameProfileStatus(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -255,6 +255,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gam
 JNIEnv *env, jobject thiz){
     JniHelpers h(env);
     try {
+        // DELint-Allow-NewWithoutRef: created object is passed through JNI
         return (jlong)(intptr_t)new delGameProfile;
     }catch(const deException &e){
         h.throwException(e);
@@ -268,7 +269,8 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gam
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
+        // DELint-Allow-NewWithoutRef: created object is passed through JNI
         return (jlong)(intptr_t)new delGameProfile(profile);
     }catch(const deException &e){
         h.throwException(e);

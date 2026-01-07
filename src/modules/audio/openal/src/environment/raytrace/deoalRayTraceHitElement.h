@@ -53,6 +53,10 @@ public:
 	
 	/** \brief Create copy of ray trace hit element. */
 	deoalRayTraceHitElement(const deoalRayTraceHitElement &element);
+	
+	/** \brief Create element. */
+	deoalRayTraceHitElement(float distance, const decDVector &point, const decDVector &normal,
+		deoalAComponent *component, int face, bool frontFacing);
 	/*@}*/
 	
 	

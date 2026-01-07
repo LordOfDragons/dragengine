@@ -122,7 +122,7 @@ DEBUG_RESET_TIMERS;
 		trackPosition = position;
 		
 	}else{
-		dearBoneState &bstate = *stalist.GetStateAt(pTrackBone);
+		dearBoneState &bstate = stalist.GetStateAt(pTrackBone);
 		bstate.UpdateMatrices();
 		trackPosition = bstate.GetGlobalMatrix().GetPosition();
 	}
@@ -195,7 +195,7 @@ DEBUG_RESET_TIMERS;
 				alignUpVector.Set(1.0f, 0.0f, 0.0f);
 				
 			}else{
-				alignUpVector = stalist.GetStateAt(pTrackBone)->GetGlobalMatrix().TransformRight();
+				alignUpVector = stalist.GetStateAt(pTrackBone).GetGlobalMatrix().TransformRight();
 			}
 			break;
 			
@@ -204,7 +204,7 @@ DEBUG_RESET_TIMERS;
 				alignUpVector.Set(0.0f, 1.0f, 0.0f);
 				
 			}else{
-				alignUpVector = stalist.GetStateAt(pTrackBone)->GetGlobalMatrix().TransformUp();
+				alignUpVector = stalist.GetStateAt(pTrackBone).GetGlobalMatrix().TransformUp();
 			}
 			break;
 			
@@ -213,7 +213,7 @@ DEBUG_RESET_TIMERS;
 				alignUpVector.Set(0.0f, 0.0f, 1.0f);
 				
 			}else{
-				alignUpVector = stalist.GetStateAt(pTrackBone)->GetGlobalMatrix().TransformView();
+				alignUpVector = stalist.GetStateAt(pTrackBone).GetGlobalMatrix().TransformView();
 			}
 			break;
 			
@@ -253,7 +253,7 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &bstate = *stalist.GetStateAt(boneIndex);
+		dearBoneState &bstate = stalist.GetStateAt(boneIndex);
 		
 		bstate.UpdateMatrices();
 		const decVector bonePosition(bstate.GetGlobalMatrix().GetPosition());

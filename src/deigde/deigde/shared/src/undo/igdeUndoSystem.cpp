@@ -58,12 +58,12 @@ int igdeUndoSystem::GetCount() const{
 	return pUndos.GetCount();
 }
 
-igdeUndo *igdeUndoSystem::GetAt(int index) const{
-	return (igdeUndo*)pUndos.GetAt(pUndos.GetCount() - 1 - index);
+const igdeUndo::Ref &igdeUndoSystem::GetAt(int index) const{
+	return pUndos.GetAt(pUndos.GetCount() - 1 - index);
 }
 
-igdeUndo *igdeUndoSystem::GetTop() const{
-	return (igdeUndo*)pUndos.GetAt(0);
+const igdeUndo::Ref &igdeUndoSystem::GetTop() const{
+	return pUndos.First();
 }
 
 void igdeUndoSystem::Add(igdeUndo *undo, bool runRedo){

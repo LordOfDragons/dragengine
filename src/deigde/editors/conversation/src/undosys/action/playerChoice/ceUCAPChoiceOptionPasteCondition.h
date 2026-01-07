@@ -34,6 +34,8 @@
  */
 class ceUCAPChoiceOptionPasteCondition : public ceUCAPChoiceOptionSetCondition{
 public:
+	using Ref = deTObjectReference<ceUCAPChoiceOptionPasteCondition>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

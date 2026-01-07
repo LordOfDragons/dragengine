@@ -65,6 +65,9 @@ private:
 		int nextDirectory;
 		int nextFile;
 		bool hasCountedDir;
+		
+	protected:
+		~cProcessDirectory() override = default;
 	};
 	
 	enum eStates{

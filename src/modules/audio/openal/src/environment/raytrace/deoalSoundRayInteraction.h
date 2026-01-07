@@ -25,6 +25,7 @@
 #ifndef _DEOALSOUNDRAYINTERACTION_H_
 #define _DEOALSOUNDRAYINTERACTION_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -38,6 +39,10 @@ class deoalAComponentTexture;
  * For use by later calculations requiring additional testing.
  */
 class deoalSoundRayInteraction{
+public:
+	using List = decTList<deoalSoundRayInteraction>;
+	
+	
 private:
 	float pDistance;
 	decDVector pPoint;

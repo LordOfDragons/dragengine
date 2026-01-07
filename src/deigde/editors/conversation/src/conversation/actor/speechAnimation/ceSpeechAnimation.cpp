@@ -156,13 +156,13 @@ void ceSpeechAnimation::CreateAnimator(){
 		
 		// add a controller for the new viseme
 		const int controllerIndex = pEngAnimator->GetControllers().GetCount();
-		deAnimatorController * const controller = new deAnimatorController;
+		const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
 		controller->SetName(moveName);
 		pEngAnimator->AddController(controller);
 		
 		// add a link for the new viseme
 		const int linkIndex = pEngAnimator->GetLinks().GetCount();
-		deAnimatorLink * const engLink = new deAnimatorLink;
+		const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
 		engLink->SetController(controllerIndex);
 		pEngAnimator->AddLink(engLink);
 		

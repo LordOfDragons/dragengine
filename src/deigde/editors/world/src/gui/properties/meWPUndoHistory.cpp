@@ -42,7 +42,7 @@
 
 meWPUndoHistory::meWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new meWPUndoHistoryListener(*this)){
+pListener(meWPUndoHistoryListener::Ref::New(*this)){
 }
 
 meWPUndoHistory::~meWPUndoHistory(){

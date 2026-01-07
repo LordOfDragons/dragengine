@@ -58,10 +58,13 @@ public:
 	/*@{*/
 	/** \brief Creates a new module. */
 	spScriptFile(ScriptingPython &sp, const char *fullname, const char *path);
+	
+protected:
 	/** \brief Cleans up the module. */
 	virtual ~spScriptFile();
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */

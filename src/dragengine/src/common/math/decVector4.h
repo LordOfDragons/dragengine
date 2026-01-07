@@ -89,6 +89,9 @@ public:
 	
 	/** \brief Multiply component wise. */
 	decVector4 Multiply(const decVector4 &vector) const;
+	
+	/** \brief Vectors are equal. */
+	bool IsEqualTo(const decVector4 &v, float threshold = VECTOR_THRESHOLD) const;
 	/*@}*/
 	
 	
@@ -100,6 +103,12 @@ public:
 	
 	/** \brief Set components of this vector to the values of another one. */
 	decVector4 &operator=(const decVector4 &v);
+	
+	/** \brief Vectors are equal. */
+	bool operator==(const decVector4 &v) const;
+	
+	/** \brief Vectors are not equal. */
+	bool operator!=(const decVector4 &v) const;
 	
 	/** \brief Adds the components of another vector to this one. */
 	decVector4 &operator+=(const decVector4 &v);

@@ -43,7 +43,7 @@
 
 gdeWPUndoHistory::gdeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new gdeWPUndoHistoryListener(*this)){
+pListener(gdeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 gdeWPUndoHistory::~gdeWPUndoHistory(){

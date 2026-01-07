@@ -55,6 +55,8 @@ public:
 		Invalidator();
 		inline bool IsValid() const{ return pValid; }
 		void Invalidate();
+	protected:
+		~Invalidator() override = default;
 	};
 
 

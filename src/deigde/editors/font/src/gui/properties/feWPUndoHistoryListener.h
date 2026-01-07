@@ -35,6 +35,9 @@ class feWPUndoHistory;
  * \brief Undo History Panel Listener.
  */
 class feWPUndoHistoryListener : public feFontNotifier{
+public:
+	using Ref = deTObjectReference<feWPUndoHistoryListener>;
+	
 private:
 	feWPUndoHistory &pPanel;
 	

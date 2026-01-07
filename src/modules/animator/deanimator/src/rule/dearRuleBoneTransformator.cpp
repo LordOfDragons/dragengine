@@ -170,7 +170,7 @@ DEBUG_RESET_TIMERS;
 			break;
 		}
 		
-		const dearBoneState &bstate = *stalist.GetStateAt(pInputBone);
+		const dearBoneState &bstate = stalist.GetStateAt(pInputBone);
 		
 		if(pUseAxis){
 			const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
@@ -190,7 +190,7 @@ DEBUG_RESET_TIMERS;
 			break;
 		}
 		
-		const dearBoneState &bstate = *stalist.GetStateAt(pInputBone);
+		const dearBoneState &bstate = stalist.GetStateAt(pInputBone);
 		
 		transformMatrix = decMatrix::CreateWorld(bstate.GetPosition(),
 			bstate.GetOrientation(), bstate.GetScale()).QuickInvert();
@@ -207,7 +207,7 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	if(pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfTargetBone && pTargetBone != -1){
-		dearBoneState &bstate = *stalist.GetStateAt(pTargetBone);
+		dearBoneState &bstate = stalist.GetStateAt(pTargetBone);
 		bstate.UpdateMatrices();
 		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply(transformMatrix)
 			.QuickMultiply(bstate.GetGlobalMatrix());
@@ -220,7 +220,7 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
+		dearBoneState &bstate = stalist.GetStateAt(animatorBone);
 		bstate.UpdateMatrices();
 		
 		if(pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfBoneLocal){

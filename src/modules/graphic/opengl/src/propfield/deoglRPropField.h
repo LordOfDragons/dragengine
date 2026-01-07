@@ -75,12 +75,13 @@ public:
 	/** Create render prop field. */
 	deoglRPropField(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render prop field. */
 	virtual ~deoglRPropField();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

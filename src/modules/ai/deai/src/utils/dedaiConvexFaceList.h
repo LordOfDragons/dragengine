@@ -25,10 +25,12 @@
 #ifndef _DEDAICONVEXFACELIST_H_
 #define _DEDAICONVEXFACELIST_H_
 
+#include "dedaiConvexFace.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class dedaiConvexFace;
 class decConvexVolume;
 
 
@@ -57,11 +59,8 @@ class decConvexVolume;
  */
 class dedaiConvexFaceList{
 private:
-	decVector *pVertices;
-	int pVertexCount;
-	int pVertexSize;
-	
-	decTList<dedaiConvexFace*> pFaces;
+	decTList<decVector> pVertices;
+	decTObjectOrderedSet<dedaiConvexFace> pFaces;
 	
 	
 	
@@ -121,19 +120,10 @@ public:
 	int IndexOfFace(dedaiConvexFace *face) const;
 	
 	/** \brief Add face. */
-	void AddFace(dedaiConvexFace *face);
+	void AddFace(const dedaiConvexFace::Ref &face);
 	
 	/** \brief Remove face. */
 	void RemoveFace(dedaiConvexFace *face);
-	
-	/** \brief Remove face at index. */
-	void RemoveFaceAt(int index);
-	
-	/** \brief Remvoe face without deleting it. */
-	void ExtractFace(dedaiConvexFace *face);
-	
-	/** \brief Remove face at index without deleting it. */
-	void ExtractFaceAt(int index);
 	
 	/** \brief Remove all faces. */
 	void RemoveAllFaces();
@@ -159,14 +149,6 @@ public:
 	
 	/** \brief Split using convex volume removing split faces inside. */
 	void SplitByVolume(const decConvexVolume &volume);
-	/*@}*/
-	
-	
-	
-	/** \name Subclassing */
-	/*@{*/
-	/** \brief Create convex face. */
-	dedaiConvexFace *CreateFace(int marker);
 	/*@}*/
 	
 	

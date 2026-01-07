@@ -132,6 +132,12 @@ public:
 	/** \brief Set components of this vector to the values of another one. */
 	decVector2 &operator=(const decVector2 &v);
 	
+	/** \brief Vectors are equal. */
+	bool operator==(const decVector2 &v) const;
+	
+	/** \brief Vectors are not equal. */
+	bool operator!=(const decVector2 &v) const;
+	
 	/** \brief Add components of another vector to this one. */
 	decVector2 &operator+=(const decVector2 &v);
 	

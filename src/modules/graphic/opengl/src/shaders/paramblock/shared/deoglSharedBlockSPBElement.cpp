@@ -37,35 +37,35 @@
 // Class deoglSharedBlockSPBElement::Ref
 //////////////////////////////////////////
 
-deoglSharedBlockSPBElement::Ref::Ref() :
+deoglSharedBlockSPBElement::Lease::Lease() :
 pElement(nullptr){
 }
 
-deoglSharedBlockSPBElement::Ref::Ref(const Ref &){
+deoglSharedBlockSPBElement::Lease::Lease(const Lease &){
 	DETHROW(deeInvalidAction);
 }
 
-deoglSharedBlockSPBElement::Ref::~Ref(){
+deoglSharedBlockSPBElement::Lease::~Lease(){
 	if(pElement){
 		pElement->Return();
 	}
 }
 
-deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement *() const{
+deoglSharedBlockSPBElement::Lease::operator deoglSharedBlockSPBElement *() const{
 	return pElement;
 }
 
-deoglSharedBlockSPBElement::Ref::operator deoglSharedBlockSPBElement &() const{
+deoglSharedBlockSPBElement::Lease::operator deoglSharedBlockSPBElement &() const{
 	DEASSERT_NOTNULL(pElement);
 	return *pElement;
 }
 
-deoglSharedBlockSPBElement *deoglSharedBlockSPBElement::Ref::operator->() const{
+deoglSharedBlockSPBElement *deoglSharedBlockSPBElement::Lease::operator->() const{
 	DEASSERT_NOTNULL(pElement);
 	return pElement;
 }
 
-deoglSharedBlockSPBElement::Ref &deoglSharedBlockSPBElement::Ref::operator=(deoglSharedBlockSPBElement *element){
+deoglSharedBlockSPBElement::Lease &deoglSharedBlockSPBElement::Lease::operator=(deoglSharedBlockSPBElement *element){
 	if(element == pElement){
 		return *this;
 	}
@@ -78,11 +78,11 @@ deoglSharedBlockSPBElement::Ref &deoglSharedBlockSPBElement::Ref::operator=(deog
 	return *this;
 }
 
-bool deoglSharedBlockSPBElement::Ref::operator!() const{
+bool deoglSharedBlockSPBElement::Lease::operator!() const{
 	return pElement == nullptr;
 }
 
-deoglSharedBlockSPBElement::Ref::operator bool() const{
+deoglSharedBlockSPBElement::Lease::operator bool() const{
 	return pElement != nullptr;
 }
 

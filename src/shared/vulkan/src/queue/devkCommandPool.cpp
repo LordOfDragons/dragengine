@@ -84,7 +84,7 @@ devkCommandBuffer::Ref devkCommandPool::GetCommandBuffer(){
 	}
 	
 	// no free command buffer not require waiting. allocate a new one
-	return devkCommandBuffer::Ref(new devkCommandBuffer(*this));
+	return devkCommandBuffer::Ref::New(*this);
 }
 
 void devkCommandPool::ReturnCommandBuffer(devkCommandBuffer *commandBuffer){

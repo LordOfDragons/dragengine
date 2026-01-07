@@ -59,6 +59,15 @@ public:
 	~devkTPoolReference(){
 		*this = nullptr;
 	}
+	
+	/**
+	 * \brief Create instance taking over reference.
+	 */
+	template<typename... A> static devkTPoolReference New(A&&... args){
+		devkTPoolReference reference;
+		reference.pSlot = new T(static_cast<A>(args)...);
+		return reference;
+	}
 	/*@}*/
 	
 	

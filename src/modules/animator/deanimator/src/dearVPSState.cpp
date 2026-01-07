@@ -45,6 +45,10 @@ pProtect(false),
 pDirty(true){
 }
 
+dearVPSState::dearVPSState(const dearVPSState &other){
+	*this = other;
+}
+
 dearVPSState::~dearVPSState(){
 }
 

@@ -48,6 +48,8 @@ private:
 		decString oldskin, newskin;
 		
 		cTexture() = default;
+	protected:
+		~cTexture() override = default;
 	};
 	
 private:

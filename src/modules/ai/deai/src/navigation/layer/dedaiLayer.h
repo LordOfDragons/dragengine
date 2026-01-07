@@ -62,12 +62,13 @@ public:
 	/** \brief Create layer. */
 	dedaiLayer(dedaiWorld &world, int layer);
 	
+protected:
 	/** \brief Clean up layer. */
 	virtual ~dedaiLayer();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent world. */

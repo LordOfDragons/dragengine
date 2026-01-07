@@ -144,12 +144,12 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				dearBoneState &state = *stalist.GetStateAt(animatorBone);
+				dearBoneState &state = stalist.GetStateAt(animatorBone);
 				if(state.GetRigIndex() == -1){
 					continue;
 				}
 				
-				stalist.GetStateAt(animatorBone)->BlendWith(
+				stalist.GetStateAt(animatorBone).BlendWith(
 					arcomponent->GetBoneStateAt(state.GetRigIndex()), blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
@@ -177,7 +177,7 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				stalist.GetStateAt(animatorBone)->BlendWithDefault(blendMode,
+				stalist.GetStateAt(animatorBone).BlendWithDefault(blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
@@ -199,7 +199,7 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			stalist.GetStateAt(animatorBone)->BlendWith(pAnimStates[i],
+			stalist.GetStateAt(animatorBone).BlendWith(pAnimStates[i],
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 		}
 		
@@ -298,7 +298,7 @@ void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName,
 			}
 			
 			const int animationBone = engAnimation.FindBone(
-				stateList.GetStateAt(animatorBone)->GetRigBoneName());
+				stateList.GetStateAt(animatorBone).GetRigBoneName());
 			if(animationBone == -1){
 				pAnimStates[i].Reset();
 				continue;

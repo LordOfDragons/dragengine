@@ -87,12 +87,13 @@ public:
 	/** Create type. */
 	deoglRParticleEmitterInstanceType(deoglRParticleEmitterInstance &instance, int index);
 	
+protected:
 	/** Clean up type. */
 	virtual ~deoglRParticleEmitterInstanceType();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Emitter instance. */

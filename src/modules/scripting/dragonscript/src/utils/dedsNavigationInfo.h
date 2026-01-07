@@ -61,12 +61,13 @@ public:
 	/** \brief Create copy of a navigation information. */
 	dedsNavigationInfo(const dedsNavigationInfo &info);
 	
+protected:
 	/** \brief Clean up the navigation information. */
 	virtual ~dedsNavigationInfo();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */

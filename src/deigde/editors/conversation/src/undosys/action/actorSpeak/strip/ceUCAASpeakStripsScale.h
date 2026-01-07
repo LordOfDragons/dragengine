@@ -51,6 +51,8 @@ private:
 		
 		explicit inline cStrip(const ceStrip::Ref &s) :
 			strip(s), pause(s->GetPause()), duration(s->GetDuration()){}
+	protected:
+		~cStrip() override = default;
 	};
 	
 	ceConversationTopic::Ref pTopic;
@@ -58,15 +60,14 @@ private:
 	decTObjectOrderedSet<cStrip> pStrips;
 	float pScaling;
 	
-public:
+protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	
 	/** \brief Cleans up the undo object. */
-protected:
 	virtual ~ceUCAASpeakStripsScale();
-public:
 	/*@}*/
 	
 public:

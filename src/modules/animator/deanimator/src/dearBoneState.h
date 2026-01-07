@@ -41,14 +41,17 @@ class deRigBone;
  * the mappings of the bone to an animation if present.
  */
 class dearBoneState{
+public:
+	using Ref = deTObjectReference<dearBoneState>;
+	using ChildStateList = decTOrderedSet<dearBoneState*>;
+	
 private:
 	deRigBone *pRigBone;
 	const char *pRigBoneName;
 	int pIndex;
 	int pRigIndex;
 	dearBoneState *pParentState;
-	dearBoneState **pChildStates;
-	int pChildStateCount, pChildStateSize;
+	ChildStateList pChildStates;
 	decVector pPosition;
 	decQuaternion pOrientation;
 	decVector pScale;
@@ -66,6 +69,10 @@ public:
 	/*@{*/
 	/** Creates a new bone state object. */
 	dearBoneState();
+	
+	/** Copy state. */
+	dearBoneState(const dearBoneState &other);
+	
 	/** Cleans up the bone state. */
 	~dearBoneState();
 	/*@}*/
@@ -197,14 +204,20 @@ public:
 	
 	/** \name Child states */
 	/*@{*/
-	/** Retrieves the number of child states. */
-	inline int GetChildStateCount() const{ return pChildStateCount; }
-	/** Retrieves the child state at the given index. */
-	dearBoneState *GetChildStateAt(int index) const;
+	/** Child states. */
+	inline const ChildStateList &GetChildStates() const{ return pChildStates; }
+	
 	/** Adds a child state. */
 	void AddChildState(dearBoneState *boneState);
+	
 	/** Removes all child states. */
 	void RemoveAllChildStates();
+	/*@}*/
+	
+	/** \name Operators */
+	/*@{*/
+	/** Assignment operator. */
+	dearBoneState &operator=(const dearBoneState &other);
 	/*@}*/
 };
 

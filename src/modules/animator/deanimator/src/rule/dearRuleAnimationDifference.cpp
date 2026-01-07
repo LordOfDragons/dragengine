@@ -184,7 +184,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// blend difference with current state
-		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
+		dearBoneState &boneState = stalist.GetStateAt(animatorBone);
 		
 		if(newBlendMode){
 			rposition = boneState.GetPosition() + (lposition - rposition);

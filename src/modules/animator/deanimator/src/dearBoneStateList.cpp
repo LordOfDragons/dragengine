@@ -49,20 +49,9 @@
 ////////////////////////////
 
 dearBoneStateList::dearBoneStateList(){
-	pStates = NULL;
-	pStateCount = 0;
-	pStateSize = 0;
 }
 
 dearBoneStateList::~dearBoneStateList(){
-	if(pStates){
-		while(pStateCount > 0){
-			delete pStates[pStateCount - 1];
-			pStateCount--;
-		}
-		
-		delete [] pStates;
-	}
 }
 
 
@@ -71,84 +60,52 @@ dearBoneStateList::~dearBoneStateList(){
 ///////////////
 
 void dearBoneStateList::SetStateCount(int count){
-	if(count > pStateSize){
-		dearBoneState ** const newArray = new dearBoneState*[count];
-		
-		if(pStates){
-			int i;
-			
-			for(i=0; i<pStateSize; i++){
-				newArray[i] = pStates[i];
-			}
-			
-			delete [] pStates;
-		}
-		
-		pStates = newArray;
-		
-		while(pStateSize < count){
-			pStates[pStateSize] = new dearBoneState;
-			pStateSize++;
-		}
+	if(count == pStates.GetCount()){
+		return;
 	}
 	
-	pStateCount = count;
+	pStates = decTList<dearBoneState>(count, dearBoneState());
 }
 
-dearBoneState *dearBoneStateList::GetStateAt(int index) const{
-	if(index < 0 || index >= pStateCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pStates[index];
+dearBoneState &dearBoneStateList::GetStateAt(int index){
+	return pStates.GetAt(index);
+}
+
+const dearBoneState &dearBoneStateList::GetStateAt(int index) const{
+	return pStates.GetAt(index);
 }
 
 int dearBoneStateList::IndexOfStateNamed(const char *name) const{
-	if(!name){
-		DETHROW(deeInvalidParam);
-	}
-	
-	const char *rigBoneName;
-	int s;
-	
-	for(s=0; s<pStateCount; s++){
-		rigBoneName = pStates[s]->GetRigBoneName();
-		
-		if(rigBoneName && strcmp(rigBoneName, name) == 0){
-			return s;
-		}
-	}
-	
-	return -1;
+	DEASSERT_NOTNULL(name)
+	return pStates.IndexOfMatching([&](const dearBoneState &state){
+		return state.GetRigBoneName() && strcmp(state.GetRigBoneName(), name) == 0;
+	});
 }
 
 
 
 dearBoneStateList *dearBoneStateList::CreateCopy() const{
 	dearBoneStateList * const stalist = new dearBoneStateList;
-	int s, c, childCount;
 	
 	try{
-		stalist->SetStateCount(pStateCount);
+		stalist->SetStateCount(pStates.GetCount());
 		
-		for(s=0; s<pStateCount; s++){
-			const dearBoneState &stateFrom = *pStates[s];
-			dearBoneState &stateTo = *stalist->GetStateAt(s);
+		pStates.VisitIndexed([&](int s, const dearBoneState &stateFrom){
+			dearBoneState &stateTo = stalist->GetStateAt(s);
 			
 			stateTo.SetRigBone(stateFrom.GetRigBone());
 			stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
 			stateTo.SetIndex(stateFrom.GetIndex());
 			if(stateFrom.GetParentState()){
-				stateTo.SetParentState(stalist->GetStateAt(stateFrom.GetParentState()->GetIndex()));
+				stateTo.SetParentState(&stalist->GetStateAt(stateFrom.GetParentState()->GetIndex()));
 			}
 			stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
 			stateTo.SetDirty(true);
 			
-			childCount = stateFrom.GetChildStateCount();
-			for(c=0; c<childCount; c++){
-				stateTo.AddChildState(stalist->GetStateAt(stateFrom.GetChildStateAt(c)->GetIndex()));
-			}
-		}
+			stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
+				stateTo.AddChildState(&stalist->GetStateAt(cs->GetIndex()));
+			});
+		});
 		
 	}catch(const deException &){
 		delete stalist;
@@ -159,46 +116,39 @@ dearBoneStateList *dearBoneStateList::CreateCopy() const{
 }
 
 void dearBoneStateList::SetFrom(const dearBoneStateList &stateList){
-	int s, c, childCount;
+	SetStateCount(stateList.pStates.GetCount());
 	
-	SetStateCount(stateList.pStateCount);
-	
-	for(s=0; s<stateList.pStateCount; s++){
-		const dearBoneState &stateFrom = *stateList.GetStateAt(s);
-		dearBoneState &stateTo = *pStates[s];
+	pStates.VisitIndexed([&](int s, dearBoneState &stateTo){
+		const dearBoneState &stateFrom = stateList.pStates.GetAt(s);
 		
+		stateTo = {};
 		stateTo.SetRigBone(stateFrom.GetRigBone());
 		stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
 		stateTo.SetIndex(stateFrom.GetIndex());
 		if(stateFrom.GetParentState()){
-			stateTo.SetParentState(pStates[stateFrom.GetParentState()->GetIndex()]);
+			stateTo.SetParentState(&pStates.GetAt(stateFrom.GetParentState()->GetIndex()));
 		}
 		stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
 		stateTo.SetDirty(true);
 		
-		childCount = stateFrom.GetChildStateCount();
-		for(c=0; c<childCount; c++){
-			stateTo.AddChildState(pStates[stateFrom.GetChildStateAt(c)->GetIndex()]);
-		}
-	}
+		stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
+			stateTo.AddChildState(&pStates.GetAt(cs->GetIndex()));
+		});
+	});
 }
 
 
 
 void dearBoneStateList::UpdateStates(){
-	int s;
-	
-	for(s=0; s<pStateCount; s++){
-		pStates[s]->UpdateMatrices();
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.UpdateMatrices();
+	});
 }
 
 void dearBoneStateList::MarkDirty(){
-	int s;
-	
-	for(s=0; s<pStateCount; s++){
-		pStates[s]->SetDirty(true);
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.SetDirty(true);
+	});
 }
 
 
@@ -212,66 +162,63 @@ void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 	
 	const decStringSet &bones = animator.GetListBones();
 	int boneCount = bones.GetCount();
-	int boneIndex;
-	int s, parent;
 	
-	for(s=0; s<pStateCount; s++){
-		pStates[s]->RemoveAllChildStates();
-	}
+	pStates.Visit([](dearBoneState &state){
+		state.RemoveAllChildStates();
+	});
 	
 	if(boneCount == 0){
 		boneCount = rig->GetBoneCount();
 		
-		if(boneCount != pStateCount){
+		if(boneCount != pStates.GetCount()){
 			SetStateCount(boneCount);
 		}
 		
-		for(s=0; s<pStateCount; s++){
+		pStates.VisitIndexed([&](int s, dearBoneState &state){
 			deRigBone &rigBone = rig->GetBoneAt(s);
-			parent = rigBone.GetParent();
+			const int parent = rigBone.GetParent();
 			
-			pStates[s]->SetIndex(s);
-			pStates[s]->SetRigIndex(s);
-			pStates[s]->SetRigBone(&rigBone);
-			pStates[s]->SetRigBoneName(rigBone.GetName());
-			pStates[s]->SetRigLocalMatrix(decMatrix::CreateRT(
-				rigBone.GetRotation(), rigBone.GetPosition()));
+			state.SetIndex(s);
+			state.SetRigIndex(s);
+			state.SetRigBone(&rigBone);
+			state.SetRigBoneName(rigBone.GetName());
+			state.SetRigLocalMatrix(decMatrix::CreateRT(rigBone.GetRotation(), rigBone.GetPosition()));
 			
 			if(parent == -1){
-				pStates[s]->SetParentState(NULL);
+				state.SetParentState(nullptr);
 				
 			}else{
-				pStates[s]->SetParentState(pStates[parent]);
-				pStates[parent]->AddChildState(pStates[s]);
+				state.SetParentState(&pStates.GetAt(parent));
+				pStates.GetAt(parent).AddChildState(&state);
 			}
-			pStates[s]->SetProtected(false);
-		}
+			state.SetProtected(false);
+		});
 		
 	}else{
 		decTList<int> foundBones;
 		
-		for(s=0; s<boneCount; s++){
-			boneIndex = rig->IndexOfBoneNamed(bones.GetAt(s));
+		bones.Visit([&](const decString &boneName){
+			const int boneIndex = rig->IndexOfBoneNamed(boneName);
 			if(boneIndex != -1){
 				foundBones.Add(boneIndex);
 			}
-		}
+		});
 		boneCount = foundBones.GetCount();
 		
-		if(boneCount != pStateCount){
+		if(boneCount != pStates.GetCount()){
 			SetStateCount(boneCount);
 		}
 		
-		for(s=0; s<pStateCount; s++){
-			boneIndex = foundBones.GetAt(s);
+		pStates.VisitIndexed([&](int s, dearBoneState &state){
+			const int boneIndex = foundBones.GetAt(s);
 			deRigBone &rigBone = rig->GetBoneAt(boneIndex);
-			parent = rigBone.GetParent();
+			int parent = rigBone.GetParent();
 			
-			pStates[s]->SetIndex(s);
-			pStates[s]->SetRigIndex(boneIndex);
-			pStates[s]->SetRigBone(&rigBone);
-			pStates[s]->SetRigBoneName(rigBone.GetName());
-			pStates[s]->SetRigLocalMatrix(decMatrix::CreateRT(
+			state.SetIndex(s);
+			state.SetRigIndex(boneIndex);
+			state.SetRigBone(&rigBone);
+			state.SetRigBoneName(rigBone.GetName());
+			state.SetRigLocalMatrix(decMatrix::CreateRT(
 				rigBone.GetRotation(), rigBone.GetPosition()));
 			
 			if(parent != -1){
@@ -279,14 +226,14 @@ void dearBoneStateList::UpdateMappings(const deAnimator &animator){
 			}
 			
 			if(parent == -1){
-				pStates[s]->SetParentState(NULL);
+				state.SetParentState(NULL);
 				
 			}else{
-				pStates[s]->SetParentState(pStates[parent]);
-				pStates[parent]->AddChildState(pStates[s]);
+				state.SetParentState(&pStates.GetAt(parent));
+				pStates.GetAt(parent).AddChildState(&state);
 			}
-			pStates[s]->SetProtected(false);
-		}
+			state.SetProtected(false);
+		});
 	}
 }
 
@@ -297,23 +244,21 @@ void dearBoneStateList::ApplyToComponent(deComponent *component) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	int s;
-	
-	for(s=0; s<pStateCount; s++){
-		if(pStates[s]->GetRigIndex() == -1){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		if(state.GetRigIndex() == -1){
+			return;
 		}
-		if(pStates[s]->GetProtected()){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		//pStates[ s ]->UpdateMatrices(); // only required if matrices are set
+		//state.UpdateMatrices(); // only required if matrices are set
 		
-		const decVector &nposition = pStates[s]->GetPosition();
-		const decQuaternion &nrotation = pStates[s]->GetOrientation();
-		decVector nscale = pStates[s]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		decVector nscale = state.GetScale();
 		
-		deComponentBone &componentBone = component->GetBoneAt(pStates[s]->GetRigIndex());
+		deComponentBone &componentBone = component->GetBoneAt(state.GetRigIndex());
 		componentBone.SetPosition(nposition);
 		componentBone.SetRotation(nrotation);
 		
@@ -330,7 +275,7 @@ void dearBoneStateList::ApplyToComponent(deComponent *component) const{
 		}
 		
 		componentBone.SetScale(nscale);
-	}
+	});
 	
 	component->InvalidateBones();
 }
@@ -341,23 +286,22 @@ void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule:
 	}
 	
 	decVector scale;
-	int s;
 	
-	for(s=0; s<pStateCount; s++){
-		if(pStates[s]->GetRigIndex() == -1){
-			continue;
+	pStates.Visit([&](const dearBoneState &state){
+		if(state.GetRigIndex() == -1){
+			return;
 		}
-		if(pStates[s]->GetProtected()){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
-		//pStates[ s ]->UpdateMatrices(); // only required if matrices are set
+		//state.UpdateMatrices(); // only required if matrices are set
 		
-		const decVector &nposition = pStates[s]->GetPosition();
-		const decQuaternion &nrotation = pStates[s]->GetOrientation();
-		const decVector &nscale = pStates[s]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		const decVector &nscale = state.GetScale();
 		
-		deComponentBone &componentBone = component->GetBoneAt(pStates[s]->GetRigIndex());
+		deComponentBone &componentBone = component->GetBoneAt(state.GetRigIndex());
 		
 		if(blendMode == deAnimatorRule::ebmBlend){
 			componentBone.SetPosition(componentBone.GetPosition() * (1.0f - blendFactor) + nposition * blendFactor);
@@ -388,12 +332,12 @@ void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule:
 		componentBone.SetScale(scale);
 		
 		/*
-		componentBone.SetMatrix(pStates[i]->GetGlobalMatrix());
-		componentBone.SetInverseMatrix(pStates[i]->GetInverseGlobalMatrix());
-		componentBone.SetWeightMatrix(pStates[i]->GetRigWeightMatrix().QuickMultiply(pStates[i]->GetGlobalMatrix()));
+		componentBone.SetMatrix(state.GetGlobalMatrix());
+		componentBone.SetInverseMatrix(state.GetInverseGlobalMatrix());
+		componentBone.SetWeightMatrix(state.GetRigWeightMatrix().QuickMultiply(state.GetGlobalMatrix()));
 		componentBone.SetUpdated(true);
 		*/
-	}
+	});
 	
 	component->InvalidateBones();
 }
@@ -401,7 +345,6 @@ void dearBoneStateList::ApplyToComponent(deComponent *component, deAnimatorRule:
 void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
 	dearComponentBoneState *boneStates = component.GetBoneStates();
 	const int boneStateCount = component.GetBoneStateCount();
-	int i;
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -412,23 +355,23 @@ void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
 	}
 	*/
 	
-	for(i=0; i<pStateCount; i++){
-		const int boneIndex = pStates[i]->GetRigIndex();
+	pStates.Visit([&](const dearBoneState &state){
+		const int boneIndex = state.GetRigIndex();
 		if(boneIndex < 0 || boneIndex >= boneStateCount){
-			continue;
+			return;
 		}
-		if(pStates[i]->GetProtected()){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
 		dearComponentBoneState &boneState = boneStates[boneIndex];
 		
-		boneState.SetPosition(pStates[i]->GetPosition());
-		boneState.SetRotation(pStates[i]->GetOrientation());
+		boneState.SetPosition(state.GetPosition());
+		boneState.SetRotation(state.GetOrientation());
 		
 		// apply a little threshold around unit scaling to obtain pure unit scaling in the case
 		// of small numerical instability. this should prevent problems with lazy modules
-		decVector nscale = pStates[i]->GetScale();
+		decVector nscale = state.GetScale();
 		
 		if(fabsf(1.0f - nscale.x) < 1e-5f){
 			nscale.x = 1.0f;
@@ -441,14 +384,13 @@ void dearBoneStateList::ApplyToComponent(dearComponent &component) const{
 		}
 		
 		boneState.SetScale(nscale);
-	}
+	});
 }
 
 void dearBoneStateList::ApplyToComponent(dearComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 	dearComponentBoneState *boneStates = component.GetBoneStates();
 	const int boneStateCount = component.GetBoneStateCount();
-	int i;
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -459,20 +401,20 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 	}
 	*/
 	
-	for(i=0; i<pStateCount; i++){
-		const int boneIndex = pStates[i]->GetRigIndex();
+	pStates.Visit([&](const dearBoneState &state){
+		const int boneIndex = state.GetRigIndex();
 		if(boneIndex < 0 || boneIndex >= boneStateCount){
-			continue;
+			return;
 		}
-		if(pStates[i]->GetProtected()){
-			continue;
+		if(state.GetProtected()){
+			return;
 		}
 		
 		dearComponentBoneState &boneState = boneStates[boneIndex];
 		
-		const decVector &nposition = pStates[i]->GetPosition();
-		const decQuaternion &nrotation = pStates[i]->GetOrientation();
-		const decVector &nscale = pStates[i]->GetScale();
+		const decVector &nposition = state.GetPosition();
+		const decQuaternion &nrotation = state.GetOrientation();
+		const decVector &nscale = state.GetScale();
 		decVector scale;
 		
 		if(blendMode == deAnimatorRule::ebmBlend){
@@ -502,5 +444,5 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 		}
 		
 		boneState.SetScale(scale);
-	}
+	});
 }

@@ -51,6 +51,9 @@ public:
 	/** Create state. */
 	dearVPSState();
 	
+	/** Create copy of state. */
+	dearVPSState(const dearVPSState &other);
+	
 	/** Clean up state. */
 	~dearVPSState();
 	/*@}*/
@@ -128,7 +131,7 @@ public:
 	void BlendWith(float weight, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enableWeight);
 	
-	/** Full copy. */
+	/** Assignment operator. */
 	dearVPSState &operator=(const dearVPSState &state);
 	/*@}*/
 };

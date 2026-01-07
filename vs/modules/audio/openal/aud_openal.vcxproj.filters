@@ -97,9 +97,6 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -200,9 +197,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.cpp">
@@ -549,9 +543,6 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -664,9 +655,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.h">

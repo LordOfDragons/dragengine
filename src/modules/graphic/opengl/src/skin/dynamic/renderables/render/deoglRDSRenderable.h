@@ -70,12 +70,13 @@ public:
 	/** Create render dynamic skin renderable. */
 	deoglRDSRenderable(eType type, deoglRDynamicSkin &dynamicSkin);
 	
+protected:
 	/** Clean up render dynamic skin renderable. */
 	virtual ~deoglRDSRenderable();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */

@@ -57,7 +57,8 @@ public:
 	public:
 		typedef deTObjectReference<PreloadLibrary> Ref;
 		PreloadLibrary(const decPath &basePath, const char *filename);
-		virtual ~PreloadLibrary();
+	protected:
+		~PreloadLibrary() override;
 	};
 #endif
 	

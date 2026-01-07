@@ -465,7 +465,6 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRaySegment.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTEnvProbeFull.cpp" />
@@ -505,7 +504,6 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.cpp" />
@@ -617,7 +615,6 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalRayTraceResult.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRay.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteraction.h" />
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayInteractionList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRayList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\deoalSoundRaySegment.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\environment\raytrace\parallel\deoalRTPTEnvProbeFull.h" />
@@ -663,7 +660,6 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterInt.h" />
-    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalParameterList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.h" />

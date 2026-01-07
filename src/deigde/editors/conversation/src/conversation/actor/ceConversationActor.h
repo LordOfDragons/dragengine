@@ -87,6 +87,8 @@ private:
 		float length;
 		cGesture(ceGesture *agesture, float apause, float alength) :
 			gesture(agesture), pause(apause), length(alength){}
+	protected:
+		~cGesture() override = default;
 	};
 	
 	class cFacePose : public deObject{
@@ -97,6 +99,8 @@ private:
 		float length;
 		cFacePose(ceFacePose *afacePose, float apause, float alength) :
 			facePose(afacePose), pause(apause), length(alength){}
+	protected:
+		~cFacePose() override = default;
 	};
 	
 	class cLookAt : public deObject{
@@ -107,6 +111,8 @@ private:
 		float duration;
 		cLookAt(ceTarget *alookAt, float apause, float aduration) :
 			lookAt(alookAt), pause(apause), duration(aduration){}
+	protected:
+		~cLookAt() override = default;
 	};
 	
 	

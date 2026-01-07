@@ -172,12 +172,13 @@ public:
 	/** Create compute render task. */
 	deoglComputeRenderTask(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up compute render task. */
 	~deoglComputeRenderTask();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

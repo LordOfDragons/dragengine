@@ -52,6 +52,9 @@ template<class T> class deTObjectReference{
 private:
 	T *pObject;
 	
+	// Allow all template instantiations to access each other's private members
+	template<class U> friend class deTObjectReference;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -103,10 +106,7 @@ public:
 	/** \brief Move constructor. */
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTObjectReference(deTObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
-		if(pObject){
-			deTObjectReference_AddRef(static_cast<void*>(pObject));
-			reference = nullptr;
-		}
+		reference.pObject = nullptr;
 	}
 	
 	/**
@@ -144,19 +144,6 @@ public:
 	inline bool IsNotNull() const{
 		return pObject != nullptr;
 	}
-	
-#if 0
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() on a new instance but allows for inline use.
-	 */
-	static deTObjectReference NewDeprecated(T *object){
-		deTObjectReference reference;
-		reference = object;
-		return reference;
-	}
-#endif
 	
 	/**
 	 * \brief Create instance taking over reference.
@@ -248,6 +235,41 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	inline deTObjectReference &operator=(const deTObjectReference<U> &reference){
 		return operator=(static_cast<T*>(reference.Pointer()));
+	}
+	
+	/** \brief Move assignment operator. */
+	deTObjectReference &operator=(deTObjectReference &&reference){
+		if(&reference == this){
+			return *this;
+		}
+		
+		if(pObject){
+			deTObjectReference_FreeRef(static_cast<void*>(pObject));
+		}
+		
+		pObject = reference.pObject;
+		reference.pObject = nullptr;
+		
+		return *this;
+	}
+	
+	/** \brief Move assignment operator. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	deTObjectReference &operator=(deTObjectReference<U> &&reference){
+		T *object = static_cast<T*>(reference.Pointer());
+		
+		if(object == pObject){
+			return *this;
+		}
+		
+		if(pObject){
+			deTObjectReference_FreeRef(static_cast<void*>(pObject));
+		}
+		
+		pObject = object;
+		reference.pObject = nullptr;
+		
+		return *this;
 	}
 	
 	/** \brief Test if object is held by this holder. */

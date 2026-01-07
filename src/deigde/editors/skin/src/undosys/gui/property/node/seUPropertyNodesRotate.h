@@ -53,6 +53,8 @@ private:
 		float rotation = 0.0f;
 		
 		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
 	cNode::List pNodes;

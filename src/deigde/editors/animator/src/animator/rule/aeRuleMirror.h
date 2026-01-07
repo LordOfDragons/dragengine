@@ -53,6 +53,9 @@ public:
 		
 		bool operator==(const MatchName &matchName) const;
 		bool operator!=(const MatchName &matchName) const;
+		
+	protected:
+		~MatchName() override = default;
 	};
 	
 	

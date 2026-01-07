@@ -28,6 +28,10 @@
 #include "utils/detUuid.h"
 #include "threading/detThreading.h"
 #include "file/detZFile.h"
+#include "detObjectReference.h"
+#include "detWeakObjectReference.h"
+#include "detThreadSafeObjectReference.h"
+#include "detUniqueReference.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLoggerConsoleColor.h>
@@ -201,6 +205,10 @@ detRunner::detRunner(){
 	pAddTest(new detPRNG);
 	pAddTest(new detUuid);
 	pAddTest(new detThreading);
+	pAddTest(new detObjectReference);
+	pAddTest(new detWeakObjectReference);
+	pAddTest(new detThreadSafeObjectReference);
+	pAddTest(new detUniqueReference);
 }
 detRunner::~detRunner(){
 	if(pCases){

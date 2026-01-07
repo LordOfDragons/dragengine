@@ -78,6 +78,8 @@ namespace {
 
 class cSorter : public igdeTreeItemSorter{
 public:
+	using Ref = deTObjectReference<cSorter>;
+	
 	cSorter(){}
 	
 	virtual bool Precedes(const igdeTreeItem &item1, const igdeTreeItem &item2){

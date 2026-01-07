@@ -96,12 +96,13 @@ public:
 	/** Create render occlusion mesh. */
 	deoglROcclusionMesh(deoglRenderThread &renderThread, const deOcclusionMesh &occlusionMesh);
 	
+protected:
 	/** Clean up render occlusion mesh. */
 	virtual ~deoglROcclusionMesh();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

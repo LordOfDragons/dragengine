@@ -28,7 +28,6 @@
 #include <stdio.h>
 
 #include "gdeViewActiveObject.h"
-#include "gdeViewActiveObjectListener.h"
 #include "gdeVAOBillboard.h"
 #include "gdeVAOComponent.h"
 #include "gdeVAOCamera.h"
@@ -152,7 +151,7 @@ pListener(nullptr),
 pShowEnvMapProbes(false),
 pShowNavBlockers(false)
 {
-	pListener = new gdeViewActiveObjectListener(*this);
+	pListener = gdeViewActiveObjectListener::Ref::New(*this);
 	
 	const deEngine &engine = *GetEngineController().GetEngine();
 	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();

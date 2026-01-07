@@ -91,6 +91,8 @@ public:
 		decVector boxTo;
 		
 		cDDCluster() = default;
+	protected:
+		~cDDCluster() override = default;
 	};
 	
 	

@@ -33,6 +33,8 @@
  */
 class gdeMACategorySkinAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategorySkinAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */

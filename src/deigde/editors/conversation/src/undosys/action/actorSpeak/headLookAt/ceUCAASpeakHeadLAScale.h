@@ -34,6 +34,8 @@
  */
 class ceUCAASpeakHeadLAScale : public ceUCAASpeakStripsScale{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakHeadLAScale>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

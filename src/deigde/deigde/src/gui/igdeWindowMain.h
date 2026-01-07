@@ -25,6 +25,7 @@
 #ifndef _IGDEWINDOWMAIN_H_
 #define _IGDEWINDOWMAIN_H_
 
+#include "igdeTaskSyncGameDefinition.h"
 #include "../configuration/igdeConfiguration.h"
 #include "../configuration/igdeConfigurationLocal.h"
 #include "../template/igdeTemplate.h"
@@ -65,7 +66,6 @@ class igdeEditorModuleManager;
 class igdeEnvironmentIGDE;
 class igdeGDPreviewManager;
 class igdeLoadSaveSystem;
-class igdeTaskSyncGameDefinition;
 class igdeSharedFontList;
 class igdeUIHelper;
 
@@ -176,7 +176,7 @@ private:
 	bool pPauseUpdating;
 	bool pFirstEngineRun;
 	
-	igdeTaskSyncGameDefinition *pTaskSyncGameDefinition;
+	igdeTaskSyncGameDefinition::Ref pTaskSyncGameDefinition;
 	
 	decUnicodeStringList pAfterLoadArguments;
 	

@@ -45,16 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-dearVPSStateList::dearVPSStateList() :
-pStates(nullptr),
-pStateCount(0),
-pStateSize(0){
+dearVPSStateList::dearVPSStateList(){
 }
 
 dearVPSStateList::~dearVPSStateList(){
-	if(pStates){
-		delete [] pStates;
-	}
 }
 
 
@@ -63,43 +57,26 @@ dearVPSStateList::~dearVPSStateList(){
 ///////////////
 
 void dearVPSStateList::SetStateCount(int count){
-	if(count > pStateSize){
-		dearVPSState * const newArray = new dearVPSState[count];
-		
-		if(pStates){
-			int i;
-			for(i=0; i<pStateSize; i++){
-				newArray[i] = pStates[i];
-			}
-			delete [] pStates;
-		}
-		
-		pStates = newArray;
-		pStateSize = count;
+	if(count == pStates.GetCount()){
+		return;
 	}
 	
-	pStateCount = count;
+	pStates = decTList<dearVPSState>(count, dearVPSState());
 }
 
-dearVPSState &dearVPSStateList::GetStateAt(int index) const{
-	DEASSERT_TRUE(index >= 0)
-	DEASSERT_TRUE(index < pStateCount)
-	
-	return pStates[index];
+dearVPSState &dearVPSStateList::GetStateAt(int index){
+	return pStates.GetAt(index);
+}
+
+const dearVPSState &dearVPSStateList::GetStateAt(int index) const{
+	return pStates.GetAt(index);
 }
 
 int dearVPSStateList::IndexOfStateNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
-	
-	int i;
-	for(i=0; i<pStateCount; i++){
-		const char * const stateName = pStates[i].GetName();
-		if(stateName && strcmp(stateName, name) == 0){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pStates.IndexOfMatching([&](const dearVPSState &state){
+		return state.GetName() && strcmp(state.GetName(), name) == 0;
+	});
 }
 
 
@@ -108,14 +85,12 @@ dearVPSStateList *dearVPSStateList::CreateCopy() const{
 	dearVPSStateList * const stalist = new dearVPSStateList;
 	
 	try{
-		stalist->SetStateCount(pStateCount);
-		
-		int i;
-		for(i=0; i<pStateCount; i++){
-			dearVPSState &state = stalist->GetStateAt(i);
-			state = pStates[i];
-			state.SetDirty(true);
-		}
+		stalist->SetStateCount(pStates.GetCount());
+		pStates.VisitIndexed([&](int i, const dearVPSState &state){
+			dearVPSState &newState = stalist->GetStateAt(i);
+			newState = state;
+			newState.SetDirty(true);
+		});
 		
 	}catch(const deException &){
 		delete stalist;
@@ -126,22 +101,19 @@ dearVPSStateList *dearVPSStateList::CreateCopy() const{
 }
 
 void dearVPSStateList::SetFrom(const dearVPSStateList &stateList){
-	SetStateCount(stateList.pStateCount);
-	
-	int i;
-	for(i=0; i<stateList.pStateCount; i++){
-		pStates[i] = stateList.GetStateAt(i);
-		pStates[i].SetDirty(true);
-	}
+	SetStateCount(stateList.pStates.GetCount());
+	pStates.VisitIndexed([&](int i, dearVPSState &state){
+		state = stateList.GetStateAt(i);
+		state.SetDirty(true);
+	});
 }
 
 
 
 void dearVPSStateList::MarkDirty(){
-	int i;
-	for(i=0; i<pStateCount; i++){
-		pStates[i].SetDirty(true);
-	}
+	pStates.Visit([](dearVPSState &state){
+		state.SetDirty(true);
+	});
 }
 
 
@@ -154,75 +126,70 @@ void dearVPSStateList::UpdateMappings(const deAnimator &animator, const deCompon
 	}
 	
 	const decStringSet &vpslist = animator.GetListVertexPositionSets();
-	int i, vpsCount = vpslist.GetCount();
+	int vpsCount = vpslist.GetCount();
 	
 	if(vpsCount == 0){
 		vpsCount = model->GetVertexPositionSetCount();
 		
-		if(vpsCount != pStateCount){
+		if(vpsCount != pStates.GetCount()){
 			SetStateCount(vpsCount);
 		}
 		
-		for(i=0; i<pStateCount; i++){
-			const deModelVertexPositionSet &modelVPS = *model->GetVertexPositionSetAt(i);
-			
-			pStates[i].SetIndex(i);
-			pStates[i].SetModelIndex(i);
-			pStates[i].SetName(modelVPS.GetName());
-			pStates[i].SetProtected(false);
-		}
+		pStates.VisitIndexed([&](int i, dearVPSState &state){
+			state.SetIndex(i);
+			state.SetModelIndex(i);
+			state.SetName(model->GetVertexPositionSetAt(i)->GetName());
+			state.SetProtected(false);
+		});
 		
 	}else{
 		decTList<int> foundVPS;
 		
-		for(i=0; i<vpsCount; i++){
-			const int modelIndex = model->IndexOfVertexPositionSetNamed(vpslist.GetAt(i));
+		vpslist.Visit([&](const decString &name){
+			const int modelIndex = model->IndexOfVertexPositionSetNamed(name);
 			if(modelIndex != -1){
 				foundVPS.Add(modelIndex);
 			}
-		}
+		});
 		vpsCount = foundVPS.GetCount();
 		
-		if(vpsCount != pStateCount){
+		if(vpsCount != pStates.GetCount()){
 			SetStateCount(vpsCount);
 		}
 		
-		for(i=0; i<pStateCount; i++){
+		pStates.VisitIndexed([&](int i, dearVPSState &state){
 			const int modelIndex = foundVPS.GetAt(i);
-			const deModelVertexPositionSet &modelVPS = *model->GetVertexPositionSetAt(modelIndex);
 			
-			pStates[i].SetIndex(i);
-			pStates[i].SetModelIndex(modelIndex);
-			pStates[i].SetName(modelVPS.GetName());
-			pStates[i].SetProtected(false);
-		}
+			state.SetIndex(i);
+			state.SetModelIndex(modelIndex);
+			state.SetName(model->GetVertexPositionSetAt(modelIndex)->GetName());
+			state.SetProtected(false);
+		});
 	}
 }
 
 
 
 void dearVPSStateList::ApplyToComponent(deComponent &component) const{
-	int i;
-	for(i=0; i<pStateCount; i++){
-		if(pStates[i].GetModelIndex() == -1 || pStates[i].GetProtected()){
-			continue;
+	pStates.Visit([&](const dearVPSState &state){
+		if(state.GetModelIndex() == -1 || state.GetProtected()){
+			return;
 		}
-		component.SetVertexPositionSetWeightAt(pStates[i].GetModelIndex(), pStates[i].GetWeight());
-	}
+		component.SetVertexPositionSetWeightAt(state.GetModelIndex(), state.GetWeight());
+	});
 	component.InvalidateMesh();
 }
 
 void dearVPSStateList::ApplyToComponent(deComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
-	int i;
-	for(i=0; i<pStateCount; i++){
-		if(pStates[i].GetModelIndex() == -1 || pStates[i].GetProtected()){
-			continue;
+	pStates.Visit([&](const dearVPSState &state){
+		if(state.GetModelIndex() == -1 || state.GetProtected()){
+			return;
 		}
 		
-		const int index = pStates[i].GetModelIndex();
+		const int index = state.GetModelIndex();
 		const float oldWeight = component.GetVertexPositionSetWeightAt(index);
-		const float newWeight = pStates[i].GetWeight();
+		const float newWeight = state.GetWeight();
 		
 		switch(blendMode){
 		case deAnimatorRule::ebmBlend:
@@ -234,14 +201,13 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 			component.SetVertexPositionSetWeightAt(index, oldWeight + newWeight * blendFactor);
 			break;
 		}
-	}
+	});
 	component.InvalidateMesh();
 }
 
 void dearVPSStateList::ApplyToComponent(dearComponent &component) const{
 	dearComponentVPSState * const vpsStates = component.GetVPSStates();
 	const int vpsStateCount = component.GetVPSStateCount();
-	int i;
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -252,21 +218,20 @@ void dearVPSStateList::ApplyToComponent(dearComponent &component) const{
 	}
 	*/
 	
-	for(i=0; i<pStateCount; i++){
-		const int modelIndex = pStates[i].GetModelIndex();
-		if(modelIndex < 0 || modelIndex >= vpsStateCount || pStates[i].GetProtected()){
-			continue;
+	pStates.Visit([&](const dearVPSState &state){
+		const int modelIndex = state.GetModelIndex();
+		if(modelIndex < 0 || modelIndex >= vpsStateCount || state.GetProtected()){
+			return;
 		}
 		
-		vpsStates[modelIndex].SetWeight(pStates[i].GetWeight());
-	}
+		vpsStates[modelIndex].SetWeight(state.GetWeight());
+	});
 }
 
 void dearVPSStateList::ApplyToComponent(dearComponent &component,
 deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 	dearComponentVPSState * const vpsStates = component.GetVPSStates();
 	const int vpsStateCount = component.GetVPSStateCount();
-	int i;
 	
 	/*
 	this check is wrong. if a bone list is used on the animator the number of states
@@ -277,15 +242,15 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 	}
 	*/
 	
-	for(i=0; i<pStateCount; i++){
-		const int modelIndex = pStates[i].GetModelIndex();
-		if(modelIndex < 0 || modelIndex >= vpsStateCount || pStates[i].GetProtected()){
-			continue;
+	pStates.Visit([&](const dearVPSState &state){
+		const int modelIndex = state.GetModelIndex();
+		if(modelIndex < 0 || modelIndex >= vpsStateCount || state.GetProtected()){
+			return;
 		}
 		
 		dearComponentVPSState &vpsState = vpsStates[modelIndex];
 		
-		const float newWeight = pStates[i].GetWeight();
+		const float newWeight = state.GetWeight();
 		
 		switch(blendMode){
 		case deAnimatorRule::ebmBlend:
@@ -296,5 +261,5 @@ deAnimatorRule::eBlendModes blendMode, float blendFactor) const{
 			vpsState.SetWeight(vpsState.GetWeight() + newWeight * blendFactor);
 			break;
 		}
-	}
+	});
 }

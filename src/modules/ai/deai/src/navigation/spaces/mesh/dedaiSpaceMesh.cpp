@@ -1197,28 +1197,19 @@ void dedaiSpaceMesh::pInitFromHTNavSpace(){
 void dedaiSpaceMesh::pInitConvexFaceListFromFace(dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face) const{
 	const int firstCorner = face.GetFirstCorner();
 	const int cornerCount = face.GetCornerCount();
-	dedaiConvexFace *convexFace = NULL;
 	int i;
 	
 	list.RemoveAllFaces();
 	list.RemoveAllVertices();
 	
-	try{
-		convexFace = new dedaiConvexFace;
-		for(i=0; i<cornerCount; i++){
-			list.AddVertex(pVertices[pCorners[firstCorner + i].GetVertex()]);
-			convexFace->AddVertex(i);
-		}
-		
-		convexFace->SetNormal(face.GetNormal());
-		list.AddFace(convexFace);
-		
-	}catch(const deException &){
-		if(convexFace){
-			delete convexFace;
-		}
-		throw;
+	dedaiConvexFace::Ref convexFace(dedaiConvexFace::Ref::New());
+	for(i=0; i<cornerCount; i++){
+		list.AddVertex(pVertices[pCorners[firstCorner + i].GetVertex()]);
+		convexFace->AddVertex(i);
 	}
+	
+	convexFace->SetNormal(face.GetNormal());
+	list.AddFace(convexFace);
 }
 
 bool dedaiSpaceMesh::pMatchesConvexFaceListMeshFace(dedaiConvexFaceList &list, const dedaiSpaceMeshFace &face) const{

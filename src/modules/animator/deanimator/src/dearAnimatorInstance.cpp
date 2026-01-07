@@ -433,13 +433,13 @@ void dearAnimatorInstance::ProtectDynamicBonesChanged(){
 	
 	if(pAnimatorInstance.GetProtectDynamicBones()){
 		for(i=0; i<count; i++){
-			dearBoneState &boneState = *pBoneStateList.GetStateAt(i);
+			dearBoneState &boneState = pBoneStateList.GetStateAt(i);
 			boneState.SetProtected(boneState.GetRigBone() && boneState.GetRigBone()->GetDynamic());
 		}
 		
 	}else{
 		for(i=0; i<count; i++){
-			pBoneStateList.GetStateAt(i)->SetProtected(false);
+			pBoneStateList.GetStateAt(i).SetProtected(false);
 		}
 	}
 }
@@ -522,12 +522,12 @@ void dearAnimatorInstance::pUpdateMappings(){
 		
 		count = pBoneStateList.GetStateCount();
 		for(i=0; i<count; i++){
-			pMappingRigToState.SetAt(pBoneStateList.GetStateAt(i)->GetRigIndex(), i);
+			pMappingRigToState.SetAt(pBoneStateList.GetStateAt(i).GetRigIndex(), i);
 		}
 		
 		if(pAnimatorInstance.GetProtectDynamicBones()){
 			for(i=0; i<count; i++){
-				dearBoneState &boneState = *pBoneStateList.GetStateAt(i);
+				dearBoneState &boneState = pBoneStateList.GetStateAt(i);
 				
 				boneState.SetProtected(boneState.GetRigBone() && boneState.GetRigBone()->GetDynamic());
 				//printf( "bone='%s' dynamic=%i protected=%i\n", boneState.GetRigBoneName(),
@@ -607,7 +607,7 @@ void dearAnimatorInstance::pUpdateFakeRootBones(){
 	int i;
 	
 	for(i=0; i<boneCount; i++){
-		dearBoneState &state = *pBoneStateList.GetStateAt(i);
+		dearBoneState &state = pBoneStateList.GetStateAt(i);
 		if(state.GetParentState()){
 			continue;
 		}

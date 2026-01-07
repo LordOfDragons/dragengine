@@ -25,6 +25,8 @@
 #ifndef _DEOALRAYTRACEHITELEMENTLIST_H_
 #define _DEOALRAYTRACEHITELEMENTLIST_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoalRayTraceHitElement;
 
 
@@ -36,10 +38,7 @@ class deoalRayTraceHitElement;
  */
 class deoalRayTraceHitElementList{
 private:
-	deoalRayTraceHitElement *pElements;
-	int pCount;
-	int pSize;
-	
+	decTList<deoalRayTraceHitElement> pElements;
 	
 	
 public:
@@ -57,7 +56,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of elements. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pElements.GetCount(); }
 	
 	/** \brief Element at index. */
 	const deoalRayTraceHitElement &GetAt(int index) const;
@@ -72,11 +71,6 @@ public:
 	/** \brief Remove all elements. */
 	void RemoveAll();
 	/*@}*/
-	
-	
-	
-private:
-	deoalRayTraceHitElement &pBareAdd();
 };
 
 #endif

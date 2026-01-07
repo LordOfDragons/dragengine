@@ -34,6 +34,8 @@
  */
 class ceUCAASpeakFaceSetPause : public ceUCAASpeakStripSetPause{
 public:
+	using Ref = deTObjectReference<ceUCAASpeakFaceSetPause>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

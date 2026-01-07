@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "dedaiConvexFace.h"
 #include "dedaiConvexFaceList.h"
 
@@ -47,27 +43,20 @@
 /////////////////////////////////
 
 dedaiConvexFace::dedaiConvexFace() :
-pVertices(NULL),
-pVertexCount(0),
 pMarker(0){
 }
 
 dedaiConvexFace::dedaiConvexFace(const dedaiConvexFace &face) :
-pVertices(NULL),
-pVertexCount(face.pVertexCount),
+pVertices(face.pVertices),
 pNormal(face.pNormal),
-pMarker(face.pMarker)
-{
-	if(pVertexCount > 0){
-		pVertices = new int[pVertexCount];
-		memcpy(pVertices, face.pVertices, sizeof(int) * pVertexCount);
-	}
+pMarker(face.pMarker){
+}
+
+dedaiConvexFace::dedaiConvexFace(int marker) :
+pMarker(marker){
 }
 
 dedaiConvexFace::~dedaiConvexFace(){
-	if(pVertices){
-		delete [] pVertices;
-	}
 }
 
 
@@ -84,111 +73,47 @@ void dedaiConvexFace::SetMarker(int marker){
 }
 
 int dedaiConvexFace::GetVertexAt(int index) const{
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pVertices[index];
+	return pVertices.GetAt(index);
 }
 
 void dedaiConvexFace::SetVertexAt(int index, int vertex){
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	pVertices[index] = vertex;
+	pVertices.SetAt(index, vertex);
 }
 
 bool dedaiConvexFace::HasVertex(int vertex) const{
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		if(vertex == pVertices[i]){
-			return true;
-		}
-	}
-	
-	return false;
+	return pVertices.Has(vertex);
 }
 
 int dedaiConvexFace::IndexOfVertex(int vertex) const{
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		if(vertex == pVertices[i]){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pVertices.IndexOf(vertex);
 }
 
 void dedaiConvexFace::AddVertex(int vertex){
-	int * const newArray = new int[pVertexCount + 1];
-	if(pVertices){
-		memcpy(newArray, pVertices, sizeof(int) * pVertexCount);
-		delete [] pVertices;
-	}
-	pVertices = newArray;
-	pVertices[pVertexCount] = vertex;
-	pVertexCount++;
+	pVertices.Add(vertex);
 }
 
 void dedaiConvexFace::InsertVertex(int index, int vertex){
-	if(index < 0 || index > pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int * const newArray = new int[pVertexCount + 1];
-	if(pVertices){
-		if(index > 0){
-			memcpy(newArray, pVertices, sizeof(int) * index);
-		}
-		if(index < pVertexCount){
-			memcpy(newArray + index + 1, pVertices + index,
-				sizeof(int) * (pVertexCount - index));
-		}
-		delete [] pVertices;
-	}
-	pVertices = newArray;
-	pVertices[index] = vertex;
-	pVertexCount++;
+	pVertices.Insert(vertex, index);
 }
 
 void dedaiConvexFace::RemoveVertexFrom(int index){
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	
-	for(i=index+1; i<pVertexCount; i++){
-		pVertices[i - 1] = pVertices[i];
-	}
-	pVertexCount--;
+	pVertices.RemoveFrom(index);
 }
 
 void dedaiConvexFace::RemoveAllVertices(){
-	if(pVertices){
-		delete [] pVertices;
-		pVertices = NULL;
-	}
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 }
 
 
 
 decVector dedaiConvexFace::CalculateCenter(const dedaiConvexFaceList &convexFaceList) const{
 	decVector center;
-	
-	if(pVertexCount > 0){
-		int i;
-		
-		for(i=0; i<pVertexCount; i++){
-			center += convexFaceList.GetVertexAt(pVertices[i]);
-		}
-		
-		center /= (float)pVertexCount;
+	if(pVertices.IsNotEmpty()){
+		pVertices.Visit([&](int index){
+			center += convexFaceList.GetVertexAt(index);
+		});
+		center /= (float)pVertices.GetCount();
 	}
-	
 	return center;
 }
 
@@ -204,7 +129,7 @@ void dedaiConvexFace::SortVertices(const dedaiConvexFaceList &convexFaceList){
 	// it is important to normalize the vectors. this is unfortunately required since otherwise
 	// the result can be falsified by vertices located nearly at the same location in space
 	// causing an additional loop around the face resulting in an incorrect ordering.
-	if(pVertexCount < 3){
+	if(pVertices.GetCount() < 3){
 		return;
 	}
 	
@@ -212,15 +137,15 @@ void dedaiConvexFace::SortVertices(const dedaiConvexFaceList &convexFaceList){
 	
 	const decVector center = CalculateCenter(convexFaceList);
 	
-	const decVector referenceDirection = (convexFaceList.GetVertexAt(pVertices[0]) - center).Normalized();
+	const decVector referenceDirection = (convexFaceList.GetVertexAt(pVertices.First()) - center).Normalized();
 	const decVector windingDirection = pNormal % referenceDirection;
 	const float windingDot = windingDirection * center - FLOAT_SAFE_EPSILON;
 	
-	for(i=1; i<pVertexCount-1; i++){
+	for(i=1; i<pVertices.GetCount()-1; i++){
 		int nextVertex = -1;
 		float nextDot = 0.0f;
 		
-		for(j=i; j<pVertexCount; j++){
+		for(j=i; j<pVertices.GetCount(); j++){
 			const decVector &testVertex = convexFaceList.GetVertexAt(pVertices[j]);
 			
 			float testDot = (testVertex - center).Normalized() * referenceDirection;
@@ -243,20 +168,14 @@ void dedaiConvexFace::SortVertices(const dedaiConvexFaceList &convexFaceList){
 }
 
 bool dedaiConvexFace::IsTooSmall(const dedaiConvexFaceList &convexFaceList) const{
-	if(pVertexCount < 3){
+	if(pVertices.GetCount() < 3){
 		return true;
 	}
 	
 	const decVector center = CalculateCenter(convexFaceList);
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		if((convexFaceList.GetVertexAt(pVertices[i]) - center).Length() < FLOAT_SAFE_EPSILON){
-			return true;
-		}
-	}
-	
-	return false;
+	return pVertices.HasMatching([&](int index){
+		return (convexFaceList.GetVertexAt(index) - center).Length() < FLOAT_SAFE_EPSILON;
+	});
 }
 
 
@@ -265,25 +184,8 @@ bool dedaiConvexFace::IsTooSmall(const dedaiConvexFaceList &convexFaceList) cons
 //////////////
 
 dedaiConvexFace &dedaiConvexFace::operator=(const dedaiConvexFace &face){
-	const int vertexCount = face.pVertexCount;
-	
+	pVertices = face.pVertices;
 	pMarker = face.pMarker;
 	pNormal = face.pNormal;
-	
-	if(vertexCount != pVertexCount){
-		if(pVertices){
-			delete [] pVertices;
-			pVertices = NULL;
-			pVertexCount = 0;
-		}
-		
-		if(vertexCount > 0){
-			pVertices = new int[vertexCount];
-			memcpy(pVertices, face.pVertices, sizeof(int) * vertexCount);
-		}
-		
-		pVertexCount = vertexCount;
-	}
-	
 	return *this;
 }

@@ -51,12 +51,13 @@ public:
 	/** Create render effect. */
 	deoglREffect(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render effect. */
 	virtual ~deoglREffect();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

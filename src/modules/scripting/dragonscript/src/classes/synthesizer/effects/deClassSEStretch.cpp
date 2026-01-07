@@ -69,7 +69,7 @@ void deClassSEStretch::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	nd->effect = new deSynthesizerEffectStretch;
+	nd->effect = deSynthesizerEffectStretch::Ref::New();
 	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
 }
 

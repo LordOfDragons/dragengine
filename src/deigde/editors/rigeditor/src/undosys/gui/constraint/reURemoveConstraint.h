@@ -51,6 +51,8 @@ private:
 		reRigBone::Ref bone;
 		
 		cEntry() = default;
+	protected:
+		~cEntry() override = default;
 	};
 	
 private:

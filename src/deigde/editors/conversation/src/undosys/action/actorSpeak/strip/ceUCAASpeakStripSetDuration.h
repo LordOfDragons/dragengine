@@ -45,18 +45,15 @@ private:
 	ceConversationTopic::Ref pTopic;
 	ceCAActorSpeak::Ref pActorSpeak;
 	ceStrip::Ref pStrip;
-	float pOldDuration;
-	float pNewDuration;
+	float pOldDuration, pNewDuration;
 	
-public:
+protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
 	ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration);
 	/** \brief Cleans up the undo object. */
-protected:
 	virtual ~ceUCAASpeakStripSetDuration();
-public:
 	/*@}*/
 	
 public:

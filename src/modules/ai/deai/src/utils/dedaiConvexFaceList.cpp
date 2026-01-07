@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dedaiConvexFace.h"
 #include "dedaiConvexFaceList.h"
 
 #include <dragengine/common/exceptions.h>
@@ -63,52 +62,23 @@ enum ePlaneResult{
 
 
 // Class dedaiConvexFaceList
-////////////////////////////
+//////////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
 
 dedaiConvexFaceList::dedaiConvexFaceList(){
-	pVertices = NULL;
-	pVertexCount = 0;
-	pVertexSize = 0;
 }
 
-dedaiConvexFaceList::dedaiConvexFaceList(const dedaiConvexFaceList &list){
-	const int vertexCount = list.GetVertexCount();
-	const int faceCount = list.GetFaceCount();
-	dedaiConvexFace *face = NULL;
-	int i;
-	
-	pVertices = NULL;
-	pVertexCount = 0;
-	pVertexSize = 0;
-	
-	try{
-		for(i=0; i<vertexCount; i++){
-			AddVertex(list.GetVertexAt(i));
-		}
-		for(i=0; i<faceCount; i++){
-			face = CreateFace(list.GetFaceAt(i)->GetMarker());
-			*face = *list.GetFaceAt( i ); // CreateFace does not create a copy just a new face
-			AddFace(face);
-			face = NULL;
-		}
-		
-	}catch(const deException &){
-		RemoveAllFaces();
-		if(pVertices){
-			delete [] pVertices;
-		}
-		throw;
-	}
+dedaiConvexFaceList::dedaiConvexFaceList(const dedaiConvexFaceList &list) :
+pVertices(list.pVertices)
+{
+	list.pFaces.Visit([&](const dedaiConvexFace &face){
+		AddFace(dedaiConvexFace::Ref::New(face));
+	});
 }
 
 dedaiConvexFaceList::~dedaiConvexFaceList(){
-	RemoveAllFaces();
-	if(pVertices){
-		delete [] pVertices;
-	}
 }
 
 
@@ -117,77 +87,35 @@ dedaiConvexFaceList::~dedaiConvexFaceList(){
 /////////////
 
 int dedaiConvexFaceList::GetVertexCount() const{
-	return pVertexCount;
+	return pVertices.GetCount();
 }
 
 const decVector &dedaiConvexFaceList::GetVertexAt(int index) const{
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	return pVertices[index];
+	return pVertices.GetAt(index);
 }
 
 bool dedaiConvexFaceList::HasVertex(const decVector &vertex) const{
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		if(vertex.IsEqualTo(pVertices[i], THRESHOLD_EQUAL)){
-			return true;
-		}
-	}
-	
-	return false;
+	return pVertices.IndexOfMatching([&](const decVector &v){
+		return v.IsEqualTo(vertex, THRESHOLD_EQUAL);
+	}) != -1;
 }
 
 int dedaiConvexFaceList::IndexOfVertex(const decVector &vertex) const{
-	int i;
-	
-	for(i=0; i<pVertexCount; i++){
-		if(vertex.IsEqualTo(pVertices[i], THRESHOLD_EQUAL)){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pVertices.IndexOfMatching([&](const decVector &v){
+		return v.IsEqualTo(vertex, THRESHOLD_EQUAL);
+	});
 }
 
 void dedaiConvexFaceList::AddVertex(const decVector &vertex){
-// 	if( HasVertex( vertex ) ){
-// 		DETHROW( deeInvalidParam );
-// 	}
-	
-	if(pVertexCount == pVertexSize){
-		const int newSize = pVertexSize * 3 / 2 + 1;
-		decVector * const newArray = new decVector[newSize];
-		
-		if(pVertices){
-			memcpy(newArray, pVertices, sizeof(decVector) * pVertexCount);
-			delete [] pVertices;
-		}
-		
-		pVertices = newArray;
-		pVertexSize = newSize;
-	}
-	
-	pVertices[pVertexCount] = vertex;
-	pVertexCount++;
+	pVertices.Add(vertex);
 }
 
 void dedaiConvexFaceList::RemoveVertex(int index){
-	if(index < 0 || index >= pVertexCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	int i;
-	
-	for(i=index+1; i<pVertexCount; i++){
-		pVertices[i - 1] = pVertices[i];
-	}
-	pVertexCount--;
+	pVertices.RemoveFrom(index);
 }
 
 void dedaiConvexFaceList::RemoveAllVertices(){
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 }
 
 
@@ -201,7 +129,7 @@ int dedaiConvexFaceList::GetFaceCount() const{
 }
 
 dedaiConvexFace *dedaiConvexFaceList::GetFaceAt(int index) const{
-	return (dedaiConvexFace*)pFaces.GetAt(index);
+	return pFaces.GetAt(index);
 }
 
 bool dedaiConvexFaceList::HasFace(dedaiConvexFace *face) const{
@@ -212,44 +140,17 @@ int dedaiConvexFaceList::IndexOfFace(dedaiConvexFace *face) const{
 	return pFaces.IndexOf(face);
 }
 
-void dedaiConvexFaceList::AddFace(dedaiConvexFace *face){
+void dedaiConvexFaceList::AddFace(const dedaiConvexFace::Ref &face){
 	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if(!face){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(face)
 	pFaces.Add(face);
 }
 
-void dedaiConvexFaceList::RemoveFaceAt(int index){
-	dedaiConvexFace * const face = (dedaiConvexFace*)pFaces.GetAt(index);
-	pFaces.RemoveFrom(index);
-	delete face;
-}
-
 void dedaiConvexFaceList::RemoveFace(dedaiConvexFace *face){
-	ExtractFace(face);
-	delete face;
-}
-
-void dedaiConvexFaceList::ExtractFaceAt(int index){
-	pFaces.RemoveFrom(index);
-}
-
-void dedaiConvexFaceList::ExtractFace(dedaiConvexFace *face){
-	const int index = pFaces.IndexOf(face);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	pFaces.RemoveFrom(index);
+	pFaces.Remove(face);
 }
 
 void dedaiConvexFaceList::RemoveAllFaces(){
-	const int count = pFaces.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		delete (dedaiConvexFace*)pFaces.GetAt(i);
-	}
 	pFaces.RemoveAll();
 }
 
@@ -259,10 +160,9 @@ void dedaiConvexFaceList::RemoveAllFaces(){
 ///////////////
 
 void dedaiConvexFaceList::Move(const decVector &direction){
-	int i;
-	for(i=0; i<pVertexCount; i++){
-		pVertices[i] += direction;
-	}
+	pVertices.Visit([&](decVector &v){
+		v += direction;
+	});
 }
 
 void dedaiConvexFaceList::SplitByFace(const dedaiConvexFaceList &splitterFaceList, int splitterFaceIndex){
@@ -282,18 +182,18 @@ void dedaiConvexFaceList::SplitByFace(const dedaiConvexFaceList &splitterFaceLis
 	// newly created faces again
 	for(i=0; i<faceCount; i++){
 //		if( splitterFaceIndex > 2 ) continue;
-		const dedaiConvexFace &testFace = *((dedaiConvexFace*)pFaces.GetAt(i));
+		const dedaiConvexFace &testFace = pFaces.GetAt(i);
 		
 		// if the face does not have at least 3 vertices do not split but remove it
 		if(testFace.GetVertexCount() < 3){
-			RemoveFaceAt(i);
+			pFaces.RemoveFrom(i);
 			i--;
 			faceCount--;
 			continue;
 		}
 		
 		const decVector &planeNormal = testFace.GetNormal();
-		const decVector &planePosition = pVertices[testFace.GetVertexAt(0)];
+		const decVector &planePosition = pVertices.GetAt(testFace.GetVertexAt(0));
 		const float planeDist = planeNormal * planePosition;
 		
 		// determine the split edge. for this find the two edges piercing the face plane
@@ -345,8 +245,8 @@ void dedaiConvexFaceList::SplitByFace(const dedaiConvexFaceList &splitterFaceLis
 			// if the face becomes degenerated or empty remove it. we can not use testFace
 			// reference since pSplitFaceByEdge potentially added faces which potentially
 			// caused memory rellocation. the face index though stays correct
-			if(((dedaiConvexFace*)pFaces.GetAt(i))->GetVertexCount() < 3){
-				RemoveFaceAt(i);
+			if(pFaces.GetAt(i)->GetVertexCount() < 3){
+				pFaces.RemoveFrom(i);
 				i--;
 				faceCount--;
 			}
@@ -371,29 +271,19 @@ void dedaiConvexFaceList::SplitByVolume(const decConvexVolume &volume){
 	int i, j;
 	
 	for(i=0; i<volumeVertexCount; i++){
-		list.AddVertex(volume.GetVertexAt(i));
+		list.pVertices.Add(volume.GetVertexAt(i));
 	}
 	
-	dedaiConvexFace *newFace = NULL;
-	try{
-		for(i=0; i<volumeFaceCount; i++){
-			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt(i);
-			const int volumeFaceVertexCount = volumeFace.GetVertexCount();
-			
-			newFace = new dedaiConvexFace;
-			newFace->SetNormal(volumeFace.GetNormal());
-			for(j=0; j<volumeFaceVertexCount; j++){
-				newFace->AddVertex(volumeFace.GetVertexAt(j));
-			}
-			list.AddFace(newFace);
-			newFace = NULL;
-		}
+	for(i=0; i<volumeFaceCount; i++){
+		const decConvexVolumeFace &volumeFace = *volume.GetFaceAt(i);
+		const int volumeFaceVertexCount = volumeFace.GetVertexCount();
 		
-	}catch(const deException &){
-		if(newFace){
-			delete newFace;
+		auto newFace = dedaiConvexFace::Ref::New();
+		newFace->SetNormal(volumeFace.GetNormal());
+		for(j=0; j<volumeFaceVertexCount; j++){
+			newFace->AddVertex(volumeFace.GetVertexAt(j));
 		}
-		throw;
+		list.pFaces.Add(newFace);
 	}
 	
 	// split by the generated convex face list
@@ -401,7 +291,7 @@ void dedaiConvexFaceList::SplitByVolume(const decConvexVolume &volume){
 	
 	// remove all faces with centers located in the split volume
 	for(i=pFaces.GetCount()-1; i>=0; i--){
-		const dedaiConvexFace &face = *((dedaiConvexFace*)pFaces.GetAt(i));
+		const dedaiConvexFace &face = pFaces.GetAt(i);
 		const decVector faceCenter(face.CalculateCenter(*this));
 		
 		for(j=0; j<volumeFaceCount; j++){
@@ -416,22 +306,10 @@ void dedaiConvexFaceList::SplitByVolume(const decConvexVolume &volume){
 		}
 		
 		if(j == volumeFaceCount){
-			RemoveFaceAt(i);
+			pFaces.RemoveFrom(i);
 		}
 	}
 }
-
-
-
-// Subclassing
-////////////////
-
-dedaiConvexFace *dedaiConvexFaceList::CreateFace(int marker){
-	dedaiConvexFace * const newFace = new dedaiConvexFace;
-	newFace->SetMarker(marker);
-	return newFace;
-}
-
 
 
 // Private Functions
@@ -610,8 +488,8 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 		faceNormal.x, faceNormal.y, faceNormal.z, cutEdgeDir.x, cutEdgeDir.y, cutEdgeDir.z));
 	
 	for(i=0; i<face.GetVertexCount(); i++){
-		const decVector &v1 = pVertices[face.GetVertexAt(i)];
-		const decVector &v2 = pVertices[face.GetVertexAt((i + 1) % face.GetVertexCount())];
+		const decVector &v1 = pVertices.GetAt(face.GetVertexAt(i));
+		const decVector &v2 = pVertices.GetAt(face.GetVertexAt((i + 1) % face.GetVertexCount()));
 		const decVector edge(v2 - v1);
 		const float edgeLen = edge.Length();
 		const decVector edgeNorm(edge / edgeLen);
@@ -659,7 +537,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 			DBG_PLANE_RESULT(fromSide), DBG_PLANE_RESULT(toSide), hasIntersection));
 		
 		if(cutIndex == -1){
-			cutIndex = pVertexCount;
+			cutIndex = pVertices.GetCount();
 			AddVertex(hitPoint);
 		}
 		
@@ -698,7 +576,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 		indexCutEdgeFrom = IndexOfVertex(cutEdgeFrom);
 		
 		if(indexCutEdgeFrom == -1){
-			indexCutEdgeFrom = pVertexCount;
+			indexCutEdgeFrom = pVertices.GetCount();
 			AddVertex(cutEdgeFrom);
 			
 		}else if(face.HasVertex(indexCutEdgeFrom)){
@@ -710,7 +588,7 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 		indexCutEdgeTo = IndexOfVertex(cutEdgeTo);
 		
 		if(indexCutEdgeTo == -1){
-			indexCutEdgeTo = pVertexCount;
+			indexCutEdgeTo = pVertices.GetCount();
 			AddVertex(cutEdgeTo);
 			
 		}else if(face.HasVertex(indexCutEdgeTo)){
@@ -737,175 +615,159 @@ void dedaiConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEd
 	// filler face does not exist.
 	// 
 	// front side is inside of cut volume. face to be cut is back face
-	dedaiConvexFace *newFaceFront = NULL;
-	dedaiConvexFace *newFaceFiller = NULL;
-	
 	int lastVertex = face.GetVertexAt(face.GetVertexCount() - 1);
-	ePlaneResult lastSide = PLANE_SIDE(refAxis * pVertices[lastVertex] - refDist);
+	ePlaneResult lastSide = PLANE_SIDE(refAxis * pVertices.GetAt(lastVertex) - refDist);
 	DBG(for(i=0; i<face.GetVertexCount(); i++){
 		printf("state: face %i vertex %i(%i) (%f,%f,%f)\n", faceIndex, i, face.GetVertexAt(i),
-			pVertices[face.GetVertexAt(i)].x, pVertices[face.GetVertexAt(i)].y, pVertices[face.GetVertexAt(i)].z);
-		})
+		pVertices.GetAt(face.GetVertexAt(i)).x, pVertices.GetAt(face.GetVertexAt(i)).y,
+		pVertices.GetAt(face.GetVertexAt(i)).z);
+	})
 	
 	// AddFace() causes potential memory rellocation. it is thus not possible to use
 	// the face reference safely
 	const int newFaceMarker = face.GetMarker();
+	dedaiConvexFace::Ref newFaceFront;
 	
-	try{
-		for(i=0; i<((dedaiConvexFace*)pFaces.GetAt(faceIndex))->GetVertexCount(); i++){
-			const int curVertex = ((dedaiConvexFace*)pFaces.GetAt(faceIndex))->GetVertexAt(i);
-			const ePlaneResult curSide = PLANE_SIDE(refAxis * pVertices[curVertex] - refDist);
-			DBG(printf("corner=%i last=(%i,%s) cur=(%i,%s) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
-				i, lastVertex, DBG_PLANE_RESULT(lastSide), curVertex,
-				DBG_PLANE_RESULT(curSide), indexCutEdgeFrom, indexCutEdgeTo));
+	for(i=0; i<pFaces.GetAt(faceIndex)->GetVertexCount(); i++){
+		const int curVertex = pFaces.GetAt(faceIndex)->GetVertexAt(i);
+		const ePlaneResult curSide = PLANE_SIDE(refAxis * pVertices.GetAt(curVertex) - refDist);
+		DBG(printf("corner=%i last=(%i,%s) cur=(%i,%s) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
+			i, lastVertex, DBG_PLANE_RESULT(lastSide), curVertex,
+			DBG_PLANE_RESULT(curSide), indexCutEdgeFrom, indexCutEdgeTo));
+		
+		// if the last vertex is back and the cur vertex is front the cut edge has not
+		// crossed nor touched the edge. in this configuration the end point of the cut
+		// edge is always closer to the face edge than the begin end
+		if(lastSide == eprBack && curSide == eprFront && indexCutEdgeTo != -1){
+			DBG(printf("add filler face at cutEdgeTo with vertices %i, %i and %i\n",
+				indexCutEdgeTo, lastVertex, curVertex));
 			
-			// if the last vertex is back and the cur vertex is front the cut edge has not
-			// crossed nor touched the edge. in this configuration the end point of the cut
-			// edge is always closer to the face edge than the begin end
-			if(lastSide == eprBack && curSide == eprFront && indexCutEdgeTo != -1){
-				DBG(printf("add filler face at cutEdgeTo with vertices %i, %i and %i\n",
-					indexCutEdgeTo, lastVertex, curVertex));
-				
-				// add filler face if the cut edge end point is inside the face
-				newFaceFiller = CreateFace(newFaceMarker);
-				newFaceFiller->SetNormal(faceNormal);
-				newFaceFiller->AddVertex(indexCutEdgeTo);
-				newFaceFiller->AddVertex(lastVertex);
-				newFaceFiller->AddVertex(curVertex);
-				AddFace(newFaceFiller);
-				newFaceFiller = NULL;
-				
-				// add cutEdgeTo to the front face
-				if(!newFaceFront){
-					DBG(printf("crossTo: create front face\n"));
-					newFaceFront = CreateFace(newFaceMarker);
-					newFaceFront->SetNormal(faceNormal);
-				}
-				DBG(printf("crossTo: add indexCutEdgeTo %i to front face\n", indexCutEdgeTo));
-				newFaceFront->AddVertex(indexCutEdgeTo);
-				
-				// add cutEdgeTo to the back face
-				DBG(printf("crossTo: insert indexCutEdgeTo %i into back face at %i\n", indexCutEdgeTo, i));
-				((dedaiConvexFace*)pFaces.GetAt(faceIndex))->InsertVertex(i, indexCutEdgeTo);
-				i++;
+			// add filler face if the cut edge end point is inside the face
+			auto newFaceFiller = dedaiConvexFace::Ref::New(newFaceMarker);
+			newFaceFiller->SetNormal(faceNormal);
+			newFaceFiller->AddVertex(indexCutEdgeTo);
+			newFaceFiller->AddVertex(lastVertex);
+			newFaceFiller->AddVertex(curVertex);
+			AddFace(newFaceFiller);
+			
+			// add cutEdgeTo to the front face
+			if(!newFaceFront){
+				DBG(printf("crossTo: create front face\n"));
+				newFaceFront = dedaiConvexFace::Ref::New(newFaceMarker);
+				newFaceFront->SetNormal(faceNormal);
 			}
+			DBG(printf("crossTo: add indexCutEdgeTo %i to front face\n", indexCutEdgeTo));
+			newFaceFront->AddVertex(indexCutEdgeTo);
 			
-			// if the last vertex is front and the cur vertex is back the cut edge has not
-			// crossed nor touched the edge. in this configuration the start point of the cut
-			// edge is always closer to the face edge than the end end
-			if(lastSide == eprFront && curSide == eprBack && indexCutEdgeFrom != -1){
-				DBG(printf("add filler face at cutEdgeFrom with vertices %i, %i and %i\n",
-					indexCutEdgeFrom, lastVertex, curVertex));
-				
-				// add filler face if the last vertex, cur vertex and cutEdgeFrom are not co-linear.
-				// this is the case if insideEdgeFrom is true
-				newFaceFiller = CreateFace(newFaceMarker);
-				newFaceFiller->SetNormal(faceNormal);
-				newFaceFiller->AddVertex(indexCutEdgeFrom);
-				newFaceFiller->AddVertex(lastVertex);
-				newFaceFiller->AddVertex(curVertex);
-				AddFace(newFaceFiller);
-				newFaceFiller = NULL;
-				
-				// add cutEdgeFrom to the front face
-				if(!newFaceFront){
-					DBG(printf("crossFrom: create back face\n"));
-					newFaceFront = CreateFace(newFaceMarker);
-					newFaceFront->SetNormal(faceNormal);
-				}
-				DBG(printf("crossFrom: add indexCutEdgeFrom %i to front face\n", indexCutEdgeFrom));
-				newFaceFront->AddVertex(indexCutEdgeFrom);
-				
-				// add cutEdgeFrom to the back face
-				DBG(printf("crossFrom: insert indexCutEdgeFrom %i into back face at %i\n", indexCutEdgeFrom, i));
-				((dedaiConvexFace*)pFaces.GetAt(faceIndex))->InsertVertex(i, indexCutEdgeFrom);
-				i++;
-			}
-			
-			// if the current side is not back add the vertex to front face. this has to
-			// come after the crossing checks above to keep the ordering correct
-			if(curSide != eprBack){
-				if(!newFaceFront){
-					DBG(printf("curSide != back: create front face\n"));
-					newFaceFront = CreateFace(newFaceMarker);
-					newFaceFront->SetNormal(faceNormal);
-				}
-				DBG(printf("curSide != back: add vertex %i to front face\n", curVertex));
-				newFaceFront->AddVertex(curVertex);
-			}
-			
-			// if the side is front remove the vertex from the back face since it belongs
-			// now only to the front face. this is only allowed to be done if a filler
-			// triangle has been added. hence the rule is this:
-			// - last=front: both on front face only. remove cur vertex from back face
-			// - last=touch: last shared across both faces. remove cur vertex from back face
-			// - last=back indexCutEdgeTo!=-1: cross edge. filler face added. remove cur vertex from back face
-			// - last=back indexCutEdgeTo=-1: cross edge. no filler face added. do not remove vertex from back face
-			// - everything else: do not remove vertex from back face
-			if(curSide == eprFront && (lastSide != eprBack || indexCutEdgeTo != -1)){
-				DBG(printf("curSide == front: remove vertex %i from back face at %i\n", curVertex, i));
-				((dedaiConvexFace*)pFaces.GetAt(faceIndex))->RemoveVertexFrom(i);
-				i--;
-			}
-			
-			// keep track of the last vertex
-			lastVertex = curVertex;
-			lastSide = curSide;
+			// add cutEdgeTo to the back face
+			DBG(printf("crossTo: insert indexCutEdgeTo %i into back face at %i\n", indexCutEdgeTo, i));
+			pFaces.GetAt(faceIndex)->InsertVertex(i, indexCutEdgeTo);
+			i++;
 		}
 		
-		// add front face if enough corners are present
-		if(newFaceFront){
-			bool addFrontFace = newFaceFront->GetVertexCount() > 2;
+		// if the last vertex is front and the cur vertex is back the cut edge has not
+		// crossed nor touched the edge. in this configuration the start point of the cut
+		// edge is always closer to the face edge than the end end
+		if(lastSide == eprFront && curSide == eprBack && indexCutEdgeFrom != -1){
+			DBG(printf("add filler face at cutEdgeFrom with vertices %i, %i and %i\n",
+				indexCutEdgeFrom, lastVertex, curVertex));
 			
-			// due to imprecision and other factors it is possible that a cut vertex is added
-			// very close to a face corner if the cut edge is nearly parallel to the face
-			// edge. if this happens it is possible a new face with 3 vertices is created
-			// which should not exist. this face upsets the navigation mesh and has to be
-			// avoided at all costs. it is difficult to define a clear set of rules when
-			// this face could be produced but it is possible to define an invariant. in a
-			// regular (good) cut the new face shares exactly one edge with the back face
-			// face. in the broken (bad) case the new face shares two edges namely the one
-			// face edge split close to the face corner. it even happens that the edges
-			// are not in opposite direction as they should be. if something like this is
-			// detected the face is not allowed to be added
-			if(addFrontFace){
-				const dedaiConvexFace &backFace = *((dedaiConvexFace*)pFaces.GetAt(faceIndex));
-				const int vertexCountNew = newFaceFront->GetVertexCount();
-				const int vertexCountBack = backFace.GetVertexCount();
-				int j, sharedEdgeCount = 0;
-				
-				for(i=0; i<vertexCountNew; i++){
-					const int v1 = newFaceFront->GetVertexAt(i);
-					const int v2 = newFaceFront->GetVertexAt((i + 1) % vertexCountNew);
-					for(j=0; j<vertexCountBack; j++){
-						const int v1b = backFace.GetVertexAt(j);
-						const int v2b = backFace.GetVertexAt((j + 1) % vertexCountBack);
-						if((v1 == v2b && v2 == v1b) || (v1 == v1b && v2 == v2b)){
-							sharedEdgeCount++;
-							break;
-						}
+			// add filler face if the last vertex, cur vertex and cutEdgeFrom are not co-linear.
+			// this is the case if insideEdgeFrom is true
+			{
+			auto newFaceFiller = dedaiConvexFace::Ref::New(newFaceMarker);
+			newFaceFiller->SetNormal(faceNormal);
+			newFaceFiller->AddVertex(indexCutEdgeFrom);
+			newFaceFiller->AddVertex(lastVertex);
+			newFaceFiller->AddVertex(curVertex);
+			AddFace(newFaceFiller);
+			}
+			
+			// add cutEdgeFrom to the front face
+			if(!newFaceFront){
+				DBG(printf("crossFrom: create back face\n"));
+				newFaceFront = dedaiConvexFace::Ref::New(newFaceMarker);
+				newFaceFront->SetNormal(faceNormal);
+			}
+			DBG(printf("crossFrom: add indexCutEdgeFrom %i to front face\n", indexCutEdgeFrom));
+			newFaceFront->AddVertex(indexCutEdgeFrom);
+			
+			// add cutEdgeFrom to the back face
+			DBG(printf("crossFrom: insert indexCutEdgeFrom %i into back face at %i\n", indexCutEdgeFrom, i));
+			pFaces.GetAt(faceIndex)->InsertVertex(i, indexCutEdgeFrom);
+			i++;
+		}
+		
+		// if the current side is not back add the vertex to front face. this has to
+		// come after the crossing checks above to keep the ordering correct
+		if(curSide != eprBack){
+			if(!newFaceFront){
+				DBG(printf("curSide != back: create front face\n"));
+				newFaceFront = dedaiConvexFace::Ref::New(newFaceMarker);
+				newFaceFront->SetNormal(faceNormal);
+			}
+			DBG(printf("curSide != back: add vertex %i to front face\n", curVertex));
+			newFaceFront->AddVertex(curVertex);
+		}
+		
+		// if the side is front remove the vertex from the back face since it belongs
+		// now only to the front face. this is only allowed to be done if a filler
+		// triangle has been added. hence the rule is this:
+		// - last=front: both on front face only. remove cur vertex from back face
+		// - last=touch: last shared across both faces. remove cur vertex from back face
+		// - last=back indexCutEdgeTo!=-1: cross edge. filler face added. remove cur vertex from back face
+		// - last=back indexCutEdgeTo=-1: cross edge. no filler face added. do not remove vertex from back face
+		// - everything else: do not remove vertex from back face
+		if(curSide == eprFront && (lastSide != eprBack || indexCutEdgeTo != -1)){
+			DBG(printf("curSide == front: remove vertex %i from back face at %i\n", curVertex, i));
+			pFaces.GetAt(faceIndex)->RemoveVertexFrom(i);
+			i--;
+		}
+		
+		// keep track of the last vertex
+		lastVertex = curVertex;
+		lastSide = curSide;
+	}
+	
+	// add front face if enough corners are present
+	if(newFaceFront){
+		bool addFrontFace = newFaceFront->GetVertexCount() > 2;
+		
+		// due to imprecision and other factors it is possible that a cut vertex is added
+		// very close to a face corner if the cut edge is nearly parallel to the face
+		// edge. if this happens it is possible a new face with 3 vertices is created
+		// which should not exist. this face upsets the navigation mesh and has to be
+		// avoided at all costs. it is difficult to define a clear set of rules when
+		// this face could be produced but it is possible to define an invariant. in a
+		// regular (good) cut the new face shares exactly one edge with the back face
+		// face. in the broken (bad) case the new face shares two edges namely the one
+		// face edge split close to the face corner. it even happens that the edges
+		// are not in opposite direction as they should be. if something like this is
+		// detected the face is not allowed to be added
+		if(addFrontFace){
+			const dedaiConvexFace &backFace = pFaces.GetAt(faceIndex);
+			const int vertexCountNew = newFaceFront->GetVertexCount();
+			const int vertexCountBack = backFace.GetVertexCount();
+			int j, sharedEdgeCount = 0;
+			
+			for(i=0; i<vertexCountNew; i++){
+				const int v1 = newFaceFront->GetVertexAt(i);
+				const int v2 = newFaceFront->GetVertexAt((i + 1) % vertexCountNew);
+				for(j=0; j<vertexCountBack; j++){
+					const int v1b = backFace.GetVertexAt(j);
+					const int v2b = backFace.GetVertexAt((j + 1) % vertexCountBack);
+					if((v1 == v2b && v2 == v1b) || (v1 == v1b && v2 == v2b)){
+						sharedEdgeCount++;
+						break;
 					}
 				}
-				addFrontFace &= sharedEdgeCount < 2;
 			}
-			
-			// add front face if valid
-			if(addFrontFace){
-				AddFace(newFaceFront);
-				
-			}else{
-				delete newFaceFront;
-			}
-			newFaceFront = NULL;
+			addFrontFace &= sharedEdgeCount < 2;
 		}
 		
-	}catch(const deException &){
-		if(newFaceFiller){
-			delete newFaceFiller;
+		// add front face if valid
+		if(addFrontFace){
+			pFaces.Add(newFaceFront);
 		}
-		if(newFaceFront){
-			delete newFaceFront;
-		}
-		throw;
 	}
 }

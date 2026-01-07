@@ -44,12 +44,13 @@ public:
 	/** Create decal listener. */
 	deoglDecalListener();
 	
+protected:
 	/** Clean up decal listener. */
 	virtual ~deoglDecalListener();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** Decal has been destroyed. */

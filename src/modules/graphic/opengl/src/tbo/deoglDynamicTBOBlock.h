@@ -62,12 +62,13 @@ public:
 	/** Create empty dynamic tbo block. */
 	deoglDynamicTBOBlock(deoglDynamicTBOShared *tbo, int offset, int size);
 	
+protected:
 	/** Clean up dynamic tbo block. */
 	virtual ~deoglDynamicTBOBlock();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shared TBO containing block or NULL. */

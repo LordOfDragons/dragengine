@@ -35,6 +35,9 @@ class saeWPUndoHistory;
  * Undo History Properties Panel Listener.
  */
 class saeWPUndoHistoryListener : public saeSAnimationListener{
+public:
+	using Ref = deTObjectReference<saeWPUndoHistoryListener>;
+	
 private:
 	saeWPUndoHistory &pPanel;
 	

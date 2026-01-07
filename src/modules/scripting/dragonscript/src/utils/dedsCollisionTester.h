@@ -81,10 +81,12 @@ public:
 	/** \brief Create copy of a collision tester. */
 	dedsCollisionTester(const dedsCollisionTester &collisionTester);
 	
+protected:
 	/** \brief Clean up the collision tester. */
 	virtual ~dedsCollisionTester();
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World to use for collision testing or null if not set. */

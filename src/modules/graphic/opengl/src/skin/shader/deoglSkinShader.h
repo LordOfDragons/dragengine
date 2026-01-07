@@ -345,10 +345,13 @@ public:
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglSkinShader(deoglRenderThread &renderThread, const deoglSkinShaderConfig &config);
+	
+protected:
 	/** Cleans up the skin shader. */
 	virtual ~deoglSkinShader();
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
