@@ -42,7 +42,7 @@
 
 saeWPUndoHistory::saeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new saeWPUndoHistoryListener(*this)){
+pListener(saeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 saeWPUndoHistory::~saeWPUndoHistory(){

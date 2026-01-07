@@ -66,12 +66,13 @@ public:
 	/** Create render environment map probe. */
 	deoglREnvMapProbe(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render environment map probe. */
 	virtual ~deoglREnvMapProbe();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

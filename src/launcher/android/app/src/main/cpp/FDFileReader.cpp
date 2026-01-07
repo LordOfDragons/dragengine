@@ -92,7 +92,5 @@ void FDFileReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref FDFileReader::Duplicate() {
-    return Ref::New(new FDFileReader(GetFilename(),
-        pProducer->CreateFileDescriptor(),
-        pOffset, pLength, pProducer));
+    return Ref::New(GetFilename(), pProducer->CreateFileDescriptor(), pOffset, pLength, pProducer);
 }

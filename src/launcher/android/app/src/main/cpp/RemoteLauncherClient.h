@@ -11,6 +11,9 @@ class delLauncher;
 class RemoteLauncherClient : public derlLauncherClient{
 private:
     class ClientLogger : public denLogger{
+    public:
+        using Ref = std::shared_ptr<ClientLogger>;
+        
     private:
         RemoteLauncherClient &pOwner;
 
@@ -20,6 +23,9 @@ private:
     };
 
     class EngineLogger : public deLogger{
+    public:
+        using Ref = deTObjectReference<EngineLogger>;
+        
     private:
         RemoteLauncherClient &pOwner;
         denLogger &pClientLogger;

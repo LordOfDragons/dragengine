@@ -53,6 +53,8 @@ private:
 		syneControllerTarget::Ref target;
 		
 		cTarget() = default;
+	protected:
+		~cTarget() override = default;
 	};
 	
 	syneSynthesizer::Ref pSynthesizer;

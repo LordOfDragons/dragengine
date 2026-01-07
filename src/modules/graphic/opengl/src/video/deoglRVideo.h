@@ -78,12 +78,13 @@ public:
 	/** Create render video. */
 	deoglRVideo(deoglRenderThread &renderThread, int width, int height, int componentCount, int frameCount);
 	
+protected:
 	/** Clean up render video. */
 	virtual ~deoglRVideo();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Frame texture or \em NULL if not ready. */

@@ -83,12 +83,13 @@ public:
 	/** Create prop field type. */
 	deoglRPropFieldType(deoglRPropField &propField);
 	
+protected:
 	/** Clean up prop field type. */
 	virtual ~deoglRPropFieldType();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Prop field. */

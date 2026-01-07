@@ -67,12 +67,13 @@ public:
 	/** Create empty shared vbo block. */
 	deoglSharedVBOBlock(deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount);
 	
+protected:
 	/** Clean up shared vbo. */
 	virtual ~deoglSharedVBOBlock();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** VBO this block belongs to. */

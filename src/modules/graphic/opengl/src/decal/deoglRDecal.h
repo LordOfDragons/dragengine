@@ -135,12 +135,13 @@ public:
 	/** Create render decal. */
 	deoglRDecal(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render decal. */
 	virtual ~deoglRDecal();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

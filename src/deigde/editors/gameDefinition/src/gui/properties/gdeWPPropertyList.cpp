@@ -206,6 +206,8 @@ public:
 
 class cActionPropertyCut : public cActionPropertyCopy {
 public:
+	using Ref = deTObjectReference<cActionPropertyCut>;
+	
 	cActionPropertyCut(gdeWPPropertyList &panel) : cActionPropertyCopy(panel){
 		SetText("Cut");
 		SetIcon(panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));

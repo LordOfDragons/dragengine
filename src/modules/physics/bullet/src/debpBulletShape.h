@@ -56,12 +56,13 @@ public:
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
 	debpBulletShape(btCollisionShape *shape);
 	
+protected:
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
 	virtual ~debpBulletShape();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */

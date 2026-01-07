@@ -74,12 +74,13 @@ public:
 	/** Create socket. */
 	debnSocket(deNetworkBasic &netBasic);
 	
+protected:
 	/** Clean up socket object. */
 	virtual ~debnSocket();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Address. */

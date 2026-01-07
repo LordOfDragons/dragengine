@@ -79,12 +79,13 @@ public:
 	/** Create debug information. */
 	deoglDebugInformation(const char *name, const decColor &colorText, const decColor &colorBackground);
 	
+protected:
 	/** Clean up debug information. */
 	virtual ~deoglDebugInformation();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */

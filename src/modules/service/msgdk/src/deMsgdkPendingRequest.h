@@ -48,9 +48,12 @@ public:
 	/** Create module. */
 	deMsgdkPendingRequest(const deServiceObject::Ref& data = {});
 	
+protected:
 	/** Delete module. */
 	~deMsgdkPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

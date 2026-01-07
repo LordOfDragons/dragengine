@@ -72,6 +72,8 @@ private:
 		bool oldIKLocked[3];
 		
 		cBone() = default;
+	protected:
+		~cBone() override = default;
 	};
 	
 	

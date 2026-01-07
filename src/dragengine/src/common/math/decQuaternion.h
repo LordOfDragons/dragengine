@@ -173,6 +173,12 @@ public:
 	/** \brief Set components of this quaternion to the values of another one. */
 	decQuaternion &operator=(const decQuaternion &q);
 	
+	/** \brief Quaternions are equal. */
+	bool operator==(const decQuaternion &q) const;
+	
+	/** \brief Quaternions are not equal. */
+	bool operator!=(const decQuaternion &q) const;
+	
 	/** \brief Adds the components of another quaternion to this one. */
 	decQuaternion &operator+=(const decQuaternion &q);
 	

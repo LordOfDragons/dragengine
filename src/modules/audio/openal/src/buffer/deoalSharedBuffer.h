@@ -25,12 +25,13 @@
 #ifndef _DEOALSHAREDBUFFER_H_
 #define _DEOALSHAREDBUFFER_H_
 
+#include <dragengine/deObject.h>
 
 
 /**
  * \brief Shared buffer.
  */
-class deoalSharedBuffer{
+class deoalSharedBuffer : public deObject{
 private:
 	float *pBuffer;
 	int pSize;
@@ -44,12 +45,13 @@ public:
 	/** \brief Create shared buffer. */
 	deoalSharedBuffer();
 	
+protected:
 	/** \brief Clean up buffer. */
-	~deoalSharedBuffer();
+	~deoalSharedBuffer() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */

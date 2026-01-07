@@ -52,6 +52,8 @@ private:
 		decVector oldsize, oldscaling;
 		
 		cObject() = default;
+	protected:
+		~cObject() override = default;
 	};
 	
 private:

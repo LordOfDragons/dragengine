@@ -34,8 +34,6 @@
 #include "raytrace/deoalRayTraceConfig.h"
 #include "raytrace/deoalRayTraceResult.h"
 #include "raytrace/deoalRayTraceHitElement.h"
-#include "raytrace/deoalSoundRayInteraction.h"
-#include "raytrace/deoalSoundRayInteractionList.h"
 #include "raytrace/parallel/deoalRTParallelEnvProbe.h"
 #include "../deoalBasics.h"
 #include "../audiothread/deoalAudioThread.h"

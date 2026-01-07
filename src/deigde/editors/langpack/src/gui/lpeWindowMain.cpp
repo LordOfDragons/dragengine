@@ -100,7 +100,7 @@ void lpeWindowMain::cRecentFilesRefLangPack::FilesChanged(){
 
 lpeWindowMain::lpeWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
-pListener(new lpeWindowMainListener(*this)),
+pListener(lpeWindowMainListener::Ref::New(*this)),
 pLoadSaveSystem(nullptr),
 pRecentFilesRefLangPack(*this)
 {

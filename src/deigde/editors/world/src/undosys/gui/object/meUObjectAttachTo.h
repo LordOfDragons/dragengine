@@ -51,6 +51,8 @@ private:
 		meObject::Ref object, oldAttachTo;
 		
 		cObject() = default;
+	protected:
+		~cObject() override = default;
 	};
 	
 	meWorld::Ref pWorld;

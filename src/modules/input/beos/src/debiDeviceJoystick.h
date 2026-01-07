@@ -35,6 +35,9 @@
  * \brief Joystick input device using BJoystick API.
  */
 class debiDeviceJoystick : public debiDevice{
+public:
+	using Ref = deTObjectReference<debiDeviceJoystick>;
+	
 private:
 	decString pDevName;
 	BJoystick *pJoystick;

@@ -106,12 +106,13 @@ public:
 	/** Create component texture. */
 	deoglRComponentTexture(deoglRComponent &component, int index);
 	
+protected:
 	/** Clean up component texture. */
 	virtual ~deoglRComponentTexture();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Parent component. */

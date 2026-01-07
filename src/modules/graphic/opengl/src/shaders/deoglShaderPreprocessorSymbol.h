@@ -53,12 +53,13 @@ public:
 	/** Create shader preprocessor symbol. */
 	deoglShaderPreprocessorSymbol(const char *name, const char *value);
 	
+protected:
 	/** Clean up shader preprocessor. */
 	virtual ~deoglShaderPreprocessorSymbol();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */

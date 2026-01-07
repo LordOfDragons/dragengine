@@ -42,7 +42,7 @@
 
 skyeWPUndoHistory::skyeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new skyeWPUndoHistoryListener(*this)){
+pListener(skyeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 skyeWPUndoHistory::~skyeWPUndoHistory(){

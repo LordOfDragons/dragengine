@@ -75,6 +75,9 @@ private:
 		cShapeColor(const char *aname, const decColor &acolor, int addshapeIndex) :
 		name(aname), color(acolor), ddshapeIndex(addshapeIndex){
 		}
+		
+	protected:
+		~cShapeColor() override = default;
 	};
 	
 	

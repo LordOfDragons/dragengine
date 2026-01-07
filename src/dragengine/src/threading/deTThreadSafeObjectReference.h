@@ -52,6 +52,9 @@ template<class T> class deTThreadSafeObjectReference{
 private:
 	T *pObject;
 	
+	// Allow all template instantiations to access each other's private members
+	template<class U> friend class deTThreadSafeObjectReference;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -103,10 +106,7 @@ public:
 	/** \brief Move constructor. */
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTThreadSafeObjectReference(deTThreadSafeObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
-		if(pObject){
-			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
-		}
-		reference = nullptr;
+		reference.pObject = nullptr;
 	}
 	
 	/**
@@ -236,6 +236,41 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	inline deTThreadSafeObjectReference &operator=(const deTThreadSafeObjectReference<U> &reference){
 		return operator=(static_cast<T*>(reference.Pointer()));
+	}
+	
+	/** \brief Move assignment operator. */
+	deTThreadSafeObjectReference &operator=(deTThreadSafeObjectReference &&reference){
+		if(&reference == this){
+			return *this;
+		}
+		
+		if(pObject){
+			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+		}
+		
+		pObject = reference.pObject;
+		reference.pObject = nullptr;
+		
+		return *this;
+	}
+	
+	/** \brief Move assignment operator. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	deTThreadSafeObjectReference &operator=(deTThreadSafeObjectReference<U> &&reference){
+		T *object = static_cast<T*>(reference.Pointer());
+		
+		if(object == pObject){
+			return *this;
+		}
+		
+		if(pObject){
+			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+		}
+		
+		pObject = object;
+		reference.pObject = nullptr;
+		
+		return *this;
 	}
 	
 	/** \brief Test if object is held by this holder. */

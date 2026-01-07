@@ -35,6 +35,9 @@ class lpeWPLangPack;
  * \brief Language pack property panel listener.
  */
 class lpeWPLangPackListener : public lpeLangPackListener{
+public:
+	using Ref = deTObjectReference<lpeWPLangPackListener>;
+	
 private:
 	lpeWPLangPack &pPanel;
 	

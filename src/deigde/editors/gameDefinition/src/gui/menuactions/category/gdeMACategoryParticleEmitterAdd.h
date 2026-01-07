@@ -33,6 +33,8 @@
  */
 class gdeMACategoryParticleEmitterAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategoryParticleEmitterAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */

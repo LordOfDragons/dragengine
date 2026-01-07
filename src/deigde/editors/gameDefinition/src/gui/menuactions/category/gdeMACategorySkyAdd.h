@@ -33,6 +33,8 @@
  */
 class gdeMACategorySkyAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategorySkyAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */

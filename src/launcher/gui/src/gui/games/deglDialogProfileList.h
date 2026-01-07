@@ -153,6 +153,8 @@ private:
 		FXRealSlider *slider;
 		FXCheckButton *checkbox;
 		FXTextField *textfield;
+	protected:
+		~Parameter() override = default;
 	};
 	
 	deglWindowMain *pWindowMain;

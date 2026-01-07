@@ -116,7 +116,7 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	for(i=0; i<mappingCount; i++){
-		stalist.GetStateAt(GetBoneMappingFor(i))->UpdateMatrices();
+		stalist.GetStateAt(GetBoneMappingFor(i)).UpdateMatrices();
 	}
 	
 	
@@ -124,7 +124,7 @@ DEBUG_RESET_TIMERS;
 	decMatrix transformMatrix(pMirrorMatrix);
 	
 	if(pMirrorBone != -1){
-		dearBoneState &bstate = *stalist.GetStateAt(pMirrorBone);
+		dearBoneState &bstate = stalist.GetStateAt(pMirrorBone);
 		bstate.UpdateMatrices();
 		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply(transformMatrix)
 			.QuickMultiply(bstate.GetGlobalMatrix());
@@ -138,11 +138,11 @@ DEBUG_RESET_TIMERS;
 		// bone pair
 		if(pair.first != pair.second){
 			// store first bone global matrix
-			dearBoneState &bstate1 = *stalist.GetStateAt(pair.first);
+			dearBoneState &bstate1 = stalist.GetStateAt(pair.first);
 			const decMatrix orgMatrix1(bstate1.GetGlobalMatrix());
 			
 			// store second bone global matrix
-			dearBoneState &bstate2 = *stalist.GetStateAt(pair.second);
+			dearBoneState &bstate2 = stalist.GetStateAt(pair.second);
 			const decMatrix orgMatrix2(bstate2.GetGlobalMatrix());
 			
 			// mirror first bone
@@ -155,7 +155,7 @@ DEBUG_RESET_TIMERS;
 			
 		// single bone
 		}else{
-			dearBoneState &bstate = *stalist.GetStateAt(pair.first);
+			dearBoneState &bstate = stalist.GetStateAt(pair.first);
 			
 			bstate.SetGlobalMatrix(bstate.GetGlobalMatrix().QuickMultiply(transformMatrix).Normalized());
 			bstate.SetInverseGlobalMatrix(bstate.GetGlobalMatrix().QuickInvert());
@@ -168,7 +168,7 @@ DEBUG_RESET_TIMERS;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	
 	for(i=0; i<mappingCount; i++){
-		dearBoneState &bstate = *stalist.GetStateAt(GetBoneMappingFor(i));
+		dearBoneState &bstate = stalist.GetStateAt(GetBoneMappingFor(i));
 		
 		decMatrix matrix(bstate.GetGlobalMatrix());
 		if(bstate.GetParentState()){
@@ -256,7 +256,7 @@ void dearRuleMirror::pUpdateBones(){
 	int i;
 	for(i=0; i<mappingCount; i++){
 		bones[i].index = GetBoneMappingFor(i);
-		bones[i].name = slist.GetStateAt(bones[i].index)->GetRigBoneName();
+		bones[i].name = slist.GetStateAt(bones[i].index).GetRigBoneName();
 		bones[i].paired = false;
 	}
 	

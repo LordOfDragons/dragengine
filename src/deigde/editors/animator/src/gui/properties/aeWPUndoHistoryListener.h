@@ -35,6 +35,10 @@ class aeWPUndoHistory;
  * History Panel Listener
  */
 class aeWPUndoHistoryListener : public aeAnimatorNotifier{
+public:
+	using Ref = deTObjectReference<aeWPUndoHistoryListener>;
+	
+	
 private:
 	aeWPUndoHistory &pPanel;
 	

@@ -51,6 +51,8 @@ protected:
 		int index;
 		
 		cNode() = default;
+	protected:
+		~cNode() override = default;
 	};
 	
 	sePropertyNodeGroup::Ref pNode;

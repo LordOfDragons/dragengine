@@ -142,7 +142,7 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
+		dearBoneState &boneState = stalist.GetStateAt(animatorBone);
 		
 		if(!move){
 			boneState.BlendWithDefault(blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);

@@ -86,7 +86,7 @@ void dearMapAnimationBones::Init(const dearRule &rule){
 			const int ruleBoneIndex = rule.GetBoneMappingFor(pCount);
 			if(ruleBoneIndex != -1){
 				pIndices[pCount] = engAnimation.FindBone(
-					boneStates.GetStateAt(ruleBoneIndex)->GetRigBoneName());
+					boneStates.GetStateAt(ruleBoneIndex).GetRigBoneName());
 				
 			}else{
 				pIndices[pCount] = -1;

@@ -22,34 +22,28 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEARBONESTATELIST_H_
 #define _DEARBONESTATELIST_H_
 
-// includes
+#include "dearBoneState.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class dearComponent;
-// predefinitions
-class dearBoneState;
 class deComponent;
 class deAnimation;
 class deRig;
 class deAnimator;
 
 
-
 /**
- * Bone State List.
- *
  * List of bone states.
  */
 class dearBoneStateList{
 private:
-	dearBoneState **pStates;
-	int pStateCount;
-	int pStateSize;
+	decTList<dearBoneState> pStates;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -63,11 +57,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of states. */
-	inline int GetStateCount() const{ return pStateCount; }
+	inline int GetStateCount() const{ return pStates.GetCount(); }
 	/** Sets the number of states. */
 	void SetStateCount(int count);
+	
 	/** Retrieves the given state. */
-	dearBoneState *GetStateAt(int index) const;
+	dearBoneState &GetStateAt(int index);
+	const dearBoneState &GetStateAt(int index) const;
+	
 	/** Retrieves the index of the state with the given rig bone name. */
 	int IndexOfStateNamed(const char *name) const;
 	

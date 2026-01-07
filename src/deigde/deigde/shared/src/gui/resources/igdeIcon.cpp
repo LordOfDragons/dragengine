@@ -132,7 +132,7 @@ igdeIcon::~igdeIcon(){
 // Management
 ///////////////
 
-igdeIcon *igdeIcon::Scale(const decPoint &size) const{
+igdeIcon::Ref igdeIcon::Scale(const decPoint &size) const{
 	if(!(size >= decPoint(1, 1)) || !pNativeIcon){
 		DETHROW(deeInvalidParam);
 	}
@@ -140,7 +140,7 @@ igdeIcon *igdeIcon::Scale(const decPoint &size) const{
 	void * const nativeScaled = igdeNativeIcon::DuplicateNativeIcon(pNativeIcon);
 	igdeNativeIcon::Scale(size, nativeScaled);
 	
-	return new igdeIcon(nativeScaled, size);
+	return igdeIcon::Ref::New(nativeScaled, size);
 }
 
 void igdeIcon::Update(deImage &image){

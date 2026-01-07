@@ -55,6 +55,8 @@ private:
 		cDependency(seProperty *aproperty, int amappedComponent) :
 		property(aproperty),
 		mappedComponent(amappedComponent){};
+	protected:
+		~cDependency() override = default;
 	};
 	
 	

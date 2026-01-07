@@ -78,12 +78,13 @@ public:
 	/** Create render plan tasks. */
 	deoglRenderPlanTasks(deoglRenderPlan &plan);
 	
+protected:
 	/** Clean up render plan tasks. */
 	~deoglRenderPlanTasks();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Parent plan. */

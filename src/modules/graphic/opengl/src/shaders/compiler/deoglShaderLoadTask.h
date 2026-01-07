@@ -50,11 +50,12 @@ public:
 	/** Create shader compile task. */
 	deoglShaderLoadTask(deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
+protected:
 	/** Clean up shader compile task. */
 	~deoglShaderLoadTask() override;
 	/*@}*/
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Program to compile. */

@@ -399,6 +399,14 @@ decQuaternion &decQuaternion::operator=(const decQuaternion &q){
 	return *this;
 }
 
+bool decQuaternion::operator==(const decQuaternion &q) const{
+	return IsEqualTo(q);
+}
+
+bool decQuaternion::operator!=(const decQuaternion &q) const{
+	return !IsEqualTo(q);
+}
+
 decQuaternion &decQuaternion::operator+=(const decQuaternion &q){
 	x += q.x;
 	y += q.y;

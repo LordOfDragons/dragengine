@@ -63,12 +63,13 @@ public:
 	deadArchiveFile(deArchiveDelga &module, const char *filename,
 		const unz_file_info &info, const unz_file_pos &archivePosition);
 	
+protected:
 	/** \brief Clean up file entry. */
 	virtual ~deadArchiveFile();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */

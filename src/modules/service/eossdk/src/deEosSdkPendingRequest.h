@@ -48,9 +48,12 @@ public:
 	/** Create module. */
 	deEosSdkPendingRequest(const deServiceObject::Ref &data = {});
 	
+protected:
 	/** Delete module. */
 	~deEosSdkPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

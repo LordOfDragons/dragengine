@@ -54,6 +54,11 @@ pComponent(element.pComponent),
 pComponentFace(element.pComponentFace){
 }
 
+deoalRayTraceHitElement::deoalRayTraceHitElement(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing)
+{
+	SetComponentFace(distance, point, normal, component, face, frontFacing);
+}
 
 
 // Manegement

@@ -156,7 +156,6 @@ deClassAnimator::nfSetControllerCount::nfSetControllerCount(const sInitData &ini
 void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	int count = rt->GetValue(0)->GetInt();
-	deAnimatorController *controller = NULL;
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
 	
@@ -166,10 +165,7 @@ void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *
 	
 	try{
 		while(animator->GetControllers().GetCount() < count){
-			controller = new deAnimatorController;
-			if(!controller) DSTHROW(dueOutOfMemory);
-			animator->AddController(controller);
-			controller = NULL;
+			animator->AddController(deAnimatorController::Ref::New());
 		}
 	}catch(...){
 		throw;
@@ -243,14 +239,9 @@ deClassAnimator::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(init.c
 void deClassAnimator::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	
-	deAnimatorLink *link = NULL;
-	
 	try{
-		link = new deAnimatorLink;
-		if(!link) DSTHROW(dueOutOfMemory);
-		
+		const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
 		link->SetController(rt->GetValue(0)->GetInt());
-		
 		animator->AddLink(link);
 		
 	}catch(...){

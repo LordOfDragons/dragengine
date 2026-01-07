@@ -41,6 +41,11 @@ class igdeWindowMain;
  * Synchronizes game definition for all editor modules.
  */
 class igdeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTaskSyncGameDefinition>;
+	
+	
 protected:
 	/** \brief States. */
 	enum eStates{

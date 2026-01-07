@@ -171,7 +171,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) = 0;
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) = 0;
 };
 
 
@@ -200,7 +200,7 @@ public:
 	typedef deTObjectReference<cComboParent> Ref;
 	cComboParent(reWPBone &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone){
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *parent = nullptr;
 		if(selection){
@@ -218,7 +218,7 @@ public:
 			return {};
 		}
 
-		return new reUSetBoneParent(bone, parent);
+		return reUSetBoneParent::Ref::New(bone, parent);
 	}
 };
 

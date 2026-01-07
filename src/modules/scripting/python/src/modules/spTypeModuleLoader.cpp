@@ -175,7 +175,7 @@ PyObject *spTypeModuleLoader::cfLoadModule(PyObject *myself, PyObject *args){
 	// load script file
 	try{
 		// load script file
-		scriptFile.TakeOver(new spScriptFile(clsModuleLoader.GetSP(), fullname, lookupPath.GetPathUnix()));
+		scriptFile.TakeOver(spScriptFile::Ref::New(clsModuleLoader.GetSP(), fullname, lookupPath.GetPathUnix()));
 		scriptFile->PythonCreate();
 		
 		loadedModule = scriptFile->GetPyModule();

@@ -55,6 +55,8 @@ private:
 		int ipa;
 		float length;
 		cSpeakPhoneme(int aipa, float alength) : ipa(aipa), length(alength){}
+	protected:
+		~cSpeakPhoneme() override = default;
 	};
 	
 	deEngine *pEngine;

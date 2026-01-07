@@ -59,12 +59,13 @@ public:
 	/** Create peer. */
 	deoglRCaptureCanvas(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up peer. */
 	virtual ~deoglRCaptureCanvas();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

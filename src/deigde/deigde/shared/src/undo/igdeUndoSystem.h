@@ -78,10 +78,10 @@ public:
 	int GetCount() const;
 	
 	/** \brief Undo action at index. */
-	igdeUndo *GetAt(int index) const;
+	const igdeUndo::Ref &GetAt(int index) const;
 	
 	/** \brief Next undo action. */
-	igdeUndo *GetTop() const;
+	const igdeUndo::Ref &GetTop() const;
 	
 	/**
 	 * \brief Add undo.

@@ -42,7 +42,7 @@
 
 reWPUndoHistory::reWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new reWPUndoHistoryListener(*this)){
+pListener(reWPUndoHistoryListener::Ref::New(*this)){
 }
 
 reWPUndoHistory::~reWPUndoHistory(){

@@ -87,12 +87,13 @@ public:
 	/** Create render model. */
 	deoglRModel(deoglRenderThread &renderThread, const deModel &model);
 	
+protected:
 	/** Clean up render model. */
 	virtual ~deoglRModel();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

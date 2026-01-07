@@ -66,12 +66,13 @@ public:
 	/** \brief Create directory entry. */
 	deadArchiveDirectory(deArchiveDelga &module, const char *filename);
 	
+protected:
 	/** \brief Clean up directory entry. */
 	virtual ~deadArchiveDirectory();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */

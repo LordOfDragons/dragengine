@@ -104,22 +104,27 @@ void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObj
 	
 	if(function == "loadUserResource")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTLoadUserResource(*this, id, request);
 	}
 	else if(function == "userAdd")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTAddUser(*this, id, request);
 	}
 	else if(function == "getTokenAndSignature")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTGetTokenAndSignature(*this, id, request);
 	}
 	else if(function == "getStatsAndAchievements")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTGetStatsAndAchievements(*this, id, request);
 	}
 	else if(function == "setStatsAndAchievements")
 	{
+		// DELint-Allow-NewWithoutRef: self-deleting class (TODO: make this better)
 		new deMTSetStatsAndAchievements(*this, id, request);
 	}
 	else

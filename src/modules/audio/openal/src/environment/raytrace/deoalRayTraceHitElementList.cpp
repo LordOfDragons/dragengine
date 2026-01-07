@@ -39,16 +39,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRayTraceHitElementList::deoalRayTraceHitElementList() :
-pElements(NULL),
-pCount(0),
-pSize(0){
+deoalRayTraceHitElementList::deoalRayTraceHitElementList(){
 }
 
 deoalRayTraceHitElementList::~deoalRayTraceHitElementList(){
-	if(pElements){
-		delete [] pElements;
-	}
 }
 
 
@@ -57,42 +51,18 @@ deoalRayTraceHitElementList::~deoalRayTraceHitElementList(){
 ///////////////
 
 const deoalRayTraceHitElement &deoalRayTraceHitElementList::GetAt(int index) const{
-	if(index < 0 || index >= pCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pElements[index];
+	return pElements.GetAt(index);
 }
 
 void deoalRayTraceHitElementList::Add(const deoalRayTraceHitElement &element){
-	pBareAdd() = element;
+	pElements.Add(element);
 }
 
 void deoalRayTraceHitElementList::AddComponentFace(float distance, const decDVector &point,
 const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
-	pBareAdd().SetComponentFace(distance, point, normal, component, face, frontFacing);
+	pElements.Add({distance, point, normal, component, face, frontFacing});
 }
 
 void deoalRayTraceHitElementList::RemoveAll(){
-	pCount = 0;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-deoalRayTraceHitElement &deoalRayTraceHitElementList::pBareAdd(){
-	if(pCount == pSize){
-		const int newSize = pSize + 10;
-		deoalRayTraceHitElement * const newArray = new deoalRayTraceHitElement[newSize];
-		if(pElements){
-			memcpy(newArray, pElements, sizeof(deoalRayTraceHitElement) * pSize);
-			delete [] pElements;
-		}
-		pElements = newArray;
-		pSize = newSize;
-	}
-	
-	return pElements[pCount++];
+	pElements.RemoveAll();
 }

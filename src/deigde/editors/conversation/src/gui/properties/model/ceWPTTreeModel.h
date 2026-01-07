@@ -86,6 +86,7 @@ public:
 	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
 		ceConversationListener &forwardListener);
 	
+protected:
 	/** Clean up tree model. */
 	~ceWPTTreeModel();
 	/*@}*/

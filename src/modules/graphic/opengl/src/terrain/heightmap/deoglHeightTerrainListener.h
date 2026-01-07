@@ -43,12 +43,13 @@ public:
 	/** Create height terrain listener. */
 	deoglHeightTerrainListener();
 	
+protected:
 	/** Clean up height terrain listener. */
 	virtual ~deoglHeightTerrainListener();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Notifications */
 	/*@{*/
 	/** Height terrain has been destroyed. */

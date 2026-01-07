@@ -25,61 +25,29 @@
 #ifndef _DEOALSPEAKERLIST_H_
 #define _DEOALSPEAKERLIST_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoalASpeaker;
-
 
 
 /**
  * Speaker list.
  */
-class deoalSpeakerList{
-private:
-	decTList<deoalASpeaker*> pSpeakers;
-	
-	
-	
+class deoalSpeakerList : public decTOrderedSet<deoalASpeaker*>{
 public:
+	using decTOrderedSet<deoalASpeaker*>::decTOrderedSet;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker list. */
-	deoalSpeakerList();
-	
-	/** Clean up speaker list. */
-	~deoalSpeakerList();
+	deoalSpeakerList(const decTOrderedSet<deoalASpeaker*> &set);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of speakers. */
-	int GetCount() const;
-	
-	/** Speaker at index. */
-	deoalASpeaker *GetAt(int index) const;
-	
-	/** Speaker is present. */
-	bool Has(deoalASpeaker *speaker) const;
-	
-	/** Index of speaker or -1 if absent. */
-	int IndexOf(deoalASpeaker *speaker) const;
-	
-	/** Add speaker. */
-	void Add(deoalASpeaker *speaker);
-	
-	/** Remove speaker. */
-	void Remove(deoalASpeaker *speaker);
-	
-	/** Remove speaker if present. */
-	void RemoveIfExisting(deoalASpeaker *speaker);
-	
-	/** Remove all speakers. */
-	void RemoveAll();
-	
-	
-	
 	/** Flag all speakers. */
 	void FlagAll(bool flag);
 	
@@ -100,26 +68,6 @@ public:
 	
 	/** Update effects all speakers. */
 	void UpdateEffectsAll();
-	/*@}*/
-	
-	
-	
-	/** \name Operators */
-	/*@{*/
-	/** Assign list. */
-	deoalSpeakerList &operator=(const deoalSpeakerList &list);
-	
-	/** Append list. */
-	deoalSpeakerList &operator+=(const deoalSpeakerList &list);
-	
-	/** Combined list. */
-	deoalSpeakerList operator+(const deoalSpeakerList &list) const;
-	
-	/** Lists are equal. */
-	bool operator==(const deoalSpeakerList &list) const;
-	
-	/** Lists are not equal. */
-	bool operator!=(const deoalSpeakerList &list) const;
 	/*@}*/
 };
 

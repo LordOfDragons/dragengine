@@ -181,7 +181,7 @@ DEBUG_RESET_TIMERS;
 				if(animatorBone == -1){
 					continue;
 				}
-				pStateList->GetStateAt(animatorBone)->SetFrom(*stalist.GetStateAt(animatorBone));
+				pStateList->GetStateAt(animatorBone).SetFrom(stalist.GetStateAt(animatorBone));
 			}
 			
 			for(i=0; i<vpsCount; i++){
@@ -205,7 +205,7 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			stalist.GetStateAt(animatorBone)->BlendWith(*pStateList->GetStateAt(animatorBone),
+			stalist.GetStateAt(animatorBone).BlendWith(pStateList->GetStateAt(animatorBone),
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 		}
 		
@@ -229,7 +229,7 @@ DEBUG_RESET_TIMERS;
 				if(animatorBone == -1){
 					continue;
 				}
-				stalist.GetStateAt(animatorBone)->BlendWithDefault(blendMode,
+				stalist.GetStateAt(animatorBone).BlendWithDefault(blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
@@ -250,10 +250,10 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				const dearBoneState &stateFrom = *stalist.GetStateAt(animatorBone);
-				pStateList->GetStateAt(animatorBone)->SetFrom(stateFrom);
+				const dearBoneState &stateFrom = stalist.GetStateAt(animatorBone);
+				pStateList->GetStateAt(animatorBone).SetFrom(stateFrom);
 				if(pStateList2){
-					pStateList2->GetStateAt(animatorBone)->SetFrom(stateFrom);
+					pStateList2->GetStateAt(animatorBone).SetFrom(stateFrom);
 				}
 			}
 			
@@ -289,8 +289,8 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				pStateList->GetStateAt(animatorBone)->BlendWith(
-					*pStateList2->GetStateAt( animatorBone ), deAnimatorRule::ebmBlend,
+				pStateList->GetStateAt(animatorBone).BlendWith(
+					pStateList2->GetStateAt(animatorBone), deAnimatorRule::ebmBlend,
 					selectBlend, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
@@ -313,7 +313,7 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			stalist.GetStateAt(animatorBone)->BlendWith(*pStateList->GetStateAt(animatorBone),
+			stalist.GetStateAt(animatorBone).BlendWith(pStateList->GetStateAt(animatorBone),
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 		}
 		

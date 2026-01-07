@@ -133,6 +133,10 @@
 			"path": "src/modules/service/modio"
 		},
 		{
+			"name": "Module Service: Microsoft GDK",
+			"path": "src/modules/service/msgdk"
+		},
+		{
 			"name": "Module Service: Steam SDK",
 			"path": "src/modules/service/steamsdk"
 		},

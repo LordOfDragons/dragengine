@@ -61,12 +61,13 @@ public:
 	/** Create render render target. */
 	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount);
 	
+protected:
 	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Size. */

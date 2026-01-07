@@ -27,6 +27,7 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
+#include "../environment/raytrace/deoalSoundRayInteraction.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../world/deoalAWorld.h"
 
@@ -54,7 +55,6 @@ class deoalRTParallelEnvProbe;
 class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalSharedBufferList;
-class deoalSoundRayInteractionList;
 class deoalEffectSlotManager;
 class deoalSharedEffectSlotManager;
 class deoalSourceManager;
@@ -108,7 +108,7 @@ private:
 	deoalRTParallelEnvProbe *pRTParallelEnvProbe;
 	deoalRayTraceResult *pRTResultDirect;
 	deoalRayTraceHitElementList *pRTHitElementList;
-	deoalSoundRayInteractionList *pSRInteractionList;
+	deoalSoundRayInteraction::List pSRInteractionList;
 	deoalWOVRayHitsElement *pWOVRayHitsElement;
 	deoalWOVCollectElements *pWOVCollectElements;
 	
@@ -305,7 +305,8 @@ public:
 	inline deoalRayTraceHitElementList &GetRTHitElementList() const{ return *pRTHitElementList; }
 	
 	/** Shared sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRInteractionList() const{ return *pSRInteractionList; }
+	inline deoalSoundRayInteraction::List &GetSRInteractionList(){ return pSRInteractionList; }
+	inline const deoalSoundRayInteraction::List &GetSRInteractionList() const{ return pSRInteractionList; }
 	
 	/** Shared ray hits element world octree visitor. */
 	inline deoalWOVRayHitsElement &GetWOVRayHitsElement() const{ return *pWOVRayHitsElement; }

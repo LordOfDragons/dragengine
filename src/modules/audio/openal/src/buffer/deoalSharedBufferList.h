@@ -36,7 +36,7 @@ class deoalSharedBuffer;
  */
 class deoalSharedBufferList{
 private:
-	decTList<deoalSharedBuffer*> pBuffers;
+	decTObjectList<deoalSharedBuffer> pBuffers;
 	
 	
 	

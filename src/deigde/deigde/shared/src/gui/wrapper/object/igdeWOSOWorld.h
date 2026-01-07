@@ -148,6 +148,9 @@ private:
 			const ChildObject::Ref object;
 			const ChildObjectTexture::Ref texture;
 			Texture(ChildObject &object, ChildObjectTexture &texture);
+			
+		protected:
+			~Texture() override = default;
 		};
 		
 		igdeWOSOWorld *pOwner;

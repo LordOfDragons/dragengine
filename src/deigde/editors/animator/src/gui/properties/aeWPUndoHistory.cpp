@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "aeWPUndoHistory.h"
-#include "aeWPUndoHistoryListener.h"
 #include "../../animator/aeAnimator.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,7 +41,7 @@
 
 aeWPUndoHistory::aeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new aeWPUndoHistoryListener(*this)){
+pListener(aeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 aeWPUndoHistory::~aeWPUndoHistory(){

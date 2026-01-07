@@ -64,12 +64,13 @@ public:
 	/** Create video player target. */
 	deoglRVideoPlayer(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up video player target. */
 	virtual ~deoglRVideoPlayer();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */

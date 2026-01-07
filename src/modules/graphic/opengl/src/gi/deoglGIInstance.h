@@ -160,12 +160,13 @@ public:
 	/** Create global illumination instance. */
 	deoglGIInstance(deoglGIInstances &instances);
 	
+protected:
 	/** Clean up global illumination instance. */
 	virtual ~deoglGIInstance();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Owner instances. */

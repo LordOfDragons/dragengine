@@ -34,6 +34,8 @@
  */
 class ceUCAWaitPasteCondition : public ceUCAWaitSetCondition{
 public:
+	using Ref = deTObjectReference<ceUCAWaitPasteCondition>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

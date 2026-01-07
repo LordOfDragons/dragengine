@@ -58,12 +58,13 @@ public:
 	/** Create render emitter. */
 	deoglRParticleEmitter(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render emitter. */
 	virtual ~deoglRParticleEmitter();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render threaf. */

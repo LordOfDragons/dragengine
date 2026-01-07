@@ -27,11 +27,13 @@
 
 #include <iterator>
 #include <cstddef>
+#include <utility>
 
 #include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
 #include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
+#include "../../deTUniqueReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
@@ -191,7 +193,14 @@ public:
 	void SetAt(int index, const TP &element){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
-		
+		pElements[index] = element;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	SetAt(int index, const T &element){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index < pCount)
 		pElements[index] = element;
 	}
 	
@@ -200,11 +209,32 @@ public:
 		return IndexOf(element, 0);
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	IndexOf(const T &element) const{
+		return IndexOf(element, 0);
+	}
+	
 	/**
 	 * \brief Index of the first occurance of an element or -1 if not found.
 	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount().
 	 */
 	int IndexOf(const TP &element, int start) const{
+		DEASSERT_TRUE(start >= 0)
+		DEASSERT_TRUE(start <= pCount)
+		
+		int i;
+		for(i=start; i<pCount; i++){
+			if(pElements[i] == element){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	IndexOf(const T &element, int start) const{
 		DEASSERT_TRUE(start >= 0)
 		DEASSERT_TRUE(start <= pCount)
 		
@@ -257,6 +287,20 @@ public:
 	
 	/** \brief Determine if element exists in the list. */
 	bool Has(const TP &element) const{
+		int p;
+		
+		for(p=0; p<pCount; p++){
+			if(pElements[p] == element){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, bool>::type
+	Has(const T &element) const{
 		int p;
 		
 		for(p=0; p<pCount; p++){
@@ -341,6 +385,21 @@ public:
 		return count;
 	}
 	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, int>::type
+	CountOccurance(const T &element) const{
+		int count = 0;
+		int p;
+		
+		for(p=0; p<pCount; p++){
+			if(pElements[p] == element){
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
 	/** \brief Add element. */
 	void Add(const TP &element){
 		if(pCount == pSize){
@@ -349,7 +408,27 @@ public:
 			if(pElements){
 				int i;
 				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
+					newArray[i] = std::move(pElements[i]);
+				}
+				delete [] pElements;
+			}
+			pElements = newArray;
+			pSize = newSize;
+		}
+		
+		pElements[pCount++] = element;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	Add(const T &element){
+		if(pCount == pSize){
+			int newSize = pSize * 3 / 2 + 1;
+			T * const newArray = new T[newSize];
+			if(pElements){
+				int i;
+				for(i=0; i<pSize; i++){
+					newArray[i] = std::move(pElements[i]);
 				}
 				delete [] pElements;
 			}
@@ -374,7 +453,7 @@ public:
 			if(pElements){
 				int i;
 				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
+					newArray[i] = std::move(pElements[i]);
 				}
 				delete [] pElements;
 			}
@@ -384,7 +463,35 @@ public:
 		
 		int i;
 		for(i=pCount; i>index; i--){
-			pElements[i] = pElements[i - 1];
+			pElements[i] = std::move(pElements[i - 1]);
+		}
+		pElements[index] = element;
+		pCount++;
+	}
+	
+	template<typename U = T>
+	typename std::enable_if<!std::is_same<U, TP>::value, void>::type
+	Insert(const T &element, int index){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index <= pCount)
+		
+		if(pCount == pSize){
+			int newSize = pSize * 3 / 2 + 1;
+			T * const newArray = new T[newSize];
+			if(pElements){
+				int i;
+				for(i=0; i<pSize; i++){
+					newArray[i] = std::move(pElements[i]);
+				}
+				delete [] pElements;
+			}
+			pElements = newArray;
+			pSize = newSize;
+		}
+		
+		int i;
+		for(i=pCount; i>index; i--){
+			pElements[i] = std::move(pElements[i - 1]);
 		}
 		pElements[index] = element;
 		pCount++;
@@ -411,20 +518,20 @@ public:
 			return;
 		}
 		
-		const T tempElement(pElements[from]);
+		T tempElement = std::move(pElements[from]);
 		int i;
 		
 		if(to < from){
 			for(i=from; i>to; i--){
-				pElements[i] = pElements[i - 1];
+				pElements[i] = std::move(pElements[i - 1]);
 			}
-			pElements[to] = tempElement;
+			pElements[to] = std::move(tempElement);
 			
 		}else{
 			for(i=from; i<to-1; i++){
-				pElements[i] = pElements[i + 1];
+				pElements[i] = std::move(pElements[i + 1]);
 			}
-			pElements[to - 1] = tempElement;
+			pElements[to - 1] = std::move(tempElement);
 		}
 	}
 	
@@ -438,7 +545,7 @@ public:
 		
 		int i;
 		for(i=index+1; i<pCount; i++){
-			pElements[i - 1] = pElements[i];
+			pElements[i - 1] = std::move(pElements[i]);
 		}
 		pElements[--pCount] = T();
 	}
@@ -1312,9 +1419,9 @@ public:
 	void Reverse(){
 		int i;
 		for(i=0; i<pCount / 2; i++){
-			const T temp = pElements[i];
-			pElements[i] = pElements[pCount - 1 - i];
-			pElements[pCount - 1 - i] = temp;
+			T temp = std::move(pElements[i]);
+			pElements[i] = std::move(pElements[pCount - 1 - i]);
+			pElements[pCount - 1 - i] = std::move(temp);
 		}
 	}
 	
@@ -1416,7 +1523,7 @@ public:
 			}
 			
 			if(last < i){
-				pElements[last] = pElements[i];
+				pElements[last] = std::move(pElements[i]);
 			}
 			last++;
 		}

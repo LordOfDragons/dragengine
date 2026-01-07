@@ -80,12 +80,13 @@ public:
 	/** Create render debug drawer. */
 	deoglRDebugDrawer(deoglRenderThread &renderThread);
 	
+protected:
 	/** Cleans up render debug drawer. */
 	virtual ~deoglRDebugDrawer();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

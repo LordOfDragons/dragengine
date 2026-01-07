@@ -71,12 +71,13 @@ public:
 	/** Create peer. */
 	deoglRCanvas(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up peer. */
 	virtual ~deoglRCanvas();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

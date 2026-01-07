@@ -151,7 +151,7 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 		
-			stalist.GetStateAt(animatorBone)->BlendWith(position, orientation, scale,
+			stalist.GetStateAt(animatorBone).BlendWith(position, orientation, scale,
 				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale);
 		}
 	}

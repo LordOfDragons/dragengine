@@ -82,12 +82,13 @@ public:
 	/** Create sky instance. */
 	deoglRSkyInstance(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render sky instance. */
 	virtual ~deoglRSkyInstance();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

@@ -138,12 +138,13 @@ public:
 	deoglPipeline(deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration);
 #endif
 	
+protected:
 	/** Clean up pipeline. */
 	~deoglPipeline() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

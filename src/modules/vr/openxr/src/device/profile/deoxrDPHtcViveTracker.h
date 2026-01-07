@@ -52,6 +52,7 @@ private:
 		int number;
 		
 		Tracker(const deoxrPath &path, int number);
+	protected:
 		virtual ~Tracker();
 	};
 	
@@ -64,6 +65,7 @@ private:
 		const deoxrAction::Ref action;
 		
 		RoleAction(const deoxrPath &path, deoxrAction *action);
+	protected:
 		virtual ~RoleAction();
 	};
 	

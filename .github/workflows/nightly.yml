@@ -35,6 +35,10 @@ jobs:
       artifactTools: tools-crossplatform
       codeql: ${{ !contains(inputs.codeql, 'false') }}
   
+  nightly_checks:
+    needs: [build_linux]
+    uses: ./.github/workflows/nightly_checks.yml
+  
   # build_windows_mingw:
   #   uses: ./.github/workflows/build_windows.yml
   #   with:
@@ -143,7 +147,8 @@ jobs:
       build_android_quest,
       build_web,
       build_live,
-      testing]
+      testing,
+      nightly_checks]
     runs-on: ubuntu-latest
     
     steps:

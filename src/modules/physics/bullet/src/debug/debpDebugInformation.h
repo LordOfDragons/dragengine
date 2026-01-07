@@ -69,12 +69,13 @@ public:
 	/** \brief Create debug information. */
 	debpDebugInformation(const char *name);
 	
+protected:
 	/** \brief Clean up debug information. */
 	virtual ~debpDebugInformation();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

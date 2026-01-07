@@ -128,6 +128,10 @@ decVector4 decVector4::Multiply(const decVector4 &vector) const{
 	return decVector4(x * vector.x, y * vector.y, z * vector.z, w * vector.w);
 }
 
+bool decVector4::IsEqualTo(const decVector4 &v, float threshold) const{
+	return fabsf(x - v.x) < threshold && fabsf(y - v.y) < threshold
+		&& fabsf(z - v.z) < threshold && fabsf(w - v.w) < threshold;
+}
 
 
 // Operators
@@ -143,6 +147,14 @@ decVector4 &decVector4::operator=(const decVector4 &v){
 	z = v.z;
 	w = v.w;
 	return *this;
+}
+
+bool decVector4::operator==(const decVector4 &v) const{
+	return IsEqualTo(v);
+}
+
+bool decVector4::operator!=(const decVector4 &v) const{
+	return !IsEqualTo(v);
 }
 
 decVector4 &decVector4::operator+=(const decVector4 &v){

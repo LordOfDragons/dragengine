@@ -156,7 +156,7 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// calculate limit coordinate space matrix
-			dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
+			dearBoneState &bstate = stalist.GetStateAt(animatorBone);
 			
 			bstate.UpdateMatrices();
 			decMatrix boneMatrix(bstate.GetLocalMatrix());
@@ -281,7 +281,7 @@ DEBUG_RESET_TIMERS;
 		decMatrix matrix1, matrix2;
 		
 		if(pCoordinateFrame == deAnimatorRuleLimit::ecfTargetBone && pTargetBone != -1){
-			dearBoneState &bstate = *stalist.GetStateAt(pTargetBone);
+			dearBoneState &bstate = stalist.GetStateAt(pTargetBone);
 			bstate.UpdateMatrices();
 			matrix1 = bstate.GetInverseGlobalMatrix();
 			matrix2 = bstate.GetGlobalMatrix();
@@ -295,7 +295,7 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// calculate limit coordinate space matrix
-			dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
+			dearBoneState &bstate = stalist.GetStateAt(animatorBone);
 			decMatrix boneMatrix;
 			
 			bstate.UpdateMatrices();

@@ -54,12 +54,11 @@ public:
 	/*@{*/
 	/** \brief Create undo object. */
 	ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
+		ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
 	
-	/** \brief Clean up undo object. */
 protected:
+	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseCaseSetCondition();
-public:
 	/*@}*/
 	
 	

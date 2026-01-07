@@ -85,12 +85,13 @@ public:
 	/** Create loader. */
 	deoxrApiLayer(deVROpenXR &oxr, const char *configFile);
 	
+protected:
 	/** Clean up loader. */
 	virtual ~deoxrApiLayer();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Configuration file. */

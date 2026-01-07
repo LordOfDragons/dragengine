@@ -52,12 +52,13 @@ public:
 	/** Create shared shader parameter block element. */
 	deoglSharedSPBElement(deoglSharedSPB &spb, int index);
 	
+protected:
 	/** Clean up shared shader parameter block element. */
 	virtual ~deoglSharedSPBElement();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */

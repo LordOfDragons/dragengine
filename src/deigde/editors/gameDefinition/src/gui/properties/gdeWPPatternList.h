@@ -29,12 +29,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringSet.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
-class igdeUndo;
 
 
 /**
@@ -107,7 +107,7 @@ public:
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet(const decStringSet &patterns) = 0;
+	virtual igdeUndo::Ref UndoSet(const decStringSet &patterns) = 0;
 	/*@}*/
 	
 	

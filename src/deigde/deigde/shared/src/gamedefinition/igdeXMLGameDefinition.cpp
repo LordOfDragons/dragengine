@@ -2007,7 +2007,6 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 	igdeGDSkinManager &skinManager = *gamedef.GetSkinManager();
 	const char *strPath = nullptr;
 	const char *strName = nullptr;
-	igdeGDSkin *skin = nullptr;
 	int e;
 	
 	// first we have to look for the important tags which are required to construct a new skin.
@@ -2040,9 +2039,7 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 		LogErrorGenericProblemValue(root, strName, "A skin with this name exists already.");
 	}
 	
-	skin = new igdeGDSkin(strPath, strName);
-	
-	skinManager.AddSkin(skin);
+	const igdeGDSkin::Ref skin(igdeGDSkin::Ref::New(strPath, strName));
 	
 	// now we read all the other tags.
 	for(e=0; e<root.GetElementCount(); e++){
@@ -2068,6 +2065,8 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 			LogWarnUnknownTag(root, *tag);
 		}
 	}
+	
+	skinManager.AddSkin(skin);
 }
 
 void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefinition &gamedef){

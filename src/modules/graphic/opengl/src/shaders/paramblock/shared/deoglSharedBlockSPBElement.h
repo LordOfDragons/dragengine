@@ -41,26 +41,27 @@ public:
 	 * Stores deoglSharedBlockSPBElement returning it to deoglSharedBlockSPB if out of scope.
 	 * This is a convenience class to avoid having to remember to call Return().
 	 */
-	class Ref{
+	class Lease{
 	private:
 		deoglSharedBlockSPBElement *pElement;
 		
-		Ref(const Ref &ref); // disallow compiler auto-use
+		Lease(const Lease &ref); // disallow compiler auto-use
 		
 	public:
-		Ref();
-		~Ref();
+		Lease();
+		~Lease();
 		
 		operator deoglSharedBlockSPBElement*() const;
 		operator deoglSharedBlockSPBElement&() const;
 		deoglSharedBlockSPBElement* operator->() const;
 		
-		Ref &operator=(deoglSharedBlockSPBElement *element);
+		Lease &operator=(deoglSharedBlockSPBElement *element);
 		bool operator!() const;
 		operator bool() const;
 	};
 	
-	typedef deTObjectReference<deoglSharedBlockSPBElement> ObjRef;
+	/** For use by deoglSharedBlockSPB only! */
+	typedef deTObjectReference<deoglSharedBlockSPBElement> Ref;
 	
 	
 private:
@@ -77,12 +78,13 @@ public:
 	/** Create shared shader parameter block element. */
 	deoglSharedBlockSPBElement(deoglSharedBlockSPB &spb, int index, int count);
 	
+protected:
 	/** Clean up shared shader parameter block element. */
 	virtual ~deoglSharedBlockSPBElement();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */

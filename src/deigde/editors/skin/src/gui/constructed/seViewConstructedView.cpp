@@ -412,7 +412,7 @@ public:
 		return undo;
 	}
 	
-	virtual seUPNGroupMoveNodes *CreateUndo(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
+	virtual seUPNGroupMoveNodes::Ref CreateUndo(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
 };
 
 class cActionMoveNodesTop : public cBaseMoveNodes{
@@ -421,8 +421,8 @@ public:
 	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
-		return new seUPNGroupNodesTop(node->GetParent(), property->GetNodeSelection().GetSelected());
+	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+		return seUPNGroupNodesTop::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
@@ -432,8 +432,8 @@ public:
 	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
-		return new seUPNGroupNodesUp(node->GetParent(), property->GetNodeSelection().GetSelected());
+	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+		return seUPNGroupNodesUp::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
@@ -443,8 +443,8 @@ public:
 	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
 	
-	seUPNGroupNodesDown *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
-		return new seUPNGroupNodesDown(node->GetParent(), property->GetNodeSelection().GetSelected());
+	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+		return seUPNGroupNodesDown::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
@@ -454,8 +454,8 @@ public:
 	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
-		return new seUPNGroupNodesBottom(node->GetParent(), property->GetNodeSelection().GetSelected());
+	seUPNGroupMoveNodes::Ref CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+		return seUPNGroupNodesBottom::Ref::New(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 

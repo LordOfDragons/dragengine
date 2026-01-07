@@ -78,7 +78,6 @@ pStateAxis(NULL),
 pStateHatCount(0),
 pStateHat(NULL)
 {
-	deObjectReference refObject;
 	decString string;
 	BString bname;
 	
@@ -109,29 +108,28 @@ pStateHat(NULL)
 		
 		int i;
 		for(i=0; i<countAxes; i++){
-			refObject.TakeOver(new debiDeviceAxis(module));
-			AddAxis(refObject);
-			debiDeviceAxis &axis = (debiDeviceAxis&)(deObject&)refObject;
+			const debiDeviceAxis::Ref axis(debiDeviceAxis::Ref::New(module));
+			AddAxis(axis);
 			
-			axis.SetIndex(indexAxis);
-			axis.SetAbsolute(true);
+			axis->SetIndex(indexAxis);
+			axis->SetAbsolute(true);
 			string.Format("axis%d", i);
-			axis.SetID(string);
+			axis->SetID(string);
 			if(pJoystick->GetAxisNameAt(i, &bname) != B_OK){
 				DETHROW(deeInvalidParam);
 			}
-			axis.SetName(bname.String());
-			axis.SetType(deInputDeviceAxis::eatStick);
-			axis.SetBICode(i);
+			axis->SetName(bname.String());
+			axis->SetType(deInputDeviceAxis::eatStick);
+			axis->SetBICode(i);
 			
 			string.Format("%d", indexAxis + 1);
-			axis.SetDisplayText(string);
+			axis->SetDisplayText(string);
 			
 			if(i == 0){
-				axis.SetDisplayImages("touchpadX");
+				axis->SetDisplayImages("touchpadX");
 				
 			}else if(i == 1){
-				axis.SetDisplayImages("touchpadY");
+				axis->SetDisplayImages("touchpadY");
 				
 			}else{
 				// "mouseZ"
@@ -145,44 +143,42 @@ pStateHat(NULL)
 		}
 		
 		for(i=0; i<countHats; i++){
-			refObject.TakeOver(new debiDeviceAxis(module));
-			AddAxis(refObject);
-			debiDeviceAxis &hatX = (debiDeviceAxis&)(deObject&)refObject;
+			const debiDeviceAxis::Ref hatX(debiDeviceAxis::Ref::New(module));
+			AddAxis(hatX);
 			
-			refObject.TakeOver(new debiDeviceAxis(module));
-			AddAxis(refObject);
-			debiDeviceAxis &hatY = (debiDeviceAxis&)(deObject&)refObject;
+			const debiDeviceAxis::Ref hatY(debiDeviceAxis::Ref::New(module));
+			AddAxis(hatY);
 			
 			if(pJoystick->GetHatNameAt(i, &bname) != B_OK){
 				DETHROW(deeInvalidParam);
 			}
 			
-			hatX.SetIndex(indexAxis);
-			hatX.SetAbsolute(true);
+			hatX->SetIndex(indexAxis);
+			hatX->SetAbsolute(true);
 			string.Format("hat%dX", i);
-			hatX.SetID(string);
+			hatX->SetID(string);
 			string.Format("%s X", bname.String());
-			hatX.SetName(string);
-			hatX.SetType(deInputDeviceAxis::eatHat);
-			hatX.SetBICode(i * 2);
+			hatX->SetName(string);
+			hatX->SetType(deInputDeviceAxis::eatHat);
+			hatX->SetBICode(i * 2);
 			
 			string.Format("%d", indexAxis + 1);
-			hatX.SetDisplayText(string);
-			hatX.SetDisplayImages("stickX");
+			hatX->SetDisplayText(string);
+			hatX->SetDisplayImages("stickX");
 			indexAxis++;
 			
-			hatY.SetIndex(countAxes + i * 2 + 1);
-			hatY.SetAbsolute(true);
+			hatY->SetIndex(countAxes + i * 2 + 1);
+			hatY->SetAbsolute(true);
 			string.Format("hat%dY", i);
-			hatY.SetID(string);
+			hatY->SetID(string);
 			string.Format("%s Y", bname.String());
-			hatY.SetName(string);
-			hatY.SetType(deInputDeviceAxis::eatHat);
-			hatY.SetBICode(i * 2 + 1);
+			hatY->SetName(string);
+			hatY->SetType(deInputDeviceAxis::eatHat);
+			hatY->SetBICode(i * 2 + 1);
 			
 			string.Format("%d", indexAxis + 1);
-			hatY.SetDisplayText(string);
-			hatY.SetDisplayImages("stickX");
+			hatY->SetDisplayText(string);
+			hatY->SetDisplayImages("stickX");
 			indexAxis++;
 		}
 		if(countHats > 0){
@@ -194,27 +190,26 @@ pStateHat(NULL)
 		const int countButtons = pJoystick->CountButtons();
 		
 		for(i=0; i<countButtons; i++){
-			refObject.TakeOver(new debiDeviceButton(module));
-			AddButton(refObject);
-			debiDeviceButton &button = (debiDeviceButton&)(deObject&)refObject;
+			const debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+			AddButton(button);
 			
 			string.Format("button%d", i);
-			button.SetID(string);
+			button->SetID(string);
 			if(pJoystick->GetButtonNameAt(i, &bname) != B_OK){
 				DETHROW(deeInvalidParam);
 			}
-			button.SetName(bname.String());
-			button.SetBICode(i);
+			button->SetName(bname.String());
+			button->SetBICode(i);
 			
 			string.Format("%d", i + 1);
-			button.SetDisplayText(string);
-			button.SetDisplayImages("button");
+			button->SetDisplayText(string);
+			button->SetDisplayImages("button");
 		}
 		
 	}catch(const deException &){
 		pCleanUp();
 		throw;
-    }
+	}
 }
 
 debiDeviceJoystick::~debiDeviceJoystick(){

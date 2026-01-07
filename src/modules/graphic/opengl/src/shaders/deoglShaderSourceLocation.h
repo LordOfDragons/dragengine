@@ -51,12 +51,13 @@ public:
 	/** Create shader source location. */
 	deoglShaderSourceLocation(const char *inputFile, int inputLine, int outputLine);
 	
+protected:
 	/** Clean up shader source location. */
 	virtual ~deoglShaderSourceLocation();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Input file. */

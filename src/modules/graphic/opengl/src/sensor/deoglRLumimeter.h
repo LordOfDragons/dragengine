@@ -68,12 +68,13 @@ public:
 	/** Create render lumimeter. */
 	deoglRLumimeter(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render lumimeter. */
 	virtual ~deoglRLumimeter();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Mark lumimeter dirty. */

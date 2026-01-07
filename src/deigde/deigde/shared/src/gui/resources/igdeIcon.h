@@ -96,7 +96,7 @@ public:
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Create scaled copy of icon. */
-	igdeIcon *Scale(const decPoint &size) const;
+	igdeIcon::Ref Scale(const decPoint &size) const;
 	
 	/**
 	 * \brief Update icon from image.

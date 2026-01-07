@@ -33,6 +33,8 @@
  */
 class gdeMACategoryObjectClassAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategoryObjectClassAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */

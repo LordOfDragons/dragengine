@@ -151,12 +151,13 @@ public:
 	/** Create render decal. */
 	deoglRBillboard(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render decal. */
 	~deoglRBillboard() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

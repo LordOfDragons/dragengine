@@ -35,3 +35,12 @@ jobs:
       
       - name: Verify Metainfo
         run: python3 .github/workflows/prerelease_checks.py verify_metainfo_versions "${{ inputs.version }}"
+      
+      - name: "Prohibited 'new' usage"
+        run: python3 find_prohibited_new.py src
+      
+      - name: "'::Ref' usage with missing 'using'/'typedef'"
+        run: python3 find_missing_using_ref.py src
+      
+      - name: "Unprotected destructors in ref count classes"
+        run: python3 find_refcount_public_destructor.py src

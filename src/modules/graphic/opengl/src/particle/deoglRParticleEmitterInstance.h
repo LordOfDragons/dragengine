@@ -135,12 +135,13 @@ public:
 	/** Create render emitter instance. */
 	deoglRParticleEmitterInstance(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render emitter instance. */
 	virtual ~deoglRParticleEmitterInstance();
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

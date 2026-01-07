@@ -53,6 +53,8 @@ private:
 		deSkyLayer::eTargets target;
 		
 		cTarget() = default;
+	protected:
+		~cTarget() override = default;
 	};
 	
 	skyeSky::Ref pSky;
