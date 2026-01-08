@@ -25,12 +25,11 @@
 #ifndef _DEARBONESTATELIST_H_
 #define _DEARBONESTATELIST_H_
 
-#include "dearBoneState.h"
-
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
+class dearBoneState;
 class dearComponent;
 class deComponent;
 class deAnimation;

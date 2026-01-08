@@ -25,10 +25,6 @@
 #ifndef _INPUTDEVICE_H_
 #define _INPUTDEVICE_H_
 
-#include "deInputDeviceButton.h"
-#include "deInputDeviceAxis.h"
-#include "deInputDeviceFeedback.h"
-#include "deInputDeviceComponent.h"
 #include "../deObject.h"
 #include "../common/collection/decTList.h"
 #include "../common/collection/decTOrderedSet.h"
@@ -38,6 +34,11 @@
 #include "../resources/model/deModel.h"
 #include "../resources/skin/deSkin.h"
 #include "../resources/rig/deRig.h"
+
+class deInputDeviceButton;
+class deInputDeviceAxis;
+class deInputDeviceFeedback;
+class deInputDeviceComponent;
 
 
 /**

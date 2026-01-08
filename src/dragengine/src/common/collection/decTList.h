@@ -89,8 +89,9 @@ public:
 	}
 	
 	/** \brief Create a copy of a list. */
-	decTList(const decTList<T,TP> &list)
-	requires de_copy_constructible<T> : pElements(nullptr), pCount(0), pSize(0){
+	// do not use 'requires de_copy_constructible<T>' before ':' or template
+	// instantiation requires full class definition of T
+	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
 		if(list.pCount == 0){
 			return;
 		}
@@ -1750,8 +1751,9 @@ public:
 	}
 	
 	/** \brief Copy list to this list. */
-	decTList<T,TP> &operator=(const decTList<T,TP> &list)
-	requires de_copy_constructible<T>{
+	// do not use 'requires de_copy_constructible<T>' before '{' or template
+	// instantiation requires full class definition of T
+	decTList<T,TP> &operator=(const decTList<T,TP> &list){
 		if(&list == this){
 			return *this;
 		}
