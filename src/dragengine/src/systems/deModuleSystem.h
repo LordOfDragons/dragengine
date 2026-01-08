@@ -175,6 +175,9 @@ public:
 	/** \brief Create new module system linked to the given engine. */
 	deModuleSystem(deEngine *engine);
 	
+	deModuleSystem(const deModuleSystem&) = delete;
+	deModuleSystem& operator=(const deModuleSystem&) = delete;
+
 	/** \brief Clean up module system. */
 	~deModuleSystem();
 	/*@}*/

@@ -149,7 +149,7 @@ public:
 	
 	/** \brief Create game definition class as a copy of another game definition class. */
 	igdeGDClass(const igdeGDClass &gdclass);
-	
+	igdeGDClass& operator=(const igdeGDClass& gdclass) = delete;
 	
 	
 protected:

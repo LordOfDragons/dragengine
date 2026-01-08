@@ -51,6 +51,33 @@
 dearBoneStateList::dearBoneStateList(){
 }
 
+dearBoneStateList::dearBoneStateList(const dearBoneStateList& other) {
+	*this = other;
+}
+
+dearBoneStateList& dearBoneStateList::operator=(const dearBoneStateList& other){
+	pStates = decTList<dearBoneState>(other.pStates.GetCount(), dearBoneState());
+	
+	other.pStates.VisitIndexed([&](int i, const dearBoneState &stateFrom){
+		dearBoneState &stateTo = pStates.GetAt(i);
+		
+		stateTo.SetRigBone(stateFrom.GetRigBone());
+		stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
+		stateTo.SetIndex(stateFrom.GetIndex());
+		if(stateFrom.GetParentState()){
+			stateTo.SetParentState(&pStates.GetAt(stateFrom.GetParentState()->GetIndex()));
+		}
+		stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
+		stateTo.SetDirty(true);
+		
+		stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
+			stateTo.AddChildState(&pStates.GetAt(cs->GetIndex()));
+		});
+	});
+	
+	return *this;
+}
+
 dearBoneStateList::~dearBoneStateList(){
 }
 
@@ -85,56 +112,11 @@ int dearBoneStateList::IndexOfStateNamed(const char *name) const{
 
 
 dearBoneStateList *dearBoneStateList::CreateCopy() const{
-	dearBoneStateList * const stalist = new dearBoneStateList;
-	
-	try{
-		stalist->SetStateCount(pStates.GetCount());
-		
-		pStates.VisitIndexed([&](int s, const dearBoneState &stateFrom){
-			dearBoneState &stateTo = stalist->GetStateAt(s);
-			
-			stateTo.SetRigBone(stateFrom.GetRigBone());
-			stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
-			stateTo.SetIndex(stateFrom.GetIndex());
-			if(stateFrom.GetParentState()){
-				stateTo.SetParentState(&stalist->GetStateAt(stateFrom.GetParentState()->GetIndex()));
-			}
-			stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
-			stateTo.SetDirty(true);
-			
-			stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
-				stateTo.AddChildState(&stalist->GetStateAt(cs->GetIndex()));
-			});
-		});
-		
-	}catch(const deException &){
-		delete stalist;
-		throw;
-	}
-	
-	return stalist;
+	return new dearBoneStateList(*this);
 }
 
 void dearBoneStateList::SetFrom(const dearBoneStateList &stateList){
-	SetStateCount(stateList.pStates.GetCount());
-	
-	pStates.VisitIndexed([&](int s, dearBoneState &stateTo){
-		const dearBoneState &stateFrom = stateList.pStates.GetAt(s);
-		
-		stateTo = {};
-		stateTo.SetRigBone(stateFrom.GetRigBone());
-		stateTo.SetRigBoneName(stateFrom.GetRigBoneName());
-		stateTo.SetIndex(stateFrom.GetIndex());
-		if(stateFrom.GetParentState()){
-			stateTo.SetParentState(&pStates.GetAt(stateFrom.GetParentState()->GetIndex()));
-		}
-		stateTo.SetRigLocalMatrix(stateFrom.GetRigLocalMatrix());
-		stateTo.SetDirty(true);
-		
-		stateFrom.GetChildStates().Visit([&](dearBoneState *cs){
-			stateTo.AddChildState(&pStates.GetAt(cs->GetIndex()));
-		});
-	});
+	*this = stateList;
 }
 
 

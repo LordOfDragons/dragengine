@@ -55,7 +55,7 @@ private:
 	bool pPressed;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pWICode;
@@ -74,6 +74,9 @@ public:
 	/** Create device button. */
 	dewiDeviceButton(deWindowsInput &module);
 	
+	dewiDeviceButton(const dewiDeviceButton& button) = delete;
+	dewiDeviceButton& operator=(const dewiDeviceButton& button) = delete;
+
 protected:
 	/** Clean up device button. */
 	virtual ~dewiDeviceButton();

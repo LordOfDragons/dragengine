@@ -49,6 +49,10 @@ public:
 	/*@{*/
 	/** Creates a new list. */
 	dearBoneStateList();
+
+	dearBoneStateList(const dearBoneStateList& other);
+	dearBoneStateList& operator=(const dearBoneStateList& other);
+
 	/** Cleans up the list. */
 	~dearBoneStateList();
 	/*@}*/

@@ -26,6 +26,7 @@
 #define _DEOGLSHADERPROGRAMUNIT_H_
 
 #include "deoglShaderDefines.h"
+#include "deoglShaderSourceLocation.h"
 #include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
@@ -36,7 +37,6 @@
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderCompileUnitTask;
-class deoglShaderSourceLocation;
 
 
 /**
@@ -70,6 +70,9 @@ public:
 	deoglShaderProgramUnit(deoglRenderThread &renderThread,
 		const deoglShaderUnitSourceCode *sources, const deoglShaderDefines &defines);
 	
+	deoglShaderProgramUnit(const deoglShaderProgramUnit&) = delete;
+	deoglShaderProgramUnit& operator=(const deoglShaderProgramUnit&) = delete;
+
 protected:
 	/** Clean up shader program. */
 	virtual ~deoglShaderProgramUnit();

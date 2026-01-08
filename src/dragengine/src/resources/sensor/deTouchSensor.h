@@ -96,6 +96,9 @@ public:
 	/** \brief Create touch sensor. */
 	deTouchSensor(deTouchSensorManager *manager);
 	
+	deTouchSensor(const deTouchSensor&) = delete;
+	deTouchSensor& operator=(const deTouchSensor&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up lumimeter.

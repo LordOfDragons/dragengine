@@ -394,7 +394,7 @@ void dearRuleInverseKinematic::pUpdateChainWeights(){
 	
 	for(i=1; i<pChainCount; i++){
 		const decDVector nextPosition(pChain[i].GetGlobalMatrix().GetPosition());
-		pChainLength += (nextPosition - position).Length();
+		pChainLength += (float)(nextPosition - position).Length();
 		position = nextPosition;
 	}
 	
@@ -407,7 +407,7 @@ void dearRuleInverseKinematic::pUpdateChainWeights(){
 	
 	for(i=1; i<pChainCount; i++){
 		const decDVector nextPosition(pChain[i].GetGlobalMatrix().GetPosition());
-		accum += (nextPosition - position).Length();
+		accum += (float)(nextPosition - position).Length();
 		position = nextPosition;
 		
 		// weight = decMath::linearStep( ( float )i, 0.0f, ( float )( pChainCount - 1 ), 1.0f, 0.1f );

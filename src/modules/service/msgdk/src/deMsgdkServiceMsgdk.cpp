@@ -82,9 +82,9 @@ pAchievementsSynced(false)
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 {
-	while(pPendingRequests.GetCount() > 0)
+	while(pPendingRequests.IsNotEmpty())
 	{
-		CancelRequest(((deMsgdkPendingRequest*)pPendingRequests.GetAt(0))->id);
+		CancelRequest(pPendingRequests.First()->id);
 	}
 
 	SetUser(nullptr);
@@ -235,59 +235,31 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 
 deMsgdkPendingRequest *deMsgdkServiceMsgdk::GetPendingRequestWithId(const decUniqueID &id) const
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++)
-	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->id == id)
-		{
-			return pr;
-		}
-	}
-	
-	return nullptr;
+	return pPendingRequests.FindOrDefault([&](const deMsgdkPendingRequest& pr) {
+		return pr.id == id;
+	});
 }
 
-deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithId(
-	const decUniqueID &id)
+deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithId(const decUniqueID &id)
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++)
+	const deMsgdkPendingRequest::Ref request(GetPendingRequestWithId(id));
+	if(request)
 	{
-		deMsgdkPendingRequest * const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if(pr->id == id)
-		{
-			const deMsgdkPendingRequest::Ref prr(pr);
-			pPendingRequests.RemoveFrom(i);
-			return prr;
-		}
+		pPendingRequests.Remove(request);
 	}
-	
-	return {};
+	return request;
 }
 
-deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithFunction(
-	const char* function)
+deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::RemoveFirstPendingRequestWithFunction(const char* function)
 {
-	const int count = pPendingRequests.GetCount();
-	int i;
-
-	for (i = 0; i < count; i++)
+	const deMsgdkPendingRequest::Ref request(pPendingRequests.FindOrDefault([&](const deMsgdkPendingRequest& pr) {
+		return pr.function == function;
+	}));
+	if (request)
 	{
-		deMsgdkPendingRequest* const pr = (deMsgdkPendingRequest*)pPendingRequests.GetAt(i);
-		if (pr->function == function)
-		{
-			const deMsgdkPendingRequest::Ref prr(pr);
-			pPendingRequests.RemoveFrom(i);
-			return prr;
-		}
+		pPendingRequests.Remove(request);
 	}
-
-	return {};
+	return request;
 }
 
 deMsgdkPendingRequest::Ref deMsgdkServiceMsgdk::NewPendingRequest(
@@ -472,35 +444,25 @@ void deMsgdkServiceMsgdk::UpdateAchievementManager()
 void deMsgdkServiceMsgdk::AddFrameUpdateTask(deMsgdkAsyncTask* task)
 {
 	DEASSERT_NOTNULL(task)
-	DEASSERT_FALSE(pFrameUpdateTasks.Has(task))
-	pFrameUpdateTasks.Add(task);
+	DEASSERT_TRUE(pFrameUpdateTasks.Add(task));
 }
 
 void deMsgdkServiceMsgdk::RemoveFrameUpdateTask(deMsgdkAsyncTask* task)
 {
 	DEASSERT_NOTNULL(task)
-
-	const int index = pFrameUpdateTasks.IndexOf(task);
-	if(index != -1)
-	{
-		pFrameUpdateTasks.RemoveFrom(index);
-	}
+	pFrameUpdateTasks.Remove(task);
 }
 
 void deMsgdkServiceMsgdk::FrameUpdateTasks(float elapsed)
 {
-	const int count = pFrameUpdateTasks.GetCount();
-	if(count == 0)
+	if(pFrameUpdateTasks.IsEmpty())
 	{
 		return;
 	}
 
-	const decObjectList tasks(pFrameUpdateTasks);
-	int i;
-	for(i=0; i<count; i++)
-	{
-		((deMsgdkAsyncTask*)tasks.GetAt(i))->OnFrameUpdate(elapsed);
-	}
+	pFrameUpdateTasks.Visit([&](deMsgdkAsyncTask& task) {
+		task.OnFrameUpdate(elapsed);
+	});
 }
 
 decString deMsgdkServiceMsgdk::UriEncode(const char *url) const

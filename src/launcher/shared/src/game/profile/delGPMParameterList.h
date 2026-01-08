@@ -45,6 +45,9 @@ public:
 	/** \brief Create list. */
 	delGPMParameterList();
 	
+	delGPMParameterList(const delGPMParameterList& other) = delete;
+	delGPMParameterList& operator=(const delGPMParameterList& other) = delete;
+
 	/** \brief Clean up list. */
 	~delGPMParameterList();
 	/*@}*/

@@ -45,6 +45,9 @@ public:
 	/** \brief Create list. */
 	delGameIconList();
 	
+	delGameIconList(const delGameIconList& other) = delete;
+	delGameIconList& operator=(const delGameIconList& other) = delete;
+
 	/** \brief Clean up list. */
 	~delGameIconList();
 	/*@}*/

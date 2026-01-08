@@ -116,6 +116,9 @@ public:
 	/** Create shader preprocessor. */
 	deoglShaderPreprocessor(deoglRenderThread &renderThread);
 	
+	deoglShaderPreprocessor(const deoglShaderPreprocessor&) = delete;
+	deoglShaderPreprocessor& operator=(const deoglShaderPreprocessor&) = delete;
+	
 	/** Clean up shader preprocessor. */
 	~deoglShaderPreprocessor();
 	/*@}*/

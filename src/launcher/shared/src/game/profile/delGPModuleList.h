@@ -45,6 +45,9 @@ public:
 	/** \brief Create list. */
 	delGPModuleList();
 	
+	delGPModuleList(const delGPModuleList& other) = delete;
+	delGPModuleList& operator=(const delGPModuleList& other) = delete;
+
 	/** \brief Clean up list. */
 	~delGPModuleList();
 	/*@}*/

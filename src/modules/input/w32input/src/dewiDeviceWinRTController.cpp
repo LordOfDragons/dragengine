@@ -85,7 +85,7 @@ pBatteryReport({})
 
 	for(i=0; i<count; i++){
 		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
-		axis->SetIndex(GetAxisCount());
+		axis->SetIndex(GetAxes().GetCount());
 		axis->SetAbsolute(true);
 		axis->SetMinimum(-1000);
 		axis->SetMaximum(1000);
@@ -181,7 +181,7 @@ pBatteryReport({})
 
 	// add arrow keys as first switch
 	dewiDeviceAxis::Ref axisDPadX(dewiDeviceAxis::Ref::New(module));
-	axisDPadX->SetIndex(GetAxisCount());
+	axisDPadX->SetIndex(GetAxes().GetCount());
 	axisDPadX->SetAbsolute(true);
 	axisDPadX->SetMinimum(-1);
 	axisDPadX->SetMaximum(1);
@@ -191,7 +191,7 @@ pBatteryReport({})
 	axisDPadX->SetName("DPad X");
 
 	dewiDeviceAxis::Ref axisDPadY(dewiDeviceAxis::Ref::New(module));
-	axisDPadY->SetIndex(GetAxisCount() + 1);
+	axisDPadY->SetIndex(GetAxes().GetCount() + 1);
 	axisDPadY->SetAbsolute(true);
 	axisDPadY->SetMinimum(-1);
 	axisDPadY->SetMaximum(1);
@@ -248,7 +248,7 @@ pBatteryReport({})
 
 	for(i=0; i<count; i++){
 		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
-		axis->SetIndex(GetAxisCount());
+		axis->SetIndex(GetAxes().GetCount());
 		axis->SetAbsolute(true);
 		axis->SetMinimum(-1);
 		axis->SetMaximum(1);
@@ -712,7 +712,7 @@ pBatteryReport({})
 	if(batteryReport){
 		if(batteryReport.RemainingCapacityInMilliwattHours() && batteryReport.FullChargeCapacityInMilliwattHours()){
 			const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
-			axis->SetIndex(GetAxisCount());
+			axis->SetIndex(GetAxes().GetCount());
 			axis->SetType(deInputDeviceAxis::eatBatteryLevel);
 			axis->SetID("batlvl");
 			axis->SetAbsolute(true);
@@ -769,15 +769,13 @@ void dewiDeviceWinRTController::Update(){
 	
 	pBatteryReport = pController.TryGetBatteryReport();
 
-	int i, count = GetAxisCount();
-	for(i=0; i<count; i++){
-		GetAxisAt(i)->WinRTReading(*this);
-	}
+	GetAxes().Visit([&](dewiDeviceAxis& axis) {
+		axis.WinRTReading(*this);
+	});
 
-	count = GetButtonCount();
-	for(i=0; i<count; i++){
-		GetButtonAt(i)->WinRTReading(*this);
-	}
+	GetButtons().Visit([&](dewiDeviceButton& button) {
+		button.WinRTReading(*this);
+	});
 
 	SendDirtyAxisEvents();
 }

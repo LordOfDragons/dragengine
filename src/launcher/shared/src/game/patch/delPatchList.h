@@ -47,6 +47,9 @@ public:
 	/** \brief Create game patch list. */
 	delPatchList();
 	
+	delPatchList(delPatchList&& list) noexcept;
+	delPatchList& operator=(delPatchList&& list) noexcept;
+
 	/** \brief Create copy of game patch list. */
 	delPatchList(const delPatchList &list);
 	

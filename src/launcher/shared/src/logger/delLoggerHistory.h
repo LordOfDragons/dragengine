@@ -66,6 +66,9 @@ public:
 	/** \brief Create logger history. */
 	delLoggerHistory(int size = 250);
 	
+	delLoggerHistory(const delLoggerHistory&) = delete;
+	delLoggerHistory& operator=(const delLoggerHistory&) = delete;
+
 protected:
 	/** \brief Clean up logger history. */
 	virtual ~delLoggerHistory();

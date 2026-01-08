@@ -46,6 +46,9 @@ public:
 	/** \brief Create ray trace hit element list. */
 	deoalRayTraceHitElementList();
 	
+	deoalRayTraceHitElementList(const deoalRayTraceHitElementList&) = delete;
+	deoalRayTraceHitElementList& operator=(const deoalRayTraceHitElementList&) = delete;
+	
 	/** \brief Clean up ray trace hit element list. */
 	~deoalRayTraceHitElementList();
 	/*@}*/

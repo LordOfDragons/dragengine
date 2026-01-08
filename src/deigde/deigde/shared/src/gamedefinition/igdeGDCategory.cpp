@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeGDCategory.h"
 
 #include <dragengine/common/exceptions.h>
@@ -169,6 +165,10 @@ void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
 		
 		matchingCategory->UpdateWith(childCategory);
 	});
+}
+
+int igdeGDCategory::Compare(const igdeGDCategory &category) const{
+	return pName.Compare(category.pName);
 }
 
 

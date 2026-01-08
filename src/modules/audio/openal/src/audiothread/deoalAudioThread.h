@@ -151,6 +151,9 @@ public:
 	/** Create audio thread. */
 	deoalAudioThread(deAudioOpenAL &oal);
 	
+	deoalAudioThread(const deoalAudioThread&) = delete;
+	deoalAudioThread& operator=(const deoalAudioThread&) = delete;
+
 	/** Clean up audio thread. */
 	virtual ~deoalAudioThread();
 	/*@}*/

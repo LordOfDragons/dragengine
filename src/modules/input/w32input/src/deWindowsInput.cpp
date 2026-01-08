@@ -181,12 +181,12 @@ void deWindowsInput::CleanUp(){
 ////////////
 
 int deWindowsInput::GetDeviceCount(){
-	return pDevices->GetCount();
+	return pDevices->GetDevices().GetCount();
 }
 
 deInputDevice::Ref deWindowsInput::GetDeviceAt(int index){
 	const deInputDevice::Ref device(deInputDevice::Ref::New());
-	pDevices->GetAt(index)->GetInfo(device);
+	pDevices->GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
 
@@ -195,11 +195,11 @@ int deWindowsInput::IndexOfDeviceWithID(const char *id){
 }
 
 int deWindowsInput::IndexOfButtonWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfButtonWithID(id);
 }
 
 int deWindowsInput::IndexOfAxisWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfAxisWithID(id);
 }
 
 int deWindowsInput::IndexOfFeedbackWithID(int device, const char *id){
@@ -207,11 +207,11 @@ int deWindowsInput::IndexOfFeedbackWithID(int device, const char *id){
 }
 
 bool deWindowsInput::GetButtonPressed(int device, int button){
-	return pDevices->GetAt(device)->GetButtonAt(button)->GetPressed();
+	return pDevices->GetDevices().GetAt(device)->GetButtons().GetAt(button)->GetPressed();
 }
 
 float deWindowsInput::GetAxisValue(int device, int axis){
-	return pDevices->GetAt(device)->GetAxisAt(axis)->GetValue();
+	return pDevices->GetDevices().GetAt(device)->GetAxes().GetAt(axis)->GetValue();
 }
 
 float deWindowsInput::GetFeedbackValue(int device, int feedback){
@@ -227,20 +227,15 @@ int deWindowsInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes ke
 		return -1;
 	}
 	
-	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	const int count = rdevice.GetButtonCount();
 	int bestPriority = 10;
 	int bestButton = -1;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const dewiDeviceButton &button = *rdevice.GetButtonAt(i);
-		
-		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
+	pDevices->GetKeyboard()->GetButtons().VisitIndexed([&](int i, const dewiDeviceButton& button) {
+		if (button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority) {
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
 		}
-	}
+	});
 	
 	return bestButton;
 }
@@ -259,18 +254,9 @@ deInputEvent::eKeyLocation location){
 		return -1;
 	}
 	
-	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	const int count = rdevice.GetButtonCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dewiDeviceButton &button = *rdevice.GetButtonAt(i);
-		if(button.GetKeyCode() == keyCode && button.GetKeyLocation() == location){
-			return i;
-		}
-	}
-	
-	return 1;
+	return pDevices->GetKeyboard()->GetButtons().IndexOfMatching([&](const dewiDeviceButton& button) {
+		return button.GetKeyCode() == keyCode && button.GetKeyLocation() == location;
+	});
 }
 
 int deWindowsInput::ButtonMatchingKeyChar(int device, int character, deInputEvent::eKeyLocation location){
@@ -278,18 +264,9 @@ int deWindowsInput::ButtonMatchingKeyChar(int device, int character, deInputEven
 		return -1;
 	}
 	
-	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	const int count = rdevice.GetButtonCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dewiDeviceButton &button = *rdevice.GetButtonAt(i);
-		if(button.GetWIChar() == character && button.GetKeyLocation() == location){
-			return i;
-		}
-	}
-	
-	return 1;
+	return pDevices->GetKeyboard()->GetButtons().IndexOfMatching([&](const dewiDeviceButton& button) {
+		return button.GetWIChar() == character && button.GetKeyLocation() == location;
+	});
 }
 
 
@@ -352,7 +329,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 		
 		//LogInfoFormat("KEY_DOWN %i, '%c', %i", result, LOBYTE( keyChar ), wParam );
 		
-		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons().GetAt(button);
 		deviceButton.SetPressed(true);
 		
 		switch(deviceButton.GetKeyCode()){
@@ -395,7 +372,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 			wichar = LOBYTE(keyChar);
 		}
 		
-		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons().GetAt(button);
 		deviceButton.SetPressed(false);
 		
 		switch(deviceButton.GetKeyCode()){
@@ -421,21 +398,21 @@ void deWindowsInput::EventLoop(const MSG &message){
 		
 	case WM_LBUTTONDOWN:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(0)->SetPressed(true);
+		pDevices->GetMouse()->GetButtons().GetAt(0)->SetPressed(true);
 		pAddMousePress(pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time);
 		break;
 		
 	case WM_MBUTTONDOWN:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(2)->SetPressed(true);
+		pDevices->GetMouse()->GetButtons().GetAt(2)->SetPressed(true);
 		pAddMousePress(pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time);
 		break;
 		
 	case WM_RBUTTONDOWN:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(1)->SetPressed(true);
+		pDevices->GetMouse()->GetButtons().GetAt(1)->SetPressed(true);
 		pAddMousePress(pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time);
 		break;
@@ -443,12 +420,12 @@ void deWindowsInput::EventLoop(const MSG &message){
 	case WM_XBUTTONDOWN:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
 		if(GET_XBUTTON_WPARAM(message.wParam) == XBUTTON1){
-			pDevices->GetMouse()->GetButtonAt(3)->SetPressed(true);
+			pDevices->GetMouse()->GetButtons().GetAt(3)->SetPressed(true);
 			pAddMousePress(pDevices->GetMouse()->GetIndex(), 3,
 				pLastMouseModifiers, message.time);
 			
 		}else if(GET_XBUTTON_WPARAM(message.wParam) == XBUTTON2){
-			pDevices->GetMouse()->GetButtonAt(4)->SetPressed(true);
+			pDevices->GetMouse()->GetButtons().GetAt(4)->SetPressed(true);
 			pAddMousePress(pDevices->GetMouse()->GetIndex(), 4,
 				pLastMouseModifiers, message.time);
 		}
@@ -456,21 +433,21 @@ void deWindowsInput::EventLoop(const MSG &message){
 		
 	case WM_LBUTTONUP:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(0)->SetPressed(false);
+		pDevices->GetMouse()->GetButtons().GetAt(0)->SetPressed(false);
 		pAddMouseRelease(pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time);
 		break;
 		
 	case WM_MBUTTONUP:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(2)->SetPressed(false);
+		pDevices->GetMouse()->GetButtons().GetAt(2)->SetPressed(false);
 		pAddMouseRelease(pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time);
 		break;
 		
 	case WM_RBUTTONUP:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
-		pDevices->GetMouse()->GetButtonAt(1)->SetPressed(false);
+		pDevices->GetMouse()->GetButtons().GetAt(1)->SetPressed(false);
 		pAddMouseRelease(pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time);
 		break;
@@ -478,12 +455,12 @@ void deWindowsInput::EventLoop(const MSG &message){
 	case WM_XBUTTONUP:
 		pLastMouseModifiers = pModifiersFromEventState((DWORD)message.wParam);
 		if(GET_XBUTTON_WPARAM(message.wParam) == XBUTTON1){
-			pDevices->GetMouse()->GetButtonAt(3)->SetPressed(false);
+			pDevices->GetMouse()->GetButtons().GetAt(3)->SetPressed(false);
 			pAddMouseRelease(pDevices->GetMouse()->GetIndex(), 3,
 				pLastMouseModifiers, message.time);
 			
 		}else if(GET_XBUTTON_WPARAM(message.wParam) == XBUTTON2){
-			pDevices->GetMouse()->GetButtonAt(4)->SetPressed(false);
+			pDevices->GetMouse()->GetButtons().GetAt(4)->SetPressed(false);
 			pAddMouseRelease(pDevices->GetMouse()->GetIndex(), 4,
 				pLastMouseModifiers, message.time);
 		}
@@ -491,7 +468,7 @@ void deWindowsInput::EventLoop(const MSG &message){
 		
 	case WM_MOUSEWHEEL:
 		pLastMouseModifiers = pModifiersFromEventState(GET_KEYSTATE_WPARAM(message.wParam));
-		pDevices->GetMouse()->GetAxisAt(2)->IncrementWheelChange(
+		pDevices->GetMouse()->GetAxes().GetAt(2)->IncrementWheelChange(
 			GET_WHEEL_DELTA_WPARAM(message.wParam), pLastMouseModifiers, message.time);
 		pDevices->GetMouse()->SetDirtyAxesValues(true);
 		break;

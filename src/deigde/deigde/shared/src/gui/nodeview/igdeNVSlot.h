@@ -49,7 +49,7 @@ public:
 	typedef deTObjectReference<igdeNVSlot> Ref;
 	
 	/** \brief Link list. */
-	typedef decTOrderedSet<deTObjectReference<igdeNVLink>, igdeNVLink*> LinkList;
+	typedef decTObjectOrderedSet<igdeNVLink> LinkList;
 	
 	
 private:
@@ -74,6 +74,8 @@ public:
 	/** \brief Create checkbox. */
 	igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput);
 	
+	igdeNVSlot(const igdeNVSlot&) = delete;
+	igdeNVSlot& operator=(const igdeNVSlot&) = delete;
 	
 	
 protected:

@@ -29,10 +29,6 @@
 
 #include "../common/exceptions_reduced.h"
 
-// Helper functions to solve compile problems with MSVC
-extern "C" DE_DLL_EXPORT void deTThreadSafeObjectReference_AddRef(void *p);
-extern "C" DE_DLL_EXPORT void deTThreadSafeObjectReference_FreeRef(void *p);
-
 
 /**
  * \brief Template deThreadSafeObject reference.
@@ -45,8 +41,40 @@ extern "C" DE_DLL_EXPORT void deTThreadSafeObjectReference_FreeRef(void *p);
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  * 
- * \warning Do not use template instances in public library interfaces.
- *          Template ABIs are \b not stable by design.
+ * \note
+ * This template requires the full type definition of T to be present at instantiation
+ * because it is copy constructible. The copy constructor calls T::AddReference() which
+ * requires knowing the complete type definition. This can cause issues if you try to
+ * use this template with forward-declared types in header files.
+ * 
+ * To avoid this, you can either:
+ * 1. Delete the copy constructors if not needed
+ * 2. Declare copy constructors in the header and define them in source files
+ * 
+ * Example to avoid requiring full type definition:
+ * 
+ * \code{cpp}
+ * // In header file:
+ * class MyClass;
+ *
+ * class MyContainer{
+ * private:
+ *    deTThreadSafeObjectReference<MyClass> pObject;
+ * public:
+ *    MyContainer();
+ *    ~MyContainer();
+ *    MyContainer(const MyContainer &other); // declare only
+ *    MyContainer &operator=(const MyContainer &other); // declare only
+ * };
+ * 
+ * // In source file:
+ * #include "MyClass.h" // full definition here
+ * 
+ * MyContainer::MyContainer() = default;
+ * MyContainer::~MyContainer() = default;
+ * MyContainer::MyContainer(const MyContainer &other) = default;
+ * MyContainer &MyContainer::operator=(const MyContainer &other) = default;
+ * \endcode
  */
 template<class T> class deTThreadSafeObjectReference{
 private:
@@ -71,7 +99,7 @@ public:
 	explicit deTThreadSafeObjectReference(T *object) : pObject(object){
 		if(pObject){
 			/* call helper to avoid requiring T definition here */
-			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
+			pObject->AddReference();
 		}
 	}
 	
@@ -82,7 +110,7 @@ public:
 	 */
 	deTThreadSafeObjectReference(const deTThreadSafeObjectReference &reference) : pObject(reference.pObject){
 		if(pObject){
-			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
+			pObject->AddReference();
 		}
 	}
 	
@@ -94,7 +122,7 @@ public:
 	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 	explicit deTThreadSafeObjectReference(const deTThreadSafeObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
-			deTThreadSafeObjectReference_AddRef(static_cast<void*>(pObject));
+			pObject->AddReference();
 		}
 	}
 	
@@ -126,7 +154,7 @@ public:
 	~deTThreadSafeObjectReference(){
 		if(pObject){
 			/* call helper to avoid requiring T definition here */
-			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+			pObject->FreeReference();
 		}
 	}
 	/*@}*/
@@ -205,13 +233,13 @@ public:
 		}
 		
 		if(pObject){
-			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+			pObject->FreeReference();
 		}
 		
 		pObject = object;
 		
 		if(object){
-			deTThreadSafeObjectReference_AddRef(static_cast<void*>(object));
+			object->AddReference();
 		}
 		
 		return *this;
@@ -245,7 +273,7 @@ public:
 		}
 		
 		if(pObject){
-			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+			pObject->FreeReference();
 		}
 		
 		pObject = reference.pObject;
@@ -264,7 +292,7 @@ public:
 		}
 		
 		if(pObject){
-			deTThreadSafeObjectReference_FreeRef(static_cast<void*>(pObject));
+			pObject->FreeReference();
 		}
 		
 		pObject = object;

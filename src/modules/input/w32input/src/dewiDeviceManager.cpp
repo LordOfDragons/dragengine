@@ -123,31 +123,26 @@ void dewiDeviceManager::LogDevice(const dewiDevice &device) const{
 	pModule.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
 		device.GetID().GetString(), device.GetType());
 		
-	const int axisCount = device.GetAxisCount();
-	int i;
-	if(axisCount > 0){
+	if(device.GetAxes().IsNotEmpty()) {
 		pModule.LogInfo("  Axes:");
-		for(i=0; i<axisCount; i++){
-			const dewiDeviceAxis &axis = *device.GetAxisAt(i);
+		device.GetAxes().Visit([&](const dewiDeviceAxis& axis) {
 			pModule.LogInfoFormat("    - '%s' (%s)[%d] %d .. %d [%d %d]",
 				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetType(),
 				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat());
-		}
+		});
 	}
 	
 	if(device.GetType() == deInputDevice::edtKeyboard){
-		pModule.LogInfoFormat("  Buttons: %d", device.GetButtonCount());
+		pModule.LogInfoFormat("  Buttons: %d", device.GetButtons().GetCount());
 
 	}else{
-		const int buttonCount = device.GetButtonCount();
-		if(buttonCount > 0){
+		if(device.GetButtons().IsNotEmpty()) {
 			pModule.LogInfo("  Buttons:");
-			for(i=0; i<buttonCount; i++){
-				const dewiDeviceButton &button = *device.GetButtonAt(i);
+			device.GetButtons().VisitIndexed([&](int i, const dewiDeviceButton& button) {
 				pModule.LogInfoFormat("    - '%s' (%s)[%d] %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
 					button.GetType(), button.GetWICode(), i);
-			}
+			});
 		}
 	}
 }

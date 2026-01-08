@@ -75,6 +75,8 @@ public:
 	/** \brief Create checkbox. */
 	igdeNVNode(igdeEnvironment &environment, const char *title, const char *description = "");
 	
+	igdeNVNode(const igdeNVNode&) = delete;
+	igdeNVNode& operator=(const igdeNVNode&) = delete;
 	
 	
 protected:

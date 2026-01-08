@@ -70,6 +70,9 @@ public:
 	/** \brief Create synthesizer. */
 	deSynthesizer(deSynthesizerManager *manager);
 	
+	deSynthesizer(const deSynthesizer& synthesizer) = delete;
+	deSynthesizer& operator=(const deSynthesizer& synthesizer) = delete;
+
 protected:
 	/**
 	 * \brief Clean up synthesizer.

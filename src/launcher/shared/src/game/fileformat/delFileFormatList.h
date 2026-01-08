@@ -45,6 +45,9 @@ public:
 	/**  \brief Create file format list. */
 	delFileFormatList();
 	
+	delFileFormatList(const delFileFormatList& other) = delete;
+	delFileFormatList& operator=(const delFileFormatList& other) = delete;
+
 	/** \brief Clean up file format list. */
 	~delFileFormatList();
 	/*@}*/

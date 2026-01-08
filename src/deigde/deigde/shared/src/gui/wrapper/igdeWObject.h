@@ -161,6 +161,9 @@ public:
 	/** \brief Create wrapper. */
 	igdeWObject(igdeEnvironment &environment);
 	
+	igdeWObject(const igdeWObject&) = delete;
+	igdeWObject& operator=(const igdeWObject&) = delete;
+
 protected:
 	/** \brief Clean up wrapper. */
 	virtual ~igdeWObject();

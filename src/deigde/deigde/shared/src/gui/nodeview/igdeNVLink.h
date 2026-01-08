@@ -56,7 +56,8 @@ public:
 	/** \brief Create link. */
 	igdeNVLink(igdeNVSlot *source, igdeNVSlot *target);
 	
-	
+	igdeNVLink(const igdeNVLink&) = delete;
+	igdeNVLink& operator=(const igdeNVLink&) = delete;
 	
 protected:
 	/**

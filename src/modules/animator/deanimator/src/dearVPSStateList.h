@@ -48,6 +48,9 @@ public:
 	/** Create state list. */
 	dearVPSStateList();
 	
+	dearVPSStateList(const dearVPSStateList&);
+	dearVPSStateList& operator=(const dearVPSStateList&);
+
 	/** Clean up state list. */
 	~dearVPSStateList();
 	/*@}*/

@@ -89,9 +89,8 @@ public:
 	}
 	
 	/** \brief Create a copy of a list. */
-	// do not use 'requires de_copy_constructible<T>' before ':' or template
-	// instantiation requires full class definition of T
-	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
+	decTList(const decTList<T,TP> &list)
+	requires de_copy_constructible<T> : pElements(nullptr), pCount(0), pSize(0){
 		if(list.pCount == 0){
 			return;
 		}
@@ -157,6 +156,33 @@ public:
 		return pCount > 0;
 	}
 	
+	/**
+	 * \brief Capacity of list.
+	 */
+	inline int GetCapacity() const {
+		return pSize;
+	}
+
+	/**
+	 * Enlarge capacity of list if smaller.
+	 */
+	void EnlargeCapacity(int capacity) {
+		if (capacity <= pSize) {
+			return;
+		}
+
+		T * const newArray = new T[capacity];
+		if(pElements){
+			int i;
+			for(i=0; i<pSize; i++){
+				newArray[i] = std::move(pElements[i]);
+			}
+			delete [] pElements;
+		}
+		pElements = newArray;
+		pSize = capacity;
+	}
+
 	/**
 	 * \brief Element at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
@@ -1751,29 +1777,14 @@ public:
 	}
 	
 	/** \brief Copy list to this list. */
-	// do not use 'requires de_copy_constructible<T>' before '{' or template
-	// instantiation requires full class definition of T
-	decTList<T,TP> &operator=(const decTList<T,TP> &list){
+	decTList<T,TP> &operator=(const decTList<T,TP> &list)
+	requires de_copy_constructible<T>{
 		if(&list == this){
 			return *this;
 		}
 		
 		RemoveAll();
-		
-		if(list.pCount > pSize){
-			T * const newArray = new T[list.pCount];
-			if(pElements){
-				delete [] pElements;
-			}
-			pElements = newArray;
-			pSize = list.pCount;
-		}
-		
-		for(pCount=0; pCount<list.pCount; pCount++){
-			pElements[pCount] = list.pElements[pCount];
-		}
-		
-		return *this;
+		return *this += list;
 	}
 	
 	/** \brief Move list. */
@@ -1805,19 +1816,7 @@ public:
 	decTList<T,TP> &operator+=(const decTList<T,TP> &list){
 		if(list.pCount > 0){
 			int count = pCount + list.pCount;
-			
-			if(count > pSize){
-				T * const newArray = new T[count];
-				if(pElements){
-					int i;
-					for(i=0; i<pSize; i++){
-						newArray[i] = pElements[i];
-					}
-					delete [] pElements;
-				}
-				pElements = newArray;
-				pSize = count;
-			}
+			EnlargeCapacity(count);
 			
 			int i;
 			for(i=0; i<list.pCount; i++){

@@ -59,6 +59,8 @@ public:
 	/** \brief Create trigger target. */
 	explicit igdeTriggerTarget(const char *name);
 	
+	igdeTriggerTarget(const igdeTriggerTarget&) = delete;
+	igdeTriggerTarget& operator=(const igdeTriggerTarget&) = delete;
 	
 	
 protected:

@@ -78,6 +78,9 @@ public:
 	deFont(deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime);
 	
+	deFont(const deFont&) = delete;
+	deFont& operator=(const deFont&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up font.

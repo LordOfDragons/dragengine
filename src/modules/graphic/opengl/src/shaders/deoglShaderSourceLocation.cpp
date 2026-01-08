@@ -47,5 +47,8 @@ pOutputLine(outputLine)
 	}
 }
 
+deoglShaderSourceLocation::deoglShaderSourceLocation(const deoglShaderSourceLocation &other) = default;
+deoglShaderSourceLocation& deoglShaderSourceLocation::operator=(const deoglShaderSourceLocation &other) = default;
+
 deoglShaderSourceLocation::~deoglShaderSourceLocation(){
 }

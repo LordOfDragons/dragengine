@@ -48,7 +48,7 @@ public:
 	using Ref = deTObjectReference<igdeGDCategory>;
 	
 	/** \brief List of categories. */
-	class List : public decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>{
+	class DE_DLL_EXPORT List : public decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>{
 	public:
 		using decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>::decTCollectionQueryByName;
 		
@@ -154,6 +154,10 @@ public:
 	 * are added to already existing categories not shadowing them.
 	 */
 	void UpdateWith(const igdeGDCategory &category);
+
+
+	/** Compare. */
+	int Compare(const igdeGDCategory& category) const;
 	/*@}*/
 	
 	

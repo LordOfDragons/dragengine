@@ -135,6 +135,9 @@ public:
 	/** \brief Create new particle emitter. */
 	deParticleEmitter(deParticleEmitterManager *manager);
 	
+	deParticleEmitter(const deParticleEmitter&) = delete;
+	deParticleEmitter& operator=(const deParticleEmitter&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up particle emitter.

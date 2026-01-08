@@ -26,19 +26,19 @@
 #define DEMSGDKASYNCTASK_H
 
 #include "gdk_include.h"
-#include <dragengine/deObject.h>
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 /**
  * Asynchronous task.
  */
 class deMsgdkAsyncTask : public deObject
 {
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deMsgdkAsyncTask> Ref;
-
-
 public:
+	using Ref = deTObjectReference<deMsgdkAsyncTask>;
+	using List = decTObjectOrderedSet<deMsgdkAsyncTask>;
+
 	/**
 	 * Invalidator used if owner of task is destroyed to avoid segfaults.
 	 * Owner has one invalidator shared between all running tasks.

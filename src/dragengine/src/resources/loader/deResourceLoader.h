@@ -121,6 +121,9 @@ public:
 	/** \brief Create resource loader. */
 	deResourceLoader(deEngine &engine);
 	
+	deResourceLoader(const deResourceLoader&) = delete;
+	deResourceLoader& operator=(const deResourceLoader&) = delete;
+
 	/** \brief Clean up resource loader. */
 	~deResourceLoader();
 	/*@}*/

@@ -620,13 +620,9 @@ LRESULT deoglRTContext::ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wPa
 	
 	switch(message){
 	case WM_SETCURSOR:{
-		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
-		const int count = windows.GetCount();
-		int i;
-		for(i=0; i<count; i++){
-			deoglRenderWindow &window = *windows.GetAt(i);
-			if(window.GetRRenderWindow()->GetWindow() == hwnd){
-				if(window.GetRRenderWindow()->GetHostWindow()){
+		for(const auto &window : pRenderThread.GetOgl().GetRenderWindowList().GetWindows()) {
+			if(window->GetRRenderWindow()->GetWindow() == hwnd){
+				if (window->GetRRenderWindow()->GetHostWindow()) {
 					return DefWindowProc(hwnd, message, wParam, lParam);
 				}
 				break;
@@ -667,43 +663,35 @@ LRESULT deoglRTContext::ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wPa
 		return 1;
 		
 	case WM_SIZE:{
-		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
-		const int count = windows.GetCount();
 		//const int height = HIWORD( lParam ); // outer width
 		//const int width = LOWORD( lParam ); // outer height
-		int i;
-		
-		for(i=0; i<count; i++){
-			deoglRenderWindow &window = *windows.GetAt(i);
-			if(window.GetRRenderWindow()->GetWindow() == hwnd){
+
+		for (const auto& window : pRenderThread.GetOgl().GetRenderWindowList().GetWindows()) {
+			if(window->GetRRenderWindow()->GetWindow() == hwnd){
 				// for fullscreen windows the size is incorrect while the window style is changed.
 				// to avoid problems ignore size change if the window is full screen
-				if(window.GetRRenderWindow()->GetFullScreen()){
+				if(window->GetRRenderWindow()->GetFullScreen()){
 					break;
 				}
 
 				// the size provided in the message are the outer size of the window not the inner size.
 				// for non-fullscreen windows we have to calculate the correct inner size
-				const decPoint innerSize(window.GetRRenderWindow()->GetInnerSize());
-				window.GetRenderWindow().SetSize(innerSize.x, innerSize.y);
+				const decPoint innerSize(window->GetRRenderWindow()->GetInnerSize());
+				window->GetRenderWindow().SetSize(innerSize.x, innerSize.y);
 				break;
 			}
 		}
 		}return 0;
 		
 	case WM_DPICHANGED:{
-		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int scaleFactor = 100 * HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
 		const RECT &rect = *((RECT*)lParam);
-		const int count = windows.GetCount();
-		int i;
 
-		for(i=0; i<count; i++){
-			deoglRenderWindow &window = *windows.GetAt(i);
-			deoglRRenderWindow &rwindow = *window.GetRRenderWindow();
+		for (const auto& window : pRenderThread.GetOgl().GetRenderWindowList().GetWindows()) {
+			deoglRRenderWindow &rwindow = *window->GetRRenderWindow();
 
 			if(rwindow.GetWindow() == hwnd){
-				deRenderWindow &engWindow = window.GetRenderWindow();
+				deRenderWindow &engWindow = window->GetRenderWindow();
 
 				engWindow.SetScaleFactor(scaleFactor);
 

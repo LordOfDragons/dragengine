@@ -433,6 +433,10 @@ public:
 	/** \brief Create input device. */
 	deInputDevice();
 	
+	deInputDevice(const deInputDevice&);
+	deInputDevice& operator=(const deInputDevice&);
+
+
 protected:
 	/** \brief Clean up input device. */
 	~deInputDevice() override;

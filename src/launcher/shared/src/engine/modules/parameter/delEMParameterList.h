@@ -46,6 +46,9 @@ public:
 	/** \brief Create list. */
 	delEMParameterList();
 	
+	delEMParameterList(const delEMParameterList& other) = delete;
+	delEMParameterList& operator=(const delEMParameterList& other) = delete;
+
 	/** \brief Clean up list. */
 	~delEMParameterList();
 	/*@}*/

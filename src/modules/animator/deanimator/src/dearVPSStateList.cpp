@@ -48,6 +48,22 @@
 dearVPSStateList::dearVPSStateList(){
 }
 
+dearVPSStateList::dearVPSStateList(const dearVPSStateList& other){
+	*this = other;
+}
+
+dearVPSStateList& dearVPSStateList::operator=(const dearVPSStateList& other){
+	pStates = decTList<dearVPSState>(other.pStates.GetCount(), dearVPSState());
+	
+	other.pStates.VisitIndexed([&](int i, const dearVPSState &state){
+		dearVPSState &newState = pStates.GetAt(i);
+		newState = state;
+		newState.SetDirty(true);
+	});
+	
+	return *this;
+}
+
 dearVPSStateList::~dearVPSStateList(){
 }
 
@@ -82,30 +98,11 @@ int dearVPSStateList::IndexOfStateNamed(const char *name) const{
 
 
 dearVPSStateList *dearVPSStateList::CreateCopy() const{
-	dearVPSStateList * const stalist = new dearVPSStateList;
-	
-	try{
-		stalist->SetStateCount(pStates.GetCount());
-		pStates.VisitIndexed([&](int i, const dearVPSState &state){
-			dearVPSState &newState = stalist->GetStateAt(i);
-			newState = state;
-			newState.SetDirty(true);
-		});
-		
-	}catch(const deException &){
-		delete stalist;
-		throw;
-	}
-	
-	return stalist;
+	return new dearVPSStateList(*this);
 }
 
 void dearVPSStateList::SetFrom(const dearVPSStateList &stateList){
-	SetStateCount(stateList.pStates.GetCount());
-	pStates.VisitIndexed([&](int i, dearVPSState &state){
-		state = stateList.GetStateAt(i);
-		state.SetDirty(true);
-	});
+	*this = stateList;
 }
 
 

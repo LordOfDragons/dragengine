@@ -528,15 +528,9 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode(int code){
 
 int dewiDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 	// this task is just a guess so missing a solution is fine
-	const int count = GetButtonCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(GetButtonAt(i)->GetWIChar() == keyChar){
-			return i;
-		}
-	}
-	
-	return -1;
+	return GetButtons().IndexOfMatching([&](const dewiDeviceButton &button){
+		return button.GetWIChar() == keyChar;
+	});
 }
 
 
@@ -546,7 +540,7 @@ int dewiDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 
 void dewiDeviceKeyboard::pSetButtonAt(int index, const char *id, const char *name,
 int wiCode, deInputEvent::eKeyCodes keyCode, int wiChar, int matchPriority){
-	dewiDeviceButton &button = *GetButtonAt(index);
+	dewiDeviceButton &button = GetButtons().GetAt(index);
 	
 	button.SetID(id);
 	button.SetName(name);

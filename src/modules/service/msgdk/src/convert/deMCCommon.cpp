@@ -67,25 +67,17 @@ decString deMCCommon::UInt64ToString(uint64_t value){
 }
 
 decStringList deMCCommon::StringList(const deServiceObject &so){
-	const int count = so.GetChildCount();
 	decStringList list;
-	int i;
-	
-	for(i=0; i<count; i++){
-		list.Add(so.GetChildAt(i)->GetString());
-	}
-	
+	so.GetChildren().Visit([&](const deServiceObject& child) {
+		list.Add(child.GetString());
+	});
 	return list;
 }
 
 deServiceObject::Ref deMCCommon::StringList(const decStringList &list){
 	const deServiceObject::Ref so(deServiceObject::NewList());
-	
-	const int count = list.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		so->AddStringChild(list.GetAt(i));
-	}
-	
+	list.Visit([&](const decString& string) {
+		so->AddStringChild(string);
+	});
 	return so;
 }

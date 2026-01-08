@@ -56,7 +56,7 @@ private:
 	deInputDeviceAxis::eAxisTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMinimum, pMaximum;
@@ -85,6 +85,9 @@ public:
 	/** Create device axis. */
 	dewiDeviceAxis(deWindowsInput &module);
 	
+	dewiDeviceAxis(const dewiDeviceAxis&) = delete;
+	dewiDeviceAxis& operator=(const dewiDeviceAxis&) = delete;
+
 protected:
 	/** Clean up device axis. */
 	virtual ~dewiDeviceAxis();

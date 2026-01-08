@@ -50,7 +50,7 @@ private:
 	deInputDeviceFeedback::eFeedbackTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMaximum;
@@ -69,6 +69,9 @@ public:
 	/** \brief Create device feedback. */
 	dewiDeviceFeedback(deWindowsInput &module);
 	
+	dewiDeviceFeedback(const dewiDeviceFeedback&) = delete;
+	dewiDeviceFeedback& operator=(const dewiDeviceFeedback&) = delete;
+
 protected:
 	/** \brief Clean up device feedback. */
 	virtual ~dewiDeviceFeedback();

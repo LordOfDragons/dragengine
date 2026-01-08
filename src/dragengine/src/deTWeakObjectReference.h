@@ -29,12 +29,44 @@
 
 #include "deObject.h"
 
-// Helper functions to solve compile problems with MSVC
-extern "C" DE_DLL_EXPORT deObject::cWeakRefData *deTObjectReference_AddWeakRef(void *p);
-
 
 /**
  * \brief Weak object reference.
+ * 
+ * \note
+ * This template requires the full type definition of T to be present at instantiation
+ * because it is copy constructible. The copy constructor calls T::AddReference() which
+ * requires knowing the complete type definition. This can cause issues if you try to
+ * use this template with forward-declared types in header files.
+ * 
+ * To avoid this, you can either:
+ * 1. Delete the copy constructors if not needed
+ * 2. Declare copy constructors in the header and define them in source files
+ * 
+ * Example to avoid requiring full type definition:
+ * 
+ * \code{cpp}
+ * // In header file:
+ * class MyClass;
+ *
+ * class MyContainer{
+ * private:
+ *    deTWeakObjectReference<MyClass> pObject;
+ * public:
+ *    MyContainer();
+ *    ~MyContainer();
+ *    MyContainer(const MyContainer &other); // declare only
+ *    MyContainer &operator=(const MyContainer &other); // declare only
+ * };
+ * 
+ * // In source file:
+ * #include "MyClass.h" // full definition here
+ * 
+ * MyContainer::MyContainer() = default;
+ * MyContainer::~MyContainer() = default;
+ * MyContainer::MyContainer(const MyContainer &other) = default;
+ * MyContainer &MyContainer::operator=(const MyContainer &other) = default;
+ * \endcode
  */
 template<class T> class deTWeakObjectReference{
 private:
@@ -52,7 +84,7 @@ public:
 	explicit deTWeakObjectReference(T *object) : pReference(nullptr){
 		if(object){
 			/* call helper to avoid requiring T definition here */
-			pReference = deTObjectReference_AddWeakRef(static_cast<void*>(object));
+			pReference = object->AddWeakReference();
 		}
 	}
 	
@@ -167,7 +199,7 @@ public:
 		pReference = nullptr;
 		
 		if(object){
-			pReference = deTObjectReference_AddWeakRef(static_cast<void*>(object));
+			pReference = object->AddWeakReference();
 		}
 		
 		return *this;

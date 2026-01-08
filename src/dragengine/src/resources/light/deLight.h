@@ -238,6 +238,9 @@ public:
 	/** \brief Create light source. */
 	deLight(deLightManager *manager);
 	
+	deLight(const deLight& other) = delete;
+	deLight& operator=(const deLight& other) = delete;
+
 protected:
 	/**
 	 * \brief Clean up light source.

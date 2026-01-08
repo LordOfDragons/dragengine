@@ -34,7 +34,6 @@
 class deoalAudioThread;
 class deoalAWorld;
 class deoalAMicrophone;
-class deoalRayTraceHitElement;
 class deoalRayTraceResult;
 class deoalEnergyHistogram;
 class deoalEnvProbe;

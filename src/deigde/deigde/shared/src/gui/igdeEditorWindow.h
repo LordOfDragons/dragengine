@@ -70,6 +70,8 @@ public:
 	/** \brief Create widget. */
 	igdeEditorWindow(igdeEditorModule &editorModule);
 	
+	igdeEditorWindow(const igdeEditorWindow&) = delete;
+	igdeEditorWindow& operator=(const igdeEditorWindow&) = delete;
 	
 	
 protected:

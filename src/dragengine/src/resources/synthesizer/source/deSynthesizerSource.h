@@ -80,6 +80,9 @@ public:
 	/** \brief Create synthesizer source. */
 	deSynthesizerSource();
 	
+	deSynthesizerSource(const deSynthesizerSource& source) = delete;
+	deSynthesizerSource& operator=(const deSynthesizerSource& source) = delete;
+
 protected:
 	/**
 	 * \brief Clean up synthesizer source.

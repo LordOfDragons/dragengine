@@ -113,6 +113,9 @@ public:
 	/** Creates a new shader manager object. */
 	deoglShaderManager(deoglRenderThread &renderThread);
 	
+	deoglShaderManager(const deoglShaderManager&) = delete;
+	deoglShaderManager& operator=(const deoglShaderManager&) = delete;
+	
 	/** Cleans up the shader manager object. */
 	~deoglShaderManager();
 	/*@}*/

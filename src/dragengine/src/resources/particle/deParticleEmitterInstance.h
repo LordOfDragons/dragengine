@@ -94,6 +94,9 @@ public:
 	/** \brief Create new particle emitter instance. */
 	deParticleEmitterInstance(deParticleEmitterInstanceManager *manager);
 	
+	deParticleEmitterInstance(const deParticleEmitterInstance&) = delete;
+	deParticleEmitterInstance& operator=(const deParticleEmitterInstance&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up particle emitter instance.

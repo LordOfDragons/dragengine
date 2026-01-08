@@ -79,6 +79,9 @@ public:
 	/** \brief Create animator. */
 	deAnimator(deAnimatorManager *manager);
 	
+	deAnimator(const deAnimator&) = delete;
+	deAnimator& operator=(const deAnimator&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up animator.

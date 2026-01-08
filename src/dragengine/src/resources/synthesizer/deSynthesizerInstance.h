@@ -92,6 +92,9 @@ public:
 	/** \brief Create synthesizer instance. */
 	deSynthesizerInstance(deSynthesizerInstanceManager *manager);
 	
+	deSynthesizerInstance(const deSynthesizerInstance& synthesizerInstance) = delete;
+	deSynthesizerInstance& operator=(const deSynthesizerInstance& synthesizerInstance) = delete;
+
 protected:
 	/**
 	 * \brief Clean up the synthesizer instance.

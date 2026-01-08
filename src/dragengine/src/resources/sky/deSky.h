@@ -74,6 +74,9 @@ public:
 	/** \brief Create sky resource. */
 	deSky(deSkyManager *manager);
 	
+	deSky(const deSky& copy) = delete;
+	deSky& operator=(const deSky& other) = delete;
+
 protected:
 	/**
 	 * \brief Clean up sky resource.

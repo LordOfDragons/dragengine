@@ -70,6 +70,9 @@ public:
 	/** \brief Create sky instance. */
 	deSkyInstance(deSkyInstanceManager *manager);
 	
+	deSkyInstance(const deSkyInstance& copy) = delete;
+	deSkyInstance& operator=(const deSkyInstance& other) = delete;
+
 protected:
 	/**
 	 * \brief Clean up the sky instance.

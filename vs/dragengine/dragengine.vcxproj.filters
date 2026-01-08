@@ -1764,16 +1764,10 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\base64\base64.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\deTObjectReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

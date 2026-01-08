@@ -47,6 +47,9 @@ public:
 	/** \brief Create list. */
 	delEngineModuleList();
 	
+	delEngineModuleList(const delEngineModuleList& other) = delete;
+	delEngineModuleList& operator=(const delEngineModuleList& other) = delete;
+
 	/** \brief Clean up list. */
 	~delEngineModuleList();
 	/*@}*/

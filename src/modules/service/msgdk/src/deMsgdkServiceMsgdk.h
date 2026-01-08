@@ -31,7 +31,6 @@
 #include "deMsgdkPendingRequest.h"
 #include "deMsgdkAsyncTask.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -52,7 +51,7 @@ public:
 private:
 	deMicrosoftGdk &pModule;
 	deService * const pService;
-	decObjectList pPendingRequests;
+	deMsgdkPendingRequest::List pPendingRequests;
 	bool pIsInitialized;
 	const deMsgdkAsyncTask::Invalidator::Ref pInvalidator;
 	
@@ -62,7 +61,7 @@ private:
 
 	XblContextHandle pXblContext;
 	bool pAchievementsSynced;
-	decObjectList pFrameUpdateTasks;
+	deMsgdkAsyncTask::List pFrameUpdateTasks;
 
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 

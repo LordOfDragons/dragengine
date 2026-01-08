@@ -141,6 +141,9 @@ public:
 	/** \brief Create collider. */
 	deCollider(deColliderManager *manager);
 	
+	deCollider(const deCollider&) = delete;
+	deCollider& operator=(const deCollider&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up collider.

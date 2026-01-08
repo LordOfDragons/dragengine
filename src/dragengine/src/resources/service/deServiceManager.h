@@ -61,6 +61,9 @@ public:
 	
 	/** \brief Clean up service manager. */
 	~deServiceManager() override;
+
+	deServiceManager(const deServiceManager&) = delete;
+	deServiceManager& operator=(const deServiceManager&) = delete;
 	/*@}*/
 	
 	

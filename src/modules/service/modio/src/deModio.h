@@ -62,6 +62,9 @@ public:
 	/** Create module. */
 	deModio(deLoadableModule &loadableModule);
 	
+	deModio(const deModio &) = delete;
+	deModio &operator=(const deModio &) = delete;
+	
 	/** Delete module. */
 	~deModio() override;
 	/*@}*/
