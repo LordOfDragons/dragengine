@@ -47,9 +47,6 @@ pSupportsFaceMouthExpressions(false),
 pUsingHandInteraction(false){
 }
 
-deInputDevice::deInputDevice(const deInputDevice& other) = default;
-deInputDevice& deInputDevice::operator=(const deInputDevice&) = default;
-
 deInputDevice::~deInputDevice(){
 	pCleanUp();
 }

@@ -28,6 +28,11 @@
 #include "deThread.h"
 #include "../common/exceptions.h"
 
+#if defined OS_UNIX || defined OS_BEOS
+#include <pthread.h>
+#include <signal.h>
+#endif
+
 
 
 // Class deThread

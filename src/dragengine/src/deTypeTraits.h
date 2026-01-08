@@ -43,6 +43,18 @@
  * constructor to be defined.
  */
 
+// Helper to detect whether a type is complete (sizeof(T) is well-formed).
+/*
+template<typename T, typename = void>
+struct de_is_complete : std::false_type {};
+
+template<typename T>
+struct de_is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
+template<typename T>
+concept de_copy_constructible = de_is_complete<T>::value && std::is_copy_constructible_v<T>;
+*/
+
 template<typename T>
 concept de_copy_constructible = std::is_copy_constructible_v<T>;
 

@@ -28,6 +28,7 @@
 #include <iterator>
 #include <cstddef>
 #include <utility>
+#include <type_traits>
 
 #include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
@@ -75,9 +76,12 @@ public:
 	 * \brief Create a new list with an initial count of elements all set to element.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	template <typename U = T>
-	requires de_copy_constructible<U>
 	decTList(int count, const T &element) : pElements(nullptr), pCount(0), pSize(0){
+		// do not use
+		//    template <typename U = T>
+		//    requires de_copy_constructible<U>
+		// before constructor declaration or template instantiation potentially requires
+		// full class definition of T
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > 0){
@@ -88,9 +92,12 @@ public:
 		}
 	}
 	
+	
 	/** \brief Create a copy of a list. */
-	decTList(const decTList<T,TP> &list)
-	requires de_copy_constructible<T> : pElements(nullptr), pCount(0), pSize(0){
+	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
+		// do not use
+		//    requires de_copy_constructible<T>
+		// after argument list or template instantiation requires full class definition of T
 		if(list.pCount == 0){
 			return;
 		}
@@ -1777,8 +1784,10 @@ public:
 	}
 	
 	/** \brief Copy list to this list. */
-	decTList<T,TP> &operator=(const decTList<T,TP> &list)
-	requires de_copy_constructible<T>{
+	decTList<T,TP> &operator=(const decTList<T,TP> &list){
+		// do not use
+		//    requires de_copy_constructible<T>
+		// after argument list or template instantiation requires full class definition of T
 		if(&list == this){
 			return *this;
 		}
