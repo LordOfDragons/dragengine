@@ -108,11 +108,11 @@ pActiveMicrophone(NULL)
 		pCommandExecuter = new deoalCommandExecuter(*this);
 		pConfiguration = new deoalConfiguration;
 		
-		pParameters.Add(deTObjectReference<deoalPEnableEFX>::New(*this));
-		pParameters.Add(deTObjectReference<deoalPAuralizationMode>::New(*this));
-		pParameters.Add(deTObjectReference<deoalPAuralizationQuality>::New(*this));
-		pParameters.Add(deTObjectReference<deoalPMaxEnvSlots>::New(*this));
-		pParameters.Add(deTObjectReference<deoalPLogLevel>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPEnableEFX>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPAuralizationMode>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPAuralizationQuality>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPMaxEnvSlots>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPLogLevel>::New(*this));
 		
 	}catch(const deException &e){
 		LogException(e);

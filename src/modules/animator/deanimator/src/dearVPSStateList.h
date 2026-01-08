@@ -25,12 +25,13 @@
 #ifndef _DEARVPSSTATELIST_H_
 #define _DEARVPSSTATELIST_H_
 
+#include "dearVPSState.h"
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class dearComponent;
-class dearVPSState;
 class deComponent;
 class deAnimator;
 

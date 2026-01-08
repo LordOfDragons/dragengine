@@ -26,7 +26,7 @@
 #define _DEOALPARAMETER_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -40,16 +40,18 @@ class deAudioOpenAL;
  * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
-class deoalParameter : public deObject, public deModuleParameter{
+class deoalParameter : public deModuleParameter{
 public:
-	class List : public decTObjectOrderedSet<deoalParameter>{
+	class List : public decTUniqueList<deoalParameter>{
 	public:
-		using decTObjectOrderedSet<deoalParameter>::decTObjectOrderedSet;
+		using decTUniqueList<deoalParameter>::decTUniqueList;
 		
 		deoalParameter &GetNamed(const char *name) const{
-			return FindOrDefault([&](const deoalParameter &p){
+			const deTUniqueReference<deoalParameter> *found = nullptr;
+			DEASSERT_TRUE(Find([&](const deoalParameter &p){
 				return p.GetName() == name;
-			});
+			}, found));
+			return **found;
 		}
 		
 		int IndexOfNamed(const char *name) const{
@@ -71,13 +73,11 @@ public:
 	/** \brief Create parameter. */
 	deoalParameter(deAudioOpenAL &oal);
 	
-protected:
 	/** \brief Clean up parameter. */
-	virtual ~deoalParameter();
+	virtual ~deoalParameter() = default;
 	/*@}*/
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */

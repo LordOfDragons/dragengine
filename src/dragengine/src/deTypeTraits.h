@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,28 @@
  * SOFTWARE.
  */
 
-#include "deoalParameter.h"
+#ifndef _DETYPETRAITS_H_
+#define _DETYPETRAITS_H_
 
+#include <type_traits>
 
-// class deoalParameter
-/////////////////////////
+/**
+ * \brief Type constraint "T is constructibler".
+ * 
+ * C++20 requires to obey the Rule of 5 meaning for a type to considered copyable
+ * the type class requires these five functions to be defined:
+ * - T::T(const T&) (copy constructor)
+ * - T::T(T&&) (move constructor)
+ * - T &T::operator=(const T&) (copy assignment)
+ * - T &T::operator=(T&&) (move assignment)
+ * - T::~T() (destructor)
+ * 
+ * However, in many cases only the copy constructor is required to be defined.
+ * This concept defines a "loose" copyable constraint only requiring the copy
+ * constructor to be defined.
+ */
 
-// Constructor, destructor
-////////////////////////////
+template<typename T>
+concept de_copy_constructible = std::is_copy_constructible_v<T>;
 
-deoalParameter::deoalParameter(deAudioOpenAL &oal) : pOal(oal){
-}
+#endif

@@ -25,9 +25,9 @@
 #ifndef _DEOALRAYTRACEHITELEMENTLIST_H_
 #define _DEOALRAYTRACEHITELEMENTLIST_H_
 
-#include <dragengine/common/collection/decTList.h>
+#include "deoalRayTraceHitElement.h"
 
-class deoalRayTraceHitElement;
+#include <dragengine/common/collection/decTList.h>
 
 
 

@@ -776,6 +776,15 @@ if parent_env['CROSSCOMPILE_CLANG']:
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-function'])
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 
+# enable c++20
+parent_env.Append(CPPFLAGS = ['-std=c++20'])
+
+# in c++20 OR-ing unnamed enum constant values causes warnings. the main problem
+# here is the FOX toolkit which uses unnamed enums for flags. other libraries potentially
+# cause problems here too. disabled since in Drag[en]gine this concept is not used except
+# when dealing with foreign libraries
+parent_env.Append(CPPFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
+
 # no default targets
 Default(None)
 
