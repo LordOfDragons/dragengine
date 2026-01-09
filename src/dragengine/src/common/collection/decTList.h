@@ -25,6 +25,7 @@
 #ifndef _DECTLIST_H_
 #define _DECTLIST_H_
 
+#include <algorithm>
 #include <iterator>
 #include <cstddef>
 #include <utility>
