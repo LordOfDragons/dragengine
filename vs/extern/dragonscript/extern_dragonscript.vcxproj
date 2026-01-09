@@ -111,7 +111,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>libdscript-static</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.5\lib\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.5\vs\x64\Release\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,7 +122,7 @@
     <PublicModuleDirectories>
     </PublicModuleDirectories>
     <TargetName>libdscript-static</TargetName>
-    <OutDir>$(ProjectDir)dragonscript-1.5\lib\</OutDir>
+    <OutDir>$(ProjectDir)dragonscript-1.5\vs\x64\Release\</OutDir>
     <AllProjectBMIsArePublic />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
