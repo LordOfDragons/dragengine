@@ -32,6 +32,7 @@
 #include <libdscript/libdscript.h>
 #include "deClassServer.h"
 #include "deClassServerListener.h"
+#include "../dedsHelpers.h"
 #include "../../peers/dedsServer.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -62,11 +63,11 @@ deClassServer::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSvr,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassServer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSvrNatDat *nd = new (p_GetNativeData(myself)) sSvrNatDat;
+	sSvrNatDat &nd = dedsNewNativeData<sSvrNatDat>(p_GetNativeData(myself));
 	deClassServer *clsSvr = static_cast<deClassServer*>(GetOwnerClass());
 	deServerManager *svrMgr = clsSvr->GetGameEngine()->GetServerManager();
 	
-	nd->server = svrMgr->CreateServer();
+	nd.server = svrMgr->CreateServer();
 }
 
 // public func destructor()
@@ -78,7 +79,7 @@ void deClassServer::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSvrNatDat*>(p_GetNativeData(myself))->~sSvrNatDat();
+	dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).~sSvrNatDat();
 }
 
 
@@ -91,7 +92,7 @@ deClassServer::nfGetAddress::nfGetAddress(const sInitData &init) : dsFunction(in
 "getAddress", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassServer::nfGetAddress::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	const deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	
 	rt->PushString(server->GetAddress());
 }
@@ -102,7 +103,7 @@ deClassServer::nfListenOn::nfListenOn(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsStr); // address
 }
 void deClassServer::nfListenOn::RunFunction(dsRunTime *rt, dsValue *myself){
-	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	
 	rt->PushBool(server->ListenOn(rt->GetValue(0)->GetString()));
 }
@@ -112,7 +113,7 @@ deClassServer::nfStopListening::nfStopListening(const sInitData &init) : dsFunct
 "stopListening", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassServer::nfStopListening::RunFunction(dsRunTime *rt, dsValue *myself){
-	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	
 	server->StopListening();
 }
@@ -127,7 +128,7 @@ deClassServer::nfGetServerListener::nfGetServerListener(const sInitData &init) :
 "getServerListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSvrL){
 }
 void deClassServer::nfGetServerListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	const deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	const dedsServer *scrServer = static_cast<dedsServer*>(server->GetPeerScripting());
 	const deClassServer *clsServer = static_cast<deClassServer*>(GetOwnerClass());
 	
@@ -145,7 +146,7 @@ deClassServer::nfSetServerListener::nfSetServerListener(const sInitData &init) :
 	p_AddParameter(init.clsSvrL); // listener
 }
 void deClassServer::nfSetServerListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	dedsServer *scrServer = static_cast<dedsServer*>(server->GetPeerScripting());
 	if(scrServer){
 		scrServer->SetCallback(rt->GetValue(0)->GetRealObject());
@@ -163,7 +164,7 @@ dsFunction(init.clsSvr, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassServer::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	
 	rt->PushInt((int)(intptr_t)server);
 }
@@ -174,14 +175,14 @@ dsFunction(init.clsSvr, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassServer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
+	const deServer *server = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself)).server;
 	deClassServer *clsSvr = static_cast<deClassServer*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSvr)){
 		rt->PushBool(false);
 	}else{
-		const deServer *otherServer = static_cast<sSvrNatDat*>(p_GetNativeData(obj))->server;
+		const deServer *otherServer = dedsGetNativeData<sSvrNatDat>(p_GetNativeData(obj)).server;
 		rt->PushBool(server == otherServer);
 	}
 }
@@ -207,7 +208,7 @@ dsClass("Server", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
 	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize(sizeof(sSvrNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSvrNatDat>());
 }
 
 deClassServer::~deClassServer(){
@@ -256,7 +257,7 @@ deServer *deClassServer::GetServer(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sSvrNatDat*>(p_GetNativeData(myself->GetBuffer()))->server;
+	return dedsGetNativeData<sSvrNatDat>(p_GetNativeData(myself->GetBuffer())).server;
 }
 
 void deClassServer::PushServer(dsRunTime *rt, deServer *server){
@@ -270,5 +271,5 @@ void deClassServer::PushServer(dsRunTime *rt, deServer *server){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSvrNatDat)->server = server;
+	dedsNewNativeData<sSvrNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).server = server;
 }

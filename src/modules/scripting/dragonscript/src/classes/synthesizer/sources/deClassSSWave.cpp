@@ -32,6 +32,7 @@
 #include "deClassSSWave.h"
 #include "../deClassSynthesizer.h"
 #include "../deClassSynthesizerSource.h"
+#include "../../dedsHelpers.h"
 #include "../../../deScriptingDragonScript.h"
 #include "../../../deClassPathes.h"
 
@@ -63,13 +64,13 @@ deClassSSWave::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSSWave,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSWave::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSWaveNatDat * const nd = new (p_GetNativeData(myself)) sSSWaveNatDat;
+	sSSWaveNatDat &nd = dedsNewNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	nd->source = deSynthesizerSourceWave::Ref::New();
-	baseClass->AssignSource(myself->GetRealObject(), nd->source);
+	nd.source = deSynthesizerSourceWave::Ref::New();
+	baseClass->AssignSource(myself->GetRealObject(), nd.source);
 }
 
 // public func destructor()
@@ -81,7 +82,7 @@ void deClassSSWave::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSSWaveNatDat*>(p_GetNativeData(myself))->~sSSWaveNatDat();
+	dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself)).~sSSWaveNatDat();
 }
 
 
@@ -97,7 +98,7 @@ void deClassSSWave::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
+	sSSWaveNatDat &nd = dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	const deClassSSWave::eTargets target = (deClassSSWave::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -139,7 +140,7 @@ void deClassSSWave::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
+	sSSWaveNatDat &nd = dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	const deClassSSWave::eTargets target = (deClassSSWave::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -182,7 +183,7 @@ void deClassSSWave::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
+	sSSWaveNatDat &nd = dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	const deSynthesizerSourceWave::eWaveType type = (deSynthesizerSourceWave::eWaveType)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -204,7 +205,7 @@ deClassSSWave::nfSetMinFrequency::nfSetMinFrequency(const sInitData &init) : dsF
 	p_AddParameter(init.clsFloat); // frequency
 }
 void deClassSSWave::nfSetMinFrequency::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
+	sSSWaveNatDat &nd = dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	const float frequency = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(frequency - nd.source->GetMinFrequency()) <= FLOAT_SAFE_EPSILON){
@@ -224,7 +225,7 @@ deClassSSWave::nfSetMaxFrequency::nfSetMaxFrequency(const sInitData &init) : dsF
 	p_AddParameter(init.clsFloat); // frequency
 }
 void deClassSSWave::nfSetMaxFrequency::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
+	sSSWaveNatDat &nd = dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself));
 	const float frequency = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(frequency - nd.source->GetMaxFrequency()) <= FLOAT_SAFE_EPSILON){
@@ -252,7 +253,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("SynthesizerSource");
 	
-	p_SetNativeDataSize(sizeof(sSSWaveNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSSWaveNatDat>());
 }
 
 deClassSSWave::~deClassSSWave(){
@@ -298,7 +299,7 @@ deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return static_cast<sSSWaveNatDat*>(p_GetNativeData(myself->GetBuffer()))->source;
+	return dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself->GetBuffer())).source;
 }
 
 void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
@@ -308,7 +309,7 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synth
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	static_cast<sSSWaveNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
+	dedsGetNativeData<sSSWaveNatDat>(p_GetNativeData(myself->GetBuffer())).synthesizer = synthesizer;
 }
 
 void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
@@ -323,12 +324,12 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSWaveNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSWaveNatDat;
+	sSSWaveNatDat &nd = dedsNewNativeData<sSSWaveNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->synthesizer = synthesizer;
-		nd->source = source;
+		nd.synthesizer = synthesizer;
+		nd.source = source;
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

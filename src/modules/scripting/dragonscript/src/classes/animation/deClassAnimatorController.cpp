@@ -32,6 +32,7 @@
 #include "deClassAnimator.h"
 #include "deClassAnimatorController.h"
 #include "deClassAnimatorInstance.h"
+#include "../dedsHelpers.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../../deScriptingDragonScript.h"
@@ -78,7 +79,7 @@ void deClassAnimatorController::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sAnimatorCtrlNatDat*>(p_GetNativeData(myself))->~sAnimatorCtrlNatDat();
+	dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself)).~sAnimatorCtrlNatDat();
 }
 
 
@@ -92,7 +93,7 @@ dsFunction(init.clsAnimatorCtrl, "getAnimator", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimator){
 }
 void deClassAnimatorController::nfGetAnimator::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassAnimatorController*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassAnimator()->PushAnimator(rt, nd.animator);
@@ -104,7 +105,7 @@ dsFunction(init.clsAnimatorCtrl, "getAnimatorInstance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimatorInst){
 }
 void deClassAnimatorController::nfGetAnimatorInstance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassAnimatorController*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassAnimatorInstance()->PushAnimatorInstance(rt, nd.instance);
@@ -116,7 +117,7 @@ dsFunction(init.clsAnimatorCtrl, "getControllerIndex", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimatorController::nfGetControllerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.index);
 }
@@ -129,7 +130,7 @@ dsFunction(init.clsAnimatorCtrl, "getName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassAnimatorController::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -144,7 +145,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimatorController::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -162,7 +163,7 @@ dsFunction(init.clsAnimatorCtrl, "getLower", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassAnimatorController::nfGetLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -176,7 +177,7 @@ dsFunction(init.clsAnimatorCtrl, "getUpper", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassAnimatorController::nfGetUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -192,7 +193,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // upper
 }
 void deClassAnimatorController::nfSetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -212,7 +213,7 @@ dsFunction(init.clsAnimatorCtrl, "getValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassAnimatorController::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -227,7 +228,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // value
 }
 void deClassAnimatorController::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -246,7 +247,7 @@ dsFunction(init.clsAnimatorCtrl, "getRelativeValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassAnimatorController::nfGetRelativeValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -262,7 +263,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // value
 }
 void deClassAnimatorController::nfSetRelativeValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -282,7 +283,7 @@ dsFunction(init.clsAnimatorCtrl, "getVector", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassAnimatorController::nfGetVector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -298,7 +299,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // vector
 }
 void deClassAnimatorController::nfSetVector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -319,7 +320,7 @@ dsFunction(init.clsAnimatorCtrl, "getRotation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassAnimatorController::nfGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -335,7 +336,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // rotation
 }
 void deClassAnimatorController::nfSetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -356,7 +357,7 @@ dsFunction(init.clsAnimatorCtrl, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassAnimatorController::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -373,7 +374,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassAnimatorController::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deClassAnimatorController &clsAC = *static_cast<deClassAnimatorController*>(GetOwnerClass());
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
@@ -394,7 +395,7 @@ dsFunction(init.clsAnimatorCtrl, "getFrozen", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassAnimatorController::nfGetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -409,7 +410,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // frozen
 }
 void deClassAnimatorController::nfSetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -428,7 +429,7 @@ dsFunction(init.clsAnimatorCtrl, "getClamp", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassAnimatorController::nfGetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -443,7 +444,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // clamp
 }
 void deClassAnimatorController::nfSetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -465,7 +466,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // amount
 }
 void deClassAnimatorController::nfIncrement::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -484,7 +485,7 @@ dsFunction(init.clsAnimatorCtrl, "setToLower", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorController::nfSetToLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -502,7 +503,7 @@ dsFunction(init.clsAnimatorCtrl, "setToCenter", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorController::nfSetToCenter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -520,7 +521,7 @@ dsFunction(init.clsAnimatorCtrl, "setToUpper", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorController::nfSetToUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -538,7 +539,7 @@ dsFunction(init.clsAnimatorCtrl, "reverse", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorController::nfReverse::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -557,7 +558,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsAnimatorCtrl); // controller
 }
 void deClassAnimatorController::nfSetValueFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -567,7 +568,7 @@ void deClassAnimatorController::nfSetValueFrom::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sAnimatorCtrlNatDat &ndFrom = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(valFrom));
+	const sAnimatorCtrlNatDat &ndFrom = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(valFrom));
 	deAnimatorController &controllerFrom = ndFrom.animator
 		? *nd.animator->GetControllers().GetAt(ndFrom.index)
 		: nd.instance->GetControllers().GetAt(ndFrom.index);
@@ -587,7 +588,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsAnimatorCtrl); // controller
 }
 void deClassAnimatorController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -597,7 +598,7 @@ void deClassAnimatorController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sAnimatorCtrlNatDat &ndFrom = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(valFrom));
+	const sAnimatorCtrlNatDat &ndFrom = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(valFrom));
 	deAnimatorController &controllerFrom = ndFrom.animator
 		? *nd.animator->GetControllers().GetAt(ndFrom.index)
 		: nd.instance->GetControllers().GetAt(ndFrom.index);
@@ -620,7 +621,7 @@ dsFunction(init.clsAnimatorCtrl, "isAtLower", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassAnimatorController::nfIsAtLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -634,7 +635,7 @@ dsFunction(init.clsAnimatorCtrl, "isAtUpper", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassAnimatorController::nfIsAtUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	const deAnimatorController &controller = nd.animator
 		? *nd.animator->GetControllers().GetAt(nd.index)
 		: nd.instance->GetControllers().GetAt(nd.index);
@@ -651,14 +652,14 @@ dsFunction(init.clsAnimatorCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 }
 void deClassAnimatorController::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassAnimatorController * const clsAnimatorCtrl = static_cast<deClassAnimatorController*>(GetOwnerClass());
-	const sAnimatorCtrlNatDat &nd = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(myself));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsAnimatorCtrl)){
 		rt->PushBool(false);
 		
 	}else{
-		const sAnimatorCtrlNatDat &other = *static_cast<const sAnimatorCtrlNatDat*>(p_GetNativeData(obj));
+		const sAnimatorCtrlNatDat &other = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(obj));
 		rt->PushBool(nd.animator == other.animator && nd.instance == other.instance
 			&& nd.index == other.index);
 	}
@@ -679,7 +680,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sAnimatorCtrlNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sAnimatorCtrlNatDat>());
 }
 
 deClassAnimatorController::~deClassAnimatorController(){
@@ -755,7 +756,7 @@ deAnimatorInstance *&instance, int &index) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sAnimatorCtrlNatDat &nd = *static_cast<sAnimatorCtrlNatDat*>(p_GetNativeData(myself->GetBuffer()));
+	const sAnimatorCtrlNatDat &nd = dedsGetNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(myself->GetBuffer()));
 	animator = nd.animator;
 	instance = nd.instance;
 	index = nd.index;
@@ -767,9 +768,9 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animat
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sAnimatorCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sAnimatorCtrlNatDat();
-	nd->animator = animator;
-	nd->index = index;
+	sAnimatorCtrlNatDat &nd = dedsNewNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	nd.animator = animator;
+	nd.index = index;
 }
 
 void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance *instance, int index){
@@ -778,7 +779,7 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sAnimatorCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sAnimatorCtrlNatDat();
-	nd->instance = instance;
-	nd->index = index;
+	sAnimatorCtrlNatDat &nd = dedsNewNativeData<sAnimatorCtrlNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	nd.instance = instance;
+	nd.index = index;
 }

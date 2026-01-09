@@ -31,6 +31,7 @@
 
 #include "deClassSky.h"
 #include "deClassSkyTarget.h"
+#include "../dedsHelpers.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -74,7 +75,7 @@ void deClassSkyTarget::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSkyTargetNatDat*>(p_GetNativeData(myself))->~sSkyTargetNatDat();
+	dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself)).~sSkyTargetNatDat();
 }
 
 
@@ -88,7 +89,7 @@ dsFunction(init.clsSkyTarget, "getSky", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyTarget::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = (static_cast<deClassSkyTarget*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
@@ -100,7 +101,7 @@ dsFunction(init.clsSkyTarget, "getLayerIndex", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyTarget::nfGetLayerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.layer);
 }
@@ -111,7 +112,7 @@ dsFunction(init.clsSkyTarget, "getTarget", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyTarget::nfGetTarget::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.target);
 }
@@ -124,7 +125,7 @@ dsFunction(init.clsSkyTarget, "getLinkCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyTarget::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	const deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	rt->PushInt(target.GetLinks().GetCount());
@@ -137,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSkyTarget::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	const deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	rt->PushInt(target.GetLinks().GetAt(rt->GetValue(0)->GetInt()));
@@ -150,7 +151,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSkyTarget::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.AddLink(rt->GetValue(0)->GetInt());
@@ -163,7 +164,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // link
 }
 void deClassSkyTarget::nfRemoveLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.RemoveLink(rt->GetValue(0)->GetInt());
@@ -175,7 +176,7 @@ dsFunction(init.clsSkyTarget, "removeAllLinks", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkyTarget::nfRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	deSkyControllerTarget &target = nd.sky->GetLayers().GetAt(nd.layer)->GetTarget(nd.target);
 	
 	target.RemoveAllLinks();
@@ -190,14 +191,14 @@ dsFunction(init.clsSkyTarget, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 void deClassSkyTarget::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkyTarget * const clsSkyTarget = static_cast<deClassSkyTarget*>(GetOwnerClass());
-	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
+	const sSkyTargetNatDat &nd = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSkyTarget)){
 		rt->PushBool(false);
 		
 	}else{
-		const sSkyTargetNatDat &other = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(obj));
+		const sSkyTargetNatDat &other = dedsGetNativeData<sSkyTargetNatDat>(p_GetNativeData(obj));
 		rt->PushBool(nd.sky == other.sky && nd.layer == other.layer
 			&& nd.target == other.target);
 	}
@@ -218,7 +219,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sSkyTargetNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSkyTargetNatDat>());
 }
 
 deClassSkyTarget::~deClassSkyTarget(){
@@ -269,8 +270,8 @@ deSkyLayer::eTargets target){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyTargetNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyTargetNatDat;
-	nd->sky = sky;
-	nd->layer = layer;
-	nd->target = target;
+	sSkyTargetNatDat &nd = dedsNewNativeData<sSkyTargetNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	nd.sky = sky;
+	nd.layer = layer;
+	nd.target = target;
 }

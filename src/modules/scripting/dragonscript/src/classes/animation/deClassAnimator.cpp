@@ -33,6 +33,7 @@
 #include "deClassAnimation.h"
 #include "deClassAnimatorController.h"
 #include "deClassAnimatorRule.h"
+#include "../dedsHelpers.h"
 #include "../world/deClassRig.h"
 #include "../curve/deClassCurveBezier.h"
 #include "../../deScriptingDragonScript.h"
@@ -70,11 +71,11 @@ deClassAnimator::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsAr,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArNatDat * const nd = new (p_GetNativeData(myself)) sArNatDat;
+	sArNatDat &nd = dedsNewNativeData<sArNatDat>(p_GetNativeData(myself));
 	
 	deClassAnimator * const clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	deAnimatorManager *aniMgr = clsAr->GetDS()->GetGameEngine()->GetAnimatorManager();
-	nd->animator = aniMgr->CreateAnimator();
+	nd.animator = aniMgr->CreateAnimator();
 }
 
 // public func destructor()
@@ -86,7 +87,7 @@ void deClassAnimator::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sArNatDat*>(p_GetNativeData(myself))->~sArNatDat();
+	dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).~sArNatDat();
 }
 
 
@@ -96,7 +97,7 @@ deClassAnimator::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cls
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassAnimator::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	clsAr->GetDS()->GetClassRig()->PushRig(rt, animator->GetRig());
 }
@@ -107,7 +108,7 @@ deClassAnimator::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsRig); // rig
 }
 void deClassAnimator::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsRealObject *objRig = rt->GetValue(0)->GetRealObject();
 	
@@ -119,7 +120,7 @@ deClassAnimator::nfGetAnimation::nfGetAnimation(const sInitData &init) : dsFunct
 "getAnimation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsAni){
 }
 void deClassAnimator::nfGetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	clsAr->GetDS()->GetClassAnimation()->PushAnimation(rt, animator->GetAnimation());
 }
@@ -130,7 +131,7 @@ deClassAnimator::nfSetAnimation::nfSetAnimation(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsAni); // animation
 }
 void deClassAnimator::nfSetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsRealObject *objAnimation = rt->GetValue(0)->GetRealObject();
 	
@@ -144,7 +145,7 @@ deClassAnimator::nfGetControllerCount::nfGetControllerCount(const sInitData &ini
 "getControllerCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	rt->PushInt(animator->GetControllers().GetCount());
 }
 
@@ -154,7 +155,7 @@ deClassAnimator::nfSetControllerCount::nfSetControllerCount(const sInitData &ini
 	p_AddParameter(init.clsInt); // count
 }
 void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	int count = rt->GetValue(0)->GetInt();
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
@@ -178,7 +179,7 @@ deClassAnimator::nfGetControllerAt::nfGetControllerAt(const sInitData &init) : d
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassAnimator::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator * const animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -197,7 +198,7 @@ deClassAnimator::nfGetControllerNamed::nfGetControllerNamed(const sInitData &ini
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimator::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator * const animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	const deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	const int index = animator->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString());
 	
@@ -215,7 +216,7 @@ deClassAnimator::nfIndexOfControllerNamed::nfIndexOfControllerNamed(const sInitD
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimator::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator * const animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	rt->PushInt(animator->GetControllers().IndexOfNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -226,7 +227,7 @@ deClassAnimator::nfGetLinkCount::nfGetLinkCount(const sInitData &init) : dsFunct
 "getLinkCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	rt->PushInt(animator->GetLinks().GetCount());
 }
@@ -237,7 +238,7 @@ deClassAnimator::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassAnimator::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	try{
 		const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
@@ -256,7 +257,7 @@ deClassAnimator::nfRemoveAllLinks::nfRemoveAllLinks(const sInitData &init) : dsF
 "removeAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	animator->RemoveAllLinks();
 }
@@ -268,7 +269,7 @@ deClassAnimator::nfSetLinkController::nfSetLinkController(const sInitData &init)
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassAnimator::nfSetLinkController::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink *link = animator->GetLinks().GetAt(index);
@@ -286,7 +287,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassAnimator::nfSetLinkCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -304,7 +305,7 @@ deClassAnimator::nfSetLinkRepeat::nfSetLinkRepeat(const sInitData &init) : dsFun
 	p_AddParameter(init.clsInt); // repeat
 }
 void deClassAnimator::nfSetLinkRepeat::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -321,7 +322,7 @@ dsFunction(init.clsAr, "setLinkBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsStr); // bone
 }
 void deClassAnimator::nfSetLinkBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -338,7 +339,7 @@ dsFunction(init.clsAr, "setLinkBoneParameter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM
 	p_AddParameter(init.clsAnimatorLinkBoneParameter); // parameter
 }
 void deClassAnimator::nfSetLinkBoneParameter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -358,7 +359,7 @@ dsFunction(init.clsAr, "setLinkBoneValueRange", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsFlt); // maximum
 }
 void deClassAnimator::nfSetLinkBoneValueRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -376,7 +377,7 @@ dsFunction(init.clsAr, "setLinkBoneValueRangeRotation", DSFT_FUNCTION, DSTM_PUBL
 	p_AddParameter(init.clsFlt); // maximum
 }
 void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -393,7 +394,7 @@ dsFunction(init.clsAr, "setLinkVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | 
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimator::nfSetLinkVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -411,7 +412,7 @@ dsFunction(init.clsAr, "setLinkVertexPositionSetValueRange", DSFT_FUNCTION, DSTM
 	p_AddParameter(init.clsFlt); // maximum
 }
 void deClassAnimator::nfSetLinkVertexPositionSetValueRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink &link = *animator.GetLinks().GetAt(index);
@@ -428,7 +429,7 @@ dsFunction(init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 	p_AddParameter(init.clsBool); // wrap
 }
 void deClassAnimator::nfSetLinkWrapY::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	const int index = rt->GetValue(0)->GetInt();
 	animator.GetLinks().GetAt(index)->SetWrapY(rt->GetValue(1)->GetBool());
@@ -443,7 +444,7 @@ deClassAnimator::nfGetRuleCount::nfGetRuleCount(const sInitData &init) : dsFunct
 "getRuleCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetRuleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	rt->PushInt(animator->GetRules().GetCount());
 }
 
@@ -453,7 +454,7 @@ deClassAnimator::nfAddRule::nfAddRule(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsArR); // rule
 }
 void deClassAnimator::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	deClassAnimator &clsAr = *(static_cast<deClassAnimator*>(GetOwnerClass()));
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
@@ -473,7 +474,7 @@ deClassAnimator::nfGetRuleAt::nfGetRuleAt(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsInt); // position
 }
 void deClassAnimator::nfGetRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	deClassAnimator &clsAr = *(static_cast<deClassAnimator*>(GetOwnerClass()));
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
@@ -490,7 +491,7 @@ deClassAnimator::nfRemoveRuleAt::nfRemoveRuleAt(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsInt); // index
 }
 void deClassAnimator::nfRemoveRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	animator->RemoveRule(animator->GetRules().GetAt(rt->GetValue(0)->GetInt()));
 }
@@ -500,7 +501,7 @@ deClassAnimator::nfRemoveAllRules::nfRemoveAllRules(const sInitData &init) : dsF
 "removeAllRules", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllRules::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	
 	animator->RemoveAllRules();
 }
@@ -513,7 +514,7 @@ deClassAnimator::nfAddBone::nfAddBone(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsStr); // boneName
 }
 void deClassAnimator::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	animator.GetListBones().Add(rt->GetValue(0)->GetString());
 	animator.NotifyBonesChanged();
@@ -524,7 +525,7 @@ deClassAnimator::nfRemoveAllBones::nfRemoveAllBones(const sInitData &init) : dsF
 "removeAllBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllBones::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	animator.GetListBones().RemoveAll();
 	animator.NotifyBonesChanged();
@@ -538,7 +539,7 @@ dsFunction(init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsStr); // bonename
 }
 void deClassAnimator::nfAddVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	animator.GetListVertexPositionSets().Add(rt->GetValue(0)->GetString());
 	animator.NotifyVertexPositionSetsChanged();
@@ -549,7 +550,7 @@ deClassAnimator::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets(co
 dsFunction(init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllVertexPositionSets::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
+	deAnimator &animator = *(dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator);
 	
 	animator.GetListVertexPositionSets().RemoveAll();
 	animator.NotifyVertexPositionSetsChanged();
@@ -563,7 +564,7 @@ deClassAnimator::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init
 }
 
 void deClassAnimator::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)animator);
 }
@@ -574,13 +575,13 @@ deClassAnimator::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = dedsGetNativeData<sArNatDat>(p_GetNativeData(myself)).animator;
 	deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsAr)){
 		rt->PushBool(false);
 	}else{
-		const deAnimator *otherAnimator = static_cast<sArNatDat*>(p_GetNativeData(obj))->animator;
+		const deAnimator *otherAnimator = dedsGetNativeData<sArNatDat>(p_GetNativeData(obj)).animator;
 		rt->PushBool(animator == otherAnimator);
 	}
 }
@@ -619,7 +620,7 @@ dsClass("Animator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize(sizeof(sArNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sArNatDat>());
 }
 
 deClassAnimator::~deClassAnimator(){
@@ -704,7 +705,7 @@ deAnimator *deClassAnimator::GetAnimator(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return static_cast<sArNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator;
+	return dedsGetNativeData<sArNatDat>(p_GetNativeData(myself->GetBuffer())).animator;
 }
 
 void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
@@ -718,5 +719,5 @@ void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sArNatDat)->animator = animator;
+	dedsNewNativeData<sArNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).animator = animator;
 }

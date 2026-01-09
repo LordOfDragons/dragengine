@@ -32,6 +32,7 @@
 #include "deClassImage.h"
 #include "deClassImagePixels.h"
 #include "deClassColor.h"
+#include "../dedsHelpers.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -292,7 +293,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsImage); // image
 }
 void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sImgPixNatDat * const nd = new (p_GetNativeData(myself)) sImgPixNatDat;
+	sImgPixNatDat &nd = dedsNewNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
@@ -310,15 +311,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 1:
 		switch(image->GetBitCount()){
 		case 8:
-			nd->getter = new sImgPixNatDat::GetterGrayscale8(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscale8(*image);
 			break;
 			
 		case 16:
-			nd->getter = new sImgPixNatDat::GetterGrayscale16(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscale16(*image);
 			break;
 			
 		case 32:
-			nd->getter = new sImgPixNatDat::GetterGrayscale32(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscale32(*image);
 			break;
 			
 		default:
@@ -329,15 +330,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 2:
 		switch(image->GetBitCount()){
 		case 8:
-			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha8(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha8(*image);
 			break;
 			
 		case 16:
-			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha16(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha16(*image);
 			break;
 			
 		case 32:
-			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha32(*image);
+			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha32(*image);
 			break;
 			
 		default:
@@ -348,15 +349,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 3:
 		switch(image->GetBitCount()){
 		case 8:
-			nd->getter = new sImgPixNatDat::GetterRGB8(*image);
+			nd.getter = new sImgPixNatDat::GetterRGB8(*image);
 			break;
 			
 		case 16:
-			nd->getter = new sImgPixNatDat::GetterRGB16(*image);
+			nd.getter = new sImgPixNatDat::GetterRGB16(*image);
 			break;
 			
 		case 32:
-			nd->getter = new sImgPixNatDat::GetterRGB32(*image);
+			nd.getter = new sImgPixNatDat::GetterRGB32(*image);
 			break;
 			
 		default:
@@ -367,15 +368,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 4:
 		switch(image->GetBitCount()){
 		case 8:
-			nd->getter = new sImgPixNatDat::GetterRGBA8(*image);
+			nd.getter = new sImgPixNatDat::GetterRGBA8(*image);
 			break;
 			
 		case 16:
-			nd->getter = new sImgPixNatDat::GetterRGBA16(*image);
+			nd.getter = new sImgPixNatDat::GetterRGBA16(*image);
 			break;
 			
 		case 32:
-			nd->getter = new sImgPixNatDat::GetterRGBA32(*image);
+			nd.getter = new sImgPixNatDat::GetterRGBA32(*image);
 			break;
 			
 		default:
@@ -388,9 +389,9 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	// store
-	nd->image = image;
-	nd->strideZ = image->GetWidth() * image->GetHeight();
-	nd->strideY = image->GetWidth();
+	nd.image = image;
+	nd.strideZ = image->GetWidth() * image->GetHeight();
+	nd.strideY = image->GetWidth();
 }
 
 // public func destructor()
@@ -402,7 +403,7 @@ void deClassImagePixels::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sImgPixNatDat*>(p_GetNativeData(myself))->~sImgPixNatDat();
+	dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself)).~sImgPixNatDat();
 }
 
 
@@ -413,7 +414,7 @@ dsFunction(init.clsImagePixels, "getImage", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassImagePixels::nfGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, nd.image);
@@ -425,7 +426,7 @@ dsFunction(init.clsImagePixels, "getWidth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetWidth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetWidth());
 }
@@ -436,7 +437,7 @@ dsFunction(init.clsImagePixels, "getHeight", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetHeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetHeight());
 }
@@ -447,7 +448,7 @@ dsFunction(init.clsImagePixels, "getDepth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetDepth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetDepth());
 }
@@ -460,7 +461,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // y
 }
 void deClassImagePixels::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -491,7 +492,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // z
 }
 void deClassImagePixels::nfGetAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -531,7 +532,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // height
 }
 void deClassImagePixels::nfGetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
@@ -598,7 +599,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // depth
 }
 void deClassImagePixels::nfGetRange2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
@@ -683,7 +684,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_GUI);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sImgPixNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sImgPixNatDat>());
 }
 
 deClassImagePixels::~deClassImagePixels(){

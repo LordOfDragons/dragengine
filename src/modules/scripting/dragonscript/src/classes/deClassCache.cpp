@@ -44,6 +44,7 @@
 #include <dragengine/common/string/decString.h>
 
 #include <libdscript/exceptions.h>
+#include "dedsHelpers.h"
 
 
 
@@ -71,7 +72,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // directory
 }
 void deClassCache::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCacheNatDat * const nd = new (p_GetNativeData(myself)) sCacheNatDat;
+	sCacheNatDat &nd = dedsNewNativeData<sCacheNatDat>(p_GetNativeData(myself));
 	
 	// check arguments
 	const char * const directory = rt->GetValue(0)->GetString();
@@ -89,8 +90,8 @@ void deClassCache::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	path.AddUnixPath(rt->GetValue(0)->GetString());
 	
 	// create cache
-	nd->cacheHelper = new deCacheHelper(&clsCache.GetDS().GetVFS(), path);
-	nd->directory = directory;
+	nd.cacheHelper = new deCacheHelper(&clsCache.GetDS().GetVFS(), path);
+	nd.directory = directory;
 	clsCache.GetDirectories().Add(directory);
 }
 
@@ -103,11 +104,11 @@ void deClassCache::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCacheNatDat * const nd = static_cast<sCacheNatDat*>(p_GetNativeData(myself));
+	sCacheNatDat &nd = dedsGetNativeData<sCacheNatDat>(p_GetNativeData(myself));
 	
-	static_cast<deClassCache*>(GetOwnerClass())->GetDirectories().Remove(nd->directory);
+	static_cast<deClassCache*>(GetOwnerClass())->GetDirectories().Remove(nd.directory);
 	
-	nd->~sCacheNatDat();
+	nd.~sCacheNatDat();
 }
 
 
@@ -122,7 +123,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileReader){
 	p_AddParameter(init.clsString); // id
 }
 void deClassCache::nfRead::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
+	deCacheHelper &cacheHelper = *(dedsGetNativeData<sCacheNatDat>(p_GetNativeData(myself)).cacheHelper);
 	deScriptingDragonScript &ds = static_cast<deClassCache*>(GetOwnerClass())->GetDS();
 	decBaseFileReader::Ref reader;
 	
@@ -137,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileWriter){
 	p_AddParameter(init.clsString); // id
 }
 void deClassCache::nfWrite::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
+	deCacheHelper &cacheHelper = *(dedsGetNativeData<sCacheNatDat>(p_GetNativeData(myself)).cacheHelper);
 	deScriptingDragonScript &ds = static_cast<deClassCache*>(GetOwnerClass())->GetDS();
 	decBaseFileWriter::Ref writer;
 	
@@ -152,7 +153,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // id
 }
 void deClassCache::nfDelete::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
+	deCacheHelper &cacheHelper = *(dedsGetNativeData<sCacheNatDat>(p_GetNativeData(myself)).cacheHelper);
 	cacheHelper.Delete(rt->GetValue(0)->GetString());
 }
 
@@ -162,7 +163,7 @@ dsFunction(init.clsCache, "deleteAll", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCache::nfDeleteAll::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
+	deCacheHelper &cacheHelper = *(dedsGetNativeData<sCacheNatDat>(p_GetNativeData(myself)).cacheHelper);
 	cacheHelper.DeleteAll();
 }
 
@@ -181,7 +182,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sCacheNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sCacheNatDat>());
 }
 
 deClassCache::~deClassCache(){

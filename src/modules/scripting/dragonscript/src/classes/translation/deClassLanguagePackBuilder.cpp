@@ -31,6 +31,7 @@
 
 #include "deClassLanguagePack.h"
 #include "deClassLanguagePackBuilder.h"
+#include "../dedsHelpers.h"
 #include "../string/deClassUnicodeString.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -92,7 +93,7 @@ dsFunction(init.clsLanguagePackBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
+	dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -112,7 +113,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLanguagePack){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassLanguagePackBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sFntBldNatDat &nd = *static_cast<sFntBldNatDat*>(p_GetNativeData(myself));
+	sFntBldNatDat &nd = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
@@ -155,7 +156,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // name
 }
 void deClassLanguagePackBuilder::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -172,7 +173,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // description
 }
 void deClassLanguagePackBuilder::nfSetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -189,7 +190,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // missingText
 }
 void deClassLanguagePackBuilder::nfSetMissingText::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -206,7 +207,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassLanguagePackBuilder::nfSetEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -223,7 +224,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // text
 }
 void deClassLanguagePackBuilder::nfSetEntryAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassLanguagePackBuilder_Builder * const builder = dedsGetNativeData<sFntBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -249,7 +250,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sFntBldNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sFntBldNatDat>());
 }
 
 deClassLanguagePackBuilder::~deClassLanguagePackBuilder(){

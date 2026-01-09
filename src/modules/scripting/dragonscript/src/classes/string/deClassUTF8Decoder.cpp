@@ -32,6 +32,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassUTF8Decoder.h"
+#include "../dedsHelpers.h"
 #include "../../deClassPathes.h"
 
 #include <dragengine/common/string/unicode/decUTF8Decoder.h>
@@ -68,10 +69,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUTF8Decoder::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sU8DNatDat * const nd = new (p_GetNativeData(myself)) sU8DNatDat;
-	nd->decoder = new decUTF8Decoder;
-	nd->decoder->SetString(rt->GetValue(0)->GetString());
-	nd->decoder->SetPosition(rt->GetValue(1)->GetInt());
+	sU8DNatDat &nd = dedsNewNativeData<sU8DNatDat>(p_GetNativeData(myself));
+	nd.decoder = new decUTF8Decoder;
+	nd.decoder->SetString(rt->GetValue(0)->GetString());
+	nd.decoder->SetPosition(rt->GetValue(1)->GetInt());
 }
 
 // public func destructor()
@@ -83,7 +84,7 @@ void deClassUTF8Decoder::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sU8DNatDat*>(p_GetNativeData(myself))->~sU8DNatDat();
+	dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).~sU8DNatDat();
 }
 
 
@@ -96,7 +97,7 @@ deClassUTF8Decoder::nfGetString::nfGetString(const sInitData &init) : dsFunction
 "getString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassUTF8Decoder::nfGetString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushString(decoder->GetString());
 }
 
@@ -105,7 +106,7 @@ deClassUTF8Decoder::nfGetLength::nfGetLength(const sInitData &init) : dsFunction
 "getLength", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUTF8Decoder::nfGetLength::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushInt(decoder->GetLength());
 }
 
@@ -114,7 +115,7 @@ deClassUTF8Decoder::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunc
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUTF8Decoder::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushInt(decoder->GetPosition());
 }
 
@@ -123,7 +124,7 @@ deClassUTF8Decoder::nfHasReachedEnd::nfHasReachedEnd(const sInitData &init) : ds
 "hasReachedEnd", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassUTF8Decoder::nfHasReachedEnd::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushBool(decoder->HasReachedEnd());
 }
 
@@ -133,7 +134,7 @@ deClassUTF8Decoder::nfSetString::nfSetString(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsStr); // string
 }
 void deClassUTF8Decoder::nfSetString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	decoder->SetString(rt->GetValue(0)->GetString());
 }
 
@@ -143,7 +144,7 @@ deClassUTF8Decoder::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUTF8Decoder::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	decoder->SetPosition(rt->GetValue(0)->GetInt());
 }
 
@@ -152,7 +153,7 @@ deClassUTF8Decoder::nfDecodeNextCharacter::nfDecodeNextCharacter(const sInitData
 "decodeNextCharacter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUTF8Decoder::nfDecodeNextCharacter::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushInt(decoder->DecodeNextCharacter());
 }
 
@@ -164,14 +165,14 @@ dsFunction(init.clsU8D, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassUTF8Decoder::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	deClassUTF8Decoder *clsU8D = static_cast<deClassUTF8Decoder*>(GetOwnerClass());
 	dsValue *object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsU8D)){
 		rt->PushBool(false);
 	}else{
-		decUTF8Decoder *otherString = static_cast<sU8DNatDat*>(p_GetNativeData(object))->decoder;
+		decUTF8Decoder *otherString = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(object)).decoder;
 		rt->PushBool(decoder == otherString);
 	}
 }
@@ -182,7 +183,7 @@ dsFunction(init.clsU8D, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassUTF8Decoder::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
+	decUTF8Decoder *decoder = dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself)).decoder;
 	rt->PushInt((int)(intptr_t)decoder);
 }
 
@@ -198,7 +199,7 @@ deClassUTF8Decoder::deClassUTF8Decoder() : dsClass("UTF8Decoder", DSCT_CLASS,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
-	p_SetNativeDataSize(sizeof(sU8DNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sU8DNatDat>());
 }
 
 deClassUTF8Decoder::~deClassUTF8Decoder(){
@@ -239,5 +240,5 @@ void deClassUTF8Decoder::CreateClassMembers(dsEngine *engine){
 }
 
 decUTF8Decoder &deClassUTF8Decoder::GetUTF8Decoder(dsRealObject *myself) const{
-	return *(static_cast<sU8DNatDat*>(p_GetNativeData(myself->GetBuffer()))->decoder);
+	return *(dedsGetNativeData<sU8DNatDat>(p_GetNativeData(myself->GetBuffer())).decoder);
 }

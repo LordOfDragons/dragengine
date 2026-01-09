@@ -32,6 +32,7 @@
 
 #include "deClassCanvas.h"
 #include "deClassCanvasImage.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassImage.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
@@ -59,7 +60,7 @@ deClassCanvasImage::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCIm
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCanvasImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCImageNatDat * const nd = new (p_GetNativeData(myself)) sCImageNatDat;
+	sCImageNatDat &nd = dedsNewNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassCanvasImage*>(GetOwnerClass())->GetDS();
 	
 	// super call
@@ -67,8 +68,8 @@ void deClassCanvasImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
-	nd->canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasImage();
-	baseClass->AssignCanvas(myself->GetRealObject(), nd->canvas);
+	nd.canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasImage();
+	baseClass->AssignCanvas(myself->GetRealObject(), nd.canvas);
 }
 
 // public func destructor()
@@ -80,7 +81,7 @@ void deClassCanvasImage::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sCImageNatDat*>(p_GetNativeData(myself))->~sCImageNatDat();
+	dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself)).~sCImageNatDat();
 }
 
 
@@ -93,7 +94,7 @@ deClassCanvasImage::nfGetImage::nfGetImage(const sInitData &init) : dsFunction(i
 "getImage", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassCanvasImage::nfGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassCanvasImage*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, nd.canvas->GetImage());
@@ -105,7 +106,7 @@ deClassCanvasImage::nfSetImage::nfSetImage(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsImage); // image
 }
 void deClassCanvasImage::nfSetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassCanvasImage*>(GetOwnerClass())->GetDS();
 	
 	nd.canvas->SetImage(ds.GetClassImage()->GetImage(rt->GetValue(0)->GetRealObject()));
@@ -116,7 +117,7 @@ deClassCanvasImage::nfGetRepeatX::nfGetRepeatX(const sInitData &init) : dsFuncti
 "getRepeatX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCanvasImage::nfGetRepeatX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	rt->PushInt(nd.canvas->GetRepeatX());
 }
 
@@ -126,7 +127,7 @@ deClassCanvasImage::nfSetRepeatX::nfSetRepeatX(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // count
 }
 void deClassCanvasImage::nfSetRepeatX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	nd.canvas->SetRepeatX(rt->GetValue(0)->GetInt());
 }
 
@@ -135,7 +136,7 @@ deClassCanvasImage::nfGetRepeatY::nfGetRepeatY(const sInitData &init) : dsFuncti
 "getRepeatY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCanvasImage::nfGetRepeatY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	rt->PushInt(nd.canvas->GetRepeatY());
 }
 
@@ -145,7 +146,7 @@ deClassCanvasImage::nfSetRepeatY::nfSetRepeatY(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // count
 }
 void deClassCanvasImage::nfSetRepeatY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCImageNatDat &nd = *static_cast<sCImageNatDat*>(p_GetNativeData(myself));
+	const sCImageNatDat &nd = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself));
 	nd.canvas->SetRepeatY(rt->GetValue(0)->GetInt());
 }
 
@@ -157,7 +158,7 @@ dsFunction(init.clsCImage, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 }
 
 void deClassCanvasImage::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasImage * const canvas = static_cast<sCImageNatDat*>(p_GetNativeData(myself))->canvas;
+	deCanvasImage * const canvas = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself)).canvas;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)canvas);
 }
@@ -168,7 +169,7 @@ dsFunction(init.clsCImage, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCanvasImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCanvasImage * const canvas = static_cast<sCImageNatDat*>(p_GetNativeData(myself))->canvas;
+	const deCanvasImage * const canvas = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself)).canvas;
 	deClassCanvasImage * const clsCImage = static_cast<deClassCanvasImage*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -176,7 +177,7 @@ void deClassCanvasImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deCanvasImage * const otherCanvas = static_cast<sCImageNatDat*>(p_GetNativeData(obj))->canvas;
+		const deCanvasImage * const otherCanvas = dedsGetNativeData<sCImageNatDat>(p_GetNativeData(obj)).canvas;
 		rt->PushBool(canvas == otherCanvas);
 	}
 }
@@ -195,7 +196,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Canvas");
 	
-	p_SetNativeDataSize(sizeof(sCImageNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sCImageNatDat>());
 }
 
 deClassCanvasImage::~deClassCanvasImage(){
@@ -244,7 +245,7 @@ deCanvasImage *deClassCanvasImage::GetCanvas(dsRealObject *myself) const {
 		return NULL;
 	}
 	
-	return static_cast<sCImageNatDat*>(p_GetNativeData(myself->GetBuffer()))->canvas;
+	return dedsGetNativeData<sCImageNatDat>(p_GetNativeData(myself->GetBuffer())).canvas;
 }
 
 void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
@@ -259,11 +260,11 @@ void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
 	
 	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sCImageNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCImageNatDat;
+	sCImageNatDat &nd = dedsNewNativeData<sCImageNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->canvas = canvas;
+		nd.canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		

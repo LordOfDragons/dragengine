@@ -32,6 +32,7 @@
 #include "deClassImage.h"
 #include "deClassEditableImage.h"
 #include "deClassColor.h"
+#include "../dedsHelpers.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -373,7 +374,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // bitCount
 }
 void deClassEditableImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sImgPixNatDat * const nd = new (p_GetNativeData(myself)) sImgPixNatDat;
+	sImgPixNatDat &nd = dedsNewNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
@@ -384,25 +385,25 @@ void deClassEditableImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int componentCount = rt->GetValue(3)->GetInt();
 	const int bitCount = rt->GetValue(4)->GetInt();
 	
-	nd->image = ds.GetGameEngine()->GetImageManager()->CreateImage(
+	nd.image = ds.GetGameEngine()->GetImageManager()->CreateImage(
 		width, height, depth, componentCount, bitCount);
-	nd->strideZ = width * height;
-	nd->strideY = width;
+	nd.strideZ = width * height;
+	nd.strideY = width;
 	
 	// create mutator
-	switch(nd->image->GetComponentCount()){
+	switch(nd.image->GetComponentCount()){
 	case 1:
-		switch(nd->image->GetBitCount()){
+		switch(nd.image->GetBitCount()){
 		case 8:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscale8(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscale8(*nd.image);
 			break;
 			
 		case 16:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscale16(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscale16(*nd.image);
 			break;
 			
 		case 32:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscale32(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscale32(*nd.image);
 			break;
 			
 		default:
@@ -411,17 +412,17 @@ void deClassEditableImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		break;
 		
 	case 2:
-		switch(nd->image->GetBitCount()){
+		switch(nd.image->GetBitCount()){
 		case 8:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscaleAlpha8(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscaleAlpha8(*nd.image);
 			break;
 			
 		case 16:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscaleAlpha16(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscaleAlpha16(*nd.image);
 			break;
 			
 		case 32:
-			nd->mutator = new sImgPixNatDat::MutatorGrayscaleAlpha32(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorGrayscaleAlpha32(*nd.image);
 			break;
 			
 		default:
@@ -430,17 +431,17 @@ void deClassEditableImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		break;
 		
 	case 3:
-		switch(nd->image->GetBitCount()){
+		switch(nd.image->GetBitCount()){
 		case 8:
-			nd->mutator = new sImgPixNatDat::MutatorRGB8(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGB8(*nd.image);
 			break;
 			
 		case 16:
-			nd->mutator = new sImgPixNatDat::MutatorRGB16(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGB16(*nd.image);
 			break;
 			
 		case 32:
-			nd->mutator = new sImgPixNatDat::MutatorRGB32(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGB32(*nd.image);
 			break;
 			
 		default:
@@ -449,17 +450,17 @@ void deClassEditableImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		break;
 		
 	case 4:
-		switch(nd->image->GetBitCount()){
+		switch(nd.image->GetBitCount()){
 		case 8:
-			nd->mutator = new sImgPixNatDat::MutatorRGBA8(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGBA8(*nd.image);
 			break;
 			
 		case 16:
-			nd->mutator = new sImgPixNatDat::MutatorRGBA16(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGBA16(*nd.image);
 			break;
 			
 		case 32:
-			nd->mutator = new sImgPixNatDat::MutatorRGBA32(*nd->image);
+			nd.mutator = new sImgPixNatDat::MutatorRGBA32(*nd.image);
 			break;
 			
 		default:
@@ -481,7 +482,7 @@ void deClassEditableImage::nfDestructor::RunFunction(dsRunTime*, dsValue *myself
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sImgPixNatDat*>(p_GetNativeData(myself))->~sImgPixNatDat();
+	dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself)).~sImgPixNatDat();
 }
 
 
@@ -492,7 +493,7 @@ dsFunction(init.clsEditableImage, "getImage", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassEditableImage::nfGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, nd.image);
@@ -504,7 +505,7 @@ dsFunction(init.clsEditableImage, "getWidth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassEditableImage::nfGetWidth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetWidth());
 }
@@ -515,7 +516,7 @@ dsFunction(init.clsEditableImage, "getHeight", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassEditableImage::nfGetHeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetHeight());
 }
@@ -526,7 +527,7 @@ dsFunction(init.clsEditableImage, "getDepth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassEditableImage::nfGetDepth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetDepth());
 }
@@ -541,7 +542,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // y
 }
 void deClassEditableImage::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -572,7 +573,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // z
 }
 void deClassEditableImage::nfGetAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -612,7 +613,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // height
 }
 void deClassEditableImage::nfGetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
@@ -679,7 +680,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // depth
 }
 void deClassEditableImage::nfGetRange2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
@@ -759,7 +760,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassEditableImage::nfClear::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(0)->GetRealObject());
@@ -780,7 +781,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassEditableImage::nfSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -813,7 +814,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassEditableImage::nfSetAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
@@ -854,7 +855,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // pixels
 }
 void deClassEditableImage::nfSetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
@@ -927,7 +928,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // pixels
 }
 void deClassEditableImage::nfSetRange2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassEditableImage*>(GetOwnerClass())->GetDS();
 	const dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	const deClassColor &clsColor = *ds.GetClassColor();
@@ -1010,7 +1011,7 @@ dsFunction(init.clsEditableImage, "contentChanged", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEditableImage::nfContentChanged::RunFunction(dsRunTime*, dsValue *myself){
-	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const sImgPixNatDat &nd = dedsGetNativeData<sImgPixNatDat>(p_GetNativeData(myself));
 	nd.image->NotifyImageDataChanged();
 }
 
@@ -1028,7 +1029,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_GUI);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sImgPixNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sImgPixNatDat>());
 }
 
 deClassEditableImage::~deClassEditableImage(){

@@ -32,6 +32,7 @@
 
 #include "deClassEffect.h"
 #include "deClassEffectOverlayImage.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassImage.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
@@ -59,7 +60,7 @@ deClassEffectOverlayImage::nfNew::nfNew(const sInitData &init) : dsFunction(init
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffectOverlayImage::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEffOverImgMatrixNatDat * const nd = new (p_GetNativeData(myself)) sEffOverImgMatrixNatDat;
+	sEffOverImgMatrixNatDat &nd = dedsNewNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = (static_cast<deClassEffectOverlayImage*>(GetOwnerClass()))->GetDS();
 	
 	// super call
@@ -67,8 +68,8 @@ void deClassEffectOverlayImage::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create effect
-	nd->effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectOverlayImage();
-	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
+	nd.effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectOverlayImage();
+	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
 }
 
 // public func destructor()
@@ -80,7 +81,7 @@ void deClassEffectOverlayImage::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself))->~sEffOverImgMatrixNatDat();
+	dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself)).~sEffOverImgMatrixNatDat();
 }
 
 
@@ -94,7 +95,7 @@ deClassEffectOverlayImage::nfSetImage::nfSetImage(const sInitData &init) : dsFun
 	p_AddParameter(init.clsImage); // image
 }
 void deClassEffectOverlayImage::nfSetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffOverImgMatrixNatDat &nd = *static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself));
+	const sEffOverImgMatrixNatDat &nd = dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = (static_cast<deClassEffectOverlayImage*>(GetOwnerClass()))->GetDS();
 	
 	nd.effect->SetImage(ds.GetClassImage()->GetImage(rt->GetValue(0)->GetRealObject()));
@@ -106,7 +107,7 @@ deClassEffectOverlayImage::nfSetTransparency::nfSetTransparency(const sInitData 
 	p_AddParameter(init.clsFlt); // transparency
 }
 void deClassEffectOverlayImage::nfSetTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffOverImgMatrixNatDat &nd = *static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself));
+	const sEffOverImgMatrixNatDat &nd = dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself));
 	
 	nd.effect->SetTransparency(rt->GetValue(0)->GetFloat());
 }
@@ -119,7 +120,7 @@ dsFunction(init.clsEffOverImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 }
 
 void deClassEffectOverlayImage::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectOverlayImage * const effect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	deEffectOverlayImage * const effect = dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself)).effect;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)effect);
 }
@@ -130,7 +131,7 @@ dsFunction(init.clsEffOverImg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectOverlayImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEffectOverlayImage * const effect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffectOverlayImage * const effect = dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself)).effect;
 	deClassEffectOverlayImage * const clsEffOverImg = static_cast<deClassEffectOverlayImage*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -138,7 +139,7 @@ void deClassEffectOverlayImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 		rt->PushBool(false);
 		
 	}else{
-		const deEffectOverlayImage * const otherEffect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffectOverlayImage * const otherEffect = dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(obj)).effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -157,7 +158,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Effect");
 	
-	p_SetNativeDataSize(sizeof(sEffOverImgMatrixNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sEffOverImgMatrixNatDat>());
 }
 
 deClassEffectOverlayImage::~deClassEffectOverlayImage(){
@@ -202,7 +203,7 @@ deEffectOverlayImage *deClassEffectOverlayImage::GetEffect(dsRealObject *myself)
 		return nullptr;
 	}
 	
-	return static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
+	return dedsGetNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(myself->GetBuffer())).effect;
 }
 
 void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *effect){
@@ -217,11 +218,11 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffOverImgMatrixNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEffOverImgMatrixNatDat;
+	sEffOverImgMatrixNatDat &nd = dedsNewNativeData<sEffOverImgMatrixNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->effect = effect;
+		nd.effect = effect;
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		

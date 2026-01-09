@@ -31,6 +31,7 @@
 
 #include "deClassMicrophone.h"
 #include "deClassSpeaker.h"
+#include "../dedsHelpers.h"
 #include "../deClassEngine.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
@@ -65,14 +66,14 @@ deClassMicrophone::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsMic,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMicrophone::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMicNatDat * const nd = new (p_GetNativeData(myself)) sMicNatDat;
+	sMicNatDat &nd = dedsNewNativeData<sMicNatDat>(p_GetNativeData(myself));
 	
 	deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = *clsMic->GetScriptModule();
 	deMicrophoneManager *spkMgr = clsMic->GetGameEngine()->GetMicrophoneManager();
 	
-	nd->microphone = spkMgr->CreateMicrophone();
-	nd->microphone->SetEnableAuralization(ds.GetClassEngine()->GetDefaultEnableAuralization());
+	nd.microphone = spkMgr->CreateMicrophone();
+	nd.microphone->SetEnableAuralization(ds.GetClassEngine()->GetDefaultEnableAuralization());
 }
 
 // public func destructor()
@@ -84,7 +85,7 @@ void deClassMicrophone::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sMicNatDat*>(p_GetNativeData(myself))->~sMicNatDat();
+	dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).~sMicNatDat();
 }
 
 
@@ -94,7 +95,7 @@ deClassMicrophone::nfGetType::nfGetType(const sInitData &init) : dsFunction(init
 "getType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMicrophoneType){
 }
 void deClassMicrophone::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	rt->PushValue(static_cast<deClassMicrophone*>(GetOwnerClass())->GetClassMicrophoneType()
 		->GetVariable(microphone->GetType())->GetStaticValue());
@@ -110,7 +111,7 @@ void deClassMicrophone::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	microphone->SetType((deMicrophone::eMicrophoneType)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -122,7 +123,7 @@ deClassMicrophone::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunct
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassMicrophone::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	
 	clsMic->GetClassDVector()->PushDVector(rt, microphone->GetPosition());
@@ -134,7 +135,7 @@ deClassMicrophone::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassMicrophone::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
@@ -148,7 +149,7 @@ deClassMicrophone::nfGetOrientation::nfGetOrientation(const sInitData &init) : d
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassMicrophone::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	deClassQuaternion *clsQuat = clsMic->GetScriptModule()->GetClassQuaternion();
 	
@@ -161,7 +162,7 @@ deClassMicrophone::nfSetOrientation::nfSetOrientation(const sInitData &init) : d
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassMicrophone::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	const deClassQuaternion *clsQuat = clsMic->GetScriptModule()->GetClassQuaternion();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -176,7 +177,7 @@ deClassMicrophone::nfGetVelocity::nfGetVelocity(const sInitData &init) : dsFunct
 "getVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassMicrophone::nfGetVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	deClassVector *clsVec = clsMic->GetScriptModule()->GetClassVector();
 	
@@ -189,7 +190,7 @@ deClassMicrophone::nfSetVelocity::nfSetVelocity(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsVec); // velocity
 }
 void deClassMicrophone::nfSetVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	const deClassVector *clsVec = clsMic->GetScriptModule()->GetClassVector();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -206,7 +207,7 @@ deClassMicrophone::nfGetMuted::nfGetMuted(const sInitData &init) : dsFunction(in
 "getMuted", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassMicrophone::nfGetMuted::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	rt->PushBool(microphone->GetMuted());
 }
@@ -217,7 +218,7 @@ deClassMicrophone::nfSetMuted::nfSetMuted(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsBool); // muted
 }
 void deClassMicrophone::nfSetMuted::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	microphone->SetMuted(rt->GetValue(0)->GetBool());
 }
@@ -227,7 +228,7 @@ deClassMicrophone::nfGetVolume::nfGetVolume(const sInitData &init) : dsFunction(
 "getVolume", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassMicrophone::nfGetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	rt->PushFloat(microphone->GetVolume());
 }
@@ -238,7 +239,7 @@ deClassMicrophone::nfSetVolume::nfSetVolume(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsFlt); // volume
 }
 void deClassMicrophone::nfSetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	microphone->SetVolume(rt->GetValue(0)->GetFloat());
 }
@@ -250,7 +251,7 @@ deClassMicrophone::nfGetLayerMask::nfGetLayerMask(const sInitData &init) : dsFun
 "getLayerMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassMicrophone::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	const deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	const deScriptingDragonScript &ds = *static_cast<deClassMicrophone*>(GetOwnerClass())->GetScriptModule();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, microphone.GetLayerMask());
@@ -262,7 +263,7 @@ deClassMicrophone::nfSetLayerMask::nfSetLayerMask(const sInitData &init) : dsFun
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassMicrophone::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	const deScriptingDragonScript &ds = *static_cast<deClassMicrophone*>(GetOwnerClass())->GetScriptModule();
 	
 	microphone.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
@@ -273,7 +274,7 @@ deClassMicrophone::nfGetSpeakerGain::nfGetSpeakerGain(const sInitData &init) :
 dsFunction(init.clsMic, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassMicrophone::nfGetSpeakerGain::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	const deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	rt->PushFloat(microphone.GetSpeakerGain());
 }
 
@@ -283,7 +284,7 @@ dsFunction(init.clsMic, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 	p_AddParameter(init.clsFlt); // gain
 }
 void deClassMicrophone::nfSetSpeakerGain::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	microphone.SetSpeakerGain(rt->GetValue(0)->GetFloat());
 }
 
@@ -292,7 +293,7 @@ deClassMicrophone::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
 dsFunction(init.clsMic, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 }
 void deClassMicrophone::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	const deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	const deScriptingDragonScript &ds = *static_cast<deClassMicrophone*>(GetOwnerClass())->GetScriptModule();
 	
 	ds.GetClassWorld()->PushWorld(rt, microphone.GetParentWorld());
@@ -303,7 +304,7 @@ deClassMicrophone::nfGetEnableAuralization::nfGetEnableAuralization(const sInitD
 dsFunction(init.clsMic, "getEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassMicrophone::nfGetEnableAuralization::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	const deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	rt->PushBool(microphone.GetEnableAuralization());
 }
 
@@ -313,7 +314,7 @@ dsFunction(init.clsMic, "setEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DS
 	p_AddParameter(init.clsBool); // enable
 }
 void deClassMicrophone::nfSetEnableAuralization::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone &microphone = *(static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone);
+	deMicrophone &microphone = *(dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone);
 	microphone.SetEnableAuralization(rt->GetValue(0)->GetBool());
 }
 
@@ -328,7 +329,7 @@ deClassMicrophone::nfAddSpeaker::nfAddSpeaker(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsSpk); // speaker
 }
 void deClassMicrophone::nfAddSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
@@ -343,7 +344,7 @@ deClassMicrophone::nfRemoveSpeaker::nfRemoveSpeaker(const sInitData &init) : dsF
 	p_AddParameter(init.clsSpk); // speaker
 }
 void deClassMicrophone::nfRemoveSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	const deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
@@ -357,7 +358,7 @@ deClassMicrophone::nfRemoveAllSpeakers::nfRemoveAllSpeakers(const sInitData &ini
 "removeAllSpeakers", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMicrophone::nfRemoveAllSpeakers::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	microphone->RemoveAllSpeakers();
 }
@@ -370,7 +371,7 @@ dsFunction(init.clsMic, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassMicrophone::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	
 	rt->PushInt((int)(intptr_t)microphone);
 }
@@ -381,14 +382,14 @@ dsFunction(init.clsMic, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassMicrophone::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
+	const deMicrophone *microphone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself)).microphone;
 	deClassMicrophone *clsMic = static_cast<deClassMicrophone*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsMic)){
 		rt->PushBool(false);
 	}else{
-		const deMicrophone *otherMicrophone = static_cast<sMicNatDat*>(p_GetNativeData(obj))->microphone;
+		const deMicrophone *otherMicrophone = dedsGetNativeData<sMicNatDat>(p_GetNativeData(obj)).microphone;
 		rt->PushBool(microphone == otherMicrophone);
 	}
 }
@@ -422,7 +423,7 @@ pClsMicrophoneType(NULL)
 	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize(sizeof(sMicNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sMicNatDat>());
 }
 
 deClassMicrophone::~deClassMicrophone(){
@@ -498,7 +499,7 @@ deMicrophone *deClassMicrophone::GetMicrophone(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return static_cast<sMicNatDat*>(p_GetNativeData(myself->GetBuffer()))->microphone;
+	return dedsGetNativeData<sMicNatDat>(p_GetNativeData(myself->GetBuffer())).microphone;
 }
 
 void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
@@ -512,5 +513,5 @@ void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMicNatDat)->microphone = microphone;
+	dedsNewNativeData<sMicNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).microphone = microphone;
 }

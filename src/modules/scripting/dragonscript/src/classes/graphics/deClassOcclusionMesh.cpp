@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassOcclusionMesh.h"
+#include "../dedsHelpers.h"
 #include "../resources/deClassResourceListener.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
@@ -61,13 +62,13 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassOcclusionMesh::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sOccMNatDat * const nd = new (p_GetNativeData(myself)) sOccMNatDat;
+	sOccMNatDat &nd = dedsNewNativeData<sOccMNatDat>(p_GetNativeData(myself));
 	deClassOcclusionMesh &clsOccM = *(static_cast<deClassOcclusionMesh*>(GetOwnerClass()));
 	deOcclusionMeshManager &occmgr = *clsOccM.GetDS()->GetGameEngine()->GetOcclusionMeshManager();
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	
-	nd->occlusionMesh = occmgr.LoadOcclusionMesh(filename, "/");
+	nd.occlusionMesh = occmgr.LoadOcclusionMesh(filename, "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -99,7 +100,7 @@ void deClassOcclusionMesh::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sOccMNatDat*>(p_GetNativeData(myself))->~sOccMNatDat();
+	dedsGetNativeData<sOccMNatDat>(p_GetNativeData(myself)).~sOccMNatDat();
 }
 
 
@@ -109,7 +110,7 @@ deClassOcclusionMesh::nfGetFilename::nfGetFilename(const sInitData &init) : dsFu
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassOcclusionMesh::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deOcclusionMesh &occlusionMesh = static_cast<sOccMNatDat*>(p_GetNativeData(myself))->occlusionMesh;
+	const deOcclusionMesh &occlusionMesh = dedsGetNativeData<sOccMNatDat>(p_GetNativeData(myself)).occlusionMesh;
 	
 	rt->PushString(occlusionMesh.GetFilename());
 }
@@ -122,7 +123,7 @@ deClassOcclusionMesh::nfHashCode::nfHashCode(const sInitData &init) : dsFunction
 }
 
 void deClassOcclusionMesh::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deOcclusionMesh * const occlusionMesh = static_cast<sOccMNatDat*>(p_GetNativeData(myself))->occlusionMesh;
+	const deOcclusionMesh * const occlusionMesh = dedsGetNativeData<sOccMNatDat>(p_GetNativeData(myself)).occlusionMesh;
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)occlusionMesh);
@@ -134,7 +135,7 @@ deClassOcclusionMesh::nfEquals::nfEquals(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassOcclusionMesh::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deOcclusionMesh * const occlusionMesh = static_cast<sOccMNatDat*>(p_GetNativeData(myself))->occlusionMesh;
+	const deOcclusionMesh * const occlusionMesh = dedsGetNativeData<sOccMNatDat>(p_GetNativeData(myself)).occlusionMesh;
 	deClassOcclusionMesh * const clsOccM = static_cast<deClassOcclusionMesh*>(GetOwnerClass());
 	
 	dsValue *object = rt->GetValue(0);
@@ -143,7 +144,7 @@ void deClassOcclusionMesh::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 		rt->PushBool(false);
 		
 	}else{
-		const deOcclusionMesh * const otherOcclusionMesh = static_cast<sOccMNatDat*>(p_GetNativeData(object))->occlusionMesh;
+		const deOcclusionMesh * const otherOcclusionMesh = dedsGetNativeData<sOccMNatDat>(p_GetNativeData(object)).occlusionMesh;
 		
 		rt->PushBool(occlusionMesh == otherOcclusionMesh);
 	}
@@ -183,7 +184,7 @@ dsClass("OcclusionMesh", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sOccMNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sOccMNatDat>());
 }
 
 deClassOcclusionMesh::~deClassOcclusionMesh(){
@@ -226,7 +227,7 @@ deOcclusionMesh *deClassOcclusionMesh::GetOcclusionMesh(dsRealObject *object) co
 		return nullptr;
 	}
 	
-	return static_cast<sOccMNatDat*>(p_GetNativeData(object->GetBuffer()))->occlusionMesh;
+	return dedsGetNativeData<sOccMNatDat>(p_GetNativeData(object->GetBuffer())).occlusionMesh;
 }
 
 void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh){
@@ -240,5 +241,5 @@ void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occ
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sOccMNatDat)->occlusionMesh = occlusionMesh;
+	dedsNewNativeData<sOccMNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).occlusionMesh = occlusionMesh;
 }

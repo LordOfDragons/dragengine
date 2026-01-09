@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 #include "deClassShapeList.h"
+#include "../dedsHelpers.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../math/deClassQuaternion.h"
@@ -68,7 +69,7 @@ deClassShapeList::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsShaLi
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassShapeList::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	new (p_GetNativeData(myself)) sShaListNatDat;
+	dedsNewNativeData<sShaListNatDat>(p_GetNativeData(myself));
 }
 
 // public func new( ShapeList shapeList )
@@ -77,11 +78,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShaList); // shapeList
 }
 void deClassShapeList::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sShaListNatDat * const nd = new (p_GetNativeData(myself)) sShaListNatDat;
+	sShaListNatDat &nd = dedsNewNativeData<sShaListNatDat>(p_GetNativeData(myself));
 	
 	const deClassShapeList &clsShaList = *(static_cast<deClassShapeList*>(GetOwnerClass()));
 	
-	nd->shapeList = clsShaList.GetShapeList(rt->GetValue(0)->GetRealObject());
+	nd.shapeList = clsShaList.GetShapeList(rt->GetValue(0)->GetRealObject());
 }
 
 // public func destructor()
@@ -93,7 +94,7 @@ void deClassShapeList::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sShaListNatDat*>(p_GetNativeData(myself))->~sShaListNatDat();
+	dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).~sShaListNatDat();
 }
 
 
@@ -106,7 +107,7 @@ deClassShapeList::nfGetCount::nfGetCount(const sInitData &init) : dsFunction(ini
 "getCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassShapeList::nfGetCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	rt->PushInt(shapeList.GetCount());
 }
 
@@ -115,7 +116,7 @@ deClassShapeList::nfEmpty::nfEmpty(const sInitData &init) : dsFunction(init.clsS
 "empty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassShapeList::nfEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	rt->PushBool(shapeList.GetCount() == 0);
 }
 
@@ -124,7 +125,7 @@ deClassShapeList::nfNotEmpty::nfNotEmpty(const sInitData &init) : dsFunction(ini
 "notEmpty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassShapeList::nfNotEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	rt->PushBool(shapeList.GetCount() > 0);
 }
 
@@ -133,7 +134,7 @@ deClassShapeList::nfRemoveAllShapes::nfRemoveAllShapes(const sInitData &init) : 
 "removeAllShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassShapeList::nfRemoveAllShapes::RunFunction(dsRunTime*, dsValue *myself){
-	decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	shapeList.RemoveAll();
 }
 
@@ -146,7 +147,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeType){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetTypeAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	rt->PushValue((static_cast<deClassShapeList*>(GetOwnerClass()))->GetClassShapeType()
@@ -160,7 +161,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetPositionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	ds.GetClassVector()->PushVector(rt, shapeList.GetAt(rt->GetValue(0)->GetInt())->GetPosition());
 }
@@ -172,7 +173,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetOrientationAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	ds.GetClassQuaternion()->PushQuaternion(rt, shapeList.GetAt(rt->GetValue(0)->GetInt())->GetOrientation());
 }
@@ -184,7 +185,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetRadiusAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	rt->PushFloat(identify.CastToSphere().GetRadius());
@@ -197,7 +198,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetHalfExtendsAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
@@ -211,7 +212,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetHalfHeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	switch(identify.GetType()){
@@ -235,7 +236,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetTopRadiusAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	switch(identify.GetType()){
@@ -259,7 +260,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetBottomRadiusAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	switch(identify.GetType()){
@@ -283,7 +284,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetTopAxisScalingAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
@@ -308,7 +309,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetBottomAxisScalingAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
@@ -333,7 +334,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassShapeList::nfGetPointCountAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
 	rt->PushInt(identify.CastToHull().GetPointCount());
@@ -347,7 +348,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // point
 }
 void deClassShapeList::nfGetPointAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deScriptingDragonScript &ds = *((static_cast<deClassShapeList*>(GetOwnerClass()))->GetDS());
 	decShapeVisitorIdentify identify;
 	shapeList.GetAt(rt->GetValue(0)->GetInt())->Visit(identify);
@@ -372,7 +373,7 @@ void deClassShapeList::nfAddSphere::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		sphere = new decShapeSphere(radius, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(sphere);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(sphere);
 		
 	}catch(...){
 		if(sphere){
@@ -400,7 +401,7 @@ void deClassShapeList::nfAddBox::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		box = new decShapeBox(extends, center);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(box);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(box);
 		
 	}catch(...){
 		if(box){
@@ -428,7 +429,7 @@ void deClassShapeList::nfAddBox2::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		box = new decShapeBox(extends, center, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(box);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(box);
 		
 	}catch(...){
 		if(box){
@@ -457,7 +458,7 @@ void deClassShapeList::nfAddBox3::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		box = new decShapeBox(extends, tapering, center);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(box);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(box);
 		
 	}catch(...){
 		if(box){
@@ -488,7 +489,7 @@ void deClassShapeList::nfAddBox4::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	try{
 		box = new decShapeBox(extends, tapering, center, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(box);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(box);
 		
 	}catch(...){
 		if(box){
@@ -515,7 +516,7 @@ void deClassShapeList::nfAddCylinder::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -543,7 +544,7 @@ void deClassShapeList::nfAddCylinder2::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -573,7 +574,7 @@ void deClassShapeList::nfAddCylinder3::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -600,7 +601,7 @@ void deClassShapeList::nfAddCylinder4::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -631,7 +632,7 @@ void deClassShapeList::nfAddCylinder5::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -664,7 +665,7 @@ void deClassShapeList::nfAddCylinder6::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -697,7 +698,7 @@ void deClassShapeList::nfAddCylinder7::RunFunction(dsRunTime *rt, dsValue *mysel
 	
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius, topAxisScaling, bottomAxisScaling);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -733,7 +734,7 @@ void deClassShapeList::nfAddCylinder8::RunFunction(dsRunTime *rt, dsValue *mysel
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius,
 			topAxisScaling, bottomAxisScaling, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -771,7 +772,7 @@ void deClassShapeList::nfAddCylinder9::RunFunction(dsRunTime *rt, dsValue *mysel
 	try{
 		cylinder = new decShapeCylinder(halfHeight, radius, bottomRadius,
 			topAxisScaling, bottomAxisScaling, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(cylinder);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(cylinder);
 		
 	}catch(...){
 		if(cylinder){
@@ -798,7 +799,7 @@ void deClassShapeList::nfAddCapsule::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -826,7 +827,7 @@ void deClassShapeList::nfAddCapsule2::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -856,7 +857,7 @@ void deClassShapeList::nfAddCapsule3::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -883,7 +884,7 @@ void deClassShapeList::nfAddCapsule4::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -914,7 +915,7 @@ void deClassShapeList::nfAddCapsule5::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -947,7 +948,7 @@ void deClassShapeList::nfAddCapsule6::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -980,7 +981,7 @@ void deClassShapeList::nfAddCapsule7::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius, topAxisScaling, bottomAxisScaling);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -1016,7 +1017,7 @@ void deClassShapeList::nfAddCapsule8::RunFunction(dsRunTime *rt, dsValue *myself
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius,
 			topAxisScaling, bottomAxisScaling, position);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -1054,7 +1055,7 @@ void deClassShapeList::nfAddCapsule9::RunFunction(dsRunTime *rt, dsValue *myself
 	try{
 		capsule = new decShapeCapsule(halfHeight, radius, bottomRadius,
 			topAxisScaling, bottomAxisScaling, position, orientation);
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(capsule);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(capsule);
 		
 	}catch(...){
 		if(capsule){
@@ -1077,7 +1078,7 @@ void deClassShapeList::nfAddHull::RunFunction(dsRunTime *rt, dsValue *myself){
 	try{
 		hull = new decShapeHull;
 		(static_cast<deClassShapeList*>(GetOwnerClass()))->HullAddPoints(*rt, *hull, *rt->GetValue(0));
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(hull);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(hull);
 		
 	}catch(...){
 		if(hull){
@@ -1102,7 +1103,7 @@ void deClassShapeList::nfAddHull2::RunFunction(dsRunTime *rt, dsValue *myself){
 	try{
 		hull = new decShapeHull(position);
 		(static_cast<deClassShapeList*>(GetOwnerClass()))->HullAddPoints(*rt, *hull, *rt->GetValue(0));
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(hull);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(hull);
 		
 	}catch(...){
 		if(hull){
@@ -1129,7 +1130,7 @@ void deClassShapeList::nfAddHull3::RunFunction(dsRunTime *rt, dsValue *myself){
 	try{
 		hull = new decShapeHull(position, orientation);
 		(static_cast<deClassShapeList*>(GetOwnerClass()))->HullAddPoints(*rt, *hull, *rt->GetValue(0));
-		static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList.Add(hull);
+		dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList.Add(hull);
 		
 	}catch(...){
 		if(hull){
@@ -1310,7 +1311,7 @@ deClassShapeList::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassShapeList::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	const deClassShapeList &clsShapeList = *(static_cast<deClassShapeList*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsShapeList.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -1341,7 +1342,7 @@ dsFunction(init.clsShaList, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 
 void deClassShapeList::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	
 	rt->PushInt((int)(intptr_t)&shapeList);
 }
@@ -1352,7 +1353,7 @@ dsFunction(init.clsShaList, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // object
 }
 void deClassShapeList::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decShapeList &shapeList = static_cast<sShaListNatDat*>(p_GetNativeData(myself))->shapeList;
+	const decShapeList &shapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself)).shapeList;
 	deClassShapeList * const clsShaList = static_cast<deClassShapeList*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
@@ -1360,7 +1361,7 @@ void deClassShapeList::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const decShapeList &otherShapeList = static_cast<sShaListNatDat*>(p_GetNativeData(object))->shapeList;
+		const decShapeList &otherShapeList = dedsGetNativeData<sShaListNatDat>(p_GetNativeData(object)).shapeList;
 		rt->PushBool(&shapeList == &otherShapeList);
 	}
 }
@@ -1387,7 +1388,7 @@ pClsShapeType(nullptr)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sShaListNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sShaListNatDat>());
 }
 
 deClassShapeList::~deClassShapeList(){
@@ -1488,7 +1489,7 @@ const decShapeList &deClassShapeList::GetShapeList(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return static_cast<sShaListNatDat*>(p_GetNativeData(myself->GetBuffer()))->shapeList;
+	return dedsGetNativeData<sShaListNatDat>(p_GetNativeData(myself->GetBuffer())).shapeList;
 }
 
 void deClassShapeList::PushShapeList(dsRunTime *rt, const decShapeList &shapeList){
@@ -1497,10 +1498,10 @@ void deClassShapeList::PushShapeList(dsRunTime *rt, const decShapeList &shapeLis
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sShaListNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sShaListNatDat;
+	sShaListNatDat &nd = dedsNewNativeData<sShaListNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
-		nd->shapeList = shapeList;
+		nd.shapeList = shapeList;
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

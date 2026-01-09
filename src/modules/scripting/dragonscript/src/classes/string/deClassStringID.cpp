@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassStringID.h"
+#include "../dedsHelpers.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deClassPathes.h"
@@ -64,7 +65,7 @@ dsFunction(init.clsStringID, DSFUNC_CONSTRUCTOR,
 DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassStringID::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sStrIDNatDat;
+	dedsNewNativeData<sStrIDNatDat>(p_GetNativeData(myself));
 }
 
 // public func new( String string )
@@ -74,11 +75,11 @@ DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // string
 }
 void deClassStringID::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sStrIDNatDat * const nd = new (p_GetNativeData(myself)) sStrIDNatDat;
+	sStrIDNatDat &nd = dedsNewNativeData<sStrIDNatDat>(p_GetNativeData(myself));
 	
 	deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
-	nd->index = sclass.InsertString(rt->GetValue(0)->GetString());
+	nd.index = sclass.InsertString(rt->GetValue(0)->GetString());
 }
 
 // public func destructor()
@@ -91,7 +92,7 @@ void deClassStringID::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->~sStrIDNatDat();
+	dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).~sStrIDNatDat();
 }
 
 
@@ -105,7 +106,7 @@ dsFunction(init.clsStringID, "getString", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassStringID::nfGetString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
+	const int index = dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).index;
 	const deClassStringID &clsStringID = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
 	rt->PushString(clsStringID.GetStringAt(index));
@@ -142,7 +143,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassStringID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
+	const int index = dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).index;
 	const deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *sclass.GetDS().GetClassFileWriter();
 	
@@ -169,7 +170,7 @@ void deClassStringID::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	// is used the hash code of StringID and String are different causing the dictionary to
 	// not find a StringID key using a String. we want though to keep the benefits of using
 	// the index as hash code so we simply require the user to not fall into this trap
-	rt->PushInt(static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index);
+	rt->PushInt(dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).index);
 }
 
 // public func bool equals( Object object )
@@ -179,14 +180,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // object
 }
 void deClassStringID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
+	const int index = dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).index;
 	deClassStringID * const sclass = static_cast<deClassStringID*>(GetOwnerClass());
 	dsClass * const scString = rt->GetEngine()->GetClassString();
 	dsValue * const object = rt->GetValue(0);
 	
 	if(object){
 		if(p_IsObjOfType(object, sclass)){
-			const int otherIndex = static_cast<sStrIDNatDat*>(p_GetNativeData(object))->index;
+			const int otherIndex = dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(object)).index;
 			rt->PushBool(index == otherIndex);
 			
 		}else if(p_IsObjOfType(object, scString)){
@@ -207,7 +208,7 @@ dsFunction(init.clsStringID, "toString", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassStringID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
+	const int index = dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself)).index;
 	const deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
 	rt->PushString(sclass.GetStringAt(index));
@@ -232,7 +233,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sStrIDNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sStrIDNatDat>());
 }
 
 deClassStringID::~deClassStringID(){
@@ -284,7 +285,7 @@ int deClassStringID::GetStringID(dsRealObject *myself){
 	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
-	return static_cast<sStrIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->index;
+	return dedsGetNativeData<sStrIDNatDat>(p_GetNativeData(myself->GetBuffer())).index;
 }
 
 void deClassStringID::PushStringID(dsRunTime *rt, int index){
@@ -293,7 +294,7 @@ void deClassStringID::PushStringID(dsRunTime *rt, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sStrIDNatDat)->index = index;
+	dedsNewNativeData<sStrIDNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).index = index;
 }
 
 int deClassStringID::InsertString(const char *string){

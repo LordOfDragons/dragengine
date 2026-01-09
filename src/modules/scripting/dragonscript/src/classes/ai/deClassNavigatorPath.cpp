@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 #include "deClassNavigatorPath.h"
+#include "../dedsHelpers.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../debug/deClassDebugDrawer.h"
@@ -62,8 +63,8 @@ deClassNavigatorPath::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsN
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNavigatorPath::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sNavPathNatDat * const nd = new (p_GetNativeData(myself)) sNavPathNatDat;
-	nd->path = deNavigatorPath::Ref::New();
+	sNavPathNatDat &nd = dedsNewNativeData<sNavPathNatDat>(p_GetNativeData(myself));
+	nd.path = deNavigatorPath::Ref::New();
 }
 
 // public func new( NavigatorPath path )
@@ -72,10 +73,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsNavPath); // path
 }
 void deClassNavigatorPath::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sNavPathNatDat * const nd = new (p_GetNativeData(myself)) sNavPathNatDat;
+	sNavPathNatDat &nd = dedsNewNativeData<sNavPathNatDat>(p_GetNativeData(myself));
 	const deClassNavigatorPath &clsNavPath = *static_cast<deClassNavigatorPath*>(GetOwnerClass());
 	
-	nd->path = deNavigatorPath::Ref::New(clsNavPath.GetNavigatorPath(rt->GetValue(0)->GetRealObject()));
+	nd.path = deNavigatorPath::Ref::New(clsNavPath.GetNavigatorPath(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func destructor()
@@ -87,7 +88,7 @@ void deClassNavigatorPath::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sNavPathNatDat*>(p_GetNativeData(myself))->~sNavPathNatDat();
+	dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).~sNavPathNatDat();
 }
 
 
@@ -100,7 +101,7 @@ deClassNavigatorPath::nfGetCount::nfGetCount(const sInitData &init) : dsFunction
 "getCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassNavigatorPath::nfGetCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	
 	rt->PushInt(path.GetCount());
 }
@@ -111,7 +112,7 @@ deClassNavigatorPath::nfGetAt::nfGetAt(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassNavigatorPath::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -126,7 +127,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVector); // point
 }
 void deClassNavigatorPath::nfSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = *(static_cast<sNavPathNatDat*>(p_GetNativeData(myself))->path);
+	deNavigatorPath &path = *(dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path);
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decDVector &point = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -140,7 +141,7 @@ deClassNavigatorPath::nfAdd::nfAdd(const sInitData &init) : dsFunction(init.clsN
 	p_AddParameter(init.clsDVector); // point
 }
 void deClassNavigatorPath::nfAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &point = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -154,7 +155,7 @@ deClassNavigatorPath::nfAddPath::nfAddPath(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsNavPath); // path
 }
 void deClassNavigatorPath::nfAddPath::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	deClassNavigatorPath &clsNavPath = *static_cast<deClassNavigatorPath*>(GetOwnerClass());
 	
 	path.AddPath(clsNavPath.GetNavigatorPath(rt->GetValue(0)->GetRealObject()));
@@ -166,7 +167,7 @@ deClassNavigatorPath::nfRemoveFrom::nfRemoveFrom(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassNavigatorPath::nfRemoveFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	
 	path.RemoveFrom(rt->GetValue(0)->GetInt());
 }
@@ -176,7 +177,7 @@ deClassNavigatorPath::nfRemoveAll::nfRemoveAll(const sInitData &init) : dsFuncti
 "removeAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNavigatorPath::nfRemoveAll::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	
 	path.RemoveAll();
 }
@@ -187,7 +188,7 @@ deClassNavigatorPath::nfTransform::nfTransform(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsDMatrix); // matrix
 }
 void deClassNavigatorPath::nfTransform::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	
 	const decDMatrix &matrix = ds.GetClassDMatrix()->GetDMatrix(rt->GetValue(0)->GetRealObject());
@@ -204,7 +205,7 @@ deClassNavigatorPath::nfTransformed::nfTransformed(const sInitData &init) : dsFu
 	p_AddParameter(init.clsDMatrix); // matrix
 }
 void deClassNavigatorPath::nfTransformed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	deClassNavigatorPath &clsNavPath = *static_cast<deClassNavigatorPath*>(GetOwnerClass());
 	
 	const decDMatrix &matrix = clsNavPath.GetDS().GetClassDMatrix()->GetDMatrix(rt->GetValue(0)->GetRealObject());
@@ -223,7 +224,7 @@ deClassNavigatorPath::nfGetLength::nfGetLength(const sInitData &init) : dsFuncti
 "getLength", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassNavigatorPath::nfGetLength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const int count = path.GetCount();
 	double length = 0.0f;
 	
@@ -247,7 +248,7 @@ deClassNavigatorPath::nfGetLengthTo::nfGetLengthTo(const sInitData &init) : dsFu
 	p_AddParameter(init.clsInteger); // endIndex
 }
 void deClassNavigatorPath::nfGetLengthTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const int endIndex = rt->GetValue(0)->GetInt();
 	const int count = path.GetCount();
 	if(endIndex < 0 || endIndex >= count){
@@ -273,7 +274,7 @@ deClassNavigatorPath::nfGetLengthFrom::nfGetLengthFrom(const sInitData &init) : 
 	p_AddParameter(init.clsInteger); // startIndex
 }
 void deClassNavigatorPath::nfGetLengthFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const int startIndex = rt->GetValue(0)->GetInt();
 	const int count = path.GetCount();
 	if(startIndex < 0 || startIndex >= count){
@@ -300,7 +301,7 @@ deClassNavigatorPath::nfGetLengthBetween::nfGetLengthBetween(const sInitData &in
 	p_AddParameter(init.clsInteger); // endIndex
 }
 void deClassNavigatorPath::nfGetLengthBetween::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const int startIndex = rt->GetValue(0)->GetInt();
 	const int endIndex = rt->GetValue(1)->GetInt();
 	const int count = path.GetCount();
@@ -366,7 +367,7 @@ deClassNavigatorPath::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFu
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassNavigatorPath::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	decBaseFileWriter * const writer = ds.GetClassFileWriter()->GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -395,7 +396,7 @@ deClassNavigatorPath::nfUpdateDebugDrawer::nfUpdateDebugDrawer(const sInitData &
 	p_AddParameter(init.clsFloat); // scale
 }
 void deClassNavigatorPath::nfUpdateDebugDrawer::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath &path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath &path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	const deScriptingDragonScript &ds = static_cast<deClassNavigatorPath*>(GetOwnerClass())->GetDS();
 	
 	deDebugDrawer * const debugDrawer = ds.GetClassDebugDrawer()->GetDebugDrawer(rt->GetValue(0)->GetRealObject());
@@ -477,7 +478,7 @@ dsFunction(init.clsNavPath, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 
 void deClassNavigatorPath::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath * const path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath * const path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	
 	rt->PushInt((int)(intptr_t)path);
 }
@@ -488,7 +489,7 @@ dsFunction(init.clsNavPath, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObject); // object
 }
 void deClassNavigatorPath::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigatorPath * const path = static_cast<const sNavPathNatDat*>(p_GetNativeData(myself))->path;
+	const deNavigatorPath * const path = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself)).path;
 	deClassNavigatorPath * const clsNavPath = static_cast<deClassNavigatorPath*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
@@ -496,7 +497,7 @@ void deClassNavigatorPath::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 		rt->PushBool(false);
 		
 	}else{
-		const deNavigatorPath * const otherPath = static_cast<const sNavPathNatDat*>(p_GetNativeData(object))->path;
+		const deNavigatorPath * const otherPath = dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(object)).path;
 		rt->PushBool(path == otherPath);
 	}
 }
@@ -516,7 +517,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sNavPathNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sNavPathNatDat>());
 }
 
 deClassNavigatorPath::~deClassNavigatorPath(){
@@ -578,7 +579,7 @@ deNavigatorPath &deClassNavigatorPath::GetNavigatorPath(dsRealObject *myself) co
 		DSTHROW(dueNullPointer);
 	}
 	
-	return static_cast<const sNavPathNatDat*>(p_GetNativeData(myself->GetBuffer()))->path;
+	return dedsGetNativeData<sNavPathNatDat>(p_GetNativeData(myself->GetBuffer())).path;
 }
 
 void deClassNavigatorPath::PushNavigatorPath(dsRunTime *rt, const deNavigatorPath &path){
@@ -587,10 +588,10 @@ void deClassNavigatorPath::PushNavigatorPath(dsRunTime *rt, const deNavigatorPat
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sNavPathNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavPathNatDat;
+	sNavPathNatDat &nd = dedsNewNativeData<sNavPathNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
-		nd->path = deNavigatorPath::Ref::New(path);
+		nd.path = deNavigatorPath::Ref::New(path);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

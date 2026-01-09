@@ -32,6 +32,7 @@
 #include "deClassARStateSnapshot.h"
 #include "../deClassAnimator.h"
 #include "../deClassAnimatorRule.h"
+#include "../../dedsHelpers.h"
 #include "../../math/deClassVector.h"
 #include "../../math/deClassVector2.h"
 #include "../../math/deClassQuaternion.h"
@@ -73,15 +74,15 @@ deClassARStateSnapshot::nfNew::nfNew(const sInitData &init) : dsFunction(init.cl
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARStateSnapshot::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat * const nd = new (p_GetNativeData(myself)) sARSnapNatDat;
+	sARSnapNatDat &nd = dedsNewNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	// super call
 	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = deAnimatorRuleStateSnapshot::Ref::New();
-	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
+	nd.rule = deAnimatorRuleStateSnapshot::Ref::New();
+	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
 // public func destructor()
@@ -93,7 +94,7 @@ void deClassARStateSnapshot::nfDestructor::RunFunction(dsRunTime *rt, dsValue *m
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sARSnapNatDat*>(p_GetNativeData(myself))->~sARSnapNatDat();
+	dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself)).~sARSnapNatDat();
 }
 
 
@@ -105,7 +106,7 @@ deClassARStateSnapshot::nfSetEnablePosition::nfSetEnablePosition(const sInitData
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateSnapshot::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -120,7 +121,7 @@ deClassARStateSnapshot::nfSetEnableOrientation::nfSetEnableOrientation(const sIn
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateSnapshot::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
@@ -135,7 +136,7 @@ deClassARStateSnapshot::nfSetEnableSize::nfSetEnableSize(const sInitData &init) 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateSnapshot::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -150,7 +151,7 @@ dsFunction(init.clsARSnap, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUB
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARStateSnapshot::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -167,7 +168,7 @@ deClassARStateSnapshot::nfSetUseLastState::nfSetUseLastState(const sInitData &in
 	p_AddParameter(init.clsBool); // useLastState
 }
 void deClassARStateSnapshot::nfSetUseLastState::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetUseLastState(rt->GetValue(0)->GetBool());
 	
@@ -182,7 +183,7 @@ deClassARStateSnapshot::nfSetID::nfSetID(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // identifier
 }
 void deClassARStateSnapshot::nfSetID::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	
 	nd.rule->SetID(rt->GetValue(0)->GetInt());
 	
@@ -204,7 +205,7 @@ void deClassARStateSnapshot::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -234,7 +235,7 @@ void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, 
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
+	sARSnapNatDat &nd = dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself));
 	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -267,7 +268,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("AnimatorRule");
 	
-	p_SetNativeDataSize(sizeof(sARSnapNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sARSnapNatDat>());
 }
 
 deClassARStateSnapshot::~deClassARStateSnapshot(){
@@ -320,7 +321,7 @@ deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *mysel
 		return NULL;
 	}
 	
-	return static_cast<sARSnapNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
+	return dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
 }
 
 void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -329,7 +330,7 @@ void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *an
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	static_cast<sARSnapNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
+	dedsGetNativeData<sARSnapNatDat>(p_GetNativeData(myself->GetBuffer())).animator = animator;
 }
 
 void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
@@ -344,12 +345,12 @@ void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAni
 	
 	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARSnapNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARSnapNatDat;
+	sARSnapNatDat &nd = dedsNewNativeData<sARSnapNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->animator = animator;
-		nd->rule = rule;
+		nd.animator = animator;
+		nd.rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

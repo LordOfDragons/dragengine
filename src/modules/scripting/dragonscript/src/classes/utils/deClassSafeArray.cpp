@@ -30,6 +30,7 @@
 #include <stdint.h>
 
 #include "deClassSafeArray.h"
+#include "../dedsHelpers.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -106,7 +107,7 @@ void deClassSafeArray::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	new (p_GetNativeData(myself)) sSafeArrayNatDat;
+	dedsNewNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 }
 
 // public func destructor()
@@ -118,7 +119,7 @@ void deClassSafeArray::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	int count = nd.array.GetCount();
 	while(count > 0){
@@ -140,7 +141,7 @@ deClassSafeArray::nfGetCount::nfGetCount(const sInitData &init) : dsFunction(ini
 "getCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSafeArray::nfGetCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	const sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	rt->PushInt(nd.array.GetCount());
 }
 
@@ -150,7 +151,7 @@ deClassSafeArray::nfHas::nfHas(const sInitData &init) : dsFunction(init.clsSA,
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfHas::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	const sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const dsRealObject * const obj = rt->GetValue(0)->GetRealObject();
 	
@@ -168,7 +169,7 @@ deClassSafeArray::nfIndexOf::nfIndexOf(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfIndexOf::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	const sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	rt->PushInt(nd.IndexOf(rt->GetValue(0)));
 }
 
@@ -178,7 +179,7 @@ deClassSafeArray::nfGetAt::nfGetAt(const sInitData &init) : dsFunction(init.clsS
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSafeArray::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	const sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const int index = rt->GetValue(0)->GetInt();
 	const dsValue &value = *static_cast<dsValue*>(nd.array.GetAt(index));
@@ -192,7 +193,7 @@ deClassSafeArray::nfSetAt::nfSetAt(const sInitData &init) : dsFunction(init.clsS
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	const sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const int index = rt->GetValue(0)->GetInt();
 	dsValue * const valueTo = static_cast<dsValue*>(nd.array.GetAt(index));
@@ -213,7 +214,7 @@ deClassSafeArray::nfAdd::nfAdd(const sInitData &init) : dsFunction(init.clsSA,
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	dsRealObject * const obj = rt->GetValue(0)->GetRealObject();
 	
@@ -242,7 +243,7 @@ deClassSafeArray::nfAddIfAbsent::nfAddIfAbsent(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfAddIfAbsent::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	dsRealObject * const obj = rt->GetValue(0)->GetRealObject();
 	
@@ -271,7 +272,7 @@ deClassSafeArray::nfRemove::nfRemove(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfRemove::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const int index = nd.IndexOf(rt->GetValue(0));
 	if(index == -1){
@@ -288,7 +289,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSafeArray::nfRemoveFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const int index = rt->GetValue(0)->GetInt();
 	if(index < 0 || index >= nd.array.GetCount()){
@@ -304,7 +305,7 @@ deClassSafeArray::nfRemoveIfPresent::nfRemoveIfPresent(const sInitData &init) : 
 	p_AddParameter(init.clsObj); // element
 }
 void deClassSafeArray::nfRemoveIfPresent::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	const int index = nd.IndexOf(rt->GetValue(0));
 	if(index == -1){
@@ -319,7 +320,7 @@ deClassSafeArray::nfRemoveAll::nfRemoveAll(const sInitData &init) : dsFunction(i
 "removeAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSafeArray::nfRemoveAll::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	while(nd.array.GetCount() > 0){
 		nd.RemoveIndex(*rt, nd.array.GetCount() - 1);
@@ -332,7 +333,7 @@ deClassSafeArray::nfRemoveAll2::nfRemoveAll2(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsBlock); // ablock
 }
 void deClassSafeArray::nfRemoveAll2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
 	if(!valueBlock->GetRealObject()){
@@ -377,7 +378,7 @@ deClassSafeArray::nfForEach::nfForEach(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsBlock); // ablock
 }
 void deClassSafeArray::nfForEach::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
 	if(!valueBlock->GetRealObject()){
@@ -418,7 +419,7 @@ deClassSafeArray::nfFind::nfFind(const sInitData &init) : dsFunction(init.clsSA,
 	p_AddParameter(init.clsBlock); // ablock
 }
 void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *static_cast<sSafeArrayNatDat*>(p_GetNativeData(myself));
+	sSafeArrayNatDat &nd = dedsGetNativeData<sSafeArrayNatDat>(p_GetNativeData(myself));
 	
 	dsValue * const valueBlock = rt->GetValue(0);
 	if(!valueBlock->GetRealObject()){
@@ -501,7 +502,7 @@ dsClass("SafeArray", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sSafeArrayNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSafeArrayNatDat>());
 }
 
 deClassSafeArray::~deClassSafeArray(){

@@ -33,6 +33,7 @@
 #include "deClassSkyBody.h"
 #include "deClassSkyLayer.h"
 #include "deClassSkyTarget.h"
+#include "../dedsHelpers.h"
 #include "../curve/deClassCurveBezier.h"
 #include "../graphics/deClassColor.h"
 #include "../math/deClassQuaternion.h"
@@ -82,7 +83,7 @@ void deClassSkyLayer::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself))->~sSkyLayerNatDat();
+	dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself)).~sSkyLayerNatDat();
 }
 
 
@@ -96,7 +97,7 @@ dsFunction(init.clsSkyLink, "getSky", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyLayer::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
@@ -108,7 +109,7 @@ dsFunction(init.clsSkyLink, "getLayerIndex", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyLayer::nfGetLayerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.index);
 }
@@ -121,7 +122,7 @@ dsFunction(init.clsSkyLink, "getOffset", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassSkyLayer::nfGetOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -135,7 +136,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // offset
 }
 void deClassSkyLayer::nfSetOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -148,7 +149,7 @@ dsFunction(init.clsSkyLink, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassSkyLayer::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -162,7 +163,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // orientation
 }
 void deClassSkyLayer::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -176,7 +177,7 @@ dsFunction(init.clsSkyLink, "getColor", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
 void deClassSkyLayer::nfGetColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -190,7 +191,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassSkyLayer::nfSetColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -203,7 +204,7 @@ dsFunction(init.clsSkyLink, "getIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSkyLayer::nfGetIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushFloat(layer.GetIntensity());
@@ -216,7 +217,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // intensity
 }
 void deClassSkyLayer::nfSetIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetIntensity(rt->GetValue(0)->GetFloat());
@@ -228,7 +229,7 @@ dsFunction(init.clsSkyLink, "getTransparency", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSkyLayer::nfGetTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushFloat(layer.GetTransparency());
@@ -241,7 +242,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // transparency
 }
 void deClassSkyLayer::nfSetTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetTransparency(rt->GetValue(0)->GetFloat());
@@ -253,7 +254,7 @@ dsFunction(init.clsSkyLink, "getSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassSkyLayer::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -267,7 +268,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkin); // skin
 }
 void deClassSkyLayer::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -282,7 +283,7 @@ dsFunction(init.clsSkyLink, "getLightOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassSkyLayer::nfGetLightOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -296,7 +297,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassSkyLayer::nfSetLightOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -310,7 +311,7 @@ dsFunction(init.clsSkyLink, "getLightColor", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
 void deClassSkyLayer::nfGetLightColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -324,7 +325,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassSkyLayer::nfSetLightColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	
@@ -337,7 +338,7 @@ dsFunction(init.clsSkyLink, "getLightIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSkyLayer::nfGetLightIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushFloat(layer.GetLightIntensity());
@@ -350,7 +351,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // intensity
 }
 void deClassSkyLayer::nfSetLightIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetLightIntensity(rt->GetValue(0)->GetFloat());
@@ -362,7 +363,7 @@ dsFunction(init.clsSkyLink, "getAmbientIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSkyLayer::nfGetAmbientIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushFloat(layer.GetAmbientIntensity());
@@ -375,7 +376,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // intensity
 }
 void deClassSkyLayer::nfSetAmbientIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetAmbientIntensity(rt->GetValue(0)->GetFloat());
@@ -389,7 +390,7 @@ dsFunction(init.clsSkyLink, "getBodyCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSkyLayer::nfGetBodyCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushInt(layer.GetBodyCount());
@@ -402,7 +403,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassSkyLayer::nfSetBodyCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetBodyCount(rt->GetValue(0)->GetInt());
@@ -415,7 +416,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyBody){
 	p_AddParameter(init.clsInt); // body
 }
 void deClassSkyLayer::nfGetBodyAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassSkyLayer*>(GetOwnerClass())->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -431,7 +432,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyTarget){
 	p_AddParameter(init.clsSkyLayerTargetType); // target
 }
 void deClassSkyLayer::nfGetTarget::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -452,7 +453,7 @@ dsFunction(init.clsSkyLink, "getMultiplyBySkyLight", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSkyLayer::nfGetMultiplyBySkyLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushBool(layer.GetMuliplyBySkyLight());
@@ -465,7 +466,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // mulBySkyLight
 }
 void deClassSkyLayer::nfSetMultiplyBySkyLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetMultiplyBySkyLight(rt->GetValue(0)->GetBool());
@@ -477,7 +478,7 @@ dsFunction(init.clsSkyLink, "getMultiplyBySkyColor", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSkyLayer::nfGetMultiplyBySkyColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	const deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	rt->PushBool(layer.GetMuliplyBySkyColor());
@@ -490,7 +491,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // mulBySkyColor
 }
 void deClassSkyLayer::nfSetMultiplyBySkyColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	deSkyLayer &layer = nd.sky->GetLayers().GetAt(nd.index);
 	
 	layer.SetMultiplyBySkyColor(rt->GetValue(0)->GetBool());
@@ -505,14 +506,14 @@ dsFunction(init.clsSkyLink, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 }
 void deClassSkyLayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSkyLayer * const clsSkyLink = static_cast<deClassSkyLayer*>(GetOwnerClass());
-	const sSkyLayerNatDat &nd = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(myself));
+	const sSkyLayerNatDat &nd = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSkyLink)){
 		rt->PushBool(false);
 		
 	}else{
-		const sSkyLayerNatDat &other = *static_cast<const sSkyLayerNatDat*>(p_GetNativeData(obj));
+		const sSkyLayerNatDat &other = dedsGetNativeData<sSkyLayerNatDat>(p_GetNativeData(obj));
 		rt->PushBool(nd.sky == other.sky && nd.index == other.index);
 	}
 }
@@ -533,7 +534,7 @@ pClsSkyLayerTargetType(nullptr)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sSkyLayerNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSkyLayerNatDat>());
 }
 
 deClassSkyLayer::~deClassSkyLayer(){
@@ -611,7 +612,7 @@ void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyLayerNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyLayerNatDat;
-	nd->sky = sky;
-	nd->index = index;
+	sSkyLayerNatDat &nd = dedsNewNativeData<sSkyLayerNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	nd.sky = sky;
+	nd.index = index;
 }

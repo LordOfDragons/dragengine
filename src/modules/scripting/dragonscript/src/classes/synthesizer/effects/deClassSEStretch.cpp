@@ -32,6 +32,7 @@
 #include "deClassSEStretch.h"
 #include "../deClassSynthesizer.h"
 #include "../deClassSynthesizerEffect.h"
+#include "../../dedsHelpers.h"
 #include "../../../deScriptingDragonScript.h"
 #include "../../../deClassPathes.h"
 
@@ -64,13 +65,13 @@ deClassSEStretch::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSEStr
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSEStretch::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSEStretchNatDat * const nd = new (p_GetNativeData(myself)) sSEStretchNatDat;
+	sSEStretchNatDat &nd = dedsNewNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	
 	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	nd->effect = deSynthesizerEffectStretch::Ref::New();
-	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
+	nd.effect = deSynthesizerEffectStretch::Ref::New();
+	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
 }
 
 // public func destructor()
@@ -82,7 +83,7 @@ void deClassSEStretch::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSEStretchNatDat*>(p_GetNativeData(myself))->~sSEStretchNatDat();
+	dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself)).~sSEStretchNatDat();
 }
 
 
@@ -98,7 +99,7 @@ void deClassSEStretch::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const deClassSEStretch::eTargets target = (deClassSEStretch::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -136,7 +137,7 @@ void deClassSEStretch::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const deClassSEStretch::eTargets target = (deClassSEStretch::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -170,7 +171,7 @@ deClassSEStretch::nfSetMinTime::nfSetMinTime(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFloat); // time
 }
 void deClassSEStretch::nfSetMinTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const float time = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(time - nd.effect->GetMinTime()) <= FLOAT_SAFE_EPSILON){
@@ -190,7 +191,7 @@ deClassSEStretch::nfSetMaxTime::nfSetMaxTime(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFloat); // time
 }
 void deClassSEStretch::nfSetMaxTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const float time = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(time - nd.effect->GetMaxTime()) <= FLOAT_SAFE_EPSILON){
@@ -210,7 +211,7 @@ deClassSEStretch::nfSetMinPitch::nfSetMinPitch(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFloat); // pitch
 }
 void deClassSEStretch::nfSetMinPitch::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const float pitch = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(pitch - nd.effect->GetMinPitch()) <= FLOAT_SAFE_EPSILON){
@@ -230,7 +231,7 @@ deClassSEStretch::nfSetMaxPitch::nfSetMaxPitch(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFloat); // pitch
 }
 void deClassSEStretch::nfSetMaxPitch::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
+	sSEStretchNatDat &nd = dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself));
 	const float pitch = rt->GetValue(0)->GetFloat();
 	
 	if(fabsf(pitch - nd.effect->GetMaxPitch()) <= FLOAT_SAFE_EPSILON){
@@ -258,7 +259,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("SynthesizerEffect");
 	
-	p_SetNativeDataSize(sizeof(sSEStretchNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSEStretchNatDat>());
 }
 
 deClassSEStretch::~deClassSEStretch(){
@@ -303,7 +304,7 @@ deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) co
 		return NULL;
 	}
 	
-	return static_cast<sSEStretchNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
+	return dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself->GetBuffer())).effect;
 }
 
 void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source){
@@ -313,7 +314,7 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 	
 	pDS.GetClassSynthesizerEffect()->AssignSource(myself, source);
 	
-	static_cast<sSEStretchNatDat*>(p_GetNativeData(myself->GetBuffer()))->source = source;
+	dedsGetNativeData<sSEStretchNatDat>(p_GetNativeData(myself->GetBuffer())).source = source;
 }
 
 void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
@@ -328,12 +329,12 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 	
 	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSEStretchNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSEStretchNatDat;
+	sSEStretchNatDat &nd = dedsNewNativeData<sSEStretchNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->source = source;
-		nd->effect = effect;
+		nd.source = source;
+		nd.effect = effect;
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);

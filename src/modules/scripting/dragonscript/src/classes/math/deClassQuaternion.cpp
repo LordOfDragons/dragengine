@@ -32,6 +32,7 @@
 #include "deClassQuaternion.h"
 #include "deClassDVector.h"
 #include "deClassVector.h"
+#include "../dedsHelpers.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -62,7 +63,7 @@ deClassQuaternion::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsQuat
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassQuaternion::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sQuatNatDat;
+	dedsNewNativeData<sQuatNatDat>(p_GetNativeData(myself));
 }
 
 // public func new( float x, float y, float z, float w )
@@ -74,7 +75,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // w
 }
 void deClassQuaternion::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decQuaternion &quaternion = (new (p_GetNativeData(myself)) sQuatNatDat)->quaternion;
+	decQuaternion &quaternion = dedsNewNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	
 	quaternion.x = rt->GetValue(0)->GetFloat();
 	quaternion.y = rt->GetValue(1)->GetFloat();
@@ -88,7 +89,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuat); // q
 }
 void deClassQuaternion::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
-	decQuaternion &quaternion = (new (p_GetNativeData(myself)) sQuatNatDat)->quaternion;
+	decQuaternion &quaternion = dedsNewNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	
 	quaternion.Set(clsQuaternion.GetQuaternion(rt->GetValue(0)->GetRealObject()));
@@ -103,7 +104,7 @@ void deClassQuaternion::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sQuatNatDat*>(p_GetNativeData(myself))->~sQuatNatDat();
+	dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).~sQuatNatDat();
 }
 
 // static public func Quaternion newFromEuler( float rx, float ry, float rz )
@@ -194,7 +195,7 @@ deClassQuaternion::nfGetX::nfGetX(const sInitData &init) : dsFunction(init.clsQu
 "getX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassQuaternion::nfGetX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushFloat(quaternion.x);
 }
 
@@ -203,7 +204,7 @@ deClassQuaternion::nfGetY::nfGetY(const sInitData &init) : dsFunction(init.clsQu
 "getY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassQuaternion::nfGetY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushFloat(quaternion.y);
 }
 
@@ -212,7 +213,7 @@ deClassQuaternion::nfGetZ::nfGetZ(const sInitData &init) : dsFunction(init.clsQu
 "getZ", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassQuaternion::nfGetZ::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushFloat(quaternion.z);
 }
 
@@ -221,7 +222,7 @@ deClassQuaternion::nfGetW::nfGetW(const sInitData &init) : dsFunction(init.clsQu
 "getW", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassQuaternion::nfGetW::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushFloat(quaternion.w);
 }
 
@@ -231,7 +232,7 @@ deClassQuaternion::nfGet::nfGet(const sInitData &init) : dsFunction(init.clsQuat
 	p_AddParameter(init.clsInt); // component
 }
 void deClassQuaternion::nfGet::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	const int component = rt->GetValue(0)->GetInt();
 	
 	if(component == 0){
@@ -256,7 +257,7 @@ deClassQuaternion::nfGetLength::nfGetLength(const sInitData &init) : dsFunction(
 "getLength", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassQuaternion::nfGetLength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushFloat(quaternion.Length());
 }
 
@@ -265,7 +266,7 @@ deClassQuaternion::nfNormalize::nfNormalize(const sInitData &init) : dsFunction(
 "normalize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassQuaternion::nfNormalize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	clsQuaternion.PushQuaternion(rt, quaternion.Normalized());
 }
@@ -275,7 +276,7 @@ deClassQuaternion::nfConjugate::nfConjugate(const sInitData &init) : dsFunction(
 "conjugate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassQuaternion::nfConjugate::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	clsQuaternion.PushQuaternion(rt, quaternion.Conjugate());
 }
@@ -285,7 +286,7 @@ deClassQuaternion::nfAbsolute::nfAbsolute(const sInitData &init) : dsFunction(in
 "absolute", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassQuaternion::nfAbsolute::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	clsQuaternion.PushQuaternion(rt, quaternion.Absolute());
 }
@@ -295,7 +296,7 @@ deClassQuaternion::nfGetEulerAngles::nfGetEulerAngles(const sInitData &init) : d
 "getEulerAngles", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassQuaternion::nfGetEulerAngles::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	const deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsQuaternion.GetScriptModule();
 	
@@ -309,7 +310,7 @@ deClassQuaternion::nfSlerp::nfSlerp(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassQuaternion::nfSlerp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	
 	const decQuaternion &other = clsQuaternion.GetQuaternion(rt->GetValue(0)->GetRealObject());
@@ -330,7 +331,7 @@ deClassQuaternion::nfIsEqualTo::nfIsEqualTo(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsFlt); // delta
 }
 void deClassQuaternion::nfIsEqualTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	const deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
 	if(!objQuat) DSTHROW(dueNullPointer);
@@ -367,7 +368,7 @@ deClassQuaternion::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassQuaternion::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	const deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsQuaternion.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -389,7 +390,7 @@ deClassQuaternion::nfOpMinus::nfOpMinus(const sInitData &init) : dsFunction(init
 "-", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassQuaternion::nfOpMinus::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	clsQuaternion->PushQuaternion(rt, -quaternion);
 }
@@ -400,7 +401,7 @@ deClassQuaternion::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsQuat); // q
 }
 void deClassQuaternion::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
 	if(!objQuat) DSTHROW(dueNullPointer);
@@ -413,7 +414,7 @@ deClassQuaternion::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsQuat); // q
 }
 void deClassQuaternion::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	dsRealObject *objQuat = rt->GetValue(0)->GetRealObject();
 	if(!objQuat) DSTHROW(dueNullPointer);
@@ -426,7 +427,7 @@ deClassQuaternion::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassQuaternion::nfOpScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	clsQuaternion->PushQuaternion(rt, quaternion * rt->GetValue(0)->GetFloat());
 }
@@ -437,7 +438,7 @@ deClassQuaternion::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassQuaternion::nfOpDivide::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	clsQuaternion->PushQuaternion(rt, quaternion / rt->GetValue(0)->GetFloat());
 }
@@ -448,7 +449,7 @@ deClassQuaternion::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsQuat); // q
 }
 void deClassQuaternion::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	
 	clsQuaternion->PushQuaternion(rt, quaternion * clsQuaternion->GetQuaternion(rt->GetValue(0)->GetRealObject()));
@@ -460,7 +461,7 @@ deClassQuaternion::nfOpMultiplyVector::nfOpMultiplyVector(const sInitData &init)
 	p_AddParameter(init.clsVec); // v
 }
 void deClassQuaternion::nfOpMultiplyVector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *static_cast<deScriptingDragonScript*>(clsQuaternion.GetScriptModule());
 	deClassVector &clsVector = *ds.GetClassVector();
@@ -475,7 +476,7 @@ deClassQuaternion::nfOpMultiplyDVector::nfOpMultiplyDVector(const sInitData &ini
 	p_AddParameter(init.clsDVec); // v
 }
 void deClassQuaternion::nfOpMultiplyDVector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion &clsQuaternion = *(static_cast<deClassQuaternion*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *static_cast<deScriptingDragonScript*>(clsQuaternion.GetScriptModule());
 	deClassDVector &clsDVector = *ds.GetClassDVector();
@@ -495,13 +496,13 @@ deClassQuaternion::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsObj); // other
 }
 void deClassQuaternion::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	deClassQuaternion *clsQuaternion = static_cast<deClassQuaternion*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsQuaternion)){
 		rt->PushBool(false);
 	}else{
-		const decQuaternion &otherQuaternion = static_cast<sQuatNatDat*>(p_GetNativeData(obj))->quaternion;
+		const decQuaternion &otherQuaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(obj)).quaternion;
 		rt->PushBool(quaternion.IsEqualTo(otherQuaternion));
 	}
 }
@@ -511,7 +512,7 @@ deClassQuaternion::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(in
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassQuaternion::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	rt->PushInt((int)(quaternion.x * 1000000)
 		+ (int)(quaternion.y * 10000)
 		+ (int)(quaternion.z * 100)
@@ -523,7 +524,7 @@ deClassQuaternion::nfToString::nfToString(const sInitData &init) : dsFunction(in
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassQuaternion::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	decString str;
 	str.Format("(%g,%g,%g,%g)", quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 	rt->PushString(str);
@@ -548,7 +549,7 @@ void deClassQuaternion::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue 
 	char format[22];
 	snprintf(format, sizeof(format), "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p);
 	
-	const decQuaternion &quaternion = static_cast<sQuatNatDat*>(p_GetNativeData(myself))->quaternion;
+	const decQuaternion &quaternion = dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself)).quaternion;
 	decString str;
 	str.Format(format, quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 	rt->PushString(str);
@@ -569,7 +570,7 @@ dsClass("Quaternion", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	// do the rest
-	p_SetNativeDataSize(sizeof(sQuatNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sQuatNatDat>());
 }
 deClassQuaternion::~deClassQuaternion(){
 }
@@ -642,7 +643,7 @@ const decQuaternion &deClassQuaternion::GetQuaternion(dsRealObject *myself) cons
 		DSTHROW(dueNullPointer);
 	}
 	
-	return (const decQuaternion &)static_cast<sQuatNatDat*>(p_GetNativeData(myself->GetBuffer()))->quaternion;
+	return dedsGetNativeData<sQuatNatDat>(p_GetNativeData(myself->GetBuffer())).quaternion;
 }
 
 void deClassQuaternion::PushQuaternion(dsRunTime *rt, const decQuaternion &quaternion){
@@ -651,5 +652,5 @@ void deClassQuaternion::PushQuaternion(dsRunTime *rt, const decQuaternion &quate
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sQuatNatDat)->quaternion = quaternion;
+	dedsNewNativeData<sQuatNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).quaternion = quaternion;
 }

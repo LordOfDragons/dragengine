@@ -27,6 +27,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassLanguagePack.h"
+#include "../dedsHelpers.h"
 #include "../string/deClassUnicodeString.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
@@ -61,12 +62,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassLanguagePack::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sLPNatDat * const nd = new (p_GetNativeData(myself)) sLPNatDat;
+	sLPNatDat &nd = dedsNewNativeData<sLPNatDat>(p_GetNativeData(myself));
 	
 	const deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	deLanguagePackManager &lpmgr = *ds.GetGameEngine()->GetLanguagePackManager();
 	
-	nd->langPack = lpmgr.LoadLanguagePack(rt->GetValue(0)->GetString());
+	nd.langPack = lpmgr.LoadLanguagePack(rt->GetValue(0)->GetString());
 }
 
 // public func destructor()
@@ -79,7 +80,7 @@ void deClassLanguagePack::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myse
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sLPNatDat*>(p_GetNativeData(myself))->~sLPNatDat();
+	dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).~sLPNatDat();
 }
 
 
@@ -92,7 +93,7 @@ deClassLanguagePack::nfGetIdentifier::nfGetIdentifier(const sInitData &init) :
 dsFunction(init.clsLP, "getIdentifier", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassLanguagePack::nfGetIdentifier::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	rt->PushString(langPack->GetIdentifier());
 }
 
@@ -102,7 +103,7 @@ dsFunction(init.clsLP, "getName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassLanguagePack::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	const deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassUnicodeString()->PushUnicodeString(rt, langPack->GetName());
@@ -114,7 +115,7 @@ dsFunction(init.clsLP, "getDescription", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassLanguagePack::nfGetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	const deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassUnicodeString()->PushUnicodeString(rt, langPack->GetDescription());
@@ -126,7 +127,7 @@ dsFunction(init.clsLP, "getFilename", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassLanguagePack::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	rt->PushString(langPack->GetFilename());
 }
 
@@ -139,7 +140,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassLanguagePack::nfTranslate::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	const deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	
 	const char * const name = rt->GetValue(0)->GetString();
@@ -155,7 +156,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 	p_AddParameter(init.clsUS); // defaultValue
 }
 void deClassLanguagePack::nfTranslate2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	deClassUnicodeString &clsUS = *ds.GetClassUnicodeString();
 	
@@ -182,7 +183,7 @@ dsFunction(init.clsLP, "getMissingText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 }
 
 void deClassLanguagePack::nfGetMissingText::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	const deScriptingDragonScript &ds = static_cast<deClassLanguagePack*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassUnicodeString()->PushUnicodeString(rt, langPack->GetMissingText());
@@ -197,7 +198,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
 void deClassLanguagePack::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)langPack.Pointer());
@@ -210,7 +211,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassLanguagePack::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLanguagePack::Ref &langPack = static_cast<sLPNatDat*>(p_GetNativeData(myself))->langPack;
+	const deLanguagePack::Ref &langPack = dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself)).langPack;
 	deClassLanguagePack * const clsLP = static_cast<deClassLanguagePack*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -218,7 +219,7 @@ void deClassLanguagePack::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deLanguagePack::Ref &other = static_cast<sLPNatDat*>(p_GetNativeData(obj))->langPack;
+		const deLanguagePack::Ref &other = dedsGetNativeData<sLPNatDat>(p_GetNativeData(obj)).langPack;
 		rt->PushBool(langPack->GetName() == other->GetName());
 	}
 }
@@ -238,7 +239,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sLPNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sLPNatDat>());
 }
 
 deClassLanguagePack::~deClassLanguagePack(){
@@ -284,7 +285,7 @@ deLanguagePack *deClassLanguagePack::GetLanguagePack(dsRealObject *myself) const
 		return nullptr;
 	}
 	
-	return static_cast<sLPNatDat*>(p_GetNativeData(myself->GetBuffer()))->langPack;
+	return dedsGetNativeData<sLPNatDat>(p_GetNativeData(myself->GetBuffer())).langPack;
 }
 
 void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPack){
@@ -298,5 +299,5 @@ void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPa
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sLPNatDat)->langPack = langPack;
+	dedsNewNativeData<sLPNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).langPack = langPack;
 }

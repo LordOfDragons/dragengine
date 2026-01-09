@@ -32,6 +32,7 @@
 
 #include "deClassEffect.h"
 #include "deClassEffectFilterKernel.h"
+#include "../dedsHelpers.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -58,7 +59,7 @@ deClassEffectFilterKernel::nfNew::nfNew(const sInitData &init) : dsFunction(init
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffectFilterKernel::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEffFilKerMatrixNatDat * const nd = new (p_GetNativeData(myself)) sEffFilKerMatrixNatDat;
+	sEffFilKerMatrixNatDat &nd = dedsNewNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = (static_cast<deClassEffectFilterKernel*>(GetOwnerClass()))->GetDS();
 	
 	// super call
@@ -66,8 +67,8 @@ void deClassEffectFilterKernel::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create effect
-	nd->effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectFilterKernel();
-	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
+	nd.effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectFilterKernel();
+	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
 }
 
 // public func destructor()
@@ -79,7 +80,7 @@ void deClassEffectFilterKernel::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->~sEffFilKerMatrixNatDat();
+	dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself)).~sEffFilKerMatrixNatDat();
 }
 
 
@@ -94,7 +95,7 @@ deClassEffectFilterKernel::nfSetKernelSize::nfSetKernelSize(const sInitData &ini
 	p_AddParameter(init.clsInt); // cols
 }
 void deClassEffectFilterKernel::nfSetKernelSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffFilKerMatrixNatDat &nd = *static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself));
+	const sEffFilKerMatrixNatDat &nd = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself));
 	
 	const int rows = rt->GetValue(0)->GetInt();
 	const int cols = rt->GetValue(1)->GetInt();
@@ -110,7 +111,7 @@ deClassEffectFilterKernel::nfSetKernelValue::nfSetKernelValue(const sInitData &i
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassEffectFilterKernel::nfSetKernelValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffFilKerMatrixNatDat &nd = *static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself));
+	const sEffFilKerMatrixNatDat &nd = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself));
 	
 	const int row = rt->GetValue(0)->GetInt();
 	const int col = rt->GetValue(1)->GetInt();
@@ -124,7 +125,7 @@ deClassEffectFilterKernel::nfGetScale::nfGetScale(const sInitData &init) : dsFun
 "getScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassEffectFilterKernel::nfGetScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEffectFilterKernel &effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffectFilterKernel &effect = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself)).effect;
 	rt->PushFloat(effect.GetScale());
 }
 
@@ -134,7 +135,7 @@ deClassEffectFilterKernel::nfSetScale::nfSetScale(const sInitData &init) : dsFun
 	p_AddParameter(init.clsFlt); // scale
 }
 void deClassEffectFilterKernel::nfSetScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectFilterKernel &effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	deEffectFilterKernel &effect = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself)).effect;
 	effect.SetScale(rt->GetValue(0)->GetFloat());
 }
 
@@ -146,7 +147,7 @@ dsFunction(init.clsEffFilKer, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 
 void deClassEffectFilterKernel::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectFilterKernel * const effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	deEffectFilterKernel * const effect = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself)).effect;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)effect);
 }
@@ -157,7 +158,7 @@ dsFunction(init.clsEffFilKer, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectFilterKernel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEffectFilterKernel * const effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffectFilterKernel * const effect = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself)).effect;
 	deClassEffectFilterKernel * const clsEffFilKer = static_cast<deClassEffectFilterKernel*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -165,7 +166,7 @@ void deClassEffectFilterKernel::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 		rt->PushBool(false);
 		
 	}else{
-		const deEffectFilterKernel * const otherEffect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffectFilterKernel * const otherEffect = dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(obj)).effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -184,7 +185,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Effect");
 	
-	p_SetNativeDataSize(sizeof(sEffFilKerMatrixNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sEffFilKerMatrixNatDat>());
 }
 
 deClassEffectFilterKernel::~deClassEffectFilterKernel(){
@@ -230,7 +231,7 @@ deEffectFilterKernel *deClassEffectFilterKernel::GetEffect(dsRealObject *myself)
 		return nullptr;
 	}
 	
-	return static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
+	return dedsGetNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(myself->GetBuffer())).effect;
 }
 
 void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *effect){
@@ -245,11 +246,11 @@ void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffFilKerMatrixNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEffFilKerMatrixNatDat;
+	sEffFilKerMatrixNatDat &nd = dedsNewNativeData<sEffFilKerMatrixNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->effect = effect;
+		nd.effect = effect;
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		

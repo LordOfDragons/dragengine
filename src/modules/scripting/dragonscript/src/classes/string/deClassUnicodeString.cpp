@@ -33,6 +33,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassUnicodeString.h"
+#include "../dedsHelpers.h"
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/decString.h>
@@ -60,7 +61,7 @@ deClassUnicodeString::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsU
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassUnicodeString::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sUSNatDat;
+	dedsNewNativeData<sUSNatDat>(p_GetNativeData(myself));
 }
 
 // public func new( UnicodeString string )
@@ -69,12 +70,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUS); // string
 }
 void deClassUnicodeString::nfNewFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	sUSNatDat * const nd = new (p_GetNativeData(myself)) sUSNatDat;
+	sUSNatDat &nd = dedsNewNativeData<sUSNatDat>(p_GetNativeData(myself));
 	
 	const dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
 	if(!objStr) DSTHROW(dueNullPointer);
 	
-	nd->string = static_cast<sUSNatDat*>(p_GetNativeData(rt->GetValue(0)))->string;
+	nd.string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(rt->GetValue(0))).string;
 }
 
 // public static func newFromUTF8( String string )
@@ -93,8 +94,8 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // character
 }
 void deClassUnicodeString::nfNewFromCharacter::RunFunction(dsRunTime *rt, dsValue *myself){
-	sUSNatDat * const nd = new (p_GetNativeData(myself)) sUSNatDat;
-	nd->string.Set(rt->GetValue(0)->GetInt(), 1);
+	sUSNatDat &nd = dedsNewNativeData<sUSNatDat>(p_GetNativeData(myself));
+	nd.string.Set(rt->GetValue(0)->GetInt(), 1);
 }
 
 // public func destructor()
@@ -106,7 +107,7 @@ void deClassUnicodeString::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sUSNatDat*>(p_GetNativeData(myself))->~sUSNatDat();
+	dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).~sUSNatDat();
 }
 
 
@@ -119,7 +120,7 @@ deClassUnicodeString::nfGetLength::nfGetLength(const sInitData &init) : dsFuncti
 "getLength", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUnicodeString::nfGetLength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	rt->PushInt(string.GetLength());
 }
 
@@ -129,7 +130,7 @@ deClassUnicodeString::nfGetCharacterAt::nfGetCharacterAt(const sInitData &init) 
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUnicodeString::nfGetCharacterAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	rt->PushInt(string.GetAt(rt->GetValue(0)->GetInt()));
 }
 
@@ -139,7 +140,7 @@ deClassUnicodeString::nfGetLeft::nfGetLeft(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsInt); // count
 }
 void deClassUnicodeString::nfGetLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetLeft(rt->GetValue(0)->GetInt()));
@@ -151,7 +152,7 @@ deClassUnicodeString::nfGetRight::nfGetRight(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // count
 }
 void deClassUnicodeString::nfGetRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetRight(rt->GetValue(0)->GetInt()));
@@ -164,7 +165,7 @@ deClassUnicodeString::nfGetSubString::nfGetSubString(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // count
 }
 void deClassUnicodeString::nfGetSubString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	int position = rt->GetValue(0)->GetInt();
 	int count = rt->GetValue(1)->GetInt();
@@ -177,7 +178,7 @@ deClassUnicodeString::nfReverse::nfReverse(const sInitData &init) : dsFunction(i
 "reverse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfReverse::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetReversed());
@@ -193,7 +194,7 @@ deClassUnicodeString::nfTrimLeft::nfTrimLeft(const sInitData &init) : dsFunction
 "trimLeft", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfTrimLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetTrimmedLeft());
@@ -204,7 +205,7 @@ deClassUnicodeString::nfTrimRight::nfTrimRight(const sInitData &init) : dsFuncti
 "trimRight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfTrimRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetTrimmedRight());
@@ -215,7 +216,7 @@ deClassUnicodeString::nfTrimBoth::nfTrimBoth(const sInitData &init) : dsFunction
 "trimBoth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfTrimBoth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetTrimmed());
@@ -233,7 +234,7 @@ deClassUnicodeString::nfFindChar::nfFindChar(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUnicodeString::nfFindChar::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	int character = rt->GetValue(0)->GetInt();
 	int position = rt->GetValue(1)->GetInt();
 	
@@ -247,7 +248,7 @@ deClassUnicodeString::nfFindCharReverse::nfFindCharReverse(const sInitData &init
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUnicodeString::nfFindCharReverse::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	int character = rt->GetValue(0)->GetInt();
 	int position = rt->GetValue(1)->GetInt();
 	
@@ -265,13 +266,13 @@ deClassUnicodeString::nfCompareTo::nfCompareTo(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsUS); // string
 }
 void deClassUnicodeString::nfCompareTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
 	if(!objStr) DSTHROW(dueNullPointer);
-	sUSNatDat *other = static_cast<sUSNatDat*>(p_GetNativeData(rt->GetValue(0)));
+	const sUSNatDat &other = dedsGetNativeData<sUSNatDat>(p_GetNativeData(rt->GetValue(0)));
 	// compare
-	rt->PushInt(string.Compare(other->string));
+	rt->PushInt(string.Compare(other.string));
 }
 
 // public func int compareToNoCase( UnicodeString string )
@@ -280,13 +281,13 @@ deClassUnicodeString::nfCompareToNoCase::nfCompareToNoCase(const sInitData &init
 	p_AddParameter(init.clsUS); // string
 }
 void deClassUnicodeString::nfCompareToNoCase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
 	if(!objStr) DSTHROW(dueNullPointer);
-	sUSNatDat *other = static_cast<sUSNatDat*>(p_GetNativeData(rt->GetValue(0)));
+	const sUSNatDat &other = dedsGetNativeData<sUSNatDat>(p_GetNativeData(rt->GetValue(0)));
 	// compare
-	rt->PushInt(string.CompareInsensitive(other->string));
+	rt->PushInt(string.CompareInsensitive(other.string));
 }
 
 // public func bool equals( Object object )
@@ -295,14 +296,14 @@ dsFunction(init.clsUS, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsObj); // object
 }
 void deClassUnicodeString::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString *clsUS = static_cast<deClassUnicodeString*>(GetOwnerClass());
 	dsValue *object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsUS)){
 		rt->PushBool(false);
 	}else{
-		const decUnicodeString &otherString = static_cast<sUSNatDat*>(p_GetNativeData(object))->string;
+		const decUnicodeString &otherString = dedsGetNativeData<sUSNatDat>(p_GetNativeData(object)).string;
 		rt->PushBool(string == otherString);
 	}
 }
@@ -313,7 +314,7 @@ dsFunction(init.clsUS, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 }
 
 void deClassUnicodeString::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	rt->PushInt(string.Hash());
 }
 
@@ -324,7 +325,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsObj); // other
 }
 void deClassUnicodeString::nfCompare::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString * const clsUS = static_cast<deClassUnicodeString*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
@@ -332,7 +333,7 @@ void deClassUnicodeString::nfCompare::RunFunction(dsRunTime *rt, dsValue *myself
 		rt->PushInt(0);
 		
 	}else{
-		const decUnicodeString &otherString = static_cast<sUSNatDat*>(p_GetNativeData(object))->string;
+		const decUnicodeString &otherString = dedsGetNativeData<sUSNatDat>(p_GetNativeData(object)).string;
 		rt->PushInt(string.Compare(otherString));
 	}
 }
@@ -347,7 +348,7 @@ deClassUnicodeString::nfToLower::nfToLower(const sInitData &init) : dsFunction(i
 "toLower", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfToLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetLower());
@@ -358,7 +359,7 @@ deClassUnicodeString::nfToUpper::nfToUpper(const sInitData &init) : dsFunction(i
 "toUpper", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS){
 }
 void deClassUnicodeString::nfToUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	clsUS.PushUnicodeString(rt, string.GetUpper());
@@ -369,7 +370,7 @@ deClassUnicodeString::nfToInt::nfToInt(const sInitData &init) : dsFunction(init.
 "toInt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUnicodeString::nfToInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	rt->PushInt(string.ToInt());
 }
 
@@ -378,7 +379,7 @@ deClassUnicodeString::nfToFloat::nfToFloat(const sInitData &init) : dsFunction(i
 "toFloat", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassUnicodeString::nfToFloat::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	rt->PushFloat(string.ToFloat());
 }
 
@@ -411,14 +412,14 @@ deClassUnicodeString::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsUS); // string
 }
 void deClassUnicodeString::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	// retrieve the other string
 	dsRealObject *objStr = rt->GetValue(0)->GetRealObject();
 	if(!objStr) DSTHROW(dueNullPointer);
-	sUSNatDat *other = static_cast<sUSNatDat*>(p_GetNativeData(rt->GetValue(0)));
+	const sUSNatDat &other = dedsGetNativeData<sUSNatDat>(p_GetNativeData(rt->GetValue(0)));
 	
-	clsUS.PushUnicodeString(rt, string + other->string);
+	clsUS.PushUnicodeString(rt, string + other.string);
 }
 
 // public func UnicodeString +( byte value )
@@ -427,7 +428,7 @@ deClassUnicodeString::nfOpAddByte::nfOpAddByte(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsByte); // value
 }
 void deClassUnicodeString::nfOpAddByte::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	decUnicodeString unicode(string);
@@ -441,7 +442,7 @@ deClassUnicodeString::nfOpAddBool::nfOpAddBool(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsBool); // value
 }
 void deClassUnicodeString::nfOpAddBool::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	decUnicodeString unicode(string);
@@ -455,7 +456,7 @@ deClassUnicodeString::nfOpAddInt::nfOpAddInt(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // value
 }
 void deClassUnicodeString::nfOpAddInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	decUnicodeString unicode(string);
@@ -469,7 +470,7 @@ deClassUnicodeString::nfOpAddFloat::nfOpAddFloat(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassUnicodeString::nfOpAddFloat::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	decUnicodeString unicode(string);
@@ -483,7 +484,7 @@ deClassUnicodeString::nfOpAddObject::nfOpAddObject(const sInitData &init) : dsFu
 	p_AddParameter(init.clsObj); // object
 }
 void deClassUnicodeString::nfOpAddObject::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUnicodeString &string = static_cast<sUSNatDat*>(p_GetNativeData(myself))->string;
+	const decUnicodeString &string = dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself)).string;
 	deClassUnicodeString &clsUS = *(static_cast<deClassUnicodeString*>(GetOwnerClass()));
 	
 	// get string by calling toString on the object if the object is not null
@@ -512,7 +513,7 @@ void deClassUnicodeString::nfOpAddObject::RunFunction(dsRunTime *rt, dsValue *my
 deClassUnicodeString::deClassUnicodeString() : dsClass("UnicodeString", DSCT_CLASS,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetBase("Object");
-	p_SetNativeDataSize(sizeof(sUSNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sUSNatDat>());
 }
 
 deClassUnicodeString::~deClassUnicodeString(){
@@ -582,19 +583,19 @@ void deClassUnicodeString::CreateClassMembers(dsEngine *engine){
 }
 
 const decUnicodeString &deClassUnicodeString::GetUnicodeString(dsRealObject *myself) const{
-	return static_cast<sUSNatDat*>(p_GetNativeData(myself->GetBuffer()))->string;
+	return dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself->GetBuffer())).string;
 }
 
 const decString deClassUnicodeString::GetUTF8(dsRealObject *myself) const{
 	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
-	return static_cast<sUSNatDat*>(p_GetNativeData(myself->GetBuffer()))->string.ToUTF8();
+	return dedsGetNativeData<sUSNatDat>(p_GetNativeData(myself->GetBuffer())).string.ToUTF8();
 }
 
 void deClassUnicodeString::PushUnicodeString(dsRunTime *rt, const decUnicodeString &string){
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sUSNatDat)->string = string;
+	dedsNewNativeData<sUSNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).string = string;
 }
 
 void deClassUnicodeString::PushUTF8(dsRunTime *rt, const char *utf8){

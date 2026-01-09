@@ -31,6 +31,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassWorld.h"
+#include "../dedsHelpers.h"
 
 #include "../ai/deClassNavigationSpace.h"
 #include "../ai/deClassNavigator.h"
@@ -175,12 +176,12 @@ deClassWorld::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsWorld,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sWorldNatDat * const nd = new (p_GetNativeData(myself)) sWorldNatDat;
+	sWorldNatDat &nd = dedsNewNativeData<sWorldNatDat>(p_GetNativeData(myself));
 	
 	deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	deWorldManager *worldMgr = clsWorld->GetGameEngine()->GetWorldManager();
 	
-	nd->world = worldMgr->CreateWorld();
+	nd.world = worldMgr->CreateWorld();
 }
 
 // public func destructor()
@@ -192,7 +193,7 @@ void deClassWorld::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sWorldNatDat*>(p_GetNativeData(myself))->~sWorldNatDat();
+	dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).~sWorldNatDat();
 }
 
 
@@ -206,7 +207,7 @@ deClassWorld::nfDetectCollisions::nfDetectCollisions(const sInitData &init) : ds
 	p_AddParameter(init.clsFlt); // elapsed
 }
 void deClassWorld::nfDetectCollisions::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	world.ProcessPhysics(rt->GetValue(0)->GetFloat());
 }
 
@@ -216,7 +217,7 @@ deClassWorld::nfUpdate::nfUpdate(const sInitData &init) : dsFunction(init.clsWor
 	p_AddParameter(init.clsFlt); // elapsed
 }
 void deClassWorld::nfUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	float elapsed = rt->GetValue(0)->GetFloat();
 	
 	world->Update(elapsed);
@@ -227,7 +228,7 @@ deClassWorld::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.clsW
 "getSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassWorld::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	clsWorld->GetClassDVector()->PushDVector(rt, world->GetSize());
@@ -239,7 +240,7 @@ deClassWorld::nfSetSize::nfSetSize(const sInitData &init) : dsFunction(init.clsW
 	p_AddParameter(init.clsDVec); // size
 }
 void deClassWorld::nfSetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	// check arguments
@@ -261,7 +262,7 @@ dsFunction(init.clsWorld, "getCameraCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetCameraCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetCameraCount());
 }
 
@@ -271,7 +272,7 @@ deClassWorld::nfAddCamera::nfAddCamera(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsCam); // camera
 }
 void deClassWorld::nfAddCamera::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -286,7 +287,7 @@ deClassWorld::nfRemoveCamera::nfRemoveCamera(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsCam); // camera
 }
 void deClassWorld::nfRemoveCamera::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -300,7 +301,7 @@ deClassWorld::nfRemoveAllCameras::nfRemoveAllCameras(const sInitData &init) : ds
 "removeAllCameras", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllCameras::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllCameras();
 }
@@ -316,7 +317,7 @@ dsFunction(init.clsWorld, "getSpeakerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetSpeakerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetSpeakerCount());
 }
 
@@ -326,7 +327,7 @@ deClassWorld::nfAddSpeaker::nfAddSpeaker(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsSpk); // speaker
 }
 void deClassWorld::nfAddSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -341,7 +342,7 @@ deClassWorld::nfRemoveSpeaker::nfRemoveSpeaker(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsSpk); // speaker
 }
 void deClassWorld::nfRemoveSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -355,7 +356,7 @@ deClassWorld::nfRemoveAllSpeakers::nfRemoveAllSpeakers(const sInitData &init) : 
 "removeAllSpeakers", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllSpeakers::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllSpeakers();
 }
@@ -371,7 +372,7 @@ dsFunction(init.clsWorld, "getMicrophoneCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetMicrophoneCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetMicrophoneCount());
 }
 
@@ -381,7 +382,7 @@ deClassWorld::nfAddMicrophone::nfAddMicrophone(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsMic); // microphone
 }
 void deClassWorld::nfAddMicrophone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -396,7 +397,7 @@ deClassWorld::nfRemoveMicrophone::nfRemoveMicrophone(const sInitData &init) : ds
 	p_AddParameter(init.clsMic); // microphone
 }
 void deClassWorld::nfRemoveMicrophone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -410,7 +411,7 @@ deClassWorld::nfRemoveAllMicrophones::nfRemoveAllMicrophones(const sInitData &in
 "removeAllMicrophones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllMicrophones::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllMicrophones();
 }
@@ -426,7 +427,7 @@ dsFunction(init.clsWorld, "getNetworkStateCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetNetworkStateCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetNetworkStateCount());
 }
 
@@ -436,7 +437,7 @@ deClassWorld::nfAddNetworkState::nfAddNetworkState(const sInitData &init) : dsFu
 	p_AddParameter(init.clsNS); // networkState
 }
 void deClassWorld::nfAddNetworkState::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -451,7 +452,7 @@ deClassWorld::nfRemoveNetworkState::nfRemoveNetworkState(const sInitData &init) 
 	p_AddParameter(init.clsNS); // networkState
 }
 void deClassWorld::nfRemoveNetworkState::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -465,7 +466,7 @@ deClassWorld::nfRemoveAllNetworkStates::nfRemoveAllNetworkStates(const sInitData
 "removeAllNetworkStates", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllNetworkStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllNetworkStates();
 }
@@ -481,7 +482,7 @@ dsFunction(init.clsWorld, "getComponentCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetComponentCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetComponentCount());
 }
 
@@ -491,7 +492,7 @@ deClassWorld::nfAddComponent::nfAddComponent(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsComp); // comp
 }
 void deClassWorld::nfAddComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -506,7 +507,7 @@ deClassWorld::nfRemoveComponent::nfRemoveComponent(const sInitData &init) : dsFu
 	p_AddParameter(init.clsComp); // comp
 }
 void deClassWorld::nfRemoveComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -522,7 +523,7 @@ deClassWorld::nfRemoveAllComponents::nfRemoveAllComponents(const sInitData &init
 "removeAllComponents", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllComponents::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllComponents();
 }
@@ -538,7 +539,7 @@ dsFunction(init.clsWorld, "getLightCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetLightCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetLightCount());
 }
 
@@ -548,7 +549,7 @@ deClassWorld::nfAddLight::nfAddLight(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsLig); // light
 }
 void deClassWorld::nfAddLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -563,7 +564,7 @@ deClassWorld::nfRemoveLight::nfRemoveLight(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsLig); // light
 }
 void deClassWorld::nfRemoveLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -579,7 +580,7 @@ deClassWorld::nfRemoveAllLights::nfRemoveAllLights(const sInitData &init) : dsFu
 "removeAllLights", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllLights::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllLights();
 }
@@ -595,7 +596,7 @@ dsFunction(init.clsWorld, "getColliderCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetColliderCount());
 }
 
@@ -605,7 +606,7 @@ deClassWorld::nfAddCollider::nfAddCollider(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassWorld::nfAddCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -620,7 +621,7 @@ deClassWorld::nfRemoveCollider::nfRemoveCollider(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassWorld::nfRemoveCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -636,7 +637,7 @@ deClassWorld::nfRemoveAllColliders::nfRemoveAllColliders(const sInitData &init) 
 "removeAllColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllColliders::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllColliders();
 }
@@ -652,7 +653,7 @@ dsFunction(init.clsWorld, "getLumimeterCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetLumimeterCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetLumimeterCount());
 }
 
@@ -662,7 +663,7 @@ deClassWorld::nfAddLumimeter::nfAddLumimeter(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsLum); // lumimeter
 }
 void deClassWorld::nfAddLumimeter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -677,7 +678,7 @@ deClassWorld::nfRemoveLumimeter::nfRemoveLumimeter(const sInitData &init) : dsFu
 	p_AddParameter(init.clsLum); // lumimeter
 }
 void deClassWorld::nfRemoveLumimeter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -691,7 +692,7 @@ deClassWorld::nfRemoveAllLumimeters::nfRemoveAllLumimeters(const sInitData &init
 "removeAllLumimeters", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllLumimeters::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllLumimeters();
 }
@@ -707,7 +708,7 @@ dsFunction(init.clsWorld, "getTouchSensorCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetTouchSensorCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetTouchSensorCount());
 }
 
@@ -717,7 +718,7 @@ deClassWorld::nfAddTouchSensor::nfAddTouchSensor(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsTS); // touchSensor
 }
 void deClassWorld::nfAddTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -732,7 +733,7 @@ deClassWorld::nfRemoveTouchSensor::nfRemoveTouchSensor(const sInitData &init) : 
 	p_AddParameter(init.clsTS); // touchSensor
 }
 void deClassWorld::nfRemoveTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -748,7 +749,7 @@ deClassWorld::nfRemoveAllTouchSensors::nfRemoveAllTouchSensors(const sInitData &
 "removeAllTouchSensors", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllTouchSensors::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllTouchSensors();
 }
@@ -764,7 +765,7 @@ dsFunction(init.clsWorld, "getPropFieldCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetPropFieldCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetPropFieldCount());
 }
 
@@ -774,7 +775,7 @@ deClassWorld::nfAddPropField::nfAddPropField(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsPF); // propfield
 }
 void deClassWorld::nfAddPropField::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript *ds = (static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject *objPF = rt->GetValue(0)->GetRealObject();
@@ -789,7 +790,7 @@ deClassWorld::nfRemovePropField::nfRemovePropField(const sInitData &init) : dsFu
 	p_AddParameter(init.clsPF); // propfield
 }
 void deClassWorld::nfRemovePropField::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript *ds = (static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject *objPF = rt->GetValue(0)->GetRealObject();
@@ -803,7 +804,7 @@ deClassWorld::nfRemoveAllPropFields::nfRemoveAllPropFields(const sInitData &init
 "removeAllPropFields", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllPropFields::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllPropFields();
 }
@@ -819,7 +820,7 @@ dsFunction(init.clsWorld, "getForceFieldCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetForceFieldCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetForceFieldCount());
 }
 
@@ -829,7 +830,7 @@ deClassWorld::nfAddForceField::nfAddForceField(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFF); // forcefield
 }
 void deClassWorld::nfAddForceField::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript *ds = (static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject *objPF = rt->GetValue(0)->GetRealObject();
@@ -844,7 +845,7 @@ deClassWorld::nfRemoveForceField::nfRemoveForceField(const sInitData &init) : ds
 	p_AddParameter(init.clsFF); // forcefield
 }
 void deClassWorld::nfRemoveForceField::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript *ds = (static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject *objPF = rt->GetValue(0)->GetRealObject();
@@ -858,7 +859,7 @@ deClassWorld::nfRemoveAllForceFields::nfRemoveAllForceFields(const sInitData &in
 "removeAllForceFields", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllForceFields::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllForceFields();
 }
@@ -874,7 +875,7 @@ dsFunction(init.clsWorld, "getParticleEmitterCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetParticleEmitterCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetParticleEmitterCount());
 }
 
@@ -884,7 +885,7 @@ deClassWorld::nfAddParticleEmitter::nfAddParticleEmitter(const sInitData &init) 
 	p_AddParameter(init.clsPEI); // emitter
 }
 void deClassWorld::nfAddParticleEmitter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	deParticleEmitterInstance *emitter;
 	
@@ -902,7 +903,7 @@ deClassWorld::nfRemoveParticleEmitter::nfRemoveParticleEmitter(const sInitData &
 	p_AddParameter(init.clsPEI); // emitter
 }
 void deClassWorld::nfRemoveParticleEmitter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	deParticleEmitterInstance *emitter;
 	
@@ -919,7 +920,7 @@ deClassWorld::nfRemoveAllParticleEmitters::nfRemoveAllParticleEmitters(const sIn
 "removeAllParticleEmitters", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllParticleEmitters::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllParticleEmitters();
 }
@@ -935,7 +936,7 @@ dsFunction(init.clsWorld, "getDebugDrawerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetDebugDrawerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetDebugDrawerCount());
 }
 
@@ -945,7 +946,7 @@ deClassWorld::nfAddDebugDrawer::nfAddDebugDrawer(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsDD); // debugDrawer
 }
 void deClassWorld::nfAddDebugDrawer::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	deDebugDrawer * const ddrawer = ds.GetClassDebugDrawer()->GetDebugDrawer(rt->GetValue(0)->GetRealObject());
 	
@@ -958,7 +959,7 @@ deClassWorld::nfRemoveDebugDrawer::nfRemoveDebugDrawer(const sInitData &init) : 
 	p_AddParameter(init.clsDD); // debugDrawer
 }
 void deClassWorld::nfRemoveDebugDrawer::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	deDebugDrawer * const ddrawer = ds.GetClassDebugDrawer()->GetDebugDrawer(rt->GetValue(0)->GetRealObject());
 	
@@ -970,7 +971,7 @@ deClassWorld::nfRemoveAllDebugDrawers::nfRemoveAllDebugDrawers(const sInitData &
 "removeAllDebugDrawers", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllDebugDrawers::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllDebugDrawers();
 }
@@ -986,7 +987,7 @@ dsFunction(init.clsWorld, "getNavigationSpaceCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetNavigationSpaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetNavigationSpaceCount());
 }
 
@@ -996,7 +997,7 @@ deClassWorld::nfAddNavigationSpace::nfAddNavigationSpace(const sInitData &init) 
 	p_AddParameter(init.clsNavSpace); // navspace
 }
 void deClassWorld::nfAddNavigationSpace::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigationSpace *navspace = ds.GetClassNavigationSpace()->GetNavigationSpace(rt->GetValue(0)->GetRealObject());
 	
@@ -1015,7 +1016,7 @@ deClassWorld::nfRemoveNavigationSpace::nfRemoveNavigationSpace(const sInitData &
 	p_AddParameter(init.clsNavSpace); // navspace
 }
 void deClassWorld::nfRemoveNavigationSpace::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigationSpace *navspace = ds.GetClassNavigationSpace()->GetNavigationSpace(rt->GetValue(0)->GetRealObject());
 	
@@ -1035,7 +1036,7 @@ deClassWorld::nfRemoveAllNavigationSpaces::nfRemoveAllNavigationSpaces(const sIn
 "removeAllNavigationSpaces", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllNavigationSpaces::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllNavigationSpaces();
 }
@@ -1051,7 +1052,7 @@ dsFunction(init.clsWorld, "getNavigationBlockerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetNavigationBlockerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetNavigationBlockerCount());
 }
 
@@ -1061,7 +1062,7 @@ deClassWorld::nfAddNavigationBlocker::nfAddNavigationBlocker(const sInitData &in
 	p_AddParameter(init.clsNavBlocker); // navblocker
 }
 void deClassWorld::nfAddNavigationBlocker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigationBlocker *navblocker = ds.GetClassNavigationBlocker()->GetNavigationBlocker(rt->GetValue(0)->GetRealObject());
 	
@@ -1080,7 +1081,7 @@ deClassWorld::nfRemoveNavigationBlocker::nfRemoveNavigationBlocker(const sInitDa
 	p_AddParameter(init.clsNavBlocker); // navblocker
 }
 void deClassWorld::nfRemoveNavigationBlocker::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigationBlocker *navblocker = ds.GetClassNavigationBlocker()->GetNavigationBlocker(rt->GetValue(0)->GetRealObject());
 	
@@ -1100,7 +1101,7 @@ deClassWorld::nfRemoveAllNavigationBlockers::nfRemoveAllNavigationBlockers(const
 "removeAllNavigationBlockers", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllNavigationBlockers::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllNavigationBlockers();
 }
@@ -1116,7 +1117,7 @@ dsFunction(init.clsWorld, "getNavigatorCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetNavigatorCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetNavigatorCount());
 }
 
@@ -1126,7 +1127,7 @@ deClassWorld::nfAddNavigator::nfAddNavigator(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsNavigator); // navigator
 }
 void deClassWorld::nfAddNavigator::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigator *navigator = ds.GetClassNavigator()->GetNavigator(rt->GetValue(0)->GetRealObject());
 	
@@ -1145,7 +1146,7 @@ deClassWorld::nfRemoveNavigator::nfRemoveNavigator(const sInitData &init) : dsFu
 	p_AddParameter(init.clsNavigator); // navigator
 }
 void deClassWorld::nfRemoveNavigator::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deNavigator *navigator = ds.GetClassNavigator()->GetNavigator(rt->GetValue(0)->GetRealObject());
 	
@@ -1163,7 +1164,7 @@ deClassWorld::nfRemoveAllNavigators::nfRemoveAllNavigators(const sInitData &init
 "removeAllNavigators", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllNavigators::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllNavigators();
 }
@@ -1179,7 +1180,7 @@ dsFunction(init.clsWorld, "getEnvMapProbeCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetEnvMapProbeCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetEnvMapProbeCount());
 }
 
@@ -1189,7 +1190,7 @@ deClassWorld::nfAddEnvMapProbe::nfAddEnvMapProbe(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsEmp); // envMapProbe
 }
 void deClassWorld::nfAddEnvMapProbe::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deEnvMapProbe * const envMapProbe = ds.GetClassEnvMapProbe()->GetEnvMapProbe(rt->GetValue(0)->GetRealObject());
 	
@@ -1208,7 +1209,7 @@ deClassWorld::nfRemoveEnvMapProbe::nfRemoveEnvMapProbe(const sInitData &init) : 
 	p_AddParameter(init.clsEmp); // envMapProbe
 }
 void deClassWorld::nfRemoveEnvMapProbe::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<const deClassWorld *>(GetOwnerClass())->GetDS());
 	deEnvMapProbe * const envMapProbe = ds.GetClassEnvMapProbe()->GetEnvMapProbe(rt->GetValue(0)->GetRealObject());
 	
@@ -1228,7 +1229,7 @@ deClassWorld::nfRemoveAllEnvMapProbes::nfRemoveAllEnvMapProbes(const sInitData &
 "removeAllEnvMapProbes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllEnvMapProbes::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<const sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllEnvMapProbes();
 }
@@ -1244,7 +1245,7 @@ dsFunction(init.clsWorld, "getSoundLevelMeterCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetSoundLevelMeterCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetSoundLevelMeterCount());
 }
 
@@ -1255,7 +1256,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSoundLevelMeter); // soundLevelMeter
 }
 void deClassWorld::nfAddSoundLevelMeter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *(static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	world.AddSoundLevelMeter(ds.GetClassSoundLevelMeter()
@@ -1269,7 +1270,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSoundLevelMeter); // soundLevelMeter
 }
 void deClassWorld::nfRemoveSoundLevelMeter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	deScriptingDragonScript &ds = *(static_cast<deClassWorld*>(GetOwnerClass()))->GetDS();
 	
 	world.RemoveSoundLevelMeter(ds.GetClassSoundLevelMeter()
@@ -1282,7 +1283,7 @@ dsFunction(init.clsWorld, "removeAllSoundLevelMeters", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllSoundLevelMeters::RunFunction(dsRunTime*, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world.RemoveAllSoundLevelMeters();
 }
@@ -1298,7 +1299,7 @@ dsFunction(init.clsWorld, "getBillboardCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetBillboardCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetBillboardCount());
 }
 
@@ -1309,7 +1310,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBillboard); // billboard
 }
 void deClassWorld::nfAddBillboard::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	deBillboard * const billboard = ds.GetClassBillboard()->GetBillboard(rt->GetValue(0)->GetRealObject());
@@ -1327,7 +1328,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBillboard); // billboard
 }
 void deClassWorld::nfRemoveBillboard::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	deBillboard * const billboard = ds.GetClassBillboard()->GetBillboard(rt->GetValue(0)->GetRealObject());
@@ -1344,7 +1345,7 @@ dsFunction(init.clsWorld, "removeAllBillboards", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllBillboards::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	world.RemoveAllBillboards();
 }
 
@@ -1359,7 +1360,7 @@ dsFunction(init.clsWorld, "getSkyCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassWorld::nfGetSkyCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushInt(world.GetSkyCount());
 }
 
@@ -1370,7 +1371,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkyInst); // sky
 }
 void deClassWorld::nfAddSky::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1386,7 +1387,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkyInst); // sky
 }
 void deClassWorld::nfRemoveSky::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1402,7 +1403,7 @@ deClassWorld::nfRemoveAllSkies::nfRemoveAllSkies(const sInitData &init) : dsFunc
 "removeAllSkies", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassWorld::nfRemoveAllSkies::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->RemoveAllSkies();
 }
@@ -1417,7 +1418,7 @@ deClassWorld::nfGetGravity::nfGetGravity(const sInitData &init) : dsFunction(ini
 "getGravity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassWorld::nfGetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	clsWorld->GetClassVector()->PushVector(rt, world->GetGravity());
@@ -1429,7 +1430,7 @@ deClassWorld::nfSetGravity::nfSetGravity(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsVec); // gravity
 }
 void deClassWorld::nfSetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1448,7 +1449,7 @@ deClassWorld::nfGetDisableLights::nfGetDisableLights(const sInitData &init) : ds
 "getDisableLights", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassWorld::nfGetDisableLights::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	rt->PushBool(world->GetDisableLights());
 }
@@ -1459,7 +1460,7 @@ deClassWorld::nfSetDisableLights::nfSetDisableLights(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // disable
 }
 void deClassWorld::nfSetDisableLights::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	
 	world->SetDisableLights(rt->GetValue(0)->GetBool());
 }
@@ -1469,7 +1470,7 @@ deClassWorld::nfGetAmbientLight::nfGetAmbientLight(const sInitData &init) : dsFu
 "getAmbientLight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassWorld::nfGetAmbientLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	clsWorld->GetClassColor()->PushColor(rt, world->GetAmbientLight());
@@ -1481,7 +1482,7 @@ deClassWorld::nfSetAmbientLight::nfSetAmbientLight(const sInitData &init) : dsFu
 	p_AddParameter(init.clsClr); // color
 }
 void deClassWorld::nfSetAmbientLight::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1495,7 +1496,7 @@ deClassWorld::nfGetLightColorMatrix::nfGetLightColorMatrix(const sInitData &init
 "getLightColorMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 }
 void deClassWorld::nfGetLightColorMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	clsWorld->GetClassMatrix()->PushMatrix(rt, world->GetLightColorMatrix());
@@ -1507,7 +1508,7 @@ deClassWorld::nfSetLightColorMatrix::nfSetLightColorMatrix(const sInitData &init
 	p_AddParameter(init.clsMat); // matrix
 }
 void deClassWorld::nfSetLightColorMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1521,7 +1522,7 @@ deClassWorld::nfGetSpeakerGain::nfGetSpeakerGain(const sInitData &init) :
 dsFunction(init.clsWorld, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassWorld::nfGetSpeakerGain::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	rt->PushFloat(world.GetSpeakerGain());
 }
 
@@ -1531,7 +1532,7 @@ dsFunction(init.clsWorld, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 	p_AddParameter(init.clsFlt); // gain
 }
 void deClassWorld::nfSetSpeakerGain::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	world.SetSpeakerGain(rt->GetValue(0)->GetFloat());
 }
 
@@ -1545,7 +1546,7 @@ deClassWorld::nfGetHeightTerrain::nfGetHeightTerrain(const sInitData &init) : ds
 "getHeightTerrain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsHT){
 }
 void deClassWorld::nfGetHeightTerrain::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	const deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	if(world->GetHeightTerrain()){
@@ -1562,7 +1563,7 @@ deClassWorld::nfSetHeightTerrain::nfSetHeightTerrain(const sInitData &init) : ds
 	p_AddParameter(init.clsHT); // heightTerrain
 }
 void deClassWorld::nfSetHeightTerrain::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld *world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld *world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deClassWorld *clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -1588,7 +1589,7 @@ deClassWorld::nfPointHits::nfPointHits(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassWorld::nfPointHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &point = ds.GetClassDVector()->GetDVector(
@@ -1614,7 +1615,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassWorld::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1642,7 +1643,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassWorld::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1671,7 +1672,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassWorld::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1702,7 +1703,7 @@ deClassWorld::nfRayHits::nfRayHits(const sInitData &init) : dsFunction(init.clsW
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassWorld::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -1730,7 +1731,7 @@ deClassWorld::nfRayHitsClosest::nfRayHitsClosest(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassWorld::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	deWorld &world = static_cast<sWorldNatDat*>(p_GetNativeData(myself))->world;
+	deWorld &world = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself)).world;
 	const deScriptingDragonScript &ds = *((static_cast<deClassWorld*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -1757,7 +1758,7 @@ dsFunction(init.clsWorld, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 }
 
 void deClassWorld::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sWorldNatDat &nd = *static_cast<sWorldNatDat*>(p_GetNativeData(myself));
+	const sWorldNatDat &nd = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself));
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)nd.world);
@@ -1769,7 +1770,7 @@ dsFunction(init.clsWorld, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sWorldNatDat &nd = *static_cast<sWorldNatDat*>(p_GetNativeData(myself));
+	const sWorldNatDat &nd = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself));
 	const deClassWorld * const clsWorld = static_cast<deClassWorld*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -1778,7 +1779,7 @@ void deClassWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const sWorldNatDat &other = *static_cast<sWorldNatDat*>(p_GetNativeData(obj));
+		const sWorldNatDat &other = dedsGetNativeData<sWorldNatDat>(p_GetNativeData(obj));
 		rt->PushBool(nd.world == other.world);
 	}
 }
@@ -1822,7 +1823,7 @@ pClsVec(NULL)
 	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize(sizeof(sWorldNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sWorldNatDat>());
 }
 
 deClassWorld::~deClassWorld(){
@@ -2031,7 +2032,7 @@ deWorld *deClassWorld::GetWorld(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sWorldNatDat*>(p_GetNativeData(myself->GetBuffer()))->world;
+	return dedsGetNativeData<sWorldNatDat>(p_GetNativeData(myself->GetBuffer())).world;
 }
 
 void deClassWorld::PushWorld(dsRunTime *rt, deWorld *world){
@@ -2045,5 +2046,5 @@ void deClassWorld::PushWorld(dsRunTime *rt, deWorld *world){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sWorldNatDat)->world = world;
+	dedsNewNativeData<sWorldNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).world = world;
 }

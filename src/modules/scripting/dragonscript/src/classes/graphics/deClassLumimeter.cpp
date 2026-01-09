@@ -31,6 +31,7 @@
 #include <string.h>
 #include <libdscript/libdscript.h>
 #include "deClassLumimeter.h"
+#include "../dedsHelpers.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../world/deClassWorld.h"
@@ -60,12 +61,12 @@ deClassLumimeter::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsLM,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLumimeter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sLumimeterNatDat * const nd = new (p_GetNativeData(myself)) sLumimeterNatDat();
+	sLumimeterNatDat &nd = dedsNewNativeData<sLumimeterNatDat>(p_GetNativeData(myself));
 	
 	deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	deLumimeterManager *lumimeterMgr = clsLumimeter->GetGameEngine()->GetLumimeterManager();
 	
-	nd->lumimeter = lumimeterMgr->CreateLumimeter();
+	nd.lumimeter = lumimeterMgr->CreateLumimeter();
 }
 
 // public func destructor()
@@ -77,7 +78,7 @@ void deClassLumimeter::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->~sLumimeterNatDat();
+	dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).~sLumimeterNatDat();
 }
 
 
@@ -90,7 +91,7 @@ deClassLumimeter::nfGetPosition::nfGetPosition(const sInitData &init) : dsFuncti
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassLumimeter::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	const deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	
 	clsLumimeter->GetClassDVector()->PushDVector(rt, lumimeter->GetPosition());
@@ -102,7 +103,7 @@ deClassLumimeter::nfSetPosition::nfSetPosition(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassLumimeter::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	const deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -116,7 +117,7 @@ deClassLumimeter::nfGetDirection::nfGetDirection(const sInitData &init) : dsFunc
 "getDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassLumimeter::nfGetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	const deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	
 	clsLumimeter->GetClassVector()->PushVector(rt, lumimeter->GetDirection());
@@ -128,7 +129,7 @@ deClassLumimeter::nfSetDirection::nfSetDirection(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassLumimeter::nfSetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	const deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -142,7 +143,7 @@ deClassLumimeter::nfGetConeInnerAngle::nfGetConeInnerAngle(const sInitData &init
 "getConeInnerAngle", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassLumimeter::nfGetConeInnerAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	rt->PushFloat(lumimeter->GetConeInnerAngle() * RAD2DEG);
 }
@@ -153,7 +154,7 @@ deClassLumimeter::nfSetConeInnerAngle::nfSetConeInnerAngle(const sInitData &init
 	p_AddParameter(init.clsFlt); // angle
 }
 void deClassLumimeter::nfSetConeInnerAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	lumimeter->SetConeInnerAngle(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
@@ -163,7 +164,7 @@ deClassLumimeter::nfGetConeOuterAngle::nfGetConeOuterAngle(const sInitData &init
 "getConeOuterAngle", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassLumimeter::nfGetConeOuterAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	rt->PushFloat(lumimeter->GetConeOuterAngle() * RAD2DEG);
 }
@@ -174,7 +175,7 @@ deClassLumimeter::nfSetConeOuterAngle::nfSetConeOuterAngle(const sInitData &init
 	p_AddParameter(init.clsFlt); // angle
 }
 void deClassLumimeter::nfSetConeOuterAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	lumimeter->SetConeOuterAngle(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
@@ -184,7 +185,7 @@ deClassLumimeter::nfGetConeExponent::nfGetConeExponent(const sInitData &init) : 
 "getConeExponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassLumimeter::nfGetConeExponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	rt->PushFloat(lumimeter->GetConeExponent());
 }
@@ -195,7 +196,7 @@ deClassLumimeter::nfSetConeExponent::nfSetConeExponent(const sInitData &init) : 
 	p_AddParameter(init.clsFlt); // exponent
 }
 void deClassLumimeter::nfSetConeExponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	lumimeter->SetConeExponent(rt->GetValue(0)->GetFloat());
 }
@@ -206,7 +207,7 @@ dsFunction(init.clsLM, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 }
 
 void deClassLumimeter::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter &lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter &lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	deClassWorld &clsWorld = *((static_cast<deClassLumimeter*>(GetOwnerClass()))->GetScriptModule()->GetClassWorld());
 	clsWorld.PushWorld(rt, lumimeter.GetParentWorld());
 }
@@ -219,7 +220,7 @@ deClassLumimeter::nfMeasureLuminance::nfMeasureLuminance(const sInitData &init) 
 "measureLuminance", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassLumimeter::nfMeasureLuminance::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	rt->PushFloat(lumimeter->MeasureLuminance());
 }
@@ -229,7 +230,7 @@ deClassLumimeter::nfMeasureColor::nfMeasureColor(const sInitData &init) : dsFunc
 "measureColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassLumimeter::nfMeasureColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	const deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	
 	clsLumimeter->GetClassColor()->PushColor(rt, lumimeter->MeasureColor());
@@ -246,7 +247,7 @@ dsFunction(init.clsLM, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 }
 
 void deClassLumimeter::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	
 	rt->PushInt((int)(intptr_t)lumimeter);
 }
@@ -257,7 +258,7 @@ dsFunction(init.clsLM, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassLumimeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deLumimeter *lumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(myself))->lumimeter;
+	const deLumimeter *lumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself)).lumimeter;
 	deClassLumimeter *clsLumimeter = static_cast<deClassLumimeter*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
@@ -265,7 +266,7 @@ void deClassLumimeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deLumimeter *otherLumimeter = static_cast<sLumimeterNatDat*>(p_GetNativeData(obj))->lumimeter;
+		const deLumimeter *otherLumimeter = dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(obj)).lumimeter;
 		rt->PushBool(lumimeter == otherLumimeter);
 	}
 }
@@ -294,7 +295,7 @@ pClsClr(nullptr)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sLumimeterNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sLumimeterNatDat>());
 }
 
 deClassLumimeter::~deClassLumimeter(){
@@ -355,7 +356,7 @@ deLumimeter *deClassLumimeter::GetLumimeter(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sLumimeterNatDat*>(p_GetNativeData(myself->GetBuffer()))->lumimeter;
+	return dedsGetNativeData<sLumimeterNatDat>(p_GetNativeData(myself->GetBuffer())).lumimeter;
 }
 
 void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
@@ -369,5 +370,5 @@ void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sLumimeterNatDat)->lumimeter = lumimeter;
+	dedsNewNativeData<sLumimeterNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).lumimeter = lumimeter;
 }

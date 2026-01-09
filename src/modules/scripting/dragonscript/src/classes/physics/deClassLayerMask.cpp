@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 #include "deClassLayerMask.h"
+#include "../dedsHelpers.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -52,7 +53,7 @@ deClassLayerMask::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsLyM,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLayerMask::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sCFNatDat;
+	dedsNewNativeData<sCFNatDat>(p_GetNativeData(myself));
 }
 
 // public func new( LayerMask layerMask )
@@ -61,12 +62,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
+	sCFNatDat &nd = dedsNewNativeData<sCFNatDat>(p_GetNativeData(myself));
 	
 	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	nd->layerMask = clsLyM.GetLayerMask(obj);
+	nd.layerMask = clsLyM.GetLayerMask(obj);
 }
 
 // static public func LayerMask newWith( int bit )
@@ -165,7 +166,7 @@ void deClassLayerMask::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sCFNatDat*>(p_GetNativeData(myself))->~sCFNatDat();
+	dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).~sCFNatDat();
 }
 
 
@@ -178,7 +179,7 @@ deClassLayerMask::nfClearMask::nfClearMask(const sInitData &init) : dsFunction(i
 "clearMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLayerMask::nfClearMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	layermask.ClearMask();
 }
 
@@ -188,7 +189,7 @@ deClassLayerMask::nfSetBit::nfSetBit(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsInt); // bit
 }
 void deClassLayerMask::nfSetBit::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	layermask.SetBit(rt->GetValue(0)->GetInt());
 }
 
@@ -198,7 +199,7 @@ deClassLayerMask::nfClearBit::nfClearBit(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bit
 }
 void deClassLayerMask::nfClearBit::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	layermask.ClearBit(rt->GetValue(0)->GetInt());
 }
 
@@ -208,7 +209,7 @@ deClassLayerMask::nfIsBitSet::nfIsBitSet(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bit
 }
 void deClassLayerMask::nfIsBitSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushBool(layermask.IsBitSet(rt->GetValue(0)->GetInt()));
 }
 
@@ -218,7 +219,7 @@ deClassLayerMask::nfIsBitCleared::nfIsBitCleared(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // bit
 }
 void deClassLayerMask::nfIsBitCleared::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushBool(layermask.IsBitCleared(rt->GetValue(0)->GetInt()));
 }
 
@@ -227,7 +228,7 @@ deClassLayerMask::nfIsEmpty::nfIsEmpty(const sInitData &init) : dsFunction(init.
 "isEmpty", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassLayerMask::nfIsEmpty::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushBool(layermask.IsEmpty());
 }
 
@@ -239,7 +240,7 @@ deClassLayerMask::nfMatches::nfMatches(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfMatches::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -252,7 +253,7 @@ deClassLayerMask::nfMatchesNot::nfMatchesNot(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfMatchesNot::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -266,7 +267,7 @@ deClassLayerMask::nfToBitString::nfToBitString(const sInitData &init) : dsFuncti
 "toBitString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassLayerMask::nfToBitString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushString(layermask.ToBitString());
 }
 
@@ -276,7 +277,7 @@ deClassLayerMask::nfSetFromBitString::nfSetFromBitString(const sInitData &init) 
 	p_AddParameter(init.clsStr); // string
 }
 void deClassLayerMask::nfSetFromBitString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	layermask.SetFromBitString(rt->GetValue(0)->GetString());
 }
 
@@ -285,7 +286,7 @@ deClassLayerMask::nfToHexString::nfToHexString(const sInitData &init) : dsFuncti
 "toHexString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassLayerMask::nfToHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushString(layermask.ToHexString());
 }
 
@@ -295,7 +296,7 @@ deClassLayerMask::nfSetFromHexString::nfSetFromHexString(const sInitData &init) 
 	p_AddParameter(init.clsStr); // string
 }
 void deClassLayerMask::nfSetFromHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	layermask.SetFromHexString(rt->GetValue(0)->GetString());
 }
 
@@ -309,7 +310,7 @@ deClassLayerMask::nfOpInverse::nfOpInverse(const sInitData &init) : dsFunction(i
 "~", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsLyM){
 }
 void deClassLayerMask::nfOpInverse::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask layermask(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
+	decLayerMask layermask(dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask);
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	
 	clsLyM.PushLayerMask(rt, ~layermask);
@@ -321,7 +322,7 @@ deClassLayerMask::nfOpAnd::nfOpAnd(const sInitData &init) : dsFunction(init.clsL
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpAnd::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -334,7 +335,7 @@ deClassLayerMask::nfOpOr::nfOpOr(const sInitData &init) : dsFunction(init.clsLyM
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpOr::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -347,7 +348,7 @@ deClassLayerMask::nfOpXor::nfOpXor(const sInitData &init) : dsFunction(init.clsL
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpXor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -360,7 +361,7 @@ deClassLayerMask::nfOpAndAssign::nfOpAndAssign(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpAndAssign::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -373,7 +374,7 @@ deClassLayerMask::nfOpOrAssign::nfOpOrAssign(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpOrAssign::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -386,7 +387,7 @@ deClassLayerMask::nfOpXorAssign::nfOpXorAssign(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsLyM); // layerMask
 }
 void deClassLayerMask::nfOpXorAssign::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -404,7 +405,7 @@ dsFunction(init.clsLyM, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassLayerMask::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushInt((int)(intptr_t)&layermask);
 }
 
@@ -421,8 +422,8 @@ void deClassLayerMask::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-		const decLayerMask &otherMask = static_cast<sCFNatDat*>(p_GetNativeData(object))->layerMask;
+		const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
+		const decLayerMask &otherMask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(object)).layerMask;
 		rt->PushBool(layermask == otherMask);
 	}
 }
@@ -432,7 +433,7 @@ deClassLayerMask::nfToString::nfToString(const sInitData &init) : dsFunction(ini
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassLayerMask::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	const decLayerMask &layermask = dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself)).layerMask;
 	rt->PushString(layermask.ToHexString());
 }
 
@@ -455,7 +456,7 @@ dsClass("LayerMask", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sCFNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sCFNatDat>());
 }
 
 deClassLayerMask::~deClassLayerMask(){
@@ -523,7 +524,7 @@ const decLayerMask &deClassLayerMask::GetLayerMask(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return static_cast<sCFNatDat*>(p_GetNativeData(myself->GetBuffer()))->layerMask;
+	return dedsGetNativeData<sCFNatDat>(p_GetNativeData(myself->GetBuffer())).layerMask;
 }
 
 void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermask){
@@ -532,5 +533,5 @@ void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermas
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCFNatDat)->layerMask = layermask;
+	dedsNewNativeData<sCFNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).layerMask = layermask;
 }

@@ -31,6 +31,7 @@
 
 #include "deClassModel.h"
 #include "deClassModelBuilder.h"
+#include "../dedsHelpers.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassVector2.h"
 #include "../math/deClassQuaternion.h"
@@ -101,7 +102,7 @@ dsFunction(init.clsModelBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
+	dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -121,7 +122,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsModel){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlBldNatDat &nd = *static_cast<sMdlBldNatDat*>(p_GetNativeData(myself));
+	sMdlBldNatDat &nd = dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
@@ -168,7 +169,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -204,7 +205,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -237,7 +238,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfAddTextureCoordinatesSet::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -252,7 +253,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfAddLOD::RunFunction(dsRunTime*, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -276,7 +277,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetLodError::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -295,7 +296,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetWeightCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -315,7 +316,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetWeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -335,7 +336,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetWeightGroupCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -354,7 +355,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetWeightGroupAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -372,7 +373,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -392,7 +393,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -413,7 +414,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetNormalCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -431,7 +432,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetTangentCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -449,7 +450,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -485,7 +486,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -519,7 +520,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -538,7 +539,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetAtSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -559,7 +560,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfSetTextureCoordinateSetAtSetAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassModelBuilder_Builder * const builder =
-		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+		dedsGetNativeData<sMdlBldNatDat>(p_GetNativeData(myself)).builder;
 	if(!builder || !builder->GetModel()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -586,7 +587,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sMdlBldNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sMdlBldNatDat>());
 }
 
 deClassModelBuilder::~deClassModelBuilder(){

@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassEnvMapProbe.h"
+#include "../dedsHelpers.h"
 #include "../resources/deClassResourceListener.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
@@ -66,10 +67,10 @@ deClassEnvMapProbe::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsEmp
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEnvMapProbe::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEmpNatDat * const nd = new (p_GetNativeData(myself)) sEmpNatDat;
+	sEmpNatDat &nd = dedsNewNativeData<sEmpNatDat>(p_GetNativeData(myself));
 	const deClassEnvMapProbe &clsEmp = *(static_cast<deClassEnvMapProbe*>(GetOwnerClass()));
 	deEnvMapProbeManager &empmgr = *clsEmp.GetDS()->GetGameEngine()->GetEnvMapProbeManager();
-	nd->envMapProbe = empmgr.CreateEnvMapProbe();
+	nd.envMapProbe = empmgr.CreateEnvMapProbe();
 }
 
 // public func destructor()
@@ -81,7 +82,7 @@ void deClassEnvMapProbe::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sEmpNatDat*>(p_GetNativeData(myself))->~sEmpNatDat();
+	dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).~sEmpNatDat();
 }
 
 
@@ -91,7 +92,7 @@ deClassEnvMapProbe::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunc
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassEnvMapProbe::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassDVector()->PushDVector(rt, envMapProbe.GetPosition());
@@ -103,7 +104,7 @@ deClassEnvMapProbe::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassEnvMapProbe::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
 	
@@ -115,7 +116,7 @@ deClassEnvMapProbe::nfGetOrientation::nfGetOrientation(const sInitData &init) : 
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassEnvMapProbe::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, envMapProbe.GetOrientation());
@@ -127,7 +128,7 @@ deClassEnvMapProbe::nfSetOrientation::nfSetOrientation(const sInitData &init) : 
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassEnvMapProbe::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objOrientation = rt->GetValue(0)->GetRealObject();
 	
@@ -139,7 +140,7 @@ deClassEnvMapProbe::nfGetScaling::nfGetScaling(const sInitData &init) : dsFuncti
 "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassEnvMapProbe::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassVector()->PushVector(rt, envMapProbe.GetScaling());
@@ -151,7 +152,7 @@ deClassEnvMapProbe::nfSetScaling::nfSetScaling(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsVec); // scaling
 }
 void deClassEnvMapProbe::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
 	
@@ -165,7 +166,7 @@ deClassEnvMapProbe::nfGetLayerMask::nfGetLayerMask(const sInitData &init) : dsFu
 "getLayerMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassEnvMapProbe::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, envMapProbe.GetLayerMask());
@@ -177,7 +178,7 @@ deClassEnvMapProbe::nfSetLayerMask::nfSetLayerMask(const sInitData &init) : dsFu
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassEnvMapProbe::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	envMapProbe.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
@@ -189,7 +190,7 @@ dsFunction(init.clsEmp, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 
 void deClassEnvMapProbe::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *(static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS();
 	ds.GetClassWorld()->PushWorld(rt, envMapProbe.GetParentWorld());
 }
@@ -199,7 +200,7 @@ deClassEnvMapProbe::nfGetShapeListInfluence::nfGetShapeListInfluence(const sInit
 "getShapeListInfluence", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShaList){
 }
 void deClassEnvMapProbe::nfGetShapeListInfluence::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassShapeList()->PushShapeList(rt, envMapProbe.GetShapeListInfluence());
@@ -211,7 +212,7 @@ deClassEnvMapProbe::nfSetShapeListInfluence::nfSetShapeListInfluence(const sInit
 	p_AddParameter(init.clsShaList); // shapeList
 }
 void deClassEnvMapProbe::nfSetShapeListInfluence::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objShapeList = rt->GetValue(0)->GetRealObject();
 	
@@ -224,7 +225,7 @@ deClassEnvMapProbe::nfGetShapeReflection::nfGetShapeReflection(const sInitData &
 "getShapeReflection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShaList){
 }
 void deClassEnvMapProbe::nfGetShapeReflection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	decShapeList shapeList;
 	
@@ -241,7 +242,7 @@ deClassEnvMapProbe::nfSetShapeReflection::nfSetShapeReflection(const sInitData &
 	p_AddParameter(init.clsShaList); // shape
 }
 void deClassEnvMapProbe::nfSetShapeReflection::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objShape = rt->GetValue(0)->GetRealObject();
 	
@@ -265,7 +266,7 @@ deClassEnvMapProbe::nfGetShapeListReflectionMask::nfGetShapeListReflectionMask(c
 "getShapeListReflectionMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShaList){
 }
 void deClassEnvMapProbe::nfGetShapeListReflectionMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassShapeList()->PushShapeList(rt, envMapProbe.GetShapeListReflectionMask());
@@ -277,7 +278,7 @@ deClassEnvMapProbe::nfSetShapeListReflectionMask::nfSetShapeListReflectionMask(c
 	p_AddParameter(init.clsShaList); // shapeList
 }
 void deClassEnvMapProbe::nfSetShapeListReflectionMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const deScriptingDragonScript &ds = *((static_cast<deClassEnvMapProbe*>(GetOwnerClass()))->GetDS());
 	dsRealObject * const objShapeList = rt->GetValue(0)->GetRealObject();
 	
@@ -290,7 +291,7 @@ deClassEnvMapProbe::nfGetInfluenceBorderSize::nfGetInfluenceBorderSize(const sIn
 "getInfluenceBorderSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassEnvMapProbe::nfGetInfluenceBorderSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	
 	rt->PushFloat(envMapProbe.GetInfluenceBorderSize());
 }
@@ -301,7 +302,7 @@ deClassEnvMapProbe::nfSetInfluenceBorderSize::nfSetInfluenceBorderSize(const sIn
 	p_AddParameter(init.clsFlt); // borderSize
 }
 void deClassEnvMapProbe::nfSetInfluenceBorderSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const float borderSize = rt->GetValue(0)->GetFloat();
 	
 	envMapProbe.SetInfluenceBorderSize(borderSize);
@@ -312,7 +313,7 @@ deClassEnvMapProbe::nfGetInfluencePriority::nfGetInfluencePriority(const sInitDa
 "getInfluencePriority", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassEnvMapProbe::nfGetInfluencePriority::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	
 	rt->PushInt(envMapProbe.GetInfluencePriority());
 }
@@ -323,7 +324,7 @@ deClassEnvMapProbe::nfSetInfluencePriority::nfSetInfluencePriority(const sInitDa
 	p_AddParameter(init.clsInt); // priority
 }
 void deClassEnvMapProbe::nfSetInfluencePriority::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEnvMapProbe &envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	deEnvMapProbe &envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	const int priority = rt->GetValue(0)->GetInt();
 	
 	envMapProbe.SetInfluencePriority(priority);
@@ -337,7 +338,7 @@ deClassEnvMapProbe::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(i
 }
 
 void deClassEnvMapProbe::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe * const envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe * const envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)envMapProbe);
@@ -349,7 +350,7 @@ deClassEnvMapProbe::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEnvMapProbe::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEnvMapProbe * const envMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(myself))->envMapProbe;
+	const deEnvMapProbe * const envMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(myself)).envMapProbe;
 	deClassEnvMapProbe * const clsEmp = static_cast<deClassEnvMapProbe*>(GetOwnerClass());
 	
 	dsValue *object = rt->GetValue(0);
@@ -358,7 +359,7 @@ void deClassEnvMapProbe::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deEnvMapProbe * const otherEnvMapProbe = static_cast<sEmpNatDat*>(p_GetNativeData(object))->envMapProbe;
+		const deEnvMapProbe * const otherEnvMapProbe = dedsGetNativeData<sEmpNatDat>(p_GetNativeData(object)).envMapProbe;
 		
 		rt->PushBool(envMapProbe == otherEnvMapProbe);
 	}
@@ -398,7 +399,7 @@ dsClass("EnvMapProbe", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sEmpNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sEmpNatDat>());
 }
 
 deClassEnvMapProbe::~deClassEnvMapProbe(){
@@ -470,7 +471,7 @@ deEnvMapProbe *deClassEnvMapProbe::GetEnvMapProbe(dsRealObject *object) const{
 		return nullptr;
 	}
 	
-	return static_cast<sEmpNatDat*>(p_GetNativeData(object->GetBuffer()))->envMapProbe;
+	return dedsGetNativeData<sEmpNatDat>(p_GetNativeData(object->GetBuffer())).envMapProbe;
 }
 
 void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe){
@@ -484,5 +485,5 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEmpNatDat)->envMapProbe = envMapProbe;
+	dedsNewNativeData<sEmpNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).envMapProbe = envMapProbe;
 }

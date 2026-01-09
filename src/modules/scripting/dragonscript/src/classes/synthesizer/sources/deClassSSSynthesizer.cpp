@@ -32,6 +32,7 @@
 #include "deClassSSSynthesizer.h"
 #include "../deClassSynthesizer.h"
 #include "../deClassSynthesizerSource.h"
+#include "../../dedsHelpers.h"
 #include "../../../deScriptingDragonScript.h"
 #include "../../../deClassPathes.h"
 
@@ -63,13 +64,13 @@ deClassSSSynthesizer::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsS
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSSynthesizer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSynNatDat * const nd = new (p_GetNativeData(myself)) sSSSynNatDat;
+	sSSSynNatDat &nd = dedsNewNativeData<sSSSynNatDat>(p_GetNativeData(myself));
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	nd->source = deSynthesizerSourceSynthesizer::Ref::New();
-	baseClass->AssignSource(myself->GetRealObject(), nd->source);
+	nd.source = deSynthesizerSourceSynthesizer::Ref::New();
+	baseClass->AssignSource(myself->GetRealObject(), nd.source);
 }
 
 // public func destructor()
@@ -81,7 +82,7 @@ void deClassSSSynthesizer::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSSSynNatDat*>(p_GetNativeData(myself))->~sSSSynNatDat();
+	dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself)).~sSSSynNatDat();
 }
 
 
@@ -97,7 +98,7 @@ void deClassSSSynthesizer::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
+	sSSSynNatDat &nd = dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself));
 	const deClassSSSynthesizer::eTargets target = (deClassSSSynthesizer::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -135,7 +136,7 @@ void deClassSSSynthesizer::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, ds
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
+	sSSSynNatDat &nd = dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself));
 	const deClassSSSynthesizer::eTargets target = (deClassSSSynthesizer::eTargets)
 		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -170,7 +171,7 @@ deClassSSSynthesizer::nfSetSynthesizer::nfSetSynthesizer(const sInitData &init) 
 	p_AddParameter(init.clsSyn); // synthesizer
 }
 void deClassSSSynthesizer::nfSetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
+	sSSSynNatDat &nd = dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = static_cast<deClassSSSynthesizer*>(GetOwnerClass())->GetDS();
 	deSynthesizer * const synthesizer = ds.GetClassSynthesizer()->GetSynthesizer(rt->GetValue(0)->GetRealObject());
 	
@@ -192,7 +193,7 @@ deClassSSSynthesizer::nfSetConnectionAt::nfSetConnectionAt(const sInitData &init
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassSSSynthesizer::nfSetConnectionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
+	sSSSynNatDat &nd = dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself));
 	
 	const int target = rt->GetValue(0)->GetInt();
 	const int controller = rt->GetValue(1)->GetInt();
@@ -223,7 +224,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("SynthesizerSource");
 	
-	p_SetNativeDataSize(sizeof(sSSSynNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSSSynNatDat>());
 }
 
 deClassSSSynthesizer::~deClassSSSynthesizer(){
@@ -267,7 +268,7 @@ deSynthesizerSourceSynthesizer *deClassSSSynthesizer::GetSource(dsRealObject *my
 		return NULL;
 	}
 	
-	return static_cast<sSSSynNatDat*>(p_GetNativeData(myself->GetBuffer()))->source;
+	return dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself->GetBuffer())).source;
 }
 
 void deClassSSSynthesizer::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
@@ -277,7 +278,7 @@ void deClassSSSynthesizer::AssignSynthesizer(dsRealObject *myself, deSynthesizer
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	static_cast<sSSSynNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
+	dedsGetNativeData<sSSSynNatDat>(p_GetNativeData(myself->GetBuffer())).synthesizer = synthesizer;
 }
 
 void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSynthesizer *source){
@@ -292,12 +293,12 @@ void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer,
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSSynNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSSynNatDat;
+	sSSSynNatDat &nd = dedsNewNativeData<sSSSynNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		nd->synthesizer = synthesizer;
-		nd->source = source;
+		nd.synthesizer = synthesizer;
+		nd.source = source;
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

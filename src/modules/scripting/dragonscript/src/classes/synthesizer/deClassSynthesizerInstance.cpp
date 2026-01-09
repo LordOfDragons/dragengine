@@ -32,6 +32,7 @@
 #include "deClassSynthesizer.h"
 #include "deClassSynthesizerController.h"
 #include "deClassSynthesizerInstance.h"
+#include "../dedsHelpers.h"
 #include "../curve/deClassCurveBezier.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -61,9 +62,9 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSynthesizerInstance::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	const deClassSynthesizerInstance &clsSyn = *(static_cast<deClassSynthesizerInstance*>(GetOwnerClass()));
 	deSynthesizerInstanceManager &syninstmgr = *clsSyn.GetDS().GetGameEngine()->GetSynthesizerInstanceManager();
-	sSynINatDat * const nd = new (p_GetNativeData(myself)) sSynINatDat;
+	sSynINatDat &nd = dedsNewNativeData<sSynINatDat>(p_GetNativeData(myself));
 	
-	nd->instance = syninstmgr.CreateSynthesizerInstance();
+	nd.instance = syninstmgr.CreateSynthesizerInstance();
 }
 
 // public func destructor()
@@ -75,7 +76,7 @@ void deClassSynthesizerInstance::nfDestructor::RunFunction(dsRunTime*, dsValue *
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSynINatDat*>(p_GetNativeData(myself))->~sSynINatDat();
+	dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).~sSynINatDat();
 }
 
 
@@ -85,7 +86,7 @@ deClassSynthesizerInstance::nfGetSynthesizer::nfGetSynthesizer(const sInitData &
 "getSynthesizer", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSyn){
 }
 void deClassSynthesizerInstance::nfGetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerInstance*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSynthesizer()->PushSynthesizer(rt, instance.GetSynthesizer());
@@ -97,7 +98,7 @@ deClassSynthesizerInstance::nfSetSynthesizer::nfSetSynthesizer(const sInitData &
 	p_AddParameter(init.clsSyn); // synthesizer
 }
 void deClassSynthesizerInstance::nfSetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerInstance*>(GetOwnerClass()))->GetDS();
 	dsRealObject * const objSynthesizer = rt->GetValue(0)->GetRealObject();
 	
@@ -109,7 +110,7 @@ deClassSynthesizerInstance::nfGetSampleCount::nfGetSampleCount(const sInitData &
 "getSampleCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSynthesizerInstance::nfGetSampleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	rt->PushInt(instance.GetSampleCount());
 }
 
@@ -119,7 +120,7 @@ deClassSynthesizerInstance::nfSetSampleCount::nfSetSampleCount(const sInitData &
 	p_AddParameter(init.clsInt); // sampleCount
 }
 void deClassSynthesizerInstance::nfSetSampleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	instance.SetSampleCount(rt->GetValue(0)->GetInt());
 }
 
@@ -131,7 +132,7 @@ dsFunction(init.clsSynI, "getControllerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSynthesizerInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	
 	rt->PushInt(instance.GetControllers().GetCount());
 }
@@ -143,7 +144,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSynController){
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassSynthesizerInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance * const instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerInstance*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -163,7 +164,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSynController){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSynthesizerInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance * const instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerInstance*>(GetOwnerClass()))->GetDS();
 	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
@@ -182,7 +183,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSynthesizerInstance::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance * const instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	rt->PushInt(instance->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -194,7 +195,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassSynthesizerInstance::nfCopyControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deClassSynthesizerInstance &clsAr = *(static_cast<deClassSynthesizerInstance*>(GetOwnerClass()));
 	
 	const deSynthesizerInstance * const sourceInstance =
@@ -233,7 +234,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassSynthesizerInstance::nfCopyControllerStates2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deClassSynthesizerInstance &clsAr = *(static_cast<deClassSynthesizerInstance*>(GetOwnerClass()));
 	
 	const deSynthesizerInstance * const sourceInstance = clsAr.GetSynthesizerInstance(rt->GetValue(0)->GetRealObject());
@@ -273,7 +274,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSynI); // instance
 }
 void deClassSynthesizerInstance::nfCopyNamedControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance &instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance &instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	const deClassSynthesizerInstance &clsAr = *(static_cast<deClassSynthesizerInstance*>(GetOwnerClass()));
 	
 	const deSynthesizerInstance * const sourceInstance = clsAr.GetSynthesizerInstance(rt->GetValue(0)->GetRealObject());
@@ -304,7 +305,7 @@ deClassSynthesizerInstance::nfHashCode::nfHashCode(const sInitData &init) : dsFu
 }
 
 void deClassSynthesizerInstance::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	deSynthesizerInstance * const instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)instance);
 }
@@ -315,7 +316,7 @@ deClassSynthesizerInstance::nfEquals::nfEquals(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassSynthesizerInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance * const instance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(myself)).instance;
 	deClassSynthesizerInstance * const clsSyn = static_cast<deClassSynthesizerInstance*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -323,7 +324,7 @@ void deClassSynthesizerInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *m
 		rt->PushBool(false);
 		
 	}else{
-		const deSynthesizerInstance * const otherInstance = static_cast<sSynINatDat*>(p_GetNativeData(obj))->instance;
+		const deSynthesizerInstance * const otherInstance = dedsGetNativeData<sSynINatDat>(p_GetNativeData(obj)).instance;
 		
 		rt->PushBool(instance == otherInstance);
 	}
@@ -343,7 +344,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sSynINatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSynINatDat>());
 }
 
 deClassSynthesizerInstance::~deClassSynthesizerInstance(){
@@ -398,7 +399,7 @@ deSynthesizerInstance *deClassSynthesizerInstance::GetSynthesizerInstance(dsReal
 		return nullptr;
 	}
 	
-	return static_cast<sSynINatDat*>(p_GetNativeData(object->GetBuffer()))->instance;
+	return dedsGetNativeData<sSynINatDat>(p_GetNativeData(object->GetBuffer())).instance;
 }
 
 void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance *instance){
@@ -412,5 +413,5 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynINatDat)->instance = instance;
+	dedsNewNativeData<sSynINatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).instance = instance;
 }

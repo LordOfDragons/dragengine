@@ -33,6 +33,7 @@
 #include "deClassSkyController.h"
 #include "deClassSkyLayer.h"
 #include "deClassSkyLink.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassColor.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -68,12 +69,12 @@ deClassSky::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSky,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSky::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSkyNatDat * const nd = new (p_GetNativeData(myself)) sSkyNatDat;
+	sSkyNatDat &nd = dedsNewNativeData<sSkyNatDat>(p_GetNativeData(myself));
 	
 	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	deSkyManager &skyMgr = *ds.GetGameEngine()->GetSkyManager();
 	
-	nd->sky = skyMgr.CreateSky();
+	nd.sky = skyMgr.CreateSky();
 }
 
 // public func destructor()
@@ -85,7 +86,7 @@ void deClassSky::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sSkyNatDat*>(p_GetNativeData(myself))->~sSkyNatDat();
+	dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).~sSkyNatDat();
 }
 
 
@@ -99,7 +100,7 @@ dsFunction(init.clsSky, "getBgColor", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
 void deClassSky::nfGetBgColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassColor()->PushColor(rt, sky.GetBgColor());
@@ -111,7 +112,7 @@ deClassSky::nfSetBgColor::nfSetBgColor(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsColor); // color
 }
 void deClassSky::nfSetBgColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	sky.SetBgColor(ds.GetClassColor()->GetColor(rt->GetValue(0)->GetRealObject()));
@@ -125,7 +126,7 @@ dsFunction(init.clsSky, "getControllerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSky::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	rt->PushInt(sky.GetControllers().GetCount());
 }
@@ -137,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	sky.SetControllerCount(rt->GetValue(0)->GetInt());
 }
@@ -149,7 +150,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyCtrl){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -168,7 +169,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyCtrl){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassSky::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	const int index = sky->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
@@ -187,7 +188,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassSky::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	rt->PushInt(sky->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -199,7 +200,7 @@ dsFunction(init.clsSky, "getLinkCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSky::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	rt->PushInt(sky.GetLinks().GetCount());
 }
@@ -211,7 +212,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfSetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	sky.SetLinkCount(rt->GetValue(0)->GetInt());
 }
@@ -223,7 +224,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyLink){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -238,7 +239,7 @@ dsFunction(init.clsSky, "getLayerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSky::nfGetLayerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	rt->PushInt(sky.GetLayers().GetCount());
 }
@@ -250,7 +251,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfSetLayerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	sky.SetLayerCount(rt->GetValue(0)->GetInt());
 }
@@ -262,7 +263,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyLayer){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassSky::nfGetLayerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -277,7 +278,7 @@ dsFunction(init.clsSky, "contentChanged", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSky::nfContentChanged::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	deSky &sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	sky.NotifyParametersChanged();
 }
@@ -290,7 +291,7 @@ dsFunction(init.clsSky, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassSky::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	
 	rt->PushInt((int)(intptr_t)sky);
 }
@@ -301,7 +302,7 @@ dsFunction(init.clsSky, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSky::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky * const sky = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself)).sky;
 	deClassSky * const clsSky = static_cast<deClassSky*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -309,7 +310,7 @@ void deClassSky::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deSky * const other = static_cast<sSkyNatDat*>(p_GetNativeData(obj))->sky;
+		const deSky * const other = dedsGetNativeData<sSkyNatDat>(p_GetNativeData(obj)).sky;
 		rt->PushBool(sky == other);
 	}
 }
@@ -329,7 +330,7 @@ pDS(ds)
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sSkyNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sSkyNatDat>());
 }
 
 deClassSky::~deClassSky(){
@@ -390,7 +391,7 @@ deSky *deClassSky::GetSky(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sSkyNatDat*>(p_GetNativeData(myself->GetBuffer()))->sky;
+	return dedsGetNativeData<sSkyNatDat>(p_GetNativeData(myself->GetBuffer())).sky;
 }
 
 void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
@@ -404,5 +405,5 @@ void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyNatDat)->sky = sky;
+	dedsNewNativeData<sSkyNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).sky = sky;
 }

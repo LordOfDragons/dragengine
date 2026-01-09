@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassVideo.h"
+#include "../dedsHelpers.h"
 #include "../resources/deClassResourceListener.h"
 #include "../math/deClassPoint.h"
 #include "../../deScriptingDragonScript.h"
@@ -60,14 +61,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassVideo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sVidNatDat * const nd = new (p_GetNativeData(myself)) sVidNatDat;
+	sVidNatDat &nd = dedsNewNativeData<sVidNatDat>(p_GetNativeData(myself));
 	
 	deClassVideo &clsVideo = *(static_cast<deClassVideo*>(GetOwnerClass()));
 	deVideoManager &vidmgr = *clsVideo.GetDS()->GetGameEngine()->GetVideoManager();
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	
-	nd->video = vidmgr.LoadVideo(filename, "/", false);
+	nd.video = vidmgr.LoadVideo(filename, "/", false);
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -99,7 +100,7 @@ void deClassVideo::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sVidNatDat*>(p_GetNativeData(myself))->~sVidNatDat();
+	dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).~sVidNatDat();
 }
 
 
@@ -112,7 +113,7 @@ deClassVideo::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(i
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassVideo::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushString(video.GetFilename());
 }
@@ -122,7 +123,7 @@ deClassVideo::nfGetWidth::nfGetWidth(const sInitData &init) : dsFunction(init.cl
 "getWidth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassVideo::nfGetWidth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushInt(video.GetWidth());
 }
@@ -132,7 +133,7 @@ deClassVideo::nfGetHeight::nfGetHeight(const sInitData &init) : dsFunction(init.
 "getHeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassVideo::nfGetHeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushInt(video.GetHeight());
 }
@@ -142,7 +143,7 @@ deClassVideo::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.clsV
 "getSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
 }
 void deClassVideo::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	const deScriptingDragonScript &ds = *(static_cast<deClassVideo*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassPoint()->PushPoint(rt, decPoint(video.GetWidth(), video.GetHeight()));
@@ -153,7 +154,7 @@ deClassVideo::nfGetFrameCount::nfGetFrameCount(const sInitData &init) : dsFuncti
 "getFrameCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassVideo::nfGetFrameCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushInt(video.GetFrameCount());
 }
@@ -163,7 +164,7 @@ deClassVideo::nfGetFrameRate::nfGetFrameRate(const sInitData &init) : dsFunction
 "getFrameRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVideo::nfGetFrameRate::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushFloat(video.GetFrameRate());
 }
@@ -173,7 +174,7 @@ deClassVideo::nfGetPlayTime::nfGetPlayTime(const sInitData &init) : dsFunction(i
 "getPlayTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVideo::nfGetPlayTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo &video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo &video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushFloat(video.GetPlayTime());
 }
@@ -189,7 +190,7 @@ dsFunction(init.clsVid, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassVideo::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deVideo *video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	deVideo *video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	
 	rt->PushInt((int)(intptr_t)video);
 }
@@ -200,7 +201,7 @@ dsFunction(init.clsVid, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassVideo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deVideo * const video = static_cast<sVidNatDat*>(p_GetNativeData(myself))->video;
+	const deVideo * const video = dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself)).video;
 	deClassVideo *clsVideo = static_cast<deClassVideo*>(GetOwnerClass());
 	dsValue *object = rt->GetValue(0);
 	
@@ -208,7 +209,7 @@ void deClassVideo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deVideo * const otherVideo = static_cast<sVidNatDat*>(p_GetNativeData(object))->video;
+		const deVideo * const otherVideo = dedsGetNativeData<sVidNatDat>(p_GetNativeData(object)).video;
 		
 		rt->PushBool(video == otherVideo);
 	}
@@ -248,7 +249,7 @@ dsClass("Video", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize(sizeof(sVidNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sVidNatDat>());
 }
 
 deClassVideo::~deClassVideo(){
@@ -298,7 +299,7 @@ deVideo *deClassVideo::GetVideo(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sVidNatDat*>(p_GetNativeData(myself->GetBuffer()))->video;
+	return dedsGetNativeData<sVidNatDat>(p_GetNativeData(myself->GetBuffer())).video;
 }
 
 void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
@@ -312,5 +313,5 @@ void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sVidNatDat)->video = video;
+	dedsNewNativeData<sVidNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).video = video;
 }

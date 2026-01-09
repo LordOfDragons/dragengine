@@ -30,6 +30,7 @@
 
 #include "deClassColliderCollisionTest.h"
 #include "deClassCollider.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassComponent.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
@@ -63,10 +64,10 @@ deClassColliderCollisionTest::nfNew::nfNew(const sInitData &init) : dsFunction(i
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderCollisionTest::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	
 	// create collision test
-	nd->collisionTest = deColliderCollisionTest::Ref::New();
+	nd.collisionTest = deColliderCollisionTest::Ref::New();
 }
 
 // public func new( ColliderCollisionTest collisionTest )
@@ -75,14 +76,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCCT); // collisionTest
 }
 void deClassColliderCollisionTest::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	
 	// create collision test
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
-	const deColliderCollisionTest &other = *(static_cast<sCCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTest);
-	nd->collisionTest = deColliderCollisionTest::Ref::New(other);
+	const deColliderCollisionTest &other = *(dedsGetNativeData<sCCTNatDat>(p_GetNativeData(rt->GetValue(0))).collisionTest);
+	nd.collisionTest = deColliderCollisionTest::Ref::New(other);
 }
 
 // public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
@@ -93,7 +94,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassColliderCollisionTest::nfNewWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	// fetch parameters
@@ -102,10 +103,10 @@ void deClassColliderCollisionTest::nfNewWorld::RunFunction(dsRunTime *rt, dsValu
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
 	
 	// create collision test
-	nd->collisionTest = deColliderCollisionTest::Ref::New();
-	nd->collisionTest->SetCollisionFilter(collisionFilter);
-	nd->collisionTest->SetOrigin(origin);
-	nd->collisionTest->SetDirection(direction);
+	nd.collisionTest = deColliderCollisionTest::Ref::New();
+	nd.collisionTest->SetCollisionFilter(collisionFilter);
+	nd.collisionTest->SetOrigin(origin);
+	nd.collisionTest->SetDirection(direction);
 }
 
 // public func new( CollisionFilter collisionFilter, Component component, String bone, Vector origin, Vector direction )
@@ -118,7 +119,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassColliderCollisionTest::nfNewWorldBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	// fetch parameters
@@ -129,12 +130,12 @@ void deClassColliderCollisionTest::nfNewWorldBone::RunFunction(dsRunTime *rt, ds
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject());
 	
 	// create collision test
-	nd->collisionTest = deColliderCollisionTest::Ref::New();
-	nd->collisionTest->SetCollisionFilter(collisionFilter);
-	nd->collisionTest->SetComponent(component);
-	nd->collisionTest->SetBone(bone);
-	nd->collisionTest->SetOrigin(origin);
-	nd->collisionTest->SetDirection(direction);
+	nd.collisionTest = deColliderCollisionTest::Ref::New();
+	nd.collisionTest->SetCollisionFilter(collisionFilter);
+	nd.collisionTest->SetComponent(component);
+	nd.collisionTest->SetBone(bone);
+	nd.collisionTest->SetOrigin(origin);
+	nd.collisionTest->SetDirection(direction);
 }
 
 // public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, Vector origin, Vector direction )
@@ -146,7 +147,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	// fetch parameters
@@ -162,11 +163,11 @@ void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, 
 	}
 	
 	// create collision test
-	nd->collisionTest = deColliderCollisionTest::Ref::New();
-	nd->collisionTest->SetTouchSensor(touchSensor);
-	nd->collisionTest->SetCollisionFilter(collisionFilter);
-	nd->collisionTest->SetOrigin(origin);
-	nd->collisionTest->SetDirection(direction);
+	nd.collisionTest = deColliderCollisionTest::Ref::New();
+	nd.collisionTest->SetTouchSensor(touchSensor);
+	nd.collisionTest->SetCollisionFilter(collisionFilter);
+	nd.collisionTest->SetOrigin(origin);
+	nd.collisionTest->SetDirection(direction);
 }
 
 // public func new( TouchSensor touchSensor, CollisionFilter collisionFilter,
@@ -181,7 +182,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	// fetch parameters
@@ -202,13 +203,13 @@ void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *
 	}
 	
 	// create collision test
-	nd->collisionTest = deColliderCollisionTest::Ref::New();
-	nd->collisionTest->SetTouchSensor(touchSensor);
-	nd->collisionTest->SetCollisionFilter(collisionFilter);
-	nd->collisionTest->SetComponent(component);
-	nd->collisionTest->SetBone(bone);
-	nd->collisionTest->SetOrigin(origin);
-	nd->collisionTest->SetDirection(direction);
+	nd.collisionTest = deColliderCollisionTest::Ref::New();
+	nd.collisionTest->SetTouchSensor(touchSensor);
+	nd.collisionTest->SetCollisionFilter(collisionFilter);
+	nd.collisionTest->SetComponent(component);
+	nd.collisionTest->SetBone(bone);
+	nd.collisionTest->SetOrigin(origin);
+	nd.collisionTest->SetDirection(direction);
 }
 
 // public func destructor()
@@ -220,7 +221,7 @@ void deClassColliderCollisionTest::nfDestructor::RunFunction(dsRunTime *rt, dsVa
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sCCTNatDat*>(p_GetNativeData(myself))->~sCCTNatDat();
+	dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).~sCCTNatDat();
 }
 
 
@@ -233,7 +234,7 @@ deClassColliderCollisionTest::nfGetTouchSensor::nfGetTouchSensor(const sInitData
 "getTouchSensor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTS){
 }
 void deClassColliderCollisionTest::nfGetTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassTouchSensor()->PushTouchSensor(rt, collisionTest.GetTouchSensor());
@@ -245,7 +246,7 @@ deClassColliderCollisionTest::nfSetTouchSensor::nfSetTouchSensor(const sInitData
 	p_AddParameter(init.clsTS); // touchSensor
 }
 void deClassColliderCollisionTest::nfSetTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	deTouchSensor * const touchSensor = ds.GetClassTouchSensor()->GetTouchSensor(rt->GetValue(0)->GetRealObject());
@@ -269,7 +270,7 @@ deClassColliderCollisionTest::nfGetCollider::nfGetCollider(const sInitData &init
 "getCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
 void deClassColliderCollisionTest::nfGetCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassCollider()->PushCollider(rt, collisionTest.GetCollider());
@@ -281,7 +282,7 @@ deClassColliderCollisionTest::nfSetCollider::nfSetCollider(const sInitData &init
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassColliderCollisionTest::nfSetCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -303,7 +304,7 @@ deClassColliderCollisionTest::nfGetCollisionFilter::nfGetCollisionFilter(const s
 "getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
 void deClassColliderCollisionTest::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, collisionTest.GetCollisionFilter());
@@ -315,7 +316,7 @@ deClassColliderCollisionTest::nfSetCollisionFilter::nfSetCollisionFilter(const s
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassColliderCollisionTest::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter(rt->GetValue(0)->GetRealObject());
@@ -339,7 +340,7 @@ deClassColliderCollisionTest::nfGetComponent::nfGetComponent(const sInitData &in
 "getComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
 void deClassColliderCollisionTest::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassComponent()->PushComponent(rt, collisionTest.GetComponent());
@@ -351,7 +352,7 @@ deClassColliderCollisionTest::nfSetComponent::nfSetComponent(const sInitData &in
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassColliderCollisionTest::nfSetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(rt->GetValue(0)->GetRealObject());
@@ -373,7 +374,7 @@ deClassColliderCollisionTest::nfGetBone::nfGetBone(const sInitData &init) : dsFu
 "getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassColliderCollisionTest::nfGetBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	
 	rt->PushString(collisionTest.GetBone());
 }
@@ -384,7 +385,7 @@ deClassColliderCollisionTest::nfSetBone::nfSetBone(const sInitData &init) : dsFu
 	p_AddParameter(init.clsStr); // bone
 }
 void deClassColliderCollisionTest::nfSetBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	
 	const char * const bone = rt->GetValue(0)->GetString();
 	
@@ -405,7 +406,7 @@ deClassColliderCollisionTest::nfGetOrigin::nfGetOrigin(const sInitData &init) : 
 "getOrigin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassColliderCollisionTest::nfGetOrigin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassVector()->PushVector(rt, collisionTest.GetOrigin());
@@ -417,7 +418,7 @@ deClassColliderCollisionTest::nfSetOrigin::nfSetOrigin(const sInitData &init) : 
 	p_AddParameter(init.clsVec); // origin
 }
 void deClassColliderCollisionTest::nfSetOrigin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const decVector &origin = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
@@ -439,7 +440,7 @@ deClassColliderCollisionTest::nfGetOrientation::nfGetOrientation(const sInitData
 dsFunction(init.clsCCT, "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassColliderCollisionTest::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, collisionTest.GetOrientation());
@@ -451,7 +452,7 @@ dsFunction(init.clsCCT, "setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassColliderCollisionTest::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject());
@@ -473,7 +474,7 @@ deClassColliderCollisionTest::nfGetDirection::nfGetDirection(const sInitData &in
 "getDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassColliderCollisionTest::nfGetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassVector()->PushVector(rt, collisionTest.GetDirection());
@@ -485,7 +486,7 @@ deClassColliderCollisionTest::nfSetDirection::nfSetDirection(const sInitData &in
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassColliderCollisionTest::nfSetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
@@ -507,7 +508,7 @@ deClassColliderCollisionTest::nfGetLocalDirection::nfGetLocalDirection(const sIn
 "getLocalDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassColliderCollisionTest::nfGetLocalDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	
 	rt->PushBool(collisionTest.GetLocalDirection());
 }
@@ -518,7 +519,7 @@ deClassColliderCollisionTest::nfSetLocalDirection::nfSetLocalDirection(const sIn
 	p_AddParameter(init.clsBool); // localDirection
 }
 void deClassColliderCollisionTest::nfSetLocalDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	
 	const bool localDirection = rt->GetValue(0)->GetBool();
 	
@@ -539,7 +540,7 @@ deClassColliderCollisionTest::nfGetEnabled::nfGetEnabled(const sInitData &init) 
 "getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassColliderCollisionTest::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	
 	rt->PushBool(collisionTest.GetEnabled());
 }
@@ -550,7 +551,7 @@ deClassColliderCollisionTest::nfSetEnabled::nfSetEnabled(const sInitData &init) 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassColliderCollisionTest::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	
 	const bool enabled = rt->GetValue(0)->GetBool();
 	
@@ -573,7 +574,7 @@ deClassColliderCollisionTest::nfGetTestOrigin::nfGetTestOrigin(const sInitData &
 "getTestOrigin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassColliderCollisionTest::nfGetTestOrigin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassDVector()->PushDVector(rt, collisionTest.GetTestOrigin());
@@ -584,7 +585,7 @@ deClassColliderCollisionTest::nfGetTestOrientation::nfGetTestOrientation(const s
 dsFunction(init.clsCCT, "getTestOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassColliderCollisionTest::nfGetTestOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, collisionTest.GetTestOrientation());
@@ -595,7 +596,7 @@ deClassColliderCollisionTest::nfGetTestDirection::nfGetTestDirection(const sInit
 "getTestDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassColliderCollisionTest::nfGetTestDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassDVector()->PushDVector(rt, collisionTest.GetTestDirection());
@@ -609,7 +610,7 @@ dsFunction(init.clsCCT, "getHasCollision", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassColliderCollisionTest::nfGetHasCollision::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	rt->PushBool(collisionTest.GetCollisionInfo().GetCount() > 0);
 }
 
@@ -619,7 +620,7 @@ dsFunction(init.clsCCT, "getCollisionCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassColliderCollisionTest::nfGetCollisionCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	rt->PushInt(collisionTest.GetCollisionInfo().GetCount());
 }
 
@@ -630,7 +631,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCI){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfGetCollisionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -642,7 +643,7 @@ deClassColliderCollisionTest::nfReset::nfReset(const sInitData &init) : dsFuncti
 "reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderCollisionTest::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	collisionTest.RemoveAllCollisionInfo();
 }
 
@@ -655,7 +656,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const int index = rt->GetValue(0)->GetInt();
 	
 	rt->PushFloat(collisionTest.GetDirection().Length()
@@ -669,7 +670,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitPointCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -692,7 +693,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitPointWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -709,7 +710,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitNormalCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -730,7 +731,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitNormalWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(myself));
+	const sCCTNatDat &nd = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -744,7 +745,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	const deScriptingDragonScript &ds = ((static_cast<deClassColliderCollisionTest*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -757,7 +758,7 @@ dsFunction(init.clsCCT, "hitBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsInt); // index
 }
 void deClassColliderCollisionTest::nfHitBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deColliderCollisionTest &collisionTest = static_cast<sCCTNatDat*>(p_GetNativeData(myself))->collisionTest;
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
 	
 	const int index = rt->GetValue(0)->GetInt();
 	rt->PushInt(collisionTest.GetCollisionInfo().GetAt(index)->GetBone());
@@ -777,7 +778,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sCCTNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sCCTNatDat>());
 }
 
 deClassColliderCollisionTest::~deClassColliderCollisionTest(){
@@ -871,7 +872,7 @@ deColliderCollisionTest *deClassColliderCollisionTest::GetCollisionTest(dsRealOb
 		return nullptr;
 	}
 	
-	return static_cast<sCCTNatDat*>(p_GetNativeData(myself->GetBuffer()))->collisionTest;
+	return dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself->GetBuffer())).collisionTest;
 }
 
 void deClassColliderCollisionTest::PushCollisionTest(dsRunTime *rt,
@@ -886,16 +887,16 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCCTNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCCTNatDat;
-	nd->collisionTest = collisionTest;
-	nd->parentCollider = parentCollider;
+	sCCTNatDat &nd = dedsNewNativeData<sCCTNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	nd.collisionTest = collisionTest;
+	nd.parentCollider = parentCollider;
 }
 
 deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself) const{
 	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
-	return static_cast<sCCTNatDat*>(p_GetNativeData(myself->GetBuffer()))->parentCollider;
+	return dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself->GetBuffer())).parentCollider;
 }
 
 void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider *collider) const{
@@ -903,5 +904,5 @@ void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCol
 		DSTHROW(dueNullPointer);
 	}
 	
-	static_cast<sCCTNatDat*>(p_GetNativeData(myself->GetBuffer()))->parentCollider = collider;
+	dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself->GetBuffer())).parentCollider = collider;
 }

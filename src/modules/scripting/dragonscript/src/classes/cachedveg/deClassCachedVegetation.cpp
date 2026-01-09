@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "deClassCachedVegetation.h"
+#include "../dedsHelpers.h"
 #include "../math/deClassPoint.h"
 #include "../physics/deClassCollisionFilter.h"
 #include "../world/deClassWorld.h"
@@ -573,14 +574,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // propfieldCellCount
 }
 void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCVegNatDat * const nd = new (p_GetNativeData(myself)) sCVegNatDat;
+	sCVegNatDat &nd = dedsNewNativeData<sCVegNatDat>(p_GetNativeData(myself));
 	
 	deClassCachedVegetation * const clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
 	float sectorDim = rt->GetValue(0)->GetFloat();
 	int propfieldCellCount = rt->GetValue(1)->GetInt();
-	nd->cveg = dedsCachedVegetation::Ref::New(engine, sectorDim, propfieldCellCount);
+	nd.cveg = dedsCachedVegetation::Ref::New(engine, sectorDim, propfieldCellCount);
 }
 
 // public func destructor()
@@ -592,7 +593,7 @@ void deClassCachedVegetation::nfDestructor::RunFunction(dsRunTime *rt, dsValue *
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<dedsCachedVegetationInstance*>(p_GetNativeData(myself))->~dedsCachedVegetationInstance();
+	dedsGetNativeData<dedsCachedVegetationInstance>(p_GetNativeData(myself)).~dedsCachedVegetationInstance();
 }
 
 
@@ -606,7 +607,7 @@ deClassCachedVegetation::nfSetCollisionFilter::nfSetCollisionFilter(const sInitD
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCachedVegetation::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	const deClassCollisionFilter &clsCF = *clsCVeg->GetDS()->GetClassCollisionFilter();
 	
@@ -623,7 +624,7 @@ deClassCachedVegetation::nfHasSector::nfHasSector(const sInitData &init) : dsFun
 	p_AddParameter(init.clsPt); // coordinates
 }
 void deClassCachedVegetation::nfHasSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
@@ -641,7 +642,7 @@ deClassCachedVegetation::nfAddSector::nfAddSector(const sInitData &init) : dsFun
 	p_AddParameter(init.clsStr); // cacheFile
 }
 void deClassCachedVegetation::nfAddSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
@@ -660,7 +661,7 @@ deClassCachedVegetation::nfRemoveSector::nfRemoveSector(const sInitData &init) :
 	p_AddParameter(init.clsPt); // coordinates
 }
 void deClassCachedVegetation::nfRemoveSector::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
@@ -676,7 +677,7 @@ deClassCachedVegetation::nfRemoveAllSectors::nfRemoveAllSectors(const sInitData 
 "removeAllSectors", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCachedVegetation::nfRemoveAllSectors::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	
 	cveg->RemoveAllSectors();
 }
@@ -689,7 +690,7 @@ deClassCachedVegetation::nfSetWorld::nfSetWorld(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsWorld); // world
 }
 void deClassCachedVegetation::nfSetWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	const deClassWorld *clsWorld = clsCVeg->GetDS()->GetClassWorld();
 	
@@ -706,7 +707,7 @@ dsFunction(init.clsCVeg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassCachedVegetation::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	
 	rt->PushInt((int)(intptr_t)cveg);
 }
@@ -717,7 +718,7 @@ dsFunction(init.clsCVeg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCachedVegetation *cveg = static_cast<sCVegNatDat*>(p_GetNativeData(myself))->cveg;
+	const dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
@@ -725,7 +726,7 @@ void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myse
 		rt->PushBool(false);
 		
 	}else{
-		const dedsCachedVegetation *other = static_cast<sCVegNatDat*>(p_GetNativeData(obj))->cveg;
+		const dedsCachedVegetation *other = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(obj)).cveg;
 		
 		rt->PushBool(cveg == other);
 	}
@@ -749,7 +750,7 @@ dsClass("CachedVegetation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sCVegNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sCVegNatDat>());
 }
 
 deClassCachedVegetation::~deClassCachedVegetation(){

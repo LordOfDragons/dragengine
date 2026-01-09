@@ -44,6 +44,7 @@
 #include "rules/deClassARLimit.h"
 #include "rules/deClassARGroup.h"
 #include "rules/deClassARMirror.h"
+#include "../dedsHelpers.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -85,7 +86,7 @@ deClassAnimatorRule::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsAr
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorRule::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sArRNatDat;
+	dedsNewNativeData<sArRNatDat>(p_GetNativeData(myself));
 }
 
 // public func destructor()
@@ -97,7 +98,7 @@ void deClassAnimatorRule::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myse
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sArRNatDat*>(p_GetNativeData(myself))->~sArRNatDat();
+	dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself)).~sArRNatDat();
 }
 
 
@@ -108,7 +109,7 @@ deClassAnimatorRule::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassAnimatorRule::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	const bool enabled = rt->GetValue(0)->GetBool();
 	
 	if(!nd.rule){
@@ -132,7 +133,7 @@ deClassAnimatorRule::nfSetBlendMode::nfSetBlendMode(const sInitData &init) : dsF
 	p_AddParameter(init.clsAnimatorRuleBlendMode); // blendMode
 }
 void deClassAnimatorRule::nfSetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule || !rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
@@ -153,7 +154,7 @@ deClassAnimatorRule::nfSetBlendFactor::nfSetBlendFactor(const sInitData &init) :
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassAnimatorRule::nfSetBlendFactor::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -172,7 +173,7 @@ dsFunction(init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsBool); // invertBlendFactor
 }
 void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	const sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -193,7 +194,7 @@ deClassAnimatorRule::nfAddBone::nfAddBone(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsStr); // boneName
 }
 void deClassAnimatorRule::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -211,7 +212,7 @@ deClassAnimatorRule::nfRemoveAllBones::nfRemoveAllBones(const sInitData &init) :
 "removeAllBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorRule::nfRemoveAllBones::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -230,7 +231,7 @@ deClassAnimatorRule::nfCopyBonesFrom::nfCopyBonesFrom(const sInitData &init) : d
 	p_AddParameter(init.clsArR); // rule
 }
 void deClassAnimatorRule::nfCopyBonesFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	deClassAnimatorRule &clsArR = *static_cast<deClassAnimatorRule*>(GetOwnerClass());
 	
 	if(!nd.rule){
@@ -257,7 +258,7 @@ dsFunction(init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimatorRule::nfAddVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -275,7 +276,7 @@ deClassAnimatorRule::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSet
 dsFunction(init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorRule::nfRemoveAllVertexPositionSets::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	
 	if(!nd.rule){
 		DSTHROW(dueNullPointer);
@@ -294,7 +295,7 @@ dsFunction(init.clsArR, "copyVertexPositionSetsFrom", DSFT_FUNCTION, DSTM_PUBLIC
 	p_AddParameter(init.clsArR); // rule
 }
 void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArRNatDat &nd = *static_cast<sArRNatDat*>(p_GetNativeData(myself));
+	sArRNatDat &nd = dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself));
 	deClassAnimatorRule &clsArR = *static_cast<deClassAnimatorRule*>(GetOwnerClass());
 	
 	if(!nd.rule){
@@ -327,7 +328,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sArRNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sArRNatDat>());
 }
 
 deClassAnimatorRule::~deClassAnimatorRule(){
@@ -377,7 +378,7 @@ deAnimatorRule *deClassAnimatorRule::GetRule(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return static_cast<sArRNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
+	return dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself->GetBuffer())).rule;
 }
 
 void deClassAnimatorRule::AssignRule(dsRealObject *myself, deAnimatorRule *rule){
@@ -385,7 +386,7 @@ void deClassAnimatorRule::AssignRule(dsRealObject *myself, deAnimatorRule *rule)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	static_cast<sArRNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule = rule;
+	dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself->GetBuffer())).rule = rule;
 }
 
 void deClassAnimatorRule::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -393,7 +394,7 @@ void deClassAnimatorRule::AssignAnimator(dsRealObject *myself, deAnimator *anima
 		DSTHROW(dueInvalidParam);
 	}
 	
-	static_cast<sArRNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
+	dedsGetNativeData<sArRNatDat>(p_GetNativeData(myself->GetBuffer())).animator = animator;
 }
 
 void deClassAnimatorRule::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule){

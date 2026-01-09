@@ -29,6 +29,7 @@
 #include "deClassService.h"
 #include "deClassServiceListener.h"
 #include "deClassServiceObject.h"
+#include "../dedsHelpers.h"
 #include "../utils/deClassUniqueID.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -65,13 +66,13 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
+	sServiceNatDat &nd = dedsNewNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	
 	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	
 	const char * const name = rt->GetValue(0)->GetString();
 	DS_WITH_ENGEX(ds,
-		nd->service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, {});
+		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, {});
 )
 }
 
@@ -84,7 +85,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
+	sServiceNatDat &nd = dedsNewNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	
 	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	
@@ -93,7 +94,7 @@ void deClassService::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->GetValue(1)->GetRealObject()));
 	
 	DS_WITH_ENGEX(ds,
-		nd->service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, data);
+		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, data);
 )
 }
 
@@ -108,7 +109,7 @@ void deClassService::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sServiceNatDat*>(p_GetNativeData(myself))->~sServiceNatDat();
+	dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself)).~sServiceNatDat();
 }
 
 
@@ -123,7 +124,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 
 void deClassService::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -139,7 +140,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceListener){
 }
 
 void deClassService::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -164,7 +165,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -196,7 +197,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfStartRequest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -224,7 +225,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfStartRequest2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -253,7 +254,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfCancelRequest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -276,7 +277,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassService::nfRunAction::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -303,7 +304,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
 void deClassService::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -320,7 +321,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 
 void deClassService::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sServiceNatDat &nd = *static_cast<sServiceNatDat*>(p_GetNativeData(myself));
+	const sServiceNatDat &nd = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself));
 	if(!nd.service){
 		DSTHROW(dueNullPointer);
 	}
@@ -332,7 +333,7 @@ void deClassService::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deService * const other = static_cast<sServiceNatDat*>(p_GetNativeData(obj))->service;
+		const deService * const other = dedsGetNativeData<sServiceNatDat>(p_GetNativeData(obj)).service;
 		rt->PushBool(nd.service == other);
 	}
 }
@@ -352,7 +353,7 @@ pNextId(1)
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sServiceNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sServiceNatDat>());
 }
 
 deClassService::~deClassService(){
@@ -401,7 +402,7 @@ deService *deClassService::GetService(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return static_cast<sServiceNatDat*>(p_GetNativeData(myself->GetBuffer()))->service;
+	return dedsGetNativeData<sServiceNatDat>(p_GetNativeData(myself->GetBuffer())).service;
 }
 
 void deClassService::PushService(dsRunTime *rt, deService *service){
@@ -415,7 +416,7 @@ void deClassService::PushService(dsRunTime *rt, deService *service){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sServiceNatDat)->service = service;
+	dedsNewNativeData<sServiceNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).service = service;
 }
 
 decUniqueID deClassService::NextId(){

@@ -34,6 +34,7 @@
 #include "deClassEffectDistortImage.h"
 #include "deClassEffectFilterKernel.h"
 #include "deClassEffectOverlayImage.h"
+#include "../dedsHelpers.h"
 #include "../graphics/deClassImage.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -64,7 +65,7 @@ deClassEffect::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsEffect,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffect::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	new (p_GetNativeData(myself)) sEffNatDat;
+	dedsNewNativeData<sEffNatDat>(p_GetNativeData(myself));
 }
 
 // public func destructor()
@@ -76,7 +77,7 @@ void deClassEffect::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sEffNatDat*>(p_GetNativeData(myself))->~sEffNatDat();
+	dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself)).~sEffNatDat();
 }
 
 
@@ -89,7 +90,7 @@ deClassEffect::nfGetEnabled::nfGetEnabled(const sInitData &init) : dsFunction(in
 "getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassEffect::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffNatDat &nd = *static_cast<sEffNatDat*>(p_GetNativeData(myself));
+	const sEffNatDat &nd = dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself));
 	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
@@ -103,7 +104,7 @@ deClassEffect::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassEffect::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffNatDat &nd = *static_cast<sEffNatDat*>(p_GetNativeData(myself));
+	const sEffNatDat &nd = dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself));
 	if(!nd.effect){
 		DSTHROW(dueNullPointer);
 	}
@@ -119,7 +120,7 @@ dsFunction(init.clsEffect, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 }
 
 void deClassEffect::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffect * const effect = static_cast<sEffNatDat*>(p_GetNativeData(myself))->effect;
+	deEffect * const effect = dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself)).effect;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)effect);
 }
@@ -130,7 +131,7 @@ dsFunction(init.clsEffect, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deEffect * const effect = static_cast<sEffNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffect * const effect = dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself)).effect;
 	deClassEffect * const clsEffect = static_cast<deClassEffect*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -138,7 +139,7 @@ void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const deEffect * const otherEffect = static_cast<sEffNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffect * const otherEffect = dedsGetNativeData<sEffNatDat>(p_GetNativeData(obj)).effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -157,7 +158,7 @@ pDS(ds){
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize(sizeof(sEffNatDat));
+	p_SetNativeDataSize(dedsNativeDataSize<sEffNatDat>());
 }
 deClassEffect::~deClassEffect(){
 }
@@ -200,7 +201,7 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	static_cast<sEffNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect = effect;
+	dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself->GetBuffer())).effect = effect;
 }
 
 
@@ -210,7 +211,7 @@ deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
 		return nullptr;
 	}
 	
-	return static_cast<sEffNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
+	return dedsGetNativeData<sEffNatDat>(p_GetNativeData(myself->GetBuffer())).effect;
 }
 
 void deClassEffect::PushEffect(dsRunTime *rt, deEffect *effect){
