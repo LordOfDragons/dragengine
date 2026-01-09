@@ -158,7 +158,9 @@ void deoglShaderCompilerThread::pCleanUp(){
 
 void deoglShaderCompilerThread::pActivateContext(){
 	if(pContextIndex > -1){
-#ifndef OS_BEOS
+#ifdef OS_WEBWASM
+		deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
+#elif ! defined OS_BEOS
 		const deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
 #endif
 		

@@ -245,9 +245,11 @@ bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
 //////////////////////
 
 void deoglLoaderThread::pInit(){
-	#ifndef OS_BEOS
+#ifdef OS_WEBWASM
 	deoglRTContext &context = pRenderThread.GetContext();
-	#endif
+#elif ! defined OS_BEOS
+	const deoglRTContext &context = pRenderThread.GetContext();
+#endif
 	
 	#ifdef OS_UNIX_X11
 	OGLX_CHECK(pRenderThread, glXMakeCurrent(context.GetDisplay(),
