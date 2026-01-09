@@ -45,7 +45,7 @@ deoglSkinStateCNImage::deoglSkinStateCNImage(deSkinPropertyNodeImage &node) :
 deoglSkinStateConstructedNode(node, etImage),
 pSyncImage(node.GetImage()),
 pImage(pSyncImage && pSyncImage->GetPeerGraphic()
-	? ((deoglImage*)pSyncImage->GetPeerGraphic())->GetRImage() : nullptr),
+	? ((deoglImage*)pSyncImage->GetPeerGraphic())->GetRImage().Pointer() : nullptr),
 pRepeat(node.GetRepeat()),
 pDirtyTCTransform(true){
 }

@@ -42,7 +42,7 @@ seUPropertySetMappedComponent::seUPropertySetMappedComponent(
 	seProperty *property, int index, seMapped *newValue) :
 
 pIndex(index),
-pOldValue(property ? property->GetMappedComponent(index) : nullptr),
+pOldValue(property ? property->GetMappedComponent(index).Pointer() : nullptr),
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(property)

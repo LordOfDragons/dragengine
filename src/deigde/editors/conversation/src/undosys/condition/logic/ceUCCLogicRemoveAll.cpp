@@ -69,7 +69,7 @@ void ceUCCLogicRemoveAll::Undo(){
 	pLogic->GetConditions() = pConditions;
 	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive(pAction, pConditions.IsNotEmpty() ? pConditions.First() : nullptr);
+	pTopic->SetActive(pAction, pConditions.IsNotEmpty() ? pConditions.First().Pointer() : nullptr);
 }
 
 void ceUCCLogicRemoveAll::Redo(){

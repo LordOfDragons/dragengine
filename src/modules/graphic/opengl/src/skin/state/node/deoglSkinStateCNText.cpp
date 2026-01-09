@@ -43,7 +43,7 @@
 deoglSkinStateCNText::deoglSkinStateCNText(deSkinPropertyNodeText &node) :
 deoglSkinStateConstructedNode(node, etText),
 pFont(node.GetFont() && node.GetFont()->GetPeerGraphic()
-	? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetRFont() : nullptr),
+	? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetRFont().Pointer() : nullptr),
 pFontSize(pFont ? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetFontSizeFor(
 	(int)(node.GetFontSize() + 0.5f)) : nullptr),
 pTextSize(node.GetFontSize()),

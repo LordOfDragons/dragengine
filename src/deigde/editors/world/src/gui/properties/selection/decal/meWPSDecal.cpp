@@ -224,7 +224,7 @@ public:
 		const int index = textField->GetValue();
 		
 		selection.SetActive(index >= 0 && index <= selection.GetSelected().GetCount()
-			? selection.GetSelected().GetAt(index) : nullptr);
+			? selection.GetSelected().GetAt(index).Pointer() : nullptr);
 		
 		pPanel.GetWorld()->NotifyDecalSelectionChanged();
 	}

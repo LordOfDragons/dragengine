@@ -109,7 +109,8 @@ public:
 		const meObjectShape::List &shapeList = selection.GetSelected();
 		const int index = textField->GetValue();
 		
-		selection.SetActive(index >= 0 && index <= shapeList.GetCount() ? shapeList.GetAt(index) : nullptr);
+		selection.SetActive(index >= 0 && index <= shapeList.GetCount()
+			? shapeList.GetAt(index).Pointer() : nullptr);
 		
 		pPanel.GetWorld()->NotifyObjectShapeSelectionChanged();
 	}

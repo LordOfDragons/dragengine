@@ -930,7 +930,7 @@ meHeightTerrainTexture *meHeightTerrainSector::GetTextureUnder(float x, float y)
 		return false;
 	});
 	
-	return htt ? htt : (pTextures.IsNotEmpty() ? pTextures.First() : nullptr);
+	return htt ? htt : (pTextures.IsNotEmpty() ? pTextures.First().Pointer() : nullptr);
 }
 
 
