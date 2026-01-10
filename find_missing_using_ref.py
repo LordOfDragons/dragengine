@@ -137,6 +137,11 @@ class RefDeclarationScanner:
                 if class_name in ('std', 'boost', 'decString'):
                     continue
                 
+                # Skip classes from external libraries (prefixed with 'derl' for deremotelauncher)
+                # These are external dependencies with their own type definitions
+                if class_name.startswith('derl'):
+                    continue
+                
                 # Check both global index and local file declarations
                 if class_name not in self.classes_with_ref and class_name not in local_classes_with_ref:
                     violations.append((line_num, class_name, line.rstrip()))
