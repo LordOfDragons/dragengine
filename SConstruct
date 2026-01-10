@@ -752,6 +752,8 @@ parent_env.Append(CPPFLAGS = ['-Wall'])
 
 parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 
+# parent_env.Append(CPPFLAGS = ['-Wextra'])
+
 # disable the new (and truely stupid) new gcc 8.1 shenanigans.
 # see https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Wclass-memaccess .
 # the idea behind all this is all nice and dandy but it prevents legit fast memory handling

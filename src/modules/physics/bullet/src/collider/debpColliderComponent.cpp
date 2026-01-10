@@ -2648,7 +2648,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 						? visitor.CastToComponent().GetComponent().Pointer()
 						: (deComponent*)&attachedResource;
 					const deModel * const attachedModel = attachedComponent
-						? attachedComponent->GetModel() : nullptr;
+						? attachedComponent->GetModel().Pointer() : nullptr;
 					
 					if(!attachedComponent || !attachedModel){
 						bpAttachment.Reposition(posMatrix, pLinVelo, !pPreventAttNotify); // fall back to static
