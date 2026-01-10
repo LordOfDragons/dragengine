@@ -199,7 +199,7 @@ jobs:
       
       - name: Run Low Level Tests
         run: |
-          cp ./src/dragengine/build/libdragengine*.so* ./src/tests/build
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`realpath ./src/dragengine/build`
           ./src/tests/build/detests
         
       - name: Get current date
