@@ -680,10 +680,12 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		pTasksRunningTraceSoundRays.Visit([](deoalRTPTTraceSoundRays *t){
-			t->Cancel();
+		GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing().RunWithTaskDependencyMutex([&]{
+			pTasksRunningTraceSoundRays.Visit([](deoalRTPTTraceSoundRays *t){
+				t->UnprotectedCancel();
+			});
+			task.UnprotectedCancel();
 		});
-		task.Cancel();
 		throw;
 	}
 	
@@ -779,10 +781,12 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		pTasksRunningListen.Visit([](deoalRTPTListen *t){
-			t->Cancel();
+		GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing().RunWithTaskDependencyMutex([&]{
+			pTasksRunningListen.Visit([](deoalRTPTListen *t){
+				t->UnprotectedCancel();
+			});
+			task.UnprotectedCancel();
 		});
-		task.Cancel();
 		throw;
 	}
 	
@@ -974,10 +978,12 @@ const deoalRayTraceConfig &probeConfig){
 	}catch(const deException &){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = nullptr;
-		pTasksRunningRoomEstimate.Visit([](deoalRTPTRoomEstimate *t){
-			t->Cancel();
+		GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing().RunWithTaskDependencyMutex([&]{
+			pTasksRunningRoomEstimate.Visit([](deoalRTPTRoomEstimate *t){
+				t->UnprotectedCancel();
+			});
+			task.UnprotectedCancel();
 		});
-		task.Cancel();
 		throw;
 	}
 	
@@ -1006,9 +1012,11 @@ decTOrderedSet<T*> &tasks, int count, decTOrderedSet<T*> &running){
 		}
 		
 	}catch(const deException &){
-		running.Visit([](T * const task){
-			task->Cancel();
-		}, firstRunning);
+		GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing().RunWithTaskDependencyMutex([&]{
+			running.Visit([](T * const task){
+				task->UnprotectedCancel();
+			}, firstRunning);
+		});
 		throw;
 	}
 }

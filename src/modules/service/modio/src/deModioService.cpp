@@ -41,6 +41,7 @@
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/deFileResource.h>
 #include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
 #include <dragengine/resources/service/deServiceManager.h>
@@ -1239,7 +1240,7 @@ public:
 			break;
 			
 		default:
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 		}
 	}
 	
@@ -1247,7 +1248,7 @@ public:
 	
 	void Finished() override{
 		if(pInvalidator->invalidated){
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			return;
 		}
 		
@@ -1267,22 +1268,24 @@ public:
 	
 private:
 	void pLoadImage(){
-		pTaskLoadResource = pService.GetModule().GetGameEngine()->GetResourceLoader()->
-			AddLoadRequest(pService.GetVFS(), pPath, deResourceLoader::ertImage);
-		deResourceLoaderTask * const rlt = (deResourceLoaderTask*)(deThreadSafeObject*)pTaskLoadResource;
+		deEngine &engine = *pService.GetModule().GetGameEngine();
+		pTaskLoadResource = engine.GetResourceLoader()->AddLoadRequest(
+			pService.GetVFS(), pPath, deResourceLoader::ertImage);
 		
-		switch(rlt->GetState()){
+		switch(pTaskLoadResource->GetState()){
 		case deResourceLoaderTask::esPending:
-			if(!GetDependsOn().Has(rlt)){
-				AddDependsOn(rlt);
-			}
+			engine.GetParallelProcessing().RunWithTaskDependencyMutex([&]{
+				if(!GetDependsOn().Has(pTaskLoadResource)){
+					AddDependsOn(pTaskLoadResource);
+				}
+			});
 			break;
 			
 		case deResourceLoaderTask::esSucceeded:
 			break;
 			
 		case deResourceLoaderTask::esFailed:
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			break;
 		}
 	}

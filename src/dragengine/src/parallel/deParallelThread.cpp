@@ -131,7 +131,7 @@ void deParallelThread::Run(){
 					"Thread %i: Task failed [%s] %s.\n", pNumber,
 					debugName.GetString(), debugDetails.GetString());
 				pParallelProcessing.GetEngine().GetLogger()->LogException(LOGSOURCE, exception);
-				pTask->Cancel();  // tell task it failed
+				pTask->Cancel(pParallelProcessing); // tell task it failed
 			}
 			
 			// send the finished task back

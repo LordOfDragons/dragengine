@@ -28,6 +28,7 @@
 
 #include "deParallelTask.h"
 #include "deParallelThread.h"
+#include "deParallelProcessing.h"
 #include "../common/exceptions.h"
 
 
@@ -67,20 +68,9 @@ void deParallelTask::SetLowPriority(bool lowPriority){
 	pLowPriority = lowPriority;
 }
 
-void deParallelTask::Cancel(){
-	if(pCancel || pFinished){
-		return;
-	}
-	
-	pCancel = true;
-	
-	const int count = pDependedOnBy.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pDependedOnBy.GetAt(i)->Cancel();
-	}
-	
-	Cancelled();
+void deParallelTask::Cancel(deParallelProcessing &parallel){
+	const deMutexGuard lock(parallel.GetTaskDependencyMutex());
+	UnprotectedCancel();
 }
 
 void deParallelTask::SetFinished(){
@@ -138,20 +128,15 @@ void deParallelTask::RemoveFromAllDependedOnTasks(){
 	}
 }
 
-bool deParallelTask::CanRun() const{
+bool deParallelTask::CanRun(deParallelProcessing &parallel) const{
 	if(IsCancelled()){
 		return false;
 	}
 	
-	const int count = pDependsOn.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(!pDependsOn.GetAt(i)->GetFinished()){
-			return false;
-		}
-	}
-	
-	return true;
+	const deMutexGuard lock(parallel.GetTaskDependencyMutex());
+	return pDependsOn.AllMatching([](const deParallelTask *task){
+		return task->GetFinished();
+	});
 }
 
 void deParallelTask::Reset(){
@@ -197,3 +182,18 @@ void deParallelTask::VerifyDependsOn(){
 	}
 }
 */
+
+
+void deParallelTask::UnprotectedCancel(){
+	if(pCancel || pFinished){
+		return;
+	}
+	
+	pCancel = true;
+	
+	pDependedOnBy.Visit([](deParallelTask *task){
+		task->UnprotectedCancel();
+	});
+	
+	Cancelled();
+}

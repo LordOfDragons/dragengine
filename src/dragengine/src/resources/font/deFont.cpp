@@ -57,7 +57,7 @@ public:
 protected:
 	~cFontSize() override{
 		if(pSize && pSize->GetTaskLoad()){
-			pSize->GetTaskLoad()->Cancel();
+			pSize->GetTaskLoad()->Cancel(pFont.GetEngine()->GetParallelProcessing());
 			pFont.GetEngine()->GetParallelProcessing().WaitForTask(pSize->GetTaskLoad());
 			pSize->SetTaskLoad(nullptr);
 		}

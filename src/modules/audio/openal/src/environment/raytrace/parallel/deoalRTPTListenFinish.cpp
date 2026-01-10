@@ -39,6 +39,8 @@
 #include "../../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/deEngine.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 
 
 
@@ -95,7 +97,7 @@ void deoalRTPTListenFinish::Run(){
 		pRun();
 		
 	}catch(...){
-		Cancel();
+		Cancel(pOwner.GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing());
 		pOwner.FinishTaskFinished(this);
 		throw;
 	}

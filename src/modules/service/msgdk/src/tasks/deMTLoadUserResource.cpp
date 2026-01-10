@@ -63,7 +63,7 @@ public:
 			break;
 			
 		case deResourceLoaderTask::esFailed:
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			break;
 		}
 	}
@@ -76,7 +76,7 @@ public:
 	{
 		if(!pInvalidator->IsValid())
 		{
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			return;
 		}
 		

@@ -133,7 +133,9 @@ void deRLTaskReadFontInternal::Finished(){
 			
 			switch(pInternalTask->GetState()){
 			case esPending:
-				pParentTask->AddDependsOn(pInternalTask);
+				engine.GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+					pParentTask->AddDependsOn(pInternalTask);
+				});
 				engine.GetParallelProcessing().AddTask(pInternalTask);
 				break;
 				

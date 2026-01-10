@@ -195,16 +195,18 @@ void dearAnimatorInstance::pStartTaskApplyRules(){
 		// if we are the first task on the component update the arcomponent. if not set
 		// component animator task. also make the task to depend on the previous set task.
 		// this allows to properly do chained animator instances.
+		deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
 		deComponent &component = pComponent->GetComponent();
 		if(component.GetAnimatorTask()){
-			task->AddDependsOn(component.GetAnimatorTask());
+			parallelProcessing.RunWithTaskDependencyMutex([&](){
+				task->AddDependsOn(component.GetAnimatorTask());
+			});
 			
 		}else{
 			pComponent->UpdateFromComponent();
 		}
 		
 		// dispatch task
-		deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
 		parallelProcessing.AddTask(task);
 		pActiveTaskApplyRule = task;
 		if(parallelProcessing.GetOutputDebugMessages()){
@@ -832,7 +834,7 @@ void dearAnimatorInstance::pCancelTaskApplyRules(){
 		pModule.LogInfoFormat("Cancel task %p (instance=%p component=%p list=%d)",
 			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount());
 	}
-	pActiveTaskApplyRule->Cancel();
+	pActiveTaskApplyRule->Cancel(pModule.GetGameEngine()->GetParallelProcessing());
 	
 	pWaitTaskApplyRules();
 }

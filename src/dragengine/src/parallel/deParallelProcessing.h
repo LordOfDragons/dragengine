@@ -28,6 +28,7 @@
 #include "deParallelTask.h"
 #include "../common/string/decStringList.h"
 #include "../threading/deMutex.h"
+#include "../threading/deMutexGuard.h"
 #include "../threading/deSemaphore.h"
 
 class deParallelThread;
@@ -51,7 +52,7 @@ private:
 	deParallelTask::TaskPointerList pListPendingTasks;
 	deParallelTask::TaskPointerList pListPendingTasksLowPriority;
 	deParallelTask::TaskPointerList pListFinishedTasks;
-	deMutex pMutexTasks;
+	deMutex pMutexTasks, pMutexTaskDependency;
 	deSemaphore pSemaphoreNewTasks;
 	
 	bool pOutputDebugMessages;
@@ -186,6 +187,17 @@ public:
 	 * since it stays in the list of finished tasks until finished.
 	 */
 	void FinishAndRemoveAllTasks();
+	
+	
+	/** \brief Mutex for task dependency management. */
+	inline deMutex &GetTaskDependencyMutex(){ return pMutexTaskDependency; }
+	
+	/** \brief Run function while holding the task dependency mutex. */
+	template<typename FuncType>
+	inline auto RunWithTaskDependencyMutex(FuncType func) -> decltype(func()){
+		const deMutexGuard lock(pMutexTaskDependency);
+		return func();
+	}
 	/*@}*/
 	
 	

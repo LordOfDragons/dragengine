@@ -287,8 +287,10 @@ void deResourceLoader::RemoveAllTasks(){
 		pEngine.GetLogger()->LogInfo(LOGSOURCE, "Stop tasks in progress and clear all tasks");
 	}
 	
-	pPendingTasks.Visit([](deResourceLoaderTask *task){
-		task->Cancel();
+	pEngine.GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+		pPendingTasks.Visit([](deResourceLoaderTask *task){
+			task->UnprotectedCancel();
+		});
 	});
 	
 	const bool resumeParallel = !pEngine.GetParallelProcessing().GetPaused();

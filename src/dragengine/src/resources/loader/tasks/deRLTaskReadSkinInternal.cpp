@@ -151,7 +151,7 @@ deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertSki
 		//throw;
 		
 		SetState(esFailed);
-		Cancel();
+		Cancel(engine.GetParallelProcessing());
 	}
 	LogCreateExit();
 }
@@ -204,7 +204,9 @@ void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
 	
 	switch(task->GetTask()->GetState()){
 	case esPending:
-		AddDependsOn(task->GetTask());
+		GetEngine().GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+			AddDependsOn(task->GetTask());
+		});
 		break;
 		
 	case esSucceeded:
@@ -212,7 +214,7 @@ void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
 		
 	case esFailed:
 		SetState(esFailed);
-		Cancel();
+		Cancel(GetEngine().GetParallelProcessing());
 		break;
 	}
 }
@@ -255,7 +257,7 @@ void deRLTaskReadSkinInternal::pPrepare(){
 	}catch(const deException &){
 		SetState(esFailed);
 		pSkin = NULL;
-		Cancel();
+		Cancel(GetEngine().GetParallelProcessing());
 		return;
 	}
 	

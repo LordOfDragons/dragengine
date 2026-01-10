@@ -881,8 +881,8 @@ void deComponent::SetLLWorldNext(deComponent *component){
 
 void deComponent::pCleanUp(){
 	if(pAnimatorTask){
-		pAnimatorTask->Cancel();
-		pAnimatorTask = NULL;
+		pAnimatorTask->Cancel(GetEngine()->GetParallelProcessing());
+		pAnimatorTask = nullptr;
 	}
 	
 	SetPeerAudio(NULL);
@@ -965,8 +965,8 @@ void deComponent::pChangeModel(deModel *model){
 void deComponent::pChangeRig(deRig *rig){
 	// if an animator task is pending cancel it since the result would be wrong anyways
 	if(pAnimatorTask){
-		pAnimatorTask->Cancel();
-		pAnimatorTask = NULL;
+		pAnimatorTask->Cancel(GetEngine()->GetParallelProcessing());
+		pAnimatorTask = nullptr;
 	}
 	
 	// create new bones array

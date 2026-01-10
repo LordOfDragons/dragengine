@@ -36,6 +36,7 @@
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
+#include "../../../parallel/deParallelProcessing.h"
 #include "../../../systems/deModuleSystem.h"
 #include "../../../systems/modules/deLoadableModule.h"
 #include "../../../systems/modules/font/deBaseFontModule.h"
@@ -69,11 +70,11 @@ pAlreadyLoaded(false)
 	SetEmptyRun(true);
 	
 	try{
-		pLoadFontResources();
+		pLoadFontResources(engine);
 		
 	}catch(const deException &){
 		SetState(esFailed);
-		Cancel();
+		Cancel(engine.GetParallelProcessing());
 	}
 	
 	LogCreateExit();
@@ -134,7 +135,7 @@ decString deRLTaskReadFontInternal2::GetDebugName() const{
 // Private Functions
 //////////////////////
 
-void deRLTaskReadFontInternal2::pLoadFontResources(){
+void deRLTaskReadFontInternal2::pLoadFontResources(deEngine &engine){
 	decPath basePath(decPath::CreatePathUnix(pFont->GetFilename()));
 	basePath.RemoveLastComponent();
 	
@@ -152,8 +153,12 @@ void deRLTaskReadFontInternal2::pLoadFontResources(){
 			
 			pTaskImage = GetResourceLoader().AddLoadRequest(GetVFS(), path, deResourceLoader::ertImage);
 			
-			if(pTaskImage->GetState() == esPending && !GetDependsOn().Has(pTaskImage)){
-				AddDependsOn(pTaskImage);
+			if(pTaskImage->GetState() == esPending){
+				engine.GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+					if(!GetDependsOn().Has(pTaskImage)){
+						AddDependsOn(pTaskImage);
+					}
+				});
 			}
 		}
 	}

@@ -84,7 +84,7 @@ public:
 	
 	
 private:
-	void pLoadFontResources();
+	void pLoadFontResources(deEngine &engine);
 };
 
 #endif

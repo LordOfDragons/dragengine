@@ -31,6 +31,7 @@
 
 class deLogger;
 class deBaseModule;
+class deParallelProcessing;
 
 
 /**
@@ -151,8 +152,10 @@ public:
 	 * 
 	 * Call from the main thread to cancel a task. A cancelled task does not
 	 * call Finished() or Run() if still pending.
+	 * 
+	 * \note Locks deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	void Cancel();
+	void Cancel(deParallelProcessing &parallel);
 	
 	/** \brief Task is finished. */
 	inline bool GetFinished() const{ return pFinished; }
@@ -166,8 +169,7 @@ public:
 	
 	/**
 	 * \brief List of tasks this task is depending on.
-	 * 
-	 * Used by deParallelProcessing only.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	inline const TaskList &GetDependsOn() const{ return pDependsOn; }
 	
@@ -176,6 +178,7 @@ public:
 	 * \throws deeInvalidParam \em task is NULL.
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has been already added.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	void AddDependsOn(deParallelTask *task);
 	
@@ -184,32 +187,35 @@ public:
 	 * \throws deeInvalidParam \em task is NULL.
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has not been added.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	void RemoveDependsOn(deParallelTask *task);
 	
-	/** \brief Remove all tasks this task depends on. */
+	/**
+	 * \brief Remove all tasks this task depends on.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
+	 */
 	void RemoveAllDependsOn();
 	
 	/**
 	 * \brief List of tasks depending on this task.
-	 * 
-	 * Used by deParallelProcessing only.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	inline TaskPointerList &GetDependedOnBy(){ return pDependedOnBy; }
 	inline const TaskPointerList &GetDependedOnBy() const{ return pDependedOnBy; }
 	
 	/**
 	 * \brief Remove from all tasks depending on this task.
-	 * 
-	 * Used by deParallelProcessing only.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	void RemoveFromAllDependedOnTasks();
 	
 	/**
 	 * \brief Task can run.
 	 * \returns true if task does not depend on other tasks or all other tasks finished.
+	 * \note Locks deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	bool CanRun() const;
+	bool CanRun(deParallelProcessing &parallel) const;
 	
 	/**
 	 * \brief Reset task.
@@ -276,6 +282,14 @@ public:
 	virtual decString GetDebugDetails() const;
 	
 // 	void VerifyDependsOn();
+	/*@}*/
+	
+	
+	
+	/** \name Internal use only. */
+	/*@{*/
+	/** \brief Internal use only. */
+	void UnprotectedCancel();
 	/*@}*/
 };
 

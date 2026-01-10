@@ -42,6 +42,8 @@
 #include "../../../world/deoalAWorld.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/deEngine.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 
 
 
@@ -110,7 +112,7 @@ void deoalRTPTRoomEstimateFinish::Run(){
 		pRun();
 		
 	}catch(...){
-		Cancel();
+		Cancel(pOwner.GetAudioThread().GetOal().GetGameEngine()->GetParallelProcessing());
 		pOwner.FinishTaskFinished(this);
 		throw;
 	}

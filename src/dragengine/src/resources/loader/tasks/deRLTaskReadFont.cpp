@@ -75,7 +75,9 @@ pSucceeded(false)
 		
 		switch(pInternalTask->GetState()){
 		case esPending:
-			AddDependsOn(pInternalTask);
+			engine.GetParallelProcessing().RunWithTaskDependencyMutex([&](){
+				AddDependsOn(pInternalTask);
+			});
 			engine.GetParallelProcessing().AddTask(pInternalTask);
 			break;
 			
@@ -84,13 +86,13 @@ pSucceeded(false)
 			
 		case esFailed:
 			SetState(esFailed);
-			Cancel();
+			Cancel(engine.GetParallelProcessing());
 			break;
 		}
 		
 	}catch(const deException &){
 		SetState(esFailed);
-		Cancel();
+		Cancel(engine.GetParallelProcessing());
 	}
 	
 	LogCreateExit();

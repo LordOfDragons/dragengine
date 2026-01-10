@@ -342,16 +342,18 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	// cancel pending tasks owned by module
 	deMutexGuard lock(pMutexTasks);
 	
-	pListPendingTasks.Visit([&](deParallelTask *task){
-		if(task->GetOwner() == module){
-			task->Cancel();
-		}
-	});
-	
-	pListPendingTasksLowPriority.Visit([&](deParallelTask *task){
-		if(task->GetOwner() == module){
-			task->Cancel();
-		}
+	RunWithTaskDependencyMutex([&](){
+		pListPendingTasks.Visit([&](deParallelTask *task){
+			if(task->GetOwner() == module){
+				task->UnprotectedCancel();
+			}
+		});
+		
+		pListPendingTasksLowPriority.Visit([&](deParallelTask *task){
+			if(task->GetOwner() == module){
+				task->UnprotectedCancel();
+			}
+		});
 	});
 	
 	// make sure the tasks are finished otherwise
@@ -427,7 +429,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 		for(i=0; i<pThreadCount; i++){
 			deParallelTask * const task = pThreads[i]->GetTask();
 			if(task && task->GetOwner() == module){
-				task->Cancel();
+				task->Cancel(*this);
 				
 				lock.Unlock();
 				
@@ -487,12 +489,14 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 	// cancel pending tasks
 	deMutexGuard lock(pMutexTasks);
 	
-	pListPendingTasks.Visit([](deParallelTask *task){
-		task->Cancel();
-	});
-	
-	pListPendingTasksLowPriority.Visit([](deParallelTask *task){
-		task->Cancel();
+	RunWithTaskDependencyMutex([&](){
+		pListPendingTasks.Visit([](deParallelTask *task){
+			task->UnprotectedCancel();
+		});
+		
+		pListPendingTasksLowPriority.Visit([](deParallelTask *task){
+			task->UnprotectedCancel();
+		});
 	});
 	
 	// make sure the tasks are finished otherwise strange problems can happen with certain tasks
@@ -570,7 +574,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 				continue;
 			}
 			
-			task->Cancel();
+			task->Cancel(*this);
 			
 			lock.Unlock();
 			
@@ -619,7 +623,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 			
 			pListFinishedTasks.Add(task);
 			
-		}else if(task->CanRun()){
+		}else if(task->CanRun(*this)){
 			pListPendingTasks.RemoveFrom(nextIndex);
 			
 			if(task->GetEmptyRun()){
@@ -678,7 +682,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 			
 			pListFinishedTasks.Add(task);
 			
-		}else if(task->CanRun()){
+		}else if(task->CanRun(*this)){
 			pListPendingTasksLowPriority.RemoveFrom(nextIndex);
 			
 			if(task->GetEmptyRun()){
@@ -902,7 +906,7 @@ bool deParallelProcessing::pProcessOneTaskDirect(bool takeLowPriorityTasks){
 		pEngine.GetLogger()->LogErrorFormat(LOGSOURCE, "ProcessOneTask Failed [%s] %s",
 			debugName.GetString(), debugDetails.GetString());
 		pEngine.GetLogger()->LogException(LOGSOURCE, exception);
-		task->Cancel();  // tell task it failed
+		task->Cancel(*this); // tell task it failed
 	}
 	
 	// send the finished task back
@@ -937,7 +941,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			return;
 		}
 		
-		if(task->CanRun()){
+		if(task->CanRun(*this)){
 			if(pOutputDebugMessages){
 				const decString debugName(task->GetDebugName());
 				const decString debugDetails(task->GetDebugDetails());
@@ -954,7 +958,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 				pEngine.GetLogger()->LogErrorFormat(LOGSOURCE, "pEnsureRunTaskNow Failed [%s] %s",
 					debugName.GetString(), debugDetails.GetString());
 				pEngine.GetLogger()->LogException(LOGSOURCE, exception);
-				task->Cancel();  // tell task it failed
+				task->Cancel(*this); // tell task it failed
 			}
 			
 			// send the finished task back
@@ -979,8 +983,10 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			return;
 		}
 		
-		const deParallelTask::Ref deptask(task->GetDependsOn().FindOrDefault([](const deParallelTask *t){
-			return !t->GetFinished() && !t->IsCancelled();
+		const deParallelTask::Ref deptask(RunWithTaskDependencyMutex([&](){
+			return task->GetDependsOn().FindOrDefault([](const deParallelTask *t){
+				return !t->GetFinished() && !t->IsCancelled();
+			});
 		}));
 		
 		if(deptask){
@@ -988,7 +994,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			pEnsureRunTaskNow(deptask);
 			
 		}else if(deadLoopCheck){
-			task->Cancel();
+			task->Cancel(*this);
 			
 		}else{
 			deadLoopCheck = true;
@@ -1003,26 +1009,28 @@ const deParallelTask &task){
 	deLogger &logger = *pEngine.GetLogger();
 	const decString taskName(task.GetDebugName());
 	const decString taskDetails(task.GetDebugDetails());
-	const deParallelTask::TaskList &dependsOn = task.GetDependsOn();
 	const decString scontPrefix(contPrefix);
 	
 	logger.LogInfoFormat(LOGSOURCE, "%s%s[%c%c%c]: %s", prefix, taskName.GetString(),
 		task.GetFinished() ? 'F' : ' ', task.IsCancelled() ? 'C' : ' ',
 		task.GetLowPriority() ? 'L' : ' ', taskDetails.GetString());
 	
-	dependsOn.Visit([&](const deParallelTask *t){
-		decString dependPrefix, dependContPrefix;
-		
-		if(dependsOn.Last() == t){
-			dependPrefix = scontPrefix + "+ ";
-			dependContPrefix = scontPrefix + "  ";
+	RunWithTaskDependencyMutex([&](){
+		const deParallelTask::TaskList &dependsOn = task.GetDependsOn();
+		dependsOn.Visit([&](const deParallelTask *t){
+			decString dependPrefix, dependContPrefix;
 			
-		}else{
-			dependPrefix = scontPrefix + "+ ";
-			dependContPrefix = scontPrefix + "| ";
-		}
-		
-		pLogTask(dependPrefix, dependContPrefix, *t);
+			if(dependsOn.Last() == t){
+				dependPrefix = scontPrefix + "+ ";
+				dependContPrefix = scontPrefix + "  ";
+				
+			}else{
+				dependPrefix = scontPrefix + "+ ";
+				dependContPrefix = scontPrefix + "| ";
+			}
+			
+			pLogTask(dependPrefix, dependContPrefix, *t);
+		});
 	});
 }
 
