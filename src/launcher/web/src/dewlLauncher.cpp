@@ -464,7 +464,7 @@ void dewlLauncher::pLauncherThreadMain(){
 		
 	}catch(const deException &e){
 		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::error,
-			LOGSOURCE, e.FormatOutput().Join("/"));
+			LOGSOURCE, DEJoin(e.FormatOutput(), "/"));
 		pDispatchEvent(EventInitialized, e);
 		return;
 	}
