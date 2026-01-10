@@ -26,6 +26,8 @@
 
 #include "igdeNativeNullCommonDialogs.h"
 
+#include <dragengine/common/exceptions.h>
+
 
 // Class igdeNativeNullCommonDialogs
 /////////////////////////////////////

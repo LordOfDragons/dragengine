@@ -142,7 +142,7 @@ void igdeNativeNullApplication::GetAppFontConfig(igdeFont::sConfiguration &confi
 }
 
 void igdeNativeNullApplication::ShowError(const deException &exception) const{
-	pOwner.GetMainWindow()->GetLogger()->LogError("IGDE", exception.FormatOutput().Join("\n"));
+	pOwner.GetMainWindow()->GetLogger()->LogError("IGDE", DEJoin(exception.FormatOutput(), "\n"));
 }
 
 void igdeNativeNullApplication::RunModalWhileShown(igdeWindow &window){
