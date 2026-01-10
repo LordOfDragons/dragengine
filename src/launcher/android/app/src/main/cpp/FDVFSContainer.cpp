@@ -2,6 +2,7 @@
 #include <unordered_set>
 #include "FDVFSContainer.h"
 #include "FDFileReader.h"
+#include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deContainerFileSearch.h>
 
 // class FDVFSContainer::Entry

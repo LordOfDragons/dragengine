@@ -33,9 +33,6 @@ pathModule = '{}/modules/service/modio/{}'.format(
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
-# required by modio
-envModule.Append(CXXFLAGS = ['-std=c++17'])
-
 # determine the source files
 sources = []
 headers = []

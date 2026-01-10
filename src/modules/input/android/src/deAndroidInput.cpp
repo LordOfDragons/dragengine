@@ -188,25 +188,27 @@ decPoint deAndroidInput::GetScreenSize() const{
 ////////////
 
 int deAndroidInput::GetDeviceCount(){
-	return pDevices->GetCount();
+	return pDevices->GetDevices().GetCount();
 }
 
 deInputDevice::Ref deAndroidInput::GetDeviceAt(int index){
 	const deInputDevice::Ref device(deInputDevice::Ref::New());
-	pDevices->GetAt(index)->GetInfo(device);
+	pDevices->GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
 
 int deAndroidInput::IndexOfDeviceWithID(const char *id){
-	return pDevices->IndexOfWithID(id);
+	return pDevices->GetDevices().IndexOfMatching([&](const deainpDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int deAndroidInput::IndexOfButtonWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfButtonWithID(id);
 }
 
 int deAndroidInput::IndexOfAxisWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices->GetDevices().GetAt(device)->IndexOfAxisWithID(id);
 }
 
 int deAndroidInput::IndexOfFeedbackWithID(int device, const char *id){
@@ -214,11 +216,11 @@ int deAndroidInput::IndexOfFeedbackWithID(int device, const char *id){
 }
 
 bool deAndroidInput::GetButtonPressed(int device, int button){
-	return pDevices->GetAt(device)->GetButtonAt(button).GetPressed();
+	return pDevices->GetDevices().GetAt(device)->GetButtonAt(button).GetPressed();
 }
 
 float deAndroidInput::GetAxisValue(int device, int axis){
-	return pDevices->GetAt(device)->GetAxisAt(axis).GetValue();
+	return pDevices->GetDevices().GetAt(device)->GetAxisAt(axis).GetValue();
 }
 
 float deAndroidInput::GetFeedbackValue(int device, int feedback){

@@ -206,7 +206,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileRelease(
 JNIEnv *env, jobject thiz, jlong pprofile){
-    static_cast<delGameProfile*>(pprofile)->FreeReference();
+    reinterpret_cast<delGameProfile*>(pprofile)->FreeReference();
 }
 
 extern "C"
@@ -215,7 +215,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetConf
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
         return GameProfileConfig(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -229,7 +229,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileSetConf
 JNIEnv *env, jobject thiz, jlong pprofile, jobject pconfig) {
     JniHelpers h(env);
     try {
-        GameProfileConfig(env).Store(pconfig, *static_cast<delGameProfile*>(pprofile));
+        GameProfileConfig(env).Store(pconfig, *reinterpret_cast<delGameProfile*>(pprofile));
     }catch(const deException &e){
         h.throwException(e);
     }
@@ -241,7 +241,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetStat
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
         return GameProfileStatus(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -269,7 +269,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gam
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *static_cast<delGameProfile*>(pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
         // DELint-Allow-NewWithoutRef: created object is passed through JNI
         return (jlong)(intptr_t)new delGameProfile(profile);
     }catch(const deException &e){

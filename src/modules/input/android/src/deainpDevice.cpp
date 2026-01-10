@@ -39,6 +39,10 @@
 #include <dragengine/app/deOSUnix.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/input/deInputDeviceAxis.h>
+#include <dragengine/input/deInputDeviceButton.h>
+#include <dragengine/input/deInputDeviceComponent.h>
+#include <dragengine/input/deInputDeviceFeedback.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputEventQueue.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -309,17 +313,17 @@ void deainpDevice::GetInfo(deInputDevice &info) const{
 	
 	info.SetButtonCount(pButtonCount);
 	for(i=0; i<pButtonCount; i++){
-		pButtons[i].GetInfo(info.GetButtonAt(i));
+		pButtons[i].GetInfo(info.GetButtons().GetAt(i));
 	}
 	
 	info.SetAxisCount(pAxisCount);
 	for(i=0; i<pAxisCount; i++){
-		pAxes[i].GetInfo(info.GetAxisAt(i));
+		pAxes[i].GetInfo(info.GetAxes().GetAt(i));
 	}
 	
 	info.SetFeedbackCount(pFeedbackCount);
 	for(i=0; i<pFeedbackCount; i++){
-		pFeedbacks[i].GetInfo(info.GetFeedbackAt(i));
+		pFeedbacks[i].GetInfo(info.GetFeedbacks().GetAt(i));
 	}
 }
 

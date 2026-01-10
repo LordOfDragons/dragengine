@@ -107,7 +107,7 @@ void deainpInputBinding::UpdateIndices(const deainpDeviceManager &devices){
 	pDeviceIndex = devices.IndexOfWithID(pDeviceID);
 	
 	if(pDeviceIndex != -1){
-		const deainpDevice &device = *devices.GetAt(pDeviceIndex);
+		const deainpDevice &device = *devices.GetDevices().GetAt(pDeviceIndex);
 		pAxisIndex = device.IndexOfAxisWithID(pAxisID);
 		pButtonIndex = device.IndexOfButtonWithID(pButtonID);
 		
@@ -122,7 +122,7 @@ void deainpInputBinding::ChangeButtonState(deAndroidInput &androidInput, bool pr
 		return;
 	}
 	
-	const deainpDevice &device = *androidInput.GetDevices().GetAt(pDeviceIndex);
+	const deainpDevice &device = androidInput.GetDevices().GetDevices().GetAt(pDeviceIndex);
 	const timeval timestamp = androidInput.TimeValNow();
 	
 	deainpDeviceButton &button = device.GetButtonAt(pButtonIndex);

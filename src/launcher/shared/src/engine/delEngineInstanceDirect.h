@@ -381,7 +381,7 @@ public:
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
 	void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
-		const decStringList &filenames, decTObjectOrderedSet<deObject> &filesContent) override;
+		const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent) override;
 	
 	/**
 	 * \brief Add DELGA file to virtual file system as root container.

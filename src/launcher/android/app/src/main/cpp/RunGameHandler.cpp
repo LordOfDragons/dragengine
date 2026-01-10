@@ -188,7 +188,7 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     //osConfig.nativeWindow = adapter.GetNativeWindow();
     factory->SetConfig(osConfig);
 
-    pGame->SetVFSDelgaContainer((deVFSContainer *) pLauncher->GetFDContainer());
+    pGame->SetVFSDelgaContainer(pLauncher->GetFDContainer());
     pInitGameForRun();
 
     pGame->StartGame(pRunParams, factory);

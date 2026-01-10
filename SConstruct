@@ -51,11 +51,6 @@ if tools:
 		parent_env['CROSSCOMPILE_SYSROOT'] = os.path.join(dirCompilerUp, compiler)
 		#print('sysroot: ' + parent_env['CROSSCOMPILE_SYSROOT'])
 		
-		# prevent stdc++6 problems with missnig symbols on different compilers
-		#parent_env.Append(CPPFLAGS = ['-std=c++11'])
-		#parent_env.Append(CROSSCOMPILE_CFLAGS = ['-std=c++11'])
-		#parent_env.Append(CROSSCOMPILE_CPPFLAGS = ['-std=c++11'])
-		
 		# app store requirements
 		parent_env.Append(LINKFLAGS = ['-Wl,--dynamicbase'])
 		parent_env.Append(LINKFLAGS = ['-Wl,--nxcompat'])
@@ -345,6 +340,7 @@ params.Add(StringVariable('apk_name_launcher',
 	'Android Launcher APK file name without extension', 'DELauncher'))
 params.Add(StringVariable('android_version_code', 'Android version code', '99999'))
 
+params.Add(BoolVariable('with_compilation_db', 'Create compilation database (compile_commands.json)', False))
 
 if parent_env['OSMacOS']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))
@@ -752,7 +748,7 @@ parent_env.Append(CPPFLAGS = ['-Wall'])
 
 parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 
-# parent_env.Append(CPPFLAGS = ['-Wextra'])
+# parent_env.Append(CXXFLAGS = ['-Wextra'])
 
 # disable the new (and truely stupid) new gcc 8.1 shenanigans.
 # see https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Wclass-memaccess .
@@ -779,16 +775,23 @@ if parent_env['CROSSCOMPILE_CLANG']:
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 
 # enable c++20
-parent_env.Append(CPPFLAGS = ['-std=c++20'])
+parent_env.Append(CXXFLAGS = ['-std=c++20'])
 
 # in c++20 OR-ing unnamed enum constant values causes warnings. the main problem
 # here is the FOX toolkit which uses unnamed enums for flags. other libraries potentially
 # cause problems here too. disabled since in Drag[en]gine this concept is not used except
 # when dealing with foreign libraries
-parent_env.Append(CPPFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
+parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
 
 # no default targets
 Default(None)
+
+# create compilation database
+if parent_env['with_compilation_db']:
+	parent_env.Tool('compilation_db')
+	# use absolute paths to ensure Clang-Tidy finds your headers even if the build runs in a sub-directory
+	parent_env['COMPILATIONDB_USE_ABSPATH'] = True
+	parent_env.CompilationDatabase('compile_commands.json')
 
 # define the targets array and reports dictionary to be filled
 parent_targets = {}

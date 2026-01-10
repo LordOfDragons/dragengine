@@ -93,7 +93,7 @@ pLauncher(nullptr)
     DEASSERT_NOTNULL(pMetListenerStopApplication)
     DEASSERT_NOTNULL(pMetListenerKillApplication)
 
-    pLogger = ClientLogger::Ref::New(*this);
+    pLogger = std::make_shared<ClientLogger>(*this);
     SetLogger(pLogger);
 
     pEngineLogger = EngineLogger::Ref::New(*this, *pLogger);

@@ -666,10 +666,10 @@ const deVFSContainer::Ref &container, const char *filename, delGameList &list){
 				decStringList readFilenames;
 				readFilenames.Add(icon.GetPath());
 				
-				decTObjectOrderedSet<deObject> filesContent;
+				decTObjectOrderedSet<decMemoryFile> filesContent;
 				instance.ReadDelgaFilesVfs(container, filename, readFilenames, filesContent);
 				
-				icon.SetContent((decMemoryFile*)filesContent.GetAt(0));
+				icon.SetContent(filesContent.First());
 				
 			}catch(const deException &e){
 				pLauncher.GetLogger()->LogErrorFormat(pLauncher.GetLogSource(),

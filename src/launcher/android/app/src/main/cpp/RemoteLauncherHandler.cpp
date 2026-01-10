@@ -27,7 +27,7 @@ void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
 }
 
 void RemoteLauncherHandler::pInitGameForRun() {
-    pGame->SetVFSDelgaContainer(nullptr);
+    pGame->SetVFSDelgaContainer({});
     pGame->SetDelgaFile("");
 }
 

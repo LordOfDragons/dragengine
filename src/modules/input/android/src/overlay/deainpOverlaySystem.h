@@ -28,7 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "deainpOverlayList.h"
+#include "deainpOverlay.h"
 
 class deAndroidInput;
 
@@ -40,7 +40,7 @@ class deainpOverlaySystem{
 private:
 	deAndroidInput &pAndroidInput;
 	
-	deainpOverlayList pOverlays;
+	deainpOverlay::List pOverlays;
 	
 	deCanvasView::Ref pCanvas;
 	bool pInHorizontalMode;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlays. */
-	deainpOverlaySystem(deAndroidInput &androidInput);
+	explicit deainpOverlaySystem(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlays. */
 	virtual ~deainpOverlaySystem();
@@ -60,8 +60,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Overlay list. */
-	deainpOverlayList GetOverlayList(){return pOverlays;}
-	const deainpOverlayList &GetOverlayList() const{ return pOverlays; }
+	deainpOverlay::List GetOverlayList(){return pOverlays;}
+	const deainpOverlay::List &GetOverlayList() const{ return pOverlays; }
 	
 	/** \brief Overlays canvas. */
 	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }

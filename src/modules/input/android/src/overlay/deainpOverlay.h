@@ -26,6 +26,7 @@
 #define _DEAINPOVERLAY_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 
@@ -40,7 +41,8 @@ class deAndroidInput;
  */
 class deainpOverlay : public deObject{
 public:
-	typedef deTObjectReference<deainpOverlay> Ref;
+	using Ref = deTObjectReference<deainpOverlay>;
+	using List = decTObjectOrderedSet<deainpOverlay>;
 	
 	
 private:

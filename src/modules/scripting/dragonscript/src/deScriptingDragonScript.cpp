@@ -643,7 +643,7 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		pLoadingScreen = dedsLoadingScreen::Ref::New(*this);
 		
 #ifdef OS_ANDROID_QUEST
-		pVRPlaceholder = dedsVRPlaceholder::Ref::New(*this;
+		pVRPlaceholder = dedsVRPlaceholder::Ref::New(*this);
 #endif
 		
 		pState = esSkipOneFrame;

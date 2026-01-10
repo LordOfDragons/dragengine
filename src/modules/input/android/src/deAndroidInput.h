@@ -79,6 +79,9 @@ public:
 	/** \brief Create input module. */
 	deAndroidInput(deLoadableModule &loadableModule);
 	
+	deAndroidInput(const deAndroidInput&) = delete;
+	deAndroidInput& operator=(const deAndroidInput&) = delete;
+	
 	/** \brief Clean up input module. */
 	~deAndroidInput() override;
 	/*@}*/

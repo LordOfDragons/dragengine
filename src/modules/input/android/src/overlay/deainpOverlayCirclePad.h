@@ -269,13 +269,13 @@ public:
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	virtual bool OnTouch(int pointerId, const decPoint &position);
+	bool OnTouch(int pointerId, const decPoint &position) override;
 	
 	/**
 	 * \brief Move event.
 	 * \param[in] position Move distance since last move event.
 	 */
-	virtual void OnMove(const decPoint &position);
+	void OnMove(const decPoint &position) override;
 	
 	/** \brief Release. */
 	void OnRelease() override;

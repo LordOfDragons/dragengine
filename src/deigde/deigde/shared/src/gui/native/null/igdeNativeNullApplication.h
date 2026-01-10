@@ -27,12 +27,12 @@
 
 #include "../../../environment/igdeEnvironment.h"
 
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
 class deException;
 class igdeApplication;
-class decUnicodeStringList;
 #ifdef OS_W32
-class decUnicodeArgumentList;
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #endif
 
 

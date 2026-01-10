@@ -78,7 +78,7 @@ const char *delgaFile, decStringList &list){
 }
 
 void delEngineInstance::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
-const char *delgaFile, const decStringList &filenames, decTObjectOrderedSet<deObject> &filesContent){
+const char *delgaFile, const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }
 
