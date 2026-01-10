@@ -75,7 +75,6 @@ private:
 	
 	decString pCanvasId;
 	decPoint pCanvasSize;
-	deLogger *pEngineLogger, pEngineLoggerDebug;
 	
 	dewlLoggerJS::Ref pLoggerJS;
 	
@@ -114,12 +113,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Engine logger. */
-	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
-	
-	/** Engine logger debug. */
-	inline const deLogger::Ref &GetEngineLoggerDebug() const{ return pEngineLoggerDebug; }
-	
 	/** Delga path. */
 	std::string GetDelgaPath() const{ return pDelgaPath.GetString(); }
 	void SetDelgaPath(const std::string &path){pDelgaPath = path.c_str();}

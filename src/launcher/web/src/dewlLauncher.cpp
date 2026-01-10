@@ -654,5 +654,5 @@ void dewlLauncher::pDispatchEvent(const std::string &event, eResultCodes resultC
 }
 
 void dewlLauncher::pDispatchEvent(const std::string &event, const deException &exception){
-	pDispatchEvent(event, eResultCodes::Exception, exception.FormatOutput().Join("\n"));
+	pDispatchEvent(event, eResultCodes::Exception, DEJoin(exception.FormatOutput(), "\n"));
 }
