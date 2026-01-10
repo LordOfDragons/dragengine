@@ -178,7 +178,7 @@ jobs:
           scons -j 4 srv_modio_build
           
           # the rest can be build full throttle
-          scons -j 14 archive installer detests
+          scons -j 14 archive installer detests_build
       
       - name: Debug Symbols
         if: ${{ ! inputs.debugBuild }}
