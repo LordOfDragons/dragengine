@@ -12,7 +12,11 @@ envLibrary = parent_env.Clone()
 # parameters
 distVersionMajor = 1
 distVersionMinor = 5
+distVersionPatch = 1
 srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
+if distVersionPatch != 0:
+	srcdir += '.{}'.format(distVersionPatch)
+
 buildStaticLinking = True
 
 if envLibrary[ 'OSWindows' ]:

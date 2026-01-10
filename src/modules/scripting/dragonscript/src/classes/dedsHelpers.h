@@ -25,47 +25,30 @@
 #ifndef _DEDEDSHELPERS_H_
 #define _DEDEDSHELPERS_H_
 
-#include <new>       // For std::launder and placement new
-#include <cstddef>   // For std::max_align_t
-#include <cstdint>   // For uintptr_t
+#include <cstddef>
+#include <utility>
 
-
-// 2026 Recommended: Align to at least 16 bytes on Windows to prevent SIMD crashes.
-template<typename T>
-consteval size_t dedsRequiredAlignment(){
-	// std::max_align_t is often 16 on modern Windows/Linux to support x64 SIMD.
-	return (alignof(T) > alignof(std::max_align_t)) ? alignof(T) : alignof(std::max_align_t);
-}
+#include <libdscript/libdscript.h>
 
 
 /** Calculate the required data size to store native data struct. */
 template<typename T>
-inline size_t dedsNativeDataSize(){
-	return sizeof(T) + (dedsRequiredAlignment<T>() - 1);
+consteval int dedsNativeDataSize(){
+	return dsNativeDataSize<T>();
 }
 
 
 /** Perform placement new of native data struct. */
-template<typename T>
-inline T& dedsNewNativeData(void *buffer){
-	const uintptr_t addr = reinterpret_cast<uintptr_t>(buffer);
-	const size_t align = dedsRequiredAlignment<T>();
-	const uintptr_t alignedAddr = (addr + (align - 1)) & ~(align - 1);
-	
-	// Construction with () for zero-initialization of primitives
-	return *(new (reinterpret_cast<T*>(alignedAddr)) T());
+template<typename T, typename... Args>
+inline T& dedsNewNativeData(void *buffer, Args&&... args){
+	return dsNativeDataNew<T>(buffer, std::forward<Args>(args)...);
 }
+
 
 /** Get native data reference. */
 template<typename T>
 inline T& dedsGetNativeData(void *buffer){
-	const uintptr_t addr = reinterpret_cast<uintptr_t>(buffer);
-	const size_t align = dedsRequiredAlignment<T>();
-	const uintptr_t aligned_addr = (addr + (align - 1)) & ~(align - 1);
-	
-	// std::launder is MANDATORY in 2026 to prevent MSVC from 
-	// caching old pointer values in registers during optimization.
-	return *std::launder(reinterpret_cast<T*>(aligned_addr));
+	return dsNativeDataGet<T>(buffer);
 }
 
 #endif

@@ -8,14 +8,14 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-$ExpandedDir = "$ProjectDir\dragonscript-1.5"
+$ExpandedDir = "$ProjectDir\dragonscript-1.5.1"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.5.tar.xz" -UrlPath "dragonscript"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.5.1.tar.xz" -UrlPath "dragonscript"
 
-Expand-TarXz -Path "$ProjectDir\dragonscript-1.5.tar.xz" -Destination $ProjectDir
+Expand-TarXz -Path "$ProjectDir\dragonscript-1.5.1.tar.xz" -Destination $ProjectDir
 
 # Build the downloaded Visual Studio solution in-place.
 # Locate MSBuild via vswhere if available, otherwise fall back to msbuild.exe in PATH.
