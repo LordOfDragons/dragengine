@@ -340,8 +340,6 @@ params.Add(StringVariable('apk_name_launcher',
 	'Android Launcher APK file name without extension', 'DELauncher'))
 params.Add(StringVariable('android_version_code', 'Android version code', '99999'))
 
-params.Add(BoolVariable('with_compilation_db', 'Create compilation database (compile_commands.json)', False))
-
 if parent_env['OSMacOS']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))
 	params.Add(TernaryVariable('with_pthread', 'Use pthread'))
@@ -785,13 +783,6 @@ parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
 
 # no default targets
 Default(None)
-
-# create compilation database
-if parent_env['with_compilation_db']:
-	parent_env.Tool('compilation_db')
-	# use absolute paths to ensure Clang-Tidy finds your headers even if the build runs in a sub-directory
-	parent_env['COMPILATIONDB_USE_ABSPATH'] = True
-	parent_env.CompilationDatabase('compile_commands.json')
 
 # define the targets array and reports dictionary to be filled
 parent_targets = {}

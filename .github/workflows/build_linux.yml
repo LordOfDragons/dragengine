@@ -199,6 +199,7 @@ jobs:
       
       - name: Run Low Level Tests
         run: |
+          cp ./src/dragengine/build/libdragengine*.so* ./src/tests/build
           ./src/tests/build/detests
         
       - name: Get current date
